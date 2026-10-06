@@ -66,7 +66,10 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [x] Refine regions 0x646000–0x7ae440 and 0x7c4000–0x82c000 (NetZ vs game vs RW toolkits)
 - [x] Identify STL template instantiations inside game regions (`tools/stl.py` → db/stl.json, module=stl; 418 fns)
 - [x] Bulk Hex-Rays export (`export/funcs/<ea>.c`)
-- [ ] Name the RW boundary API (455 functions, `export/boundary_api.json`) using librw/RW API as reference
+- [ ] Name the RW boundary API (456; `tools/rwname.py`). Pass 1: 254 applied (core RW ranges, unique, conf ≥0.7).
+      Left: 64 not attempted (Codex quota), 30 held back (dupes/low conf), 108 in 0x7C6000+ (see next item)
+- [ ] Re-examine 0x7C65C0–0x82C410 ("RW toolkits / NetZ tail"): naming pass found wrappers/setters that don't
+      match RW (e.g. 0x7DB920 table-driven init) — may be a separately linked engine lib (game or middleware)
 - [x] Name the CRT boundary API (58 after FLIRT/region fixes; `tools/boundary.py` regenerates export/boundary_api.json)
 - [ ] NetZ boundary (320): name only if needed for stubbing — deferred, game net layer is stubbed at cutover
 - [ ] Harvest Spanish strings/state names/config keys → subsystem anchors
@@ -111,7 +114,7 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
   (`--escalate-claude`); Opus (interactive session) reviews samples and handles `queue/`.
 - 2026-10-07: **Grunt tiering v2 (user):** main grunt = GPT-6.1-Sol via Codex CLI (`codex exec`, user's
   subscription, effort high → xhigh on retry); functions < 48 B → DeepSeek flash (falls through to Codex on API
-  error, e.g. out of credit); `--escalate-claude` adds Sonnet. `grunt.py run --backend auto` (default).
+  error, e.g. out of credit). Codex quota is finite: a 456-call naming run exhausted it — keep runs batched; `--escalate-claude` adds Sonnet. `grunt.py run --backend auto` (default).
 - 2026-10-07: xwin x86 CRT/SDK installed at `~/.xwin` (license accepted by user).
 - Play copy of the game for hook testing: `/mnt/e/dev/csf-play` (E:\dev\csf-play). Never deploy into csf-builds.
 
