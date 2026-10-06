@@ -1,0 +1,18 @@
+# Cross toolchain: clang-cl + lld-link targeting 32-bit MSVC ABI, SDK/CRT from xwin (~/.xwin).
+set(CMAKE_SYSTEM_NAME Windows)
+set(CMAKE_SYSTEM_PROCESSOR x86)
+set(CMAKE_C_COMPILER clang-cl)
+set(CMAKE_CXX_COMPILER clang-cl)
+set(CMAKE_LINKER lld-link)
+set(CMAKE_AR llvm-lib-21)
+set(CMAKE_RC_COMPILER llvm-rc-21)
+set(CMAKE_MT llvm-mt-21)
+set(XWIN $ENV{HOME}/.xwin)
+set(_flags "--target=i686-pc-windows-msvc -fms-compatibility-version=19.30 /arch:IA32 \
+ /imsvc ${XWIN}/crt/include /imsvc ${XWIN}/sdk/include/ucrt /imsvc ${XWIN}/sdk/include/um /imsvc ${XWIN}/sdk/include/shared")
+set(CMAKE_C_FLAGS_INIT "${_flags}")
+set(CMAKE_CXX_FLAGS_INIT "${_flags}")
+set(_lflags "/libpath:${XWIN}/crt/lib/x86 /libpath:${XWIN}/sdk/lib/um/x86 /libpath:${XWIN}/sdk/lib/ucrt/x86")
+set(CMAKE_EXE_LINKER_FLAGS_INIT "${_lflags}")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "${_lflags}")
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)

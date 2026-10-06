@@ -67,7 +67,7 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [ ] Identify STL template instantiations inside game regions (mark `lib: stl`)
 - [x] Bulk Hex-Rays export (`export/funcs/<ea>.c`)
 - [ ] Name the RW boundary API (455 functions, `export/boundary_api.json`) using librw/RW API as reference
-- [ ] Name the CRT boundary API (105); NetZ (319) depends on open decision 1
+- [ ] Name the CRT boundary API (105). NetZ boundary: name only (for stubbing), no reimpl
 - [ ] Harvest Spanish strings/state names/config keys → subsystem anchors
 - [x] Clone clusters (`tools/clones.py` → export/clones.json): one impl per cluster
 - [x] Vtable recovery + QI-chain hierarchy (`tools/vtables.py` → db/vtables.json)
@@ -82,8 +82,9 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [ ] Module boundaries finalized; first `notes/`
 
 ### Phase 3 — hook DLL bring-up
-- [ ] clang-cl + xwin toolchain builds a DLL that the game loads (proxy dll e.g. dinput8.dll)
-- [ ] Hook installer (jmp + vtable patch), ini toggles, logging
+- [x] clang-cl + xwin toolchain builds `dinput8.dll` proxy (`cmake/clang-cl-x86.cmake`, `tools/deploy.sh`)
+- [ ] Smoke test: game loads the DLL and runs (`tools/smoke.sh`)
+- [x] Hook installer (jmp + vtable patch), ini toggles, logging (`hook/`)
 - [ ] Allocator shim, rw.h shim, globals.h generator
 - [ ] First hand-written hooked function verified in-game
 
@@ -94,11 +95,14 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 
 ### Phase 5 — batch verification (user playtests) and Phase 6 — cutover
 
+## Decisions made
+
+- 2026-10-07: **Single-player first; multiplayer stubbed.** NetZ boundary is not reimplemented; game net code
+  (net DDL classes etc.) gets stubbed at cutover. Revisit LAN after SP cutover.
+- 2026-10-07: Grunt provider = **DeepSeek API** (key in `~/.config/csf-re/env`, never in git).
+- 2026-10-07: xwin x86 CRT/SDK installed at `~/.xwin` (license accepted by user).
+- Play copy of the game for hook testing: `/mnt/e/dev/csf-play` (E:\dev\csf-play). Never deploy into csf-builds.
+
 ## Open decisions (for the user)
 
-1. **Multiplayer / NetZ**: NetZ is proprietary and can't be linked at cutover. Options: stub multiplayer
-   (single-player only first), or reimplement the subset of NetZ used for LAN. Recommendation: single-player first.
-2. **xwin license**: `xwin --accept-license splat` downloads the MSVC CRT + Windows SDK under Microsoft's
-   license. User must accept (run it, or tell Claude to). Needed for Phase 3.
-3. **Grunt model/provider**: plan says DeepSeek flash via opencode; revised workflow calls an API directly.
-   Need API key location / provider choice before Phase 4.
+(none)

@@ -46,3 +46,12 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
 - Final draft: game 14,422 funcs / 2.3 MB; rw 2,737 / 635 KB; netz 3,777 / 446 KB; d3dx9 1,241 / 469 KB.
 - Boundary API (lib functions called directly by game): rw 455, netz 319, crt 105, png 1 → `export/boundary_api.json`.
 - NetZ boundary is large (319): game net layer (0x740000 DDL classes etc.) is deeply tied to NetZ.
+
+## 2026-10-07 — Hook DLL bring-up
+
+- Toolchain: clang-cl 21 / lld-link, `--target=i686-pc-windows-msvc`, xwin x86 libs; static CRT. Linker map at
+  `build/dinput8.map` (used to compare our compiled `ret N` with the original).
+- Game imports only `DirectInput8Create` from DINPUT8.dll → `dinput8.dll` proxy is the loader.
+- First hook: `sub_44FC30` = `CHandleTable::Resolve(const CHandle*)` (464 callers, generational handle lookup;
+  entries @+0x10, count @+0x18, object generation @+0x20). Compiled output matches original instruction-for-
+  instruction (signed compares, `ret 4`). Game uses frame pointers (EBP frames).
