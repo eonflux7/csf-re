@@ -49,7 +49,10 @@ def main():
         f = json.loads(line)
         ea = f["ea"]
         r = region_of(regions, ea)
-        region = "crt" if f["lib"] else (r["lib"] or "game") if r else "unknown"
+        # FLIRT "lib" matches outside the CRT range are false positives on tiny functions (e.g. VS2010
+        # Concurrency:: names in a 2006 binary): the address region wins.
+        region = (r["lib"] or "game") if r else "crt" if f["lib"] else "unknown"
+        flirt_bogus = f["lib"] and region != "crt"
         prev = old.get(ea)
         auto_name = f["name"]
         if prev:
@@ -61,8 +64,10 @@ def main():
                 row["status"] = "lib"
             elif region == "game" and row["status"] == "lib":
                 row["status"] = "todo"
+            if flirt_bogus and row["name_src"] == "ida":
+                row["name"], row["name_src"] = "", ""
         else:
-            named = not auto_name.startswith(("sub_", "nullsub_", "j_"))
+            named = not auto_name.startswith(("sub_", "nullsub_", "j_")) and not flirt_bogus
             row = dict(ea=f"{ea:08x}", size=str(f["size"]), region=region, module="",
                        name=auto_name if named else "", name_src="ida" if named else "",
                        status="todo" if region == "game" else "lib")
