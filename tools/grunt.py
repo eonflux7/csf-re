@@ -174,7 +174,7 @@ def select(db, n, max_size, min_size=6):
     room = {eas[i]: eas[i + 1] - eas[i] for i in range(len(eas) - 1)}
     cands = []
     for ea, r in rows.items():
-        if r["status"] != "todo" or r["region"] != "game" or ea in rep:
+        if r["status"] != "todo" or r["region"] != "game" or ea in rep or r["module"] == "stl":  # stl: template impls
             continue
         f = db.F.get(ea)
         if not f or f["size"] > max_size or f["size"] < min_size or room.get(ea, 99) < 5 or not os.path.exists(os.path.join(ROOT, "export", "funcs", f"{ea:08x}.c")):

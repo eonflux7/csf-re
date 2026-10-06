@@ -78,3 +78,16 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
   where the original reloads (risky: children removing themselves); Sonnet reloaded correctly but added a bogus
   extra read. → prompt rule "re-read memory where the original does"; asm now included up to 400 B.
 - Gate now also checks every CSF_FUNC binding's convention/arg bytes against the callee's `ret N`.
+
+## 2026-10-07 — FLIRT false positives, STL instances
+
+- 61 tiny game functions (getters etc.) carried FLIRT names from VS2010 ConcRT (`Concurrency::...`) and were
+  filed as `crt`. triage now lets the address region win over the FLIRT flag; bogus names cleared.
+  CRT boundary count in `export/boundary_api.json` is stale (regenerate before naming it).
+- `tools/stl.py`: seeds = refs to VC7.1 STL error strings; all `vector<T>` instances share one COMDAT-folded
+  `_Xlen` (0x6CE410, 182 callers); std::string members are game-side instantiations calling the CRT's
+  `_String_base::_Xlen/_Xran`. Plus clone expansion and template-shaped exclusive callees (uninitialized_fill_n,
+  copy_backward, _Destroy ranges, tree _Min/_Max/_Lrotate). → 418 functions / 119 KB, module=stl, skipped by grunt.
+- Tree node: _Isnil byte at +45 for one instance (value 33 bytes after 3 ptrs + color) — offsets vary per T.
+- STL containers allocate via `sub_690DC0(size, file?, line?)` / `sub_690E60` (game allocator; cf. PS2
+  `StlAllocator.h`), not operator new.

@@ -64,7 +64,7 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [x] Draft region map (`db/regions.yaml`)
 - [x] `db/functions.csv` generated (`tools/triage.py`)
 - [x] Refine regions 0x646000–0x7ae440 and 0x7c4000–0x82c000 (NetZ vs game vs RW toolkits)
-- [ ] Identify STL template instantiations inside game regions (mark `lib: stl`)
+- [x] Identify STL template instantiations inside game regions (`tools/stl.py` → db/stl.json, module=stl; 418 fns)
 - [x] Bulk Hex-Rays export (`export/funcs/<ea>.c`)
 - [ ] Name the RW boundary API (455 functions, `export/boundary_api.json`) using librw/RW API as reference
 - [ ] Name the CRT boundary API (105). NetZ boundary: name only (for stubbing), no reimpl
@@ -78,7 +78,8 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 
 ### Phase 2 — types and module carving (Opus)
 - [ ] Core classes: layouts, vtables, sizeof with static_asserts
-- [ ] STL layout replicas for VC7.1 (std::string/vector/list/map) if embedded in game classes
+- [ ] STL layout replicas for VC7.1 (vector/list/map/set) + template hook impls covering db/stl.json
+      (element size per instance; nodes/buffers via game allocator sub_690DC0/sub_690E60)
 - [ ] Module boundaries finalized; first `notes/`
 
 ### Phase 3 — hook DLL bring-up
