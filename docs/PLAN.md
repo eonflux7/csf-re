@@ -67,7 +67,8 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [x] Identify STL template instantiations inside game regions (`tools/stl.py` → db/stl.json, module=stl; 418 fns)
 - [x] Bulk Hex-Rays export (`export/funcs/<ea>.c`)
 - [ ] Name the RW boundary API (455 functions, `export/boundary_api.json`) using librw/RW API as reference
-- [ ] Name the CRT boundary API (105). NetZ boundary: name only (for stubbing), no reimpl
+- [x] Name the CRT boundary API (58 after FLIRT/region fixes; `tools/boundary.py` regenerates export/boundary_api.json)
+- [ ] NetZ boundary (320): name only if needed for stubbing — deferred, game net layer is stubbed at cutover
 - [ ] Harvest Spanish strings/state names/config keys → subsystem anchors
 - [x] Clone clusters (`tools/clones.py` → export/clones.json): one impl per cluster
 - [x] Vtable recovery + QI-chain hierarchy (`tools/vtables.py` → db/vtables.json)

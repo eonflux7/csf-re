@@ -91,3 +91,6 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
 - Tree node: _Isnil byte at +45 for one instance (value 33 bytes after 3 ptrs + color) — offsets vary per T.
 - STL containers allocate via `sub_690DC0(size, file?, line?)` / `sub_690E60` (game allocator; cf. PS2
   `StlAllocator.h`), not operator new.
+- CRT range had a 16-aligned island 0x7C1C70–0x7C2C2F: six clip helpers called only by game 0x6EBA90 (→ game)
+  and two called only by RW 0x7FF600 (→ rw). regions.yaml updated. Remaining CRT boundary (58) is all named;
+  hand-named: std::exception ctor/dtor (vftable 0x876A50), _wsystem, __security_check_cookie (/GS is on).
