@@ -2,11 +2,10 @@
 #include "globals.h"
 #include "hook.h"
 
-// 0x004AA180 (6 bytes) — returns the literal action/tag name "TAsomarse".
-// mov eax, 0x837b94 ; ret
+// Returns the animation/state name string constant "TAsomarse".
 static const char* __cdecl GetTAsomarseString()
 {
-    return "TAsomarse";
+    return CSF_STR(0x837B94, "TAsomarse");
 }
 
 HOOK(0x4AA180, GetTAsomarseString, "auto");

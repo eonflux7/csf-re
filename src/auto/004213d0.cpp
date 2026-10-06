@@ -1,19 +1,12 @@
 #include <cstdint>
 #include <cstddef>
-#include <cstring>
-#include <cmath>
-#include <climits>
-#include <cfloat>
 #include "globals.h"
 #include "hook.h"
-#include "core/memory.h"
-#include "types/auto_classes.h"
-#include "legacy/string.h"
 
-// Returns the literal animation name used for the strafe blend.
+// Returns the name of the strafe animation: pointer to the constant "TStrafe".
 static const char* __cdecl GetStrafeAnimName()
 {
-    return "TStrafe";
+    return CSF_STR(0x0082F790, "TStrafe");
 }
 
-HOOK(0x4213D0, GetStrafeAnimName, "auto");
+HOOK(0x004213D0, GetStrafeAnimName, "auto");

@@ -1,20 +1,11 @@
-#include <cstdint>
-#include <cstddef>
-#include <cstring>
-#include <cmath>
-#include <climits>
-#include <cfloat>
 #include "globals.h"
 #include "hook.h"
-#include "core/memory.h"
-#include "types/auto_classes.h"
-#include "legacy/string.h"
 
-// Returns the literal string identifier "TMoviendose".
-// Original: mov eax, 0x82f190 ; ret   (0x82f190 -> "TMoviendose")
-static const char* __cdecl Sub_420720()
+// Returns the pointer to the constant animation/state name "TMoviendose"
+// (Spanish: "moving"), stored in read-only data at 0x0082F190.
+static const char* __cdecl GetMoviendoseName()
 {
-    return "TMoviendose";
+    return CSF_STR(0x0082F190, "TMoviendose");
 }
 
-HOOK(0x420720, Sub_420720, "auto");
+HOOK(0x00420720, GetMoviendoseName, "auto");

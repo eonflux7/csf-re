@@ -1,12 +1,19 @@
 #include <cstdint>
+#include <cstddef>
+#include <cstring>
+#include <cmath>
+#include <climits>
+#include <cfloat>
 #include "globals.h"
 #include "hook.h"
+#include "core/memory.h"
+#include "types/auto_classes.h"
+#include "legacy/string.h"
 
-// Returns the identifier string "TDisparar" ("Shoot"), which lives in the game
-// image at 0x00832D58 (the original simply loads that address into eax).
-static const char* __cdecl C_00832cc0_GetTDispararString()
+// Returns the address of the constant string "TDisparar" (0x00832D58).
+static const char* __fastcall C_00832cc0_GetTDispararString(C_00832cc0* /*self*/, void* /*edx*/)
 {
-    return "TDisparar";
+    return CSF_STR(0x832D58, "TDisparar");
 }
 
-HOOK(0x0047BE30, C_00832cc0_GetTDispararString, "auto");
+HOOK(0x47BE30, C_00832cc0_GetTDispararString, "auto");

@@ -1,12 +1,12 @@
 #include <cstdint>
-#include <cstddef>
-#include "globals.h"
 #include "hook.h"
+#include "globals.h"
+#include "types/auto_classes.h"
 
-// Returns a pointer to the constant string "truco".
+// Returns the constant Spanish string "truco" stored in the game's read-only data.
 static const char* __cdecl GetTrucoString()
 {
-    return "truco";
+    return CSF_STR(0x00830084, "truco");
 }
 
-HOOK(0x428B10, GetTrucoString, "auto");
+HOOK(0x00428B10, GetTrucoString, "auto");

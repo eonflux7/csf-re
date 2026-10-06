@@ -1,20 +1,12 @@
 #include <cstdint>
 #include <cstddef>
-#include <cstring>
-#include <cmath>
-#include <climits>
-#include <cfloat>
 #include "globals.h"
 #include "hook.h"
-#include "core/memory.h"
-#include "types/auto_classes.h"
-#include "legacy/string.h"
 
-// Returns the literal identifier "TBuscar" (Spanish: "search").
-// Original code: `mov eax, 0x836ac4 ; ret`  -> returns pointer to the string literal.
+// Returns the constant string "TBuscar" (address 0x00836AC4).
 static const char* __cdecl TBuscar_GetString()
 {
-    return "TBuscar";
+    return CSF_STR(0x836AC4, "TBuscar");
 }
 
-HOOK(0x004AA130, TBuscar_GetString, "auto");
+HOOK(0x4AA130, TBuscar_GetString, "auto");

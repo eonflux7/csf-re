@@ -10,10 +10,10 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-// Returns the constant literal "TPostAction".
-static const char* __cdecl GetTPostActionString()
+// Returns the constant name of the "TPostAction" animation/action group.
+static const char* GetTPostActionString()
 {
-    return "TPostAction";
+    return CSF_STR(0x82EF48, "TPostAction");
 }
 
 HOOK(0x4206F0, GetTPostActionString, "auto");

@@ -10,11 +10,10 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-// 0x004AA0A0 (6 bytes, __cdecl, ret 0)
-// Returns the static string "TFncGirar".
+// Returns the name string of the TFncGirar object at 0x0082F9D0.
 static const char* __cdecl TFncGirar_GetName()
 {
-    return "TFncGirar";
+    return CSF_STR(0x0082F9D0, "TFncGirar");
 }
 
 HOOK(0x4AA0A0, TFncGirar_GetName, "auto");

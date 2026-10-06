@@ -1,10 +1,19 @@
 #include <cstdint>
+#include <cstddef>
+#include <cstring>
+#include <cmath>
+#include <climits>
+#include <cfloat>
+#include "globals.h"
 #include "hook.h"
+#include "core/memory.h"
+#include "types/auto_classes.h"
+#include "legacy/string.h"
 
-// Returns a pointer to the constant string "TIrHacia" (stored in .rdata at 0x8359C4).
+// Returns the pointer to the static string literal "TIrHacia" (0x008359C4).
 static const char* __cdecl GetTIrHaciaString()
 {
-    return "TIrHacia";
+    return CSF_STR(0x8359C4, "TIrHacia");
 }
 
-HOOK(0x4AA140, GetTIrHaciaString, "auto");
+HOOK(0x004AA140, GetTIrHaciaString, "auto");

@@ -1,20 +1,12 @@
 #include <cstdint>
-#include <cstddef>
-#include <cstring>
-#include <cmath>
-#include <climits>
-#include <cfloat>
 #include "globals.h"
 #include "hook.h"
-#include "core/memory.h"
-#include "types/auto_classes.h"
 #include "legacy/string.h"
 
-// Returns the localized token string "TMirar" (literally "T[o] Look/Mirar").
-// Original: mov eax, 0x835794 ; ret  -> address of the string literal in .rdata.
-static const char* __cdecl GetMirarToken()
+// Returns the literal token "TMirar" used by the "look" command parser.
+static const char* GetMirarToken()
 {
-    return "TMirar";
+  return CSF_STR(0x00835794, "TMirar");
 }
 
-HOOK(0x4AA0C0, GetMirarToken, "auto");
+HOOK(0x004AA0C0, GetMirarToken, "auto");

@@ -1,15 +1,11 @@
 #include <cstdint>
-#include <cstddef>
 #include "globals.h"
 #include "hook.h"
-#include "core/memory.h"
-#include "types/auto_classes.h"
-#include "legacy/string.h"
 
-// Returns the constant class/type name string "TPreAction".
-static const char* __cdecl GetTPreActionName()
+// Returns the constant action name string "TPreAction" (data at 0x0082EDD0).
+static const char* GetTPreActionName()
 {
-    return "TPreAction";
+    return CSF_STR(0x0082EDD0, "TPreAction");
 }
 
 HOOK(0x4206D0, GetTPreActionName, "auto");

@@ -10,10 +10,10 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-// Returns the animation/state name literal "TMoviendoseImpacto".
+// Returns the literal name "TMoviendoseImpacto" (moving-impact animation).
 static const char* __cdecl GetMoviendoseImpactoName()
 {
-    return "TMoviendoseImpacto";
+    return CSF_STR(0x0082F250, "TMoviendoseImpacto");
 }
 
-HOOK(0x420730, GetMoviendoseImpactoName, "auto");
+HOOK(0x00420730, GetMoviendoseImpactoName, "auto");

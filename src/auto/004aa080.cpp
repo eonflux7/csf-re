@@ -1,11 +1,19 @@
 #include <cstdint>
+#include <cstddef>
+#include <cstring>
+#include <cmath>
+#include <climits>
+#include <cfloat>
+#include "globals.h"
 #include "hook.h"
+#include "core/memory.h"
+#include "types/auto_classes.h"
+#include "legacy/string.h"
 
-// Returns a pointer to the (read-only) string "TRendirse".
-// Original: mov eax, 0x83713c ; ret   (i.e. a constant string address)
+// Returns the constant identifier string "TRendirse" used by the game.
 static const char* __cdecl GetTRendirse()
 {
-    return "TRendirse";
+    return CSF_STR(0x83713C, "TRendirse");
 }
 
-HOOK(0x004AA080, GetTRendirse, "auto");
+HOOK(0x4AA080, GetTRendirse, "auto");

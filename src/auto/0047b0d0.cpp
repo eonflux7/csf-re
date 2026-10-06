@@ -1,19 +1,17 @@
 #include <cstdint>
 #include <cstddef>
 #include <cstring>
-#include <cmath>
-#include <climits>
-#include <cfloat>
 #include "globals.h"
 #include "hook.h"
 #include "core/memory.h"
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-// Returns the literal name of the "Girar" (turn) function.
+// 0x0047B0D0 (6 bytes) __cdecl, ret 0
+// Returns the constant name of the "Girar" (turn/rotate) task function.
 static const char* __cdecl GetTFunctionGirarName()
 {
-    return "TFunctionGirar";
+    return CSF_STR(0x00831E68, "TFunctionGirar");
 }
 
-HOOK(0x47B0D0, GetTFunctionGirarName, "auto");
+HOOK(0x0047B0D0, GetTFunctionGirarName, "auto");
