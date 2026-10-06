@@ -37,3 +37,12 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
 - No RTTI, but ~108 classes implement a QueryInterface-like virtual: `if (id == &TypeId) {*out=this;} else Base::QI()`.
   Chains give hierarchy (depth ≤ 3). Type ids are bare BSS addresses (no names).
 - `tools/vtables.py` → `db/vtables.json`: 1,214 vtable candidates (1,049 game, 120 netz).
+
+## 2026-10-07 — Region refinement
+
+- `tools/regions.py` rewritten: call-graph closure (callers of game are game; callees of libs are lib) + string
+  seeds + address-neighbour fill. 0x7c65c0–0x82c403 (420 KB, no seeds) calls out only to rw/netz/crt and is
+  called by game → library (RW toolkits, libpng/zlib, NetZ tail).
+- Final draft: game 14,422 funcs / 2.3 MB; rw 2,737 / 635 KB; netz 3,777 / 446 KB; d3dx9 1,241 / 469 KB.
+- Boundary API (lib functions called directly by game): rw 455, netz 319, crt 105, png 1 → `export/boundary_api.json`.
+- NetZ boundary is large (319): game net layer (0x740000 DDL classes etc.) is deeply tied to NetZ.

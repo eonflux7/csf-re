@@ -1,48 +1,110 @@
 #!/usr/bin/env python3
-"""Seed-label functions by referenced strings, then print run-length address regions.
+"""Classify aligned code (game vs rw vs netz) by call-graph closure, then print address runs.
 
-Used to draft db/regions.yaml (library vs game address ranges). Exploratory; re-runnable.
+Principle: library code never calls game code directly.
+  - callers of a game function are game (transitively)
+  - callees of a library function are library (same lib, or crt/d3dx/png)
+Seeds come from strings. Unlabeled functions take the label of their address neighbours (object files are
+contiguous). Fixed regions (crt/d3dx9/png) come from db/regions.yaml entries with confidence: high.
+
+Usage: regions.py [min_run]   -> prints suggested runs; edit db/regions.yaml by hand from it.
 """
-import json, os, re, sys
+import collections, json, os, re, sys
+import yaml
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-F = [json.loads(l) for l in open(os.path.join(ROOT, "export", "functions.jsonl"))]
-F.sort(key=lambda f: f["ea"])
+F = sorted((json.loads(l) for l in open(os.path.join(ROOT, "export", "functions.jsonl"))), key=lambda f: f["ea"])
+by = {f["ea"]: f for f in F}
+RWI = 0x8b68c0
 
-NETZ_CPP = re.compile(r"(DDL|Job|Extension|Transport|Session|Station|EndPoint|Socket|DOCore|NetZ|Duplicat|Facade|"
-                      r"Discovery|Voice|Peer|BackEnd|Authentication|ObjDup|Core|Result|Platform|Scheduler|"
-                      r"MemoryManager|String|EventHandler|StepSequence|CallContext|SystemComponent|Network|"
-                      r"Emulation|Packet|HighLevelStream|RC4|LZo|Message|Thread|Bundling|PseudoGlobal|DOClasses)\w*\.(cpp|h)$")
-RULES = [
-    ("crt",  lambda f, s: f["lib"]),
-    ("d3dx", lambda f, s: re.search(r"D3DX|shader|ps_[123]|vs_[123]|internal error|syntax error|texm|swizzl|register|semantic|predicate|oPos|oT\d|dp3 |dcl_", s)),
-    ("rw",   lambda f, s: re.search(r"rwRASTER|[Rr]aster|RwEngine|rwID|Only rendering sub|projection type|combination type|NVPerfHUD|video memory|rwFILE|RpWorld|RwFrame", s)),
-    ("png",  lambda f, s: re.search(r"libpng|png_|PNG|IHDR|IDAT|bit depth|gamma|color type|palette|chunk", s)),
-    ("zlib", lambda f, s: re.search(r"zlib|deflate|inflate|distance code|invalid (block|literal|code|stored)|incorrect header|1\.2\.\d", s)),
-    ("netz", lambda f, s: re.search(r"Job\w+::|Unknown$|Extension$|SystemComponent|prudp|Station", s) or any(NETZ_CPP.search(x) for x in f["strings"])),
-]
+callers = collections.defaultdict(set)
+for f in F:
+    for c in f["callees"]:
+        callers[c].add(f["ea"])
 
+GAME_STR = re.compile(r"(\.PANEL|Boton|Menus?[/\\]|Maps[/\\]|Models[/\\]|Texts[/\\]|\.fbs|\.fli|\.cfg|"
+                      r"Juego|Mision|Soldado|Enemigo|Jugador|Partida|Arma|Proyectil|Commandos|CSF|"
+                      r"^T[A-Z][a-z]+$|STATE_|\.dff|CErrorLog|OUT OF MEMORY|Desconocido|fichero)")
+NETZ_STR = re.compile(r"(^Job\w+::|Extension$|SystemComponent|\bStation|PRUDP|Quazal|NetZ|"
+                      r"(DOCore|ObjDup|DuplicatedObject|Transport|EndPoint|Socket|Session\w*|Result|"
+                      r"Scheduler|EventHandler|StepSequenceJob|CallContext|HighLevelStream|BackEndServices|"
+                      r"Authentication\w*|ProductFacade|VoiceChannel\w*|PeerManager|DOClassesTable|"
+                      r"BundlingPolicy|PseudoGlobalVariable|SelectionIteratorTemplate)\.(cpp|h)$)")
+RW_STR = re.compile(r"(rwRASTER|Raster|RwEngine|Only rendering sub|projection type|combination type|NVPerfHUD|"
+                    r"video memory|GenuineIntel|AuthenticAMD)")
 
-def label(f):
-    s = "\n".join(f["strings"])
-    for name, rule in RULES:
-        if rule(f, s):
-            return name
-    if f["strings"]:
-        return "game?"
-    return None
+fixed = {}
+for r in yaml.safe_load(open(os.path.join(ROOT, "db", "regions.yaml"))):
+    if r["confidence"] == "high":
+        for f in F:
+            if r["start"] <= f["ea"] < r["end"]:
+                fixed[f["ea"]] = r["lib"]
+for f in F:
+    if f["lib"]:
+        fixed[f["ea"]] = "crt"
 
-
-labels = [label(f) for f in F]
-# run-length over labeled functions only
-runs = []
-for f, l in zip(F, labels):
-    if l is None:
+label = dict(fixed)
+for f in F:
+    if f["ea"] in label:
         continue
+    s = "\n".join(f["strings"])
+    if any(NETZ_STR.search(x) for x in f["strings"]):
+        label[f["ea"]] = "netz"
+    elif RW_STR.search(s):
+        label[f["ea"]] = "rw"
+    elif any(GAME_STR.search(x) for x in f["strings"]):
+        label[f["ea"]] = "game"
+
+# RW seed: RwEngineInstance users inside the RW-dense core/driver ranges
+for f in F:
+    if f["ea"] not in label and RWI in f["drefs"] and (0x566000 <= f["ea"] < 0x646000):
+        label[f["ea"]] = "rw"
+
+seeds = dict(label)
+conflicts = collections.Counter()
+# closure: game upward through callers; libs downward through callees
+for _ in range(50):
+    changed = False
+    for ea, l in list(label.items()):
+        if l == "game":
+            for c in callers[ea]:
+                if c not in label:
+                    label[c] = "game"; changed = True
+                elif label[c] not in ("game",) and c not in fixed:
+                    conflicts[(label[c], "game")] += 1
+        elif l in ("rw", "netz"):
+            for c in by[ea]["callees"]:
+                if c not in label:
+                    label[c] = l; changed = True
+    if not changed:
+        break
+
+# neighbour fill by address
+eas = [f["ea"] for f in F]
+for _ in range(3):
+    for i, ea in enumerate(eas):
+        if ea in label:
+            continue
+        lo = next((label[eas[j]] for j in range(i - 1, max(i - 8, -1), -1) if eas[j] in label), None)
+        hi = next((label[eas[j]] for j in range(i + 1, min(i + 8, len(eas))) if eas[j] in label), None)
+        if lo and lo == hi:
+            label[ea] = lo
+
+runs = []
+for f in F:
+    l = label.get(f["ea"], "?")
     if runs and runs[-1][2] == l:
-        runs[-1][1] = f["ea"]; runs[-1][3] += 1
+        runs[-1][1] = f["end"]; runs[-1][3] += 1; runs[-1][4] += f["size"]
     else:
-        runs.append([f["ea"], f["ea"], l, 1])
-min_n = int(sys.argv[1]) if len(sys.argv) > 1 else 1
-for a, b, l, n in runs:
+        runs.append([f["ea"], f["end"], l, 1, f["size"]])
+
+min_n = int(sys.argv[1]) if len(sys.argv) > 1 else 20
+# merge short runs into surroundings for display
+print(f"labeled {len(label)}/{len(F)}  seeds {len(seeds)}  conflicts {dict(conflicts)}")
+tot = collections.Counter()
+for a, b, l, n, sz in runs:
+    tot[l] += sz
     if n >= min_n:
-        print(f"{a:08x}-{b:08x} {l:6s} n={n}")
+        print(f"{a:08x}-{b:08x} {l:5s} n={n:5d} bytes={sz}")
+print({k: v for k, v in tot.items()})
+json.dump({f"{k:08x}": v for k, v in label.items()}, open(os.path.join(ROOT, "export", "labels.json"), "w"))

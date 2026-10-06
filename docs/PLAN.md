@@ -63,11 +63,11 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [x] RTTI scan (none for game classes)
 - [x] Draft region map (`db/regions.yaml`)
 - [x] `db/functions.csv` generated (`tools/triage.py`)
-- [ ] Refine regions 0x646000–0x7ae440 and 0x7c4000–0x82c000 (NetZ vs game vs RW toolkits)
+- [x] Refine regions 0x646000–0x7ae440 and 0x7c4000–0x82c000 (NetZ vs game vs RW toolkits)
 - [ ] Identify STL template instantiations inside game regions (mark `lib: stl`)
 - [x] Bulk Hex-Rays export (`export/funcs/<ea>.c`)
-- [ ] Name the RW boundary API (~470 functions) using librw/RW API as reference
-- [ ] Name the NetZ / CRT / D3DX boundary API
+- [ ] Name the RW boundary API (455 functions, `export/boundary_api.json`) using librw/RW API as reference
+- [ ] Name the CRT boundary API (105); NetZ (319) depends on open decision 1
 - [ ] Harvest Spanish strings/state names/config keys → subsystem anchors
 - [x] Clone clusters (`tools/clones.py` → export/clones.json): one impl per cluster
 - [x] Vtable recovery + QI-chain hierarchy (`tools/vtables.py` → db/vtables.json)
@@ -98,5 +98,7 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 
 1. **Multiplayer / NetZ**: NetZ is proprietary and can't be linked at cutover. Options: stub multiplayer
    (single-player only first), or reimplement the subset of NetZ used for LAN. Recommendation: single-player first.
-2. **Grunt model/provider**: plan says DeepSeek flash via opencode; revised workflow calls an API directly.
+2. **xwin license**: `xwin --accept-license splat` downloads the MSVC CRT + Windows SDK under Microsoft's
+   license. User must accept (run it, or tell Claude to). Needed for Phase 3.
+3. **Grunt model/provider**: plan says DeepSeek flash via opencode; revised workflow calls an API directly.
    Need API key location / provider choice before Phase 4.
