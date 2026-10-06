@@ -62,3 +62,19 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
   and sub_697450 (`std::string::c_str` on options object) reimplemented and hit.
 - VC7.1 std::string layout confirmed from code: alloc@0, _Bx[16]@4, size@20, res@24 (28 bytes).
 - Global options object pointer at 0x8BAF8C.
+
+## 2026-10-07 — Grunt pipeline + model A/B
+
+- Driver `tools/grunt.py` (packet → model → gate → src/auto/<ea>.cpp → link/deploy/smoke → commit). 117 functions
+  reimplemented so far, all smoke-tested in game. Trivial ones ~1.5k tokens/task on DeepSeek; cost negligible.
+- Found + fixed: bare string literals break pointer identity → `CSF_STR(addr, text)` + gate ban; missing `;` after
+  HOOK auto-fixed; functions with <5 bytes room (8 total) can't be JMP-hooked → excluded.
+- DeepSeek flash: thinking is on by default; `max_tokens=8000` starved medium functions (8000 reasoning tokens, no
+  answer). Now `thinking:{type:enabled}`, `reasoning_effort` high (retry: max), `max_tokens` 64000.
+- Claude backend = Claude Code CLI headless (`claude -p --tools "" --system-prompt …`, user's subscription; no API
+  key). `--bare` breaks subscription auth — don't use it. Runs from ~/.cache/csf-re-claude (outside repo).
+- A/B on 16 medium functions (250–580 B): DeepSeek 15/16 gate-pass, Sonnet 16/16. Manual review of 2:
+  0x455C50 (vector<T48>::reserve) both correct. 0x72AE00: DeepSeek cached a vector element across a virtual call
+  where the original reloads (risky: children removing themselves); Sonnet reloaded correctly but added a bogus
+  extra read. → prompt rule "re-read memory where the original does"; asm now included up to 400 B.
+- Gate now also checks every CSF_FUNC binding's convention/arg bytes against the callee's `ret N`.

@@ -41,12 +41,18 @@ File rules:
 - Virtual calls: ((RET(__fastcall*)(void*, void*, ARGS...))obj->vtbl[SLOT])(obj, nullptr, args...) where
   SLOT = byte offset / 4. If obj's type is unknown use CSF_AT(void**, p, 0)[SLOT].
 - Globals: CSF_GLOBAL(type, g_Name, 0xADDR); then use g_Name.
+- String constants of the original: ALWAYS CSF_STR(0xADDR, "text") with the address from the packet, never a
+  bare string literal (callers may compare pointers). Same for other constant data: bind by address.
 - Fields: use the declared struct fields (types/auto_classes.h; never redefine those structs). For an offset
   that is not a declared field (inside a pad_ array, or no class given) use CSF_AT(type, ptr, 0xOFF).
   Pointer-sized fields declared uint32_t: cast as needed, e.g. reinterpret_cast<C_xxx*>(self->field_0010).
 - Preserve exact semantics: signed vs unsigned compares (check the disassembly when given: jl/jg = signed,
   jb/ja = unsigned), integer widths and truncation, float vs double, evaluation and call order, side effects.
   Do not "fix" bugs. Do not drop calls whose results are unused.
+- Memory reads: re-read a field/array element at every point the original reads it (check the disassembly).
+  Never cache a value in a local across a call if the original reloads it after the call — callees may modify
+  the object (e.g. a child removing itself from the list being iterated). Don't add checks or reads the
+  original doesn't have.
 - Give functions descriptive names in PascalCase (English), prefixed by the class id for methods, e.g.
   C_0082d70c_Destroy. Name local variables meaningfully.
 
@@ -64,19 +70,50 @@ def load_key():
     raise SystemExit("no DEEPSEEK_API_KEY in ~/.config/csf-re/env")
 
 
-def chat(model, messages, key):
-    body = json.dumps(dict(model=model, messages=messages, temperature=0.0, max_tokens=8000)).encode()
+def chat(model, messages, key, effort="high"):
+    # Thinking on, explicit effort; output cap large enough that reasoning can't starve the answer.
+    body = json.dumps(dict(model=model, messages=messages, max_tokens=64000, thinking={"type": "enabled"},
+                           reasoning_effort=effort)).encode()
     req = urllib.request.Request("https://api.deepseek.com/chat/completions", data=body,
                                  headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"})
     for attempt in range(4):
         try:
-            with urllib.request.urlopen(req, timeout=300) as r:
+            with urllib.request.urlopen(req, timeout=1200) as r:
                 d = json.load(r)
             return d["choices"][0]["message"]["content"], d.get("usage", {})
         except Exception as e:  # network / rate limit: back off
             if attempt == 3:
                 raise
             time.sleep(5 * (attempt + 1))
+
+
+CLAUDE_CWD = os.path.expanduser("~/.cache/csf-re-claude")  # outside the repo: no CLAUDE.md / memory pulled in
+
+
+def chat_claude(model, messages):
+    """Claude via the Claude Code CLI in headless mode (user's subscription). No tools."""
+    os.makedirs(CLAUDE_CWD, exist_ok=True)
+    system = messages[0]["content"]
+    convo = []
+    for m in messages[1:]:
+        tag = "PACKET / REQUEST" if m["role"] == "user" else "YOUR PREVIOUS ANSWER"
+        convo.append(f"=== {tag} ===\n{m['content']}")
+    r = subprocess.run(["claude", "-p", "--tools", "", "--model", model, "--no-session-persistence",
+                        "--output-format", "json", "--system-prompt", system],
+                       input="\n\n".join(convo), capture_output=True, text=True, cwd=CLAUDE_CWD, timeout=900)
+    d = json.loads(r.stdout)
+    if d.get("is_error") or d.get("terminal_reason") not in (None, "completed", "end_turn"):
+        raise RuntimeError(f"claude -p failed: {d.get('terminal_reason')} {str(d.get('result'))[:200]}")
+    u = d.get("usage", {})
+    return d["result"], dict(prompt_tokens=u.get("input_tokens", 0) + u.get("cache_read_input_tokens", 0) +
+                             u.get("cache_creation_input_tokens", 0), completion_tokens=u.get("output_tokens", 0),
+                             backend="claude", model=model)
+
+
+def ask(backend, model, messages, key, effort="high"):
+    if backend == "claude":
+        return chat_claude(model, messages)
+    return chat(model, messages, key, effort)
 
 
 def parse(text):
@@ -89,17 +126,24 @@ def parse(text):
     return (code.group(1) if code else None), m
 
 
-def work(ea, db, key, model):
+def work(ea, db, key, ladder, out_dir=None):
+    """ladder: [(backend, model, attempts), ...] tried in order; the conversation (with gate errors) carries over."""
     packet = build(db, ea)
     msgs = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": packet}]
-    path = os.path.join(ROOT, "src", "auto", f"{ea:08x}.cpp")
-    tmp = os.path.join(ROOT, "work", "grunt", f"{ea:08x}.cpp")
+    path = os.path.join(out_dir or os.path.join(ROOT, "src", "auto"), f"{ea:08x}.cpp")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    tmp = os.path.join(ROOT, "work", "grunt", ladder[0][0], f"{ea:08x}.cpp")
     os.makedirs(os.path.dirname(tmp), exist_ok=True)
     usage_all, err, meta, text = [], "", {}, ""
-    for attempt in range(2):
-        text, usage = chat(model, msgs, key)
+    steps = [(b, m) for b, m, n in ladder for _ in range(n)]
+    for attempt, (backend, model) in enumerate(steps):
+        # first attempt per backend at high effort, retries at max
+        first = attempt == 0 or steps[attempt - 1][0] != backend
+        text, usage = ask(backend, model, msgs, key, "high" if first else "max")
         usage_all.append(usage)
         code, meta = parse(text)
+        if code:
+            code = re.sub(r"^(\s*HOOK(?:_METHOD)?\(.*\))\s*$", r"\1;", code, flags=re.M)
         if not code:
             ok, err = False, "no ```cpp block found in your answer"
         else:
@@ -107,17 +151,18 @@ def work(ea, db, key, model):
             ok, err = gate(ea, tmp, db)
         if ok:
             os.replace(tmp, path)
-            return dict(ea=ea, ok=True, attempts=attempt + 1, meta=meta, usage=usage_all)
+            return dict(ea=ea, ok=True, attempts=attempt + 1, meta=meta, usage=usage_all, by=f"{backend}:{model}")
         msgs += [{"role": "assistant", "content": text},
                  {"role": "user", "content": f"The gate rejected the file:\n{err}\nFix it and answer again in the same format."}]
-    os.makedirs(os.path.join(ROOT, "queue"), exist_ok=True)
-    with open(os.path.join(ROOT, "queue", f"{ea:08x}.md"), "w") as f:
+    qdir = os.path.join(out_dir, "queue") if out_dir else os.path.join(ROOT, "queue")
+    os.makedirs(qdir, exist_ok=True)
+    with open(os.path.join(qdir, f"{ea:08x}.md"), "w") as f:
         f.write(f"# Escalation 0x{ea:08X}\n\n## Last gate error\n```\n{err}\n```\n\n## Last answer\n{text}\n\n"
                 f"## Packet\n{packet}\n")
-    return dict(ea=ea, ok=False, attempts=2, err=err[:500], usage=usage_all)
+    return dict(ea=ea, ok=False, attempts=len(steps), err=err[:500], usage=usage_all)
 
 
-def select(db, n, max_size):
+def select(db, n, max_size, min_size=6):
     """Leaf-first: fewest not-done game callees, then smallest. One representative per clone cluster."""
     rows = db.rows
     clones = json.load(open(os.path.join(ROOT, "export", "clones.json")))
@@ -132,7 +177,7 @@ def select(db, n, max_size):
         if r["status"] != "todo" or r["region"] != "game" or ea in rep:
             continue
         f = db.F.get(ea)
-        if not f or f["size"] > max_size or f["size"] < 6 or room.get(ea, 99) < 5 or not os.path.exists(os.path.join(ROOT, "export", "funcs", f"{ea:08x}.c")):
+        if not f or f["size"] > max_size or f["size"] < min_size or room.get(ea, 99) < 5 or not os.path.exists(os.path.join(ROOT, "export", "funcs", f"{ea:08x}.c")):
             continue
         if os.path.exists(os.path.join(ROOT, "queue", f"{ea:08x}.md")):
             continue
@@ -153,11 +198,16 @@ def smoke():
 def run(args):
     db = DB()
     key = load_key()
-    targets = [int(x, 16) for x in args.only.split(",")] if args.only else select(db, args.n, args.max_size)
+    targets = [int(x, 16) for x in args.only.split(",")] if args.only else select(db, args.n, args.max_size, args.min_size)
+    if args.backend == "claude":
+        ladder = [("claude", args.claude_model, 2)]
+    else:
+        ladder = [("deepseek", args.model, 2)] + ([("claude", args.claude_model, 2)] if args.escalate_claude else [])
     print(f"batch of {len(targets)}: {' '.join(f'{t:x}' for t in targets)}", flush=True)
     results = []
     with cf.ThreadPoolExecutor(args.jobs) as ex:
-        futs = {ex.submit(work, ea, db, key, args.model): ea for ea in targets}
+        out_dir = os.path.join(ROOT, "work", "ab", args.backend) if args.dry else None
+        futs = {ex.submit(work, ea, db, key, ladder, out_dir): ea for ea in targets}
         for fu in cf.as_completed(futs):
             try:
                 r = fu.result()
@@ -165,11 +215,13 @@ def run(args):
                 r = dict(ea=futs[fu], ok=False, err=f"exception: {e}", usage=[])
             results.append(r)
             with open(LOG, "a") as f:
-                f.write(json.dumps(dict(r, ts=time.time(), model=args.model)) + "\n")
+                f.write(json.dumps(dict(r, ts=time.time())) + "\n")
             print(f"  {r['ea']:08x} {'OK ' if r['ok'] else 'ESC'} {r.get('meta', {}).get('name', '') if r['ok'] else r.get('err', '')[:100]}",
                   flush=True)
     good = [r for r in results if r["ok"]]
     print(f"gate: {len(good)}/{len(results)} passed", flush=True)
+    if args.dry:
+        return
     if not good:
         return
     if not args.no_smoke:
@@ -190,7 +242,7 @@ def run(args):
     save_csv(rows)
     paths = [p for p in ("src/auto", "db", "queue") if os.path.exists(os.path.join(ROOT, p))]
     subprocess.run(["git", "-C", ROOT, "add", "-A", *paths], check=True)
-    msg = f"grunt batch: {len(good)} functions reimplemented ({args.model})\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+    msg = f"grunt batch: {len(good)} functions reimplemented ({args.backend})\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
     subprocess.run(["git", "-C", ROOT, "commit", "-q", "-m", msg], check=False)
     print("committed", flush=True)
 
@@ -218,6 +270,11 @@ if __name__ == "__main__":
     r.add_argument("--max-size", type=int, default=200)
     r.add_argument("--only")
     r.add_argument("--model", default="deepseek-flash")
+    r.add_argument("--backend", choices=["deepseek", "claude"], default="deepseek")
+    r.add_argument("--claude-model", default="sonnet")
+    r.add_argument("--escalate-claude", action="store_true", help="after 2 DeepSeek failures, try Claude twice")
+    r.add_argument("--min-size", type=int, default=6)
+    r.add_argument("--dry", action="store_true", help="write to work/ab/<backend>/, no smoke/commit/status")
     r.add_argument("--no-smoke", action="store_true")
     sub.add_parser("cost")
     a = ap.parse_args()

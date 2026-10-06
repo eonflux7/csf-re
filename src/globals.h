@@ -19,3 +19,11 @@
 
 // Access a field not (yet) declared in a struct: CSF_AT(float, self, 0x48) = 1.0f;
 #define CSF_AT(T, p, off) (*reinterpret_cast<T*>(reinterpret_cast<uint8_t*>(p) + (off)))
+
+// A string constant of the original binary. Hook phase: the original address (pointer identity can matter,
+// e.g. names used as type ids). Standalone: the literal.
+#ifndef CSF_STANDALONE
+#define CSF_STR(addr, text) (reinterpret_cast<const char*>(addr))
+#else
+#define CSF_STR(addr, text) (text)
+#endif

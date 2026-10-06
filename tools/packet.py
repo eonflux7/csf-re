@@ -87,7 +87,7 @@ def struct_text(db, vt):
     return m.group(0) if m else None
 
 
-def build(db, ea, with_asm_limit=160):
+def build(db, ea, with_asm_limit=400):
     f = db.F[ea]
     row = db.rows[ea]
     src = pseudo(ea)
@@ -128,8 +128,9 @@ def build(db, ea, with_asm_limit=160):
         out.append("\n## Data referenced\n" + "\n".join(
             f"- 0x{d:08X}" + (f" `{db.globals[d]['name']}`: {db.globals[d]['type']}" if d in db.globals else "")
             for d in gl))
-    if f["strings"]:
-        out.append("\n## Strings referenced\n" + "\n".join(f"- {s!r}" for s in f["strings"][:20]))
+    if f.get("srefs"):
+        out.append("\n## Strings referenced (use CSF_STR(addr, \"text\"), never a bare literal)\n" + "\n".join(
+            f"- 0x{a:08X}: {s!r}" for a, s in list(zip(f["srefs"], f["strings"]))[:30]))
     return "\n".join(out)
 
 

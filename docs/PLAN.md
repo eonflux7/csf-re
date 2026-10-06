@@ -90,7 +90,10 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [x] First hand-written hooked functions verified in-game (sub_697300 79 hits, sub_697450 1 hit)
 
 ### Phase 4 — grunt waves
-- [ ] Driver (packet → model → gate → commit), escalation queue
+- [x] Driver (packet → model → gate → commit), escalation queue (`tools/grunt.py`)
+- [ ] Clone-cluster expansion: after one member passes, derive siblings (same shape, different callees/consts)
+- [ ] Collect CSF_GLOBAL names from src/auto into db/globals.yaml; dedupe names across files
+- [ ] Opus review pass: sample ~5% of each batch against asm; feed recurring mistakes into the prompt
 - [ ] Differential test harness
 - [ ] Waves per module, leaf-first
 
@@ -101,6 +104,9 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - 2026-10-07: **Single-player first; multiplayer stubbed.** NetZ boundary is not reimplemented; game net code
   (net DDL classes etc.) gets stubbed at cutover. Revisit LAN after SP cutover.
 - 2026-10-07: Grunt provider = **DeepSeek API** (key in `~/.config/csf-re/env`, never in git).
+- 2026-10-07: Model tiering: DeepSeek flash (thinking on, effort high→max) for the bulk; Claude Sonnet via the
+  Claude Code CLI (user's subscription, no API key) for functions > ~500 B and as escalation after DeepSeek fails
+  (`--escalate-claude`); Opus (interactive session) reviews samples and handles `queue/`.
 - 2026-10-07: xwin x86 CRT/SDK installed at `~/.xwin` (license accepted by user).
 - Play copy of the game for hook testing: `/mnt/e/dev/csf-play` (E:\dev\csf-play). Never deploy into csf-builds.
 

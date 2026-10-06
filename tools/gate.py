@@ -41,6 +41,36 @@ def our_rets(obj, fn_name):
     return found, sorted(rets)
 
 
+def stack_bytes(conv, params):
+    """Bytes a callee pops for a CSF_FUNC declaration (all params 4-byte except double/int64/explicit 8)."""
+    ps = [p.strip() for p in params.split(",") if p.strip() and p.strip() != "void"]
+    if conv == "__fastcall":
+        ps = ps[2:]  # ecx, edx
+    size = sum(8 if re.search(r"\b(double|int64_t|uint64_t|long long)\b(?!\s*\*)", p) else 4 for p in ps)
+    return size
+
+
+def check_bindings(src, db):
+    """Every CSF_FUNC binding must match the callee's real `ret N` (cdecl pops 0)."""
+    errs = []
+    for m in re.finditer(r"CSF_FUNC\(\s*(.+?)\s*,\s*(__\w+)\s*,\s*(\w+)\s*,\s*0x([0-9A-Fa-f]+)\s*,\s*\((.*?)\)\s*\)",
+                         src, re.S):
+        conv, name, addr, params = m.group(2), m.group(3), int(m.group(4), 16), m.group(5)
+        if addr not in db.F:
+            errs.append(f"CSF_FUNC {name}: 0x{addr:X} is not a function start")
+            continue
+        rets = ret_bytes(addr, db.F[addr]["size"])
+        if not rets:
+            continue  # no ret (tail jump / noreturn): can't check
+        want = 0 if conv == "__cdecl" else stack_bytes(conv, params)
+        if conv == "__cdecl" and rets != [0]:
+            errs.append(f"CSF_FUNC {name}: declared __cdecl but 0x{addr:X} pops {rets} bytes (use __stdcall, or "
+                        f"__fastcall with ecx/edx for __thiscall)")
+        elif conv != "__cdecl" and want not in rets:
+            errs.append(f"CSF_FUNC {name}: declared {conv} popping {want} bytes but 0x{addr:X} pops {rets}")
+    return errs
+
+
 def gate(ea, path, db=None):
     path = os.path.abspath(path)
     src = open(path).read()
@@ -55,6 +85,14 @@ def gate(ea, path, db=None):
         errs.append(f"need exactly one HOOK(0x{ea:X}, Fn, \"module\") line; found {hooks}")
     if re.search(r"\b(malloc|free|calloc|realloc)\s*\(|\bnew\s+[A-Za-z_]|\bdelete\s", src):
         errs.append("use game::Mem_Alloc/Mem_Free (core/memory.h), not malloc/free/new/delete")
+    code_only = re.sub(r"//[^\n]*|/\*.*?\*/", "", src, flags=re.S)
+    for line in code_only.splitlines():
+        if re.search(r'"', line) and not re.search(r"^\s*(HOOK|#\s*include)", line):
+            stripped = re.sub(r'CSF_STR\(\s*0x[0-9A-Fa-f]+\s*,\s*"(?:[^"\\]|\\.)*"\s*\)', "", line)
+            if '"' in stripped:
+                errs.append(f"bare string literal (use CSF_STR(0xADDR, \"text\")): {line.strip()[:120]}")
+    db = db or DB()
+    errs += check_bindings(src, db)
     if errs:
         return False, "\n".join(errs)
     with tempfile.TemporaryDirectory() as td:
@@ -67,7 +105,6 @@ def gate(ea, path, db=None):
             return False, "compile error:\n" + out[:4000]
         fn = hooks[0][1].split("::")[-1]
         found, rets = our_rets(obj, fn)
-        db = db or DB()
         orig = ret_bytes(ea, db.F[ea]["size"])
         if not found:
             return False, f"could not find compiled function `{fn}` in object file"
