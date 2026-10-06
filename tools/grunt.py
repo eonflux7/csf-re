@@ -7,7 +7,7 @@ Usage:
 
 After a batch: link, deploy, smoke test (unless --no-smoke); on success mark functions done and git commit.
 """
-import argparse, concurrent.futures as cf, json, os, re, subprocess, sys, time, urllib.request
+import argparse, concurrent.futures as cf, json, os, re, subprocess, sys, threading, time, urllib.request
 sys.path.insert(0, os.path.dirname(__file__))
 from packet import DB, build
 from gate import gate
@@ -110,9 +110,40 @@ def chat_claude(model, messages):
                              backend="claude", model=model)
 
 
+CODEX_CWD = os.path.expanduser("~/.cache/csf-re-codex")
+CODEX_EFFORT = {"high": "high", "max": "xhigh"}
+
+
+def chat_codex(model, messages, effort="high"):
+    """GPT via the Codex CLI headless (user's ChatGPT subscription). Ephemeral, read-only sandbox, no user config
+    (no MCP servers), run outside the repo. The whole conversation goes in as one prompt."""
+    os.makedirs(CODEX_CWD, exist_ok=True)
+    convo = [messages[0]["content"], "Answer directly from the packet below. Do not run commands or use tools."]
+    for m in messages[1:]:
+        tag = "PACKET / REQUEST" if m["role"] == "user" else "YOUR PREVIOUS ANSWER"
+        convo.append(f"=== {tag} ===\n{m['content']}")
+    out = os.path.join(CODEX_CWD, f"out-{os.getpid()}-{threading.get_ident()}.txt")
+    r = subprocess.run(["codex", "exec", "--ephemeral", "--skip-git-repo-check", "--ignore-user-config",
+                        "-s", "read-only", "-m", model, "-c", f'model_reasoning_effort="{CODEX_EFFORT.get(effort, effort)}"',
+                        "-o", out, "--json", "-"],
+                       input="\n\n".join(convo), capture_output=True, text=True, cwd=CODEX_CWD, timeout=1800)
+    if r.returncode or not os.path.exists(out):
+        raise RuntimeError(f"codex exec failed rc={r.returncode}: {(r.stderr or r.stdout)[-300:]}")
+    text = open(out).read()
+    os.remove(out)
+    u = {}
+    for line in r.stdout.splitlines():
+        if '"turn.completed"' in line:
+            u = json.loads(line).get("usage", {})
+    return text, dict(prompt_tokens=u.get("input_tokens", 0), completion_tokens=u.get("output_tokens", 0) +
+                      u.get("reasoning_output_tokens", 0), backend="codex", model=model)
+
+
 def ask(backend, model, messages, key, effort="high"):
     if backend == "claude":
         return chat_claude(model, messages)
+    if backend == "codex":
+        return chat_codex(model, messages, effort)
     return chat(model, messages, key, effort)
 
 
@@ -136,10 +167,18 @@ def work(ea, db, key, ladder, out_dir=None):
     os.makedirs(os.path.dirname(tmp), exist_ok=True)
     usage_all, err, meta, text = [], "", {}, ""
     steps = [(b, m) for b, m, n in ladder for _ in range(n)]
+    dead = set()
     for attempt, (backend, model) in enumerate(steps):
         # first attempt per backend at high effort, retries at max
         first = attempt == 0 or steps[attempt - 1][0] != backend
-        text, usage = ask(backend, model, msgs, key, "high" if first else "max")
+        if backend in dead:
+            continue
+        try:
+            text, usage = ask(backend, model, msgs, key, "high" if first else "max")
+        except Exception as e:  # out of credit / CLI failure: fall through to the next backend
+            dead.add(backend)
+            err = f"{backend} error: {e}"
+            continue
         usage_all.append(usage)
         code, meta = parse(text)
         if code:
@@ -199,15 +238,21 @@ def run(args):
     db = DB()
     key = load_key()
     targets = [int(x, 16) for x in args.only.split(",")] if args.only else select(db, args.n, args.max_size, args.min_size)
+    esc = [("claude", args.claude_model, 2)] if args.escalate_claude else []
+    codex = [("codex", args.codex_model, 2)]
     if args.backend == "claude":
-        ladder = [("claude", args.claude_model, 2)]
-    else:
-        ladder = [("deepseek", args.model, 2)] + ([("claude", args.claude_model, 2)] if args.escalate_claude else [])
+        ladder_of = lambda ea: [("claude", args.claude_model, 2)]
+    elif args.backend == "deepseek":
+        ladder_of = lambda ea: [("deepseek", args.model, 2)] + esc
+    elif args.backend == "codex":
+        ladder_of = lambda ea: codex + esc
+    else:  # auto: tiny functions to DeepSeek flash (codex as fallback), the rest to Codex
+        ladder_of = lambda ea: ([("deepseek", args.model, 2)] if db.F[ea]["size"] < args.tiny else []) + codex + esc
     print(f"batch of {len(targets)}: {' '.join(f'{t:x}' for t in targets)}", flush=True)
     results = []
     with cf.ThreadPoolExecutor(args.jobs) as ex:
         out_dir = os.path.join(ROOT, "work", "ab", args.backend) if args.dry else None
-        futs = {ex.submit(work, ea, db, key, ladder, out_dir): ea for ea in targets}
+        futs = {ex.submit(work, ea, db, key, ladder_of(ea), out_dir): ea for ea in targets}
         for fu in cf.as_completed(futs):
             try:
                 r = fu.result()
@@ -270,7 +315,9 @@ if __name__ == "__main__":
     r.add_argument("--max-size", type=int, default=200)
     r.add_argument("--only")
     r.add_argument("--model", default="deepseek-flash")
-    r.add_argument("--backend", choices=["deepseek", "claude"], default="deepseek")
+    r.add_argument("--backend", choices=["auto", "deepseek", "codex", "claude"], default="auto")
+    r.add_argument("--codex-model", default="gpt-6.1-sol")
+    r.add_argument("--tiny", type=int, default=48, help="auto: functions smaller than this go to DeepSeek flash")
     r.add_argument("--claude-model", default="sonnet")
     r.add_argument("--escalate-claude", action="store_true", help="after 2 DeepSeek failures, try Claude twice")
     r.add_argument("--min-size", type=int, default=6)

@@ -94,3 +94,14 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
 - CRT range had a 16-aligned island 0x7C1C70–0x7C2C2F: six clip helpers called only by game 0x6EBA90 (→ game)
   and two called only by RW 0x7FF600 (→ rw). regions.yaml updated. Remaining CRT boundary (58) is all named;
   hand-named: std::exception ctor/dtor (vftable 0x876A50), _wsystem, __security_check_cookie (/GS is on).
+
+## 2026-10-07 — Codex backend
+
+- DeepSeek account hit HTTP 402 (out of credit). Added `codex` backend: `codex exec --ephemeral
+  --skip-git-repo-check --ignore-user-config -s read-only -o <file> --json -`, run from ~/.cache/csf-re-codex.
+  ~15k prompt tokens of Codex overhead per call (mostly cached), ~6 s for a trivial answer.
+- First batches: 6 tiny + 8 medium (200–600 B) all gate-passed, 7/8 medium on first try, ~2–3k output tokens.
+  Manual review of 0x525060 and 0x427FD0: faithful, incl. x87 double intermediates and NaN-branch semantics of
+  the original compare. Now the default main grunt.
+- RW naming (`tools/rwname.py`) started; trial results in db/rw_names.jsonl. 0x624D10 (232 game callers) frees to
+  a module freelist via RwEngineInstance+0x11C → RwMatrixDestroy-like.

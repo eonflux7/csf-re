@@ -106,9 +106,12 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - 2026-10-07: **Single-player first; multiplayer stubbed.** NetZ boundary is not reimplemented; game net code
   (net DDL classes etc.) gets stubbed at cutover. Revisit LAN after SP cutover.
 - 2026-10-07: Grunt provider = **DeepSeek API** (key in `~/.config/csf-re/env`, never in git).
-- 2026-10-07: Model tiering: DeepSeek flash (thinking on, effort high→max) for the bulk; Claude Sonnet via the
+- 2026-10-07 (superseded below): Model tiering: DeepSeek flash (thinking on, effort high→max) for the bulk; Claude Sonnet via the
   Claude Code CLI (user's subscription, no API key) for functions > ~500 B and as escalation after DeepSeek fails
   (`--escalate-claude`); Opus (interactive session) reviews samples and handles `queue/`.
+- 2026-10-07: **Grunt tiering v2 (user):** main grunt = GPT-6.1-Sol via Codex CLI (`codex exec`, user's
+  subscription, effort high → xhigh on retry); functions < 48 B → DeepSeek flash (falls through to Codex on API
+  error, e.g. out of credit); `--escalate-claude` adds Sonnet. `grunt.py run --backend auto` (default).
 - 2026-10-07: xwin x86 CRT/SDK installed at `~/.xwin` (license accepted by user).
 - Play copy of the game for hook testing: `/mnt/e/dev/csf-play` (E:\dev\csf-play). Never deploy into csf-builds.
 
