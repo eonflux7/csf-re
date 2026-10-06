@@ -71,7 +71,7 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [ ] Harvest Spanish strings/state names/config keys → subsystem anchors
 - [x] Clone clusters (`tools/clones.py` → export/clones.json): one impl per cluster
 - [x] Vtable recovery + QI-chain hierarchy (`tools/vtables.py` → db/vtables.json)
-- [ ] Ctor-based hierarchy (base vtable stored before derived) + class size from `operator new` call sites
+- [x] Ctor-based hierarchy (base vtable stored before derived) + class size from `operator new` call sites (`tools/classes.py` → db/classes.json, 662 classes)
 - [ ] Draft `db/modules.yaml` (call-graph + address clustering, ~one cluster per original .cpp)
 - [ ] Find globals: data refs → `db/globals.yaml` draft
 - [ ] Locate Xbox XBE code, diff vs PC for structure confirmation (optional)
