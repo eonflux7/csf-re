@@ -39,15 +39,46 @@ static bool patch(void* at, const void* bytes, size_t n) {
     return true;
 }
 
-static bool install(const Entry& e) {
+// Per-hook hit counters: each hook goes through a stub `inc dword [count]; jmp fn`, dumped to
+// csf_hook_hits.txt every few seconds (coverage of a playtest). 16 bytes per stub.
+static uint8_t* g_stubs;
+static uint32_t* g_hits;
+static Entry** g_installed;
+static int g_ninstalled;
+
+static void* make_stub(int i, void* fn) {
+    uint8_t* s = g_stubs + 16 * i;
+    s[0] = 0xFF; s[1] = 0x05;  // inc dword ptr [abs32]
+    uint32_t* cnt = &g_hits[i];
+    memcpy(s + 2, &cnt, 4);
+    s[6] = 0xE9;               // jmp rel32
+    int32_t rel = (int32_t)((uintptr_t)fn - (uintptr_t)(s + 11));
+    memcpy(s + 7, &rel, 4);
+    return s;
+}
+
+static bool install(const Entry& e, void* target) {
     if (e.kind == Kind::Jmp) {
         uint8_t jmp[5] = {0xE9};
-        int32_t rel = (int32_t)((uintptr_t)e.fn - (e.addr + 5));
+        int32_t rel = (int32_t)((uintptr_t)target - (e.addr + 5));
         memcpy(jmp + 1, &rel, 4);
         return patch((void*)e.addr, jmp, sizeof jmp);
     }
     void* slot = (void*)(e.addr + 4 * e.slot);
-    return patch(slot, &e.fn, sizeof(void*));
+    return patch(slot, &target, sizeof(void*));
+}
+
+static DWORD WINAPI hits_thread(LPVOID) {
+    std::string path = std::string(g_dir) + "csf_hook_hits.txt";
+    for (;;) {
+        Sleep(3000);
+        if (FILE* f = fopen(path.c_str(), "w")) {
+            for (int i = 0; i < g_ninstalled; ++i)
+                fprintf(f, "%08x %10u %s %s\n", (unsigned)g_installed[i]->addr, g_hits[i],
+                        g_installed[i]->module, g_installed[i]->name);
+            fclose(f);
+        }
+    }
 }
 
 // csf_hook.ini: one directive per line; '#' comments.
@@ -82,7 +113,12 @@ static Config load_config() {
 
 void install_all() {
     Config cfg = load_config();
-    int ok = 0, skipped = 0, failed = 0;
+    int ok = 0, skipped = 0, failed = 0, n = 0;
+    for (Entry* e = g_head; e; e = e->next)
+        ++n;
+    g_stubs = (uint8_t*)VirtualAlloc(nullptr, 16 * n + 16, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    g_hits = new uint32_t[n]();
+    g_installed = new Entry*[n];
     for (Entry* e = g_head; e; e = e->next) {
         bool off = cfg.disabled.count(e->addr) || cfg.disabled_modules.count(e->module) ||
                    (!cfg.only_modules.empty() && !cfg.only_modules.count(e->module));
@@ -90,7 +126,8 @@ void install_all() {
             ++skipped;
             continue;
         }
-        if (install(*e)) {
+        if (install(*e, make_stub(g_ninstalled, e->fn))) {
+            g_installed[g_ninstalled++] = e;
             ++ok;
             log("hook %08x %-8s %s", (unsigned)e->addr, e->module, e->name);
         } else {
@@ -99,6 +136,7 @@ void install_all() {
         }
     }
     log("hooks installed=%d skipped=%d failed=%d", ok, skipped, failed);
+    CreateThread(nullptr, 0, hits_thread, nullptr, 0, nullptr);
 }
 
 static void init() {

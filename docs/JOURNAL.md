@@ -55,3 +55,10 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
 - First hook: `sub_44FC30` = `CHandleTable::Resolve(const CHandle*)` (464 callers, generational handle lookup;
   entries @+0x10, count @+0x18, object generation @+0x20). Compiled output matches original instruction-for-
   instruction (signed compares, `ret 4`). Game uses frame pointers (EBP frames).
+- Smoke test (`tools/smoke.sh`): PowerShell Start-Process/WaitForExit/Stop-Process by PID (tasklist-based
+  version mis-detected exit and left the game running). User allowed free smoke launches.
+- Hit counters: each hook routed via `inc [cnt]; jmp fn` stub; counts in `csf_hook_hits.txt` every 3 s → coverage.
+- sub_44FC30 not hit in the first 20 s (gameplay only). Startup proof: sub_697300 (options flag setter, 79 hits)
+  and sub_697450 (`std::string::c_str` on options object) reimplemented and hit.
+- VC7.1 std::string layout confirmed from code: alloc@0, _Bx[16]@4, size@20, res@24 (28 bytes).
+- Global options object pointer at 0x8BAF8C.

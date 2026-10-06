@@ -83,10 +83,11 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 
 ### Phase 3 — hook DLL bring-up
 - [x] clang-cl + xwin toolchain builds `dinput8.dll` proxy (`cmake/clang-cl-x86.cmake`, `tools/deploy.sh`)
-- [ ] Smoke test: game loads the DLL and runs (`tools/smoke.sh`)
+- [x] Smoke test: game loads the DLL and runs (`tools/smoke.sh`; per-hook hit counts in csf_hook_hits.txt)
 - [x] Hook installer (jmp + vtable patch), ini toggles, logging (`hook/`)
-- [ ] Allocator shim, rw.h shim, globals.h generator
-- [ ] First hand-written hooked function verified in-game
+- [x] globals.h (address-bound `CSF_GLOBAL`), `legacy::string` (VC7.1 layout, 28 bytes)
+- [ ] Allocator shim (operator new/delete → game heap; delete = sub_691110), rw.h shim, globals.yaml → globals.h generator
+- [x] First hand-written hooked functions verified in-game (sub_697300 79 hits, sub_697450 1 hit)
 
 ### Phase 4 — grunt waves
 - [ ] Driver (packet → model → gate → commit), escalation queue
