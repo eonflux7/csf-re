@@ -27,3 +27,13 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
 - Draft totals: game ~14k funcs / 2.2 MB; rw 2.8k / 668 KB; netz 4.1k / 545 KB; d3dx9 1.2k / 481 KB.
   Game→lib boundary: ~470 RW, ~400 NetZ (inflated by misclassified ranges), 61 CRT.
 - Leaked RenderWare SDK source exists on GitHub; deliberately not used (licensing taint). librw instead.
+
+## 2026-10-07 — Bulk export, clones, vtables
+
+- Hex-Rays export of all non-lib functions: 13,999 ok / 2 failed, ~2 min (`tools/ida/export_pseudo.py`).
+- Clone clustering (`tools/clones.py`, exact normalized-instruction hash): 813 game-only clusters with 3,040
+  members; one impl per cluster would save ~216 KB (~10% of game bytes). Biggest: 188× scalar-deleting
+  destructor pattern → **`operator delete` = sub_691110** (game allocator in 0x690000 core region).
+- No RTTI, but ~108 classes implement a QueryInterface-like virtual: `if (id == &TypeId) {*out=this;} else Base::QI()`.
+  Chains give hierarchy (depth ≤ 3). Type ids are bare BSS addresses (no names).
+- `tools/vtables.py` → `db/vtables.json`: 1,214 vtable candidates (1,049 game, 120 netz).

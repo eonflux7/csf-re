@@ -65,10 +65,13 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [x] `db/functions.csv` generated (`tools/triage.py`)
 - [ ] Refine regions 0x646000–0x7ae440 and 0x7c4000–0x82c000 (NetZ vs game vs RW toolkits)
 - [ ] Identify STL template instantiations inside game regions (mark `lib: stl`)
-- [ ] Bulk Hex-Rays export (`export/funcs/<ea>.c`)
+- [x] Bulk Hex-Rays export (`export/funcs/<ea>.c`)
 - [ ] Name the RW boundary API (~470 functions) using librw/RW API as reference
 - [ ] Name the NetZ / CRT / D3DX boundary API
 - [ ] Harvest Spanish strings/state names/config keys → subsystem anchors
+- [x] Clone clusters (`tools/clones.py` → export/clones.json): one impl per cluster
+- [x] Vtable recovery + QI-chain hierarchy (`tools/vtables.py` → db/vtables.json)
+- [ ] Ctor-based hierarchy (base vtable stored before derived) + class size from `operator new` call sites
 - [ ] Draft `db/modules.yaml` (call-graph + address clustering, ~one cluster per original .cpp)
 - [ ] Find globals: data refs → `db/globals.yaml` draft
 - [ ] Locate Xbox XBE code, diff vs PC for structure confirmation (optional)
