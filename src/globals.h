@@ -16,3 +16,6 @@
 #define CSF_GLOBAL(type, name, addr) extern type name
 #define CSF_FUNC(ret, conv, name, addr, args) ret conv name args
 #endif
+
+// Access a field not (yet) declared in a struct: CSF_AT(float, self, 0x48) = 1.0f;
+#define CSF_AT(T, p, off) (*reinterpret_cast<T*>(reinterpret_cast<uint8_t*>(p) + (off)))

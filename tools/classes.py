@@ -15,6 +15,8 @@ from capstone.x86 import X86_OP_REG, X86_OP_MEM, X86_OP_IMM, X86_REG_ECX, X86_RE
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OP_NEW = {0x6910F0}
+FLOAT_OPS = {"fld", "fst", "fstp", "fadd", "fsub", "fsubr", "fmul", "fdiv", "fdivr", "fcom", "fcomp",
+             "movss", "addss", "subss", "mulss", "divss", "comiss", "ucomiss"}
 pe = pefile.PE(os.path.join(ROOT, "work", "pc", "CommXPC.exe"), fast_load=True)
 base = pe.OPTIONAL_HEADER.ImageBase
 img = pe.get_memory_mapped_image()
@@ -47,7 +49,8 @@ def this_scan(ea):
         # memory accesses relative to this
         for k, op in enumerate(ops):
             if op.type == X86_OP_MEM and op.mem.base in regs and op.mem.index == 0:
-                write = (k == 0 and m.startswith(("mov", "add", "sub", "inc", "dec", "and", "or", "xor", "fst", "fistp", "set")))
+                write = (k == 0 and m.startswith(("mov", "add", "sub", "inc", "dec", "and", "or", "xor", "set"))) \
+                    or m in ("fst", "fstp", "fistp", "fist")
                 off = op.mem.disp
                 if m == "lea":
                     continue
@@ -55,7 +58,8 @@ def this_scan(ea):
                     (vt_stores if off == 0 else sec).append((ops[1].imm, off) if off else ops[1].imm)
                     continue
                 if 0 <= off < 0x10000:
-                    fields.append((off, op.size, "w" if write else "r"))
+                    kind = "f" if m in FLOAT_OPS else ""
+                    fields.append((off, op.size, ("w" if write else "r") + kind))
         if m == "call":
             if ops and ops[0].type == X86_OP_IMM and X86_REG_ECX in regs and ops[0].imm in F:
                 this_calls.append(ops[0].imm)
@@ -175,8 +179,9 @@ def main():
             for off, sz, rw in fl:
                 e = c["fields"][off]
                 e[0] = max(e[0], sz)
-                if rw not in e[1]:
-                    e[1] += rw
+                for ch in rw:
+                    if ch not in e[1]:
+                        e[1] += ch
                 e[2] += 1
             for t in tc:
                 # non-virtual method: called on this, not a ctor of another class, not a slot of an unrelated vtable

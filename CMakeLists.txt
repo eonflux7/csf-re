@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 project(csf_re CXX)
 # Build: cmake -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=cmake/clang-cl-x86.cmake && ninja -C build
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")  # static CRT: no runtime DLLs needed on the game box
 
 file(GLOB_RECURSE CSF_SRC CONFIGURE_DEPENDS src/*.cpp)
