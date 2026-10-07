@@ -343,3 +343,38 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
   the output per call but the retries resend the whole packet, so the total is about the same and slower.
   Keep high. The bigger lever is input: ~8k prompt per call with 20-30% cached.
 - The monitor's "max" was grunt's retry label; Codex gets xhigh (never a max model). Logs now show xhigh.
+
+## 2026-10-07 — Grunt cost/speed: retries, packets, batching, direct Codex backend
+
+Same 12 GUI functions (50-260 B) each time, dry runs; tokens for all 12 (uncached in / cached in / out):
+
+| setup | ok | first try | in | cached | out |
+|---|---|---|---|---|---|
+| CLI, single, full class dump (old default) | 12 | 9 | 76k | 58k | 28k |
+| CLI, single, compact class view | 12 | 12 | 76k | 16k | 25k |
+| CLI, batches of 4, compact | 12 | 12 | 31k | 3k | 20k |
+| direct backend, single, compact | 12 | 12 | 36k | 8k | 14k |
+| direct backend, batches of 4, compact | 12* | 11 | 22k | 0 | 11k |
+| DeepSeek + Codex review (>100 B) | 10 | 8 | DS 57k/175k out; Codex review 21k in, 3k out |
+
+(*) all 4 files in every answer once batches got their own system prompt; 1 needed a retry.
+
+- Retries were ~45% of Codex tokens; 132 of ~220 were a missing #include "globals.h" -> fixed mechanically
+  before the gate (`normalize()`), no model call.
+- Packets: the `this` class section (whole struct + base chain + asserts) was ~50% of GUI packet chars. Now only
+  the declared fields at the offsets the function's memory operands use (stack operands excluded); `CSF_CLASS_VIEW=full`
+  restores the old view. Fewer first-try failures, not more.
+- Codex CLI harness floor: 4.3k tokens/call with every feature off (environment/permissions text ~180 more, now
+  off). Cache hits were a coin flip (per-run session id). The ChatGPT Codex backend (same subscription/endpoint
+  as the CLI, what pi's openai-codex provider uses) takes our prompt as `instructions` (no harness: 1.4k fixed)
+  and caches reliably with a fixed `session_id` header + `prompt_cache_key` (3712/3893 cached on repeat;
+  `prompt_cache_options` is rejected for this model). `CSF_CODEX_TRANSPORT=direct` (default) | `cli`. Token from
+  ~/.codex/auth.json (~10 days; near expiry one CLI call refreshes it). pi itself not needed.
+- Batching (`work_batch`, lanes `--batch-fns 4 --batch-max 300`, grouped by class then module): one call, each
+  file gated alone, failures continue single from their own part of the answer. Through the direct backend the
+  single-file output rule in the system prompt beat the batch note (only the first function answered) -> batches
+  use SYSTEM_BATCH. Lanes validation (CLI): 28 batched functions, 28 ok, 3.4k in/fn vs 10.6k single.
+- Effort: low/medium Sol fail first try more (4-5/12 vs 9/12); retries eat the savings. Keep high.
+- DeepSeek for mid-size functions: 10/12, the reviewer caught one bad file, the gate the other. Costs Codex only
+  a review (~2k in, 0.25k out). Option for when the Codex quota is the bottleneck; not the default yet.
+- A 429 usage_limit now pauses Codex (functions deferred, not escalated). These tests used up the 5h window.

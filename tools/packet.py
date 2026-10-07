@@ -117,6 +117,50 @@ def struct_text(db, vt):
     return m.group(0) if m else None
 
 
+_hdr_fields = None
+
+
+def class_fields(db, vt):
+    """{offset: (class name, type, member)} declared for vt and its bases in auto_classes.h (offsets from field_XXXX
+    names and the offsetof asserts of named fields)."""
+    global _hdr_fields
+    if _hdr_fields is None:
+        hdr = open(os.path.join(ROOT, "src", "types", "auto_classes.h")).read()
+        _hdr_fields = {}
+        for m in re.finditer(r"^struct (\w+)[^{]*\{\n(.*?)\n\};\n((?:static_assert[^\n]*\n)*)", hdr, re.S | re.M):
+            offs = {n: int(o, 16) for n, o in re.findall(r"offsetof\(\w+, (\w+)\) == 0x([0-9a-f]+)", m.group(3))}
+            fl = {}
+            for t, n in re.findall(r"^\s+([\w:]+\*?) (\w+)(?:\[\w+\])?;", m.group(2), re.M):
+                if n.startswith("pad_") or n == "vtbl":
+                    continue
+                o = int(n[6:], 16) if re.fullmatch(r"field_[0-9a-f]{4}", n) else offs.get(n)
+                if o is not None:
+                    fl[o] = (t, n)
+            _hdr_fields[m.group(1)] = fl
+    out, x = {}, vt
+    while x:
+        for o, (t, n) in _hdr_fields.get(db.cls_name(x), {}).items():
+            out.setdefault(o, (db.cls_name(x), t, n))
+        x = db.classes.get(x, {}).get("base")
+    return out
+
+
+def compact_class(db, vt, ea, size):
+    """The fields of the class chain whose offsets this function's memory operands use (cheap: the full struct
+    dump was ~half of every GUI packet). Displacements are matched on any base register, so it may over-include."""
+    fields = class_fields(db, vt)
+    disp = set()
+    for i in disasm(ea, size):
+        for m in re.finditer(r"\[(e(?!bp|sp)\w\w) \+ (0x[0-9a-f]+|\d+)\]", i.op_str):  # not stack slots
+            disp.add(int(m.group(2), 0))
+        if re.search(r"\[e(?!bp|sp)\w\w\]", i.op_str):
+            disp.add(0)
+    used = sorted(o for o in disp if o in fields)
+    lines = [f"- +0x{o:03X} {fields[o][0]}::{fields[o][2]}  ({fields[o][1]})" for o in used]
+    return ("Fields at the offsets this function uses (declared in types/auto_classes.h, DO NOT redefine; "
+            "access through the struct, other offsets via CSF_AT):\n" + ("\n".join(lines) if lines else "(none declared)"))
+
+
 STL_LAYOUT = {
     "vector": "allocator@0 (4 bytes, empty), _Myfirst@4, _Mylast@8, _Myend@12 (16 bytes)",
     "vector<bool>": "_Myvec (vector<unsigned>, 16 bytes)@0, _Mysize@16",
@@ -162,11 +206,20 @@ def build(db, ea, with_asm_limit=400):
                    f"base {db.cls_name(c['base']) if c['base'] else 'none'})")
         if vt in db.class_names:
             out.append(f"Role: {db.class_names[vt].get('why', '')}. Name your function {db.cls_name(vt)}_<Verb...>.")
-        st = struct_text(db, vt)
-        if st:
-            out.append("Declared in types/auto_classes.h (DO NOT redefine; use as-is):\n```cpp\n" + st + "```")
-        if c["base"] and struct_text(db, c["base"]):
-            out.append("Base:\n```cpp\n" + struct_text(db, c["base"]) + "```")
+        if os.environ.get("CSF_CLASS_VIEW", "compact") == "compact":
+            chain, x = [], c["base"]
+            while x:
+                chain.append(db.cls_name(x))
+                x = db.classes.get(x, {}).get("base")
+            if chain:
+                out.append("Bases: " + " : ".join(chain))
+            out.append(compact_class(db, vt, ea, f["size"]))
+        else:
+            st = struct_text(db, vt)
+            if st:
+                out.append("Declared in types/auto_classes.h (DO NOT redefine; use as-is):\n```cpp\n" + st + "```")
+            if c["base"] and struct_text(db, c["base"]):
+                out.append("Base:\n```cpp\n" + struct_text(db, c["base"]) + "```")
     note = stl_note(ea)
     if note:
         out.append(note)
