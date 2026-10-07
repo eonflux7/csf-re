@@ -54,13 +54,33 @@ class DB:
         return f"C_{vt}"
 
 
-def disasm(ea, size):
-    global _pe
+_md = None
+
+
+def ida_view(ea):
+    """IDA's code view of a function (export/disasm/<ea>.json from tools/ida/export_disasm.py), or None."""
+    p = os.path.join(ROOT, "export", "disasm", f"{ea:08x}.json")
+    return json.load(open(p)) if os.path.exists(p) else None
+
+
+def disasm(ea, size, linear=False):
+    """Instructions of the function at ea. With an IDA export: exactly the code heads IDA knows (all chunks, jump
+    tables and embedded data excluded), each decoded by capstone. Otherwise (or linear=True, e.g. for a shared
+    block that isn't a function): linear decoding of `size` bytes."""
+    global _pe, _md
     if _pe is None:
         _pe = pefile.PE(os.path.join(ROOT, "work", "pc", "CommXPC.exe"), fast_load=True)
+        _md = Cs(CS_ARCH_X86, CS_MODE_32)
     img = _pe.get_memory_mapped_image()
-    md = Cs(CS_ARCH_X86, CS_MODE_32)
-    return list(md.disasm(img[ea - 0x400000: ea - 0x400000 + size], ea))
+    view = None if linear else ida_view(ea)
+    if view:
+        out = []
+        for h in view["insns"]:
+            ins = next(_md.disasm(img[h - 0x400000: h - 0x400000 + 16], h, 1), None)
+            if ins:
+                out.append(ins)
+        return out
+    return list(_md.disasm(img[ea - 0x400000: ea - 0x400000 + size], ea))
 
 
 def ret_bytes(ea, size):

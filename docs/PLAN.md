@@ -106,7 +106,7 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [x] Differential test harness (hook/diff.cpp, tools/difftable.py; leaf functions, on by default in smoke)
 - [ ] Diff tier 2: functions with callees (record callee calls / stub them during the double run)
 - [x] x64dbg + x64dbg-automate (E:\dev\tools\x64dbg, venv E:\dev\tools\x64dbg-venv): `tools/dbg.sh crash` = crash triage
-- [ ] Optional IDA disassembly/xref/switch-table export per function (semcheck/difftable/packets read it, capstone fallback)
+- [x] IDA code view export (`tools/ida/export_disasm.py` → export/disasm/<ea>.json: code heads, chunks, switch tables, xrefs; 9 s); packet.disasm() decodes exactly those heads (capstone fallback)
 - [ ] Waves per module, leaf-first
 
 ### Phase 5 — batch verification (user playtests) and Phase 6 — cutover

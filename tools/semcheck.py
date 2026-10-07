@@ -100,7 +100,7 @@ def code_of(ea, db):
         if i.mnemonic == "jmp" and i.op_str.startswith("0x"):
             t = int(i.op_str, 16)
             if not (f["ea"] <= t < f["end"]) and t not in db.F:
-                for j in disasm(t, 256):
+                for j in disasm(t, 256, linear=True):
                     out.append(j)
                     if j.mnemonic in ("ret", "jmp", "int3"):
                         break

@@ -171,3 +171,7 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
   x32dbg, continues through non-fatal stops, and on the first fatal exception prints registers, asm at eip and
   the stack, symbolized (game via db/functions.csv, our relocated DLL via the logged base + build/dinput8.map).
   ini `crashtest 1` triggers a deliberate fault to test it.
+- IDA code-view export (export/disasm/, game region, 9 s): 318 functions have switch tables (bytes linear capstone
+  decoded as junk), 560 have multiple chunks. packet.disasm() now decodes only IDA's code heads, so packets,
+  semcheck and difftable see real instructions; linear decoding remains for shared blocks / missing exports.
+  Regenerate after IDB changes (export/ is derived).
