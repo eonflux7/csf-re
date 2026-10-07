@@ -334,3 +334,12 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
   app's vslot +0x10 and 0x50D7C0(0) (app+136). `background 1` (default in smoke.sh) subclasses the window to drop
   them, moves it off-screen and gives focus back; verified unfocused: menu tour reached its last screen, FR01 ran
   37 AI functions 30M times.
+
+## 2026-10-07 — Codex effort A/B (Sol low / medium / high)
+
+- 12 GUI functions (50-260 B) that Sol-high had passed first try; dry runs (`CSF_CODEX_EFFORT=low|medium`).
+  First-try gate pass: low 4/12, medium 5/12, high 9/12; after the xhigh retry: 12, 11, 12. Tokens per run:
+  low 145k uncached in + 17k out (20 calls), medium 121k + 16k (17), high 76k + 28k (16). Lower effort halves
+  the output per call but the retries resend the whole packet, so the total is about the same and slower.
+  Keep high. The bigger lever is input: ~8k prompt per call with 20-30% cached.
+- The monitor's "max" was grunt's retry label; Codex gets xhigh (never a max model). Logs now show xhigh.
