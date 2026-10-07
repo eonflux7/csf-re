@@ -87,8 +87,10 @@ def gate(ea, path, db=None):
         errs.append('CSF_GLOBAL/CSF_FUNC/CSF_AT/CSF_STR come from #include "globals.h" (add it)')
     if re.search(r"#\s*define\s+CSF_|#\s*undef\s+CSF_", src):
         errs.append('do not (re)define CSF_* macros: #include "globals.h" and use them as given')
-    if re.search(r"\b(__asm|asm)\b", src):
-        errs.append("inline asm not allowed")
+    # the only allowed asm: a naked tail-jump thunk `__asm { jmp dword ptr ds:[0xADDR] }` / `__asm { jmp 0xADDR }`
+    thunk = r"__asm\s*\{\s*jmp\s+(?:dword\s+ptr\s+ds:\[0x[0-9A-Fa-f]+\]|0x[0-9A-Fa-f]+)\s*\}"
+    if re.search(r"\b(__asm|asm)\b", re.sub(thunk, "", src)):
+        errs.append("inline asm not allowed (except a naked tail-jump thunk: __asm { jmp dword ptr ds:[0xADDR] })")
     hooks = re.findall(r"HOOK(?:_METHOD)?\(\s*0x([0-9A-Fa-f]+)\s*,\s*&?([\w:]+)", src)
     if len(hooks) != 1 or int(hooks[0][0], 16) != ea:
         errs.append(f"need exactly one HOOK(0x{ea:X}, Fn, \"module\") line; found {hooks}")

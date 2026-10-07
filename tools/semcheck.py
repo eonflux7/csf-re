@@ -181,6 +181,18 @@ def check(ea, obj, db):
         if n not in our_addr_ofs(obj):
             errs.append(f"the original computes the ADDRESS this+0x{n:X} (add/lea: an embedded object), your code "
                         f"doesn't — did you load a pointer from +0x{n:X} instead of taking its address?")
+    # indirect tail jumps (jmp [abs]) forward the caller's args/registers: ours must jump too, not call
+    dis = None
+    for i in code_of(ea, db):
+        m = re.fullmatch(r"dword ptr \[(0x[0-9a-f]+)\]", i.op_str)
+        if i.mnemonic == "jmp" and m:
+            if dis is None:
+                dis = subprocess.run(["llvm-objdump-21", "-d", "--no-show-raw-insn", "--x86-asm-syntax=intel", obj],
+                                     capture_output=True, text=True).stdout
+            if not re.search(rf"\tjmp\s+dword ptr (?:ds:)?\[{m.group(1)}\]", dis):
+                errs.append(f"the original TAIL-JUMPS through [{m.group(1)}] (forwarding the caller's stack args and "
+                            "registers untouched); a call drops/shifts them. Write a naked thunk: "
+                            f"`static __declspec(naked) void F() {{ __asm {{ jmp dword ptr ds:[{m.group(1)}] }} }}`")
     bad = sorted(d for d in our_disps if d >= 8 and d not in orig_disps and d not in imms)
     if bad:
         errs.append("your code accesses field offsets the original never uses: " + ", ".join(f"0x{d:X}" for d in bad))

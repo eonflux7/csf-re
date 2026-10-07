@@ -70,7 +70,13 @@ JSON metadata: {"name": "<function name used>", "confidence": 0.0-1.0,
  "summary": "<one line: what it does>",
  "field_names": {"C_xxx.field_0010": "suggestedName", ...},   // only if reasonably sure
  "class_guess": {"C_xxx": "CSuggestedName"},                     // optional
- "notes": "<anything uncertain>"}"""
+ "notes": "<anything uncertain>"}- A tail jump (`jmp` to another function / `jmp dword ptr [addr]` without a matching `call`) forwards the caller's
+  stack arguments and registers unchanged. Reproduce it with the callee's exact signature, or, when that is unknown
+  (indirect jmp through a pointer), as a naked thunk: `static __declspec(naked) void F() { __asm { jmp dword ptr ds:[0xADDR] } }`.
+- Return width: `xor eax, eax` / `movzx eax, ...` before `setcc al` (or any full-eax result) means a 32-bit
+  int/BOOL return; declare it `int`, never `bool` (bool leaves eax's upper bytes undefined; callers test eax).
+  Only a bare `mov al, ...` / `setcc al` without zeroing eax is a genuine byte/bool return.
+"""
 
 
 def load_key():
@@ -169,12 +175,52 @@ def chat_codex(model, messages, effort="high"):
                       backend="codex", model=model)
 
 
+# Live state for tools/monitor.py: in-flight model calls, per-backend token totals, run counters.
+LIVE = os.path.join(ROOT, "work", "grunt_state.json")
+_live_lock = threading.Lock()
+_live = dict(pid=os.getpid(), started=time.time(), mode="", phase="", calls={}, tokens={}, counts={})
+_tl = threading.local()
+
+
+def live(**kw):
+    with _live_lock:
+        for k, v in kw.items():
+            if isinstance(v, dict) and isinstance(_live.get(k), dict) and k == "counts":
+                _live[k].update(v)
+            else:
+                _live[k] = v
+        _live["updated"] = time.time()
+        tmp = f"{LIVE}.{os.getpid()}"
+        with open(tmp, "w") as f:
+            json.dump(_live, f)
+        os.replace(tmp, LIVE)
+
+
 def ask(backend, model, messages, key, effort="high"):
-    if backend == "claude":
-        return chat_claude(model, messages)
-    if backend == "codex":
-        return chat_codex(model, messages, effort)
-    return chat(model, messages, key, effort)
+    cid = f"{threading.get_ident()}"
+    with _live_lock:
+        _live["calls"][cid] = dict(ea=getattr(_tl, "ea", 0), backend=backend, model=model, effort=effort,
+                                   kind="review" if messages[0]["content"] is REVIEW_SYSTEM else "write",
+                                   since=time.time())
+    live()
+    try:
+        if backend == "claude":
+            text, usage = chat_claude(model, messages)
+        elif backend == "codex":
+            text, usage = chat_codex(model, messages, effort)
+        else:
+            text, usage = chat(model, messages, key, effort)
+        with _live_lock:
+            t = _live["tokens"].setdefault(backend, dict(calls=0, prompt=0, cached=0, completion=0))
+            t["calls"] += 1
+            t["prompt"] += usage.get("prompt_tokens", 0) or 0
+            t["cached"] += usage.get("cached_tokens", 0) or 0
+            t["completion"] += usage.get("completion_tokens", 0) or 0
+        return text, usage
+    finally:
+        with _live_lock:
+            _live["calls"].pop(cid, None)
+        live()
 
 
 def parse(text):
@@ -225,6 +271,7 @@ def example_section(db, ex):
 def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None):
     """ladder: [(backend, model, attempts), ...] tried in order; the conversation (with gate errors) carries over.
     example: ea of a done clone sibling (its file is shown). review_over: Codex-review DeepSeek outputs above N bytes."""
+    _tl.ea = ea
     packet = build(db, ea) + (example_section(db, example) if example else "")
     msgs = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": packet}]
     path = os.path.join(out_dir or os.path.join(ROOT, "src", "auto"), f"{ea:08x}.cpp")
@@ -354,6 +401,7 @@ def run(args):
     picks = [(int(x, 16), None) for x in args.only.split(",")] if args.only else select(db, args.n, args.max_size, args.min_size)
     targets = [ea for ea, _ in picks]
     example = dict(picks)
+    live(mode="run" + (" (dry)" if args.dry else ""), phase="grunting", counts=dict(total=len(targets), submitted=len(targets)))
     esc = [("claude", args.claude_model, 2)] if args.escalate_claude else []
     codex = [("codex", args.codex_model, 2)]
     if args.backend == "claude":
@@ -432,6 +480,8 @@ def lanes(args):
     pools = {"deep": cf.ThreadPoolExecutor(args.tiny_jobs), "main": cf.ThreadPoolExecutor(args.main_jobs)}
     caps = {"deep": args.tiny_jobs * 2, "main": args.main_jobs * 2}
     inflight, good, submitted, total_ok, total_esc = {}, [], 0, 0, 0
+    live(mode="lanes", phase="grunting", counts=dict(total=args.total, batch=args.batch, ok=0, esc=0, pending=0,
+                                                      submitted=0, committed=0))
 
     def lane_of(ea, ex):
         size = db.F[ea]["size"]
@@ -455,22 +505,26 @@ def lanes(args):
             submitted += 1
             if submitted >= args.total:
                 break
+        live(counts=dict(submitted=submitted))
 
     def flush():
         nonlocal good
         if not good:
             return True
+        live(phase="smoke")
         if not args.no_smoke:
             ok, out = smoke()
             print(out[-600:], flush=True)
             if not ok:
                 print(f"SMOKE FAILED with {len(good)} new functions: left uncommitted in src/auto; bisect with "
                       "csf_hook.ini `disable 0x...`", flush=True)
+                live(phase="SMOKE FAILED")
                 return False
             good, rej = diff_rejects(good, out)
             if rej:
                 print(f"diff mismatches: {len(rej)} sent to queue/", flush=True)
         commit(good, f"grunt lanes: {len(good)} functions reimplemented")
+        live(phase="grunting", counts=dict(committed=_live["counts"].get("committed", 0) + len(good), pending=0))
         good = []
         return True
 
@@ -491,6 +545,7 @@ def lanes(args):
                 total_ok += 1
             else:
                 total_esc += 1
+            live(counts=dict(ok=total_ok, esc=total_esc, pending=len(good)))
             print(f"  [{lane}] {ea:08x} {'OK ' if r['ok'] else 'ESC'} "
                   f"{r.get('meta', {}).get('name', '') if r['ok'] else r.get('err', '')[:90]}"
                   f"{'  (example %08x)' % r['example'] if r.get('example') else ''}", flush=True)
@@ -500,6 +555,7 @@ def lanes(args):
             return
         refill()
     flush()
+    live(phase="finished")
     print(f"lanes done: {total_ok} ok, {total_esc} escalated", flush=True)
 
 
