@@ -41,17 +41,45 @@ def save_csv(rows):
             w.writerow(rows[ea])
 
 
+ALLOCATOR = {0x6910F0, 0x691110, 0x691120, 0x690DC0, 0x690E60}  # game operator new/delete, Mem_*, STL alloc
+
+
+def classify(funcs, regions):
+    """ea -> region. Address ranges, then per-function overrides (db/region_overrides.json, for interleaved
+    libraries), then: a non-CRT library function that directly calls game code is game (libraries never call
+    the game; catches static-init stubs placed among library code). Only tiny stubs, one pass, allocator calls
+    ignored, and callees <= 8 B ignored (ICF-folded nullsubs/return-0 shared with libs): the game replaces
+    global operator new/delete, so every library calls into game-region allocators.
+    CRT is exempt (startup calls WinMain)."""
+    reg = {}
+    for ea, f in funcs.items():
+        r = region_of(regions, ea)
+        # FLIRT "lib" matches outside the CRT range are false positives on tiny functions (e.g. VS2010
+        # Concurrency:: names in a 2006 binary): the address region wins.
+        reg[ea] = (r["lib"] or "game") if r else "crt" if f["lib"] else "unknown"
+    op = os.path.join(ROOT, "db", "region_overrides.json")
+    if os.path.exists(op):
+        for k, v in json.load(open(op)).items():
+            if int(k, 16) in reg:
+                reg[int(k, 16)] = v["region"]
+    stubs = [ea for ea, f in funcs.items() if f["size"] <= 24 and reg[ea] not in ("game", "crt", "unknown")
+             and any(reg.get(c) == "game" and c not in ALLOCATOR and funcs[c]["size"] > 8 for c in f["callees"])]
+    for ea in stubs:  # one pass: libraries do call the game's replaced global operator new/delete
+        reg[ea] = "game"
+    return reg
+
+
 def main():
     regions = load_regions()
     old = load_csv()
     rows = {}
+    funcs = {}
     for line in open(os.path.join(ROOT, "export", "functions.jsonl")):
         f = json.loads(line)
-        ea = f["ea"]
-        r = region_of(regions, ea)
-        # FLIRT "lib" matches outside the CRT range are false positives on tiny functions (e.g. VS2010
-        # Concurrency:: names in a 2006 binary): the address region wins.
-        region = (r["lib"] or "game") if r else "crt" if f["lib"] else "unknown"
+        funcs[f["ea"]] = f
+    reg = classify(funcs, regions)
+    for ea, f in funcs.items():
+        region = reg[ea]
         flirt_bogus = f["lib"] and region != "crt"
         prev = old.get(ea)
         auto_name = f["name"]

@@ -109,3 +109,15 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
   403s). Core RW ranges look solid (RpHAnim block 0x56CD30–0x56DB50, RpMatFX 0x571270–0x571A80, conf 0.9+).
   0x7C6000+ answers were low-confidence and collided with core names (RwEngineStart at 0x626D60 and 0x7DB920)
   → that region is probably not RW proper. Applied 254 names; rest held in db/rw_names.jsonl.
+
+## 2026-10-07 — RenderWare Audio found; region rules
+
+- 0x7C6010–0x7F78F2 contains RenderWare Audio interleaved with RW toolkits and libpng: one call-graph component
+  holding all DirectSound/ole32 (CoCreateInstance, CoTaskMem*)/timeGetTime users, plus `rws;1` string.
+  581 functions / 92 KB → region `rwa`. The model had named its entry points RwEngineStart/Close/Term — wrong.
+  0x7D8000–0x7DBE90 and 0x7F8000+ are genuine RW 3.7 toolkits (RtQuat, RtIntersection, RtDict, RpMTEffect, Rt2d).
+- triage: per-function overrides (db/region_overrides.json) + "tiny lib stub calling game → game" rule.
+  A naive "lib calls game → game" fixpoint flipped 2,560 NetZ + 620 D3DX9 functions: the game replaces global
+  operator new/delete (every lib calls game allocators), and ICF folds 1–5 B nullsubs/return-0 shared by
+  game and libs. Rule now: ≤ 24 B, one pass, ignore allocators and callees ≤ 8 B. 0x828000+ static-init stubs
+  mostly call folded no-op ctors → left as lib.

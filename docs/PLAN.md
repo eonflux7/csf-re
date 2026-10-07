@@ -14,7 +14,7 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - Developer: Pyro Studios. Identifiers and strings are **Spanish**.
 - Original source root: `c:\CommX\Src\Main\` (from Xbox XBE). PDB was `CommXPC.pdb`.
 - Statically linked libraries (never reversed, only their boundary API is named):
-  RenderWare 3.x (core + D3D9 driver + toolkits), D3DX9 (shader compiler 5.04.00.3900), Quazal NetZ,
+  RenderWare 3.x (core + D3D9 driver + toolkits), RenderWare Audio (DirectSound), D3DX9 (shader compiler 5.04.00.3900), Quazal NetZ,
   MSVC 7.1 CRT/STL, libpng 1.0.12, zlib. Dynamically: binkw32, vorbisfile.
 - `RwEngineInstance` = `0x8b68c0`.
 - Region map: `db/regions.yaml`.
@@ -68,8 +68,8 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [x] Bulk Hex-Rays export (`export/funcs/<ea>.c`)
 - [ ] Name the RW boundary API (456; `tools/rwname.py`). Pass 1: 254 applied (core RW ranges, unique, conf ≥0.7).
       Left: 64 not attempted (Codex quota), 30 held back (dupes/low conf), 108 in 0x7C6000+ (see next item)
-- [ ] Re-examine 0x7C65C0–0x82C410 ("RW toolkits / NetZ tail"): naming pass found wrappers/setters that don't
-      match RW (e.g. 0x7DB920 table-driven init) — may be a separately linked engine lib (game or middleware)
+- [x] Re-examine 0x7C65C0–0x82C410: RW 3.7 toolkits + interleaved **RenderWare Audio** (DirectSound/COM, `.rws`;
+      581 fns / 92 KB, region `rwa` via `tools/rwa.py` → db/region_overrides.json; 40 boundary fns)
 - [x] Name the CRT boundary API (58 after FLIRT/region fixes; `tools/boundary.py` regenerates export/boundary_api.json)
 - [ ] NetZ boundary (320): name only if needed for stubbing — deferred, game net layer is stubbed at cutover
 - [ ] Harvest Spanish strings/state names/config keys → subsystem anchors
@@ -120,4 +120,6 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 
 ## Open decisions (for the user)
 
-(none)
+- (not blocking until cutover) **RenderWare Audio replacement.** librw covers RW Graphics only. Options: reimplement
+  the 40-function RWA boundary on our own backend (e.g. miniaudio/OpenAL + libvorbis), or reimplement RWA itself
+  (92 KB). Recommendation: reimplement the boundary — the game only uses 40 calls.
