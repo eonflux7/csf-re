@@ -285,6 +285,7 @@ def run(args):
             pf.write(json.dumps(dict(ea=f"{r['ea']:08x}", **{k: r["meta"].get(k) for k in
                                                             ("name", "summary", "confidence", "field_names", "class_guess", "notes")})) + "\n")
     save_csv(rows)
+    subprocess.run([sys.executable, os.path.join(ROOT, "tools", "globals.py")], check=False)
     paths = [p for p in ("src/auto", "db", "queue") if os.path.exists(os.path.join(ROOT, p))]
     subprocess.run(["git", "-C", ROOT, "add", "-A", *paths], check=True)
     msg = f"grunt batch: {len(good)} functions reimplemented ({args.backend})\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"

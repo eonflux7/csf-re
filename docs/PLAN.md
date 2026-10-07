@@ -97,7 +97,8 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 ### Phase 4 — grunt waves
 - [x] Driver (packet → model → gate → commit), escalation queue (`tools/grunt.py`)
 - [ ] Clone-cluster expansion: after one member passes, derive siblings (same shape, different callees/consts)
-- [ ] Collect CSF_GLOBAL names from src/auto into db/globals.yaml; dedupe names across files
+- [x] Collect CSF_GLOBAL names from src/auto into db/globals.yaml (`tools/globals.py`, run after each batch;
+      names substituted into packet pseudocode; pin with src: opus)
 - [ ] Opus review pass: sample ~5% of each batch against asm; feed recurring mistakes into the prompt
 - [ ] Differential test harness
 - [ ] Waves per module, leaf-first

@@ -78,7 +78,12 @@ def substitute_names(db, text):
         ea = int(m.group(1), 16)
         n = db.name(ea)
         return n if n else m.group(0)
-    return re.sub(r"\bsub_([0-9A-F]+)\b", rep, text)
+    text = re.sub(r"\bsub_([0-9A-F]+)\b", rep, text)
+
+    def grep_(m):
+        g = db.globals.get(int(m.group(2), 16))
+        return g["name"] if g else m.group(0)
+    return re.sub(r"\b(dword|word|byte|flt|dbl|qword|off|unk|stru)_([0-9A-F]+)\b", grep_, text)
 
 
 def struct_text(db, vt):
