@@ -3,6 +3,7 @@
 
 Usage:
   rwname.py run [--n N] [--jobs 8] [--only ea,ea] [--redo] [--backend codex|deepseek|claude] [--model M]
+  rwname.py dedupe                 re-ask name collisions jointly (one prompt per group)
   rwname.py report                 conflicts / low confidence
   rwname.py apply [--min 0.6]      write accepted names into db/functions.csv (name_src=rwname)
 
@@ -154,22 +155,82 @@ def run(a):
     eas_sorted = sorted(F)
     idx = {e: i for i, e in enumerate(eas_sorted)}
     key = load_key() if a.backend == "deepseek" else None
-    # waves: a wave only sees names from earlier waves (bottom-up), so run in chunks of `jobs`
-    for w in range(0, len(targets), a.jobs):
-        names = {e: d["name"] for e, d in results().items() if d.get("name") and (d.get("confidence") or 0) >= 0.5}
-        wave = targets[w: w + a.jobs]
-        with cf.ThreadPoolExecutor(a.jobs) as ex:
-            futs = {ex.submit(one, e, packet(e, F, rows, names, callers, eas_sorted, idx), a.backend, a.model, key): e
-                    for e in wave}
-            for fu in cf.as_completed(futs):
+    # dependency queue (no waves): a function starts once its callees within the target set have answers
+    tset, done, inflight = set(targets), set(), {}
+    pending = list(targets)
+    with cf.ThreadPoolExecutor(a.jobs) as ex:
+        while pending or inflight:
+            ready = [e for e in pending if all(c in done or c not in tset or c == e for c in F[e]["callees"])]
+            if not ready and not inflight and pending:
+                ready = pending[:1]  # cycle: break it
+            names = {e: d["name"] for e, d in results().items() if d.get("name") and (d.get("confidence") or 0) >= 0.5}
+            for e in ready[: max(0, a.jobs * 2 - len(inflight))]:
+                pending.remove(e)
+                inflight[ex.submit(one, e, packet(e, F, rows, names, callers, eas_sorted, idx), a.backend, a.model,
+                                   key)] = e
+            fin, _ = cf.wait(list(inflight), return_when=cf.FIRST_COMPLETED)
+            for fu in fin:
+                e = inflight.pop(fu)
+                done.add(e)
                 try:
                     r = fu.result()
-                except Exception as e:
-                    print(f"  {futs[fu]:08x} ERROR {e}", flush=True)
+                except Exception as err:
+                    print(f"  {e:08x} ERROR {err}", flush=True)
                     continue
                 with open(OUT, "a") as f:
                     f.write(json.dumps(r) + "\n")
                 print(f"  {r['ea']} {r['confidence']!s:5} {r['name']}", flush=True)
+
+
+DEDUPE_SYSTEM = SYSTEM.split("Output exactly")[0] + """These functions were each given the SAME name by an earlier pass,
+which cannot be right (one RW function has one address). Compare them and give each its correct, distinct RW 3.7
+name (e.g. a Set/Get pair, Width/Height, Int16/Int32/Real variants, Atomic/Clump/Light variants).
+Output exactly one ```json block: {"0xADDR": {"name": "...", "confidence": 0.0-1.0, "why": "..."}, ...}"""
+
+
+def dedupe(a):
+    """Re-ask name collisions jointly: each group of functions sharing a name goes to the model in one prompt."""
+    F, rows = load(), load_csv()
+    res = results()
+    api = {int(e, 16) for e in json.load(open(os.path.join(ROOT, "export", "boundary_api.json")))["rw"]}
+    applied = {e: r["name"] for e, r in rows.items() if r["name_src"] == "rwname"}
+    by = collections.defaultdict(set)
+    for e, d in res.items():
+        if e in api and d.get("name"):
+            by[d["name"]].add(e)
+    for e, n in applied.items():
+        by[n].add(e)
+    groups = [sorted(g) for g in by.values() if len(g) > 1]
+    print(f"{len(groups)} collision groups")
+    eas_sorted = sorted(F)
+    idx = {e: i for i, e in enumerate(eas_sorted)}
+    key = load_key() if a.backend == "deepseek" else None
+    names = {e: d["name"] for e, d in res.items() if d.get("name")}
+
+    def ask_group(g):
+        parts = [packet(e, F, rows, names, {}, eas_sorted, idx) for e in g]
+        msg = "\n\n---\n\n".join(parts)
+        text, usage = ask(a.backend, a.model, [dict(role="system", content=DEDUPE_SYSTEM), dict(role="user", content=msg)], key)
+        m = re.search(r"```json\s*\n(.*?)```", text, re.S)
+        return g, json.loads(m.group(1)) if m else {}
+
+    with cf.ThreadPoolExecutor(a.jobs) as ex:
+        for fu in cf.as_completed([ex.submit(ask_group, g) for g in groups]):
+            try:
+                g, d = fu.result()
+            except Exception as err:
+                print("  ERROR", err)
+                continue
+            with open(OUT, "a") as f:
+                for k, v in d.items():
+                    e = int(k, 16)
+                    if e in g and isinstance(v, dict):
+                        f.write(json.dumps(dict(ea=f"{e:08x}", backend=a.backend, model=a.model, kind="dedupe",
+                                                name=v.get("name"), confidence=v.get("confidence"), why=v.get("why"))) + "\n")
+                        print(f"  {e:08x} {v.get('confidence')!s:5} {v.get('name')}")
+                        if rows[e]["name_src"] == "rwname":  # re-evaluated by apply
+                            rows[e]["name"], rows[e]["name_src"] = "", ""
+    save_csv(rows)
 
 
 def report(a):
@@ -212,6 +273,11 @@ def main():
     r.add_argument("--redo", action="store_true")
     r.add_argument("--backend", choices=["codex", "deepseek", "claude"], default="codex")
     r.add_argument("--model", default="gpt-6.1-sol")
+    d = sp.add_parser("dedupe")
+    d.add_argument("--jobs", type=int, default=8)
+    d.add_argument("--backend", choices=["codex", "deepseek", "claude"], default="codex")
+    d.add_argument("--model", default="gpt-6.1-sol")
+    d.set_defaults(fn=dedupe)
     for name, fn in (("report", report), ("apply", apply)):
         p = sp.add_parser(name)
         p.add_argument("--min", type=float, default=0.6)

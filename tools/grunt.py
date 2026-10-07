@@ -3,11 +3,12 @@
 
 Usage:
   grunt.py run [--n 10] [--jobs 8] [--max-size 200] [--only ea,ea] [--model deepseek-flash] [--no-smoke]
+  grunt.py lanes [--total 200] [--batch 50] [--tiny-jobs 8] [--main-jobs 6]   continuous, two lanes (see lanes())
   grunt.py cost                      token usage + projected cost from work/grunt_log.jsonl
 
 After a batch: link, deploy, smoke test (unless --no-smoke); on success mark functions done and git commit.
 """
-import argparse, concurrent.futures as cf, json, os, re, subprocess, sys, threading, time, urllib.request
+import argparse, collections, concurrent.futures as cf, glob, json, os, re, subprocess, sys, threading, time, urllib.request
 sys.path.insert(0, os.path.dirname(__file__))
 from packet import DB, build
 from gate import gate
@@ -164,9 +165,45 @@ def parse(text):
     return (code.group(1) if code else None), m
 
 
-def work(ea, db, key, ladder, out_dir=None):
-    """ladder: [(backend, model, attempts), ...] tried in order; the conversation (with gate errors) carries over."""
-    packet = build(db, ea)
+REVIEW_SYSTEM = """You review a C++ reimplementation of one x86 function from a 2006 MSVC game against the original's
+disassembly and pseudocode. Look only for real behavioral differences: wrong offsets, signedness, widths, float vs
+double, missing/extra/reordered calls or memory accesses, wrong loop bounds, wrong constants, values cached across
+calls where the original reloads. Ignore naming and style. Output exactly one ```json block:
+{"ok": true|false, "issues": ["<concrete difference, with the asm address>", ...]}"""
+
+
+def review(ea, packet, code):
+    """Second opinion by Codex on a gate-passed file. Returns '' if fine, else the issues text."""
+    msgs = [{"role": "system", "content": REVIEW_SYSTEM},
+            {"role": "user", "content": f"{packet}\n\n## Reimplementation under review\n```cpp\n{code}\n```"}]
+    try:
+        text, usage = ask("codex", "gpt-6.1-sol", msgs, None, "high")
+    except Exception:
+        return "", None
+    m = re.search(r"```json\s*\n(.*?)```", text, re.S)
+    try:
+        d = json.loads(m.group(1)) if m else {}
+    except json.JSONDecodeError:
+        d = {}
+    if d.get("ok", True) or not d.get("issues"):
+        return "", usage
+    return "\n".join(f"- {i}" for i in d["issues"]), usage
+
+
+def example_section(db, ex):
+    path = os.path.join(ROOT, "src", "auto", f"{ex:08x}.cpp")
+    if not os.path.exists(path):
+        return ""
+    return (f"\n\n## Same-shape function, already reimplemented and verified: 0x{ex:08X}\n"
+            "The target has the same instruction shape (a clone: other element size / constants / callees). Follow this "
+            "structure, but use the target's own addresses, constants, offsets and callee bindings from the packet above.\n"
+            f"```cpp\n{open(path).read()}\n```")
+
+
+def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None):
+    """ladder: [(backend, model, attempts), ...] tried in order; the conversation (with gate errors) carries over.
+    example: ea of a done clone sibling (its file is shown). review_over: Codex-review DeepSeek outputs above N bytes."""
+    packet = build(db, ea) + (example_section(db, example) if example else "")
     msgs = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": packet}]
     path = os.path.join(out_dir or os.path.join(ROOT, "src", "auto"), f"{ea:08x}.cpp")
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -195,9 +232,16 @@ def work(ea, db, key, ladder, out_dir=None):
         else:
             open(tmp, "w").write(code)
             ok, err = gate(ea, tmp, db)
+        if ok and backend == "deepseek" and (review_over or -1) >= 0 and db.F[ea]["size"] > review_over:
+            issues, u = review(ea, packet, code)
+            if u:
+                usage_all.append(u)
+            if issues:
+                ok, err = False, "a reviewer compared your file with the original and found differences:\n" + issues
         if ok:
             os.replace(tmp, path)
-            return dict(ea=ea, ok=True, attempts=attempt + 1, meta=meta, usage=usage_all, by=f"{backend}:{model}")
+            return dict(ea=ea, ok=True, attempts=attempt + 1, meta=meta, usage=usage_all, by=f"{backend}:{model}",
+                        example=example)
         msgs += [{"role": "assistant", "content": text},
                  {"role": "user", "content": f"The gate rejected the file:\n{err}\nFix it and answer again in the same format."}]
     qdir = os.path.join(out_dir, "queue") if out_dir else os.path.join(ROOT, "queue")
@@ -208,29 +252,52 @@ def work(ea, db, key, ladder, out_dir=None):
     return dict(ea=ea, ok=False, attempts=len(steps), err=err[:500], usage=usage_all)
 
 
-def select(db, n, max_size, min_size=6):
-    """Leaf-first: fewest not-done game callees, then smallest. One representative per clone cluster."""
+def select(db, n, max_size, min_size=6, exclude=()):
+    """Leaf-first: fewest not-done game callees, then smallest. Returns [(ea, example_ea|None)].
+    Clone clusters: while no member is done, only one member is offered; once one is done, the others are offered
+    with it as the example (cheap: same shape)."""
     rows = db.rows
     clones = json.load(open(os.path.join(ROOT, "export", "clones.json")))
-    rep = {}
-    for c in clones:
-        for m in c["members"][1:]:
-            rep[int(m, 16)] = int(c["members"][0], 16)
+    cluster = {}
+    for i, c in enumerate(clones):
+        for m in c["members"]:
+            cluster[int(m, 16)] = i
+    done_in = {}
+    busy = set()
+    for ea, i in cluster.items():
+        if rows.get(ea, {}).get("status") in ("done", "verified"):
+            done_in.setdefault(i, ea)
+        if ea in exclude:
+            busy.add(i)
     eas = sorted(db.F)
     room = {eas[i]: eas[i + 1] - eas[i] for i in range(len(eas) - 1)}
     cands = []
     for ea, r in rows.items():
-        if r["status"] != "todo" or r["region"] != "game" or ea in rep or r["module"] == "stl":  # stl: template impls
+        if r["status"] != "todo" or r["region"] != "game" or r["module"] == "stl" or ea in exclude:  # stl: templates
             continue
         f = db.F.get(ea)
         if not f or f["size"] > max_size or f["size"] < min_size or room.get(ea, 99) < 5 or not os.path.exists(os.path.join(ROOT, "export", "funcs", f"{ea:08x}.c")):
             continue
         if os.path.exists(os.path.join(ROOT, "queue", f"{ea:08x}.md")):
             continue
+        ci = cluster.get(ea)
+        ex = done_in.get(ci) if ci is not None else None
+        if ci is not None and ex is None and ci in busy:
+            continue  # a sibling is in flight; wait for it to become the example
         pending = sum(1 for c in f["callees"] if rows.get(c, {}).get("status") == "todo")
-        cands.append((pending, f["size"], ea))
+        cands.append((ex is None, pending, f["size"], ea, ex))
     cands.sort()
-    return [ea for _, _, ea in cands[:n]]
+    out, taken = [], set()
+    for _, _, _, ea, ex in cands:
+        ci = cluster.get(ea)
+        if ex is None and ci is not None:
+            if ci in taken:
+                continue
+            taken.add(ci)
+        out.append((ea, ex))
+        if len(out) >= n:
+            break
+    return out
 
 
 def smoke():
@@ -244,7 +311,9 @@ def smoke():
 def run(args):
     db = DB()
     key = load_key()
-    targets = [int(x, 16) for x in args.only.split(",")] if args.only else select(db, args.n, args.max_size, args.min_size)
+    picks = [(int(x, 16), None) for x in args.only.split(",")] if args.only else select(db, args.n, args.max_size, args.min_size)
+    targets = [ea for ea, _ in picks]
+    example = dict(picks)
     esc = [("claude", args.claude_model, 2)] if args.escalate_claude else []
     codex = [("codex", args.codex_model, 2)]
     if args.backend == "claude":
@@ -259,7 +328,8 @@ def run(args):
     results = []
     with cf.ThreadPoolExecutor(args.jobs) as ex:
         out_dir = os.path.join(ROOT, "work", "ab", args.backend) if args.dry else None
-        futs = {ex.submit(work, ea, db, key, ladder_of(ea), out_dir): ea for ea in targets}
+        futs = {ex.submit(work, ea, db, key, ladder_of(ea), out_dir, example.get(ea), args.review_over): ea
+                for ea in targets}
         for fu in cf.as_completed(futs):
             try:
                 r = fu.result()
@@ -282,6 +352,11 @@ def run(args):
         if not ok:
             print("SMOKE FAILED: files left in src/auto uncommitted; bisect with csf_hook.ini (disable 0x...)")
             return
+    commit(good, f"grunt batch: {len(good)} functions reimplemented ({args.backend})")
+
+
+def commit(good, title):
+    """Mark done, record proposals, regenerate globals.yaml, commit exactly these files."""
     rows = load_csv()
     with open(PROPOSALS, "a") as pf:
         for r in good:
@@ -293,11 +368,93 @@ def run(args):
                                                             ("name", "summary", "confidence", "field_names", "class_guess", "notes")})) + "\n")
     save_csv(rows)
     subprocess.run([sys.executable, os.path.join(ROOT, "tools", "globals.py")], check=False)
-    paths = [p for p in ("src/auto", "db", "queue") if os.path.exists(os.path.join(ROOT, p))]
-    subprocess.run(["git", "-C", ROOT, "add", "-A", *paths], check=True)
-    msg = f"grunt batch: {len(good)} functions reimplemented ({args.backend})\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
-    subprocess.run(["git", "-C", ROOT, "commit", "-q", "-m", msg], check=False)
+    files = [f"src/auto/{r['ea']:08x}.cpp" for r in good] + ["db/functions.csv", "db/proposals.jsonl", "db/globals.yaml"]
+    files += [os.path.relpath(p, ROOT) for p in glob.glob(os.path.join(ROOT, "queue", "*.md"))]
+    if subprocess.run(["git", "-C", ROOT, "ls-files", "--", "queue"], capture_output=True, text=True).stdout:
+        files.append("queue")  # also stages escalations resolved (deleted) since the last commit
+    subprocess.run(["git", "-C", ROOT, "add", "-A", "--", *files], check=False)
+    msg = f"{title}\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+    subprocess.run(["git", "-C", ROOT, "commit", "-q", "-m", msg, "--", *files], check=False)
     print("committed", flush=True)
+
+
+def lanes(args):
+    """Continuous grunting in two lanes: DeepSeek (tiny functions, and clone siblings that have an example; Codex as
+    fallback) and Codex (the rest). Every --batch gate passes: build + in-mission smoke + commit. Stops on a smoke
+    failure (files left uncommitted for bisecting) or after --total functions."""
+    db = DB()
+    key = load_key()
+    esc = [("claude", args.claude_model, 2)] if args.escalate_claude else []
+    codex = [("codex", args.codex_model, 2)]
+    pools = {"deep": cf.ThreadPoolExecutor(args.tiny_jobs), "main": cf.ThreadPoolExecutor(args.main_jobs)}
+    caps = {"deep": args.tiny_jobs * 2, "main": args.main_jobs * 2}
+    inflight, good, submitted, total_ok, total_esc = {}, [], 0, 0, 0
+
+    def lane_of(ea, ex):
+        size = db.F[ea]["size"]
+        if size < args.tiny or (ex is not None and size <= 400):
+            return "deep", [("deepseek", args.model, 2)] + codex + esc
+        return "main", codex + esc
+
+    def refill():
+        nonlocal submitted
+        busy = {ea for ea, _ in inflight.values()}
+        cnt = collections.Counter(l for _, l in inflight.values())
+        if submitted >= args.total or all(cnt[l] >= caps[l] for l in caps):
+            return
+        for ea, ex in select(db, 600, args.max_size, args.min_size, exclude=busy):
+            lane, ladder = lane_of(ea, ex)
+            if cnt[lane] >= caps[lane]:
+                continue
+            fut = pools[lane].submit(work, ea, db, key, ladder, None, ex, args.review_over)
+            inflight[fut] = (ea, lane)
+            cnt[lane] += 1
+            submitted += 1
+            if submitted >= args.total:
+                break
+
+    def flush():
+        nonlocal good
+        if not good:
+            return True
+        if not args.no_smoke:
+            ok, out = smoke()
+            print(out[-600:], flush=True)
+            if not ok:
+                print(f"SMOKE FAILED with {len(good)} new functions: left uncommitted in src/auto; bisect with "
+                      "csf_hook.ini `disable 0x...`", flush=True)
+                return False
+        commit(good, f"grunt lanes: {len(good)} functions reimplemented")
+        good = []
+        return True
+
+    refill()
+    while inflight:
+        done, _ = cf.wait(list(inflight), timeout=60, return_when=cf.FIRST_COMPLETED)
+        for fu in done:
+            ea, lane = inflight.pop(fu)
+            try:
+                r = fu.result()
+            except Exception as e:
+                r = dict(ea=ea, ok=False, err=f"exception: {e}", usage=[])
+            with open(LOG, "a") as f:
+                f.write(json.dumps(dict(r, ts=time.time(), lane=lane)) + "\n")
+            if r["ok"]:
+                db.rows[ea]["status"] = "done"  # in memory: siblings may now use it as their example
+                good.append(r)
+                total_ok += 1
+            else:
+                total_esc += 1
+            print(f"  [{lane}] {ea:08x} {'OK ' if r['ok'] else 'ESC'} "
+                  f"{r.get('meta', {}).get('name', '') if r['ok'] else r.get('err', '')[:90]}"
+                  f"{'  (example %08x)' % r['example'] if r.get('example') else ''}", flush=True)
+        if len(good) >= args.batch and not flush():
+            for p in pools.values():
+                p.shutdown(wait=True, cancel_futures=True)
+            return
+        refill()
+    flush()
+    print(f"lanes done: {total_ok} ok, {total_esc} escalated", flush=True)
 
 
 def cost(_):
@@ -331,6 +488,21 @@ if __name__ == "__main__":
     r.add_argument("--min-size", type=int, default=6)
     r.add_argument("--dry", action="store_true", help="write to work/ab/<backend>/, no smoke/commit/status")
     r.add_argument("--no-smoke", action="store_true")
+    r.add_argument("--review-over", type=int, default=100, help="Codex-review DeepSeek outputs above N bytes (-1: off)")
+    l = sub.add_parser("lanes")
+    l.add_argument("--total", type=int, default=200)
+    l.add_argument("--batch", type=int, default=50, help="smoke + commit every N gate passes")
+    l.add_argument("--tiny-jobs", type=int, default=8)
+    l.add_argument("--main-jobs", type=int, default=6)
+    l.add_argument("--max-size", type=int, default=600)
+    l.add_argument("--min-size", type=int, default=6)
+    l.add_argument("--tiny", type=int, default=48)
+    l.add_argument("--model", default="deepseek-flash")
+    l.add_argument("--codex-model", default="gpt-6.1-sol")
+    l.add_argument("--claude-model", default="sonnet")
+    l.add_argument("--escalate-claude", action="store_true")
+    l.add_argument("--review-over", type=int, default=100)
+    l.add_argument("--no-smoke", action="store_true")
     sub.add_parser("cost")
     a = ap.parse_args()
-    {"run": run, "cost": cost}[a.cmd](a)
+    {"run": run, "lanes": lanes, "cost": cost}[a.cmd](a)
