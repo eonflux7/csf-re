@@ -391,19 +391,26 @@ def select(db, n, max_size, min_size=6, exclude=()):
     return out
 
 
-SMOKE_SECS, SMOKE_LONG_SECS, SMOKE_LONG_EVERY = 15, 60, 5  # game is in-mission after 1-3 s; every 5th smoke runs long
+SMOKE_SECS, SMOKE_LONG_SECS, SMOKE_LONG_EVERY = 15, 60, 5  # seconds after ready (smoke.sh); every 5th smoke runs long
+# Long smokes rotate the start (wider coverage for db/verify.json); short ones always use smoke.sh's FR01 scene.
+SMOKE_STARTS = [{}, {"CSF_START": "menu", "CSF_INI_EXTRA": "menutour 1500"}, {"CSF_START": "loadsave 1.sav"}]
+_last_smoke = (None, {})  # (secs, env) of the last deployed smoke: a bisect repeats exactly that run
 _smokes = 0
 
 
 def smoke(deploy=True, secs=None):
-    global _smokes
+    global _smokes, _last_smoke
     if deploy:
         r = subprocess.run([os.path.join(ROOT, "tools", "deploy.sh")], capture_output=True, text=True)
         if r.returncode:
             return False, "build/deploy failed:\n" + (r.stdout + r.stderr)[-3000:]
         _smokes += 1
-    secs = secs or (SMOKE_LONG_SECS if deploy and _smokes % SMOKE_LONG_EVERY == 0 else SMOKE_SECS)
-    r = subprocess.run([os.path.join(ROOT, "tools", "smoke.sh"), str(secs)], capture_output=True, text=True)
+        long = _smokes % SMOKE_LONG_EVERY == 0
+        env = SMOKE_STARTS[(_smokes // SMOKE_LONG_EVERY) % len(SMOKE_STARTS)] if long else {}
+        _last_smoke = (secs or (SMOKE_LONG_SECS if long else SMOKE_SECS), env)
+    secs, env = (secs or _last_smoke[0] or SMOKE_SECS), _last_smoke[1]
+    r = subprocess.run([os.path.join(ROOT, "tools", "smoke.sh"), str(secs)], capture_output=True, text=True,
+                       env={**os.environ, **env})
     return r.returncode == 0, r.stdout  # full: diff_rejects() needs the MISMATCH lines near the top
 
 

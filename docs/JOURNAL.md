@@ -258,3 +258,16 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
 - `db/verify.json` (`tools/verify.py`): code hash = the function's own object code (bytes + relocation kinds; symbol
   names and the HOOK stub excluded, so renames keep evidence). First real numbers: of 841 done functions 217 diffed,
   64 executed, 560 never executed in the FR01 in-mission smoke.
+
+## 2026-10-07 — Coverage starts: menu tour, savegame, scene sweep
+
+- Gate-only functions by start (cumulative in db/verify.json): FR01 alone 560; + 3 other scenes 543 (idle missions
+  run the same code); + menu tour 526; + loadsave 1.sav (mid-mission Fiord) 492; + blind autopilot movement 488.
+  Movement scripts and more idle scenes aren't worth it; the rest is AI combat (T* tasks) and GUI input handling.
+- devcmd `menutour MS [screens]`: GotoScreen is called once per frame from a RwCameraEndUpdate (0x628E40) trampoline
+  on the game thread (GotoScreen loads the screen: never from another thread; re-entry guarded, loading renders).
+  Menu manager pointer captured in the GotoScreen hook. P_Idioma, P_MeJueg and P_MeCaPa crash the ORIGINAL game
+  when opened out of context (checked with `only_module core`): left out. Multiplayer lobby screens need NetZ.
+- Probing the 0x864508 vtable slots in the menus: slots at 0x71A8E0/0x71A5E0/0x71A300 run per control
+  (100k-300k calls / 20 s), not per frame — unusable as a frame hook.
+- smoke.sh: `CSF_INI_EXTRA` adds ini lines for one run (autopilot steps, menutour, only_module).

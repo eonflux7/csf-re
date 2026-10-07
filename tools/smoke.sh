@@ -12,10 +12,12 @@ PLAY=${CSF_PLAY:-/mnt/e/dev/csf-play}
 SECS=${1:-15}
 START=${CSF_START:-scene Maps/FR01/Parachut.scn}
 INI="$PLAY/csf_hook.ini"
-sed -i '/^\(scene\|loadsave\|windowed\|cmdline\|autopilot\|probe\|diff\|diff_limit\|diff_calls\) /d' "$INI"
+sed -i '/^\(scene\|loadsave\|windowed\|cmdline\|autopilot\|probe\|diff\|diff_limit\|diff_calls\|menutour\) /d' "$INI"
 [ "${CSF_DIFF:-1}" = 1 ] && echo "diff 1" >> "$INI"  # differential testing of eligible hooks (hook/diff.cpp)
 echo "windowed 1280x960" >> "$INI"
 [ "$START" != menu ] && echo "$START" >> "$INI"
+# extra ini lines for this run only, e.g. autopilot steps: CSF_INI_EXTRA=$'autopilot 9000 key ESCAPE\n...'
+[ -n "${CSF_INI_EXTRA:-}" ] && printf '%s\n' "$CSF_INI_EXTRA" >> "$INI"
 case "$START" in
   scene*) READY="devcmd: starting scene";;
   loadsave*) READY="devcmd: dev start";;
@@ -36,10 +38,10 @@ if (-not \$p.HasExited) { Stop-Process -Id \$p.Id -Force; \$p.WaitForExit(5000) 
 Write-Output \"pid=\$(\$p.Id) ready=\$ready after=\${rs}s alive=\$alive exit=\$(if(\$alive){'killed'}else{\$p.ExitCode}) stillrunning=\$(-not \$p.HasExited)\"
 " | tr -d '\r')
 echo "$result"
-echo "---- hits"; tr -d "\r" < "$PLAY/csf_hook_hits.txt" 2>/dev/null | sort -k2 -n -r | head -10
-echo "---- diff ($(wc -l < "$PLAY/csf_diff_summary.txt" 2>/dev/null || echo 0) functions compared)"
-tr -d '\r' < "$PLAY/csf_diff_summary.txt" 2>/dev/null | awk '$4 > 0 {print "MISMATCH " $0}'
-tr -d '\r' < "$PLAY/csf_diff.log" 2>/dev/null | head -20
+echo "---- hits"; { tr -d "\r" < "$PLAY/csf_hook_hits.txt"; } 2>/dev/null | sort -k2 -n -r | head -10
+echo "---- diff ($(cat "$PLAY/csf_diff_summary.txt" 2>/dev/null | wc -l) functions compared)"
+{ tr -d '\r' < "$PLAY/csf_diff_summary.txt"; } 2>/dev/null | awk '$4 > 0 {print "MISMATCH " $0}'
+{ tr -d '\r' < "$PLAY/csf_diff.log"; } 2>/dev/null | head -20
 grep -A5 CRASH "$PLAY/csf_hook.log" 2>/dev/null
 echo "---- csf_hook.log"; tr -d '\r' < "$PLAY/csf_hook.log" 2>/dev/null | tail -20
 crashes=$(grep -c CRASH "$PLAY/csf_hook.log" 2>/dev/null)

@@ -65,8 +65,11 @@ void free_string(legacy::string& s) {
 // (0x504970) the scene when state == 1. The briefing is skipped (GameScreen_HasBriefing): no intro, no menus.
 bool dev_start() { return hook::ini_string("scene") || hook::ini_string("loadsave"); }
 
+void* g_menus;  // the menu manager (vtable 0x864508), captured on its first GotoScreen; used by the menu tour
+
 int __fastcall Menus_GotoScreen_Dev(void* self, void* /*edx*/, const char* screen) {
     static bool first = true;
+    g_menus = self;
     if (first && hook::ini_string("crashtest"))  // deliberate fault, to test crash triage (tools/dbg.sh crash)
         *(volatile int*)nullptr = 0x0BADC0DE;
     if (!first || !dev_start())
@@ -165,8 +168,61 @@ BOOL __cdecl Window_FitClientArea(HWND wnd, LONG w, LONG h) {
     int ww = r.right - r.left, hh = r.bottom - r.top;
     return MoveWindow(wnd, (GetSystemMetrics(SM_CXSCREEN) - ww) / 2, 0, ww, hh, TRUE);
 }
+// Menu tour (coverage of GUI code in unattended smokes). csf_hook.ini:
+//   menutour 1500                     open every single-player menu screen in turn, 1500 ms apart
+//   menutour 1500 P_Option P_Video    only these (Menus/<name>.fbs)
+// Screens are switched once per frame from RwCameraEndUpdate (0x628E40) on the game thread, never from another
+// thread (GotoScreen loads the screen). Logs "menutour: <screen>" per step and "menutour: done" at the end.
+const char* const kTour[] = {"P_MePrin", "P_Campan", "P_Scenes", "P_LoGame", "P_Profil", "P_Option", "P_Video",
+                             "P_VideoA", "P_Sound", "P_Contro", "P_Help", "P_Tactic", "P_TVirtu",
+                             "P_SShots", "P_Credits", "P_OptIng", "P_SoundI", "P_VideoI", "P_ConIng", "P_SaGame",
+                             "P_Carga", "P_ProgBr", "P_SalDem", "P_Edit", "P_EditG", "P_MsgBox", "P_MePrin"};
+// Left out: P_Idioma, P_MeJueg, P_MeCaPa crash the ORIGINAL game when opened out of context (only_module core);
+// the multiplayer lobby screens (P_Lb*, P_MeMult, ...) need a NetZ session.
+void* (__cdecl* g_RwCameraEndUpdate)(void*);
+
+void menutour_step() {
+    static bool parsed, busy;
+    static char names[32][24];
+    static int n, next_i;
+    static DWORD period, next_t;
+    if (!parsed) {
+        parsed = true;
+        const char* v = hook::ini_string("menutour");
+        if (!v)
+            return;
+        period = strtoul(v, const_cast<char**>(&v), 10);
+        for (char tok[24]; n < 32 && sscanf(v, " %23s", tok) == 1; v = strstr(v, tok) + strlen(tok))
+            strcpy(names[n++], tok);
+        if (!n)
+            for (const char* t : kTour)
+                strcpy(names[n++], t);
+        next_t = GetTickCount() + period;
+    }
+    if (!n || busy || !g_menus || next_i > n || (int)(GetTickCount() - next_t) < 0)
+        return;
+    if (next_i == n) {
+        hook::log("menutour: done");
+        ++next_i;
+        return;
+    }
+    char path[64];
+    snprintf(path, sizeof path, "Menus/%s.fbs", names[next_i++]);
+    hook::log("menutour: %s", path);
+    busy = true;  // loading a screen renders frames (re-enters RwCameraEndUpdate)
+    Menus_GotoScreen(g_menus, nullptr, path);
+    busy = false;
+    next_t = GetTickCount() + period;
+}
+
+void* __cdecl RwCameraEndUpdate_Dev(void* camera) {
+    void* r = g_RwCameraEndUpdate(camera);
+    menutour_step();
+    return r;
+}
 }  // namespace
 
+HOOK_TRAMP(0x628E40, RwCameraEndUpdate_Dev, g_RwCameraEndUpdate, "core");
 HOOK(0x508F50, Window_FitClientArea, "core");
 HOOK_VSLOT(0x861460, 25, &Device_HasModeFor_Dev, "core");
 HOOK_TRAMP(0x626BE0, RwEngineGetVideoModeInfo_Dev, g_RwGetVideoModeInfo, "core");
