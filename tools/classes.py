@@ -158,6 +158,18 @@ def main():
                 if t in ctor_of and ctor_of[t] != ctor_of[ea]:
                     c["base"] = ctor_of[t]
                     break
+    # break base cycles (A.base=B, B.base=A): a dtor with an inlined base dtor stores [derived, base] and, when the
+    # dtor heuristic misses it, reads as a ctor of the base whose "base" is the derived class. In each cycle the
+    # vtable with the fewest slots is the real base: drop its base link.
+    for vt in list(classes):
+        path, x = [], vt
+        while x is not None and x in classes and x not in path:
+            path.append(x)
+            x = classes[x]["base"]
+        if x is not None and x in path:
+            cyc = path[path.index(x):]
+            root = min(cyc, key=lambda v: (len(VT[v]["slots"]), v))
+            classes[root]["base"] = None
     # sizes
     for ctor, sizes in alloc_sites().items():
         if ctor in ctor_of:

@@ -14,8 +14,10 @@ DECL = re.compile(r"CSF_GLOBAL\(\s*(.+?)\s*,\s*(\w+)\s*,\s*0x([0-9A-Fa-f]+)\s*\)
 
 
 def generic(name, addr):
-    n = name.lower()
-    return f"{addr:x}" in n or re.fullmatch(r"g_(value|global|globalvalue|var|data|unk|dword|flag)\w*", n) is not None
+    """True when the name says nothing beyond the address: the address with an optional g_Value/g_Global-style
+    prefix. g_FloatZero_0082D4CC is descriptive (beats g_Value_0082D4CC)."""
+    n = re.sub(rf"_?0*{addr:x}$", "", name.lower())
+    return n in ("", "g") or re.fullmatch(r"g_?(value|global|globalvalue|globalobject|var|data|unk|dword|flag)\d*", n) is not None
 
 
 def main():

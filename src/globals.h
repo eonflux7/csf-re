@@ -18,7 +18,9 @@
 #endif
 
 // Access a field not (yet) declared in a struct: CSF_AT(float, self, 0x48) = 1.0f;
-#define CSF_AT(T, p, off) (*reinterpret_cast<T*>(reinterpret_cast<uint8_t*>(p) + (off)))
+// p may be a const pointer or an address integer (the game has no const; the original reads through anything).
+#define CSF_AT(T, p, off) \
+    (*reinterpret_cast<T*>(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(p)) + (off)))
 
 // A string constant of the original binary. Hook phase: the original address (pointer identity can matter,
 // e.g. names used as type ids). Standalone: the literal.

@@ -871,3 +871,5 @@
 {"ea": "006bf990", "name": "C_00860700_GetFrameForwardVector", "summary": null, "confidence": null, "field_names": null, "class_guess": null, "notes": null}
 {"ea": "00710e50", "name": "C_00863ba8_SetVectorAndMarkChanged", "summary": null, "confidence": null, "field_names": null, "class_guess": null, "notes": null}
 {"ea": "0048f630", "name": "SetVectorAndMarkDirty", "summary": null, "confidence": null, "field_names": null, "class_guess": null, "notes": null}
+{"ea": "00489c00", "name": "C_00833708_AreAllRecordStatesZeroOrOne", "summary": "Returns 1 if every 0x60-byte record's dword at +4 is 0 or 1 (byte AND over all records; empty array -> 1).", "confidence": 0.95, "field_names": null, "class_guess": null, "notes": "queue item resolved by codex/Opus review"}
+{"ea": "00690c40", "name": "StoreValidatedByte", "summary": "__thiscall on a destination byte: if NetZ_IsValidByteValue(value) store it and return 1, else report error 0xE0000012 and return 0.", "confidence": 0.95, "field_names": null, "class_guess": null, "notes": "queue item resolved by opus/Opus review"}
