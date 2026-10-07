@@ -369,11 +369,18 @@ def select(db, n, max_size, min_size=6, exclude=()):
     return out
 
 
+SMOKE_SECS, SMOKE_LONG_SECS, SMOKE_LONG_EVERY = 15, 60, 5  # game is in-mission after 1-3 s; every 5th smoke runs long
+_smokes = 0
+
+
 def smoke():
+    global _smokes
     r = subprocess.run([os.path.join(ROOT, "tools", "deploy.sh")], capture_output=True, text=True)
     if r.returncode:
         return False, "build/deploy failed:\n" + (r.stdout + r.stderr)[-3000:]
-    r = subprocess.run([os.path.join(ROOT, "tools", "smoke.sh"), "60"], capture_output=True, text=True)
+    _smokes += 1
+    secs = SMOKE_LONG_SECS if _smokes % SMOKE_LONG_EVERY == 0 else SMOKE_SECS
+    r = subprocess.run([os.path.join(ROOT, "tools", "smoke.sh"), str(secs)], capture_output=True, text=True)
     return r.returncode == 0, r.stdout[-3000:]
 
 
