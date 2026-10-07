@@ -1,3 +1,4 @@
+#include "globals.h"
 #include <cstdint>
 #include "hook.h"
 #include "core/memory.h"

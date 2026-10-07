@@ -9,7 +9,7 @@ Usage: gate.py <ea-hex> <file.cpp>      exit 0 = pass; errors on stdout
 """
 import json, os, re, shlex, subprocess, sys, tempfile
 sys.path.insert(0, os.path.dirname(__file__))
-from packet import ret_bytes, DB
+from packet import ret_bytes, disasm, DB
 import semcheck
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -55,6 +55,21 @@ def stack_bytes(conv, params):
     return size
 
 
+def effective_rets(ea, db, depth=3):
+    """`ret N` bytes of a function; one that ends in a direct tail jump (`jmp 0xT`, no ret of its own) inherits T's:
+    the jump hands T the caller's stack frame, so T's ret pops the caller's args."""
+    rets = ret_bytes(ea, db.F[ea]["size"])
+    if rets or depth == 0:
+        return rets
+    f = db.F[ea]
+    tails = {int(i.op_str, 16) for i in disasm(ea, f["size"]) if i.mnemonic == "jmp" and i.op_str.startswith("0x")}
+    tails = {t for t in tails if t in db.F and not f["ea"] <= t < f["end"]}
+    out = set()
+    for t in tails:
+        out |= set(effective_rets(t, db, depth - 1))
+    return sorted(out)
+
+
 def check_bindings(src, db):
     """Every CSF_FUNC binding must match the callee's real `ret N` (cdecl pops 0)."""
     errs = []
@@ -64,7 +79,7 @@ def check_bindings(src, db):
         if addr not in db.F:
             errs.append(f"CSF_FUNC {name}: 0x{addr:X} is not a function start")
             continue
-        rets = ret_bytes(addr, db.F[addr]["size"])
+        rets = effective_rets(addr, db)
         if not rets:
             continue  # no ret (tail jump / noreturn): can't check
         want = 0 if conv == "__cdecl" else stack_bytes(conv, params)
@@ -121,10 +136,10 @@ def gate(ea, path, db=None):
             return False, "compile error:\n" + out[:4000]
         fn = hooks[0][1].split("::")[-1]
         found, rets = our_rets(obj, fn)
-        orig = ret_bytes(ea, db.F[ea]["size"])
+        orig = effective_rets(ea, db)
         if not found:
             return False, f"could not find compiled function `{fn}` in object file"
-        sem = semcheck.check(ea, obj, db)
+        sem = semcheck.check(ea, obj, db) + semcheck.byte_return_of_bool(ea, obj, fn, db)
         if sem:
             return False, "semantic check (references must match the original's):\n" + "\n".join(sem)
         if rets and orig and set(rets) != set(orig):

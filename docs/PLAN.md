@@ -62,6 +62,7 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
    the 0x82E598 task subfamily, base-class field attribution (see Phase 2).
 2. Phase 4 lanes runs between Codex windows (auto-bisect, stop file and quota guard make them unattended).
 3. Opus review sampling and diff tier 2 (catch bug classes before they crash in-game).
+4. Executed coverage: two thirds of the done functions have only passed static checks (`verify.py report`).
 
 ## Phase checklist
 
@@ -133,6 +134,20 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [x] x64dbg + x64dbg-automate (E:\dev\tools\x64dbg, venv E:\dev\tools\x64dbg-venv): `tools/dbg.sh crash` = crash triage
 - [x] IDA code view export (`tools/ida/export_disasm.py` → export/disasm/<ea>.json: code heads, chunks, switch tables, xrefs; 9 s); packet.disasm() decodes exactly those heads (capstone fallback)
 - [ ] Waves per module, leaf-first
+- [x] Negative controls (`tools/controls.py`, from the auto-re-agent review): 36 fixtures in tests/controls/ (33
+      historical tail-call bugs from git, embedded-object loads, BOOL width) must be rejected for the right reason;
+      generated mutants per operator (offset/callee/global/string/dropcall/convention); positive controls (`--all`:
+      every src/auto file passes today's gate); `--live`: const/BOOL mutants must show MISMATCH in game. Run after
+      any change to gate/semcheck/diff/smoke.
+- [x] Verification ledger `db/verify.json` (`tools/verify.py`): per function the compiled-code hash + smoke hits +
+      diff counts, filled by every SMOKE OK; tiers diffed > executed > gate, stale when the code changed since its
+      evidence (rename-insensitive); shown by status.py
+- [ ] Raise executed coverage: 560/841 done functions never run in the FR01 in-mission smoke (gate-only). More
+      smoke starts (other scenes, loadsave, menu walk via autopilot), or prioritize reachable functions in select()
+- [ ] Bounded evidence requests in grunt packets for > 600 B functions (model asks for a callee's pseudocode,
+      xrefs_to, vtable, struct; <= 3 per function) — auto-re-agent's investigation loop
+- [ ] Per-address gate waivers (db/waivers.yaml, Opus sign-off) instead of loosening semcheck globally
+- [ ] Full prompt/response logs per grunt call in work/ (for the Opus review sample and prompt A/B)
 
 ### Phase 5 — batch verification (user playtests) and Phase 6 — cutover
 

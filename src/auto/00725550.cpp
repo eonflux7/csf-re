@@ -1,4 +1,5 @@
 #include <cstdint>
+#include "globals.h"
 #include "hook.h"
 #include "core/memory.h"
 #include "types/auto_classes.h"

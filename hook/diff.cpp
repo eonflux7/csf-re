@@ -269,7 +269,7 @@ bool diff_install(const Entry& e, uint8_t* stub, uint32_t* counter, int max_slot
     *p++ = 0x61;                                                         // popad
     uint16_t n = (uint16_t)(d->conv == 0 ? 0 : d->argbytes);
     if (n) { *p++ = 0xC2; memcpy(p, &n, 2); p += 2; } else *p++ = 0xC3;  // ret N
-    if (MH_CreateHook((void*)e.addr, stub, &s.orig) != MH_OK || MH_EnableHook((void*)e.addr) != MH_OK)
+    if (MH_CreateHook((void*)e.addr, stub, &s.orig) != MH_OK || MH_QueueEnableHook((void*)e.addr) != MH_OK)
         return false;
     ++g_nslots;
     return true;

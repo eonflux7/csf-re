@@ -246,6 +246,27 @@ def check(ea, obj, db):
     return errs
 
 
+def byte_return_of_bool(ea, obj, fn, db):
+    """The original returns a full 32-bit BOOL (setcc al on a zeroed eax: `xor eax,eax` before it or `movzx eax,al`
+    after it) but our hooked function is declared bool/char: the upper bytes of eax are then undefined (callers test
+    eax). Read from the MSVC mangled return type (`YI_N` = __fastcall returning bool, `YIH` = returning int)."""
+    code = [f"{i.mnemonic} {i.op_str}".strip() for i in code_of(ea, db)]
+    widened = False
+    for k, c in enumerate(code):
+        if re.match(r"set\w+ al$", c):
+            if "xor eax, eax" in code[:k] or any(x.startswith("movzx eax, al") for x in code[k + 1:k + 4]):
+                widened = True
+    if not widened:
+        return []
+    syms = subprocess.run(["llvm-nm-21", obj], capture_output=True, text=True).stdout
+    m = re.search(rf"\?{re.escape(fn)}@@Y[AGI](_N|[CDE])", syms)
+    if m:
+        t = "bool" if m.group(1) == "_N" else "char"
+        return [f"the original returns a full 32-bit value (setcc al on a zeroed eax): declare `{fn}` returning int "
+                f"(BOOL), not {t} — a {t} return leaves eax's upper bytes undefined and callers test eax"]
+    return []
+
+
 def survey():
     from gate import compile_cmd
     db = DB()
@@ -259,7 +280,9 @@ def survey():
                                cwd=os.path.join(ROOT, "build"))
             if r.returncode:
                 return ea, ["compile failed"]
-            return ea, check(ea, obj, db)
+            m = re.search(r"HOOK(?:_METHOD)?\(\s*0x[0-9A-Fa-f]+\s*,\s*&?([\w:]+)", open(p).read())
+            fn = m.group(1).split("::")[-1] if m else ""
+            return ea, check(ea, obj, db) + (byte_return_of_bool(ea, obj, fn, db) if fn else [])
 
     bad = 0
     with cf.ThreadPoolExecutor(16) as ex:

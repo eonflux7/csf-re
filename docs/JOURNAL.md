@@ -233,3 +233,28 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
 - Lanes: smoke failure → automatic bisect via ini toggles (control run first; ~11 smokes for 1 culprit in 60),
   `work/grunt_stop`, Codex quota guard, review verdicts logged. CSF_AT accepted no const pointer (2 grunt
   compile failures).
+
+## 2026-10-07 — auto-re-agent review: negative controls, verification ledger, vacuous smokes
+
+- Reviewed github.com/Dryxio/auto-re-agent (generic Ghidra + LLM reverser/checker loop; candidates only, text-level
+  verifier, Unicorn diffs on hand-picked cases). Ours verifies far deeper (object-code semcheck, live diffs, hooks);
+  borrowed: negative controls, coverage/staleness tracking; queued: bounded evidence requests, waivers, full logs.
+- `tools/controls.py` (static ~10 s): all 36 fixtures caught after two gate fixes it exposed:
+  - BOOL width was invisible statically: semcheck now reads the MSVC mangled return type (`YI_N` = bool) when the
+    original zero-extends a setcc result. 0/841 false positives.
+  - A function ending in a direct tail jump (`jmp 0xT`, no ret) skipped the `ret N` check: convention mutants
+    survived 6/30. The gate now inherits T's ret N (also for CSF_FUNC bindings). Now 30/30.
+  - Offset mutants survive ~20%: semcheck compares offset SETS (moving +0x104 to +0x108 passes when the original
+    reads both) and ignores offsets < 8. Only the live diff catches that; known blind spot.
+  - Historical fixtures rot when classes are renamed: the runner applies classes.yaml names (C_<vtable> -> name).
+  - 13 src/auto files violated gate rules added after they were committed (missing globals.h, a CSF_AT redefine): fixed.
+- **Vacuous smokes (found by the live controls, 0/4 caught at first):** startup had grown to ~18 s (one
+  MH_EnableHook per diff/tramp hook, each suspending all threads), so 15 s lanes smokes often ended before the
+  mission and passed "alive", while smoke.sh printed the PREVIOUS run's csf_diff_summary/hits files as if fresh.
+  Lanes batches since startup slowed were smoke-tested only by their 60 s smokes. Fixes: MH_QueueEnableHook +
+  one MH_ApplyQueued (startup 18 s -> 3-4 s); smoke.sh deletes result files before launch and waits for a readiness
+  line in csf_hook.log (`devcmd: starting scene`, up to 120 s) before the N seconds start; never ready = SMOKE FAIL.
+  Live controls now 4/4.
+- `db/verify.json` (`tools/verify.py`): code hash = the function's own object code (bytes + relocation kinds; symbol
+  names and the HOOK stub excluded, so renames keep evidence). First real numbers: of 841 done functions 217 diffed,
+  64 executed, 560 never executed in the FR01 in-mission smoke.

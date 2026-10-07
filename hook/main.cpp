@@ -63,7 +63,7 @@ static void* make_stub(int i, void* fn) {
 
 static bool install(const Entry& e, void* target) {
     if (e.kind == Kind::Tramp)  // MinHook relocates the prologue; *orig calls the original
-        return MH_CreateHook((void*)e.addr, target, e.orig) == MH_OK && MH_EnableHook((void*)e.addr) == MH_OK;
+        return MH_CreateHook((void*)e.addr, target, e.orig) == MH_OK && MH_QueueEnableHook((void*)e.addr) == MH_OK;
     if (e.kind == Kind::Jmp) {
         uint8_t jmp[5] = {0xE9};
         int32_t rel = (int32_t)((uintptr_t)target - (e.addr + 5));
@@ -167,13 +167,17 @@ void install_all() {
         if (MH_CreateHook((void*)a, stub, &orig) == MH_OK) {
             int32_t rel = (int32_t)((uintptr_t)orig - (uintptr_t)(stub + 11));
             memcpy(stub + 7, &rel, 4);
-            MH_EnableHook((void*)a);
+            MH_QueueEnableHook((void*)a);
             g_installed[g_ninstalled++] = e;
             log("probe %08x", (unsigned)a);
         } else {
             log("FAILED probe %08x", (unsigned)a);
         }
     }
+    // MinHook hooks (tramp/diff/probe) were queued: enable them in one pass (each MH_EnableHook suspends and resumes
+    // every thread of the process; 400+ of them took ~15 s of startup)
+    if (MH_ApplyQueued() != MH_OK)
+        log("FAILED MH_ApplyQueued");
     log("hooks installed=%d skipped=%d failed=%d", ok, skipped, failed);
     CreateThread(nullptr, 0, hits_thread, nullptr, 0, nullptr);
 }

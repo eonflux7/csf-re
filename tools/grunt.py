@@ -554,7 +554,8 @@ def commit(good, title):
                                                             ("name", "summary", "confidence", "field_names", "class_guess", "notes")})) + "\n")
     save_csv(rows)
     subprocess.run([sys.executable, os.path.join(ROOT, "tools", "globals.py")], check=False)
-    files = [f"src/auto/{r['ea']:08x}.cpp" for r in good] + ["db/functions.csv", "db/proposals.jsonl", "db/globals.yaml"]
+    files = [f"src/auto/{r['ea']:08x}.cpp" for r in good] + ["db/functions.csv", "db/proposals.jsonl", "db/globals.yaml",
+                                                       "db/verify.json"]
     files += [os.path.relpath(p, ROOT) for p in glob.glob(os.path.join(ROOT, "queue", "*.md"))]
     if subprocess.run(["git", "-C", ROOT, "ls-files", "--", "queue"], capture_output=True, text=True).stdout:
         files.append("queue")  # also stages escalations resolved (deleted) since the last commit

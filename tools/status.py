@@ -61,6 +61,13 @@ def main():
             pct = f"{100 * done_b / a['bytes']:.1f}%" if k == "game" or by_module else "-"
             print(f"  {k:16s} {a['n']:6d} {a['bytes'] // 1024:6d} {a['named']:6d} {a['n_done']:6d} "
                   f"{a['n_verified']:6d} {a['n_escalated']:4d}  {pct}")
+    try:  # verification depth of src/auto (db/verify.json, filled by every SMOKE OK)
+        sys.path.insert(0, os.path.dirname(__file__))
+        import verify
+        print("\n== Verification depth (src/auto; `verify.py report --list gate`)")
+        print("\n".join(verify.summary_lines()))
+    except Exception as e:  # no build dir yet etc.
+        print(f"\n== Verification depth: unavailable ({e})")
     q = os.path.join(ROOT, "queue")
     if os.path.isdir(q):
         items = [f for f in os.listdir(q) if not f.startswith(".")]
