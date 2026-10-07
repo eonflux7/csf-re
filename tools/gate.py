@@ -2,13 +2,15 @@
 """Gate for one reimplemented function file.
 
 Checks: allowed includes only, no inline asm, exactly one HOOK for the target address, compiles with the real
-build flags (static_asserts included), and the hooked function's `ret N` matches the original.
+build flags (static_asserts included), referenced addresses/field offsets match the original (semcheck.py),
+and the hooked function's `ret N` matches the original.
 
 Usage: gate.py <ea-hex> <file.cpp>      exit 0 = pass; errors on stdout
 """
 import json, os, re, shlex, subprocess, sys, tempfile
 sys.path.insert(0, os.path.dirname(__file__))
 from packet import ret_bytes, DB
+import semcheck
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ALLOWED_INC = {"cstdint", "cstddef", "cstring", "cmath", "climits", "cfloat", "globals.h", "hook.h",
@@ -108,6 +110,9 @@ def gate(ea, path, db=None):
         orig = ret_bytes(ea, db.F[ea]["size"])
         if not found:
             return False, f"could not find compiled function `{fn}` in object file"
+        sem = semcheck.check(ea, obj, db)
+        if sem:
+            return False, "semantic check (references must match the original's):\n" + "\n".join(sem)
         if rets and orig and set(rets) != set(orig):
             return False, (f"calling convention mismatch: original pops {orig} bytes (ret N), yours pops {rets}. "
                            "Fix the calling convention / parameter list (__thiscall → __fastcall with dummy edx; "

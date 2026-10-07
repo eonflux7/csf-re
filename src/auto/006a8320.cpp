@@ -3,6 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
+CSF_FUNC(void*, __cdecl, NetZ_OperatorNew, 0x00647140, (unsigned int size));  // NetZ heap, not the game heap
 CSF_FUNC(void, __fastcall, InitializeTemporaryString, 0x0064A6B0,
          (void* self, void* edx, std::int32_t source));
 CSF_FUNC(void, __fastcall, DestroyTemporaryString, 0x0064A6F0,
@@ -29,7 +30,7 @@ static char __fastcall BeginResourceLoad(
         CSF_AT(std::uint32_t, self, 0x08) = 3;
         CSF_AT(std::uint32_t, self, 0x0C) = 1;
 
-        void* allocation = game::Mem_Alloc(112);
+        void* allocation = NetZ_OperatorNew(112);
         void* resource = allocation
             ? ConstructResource(allocation, nullptr)
             : nullptr;

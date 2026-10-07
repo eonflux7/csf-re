@@ -2,6 +2,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
+CSF_FUNC(void*, __cdecl, NetZ_OperatorNew, 0x00647140, (unsigned int size));  // NetZ heap, not the game heap
 CSF_FUNC(void*, __fastcall, ConstructRequest, 0x0066A440,
          (void* self, void* edx));
 CSF_FUNC(int, __fastcall, StartRequest, 0x00799220,
@@ -28,7 +29,7 @@ static int __fastcall BeginRequestOrUpdateMode(
             CSF_AT(void*, self, 0x90) = nullptr;
         }
 
-        void* allocation = game::Mem_Alloc(0x70);
+        void* allocation = NetZ_OperatorNew(0x70);
         void* request = allocation
             ? ConstructRequest(allocation, nullptr)
             : nullptr;

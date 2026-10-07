@@ -25,8 +25,13 @@ Output exactly two fenced blocks: first ```cpp (the whole file), then ```json (m
 
 File rules:
 - Allowed includes only: <cstdint> <cstddef> <cstring> <cmath> <climits> <cfloat> "globals.h" "hook.h"
-  "core/memory.h" "types/auto_classes.h" "legacy/string.h". No inline asm. No malloc/free/new/delete:
-  use game::Mem_Alloc(size)/game::Mem_Free(p) from core/memory.h.
+  "core/memory.h" "types/auto_classes.h" "legacy/string.h". No inline asm. No malloc/free/new/delete.
+  Allocate/free with exactly the function the original calls, bound by address (the game heap
+  game::Mem_Alloc/Mem_Free = 0x6910F0/0x691110 only when the original calls those; NetZ objects use NetZ's
+  allocator, STL containers 0x690DC0, etc.). Mixing heaps corrupts memory.
+- The gate compares addresses: every function the original calls, every string/global/vtable it references must
+  appear in your code (bound by address), you must not reference addresses it doesn't, and field offsets you
+  access must be ones the original accesses.
 - Every function and binding in the file is `static` (file-local). Exactly one HOOK line, for the target:
     HOOK(0xADDR, FunctionName, "auto");
 - Conventions: a __thiscall method is written as a free function
@@ -53,7 +58,9 @@ File rules:
   Never cache a value in a local across a call if the original reloads it after the call — callees may modify
   the object (e.g. a child removing itself from the list being iterated). Don't add checks or reads the
   original doesn't have.
-- Give functions descriptive names in PascalCase (English), prefixed by the class id for methods, e.g.
+- Give functions descriptive names in PascalCase (English) that say what it does or returns (e.g.
+  GetCoverFireTaskName, IsInnerObjectType38, SetVisibleFlag) — never placeholders like GetConstant29, Sub_4206B0,
+  ReturnValue, Nullsub. Prefix by the class id for methods, e.g.
   C_0082d70c_Destroy. Name local variables meaningfully.
 
 JSON metadata: {"name": "<function name used>", "confidence": 0.0-1.0,

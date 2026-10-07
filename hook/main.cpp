@@ -11,7 +11,7 @@ namespace hook {
 
 static Entry* g_head;
 static FILE* g_log;
-static char g_dir[MAX_PATH];
+char g_dir[MAX_PATH];  // exe directory (shared with autopilot.cpp)
 
 void add(Entry* e) {
     e->next = g_head;
@@ -139,6 +139,9 @@ void install_all() {
     CreateThread(nullptr, 0, hits_thread, nullptr, 0, nullptr);
 }
 
+void autopilot_init();
+void autopilot_wrap_dinput(void* di);
+
 static void init() {
     GetModuleFileNameA(nullptr, g_dir, MAX_PATH);
     if (char* s = strrchr(g_dir, '\\'))
@@ -146,6 +149,7 @@ static void init() {
     g_log = fopen((std::string(g_dir) + "csf_hook.log").c_str(), "w");
     log("csf hook loaded; exe base %p", GetModuleHandleA(nullptr));
     install_all();
+    autopilot_init();
 }
 
 }  // namespace hook
@@ -162,7 +166,10 @@ extern "C" HRESULT WINAPI DirectInput8Create(HINSTANCE inst, DWORD ver, REFIID r
         g_real = LoadLibraryA(path);
     }
     auto fn = g_real ? (DI8Create)GetProcAddress(g_real, "DirectInput8Create") : nullptr;
-    return fn ? fn(inst, ver, riid, out, outer) : E_FAIL;
+    HRESULT hr = fn ? fn(inst, ver, riid, out, outer) : E_FAIL;
+    if (SUCCEEDED(hr) && out)
+        hook::autopilot_wrap_dinput(*out);
+    return hr;
 }
 
 BOOL WINAPI DllMain(HINSTANCE, DWORD reason, LPVOID) {

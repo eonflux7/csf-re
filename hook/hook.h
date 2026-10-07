@@ -26,6 +26,8 @@ struct Entry {
 void add(Entry* e);
 void install_all();
 void log(const char* fmt, ...);
+// Rest of the first csf_hook.ini line starting with `key ` (trimmed), or nullptr. Static storage.
+const char* ini_string(const char* key);
 
 template <typename T>
 inline void* to_ptr(T member) {
