@@ -27,8 +27,10 @@ tr -d '\r' < "$PLAY/csf_diff_summary.txt" 2>/dev/null | awk '$4 > 0 {print "MISM
 tr -d '\r' < "$PLAY/csf_diff.log" 2>/dev/null | head -20
 grep -A5 CRASH "$PLAY/csf_hook.log" 2>/dev/null
 echo "---- csf_hook.log"; tr -d '\r' < "$PLAY/csf_hook.log" 2>/dev/null | tail -20
+crashes=$(grep -c CRASH "$PLAY/csf_hook.log" 2>/dev/null)
 case "$result" in
   *stillrunning=True*) echo "WARNING: could not kill the game"; exit 2;;
-  *alive=True*) echo "SMOKE OK (alive after ${SECS}s)";;
+  *alive=True*) [ "${crashes:-0}" -gt 0 ] && { echo "SMOKE FAIL (alive, but $crashes CRASH logged: the game caught it)"; exit 1; }
+                echo "SMOKE OK (alive after ${SECS}s)";;
   *) echo "SMOKE FAIL (exited/crashed early)"; exit 1;;
 esac

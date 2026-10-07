@@ -382,7 +382,7 @@ def smoke():
     _smokes += 1
     secs = SMOKE_LONG_SECS if _smokes % SMOKE_LONG_EVERY == 0 else SMOKE_SECS
     r = subprocess.run([os.path.join(ROOT, "tools", "smoke.sh"), str(secs)], capture_output=True, text=True)
-    return r.returncode == 0, r.stdout[-3000:]
+    return r.returncode == 0, r.stdout  # full: diff_rejects() needs the MISMATCH lines near the top
 
 
 def diff_rejects(good, smoke_out):
@@ -523,7 +523,7 @@ def lanes(args):
         live(phase="smoke")
         if not args.no_smoke:
             ok, out = smoke()
-            print(out[-600:], flush=True)
+            print(out[-1500:], flush=True)
             if not ok:
                 print(f"SMOKE FAILED with {len(good)} new functions: left uncommitted in src/auto; bisect with "
                       "csf_hook.ini `disable 0x...`", flush=True)

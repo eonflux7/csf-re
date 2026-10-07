@@ -3,7 +3,7 @@
 
 Usage: packet.py <ea-hex>     (prints the packet)
 """
-import csv, json, os, re, sys
+import csv, json, os, re, sys, threading
 import pefile
 from capstone import Cs, CS_ARCH_X86, CS_MODE_32
 
@@ -55,6 +55,7 @@ class DB:
 
 
 _md = None
+_init_lock = threading.Lock()
 
 
 def ida_view(ea):
@@ -68,9 +69,11 @@ def disasm(ea, size, linear=False):
     tables and embedded data excluded), each decoded by capstone. Otherwise (or linear=True, e.g. for a shared
     block that isn't a function): linear decoding of `size` bytes."""
     global _pe, _md
-    if _pe is None:
-        _pe = pefile.PE(os.path.join(ROOT, "work", "pc", "CommXPC.exe"), fast_load=True)
-        _md = Cs(CS_ARCH_X86, CS_MODE_32)
+    if _md is None:
+        with _init_lock:  # grunt runs this from worker threads: publish _md last, after _pe is ready
+            if _md is None:
+                _pe = pefile.PE(os.path.join(ROOT, "work", "pc", "CommXPC.exe"), fast_load=True)
+                _md = Cs(CS_ARCH_X86, CS_MODE_32)
     img = _pe.get_memory_mapped_image()
     view = None if linear else ida_view(ea)
     if view:

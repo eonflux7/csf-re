@@ -107,6 +107,37 @@ def code_of(ea, db):
     return out
 
 
+def loaded_as_pointer(obj):
+    """Offsets N where our code loads a dword from [x + N] and then uses the loaded register as a memory base."""
+    lines = [l.split("\t", 1)[1] for l in subprocess.run(
+        ["llvm-objdump-21", "-d", "--no-show-raw-insn", "--x86-asm-syntax=intel", obj],
+        capture_output=True, text=True).stdout.splitlines() if "\t" in l]
+    out = set()
+    for k, l in enumerate(lines):
+        m = re.match(r"mov\s+(e[a-z]{2}), dword ptr \[(?!esp|ebp)\w+ \+ (0x[0-9a-f]+|\d+)\]", l)
+        if not m:
+            continue
+        regs, slots = {m.group(1)}, set()  # follow the loaded value through register copies and stack spills (-O0)
+        for nxt in lines[k + 1:k + 12]:
+            if any(re.search(rf"\[{r}\b", nxt) for r in regs):
+                out.add(int(m.group(2), 0))
+                break
+            sp = re.match(r"mov\s+dword ptr \[(ebp - 0x[0-9a-f]+|esp(?: \+ 0x[0-9a-f]+)?)\], (e[a-z]{2})$", nxt)
+            if sp and sp.group(2) in regs:
+                slots.add(sp.group(1))
+                continue
+            ld = re.match(r"mov\s+(e[a-z]{2}), (?:dword ptr \[(.+)\]|(e[a-z]{2}))$", nxt)
+            if ld:
+                src_in = (ld.group(2) in slots) if ld.group(2) else (ld.group(3) in regs)
+                (regs.add if src_in else regs.discard)(ld.group(1))
+                if not regs and not slots:
+                    break
+                continue
+            if nxt.startswith(("ret", "jmp")):
+                break
+    return out
+
+
 def our_addr_ofs(obj):
     dis = subprocess.run(["llvm-objdump-21", "-d", "--no-show-raw-insn", "--x86-asm-syntax=intel", obj],
                          capture_output=True, text=True).stdout
@@ -185,7 +216,9 @@ def check(ea, obj, db):
     addr_of = {int(m.group(1), 16) for i in code_of(ea, db)
                for m in [re.match(r"(?:add ecx, |lea \w+, \[ecx \+ )(0x[0-9a-f]+)", f"{i.mnemonic} {i.op_str}")] if m}
     for n in sorted(addr_of):
-        if n not in our_addr_ofs(obj):
+        # flag only a dereference at +N with no address computation (pointer loaded from +N); field accesses the
+        # compiler folded to [this + N + d] never compute this+N and are fine
+        if n not in our_addr_ofs(obj) and n in loaded_as_pointer(obj):
             errs.append(f"the original computes the ADDRESS this+0x{n:X} (add/lea: an embedded object), your code "
                         f"doesn't — did you load a pointer from +0x{n:X} instead of taking its address?")
     # indirect tail jumps (jmp [abs] / jmp [reg+N] / jmp reg) forward the caller's stack args and registers to a
@@ -202,7 +235,12 @@ def check(ea, obj, db):
                         "registers untouched to a target whose signature is unknown; a call drops/shifts them. Write a "
                         "naked thunk: `static __declspec(naked) void F() { __asm { mov ecx, [ecx+4] ... jmp dword ptr "
                         "[eax+0x20] } }` (only mov/lea/add/sub, ending in the jmp)")
-    bad = sorted(d for d in our_disps if d >= 8 and d not in orig_disps and d not in imms)
+    # pointer adjusted first (add r, K / lea r, [x + K]) then dereferenced at +d: the compiler may fold to [x + K + d]
+    adds = {int(m.group(1), 0) for i in code_of(ea, db)
+            for m in [re.match(r"(?:add (?!esp|ebp)\w+, |lea \w+, \[(?!esp|ebp)\w+ \+ )(0x[0-9a-f]+|\d+)\]?$",
+                               f"{i.mnemonic} {i.op_str}")] if m}
+    folded = {k + d for k in adds for d in orig_disps | {0}}
+    bad = sorted(d for d in our_disps if d >= 8 and d not in orig_disps and d not in imms and d not in folded)
     if bad:
         errs.append("your code accesses field offsets the original never uses: " + ", ".join(f"0x{d:X}" for d in bad))
     return errs
