@@ -2,7 +2,7 @@
 - {addr: 0x0082D094, name: g_pfnGetFileSize, type: GetFileSizeFn, uses: 1, src: auto}
 - {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082D4C4, name: g_flt_82D4C4, type: float, uses: 1, src: auto}
-- {addr: 0x0082D4CC, name: g_Value_0082D4CC, type: float, uses: 2, src: auto}
+- {addr: 0x0082D4CC, name: g_Value_0082D4CC, type: float, uses: 4, src: auto, alt: [g_FloatZero_0082D4CC]}
 - {addr: 0x0082DC84, name: g_flt_0082DC84, type: float, uses: 1, src: auto}
 - {addr: 0x0082DDEC, name: g_Const200_0f, type: float, uses: 1, src: auto}
 - {addr: 0x0082E030, name: g_fReturnedConstant_0082E030, type: float, uses: 1, src: auto}
@@ -14,6 +14,7 @@
 - {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 1, src: auto}
 - {addr: 0x00830A00, name: g_ByteToUnitScale, type: float, uses: 2, src: auto, alt: [g_kInvByteMax]}
 - {addr: 0x00831090, name: g_FloatMax, type: float, uses: 1, src: auto}
+- {addr: 0x00831304, name: g_C_00831304_Vtable, type: void*, uses: 1, src: auto}
 - {addr: 0x008322E8, name: g_TInterrupcion, type: char, uses: 1, src: auto}
 - {addr: 0x00834A40, name: g_szIrAPuesto, type: char, uses: 1, src: auto}
 - {addr: 0x0083688C, name: g_szLanzarGranadaName, type: char, uses: 1, src: auto}
@@ -67,7 +68,8 @@
 - {addr: 0x008B0688, name: g_Int8B0688, type: int, uses: 1, src: auto}
 - {addr: 0x008B08F4, name: g_Value_8B08F4, type: int, uses: 1, src: auto}
 - {addr: 0x008B08F8, name: g_Value_8B08F8, type: int32_t, uses: 1, src: auto}
-- {addr: 0x008BABC0, name: g_GlobalObject_8BABC0, type: uint8_t, uses: 1, src: auto}
+- {addr: 0x008BABC0, name: g_FloatHelper_008BABC0, type: uint8_t, uses: 3, src: auto, alt: [g_GlobalFloatObject, g_GlobalObject_8BABC0]}
+- {addr: 0x008BABFC, name: g_FloatTripletReceiver, type: uint8_t, uses: 2, src: auto, alt: [g_FloatRangeContext_008BABFC]}
 - {addr: 0x008BAD60, name: g_Value8BAD60, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008BAD64, name: g_dword_8BAD64, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008BAD98, name: g_unk_8BAD98, type: uint8_t, uses: 1, src: auto}
@@ -83,6 +85,8 @@
 - {addr: 0x008BB418, name: g_GlobalState, type: int, uses: 1, src: auto}
 - {addr: 0x008BB420, name: g_8BB420, type: uint32_t, uses: 2, src: auto, alt: [g_Value8BB420]}
 - {addr: 0x008BB450, name: g_Value_8BB450, type: int, uses: 1, src: auto}
+- {addr: 0x008BB47C, name: g_EntryTable, type: void*, uses: 1, src: auto}
+- {addr: 0x008BB480, name: g_EntryTable, type: void*, uses: 1, src: auto}
 - {addr: 0x008BB4B8, name: g_Value_8BB4B8, type: int, uses: 1, src: auto}
 - {addr: 0x008BB4CC, name: g_Value_8BB4CC, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008BB738, name: g_Value_8BB738, type: int, uses: 1, src: auto}
