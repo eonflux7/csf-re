@@ -64,19 +64,53 @@ def pid_alive(pid):
 
 # ---------------------------------------------------------------- Claude
 
-def claude_job():
-    best = None
+def repo_root(p):
+    """Main checkout path for a path inside it or inside one of its .claude/worktrees/."""
+    return (p or "").split("/.claude/worktrees/")[0].rstrip("/")
+
+
+def claude_jobs():
+    """Claude jobs for this repo (worktree jobs included), newest first: every one not done or touched in the
+    last 10 min; the newest job when none is active."""
+    jobs = []
     for p in glob.glob(os.path.join(JOBS, "*", "state.json")):
         try:
             d = json.load(open(p))
         except (OSError, ValueError):
             continue
-        if d.get("cwd") != ROOT:
+        if repo_root(d.get("originCwd") or d.get("cwd")) != repo_root(ROOT):
             continue
         d["_dir"] = os.path.dirname(p)
-        if best is None or d.get("updatedAt", "") > best.get("updatedAt", ""):
-            best = d
-    return best
+        jobs.append(d)
+    jobs.sort(key=lambda d: d.get("updatedAt", ""), reverse=True)
+    active = [d for d in jobs if d.get("state") != "done" or time.time() - iso(d["updatedAt"]) < 600]
+    return active or jobs[:1]
+
+
+def context_tokens(path):
+    """Context size at the session's last main-chain turn: input + cache read + cache write of its usage."""
+    with open(path, "rb") as f:
+        f.seek(0, 2)
+        f.seek(max(0, f.tell() - 400_000))
+        lines = f.read().decode(errors="replace").splitlines()[1:]
+    for l in reversed(lines):
+        if '"usage"' not in l:
+            continue
+        try:
+            e = json.loads(l)
+        except ValueError:
+            continue
+        u = (e.get("message") or {}).get("usage")
+        if e.get("type") == "assistant" and not e.get("isSidechain") and u:
+            return sum(u.get(k) or 0 for k in ("input_tokens", "cache_read_input_tokens",
+                                                "cache_creation_input_tokens"))
+    return None
+
+
+def job_ctx(job):
+    p = job.get("linkScanPath")
+    v = cached("ctx:" + job["_dir"], 5, lambda: context_tokens(p) if p else None)
+    return v if isinstance(v, int) else None
 
 
 def timeline(job, n=6):
@@ -120,35 +154,71 @@ def usage_line(label, u, style):
     return t
 
 
+STATE_STYLE = {"working": "bold green", "waiting": "bold yellow", "blocked": "bold red", "done": "dim"}
+AGENT_COLORS = ["bright_cyan", "bright_magenta", "bright_yellow", "bright_blue", "orange1", "spring_green1"]
+
+
+def ctx_text(n):
+    style = "dim" if n is None else "red" if n >= 160_000 else "yellow" if n >= 100_000 else "cyan"
+    return Text(f"ctx {kfmt(n) if n is not None else '?':>6}", style=style)
+
+
 def panel_claude():
-    job = cached("job", 1, claude_job)
-    if not job or isinstance(job, Exception):
+    jobs = cached("jobs", 1, claude_jobs)
+    if not jobs or isinstance(jobs, Exception):
         return Panel("no Claude job for this repo", title="Claude", border_style="dim")
-    state = job.get("state", "?")
-    style = {"working": "bold green", "waiting": "bold yellow", "blocked": "bold red", "done": "dim"}.get(state, "bold")
-    head = Text()
-    head.append(f"{state.upper()}", style=style)
-    head.append(f"  {job.get('tempo', '')}  ", style="dim")
-    head.append(f"tokens {kfmt(job.get('tokens') or 0)}  ", style="cyan")
-    head.append(f"up {ago(iso(job['createdAt']))}  upd {ago(iso(job['updatedAt']))} ago", style="dim")
-    body = [head, usage_line("plan", cached("claude_usage", 60, claude_usage), "bold green"),
-            Text(job.get("detail") or "", style="bold white", overflow="ellipsis", no_wrap=True)]
-    tl = timeline(job)
-    for e in tl[:-1][::-1][:5]:
+    multi = len(jobs) > 1
+    # one colour per agent, by start order, so it doesn't jump around as agents take turns being the newest
+    color = {j["_dir"]: AGENT_COLORS[i % len(AGENT_COLORS)]
+             for i, j in enumerate(sorted(jobs, key=lambda d: d.get("createdAt", "")))}
+    plan = usage_line("plan", cached("claude_usage", 60, claude_usage), "bold green")
+    if not multi:
+        job = jobs[0]
+        state = job.get("state", "?")
+        head = Text()
+        head.append(f"{state.upper()}", style=STATE_STYLE.get(state, "bold"))
+        head.append(f"  {job.get('tempo', '')}  ", style="dim")
+        head.append_text(ctx_text(job_ctx(job)))
+        head.append(f"  tokens {kfmt(job.get('tokens') or 0)}  ", style="cyan")
+        head.append(f"up {ago(iso(job['createdAt']))}  upd {ago(iso(job['updatedAt']))} ago", style="dim")
+        body = [head, plan, Text(job.get("detail") or "", style="bold white", overflow="ellipsis", no_wrap=True)]
+    else:
+        body = [plan]
+        for j in jobs:  # one Text per row: a grid collapses the short columns when the detail is long
+            state, c = j.get("state", "?"), color[j["_dir"]]
+            name = j.get("name", "")
+            t = Text("● ", style=c, no_wrap=True, overflow="ellipsis")
+            t.append(f"{name[:23] + '…' if len(name) > 24 else name:<24} ", style="bold " + c)
+            t.append(f"{state.upper():<8}", style=STATE_STYLE.get(state, "bold"))
+            t.append_text(ctx_text(job_ctx(j)))
+            t.append(f"  up {ago(iso(j['createdAt'])):>6}  ", style="dim")
+            t.append((j.get("detail") or "").replace("\n", " "))
+            body.append(t)
+    # events of all agents in one newest-first list, each marked with its agent's colour when there are several
+    ev = []
+    for j in jobs:
+        tl = timeline(j)
+        ev += [(e, j) for e in (tl if multi else tl[:-1])]  # single agent: its newest event is the headline
+    ev.sort(key=lambda x: x[0]["at"], reverse=True)
+    for e, j in ev[:8 if multi else 5]:
         t = Text(f"  {ago(iso(e['at'])):>6} ", style="dim")
+        if multi:
+            t.append("● ", style=color[j["_dir"]])
         t.append(e["detail"].splitlines()[0][:200], style="grey62")
         t.no_wrap, t.overflow = True, "ellipsis"
         body.append(t)
-    fan = job.get("fan") or []
+    fan = [(s, j) for j in jobs for s in (j.get("fan") or [])]
     if fan:
         tb = Table.grid(padding=(0, 1))
-        tb.add_column(style="cyan", no_wrap=True, min_width=9)
+        tb.add_column(no_wrap=True, min_width=9)
         tb.add_column(style="dim", no_wrap=True, justify="right", min_width=6)
         tb.add_column(no_wrap=True, overflow="ellipsis", ratio=1)
-        for s in fan:
-            tb.add_row(s.get("id", "?"), ago(s.get("startedAt", 0) / 1000), s.get("label", "").replace("\n", " "))
+        for s, j in fan:
+            tb.add_row(Text(("● " if multi else "") + s.get("id", "?"), style=color[j["_dir"]] if multi else "cyan"),
+                       ago(s.get("startedAt", 0) / 1000), s.get("label", "").replace("\n", " "))
         body += [Text(f"background shells ({len(fan)})", style="bold"), tb]
-    return Panel(Group(*body), title=f"Claude · {job.get('name', '')}", border_style="green")
+    title = f"Claude · {len(jobs)} agents" if multi else f"Claude · {jobs[0].get('name', '')}"
+    return Panel(Group(*body), title=title, border_style="green")
 
 
 # ---------------------------------------------------------------- Grunts
@@ -425,8 +495,8 @@ def panel_plan():
 
 def panel_session():
     pg = cached("progress", 20, progress)
-    job = cached("job", 1, claude_job)
-    since = iso(job["createdAt"]) if isinstance(job, dict) else time.time() - 86400
+    jobs = cached("jobs", 1, claude_jobs)
+    since = min(iso(j["createdAt"]) for j in jobs) if isinstance(jobs, list) and jobs else time.time() - 86400
     cm = cached("commits", 10, lambda: commits(since))
     body = []
     if isinstance(pg, dict):
