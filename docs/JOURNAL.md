@@ -188,3 +188,22 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
 - x32dbg: default stops (system/entry/TLS breakpoints) are ini settings read at startup; crash.py turns them off
   in x32dbg.ini before launch (faster start, fewer continue round-trips).
 - 15 lanes outputs had no grunt_log entry (from an interrupted run); names recovered from their HOOK lines.
+
+## 2026-10-07 — Tail-jump thunks, BOOL width, STL in the pipeline, monitor
+
+- Bug class: indirect tail jumps (`jmp [reg+N]`, `jmp [abs]`) forward the caller's stack args/registers to a target
+  whose signature is unknown. Grunts wrote them as calls ("no stack args involved") → the target's `ret N` pops our
+  frame (0x6C5B20, 0x4F5170 crashed in-mission; eip on the stack, ebp = a code address, so the debugger only shows
+  the victim — found by bisecting with ini `disable`). 45 functions had it latently; converted to naked asm thunks
+  generated from the original instructions. semcheck now requires an indirect jmp in ours; the gate allows asm only
+  as a naked thunk (mov/lea/add/sub/call reg, then jmp).
+- `xor eax,eax; setcc al` is a 32-bit BOOL return; `bool` leaves eax's upper bytes undefined (0x47F9B0, caught by
+  the diff harness, 14/14 mismatched). Prompt rule added.
+- STL (418 fns) now go through the grunt with a VC7.1 layout note. semcheck: VC7.1 `max_size()` is -1, so
+  `cmp n,-1; jbe; call _Xlen` is dead code clang folds away → not required; compiler EH helpers not required; EH
+  funclet rets ignored by the ret check.
+- Codex slim harness: our system prompt as `model_instructions_file`, agent features off: overhead 14k → ~4k
+  tokens/call, same or better pass rate (A/B 4/8 vs 3/8). pi agent not needed (DeepSeek is already direct API).
+- tools/monitor.py: rich dashboard (Claude job state from ~/.claude/jobs, grunt live state work/grunt_state.json,
+  Codex 5h/7d from the ChatGPT usage endpoint the CLI's /status uses, DeepSeek balance API).
+- Lanes: the Codex lane starved (candidate window = 600 leaf-first, nearly all tiny) → window 4000.

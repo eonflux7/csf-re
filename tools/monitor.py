@@ -12,7 +12,7 @@ Reads only files, never the IDB:
   Plan        docs/PLAN.md (current phase, next open items)
   Progress    db/functions.csv; git log since the Claude session started
 """
-import argparse, collections, csv, glob, json, os, re, subprocess, time
+import argparse, collections, csv, glob, json, os, re, subprocess, time, urllib.request
 from datetime import datetime, timezone
 
 from rich.console import Group
@@ -210,11 +210,42 @@ def panel_grunts():
     return Panel(Group(*body), title="Grunts", border_style="magenta"), (st if isinstance(st, dict) else None), recent
 
 
+def codex_usage():
+    """5h / 7d windows of the ChatGPT subscription, from the endpoint the Codex CLI's /status uses (own token)."""
+    a = json.load(open(os.path.expanduser("~/.codex/auth.json")))["tokens"]
+    req = urllib.request.Request("https://chatgpt.com/backend-api/wham/usage", headers={
+        "Authorization": f"Bearer {a['access_token']}", "ChatGPT-Account-Id": a.get("account_id") or "",
+        "User-Agent": "codex_cli_rs"})
+    d = json.load(urllib.request.urlopen(req, timeout=8))["rate_limit"]
+    return {k: (d[w]["used_percent"], d[w]["reset_after_seconds"]) for k, w in
+            (("5h", "primary_window"), ("7d", "secondary_window")) if d.get(w)}
+
+
+def deepseek_balance():
+    key = next(l.split("=", 1)[1].strip() for l in open(os.path.expanduser("~/.config/csf-re/env"))
+               if l.startswith("DEEPSEEK_API_KEY="))
+    req = urllib.request.Request("https://api.deepseek.com/user/balance",
+                                 headers={"Authorization": f"Bearer {key}", "Accept": "application/json"})
+    d = json.load(urllib.request.urlopen(req, timeout=8))
+    return [(b["currency"], b["total_balance"]) for b in d.get("balance_infos", [])], d.get("is_available")
+
+
+def bar(pct, width=12):
+    n = round(pct / 100 * width)
+    style = "red" if pct >= 90 else "yellow" if pct >= 70 else "green"
+    t = Text("█" * n, style=style)
+    t.append("░" * (width - n), style="dim")
+    return t
+
+
+def dur(s):
+    s = int(s)
+    return f"{s // 86400}d{s % 86400 // 3600}h" if s >= 86400 else f"{s // 3600}h{s % 3600 // 60:02d}m" if s >= 3600 \
+        else f"{s // 60}m"
+
+
 def panel_tokens(st, recent):
-    tb = Table(box=None, padding=(0, 1), header_style="dim")
-    for col in ("backend", "calls", "prompt", "cached", "output", "out/min 10m"):
-        tb.add_column(col, justify="left" if col == "backend" else "right")
-    # totals: live counters of the current run (include calls of unfinished functions); rates from the log
+    """Compact (fits beside the grunt panel): per-backend tokens of the current run + subscription/balance limits."""
     tot = (st or {}).get("tokens") or {}
     if not tot:
         agg = collections.defaultdict(lambda: dict(calls=0, prompt=0, cached=0, completion=0))
@@ -231,12 +262,35 @@ def panel_tokens(st, recent):
         if r.get("ts", 0) > time.time() - 600:
             for u in r.get("usage", []):
                 rate[u.get("backend", "deepseek")] += u.get("completion_tokens", 0) or 0
+    body = []
     for b, t in sorted(tot.items()):
-        tb.add_row(Text(b, style=BACKEND_STYLE.get(b, "")), str(t["calls"]), kfmt(t["prompt"]), kfmt(t["cached"]),
-                   kfmt(t["completion"]), kfmt(rate[b] // 10))
+        h = Text(f"{b} ", style="bold " + BACKEND_STYLE.get(b, ""))
+        h.append(f"{t['calls']} calls", style="dim")
+        body.append(h)
+        body.append(Text(f" in  {kfmt(t['prompt'])}" + (f" ({kfmt(t['cached'])} cached)" if t["cached"] else "")))
+        body.append(Text(f" out {kfmt(t['completion'])}  {kfmt(rate[b] // 10)}/min"))
     if not tot:
-        tb.add_row("-", "", "", "", "", "")
-    return Panel(tb, title="Grunt tokens (current run)", border_style="cyan")
+        body.append(Text("no calls yet", style="dim"))
+    body.append(Text(""))
+    cu = cached("codex_usage", 60, codex_usage)
+    body.append(Text("Codex (ChatGPT plan)", style="bold magenta"))
+    if isinstance(cu, dict):
+        for k, (pct, reset) in cu.items():
+            t = Text(f" {k} ")
+            t.append_text(bar(pct))
+            t.append(f" {pct:>3.0f}% ↻{dur(reset)}", style="dim" if pct < 70 else "bold")
+            body.append(t)
+    else:
+        body.append(Text(f" n/a: {str(cu)[:40]}", style="dim"))
+    db_ = cached("ds_balance", 120, deepseek_balance)
+    t = Text("DeepSeek ", style="bold cyan")
+    if isinstance(db_, tuple):
+        t.append("  ".join(f"{amt} {cur}" for cur, amt in db_[0]) or "?",
+                 style="green" if db_[1] else "bold red")
+    else:
+        t.append(f"n/a: {str(db_)[:30]}", style="dim")
+    body.append(t)
+    return Panel(Group(*body), title="Tokens · limits", border_style="cyan")
 
 
 # ---------------------------------------------------------------- processes
@@ -373,7 +427,11 @@ def panel_session():
 def render():
     g, st, recent = panel_grunts()
     clock = Text(datetime.now().strftime("%H:%M:%S") + "  csf-re monitor", style="dim", justify="right")
-    return Group(clock, panel_claude(), g, panel_tokens(st, recent), panel_procs(), panel_plan(), panel_session())
+    side = Table.grid(expand=True)
+    side.add_column(ratio=3)
+    side.add_column(ratio=2, min_width=34, max_width=44)
+    side.add_row(g, panel_tokens(st, recent))
+    return Group(clock, panel_claude(), side, panel_procs(), panel_plan(), panel_session())
 
 
 def main():

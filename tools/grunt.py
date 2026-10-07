@@ -495,7 +495,8 @@ def lanes(args):
         cnt = collections.Counter(l for _, l in inflight.values())
         if submitted >= args.total or all(cnt[l] >= caps[l] for l in caps):
             return
-        for ea, ex in select(db, 600, args.max_size, args.min_size, exclude=busy):
+        # wide window: the leaf-first head is almost all tiny (DeepSeek lane); the Codex lane needs larger candidates
+        for ea, ex in select(db, 4000, args.max_size, args.min_size, exclude=busy):
             lane, ladder = lane_of(ea, ex)
             if cnt[lane] >= caps[lane]:
                 continue
