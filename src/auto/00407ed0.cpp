@@ -1,14 +1,14 @@
 #include <cstdint>
-#include "globals.h"
 #include "hook.h"
-#include "types/auto_classes.h"
 
-// Tail-jump thunk: forwards to the __thiscall virtual method at vtable slot 15
-// (byte offset 0x3c ). The original does `jmp [eax+0x3c]`, so no stack bytes are
-// popped here -- the callee pops its own arguments.
-static int __fastcall C_0082d5e0_InvokeVtblSlot15(C_0082d5e0* self, void* /*edx*/)
+// 0x00407ED0: pure tail-jump thunk. The indirect jmp forwards the caller's stack arguments and registers untouched
+// to a target whose signature is unknown, so it stays a naked jmp (a call would drop/shift stack arguments).
+static __declspec(naked) void C_0082d5e0_InvokeVtblSlot15()
 {
-    return ((int(__fastcall*)(void*, void*))self->vtbl[15])(self, nullptr);
+    __asm {
+        mov eax, dword ptr [ecx]
+        jmp dword ptr [eax + 0x3c]
+    }
 }
 
-HOOK(0x00407ED0, C_0082d5e0_InvokeVtblSlot15, "auto");
+HOOK(0x407ED0, C_0082d5e0_InvokeVtblSlot15, "auto");

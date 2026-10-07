@@ -1,15 +1,15 @@
 #include <cstdint>
 #include "hook.h"
-#include "types/auto_classes.h"
 
-// 0x0069A390
-// Tail-forwards to the virtual method in slot 1 (vtable offset +4) of the object
-// held in this->field_0004, with that inner object passed as `this` (ecx).
-static int __fastcall C_0085e760_CallInnerVirtualSlot1(C_0085e760* self, void* /*edx*/)
+// 0x0069A390: pure tail-jump thunk. The indirect jmp forwards the caller's stack arguments and registers untouched
+// to a target whose signature is unknown, so it stays a naked jmp (a call would drop/shift stack arguments).
+static __declspec(naked) void C_0085e760_CallInnerVirtualSlot1()
 {
-    void* inner = reinterpret_cast<void*>(self->field_0004);
-    void** inner_vtbl = *reinterpret_cast<void***>(inner);
-    return (reinterpret_cast<int(__fastcall*)(void*, void*)>(inner_vtbl[1]))(inner, nullptr);
+    __asm {
+        mov ecx, dword ptr [ecx + 4]
+        mov eax, dword ptr [ecx]
+        jmp dword ptr [eax + 4]
+    }
 }
 
-HOOK(0x0069A390, C_0085e760_CallInnerVirtualSlot1, "auto");
+HOOK(0x69A390, C_0085e760_CallInnerVirtualSlot1, "auto");

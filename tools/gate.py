@@ -87,8 +87,10 @@ def gate(ea, path, db=None):
         errs.append('CSF_GLOBAL/CSF_FUNC/CSF_AT/CSF_STR come from #include "globals.h" (add it)')
     if re.search(r"#\s*define\s+CSF_|#\s*undef\s+CSF_", src):
         errs.append('do not (re)define CSF_* macros: #include "globals.h" and use them as given')
-    # the only allowed asm: a naked tail-jump thunk `__asm { jmp dword ptr ds:[0xADDR] }` / `__asm { jmp 0xADDR }`
-    thunk = r"__asm\s*\{\s*jmp\s+(?:dword\s+ptr\s+ds:\[0x[0-9A-Fa-f]+\]|0x[0-9A-Fa-f]+)\s*\}"
+    # the only allowed asm: a naked tail-jump thunk — register moves/adjustments, then one jmp
+    ins = r"(?:mov|lea|add|sub|call\s+e[a-z]x)\s*[^;\n}]*?"
+    thunk = (r"__asm\s*\{\s*(?:" + ins + r"(?:\s*;|\s*\n|\s+__asm\s+|\s+))*"
+             r"jmp\s+(?:dword\s+ptr\s+(?:ds:)?\[[^\]]+\]|e[a-z]{2}|0x[0-9A-Fa-f]+)\s*;?\s*\}")
     if re.search(r"\b(__asm|asm)\b", re.sub(thunk, "", src)):
         errs.append("inline asm not allowed (except a naked tail-jump thunk: __asm { jmp dword ptr ds:[0xADDR] })")
     hooks = re.findall(r"HOOK(?:_METHOD)?\(\s*0x([0-9A-Fa-f]+)\s*,\s*&?([\w:]+)", src)

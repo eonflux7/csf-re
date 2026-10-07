@@ -1,15 +1,15 @@
 #include <cstdint>
-#include "globals.h"
-#include "types/auto_classes.h"
 #include "hook.h"
 
-// Tail-call forwarder (thunk): fetches the object stored at field_0020 and
-// tail-jumps to its virtual slot at vtable byte offset 0x48 (index 18),
-// passing no stack arguments and returning the callee's result unchanged.
-static int __fastcall C_00862390_CallInnerVirtualSlot18(C_00862390* self, void* /*edx*/)
+// 0x006F0E80: pure tail-jump thunk. The indirect jmp forwards the caller's stack arguments and registers untouched
+// to a target whose signature is unknown, so it stays a naked jmp (a call would drop/shift stack arguments).
+static __declspec(naked) void C_00862390_CallInnerVirtualSlot18()
 {
-    void* inner = reinterpret_cast<void*>(self->field_0020);
-    return ((int(__fastcall*)(void*, void*))CSF_AT(void**, inner, 0)[0x48 / 4])(inner, nullptr);
+    __asm {
+        mov ecx, dword ptr [ecx + 0x20]
+        mov eax, dword ptr [ecx]
+        jmp dword ptr [eax + 0x48]
+    }
 }
 
-HOOK(0x006F0E80, C_00862390_CallInnerVirtualSlot18, "auto");
+HOOK(0x6F0E80, C_00862390_CallInnerVirtualSlot18, "auto");

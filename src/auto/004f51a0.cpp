@@ -1,20 +1,15 @@
 #include <cstdint>
 #include "hook.h"
 
-// 0x4F51A0 (8 bytes) - pure tail-call thunk:
-//   mov ecx, [ecx+4]            ; ecx = sub-object referenced by this+4
-//   mov eax, [ecx]              ; eax = that sub-object's vtable
-//   jmp dword ptr [eax+0x2C]    ; tail-call virtual method at slot 0x2C/4 = 11
-// Takes no stack arguments (nothing is popped) and never touches edx.
-static int __fastcall C_Unknown_InvokeSubobjectVfunc2C(void* self, void* /*edx*/)
+// 0x004F51A0: pure tail-jump thunk. The indirect jmp forwards the caller's stack arguments and registers untouched
+// to a target whose signature is unknown, so it stays a naked jmp (a call would drop/shift stack arguments).
+static __declspec(naked) void C_Unknown_InvokeSubobjectVfunc2C()
 {
-    // mov ecx, dword ptr [ecx + 4]
-    const uint32_t subobject_addr = *reinterpret_cast<const uint32_t*>(static_cast<const uint8_t*>(self) + 4);
-    void* subobject = reinterpret_cast<void*>(subobject_addr);
-
-    // mov eax, dword ptr [ecx]  ->  jmp dword ptr [eax + 0x2C]
-    void** vtbl = *reinterpret_cast<void***>(subobject);
-    return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x2C / 4])(subobject, nullptr);
+    __asm {
+        mov ecx, dword ptr [ecx + 4]
+        mov eax, dword ptr [ecx]
+        jmp dword ptr [eax + 0x2c]
+    }
 }
 
 HOOK(0x4F51A0, C_Unknown_InvokeSubobjectVfunc2C, "auto");

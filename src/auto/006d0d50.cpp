@@ -1,16 +1,15 @@
 #include <cstdint>
-#include "globals.h"
 #include "hook.h"
-#include "core/memory.h"
-#include "types/auto_classes.h"
 
-// Tail-forwards to the virtual slot at vtable offset 0x34 (index 13) of the
-// object stored in this->field_002c, passing that object as `this`.
-static int __fastcall C_00860e68_InvokeInnerVirtual34(C_00860e68* self, void* /*edx*/)
+// 0x006D0D50: pure tail-jump thunk. The indirect jmp forwards the caller's stack arguments and registers untouched
+// to a target whose signature is unknown, so it stays a naked jmp (a call would drop/shift stack arguments).
+static __declspec(naked) void C_00860e68_InvokeInnerVirtual34()
 {
-    void* inner = reinterpret_cast<void*>(self->field_002c);
-    void** innerVtbl = CSF_AT(void**, inner, 0);
-    return ((int(__fastcall*)(void*, void*))innerVtbl[13])(inner, nullptr);
+    __asm {
+        mov ecx, dword ptr [ecx + 0x2c]
+        mov eax, dword ptr [ecx]
+        jmp dword ptr [eax + 0x34]
+    }
 }
 
 HOOK(0x6D0D50, C_00860e68_InvokeInnerVirtual34, "auto");

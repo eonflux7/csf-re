@@ -131,6 +131,13 @@ def orig_refs(ea, db):
 EH_HELPER = re.compile(r"CxxFrameHandler|_EH_prolog|_SEH_prolog|_SEH_epilog|_except_handler|__security_check")
 
 
+def ida_switches(ea):
+    """{jump_ea: targets} of switch jump tables (export/disasm): those indirect jmps are not tail calls."""
+    from packet import ida_view
+    v = ida_view(ea)
+    return {int(k): t for k, t in (v or {}).get("switches", {}).items()}
+
+
 def dead_calls(ea, db):
     """Callees reached only behind an always-false unsigned check (`cmp r, -1; jbe skip; call T`: VC7.1 STL's
     max_size() is -1). MSVC keeps the call, any modern compiler folds it away, so it can't be required."""
@@ -181,18 +188,20 @@ def check(ea, obj, db):
         if n not in our_addr_ofs(obj):
             errs.append(f"the original computes the ADDRESS this+0x{n:X} (add/lea: an embedded object), your code "
                         f"doesn't — did you load a pointer from +0x{n:X} instead of taking its address?")
-    # indirect tail jumps (jmp [abs]) forward the caller's args/registers: ours must jump too, not call
-    dis = None
-    for i in code_of(ea, db):
-        m = re.fullmatch(r"dword ptr \[(0x[0-9a-f]+)\]", i.op_str)
-        if i.mnemonic == "jmp" and m:
-            if dis is None:
-                dis = subprocess.run(["llvm-objdump-21", "-d", "--no-show-raw-insn", "--x86-asm-syntax=intel", obj],
-                                     capture_output=True, text=True).stdout
-            if not re.search(rf"\tjmp\s+dword ptr (?:ds:)?\[{m.group(1)}\]", dis):
-                errs.append(f"the original TAIL-JUMPS through [{m.group(1)}] (forwarding the caller's stack args and "
-                            "registers untouched); a call drops/shifts them. Write a naked thunk: "
-                            f"`static __declspec(naked) void F() {{ __asm {{ jmp dword ptr ds:[{m.group(1)}] }} }}`")
+    # indirect tail jumps (jmp [abs] / jmp [reg+N] / jmp reg) forward the caller's stack args and registers to a
+    # target whose signature isn't known here: ours must end in an indirect jmp too, never a call
+    sw = ida_switches(ea)
+    tails = [i for i in code_of(ea, db) if i.mnemonic == "jmp" and not i.op_str.startswith("0x")
+             and i.address not in sw]
+    if tails:
+        dis = subprocess.run(["llvm-objdump-21", "-d", "--no-show-raw-insn", "--x86-asm-syntax=intel", obj],
+                             capture_output=True, text=True).stdout
+        if not re.search(r"\tjmp\s+(?:dword ptr (?:ds:)?\[[^\]]+\]|e[a-z]{2})\s*$", dis, re.M):
+            t = tails[0].op_str
+            errs.append(f"the original TAIL-JUMPS indirectly (`jmp {t}`), forwarding the caller's stack args and "
+                        "registers untouched to a target whose signature is unknown; a call drops/shifts them. Write a "
+                        "naked thunk: `static __declspec(naked) void F() { __asm { mov ecx, [ecx+4] ... jmp dword ptr "
+                        "[eax+0x20] } }` (only mov/lea/add/sub, ending in the jmp)")
     bad = sorted(d for d in our_disps if d >= 8 and d not in orig_disps and d not in imms)
     if bad:
         errs.append("your code accesses field offsets the original never uses: " + ", ".join(f"0x{d:X}" for d in bad))

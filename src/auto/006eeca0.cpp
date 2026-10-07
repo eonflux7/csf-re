@@ -1,18 +1,15 @@
 #include <cstdint>
 #include "hook.h"
-#include "types/auto_classes.h"
 
-// The original advances ecx by 8 bytes (two DWORDs) so that it points at an
-// inner object embedded in *this, loads that object's vtable pointer, and
-// tail-calls the virtual method at vtable byte offset 0x70 (slot 28). The
-// callee's return value is passed through unchanged.
-static int __fastcall CallInnerObjectVtableSlot70(C_00862110* self, void* /*edx*/)
+// 0x006EECA0: pure tail-jump thunk. The indirect jmp forwards the caller's stack arguments and registers untouched
+// to a target whose signature is unknown, so it stays a naked jmp (a call would drop/shift stack arguments).
+static __declspec(naked) void CallInnerObjectVtableSlot70()
 {
-    void* innerObject = reinterpret_cast<uint32_t*>(self) + 2;
-    void** innerVtbl = *reinterpret_cast<void***>(innerObject);
-    int (__fastcall * method)(void*, void*) =
-        reinterpret_cast<int (__fastcall*)(void*, void*)>(innerVtbl[0x70 / 4]);
-    return method(innerObject, nullptr);
+    __asm {
+        add ecx, 8
+        mov eax, dword ptr [ecx]
+        jmp dword ptr [eax + 0x70]
+    }
 }
 
 HOOK(0x6EECA0, CallInnerObjectVtableSlot70, "auto");

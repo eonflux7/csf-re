@@ -1,12 +1,14 @@
 #include <cstdint>
 #include "hook.h"
-#include "types/auto_classes.h"
 
-// 0x00407F30 - tail-call thunk: forwards to the virtual method at vtable
-// offset 0x44 (slot 17), passing the same `this` pointer and no other args.
-static int __fastcall C_0082d5e0_DispatchVirtual17(C_0082d5e0* self, void* /*edx*/)
+// 0x00407F30: pure tail-jump thunk. The indirect jmp forwards the caller's stack arguments and registers untouched
+// to a target whose signature is unknown, so it stays a naked jmp (a call would drop/shift stack arguments).
+static __declspec(naked) void C_0082d5e0_DispatchVirtual17()
 {
-    return ((int(__fastcall*)(void*, void*))self->vtbl[0x44 / 4])(self, nullptr);
+    __asm {
+        mov eax, dword ptr [ecx]
+        jmp dword ptr [eax + 0x44]
+    }
 }
 
-HOOK(0x00407F30, C_0082d5e0_DispatchVirtual17, "auto");
+HOOK(0x407F30, C_0082d5e0_DispatchVirtual17, "auto");

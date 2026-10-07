@@ -1,14 +1,15 @@
 #include <cstdint>
-#include "globals.h"
 #include "hook.h"
 
-// Thunk: loads the member object stored at this+0x44 and tail-calls the
-// virtual method at vtable offset 0x110 (slot 0x44) on that object.
-static int __fastcall CallInnerObjectVirtualMethod110(void* self, void* /*edx*/)
+// 0x00492BC0: pure tail-jump thunk. The indirect jmp forwards the caller's stack arguments and registers untouched
+// to a target whose signature is unknown, so it stays a naked jmp (a call would drop/shift stack arguments).
+static __declspec(naked) void CallInnerObjectVirtualMethod110()
 {
-    void* innerObject = CSF_AT(void*, self, 0x44);
-    void** innerVtable = CSF_AT(void**, innerObject, 0x00);
-    return ((int(__fastcall*)(void*, void*))innerVtable[0x110 / 4])(innerObject, nullptr);
+    __asm {
+        mov ecx, dword ptr [ecx + 0x44]
+        mov eax, dword ptr [ecx]
+        jmp dword ptr [eax + 0x110]
+    }
 }
 
 HOOK(0x492BC0, CallInnerObjectVirtualMethod110, "auto");

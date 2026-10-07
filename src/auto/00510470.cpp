@@ -1,15 +1,14 @@
 #include <cstdint>
-#include "globals.h"
 #include "hook.h"
-#include "core/memory.h"
-#include "types/auto_classes.h"
 
-// Forwarder for the virtual method at vtable byte offset 8 (slot 2).
-// The original is a bare tail-jump: load vtbl, jump to entry 2 with `this` in ecx.
-static int __fastcall C_008406e8_InvokeVtblSlot2(C_008406e8* self, void* /*edx*/)
+// 0x00510470: pure tail-jump thunk. The indirect jmp forwards the caller's stack arguments and registers untouched
+// to a target whose signature is unknown, so it stays a naked jmp (a call would drop/shift stack arguments).
+static __declspec(naked) void C_008406e8_InvokeVtblSlot2()
 {
-    void** vtbl = CSF_AT(void**, self, 0);
-    return ((int(__fastcall*)(void*, void*))vtbl[2])(self, nullptr);
+    __asm {
+        mov eax, dword ptr [ecx]
+        jmp dword ptr [eax + 8]
+    }
 }
 
 HOOK(0x510470, C_008406e8_InvokeVtblSlot2, "auto");

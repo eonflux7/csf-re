@@ -1,17 +1,15 @@
 #include <cstdint>
-#include "globals.h"
 #include "hook.h"
-#include "core/memory.h"
 
-// Forwards the call to the virtual method at vtable byte offset 0x54 (slot 21) of the
-// object stored at offset +4 of this object, passing that inner object as `this`.
-// The original is a tail-jump thunk (jmp [eax+0x54]); no stack arguments are involved.
-static int __fastcall CallInnerVirtualSlot54(void* self, void* /*edx*/)
+// 0x006CA580: pure tail-jump thunk. The indirect jmp forwards the caller's stack arguments and registers untouched
+// to a target whose signature is unknown, so it stays a naked jmp (a call would drop/shift stack arguments).
+static __declspec(naked) void CallInnerVirtualSlot54()
 {
-    void* inner = CSF_AT(void*, self, 0x04);
-    void** inner_vtbl = *reinterpret_cast<void***>(inner);
-    using Fn = int(__fastcall*)(void*, void*);
-    return reinterpret_cast<Fn>(inner_vtbl[0x54 / 4])(inner, nullptr);
+    __asm {
+        mov ecx, dword ptr [ecx + 4]
+        mov eax, dword ptr [ecx]
+        jmp dword ptr [eax + 0x54]
+    }
 }
 
-HOOK(0x006CA580, CallInnerVirtualSlot54, "auto");
+HOOK(0x6CA580, CallInnerVirtualSlot54, "auto");

@@ -1,15 +1,15 @@
 #include <cstdint>
-#include "globals.h"
-#include "types/auto_classes.h"
 #include "hook.h"
 
-// Thin __thiscall forwarding thunk: takes the object stored in this->field_0004
-// and tail-jumps to its virtual method at vtable offset 0x50 (slot 20),
-// returning that method's result unchanged.
-static int __fastcall C_008443c8_ForwardToInnerVtblSlot20(C_008443c8* self, void* /*edx*/)
+// 0x0054E4F0: pure tail-jump thunk. The indirect jmp forwards the caller's stack arguments and registers untouched
+// to a target whose signature is unknown, so it stays a naked jmp (a call would drop/shift stack arguments).
+static __declspec(naked) void C_008443c8_ForwardToInnerVtblSlot20()
 {
-    void* inner = reinterpret_cast<void*>(self->field_0004);
-    return ((int (__fastcall*)(void*, void*))CSF_AT(void**, inner, 0)[20])(inner, nullptr);
+    __asm {
+        mov ecx, dword ptr [ecx + 4]
+        mov eax, dword ptr [ecx]
+        jmp dword ptr [eax + 0x50]
+    }
 }
 
-HOOK(0x0054E4F0, C_008443c8_ForwardToInnerVtblSlot20, "auto");
+HOOK(0x54E4F0, C_008443c8_ForwardToInnerVtblSlot20, "auto");
