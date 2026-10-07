@@ -119,9 +119,9 @@ def panel_claude():
     fan = job.get("fan") or []
     if fan:
         tb = Table.grid(padding=(0, 1))
-        tb.add_column(style="cyan", no_wrap=True)
-        tb.add_column(style="dim", no_wrap=True, justify="right")
-        tb.add_column(no_wrap=True, overflow="ellipsis")
+        tb.add_column(style="cyan", no_wrap=True, min_width=9)
+        tb.add_column(style="dim", no_wrap=True, justify="right", min_width=6)
+        tb.add_column(no_wrap=True, overflow="ellipsis", ratio=1)
         for s in fan:
             tb.add_row(s.get("id", "?"), ago(s.get("startedAt", 0) / 1000), s.get("label", "").replace("\n", " "))
         body += [Text(f"background shells ({len(fan)})", style="bold"), tb]
@@ -196,9 +196,9 @@ def panel_grunts():
     recent = recent if isinstance(recent, list) else []
     if recent:
         tb = Table.grid(padding=(0, 1))
-        for _ in range(5):
-            tb.add_column(no_wrap=True)
-        tb.columns[4].overflow = "ellipsis"
+        for w in (6, 4, 8, 3):
+            tb.add_column(no_wrap=True, min_width=w)
+        tb.add_column(no_wrap=True, overflow="ellipsis", ratio=1)
         for r in recent[-10:][::-1]:
             ok = r.get("ok")
             what = r.get("meta", {}).get("name", "") if ok else (r.get("err", "").splitlines() or [""])[0]
@@ -271,8 +271,8 @@ def panel_procs():
     rows, codex = pr if isinstance(pr, tuple) else ([], 0)
     g = cached("game", 10, game)
     tb = Table.grid(padding=(0, 1))
-    tb.add_column(style="dim", justify="right", no_wrap=True)
-    tb.add_column(no_wrap=True, overflow="ellipsis")
+    tb.add_column(style="dim", justify="right", no_wrap=True, min_width=6)
+    tb.add_column(no_wrap=True, overflow="ellipsis", ratio=1)
     for et, pid, args in rows[-8:]:
         a = re.sub(r"^\S*python\S*\s+", "", args).replace(ROOT + "/", "")
         tb.add_row(ago(time.time() - et), a)
