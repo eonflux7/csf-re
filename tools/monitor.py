@@ -14,6 +14,9 @@ Reads only files, never the IDB:
 """
 import argparse, collections, csv, glob, json, os, re, subprocess, time, urllib.request
 from datetime import datetime, timezone
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from limits import codex_usage, deepseek_balance  # noqa: E402
 
 from rich.console import Group
 from rich.live import Live
@@ -302,26 +305,6 @@ def panel_grunts():
         body.append(Text("recent results", style="bold"))
         body += lines
     return Panel(Group(*body), title="Grunts", border_style="magenta"), (st if isinstance(st, dict) else None), recent
-
-
-def codex_usage():
-    """5h / 7d windows of the ChatGPT subscription, from the endpoint the Codex CLI's /status uses (own token)."""
-    a = json.load(open(os.path.expanduser("~/.codex/auth.json")))["tokens"]
-    req = urllib.request.Request("https://chatgpt.com/backend-api/wham/usage", headers={
-        "Authorization": f"Bearer {a['access_token']}", "ChatGPT-Account-Id": a.get("account_id") or "",
-        "User-Agent": "codex_cli_rs"})
-    d = json.load(urllib.request.urlopen(req, timeout=8))["rate_limit"]
-    return {k: (d[w]["used_percent"], d[w]["reset_after_seconds"]) for k, w in
-            (("5h", "primary_window"), ("7d", "secondary_window")) if d.get(w)}
-
-
-def deepseek_balance():
-    key = next(l.split("=", 1)[1].strip() for l in open(os.path.expanduser("~/.config/csf-re/env"))
-               if l.startswith("DEEPSEEK_API_KEY="))
-    req = urllib.request.Request("https://api.deepseek.com/user/balance",
-                                 headers={"Authorization": f"Bearer {key}", "Accept": "application/json"})
-    d = json.load(urllib.request.urlopen(req, timeout=8))
-    return [(b["currency"], b["total_balance"]) for b in d.get("balance_infos", [])], d.get("is_available")
 
 
 def bar(pct, width=12):

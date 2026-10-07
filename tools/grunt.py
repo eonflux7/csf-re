@@ -3,8 +3,10 @@
 
 Usage:
   grunt.py run [--n 10] [--jobs 8] [--max-size 200] [--only ea,ea] [--model deepseek-flash] [--no-smoke]
-  grunt.py lanes [--total 200] [--batch 50] [--tiny-jobs 8] [--main-jobs 6]   continuous, two lanes (see lanes())
-  grunt.py cost                      token usage + projected cost from work/grunt_log.jsonl
+  grunt.py lanes [--total 200] [--batch 60] [--tiny-jobs 8] [--main-jobs 6]   continuous, two lanes (see lanes())
+  grunt.py cost                      token usage, review hit rate from work/grunt_log.jsonl
+
+Stop a lanes run cleanly: `touch work/grunt_stop` (in-flight calls finish, the batch is smoked and committed).
 
 After a batch: link, deploy, smoke test (unless --no-smoke); on success mark functions done and git commit.
 """
@@ -13,6 +15,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from packet import DB, build
 from gate import gate
 from triage import load_csv, save_csv
+from limits import codex_usage
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOG = os.path.join(ROOT, "work", "grunt_log.jsonl")
@@ -197,7 +200,12 @@ def live(**kw):
         os.replace(tmp, LIVE)
 
 
+CODEX_PAUSED = threading.Event()  # set by the lanes quota guard: no new Codex calls (writes, fallbacks, reviews)
+
+
 def ask(backend, model, messages, key, effort="high"):
+    if backend == "codex" and CODEX_PAUSED.is_set():
+        raise RuntimeError("Codex paused by the quota guard")
     cid = f"{threading.get_ident()}"
     with _live_lock:
         _live["calls"][cid] = dict(ea=getattr(_tl, "ea", 0), backend=backend, model=model, effort=effort,
@@ -242,13 +250,13 @@ calls where the original reloads. Ignore naming and style. Output exactly one ``
 
 
 def review(ea, packet, code):
-    """Second opinion by Codex on a gate-passed file. Returns '' if fine, else the issues text."""
+    """Second opinion by Codex on a gate-passed file. Returns '' if fine, the issues text, or None if not run."""
     msgs = [{"role": "system", "content": REVIEW_SYSTEM},
             {"role": "user", "content": f"{packet}\n\n## Reimplementation under review\n```cpp\n{code}\n```"}]
     try:
         text, usage = ask("codex", "gpt-6.1-sol", msgs, None, "high")
     except Exception:
-        return "", None
+        return None, None
     m = re.search(r"```json\s*\n(.*?)```", text, re.S)
     try:
         d = json.loads(m.group(1)) if m else {}
@@ -281,7 +289,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None):
     os.makedirs(os.path.dirname(tmp), exist_ok=True)
     usage_all, err, meta, text = [], "", {}, ""
     steps = [(b, m) for b, m, n in ladder for _ in range(n)]
-    dead = set()
+    dead, reviews = set(), []  # reviews: True = reviewer rejected that attempt
     for attempt, (backend, model) in enumerate(steps):
         # first attempt per backend at high effort, retries at max
         first = attempt == 0 or steps[attempt - 1][0] != backend
@@ -302,24 +310,41 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None):
         else:
             open(tmp, "w").write(code)
             ok, err = gate(ea, tmp, db)
-        if ok and backend == "deepseek" and (review_over or -1) >= 0 and db.F[ea]["size"] > review_over:
+        if ok and backend == "deepseek" and review_over is not None and review_over >= 0 \
+                and db.F[ea]["size"] > review_over:
             issues, u = review(ea, packet, code)
             if u:
                 usage_all.append(u)
+            if issues is not None:
+                reviews.append(bool(issues))
             if issues:
                 ok, err = False, "a reviewer compared your file with the original and found differences:\n" + issues
         if ok:
             os.replace(tmp, path)
             return dict(ea=ea, ok=True, attempts=attempt + 1, meta=meta, usage=usage_all, by=f"{backend}:{model}",
-                        example=example)
+                        example=example, reviews=reviews)
         msgs += [{"role": "assistant", "content": text},
                  {"role": "user", "content": f"The gate rejected the file:\n{err}\nFix it and answer again in the same format."}]
+    if "codex" in dead and CODEX_PAUSED.is_set():  # not a real failure: retry in a later run
+        return dict(ea=ea, ok=False, deferred=True, attempts=len(usage_all), err=err[:500], usage=usage_all,
+                    reviews=reviews)
     qdir = os.path.join(out_dir, "queue") if out_dir else os.path.join(ROOT, "queue")
     os.makedirs(qdir, exist_ok=True)
     with open(os.path.join(qdir, f"{ea:08x}.md"), "w") as f:
         f.write(f"# Escalation 0x{ea:08X}\n\n## Last gate error\n```\n{err}\n```\n\n## Last answer\n{text}\n\n"
                 f"## Packet\n{packet}\n")
-    return dict(ea=ea, ok=False, attempts=len(steps), err=err[:500], usage=usage_all)
+    return dict(ea=ea, ok=False, attempts=len(steps), err=err[:500], usage=usage_all, reviews=reviews)
+
+
+_clusters = None
+
+
+def clone_clusters():
+    global _clusters
+    if _clusters is None:
+        _clusters = {int(m, 16): i for i, c in enumerate(json.load(open(os.path.join(ROOT, "export", "clones.json"))))
+                     for m in c["members"]}
+    return _clusters
 
 
 def select(db, n, max_size, min_size=6, exclude=()):
@@ -327,11 +352,7 @@ def select(db, n, max_size, min_size=6, exclude=()):
     Clone clusters: while no member is done, only one member is offered; once one is done, the others are offered
     with it as the example (cheap: same shape)."""
     rows = db.rows
-    clones = json.load(open(os.path.join(ROOT, "export", "clones.json")))
-    cluster = {}
-    for i, c in enumerate(clones):
-        for m in c["members"]:
-            cluster[int(m, 16)] = i
+    cluster = clone_clusters()
     done_in = {}
     busy = set()
     for ea, i in cluster.items():
@@ -374,13 +395,14 @@ SMOKE_SECS, SMOKE_LONG_SECS, SMOKE_LONG_EVERY = 15, 60, 5  # game is in-mission 
 _smokes = 0
 
 
-def smoke():
+def smoke(deploy=True, secs=None):
     global _smokes
-    r = subprocess.run([os.path.join(ROOT, "tools", "deploy.sh")], capture_output=True, text=True)
-    if r.returncode:
-        return False, "build/deploy failed:\n" + (r.stdout + r.stderr)[-3000:]
-    _smokes += 1
-    secs = SMOKE_LONG_SECS if _smokes % SMOKE_LONG_EVERY == 0 else SMOKE_SECS
+    if deploy:
+        r = subprocess.run([os.path.join(ROOT, "tools", "deploy.sh")], capture_output=True, text=True)
+        if r.returncode:
+            return False, "build/deploy failed:\n" + (r.stdout + r.stderr)[-3000:]
+        _smokes += 1
+    secs = secs or (SMOKE_LONG_SECS if deploy and _smokes % SMOKE_LONG_EVERY == 0 else SMOKE_SECS)
     r = subprocess.run([os.path.join(ROOT, "tools", "smoke.sh"), str(secs)], capture_output=True, text=True)
     return r.returncode == 0, r.stdout  # full: diff_rejects() needs the MISMATCH lines near the top
 
@@ -401,6 +423,71 @@ def diff_rejects(good, smoke_out):
         if os.path.exists(src):
             os.remove(src)
     return [r for r in good if r["ea"] not in bad], rej
+
+
+PLAY = os.environ.get("CSF_PLAY", "/mnt/e/dev/csf-play")
+BISECT_TAG = "# grunt-bisect"
+
+
+def set_disabled(eas):
+    """Disable exactly these hooks in the play copy's ini (lines tagged BISECT_TAG; others are left alone)."""
+    ini = os.path.join(PLAY, "csf_hook.ini")
+    lines = [l for l in open(ini).read().splitlines() if not l.endswith(BISECT_TAG)]
+    lines += [f"disable 0x{ea:X} {BISECT_TAG}" for ea in sorted(eas)]
+    open(ini, "w").write("\n".join(lines) + "\n")
+
+
+def bisect(batch, max_culprits=4):
+    """The deployed DLL holds `batch` (uncommitted) and its smoke failed. Find the culprits by toggling hooks in the
+    ini (no rebuild): control run with the whole batch off, then binary search with the rest of the batch off.
+    Returns (culprits, why): culprits=None when the batch is not to blame or the result is unreliable."""
+    n = 0
+
+    def fails(on):
+        nonlocal n
+        n += 1
+        set_disabled(set(batch) - set(on))
+        live(phase=f"bisect: smoke {n} ({len(on)} on)")
+        return not smoke(deploy=False)[0]
+
+    try:
+        if fails([]):
+            return None, "control run (whole batch disabled) also fails: crash is not from this batch"
+        culprits, rest = [], list(batch)
+        while fails(rest):
+            if len(culprits) >= max_culprits:
+                return None, f"more than {max_culprits} culprits: {' '.join(f'{c:x}' for c in culprits)} ..."
+            cur = rest
+            while len(cur) > 1:
+                a, b = cur[:len(cur) // 2], cur[len(cur) // 2:]
+                if fails(a):
+                    cur = a
+                elif fails(b):
+                    cur = b
+                else:
+                    return None, f"neither half of {len(cur)} fails alone (interaction or flaky crash)"
+            culprits.append(cur[0])
+            rest.remove(cur[0])
+        if not culprits:
+            return None, "the full batch passed on re-run: flaky crash, not bisectable"
+        return culprits, f"{n} smokes"
+    finally:
+        set_disabled([])
+
+
+def quarantine(ea, why, smoke_out=""):
+    """Move an uncommitted src/auto file to queue/ (excluded from select() from now on)."""
+    src = os.path.join(ROOT, "src", "auto", f"{ea:08x}.cpp")
+    code = open(src).read() if os.path.exists(src) else ""
+    os.makedirs(os.path.join(ROOT, "queue"), exist_ok=True)
+    with open(os.path.join(ROOT, "queue", f"{ea:08x}.md"), "w") as f:
+        f.write(f"# Escalation 0x{ea:08X}: {why}\n\n## Smoke log tail\n```\n{smoke_out[-2500:]}\n```\n\n"
+                f"## Rejected file\n```cpp\n{code}\n```\n")
+    if os.path.exists(src):
+        os.remove(src)
+
+
+STOP = os.path.join(ROOT, "work", "grunt_stop")
 
 
 def run(args):
@@ -488,6 +575,9 @@ def lanes(args):
     pools = {"deep": cf.ThreadPoolExecutor(args.tiny_jobs), "main": cf.ThreadPoolExecutor(args.main_jobs)}
     caps = {"deep": args.tiny_jobs * 2, "main": args.main_jobs * 2}
     inflight, good, submitted, total_ok, total_esc = {}, [], 0, 0, 0
+    stopping, quota_t = False, 0
+    if os.path.exists(STOP):
+        os.remove(STOP)
     live(mode="lanes", phase="grunting", counts=dict(total=args.total, batch=args.batch, ok=0, esc=0, pending=0,
                                                       submitted=0, committed=0))
 
@@ -497,10 +587,39 @@ def lanes(args):
             return "deep", [("deepseek", args.model, 2)] + codex + esc
         return "main", codex + esc
 
+    def quota():
+        """Pause/resume Codex on the 5h window (checked every 2 min). While paused the main lane gets no new work and
+        the DeepSeek lane runs without Codex fallback/review."""
+        nonlocal quota_t
+        if args.codex_cap <= 0 or time.time() - quota_t < 120:
+            return
+        quota_t = time.time()
+        try:
+            pct, reset = codex_usage()["5h"]
+        except Exception:
+            return  # endpoint down: keep the current state
+        if pct >= args.codex_cap and not CODEX_PAUSED.is_set():
+            CODEX_PAUSED.set()
+            print(f"Codex 5h window at {pct:.0f}% (cap {args.codex_cap}): main lane paused, resets in {reset // 60} min",
+                  flush=True)
+        elif pct < args.codex_cap and CODEX_PAUSED.is_set():
+            CODEX_PAUSED.clear()
+            print(f"Codex 5h window at {pct:.0f}%: main lane resumed", flush=True)
+        live(codex_paused=CODEX_PAUSED.is_set(), codex_5h=pct)
+
     def refill():
-        nonlocal submitted
+        nonlocal submitted, stopping
+        if not stopping and os.path.exists(STOP):
+            stopping = True
+            print("stop file found: finishing in-flight tasks, then smoke + commit", flush=True)
+            live(phase="stopping")
+        if stopping:
+            return
+        quota()
         busy = {ea for ea, _ in inflight.values()}
         cnt = collections.Counter(l for _, l in inflight.values())
+        if CODEX_PAUSED.is_set():
+            cnt["main"] = caps["main"]
         if submitted >= args.total or all(cnt[l] >= caps[l] for l in caps):
             return
         # wide window: the leaf-first head is almost all tiny (DeepSeek lane); the Codex lane needs larger candidates
@@ -517,13 +636,26 @@ def lanes(args):
         live(counts=dict(submitted=submitted))
 
     def flush():
-        nonlocal good
+        nonlocal good, total_ok, total_esc
         if not good:
             return True
         live(phase="smoke")
         if not args.no_smoke:
             ok, out = smoke()
             print(out[-1500:], flush=True)
+            if not ok and not out.startswith("build/deploy failed") and not args.no_bisect:
+                print(f"smoke failed with {len(good)} new functions: bisecting", flush=True)
+                culprits, why = bisect([r["ea"] for r in good])
+                print(f"bisect: {why}" + (f"; culprits {' '.join(f'{c:x}' for c in culprits)}" if culprits else ""),
+                      flush=True)
+                if culprits:
+                    for c in culprits:
+                        quarantine(c, "in-game smoke failure (lanes auto-bisect)", out)
+                        db.rows[c]["status"] = "todo"
+                    good = [r for r in good if r["ea"] not in culprits]
+                    total_ok, total_esc = total_ok - len(culprits), total_esc + len(culprits)
+                    live(counts=dict(ok=total_ok, esc=total_esc, pending=len(good)))
+                    return flush()
             if not ok:
                 print(f"SMOKE FAILED with {len(good)} new functions: left uncommitted in src/auto; bisect with "
                       "csf_hook.ini `disable 0x...`", flush=True)
@@ -552,10 +684,12 @@ def lanes(args):
                 db.rows[ea]["status"] = "done"  # in memory: siblings may now use it as their example
                 good.append(r)
                 total_ok += 1
+            elif r.get("deferred"):
+                db.rows[ea]["status"] = "deferred"  # in memory only: not re-picked this run
             else:
                 total_esc += 1
             live(counts=dict(ok=total_ok, esc=total_esc, pending=len(good)))
-            print(f"  [{lane}] {ea:08x} {'OK ' if r['ok'] else 'ESC'} "
+            print(f"  [{lane}] {ea:08x} {'OK ' if r['ok'] else 'DEF' if r.get('deferred') else 'ESC'} "
                   f"{r.get('meta', {}).get('name', '') if r['ok'] else r.get('err', '')[:90]}"
                   f"{'  (example %08x)' % r['example'] if r.get('example') else ''}", flush=True)
         if len(good) >= args.batch and not flush():
@@ -563,23 +697,36 @@ def lanes(args):
                 p.shutdown(wait=True, cancel_futures=True)
             return
         refill()
-    flush()
-    live(phase="finished")
+    if flush():
+        live(phase="stopped" if stopping else "finished")
     print(f"lanes done: {total_ok} ok, {total_esc} escalated", flush=True)
 
 
 def cost(_):
-    tin = tout = cached = n = ok = 0
+    """Token totals per writing backend, and how often the Codex review of DeepSeek outputs rejected one (logged
+    since the `reviews` field exists): if it almost never rejects, --review-over -1 saves Codex quota."""
+    by = collections.defaultdict(lambda: dict(n=0, ok=0, prompt=0, cached=0, completion=0))
+    reviewed = rejected = rev_fns = rev_fns_rej = 0
     for l in open(LOG):
         r = json.loads(l)
-        n += 1
-        ok += r["ok"]
-        for u in r.get("usage", []):
-            tin += u.get("prompt_tokens", 0)
-            tout += u.get("completion_tokens", 0)
-            cached += u.get("prompt_cache_hit_tokens", 0)
-    print(f"tasks {n} ok {ok}  prompt {tin} (cached {cached})  completion {tout}  "
-          f"avg/task in {tin // max(n, 1)} out {tout // max(n, 1)}")
+        b = by[(r.get("by") or ("unknown" if r["ok"] else "failed")).split(":")[0]]
+        b["n"] += 1
+        b["ok"] += bool(r["ok"])
+        for u in r.get("usage") or []:
+            b["prompt"] += u.get("prompt_tokens", 0) or 0
+            b["completion"] += u.get("completion_tokens", 0) or 0
+            b["cached"] += (u.get("cached_tokens") or u.get("prompt_cache_hit_tokens") or 0)
+        rv = r.get("reviews")
+        if rv:
+            reviewed += len(rv)
+            rejected += sum(rv)
+            rev_fns += 1
+            rev_fns_rej += any(rv)
+    for k, b in sorted(by.items()):
+        print(f"{k:9} tasks {b['n']:5} ok {b['ok']:5}  prompt {b['prompt']:>10} (cached {b['cached']:>9})  "
+              f"completion {b['completion']:>9}")
+    print(f"codex reviews: {reviewed} on {rev_fns} functions, {rejected} rejections "
+          f"({rev_fns_rej} functions had >=1 rejection)" if reviewed else "codex reviews: none logged yet")
 
 
 if __name__ == "__main__":
@@ -602,7 +749,7 @@ if __name__ == "__main__":
     r.add_argument("--review-over", type=int, default=100, help="Codex-review DeepSeek outputs above N bytes (-1: off)")
     l = sub.add_parser("lanes")
     l.add_argument("--total", type=int, default=200)
-    l.add_argument("--batch", type=int, default=50, help="smoke + commit every N gate passes")
+    l.add_argument("--batch", type=int, default=60, help="smoke + commit every N gate passes")
     l.add_argument("--tiny-jobs", type=int, default=8)
     l.add_argument("--main-jobs", type=int, default=6)
     l.add_argument("--max-size", type=int, default=600)
@@ -614,6 +761,8 @@ if __name__ == "__main__":
     l.add_argument("--escalate-claude", action="store_true")
     l.add_argument("--review-over", type=int, default=100)
     l.add_argument("--no-smoke", action="store_true")
+    l.add_argument("--no-bisect", action="store_true", help="stop on a smoke failure instead of bisecting it")
+    l.add_argument("--codex-cap", type=float, default=90, help="pause Codex at this 5h-window %% (0: off)")
     sub.add_parser("cost")
     a = ap.parse_args()
     {"run": run, "lanes": lanes, "cost": cost}[a.cmd](a)
