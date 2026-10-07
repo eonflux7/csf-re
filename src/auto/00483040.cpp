@@ -1,4 +1,4 @@
-// 0x00483040 - C_008334f0::SetFlags / reset of two byte state fields.
+// 0x00483040 - CCharActionFsm::SetFlags / reset of two byte state fields.
 //
 //   mov byte ptr [ecx + 0xbd], 1    ; field_00bd = 1
 //   mov byte ptr [ecx + 0xc4], 0    ; field_00c4 = 0
@@ -18,10 +18,10 @@
 #include "legacy/string.h"
 
 // Sets field_00bd to 1 and clears field_00c4. 15 bytes, __thiscall, pops 0.
-static void __fastcall C_008334f0_SetByteState(C_008334f0* self, void* /*edx*/)
+static void __fastcall CCharActionFsm_SetByteState(CCharActionFsm* self, void* /*edx*/)
 {
     self->field_00bd = 1;
     self->field_00c4 = 0;
 }
 
-HOOK(0x00483040, C_008334f0_SetByteState, "auto");
+HOOK(0x00483040, CCharActionFsm_SetByteState, "auto");

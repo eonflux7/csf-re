@@ -14,11 +14,11 @@
 //   call dword ptr [eax+0x64] ; virtual slot 0x64/4 = 25, __thiscall, two zero args
 //   ret
 // Result is returned unchanged (widened to full eax by the callee).
-static int __fastcall C_00842550_InvokeInnerVirtual(C_00842550* self, void* /*edx*/)
+static int __fastcall CMenuMain_InvokeInnerVirtual(CMenuMain* self, void* /*edx*/)
 {
     void* inner = CSF_AT(void*, self, 0x10);
     void** innerVtbl = *reinterpret_cast<void***>(inner);
     return (reinterpret_cast<int(__fastcall*)(void*, void*, int, int)>(innerVtbl[25]))(inner, nullptr, 0, 0);
 }
 
-HOOK(0x53A680, C_00842550_InvokeInnerVirtual, "auto");
+HOOK(0x53A680, CMenuMain_InvokeInnerVirtual, "auto");

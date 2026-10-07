@@ -6,9 +6,9 @@
 #include "legacy/string.h"
 
 // Returns the constant type-name string for this class ("TFncInteractivo").
-static const char* __cdecl C_0083a788_GetTypeName()
+static const char* __cdecl TFncInteractivo_GetTypeName()
 {
     return CSF_STR(0x0083A80C, "TFncInteractivo");
 }
 
-HOOK(0x004B2A10, C_0083a788_GetTypeName, "auto");
+HOOK(0x004B2A10, TFncInteractivo_GetTypeName, "auto");

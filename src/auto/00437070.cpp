@@ -11,9 +11,9 @@
 #include "legacy/string.h"
 
 // Returns byte at offset 0x130 (inside base pad_012c).
-static uint8_t __fastcall C_00864288_GetField0130(C_00864288* self, void* /*edx*/)
+static uint8_t __fastcall CGuiControl_GetField0130(CGuiControl* self, void* /*edx*/)
 {
     return CSF_AT(uint8_t, self, 0x130);
 }
 
-HOOK(0x00437070, C_00864288_GetField0130, "auto");
+HOOK(0x00437070, CGuiControl_GetField0130, "auto");

@@ -6,7 +6,7 @@
 //   mov eax, 0x1A   ; 26
 //   ret
 // Trivial constant-return stub: called with no stack arguments and no ecx use.
-// Presumably a virtual getter (C_00839ea8 vtable) that always yields 26.
+// Presumably a virtual getter (TFncAtacarDesdeParapeto vtable) that always yields 26.
 
 static int __cdecl GetValue26()
 {

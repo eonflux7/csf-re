@@ -11,9 +11,9 @@
 #include "legacy/string.h"
 
 // Returns the 32-bit value stored at offset 0x150.
-static int __fastcall C_00865e38_GetField0150(C_00865e38* self, void* /*edx*/)
+static int __fastcall CGuiSlider_GetField0150(CGuiSlider* self, void* /*edx*/)
 {
     return static_cast<int>(self->field_0150);
 }
 
-HOOK(0x0072D110, C_00865e38_GetField0150, "auto");
+HOOK(0x0072D110, CGuiSlider_GetField0150, "auto");

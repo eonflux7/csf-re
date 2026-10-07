@@ -207,3 +207,29 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
 - tools/monitor.py: rich dashboard (Claude job state from ~/.claude/jobs, grunt live state work/grunt_state.json,
   Codex 5h/7d from the ChatGPT usage endpoint the CLI's /status uses, DeepSeek balance API).
 - Lanes: the Codex lane starved (candidate window = 600 leaf-first, nearly all tiny) → window 4000.
+
+## 2026-10-07 — Phase 2 started early: class naming pass 1, IDB sync; lanes run unattended
+
+- Class names come from four kinds of evidence (tools/classinfo.py prints them per vtable):
+  - GUI: the .fbs parser 0x71DBE0 maps keywords (BOTON, ESTATICO, SLIDER, LISTBOX, ...) to CGuiBuilder vtable
+    slots +0x18..+0x44; each slot's factory allocates exactly one control class → 12 control types + their base.
+  - Menu screens: each derived screen finds its controls by name under `.PANEL_PRINCIPAL` (BotonCampanya,
+    ListboxSaveGames, SliderMusic, ...), which identifies the screen.
+  - AI: the T* classes return their own name from a GetName virtual (slot 33 of 0x83DE60 tasks, slot 8 of
+    0x83E050 states): TNavegando, TDisparar, TAlerta, TCombate, ... — the original names (attested). The type
+    registry at 0x8442A0 (CVector3, SRect, CInterpolatorHermite3D) confirms the convention: C classes, S structs.
+  - NetZ DDL: DOClass names in the generated code (NetPlayer, NetGame, NetGhost, RootDO, Session, ...).
+- "Desconocido" in a method is the allocator's default tag (0x6910F0), not evidence. Grunt class_guess and
+  field_names proposals are too generic to use ("CUnknownObject", "m_value0218").
+- Grunts typed base-class methods with the first derived class they met (43 files said C_0082fbe8 for TCharTask
+  methods). The rename pass prefixes each method with its owning class (most-base class containing it); functions
+  in unrelated hierarchies' vtables (COMDAT-folded) keep their prefix.
+- classes.json had 8 base cycles (a dtor with an inlined base dtor read as a ctor); `methods` is a sorted set
+  including non-virtual this-calls, so slot order must come from db/vtables.json.
+- Layout issue left open: a base absorbs fields accessed through derived objects (C_00830438 holds the GUI
+  control's fields; CGuiControl itself is empty).
+- First IDB sync: 1244 function names, 782 summary comments, 103 globals, 116 vtables, 662 local types; struct
+  sizes match the static_asserts.
+- Lanes: smoke failure → automatic bisect via ini toggles (control run first; ~11 smokes for 1 culprit in 60),
+  `work/grunt_stop`, Codex quota guard, review verdicts logged. CSF_AT accepted no const pointer (2 grunt
+  compile failures).

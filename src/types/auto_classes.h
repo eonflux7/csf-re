@@ -630,7 +630,8 @@ static_assert(sizeof(C_0082e428) == 0xa4);
 struct C_0082e4c0 : C_0082d410 {
 };
 
-struct C_0083de60 {
+// TCharTask (vtable 0x0083DE60): base of TDisparar, TAtacar, TNavegando, TFreeMove, TConversacion ... (slot 33 returns the T* name)
+struct TCharTask {
     void** vtbl;
     uint32_t field_0004;
     uint32_t field_0008;
@@ -638,7 +639,7 @@ struct C_0083de60 {
     uint32_t field_0010;
 };
 
-struct C_0082e598 : C_0083de60 {
+struct C_0082e598 : TCharTask {
     uint32_t field_0014;
     uint32_t field_0018;
     uint32_t field_001c;
@@ -682,15 +683,18 @@ struct C_0082e7c8 : C_0082e598 {
 };
 static_assert(sizeof(C_0082e7c8) == 0x34);
 
-struct C_0082f7b8 : C_0083de60 {
+// TFreeMove (vtable 0x0082F7B8): GetName string
+struct TFreeMove : TCharTask {
 };
 
-struct C_0082f878 : C_0083de60 {
+// TNavegando (vtable 0x0082F878): GetName string
+struct TNavegando : TCharTask {
     uint8_t pad_0014[0x68];
     uint8_t field_007c;
 };
 
-struct C_0082f938 : C_0083de60 {
+// TFncGirar (vtable 0x0082F938): GetName string
+struct TFncGirar : TCharTask {
 };
 
 struct C_0082f9f8 : C_0082e598 {
@@ -822,76 +826,45 @@ struct C_008300c0 : C_00830030 {
 };
 static_assert(sizeof(C_008300c0) == 0xe9c);
 
-struct C_00830578 {
+// CMenuScreen (vtable 0x0083042C): base of ~50 screens that load .PANEL_PRINCIPAL and find controls by name
+struct CMenuScreen {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0xc];
     uint32_t field_0014;
     uint32_t field_0018;
     uint32_t field_001c;
-    uint8_t field_0020;
-    uint8_t pad_0021[0x3];
+    uint32_t field_0020;
     uint32_t field_0024;
     uint32_t field_0028;
-    float field_002c;
-    float field_0030;
-    float field_0034;
-    float field_0038;
-    uint8_t field_003c;
-    uint8_t field_003d;
-    uint8_t field_003e;
-    uint8_t field_003f;
-    uint8_t field_0040;
-    uint8_t pad_0041[0x3];
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint32_t field_003c;
+    uint32_t field_0040;
     uint32_t field_0044;
     uint32_t field_0048;
     uint32_t field_004c;
     uint32_t field_0050;
     uint32_t field_0054;
-    uint32_t field_0058;
-    uint32_t field_005c;
-    uint32_t field_0060;
-    uint32_t field_0064;
+    uint8_t pad_0058[0x10];
     uint32_t field_0068;
     uint32_t field_006c;
     uint32_t field_0070;
-    uint32_t field_0074;
-    uint32_t field_0078;
+    uint8_t pad_0074[0x8];
     uint32_t field_007c;
-    uint32_t field_0080;
+    uint8_t pad_0080[0x4];
     uint32_t field_0084;
-    uint32_t field_0088;
+    uint8_t pad_0088[0x4];
     uint32_t field_008c;
     uint32_t field_0090;
     uint32_t field_0094;
     uint32_t field_0098;
     uint32_t field_009c;
-    uint32_t field_00a0;
-    uint32_t field_00a4;
-    uint32_t field_00a8;
-    uint32_t field_00ac;
-    uint32_t field_00b0;
-    uint32_t field_00b4;
-    uint32_t field_00b8;
-    uint32_t field_00bc;
-    uint32_t field_00c0;
-    uint32_t field_00c4;
-    uint32_t field_00c8;
-    uint32_t field_00cc;
-    uint32_t field_00d0;
-    uint32_t field_00d4;
-    uint32_t field_00d8;
-    uint32_t field_00dc;
-    uint32_t field_00e0;
+    uint8_t pad_00a0[0x44];
     uint32_t field_00e4;
-    uint32_t field_00e8;
-    uint32_t field_00ec;
-    uint32_t field_00f0;
-    uint8_t field_00f4;
-};
-
-struct C_0083042c : C_00830578 {
-    uint8_t pad_00f5[0x17];
+    uint8_t pad_00e8[0x24];
     uint32_t field_010c;
     uint8_t pad_0110[0x48];
     uint32_t field_0158;
@@ -978,6 +951,9 @@ struct C_00830438 {
     uint8_t pad_01b4[0xc];
     uint32_t field_01c0;
     uint32_t field_01c4;
+};
+
+struct C_00830578 : CMenuScreen {
 };
 
 struct C_008305f8 {
@@ -1158,7 +1134,9 @@ struct C_00830a04 {
 };
 static_assert(sizeof(C_00830a04) == 0x334);
 
-struct C_00864288 : C_00830438 {
+// CGuiControl (vtable 0x00864288): common base of all 12 control types; ctor 0x71A010
+// 5 legacy::string (VC7.1, 28 B) at +0x18, +0x34, +0x50, +0x6C, +0x88; float 1.0 at +0xC4; attach-to-parent virtual at slot +0x108 (called by the parser)
+struct CGuiControl : C_00830438 {
 };
 
 struct C_00830a48 {
@@ -2079,7 +2057,7 @@ struct C_008319c0 : C_008316d8 {
 };
 static_assert(sizeof(C_008319c0) == 0x64);
 
-struct C_00831ac0 : C_0083de60 {
+struct C_00831ac0 : TCharTask {
     uint32_t field_0014;
     uint8_t pad_0018[0x4];
     uint32_t field_001c;
@@ -2102,19 +2080,24 @@ struct C_00832bb0 {
     uint32_t field_003c;
 };
 
-struct C_00832bf8 : C_0083de60 {
+// TModoAgacharse (vtable 0x00832BF8): GetName string
+struct TModoAgacharse : TCharTask {
 };
 
-struct C_00832cc0 : C_0083de60 {
+// TDisparar (vtable 0x00832CC0): GetName string
+struct TDisparar : TCharTask {
 };
 
-struct C_00832d80 : C_0083de60 {
+// TAtacar (vtable 0x00832D80): GetName string
+struct TAtacar : TCharTask {
 };
 
-struct C_00832e40 : C_0083de60 {
+// TFunctionRecargar (vtable 0x00832E40): GetName string
+struct TFunctionRecargar : TCharTask {
 };
 
-struct C_00832f68 : C_0083de60 {
+// TAtacarRafaga (vtable 0x00832F68): GetName string
+struct TAtacarRafaga : TCharTask {
     uint8_t pad_0014[0x50];
     uint32_t field_0064;
     uint32_t field_0068;
@@ -2140,7 +2123,8 @@ struct C_00832f68 : C_0083de60 {
     uint32_t field_00c4;
 };
 
-struct C_00833228 {
+// CCharWeaponFsm (vtable 0x00833228): state names STATE_READY/SACAR_ARMA/CHANGE_ARMA/ATTACK/RELOAD/WAIT_ARMA_READY/SACAR_PROYECTIL/SOLICITAR_CUERPO
+struct CCharWeaponFsm {
     void** vtbl;
     uint32_t field_0004;
     uint32_t field_0008;
@@ -2181,9 +2165,10 @@ struct C_00833228 {
     uint8_t field_0071;
     uint8_t pad_0072[0x2];
 };
-static_assert(sizeof(C_00833228) == 0x74);
+static_assert(sizeof(CCharWeaponFsm) == 0x74);
 
-struct C_008334f0 : C_00833228 {
+// CCharActionFsm (vtable 0x008334F0): derives from CCharWeaponFsm; adds STATE_CHANGE_ITEM/USAR_ITEM/CONTEXTUAL/START_AIM/STOP_AIM/PEDIR_AYUDA
+struct CCharActionFsm : CCharWeaponFsm {
     uint8_t pad_0074[0x4];
     uint32_t field_0078;
     uint32_t field_007c;
@@ -2214,7 +2199,7 @@ struct C_008334f0 : C_00833228 {
     float field_00d0;
     uint32_t field_00d4;
 };
-static_assert(sizeof(C_008334f0) == 0xd8);
+static_assert(sizeof(CCharActionFsm) == 0xd8);
 
 struct C_00833708 {
     void** vtbl;
@@ -2729,7 +2714,7 @@ struct C_00834790 : C_008344f0 {
 };
 static_assert(sizeof(C_00834790) == 0x7c);
 
-struct C_00834fa8 : C_0083de60 {
+struct C_00834fa8 : TCharTask {
     uint8_t pad_0014[0xf0];
     uint32_t field_0104;
     uint32_t field_0108;
@@ -2810,111 +2795,77 @@ struct C_00835228 {
 };
 static_assert(sizeof(C_00835228) == 0xdc);
 
-struct C_0083aa80 {
+struct C_00835398 {
     void** vtbl;
     uint32_t field_0004;
-    uint8_t pad_0008[0x5fc];
-    uint32_t field_0604;
-    uint32_t field_0608;
-    uint32_t field_060c;
-    uint8_t pad_0610[0x4];
-    uint32_t field_0614;
-    uint32_t field_0618;
-    uint8_t pad_061c[0x10];
-    uint32_t field_062c;
-    uint32_t field_0630;
-    uint8_t pad_0634[0x4];
-    uint32_t field_0638;
-    uint32_t field_063c;
-    uint8_t pad_0640[0x30];
-    uint32_t field_0670;
-    uint8_t pad_0674[0x4];
-    uint32_t field_0678;
-    uint32_t field_067c;
-    uint32_t field_0680;
-    uint8_t field_0684;
-    uint8_t field_0685;
-    uint8_t pad_0686[0x6];
-    uint32_t field_068c;
-    uint8_t pad_0690[0x10];
-    uint8_t field_06a0;
-    uint8_t pad_06a1[0x3];
-    uint32_t field_06a4;
-    uint32_t field_06a8;
-    uint32_t field_06ac;
-    uint8_t pad_06b0[0x4];
-    uint32_t field_06b4;
-    uint32_t field_06b8;
-    uint32_t field_06bc;
-    uint32_t field_06c0;
-    uint32_t field_06c4;
-    uint32_t field_06c8;
-    uint8_t pad_06cc[0x8];
-    uint32_t field_06d4;
-    uint32_t field_06d8;
-    uint32_t field_06dc;
-    uint32_t field_06e0;
-    uint32_t field_06e4;
-    uint8_t field_06e8;
-    uint8_t pad_06e9[0x3];
-    uint32_t field_06ec;
-    uint32_t field_06f0;
-    uint8_t pad_06f4[0x4];
-    uint8_t field_06f8;
-    uint8_t pad_06f9[0xf];
+    uint8_t pad_0008[0x24];
+    uint32_t field_002c;
+    uint8_t pad_0030[0x250];
+    uint32_t field_0280;
+    uint8_t pad_0284[0x40];
+    uint32_t field_02c4;
+    uint8_t pad_02c8[0x78];
+    uint32_t field_0340;
+    uint8_t pad_0344[0xa0];
+    uint32_t field_03e4;
+    uint8_t pad_03e8[0x310];
+    uint32_t field_06f8;
+    uint8_t pad_06fc[0xc];
     uint32_t field_0708;
     uint32_t field_070c;
-    uint32_t field_0710;
-    uint32_t field_0714;
-    uint32_t field_0718;
-};
-static_assert(sizeof(C_0083aa80) == 0x71c);
-
-struct C_00835398 : C_0083aa80 {
 };
 
-struct C_0083e050 {
+// TAiState (vtable 0x0083E050): base of TDistraido/TDudoso/TAlerta/TCombate (alert levels), TMovilA* and TFnc* (slot 8 returns the T* name)
+struct TAiState {
     void** vtbl;
 };
 
-struct C_00839118 : C_0083e050 {
+// TMovilAPunto (vtable 0x00839118): GetName string
+struct TMovilAPunto : TAiState {
     uint8_t pad_0004[0xc];
     uint32_t field_0010;
     uint32_t field_0014;
     uint32_t field_0018;
 };
 
-struct C_00839238 : C_0083e050 {
+// TMovilAPunto_2 (vtable 0x00839238): GetName string shared with 0x839118 (second variant)
+struct TMovilAPunto_2 : TAiState {
     uint8_t pad_0004[0x10];
     uint32_t field_0014;
     uint32_t field_0018;
     uint32_t field_001c;
 };
 
-struct C_008392c0 : C_0083e050 {
+// TMovilAPuntoRastreo (vtable 0x008392C0): GetName string
+struct TMovilAPuntoRastreo : TAiState {
     uint8_t pad_0004[0x14];
     uint32_t field_0018;
     uint32_t field_001c;
     uint32_t field_0020;
 };
 
-struct C_00839358 : C_0083e050 {
+// TMovilAParapeto (vtable 0x00839358): GetName string
+struct TMovilAParapeto : TAiState {
 };
 
-struct C_008393f0 : C_0083e050 {
+// TMovilAInteractivo (vtable 0x008393F0): GetName string
+struct TMovilAInteractivo : TAiState {
 };
 
-struct C_008396b8 : C_0083e050 {
+// TMovilAPuntoParapetandose (vtable 0x008396B8): GetName string
+struct TMovilAPuntoParapetandose : TAiState {
     uint8_t pad_0004[0x14];
     uint32_t field_0018;
     uint32_t field_001c;
     uint32_t field_0020;
 };
 
-struct C_00839758 : C_0083e050 {
+// TMovilAInteractivo_2 (vtable 0x00839758): GetName string shared with 0x8393F0 (second variant)
+struct TMovilAInteractivo_2 : TAiState {
 };
 
-struct C_008397e0 : C_0083e050 {
+// TFncRastrear (vtable 0x008397E0): GetName string
+struct TFncRastrear : TAiState {
     uint8_t pad_0004[0xc];
     uint32_t field_0010;
     uint32_t field_0014;
@@ -2931,7 +2882,8 @@ struct C_008397e0 : C_0083e050 {
     float field_0050;
 };
 
-struct C_00839878 : C_0083e050 {
+// TFncBusqueda (vtable 0x00839878): GetName string
+struct TFncBusqueda : TAiState {
     uint8_t pad_0004[0xc];
     uint32_t field_0010;
     uint32_t field_0014;
@@ -2939,14 +2891,16 @@ struct C_00839878 : C_0083e050 {
     uint32_t field_001c;
 };
 
-struct C_00839910 : C_0083e050 {
+// TFncAtacarDesdePosicion (vtable 0x00839910): GetName string
+struct TFncAtacarDesdePosicion : TAiState {
     uint8_t pad_0004[0xc];
     uint32_t field_0010;
     uint32_t field_0014;
     uint32_t field_0018;
 };
 
-struct C_00839d70 : C_0083e050 {
+// TFncIrAParapeto (vtable 0x00839D70): GetName string
+struct TFncIrAParapeto : TAiState {
     uint8_t pad_0004[0x8];
     uint32_t field_000c;
     uint32_t field_0010;
@@ -2957,27 +2911,34 @@ struct C_00839d70 : C_0083e050 {
     uint32_t field_0024;
 };
 
-struct C_00839e08 : C_0083e050 {
+// TFncVigilarDesdeParapeto (vtable 0x00839E08): GetName string
+struct TFncVigilarDesdeParapeto : TAiState {
 };
 
-struct C_00839ea8 : C_0083e050 {
+// TFncAtacarDesdeParapeto (vtable 0x00839EA8): GetName string
+struct TFncAtacarDesdeParapeto : TAiState {
 };
 
-struct C_0083a248 : C_0083e050 {
+// TDistraido (vtable 0x0083A248): GetName string
+struct TDistraido : TAiState {
 };
 
-struct C_0083a2d8 : C_0083e050 {
+// TDudoso (vtable 0x0083A2D8): GetName string
+struct TDudoso : TAiState {
     uint8_t pad_0004[0x2c];
     uint8_t field_0030;
 };
 
-struct C_0083a368 : C_0083e050 {
+// TAlerta (vtable 0x0083A368): GetName string
+struct TAlerta : TAiState {
 };
 
-struct C_0083a3f8 : C_0083e050 {
+// TEstatico (vtable 0x0083A3F8): GetName string
+struct TEstatico : TAiState {
 };
 
-struct C_0083a660 : C_0083e050 {
+// TOrden (vtable 0x0083A660): GetName string
+struct TOrden : TAiState {
     uint8_t pad_0004[0x60];
     uint32_t field_0064;
     uint32_t field_0068;
@@ -3003,7 +2964,8 @@ struct C_0083a660 : C_0083e050 {
     uint32_t field_00bc;
 };
 
-struct C_0083a788 : C_0083e050 {
+// TFncInteractivo (vtable 0x0083A788): GetName string
+struct TFncInteractivo : TAiState {
     uint8_t pad_0004[0x14];
     uint32_t field_0018;
     uint32_t field_001c;
@@ -3012,10 +2974,12 @@ struct C_0083a788 : C_0083e050 {
     uint32_t field_0028;
 };
 
-struct C_0083a8b8 : C_0083e050 {
+// TCombate (vtable 0x0083A8B8): GetName string
+struct TCombate : TAiState {
 };
 
-struct C_0083a948 : C_0083e050 {
+// TFncMacroOrden (vtable 0x0083A948): GetName string
+struct TFncMacroOrden : TAiState {
     uint8_t pad_0004[0x9c];
     uint32_t field_00a0;
     uint32_t field_00a4;
@@ -3037,6 +3001,13 @@ struct C_0083a948 : C_0083e050 {
     uint32_t field_00f4;
     uint32_t field_00f8;
 };
+
+struct C_0083aa80 : C_00835398 {
+    uint32_t field_0710;
+    uint32_t field_0714;
+    uint32_t field_0718;
+};
+static_assert(sizeof(C_0083aa80) == 0x71c);
 
 struct C_0083ab58 {
     void** vtbl;
@@ -3426,7 +3397,8 @@ struct C_0083bc28 {
 };
 static_assert(sizeof(C_0083bc28) == 0x70);
 
-struct C_0083c0d8 : C_0083de60 {
+// TDarObjeto (vtable 0x0083C0D8): GetName string
+struct TDarObjeto : TCharTask {
     uint8_t pad_0014[0x64];
     uint32_t field_0078;
 };
@@ -3553,7 +3525,8 @@ struct C_0083c478 : C_0083c388 {
 };
 static_assert(sizeof(C_0083c478) == 0x60);
 
-struct C_0083da30 : C_0083de60 {
+// TAutonomo (vtable 0x0083DA30): GetName string
+struct TAutonomo : TCharTask {
     uint8_t pad_0014[0x50];
     uint8_t field_0064;
     uint8_t pad_0065[0x3];
@@ -3567,14 +3540,16 @@ struct C_0083da30 : C_0083de60 {
     uint32_t field_0084;
 };
 
-struct C_0083dae8 : C_0083de60 {
+// TLanzarObjetoAPos (vtable 0x0083DAE8): GetName string
+struct TLanzarObjetoAPos : TCharTask {
     uint8_t pad_0014[0x28];
     uint32_t field_003c;
     uint32_t field_0040;
     uint32_t field_0044;
 };
 
-struct C_0083dc90 : C_0083de60 {
+// TConversacion (vtable 0x0083DC90): GetName string
+struct TConversacion : TCharTask {
     uint8_t pad_0014[0x68];
     uint32_t field_007c;
     uint32_t field_0080;
@@ -3899,7 +3874,8 @@ struct C_0085e7d8 {
     uint32_t field_002c;
 };
 
-struct C_0083ee68 : C_0085e7d8 {
+// CTextDatabase (vtable 0x0083EE68): Texts/Global.fli, Texts/SysRed.fli, Texts/MultiPla.fli
+struct CTextDatabase : C_0085e7d8 {
 };
 
 struct C_00871914 {
@@ -4294,7 +4270,8 @@ struct C_0083f5d8 : C_0083f578 {
 };
 static_assert(sizeof(C_0083f5d8) == 0x11c);
 
-struct C_0083f6c0 {
+// CNetProfile (vtable 0x0083F6C0): CSF Data\NetProfile; created by app init (5984 B)
+struct CNetProfile {
     void** vtbl;
     uint8_t pad_0004[0x4];
     uint8_t field_0008;
@@ -4317,16 +4294,16 @@ struct C_0083f6c0 {
     uint32_t field_1758;
     uint32_t field_175c;
 };
-static_assert(sizeof(C_0083f6c0) == 0x1760);
+static_assert(sizeof(CNetProfile) == 0x1760);
 
-struct C_0083f630 : C_0083f6c0 {
+struct C_0083f630 : CNetProfile {
 };
 
 struct C_0083fc98 {
     void** vtbl;
 };
 
-struct C_0083ffa8 {
+struct C_0083fdf4 {
     void** vtbl;
     uint32_t field_0004;
     uint32_t field_0008;
@@ -4339,15 +4316,16 @@ struct C_0083ffa8 {
     uint32_t field_002c;
     uint32_t field_0030;
     uint8_t pad_0034[0x4];
-    uint16_t field_0038;
-    uint8_t pad_003a[0xe];
+    uint32_t field_0038;
+    uint8_t pad_003c[0xc];
     uint32_t field_0048;
     uint32_t field_004c;
 };
-static_assert(sizeof(C_0083ffa8) == 0x50);
 
-struct C_0083fdf4 : C_0083ffa8 {
+// COptionsFile (vtable 0x0083FFA8): CSF Data\Options, Options; created by app init (80 B); not the COptions of src/core/options.cpp
+struct COptionsFile : C_0083fdf4 {
 };
+static_assert(sizeof(COptionsFile) == 0x50);
 
 struct C_0084004c {
     void** vtbl;
@@ -4520,7 +4498,8 @@ struct C_008407a8 : C_008405e0 {
 };
 static_assert(sizeof(C_008407a8) == 0x144);
 
-struct C_00840920 {
+// CSaveGameManager (vtable 0x00840920): CSF Data\Games\, %s%d.sav, %dquick.sav; created by app init 0x506F70 (176 B)
+struct CSaveGameManager {
     void** vtbl;
     uint8_t field_0004;
     uint8_t pad_0005[0x7];
@@ -4559,7 +4538,7 @@ struct C_00840920 {
     uint32_t field_00a8;
     uint32_t field_00ac;
 };
-static_assert(sizeof(C_00840920) == 0xb0);
+static_assert(sizeof(CSaveGameManager) == 0xb0);
 
 struct C_00840af8 {
     void** vtbl;
@@ -4569,7 +4548,8 @@ struct C_00840af8 {
     uint32_t field_0010;
 };
 
-struct C_008409f0 : C_00840af8 {
+// CProfileManager (vtable 0x008409F0): CSF Data\Profiles\Profiles, ./Profiles; created by app init (160 B)
+struct CProfileManager : C_00840af8 {
     uint8_t pad_0014[0x4];
     uint32_t field_0018;
     uint8_t pad_001c[0xc];
@@ -4596,7 +4576,7 @@ struct C_008409f0 : C_00840af8 {
     uint32_t field_0098;
     uint32_t field_009c;
 };
-static_assert(sizeof(C_008409f0) == 0xa0);
+static_assert(sizeof(CProfileManager) == 0xa0);
 
 struct C_00840d54 {
     void** vtbl;
@@ -4915,48 +4895,6 @@ struct C_00841090 {
 };
 static_assert(sizeof(C_00841090) == 0x9c);
 
-struct C_00841128 {
-    void** vtbl;
-    uint32_t field_0004;
-    uint32_t field_0008;
-    uint32_t field_000c;
-    uint32_t field_0010;
-    float field_0014;
-    float field_0018;
-    uint8_t pad_001c[0xc];
-    uint32_t field_0028;
-    uint32_t field_002c;
-    uint32_t field_0030;
-    float field_0034;
-    uint8_t field_0038;
-    uint8_t field_0039;
-    uint8_t field_003a;
-    uint8_t pad_003b[0x1];
-    uint8_t field_003c;
-    uint8_t pad_003d[0x3];
-    uint32_t field_0040;
-    uint8_t field_0044;
-    uint8_t pad_0045[0x3];
-    float field_0048;
-    float field_004c;
-    uint32_t field_0050;
-    uint32_t field_0054;
-    uint32_t field_0058;
-    uint8_t field_005c;
-    uint8_t field_005d;
-    uint8_t field_005e;
-    uint8_t field_005f;
-    uint32_t field_0060;
-    float field_0064;
-    uint32_t field_0068;
-    uint32_t field_006c;
-    uint32_t field_0070;
-    uint8_t pad_0074[0x4];
-    uint32_t field_0078;
-    uint8_t pad_007c[0x4];
-};
-static_assert(sizeof(C_00841128) == 0x80);
-
 struct C_008410b0 {
     void** vtbl;
     uint32_t field_0004;
@@ -4997,6 +4935,14 @@ struct C_008410b0 {
 };
 static_assert(sizeof(C_008410b0) == 0x70);
 
+struct C_00841128 : C_008410b0 {
+    uint32_t field_0070;
+    uint8_t pad_0074[0x4];
+    uint32_t field_0078;
+    uint8_t pad_007c[0x4];
+};
+static_assert(sizeof(C_00841128) == 0x80);
+
 struct C_008411a0 {
     void** vtbl;
     uint32_t field_0004;
@@ -5031,7 +4977,8 @@ struct C_008411a0 {
 };
 static_assert(sizeof(C_008411a0) == 0x64);
 
-struct C_00841370 : C_0083042c {
+// CMenuMessageBox (vtable 0x00841370): BotonYes/No/Cancel/Retry/Continue/OK, BotonSlot1-5
+struct CMenuMessageBox : CMenuScreen {
     uint32_t field_0958;
     uint32_t field_095c;
     uint32_t field_0960;
@@ -5056,9 +5003,10 @@ struct C_00841370 : C_0083042c {
     uint32_t field_09ac;
     uint32_t field_09b0;
 };
-static_assert(sizeof(C_00841370) == 0x9b4);
+static_assert(sizeof(CMenuMessageBox) == 0x9b4);
 
-struct C_00841450 {
+// CMenuTextInput (vtable 0x00841450): UserEditBox, EstaticoEdit, BotonOkQuestion/CancelQuestion
+struct CMenuTextInput {
     void** vtbl;
     uint8_t pad_0004[0xc];
     uint32_t field_0010;
@@ -5076,7 +5024,7 @@ struct C_00841450 {
     uint8_t field_0058;
     uint8_t pad_0059[0x3];
 };
-static_assert(sizeof(C_00841450) == 0x5c);
+static_assert(sizeof(CMenuTextInput) == 0x5c);
 
 struct C_008414e8 {
     void** vtbl;
@@ -5113,7 +5061,8 @@ struct C_008414e8 {
 };
 static_assert(sizeof(C_008414e8) == 0x190);
 
-struct C_00841598 {
+// CMenuProgressBar (vtable 0x00841598): BarraProgreso
+struct CMenuProgressBar {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -5124,9 +5073,10 @@ struct C_00841598 {
     uint32_t field_0020;
     uint32_t field_0024;
 };
-static_assert(sizeof(C_00841598) == 0x28);
+static_assert(sizeof(CMenuProgressBar) == 0x28);
 
-struct C_00841688 {
+// CMenuScenarioSelect (vtable 0x00841688): ListboxEscenarios, Briefing, Estrella%d, Puntuacion, BotonPlay/Load/Extras
+struct CMenuScenarioSelect {
     void** vtbl;
     uint8_t pad_0004[0xc];
     uint32_t field_0010;
@@ -5159,9 +5109,10 @@ struct C_00841688 {
     uint32_t field_0090;
     float field_0094;
 };
-static_assert(sizeof(C_00841688) == 0x98);
+static_assert(sizeof(CMenuScenarioSelect) == 0x98);
 
-struct C_00841810 {
+// CMenuMpLoadout (vtable 0x00841810): ListboxTeam, ListboxClass, ListboxPrimaryWeapon, BotonPlay
+struct CMenuMpLoadout {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0xc];
@@ -5184,9 +5135,10 @@ struct C_00841810 {
     uint32_t field_0054;
     uint32_t field_0058;
 };
-static_assert(sizeof(C_00841810) == 0x5c);
+static_assert(sizeof(CMenuMpLoadout) == 0x5c);
 
-struct C_008418b8 {
+// CMenuCredits (vtable 0x008418B8): menus\credits.fbs, Texts/CTitles.fli
+struct CMenuCredits {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -5196,9 +5148,10 @@ struct C_008418b8 {
     uint32_t field_001c;
     uint8_t pad_0020[0x68];
 };
-static_assert(sizeof(C_008418b8) == 0x88);
+static_assert(sizeof(CMenuCredits) == 0x88);
 
-struct C_00841978 {
+// CMenuSceneSelect (vtable 0x00841978): Menus/Escenas.txt, ListboxScenes
+struct CMenuSceneSelect {
     void** vtbl;
     uint8_t pad_0004[0xc];
     uint32_t field_0010;
@@ -5217,9 +5170,10 @@ struct C_00841978 {
     uint32_t field_004c;
     uint32_t field_0050;
 };
-static_assert(sizeof(C_00841978) == 0x54);
+static_assert(sizeof(CMenuSceneSelect) == 0x54);
 
-struct C_00841ae8 {
+// CMenuMpServerInfo (vtable 0x00841AE8): Server, MapaValor, TiempoValor, StatDMatch/StatRojoTDMatch/StatAzulTDMatch, StatEspectadores
+struct CMenuMpServerInfo {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -5253,9 +5207,10 @@ struct C_00841ae8 {
     uint32_t field_0200;
     uint32_t field_0204;
 };
-static_assert(sizeof(C_00841ae8) == 0x208);
+static_assert(sizeof(CMenuMpServerInfo) == 0x208);
 
-struct C_00841b78 {
+// CMenuEula (vtable 0x00841B78): .FICHERO_EIDOS, BotonAccept/Decline, BotonNext/Prev
+struct CMenuEula {
     void** vtbl;
     uint8_t pad_0004[0xc];
     uint32_t field_0010;
@@ -5278,9 +5233,10 @@ struct C_00841b78 {
     uint32_t field_0160;
     uint8_t pad_0164[0x4];
 };
-static_assert(sizeof(C_00841b78) == 0x168);
+static_assert(sizeof(CMenuEula) == 0x168);
 
-struct C_00841cd0 {
+// CMenuLanguage (vtable 0x00841CD0): Lang/
+struct CMenuLanguage {
     void** vtbl;
     uint8_t pad_0004[0x10];
     uint32_t field_0014;
@@ -5301,9 +5257,10 @@ struct C_00841cd0 {
     uint8_t field_0058;
     uint8_t pad_0059[0x3];
 };
-static_assert(sizeof(C_00841cd0) == 0x5c);
+static_assert(sizeof(CMenuLanguage) == 0x5c);
 
-struct C_00841d70 {
+// CMenuMpPause (vtable 0x00841D70): BotonContinue/Partida/Friends/Opciones/Suicide/Exit/Character, StaticNotificaciones
+struct CMenuMpPause {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -5326,9 +5283,10 @@ struct C_00841d70 {
     float field_0048;
     float field_004c;
 };
-static_assert(sizeof(C_00841d70) == 0x50);
+static_assert(sizeof(CMenuMpPause) == 0x50);
 
-struct C_00841ee0 {
+// CMenuIntroVideo (vtable 0x00841EE0): videos/eidos.bik
+struct CMenuIntroVideo {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -5346,9 +5304,10 @@ struct C_00841ee0 {
     uint8_t field_0030;
     uint8_t pad_0031[0x3];
 };
-static_assert(sizeof(C_00841ee0) == 0x34);
+static_assert(sizeof(CMenuIntroVideo) == 0x34);
 
-struct C_00842150 {
+// CMenuLoading (vtable 0x00842150): Menus/Textures/loading.png, Briefing, Caretos, Progreso, .DATOS_FOTOS_PC
+struct CMenuLoading {
     void** vtbl;
     uint8_t pad_0004[0x24];
     uint32_t field_0028;
@@ -5388,9 +5347,10 @@ struct C_00842150 {
     uint32_t field_00d8;
     uint8_t pad_00dc[0x40];
 };
-static_assert(sizeof(C_00842150) == 0x11c);
+static_assert(sizeof(CMenuLoading) == 0x11c);
 
-struct C_00842220 : C_0083042c {
+// CMenuLoadGame (vtable 0x00842220): ListboxLoadGames, BotonLoad, BotonBack
+struct CMenuLoadGame : CMenuScreen {
 };
 
 struct C_00842328 {
@@ -5431,7 +5391,8 @@ struct C_008423d8 {
 };
 static_assert(sizeof(C_008423d8) == 0x124);
 
-struct C_00842488 {
+// CMenuPause (vtable 0x00842488): BotonContinue/Load/Save/Restart/Opciones/Exit
+struct CMenuPause {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -5450,12 +5411,14 @@ struct C_00842488 {
     uint32_t field_0040;
     uint32_t field_0044;
 };
-static_assert(sizeof(C_00842488) == 0x48);
+static_assert(sizeof(CMenuPause) == 0x48);
 
-struct C_00842550 : C_0083042c {
+// CMenuMain (vtable 0x00842550): BotonCampanya, BotonMultiPlayer, BotonOpciones, BotonCreditos
+struct CMenuMain : CMenuScreen {
 };
 
-struct C_00842638 {
+// CMenuOptions (vtable 0x00842638): BotonJuego, BotonSonido, BotonVideo
+struct CMenuOptions {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0xc];
@@ -5469,16 +5432,19 @@ struct C_00842638 {
     uint32_t field_0030;
     uint32_t field_0034;
 };
-static_assert(sizeof(C_00842638) == 0x38);
+static_assert(sizeof(CMenuOptions) == 0x38);
 
-struct C_00842788 : C_0083042c {
+// CMenuGameOptions (vtable 0x00842788): BotonInvertAxis, BotonSubtitles, voice output/mute
+struct CMenuGameOptions : CMenuScreen {
 };
 
-struct C_00842858 : C_00842638 {
+// CMenuOptionsPC (vtable 0x00842858): derives from CMenuOptions; adds BotonControles
+struct CMenuOptionsPC : CMenuOptions {
 };
-static_assert(sizeof(C_00842858) == 0x38);
+static_assert(sizeof(CMenuOptionsPC) == 0x38);
 
-struct C_00842908 : C_0083042c {
+// CMenuProfiles (vtable 0x00842908): ListboxProfiles, BotonCreate/Delete/Select
+struct CMenuProfiles : CMenuScreen {
 };
 
 struct C_00842a08 {
@@ -5493,7 +5459,8 @@ struct C_00842a08 {
 };
 static_assert(sizeof(C_00842a08) == 0x24);
 
-struct C_00842ad0 : C_0083042c {
+// CMenuSoundOptions (vtable 0x00842AD0): SliderFX, SliderMusic, GroupRadioAcoustic
+struct CMenuSoundOptions : CMenuScreen {
 };
 
 struct C_00842bc8 {
@@ -5523,10 +5490,12 @@ struct C_00842bc8 {
 };
 static_assert(sizeof(C_00842bc8) == 0x5c);
 
-struct C_00842e08 : C_0083042c {
+// CMenuMissionInfo (vtable 0x00842E08): PanelObjetivos, PanelMapaTactico, PanelKillsReport, PanelBichos, tab buttons
+struct CMenuMissionInfo : CMenuScreen {
 };
 
-struct C_008430f8 {
+// CMenuMpScoreBar (vtable 0x008430F8): LogoAlemanes/LogoAliados, EstaticoModo, EstaticoTiempo %02d:%02d
+struct CMenuMpScoreBar {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -5544,9 +5513,10 @@ struct C_008430f8 {
     uint8_t field_0038;
     uint8_t pad_0039[0x3];
 };
-static_assert(sizeof(C_008430f8) == 0x3c);
+static_assert(sizeof(CMenuMpScoreBar) == 0x3c);
 
-struct C_00843230 {
+// CMenuMpStats (vtable 0x00843230): ListboxEstadisticas, TextoTeam1/2
+struct CMenuMpStats {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -5561,7 +5531,7 @@ struct C_00843230 {
     uint32_t field_0084;
     uint32_t field_0088;
 };
-static_assert(sizeof(C_00843230) == 0x8c);
+static_assert(sizeof(CMenuMpStats) == 0x8c);
 
 struct C_008432b0 {
     void** vtbl;
@@ -5647,7 +5617,8 @@ struct C_008432b0 {
 };
 static_assert(sizeof(C_008432b0) == 0x158);
 
-struct C_008435f8 {
+// CMenuControls (vtable 0x008435F8): ListboxConfiguracion, BotonMovement/Look/Attack, BotonSave/Reset
+struct CMenuControls {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -5673,9 +5644,9 @@ struct C_008435f8 {
     uint32_t field_02d8;
     uint32_t field_02dc;
 };
-static_assert(sizeof(C_008435f8) == 0x2e0);
+static_assert(sizeof(CMenuControls) == 0x2e0);
 
-struct C_00843550 : C_008435f8 {
+struct C_00843550 : CMenuControls {
 };
 static_assert(sizeof(C_00843550) == 0x2e0);
 
@@ -5746,7 +5717,8 @@ struct C_00843720 {
     uint8_t field_027c;
 };
 
-struct C_00843830 {
+// CMenuMainPC (vtable 0x00843830): derives from CMenuMain; adds BotonExit, StaticCopyRight
+struct CMenuMainPC {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -5759,9 +5731,10 @@ struct C_00843830 {
     uint8_t field_003c;
     uint8_t pad_003d[0x3];
 };
-static_assert(sizeof(C_00843830) == 0x40);
+static_assert(sizeof(CMenuMainPC) == 0x40);
 
-struct C_008439b8 {
+// CMenuGameOptionsPC (vtable 0x008439B8): derives from CMenuGameOptions; adds SliderMouse
+struct CMenuGameOptionsPC {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -5788,9 +5761,9 @@ struct C_008439b8 {
     uint8_t field_0060;
     uint8_t pad_0061[0x3];
 };
-static_assert(sizeof(C_008439b8) == 0x64);
+static_assert(sizeof(CMenuGameOptionsPC) == 0x64);
 
-struct C_008438f0 : C_008439b8 {
+struct C_008438f0 : CMenuGameOptionsPC {
 };
 static_assert(sizeof(C_008438f0) == 0x64);
 
@@ -5815,7 +5788,8 @@ struct C_00843a90 {
 };
 static_assert(sizeof(C_00843a90) == 0x78);
 
-struct C_00843b30 {
+// CMenuSaveGame (vtable 0x00843B30): ListboxSaveGames, BotonNew, BotonErase
+struct CMenuSaveGame {
     void** vtbl;
     uint8_t pad_0004[0xc];
     uint32_t field_0010;
@@ -5839,9 +5813,10 @@ struct C_00843b30 {
     uint32_t field_0058;
     uint8_t pad_005c[0x34];
 };
-static_assert(sizeof(C_00843b30) == 0x90);
+static_assert(sizeof(CMenuSaveGame) == 0x90);
 
-struct C_00843cb8 {
+// CMenuExtras (vtable 0x00843CB8): menus\thumbnails.fbs, thumbShot, thumbDesc
+struct CMenuExtras {
     void** vtbl;
     uint8_t pad_0004[0xc];
     uint32_t field_0010;
@@ -5867,9 +5842,10 @@ struct C_00843cb8 {
     uint32_t field_0058;
     uint32_t field_005c;
 };
-static_assert(sizeof(C_00843cb8) == 0x60);
+static_assert(sizeof(CMenuExtras) == 0x60);
 
-struct C_00843db8 {
+// CMenuSoundOptionsPC (vtable 0x00843DB8): derives from CMenuSoundOptions; adds Switch_SB_XFI (Sound Blaster X-Fi)
+struct CMenuSoundOptionsPC {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -5899,7 +5875,7 @@ struct C_00843db8 {
     uint8_t field_0068;
     uint8_t pad_0069[0x3];
 };
-static_assert(sizeof(C_00843db8) == 0x6c);
+static_assert(sizeof(CMenuSoundOptionsPC) == 0x6c);
 
 struct C_00843ed0 {
     void** vtbl;
@@ -5934,7 +5910,8 @@ struct C_00843ed0 {
 };
 static_assert(sizeof(C_00843ed0) == 0xb4);
 
-struct C_00844000 {
+// CMenuVideoAdvanced (vtable 0x00844000): TextureQuality, ModelQuality, Shadows, Antialiasing, VerticalSync, WaterQuality
+struct CMenuVideoAdvanced {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -5956,9 +5933,10 @@ struct C_00844000 {
     uint32_t field_004c;
     uint32_t field_0050;
 };
-static_assert(sizeof(C_00844000) == 0x54);
+static_assert(sizeof(CMenuVideoAdvanced) == 0x54);
 
-struct C_00844148 {
+// CMenuVideoOptions (vtable 0x00844148): 640 x 480 .. 1024 x 768, Brightness, Quality, Advanced
+struct CMenuVideoOptions {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -5994,9 +5972,9 @@ struct C_00844148 {
     uint8_t field_007c;
     uint8_t pad_007d[0x3];
 };
-static_assert(sizeof(C_00844148) == 0x80);
+static_assert(sizeof(CMenuVideoOptions) == 0x80);
 
-struct C_008440a0 : C_00844148 {
+struct C_008440a0 : CMenuVideoOptions {
 };
 static_assert(sizeof(C_008440a0) == 0x80);
 
@@ -6251,7 +6229,8 @@ struct C_008453a4 : C_00845368 {
     uint8_t field_0018;
 };
 
-struct C_00845438 {
+// CMenuAccountEdit (vtable 0x00845438): EdNombreCuenta, EdPasswordCuenta, EdRetypePasswordCuenta, BotonSalvarCambios
+struct CMenuAccountEdit {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -6271,9 +6250,10 @@ struct C_00845438 {
     uint32_t field_0288;
     uint8_t pad_028c[0x14];
 };
-static_assert(sizeof(C_00845438) == 0x2a0);
+static_assert(sizeof(CMenuAccountEdit) == 0x2a0);
 
-struct C_00845570 {
+// CMenuPlayerInfo (vtable 0x00845570): EstaticoNombrePlayer, BotonRequestFriend, BotonToggleVoice, EstaticoInfoAmistad
+struct CMenuPlayerInfo {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0xc];
@@ -6292,9 +6272,10 @@ struct C_00845570 {
     uint32_t field_0044;
     uint32_t field_0048;
 };
-static_assert(sizeof(C_00845570) == 0x4c);
+static_assert(sizeof(CMenuPlayerInfo) == 0x4c);
 
-struct C_00845678 {
+// CMenuPlayerList (vtable 0x00845678): ListaJugadores
+struct CMenuPlayerList {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -6310,9 +6291,10 @@ struct C_00845678 {
     uint32_t field_0230;
     uint32_t field_0234;
 };
-static_assert(sizeof(C_00845678) == 0x238);
+static_assert(sizeof(CMenuPlayerList) == 0x238);
 
-struct C_00845740 {
+// CMenuMpOnline (vtable 0x00845740): BotonQuickMatch, BotonOptiMatch, BotonCreateMatch, BotonFriends
+struct CMenuMpOnline {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0xc];
@@ -6339,9 +6321,10 @@ struct C_00845740 {
     uint32_t field_004c;
     uint32_t field_0050;
 };
-static_assert(sizeof(C_00845740) == 0x54);
+static_assert(sizeof(CMenuMpOnline) == 0x54);
 
-struct C_00845990 {
+// CMenuMpSessions (vtable 0x00845990): ListboxPartidas, EdNombreSesion, EdPassword, ButJoin, ButEmpezar, ButPartidaPrivada, stFuegoAmigo
+struct CMenuMpSessions {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -6424,9 +6407,10 @@ struct C_00845990 {
     uint32_t field_0208;
     float field_020c;
 };
-static_assert(sizeof(C_00845990) == 0x210);
+static_assert(sizeof(CMenuMpSessions) == 0x210);
 
-struct C_00845af8 {
+// CMenuAccounts (vtable 0x00845AF8): ListaCuentas, BotonCrear/Borrar/Seleccionar
+struct CMenuAccounts {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0xc];
@@ -6450,9 +6434,10 @@ struct C_00845af8 {
     uint8_t field_0048;
     uint8_t pad_0049[0x3];
 };
-static_assert(sizeof(C_00845af8) == 0x4c);
+static_assert(sizeof(CMenuAccounts) == 0x4c);
 
-struct C_00845bf0 {
+// CMenuMpNetworkType (vtable 0x00845BF0): BotonLAN, BotonWAN
+struct CMenuMpNetworkType {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0xc];
@@ -6477,9 +6462,10 @@ struct C_00845bf0 {
     uint8_t field_0049;
     uint8_t pad_004a[0x2];
 };
-static_assert(sizeof(C_00845bf0) == 0x4c);
+static_assert(sizeof(CMenuMpNetworkType) == 0x4c);
 
-struct C_00845ca8 {
+// CMenuMpGameMode (vtable 0x00845CA8): BotonDMatch
+struct CMenuMpGameMode {
     void** vtbl;
     uint32_t field_0004;
     uint8_t pad_0008[0x8];
@@ -6492,9 +6478,9 @@ struct C_00845ca8 {
     uint32_t field_0028;
     uint32_t field_002c;
 };
-static_assert(sizeof(C_00845ca8) == 0x30);
+static_assert(sizeof(CMenuMpGameMode) == 0x30);
 
-struct C_00845d48 : C_00845990 {
+struct C_00845d48 : CMenuMpSessions {
 };
 static_assert(sizeof(C_00845d48) == 0x210);
 
@@ -6816,31 +6802,18 @@ struct C_00854d90 : C_008570a8 {
 };
 static_assert(sizeof(C_00854d90) == 0x1fc);
 
-struct C_00858180 {
+struct C_008580c0 {
     void** vtbl;
-    uint8_t pad_0004[0x8];
+    uint16_t field_0004;
+    uint16_t field_0006;
+    uint8_t pad_0008[0x4];
     uint32_t field_000c;
-    uint8_t pad_0010[0x34];
-    uint32_t field_0044;
-    uint32_t field_0048;
-    uint32_t field_004c;
-    uint8_t pad_0050[0x4];
-    uint8_t field_0054;
-    uint8_t field_0055;
-    uint8_t pad_0056[0xa];
-    uint32_t field_0060;
-    uint8_t pad_0064[0x4];
-    uint32_t field_0068;
-    uint32_t field_006c;
-    uint8_t field_0070;
-    uint8_t field_0071;
-    uint8_t pad_0072[0x6];
-    uint32_t field_0078;
-    uint32_t field_007c;
-    uint32_t field_0080;
-};
-
-struct C_008580c0 : C_00858180 {
+    uint8_t pad_0010[0x4];
+    uint8_t field_0014;
+    uint8_t pad_0015[0x1];
+    uint16_t field_0016;
+    uint8_t pad_0018[0x14];
+    uint32_t field_002c;
 };
 
 struct C_00858100 {
@@ -6859,6 +6832,27 @@ struct C_00858168 {
     uint32_t field_0008;
     uint8_t pad_000c[0x4];
     uint32_t field_0010;
+};
+
+struct C_00858180 : C_008580c0 {
+    uint8_t pad_0030[0x14];
+    uint32_t field_0044;
+    uint32_t field_0048;
+    uint32_t field_004c;
+    uint8_t pad_0050[0x4];
+    uint8_t field_0054;
+    uint8_t field_0055;
+    uint8_t pad_0056[0xa];
+    uint32_t field_0060;
+    uint8_t pad_0064[0x4];
+    uint32_t field_0068;
+    uint32_t field_006c;
+    uint8_t field_0070;
+    uint8_t field_0071;
+    uint8_t pad_0072[0x6];
+    uint32_t field_0078;
+    uint32_t field_007c;
+    uint32_t field_0080;
 };
 
 struct C_00858344 {
@@ -6881,7 +6875,8 @@ struct C_00858730 {
     uint32_t field_0014;
 };
 
-struct C_00859b88 {
+// RootDO (vtable 0x00859B88): RootDODDL.cpp DOClass name
+struct RootDO {
     void** vtbl;
     uint32_t field_0004;
     uint32_t field_0008;
@@ -6893,7 +6888,8 @@ struct C_00859b88 {
     uint16_t field_001c;
 };
 
-struct C_00858790 : C_00859b88 {
+// SessionClock (vtable 0x00858790): SessionClockDDL.cpp DOClass name
+struct SessionClock : RootDO {
     uint8_t pad_001e[0x2];
     uint16_t field_0020;
     uint16_t field_0022;
@@ -6977,23 +6973,24 @@ struct C_008592a8 {
     uint32_t field_0088;
 };
 
-struct C_00859d98 : C_00859b88 {
+// Session (vtable 0x00859D98): SessionDDL.cpp DOClass name
+struct Session : RootDO {
     uint8_t pad_001e[0x2];
     uint16_t field_0020;
     uint16_t field_0022;
 };
 
-struct C_00859eb0 {
+struct C_00859ea4 {
     void** vtbl;
     uint8_t pad_0004[0x4];
     uint32_t field_0008;
     uint32_t field_000c;
+};
+
+struct C_00859eb0 : C_00859ea4 {
     uint16_t field_0010;
     uint8_t pad_0012[0x2];
     uint32_t field_0014;
-};
-
-struct C_00859ea4 : C_00859eb0 {
 };
 
 struct C_0085a02c {
@@ -7125,7 +7122,8 @@ struct C_0085cc98 {
     uint32_t field_0010;
 };
 
-struct C_0085d278 : C_00859b88 {
+// PromotionReferee (vtable 0x0085D278): PromotionRefereeDDL.cpp DOClass name
+struct PromotionReferee : RootDO {
     uint8_t pad_001e[0x2];
     uint16_t field_0020;
     uint16_t field_0022;
@@ -8001,7 +7999,8 @@ struct C_00860e68 : C_00860178 {
 struct C_00860de0 : C_00860e68 {
 };
 
-struct C_00860fb8 : C_00860178 {
+// CCamera (vtable 0x00860FB8): 'Invalid projection type specified'
+struct CCamera : C_00860178 {
     uint32_t field_0004;
     uint32_t field_0008;
     uint32_t field_000c;
@@ -8047,9 +8046,9 @@ struct C_00860fb8 : C_00860178 {
     float field_00dc;
     float field_00e0;
 };
-static_assert(sizeof(C_00860fb8) == 0xe4);
+static_assert(sizeof(CCamera) == 0xe4);
 
-struct C_00860f10 : C_00860fb8 {
+struct C_00860f10 : CCamera {
 };
 
 struct C_00861068 : C_00860178 {
@@ -8184,7 +8183,8 @@ struct C_00861214 {
     void** vtbl;
 };
 
-struct C_00861328 : C_00860178 {
+// CRenderEngine (vtable 0x00861328): screenshot%03d.bmp, 'RwEngineSetSubSystem() ha fallado'
+struct CRenderEngine : C_00860178 {
     uint32_t field_0004;
     uint32_t field_0008;
     uint32_t field_000c;
@@ -8212,7 +8212,7 @@ struct C_00861328 : C_00860178 {
     uint8_t field_0058;
 };
 
-struct C_00861260 : C_00861328 {
+struct C_00861260 : CRenderEngine {
 };
 
 struct C_00861460 : C_00861260 {
@@ -8924,10 +8924,12 @@ static_assert(sizeof(C_00862e88) == 0x68);
 struct C_00862df0 : C_00862e88 {
 };
 
-struct C_00862f70 : C_00860178 {
+// CLightObject (vtable 0x00862F70): creates/destroys an RpLight with its RwFrame, adds/removes it from world and clump
+// ctor 0x6FD400: +0xC = RpLightCreate(type 0..3 -> 2/1/0x80/0x81); 4x4 matrix at +0x40
+struct CLightObject : C_00860178 {
     uint32_t field_0004;
     uint32_t field_0008;
-    uint32_t field_000c;
+    uint32_t m_pLight;
     uint32_t field_0010;
     uint8_t pad_0014[0x1c];
     uint32_t field_0030;
@@ -8957,9 +8959,10 @@ struct C_00862f70 : C_00860178 {
     uint8_t field_0081;
     uint8_t pad_0082[0x2];
 };
-static_assert(sizeof(C_00862f70) == 0x84);
+static_assert(sizeof(CLightObject) == 0x84);
+static_assert(offsetof(CLightObject, m_pLight) == 0xc);
 
-struct C_00862ef8 : C_00862f70 {
+struct C_00862ef8 : CLightObject {
 };
 
 struct C_00862fcc : C_00861068 {
@@ -9307,15 +9310,23 @@ struct C_00863d80 {
 struct C_00863d38 : C_00863d80 {
 };
 
-struct C_00863ed8 {
+// CInputBase (vtable 0x00863E58): base of CInputDirectInput
+struct CInputBase {
     void** vtbl;
     uint8_t field_0004;
     uint8_t pad_0005[0x3];
     uint32_t field_0008;
-    uint8_t pad_000c[0x10];
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
     uint32_t field_001c;
     uint32_t field_0020;
     uint32_t field_0024;
+};
+
+// CInputDirectInput (vtable 0x00863ED8): calls DirectInput8Create; created by the app (0x506CD0)
+struct CInputDirectInput : CInputBase {
     uint32_t field_0028;
     uint8_t pad_002c[0x200];
     uint32_t field_022c;
@@ -9349,9 +9360,6 @@ struct C_00863ed8 {
     uint32_t field_0cc0;
 };
 
-struct C_00863e58 : C_00863ed8 {
-};
-
 struct C_00863f60 {
     void** vtbl;
     uint32_t field_0004;
@@ -9365,7 +9373,8 @@ struct C_00863f60 {
     uint32_t field_002c;
 };
 
-struct C_00863ff8 : C_00864288 {
+// CGuiListBoxBase (vtable 0x00863FF8): common base of LISTBOX and LISTBOX_TEXTURES
+struct CGuiListBoxBase : CGuiControl {
     uint32_t field_01c8;
     uint32_t field_01cc;
     uint32_t field_01d0;
@@ -9430,7 +9439,8 @@ struct C_00864508 {
 };
 static_assert(sizeof(C_00864508) == 0xa8);
 
-struct C_00864b30 {
+// CGuiBuilder (vtable 0x00864B30): owns the per-keyword control factories (slots +0x18..+0x44) dispatched by the .fbs parser 0x71DBE0
+struct CGuiBuilder {
     void** vtbl;
     uint32_t field_0004;
     uint8_t field_0008;
@@ -9453,10 +9463,11 @@ struct C_00864b30 {
     uint32_t field_0084;
 };
 
-struct C_00864a58 : C_00864b30 {
+struct C_00864a58 : CGuiBuilder {
 };
 
-struct C_00864bc0 {
+// CGuiStatic (vtable 0x00864BC0): ESTATICO (slot +0x30 -> 0x7202A0)
+struct CGuiStatic {
     void** vtbl;
     uint8_t pad_0004[0x4];
     uint8_t field_0008;
@@ -9542,13 +9553,15 @@ struct C_00864bc0 {
     uint32_t field_0158;
     uint32_t field_015c;
 };
-static_assert(sizeof(C_00864bc0) == 0x160);
+static_assert(sizeof(CGuiStatic) == 0x160);
 
-struct C_00864e18 : C_00864288 {
+// CGuiEdit (vtable 0x00864E18): EDIT (slot +0x44 -> 0x720360)
+struct CGuiEdit : CGuiControl {
 };
-static_assert(sizeof(C_00864e18) == 0x1c8);
+static_assert(sizeof(CGuiEdit) == 0x1c8);
 
-struct C_00865070 : C_00863ff8 {
+// CGuiListBox (vtable 0x00865070): LISTBOX (slot +0x38 -> 0x720970)
+struct CGuiListBox : CGuiListBoxBase {
     uint8_t pad_01f5[0x3];
     uint32_t field_01f8;
     uint32_t field_01fc;
@@ -9565,9 +9578,10 @@ struct C_00865070 : C_00863ff8 {
     uint32_t field_0228;
     float field_022c;
 };
-static_assert(sizeof(C_00865070) == 0x230);
+static_assert(sizeof(CGuiListBox) == 0x230);
 
-struct C_00865328 : C_00864288 {
+// CGuiButton (vtable 0x00865328): BOTON (slot +0x20 -> 0x720090)
+struct CGuiButton : CGuiControl {
     uint32_t field_01c8;
     uint32_t field_01cc;
     float field_01d0;
@@ -9580,7 +9594,7 @@ struct C_00865328 : C_00864288 {
     uint8_t field_01ec;
     uint8_t pad_01ed[0x3];
 };
-static_assert(sizeof(C_00865328) == 0x1f0);
+static_assert(sizeof(CGuiButton) == 0x1f0);
 
 struct C_008655e8 {
     void** vtbl;
@@ -9728,7 +9742,8 @@ struct C_00865aa8 {
 };
 static_assert(sizeof(C_00865aa8) == 0x68);
 
-struct C_00865b40 {
+// CGuiPanel (vtable 0x00865B40): created for keyword PANEL (builder slot +0x18 -> 0x71F850)
+struct CGuiPanel {
     void** vtbl;
     uint8_t pad_0004[0x4];
     uint8_t field_0008;
@@ -9823,13 +9838,14 @@ struct C_00865b40 {
     uint8_t field_018a;
     uint8_t pad_018b[0x1];
 };
-static_assert(sizeof(C_00865b40) == 0x18c);
+static_assert(sizeof(CGuiPanel) == 0x18c);
 
 struct C_00865e04 {
     void** vtbl;
 };
 
-struct C_00865e38 {
+// CGuiSlider (vtable 0x00865E38): SLIDER (slot +0x34 -> 0x71F4E0, reads CONSOLE/HORIZONTAL)
+struct CGuiSlider {
     void** vtbl;
     uint8_t pad_0004[0x4];
     uint8_t field_0008;
@@ -9917,13 +9933,15 @@ struct C_00865e38 {
     uint8_t field_016a;
     uint8_t field_016b;
 };
-static_assert(sizeof(C_00865e38) == 0x16c);
+static_assert(sizeof(CGuiSlider) == 0x16c);
 
-struct C_008660c8 : C_00865b40 {
+// CGuiRadioGroup (vtable 0x008660C8): GROUP_RADIO (slot +0x1C -> 0x71F8B0); derives from CGuiPanel
+struct CGuiRadioGroup : CGuiPanel {
 };
-static_assert(sizeof(C_008660c8) == 0x18c);
+static_assert(sizeof(CGuiRadioGroup) == 0x18c);
 
-struct C_00866340 : C_00865328 {
+// CGuiChoiceButton (vtable 0x00866340): BOTON_CHOICE (slot +0x28 -> 0x71FF70)
+struct CGuiChoiceButton : CGuiButton {
     uint8_t pad_01f0[0x4];
     uint32_t field_01f4;
     uint32_t field_01f8;
@@ -9931,9 +9949,10 @@ struct C_00866340 : C_00865328 {
     uint32_t field_0200;
     uint32_t field_0204;
 };
-static_assert(sizeof(C_00866340) == 0x208);
+static_assert(sizeof(CGuiChoiceButton) == 0x208);
 
-struct C_00866600 : C_00865328 {
+// CGuiChoiceNumButton (vtable 0x00866600): BOTON_CHOICE_NUM (slot +0x2C -> 0x71FFD0)
+struct CGuiChoiceNumButton : CGuiButton {
     uint32_t field_01f0;
     uint32_t field_01f4;
     uint32_t field_01f8;
@@ -9941,13 +9960,15 @@ struct C_00866600 : C_00865328 {
     uint32_t field_0200;
     uint32_t field_0204;
 };
-static_assert(sizeof(C_00866600) == 0x208);
+static_assert(sizeof(CGuiChoiceNumButton) == 0x208);
 
-struct C_008668b8 : C_00865328 {
+// CGuiRadioButton (vtable 0x008668B8): BOTON_RADIO (slot +0x24 -> 0x720030)
+struct CGuiRadioButton : CGuiButton {
 };
-static_assert(sizeof(C_008668b8) == 0x1f0);
+static_assert(sizeof(CGuiRadioButton) == 0x1f0);
 
-struct C_00866b58 {
+// CGuiSwitch (vtable 0x00866B58): SWITCH (slot +0x40 -> 0x7200F0)
+struct CGuiSwitch {
     void** vtbl;
     uint8_t pad_0004[0x4];
     uint8_t field_0008;
@@ -10040,16 +10061,17 @@ struct C_00866b58 {
     uint32_t field_0178;
     float field_017c;
 };
-static_assert(sizeof(C_00866b58) == 0x180);
+static_assert(sizeof(CGuiSwitch) == 0x180);
 
-struct C_00866db8 : C_00863ff8 {
+// CGuiTextureListBox (vtable 0x00866DB8): LISTBOX_TEXTURES (slot +0x3C -> 0x7208F0)
+struct CGuiTextureListBox : CGuiListBoxBase {
     uint8_t pad_01f5[0x7];
     uint32_t field_01fc;
     uint32_t field_0200;
     uint32_t field_0204;
     uint32_t field_0208;
 };
-static_assert(sizeof(C_00866db8) == 0x20c);
+static_assert(sizeof(CGuiTextureListBox) == 0x20c);
 
 struct C_0086704c {
     void** vtbl;
@@ -10466,7 +10488,8 @@ struct C_00867900 : C_008678a8 {
     uint32_t field_083c;
 };
 
-struct C_00867a58 : C_00859b88 {
+// NetCogible (vtable 0x00867A58): PCGenerados\NetCogibleDDL.cpp DOClass name
+struct NetCogible : RootDO {
     uint8_t pad_001e[0x2];
     uint16_t field_0020;
     uint16_t field_0022;
@@ -10494,10 +10517,12 @@ struct C_00867ab8 {
 struct C_00867b08 : C_00867ab8 {
 };
 
-struct C_00875db0 : C_00859b88 {
+// Duplicated3DObject (vtable 0x00875DB0): Duplicated3DObjectDDL.cpp DOClass name
+struct Duplicated3DObject : RootDO {
 };
 
-struct C_00867e70 : C_00875db0 {
+// NetPlayer (vtable 0x00867E70): PCGenerados\NetPlayerDDL.cpp DOClass name
+struct NetPlayer : Duplicated3DObject {
     uint8_t pad_001e[0x2];
     uint16_t field_0020;
     uint16_t field_0022;
@@ -10514,7 +10539,8 @@ struct C_00867e70 : C_00875db0 {
     uint16_t field_0038;
 };
 
-struct C_00867f60 : C_00859b88 {
+// NetProyectil (vtable 0x00867F60): PCGenerados\NetProyectilDDL.cpp DOClass name
+struct NetProyectil : RootDO {
     uint8_t pad_001e[0x2];
     uint16_t field_0020;
     uint16_t field_0022;
@@ -10566,14 +10592,16 @@ struct C_00868050 {
     float field_01c0;
 };
 
-struct C_00868238 : C_00859b88 {
+// NetGhost (vtable 0x00868238): PCGenerados\NetGhostDDL.cpp DOClass name
+struct NetGhost : RootDO {
     uint8_t pad_001e[0x2];
     uint16_t field_0020;
     uint16_t field_0022;
     uint16_t field_0024;
 };
 
-struct C_008684c8 : C_00859b88 {
+// NetGame (vtable 0x008684C8): PCGenerados\NetGameDDL.cpp DOClass name
+struct NetGame : RootDO {
     uint8_t pad_001e[0x2];
     uint16_t field_0020;
     uint16_t field_0022;
@@ -10612,14 +10640,16 @@ struct C_00868768 {
     uint32_t field_002c;
 };
 
-struct C_00868890 : C_00859b88 {
+// NetPostman (vtable 0x00868890): PCGenerados\NetPostmanDDL.cpp DOClass name
+struct NetPostman : RootDO {
     uint8_t pad_001e[0x2];
     uint16_t field_0020;
     uint16_t field_0022;
     uint16_t field_0024;
 };
 
-struct C_00868968 : C_00875db0 {
+// NetChat (vtable 0x00868968): PCGenerados\NetChatDDL.cpp DOClass name
+struct NetChat : Duplicated3DObject {
     uint8_t pad_001e[0x2];
     uint16_t field_0020;
     uint16_t field_0022;
@@ -10870,7 +10900,8 @@ struct C_00876498 {
     uint32_t field_008c;
 };
 
-struct C_00876710 : C_00859b88 {
+// VoiceChannel (vtable 0x00876710): VoiceChannelDDL.cpp DOClass name
+struct VoiceChannel : RootDO {
     uint8_t pad_001e[0x2];
     uint16_t field_0020;
     uint16_t field_0022;

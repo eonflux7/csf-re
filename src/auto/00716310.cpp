@@ -4,10 +4,10 @@
 #include "types/auto_classes.h"
 
 // Reads the 4-byte value at offset 0x180 of the object (a field inside the
-// inherited padding area, not part of the declared C_00863ff8 fields).
-static int __fastcall C_00863ff8_GetField180(C_00863ff8* self, void* /*edx*/)
+// inherited padding area, not part of the declared CGuiListBoxBase fields).
+static int __fastcall CGuiListBoxBase_GetField180(CGuiListBoxBase* self, void* /*edx*/)
 {
     return CSF_AT(int, self, 0x180);
 }
 
-HOOK(0x00716310, C_00863ff8_GetField180, "auto");
+HOOK(0x00716310, CGuiListBoxBase_GetField180, "auto");

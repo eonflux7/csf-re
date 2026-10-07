@@ -7,9 +7,9 @@
 #include "legacy/string.h"
 
 // Returns the class/type name string for this object ("TMovilAPuntoRastreo").
-static const char* __cdecl C_008392c0_GetTypeName()
+static const char* __cdecl TMovilAPuntoRastreo_GetTypeName()
 {
     return CSF_STR(0x00839344, "TMovilAPuntoRastreo");
 }
 
-HOOK(0x004AE140, C_008392c0_GetTypeName, "auto");
+HOOK(0x004AE140, TMovilAPuntoRastreo_GetTypeName, "auto");

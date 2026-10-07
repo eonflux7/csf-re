@@ -6,7 +6,7 @@
 CSF_FUNC(void*, __cdecl, AllocateGatheringStorage, 0x00647160,
          (std::uint32_t size, const char* sourceFile, int sourceLine));
 
-CSF_FUNC(void, __fastcall, C_0085ff4c_ConstructGatheringBase, 0x00798DF0,
+CSF_FUNC(void, __fastcall, C_0085ff6c_ConstructGatheringBase, 0x00798DF0,
          (C_0085ff4c* self, void* edx));
 
 CSF_GLOBAL(void*, g_Commandos3DGameGatheringVtable, 0x0085FF6C);
@@ -22,7 +22,7 @@ static C_0085ff4c* __cdecl CreateCommandos3DGameGathering()
     if (!gathering)
         return nullptr;
 
-    C_0085ff4c_ConstructGatheringBase(gathering, nullptr);
+    C_0085ff6c_ConstructGatheringBase(gathering, nullptr);
     gathering->vtbl = &g_Commandos3DGameGatheringVtable;
     return gathering;
 }

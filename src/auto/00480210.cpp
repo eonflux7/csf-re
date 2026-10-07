@@ -12,7 +12,7 @@
 #include "types/auto_classes.h"
 
 // Forward the constant 12 to virtual slot 0x11c of the object.
-static int __fastcall C_00833228_InvokeVirtualSlot71With12(C_00833228* self, void* /*edx*/)
+static int __fastcall CCharWeaponFsm_InvokeVirtualSlot71With12(CCharWeaponFsm* self, void* /*edx*/)
 {
     // mov eax, dword ptr [ecx]      ; eax = self->vtbl
     // push 0xc                      ; arg = 12
@@ -22,4 +22,4 @@ static int __fastcall C_00833228_InvokeVirtualSlot71With12(C_00833228* self, voi
                self->vtbl[0x11c / 4])(self, nullptr, 12);
 }
 
-HOOK(0x00480210, C_00833228_InvokeVirtualSlot71With12, "auto");
+HOOK(0x00480210, CCharWeaponFsm_InvokeVirtualSlot71With12, "auto");

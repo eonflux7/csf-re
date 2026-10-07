@@ -12,9 +12,9 @@
 
 // Returns the type-name string constant "TOrden" (bound at 0x0083A6E4).
 // Original: mov eax, 0x83A6E4 ; ret   -> no `this` is touched, no stack args (ret 0).
-static const char* __cdecl C_0083a660_GetTypeName()
+static const char* __cdecl TOrden_GetTypeName()
 {
     return CSF_STR(0x0083A6E4, "TOrden");
 }
 
-HOOK(0x004B2950, C_0083a660_GetTypeName, "auto");
+HOOK(0x004B2950, TOrden_GetTypeName, "auto");

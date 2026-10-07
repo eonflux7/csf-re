@@ -6,9 +6,9 @@
 // Disassembly:
 //   mov eax, dword ptr [ecx + 0x218]
 //   ret
-static int __fastcall C_00865070_GetField0218(C_00865070* self, void* /*edx*/)
+static int __fastcall CGuiListBox_GetField0218(CGuiListBox* self, void* /*edx*/)
 {
     return static_cast<int>(self->field_0218);
 }
 
-HOOK(0x724790, C_00865070_GetField0218, "auto");
+HOOK(0x724790, CGuiListBox_GetField0218, "auto");

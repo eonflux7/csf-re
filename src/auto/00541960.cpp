@@ -7,9 +7,9 @@
 #include "legacy/string.h"
 
 // Returns the DWORD stored at offset 0x84 of the object.
-static int __fastcall C_00843230_GetField0084(C_00843230* self, void* /*edx*/)
+static int __fastcall CMenuMpStats_GetField0084(CMenuMpStats* self, void* /*edx*/)
 {
     return static_cast<int>(self->field_0084);
 }
 
-HOOK(0x00541960, C_00843230_GetField0084, "auto");
+HOOK(0x00541960, CMenuMpStats_GetField0084, "auto");

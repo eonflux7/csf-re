@@ -3,7 +3,7 @@
 
 // 0x00721090: pure tail-jump thunk. The indirect jmp forwards the caller's stack arguments and registers untouched
 // to a target whose signature is unknown, so it stays a naked jmp (a call would drop/shift stack arguments).
-static __declspec(naked) void C_00864e18_CallEmbeddedObjectVtbl64()
+static __declspec(naked) void CGuiEdit_CallEmbeddedObjectVtbl64()
 {
     __asm {
         mov ecx, dword ptr [ecx + 0x134]
@@ -12,4 +12,4 @@ static __declspec(naked) void C_00864e18_CallEmbeddedObjectVtbl64()
     }
 }
 
-HOOK(0x721090, C_00864e18_CallEmbeddedObjectVtbl64, "auto");
+HOOK(0x721090, CGuiEdit_CallEmbeddedObjectVtbl64, "auto");

@@ -53,6 +53,16 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - Periodic **link test**: build the standalone exe with the cutover flag; unresolved symbols = true remaining work.
 - Ordering: leaf-first over SCCs of the call graph; virtual calls count as satisfied once the class is typed.
 
+## Current focus (priority order)
+
+1. **Phase 2 core classes, started early alongside the Phase 4 waves** (2026-10-07): every named class makes later
+   packets clearer (grunts get the class name, its role and named fields). Loop: `tools/classinfo.py <vtable>` for
+   evidence → `db/types/classes.yaml` → `tools/rename_classes.py` (src + functions.csv + header) → build/smoke →
+   `tools/ida/sync.py`. Next: field names of the GUI/menu/AI bases, the engine family 0x860178 (86 classes),
+   the 0x82E598 task subfamily, base-class field attribution (see Phase 2).
+2. Phase 4 lanes runs between Codex windows (auto-bisect, stop file and quota guard make them unattended).
+3. Opus review sampling and diff tier 2 (catch bug classes before they crash in-game).
+
 ## Phase checklist
 
 ### Phase 0 — symbol harvest  ✅ done (no symbols exist; see JOURNAL 2026-10-07)
@@ -81,7 +91,18 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [ ] Find globals: data refs → `db/globals.yaml` draft
 - [ ] Locate Xbox XBE code, diff vs PC for structure confirmation (optional)
 
-### Phase 2 — types and module carving (Opus)
+### Phase 2 — types and module carving (Opus) — started early, see Current focus
+- [x] Class naming pass 1: 116 classes in `db/types/classes.yaml` (conf ≥ 0.7 applied): the 12 GUI control types
+      (from the .fbs keyword factory 0x71DBE0), ~45 menu screens (control names), 35 AI tasks/states (attested
+      T* names from their GetName virtuals), 13 NetZ DDL classes, managers (save games, profiles, options, input,
+      light, camera). Rename pass over src/auto (110 functions re-prefixed by owning class), IDB sync.
+- [x] `tools/ida/sync.py`: functions.csv names, summaries as comments, globals, vtable names, auto_classes.h types
+- [ ] Field names and layouts of the named bases (CGuiControl: 5 legacy::string at +0x18.., CMenuScreen,
+      TCharTask, TAiState, CCharWeaponFsm); grunt field_names proposals are too generic to use
+- [ ] Base-class field attribution in classes.py: a base absorbs fields accessed through derived objects
+      (C_00830438 holds CGuiControl's fields, CGuiControl is empty); fix without breaking compiled src/auto
+- [ ] Engine family 0x860178 (86 classes: clump objects, HAnim animation, lights, cameras, 2D scenes) and the
+      unnamed 0x82E598 task subfamily (factory 0x41E240, type ids 0..6)
 - [ ] Core classes: layouts, vtables, sizeof with static_asserts
 - [ ] STL layout replicas for VC7.1 (vector/list/map/set) + template hook impls covering db/stl.json
       (element size per instance; nodes/buffers via game allocator sub_690DC0/sub_690E60)
@@ -102,6 +123,8 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [x] Lanes mode (DeepSeek tiny/clone lane + Codex main lane, continuous smoke+commit) — trial: 45 functions
 - [x] Collect CSF_GLOBAL names from src/auto into db/globals.yaml (`tools/globals.py`, run after each batch;
       names substituted into packet pseudocode; pin with src: opus)
+- [x] Lanes: auto-bisect on smoke failure (ini toggles, no rebuild), `work/grunt_stop`, Codex 5h quota guard
+      (`--codex-cap 90`), Codex review verdicts logged (`grunt.py cost` shows the rejection rate)
 - [ ] Opus review pass: sample ~5% of each batch against asm; feed recurring mistakes into the prompt
 - [x] In-mission smoke test: `scene`/`loadsave` dev start + windowed (src/core/devcmd.cpp; smoke.sh default)
 - [x] Semantic gate check (tools/semcheck.py)

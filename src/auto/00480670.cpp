@@ -11,9 +11,9 @@
 #include "legacy/string.h"
 
 // Calls the virtual method at vtable slot 71 (offset 0x11c) with argument 16.
-static int __fastcall C_00833228_InvokeVtblSlot71With16(C_00833228* self, void* /*edx*/)
+static int __fastcall CCharWeaponFsm_InvokeVtblSlot71With16(CCharWeaponFsm* self, void* /*edx*/)
 {
     return ((int(__fastcall*)(void*, void*, int))self->vtbl[0x11c / 4])(self, nullptr, 16);
 }
 
-HOOK(0x00480670, C_00833228_InvokeVtblSlot71With16, "auto");
+HOOK(0x00480670, CCharWeaponFsm_InvokeVtblSlot71With16, "auto");

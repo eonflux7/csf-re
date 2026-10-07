@@ -10,12 +10,12 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-// 0x00718590: returns the byte at offset 0x114 of C_00864288.
+// 0x00718590: returns the byte at offset 0x114 of CGuiControl.
 // The offset lies inside the base class' pad_0114[] array, so it is accessed
 // via CSF_AT instead of a declared field.
-static char __fastcall C_00864288_GetField_0114(C_00864288* self, void* /*edx*/)
+static char __fastcall CGuiControl_GetField_0114(CGuiControl* self, void* /*edx*/)
 {
     return CSF_AT(char, self, 0x114);
 }
 
-HOOK(0x718590, C_00864288_GetField_0114, "auto");
+HOOK(0x718590, CGuiControl_GetField_0114, "auto");

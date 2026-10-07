@@ -1,0 +1,137 @@
+# Class names (Phase 2). Source of truth for src/types/auto_classes.h (tools/gen_classes_h.py), the rename pass
+# (tools/rename_classes.py) and the IDB sync. Keys are primary vtable addresses (db/classes.json).
+#   name      C* class, T* AI task/state (the game's own convention, see 0x8442A0's type registry: CVector3, SRect,
+#             CInterpolatorHermite3D; AI classes return their T* names from a GetName virtual), Net* = NetZ DDL class.
+#   attested  true: the name itself is in the binary (type-name string). false: our descriptive name for the role.
+#   conf      confidence in the role. Only conf >= 0.7 is applied to code (rename pass, IDB).
+#   why       the evidence.
+#   fields    {offset: name} for scalar fields (renames field_XXXX in generated structs and src/auto).
+#   note      layout facts not expressed as fields yet.
+
+# ---- GUI (.fbs menus). Parser 0x71DBE0 maps control keywords to CGuiBuilder vtable slots +0x18..+0x44.
+"00864b30": {name: CGuiBuilder, attested: false, conf: 0.8, why: "owns the per-keyword control factories (slots +0x18..+0x44) dispatched by the .fbs parser 0x71DBE0"}
+"00864288": {name: CGuiControl, attested: false, conf: 0.9, why: "common base of all 12 control types; ctor 0x71A010", note: "5 legacy::string (VC7.1, 28 B) at +0x18, +0x34, +0x50, +0x6C, +0x88; float 1.0 at +0xC4; attach-to-parent virtual at slot +0x108 (called by the parser)"}
+"00865b40": {name: CGuiPanel, attested: false, conf: 0.9, why: "created for keyword PANEL (builder slot +0x18 -> 0x71F850)"}
+"008660c8": {name: CGuiRadioGroup, attested: false, conf: 0.9, why: "GROUP_RADIO (slot +0x1C -> 0x71F8B0); derives from CGuiPanel"}
+"00865328": {name: CGuiButton, attested: false, conf: 0.9, why: "BOTON (slot +0x20 -> 0x720090)"}
+"008668b8": {name: CGuiRadioButton, attested: false, conf: 0.9, why: "BOTON_RADIO (slot +0x24 -> 0x720030)"}
+"00866340": {name: CGuiChoiceButton, attested: false, conf: 0.9, why: "BOTON_CHOICE (slot +0x28 -> 0x71FF70)"}
+"00866600": {name: CGuiChoiceNumButton, attested: false, conf: 0.9, why: "BOTON_CHOICE_NUM (slot +0x2C -> 0x71FFD0)"}
+"00864bc0": {name: CGuiStatic, attested: false, conf: 0.9, why: "ESTATICO (slot +0x30 -> 0x7202A0)"}
+"00865e38": {name: CGuiSlider, attested: false, conf: 0.9, why: "SLIDER (slot +0x34 -> 0x71F4E0, reads CONSOLE/HORIZONTAL)"}
+"00863ff8": {name: CGuiListBoxBase, attested: false, conf: 0.8, why: "common base of LISTBOX and LISTBOX_TEXTURES"}
+"00865070": {name: CGuiListBox, attested: false, conf: 0.9, why: "LISTBOX (slot +0x38 -> 0x720970)"}
+"00866db8": {name: CGuiTextureListBox, attested: false, conf: 0.9, why: "LISTBOX_TEXTURES (slot +0x3C -> 0x7208F0)"}
+"00866b58": {name: CGuiSwitch, attested: false, conf: 0.9, why: "SWITCH (slot +0x40 -> 0x7200F0)"}
+"00864e18": {name: CGuiEdit, attested: false, conf: 0.9, why: "EDIT (slot +0x44 -> 0x720360)"}
+
+# ---- Menu screens: all derive from CMenuScreen and look up their controls by name under .PANEL_PRINCIPAL.
+"0083042c": {name: CMenuScreen, attested: false, conf: 0.8, why: "base of ~50 screens that load .PANEL_PRINCIPAL and find controls by name"}
+"00841370": {name: CMenuMessageBox, attested: false, conf: 0.7, why: "BotonYes/No/Cancel/Retry/Continue/OK, BotonSlot1-5"}
+"00841450": {name: CMenuTextInput, attested: false, conf: 0.7, why: "UserEditBox, EstaticoEdit, BotonOkQuestion/CancelQuestion"}
+"00841598": {name: CMenuProgressBar, attested: false, conf: 0.7, why: "BarraProgreso"}
+"00841688": {name: CMenuScenarioSelect, attested: false, conf: 0.9, why: "ListboxEscenarios, Briefing, Estrella%d, Puntuacion, BotonPlay/Load/Extras"}
+"00841810": {name: CMenuMpLoadout, attested: false, conf: 0.8, why: "ListboxTeam, ListboxClass, ListboxPrimaryWeapon, BotonPlay"}
+"008418b8": {name: CMenuCredits, attested: false, conf: 0.9, why: "menus\\credits.fbs, Texts/CTitles.fli"}
+"00841978": {name: CMenuSceneSelect, attested: false, conf: 0.7, why: "Menus/Escenas.txt, ListboxScenes"}
+"00841ae8": {name: CMenuMpServerInfo, attested: false, conf: 0.7, why: "Server, MapaValor, TiempoValor, StatDMatch/StatRojoTDMatch/StatAzulTDMatch, StatEspectadores"}
+"00841b78": {name: CMenuEula, attested: false, conf: 0.8, why: ".FICHERO_EIDOS, BotonAccept/Decline, BotonNext/Prev"}
+"00841cd0": {name: CMenuLanguage, attested: false, conf: 0.7, why: "Lang/"}
+"00841d70": {name: CMenuMpPause, attested: false, conf: 0.8, why: "BotonContinue/Partida/Friends/Opciones/Suicide/Exit/Character, StaticNotificaciones"}
+"00841ee0": {name: CMenuIntroVideo, attested: false, conf: 0.8, why: "videos/eidos.bik"}
+"00842150": {name: CMenuLoading, attested: false, conf: 0.9, why: "Menus/Textures/loading.png, Briefing, Caretos, Progreso, .DATOS_FOTOS_PC"}
+"00842220": {name: CMenuLoadGame, attested: false, conf: 0.9, why: "ListboxLoadGames, BotonLoad, BotonBack"}
+"00842488": {name: CMenuPause, attested: false, conf: 0.9, why: "BotonContinue/Load/Save/Restart/Opciones/Exit"}
+"00842550": {name: CMenuMain, attested: false, conf: 0.9, why: "BotonCampanya, BotonMultiPlayer, BotonOpciones, BotonCreditos"}
+"00843830": {name: CMenuMainPC, attested: false, conf: 0.7, why: "derives from CMenuMain; adds BotonExit, StaticCopyRight"}
+"00842638": {name: CMenuOptions, attested: false, conf: 0.9, why: "BotonJuego, BotonSonido, BotonVideo"}
+"00842858": {name: CMenuOptionsPC, attested: false, conf: 0.7, why: "derives from CMenuOptions; adds BotonControles"}
+"00842788": {name: CMenuGameOptions, attested: false, conf: 0.8, why: "BotonInvertAxis, BotonSubtitles, voice output/mute"}
+"008439b8": {name: CMenuGameOptionsPC, attested: false, conf: 0.7, why: "derives from CMenuGameOptions; adds SliderMouse"}
+"00842908": {name: CMenuProfiles, attested: false, conf: 0.9, why: "ListboxProfiles, BotonCreate/Delete/Select"}
+"00842ad0": {name: CMenuSoundOptions, attested: false, conf: 0.9, why: "SliderFX, SliderMusic, GroupRadioAcoustic"}
+"00843db8": {name: CMenuSoundOptionsPC, attested: false, conf: 0.7, why: "derives from CMenuSoundOptions; adds Switch_SB_XFI (Sound Blaster X-Fi)"}
+"00842e08": {name: CMenuMissionInfo, attested: false, conf: 0.8, why: "PanelObjetivos, PanelMapaTactico, PanelKillsReport, PanelBichos, tab buttons"}
+"008430f8": {name: CMenuMpScoreBar, attested: false, conf: 0.7, why: "LogoAlemanes/LogoAliados, EstaticoModo, EstaticoTiempo %02d:%02d"}
+"00843230": {name: CMenuMpStats, attested: false, conf: 0.8, why: "ListboxEstadisticas, TextoTeam1/2"}
+"008435f8": {name: CMenuControls, attested: false, conf: 0.9, why: "ListboxConfiguracion, BotonMovement/Look/Attack, BotonSave/Reset"}
+"00843b30": {name: CMenuSaveGame, attested: false, conf: 0.9, why: "ListboxSaveGames, BotonNew, BotonErase"}
+"00843cb8": {name: CMenuExtras, attested: false, conf: 0.9, why: "menus\\thumbnails.fbs, thumbShot, thumbDesc"}
+"00844000": {name: CMenuVideoAdvanced, attested: false, conf: 0.9, why: "TextureQuality, ModelQuality, Shadows, Antialiasing, VerticalSync, WaterQuality"}
+"00844148": {name: CMenuVideoOptions, attested: false, conf: 0.9, why: "640 x 480 .. 1024 x 768, Brightness, Quality, Advanced"}
+"00845438": {name: CMenuAccountEdit, attested: false, conf: 0.9, why: "EdNombreCuenta, EdPasswordCuenta, EdRetypePasswordCuenta, BotonSalvarCambios"}
+"00845570": {name: CMenuPlayerInfo, attested: false, conf: 0.8, why: "EstaticoNombrePlayer, BotonRequestFriend, BotonToggleVoice, EstaticoInfoAmistad"}
+"00845678": {name: CMenuPlayerList, attested: false, conf: 0.7, why: "ListaJugadores"}
+"00845740": {name: CMenuMpOnline, attested: false, conf: 0.8, why: "BotonQuickMatch, BotonOptiMatch, BotonCreateMatch, BotonFriends"}
+"00845990": {name: CMenuMpSessions, attested: false, conf: 0.8, why: "ListboxPartidas, EdNombreSesion, EdPassword, ButJoin, ButEmpezar, ButPartidaPrivada, stFuegoAmigo"}
+"00845af8": {name: CMenuAccounts, attested: false, conf: 0.9, why: "ListaCuentas, BotonCrear/Borrar/Seleccionar"}
+"00845bf0": {name: CMenuMpNetworkType, attested: false, conf: 0.9, why: "BotonLAN, BotonWAN"}
+"00845ca8": {name: CMenuMpGameMode, attested: false, conf: 0.7, why: "BotonDMatch"}
+
+# ---- AI. 0x83DE60: per-character tasks (GetName = slot 33); 0x83E050: AI behaviour/alert states (GetName = slot 8).
+"0083de60": {name: TCharTask, attested: false, conf: 0.8, why: "base of TDisparar, TAtacar, TNavegando, TFreeMove, TConversacion ... (slot 33 returns the T* name)"}
+"0082f7b8": {name: TFreeMove, attested: true, conf: 1.0, why: "GetName string"}
+"0082f878": {name: TNavegando, attested: true, conf: 1.0, why: "GetName string"}
+"0082f938": {name: TFncGirar, attested: true, conf: 1.0, why: "GetName string"}
+"00832bf8": {name: TModoAgacharse, attested: true, conf: 1.0, why: "GetName string"}
+"00832cc0": {name: TDisparar, attested: true, conf: 1.0, why: "GetName string"}
+"00832d80": {name: TAtacar, attested: true, conf: 1.0, why: "GetName string"}
+"00832e40": {name: TFunctionRecargar, attested: true, conf: 1.0, why: "GetName string"}
+"00832f68": {name: TAtacarRafaga, attested: true, conf: 1.0, why: "GetName string"}
+"0083c0d8": {name: TDarObjeto, attested: true, conf: 1.0, why: "GetName string"}
+"0083da30": {name: TAutonomo, attested: true, conf: 1.0, why: "GetName string"}
+"0083dae8": {name: TLanzarObjetoAPos, attested: true, conf: 1.0, why: "GetName string"}
+"0083dc90": {name: TConversacion, attested: true, conf: 1.0, why: "GetName string"}
+"0083e050": {name: TAiState, attested: false, conf: 0.7, why: "base of TDistraido/TDudoso/TAlerta/TCombate (alert levels), TMovilA* and TFnc* (slot 8 returns the T* name)"}
+"00839118": {name: TMovilAPunto, attested: true, conf: 1.0, why: "GetName string"}
+"00839238": {name: TMovilAPunto_2, attested: true, conf: 0.9, why: "GetName string shared with 0x839118 (second variant)"}
+"008392c0": {name: TMovilAPuntoRastreo, attested: true, conf: 1.0, why: "GetName string"}
+"00839358": {name: TMovilAParapeto, attested: true, conf: 1.0, why: "GetName string"}
+"008393f0": {name: TMovilAInteractivo, attested: true, conf: 1.0, why: "GetName string"}
+"008396b8": {name: TMovilAPuntoParapetandose, attested: true, conf: 1.0, why: "GetName string"}
+"00839758": {name: TMovilAInteractivo_2, attested: true, conf: 0.9, why: "GetName string shared with 0x8393F0 (second variant)"}
+"008397e0": {name: TFncRastrear, attested: true, conf: 1.0, why: "GetName string"}
+"00839878": {name: TFncBusqueda, attested: true, conf: 1.0, why: "GetName string"}
+"00839910": {name: TFncAtacarDesdePosicion, attested: true, conf: 1.0, why: "GetName string"}
+"00839d70": {name: TFncIrAParapeto, attested: true, conf: 1.0, why: "GetName string"}
+"00839e08": {name: TFncVigilarDesdeParapeto, attested: true, conf: 1.0, why: "GetName string"}
+"00839ea8": {name: TFncAtacarDesdeParapeto, attested: true, conf: 1.0, why: "GetName string"}
+"0083a248": {name: TDistraido, attested: true, conf: 1.0, why: "GetName string"}
+"0083a2d8": {name: TDudoso, attested: true, conf: 1.0, why: "GetName string"}
+"0083a368": {name: TAlerta, attested: true, conf: 1.0, why: "GetName string"}
+"0083a3f8": {name: TEstatico, attested: true, conf: 1.0, why: "GetName string"}
+"0083a660": {name: TOrden, attested: true, conf: 1.0, why: "GetName string"}
+"0083a788": {name: TFncInteractivo, attested: true, conf: 1.0, why: "GetName string"}
+"0083a8b8": {name: TCombate, attested: true, conf: 1.0, why: "GetName string"}
+"0083a948": {name: TFncMacroOrden, attested: true, conf: 1.0, why: "GetName string"}
+
+# ---- Characters
+"00833228": {name: CCharWeaponFsm, attested: false, conf: 0.7, why: "state names STATE_READY/SACAR_ARMA/CHANGE_ARMA/ATTACK/RELOAD/WAIT_ARMA_READY/SACAR_PROYECTIL/SOLICITAR_CUERPO"}
+"008334f0": {name: CCharActionFsm, attested: false, conf: 0.7, why: "derives from CCharWeaponFsm; adds STATE_CHANGE_ITEM/USAR_ITEM/CONTEXTUAL/START_AIM/STOP_AIM/PEDIR_AYUDA"}
+
+# ---- Application, files, engine
+"00840920": {name: CSaveGameManager, attested: false, conf: 0.9, why: "CSF Data\\Games\\, %s%d.sav, %dquick.sav; created by app init 0x506F70 (176 B)"}
+"008409f0": {name: CProfileManager, attested: false, conf: 0.9, why: "CSF Data\\Profiles\\Profiles, ./Profiles; created by app init (160 B)"}
+"0083f6c0": {name: CNetProfile, attested: false, conf: 0.7, why: "CSF Data\\NetProfile; created by app init (5984 B)"}
+"0083ffa8": {name: COptionsFile, attested: false, conf: 0.7, why: "CSF Data\\Options, Options; created by app init (80 B); not the COptions of src/core/options.cpp"}
+"0083ee68": {name: CTextDatabase, attested: false, conf: 0.7, why: "Texts/Global.fli, Texts/SysRed.fli, Texts/MultiPla.fli"}
+"00863e58": {name: CInputBase, attested: false, conf: 0.7, why: "base of CInputDirectInput"}
+"00863ed8": {name: CInputDirectInput, attested: false, conf: 0.8, why: "calls DirectInput8Create; created by the app (0x506CD0)"}
+"00862f70": {name: CLightObject, attested: false, conf: 0.8, why: "creates/destroys an RpLight with its RwFrame, adds/removes it from world and clump", fields: {"000c": m_pLight}, note: "ctor 0x6FD400: +0xC = RpLightCreate(type 0..3 -> 2/1/0x80/0x81); 4x4 matrix at +0x40"}
+"00860fb8": {name: CCamera, attested: false, conf: 0.7, why: "'Invalid projection type specified'"}
+"00861328": {name: CRenderEngine, attested: false, conf: 0.7, why: "screenshot%03d.bmp, 'RwEngineSetSubSystem() ha fallado'"}
+
+# ---- NetZ DDL classes (names from the DDL-generated DOClass strings)
+"00859b88": {name: RootDO, attested: true, conf: 1.0, why: "RootDODDL.cpp DOClass name"}
+"00859d98": {name: Session, attested: true, conf: 1.0, why: "SessionDDL.cpp DOClass name"}
+"00858790": {name: SessionClock, attested: true, conf: 1.0, why: "SessionClockDDL.cpp DOClass name"}
+"0085d278": {name: PromotionReferee, attested: true, conf: 1.0, why: "PromotionRefereeDDL.cpp DOClass name"}
+"00876710": {name: VoiceChannel, attested: true, conf: 1.0, why: "VoiceChannelDDL.cpp DOClass name"}
+"00875db0": {name: Duplicated3DObject, attested: true, conf: 1.0, why: "Duplicated3DObjectDDL.cpp DOClass name"}
+"00867a58": {name: NetCogible, attested: true, conf: 1.0, why: "PCGenerados\\NetCogibleDDL.cpp DOClass name"}
+"00867e70": {name: NetPlayer, attested: true, conf: 1.0, why: "PCGenerados\\NetPlayerDDL.cpp DOClass name"}
+"00867f60": {name: NetProyectil, attested: true, conf: 1.0, why: "PCGenerados\\NetProyectilDDL.cpp DOClass name"}
+"00868238": {name: NetGhost, attested: true, conf: 1.0, why: "PCGenerados\\NetGhostDDL.cpp DOClass name"}
+"008684c8": {name: NetGame, attested: true, conf: 1.0, why: "PCGenerados\\NetGameDDL.cpp DOClass name"}
+"00868890": {name: NetPostman, attested: true, conf: 1.0, why: "PCGenerados\\NetPostmanDDL.cpp DOClass name"}
+"00868968": {name: NetChat, attested: true, conf: 1.0, why: "PCGenerados\\NetChatDDL.cpp DOClass name"}

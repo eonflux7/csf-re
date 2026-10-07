@@ -13,11 +13,11 @@
 #include "legacy/string.h"
 
 // Returns the string's data pointer (inline buffer when capacity < 0x10).
-static char* __fastcall C_00864288_GetStringData(C_00864288* self, void* /*edx*/)
+static char* __fastcall CGuiControl_GetStringData(CGuiControl* self, void* /*edx*/)
 {
     if (self->field_0030 < 0x10u)
         return reinterpret_cast<char*>(self) + 0x1c;   // &self->field_001c
     return reinterpret_cast<char*>(self->field_001c);
 }
 
-HOOK(0x4379B0, C_00864288_GetStringData, "auto");
+HOOK(0x4379B0, CGuiControl_GetStringData, "auto");

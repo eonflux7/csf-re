@@ -7,9 +7,9 @@
 #include "legacy/string.h"
 
 // Returns the address of the sub-object embedded at offset 0xB0 of this instance.
-static C_00864288* __fastcall C_00864288_GetField0B0(C_00864288* self, void* /*edx*/)
+static CGuiControl* __fastcall CGuiControl_GetField0B0(CGuiControl* self, void* /*edx*/)
 {
-    return reinterpret_cast<C_00864288*>(reinterpret_cast<char*>(self) + 0xb0);
+    return reinterpret_cast<CGuiControl*>(reinterpret_cast<char*>(self) + 0xb0);
 }
 
-HOOK(0x718040, C_00864288_GetField0B0, "auto");
+HOOK(0x718040, CGuiControl_GetField0B0, "auto");

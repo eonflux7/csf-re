@@ -6,10 +6,10 @@
 #include "legacy/string.h"
 
 // Returns the constant identifier string "TFncBusqueda" for this object.
-static const char* __fastcall C_00839878_GetTFncBusqueda(C_00839878* self, void* /*edx*/)
+static const char* __fastcall TFncBusqueda_GetTFncBusqueda(TFncBusqueda* self, void* /*edx*/)
 {
     (void)self;
     return CSF_STR(0x008398FC, "TFncBusqueda");
 }
 
-HOOK(0x4AE420, C_00839878_GetTFncBusqueda, "auto");
+HOOK(0x4AE420, TFncBusqueda_GetTFncBusqueda, "auto");

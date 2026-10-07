@@ -10,11 +10,11 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-// Returns the fixed type-name string of C_008393f0 ("TMovilAInteractivo").
+// Returns the fixed type-name string of TMovilAInteractivo ("TMovilAInteractivo").
 // Original: mov eax, 0x839474 ; ret
-static const char* __cdecl C_008393f0_GetTypeName()
+static const char* __cdecl TMovilAInteractivo_GetTypeName()
 {
     return CSF_STR(0x00839474, "TMovilAInteractivo");
 }
 
-HOOK(0x004AE330, C_008393f0_GetTypeName, "auto");
+HOOK(0x004AE330, TMovilAInteractivo_GetTypeName, "auto");

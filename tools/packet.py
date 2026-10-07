@@ -19,6 +19,8 @@ class DB:
             f = json.loads(l)
             self.F[f["ea"]] = f
         self.classes = {c["vtable"]: c for c in json.load(open(os.path.join(ROOT, "db", "classes.json")))}
+        from gen_classes_h import load_names
+        self.class_names = load_names()  # db/types/classes.yaml, conf >= 0.7
         self.owner = {}
         for vt, c in self.classes.items():
             for m in c["methods"]:
@@ -51,7 +53,7 @@ class DB:
         return sorted(owners, key=lambda o: self.classes[o]["size"] or 1 << 30)[0]
 
     def cls_name(self, vt):
-        return f"C_{vt}"
+        return self.class_names[vt]["name"] if vt in self.class_names else f"C_{vt}"
 
 
 _md = None
@@ -111,7 +113,7 @@ def substitute_names(db, text):
 
 def struct_text(db, vt):
     hdr = open(os.path.join(ROOT, "src", "types", "auto_classes.h")).read()
-    m = re.search(rf"struct C_{vt}\b.*?\n}};\n(static_assert[^\n]*\n)?", hdr, re.S)
+    m = re.search(rf"(?://[^\n]*\n)*struct {re.escape(db.cls_name(vt))}\b.*?\n}};\n(?:static_assert[^\n]*\n)*", hdr, re.S)
     return m.group(0) if m else None
 
 
@@ -156,8 +158,10 @@ def build(db, ea, with_asm_limit=400):
     vt = db.class_of(ea)
     if vt:
         c = db.classes[vt]
-        out.append(f"\n## `this` class: C_{vt} (vtable 0x{vt.upper()}, size {c['size'] or 'unknown'}, "
-                   f"base {('C_' + c['base']) if c['base'] else 'none'})")
+        out.append(f"\n## `this` class: {db.cls_name(vt)} (vtable 0x{vt.upper()}, size {c['size'] or 'unknown'}, "
+                   f"base {db.cls_name(c['base']) if c['base'] else 'none'})")
+        if vt in db.class_names:
+            out.append(f"Role: {db.class_names[vt].get('why', '')}. Name your function {db.cls_name(vt)}_<Verb...>.")
         st = struct_text(db, vt)
         if st:
             out.append("Declared in types/auto_classes.h (DO NOT redefine; use as-is):\n```cpp\n" + st + "```")

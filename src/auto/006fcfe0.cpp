@@ -3,10 +3,10 @@
 #include "types/auto_classes.h"
 
 // Sets field_003d (byte at +0x3D) to the given value and returns it.
-static char __fastcall C_00862f70_SetValue3d(C_00862f70* self, void* /*edx*/, char value)
+static char __fastcall CLightObject_SetValue3d(CLightObject* self, void* /*edx*/, char value)
 {
     self->field_003d = static_cast<uint8_t>(value);
     return value;
 }
 
-HOOK(0x006FCFE0, C_00862f70_SetValue3d, "auto");
+HOOK(0x006FCFE0, CLightObject_SetValue3d, "auto");

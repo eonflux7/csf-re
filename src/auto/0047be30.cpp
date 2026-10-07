@@ -11,9 +11,9 @@
 #include "legacy/string.h"
 
 // Returns the address of the constant string "TDisparar" (0x00832D58).
-static const char* __fastcall C_00832cc0_GetTDispararString(C_00832cc0* /*self*/, void* /*edx*/)
+static const char* __fastcall TDisparar_GetTDispararString(TDisparar* /*self*/, void* /*edx*/)
 {
     return CSF_STR(0x832D58, "TDisparar");
 }
 
-HOOK(0x47BE30, C_00832cc0_GetTDispararString, "auto");
+HOOK(0x47BE30, TDisparar_GetTDispararString, "auto");

@@ -8,7 +8,7 @@
 //   push 9
 //   call [eax + 0x11C]
 //   ret
-static int __fastcall InvokeVtblSlot71_Arg9(C_00833228* self, void* /*edx*/)
+static int __fastcall InvokeVtblSlot71_Arg9(CCharWeaponFsm* self, void* /*edx*/)
 {
     return ((int(__fastcall*)(void*, void*, int))self->vtbl[0x11c / 4])(self, nullptr, 9);
 }

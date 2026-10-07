@@ -7,9 +7,9 @@
 #include "legacy/string.h"
 
 // Returns the dword at offset 0x12c of the object.
-static uint32_t __fastcall C_00864288_GetField012C(C_00864288* self, void* /*edx*/)
+static uint32_t __fastcall CGuiControl_GetField012C(CGuiControl* self, void* /*edx*/)
 {
     return CSF_AT(uint32_t, self, 0x12c);
 }
 
-HOOK(0x0044F630, C_00864288_GetField012C, "auto");
+HOOK(0x0044F630, CGuiControl_GetField012C, "auto");

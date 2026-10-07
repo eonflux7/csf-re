@@ -8,9 +8,9 @@
 
 // 0x00483620 - calls the virtual function at vtable offset 0x134 (slot 77)
 // with the constant arguments (4, 0) and returns its result.
-static int __fastcall C_008334f0_SetMode4(C_008334f0* self, void* /*edx*/)
+static int __fastcall CCharActionFsm_SetMode4(CCharActionFsm* self, void* /*edx*/)
 {
-    return ((int(__fastcall*)(C_008334f0*, void*, int, int))self->vtbl[0x134 / 4])(self, nullptr, 4, 0);
+    return ((int(__fastcall*)(CCharActionFsm*, void*, int, int))self->vtbl[0x134 / 4])(self, nullptr, 4, 0);
 }
 
-HOOK(0x483620, C_008334f0_SetMode4, "auto");
+HOOK(0x483620, CCharActionFsm_SetMode4, "auto");

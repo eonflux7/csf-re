@@ -11,9 +11,9 @@
 #include "legacy/string.h"
 
 // Returns the identifier string "TAlerta" (likely the type-alert class name).
-static const char* C_0083a368_GetName()
+static const char* TAlerta_GetName()
 {
     return CSF_STR(0x0083A3EC, "TAlerta");
 }
 
-HOOK(0x4B2680, C_0083a368_GetName, "auto");
+HOOK(0x4B2680, TAlerta_GetName, "auto");

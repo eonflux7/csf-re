@@ -12,9 +12,9 @@
 
 // 0x00480320: non-virtual wrapper that invokes the virtual method at
 // vtable slot 78 (byte offset 0x138) with the constant argument 9.
-static int __fastcall C_00833228_InvokeVirtual138(C_00833228* self, void* /*edx*/)
+static int __fastcall CCharWeaponFsm_InvokeVirtual138(CCharWeaponFsm* self, void* /*edx*/)
 {
     return ((int(__fastcall*)(void*, void*, int))self->vtbl[0x138 / 4])(self, nullptr, 9);
 }
 
-HOOK(0x00480320, C_00833228_InvokeVirtual138, "auto");
+HOOK(0x00480320, CCharWeaponFsm_InvokeVirtual138, "auto");
