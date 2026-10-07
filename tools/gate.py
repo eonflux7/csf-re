@@ -33,7 +33,10 @@ def our_rets(obj, fn_name):
     for line in dis.splitlines():
         m = re.match(r"^[0-9a-f]+ <(.+)>:$", line)
         if m:
-            cur = m.group(1)
+            if not m.group(1).startswith("$"):  # $ehgcr_* etc.: labels inside the current function
+                cur = m.group(1)
+            continue
+        if cur and cur.startswith(("?catch$", "?dtor$", "?fin$", "___ehhandler")):  # EH funclets: own rets
             continue
         if cur and re.search(rf"\b{re.escape(fn_name)}\b|\?{re.escape(fn_name)}@", cur):
             found = True

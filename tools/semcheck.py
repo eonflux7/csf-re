@@ -127,6 +127,27 @@ def orig_refs(ea, db):
     return imms, disps
 
 
+# Compiler EH/SEH runtime reached from the function's unwind thunk; our compiler emits its own.
+EH_HELPER = re.compile(r"CxxFrameHandler|_EH_prolog|_SEH_prolog|_SEH_epilog|_except_handler|__security_check")
+
+
+def dead_calls(ea, db):
+    """Callees reached only behind an always-false unsigned check (`cmp r, -1; jbe skip; call T`: VC7.1 STL's
+    max_size() is -1). MSVC keeps the call, any modern compiler folds it away, so it can't be required."""
+    ins = code_of(ea, db)
+    dead, live = set(), set()
+    for k, i in enumerate(ins):
+        if i.mnemonic != "call" or not i.op_str.startswith("0x"):
+            continue
+        t = int(i.op_str, 16)
+        if (k >= 2 and ins[k - 1].mnemonic == "jbe" and ins[k - 2].mnemonic == "cmp"
+                and ins[k - 2].op_str.endswith(", -1") and ins[k - 1].op_str == hex(i.address + i.size)):
+            dead.add(t)
+        else:
+            live.add(t)
+    return dead - live
+
+
 def check(ea, obj, db):
     f = db.F[ea]
     ours, our_disps = our_refs(obj)
@@ -135,7 +156,7 @@ def check(ea, obj, db):
     errs = []
     required = {}
     for c in f["callees"]:
-        if c not in own:
+        if c not in own and c not in dead_calls(ea, db) and not EH_HELPER.search(db.name(c) or ""):
             required[c] = f"call to 0x{c:X} ({db.name(c) or 'sub_%X' % c})"
     for s in f.get("srefs", []):
         required[s] = f"string at 0x{s:X}"
