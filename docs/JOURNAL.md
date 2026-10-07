@@ -175,3 +175,16 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
   decoded as junk), 560 have multiple chunks. packet.disasm() now decodes only IDA's code heads, so packets,
   semcheck and difftable see real instructions; linear decoding remains for shared blocks / missing exports.
   Regenerate after IDB changes (export/ is derived).
+
+## 2026-10-07 — Lanes trial, embedded-object bug class
+
+- Lanes trial (DeepSeek tiny/clone lane + Codex GPT-6.1-Sol main lane): 45 functions, smoke crashed in-mission.
+  `tools/dbg.sh crash` pinned both crashes to reimplementations that turned `add ecx, N` / `lea r, [ecx+N]`
+  (address of an EMBEDDED sub-object at this+N) into a pointer LOAD from +N (0x6B2F40 +0x30, 0x6FD170 +0x10).
+  Fixed by hand; after the fix smoke OK, 134 functions diffed, 0 mismatches. Both are hot (635k calls / 60 s).
+- Prevention: grunt prompt rule spelling out add/lea = address-of vs mov = load; semcheck now requires an add/lea
+  with +N in our code for every `add ecx,N` / `lea r,[ecx+N]` in the original (stack regs excluded: `add esp,N`
+  is cleanup). Rejects the buggy variant, 0/485 false positives on the survey.
+- x32dbg: default stops (system/entry/TLS breakpoints) are ini settings read at startup; crash.py turns them off
+  in x32dbg.ini before launch (faster start, fewer continue round-trips).
+- 15 lanes outputs had no grunt_log entry (from an interrupted run); names recovered from their HOOK lines.

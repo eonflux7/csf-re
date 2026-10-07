@@ -97,7 +97,9 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 
 ### Phase 4 — grunt waves
 - [x] Driver (packet → model → gate → commit), escalation queue (`tools/grunt.py`)
-- [ ] Clone-cluster expansion: after one member passes, derive siblings (same shape, different callees/consts)
+- [x] Clone-cluster expansion: after one member passes, derive siblings (same shape, different callees/consts)
+      (select() is clone-aware: siblings get the done member as an example and go to the DeepSeek lane)
+- [x] Lanes mode (DeepSeek tiny/clone lane + Codex main lane, continuous smoke+commit) — trial: 45 functions
 - [x] Collect CSF_GLOBAL names from src/auto into db/globals.yaml (`tools/globals.py`, run after each batch;
       names substituted into packet pseudocode; pin with src: opus)
 - [ ] Opus review pass: sample ~5% of each batch against asm; feed recurring mistakes into the prompt
