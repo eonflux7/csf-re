@@ -87,12 +87,15 @@ def gate(ea, path, db=None):
         errs.append('CSF_GLOBAL/CSF_FUNC/CSF_AT/CSF_STR come from #include "globals.h" (add it)')
     if re.search(r"#\s*define\s+CSF_|#\s*undef\s+CSF_", src):
         errs.append('do not (re)define CSF_* macros: #include "globals.h" and use them as given')
-    # the only allowed asm: a naked tail-jump thunk — register moves/adjustments, then one jmp
-    ins = r"(?:mov|lea|add|sub|call\s+e[a-z]x)\s*[^;\n}]*?"
-    thunk = (r"__asm\s*\{\s*(?:" + ins + r"(?:\s*;|\s*\n|\s+__asm\s+|\s+))*"
-             r"jmp\s+(?:dword\s+ptr\s+(?:ds:)?\[[^\]]+\]|e[a-z]{2}|0x[0-9A-Fa-f]+)\s*;?\s*\}")
-    if re.search(r"\b(__asm|asm)\b", re.sub(thunk, "", src)):
-        errs.append("inline asm not allowed (except a naked tail-jump thunk: __asm { jmp dword ptr ds:[0xADDR] })")
+    # the only allowed asm: a naked tail-jump thunk — at most 8 register moves/tests/branches around one indirect jmp
+    for blk in re.findall(r"__asm\s*\{([^}]*)\}", src):
+        ins = [l.strip() for l in re.split(r"[\n;]", blk) if l.strip() and not re.fullmatch(r"\w+:", l.strip())]
+        bad = [x for x in ins if not re.match(r"(mov|lea|add|sub|test|cmp|je|jne|jz|jnz|ret|call\s+e[a-z]x\b|jmp)\b", x)]
+        if bad or len(ins) > 8 or not any(re.match(r"jmp\s+(dword\s+ptr\s+(ds:)?\[|e[a-z]x\b|0x)", x) for x in ins):
+            errs.append("inline asm allowed only as a naked tail-jump thunk (<= 8 of mov/lea/add/sub/test/cmp/je/jne/"
+                        "ret/call reg, ending in an indirect jmp); offending: " + "; ".join(bad[:3] or ins[:3]))
+    if re.search(r"\b(__asm|asm)\b", re.sub(r"__asm\s*\{[^}]*\}", "", src)):
+        errs.append("inline asm only as `__asm { ... }` blocks in a naked thunk")
     hooks = re.findall(r"HOOK(?:_METHOD)?\(\s*0x([0-9A-Fa-f]+)\s*,\s*&?([\w:]+)", src)
     if len(hooks) != 1 or int(hooks[0][0], 16) != ea:
         errs.append(f"need exactly one HOOK(0x{ea:X}, Fn, \"module\") line; found {hooks}")

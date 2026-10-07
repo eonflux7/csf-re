@@ -98,6 +98,28 @@ def timeline(job, n=6):
     return out[-n:]
 
 
+def claude_usage():
+    """5h / 7d windows of the Claude plan, from the endpoint Claude Code's /usage reads (own OAuth token)."""
+    tok = json.load(open(os.path.expanduser("~/.claude/.credentials.json")))["claudeAiOauth"]["accessToken"]
+    req = urllib.request.Request("https://api.anthropic.com/api/oauth/usage", headers={
+        "Authorization": f"Bearer {tok}", "anthropic-beta": "oauth-2025-04-20", "User-Agent": "csf-re-monitor"})
+    d = json.load(urllib.request.urlopen(req, timeout=8))
+    return {k: (d[w]["utilization"], iso(d[w]["resets_at"]) - time.time()) for k, w in
+            (("5h", "five_hour"), ("7d", "seven_day")) if d.get(w)}
+
+
+def usage_line(label, u, style):
+    t = Text(f"{label} ", style=style)
+    if not isinstance(u, dict):
+        t.append(f"n/a: {str(u)[:40]}", style="dim")
+        return t
+    for k, (pct, reset) in u.items():
+        t.append(f" {k} ")
+        t.append_text(bar(pct, 10))
+        t.append(f" {pct:>3.0f}% ↻{dur(reset)} ", style="dim" if pct < 70 else "bold")
+    return t
+
+
 def panel_claude():
     job = cached("job", 1, claude_job)
     if not job or isinstance(job, Exception):
@@ -109,7 +131,8 @@ def panel_claude():
     head.append(f"  {job.get('tempo', '')}  ", style="dim")
     head.append(f"tokens {kfmt(job.get('tokens') or 0)}  ", style="cyan")
     head.append(f"up {ago(iso(job['createdAt']))}  upd {ago(iso(job['updatedAt']))} ago", style="dim")
-    body = [head, Text(job.get("detail") or "", style="bold white", overflow="ellipsis", no_wrap=True)]
+    body = [head, usage_line("plan", cached("claude_usage", 60, claude_usage), "bold green"),
+            Text(job.get("detail") or "", style="bold white", overflow="ellipsis", no_wrap=True)]
     tl = timeline(job)
     for e in tl[:-1][::-1][:5]:
         t = Text(f"  {ago(iso(e['at'])):>6} ", style="dim")
@@ -195,18 +218,19 @@ def panel_grunts():
     recent = cached("recent", 3, lambda: read_log_since(since))
     recent = recent if isinstance(recent, list) else []
     if recent:
-        tb = Table.grid(padding=(0, 1))
-        for w in (6, 4, 8, 3):
-            tb.add_column(no_wrap=True, min_width=w)
-        tb.add_column(no_wrap=True, overflow="ellipsis", ratio=1)
+        lines = []
         for r in recent[-10:][::-1]:
             ok = r.get("ok")
             what = r.get("meta", {}).get("name", "") if ok else (r.get("err", "").splitlines() or [""])[0]
-            tb.add_row(Text(ago(r.get("ts", 0)), style="dim"), Text(r.get("lane", "") or "", style="dim"),
-                       f"{r['ea']:08x}", Text("OK " if ok else "ESC", style="green" if ok else "red"),
-                       Text(what, style="" if ok else "grey62"))
+            by = (r.get("by") or "").split(":")[0] or {"deep": "ds-lane", "main": "gpt-lane"}.get(r.get("lane"), "")
+            t = Text(f"{ago(r.get('ts', 0)):>6} ", style="dim", no_wrap=True, overflow="ellipsis")
+            t.append(f"{by:<8} ", style=BACKEND_STYLE.get(by, "dim"))
+            t.append(f"{r['ea']:08x} ")
+            t.append("OK  " if ok else "ESC ", style="green" if ok else "red")
+            t.append(what, style="" if ok else "grey62")
+            lines.append(t)
         body.append(Text("recent results", style="bold"))
-        body.append(tb)
+        body += lines
     return Panel(Group(*body), title="Grunts", border_style="magenta"), (st if isinstance(st, dict) else None), recent
 
 
