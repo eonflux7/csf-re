@@ -470,6 +470,7 @@ def select(db, n, max_size, min_size=6, exclude=(), modules=None):
 SMOKE_SECS, SMOKE_LONG_SECS, SMOKE_LONG_EVERY = 15, 60, 5  # seconds after ready (smoke.sh); every 5th smoke runs long
 # Long smokes rotate the start (wider coverage for db/verify.json); short ones always use smoke.sh's FR01 scene.
 SMOKE_STARTS = [{}, {"CSF_START": "menu", "CSF_INI_EXTRA": "menutour 1500"}, {"CSF_START": "loadsave 1.sav"}]
+SMOKE_SHORT = (SMOKE_SECS, {})  # lanes --smoke-menu: short smokes run the menu tour instead (GUI waves)
 _last_smoke = (None, {})  # (secs, env) of the last deployed smoke: a bisect repeats exactly that run
 _smokes = 0
 
@@ -482,8 +483,8 @@ def smoke(deploy=True, secs=None):
             return False, "build/deploy failed:\n" + (r.stdout + r.stderr)[-3000:]
         _smokes += 1
         long = _smokes % SMOKE_LONG_EVERY == 0
-        env = SMOKE_STARTS[(_smokes // SMOKE_LONG_EVERY) % len(SMOKE_STARTS)] if long else {}
-        _last_smoke = (secs or (SMOKE_LONG_SECS if long else SMOKE_SECS), env)
+        env = SMOKE_STARTS[(_smokes // SMOKE_LONG_EVERY) % len(SMOKE_STARTS)] if long else SMOKE_SHORT[1]
+        _last_smoke = (secs or (SMOKE_LONG_SECS if long else SMOKE_SHORT[0]), env)
     secs, env = (secs or _last_smoke[0] or SMOKE_SECS), _last_smoke[1]
     r = subprocess.run([os.path.join(ROOT, "tools", "smoke.sh"), str(secs)], capture_output=True, text=True,
                        env={**os.environ, **env})
@@ -655,6 +656,9 @@ def lanes(args):
     failure (files left uncommitted for bisecting) or after --total functions."""
     db = DB()
     wave = module_ids(args.module)
+    if args.smoke_menu:
+        global SMOKE_SHORT
+        SMOKE_SHORT = (40, SMOKE_STARTS[1])  # the tour opens ~25 menus at 1.5 s each
     key = load_key()
     esc = [("claude", args.claude_model, 2)] if args.escalate_claude else []
     codex = [("codex", args.codex_model, 2)]
@@ -862,6 +866,7 @@ if __name__ == "__main__":
     l.add_argument("--review-over", type=int, default=100)
     l.add_argument("--no-smoke", action="store_true")
     l.add_argument("--no-bisect", action="store_true", help="stop on a smoke failure instead of bisecting it")
+    l.add_argument("--smoke-menu", action="store_true", help="short smokes run the menu tour (GUI module waves)")
     l.add_argument("--codex-cap", type=float, default=90, help="pause Codex at this 5h-window %% (0: off)")
     sub.add_parser("cost")
     a = ap.parse_args()

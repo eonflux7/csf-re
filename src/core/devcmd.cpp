@@ -156,6 +156,30 @@ bool __fastcall Device_HasModeFor_Dev(void* self, void* /*edx*/, int32_t* desire
 // horizontally at the top of the screen. `windowed WxH` overrides w x h (matches the video mode chosen above).
 CSF_FUNC(void*, __fastcall, Render_GetDevice, 0x652160, (void* sys, void* edx));
 
+// `background 1` (unattended smokes): the game keeps running without focus and stays out of the way. The window
+// proc 0x508D40 pauses the game on WM_ACTIVATE(inactive) / WM_ACTIVATEAPP(0) (app vslot +0x10 and 0x50D7C0(0));
+// a subclass drops those, the window goes off-screen, and focus goes back to the window that had it before the
+// game showed its own (the game calls ShowWindow + SetFocus right after this function).
+WNDPROC g_gameWndProc;
+HWND g_prevForeground;
+constexpr UINT kMsgGiveBackFocus = WM_APP + 0x51;
+
+LRESULT CALLBACK Background_WndProc(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
+    if ((msg == WM_ACTIVATE && LOWORD(wp) == WA_INACTIVE) || (msg == WM_ACTIVATEAPP && !wp) || msg == WM_KILLFOCUS)
+        return 0;
+    if (msg == WM_ACTIVATE && g_prevForeground)
+        PostMessageA(wnd, kMsgGiveBackFocus, 0, 0);
+    if (msg == kMsgGiveBackFocus) {
+        if (g_prevForeground && IsWindow(g_prevForeground)) {
+            BOOL ok = SetForegroundWindow(g_prevForeground);
+            hook::log("devcmd: focus handed back to %p (%s)", (void*)g_prevForeground, ok ? "ok" : "refused");
+        }
+        g_prevForeground = nullptr;
+        return 0;
+    }
+    return CallWindowProcA(g_gameWndProc, wnd, msg, wp, lp);
+}
+
 BOOL __cdecl Window_FitClientArea(HWND wnd, LONG w, LONG h) {
     int ow, oh;
     const char* win = hook::ini_string("windowed");
@@ -166,6 +190,15 @@ BOOL __cdecl Window_FitClientArea(HWND wnd, LONG w, LONG h) {
     r.bottom = h > 0 ? h : vcall<LONG>(Render_GetDevice(Render_GetSystem(), nullptr), 36);
     AdjustWindowRect(&r, 0xCA0000, FALSE);
     int ww = r.right - r.left, hh = r.bottom - r.top;
+    if (const char* bg = hook::ini_string("background"); bg && *bg && *bg != '0') {
+        if (!g_gameWndProc) {
+            g_prevForeground = GetForegroundWindow();
+            g_gameWndProc = (WNDPROC)SetWindowLongA(wnd, GWL_WNDPROC, (LONG)&Background_WndProc);
+            hook::log("devcmd: background mode (off-screen, no pause on focus loss)");
+        }
+        // left of the virtual desktop, so no monitor shows it; D3D9 windowed rendering continues
+        return MoveWindow(wnd, GetSystemMetrics(SM_XVIRTUALSCREEN) - ww - 64, 0, ww, hh, TRUE);
+    }
     return MoveWindow(wnd, (GetSystemMetrics(SM_CXSCREEN) - ww) / 2, 0, ww, hh, TRUE);
 }
 // Menu tour (coverage of GUI code in unattended smokes). csf_hook.ini:

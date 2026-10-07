@@ -5,16 +5,18 @@
 # including when it never became ready (startup hang/crash: a smoke that never reached the mission proves nothing).
 # Result files of the previous run are deleted first, so a run that writes none can't be read as fresh evidence.
 # Differential testing is on (CSF_DIFF=0 to disable): MISMATCH lines name functions whose result differed.
-# Starts straight into a mission (src/core/devcmd.cpp), windowed 1280x960:
+# Starts straight into a mission (src/core/devcmd.cpp), windowed 1280x960, off-screen unless CSF_BG=0:
 #   CSF_START="scene Maps/FR01/Parachut.scn" (default) | "loadsave 1.sav" | "menu" (normal intro + menus)
 set -uo pipefail
 PLAY=${CSF_PLAY:-/mnt/e/dev/csf-play}
 SECS=${1:-15}
 START=${CSF_START:-scene Maps/FR01/Parachut.scn}
 INI="$PLAY/csf_hook.ini"
-sed -i '/^\(scene\|loadsave\|windowed\|cmdline\|autopilot\|probe\|diff\|diff_limit\|diff_calls\|menutour\) /d' "$INI"
+sed -i '/^\(scene\|loadsave\|windowed\|background\|cmdline\|autopilot\|probe\|diff\|diff_limit\|diff_calls\|menutour\) /d' "$INI"
 [ "${CSF_DIFF:-1}" = 1 ] && echo "diff 1" >> "$INI"  # differential testing of eligible hooks (hook/diff.cpp)
 echo "windowed 1280x960" >> "$INI"
+# background mode (src/core/devcmd.cpp): off-screen window, no pause on focus loss, focus handed back (CSF_BG=0: visible)
+[ "${CSF_BG:-1}" = 1 ] && echo "background 1" >> "$INI"
 [ "$START" != menu ] && echo "$START" >> "$INI"
 # extra ini lines for this run only, e.g. autopilot steps: CSF_INI_EXTRA=$'autopilot 9000 key ESCAPE\n...'
 [ -n "${CSF_INI_EXTRA:-}" ] && printf '%s\n' "$CSF_INI_EXTRA" >> "$INI"
