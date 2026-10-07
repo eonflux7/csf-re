@@ -55,6 +55,11 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 
 ## Current focus (priority order)
 
+0. **Module waves** (2026-10-07, user): progress is measured in bytes per module, not function counts (841 done
+   functions were only 0.5% of the game's bytes: leaf-first picked the tiny ones everywhere). Per module: name its
+   classes / fields first (Phase 2 loop below), then `grunt.py lanes --module <name|id>`, then `sweep.sh`.
+   Modules: `tools/modules.py list|show`, `status.py --modules`. First wave candidate: the GUI control family
+   (gui_control .. gui_texture_listbox, 0x7140B0-0x731800, ~70 KB): classes named, exercised by the menu tour.
 1. **Phase 2 core classes, started early alongside the Phase 4 waves** (2026-10-07): every named class makes later
    packets clearer (grunts get the class name, its role and named fields). Loop: `tools/classinfo.py <vtable>` for
    evidence → `db/types/classes.yaml` → `tools/rename_classes.py` (src + functions.csv + header) → build/smoke →
@@ -84,11 +89,16 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
       581 fns / 92 KB, region `rwa` via `tools/rwa.py` → db/region_overrides.json; 40 boundary fns)
 - [x] Name the CRT boundary API (58 after FLIRT/region fixes; `tools/boundary.py` regenerates export/boundary_api.json)
 - [ ] NetZ boundary (320): name only if needed for stubbing — deferred, game net layer is stubbed at cutover
-- [ ] Harvest Spanish strings/state names/config keys → subsystem anchors
+- [x] Harvest Spanish strings/state names/config keys → subsystem anchors (per-module evidence in
+      `work/modules_evidence.txt`: strings, classes, library callees, callers; used to name the modules)
 - [x] Clone clusters (`tools/clones.py` → export/clones.json): one impl per cluster
 - [x] Vtable recovery + QI-chain hierarchy (`tools/vtables.py` → db/vtables.json)
 - [x] Ctor-based hierarchy (base vtable stored before derived) + class size from `operator new` call sites (`tools/classes.py` → db/classes.json, 662 classes)
-- [ ] Draft `db/modules.yaml` (call-graph + address clustering, ~one cluster per original .cpp)
+- [x] Draft `db/modules.yaml` (`tools/modules.py`): optimal contiguous partition under modularity over call /
+      class / shared-data / neighbouring-rdata affinity, calibrated on NetZ's __FILE__ names (85% of same-file
+      neighbours together, 80% of file boundaries found); known .cpp names are hard boundaries. 269 modules
+      (median 5.7 KB), 148 named by Opus; functions.csv module column = module id
+- [ ] Name the remaining 121 modules as their classes get named (`modules.py show`, `modules.py name FILE`)
 - [ ] Find globals: data refs → `db/globals.yaml` draft
 - [ ] Locate Xbox XBE code, diff vs PC for structure confirmation (optional)
 
@@ -133,7 +143,7 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [ ] Diff tier 2: functions with callees (record callee calls / stub them during the double run)
 - [x] x64dbg + x64dbg-automate (E:\dev\tools\x64dbg, venv E:\dev\tools\x64dbg-venv): `tools/dbg.sh crash` = crash triage
 - [x] IDA code view export (`tools/ida/export_disasm.py` → export/disasm/<ea>.json: code heads, chunks, switch tables, xrefs; 9 s); packet.disasm() decodes exactly those heads (capstone fallback)
-- [ ] Waves per module, leaf-first
+- [ ] Waves per module, leaf-first (`grunt.py run|lanes --module`; selection support done)
 - [x] Negative controls (`tools/controls.py`, from the auto-re-agent review): 36 fixtures in tests/controls/ (33
       historical tail-call bugs from git, embedded-object loads, BOOL width) must be rejected for the right reason;
       generated mutants per operator (offset/callee/global/string/dropcall/convention); positive controls (`--all`:

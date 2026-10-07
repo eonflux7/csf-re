@@ -1,0 +1,543 @@
+# Modules of the game code (tools/modules.py carve): address-contiguous ranges ~ original .obj files.
+# id = m<start>. name: empty until reviewed; name_src opus = reviewed (kept across re-carves).
+# label = automatic hint (dominant named class or grunt name prefix). end is exclusive.
+# fns/kb exclude STL instances inside the range. classes = classes with >= 2 methods here.
+
+- {id: m401000, start: 0x401000, end: 0x401F80, fns: 29, kb: 3.6, done: 2, name: "", name_src: , label: "", cohesion: 0.16,
+   classes: ["C_0082d46c", "C_0082d478"], strings: []}
+- {id: m401F80, start: 0x401F80, end: 0x4053E0, fns: 46, kb: 11.2, done: 0, name: "", name_src: , label: "", cohesion: 0.31,
+   classes: ["C_008769d4", "C_008769e0", "C_00867444"], strings: []}
+- {id: m4053E0, start: 0x4053E0, end: 0x40AC30, fns: 163, kb: 20.2, done: 7, name: "", name_src: , label: "", cohesion: 0.51,
+   classes: ["C_0082d58c", "C_0082d5e0", "C_0082d648", "C_0082d8a0", "C_0082d908", "C_0082d970"], strings: []}
+- {id: m40AC30, start: 0x40AC30, end: 0x40CDB0, fns: 54, kb: 6.9, done: 1, name: "", name_src: , label: "", cohesion: 0.44,
+   classes: ["C_0082db60", "C_0082d410", "C_0082daf4"], strings: []}
+- {id: m40CDB0, start: 0x40CDB0, end: 0x40FB20, fns: 81, kb: 10.6, done: 3, name: "", name_src: , label: "", cohesion: 0.38,
+   classes: ["C_0082dc88", "C_0082dcf0", "C_0082dd78", "C_0082de40", "C_0082db60", "C_0082d410"], strings: []}
+- {id: m40FB20, start: 0x40FB20, end: 0x415D70, fns: 83, kb: 23.3, done: 3, name: "", name_src: , label: "", cohesion: 0.34,
+   classes: ["C_0082dfd0", "C_0082deb8", "C_0082e4c0", "C_0082d410", "C_0082d448"], strings: []}
+- {id: m415D70, start: 0x415D70, end: 0x418370, fns: 35, kb: 9.1, done: 1, name: "", name_src: , label: "", cohesion: 0.41,
+   classes: ["C_0082e090", "C_0082e128", "C_0082d410"], strings: []}
+- {id: m418370, start: 0x418370, end: 0x41E1D0, fns: 98, kb: 22.6, done: 5, name: "vehicle", name_src: opus, label: "", cohesion: 0.45,
+   classes: ["C_0082e1e8", "C_0082e428", "C_0082e3b8", "C_0082e280", "C_0082e2e8", "C_0082e350"], strings: [], note: "\"Rueda izquierda/derecha %d\" (wheels); unnamed classes, low confidence"}
+- {id: m41E1D0, start: 0x41E1D0, end: 0x423CA0, fns: 191, kb: 21.3, done: 28, name: "ai_task_states", name_src: opus, label: "", cohesion: 0.31,
+   classes: ["C_0082f9f8", "C_0082e6e8", "C_0082e7c8", "C_0082e598", "TNavegando", "C_0082e6a0"], strings: ["TParado", "TAturdido", "TGirando", "TImpacto", "TPreAction"], note: "base task state names TParado/TAturdido/TGirando/TImpacto/TMuerto/TBlending; TNavegando"}
+- {id: m423CA0, start: 0x423CA0, end: 0x427520, fns: 67, kb: 13.6, done: 2, name: "", name_src: , label: "", cohesion: 0.41,
+   classes: ["C_0082faf8", "C_0082fcd8", "C_0082fdb8", "C_0082fbe8", "C_0082fe88", "C_0082d410"], strings: []}
+- {id: m427520, start: 0x427520, end: 0x428480, fns: 20, kb: 3.6, done: 1, name: "hud_objectives", name_src: opus, label: "", cohesion: 0.38,
+   classes: [], strings: [".ESPACIO_VERTICAL_ENTRE_TEXTOS", ".POSICION_VERTICAL_INICIAL", ".LATENCIA_HIGHLIGHT_INICIAL", "Gfx/Textures/bannDest.png", ".TEXTURA_HIGHLIGHT"], note: ".FONT_TITULO_OBJETIVO, bannDest.png, highlight/fade latencies"}
+- {id: m428480, start: 0x428480, end: 0x42CF50, fns: 102, kb: 16.6, done: 6, name: "cheats", name_src: opus, label: "", cohesion: 0.55,
+   classes: ["C_008300c0", "C_00830578", "C_00830030", "CMenuScreen"], strings: ["truco"], note: "\"truco\"; CMenuScreen-derived classes"}
+- {id: m42CF50, start: 0x42CF50, end: 0x436770, fns: 150, kb: 35.2, done: 3, name: "hud", name_src: opus, label: "", cohesion: 0.45,
+   classes: ["C_00830a04", "C_008305f8"], strings: [".COLOR_RELLENO", ".TEXTURA", ".SIZE", ".COLOR_FONDO", ".COORDS_TEXTURA"], note: ".SIZE/.COLOR_FONDO/.TEXTURA widgets + debug overlay (FPSMedios, MemUsed)"}
+- {id: m436770, start: 0x436770, end: 0x438280, fns: 48, kb: 6.4, done: 7, name: "", name_src: , label: "CGuiControl", cohesion: 0.25,
+   classes: ["C_00830a48", "C_008432b0", "CGuiControl", "CGuiStatic", "CGuiEdit", "CGuiSwitch"], strings: []}
+- {id: m438280, start: 0x438280, end: 0x43A700, fns: 29, kb: 8.9, done: 0, name: "", name_src: , label: "", cohesion: 0.49,
+   classes: [], strings: []}
+- {id: m43A700, start: 0x43A700, end: 0x43E010, fns: 59, kb: 13.1, done: 2, name: "minimap", name_src: opus, label: "", cohesion: 0.52,
+   classes: ["C_00830e5c", "C_00830d68", "C_00830d90"], strings: [".MINIMAPA_RADAR_MP"], note: ".MINIMAPA_RADAR_MP"}
+- {id: m43E010, start: 0x43E010, end: 0x4419C0, fns: 76, kb: 9.6, done: 1, name: "campaign", name_src: opus, label: "", cohesion: 0.48,
+   classes: ["C_00831008", "C_0082d410", "C_008769ec"], strings: ["Sounds\\Scenes\\Briefings\\", "Maps/", "Menus/campanya.fbs"], note: "Menus/campanya.fbs, Sounds\\Scenes\\Briefings\\"}
+- {id: m4419C0, start: 0x4419C0, end: 0x443760, fns: 43, kb: 5.7, done: 1, name: "dynamic_objects", name_src: opus, label: "", cohesion: 0.34,
+   classes: ["C_00831074", "C_0082d410"], strings: ["DynamicObj"], note: "\"DynamicObj\""}
+- {id: m443760, start: 0x443760, end: 0x444FB0, fns: 49, kb: 5.7, done: 2, name: "", name_src: , label: "", cohesion: 0.31,
+   classes: ["C_0082d410", "C_0083109c", "C_008310b8"], strings: []}
+- {id: m444FB0, start: 0x444FB0, end: 0x4480C0, fns: 56, kb: 11.8, done: 0, name: "", name_src: , label: "", cohesion: 0.4,
+   classes: ["C_0082d410", "C_008310d8", "C_00831120"], strings: []}
+- {id: m4480C0, start: 0x4480C0, end: 0x44ACE0, fns: 60, kb: 9.4, done: 0, name: "", name_src: , label: "", cohesion: 0.57,
+   classes: ["C_0083114c", "C_0082d410"], strings: []}
+- {id: m44ACE0, start: 0x44ACE0, end: 0x44BC20, fns: 31, kb: 2.0, done: 3, name: "", name_src: , label: "", cohesion: 0.34,
+   classes: ["C_008311a0"], strings: []}
+- {id: m44BC20, start: 0x44BC20, end: 0x44D360, fns: 36, kb: 4.3, done: 0, name: "", name_src: , label: "", cohesion: 0.69,
+   classes: ["C_008311c4"], strings: []}
+- {id: m44D360, start: 0x44D360, end: 0x44EA10, fns: 38, kb: 5.2, done: 1, name: "", name_src: , label: "", cohesion: 0.36,
+   classes: ["C_00831210", "C_0082d410", "C_008311e8", "C_00831230", "C_0083124c"], strings: []}
+- {id: m44EA10, start: 0x44EA10, end: 0x44F640, fns: 20, kb: 2.9, done: 3, name: "", name_src: , label: "", cohesion: 0.0,
+   classes: [], strings: []}
+- {id: m44F640, start: 0x44F640, end: 0x44FC80, fns: 22, kb: 1.4, done: 6, name: "", name_src: , label: "", cohesion: 0.0,
+   classes: [], strings: []}
+- {id: m44FC80, start: 0x44FC80, end: 0x456C90, fns: 105, kb: 23.8, done: 0, name: "", name_src: , label: "", cohesion: 0.28,
+   classes: ["C_008312b0"], strings: []}
+- {id: m456C90, start: 0x456C90, end: 0x458210, fns: 34, kb: 5.0, done: 2, name: "hud_portraits", name_src: opus, label: "", cohesion: 0.37,
+   classes: ["C_008312e0", "C_00831304", "C_0082d410"], strings: ["reTach.png", "menus\\textures\\retratos\\", ".FLI_NAME", ".IS_GENERIC", ".IMAGE"], note: "menus\\textures\\retratos\\%s, .FLI_NAME, .IS_GENERIC"}
+- {id: m458210, start: 0x458210, end: 0x45AAF0, fns: 59, kb: 6.9, done: 0, name: "", name_src: , label: "", cohesion: 0.65,
+   classes: ["C_008313dc"], strings: []}
+- {id: m45AAF0, start: 0x45AAF0, end: 0x467AD0, fns: 351, kb: 47.6, done: 2, name: "", name_src: , label: "", cohesion: 0.46,
+   classes: ["C_00831414"], strings: []}
+- {id: m467AD0, start: 0x467AD0, end: 0x471550, fns: 204, kb: 26.3, done: 3, name: "object_class_defs", name_src: opus, label: "", cohesion: 0.45,
+   classes: ["C_008314f8"], strings: [".VARIABLES", ".EFECTO", ".SONIDOS", ".SONIDOSID", ".ARMACLASSID"], note: ".CLASSID/.ARMACLASSID/.SCRIPTS/.VARIABLES/.ACCIONES/.CONDICIONES/.EVENTOS parser"}
+- {id: m471550, start: 0x471550, end: 0x474380, fns: 41, kb: 7.5, done: 0, name: "", name_src: , label: "", cohesion: 0.36,
+   classes: ["C_0082d410"], strings: ["FALSE"]}
+- {id: m474380, start: 0x474380, end: 0x475480, fns: 27, kb: 4.0, done: 1, name: "", name_src: , label: "", cohesion: 0.28,
+   classes: ["C_00831618", "C_00831638", "C_00831658", "C_00831678", "C_0082e0f4", "C_008310f8"], strings: []}
+- {id: m475480, start: 0x475480, end: 0x4759B0, fns: 12, kb: 1.2, done: 0, name: "", name_src: , label: "", cohesion: 0.18,
+   classes: ["C_00831698", "C_00840e68"], strings: []}
+- {id: m4759B0, start: 0x4759B0, end: 0x47AE10, fns: 147, kb: 19.7, done: 9, name: "", name_src: , label: "", cohesion: 0.47,
+   classes: ["C_008318c8", "C_008317c8", "C_008316d8", "C_008319c0", "C_0082d410"], strings: []}
+- {id: m47AE10, start: 0x47AE10, end: 0x47F930, fns: 135, kb: 16.8, done: 13, name: "ai_attack_tasks", name_src: opus, label: "TDisparar", cohesion: 0.33,
+   classes: ["TDisparar", "TAtacarRafaga", "C_00831ac0", "TAtacar", "TFunctionRecargar", "C_00832bb0"], strings: ["TFunctionGirar", "TModoNinguno", "TModoAutomatico", "TApuntar", "TDisparando"], note: "TDisparar, TAtacarRafaga, TAtacar, TFunctionRecargar, TApuntar"}
+- {id: m47F930, start: 0x47F930, end: 0x489B70, fns: 285, kb: 32.9, done: 17, name: "char_action_fsm", name_src: opus, label: "CCharActionFsm", cohesion: 0.54,
+   classes: ["CCharActionFsm", "CCharWeaponFsm"], strings: ["STATE_SOLICITAR_CUERPO", "STATE_ATTACK", "STATE_CHANGE_ARMA", "UNKNOWN", "STATE_SACAR_PROYECTIL"], note: "CCharActionFsm + CCharWeaponFsm (STATE_RELOAD, STATE_ATTACK, ...)"}
+- {id: m489B70, start: 0x489B70, end: 0x48C630, fns: 44, kb: 10.3, done: 5, name: "", name_src: , label: "", cohesion: 0.32,
+   classes: ["C_00833708"], strings: []}
+- {id: m48C630, start: 0x48C630, end: 0x48D610, fns: 25, kb: 3.8, done: 1, name: "", name_src: , label: "", cohesion: 0.16,
+   classes: ["C_00833834", "C_0083380c"], strings: []}
+- {id: m48D610, start: 0x48D610, end: 0x48E120, fns: 15, kb: 2.7, done: 1, name: "", name_src: , label: "", cohesion: 0.02,
+   classes: [], strings: []}
+- {id: m48E120, start: 0x48E120, end: 0x48E450, fns: 17, kb: 0.7, done: 2, name: "", name_src: , label: "", cohesion: 0.01,
+   classes: ["C_00833908", "C_00833a48", "C_00833cf8", "C_00834050", "C_00834198", "C_008342e8"], strings: []}
+- {id: m48E450, start: 0x48E450, end: 0x48E550, fns: 6, kb: 0.2, done: 1, name: "", name_src: , label: "", cohesion: 0.0,
+   classes: ["C_00833ee8"], strings: []}
+- {id: m48E550, start: 0x48E550, end: 0x4920D0, fns: 117, kb: 13.8, done: 6, name: "", name_src: , label: "", cohesion: 0.28,
+   classes: ["C_00833908", "C_00833a48", "C_00833cf8", "C_00834050", "C_008342e8", "C_00834198"], strings: []}
+- {id: m4920D0, start: 0x4920D0, end: 0x493250, fns: 46, kb: 4.0, done: 4, name: "", name_src: , label: "", cohesion: 0.14,
+   classes: ["C_00833b88", "C_00833ee8"], strings: []}
+- {id: m493250, start: 0x493250, end: 0x493940, fns: 11, kb: 1.6, done: 0, name: "", name_src: , label: "", cohesion: 0.34,
+   classes: ["C_00833cf8"], strings: []}
+- {id: m493940, start: 0x493940, end: 0x496080, fns: 83, kb: 9.1, done: 15, name: "", name_src: , label: "", cohesion: 0.08,
+   classes: ["C_00833ee8", "C_00833cf8"], strings: []}
+- {id: m496080, start: 0x496080, end: 0x49CF10, fns: 80, kb: 26.1, done: 0, name: "", name_src: , label: "", cohesion: 0.27,
+   classes: ["C_00833ee8"], strings: []}
+- {id: m49CF10, start: 0x49CF10, end: 0x49EBA0, fns: 34, kb: 6.8, done: 1, name: "", name_src: , label: "", cohesion: 0.35,
+   classes: ["C_00834198", "C_00834050"], strings: []}
+- {id: m49EBA0, start: 0x49EBA0, end: 0x49FA50, fns: 29, kb: 3.4, done: 1, name: "", name_src: , label: "", cohesion: 0.18,
+   classes: ["C_008342e8"], strings: []}
+- {id: m49FA50, start: 0x49FA50, end: 0x4A2C00, fns: 58, kb: 11.8, done: 1, name: "hud_alert_icons", name_src: opus, label: "", cohesion: 0.28,
+   classes: ["C_008343a4", "C_00831278", "C_00834400"], strings: [".TEX_V1", ".ICONOS", "gfx/iconos.txt", "PLANO", ".TEXTURE"], note: "gfx/iconos.txt, ALERTA/DUDOSO/PLANO icons"}
+- {id: m4A2C00, start: 0x4A2C00, end: 0x4A6E90, fns: 122, kb: 14.9, done: 1, name: "", name_src: , label: "", cohesion: 0.6,
+   classes: ["C_00834598", "C_00834640", "C_008344f0", "C_008346e8", "C_00834790"], strings: []}
+- {id: m4A6E90, start: 0x4A6E90, end: 0x4A87D0, fns: 43, kb: 6.0, done: 9, name: "ai_mount_tasks", name_src: opus, label: "", cohesion: 0.1,
+   classes: ["C_00834fa8"], strings: ["TIrAPuesto", "TSubido", "TIrASalida", "TBajar", "TSubir"], note: "TIrAPuesto, TSubido, TIrASalida, TBajar, TSubir, TSentarse"}
+- {id: m4A87D0, start: 0x4A87D0, end: 0x4A9CA0, fns: 43, kb: 4.8, done: 2, name: "", name_src: , label: "", cohesion: 0.26,
+   classes: ["C_00835228", "C_00835060", "C_00835140", "C_0083ac40", "C_0083b3c0", "C_0083c280"], strings: []}
+- {id: m4A9CA0, start: 0x4A9CA0, end: 0x4ABE10, fns: 125, kb: 7.3, done: 46, name: "ai_move_tasks", name_src: opus, label: "TMovilAPunto_2", cohesion: 0.04,
+   classes: ["TMovilAPunto_2", "TMovilAPuntoRastreo", "TMovilAParapeto", "C_0083aa80"], strings: ["TBasico", "TDefault", "TEvitarOclusores", "TLanzarGranada", "TPausa"], note: "TMovilAPunto_2, TMovilAPuntoRastreo, TMovilAParapeto + GetName of many tasks"}
+- {id: m4ABE10, start: 0x4ABE10, end: 0x4AC7A0, fns: 24, kb: 2.2, done: 0, name: "", name_src: , label: "", cohesion: 0.0,
+   classes: [], strings: []}
+- {id: m4AC7A0, start: 0x4AC7A0, end: 0x4AD420, fns: 29, kb: 2.9, done: 0, name: "ai_order", name_src: opus, label: "TOrden", cohesion: 0.0,
+   classes: ["TOrden"], strings: [], note: "TOrden"}
+- {id: m4AD420, start: 0x4AD420, end: 0x4ADE60, fns: 28, kb: 2.4, done: 4, name: "", name_src: , label: "", cohesion: 0.04,
+   classes: [], strings: []}
+- {id: m4ADE60, start: 0x4ADE60, end: 0x4AE010, fns: 3, kb: 0.4, done: 0, name: "", name_src: , label: "", cohesion: 0.0,
+   classes: [], strings: []}
+- {id: m4AE010, start: 0x4AE010, end: 0x4AEDD0, fns: 58, kb: 2.9, done: 27, name: "ai_fnc_tasks", name_src: opus, label: "TFncAtacarDesdeParapeto", cohesion: 0.1,
+   classes: ["TFncAtacarDesdeParapeto", "TFncRastrear", "TFncAtacarDesdePosicion", "TFncIrAParapeto", "TFncVigilarDesdeParapeto", "TMovilAPunto"], strings: ["TEstatico", "TMovilAPuntoRastreo", "TEstaticoParapeto", "TMovilAPunto", "TMovilAParapeto"], note: "TFncAtacarDesdeParapeto, TFncRastrear, TFncIrAParapeto, TFncVigilarDesdeParapeto"}
+- {id: m4AEDD0, start: 0x4AEDD0, end: 0x4B1310, fns: 43, kb: 9.0, done: 1, name: "", name_src: , label: "", cohesion: 0.14,
+   classes: [], strings: []}
+- {id: m4B1310, start: 0x4B1310, end: 0x4B1F60, fns: 13, kb: 3.0, done: 0, name: "", name_src: , label: "", cohesion: 0.08,
+   classes: [], strings: []}
+- {id: m4B1F60, start: 0x4B1F60, end: 0x4B2960, fns: 25, kb: 2.3, done: 7, name: "ai_alert_states", name_src: opus, label: "TDistraido", cohesion: 0.09,
+   classes: ["TDistraido", "TDudoso", "TAlerta", "TOrden"], strings: ["TDistraido", "TDudoso", "TAlerta", "TPrcBuscarParapeto", "TPrcBuscarInteractivo"], note: "TDistraido, TDudoso, TAlerta state names"}
+- {id: m4B2960, start: 0x4B2960, end: 0x4B2A90, fns: 9, kb: 0.2, done: 7, name: "", name_src: , label: "TFncInteractivo", cohesion: 0.08,
+   classes: ["TFncInteractivo", "C_0082d448", "C_0082d478", "C_0082daf4", "C_0082db60", "C_0082dc88"], strings: ["TFncEvitarOclusores", "TFncInteractivo"]}
+- {id: m4B2A90, start: 0x4B2A90, end: 0x4B5100, fns: 42, kb: 9.3, done: 2, name: "ai_alert", name_src: opus, label: "TAlerta", cohesion: 0.16,
+   classes: ["TAlerta", "TOrden"], strings: ["TFncMove"], note: "TAlerta, TFncMove"}
+- {id: m4B5100, start: 0x4B5100, end: 0x4B6140, fns: 12, kb: 4.0, done: 0, name: "", name_src: , label: "", cohesion: 0.02,
+   classes: [], strings: []}
+- {id: m4B6140, start: 0x4B6140, end: 0x4B7EF0, fns: 33, kb: 7.2, done: 0, name: "", name_src: , label: "", cohesion: 0.11,
+   classes: [], strings: []}
+- {id: m4B7EF0, start: 0x4B7EF0, end: 0x4B9860, fns: 28, kb: 6.2, done: 3, name: "ai_combat", name_src: opus, label: "TCombate", cohesion: 0.04,
+   classes: ["TCombate", "TFncMacroOrden"], strings: ["TCombate", "TFncMacroOrden"], note: "TCombate, TFncMacroOrden"}
+- {id: m4B9860, start: 0x4B9860, end: 0x4BC2A0, fns: 34, kb: 10.3, done: 0, name: "ai_distracted", name_src: opus, label: "TDistraido", cohesion: 0.13,
+   classes: ["TDistraido", "TDudoso"], strings: [], note: "TDistraido, TDudoso"}
+- {id: m4BC2A0, start: 0x4BC2A0, end: 0x4C03E0, fns: 93, kb: 15.8, done: 0, name: "ai_core", name_src: opus, label: "", cohesion: 0.2,
+   classes: ["C_0083aa80"], strings: ["-- Fin Debug IA --"], note: "\"-- Fin Debug IA --\"; called by all AI modules"}
+- {id: m4C03E0, start: 0x4C03E0, end: 0x4C40F0, fns: 45, kb: 14.8, done: 0, name: "", name_src: , label: "", cohesion: 0.16,
+   classes: [], strings: []}
+- {id: m4C40F0, start: 0x4C40F0, end: 0x4C5150, fns: 17, kb: 3.9, done: 0, name: "", name_src: , label: "", cohesion: 0.31,
+   classes: [], strings: []}
+- {id: m4C5150, start: 0x4C5150, end: 0x4CB490, fns: 65, kb: 24.2, done: 0, name: "", name_src: , label: "", cohesion: 0.27,
+   classes: [], strings: []}
+- {id: m4CB490, start: 0x4CB490, end: 0x4CDDB0, fns: 25, kb: 10.1, done: 0, name: "", name_src: , label: "", cohesion: 0.26,
+   classes: ["C_0083ab58"], strings: []}
+- {id: m4CDDB0, start: 0x4CDDB0, end: 0x4CE6F0, fns: 14, kb: 2.1, done: 0, name: "", name_src: , label: "", cohesion: 0.36,
+   classes: ["C_0083ac40", "C_0083c280"], strings: []}
+- {id: m4CE6F0, start: 0x4CE6F0, end: 0x4D1AE0, fns: 112, kb: 11.6, done: 5, name: "", name_src: , label: "", cohesion: 0.36,
+   classes: ["C_0083ae28", "C_0083af30", "C_0083b4a0", "C_0083b850", "C_0083b580", "C_0083b668"], strings: []}
+- {id: m4D1AE0, start: 0x4D1AE0, end: 0x4D3680, fns: 28, kb: 6.7, done: 0, name: "", name_src: , label: "", cohesion: 0.47,
+   classes: ["C_0083ba40"], strings: []}
+- {id: m4D3680, start: 0x4D3680, end: 0x4D48E0, fns: 20, kb: 4.3, done: 0, name: "", name_src: , label: "", cohesion: 0.42,
+   classes: ["C_0083bc28"], strings: []}
+- {id: m4D48E0, start: 0x4D48E0, end: 0x4D5500, fns: 34, kb: 2.8, done: 5, name: "ai_give_object", name_src: opus, label: "TDarObjeto", cohesion: 0.27,
+   classes: ["TDarObjeto", "C_0083c198"], strings: ["TRespondiendo", "TAcudiendo", "TVolviendo", "TGiraAngOriginal", "TDarObjeto"], note: "TDarObjeto, TRespondiendo, TAcudiendo, TVolviendo"}
+- {id: m4D5500, start: 0x4D5500, end: 0x4D64B0, fns: 21, kb: 3.7, done: 0, name: "", name_src: , label: "", cohesion: 0.36,
+   classes: ["C_0083c280"], strings: []}
+- {id: m4D64B0, start: 0x4D64B0, end: 0x4D6DC0, fns: 21, kb: 2.1, done: 1, name: "", name_src: , label: "", cohesion: 0.31,
+   classes: ["C_0083c478", "C_0083c388"], strings: []}
+- {id: m4D6DC0, start: 0x4D6DC0, end: 0x4DB200, fns: 159, kb: 15.5, done: 25, name: "ai_autonomous", name_src: opus, label: "", cohesion: 0.35,
+   classes: ["C_0083dbb0", "C_0083dd58", "C_0083c198", "TAutonomo", "TConversacion", "TLanzarObjetoAPos"], strings: ["TIAOff", "TYendoA", "TCutScene", "TGirandoHastaAngulo", "TPlayAnimacion"], note: "TAutonomo, TConversacion, TLanzarObjetoAPos; TIAOff/TCutScene/TPlayAnimacion/TSaludo"}
+- {id: m4DB200, start: 0x4DB200, end: 0x4DB490, fns: 21, kb: 0.5, done: 8, name: "", name_src: , label: "", cohesion: 0.45,
+   classes: ["C_0082e598", "C_0082e6e8", "TFreeMove", "TNavegando", "C_0082faf8", "C_0082fbe8"], strings: []}
+- {id: m4DB490, start: 0x4DB490, end: 0x4DB5D0, fns: 5, kb: 0.3, done: 2, name: "ai_char_task", name_src: opus, label: "TCharTask", cohesion: 0.0,
+   classes: ["TCharTask"], strings: [], note: "TCharTask base"}
+- {id: m4DB5D0, start: 0x4DB5D0, end: 0x4DB650, fns: 4, kb: 0.1, done: 2, name: "", name_src: , label: "", cohesion: 0.0,
+   classes: [], strings: []}
+- {id: m4DB650, start: 0x4DB650, end: 0x4DBDB0, fns: 45, kb: 1.5, done: 1, name: "", name_src: , label: "", cohesion: 0.54,
+   classes: ["C_0083dfa0", "C_00835398", "C_0083aa80", "TMovilAPunto", "TMovilAInteractivo_2", "TFncRastrear"], strings: []}
+- {id: m4DBDB0, start: 0x4DBDB0, end: 0x4DC3E0, fns: 18, kb: 1.4, done: 1, name: "ai_state", name_src: opus, label: "", cohesion: 0.09,
+   classes: ["C_0082d410", "TAiState", "C_0083dfa0", "TFncIrAParapeto", "TFncInteractivo"], strings: [], note: "TAiState ctor"}
+- {id: m4DC3E0, start: 0x4DC3E0, end: 0x4DDD90, fns: 35, kb: 4.6, done: 1, name: "", name_src: , label: "", cohesion: 0.3,
+   classes: ["C_0083e0d8"], strings: []}
+- {id: m4DDD90, start: 0x4DDD90, end: 0x4E0FE0, fns: 83, kb: 11.3, done: 2, name: "", name_src: , label: "", cohesion: 0.65,
+   classes: ["C_0083e118", "C_0083e124"], strings: []}
+- {id: m4E0FE0, start: 0x4E0FE0, end: 0x4E51B0, fns: 119, kb: 15.3, done: 8, name: "", name_src: , label: "", cohesion: 0.46,
+   classes: ["C_0083e248", "C_0083e5e8", "C_0083e8c8", "C_0083e330", "C_0083e7d8", "C_0083e418"], strings: []}
+- {id: m4E51B0, start: 0x4E51B0, end: 0x4E8C60, fns: 96, kb: 13.6, done: 5, name: "", name_src: , label: "", cohesion: 0.34,
+   classes: ["C_0083eb70", "C_0083ec48", "C_0083e9d0"], strings: []}
+- {id: m4E8C60, start: 0x4E8C60, end: 0x4EEFB0, fns: 63, kb: 24.0, done: 2, name: "", name_src: , label: "", cohesion: 0.28,
+   classes: ["C_0083ed40"], strings: []}
+- {id: m4EEFB0, start: 0x4EEFB0, end: 0x4F0470, fns: 38, kb: 4.8, done: 1, name: "text_database", name_src: opus, label: "CTextDatabase", cohesion: 0.41,
+   classes: ["CTextDatabase", "C_0083eee4"], strings: ["Texts/Global.fli", "Texts/MultiPla.fli", "Texts/SysRed.fli"], note: "CTextDatabase: Texts/Global.fli, SysRed.fli, MultiPla.fli"}
+- {id: m4F0470, start: 0x4F0470, end: 0x4F1CC0, fns: 46, kb: 5.6, done: 2, name: "", name_src: , label: "", cohesion: 0.55,
+   classes: ["C_0083ef30", "C_0083f040", "C_0083eef4", "C_0083ef04", "C_0083eeec", "C_0083eefc"], strings: []}
+- {id: m4F1CC0, start: 0x4F1CC0, end: 0x4F4E10, fns: 74, kb: 10.6, done: 1, name: "", name_src: , label: "", cohesion: 0.5,
+   classes: ["C_0083f0ec", "C_0082d410", "C_0083f130", "C_0083f160"], strings: []}
+- {id: m4F4E10, start: 0x4F4E10, end: 0x4F9190, fns: 51, kb: 16.4, done: 4, name: "character_model", name_src: opus, label: "", cohesion: 0.29,
+   classes: ["C_0083f1a0"], strings: ["Models/Char/Cabeza.dff"], note: "Models/Char/Cabeza.dff, RW matrix/transform"}
+- {id: m4F9190, start: 0x4F9190, end: 0x4FBE10, fns: 64, kb: 10.4, done: 3, name: "dev_console", name_src: opus, label: "", cohesion: 0.26,
+   classes: ["C_0083f1f8", "C_0083f1d8", "C_0083f364", "C_0082d410"], strings: ["Menus\\Ingame_01.fnt", "texts/console.fli", "-instance", "-scene"], note: "texts/console.fli, -instance, -scene"}
+- {id: m4FBE10, start: 0x4FBE10, end: 0x4FDA40, fns: 40, kb: 6.5, done: 2, name: "commando_anims", name_src: opus, label: "", cohesion: 0.18,
+   classes: ["C_0083f448", "C_0082d410"], strings: ["Anims/Comm/Gatear.anm", "Anims/Comm/Morir.anm", "Anims/Comm/Agacharse.anm", "Anims/Comm/Levantarse.anm", "Anims/Comm/Correr.anm"], note: "Anims/Comm/*.anm (Idle, Andar, Correr, Gatear, Morir)"}
+- {id: m4FDA40, start: 0x4FDA40, end: 0x4FDC70, fns: 5, kb: 0.5, done: 1, name: "", name_src: , label: "", cohesion: 0.02,
+   classes: [], strings: []}
+- {id: m4FDC70, start: 0x4FDC70, end: 0x506AD0, fns: 129, kb: 33.5, done: 2, name: "scene_loader", name_src: opus, label: "", cohesion: 0.24,
+   classes: ["C_0083f5d8", "C_0083f578", "C_00830a48", "C_008432b0", "CGuiListBoxBase", "CGuiControl"], strings: [".GASMASK", ".SNIPER", "Maps/Prp/%s", ".COMMANDO", ".STREAMING"], note: ".MAPA_SECTORES, Maps/Prp/%s, LogModels.m3d, .NUMDOORS, RpWorld*"}
+- {id: m506AD0, start: 0x506AD0, end: 0x50A360, fns: 78, kb: 13.3, done: 11, name: "app_main", name_src: opus, label: "", cohesion: 0.3,
+   classes: ["C_00840754", "CNetProfile", "C_0083f1f8", "C_0083f630"], strings: [".ALIAS", "PipeUtils::RegisterPipelines() ha fallado", "menus\\textures\\banner2.raw", "Texts/Demo.fli", "RwEngineInit() ha fallado"], note: "WinMain, RwEngineInit, RW plugin attach, fonts (.FONTS/.DEFAULT_FONT), crash.txt"}
+- {id: m50A360, start: 0x50A360, end: 0x50BF70, fns: 78, kb: 6.4, done: 7, name: "options_file", name_src: opus, label: "COptionsFile", cohesion: 0.5,
+   classes: ["COptionsFile", "C_0083fdf4"], strings: ["Options", "CSF Data\\Options"], note: "COptionsFile: CSF Data\\Options"}
+- {id: m50BF70, start: 0x50BF70, end: 0x50D1A0, fns: 29, kb: 3.2, done: 1, name: "", name_src: , label: "", cohesion: 0.07,
+   classes: ["C_0084004c"], strings: []}
+- {id: m50D1A0, start: 0x50D1A0, end: 0x50DB70, fns: 21, kb: 2.3, done: 0, name: "menu_system", name_src: opus, label: "", cohesion: 0.0,
+   classes: ["C_008405e0"], strings: ["Menus/P_Common.fbs"], note: "Menus/P_Common.fbs, RwEngineTerm"}
+- {id: m50DB70, start: 0x50DB70, end: 0x50DDE0, fns: 8, kb: 0.5, done: 1, name: "", name_src: , label: "", cohesion: 0.0,
+   classes: [], strings: []}
+- {id: m50DDE0, start: 0x50DDE0, end: 0x511D10, fns: 93, kb: 13.9, done: 5, name: "game_bdd_loader", name_src: opus, label: "", cohesion: 0.26,
+   classes: ["C_008407a8", "C_008405e0", "C_008406e8", "C_00840680", "C_00840698", "C_008406d0"], strings: ["Menus/Escenas.fbs", "%s\\Armas.bdd", "%s\\Sonidos.bdd", "%s\\Anims.bdd", "%s\\Materiales.bdd"], note: "%s\\Materiales.bdd/Sonidos.bdd/Efectos.bdd/Armas.bdd/Objetos.bdd/Anims.bdd, BDDS.log, framedump"}
+- {id: m511D10, start: 0x511D10, end: 0x5177A0, fns: 122, kb: 18.8, done: 0, name: "profiles_savegames", name_src: opus, label: "CProfileManager", cohesion: 0.55,
+   classes: ["CProfileManager", "CSaveGameManager", "C_00840af8"], strings: ["CSF Data\\Games\\", "./Profiles", "%dquick.sav", "%s%d.sav", "CSF Data\\Profiles"], note: "CProfileManager, CSaveGameManager (%s%d.sav, quick.sav)"}
+- {id: m5177A0, start: 0x5177A0, end: 0x519190, fns: 51, kb: 6.0, done: 7, name: "net_profile", name_src: opus, label: "", cohesion: 0.36,
+   classes: ["C_0083f630", "CNetProfile"], strings: ["CSF Data\\NetProfile"], note: "CNetProfile: CSF Data\\NetProfile"}
+- {id: m519190, start: 0x519190, end: 0x519A80, fns: 34, kb: 2.0, done: 4, name: "", name_src: , label: "", cohesion: 0.47,
+   classes: ["C_00840d54", "C_00840d64", "C_00830438"], strings: ["(B)uscador"]}
+- {id: m519A80, start: 0x519A80, end: 0x51C070, fns: 79, kb: 7.2, done: 1, name: "bdd_tables", name_src: opus, label: "", cohesion: 0.34,
+   classes: ["C_00840e38", "C_00840de4", "C_00840704", "C_00840724", "C_00840d88", "C_00840dac"], strings: [".BDD_ANIMACIONES", ".BDD_ARMAS", ".BDD_EFECTOS", ".BDD_MATERIALES", ".BDD_OBJETOS"], note: ".BDD_ANIMACIONES/.BDD_ARMAS/.BDD_EFECTOS/.BDD_MATERIALES/.BDD_OBJETOS/.BDD_SONIDOS"}
+- {id: m51C070, start: 0x51C070, end: 0x521BB0, fns: 112, kb: 21.8, done: 7, name: "", name_src: , label: "", cohesion: 0.5,
+   classes: ["C_00840f6c", "C_00840f48", "C_00840ee0", "C_00840ec0", "C_00840f00", "C_00840f28"], strings: []}
+- {id: m521BB0, start: 0x521BB0, end: 0x521C10, fns: 4, kb: 0.1, done: 2, name: "", name_src: , label: "", cohesion: 0.0,
+   classes: [], strings: []}
+- {id: m521C10, start: 0x521C10, end: 0x5287F0, fns: 175, kb: 25.0, done: 8, name: "", name_src: , label: "", cohesion: 0.46,
+   classes: ["C_008410b0", "C_00841128", "C_00840ff0", "C_008411a0", "C_00841088", "C_0082d410"], strings: []}
+- {id: m5287F0, start: 0x5287F0, end: 0x52BD10, fns: 60, kb: 12.5, done: 4, name: "menu_message_box", name_src: opus, label: "CMenuMessageBox", cohesion: 0.62,
+   classes: ["CMenuMessageBox"], strings: ["Static", "BotonOK", "BotonSlot2", "BotonYes", "BotonSlot4"], note: "CMenuMessageBox"}
+- {id: m52BD10, start: 0x52BD10, end: 0x52D720, fns: 37, kb: 6.1, done: 1, name: "menu_progress_input", name_src: opus, label: "", cohesion: 0.31,
+   classes: ["C_008414e8", "CMenuProgressBar", "CMenuTextInput", "CMenuScreen"], strings: ["BotonCancelQuestion", "UserEditBox", "EstaticoEdit", "BarraProgreso"], note: "CMenuProgressBar, CMenuTextInput"}
+- {id: m52D720, start: 0x52D720, end: 0x52FB30, fns: 54, kb: 8.4, done: 0, name: "menu_scenario_select", name_src: opus, label: "CMenuScenarioSelect", cohesion: 0.33,
+   classes: ["CMenuScenarioSelect", "CMenuMpLoadout", "CMenuCredits", "CMenuScreen", "CMenuPause", "CMenuExtras"], strings: ["Sounds\\Scenes\\Briefings\\", "BotonPlay", "ListboxEscenarios", "NombreEscenario", "BotonExtras"], note: "CMenuScenarioSelect, CMenuMpLoadout, CMenuCredits, CMenuPause, CMenuExtras"}
+- {id: m52FB30, start: 0x52FB30, end: 0x532A40, fns: 34, kb: 11.4, done: 1, name: "menu_mp_server_info", name_src: opus, label: "CMenuMpServerInfo", cohesion: 0.35,
+   classes: ["CMenuMpServerInfo", "CMenuSceneSelect", "CMenuScreen"], strings: ["Menus/Escenas.txt", "Phantom", "ListboxScenes", "StatEspectadores", "Titulo"], note: "CMenuMpServerInfo, CMenuSceneSelect"}
+- {id: m532A40, start: 0x532A40, end: 0x5339B0, fns: 19, kb: 2.9, done: 0, name: "menu_eula", name_src: opus, label: "CMenuEula", cohesion: 0.37,
+   classes: ["CMenuEula"], strings: [".FICHERO_EIDOS", "BotonDecline", "BotonPrev", "BotonNext", "BotonAccept"], note: "CMenuEula"}
+- {id: m5339B0, start: 0x5339B0, end: 0x535C90, fns: 48, kb: 7.4, done: 0, name: "menu_mp_pause", name_src: opus, label: "CMenuMpPause", cohesion: 0.36,
+   classes: ["CMenuMpPause", "CMenuLanguage", "CMenuIntroVideo", "CMenuScreen", "CMenuMpNetworkType"], strings: ["Lang/", "Menus/Textures/", "StaticNotificaciones", "BotonCharacter", "BotonOpciones"], note: "CMenuMpPause, CMenuLanguage, CMenuIntroVideo, CMenuMpNetworkType"}
+- {id: m535C90, start: 0x535C90, end: 0x5384C0, fns: 60, kb: 9.1, done: 6, name: "interface", name_src: opus, label: "", cohesion: 0.21,
+   classes: ["C_00843720"], strings: ["Continue", "Gfx/Interfaz.txt", "INSTANCING RESULT: FAILED", "INSTANCING RESULT: OK"], note: "Gfx/Interfaz.txt, INSTANCING SCENE/RESULT"}
+- {id: m5384C0, start: 0x5384C0, end: 0x539CE0, fns: 37, kb: 5.3, done: 2, name: "menu_loading", name_src: opus, label: "CMenuLoading", cohesion: 0.42,
+   classes: ["CMenuLoading", "CMenuLoadGame", "C_00842328", "C_008423d8", "CMenuScreen"], strings: [".DATOS_FOTOS_PC", ".DATOS_CLIPS_PC", "Menus/Escenas.fbs", "Menus/Textures/loading.png", "Briefing"], note: "CMenuLoading, CMenuLoadGame"}
+- {id: m539CE0, start: 0x539CE0, end: 0x53AB80, fns: 31, kb: 3.4, done: 1, name: "menu_main", name_src: opus, label: "CMenuPause", cohesion: 0.31,
+   classes: ["CMenuPause", "CMenuMain", "CMenuMainPC", "CMenuScreen"], strings: ["BotonOpciones", "BotonSave", "BotonExit", "BotonRestart", "BotonLoad"], note: "CMenuPause, CMenuMain, CMenuMainPC"}
+- {id: m53AB80, start: 0x53AB80, end: 0x53B910, fns: 38, kb: 3.0, done: 0, name: "menu_game_options", name_src: opus, label: "CMenuGameOptions", cohesion: 0.38,
+   classes: ["CMenuGameOptions", "CMenuOptionsPC", "C_008438f0", "CMenuGameOptionsPC", "CMenuOptions", "CMenuScreen"], strings: ["BotonControles", "BotonSonido", "BotonVideo", "BotonJuego", "BotonInvertAxis"], note: "CMenuGameOptions(PC), CMenuOptionsPC"}
+- {id: m53B910, start: 0x53B910, end: 0x53C680, fns: 26, kb: 3.1, done: 0, name: "menu_profiles", name_src: opus, label: "CMenuProfiles", cohesion: 0.31,
+   classes: ["CMenuProfiles", "C_00843a90", "C_00842a08", "CMenuScreen"], strings: ["ListboxProfiles", "BotonCreate", "BotonDelete", "BotonSelect"], note: "CMenuProfiles"}
+- {id: m53C680, start: 0x53C680, end: 0x53D260, fns: 30, kb: 2.7, done: 3, name: "menu_sound_options", name_src: opus, label: "CMenuSoundOptions", cohesion: 0.51,
+   classes: ["CMenuSoundOptions", "C_00842bc8", "CMenuSoundOptionsPC", "CMenuScreen"], strings: ["SliderMusic", "SliderFX", "Switch", "GroupRadioAcoustic"], note: "CMenuSoundOptions(PC)"}
+- {id: m53D260, start: 0x53D260, end: 0x540790, fns: 52, kb: 12.7, done: 1, name: "menu_mission_info", name_src: opus, label: "CMenuMissionInfo", cohesion: 0.44,
+   classes: ["CMenuMissionInfo", "C_00843ed0"], strings: ["Foto%dTachada", "BotonPanelAnterior", "BotonPanelSiguiente", "BotonPestaniaObjetivos", "PanelObjetivos"], note: "CMenuMissionInfo"}
+- {id: m540790, start: 0x540790, end: 0x541E70, fns: 25, kb: 5.3, done: 1, name: "menu_mp_stats", name_src: opus, label: "CMenuMpScoreBar", cohesion: 0.26,
+   classes: ["CMenuMpScoreBar", "CMenuMpStats", "CMenuScreen"], strings: ["TextoTeam2", "TextoTeam1", "EstaticoAliados", "EstaticoAlemanes", "LogoAliados"], note: "CMenuMpScoreBar, CMenuMpStats"}
+- {id: m541E70, start: 0x541E70, end: 0x542AA0, fns: 28, kb: 2.8, done: 0, name: "", name_src: , label: "", cohesion: 0.14,
+   classes: ["C_008432b0"], strings: []}
+- {id: m542AA0, start: 0x542AA0, end: 0x543C40, fns: 41, kb: 4.0, done: 0, name: "menu_controls", name_src: opus, label: "", cohesion: 0.25,
+   classes: ["C_00843550", "CMenuControls", "CMenuScreen", "CMenuLoadGame", "C_00842328", "C_008423d8"], strings: ["BotonMovement", "BotonSave", "BotonAttack", "BotonReset", "ListboxConfiguracion"], note: "CMenuControls"}
+- {id: m543C40, start: 0x543C40, end: 0x5442A0, fns: 18, kb: 1.4, done: 0, name: "menu_main_pc", name_src: opus, label: "CMenuMainPC", cohesion: 0.33,
+   classes: ["CMenuMainPC", "CMenuGameOptionsPC", "C_008438f0"], strings: ["BotonExit", "StaticCopyRight", "SliderMouse"], note: "CMenuMainPC, CMenuGameOptionsPC"}
+- {id: m5442A0, start: 0x5442A0, end: 0x545CC0, fns: 43, kb: 5.3, done: 0, name: "menu_save_game", name_src: opus, label: "CMenuSaveGame", cohesion: 0.46,
+   classes: ["CMenuSaveGame", "C_00843a90"], strings: ["BotonCancelQuestion", "EstaticoEdit", "BotonNew", "ListboxSaveGames", "BotonErase"], note: "CMenuSaveGame"}
+- {id: m545CC0, start: 0x545CC0, end: 0x548C40, fns: 55, kb: 9.4, done: 2, name: "menu_extras", name_src: opus, label: "CMenuExtras", cohesion: 0.47,
+   classes: ["CMenuExtras", "CMenuSoundOptionsPC", "C_00843ed0"], strings: ["Accept", "MakingOf", "thumbShot", "thumbDesc", "menus\\textures\\extras\\"], note: "CMenuExtras: thumbnails, MakingOf"}
+- {id: m548C40, start: 0x548C40, end: 0x54ABF0, fns: 42, kb: 6.8, done: 0, name: "menu_video_options", name_src: opus, label: "", cohesion: 0.46,
+   classes: ["C_008440a0", "CMenuVideoOptions", "CMenuVideoAdvanced", "CMenuGameOptions", "CMenuScreen", "C_008414e8"], strings: ["VerticalSync", "WaterQuality", "ModelQuality", "TextureFilter", "Antialiasing"], note: "CMenuVideoOptions, CMenuVideoAdvanced"}
+- {id: m54ABF0, start: 0x54ABF0, end: 0x54E520, fns: 90, kb: 11.2, done: 4, name: "type_registry", name_src: opus, label: "", cohesion: 0.71,
+   classes: ["C_008442a0", "C_008443c8", "C_00844200", "C_008443c4"], strings: ["SSize", "CVector3", "CVector2", "CDirAng", "CSphere"], note: "CVector3/CVector2/SRect/CColor4/CInterpolatorHermite3D type names (serialization)"}
+- {id: m54E520, start: 0x54E520, end: 0x550CD0, fns: 34, kb: 9.0, done: 3, name: "mp_game_modes", name_src: opus, label: "", cohesion: 0.26,
+   classes: ["C_008445f4"], strings: [".PANTALLA_CARGA", ".DMATCH", ".POSTMEN", ".NOMBRE", ".ESCENAS"], note: "Menus/EscenasMP.txt, .SABOTAGE/.POSTMEN/.TDMATCH/.DMATCH"}
+- {id: m550CD0, start: 0x550CD0, end: 0x558160, fns: 107, kb: 25.8, done: 1, name: "mp_spawn_points", name_src: opus, label: "", cohesion: 0.3,
+   classes: ["C_00844694"], strings: ["TDMSpawnAlemanes", "PMSpawnAliados", "SABSpawnAlemanes", "PMInicialesAliados", "SABBombasSabotage"], note: "DMSpawn, TDMSpawnAlemanes/Aliados, SABBombasSabotage"}
+- {id: m558160, start: 0x558160, end: 0x55BCB0, fns: 62, kb: 11.2, done: 1, name: "mp_rules", name_src: opus, label: "", cohesion: 0.56,
+   classes: ["C_00844928", "C_008449a0"], strings: [".ALIADOS", ".ALEMANES", ".TIEMPO_EXPLOSION_BOMBA_SABOTAGE_MS", ".ALEMANES_G", ".CLAVES_PARA_GANAR"], note: "team colours, sabotage bomb damage/radius/time"}
+- {id: m55BCB0, start: 0x55BCB0, end: 0x55EBA0, fns: 71, kb: 11.1, done: 4, name: "menu_mp_accounts", name_src: opus, label: "CMenuAccountEdit", cohesion: 0.35,
+   classes: ["CMenuAccountEdit", "CMenuPlayerList", "C_008453a4", "CMenuPlayerInfo", "C_00845368", "CMenuScreen"], strings: ["EdPasswordCuenta", "BotonSalvarCambios", "EdRetypePasswordCuenta", "EdNombreCuenta", "EdOldPasswordCuenta"], note: "CMenuAccountEdit, CMenuPlayerList, CMenuPlayerInfo"}
+- {id: m55EBA0, start: 0x55EBA0, end: 0x560070, fns: 34, kb: 4.8, done: 0, name: "menu_mp_online", name_src: opus, label: "CMenuMpOnline", cohesion: 0.32,
+   classes: ["CMenuMpOnline"], strings: ["BotonFriends", "BotonCreateMatch", "BotonOptiMatch", "BotonQuickMatch"], note: "CMenuMpOnline"}
+- {id: m560070, start: 0x560070, end: 0x564B80, fns: 49, kb: 17.7, done: 1, name: "menu_mp_sessions", name_src: opus, label: "CMenuMpSessions", cohesion: 0.43,
+   classes: ["CMenuMpSessions", "C_00845d48", "CMenuScreen"], strings: ["stFuegoAmigo", "ListboxPartidas", "ListboxMapas", "ButSave", "StEspia"], note: "CMenuMpSessions"}
+- {id: m564B80, start: 0x564B80, end: 0x566003, fns: 38, kb: 4.8, done: 1, name: "menu_accounts", name_src: opus, label: "CMenuAccounts", cohesion: 0.27,
+   classes: ["CMenuAccounts", "CMenuMpGameMode", "CMenuMpNetworkType", "CMenuScreen"], strings: ["ListaCuentas", "BotonSeleccionar", "BotonCrear", "BotonBorrar", "StaticInfo"], note: "CMenuAccounts, CMenuMpGameMode, CMenuMpNetworkType"}
+- {id: m690B10, start: 0x690B10, end: 0x690E60, fns: 15, kb: 0.5, done: 3, name: "core_mem_debug", name_src: opus, label: "", cohesion: 0.02,
+   classes: [], strings: [], note: "Mem_AllocDebug"}
+- {id: m690E60, start: 0x690E60, end: 0x6910F0, fns: 8, kb: 0.6, done: 1, name: "core_mem_debug_free", name_src: opus, label: "", cohesion: 0.02,
+   classes: ["C_00867358"], strings: [], note: "Mem_FreeDebug"}
+- {id: m6910F0, start: 0x6910F0, end: 0x692390, fns: 33, kb: 4.4, done: 2, name: "core_memory", name_src: opus, label: "", cohesion: 0.05,
+   classes: ["C_0085e5c4", "C_0083f4bc", "C_0082d478", "C_0082e0f4", "C_0082e520", "C_008310f8"], strings: ["Desconocido", "NOSYM"], note: "Mem_Alloc, Mem_Free, Mem_AllocTagged; \"Error resolviendo referencias\""}
+- {id: m692390, start: 0x692390, end: 0x692410, fns: 5, kb: 0.1, done: 1, name: "", name_src: , label: "", cohesion: 0.05,
+   classes: ["C_0085e65c"], strings: []}
+- {id: m692410, start: 0x692410, end: 0x692CC0, fns: 19, kb: 2.0, done: 0, name: "core_parser", name_src: opus, label: "", cohesion: 0.03,
+   classes: [], strings: [], note: "atof/isalpha/stricmp; called by every loader"}
+- {id: m692CC0, start: 0x692CC0, end: 0x6932B0, fns: 6, kb: 1.5, done: 0, name: "", name_src: , label: "", cohesion: 0.08,
+   classes: [], strings: []}
+- {id: m6932B0, start: 0x6932B0, end: 0x6939C0, fns: 13, kb: 1.7, done: 0, name: "", name_src: , label: "", cohesion: 0.02,
+   classes: [], strings: []}
+- {id: m6939C0, start: 0x6939C0, end: 0x693AD0, fns: 5, kb: 0.2, done: 0, name: "", name_src: , label: "", cohesion: 0.0,
+   classes: [], strings: []}
+- {id: m693AD0, start: 0x693AD0, end: 0x694860, fns: 14, kb: 3.3, done: 0, name: "core_paths", name_src: opus, label: "", cohesion: 0.15,
+   classes: [], strings: [], note: "strrchr path helpers"}
+- {id: m694860, start: 0x694860, end: 0x694C80, fns: 11, kb: 1.0, done: 1, name: "core_string", name_src: opus, label: "", cohesion: 0.03,
+   classes: [], strings: [], note: "length-prefixed buffers"}
+- {id: m694C80, start: 0x694C80, end: 0x695660, fns: 22, kb: 2.3, done: 0, name: "core_string_format", name_src: opus, label: "", cohesion: 0.31,
+   classes: [], strings: [], note: "snprintf"}
+- {id: m695660, start: 0x695660, end: 0x6973C0, fns: 44, kb: 5.0, done: 8, name: "core_variant_values", name_src: opus, label: "", cohesion: 0.14,
+   classes: [], strings: ["String ", "Wstring ", "Integer ", "Float "], note: "Wstring/String/Float/Integer typed values; options bytes"}
+- {id: m6973C0, start: 0x6973C0, end: 0x698BD0, fns: 37, kb: 5.0, done: 4, name: "core_files", name_src: opus, label: "", cohesion: 0.22,
+   classes: [], strings: ["- ACCESS UNLOCKED\r\n", "- ACCESS LOCKED\r\n", "LogCarga.txt", "Maps/%s", "Maps/MP/%s"], note: "LogCarga.txt, Maps/%s, base-directory prefixing, ACCESS LOCKED/UNLOCKED"}
+- {id: m698BD0, start: 0x698BD0, end: 0x699DA0, fns: 30, kb: 3.6, done: 0, name: "core_sorted_table", name_src: opus, label: "", cohesion: 0.44,
+   classes: ["C_0085e720"], strings: [], note: "qsort/bsearch table"}
+- {id: m699DA0, start: 0x699DA0, end: 0x69AE70, fns: 46, kb: 3.2, done: 4, name: "", name_src: , label: "", cohesion: 0.36,
+   classes: ["C_0085e760", "C_0085e7b8", "C_0085e748", "C_0085e738", "C_0085ea2c"], strings: []}
+- {id: m69AE70, start: 0x69AE70, end: 0x69C310, fns: 44, kb: 4.1, done: 3, name: "", name_src: , label: "", cohesion: 0.3,
+   classes: ["C_0085e7d0", "C_0085e7d8", "CTextDatabase"], strings: []}
+- {id: m69C310, start: 0x69C310, end: 0x69CFA0, fns: 29, kb: 2.9, done: 3, name: "core_win32_debug", name_src: opus, label: "", cohesion: 0.57,
+   classes: ["C_0085e92c"], strings: ["\\SCENES"], note: "window handle, \"EL MENSAJE ES DEMASIADO GRANDE\""}
+- {id: m69CFA0, start: 0x69CFA0, end: 0x69DD10, fns: 33, kb: 2.9, done: 3, name: "core_error_log", name_src: opus, label: "", cohesion: 0.29,
+   classes: ["C_0085ea2c", "C_00844928", "C_00869124", "C_0086a3d8", "C_0086c2b4"], strings: ["CErrorLog Initialized\n\n", "default.log"], note: "CErrorLog, default.log"}
+- {id: m69DD10, start: 0x69DD10, end: 0x69EA90, fns: 32, kb: 3.0, done: 5, name: "core_tokenizer", name_src: opus, label: "", cohesion: 0.4,
+   classes: ["C_0085eac0", "C_0085eb30", "C_0085ea70", "C_0085eb24"], strings: ["\n\n OUT OF MEMORY \n\n", "Comentario truncado en el final del fichero", "Cadena truncada en el final del fichero", "No se pueden procesar textos de tama"], note: "\"Cadena truncada en el final del fichero\", OUT OF MEMORY"}
+- {id: m69EA90, start: 0x69EA90, end: 0x6A02B0, fns: 53, kb: 4.5, done: 11, name: "", name_src: , label: "", cohesion: 0.68,
+   classes: ["C_0085ebf4", "C_0085ec18", "C_0085ec34", "C_0085ebdc"], strings: []}
+- {id: m6A02B0, start: 0x6A02B0, end: 0x6A6CE0, fns: 88, kb: 23.8, done: 3, name: "core_zlib_log", name_src: opus, label: "", cohesion: 0.74,
+   classes: ["C_0085ec74", "C_0085ee28", "C_0085edfc", "C_0085ec4c"], strings: ["invalid distance code", "invalid literal/length code", "incorrect data check", "unknown compression method", "need dictionary"], note: "zlib inflate copy (library: link zlib, don't reimplement) + DlgLog log window"}
+- {id: m6A6CE0, start: 0x6A6CE0, end: 0x6AB460, fns: 112, kb: 15.3, done: 12, name: "net_gathering_ddl", name_src: opus, label: "Commandos3DGameGatheringDDL", cohesion: 0.71,
+   classes: ["C_0085ff6c", "C_0085ff4c", "C_0085fe28", "C_0085fd08"], strings: ["Commandos3DGameGathering", "LogFailedMonitorURLs%s.txt", "**CuentaCrearCSFv1**", ".\\Commandos3DGameGatheringDDL.cpp"], note: "Commandos3DGameGatheringDDL.cpp"}
+- {id: m6AB460, start: 0x6AB460, end: 0x6AB8D0, fns: 11, kb: 1.0, done: 0, name: "", name_src: , label: "", cohesion: 0.0,
+   classes: [], strings: []}
+- {id: m6AB8D0, start: 0x6AB8D0, end: 0x6AEA20, fns: 67, kb: 11.8, done: 0, name: "gfx_matrix", name_src: opus, label: "", cohesion: 0.13,
+   classes: [], strings: [], note: "RW matrix/transform helpers"}
+- {id: m6AEA20, start: 0x6AEA20, end: 0x6B1380, fns: 42, kb: 10.0, done: 1, name: "", name_src: , label: "", cohesion: 0.27,
+   classes: ["C_008600d4"], strings: []}
+- {id: m6B1380, start: 0x6B1380, end: 0x6B2870, fns: 47, kb: 4.8, done: 4, name: "", name_src: , label: "", cohesion: 0.04,
+   classes: ["C_00860130", "C_00860178", "C_00860170"], strings: ["BASICA. "]}
+- {id: m6B2870, start: 0x6B2870, end: 0x6B4DC0, fns: 89, kb: 8.6, done: 9, name: "gfx_object", name_src: opus, label: "", cohesion: 0.33,
+   classes: ["C_00860288", "C_0086287c", "C_008317c8", "C_008601a8", "C_00860e68", "C_00862110"], strings: [], note: "clump/atomic object (RpClumpForAllAtomics, RpMorph)"}
+- {id: m6B4DC0, start: 0x6B4DC0, end: 0x6B6A40, fns: 25, kb: 5.0, done: 0, name: "", name_src: , label: "", cohesion: 0.5,
+   classes: [], strings: []}
+- {id: m6B6A40, start: 0x6B6A40, end: 0x6B8020, fns: 34, kb: 4.1, done: 2, name: "gfx_world", name_src: opus, label: "", cohesion: 0.27,
+   classes: ["C_00860388", "C_00860378"], strings: [], note: "RpWorldCreate/Destroy"}
+- {id: m6B8020, start: 0x6B8020, end: 0x6B83A0, fns: 32, kb: 0.7, done: 13, name: "", name_src: , label: "", cohesion: 0.01,
+   classes: [], strings: []}
+- {id: m6B83A0, start: 0x6B83A0, end: 0x6BBF60, fns: 101, kb: 13.1, done: 4, name: "gfx_object_props", name_src: opus, label: "", cohesion: 0.56,
+   classes: [], strings: ["flagLightmap", "tipoLuz", "flagDinamica", "tipoAlpha", "tipoObjeto"], note: "user-data properties: flagLightmap, tipoObjeto, strMaterial, planoAlpha"}
+- {id: m6BBF60, start: 0x6BBF60, end: 0x6BF0E0, fns: 73, kb: 11.1, done: 5, name: "gfx_environment", name_src: opus, label: "", cohesion: 0.42,
+   classes: ["C_008605d8", "C_00862084", "C_00860578"], strings: ["gfx\\textures\\Noise.png", "gfx\\textures\\env.png"], note: "gfx\\textures\\Noise.png, env.png"}
+- {id: m6BF0E0, start: 0x6BF0E0, end: 0x6C0EE0, fns: 80, kb: 6.8, done: 6, name: "gfx_frames", name_src: opus, label: "", cohesion: 0.37,
+   classes: ["C_00860700", "C_00860630"], strings: [], note: "RwFrame hierarchy helpers"}
+- {id: m6C0EE0, start: 0x6C0EE0, end: 0x6C2080, fns: 35, kb: 3.5, done: 1, name: "gfx_texdict", name_src: opus, label: "", cohesion: 0.31,
+   classes: ["C_008607f8", "C_008633e0", "C_008607b0"], strings: [], note: "texture dictionaries"}
+- {id: m6C2080, start: 0x6C2080, end: 0x6C34F0, fns: 18, kb: 5.0, done: 1, name: "gfx_anim_compress", name_src: opus, label: "", cohesion: 0.81,
+   classes: [], strings: [], note: "RtAnim keyframe compression"}
+- {id: m6C34F0, start: 0x6C34F0, end: 0x6C4620, fns: 25, kb: 4.1, done: 4, name: "", name_src: , label: "", cohesion: 0.19,
+   classes: ["C_00860848", "C_00860894", "C_008305f8"], strings: []}
+- {id: m6C4620, start: 0x6C4620, end: 0x6C84D0, fns: 108, kb: 14.8, done: 7, name: "gfx_skin", name_src: opus, label: "", cohesion: 0.33,
+   classes: ["C_008608e8", "C_008608f8", "C_00860894"], strings: [], note: "skinned geometry (RpSkin)"}
+- {id: m6C84D0, start: 0x6C84D0, end: 0x6C9B50, fns: 42, kb: 4.5, done: 1, name: "", name_src: , label: "", cohesion: 0.29,
+   classes: ["C_00860954", "C_00860908", "C_00860924"], strings: []}
+- {id: m6C9B50, start: 0x6C9B50, end: 0x6CA810, fns: 40, kb: 2.7, done: 11, name: "", name_src: , label: "", cohesion: 0.21,
+   classes: ["C_00860a30", "C_008622e8", "C_00862240", "C_00862490", "C_00862598", "C_00862640"], strings: []}
+- {id: m6CA810, start: 0x6CA810, end: 0x6CDE90, fns: 100, kb: 12.8, done: 5, name: "gfx_scene", name_src: opus, label: "", cohesion: 0.29,
+   classes: ["C_00860bb8", "C_00860af0"], strings: [], note: "world add/remove clumps, streaming"}
+- {id: m6CDE90, start: 0x6CDE90, end: 0x6D0490, fns: 57, kb: 8.1, done: 1, name: "gfx_collision_shapes", name_src: opus, label: "", cohesion: 0.55,
+   classes: ["C_00860cbc", "C_00860c88", "C_00860d90", "C_00860c98", "C_00860da0"], strings: ["ELLIPSOID", "SPHERE"], note: "SPHERE/ELLIPSOID, vector<T>"}
+- {id: m6D0490, start: 0x6D0490, end: 0x6D0C70, fns: 13, kb: 1.5, done: 0, name: "", name_src: , label: "", cohesion: 0.23,
+   classes: ["C_00860db0"], strings: []}
+- {id: m6D0C70, start: 0x6D0C70, end: 0x6D2910, fns: 64, kb: 6.7, done: 3, name: "gfx_lights", name_src: opus, label: "", cohesion: 0.48,
+   classes: ["C_00860e68", "C_008631c8", "C_00860de0"], strings: [], note: "RpLight world add/remove"}
+- {id: m6D2910, start: 0x6D2910, end: 0x6D3FB0, fns: 36, kb: 5.3, done: 2, name: "gfx_camera", name_src: opus, label: "CCamera", cohesion: 0.38,
+   classes: ["CCamera", "C_00860f10"], strings: [], note: "CCamera"}
+- {id: m6D3FB0, start: 0x6D3FB0, end: 0x6D59D0, fns: 42, kb: 5.3, done: 0, name: "gfx_clump_dict", name_src: opus, label: "", cohesion: 0.39,
+   classes: ["C_00861068", "C_00862fcc"], strings: [], note: "%s%s.dds, %s_Alt%.3d variants"}
+- {id: m6D59D0, start: 0x6D59D0, end: 0x6D61E0, fns: 18, kb: 1.9, done: 1, name: "", name_src: , label: "", cohesion: 0.22,
+   classes: [], strings: []}
+- {id: m6D61E0, start: 0x6D61E0, end: 0x6D7340, fns: 34, kb: 4.1, done: 7, name: "gfx_2d", name_src: opus, label: "", cohesion: 0.23,
+   classes: ["C_00861120", "C_008610c0", "C_00830a48", "C_008432b0", "CGuiListBoxBase", "CGuiControl"], strings: [], note: "Rt2d scenes, RtDict"}
+- {id: m6D7340, start: 0x6D7340, end: 0x6D9D00, fns: 41, kb: 10.1, done: 5, name: "gfx_ptank", name_src: opus, label: "", cohesion: 0.41,
+   classes: ["C_008611d4", "C_00861188"], strings: [], note: "PTank particles"}
+- {id: m6D9D00, start: 0x6D9D00, end: 0x6DB710, fns: 40, kb: 5.3, done: 0, name: "", name_src: , label: "", cohesion: 0.37,
+   classes: [], strings: []}
+- {id: m6DB710, start: 0x6DB710, end: 0x6DCEF0, fns: 49, kb: 5.4, done: 5, name: "gfx_render_engine", name_src: opus, label: "", cohesion: 0.43,
+   classes: ["C_00861460", "CRenderEngine", "C_00861508", "C_00861260"], strings: ["screenshot%03d.bmp", "RwEngineStart() ha fallado", "MENUS\\TEXTURES\\RELOJ3.RAW", "MENUS\\TEXTURES\\RELOJ.RAW", "MENUS\\TEXTURES\\RELOJ2.RAW"], note: "CRenderEngine: RwEngineStart, video modes, screenshot%03d.bmp"}
+- {id: m6DCEF0, start: 0x6DCEF0, end: 0x6DF780, fns: 30, kb: 8.1, done: 0, name: "gfx_texture_loader", name_src: opus, label: "", cohesion: 0.31,
+   classes: [], strings: ["Gfx\\Textures\\"], note: "Gfx\\Textures\\"}
+- {id: m6DF780, start: 0x6DF780, end: 0x6E04D0, fns: 38, kb: 3.0, done: 5, name: "", name_src: , label: "", cohesion: 0.27,
+   classes: ["C_00861988", "C_008619e0", "C_00861928"], strings: []}
+- {id: m6E04D0, start: 0x6E04D0, end: 0x6E2C70, fns: 45, kb: 7.9, done: 0, name: "gfx_particle_emitters", name_src: opus, label: "", cohesion: 0.45,
+   classes: ["C_00861a24", "C_00861a28"], strings: [], note: "RpPrtStd emitter classes"}
+- {id: m6E2C70, start: 0x6E2C70, end: 0x6E4530, fns: 47, kb: 5.7, done: 1, name: "gfx_im3d", name_src: opus, label: "", cohesion: 0.37,
+   classes: ["C_00861a60", "C_00861a78", "C_00861b40", "C_00861b58"], strings: [], note: "immediate-mode 3D"}
+- {id: m6E4530, start: 0x6E4530, end: 0x6E6AA0, fns: 67, kb: 8.6, done: 4, name: "gfx_object_instances", name_src: opus, label: "", cohesion: 0.35,
+   classes: ["C_00861ce0", "C_00861bd8", "C_00861c08", "C_00861b9c"], strings: [], note: "%s_Alt%.3d, atomic geometry"}
+- {id: m6E6AA0, start: 0x6E6AA0, end: 0x6E7D10, fns: 26, kb: 4.4, done: 3, name: "", name_src: , label: "", cohesion: 0.47,
+   classes: ["C_00861d48", "C_00863260", "C_008632c0", "C_0082d410"], strings: []}
+- {id: m6E7D10, start: 0x6E7D10, end: 0x6E8010, fns: 11, kb: 0.7, done: 1, name: "gfx_bones", name_src: opus, label: "", cohesion: 0.27,
+   classes: ["C_00861dd8", "C_00861da8"], strings: ["Hueso "], note: "\"Hueso %d\""}
+- {id: m6E8010, start: 0x6E8010, end: 0x6EB820, fns: 79, kb: 13.4, done: 5, name: "gfx_hanim", name_src: opus, label: "", cohesion: 0.7,
+   classes: ["C_00861e98", "C_00861e08"], strings: [], note: "HAnim hierarchy, quaternions"}
+- {id: m6EB820, start: 0x6EB820, end: 0x6EE500, fns: 72, kb: 10.6, done: 2, name: "gfx_collision", name_src: opus, label: "", cohesion: 0.56,
+   classes: ["C_00862028", "C_00861f38", "C_0086200c", "C_00861f94", "C_00861fac", "C_00861fc8"], strings: [], note: "intersection queries"}
+- {id: m6EE500, start: 0x6EE500, end: 0x6EF3E0, fns: 39, kb: 3.4, done: 6, name: "gfx_ptank_create", name_src: opus, label: "", cohesion: 0.28,
+   classes: ["C_00862110", "C_00862084", "C_008620c8"], strings: [], note: "PTank atomic create, texture callbacks"}
+- {id: m6EF3E0, start: 0x6EF3E0, end: 0x6EFC80, fns: 16, kb: 2.0, done: 1, name: "", name_src: , label: "", cohesion: 0.23,
+   classes: ["C_008621c8"], strings: []}
+- {id: m6EFC80, start: 0x6EFC80, end: 0x6F0C60, fns: 31, kb: 3.6, done: 3, name: "", name_src: , label: "", cohesion: 0.31,
+   classes: ["C_00862240", "C_008622e8"], strings: []}
+- {id: m6F0C60, start: 0x6F0C60, end: 0x6F24F0, fns: 46, kb: 5.7, done: 3, name: "", name_src: , label: "", cohesion: 0.35,
+   classes: ["C_00862490", "C_00862390", "C_00862410"], strings: []}
+- {id: m6F24F0, start: 0x6F24F0, end: 0x6F35C0, fns: 48, kb: 3.7, done: 7, name: "", name_src: , label: "", cohesion: 0.3,
+   classes: ["C_00862640", "C_00862598", "C_008622e8", "C_00862390", "C_00862490"], strings: []}
+- {id: m6F35C0, start: 0x6F35C0, end: 0x6F5510, fns: 39, kb: 7.5, done: 1, name: "gfx_prtstd_particles", name_src: opus, label: "", cohesion: 0.44,
+   classes: ["C_00862748"], strings: [], note: "RpPrtStd atomic update"}
+- {id: m6F5510, start: 0x6F5510, end: 0x6F6FB0, fns: 46, kb: 6.3, done: 2, name: "gfx_camera_projection", name_src: opus, label: "", cohesion: 0.4,
+   classes: ["C_008627d8", "C_00862874", "C_00861fc8"], strings: [], note: "near/far clip, projection, view window"}
+- {id: m6F6FB0, start: 0x6F6FB0, end: 0x6F7820, fns: 30, kb: 1.8, done: 0, name: "", name_src: , label: "", cohesion: 0.22,
+   classes: ["C_00862900", "C_0086287c", "C_008628b8"], strings: []}
+- {id: m6F7820, start: 0x6F7820, end: 0x6F8680, fns: 19, kb: 3.4, done: 1, name: "gfx_materials", name_src: opus, label: "", cohesion: 0.15,
+   classes: ["C_00862944", "C_008629f8"], strings: ["TexList.txt"], note: "TexList.txt, MatFX"}
+- {id: m6F8680, start: 0x6F8680, end: 0x6FC130, fns: 77, kb: 11.5, done: 1, name: "gfx_screen_effects", name_src: opus, label: "", cohesion: 0.52,
+   classes: ["C_00862a80", "C_00862b04", "C_00862c74", "C_00862d48", "C_00862b58", "C_00862cd4"], strings: ["Gfx/Textures/", "Oscil", "Size Y", "Size X", "Color"], note: "OldFilm, Noise, FadeIn, Oscil"}
+- {id: m6FC130, start: 0x6FC130, end: 0x6FD690, fns: 60, kb: 4.6, done: 8, name: "gfx_light_object", name_src: opus, label: "CLightObject", cohesion: 0.4,
+   classes: ["CLightObject", "C_00862e88", "C_00862ef8", "C_00860e68", "C_00862df0", "C_008631c8"], strings: [], note: "CLightObject"}
+- {id: m6FD690, start: 0x6FD690, end: 0x6FF410, fns: 41, kb: 6.9, done: 2, name: "gfx_clump_loader", name_src: opus, label: "", cohesion: 0.34,
+   classes: ["C_00863044", "C_00862fcc", "C_00863018"], strings: ["Unnamed"], note: "RpClumpStreamRead/Clone"}
+- {id: m6FF410, start: 0x6FF410, end: 0x700F90, fns: 33, kb: 6.7, done: 1, name: "gfx_team", name_src: opus, label: "", cohesion: 0.4,
+   classes: ["C_008630e0", "C_00863678", "C_00863600", "C_00863588", "C_00863070"], strings: [], note: "RpTeam players"}
+- {id: m700F90, start: 0x700F90, end: 0x7027A0, fns: 20, kb: 5.9, done: 0, name: "", name_src: , label: "", cohesion: 0.2,
+   classes: ["C_0086315c"], strings: []}
+- {id: m7027A0, start: 0x7027A0, end: 0x7037F0, fns: 29, kb: 3.8, done: 0, name: "", name_src: , label: "", cohesion: 0.3,
+   classes: ["C_00861a00", "C_00863180"], strings: []}
+- {id: m7037F0, start: 0x7037F0, end: 0x7060E0, fns: 41, kb: 9.8, done: 0, name: "", name_src: , label: "", cohesion: 0.29,
+   classes: ["C_008631c8", "C_008631a8"], strings: []}
+- {id: m7060E0, start: 0x7060E0, end: 0x707430, fns: 23, kb: 4.6, done: 0, name: "", name_src: , label: "", cohesion: 0.28,
+   classes: ["C_008632c0", "C_00863260"], strings: []}
+- {id: m707430, start: 0x707430, end: 0x708A60, fns: 60, kb: 5.0, done: 10, name: "", name_src: , label: "", cohesion: 0.38,
+   classes: ["C_00863430", "C_008633a0", "C_008633e0", "C_00863360", "C_00861e08", "C_008634c0"], strings: []}
+- {id: m708A60, start: 0x708A60, end: 0x709720, fns: 25, kb: 3.0, done: 0, name: "", name_src: , label: "", cohesion: 0.37,
+   classes: ["C_00862b58", "C_00862cd4", "C_00862d48", "C_00862a80", "C_00862c74", "C_008629f8"], strings: []}
+- {id: m709720, start: 0x709720, end: 0x70DDE0, fns: 107, kb: 16.0, done: 1, name: "gfx_water", name_src: opus, label: "", cohesion: 0.39,
+   classes: ["C_00863588", "C_0086379c", "C_00863760", "C_008637d8", "C_00863600", "C_00863678"], strings: ["Gfx/Shaders/Water.vsh", "Gfx/Shaders/Water.psh"], note: "Gfx/Shaders/Water.psh/.vsh"}
+- {id: m70DDE0, start: 0x70DDE0, end: 0x712CC0, fns: 174, kb: 18.3, done: 16, name: "audio", name_src: opus, label: "", cohesion: 0.59,
+   classes: ["C_00863ac0", "C_00863ba8", "C_00863dd0", "C_00863d80", "C_00863cd4", "C_008639b0"], strings: ["GERMANS", "SCENES", "SOUNDMAX"], note: "SOUNDMAX, DirectSound enum callback, RW audio effects dictionaries"}
+- {id: m712CC0, start: 0x712CC0, end: 0x713B10, fns: 35, kb: 3.2, done: 3, name: "input_dinput", name_src: opus, label: "CInputDirectInput", cohesion: 0.31,
+   classes: ["CInputDirectInput", "CInputBase"], strings: [], note: "CInputDirectInput, DirectInput8Create"}
+- {id: m713B10, start: 0x713B10, end: 0x7140B0, fns: 32, kb: 1.1, done: 4, name: "", name_src: , label: "", cohesion: 0.43,
+   classes: ["C_00863f60", "C_008656d0", "C_00865758", "C_00865980", "C_008657e0", "C_00865a10"], strings: []}
+- {id: m7140B0, start: 0x7140B0, end: 0x717FA0, fns: 83, kb: 13.5, done: 1, name: "gui_listbox_base", name_src: opus, label: "CGuiListBoxBase", cohesion: 0.36,
+   classes: ["CGuiListBoxBase", "CGuiTextureListBox", "CGuiListBox"], strings: [], note: "CGuiListBoxBase, CGuiTextureListBox"}
+- {id: m717FA0, start: 0x717FA0, end: 0x71A2C0, fns: 90, kb: 7.5, done: 9, name: "gui_control", name_src: opus, label: "CGuiControl", cohesion: 0.4,
+   classes: ["CGuiControl", "C_00830a48", "C_008432b0", "CGuiStatic", "CGuiRadioButton", "CGuiSwitch"], strings: [], note: "CGuiControl"}
+- {id: m71A2C0, start: 0x71A2C0, end: 0x71D820, fns: 72, kb: 11.2, done: 2, name: "gui_menus", name_src: opus, label: "", cohesion: 0.6,
+   classes: ["C_00864508"], strings: ["Menus/P_Juego.fbs"], note: "menus manager (C_00864508), Menus/P_Juego.fbs"}
+- {id: m71D820, start: 0x71D820, end: 0x7209F0, fns: 48, kb: 12.0, done: 0, name: "gui_builder", name_src: opus, label: "CGuiBuilder", cohesion: 0.65,
+   classes: ["CGuiBuilder", "C_00864a58"], strings: ["PANEL", "LISTBOX", "BOTON", "SWITCH", "ESTATICO"], note: "CGuiBuilder: .fbs keyword factory"}
+- {id: m7209F0, start: 0x7209F0, end: 0x721070, fns: 18, kb: 1.5, done: 1, name: "gui_static", name_src: opus, label: "CGuiStatic", cohesion: 0.13,
+   classes: ["CGuiStatic"], strings: [], note: "CGuiStatic"}
+- {id: m721070, start: 0x721070, end: 0x722C20, fns: 38, kb: 6.5, done: 2, name: "gui_edit", name_src: opus, label: "CGuiEdit", cohesion: 0.6,
+   classes: ["CGuiEdit"], strings: [], note: "CGuiEdit"}
+- {id: m722C20, start: 0x722C20, end: 0x724CC0, fns: 66, kb: 5.8, done: 2, name: "gui_listbox", name_src: opus, label: "CGuiListBox", cohesion: 0.52,
+   classes: ["CGuiListBox"], strings: [], note: "CGuiListBox"}
+- {id: m724CC0, start: 0x724CC0, end: 0x726450, fns: 54, kb: 5.5, done: 4, name: "gui_button", name_src: opus, label: "CGuiButton", cohesion: 0.28,
+   classes: ["CGuiButton", "CGuiRadioButton", "CGuiChoiceNumButton", "CGuiChoiceButton", "CGuiEdit", "CGuiStatic"], strings: [], note: "CGuiButton"}
+- {id: m726450, start: 0x726450, end: 0x728390, fns: 70, kb: 5.8, done: 3, name: "gui_font_render", name_src: opus, label: "", cohesion: 0.44,
+   classes: ["C_008655e8", "C_008655c0"], strings: ["MGAME_01.FNT"], note: "MGAME_01.FNT, named textures"}
+- {id: m728390, start: 0x728390, end: 0x72A360, fns: 61, kb: 7.5, done: 4, name: "gui_skin", name_src: opus, label: "", cohesion: 0.32,
+   classes: ["C_00865a10", "C_00865aa8", "C_008657e0", "C_00865870", "C_008658f8", "C_00865980"], strings: ["Menus/Textures/"], note: "Menus/Textures/"}
+- {id: m72A360, start: 0x72A360, end: 0x72E970, fns: 126, kb: 15.1, done: 8, name: "gui_panel", name_src: opus, label: "CGuiPanel", cohesion: 0.38,
+   classes: ["CGuiPanel", "CGuiRadioGroup", "CGuiSlider"], strings: [], note: "CGuiPanel, CGuiRadioGroup, CGuiSlider"}
+- {id: m72E970, start: 0x72E970, end: 0x72FAC0, fns: 34, kb: 3.3, done: 2, name: "gui_choice_button", name_src: opus, label: "CGuiChoiceButton", cohesion: 0.24,
+   classes: ["CGuiChoiceButton", "CGuiChoiceNumButton"], strings: [], note: "CGuiChoiceButton, CGuiChoiceNumButton"}
+- {id: m72FAC0, start: 0x72FAC0, end: 0x730800, fns: 34, kb: 3.0, done: 7, name: "gui_switch", name_src: opus, label: "CGuiSwitch", cohesion: 0.2,
+   classes: ["CGuiSwitch", "CGuiRadioButton", "CGuiSlider", "CGuiStatic", "CGuiListBoxBase", "CGuiListBox"], strings: [], note: "CGuiSwitch"}
+- {id: m730800, start: 0x730800, end: 0x7317E0, fns: 27, kb: 2.3, done: 1, name: "gui_texture_listbox", name_src: opus, label: "CGuiTextureListBox", cohesion: 0.27,
+   classes: ["CGuiTextureListBox"], strings: [], note: "CGuiTextureListBox"}
+- {id: m7317E0, start: 0x7317E0, end: 0x7329B0, fns: 36, kb: 3.4, done: 1, name: "", name_src: , label: "", cohesion: 0.56,
+   classes: ["C_00867078", "C_0086704c"], strings: []}
+- {id: m7329B0, start: 0x7329B0, end: 0x736FC0, fns: 90, kb: 15.8, done: 8, name: "", name_src: , label: "", cohesion: 0.58,
+   classes: ["C_008670f0", "C_00861120", "C_008670cc"], strings: []}
+- {id: m736FC0, start: 0x736FC0, end: 0x739310, fns: 76, kb: 8.1, done: 0, name: "", name_src: , label: "", cohesion: 0.62,
+   classes: ["C_00867260", "C_008673b0", "C_00867358", "C_00867318", "C_008672e4", "C_008670cc"], strings: []}
+- {id: m739310, start: 0x739310, end: 0x73B500, fns: 32, kb: 6.9, done: 1, name: "gui_font", name_src: opus, label: "", cohesion: 0.63,
+   classes: ["C_00867444", "C_008673fc"], strings: ["FontWapa"], note: "FontWapa"}
+- {id: m73B500, start: 0x73B500, end: 0x73C320, fns: 33, kb: 3.1, done: 4, name: "", name_src: , label: "", cohesion: 0.13,
+   classes: ["C_0086754c", "C_00867484", "C_00867578"], strings: []}
+- {id: m73C320, start: 0x73C320, end: 0x73F700, fns: 86, kb: 11.4, done: 9, name: "net_session", name_src: opus, label: "", cohesion: 0.46,
+   classes: [], strings: ["NumJugs", "NombreMapa", "DEFAULT", "COMM3DServer", "NO CORE"], note: "COMM3DServer, prudp, station/session dump"}
+- {id: m73F700, start: 0x73F700, end: 0x743450, fns: 131, kb: 13.1, done: 8, name: "net_cogible_ddl", name_src: opus, label: "NetCogibleDDL", cohesion: 0.35,
+   classes: ["NetCogible", "C_00867800", "C_00867900", "C_00867768", "C_00867890", "NetPlayer"], strings: [".\\PCGenerados\\NetCogibleDDL.cpp", "TeHeCogido", "RecogerArma", "RecogerMunicion", "BeginRespawn"], note: "NetCogibleDDL.cpp (generated DDL)"}
+- {id: m743450, start: 0x743450, end: 0x7445D0, fns: 39, kb: 3.6, done: 2, name: "net_callbacks", name_src: opus, label: "", cohesion: 0.46,
+   classes: ["C_00867ab8"], strings: [], note: "callback registration for net objects"}
+- {id: m7445D0, start: 0x7445D0, end: 0x747480, fns: 56, kb: 11.1, done: 3, name: "net_player_ddl", name_src: opus, label: "NetPlayerDDL", cohesion: 0.52,
+   classes: ["NetPlayer", "C_008678a8"], strings: [".\\PCGenerados\\NetPlayerDDL.cpp", "Respawn", "Muere", "DejoDeInterrogarte", "Dispara"], note: "NetPlayerDDL.cpp"}
+- {id: m747480, start: 0x747480, end: 0x747F20, fns: 32, kb: 2.4, done: 2, name: "net_proyectil_ddl", name_src: opus, label: "NetProyectilDDL", cohesion: 0.44,
+   classes: ["NetProyectil", "C_00867770"], strings: [".\\PCGenerados\\NetProyectilDDL.cpp", "Detona", "NetProyectil", "m_dsProyectilDescription", "ColisionConBicho"], note: "NetProyectilDDL.cpp"}
+- {id: m747F20, start: 0x747F20, end: 0x7496C0, fns: 47, kb: 4.8, done: 5, name: "", name_src: , label: "", cohesion: 0.27,
+   classes: ["C_00868010", "C_00867fc0", "C_00868050"], strings: []}
+- {id: m7496C0, start: 0x7496C0, end: 0x74B160, fns: 55, kb: 6.0, done: 3, name: "", name_src: , label: "", cohesion: 0.35,
+   classes: [], strings: []}
+- {id: m74B160, start: 0x74B160, end: 0x74C4C0, fns: 41, kb: 4.5, done: 4, name: "net_ghost_ddl", name_src: opus, label: "NetGhostDDL", cohesion: 0.4,
+   classes: ["NetGhost", "C_00867578"], strings: [".\\PCGenerados\\NetGhostDDL.cpp", "DejoDeManipularte", "QuieroManipularte", "SetBombaActivada", "NetGhost"], note: "NetGhostDDL.cpp"}
+- {id: m74C4C0, start: 0x74C4C0, end: 0x74E630, fns: 36, kb: 8.0, done: 1, name: "net_game_ddl", name_src: opus, label: "NetGameDDL", cohesion: 0.5,
+   classes: ["NetGame", "C_00867fc0"], strings: [".\\PCGenerados\\NetGameDDL.cpp", "NotificaYaConectadosMasterHaEntradoEnSesion", "ReseteaMemoriasPuntosRespawn", "AddPuntoRespawnToMemory", "CiclaMemoriaPuntosRespawn"], note: "NetGameDDL.cpp"}
+- {id: m74E630, start: 0x74E630, end: 0x74EEB0, fns: 32, kb: 1.9, done: 6, name: "net_control_ddl", name_src: opus, label: "NetControlDDL", cohesion: 0.32,
+   classes: ["C_00868658", "NetCogible", "NetProyectil", "NetGhost", "NetGame", "NetPostman"], strings: [".\\PCGenerados\\NetControlDDL.cpp", "NetControl", "m_dsParSimulado", "m_dsParEmpaquetado", "m_dsParFrecuenciado"], note: "NetControlDDL.cpp"}
+- {id: m74EEB0, start: 0x74EEB0, end: 0x74F740, fns: 25, kb: 1.9, done: 2, name: "net_playerlist_ddl", name_src: opus, label: "NetPlayerListDDL", cohesion: 0.5,
+   classes: ["C_00868768"], strings: [".\\PCGenerados\\NetPlayerListDDL.cpp", "NetPlayerList", "m_dsPlayersEnPartida"], note: "NetPlayerListDDL.cpp"}
+- {id: m74F740, start: 0x74F740, end: 0x750A90, fns: 32, kb: 4.5, done: 2, name: "net_postman_ddl", name_src: opus, label: "NetPostmanDDL", cohesion: 0.49,
+   classes: ["NetPostman", "C_00867ab8"], strings: [".\\PCGenerados\\NetPostmanDDL.cpp", "NetPostman", "m_dsPostmanDescription", "m_dsTiempoLlegar", "m_dsGrupoSiguiente"], note: "NetPostmanDDL.cpp"}
+- {id: m750A90, start: 0x750A90, end: 0x7512B0, fns: 30, kb: 1.8, done: 7, name: "net_chat_ddl", name_src: opus, label: "NetChatDDL", cohesion: 0.4,
+   classes: ["NetChat", "NetPlayer", "C_00868050", "NetPostman"], strings: ["MensajeFliEx", "MensajeChatEx", ".\\PCGenerados\\NetChatDDL.cpp", "Commandos3D", "NetChat"], note: "NetChatDDL.cpp"}
+- {id: m7512B0, start: 0x7512B0, end: 0x7539E0, fns: 76, kb: 9.1, done: 11, name: "net_spawn_messages", name_src: opus, label: "", cohesion: 0.44,
+   classes: ["C_00868abc", "C_00868af0", "C_00868b04", "C_00868ae0", "C_00868658", "C_00868768"], strings: ["bHuboCambios", "m_fVelYInicial", "m_fPosZInicial", "m_fPosXInicial", "m_TipoBicho"], note: "m_TipoProyectil/m_TipoBicho/m_fPosXInicial create messages"}
+- {id: m7539E0, start: 0x7539E0, end: 0x75A480, fns: 66, kb: 25.1, done: 3, name: "game_config", name_src: opus, label: "", cohesion: 0.12,
+   classes: ["C_00869cd0", "C_00869124", "C_0086a3d8", "C_0086a3c0", "C_0086c12c", "C_0082d410"], strings: [".fPlayerForwardSpeed", ".bAmbientWhite", ".fTiempoLanzarGranadasComando", ".vApuntadoZoomExpVelocidadLenta", "TRILINEAL"], note: ".fAlturaSubtitulos, .MemoriaSonido, .iShadowsMax, MP player tuning"}
+- {id: m75A480, start: 0x75A480, end: 0x75BF30, fns: 26, kb: 5.4, done: 0, name: "", name_src: , label: "", cohesion: 0.49,
+   classes: ["C_0086c1e0", "C_008406b0", "C_00840e38"], strings: []}
+- {id: m75BF30, start: 0x75BF30, end: 0x75FDF0, fns: 77, kb: 11.2, done: 1, name: "", name_src: , label: "", cohesion: 0.53,
+   classes: ["C_0086c288", "C_0083e0d8"], strings: []}
+- {id: m75FDF0, start: 0x75FDF0, end: 0x761800, fns: 47, kb: 6.2, done: 1, name: "app_config", name_src: opus, label: "", cohesion: 0.14,
+   classes: ["C_0086c2b4"], strings: [".IncluyeVersionSingleplayer", ".bMenusExtrasActivo", ".bNextMission", ".uPulseDelayTime", ".RENDEZVOUS_URL"], note: ".WINDOWSREGPATH, .resolution, .bCreditos, .Region"}
+- {id: m761800, start: 0x761800, end: 0x7685A0, fns: 54, kb: 26.0, done: 0, name: "", name_src: , label: "", cohesion: 0.71,
+   classes: ["C_0086f128", "C_008406e8", "C_00840e0c"], strings: []}
+- {id: m7685A0, start: 0x7685A0, end: 0x770470, fns: 55, kb: 29.4, done: 1, name: "input_bindings", name_src: opus, label: "", cohesion: 0.56,
+   classes: ["C_0086f15c"], strings: ["- Id num", "- Duraci", "- Posici", "- Animaci", ".VALOR"], note: "ATACAR/DISPARAR/RECARGAR/AGACHARSE/STRAFE action names"}
+- {id: m770470, start: 0x770470, end: 0x771FF0, fns: 36, kb: 3.8, done: 0, name: "", name_src: , label: "", cohesion: 0.38,
+   classes: ["C_00871914"], strings: []}
+- {id: m771FF0, start: 0x771FF0, end: 0x774C30, fns: 46, kb: 8.1, done: 0, name: "", name_src: , label: "", cohesion: 0.62,
+   classes: ["C_00871a18", "C_00840704", "C_00840724"], strings: []}
+- {id: m774C30, start: 0x774C30, end: 0x776FF0, fns: 51, kb: 5.1, done: 0, name: "", name_src: , label: "", cohesion: 0.47,
+   classes: [], strings: []}
+- {id: m776FF0, start: 0x776FF0, end: 0x7822B0, fns: 41, kb: 42.5, done: 0, name: "game_data_defs", name_src: opus, label: "", cohesion: 0.71,
+   classes: ["C_008723f8"], strings: [".FogWaterType", ".ColorAmbiente", ".EliminarMuertos", ".SkySpeed2", ".SkySpeed1"], note: "*.bik/*.png/*.rws, .MP*, .PunteriaID definitions"}
+- {id: m7822B0, start: 0x7822B0, end: 0x783430, fns: 29, kb: 2.8, done: 1, name: "", name_src: , label: "", cohesion: 0.54,
+   classes: [], strings: ["DEFAULT"]}
+- {id: m783430, start: 0x783430, end: 0x78B4E0, fns: 38, kb: 31.0, done: 0, name: "", name_src: , label: "", cohesion: 0.74,
+   classes: ["C_008728a0", "C_00840680", "C_00840d88"], strings: []}
+- {id: m78B4E0, start: 0x78B4E0, end: 0x78D129, fns: 43, kb: 5.4, done: 2, name: "net_perf_counters", name_src: opus, label: "DataSetPerfCounters", cohesion: 0.63,
+   classes: ["C_00872abc", "C_00840698", "C_00840dac"], strings: ["DataSetPerfCounters.cpp", "UpdatesThatTrigeredMessages", "MessagesSent"], note: "DataSetPerfCounters.cpp"}
+- {id: m7C1C70, start: 0x7C1C70, end: 0x7C28E9, fns: 6, kb: 3.1, done: 0, name: "gfx_clip_helpers", name_src: opus, label: "", cohesion: 0.24,
+   classes: [], strings: [], note: "segment/box clip helpers (16-aligned island in the CRT)"}

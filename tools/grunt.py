@@ -405,8 +405,24 @@ def clone_clusters():
     return _clusters
 
 
-def select(db, n, max_size, min_size=6, exclude=()):
+def module_ids(spec):
+    """--module: comma list of module ids (m4F9190) or names (dev_console) from db/modules.yaml -> set of ids."""
+    if not spec:
+        return None
+    import modules
+    mods = modules.read_yaml()
+    out = set()
+    for k in spec.split(","):
+        m = next((m for m in mods if k in (m["id"], m.get("name"))), None)
+        if not m:
+            sys.exit(f"unknown module {k!r} (modules.py list)")
+        out.add(m["id"])
+    return out
+
+
+def select(db, n, max_size, min_size=6, exclude=(), modules=None):
     """Leaf-first: fewest not-done game callees, then smallest. Returns [(ea, example_ea|None)].
+    modules: only functions of these module ids (a module wave).
     Clone clusters: while no member is done, only one member is offered; once one is done, the others are offered
     with it as the example (cheap: same shape)."""
     rows = db.rows
@@ -423,6 +439,8 @@ def select(db, n, max_size, min_size=6, exclude=()):
     cands = []
     for ea, r in rows.items():
         if r["status"] != "todo" or r["region"] != "game" or ea in exclude:
+            continue
+        if modules is not None and r["module"] not in modules:
             continue
         f = db.F.get(ea)
         if not f or f["size"] > max_size or f["size"] < min_size or room.get(ea, 99) < 5 or not os.path.exists(os.path.join(ROOT, "export", "funcs", f"{ea:08x}.c")):
@@ -558,7 +576,7 @@ STOP = os.path.join(ROOT, "work", "grunt_stop")
 def run(args):
     db = DB()
     key = load_key()
-    picks = [(int(x, 16), None) for x in args.only.split(",")] if args.only else select(db, args.n, args.max_size, args.min_size)
+    picks = [(int(x, 16), None) for x in args.only.split(",")] if args.only else select(db, args.n, args.max_size, args.min_size, modules=module_ids(args.module))
     targets = [ea for ea, _ in picks]
     example = dict(picks)
     live(mode="run" + (" (dry)" if args.dry else ""), phase="grunting", counts=dict(total=len(targets), submitted=len(targets)))
@@ -636,6 +654,7 @@ def lanes(args):
     fallback) and Codex (the rest). Every --batch gate passes: build + in-mission smoke + commit. Stops on a smoke
     failure (files left uncommitted for bisecting) or after --total functions."""
     db = DB()
+    wave = module_ids(args.module)
     key = load_key()
     esc = [("claude", args.claude_model, 2)] if args.escalate_claude else []
     codex = [("codex", args.codex_model, 2)]
@@ -690,7 +709,7 @@ def lanes(args):
         if submitted >= args.total or all(cnt[l] >= caps[l] for l in caps):
             return
         # wide window: the leaf-first head is almost all tiny (DeepSeek lane); the Codex lane needs larger candidates
-        for ea, ex in select(db, 4000, args.max_size, args.min_size, exclude=busy):
+        for ea, ex in select(db, 4000, args.max_size, args.min_size, exclude=busy, modules=wave):
             lane, ladder = lane_of(ea, ex)
             if cnt[lane] >= caps[lane]:
                 continue
@@ -812,6 +831,7 @@ if __name__ == "__main__":
     r.add_argument("--jobs", type=int, default=8)
     r.add_argument("--max-size", type=int, default=200)
     r.add_argument("--only")
+    r.add_argument("--module", help="module wave: comma list of module ids/names (tools/modules.py list)")
     r.add_argument("--model", default="deepseek-flash")
     r.add_argument("--backend", choices=["auto", "deepseek", "codex", "claude"], default="auto")
     r.add_argument("--codex-model", default="gpt-6.1-sol")
@@ -826,6 +846,7 @@ if __name__ == "__main__":
     r.add_argument("--review-over", type=int, default=100, help="Codex-review DeepSeek outputs above N bytes (-1: off)")
     l = sub.add_parser("lanes")
     l.add_argument("--total", type=int, default=200)
+    l.add_argument("--module", help="module wave: comma list of module ids/names (tools/modules.py list)")
     l.add_argument("--batch", type=int, default=60, help="smoke + commit every N gate passes")
     l.add_argument("--tiny-jobs", type=int, default=8)
     l.add_argument("--main-jobs", type=int, default=6)

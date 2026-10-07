@@ -282,3 +282,21 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
   callers / class, <= 3 per function); the driver answers from packet.py data and the conversation continues
   without spending an attempt. First dry run (2 DeepSeek functions, 200-400 B): neither asked; both passed. The
   offer goes in the user packet, so the cached system prompt is unchanged.
+
+## 2026-10-07 — Module map (Phase 1 item finished late)
+
+- Phase 1 had stopped at "good enough to feed grunts"; without modules the grunt went leaf-first over the whole
+  binary: 841 functions = 10 KB = 0.5% of the game bytes. Modules now exist; waves are per module.
+- MSVC .obj contiguity confirmed on NetZ: its 105 __FILE__-named .cpp files (assert strings) are 109/109 contiguous
+  runs, and their .cpp strings sit in .rdata in the same order. Game code has no __FILE__ strings except the 9
+  generated net DDL files (PCGenerados\Net*DDL.cpp) and DataSetPerfCounters.cpp.
+- Clustering (`tools/modules.py`): greedy adjacent merging fails (a function whose partner is 3 positions away can
+  never merge: 6,000 singletons); dynamic programming over contiguous partitions (modularity, numpy banded prefix
+  sums, 1 s) works. Signals that helped: calls, class methods, shared globals/strings, neighbouring .rdata items
+  (+0.03). No signal: function padding (always 0xCC, inside and between objs). Scaling gamma with graph size was
+  worse. The .CRT$XCU initializer table (196 entries, link order, stubs at 0x828xxx) anchors .data, not code.
+- NetZ score 0.83 balanced; the misses are tiny files (2-3 functions) and generated near-clone files, which only
+  their __FILE__ names separate (used as hard constraints where present).
+- Finds while naming: a second zlib (inflate) inside the engine region at 0x6A02B0 (module core_zlib_log: link
+  zlib, don't reimplement); RenderWare Physics (Rwp*.c $Id strings) is linked in, check its region; the game code
+  is two blocks (0x401000-0x566000 game, 0x690B10-0x78D130 engine/core/GUI/net) with RW/D3DX9/NetZ between.

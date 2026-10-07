@@ -30,9 +30,16 @@ def functions(by_module):
     if not os.path.exists(path):
         return None
     rows = list(csv.DictReader(open(path)))
+    names = {}
+    if by_module:  # db/modules.yaml (tools/modules.py): show reviewed names, in address order
+        import yaml
+        mp = os.path.join(ROOT, "db", "modules.yaml")
+        for m in (yaml.safe_load(open(mp)) if os.path.exists(mp) else []):
+            names[m["id"]] = f"{m['id']} {m['name']}" if m.get("name") else m["id"]
     agg = collections.defaultdict(lambda: collections.Counter())
     for r in rows:
-        key = (r["module"] or "(unassigned)") if (by_module and r["region"] == "game") else r["region"]
+        key = (names.get(r["module"], r["module"]) or "(unassigned)") if (by_module and r["region"] == "game") \
+            else r["region"]
         a = agg[key]
         a["n"] += 1
         a["bytes"] += int(r["size"])
@@ -55,11 +62,12 @@ def main():
     agg = functions(by_module)
     if agg:
         print(f"\n== Functions by {'module (game only)' if by_module else 'region'}")
-        print(f"  {'':16s} {'funcs':>6s} {'KB':>6s} {'named':>6s} {'done':>6s} {'verif':>6s} {'esc':>4s}  done%bytes")
-        for k, a in sorted(agg.items(), key=lambda x: -x[1]["bytes"]):
+        print(f"  {'':32s} {'funcs':>6s} {'KB':>6s} {'named':>6s} {'done':>6s} {'verif':>6s} {'esc':>4s}  done%bytes")
+        order = (lambda x: x[0].split()[0]) if by_module else (lambda x: -x[1]["bytes"])
+        for k, a in sorted(agg.items(), key=order):
             done_b = a["b_done"] + a["b_verified"]
             pct = f"{100 * done_b / a['bytes']:.1f}%" if k == "game" or by_module else "-"
-            print(f"  {k:16s} {a['n']:6d} {a['bytes'] // 1024:6d} {a['named']:6d} {a['n_done']:6d} "
+            print(f"  {k:32s} {a['n']:6d} {a['bytes'] // 1024:6d} {a['named']:6d} {a['n_done']:6d} "
                   f"{a['n_verified']:6d} {a['n_escalated']:4d}  {pct}")
     try:  # verification depth of src/auto (db/verify.json, filled by every SMOKE OK)
         sys.path.insert(0, os.path.dirname(__file__))

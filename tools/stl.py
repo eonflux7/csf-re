@@ -11,7 +11,7 @@ Evidence, applied to a fixpoint:
 Writes db/stl.json ([{ea, kind, evidence, cluster}]) and sets module=stl in db/functions.csv
 (only where module is empty).
 """
-import collections, json, os, sys
+import collections, json, os, re, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from triage import load_csv, save_csv
 
@@ -84,8 +84,8 @@ def main():
     json.dump(out, open(os.path.join(ROOT, "db", "stl.json"), "w"), indent=0)
     n = 0
     for ea in kind:
-        if not rows[ea]["module"]:
-            rows[ea]["module"] = "stl"
+        if not rows[ea]["module"] or re.fullmatch(r"m[0-9A-F]{6}", rows[ea]["module"]):  # empty or a carved module
+            rows[ea]["module"] = "stl"  # (re-run tools/modules.py carve afterwards)
             n += 1
     save_csv(rows)
     by = collections.Counter((kind[e], evidence[e]) for e in kind)
