@@ -8,7 +8,7 @@ Usage:
 
 After a batch: link, deploy, smoke test (unless --no-smoke); on success mark functions done and git commit.
 """
-import argparse, collections, concurrent.futures as cf, glob, json, os, re, subprocess, sys, threading, time, urllib.request
+import hashlib, argparse, collections, concurrent.futures as cf, glob, json, os, re, subprocess, sys, threading, time, urllib.request
 sys.path.insert(0, os.path.dirname(__file__))
 from packet import DB, build
 from gate import gate
@@ -124,17 +124,36 @@ CODEX_CWD = os.path.expanduser("~/.cache/csf-re-codex")
 CODEX_EFFORT = {"high": "high", "max": "xhigh"}
 
 
+# Codex agent features that add tool schemas / instructions to every request; grunts need none of them.
+CODEX_OFF = ["shell_tool", "unified_exec", "view_image", "multi_agent", "apps", "plugins", "browser_use",
+             "browser_use_external", "computer_use", "image_generation", "goals", "sleep_tool", "tool_suggest",
+             "skill_search", "hooks", "in_app_browser", "mentions_v2", "remote_plugin", "workspace_dependencies",
+             "worktrees"]
+
+
 def chat_codex(model, messages, effort="high"):
     """GPT via the Codex CLI headless (user's ChatGPT subscription). Ephemeral, read-only sandbox, no user config
-    (no MCP servers), run outside the repo. The whole conversation goes in as one prompt."""
+    (no MCP servers), run outside the repo. Our system prompt replaces Codex's base instructions and the agent tools
+    are off (~14k -> ~4k tokens of harness overhead per call); the conversation goes in as one prompt."""
     os.makedirs(CODEX_CWD, exist_ok=True)
-    convo = [messages[0]["content"], "Answer directly from the packet below. Do not run commands or use tools."]
+    sysp = messages[0]["content"]
+    instr = os.path.join(CODEX_CWD, f"sys-{hashlib.sha1(sysp.encode()).hexdigest()[:12]}.md")
+    if not os.path.exists(instr):
+        tmp = f"{instr}.{os.getpid()}.{threading.get_ident()}"
+        open(tmp, "w").write(sysp + "\n\nAnswer directly from the packet. You have no tools.\n")
+        os.replace(tmp, instr)
+    convo = []
     for m in messages[1:]:
         tag = "PACKET / REQUEST" if m["role"] == "user" else "YOUR PREVIOUS ANSWER"
         convo.append(f"=== {tag} ===\n{m['content']}")
     out = os.path.join(CODEX_CWD, f"out-{os.getpid()}-{threading.get_ident()}.txt")
+    feats = [a for f in CODEX_OFF for a in ("-c", f"features.{f}=false")]
+    feats += ["-c", f'model_instructions_file="{instr}"', "-c", "web_search=disabled"]
+    if os.environ.get("CSF_CODEX_SLIM") == "0":  # A/B: stock Codex harness, system prompt inlined
+        feats, convo = [], [sysp, "Answer directly from the packet below. Do not run commands or use tools."] + convo
     r = subprocess.run(["codex", "exec", "--ephemeral", "--skip-git-repo-check", "--ignore-user-config",
                         "-s", "read-only", "-m", model, "-c", f'model_reasoning_effort="{CODEX_EFFORT.get(effort, effort)}"',
+                        *feats,
                         "-o", out, "--json", "-"],
                        input="\n\n".join(convo), capture_output=True, text=True, cwd=CODEX_CWD, timeout=1800)
     if r.returncode or not os.path.exists(out):
@@ -145,8 +164,9 @@ def chat_codex(model, messages, effort="high"):
     for line in r.stdout.splitlines():
         if '"turn.completed"' in line:
             u = json.loads(line).get("usage", {})
-    return text, dict(prompt_tokens=u.get("input_tokens", 0), completion_tokens=u.get("output_tokens", 0) +
-                      u.get("reasoning_output_tokens", 0), backend="codex", model=model)
+    return text, dict(prompt_tokens=u.get("input_tokens", 0), cached_tokens=u.get("cached_input_tokens", 0),
+                      completion_tokens=u.get("output_tokens", 0) + u.get("reasoning_output_tokens", 0),
+                      backend="codex", model=model)
 
 
 def ask(backend, model, messages, key, effort="high"):
@@ -275,7 +295,7 @@ def select(db, n, max_size, min_size=6, exclude=()):
     room = {eas[i]: eas[i + 1] - eas[i] for i in range(len(eas) - 1)}
     cands = []
     for ea, r in rows.items():
-        if r["status"] != "todo" or r["region"] != "game" or r["module"] == "stl" or ea in exclude:  # stl: templates
+        if r["status"] != "todo" or r["region"] != "game" or ea in exclude:
             continue
         f = db.F.get(ea)
         if not f or f["size"] > max_size or f["size"] < min_size or room.get(ea, 99) < 5 or not os.path.exists(os.path.join(ROOT, "export", "funcs", f"{ea:08x}.c")):

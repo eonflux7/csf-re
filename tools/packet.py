@@ -112,6 +112,32 @@ def struct_text(db, vt):
     return m.group(0) if m else None
 
 
+STL_LAYOUT = {
+    "vector": "allocator@0 (4 bytes, empty), _Myfirst@4, _Mylast@8, _Myend@12 (16 bytes)",
+    "vector<bool>": "_Myvec (vector<unsigned>, 16 bytes)@0, _Mysize@16",
+    "string": "allocator@0, _Bx@4 (char[16] inline buffer, or char* when _Myres >= 16), _Mysize@20, _Myres@24 (28 bytes)",
+    "list": "allocator@0, _Myhead@4 (sentinel node: _Next@0, _Prev@4, value@8), _Mysize@8 (12 bytes)",
+    "tree": "comparator/allocator@0, _Myhead@4 (sentinel: _Left@0, _Parent@4, _Right@8, _Color@12, _Isnil@13, "
+            "value after), _Mysize@8 (12 bytes)",
+}
+_stl = None
+
+
+def stl_note(ea):
+    global _stl
+    if _stl is None:
+        _stl = {int(x["ea"], 16): x for x in json.load(open(os.path.join(ROOT, "db", "stl.json")))}
+    x = _stl.get(ea)
+    if not x:
+        return None
+    k = x["kind"]
+    return (f"\n## STL instantiation\nThis is a VC7.1 (MSVC 2003) `std::{k}` template member (or internal helper), instantiated for a game "
+            f"element type. Layout: {STL_LAYOUT.get(k, '?')}. Reproduce its exact behavior on raw memory at these "
+            "offsets (CSF_AT / casts); do NOT use our compiler's std:: containers (different layout). Element copies, "
+            "constructors and destructors appear inlined or as callees: keep them exactly (same callees, same element "
+            "size and order). Allocate/free with exactly the functions the original calls.")
+
+
 def build(db, ea, with_asm_limit=400):
     f = db.F[ea]
     row = db.rows[ea]
@@ -134,6 +160,9 @@ def build(db, ea, with_asm_limit=400):
             out.append("Declared in types/auto_classes.h (DO NOT redefine; use as-is):\n```cpp\n" + st + "```")
         if c["base"] and struct_text(db, c["base"]):
             out.append("Base:\n```cpp\n" + struct_text(db, c["base"]) + "```")
+    note = stl_note(ea)
+    if note:
+        out.append(note)
     out.append("\n## Hex-Rays pseudocode (names substituted where known)\n```c\n" + substitute_names(db, src) + "\n```")
     if f["size"] <= with_asm_limit:
         out.append("\n## Disassembly (authoritative for signedness / exact semantics)\n```asm\n" +
@@ -147,7 +176,8 @@ def build(db, ea, with_asm_limit=400):
             status = cr["status"] if cr else "?"
             nm = db.name(c) or f"sub_{c:X}"
             out.append(f"- 0x{c:08X} `{nm}` [{status}] rets={ret_bytes(c, db.F[c]['size']) if c in db.F else '?'} "
-                       f"proto: `{cproto}`")
+                       f"proto: `{cproto}`" + ("  NORETURN (throws/aborts): still call it on exactly the same "
+                                               "condition, even if the branch looks unreachable" if "__noreturn" in cproto else ""))
     gl = [d for d in f["drefs"]]
     if gl:
         out.append("\n## Data referenced\n" + "\n".join(
