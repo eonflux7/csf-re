@@ -121,3 +121,7 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
   operator new/delete (every lib calls game allocators), and ICF folds 1–5 B nullsubs/return-0 shared by
   game and libs. Rule now: ≤ 24 B, one pass, ignore allocators and callees ≤ 8 B. 0x828000+ static-init stubs
   mostly call folded no-op ctors → left as lib.
+- RW naming pass 2 (Codex, neighbour/callee names from pass 1 in context): 118 more applied → 372/416.
+  44 held: mostly adjacent pairs collapsed to one name (e.g. 0x7FB000/0x7FB010 both "RwImageSetWidth").
+- Grunt batches 3–4 (100 + 200 fns, ≤ 600 B): 300/300 gate + smoke. Leaf-first ordering still yields almost only
+  < 48 B functions → DeepSeek did 298, Codex rescued 2. 200 functions in 3.7 min.
