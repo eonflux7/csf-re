@@ -11,7 +11,7 @@
 
 namespace hook {
 
-enum class Kind : uint8_t { Jmp, VSlot };
+enum class Kind : uint8_t { Jmp, VSlot, Tramp };
 
 struct Entry {
     uintptr_t addr;   // function entry (Jmp) or vtable address (VSlot)
@@ -21,6 +21,7 @@ struct Entry {
     const char* module;
     Kind kind;
     Entry* next;
+    void** orig;      // Tramp only: receives a callable copy of the original (relocated prologue + jmp back)
 };
 
 void add(Entry* e);
@@ -28,6 +29,8 @@ void install_all();
 void log(const char* fmt, ...);
 // Rest of the first csf_hook.ini line starting with `key ` (trimmed), or nullptr. Static storage.
 const char* ini_string(const char* key);
+// Scripted key press (DIK name, e.g. "RETURN") delay_ms from now; see hook/autopilot.cpp.
+void autopilot_press(const char* key, unsigned delay_ms);
 
 template <typename T>
 inline void* to_ptr(T member) {
@@ -40,8 +43,9 @@ inline void* to_ptr(T member) {
 
 struct Registrar {
     Entry e;
-    Registrar(uintptr_t addr, uint32_t slot, void* fn, const char* name, const char* module, Kind k)
-        : e{addr, slot, fn, name, module, k, nullptr} { add(&e); }
+    Registrar(uintptr_t addr, uint32_t slot, void* fn, const char* name, const char* module, Kind k,
+              void** orig = nullptr)
+        : e{addr, slot, fn, name, module, k, nullptr, orig} { add(&e); }
 };
 
 }  // namespace hook
@@ -52,5 +56,10 @@ struct Registrar {
     static ::hook::Registrar HOOK_CAT(hook_reg_, __LINE__)(addr, 0, (void*)&fn, #fn, module, ::hook::Kind::Jmp)
 #define HOOK_METHOD(addr, mfn, module) \
     static ::hook::Registrar HOOK_CAT(hook_reg_, __LINE__)(addr, 0, ::hook::to_ptr(mfn), #mfn, module, ::hook::Kind::Jmp)
+// Wrap a function and keep the original callable through `orig` (a function pointer variable of the right type).
+// The prologue (>= 5 bytes of simple instructions, no relative branches) is relocated into a trampoline.
+#define HOOK_TRAMP(addr, fn, orig, module) \
+    static ::hook::Registrar HOOK_CAT(hook_reg_, __LINE__)(addr, 0, (void*)&fn, #fn, module, ::hook::Kind::Tramp, \
+                                                           (void**)&orig)
 #define HOOK_VSLOT(vtbl, slot, mfn, module) \
     static ::hook::Registrar HOOK_CAT(hook_reg_, __LINE__)(vtbl, slot, ::hook::to_ptr(mfn), #mfn, module, ::hook::Kind::VSlot)

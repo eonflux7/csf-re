@@ -221,8 +221,20 @@ const char* ini_string(const char* key) {
     return out;
 }
 
+// Schedule a key press `delay_ms` from now (called by game-side dev hooks, e.g. when a screen opens).
+void autopilot_press(const char* key, unsigned delay_ms) {
+    std::lock_guard<std::mutex> lk(g_mu);
+    bool idle = true;
+    for (auto& st : g_steps)
+        idle &= st.released;
+    g_steps.push_back(Step{GetTickCount() - g_t0 + delay_ms, 120, parse_key(key)});
+    log("autopilot: %s in %u ms", key, delay_ms);
+    if (idle)
+        CreateThread(nullptr, 0, driver, nullptr, 0, nullptr);
+}
+
 void autopilot_wrap_dinput(void* di) {
-    if (g_steps.empty() || !di)
+    if (!di)
         return;
     patch(*(void***)di, 3, (void*)&CreateDevice_, (void**)&g_createDev);
 }

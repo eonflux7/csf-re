@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
-# Launch the play copy for N seconds (default 30), then kill it and show the hook log.
+# Launch the play copy for N seconds (default 60), then kill it and show the hook log.
 # Exit 0 if the game was still running at the deadline (no crash), 1 otherwise.
+# Starts straight into a mission (src/core/devcmd.cpp), windowed 1280x960:
+#   CSF_START="scene Maps/FR01/Parachut.scn" (default) | "loadsave 1.sav" | "menu" (normal intro + menus)
 set -uo pipefail
 PLAY=${CSF_PLAY:-/mnt/e/dev/csf-play}
-SECS=${1:-30}
+SECS=${1:-60}
+START=${CSF_START:-scene Maps/FR01/Parachut.scn}
+INI="$PLAY/csf_hook.ini"
+sed -i '/^\(scene\|loadsave\|windowed\|cmdline\|autopilot\|probe\) /d' "$INI"
+echo "windowed 1280x960" >> "$INI"
+[ "$START" != menu ] && echo "$START" >> "$INI"
 WINPLAY=$(wslpath -w "$PLAY")
 result=$(powershell.exe -NoProfile -Command "
 \$p = Start-Process -FilePath '$WINPLAY\\CommXPC.exe' -WorkingDirectory '$WINPLAY' -PassThru

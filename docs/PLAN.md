@@ -101,6 +101,8 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [x] Collect CSF_GLOBAL names from src/auto into db/globals.yaml (`tools/globals.py`, run after each batch;
       names substituted into packet pseudocode; pin with src: opus)
 - [ ] Opus review pass: sample ~5% of each batch against asm; feed recurring mistakes into the prompt
+- [x] In-mission smoke test: `scene`/`loadsave` dev start + windowed (src/core/devcmd.cpp; smoke.sh default)
+- [x] Semantic gate check (tools/semcheck.py)
 - [ ] Differential test harness
 - [ ] Waves per module, leaf-first
 

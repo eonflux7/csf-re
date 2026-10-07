@@ -125,3 +125,26 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
   44 held: mostly adjacent pairs collapsed to one name (e.g. 0x7FB000/0x7FB010 both "RwImageSetWidth").
 - Grunt batches 3–4 (100 + 200 fns, ≤ 600 B): 300/300 gate + smoke. Leaf-first ordering still yields almost only
   < 48 B functions → DeepSeek did 298, Codex rescued 2. 200 functions in 3.7 min.
+
+## 2026-10-07 — Direct-to-mission smoke test (devcmd), MinHook, semantic gate
+
+- Semantic gate (`tools/semcheck.py`): compiled object's absolute references vs the original's callees, strings,
+  writable globals, vtables, field displacements (follows tail jumps into shared blocks). 0 false positives on 440
+  accepted files after tuning; found 2 real bugs (0x6A8320/0x6A8D00 allocated a NetZ object on the game heap —
+  caused by our own prompt rule "use Mem_Alloc"; rule fixed).
+- Game startup facts: "command line" comes from Juego.cfg `.commandLine` (CDevCommandLine 0x4FB8F0/0x4FB850:
+  -scene/-log/-instance; -instance = offline instancing tool mode, exits). bFullScreen = byte +284 of
+  dword_8BC1DC (read before window creation). Main loop exits when the menu manager has no active screen.
+- Menu manager vtable 0x864508 (slot 22 GotoScreen 0x71C2A0, 23 FindScreen). Screens are .fbs names
+  (Menus/P_*.fbs). P_Juego = the game screen object at app+24 (CGameScreen, vtable 0x843720), its update 0x538160
+  (state +308: 0 start / 1 campaign menu / 2 in game). With CGameFlow (dword_8B0568) state +92 == 1 it prepares
+  (0x501B90) and starts (0x504970) the scene; briefing gate = vslot 35 0x5364D0.
+- CGameFlow: SetScene 0x501990 (+124, name = .scn path e.g. Maps/FR01/Parachut.scn), SetLoadGame 0x501A00 (+152,
+  full path); save manager (vtable 0x840920, at game+4) slot 11 = select for load. Save folder at intro time is
+  Documents\CSF Data\Games\ (profile subfolder Games<N> appended later).
+- Video: render device vtable 0x861460 (slot 8/9 width/height, 25 HasModeFor, 27 SetupVideoMode 0x6DC000);
+  windowed RW back buffer follows the client area; window sized by 0x508F50.
+- `src/core/devcmd.cpp`: ini `scene PATH` / `loadsave NAME` (first screen change → set CGameFlow, go to P_Juego,
+  no briefing) and `windowed WxH`. smoke.sh now starts in-mission: 142/444 hooks hit (was 54 at the menu).
+- Hooks: MinHook vendored (third_party/minhook, BSD-2) for HOOK_TRAMP (wrap + call original) and `probe 0xADDR`
+  (pass-through hit counter; great for tracing which originals run). tools/shots.sh = window-only screenshots.

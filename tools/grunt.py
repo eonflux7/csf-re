@@ -237,7 +237,7 @@ def smoke():
     r = subprocess.run([os.path.join(ROOT, "tools", "deploy.sh")], capture_output=True, text=True)
     if r.returncode:
         return False, "build/deploy failed:\n" + (r.stdout + r.stderr)[-3000:]
-    r = subprocess.run([os.path.join(ROOT, "tools", "smoke.sh"), "30"], capture_output=True, text=True)
+    r = subprocess.run([os.path.join(ROOT, "tools", "smoke.sh"), "60"], capture_output=True, text=True)
     return r.returncode == 0, r.stdout[-2000:]
 
 
