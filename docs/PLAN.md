@@ -60,7 +60,8 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
    classes / fields first (Phase 2 loop below), then `grunt.py lanes --module <name|id>`, then `sweep.sh`.
    Modules: `tools/modules.py list|show`, `status.py --modules`. First wave: the GUI control family
    (gui_control .. gui_texture_listbox, 0x7140B0-0x731800, ~70 KB), exercised by the menu tour. Fields done
-   (2026-10-07: CGuiControl + 9 controls, ~130 GUI functions named); next `grunt.py lanes --module` over it.
+   (2026-10-07: CGuiControl + 9 controls, ~130 GUI functions named). Wave 1 lanes: 25% of the GUI bytes
+   (417 ok); resume with the same command when Codex has quota (347 eligible left), then the 23 functions > 600 B.
 1. **Phase 2 core classes, started early alongside the Phase 4 waves** (2026-10-07): every named class makes later
    packets clearer (grunts get the class name, its role and named fields). Loop: `tools/classinfo.py <vtable>` for
    evidence → `db/types/classes.yaml` → `tools/rename_classes.py` (src + functions.csv + header) → build/smoke →

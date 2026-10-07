@@ -323,3 +323,14 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
 - gen_classes_h: `fields:` values may be "type name[N]" (needed for strings/arrays and for fields the access scan
   never sees, e.g. written through computed indices). IDB sync maps legacy::(w)string to C structs (12 type errors
   -> 0). Menu-tour smoke: OK, 0 diff mismatches; the rewritten CGuiControl_GetId ran 1737 times.
+
+## 2026-10-07 — GUI wave 1 (lanes over the 15 gui_* modules); background smokes
+
+- `grunt.py lanes --module gui_... --smoke-menu`: 417 ok, 7 escalated, 7 smokes (menu tour) all OK, no bisect.
+  GUI modules: 464/853 functions, 27.8/110 KB = 25% of the bytes (gui_control 56%, gui_panel 44%). The run
+  ended when the Codex quota guard paused the main lane (cap 90% of the 5h window); 347 eligible functions
+  (<= 600 B) and 23 larger ones remain.
+- The game pauses on focus loss: the window proc 0x508D40 handles WM_ACTIVATE(inactive)/WM_ACTIVATEAPP(0) via the
+  app's vslot +0x10 and 0x50D7C0(0) (app+136). `background 1` (default in smoke.sh) subclasses the window to drop
+  them, moves it off-screen and gives focus back; verified unfocused: menu tour reached its last screen, FR01 ran
+  37 AI functions 30M times.
