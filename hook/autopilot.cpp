@@ -199,26 +199,32 @@ void autopilot_init() {
 }
 
 const char* ini_string(const char* key) {
-    static char buf[16][512];
-    static int used;
-    FILE* f = fopen((std::string(g_dir) + "csf_hook.ini").c_str(), "r");
-    if (!f)
-        return nullptr;
-    char line[512];
-    size_t kl = strlen(key);
-    const char* out = nullptr;
-    while (!out && fgets(line, sizeof line, f)) {
-        if (!strncmp(line, key, kl) && (line[kl] == ' ' || line[kl] == '\t') && used < 16) {
-            char* v = line + kl;
-            while (*v == ' ' || *v == '\t')
-                ++v;
-            size_t n = strcspn(v, "\r\n");
-            v[n] = 0;
-            out = strcpy(buf[used++], v);
+    // The ini is read once and cached (callers query it every frame); values live as long as the process.
+    static std::vector<std::pair<std::string, std::string>>* kv;
+    if (!kv) {
+        kv = new std::vector<std::pair<std::string, std::string>>;
+        if (FILE* f = fopen((std::string(g_dir) + "csf_hook.ini").c_str(), "r")) {
+            char line[512];
+            while (fgets(line, sizeof line, f)) {
+                char* k = line;
+                while (*k == ' ' || *k == '\t')
+                    ++k;
+                if (*k == '#' || !*k)
+                    continue;
+                size_t kl = strcspn(k, " \t\r\n");
+                char* v = k + kl;
+                while (*v == ' ' || *v == '\t')
+                    ++v;
+                v[strcspn(v, "\r\n")] = 0;
+                kv->emplace_back(std::string(k, kl), v);
+            }
+            fclose(f);
         }
     }
-    fclose(f);
-    return out;
+    for (auto& [k, v] : *kv)
+        if (k == key)
+            return v.c_str();
+    return nullptr;
 }
 
 // Schedule a key press `delay_ms` from now (called by game-side dev hooks, e.g. when a screen opens).

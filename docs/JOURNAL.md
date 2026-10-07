@@ -148,3 +148,21 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
   no briefing) and `windowed WxH`. smoke.sh now starts in-mission: 142/444 hooks hit (was 54 at the menu).
 - Hooks: MinHook vendored (third_party/minhook, BSD-2) for HOOK_TRAMP (wrap + call original) and `probe 0xADDR`
   (pass-through hit counter; great for tracing which originals run). tools/shots.sh = window-only screenshots.
+
+## 2026-10-07 — Differential testing harness
+
+- `hook/diff.cpp` + `tools/difftable.py`: leaf functions whose writes go only to `this`/absolute globals (423/440
+  done) run original (MinHook trampoline) and ours on the same live inputs; return value (masked to the defined
+  width: al/ax/eax/edx:eax/st0) and memory compared; ours stays. In-mission smoke: ~125 compared, 0 mismatches.
+  smoke.sh enables it by default and prints MISMATCH lines; grunt sends mismatching new functions to queue/.
+- Pitfalls found: (1) never read past the thread's stack top when copying args (TEB StackBase cap); (2) clang-cl
+  miscompiles naked functions with non-void returns (adds prologue / sret code) — declare naked thunks `void()`
+  and call through typed pointers; (3) stubs must restore every register except the return registers: write
+  edx only for 64-bit returns (callers may keep live values in registers an MSVC leaf doesn't touch — the same
+  hazard exists for normal JMP hooks whose reimplementation clobbers ecx/edx where the original didn't; watch).
+- Byte/bool getters (`mov al,[ecx+X]; ret`) leave eax's upper bytes as garbage: compare al only.
+- ini_string() now caches the ini once (the old 16-slot buffer silently ran out after 16 lookups).
+- Crash triage: vectored handler logs CRASH lines; Windows Application log (event 1000) gives module+offset when
+  the handler can't run; map offsets via build/dinput8.map.
+- semcheck: skip hook-infrastructure symbols (Registrar ctor no longer inlined) for field offsets; collect
+  addresses also from 4-byte .rdata pointer sections (CSF_GLOBAL bindings).

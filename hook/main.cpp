@@ -42,14 +42,14 @@ static bool patch(void* at, const void* bytes, size_t n) {
 }
 
 // Per-hook hit counters: each hook goes through a stub `inc dword [count]; jmp fn`, dumped to
-// csf_hook_hits.txt every few seconds (coverage of a playtest). 16 bytes per stub.
+// csf_hook_hits.txt every few seconds (coverage of a playtest). 32 bytes per stub (diff stubs are longer).
 static uint8_t* g_stubs;
 static uint32_t* g_hits;
 static Entry** g_installed;
 static int g_ninstalled;
 
 static void* make_stub(int i, void* fn) {
-    uint8_t* s = g_stubs + 16 * i;
+    uint8_t* s = g_stubs + 32 * i;
     s[0] = 0xFF; s[1] = 0x05;  // inc dword ptr [abs32]
     uint32_t* cnt = &g_hits[i];
     memcpy(s + 2, &cnt, 4);
@@ -90,7 +90,9 @@ static DWORD WINAPI hits_thread(LPVOID) {
 //   disable_module ped      disable all hooks of a module
 //   only_module ped         install only hooks of listed modules (repeatable)
 //   probe 0x538160          count calls of an original function (pass-through; shows in csf_hook_hits.txt)
+//   diff 1                  differential testing of eligible hooks (hook/diff.cpp; csf_diff.log)
 struct Config {
+    bool diff = false;
     std::unordered_set<uintptr_t> disabled;
     std::vector<uintptr_t> probes;
     std::unordered_set<std::string> disabled_modules, only_modules;
@@ -112,12 +114,16 @@ static Config load_config() {
             c.disabled_modules.insert(val);
         else if (!strcmp(key, "only_module"))
             c.only_modules.insert(val);
+        else if (!strcmp(key, "diff"))
+            c.diff = atoi(val) != 0;
         else if (!strcmp(key, "probe"))
             c.probes.push_back((uintptr_t)strtoul(val, nullptr, 0));
     }
     fclose(f);
     return c;
 }
+
+bool diff_install(const Entry& e, uint8_t* stub, uint32_t* counter, int max_slots);
 
 void install_all() {
     Config cfg = load_config();
@@ -126,7 +132,7 @@ void install_all() {
     for (Entry* e = g_head; e; e = e->next)
         ++n;
     n += (int)cfg.probes.size();
-    g_stubs = (uint8_t*)VirtualAlloc(nullptr, 16 * n + 16, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    g_stubs = (uint8_t*)VirtualAlloc(nullptr, 32 * n + 32, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
     g_hits = new uint32_t[n]();
     g_installed = new Entry*[n];
     for (Entry* e = g_head; e; e = e->next) {
@@ -134,6 +140,13 @@ void install_all() {
                    (!cfg.only_modules.empty() && !cfg.only_modules.count(e->module));
         if (off) {
             ++skipped;
+            continue;
+        }
+        if (cfg.diff && e->kind == Kind::Jmp &&
+            diff_install(*e, g_stubs + 32 * g_ninstalled, &g_hits[g_ninstalled], n)) {
+            g_installed[g_ninstalled++] = e;
+            ++ok;
+            log("diff %08x %-8s %s", (unsigned)e->addr, e->module, e->name);
             continue;
         }
         if (install(*e, make_stub(g_ninstalled, e->fn))) {
@@ -166,12 +179,37 @@ void install_all() {
 void autopilot_init();
 void autopilot_wrap_dinput(void* di);
 
+// Crash triage: log the first fatal exception (address, registers, stack words, owning hook if any).
+static LONG CALLBACK crash_handler(EXCEPTION_POINTERS* ep) {
+    static volatile LONG once = 0;
+    DWORD code = ep->ExceptionRecord->ExceptionCode;
+    if (code != EXCEPTION_ACCESS_VIOLATION && code != EXCEPTION_ILLEGAL_INSTRUCTION && code != EXCEPTION_STACK_OVERFLOW &&
+        code != EXCEPTION_INT_DIVIDE_BY_ZERO && code != EXCEPTION_PRIV_INSTRUCTION)
+        return EXCEPTION_CONTINUE_SEARCH;
+    if (InterlockedExchange(&once, 1))
+        return EXCEPTION_CONTINUE_SEARCH;
+    CONTEXT* c = ep->ContextRecord;
+    log("CRASH code=%08lx eip=%08lx addr=%08lx (rw=%lu) eax=%08lx ebx=%08lx ecx=%08lx edx=%08lx esi=%08lx edi=%08lx "
+        "ebp=%08lx esp=%08lx", code, c->Eip, (unsigned long)ep->ExceptionRecord->ExceptionInformation[1],
+        (unsigned long)ep->ExceptionRecord->ExceptionInformation[0], c->Eax, c->Ebx, c->Ecx, c->Edx, c->Esi, c->Edi,
+        c->Ebp, c->Esp);
+    HMODULE self = nullptr;
+    GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                       (LPCSTR)c->Eip, &self);
+    log("  eip module %p (ours %p); stack:", self, GetModuleHandleA("dinput8.dll"));
+    const uint32_t* sp = (const uint32_t*)c->Esp;
+    for (int i = 0; i < 24; i += 6)
+        log("   %08x %08x %08x %08x %08x %08x", sp[i], sp[i + 1], sp[i + 2], sp[i + 3], sp[i + 4], sp[i + 5]);
+    return EXCEPTION_CONTINUE_SEARCH;
+}
+
 static void init() {
     GetModuleFileNameA(nullptr, g_dir, MAX_PATH);
     if (char* s = strrchr(g_dir, '\\'))
         s[1] = 0;
     g_log = fopen((std::string(g_dir) + "csf_hook.log").c_str(), "w");
     log("csf hook loaded; exe base %p", GetModuleHandleA(nullptr));
+    AddVectoredExceptionHandler(1, crash_handler);
     install_all();
     autopilot_init();
 }

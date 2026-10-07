@@ -80,6 +80,10 @@ def gate(ea, path, db=None):
     for inc in re.findall(r'#\s*include\s*[<"]([^>"]+)[>"]', src):
         if inc not in ALLOWED_INC:
             errs.append(f"include not allowed: {inc}")
+    if re.search(r"\bCSF_(GLOBAL|FUNC|AT|STR)\b", src) and not re.search(r'#\s*include\s*"globals.h"', src):
+        errs.append('CSF_GLOBAL/CSF_FUNC/CSF_AT/CSF_STR come from #include "globals.h" (add it)')
+    if re.search(r"#\s*define\s+CSF_|#\s*undef\s+CSF_", src):
+        errs.append('do not (re)define CSF_* macros: #include "globals.h" and use them as given')
     if re.search(r"\b(__asm|asm)\b", src):
         errs.append("inline asm not allowed")
     hooks = re.findall(r"HOOK(?:_METHOD)?\(\s*0x([0-9A-Fa-f]+)\s*,\s*&?([\w:]+)", src)

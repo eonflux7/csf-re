@@ -103,7 +103,10 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [ ] Opus review pass: sample ~5% of each batch against asm; feed recurring mistakes into the prompt
 - [x] In-mission smoke test: `scene`/`loadsave` dev start + windowed (src/core/devcmd.cpp; smoke.sh default)
 - [x] Semantic gate check (tools/semcheck.py)
-- [ ] Differential test harness
+- [x] Differential test harness (hook/diff.cpp, tools/difftable.py; leaf functions, on by default in smoke)
+- [ ] Diff tier 2: functions with callees (record callee calls / stub them during the double run)
+- [ ] x64dbg + x64dbg-automate (Windows, E:\dev) driven from Python for dynamic RE / crash triage
+- [ ] Optional IDA disassembly/xref/switch-table export per function (semcheck/difftable/packets read it, capstone fallback)
 - [ ] Waves per module, leaf-first
 
 ### Phase 5 — batch verification (user playtests) and Phase 6 — cutover

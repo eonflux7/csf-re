@@ -51,7 +51,12 @@ def our_refs(obj):
     dis = subprocess.run(["llvm-objdump-21", "-d", "--no-show-raw-insn", "--x86-asm-syntax=intel", obj],
                          capture_output=True, text=True).stdout
     addrs, disps = set(), set()
+    skip = False
     for line in dis.splitlines():
+        m = re.match(r"^[0-9a-f]+ <(.+)>:$", line)
+        if m:  # compiler-generated initializers / hook registrars: their field offsets aren't the function's
+            skip = bool(re.search(r"\?\?__E|_GLOBAL__|__dyn_tls|_Init_thread|\?\$TSS|@hook@@", m.group(1)))
+            continue
         if "\t" not in line:
             continue
         ins = line.split("\t", 1)[1]
@@ -61,9 +66,29 @@ def our_refs(obj):
             v = int(h, 16)
             if IMG_LO <= v < IMG_HI:
                 addrs.add(v)
-        for base, sign, off in DISP.findall(ins):
+        for base, sign, off in ([] if skip else DISP.findall(ins)):  # addresses: all code (CSF_GLOBAL binds in init)
             if base not in ("esp", "ebp") and sign == "+":
                 disps.add(int(off, 0))
+    # Constant-initialized bindings (CSF_GLOBAL references) are 4-byte pointer variables in .rdata/.data sections.
+    # Only whole 4-byte sections and .data are scanned: other .rdata holds strings, whose bytes look like addresses.
+    raw = subprocess.run(["llvm-objdump-21", "-s", "-j", ".data", "-j", ".rdata", obj], capture_output=True,
+                         text=True).stdout
+    secs, cur = [], None
+    for line in raw.splitlines():
+        if line.startswith("Contents of section"):
+            cur = [line.split()[-1].rstrip(":"), bytearray()]
+            secs.append(cur)
+            continue
+        m = re.match(r"^ [0-9a-f]{4,} ((?:[0-9a-f]{2,8} ?){1,4})", line)
+        if m and cur:
+            cur[1] += bytes.fromhex(m.group(1).replace(" ", ""))
+    for name, blob in secs:
+        if name == ".rdata" and len(blob) != 4:
+            continue
+        for i in range(0, len(blob) - 3, 4):
+            v = int.from_bytes(blob[i:i + 4], "little")
+            if IMG_LO <= v < IMG_HI:
+                addrs.add(v)
     return addrs, disps
 
 

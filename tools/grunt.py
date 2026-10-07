@@ -305,7 +305,25 @@ def smoke():
     if r.returncode:
         return False, "build/deploy failed:\n" + (r.stdout + r.stderr)[-3000:]
     r = subprocess.run([os.path.join(ROOT, "tools", "smoke.sh"), "60"], capture_output=True, text=True)
-    return r.returncode == 0, r.stdout[-2000:]
+    return r.returncode == 0, r.stdout[-3000:]
+
+
+def diff_rejects(good, smoke_out):
+    """Functions of this batch with differential-test mismatches: removed from `good`, sent to queue/ with the log."""
+    bad = {int(m.group(1), 16) for m in re.finditer(r"^MISMATCH ([0-9A-F]{8})", smoke_out, re.M)}
+    rej = [r for r in good if r["ea"] in bad]
+    for r in rej:
+        ea = r["ea"]
+        lines = "\n".join(l for l in smoke_out.splitlines() if l.startswith(f"DIFF {ea:08X}"))
+        os.makedirs(os.path.join(ROOT, "queue"), exist_ok=True)
+        src = os.path.join(ROOT, "src", "auto", f"{ea:08x}.cpp")
+        code = open(src).read() if os.path.exists(src) else ""
+        with open(os.path.join(ROOT, "queue", f"{ea:08x}.md"), "w") as f:
+            f.write(f"# Escalation 0x{ea:08X}: differential test mismatch in game\n\n```\n{lines}\n```\n\n"
+                    f"## Rejected file\n```cpp\n{code}\n```\n")
+        if os.path.exists(src):
+            os.remove(src)
+    return [r for r in good if r["ea"] not in bad], rej
 
 
 def run(args):
@@ -352,6 +370,9 @@ def run(args):
         if not ok:
             print("SMOKE FAILED: files left in src/auto uncommitted; bisect with csf_hook.ini (disable 0x...)")
             return
+        good, rej = diff_rejects(good, out)
+        if rej:
+            print(f"diff mismatches: {len(rej)} sent to queue/: {' '.join(f'{r['ea']:08x}' for r in rej)}")
     commit(good, f"grunt batch: {len(good)} functions reimplemented ({args.backend})")
 
 
@@ -424,6 +445,9 @@ def lanes(args):
                 print(f"SMOKE FAILED with {len(good)} new functions: left uncommitted in src/auto; bisect with "
                       "csf_hook.ini `disable 0x...`", flush=True)
                 return False
+            good, rej = diff_rejects(good, out)
+            if rej:
+                print(f"diff mismatches: {len(rej)} sent to queue/", flush=True)
         commit(good, f"grunt lanes: {len(good)} functions reimplemented")
         good = []
         return True
