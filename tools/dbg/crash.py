@@ -13,6 +13,17 @@ X64DBG = r"E:\dev\tools\x64dbg\release\x32\x32dbg.exe"
 GAME = r"E:\dev\csf-play\CommXPC.exe"
 secs = int(sys.argv[1]) if len(sys.argv) > 1 else 90
 
+# No default stops (system/entry/TLS breakpoints): read from the ini at debugger startup, so patch it before launch.
+INI = X64DBG[:-4] + ".ini"
+try:
+    import re
+    txt = open(INI).read()
+    for k in ("SystemBreakpoint", "EntryBreakpoint", "TlsCallbacks", "TlsCallbacksSystem", "DllEntry", "DllEntrySystem"):
+        txt = re.sub(rf"(?m)^{k}=1$", f"{k}=0", txt)
+    open(INI, "w").write(txt)
+except OSError:
+    pass
+
 c = X64DbgClient(x64dbg_path=X64DBG)
 c.start_session(GAME, current_dir=r"E:\dev\csf-play")
 c.wait_until_debugging(30)

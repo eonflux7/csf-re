@@ -107,6 +107,13 @@ def code_of(ea, db):
     return out
 
 
+def our_addr_ofs(obj):
+    dis = subprocess.run(["llvm-objdump-21", "-d", "--no-show-raw-insn", "--x86-asm-syntax=intel", obj],
+                         capture_output=True, text=True).stdout
+    return {int(m.group(1), 0) for m in re.finditer(
+        r"\t(?:add\s+(?!esp|ebp)\w+, |lea\s+\w+, \[(?!esp|ebp)\w+ \+ )(0x[0-9a-f]+|\d+)", dis)}
+
+
 def orig_refs(ea, db):
     imms, disps = set(), set()
     for i in code_of(ea, db):
@@ -146,6 +153,13 @@ def check(ea, obj, db):
         if section_of(a) in (".text", ".data", ".rdata", "_rwdseg", "_rwcseg"):
             n = db.name(a) if a in db.F else None
             errs.append(f"your code references 0x{a:X}{' (' + n + ')' if n else ''}, which the original does not")
+    # address-of an embedded sub-object (add ecx, N / lea r, [ecx + N]) must stay an address computation in ours
+    addr_of = {int(m.group(1), 16) for i in code_of(ea, db)
+               for m in [re.match(r"(?:add ecx, |lea \w+, \[ecx \+ )(0x[0-9a-f]+)", f"{i.mnemonic} {i.op_str}")] if m}
+    for n in sorted(addr_of):
+        if n not in our_addr_ofs(obj):
+            errs.append(f"the original computes the ADDRESS this+0x{n:X} (add/lea: an embedded object), your code "
+                        f"doesn't — did you load a pointer from +0x{n:X} instead of taking its address?")
     bad = sorted(d for d in our_disps if d >= 8 and d not in orig_disps and d not in imms)
     if bad:
         errs.append("your code accesses field offsets the original never uses: " + ", ".join(f"0x{d:X}" for d in bad))

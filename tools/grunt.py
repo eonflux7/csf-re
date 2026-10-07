@@ -55,6 +55,8 @@ File rules:
 - Preserve exact semantics: signed vs unsigned compares (check the disassembly when given: jl/jg = signed,
   jb/ja = unsigned), integer widths and truncation, float vs double, evaluation and call order, side effects.
   Do not "fix" bugs. Do not drop calls whose results are unused.
+- `add ecx, N` / `lea reg, [ecx+N]` computes the ADDRESS of a sub-object embedded at +N (e.g. a member object
+  or secondary base): use (uint8_t*)self + N. Only `mov reg, [ecx+N]` loads a pointer stored at +N.
 - Memory reads: re-read a field/array element at every point the original reads it (check the disassembly).
   Never cache a value in a local across a call if the original reloads it after the call — callees may modify
   the object (e.g. a child removing itself from the list being iterated). Don't add checks or reads the
