@@ -2,7 +2,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-static int __fastcall C_0082fbe8_ForwardInnerVirtualCall(
+static int __fastcall TCharTask_ForwardInnerVirtualCall(
     C_0082fbe8* self, void* edx)
 {
     void* innerObject = CSF_AT(void*, self, 0x10);
@@ -18,4 +18,4 @@ static int __fastcall C_0082fbe8_ForwardInnerVirtualCall(
         reinterpret_cast<C_0082fbe8*>(innerObject), edx);
 }
 
-HOOK(0x004DB260, C_0082fbe8_ForwardInnerVirtualCall, "auto");
+HOOK(0x004DB260, TCharTask_ForwardInnerVirtualCall, "auto");

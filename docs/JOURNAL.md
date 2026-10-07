@@ -300,3 +300,26 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
 - Finds while naming: a second zlib (inflate) inside the engine region at 0x6A02B0 (module core_zlib_log: link
   zlib, don't reimplement); RenderWare Physics (Rwp*.c $Id strings) is linked in, check its region; the game code
   is two blocks (0x401000-0x566000 game, 0x690B10-0x78D130 engine/core/GUI/net) with RW/D3DX9/NetZ between.
+
+## 2026-10-07 — GUI wave step 1: class layouts, and the base-class attribution bug
+
+- classes.py bug: a derived class's dtor with the base dtor inlined stores [derived vtable, base vtable]; it was read
+  as a ctor of the base (last store), so the base absorbed every derived field and 36 base links were inverted
+  (CGuiControl came out empty, its fields in the shared base C_00830438, list boxes starting at +0x1C8). Rules now:
+  a multi-store function is a dtor of its first vtable when that vtable's slot 0 is or calls it, or when the slot
+  count decreases (a derived vtable never has fewer slots than its base); a dtor's base comes from the base dtor it
+  calls (ctors take priority: a dtor can restore a further ancestor's vtable, e.g. 0x860178 vs 0x860170); ctors
+  take the nearest earlier store as base. Base links with more slots than the derived: 21 -> 6. src/auto built
+  unchanged (fields keep their offsets/names when they move from base to derived).
+- The .fbs builder is the Rosetta stone for GUI fields: the reader 0x71EBD0 maps each keyword to a virtual setter
+  (.XY slot +0x98, .SIZE +0xA0, .ID +0x70, .ID_LEFT.. +0x78..+0x84, MOUSE +0xC0, DRAG +0xB0, QUAD_* +0x1E4..+0x1F4,
+  DEBUG_RECT +0x180, FONDO +0xD8, VIDEO +0x18C); per-control readers 0x71FCB0 (buttons), 0x720420/0x7207E0
+  (list boxes), 0x71F790 (panels), factories at builder slots +0x18..+0x44. Keyword strings are reached through
+  pointer tables (off_8A86xx), resolved from the PE.
+- CGuiControl: 5 legacy::string ids, parent, int rect, float RGBA, flags, input state bits, three
+  (elapsed, interpolator*) animations (colour/pos/size, events 9-12), listener vector (VC7.1: allocator word
+  first), effects list made by 0x713B20(type). Button state = 28-byte record (quad, timed, time, text RGBA) x4.
+  CGuiEdit holds three VC7.1 std::wstring (capacity 7 at init) -> legacy::wstring added.
+- gen_classes_h: `fields:` values may be "type name[N]" (needed for strings/arrays and for fields the access scan
+  never sees, e.g. written through computed indices). IDB sync maps legacy::(w)string to C structs (12 type errors
+  -> 0). Menu-tour smoke: OK, 0 diff mismatches; the rewritten CGuiControl_GetId ran 1737 times.

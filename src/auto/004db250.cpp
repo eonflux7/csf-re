@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-static int __fastcall C_0082fbe8_ForwardLinkedObjectMethod(
+static int __fastcall TCharTask_ForwardLinkedObjectMethod(
     C_0082fbe8* self, void* edx)
 {
     auto* linkedObject = reinterpret_cast<C_0082fbe8*>(
@@ -18,4 +18,4 @@ static int __fastcall C_0082fbe8_ForwardLinkedObjectMethod(
         CSF_AT(void**, linkedObject, 0)[7])(linkedObject, edx);
 }
 
-HOOK(0x004DB250, C_0082fbe8_ForwardLinkedObjectMethod, "auto");
+HOOK(0x004DB250, TCharTask_ForwardLinkedObjectMethod, "auto");

@@ -58,13 +58,15 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 0. **Module waves** (2026-10-07, user): progress is measured in bytes per module, not function counts (841 done
    functions were only 0.5% of the game's bytes: leaf-first picked the tiny ones everywhere). Per module: name its
    classes / fields first (Phase 2 loop below), then `grunt.py lanes --module <name|id>`, then `sweep.sh`.
-   Modules: `tools/modules.py list|show`, `status.py --modules`. First wave candidate: the GUI control family
-   (gui_control .. gui_texture_listbox, 0x7140B0-0x731800, ~70 KB): classes named, exercised by the menu tour.
+   Modules: `tools/modules.py list|show`, `status.py --modules`. First wave: the GUI control family
+   (gui_control .. gui_texture_listbox, 0x7140B0-0x731800, ~70 KB), exercised by the menu tour. Fields done
+   (2026-10-07: CGuiControl + 9 controls, ~130 GUI functions named); next `grunt.py lanes --module` over it.
 1. **Phase 2 core classes, started early alongside the Phase 4 waves** (2026-10-07): every named class makes later
    packets clearer (grunts get the class name, its role and named fields). Loop: `tools/classinfo.py <vtable>` for
    evidence → `db/types/classes.yaml` → `tools/rename_classes.py` (src + functions.csv + header) → build/smoke →
-   `tools/ida/sync.py`. Next: field names of the GUI/menu/AI bases, the engine family 0x860178 (86 classes),
-   the 0x82E598 task subfamily, base-class field attribution (see Phase 2).
+   `tools/ida/sync.py`. Fields: `fields:` takes a plain name or "type name[N]" (legacy::string/wstring, arrays).
+   Next: field names of the menu/AI bases (CMenuScreen, TCharTask, TAiState), the engine family 0x860178, the
+   0x82E598 task subfamily.
 2. Phase 4 lanes runs between Codex windows (auto-bisect, stop file and quota guard make them unattended).
 3. Opus review sampling and diff tier 2 (catch bug classes before they crash in-game).
 4. Executed coverage: two thirds of the done functions have only passed static checks (`verify.py report`).
@@ -108,10 +110,11 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
       T* names from their GetName virtuals), 13 NetZ DDL classes, managers (save games, profiles, options, input,
       light, camera). Rename pass over src/auto (110 functions re-prefixed by owning class), IDB sync.
 - [x] `tools/ida/sync.py`: functions.csv names, summaries as comments, globals, vtable names, auto_classes.h types
-- [ ] Field names and layouts of the named bases (CGuiControl: 5 legacy::string at +0x18.., CMenuScreen,
-      TCharTask, TAiState, CCharWeaponFsm); grunt field_names proposals are too generic to use
-- [ ] Base-class field attribution in classes.py: a base absorbs fields accessed through derived objects
-      (C_00830438 holds CGuiControl's fields, CGuiControl is empty); fix without breaking compiled src/auto
+- [ ] Field names and layouts of the named bases: GUI done (CGuiControl 36 fields, sizeof 0x134, + Button,
+      Static, Switch, Edit, Slider, Panel, ListBoxBase, ListBox; traced .fbs keyword -> setter slot -> field);
+      left: CMenuScreen, TCharTask, TAiState, CCharWeaponFsm (grunt field_names proposals are too generic to use)
+- [x] Base-class field attribution in classes.py: the cause was derived dtors with the base dtor inlined
+      ([derived, base] stores) read as base ctors; now dtors of the first store (slot-0 rule + slot-count rule)
 - [ ] Engine family 0x860178 (86 classes: clump objects, HAnim animation, lights, cameras, 2D scenes) and the
       unnamed 0x82E598 task subfamily (factory 0x41E240, type ids 0..6)
 - [ ] Core classes: layouts, vtables, sizeof with static_asserts

@@ -10,20 +10,194 @@
 
 # ---- GUI (.fbs menus). Parser 0x71DBE0 maps control keywords to CGuiBuilder vtable slots +0x18..+0x44.
 "00864b30": {name: CGuiBuilder, attested: false, conf: 0.8, why: "owns the per-keyword control factories (slots +0x18..+0x44) dispatched by the .fbs parser 0x71DBE0"}
-"00864288": {name: CGuiControl, attested: false, conf: 0.9, why: "common base of all 12 control types; ctor 0x71A010", note: "5 legacy::string (VC7.1, 28 B) at +0x18, +0x34, +0x50, +0x6C, +0x88; float 1.0 at +0xC4; attach-to-parent virtual at slot +0x108 (called by the parser)"}
-"00865b40": {name: CGuiPanel, attested: false, conf: 0.9, why: "created for keyword PANEL (builder slot +0x18 -> 0x71F850)"}
+"00864288":
+  name: CGuiControl
+  attested: false
+  conf: 0.9
+  why: "common base of all 12 control types; ctor 0x71A010, dtor 0x719B10, reset 0x718CC0"
+  note: >-
+    Setters traced from the .fbs reader 0x71EBD0 (keyword -> vtable slot -> field). Slot +0x138 = SendEvent(id)
+    (-> +0x218 FireEvent: listeners, then parent). +0x0C creates quads/fonts (builder's +4); +0x10 = &builder+0xC.
+    +0xFC is a VC7.1 std::vector<listener*> (allocator word, then begin/end/cap). Effects at +0x128 are a linked list
+    (next = vslot +0x10) made by 0x713B20(type): 0 QUAD_VARIABLE, 1 QUAD_BACKGROUND, 3 QUAD_FOCUS,
+    4 QUAD_BLINKING_FOCUS, 5 QUAD_SELECTED. Anim pairs (elapsed float, interpolator*) fire events 9/10 (pos),
+    11/12 (size). sizeof 0x134 (first derived field at +0x134).
+  fields:
+    "000c": m_pRenderer
+    "0014": m_bShown
+    "0018": legacy::string m_id
+    "0034": legacy::string m_idLeft
+    "0050": legacy::string m_idRight
+    "006c": legacy::string m_idUp
+    "0088": legacy::string m_idDown
+    "00a4": m_pParent
+    "00a8": m_x
+    "00ac": m_y
+    "00b0": m_width
+    "00b4": m_height
+    "00b8": m_colorR
+    "00bc": m_colorG
+    "00c0": m_colorB
+    "00c4": m_colorA
+    "00c8": m_bFocused
+    "00c9": m_bDisabled
+    "00ca": m_bMouseEnabled
+    "00cb": m_bDraggable
+    "00d4": m_bSelected
+    "00e0": m_inputState
+    "00e4": m_colorAnimTime
+    "00e8": m_pColorAnim
+    "00ec": m_posAnimTime
+    "00f0": m_pPosAnim
+    "00f4": m_sizeAnimTime
+    "00f8": m_pSizeAnim
+    "0100": m_listenersBegin
+    "0104": m_listenersEnd
+    "0108": m_listenersCap
+    "010c": m_bFiringEvent
+    "0110": m_pDebugRect
+    "0114": m_bDebugRect
+    "0115": m_bSelectable
+    "0128": m_pEffects
+"00865b40":
+  name: CGuiPanel
+  attested: false
+  conf: 0.9
+  why: "created for keyword PANEL (builder slot +0x18 -> 0x71F850); ctor 0x72C580, .fbs reader 0x71F790 (+.CONTROLES -> 0x71DBE0)"
+  note: >-
+    FONDO -> +0x144 (slot +0xD8), POINTER -> +0x150 (slot +0x248), ID_INICIAL -> +0x154 = child found by id (slot +0x258 via +0xFC). legacy::string at +0x15C. sizeof 0x18C.
+  fields:
+    "0144": m_pBackgroundQuad
+    "0150": m_pPointerQuad
+    "0154": m_pInitialFocus
+    "015c": legacy::string m_str15C
 "008660c8": {name: CGuiRadioGroup, attested: false, conf: 0.9, why: "GROUP_RADIO (slot +0x1C -> 0x71F8B0); derives from CGuiPanel"}
-"00865328": {name: CGuiButton, attested: false, conf: 0.9, why: "BOTON (slot +0x20 -> 0x720090)"}
+"00865328":
+  name: CGuiButton
+  attested: false
+  conf: 0.9
+  why: "BOTON (slot +0x20 -> 0x720090); ctor 0x725390, .fbs reader 0x71FCB0"
+  note: >-
+    Four 28-byte state records at +0x14C (REPOSO idle, ACTIVO hover, PULSADO pressed, PERMANENTE): quad*, timed flag,
+    time (-1 = none; slot +0x288 sets record i), text RGBA (-1 in R = take the text object's colour). TEXTO at +0x134
+    (slot +0x268), COLOR_TEXTO_FOCUS +0x1C0, EFECTOS flag +0x1BC forwarded to the 0x20-byte fx object at +0x1D4
+    (0x732920). +0x1E0/+0x1E4 take builder defaults (5, 1.5f). sizeof 0x1F0.
+  fields:
+    "0134": m_pText
+    "0138": float m_textColor[4]
+    "014c": uint32_t m_pIdleQuad
+    "0150": uint8_t m_bIdleTimed
+    "0154": float m_idleTime
+    "0158": float m_idleTextColor[4]
+    "0168": uint32_t m_pHoverQuad
+    "016c": uint8_t m_bHoverTimed
+    "0170": float m_hoverTime
+    "0174": float m_hoverTextColor[4]
+    "0184": uint32_t m_pPressedQuad
+    "0188": uint8_t m_bPressedTimed
+    "018c": float m_pressedTime
+    "0190": float m_pressedTextColor[4]
+    "01a0": uint32_t m_pPermanentQuad
+    "01a4": uint8_t m_bPermanentTimed
+    "01a8": float m_permanentTime
+    "01ac": float m_permanentTextColor[4]
+    "01bc": m_bEffects
+    "01bd": m_bStateTimes
+    "01c0": float m_focusTextColor[4]
+    "01d4": m_pFx
 "008668b8": {name: CGuiRadioButton, attested: false, conf: 0.9, why: "BOTON_RADIO (slot +0x24 -> 0x720030)"}
 "00866340": {name: CGuiChoiceButton, attested: false, conf: 0.9, why: "BOTON_CHOICE (slot +0x28 -> 0x71FF70)"}
 "00866600": {name: CGuiChoiceNumButton, attested: false, conf: 0.9, why: "BOTON_CHOICE_NUM (slot +0x2C -> 0x71FFD0)"}
-"00864bc0": {name: CGuiStatic, attested: false, conf: 0.9, why: "ESTATICO (slot +0x30 -> 0x7202A0)"}
-"00865e38": {name: CGuiSlider, attested: false, conf: 0.9, why: "SLIDER (slot +0x34 -> 0x71F4E0, reads CONSOLE/HORIZONTAL)"}
-"00863ff8": {name: CGuiListBoxBase, attested: false, conf: 0.8, why: "common base of LISTBOX and LISTBOX_TEXTURES"}
-"00865070": {name: CGuiListBox, attested: false, conf: 0.9, why: "LISTBOX (slot +0x38 -> 0x720970)"}
+"00864bc0":
+  name: CGuiStatic
+  attested: false
+  conf: 0.9
+  why: "ESTATICO (slot +0x30 -> 0x7202A0); ctor 0x720E10"
+  note: >-
+    TEXTO -> +0x134 (0x720AF0), QUAD -> slot +0x1F4, BLINK_ENABLE -> +0x154. +0x13C is a quad made by the renderer in the ctor. sizeof 0x160.
+  fields:
+    "0134": m_pText
+    "013c": m_pQuad
+    "0154": uint8_t m_bBlink
+"00865e38":
+  name: CGuiSlider
+  attested: false
+  conf: 0.9
+  why: "SLIDER (slot +0x34 -> 0x71F4E0, reads CONSOLE/HORIZONTAL); ctor 0x72D8D0"
+  note: >-
+    BOTON thumb -> +0x14C (slot +0x240), FLECHA_UP/DOWN -> +0x144/+0x148, MODO HORIZONTAL -> +0x150, TYPE_SLIDER CONSOLE -> +0x169. SetRange 0x72D120 (count +0x13C, page +0x140), SetPos 0x72E080 wraps when +0x16B. +0x154 = selected part (arrow/thumb). sizeof 0x16C.
+  fields:
+    "0134": m_pos
+    "013c": m_count
+    "0140": m_pageSize
+    "0144": m_pArrowUp
+    "0148": m_pArrowDown
+    "014c": m_pThumb
+    "0150": m_bHorizontal
+    "0154": m_pSelectedPart
+    "0169": uint8_t m_bConsole
+    "016b": uint8_t m_bWrap
+"00863ff8":
+  name: CGuiListBoxBase
+  attested: false
+  conf: 0.8
+  why: "common base of LISTBOX and LISTBOX_TEXTURES; ctor 0x7166C0, .fbs reader 0x720420"
+  note: >-
+    SLIDER -> +0x134 (0x714050 attaches it as a child and passes CYCLE). COLOR / COLOR_NOFOCUS -> +0x144 / +0x154 (defaults 200,200,255,128 / 255,255,255,128). LINEAS/AUTOSIZE/ROWFILL -> bytes +0x16C..+0x16E (slots +0x240..+0x248, the last two also set +0x16F), INTERLINEA -> +0x170 (default 2), CABECERA TEXTO -> +0x180. Columns: VC7.1 vector of 12-byte entries (text* at +4) at +0x198. CYCLE -> +0x1F4.
+  fields:
+    "0134": m_pSlider
+    "0144": float m_itemColor[4]
+    "0154": float m_noFocusColor[4]
+    "016c": uint8_t m_bLines
+    "016d": uint8_t m_bAutoSize
+    "016e": uint8_t m_bRowFill
+    "016f": uint8_t m_bLayoutDirty
+    "0170": uint32_t m_lineSpacing
+    "0180": m_pHeaderText
+    "019c": uint32_t m_columnsBegin
+    "01a0": uint32_t m_columnsEnd
+    "01a4": uint32_t m_columnsCap
+    "01f4": uint8_t m_bCycle
+"00865070":
+  name: CGuiListBox
+  attested: false
+  conf: 0.9
+  why: "LISTBOX (slot +0x38 -> 0x720970); ctor 0x724A30, .fbs reader 0x7207E0"
+  note: >-
+    COLOR_TEXTO_SELEC -> +0x208; +0x218 = text object from the renderer (slot +0x58), centred, used to draw rows. sizeof 0x230.
+  fields:
+    "0208": float m_selTextColor[4]
+    "0218": m_pRowText
 "00866db8": {name: CGuiTextureListBox, attested: false, conf: 0.9, why: "LISTBOX_TEXTURES (slot +0x3C -> 0x7208F0)"}
-"00866b58": {name: CGuiSwitch, attested: false, conf: 0.9, why: "SWITCH (slot +0x40 -> 0x7200F0)"}
-"00864e18": {name: CGuiEdit, attested: false, conf: 0.9, why: "EDIT (slot +0x44 -> 0x720360)"}
+"00866b58":
+  name: CGuiSwitch
+  attested: false
+  conf: 0.9
+  why: "SWITCH (slot +0x40 -> 0x7200F0); ctor 0x7302A0"
+  note: >-
+    .ON/.OFF/.ACTIVO/.PERMANENTE quads -> slots +0x240..+0x24C (+0x134..+0x140); TEXTO -> +0x148 (0x730120) whose colour becomes the ON text colour; COLOR_TEXTO_OFF -> +0x16C. sizeof 0x180.
+  fields:
+    "0134": m_pOnQuad
+    "0138": m_pOffQuad
+    "013c": m_pActiveQuad
+    "0140": m_pPermanentQuad
+    "0148": m_pText
+    "015c": float m_textColorOn[4]
+    "016c": float m_textColorOff[4]
+"00864e18":
+  name: CGuiEdit
+  attested: false
+  conf: 0.9
+  why: "EDIT (slot +0x44 -> 0x720360); ctor 0x7214F0"
+  note: >-
+    TEXTO -> +0x134 (0x722B80), BLINK_TIME -> +0x140 (slot +0x24C, default 0.5), LENGTH -> +0x1A4 (default 15). Three VC7.1 std::wstring at +0x150/+0x16C/+0x188. sizeof 0x1C8.
+  fields:
+    "0134": m_pText
+    "0140": float m_blinkTime
+    "0150": legacy::wstring m_wtext0
+    "016c": legacy::wstring m_wtext1
+    "0188": legacy::wstring m_wtext2
+    "01a4": uint32_t m_maxLength
 
 # ---- Menu screens: all derive from CMenuScreen and look up their controls by name under .PANEL_PRINCIPAL.
 "0083042c": {name: CMenuScreen, attested: false, conf: 0.8, why: "base of ~50 screens that load .PANEL_PRINCIPAL and find controls by name"}

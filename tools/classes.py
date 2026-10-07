@@ -140,24 +140,42 @@ def main():
     for vt, v in VT.items():
         for s in v["slots"]:
             slot_owner[int(s, 16)].add(vt)
+    def called_from_slot0(ea, vt):
+        """ea is the (deleting) dtor in slot 0 of vt, or the dtor body it calls."""
+        s0 = VT[vt]["slots"][:1]
+        return bool(s0) and (int(s0[0], 16) == ea or ea in F[int(s0[0], 16)]["callees"])
+
+    dtor_base = {}
     for ea, vs in stored.items():
         last = vs[-1]
+        # derived dtor with the base dtor inlined: stores [derived, ..., base] and is reached from the derived
+        # deleting-dtor slot. It belongs to the derived class (else the base absorbs every derived field).
+        # A derived vtable has at least as many slots as its base, so fewer slots in the last store means a dtor.
+        if len(set(vs)) > 1 and (called_from_slot0(ea, vs[0]) or VT[vs[0]]["nslots"] > VT[last]["nslots"]):
+            d = cls(vs[0])
+            d["dtors"].append(ea)
+            dtor_base.setdefault(vs[0], next(v for v in vs if v != vs[0]))  # fallback, may skip a level
+            ctor_of[ea] = vs[0]
+            continue
         c = cls(last)
         # dtor heuristic: the vtable store comes first and the function is reached from a deleting-dtor slot
-        is_dtor = any(ea in F[int(s, 16)]["callees"] for s in VT[last]["slots"][:1]) if VT[last]["slots"] else False
+        is_dtor = called_from_slot0(ea, last)
         (c["dtors"] if is_dtor else c["ctors"]).append(ea)
         ctor_of[ea] = last
         if len(set(vs)) > 1 and not is_dtor:
             prev = [v for v in vs if v != last]
-            c["base"] = c["base"] or prev[0]
-    # base via calling another ctor on this
-    for ea, (vs, fl, tc, sec) in scans.items():
+            c["base"] = c["base"] or prev[-1]  # nearest earlier store: the direct base when base ctors are inlined
+    # base via calling another ctor (or, from a dtor, the base dtor) on this
+    # ctors first: a dtor may call a base dtor that restores a further ancestor's vtable
+    for ea, (vs, fl, tc, sec) in sorted(scans.items(), key=lambda kv: kv[0] in classes[ctor_of[kv[0]]]["dtors"]):
         c = classes[ctor_of[ea]]
-        if c["base"] is None and ea in c["ctors"]:
+        if c["base"] is None and (ea in c["ctors"] or ea in c["dtors"]):
             for t in tc:
                 if t in ctor_of and ctor_of[t] != ctor_of[ea]:
                     c["base"] = ctor_of[t]
                     break
+    for vt, b in dtor_base.items():
+        classes[vt]["base"] = classes[vt]["base"] or b
     # break base cycles (A.base=B, B.base=A): a dtor with an inlined base dtor stores [derived, base] and, when the
     # dtor heuristic misses it, reads as a ctor of the base whose "base" is the derived class. In each cycle the
     # vtable with the fewest slots is the real base: drop its base link.

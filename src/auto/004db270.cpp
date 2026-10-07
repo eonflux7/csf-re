@@ -2,7 +2,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-static int __fastcall C_0082fbe8_ForwardMemberVirtualSlot9(
+static int __fastcall TCharTask_ForwardMemberVirtualSlot9(
     C_0082fbe8* self, void* edx)
 {
     auto* member = CSF_AT(C_0082fbe8*, self, 0x10);
@@ -16,4 +16,4 @@ static int __fastcall C_0082fbe8_ForwardMemberVirtualSlot9(
         CSF_AT(void**, member, 0)[9])(member, edx);
 }
 
-HOOK(0x4DB270, C_0082fbe8_ForwardMemberVirtualSlot9, "auto");
+HOOK(0x4DB270, TCharTask_ForwardMemberVirtualSlot9, "auto");

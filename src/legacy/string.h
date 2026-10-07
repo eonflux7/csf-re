@@ -19,4 +19,19 @@ struct string {
 static_assert(sizeof(string) == 28);
 static_assert(offsetof(string, size) == 20 && offsetof(string, res) == 24);
 
+// std::basic_string<wchar_t> (VC7.1): same 28 bytes, 8-wchar inline buffer (capacity starts at 7).
+struct wstring {
+    uint32_t alloc;
+    union {
+        wchar_t buf[8];
+        wchar_t* ptr;
+    } bx;
+    uint32_t size;
+    uint32_t res;  // capacity; < 8 means inline buffer
+
+    const wchar_t* c_str() const { return res < 8 ? bx.buf : bx.ptr; }
+};
+static_assert(sizeof(wstring) == 28);
+static_assert(offsetof(wstring, size) == 20 && offsetof(wstring, res) == 24);
+
 }  // namespace legacy

@@ -9,7 +9,7 @@
 // 0x0072FF80: trivial accessor returning the dword at offset 0x134 of the object.
 static int __fastcall CGuiStatic_GetField0134(CGuiStatic* self, void* /*edx*/)
 {
-    return static_cast<int>(self->field_0134);
+    return static_cast<int>(self->m_pText);
 }
 
 HOOK(0x72FF80, CGuiStatic_GetField0134, "auto");

@@ -41,8 +41,12 @@ def header_decls():
     src = open(os.path.join(ROOT, "src", "types", "auto_classes.h")).read()
     keep = [l for l in src.splitlines() if not l.startswith(("#", "static_assert"))]
     pre = ("typedef unsigned char uint8_t; typedef unsigned short uint16_t; typedef unsigned int uint32_t;"
-           " typedef unsigned long long uint64_t;\n")
-    return pre + "\n".join(keep)
+           " typedef unsigned long long uint64_t;\n"
+           # src/legacy/string.h as C (VC7.1 std::string / std::wstring, 28 bytes)
+           "struct legacy_string { uint32_t alloc; union { char buf[16]; char *ptr; } bx; uint32_t size; uint32_t res; };\n"
+           "struct legacy_wstring { uint32_t alloc; union { unsigned short buf[8]; unsigned short *ptr; } bx;"
+           " uint32_t size; uint32_t res; };\n")
+    return pre + "\n".join(keep).replace("legacy::string", "legacy_string").replace("legacy::wstring", "legacy_wstring")
 
 
 def main():

@@ -8,7 +8,7 @@
 //   ret
 static int __fastcall CGuiListBox_GetField0218(CGuiListBox* self, void* /*edx*/)
 {
-    return static_cast<int>(self->field_0218);
+    return static_cast<int>(self->m_pRowText);
 }
 
 HOOK(0x724790, CGuiListBox_GetField0218, "auto");

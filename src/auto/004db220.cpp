@@ -3,7 +3,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-static int __fastcall C_0082fbe8_ForwardInnerVirtualQuery(
+static int __fastcall TCharTask_ForwardInnerVirtualQuery(
     C_0082fbe8* self, void* edx)
 {
     auto* inner = CSF_AT(C_0082fbe8*, self, 0x10);
@@ -16,4 +16,4 @@ static int __fastcall C_0082fbe8_ForwardInnerVirtualQuery(
         CSF_AT(void**, inner, 0)[3])(inner, edx);
 }
 
-HOOK(0x004DB220, C_0082fbe8_ForwardInnerVirtualQuery, "auto");
+HOOK(0x004DB220, TCharTask_ForwardInnerVirtualQuery, "auto");

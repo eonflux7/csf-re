@@ -2,7 +2,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-static int __fastcall C_0082fbe8_ForwardToMemberVirtual(
+static int __fastcall TCharTask_ForwardToMemberVirtual(
     C_0082fbe8* self, void* edx)
 {
     void* target = CSF_AT(void*, self, 0x10);
@@ -17,4 +17,4 @@ static int __fastcall C_0082fbe8_ForwardToMemberVirtual(
             reinterpret_cast<C_0082fbe8*>(target), edx);
 }
 
-HOOK(0x004DB2D0, C_0082fbe8_ForwardToMemberVirtual, "auto");
+HOOK(0x004DB2D0, TCharTask_ForwardToMemberVirtual, "auto");

@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-static int __fastcall C_0082fbe8_ForwardMemberVirtualCall(
+static int __fastcall TCharTask_ForwardMemberVirtualCall(
     C_0082fbe8* self, void* edx)
 {
     void* member = CSF_AT(void*, self, 0x10);
@@ -19,4 +19,4 @@ static int __fastcall C_0082fbe8_ForwardMemberVirtualCall(
             reinterpret_cast<C_0082fbe8*>(member), edx);
 }
 
-HOOK(0x004DB2C0, C_0082fbe8_ForwardMemberVirtualCall, "auto");
+HOOK(0x004DB2C0, TCharTask_ForwardMemberVirtualCall, "auto");
