@@ -140,13 +140,46 @@ def gate(ea, path, db=None):
         if not found:
             return False, f"could not find compiled function `{fn}` in object file"
         sem = semcheck.check(ea, obj, db) + semcheck.byte_return_of_bool(ea, obj, fn, db)
-        if sem:
-            return False, "semantic check (references must match the original's):\n" + "\n".join(sem)
         if rets and orig and set(rets) != set(orig):
-            return False, (f"calling convention mismatch: original pops {orig} bytes (ret N), yours pops {rets}. "
-                           "Fix the calling convention / parameter list (__thiscall → __fastcall with dummy edx; "
-                           "__stdcall pops args; __cdecl pops 0).")
-    return True, "ok"
+            sem.append(f"calling convention mismatch: original pops {orig} bytes (ret N), yours pops {rets}. "
+                       "Fix the calling convention / parameter list (__thiscall → __fastcall with dummy edx; "
+                       "__stdcall pops args; __cdecl pops 0).")
+        sem, waived = apply_waivers(ea, obj, sem)
+        if sem:
+            conv = [e for e in sem if e.startswith("calling convention mismatch")]
+            rest = [e for e in sem if e not in conv]
+            if rest:
+                return False, "semantic check (references must match the original's):\n" + "\n".join(rest)
+            return False, conv[0]
+    return True, "ok" + (f" (waived: {'; '.join(waived)})" if waived else "")
+
+
+WAIVERS = os.path.join(ROOT, "db", "waivers.yaml")
+
+
+def load_waivers():
+    import yaml
+    try:
+        d = yaml.safe_load(open(WAIVERS)) or {}
+    except OSError:
+        return {}
+    return {(int(k, 16) if isinstance(k, str) else k): v for k, v in d.items()}
+
+
+def apply_waivers(ea, obj, errs):
+    """Drop findings waived for exactly this compiled code (db/waivers.yaml, written by tools/waive.py)."""
+    if not errs:
+        return errs, []
+    w = load_waivers().get(ea)
+    if not w:
+        return errs, []
+    from verify import code_hash
+    if w.get("code") != code_hash(obj):
+        return errs, []  # the code changed since the review: the waiver no longer applies
+    keep, waived = [], []
+    for e in errs:
+        (waived if any(re.search(p, e) for p in w.get("checks", [])) else keep).append(e)
+    return keep, [w.get("why", "")] if waived else []
 
 
 if __name__ == "__main__":

@@ -271,3 +271,14 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
 - Probing the 0x864508 vtable slots in the menus: slots at 0x71A8E0/0x71A5E0/0x71A300 run per control
   (100k-300k calls / 20 s), not per frame — unusable as a frame hook.
 - smoke.sh: `CSF_INI_EXTRA` adds ini lines for one run (autopilot steps, menutour, only_module).
+
+## 2026-10-07 — auto-re-agent items finished: transcripts, waivers, evidence requests
+
+- work/calls/<ea>/<time>-<write|review>-<backend>.json: every model call (also failed ones) with the full
+  conversation and answer; system prompts by hash in work/calls/system/. Feeds the Opus review sample and A/B tests.
+- db/waivers.yaml (`tools/waive.py <ea> <regex> <why>`): a gate finding waived for one function's exact compiled
+  code (verify.py code hash); a code change voids it. File rules and compile errors can't be waived.
+- Evidence requests: a grunt above 150 B may answer with {"actions": [...]} instead of the file (pseudo / asm /
+  callers / class, <= 3 per function); the driver answers from packet.py data and the conversation continues
+  without spending an attempt. First dry run (2 DeepSeek functions, 200-400 B): neither asked; both passed. The
+  offer goes in the user packet, so the cached system prompt is unchanged.

@@ -147,10 +147,11 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
       Gate-only 560 -> 488 of 841.
 - [ ] AI combat coverage: the T* AI tasks (cover, search, throw, reload, ...) and GUI input handlers only run in
       real play. Needs savegames taken in combat (user playtest) -> `CSF_SWEEP_SAVES="1.sav 2.sav ..."`.
-- [ ] Bounded evidence requests in grunt packets for > 600 B functions (model asks for a callee's pseudocode,
-      xrefs_to, vtable, struct; <= 3 per function) — auto-re-agent's investigation loop
-- [ ] Per-address gate waivers (db/waivers.yaml, Opus sign-off) instead of loosening semcheck globally
-- [ ] Full prompt/response logs per grunt call in work/ (for the Opus review sample and prompt A/B)
+- [x] Bounded evidence requests (`tools/evidence.py`: pseudo / asm / callers / class): offered above
+      `--evidence-over` 150 B, `--evidence` 3 per function, not counted as attempts; `grunt.py cost` shows usage
+- [x] Per-address gate waivers (`tools/waive.py` -> db/waivers.yaml): bound to the reviewed compiled-code hash,
+      post-compile findings only (semcheck, ret N)
+- [x] Full transcripts of every model call in work/calls/<ea>/ (system prompts stored once by hash)
 
 ### Phase 5 — batch verification (user playtests) and Phase 6 — cutover
 

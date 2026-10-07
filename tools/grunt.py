@@ -16,6 +16,7 @@ from packet import DB, build
 from gate import gate
 from triage import load_csv, save_csv
 from limits import codex_usage
+import evidence
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOG = os.path.join(ROOT, "work", "grunt_log.jsonl")
@@ -203,9 +204,50 @@ def live(**kw):
 CODEX_PAUSED = threading.Event()  # set by the lanes quota guard: no new Codex calls (writes, fallbacks, reviews)
 
 
+CALLS = os.path.join(ROOT, "work", "calls")  # full transcript of every model call (gitignored)
+
+
+def log_call(backend, model, effort, messages, text, usage, secs, error=None):
+    """work/calls/<ea>/<time>-<kind>-<backend>.json: the whole conversation + answer. System prompts are stored once
+    under work/calls/system/<sha>.txt and referenced by hash (they're large and constant)."""
+    try:
+        ea = getattr(_tl, "ea", 0)
+        kind = "review" if messages[0]["content"] is REVIEW_SYSTEM else "write"
+        msgs = []
+        for m in messages:
+            if m["role"] == "system":
+                h = hashlib.sha1(m["content"].encode()).hexdigest()[:12]
+                sp = os.path.join(CALLS, "system", f"{h}.txt")
+                if not os.path.exists(sp):
+                    os.makedirs(os.path.dirname(sp), exist_ok=True)
+                    open(sp, "w").write(m["content"])
+                msgs.append(dict(role="system", sha=h))
+            else:
+                msgs.append(m)
+        d = os.path.join(CALLS, f"{ea:08x}")
+        os.makedirs(d, exist_ok=True)
+        stamp = time.strftime("%Y%m%d-%H%M%S") + f"-{int(time.time() * 1000) % 1000:03d}"
+        with open(os.path.join(d, f"{stamp}-{kind}-{backend}.json"), "w") as f:
+            json.dump(dict(ea=f"{ea:08x}", kind=kind, backend=backend, model=model, effort=effort, secs=round(secs, 1),
+                           usage=usage, error=error, messages=msgs, answer=text), f, indent=1)
+    except Exception as e:  # logging must never break a run
+        print(f"log_call failed: {e}", file=sys.stderr)
+
+
 def ask(backend, model, messages, key, effort="high"):
     if backend == "codex" and CODEX_PAUSED.is_set():
         raise RuntimeError("Codex paused by the quota guard")
+    t0 = time.time()
+    try:
+        text, usage = _ask(backend, model, messages, key, effort)
+    except Exception as e:
+        log_call(backend, model, effort, messages, None, None, time.time() - t0, error=str(e))
+        raise
+    log_call(backend, model, effort, messages, text, usage, time.time() - t0)
+    return text, usage
+
+
+def _ask(backend, model, messages, key, effort="high"):
     cid = f"{threading.get_ident()}"
     with _live_lock:
         _live["calls"][cid] = dict(ea=getattr(_tl, "ea", 0), backend=backend, model=model, effort=effort,
@@ -277,11 +319,15 @@ def example_section(db, ex):
             f"```cpp\n{open(path).read()}\n```")
 
 
-def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None):
+def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evidence_budget=0):
     """ladder: [(backend, model, attempts), ...] tried in order; the conversation (with gate errors) carries over.
-    example: ea of a done clone sibling (its file is shown). review_over: Codex-review DeepSeek outputs above N bytes."""
+    example: ea of a done clone sibling (its file is shown). review_over: Codex-review DeepSeek outputs above N bytes.
+    evidence_budget: read-only evidence requests the model may make (tools/evidence.py); they aren't attempts."""
     _tl.ea = ea
     packet = build(db, ea) + (example_section(db, example) if example else "")
+    ev_left, n_ev = evidence_budget, 0
+    if evidence_budget:
+        packet += "\n" + evidence.PROMPT % evidence_budget
     msgs = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": packet}]
     path = os.path.join(out_dir or os.path.join(ROOT, "src", "auto"), f"{ea:08x}.cpp")
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -297,12 +343,19 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None):
             continue
         try:
             text, usage = ask(backend, model, msgs, key, "high" if first else "max")
+            usage_all.append(usage)
+            code, meta = parse(text)
+            while not code and isinstance(meta.get("actions"), list) and meta["actions"] and ev_left > 0:
+                reply, used = evidence.answer(db, meta["actions"], ev_left)
+                ev_left, n_ev = ev_left - used, n_ev + used
+                msgs += [{"role": "assistant", "content": text}, {"role": "user", "content": reply}]
+                text, usage = ask(backend, model, msgs, key, "high" if first else "max")
+                usage_all.append(usage)
+                code, meta = parse(text)
         except Exception as e:  # out of credit / CLI failure: fall through to the next backend
             dead.add(backend)
             err = f"{backend} error: {e}"
             continue
-        usage_all.append(usage)
-        code, meta = parse(text)
         if code:
             code = re.sub(r"^(\s*HOOK(?:_METHOD)?\(.*\))\s*$", r"\1;", code, flags=re.M)
         if not code:
@@ -322,7 +375,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None):
         if ok:
             os.replace(tmp, path)
             return dict(ea=ea, ok=True, attempts=attempt + 1, meta=meta, usage=usage_all, by=f"{backend}:{model}",
-                        example=example, reviews=reviews)
+                        example=example, reviews=reviews, evidence=n_ev)
         msgs += [{"role": "assistant", "content": text},
                  {"role": "user", "content": f"The gate rejected the file:\n{err}\nFix it and answer again in the same format."}]
     if "codex" in dead and CODEX_PAUSED.is_set():  # not a real failure: retry in a later run
@@ -333,10 +386,15 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None):
     with open(os.path.join(qdir, f"{ea:08x}.md"), "w") as f:
         f.write(f"# Escalation 0x{ea:08X}\n\n## Last gate error\n```\n{err}\n```\n\n## Last answer\n{text}\n\n"
                 f"## Packet\n{packet}\n")
-    return dict(ea=ea, ok=False, attempts=len(steps), err=err[:500], usage=usage_all, reviews=reviews)
+    return dict(ea=ea, ok=False, attempts=len(steps), err=err[:500], usage=usage_all, reviews=reviews, evidence=n_ev)
 
 
 _clusters = None
+
+
+def ev_budget(args, db, ea):
+    """Evidence requests offered for this function (none for small ones: their packet is complete enough)."""
+    return args.evidence if db.F[ea]["size"] > args.evidence_over else 0
 
 
 def clone_clusters():
@@ -518,7 +576,8 @@ def run(args):
     results = []
     with cf.ThreadPoolExecutor(args.jobs) as ex:
         out_dir = os.path.join(ROOT, "work", "ab", args.backend) if args.dry else None
-        futs = {ex.submit(work, ea, db, key, ladder_of(ea), out_dir, example.get(ea), args.review_over): ea
+        futs = {ex.submit(work, ea, db, key, ladder_of(ea), out_dir, example.get(ea), args.review_over,
+                          ev_budget(args, db, ea)): ea
                 for ea in targets}
         for fu in cf.as_completed(futs):
             try:
@@ -635,7 +694,7 @@ def lanes(args):
             lane, ladder = lane_of(ea, ex)
             if cnt[lane] >= caps[lane]:
                 continue
-            fut = pools[lane].submit(work, ea, db, key, ladder, None, ex, args.review_over)
+            fut = pools[lane].submit(work, ea, db, key, ladder, None, ex, args.review_over, ev_budget(args, db, ea))
             inflight[fut] = (ea, lane)
             cnt[lane] += 1
             submitted += 1
@@ -715,8 +774,15 @@ def cost(_):
     since the `reviews` field exists): if it almost never rejects, --review-over -1 saves Codex quota."""
     by = collections.defaultdict(lambda: dict(n=0, ok=0, prompt=0, cached=0, completion=0))
     reviewed = rejected = rev_fns = rev_fns_rej = 0
+    ev = dict(fns=0, reqs=0, ok=0, offered=0)
     for l in open(LOG):
         r = json.loads(l)
+        if "evidence" in r:  # logged since evidence requests exist
+            ev["offered"] += 1
+            if r["evidence"]:
+                ev["fns"] += 1
+                ev["reqs"] += r["evidence"]
+                ev["ok"] += bool(r["ok"])
         b = by[(r.get("by") or ("unknown" if r["ok"] else "failed")).split(":")[0]]
         b["n"] += 1
         b["ok"] += bool(r["ok"])
@@ -735,6 +801,7 @@ def cost(_):
               f"completion {b['completion']:>9}")
     print(f"codex reviews: {reviewed} on {rev_fns} functions, {rejected} rejections "
           f"({rev_fns_rej} functions had >=1 rejection)" if reviewed else "codex reviews: none logged yet")
+    print(f"evidence requests: {ev['reqs']} in {ev['fns']} of {ev['offered']} logged tasks ({ev['ok']} of those passed)")
 
 
 if __name__ == "__main__":
@@ -754,6 +821,8 @@ if __name__ == "__main__":
     r.add_argument("--min-size", type=int, default=6)
     r.add_argument("--dry", action="store_true", help="write to work/ab/<backend>/, no smoke/commit/status")
     r.add_argument("--no-smoke", action="store_true")
+    r.add_argument("--evidence", type=int, default=3, help="evidence requests per function (tools/evidence.py)")
+    r.add_argument("--evidence-over", type=int, default=150, help="offer evidence requests above N bytes")
     r.add_argument("--review-over", type=int, default=100, help="Codex-review DeepSeek outputs above N bytes (-1: off)")
     l = sub.add_parser("lanes")
     l.add_argument("--total", type=int, default=200)
@@ -767,6 +836,8 @@ if __name__ == "__main__":
     l.add_argument("--codex-model", default="gpt-6.1-sol")
     l.add_argument("--claude-model", default="sonnet")
     l.add_argument("--escalate-claude", action="store_true")
+    l.add_argument("--evidence", type=int, default=3, help="evidence requests per function (tools/evidence.py)")
+    l.add_argument("--evidence-over", type=int, default=150, help="offer evidence requests above N bytes")
     l.add_argument("--review-over", type=int, default=100)
     l.add_argument("--no-smoke", action="store_true")
     l.add_argument("--no-bisect", action="store_true", help="stop on a smoke failure instead of bisecting it")
