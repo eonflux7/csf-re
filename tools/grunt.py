@@ -132,7 +132,7 @@ def chat_claude(model, messages):
 
 
 CODEX_CWD = os.path.expanduser("~/.cache/csf-re-codex")
-CODEX_EFFORT = {"high": "high", "max": "xhigh"}
+CODEX_EFFORT = {"high": os.environ.get("CSF_CODEX_EFFORT", "high"), "max": "xhigh"}  # env: A/B low/medium
 
 
 # Codex agent features that add tool schemas / instructions to every request; grunts need none of them.
@@ -238,19 +238,21 @@ def ask(backend, model, messages, key, effort="high"):
     if backend == "codex" and CODEX_PAUSED.is_set():
         raise RuntimeError("Codex paused by the quota guard")
     t0 = time.time()
+    shown = CODEX_EFFORT.get(effort, effort) if backend == "codex" else effort  # what the backend really gets
     try:
         text, usage = _ask(backend, model, messages, key, effort)
     except Exception as e:
-        log_call(backend, model, effort, messages, None, None, time.time() - t0, error=str(e))
+        log_call(backend, model, shown, messages, None, None, time.time() - t0, error=str(e))
         raise
-    log_call(backend, model, effort, messages, text, usage, time.time() - t0)
+    log_call(backend, model, shown, messages, text, usage, time.time() - t0)
     return text, usage
 
 
 def _ask(backend, model, messages, key, effort="high"):
     cid = f"{threading.get_ident()}"
     with _live_lock:
-        _live["calls"][cid] = dict(ea=getattr(_tl, "ea", 0), backend=backend, model=model, effort=effort,
+        _live["calls"][cid] = dict(ea=getattr(_tl, "ea", 0), backend=backend, model=model,
+                                   effort=CODEX_EFFORT.get(effort, effort) if backend == "codex" else effort,
                                    kind="review" if messages[0]["content"] is REVIEW_SYSTEM else "write",
                                    since=time.time())
     live()
@@ -594,7 +596,8 @@ def run(args):
     print(f"batch of {len(targets)}: {' '.join(f'{t:x}' for t in targets)}", flush=True)
     results = []
     with cf.ThreadPoolExecutor(args.jobs) as ex:
-        out_dir = os.path.join(ROOT, "work", "ab", args.backend) if args.dry else None
+        out_dir = os.path.join(ROOT, "work", "ab", args.backend + (f"-{os.environ['CSF_CODEX_EFFORT']}"
+                               if os.environ.get("CSF_CODEX_EFFORT") else "")) if args.dry else None
         futs = {ex.submit(work, ea, db, key, ladder_of(ea), out_dir, example.get(ea), args.review_over,
                           ev_budget(args, db, ea)): ea
                 for ea in targets}
