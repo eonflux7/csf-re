@@ -67,6 +67,8 @@ bool dev_start() { return hook::ini_string("scene") || hook::ini_string("loadsav
 
 int __fastcall Menus_GotoScreen_Dev(void* self, void* /*edx*/, const char* screen) {
     static bool first = true;
+    if (first && hook::ini_string("crashtest"))  // deliberate fault, to test crash triage (tools/dbg.sh crash)
+        *(volatile int*)nullptr = 0x0BADC0DE;
     if (!first || !dev_start())
         return Menus_GotoScreen(self, nullptr, screen);
     first = false;

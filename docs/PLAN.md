@@ -105,7 +105,7 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [x] Semantic gate check (tools/semcheck.py)
 - [x] Differential test harness (hook/diff.cpp, tools/difftable.py; leaf functions, on by default in smoke)
 - [ ] Diff tier 2: functions with callees (record callee calls / stub them during the double run)
-- [ ] x64dbg + x64dbg-automate (Windows, E:\dev) driven from Python for dynamic RE / crash triage
+- [x] x64dbg + x64dbg-automate (E:\dev\tools\x64dbg, venv E:\dev\tools\x64dbg-venv): `tools/dbg.sh crash` = crash triage
 - [ ] Optional IDA disassembly/xref/switch-table export per function (semcheck/difftable/packets read it, capstone fallback)
 - [ ] Waves per module, leaf-first
 
@@ -123,6 +123,8 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
   subscription, effort high → xhigh on retry); functions < 48 B → DeepSeek flash (falls through to Codex on API
   error, e.g. out of credit). Codex quota is finite: a 456-call naming run exhausted it — keep runs batched; `--escalate-claude` adds Sonnet. `grunt.py run --backend auto` (default).
 - 2026-10-07: xwin x86 CRT/SDK installed at `~/.xwin` (license accepted by user).
+- 2026-10-07: x64dbg (2026.05.27) + x64dbg-automate 0.8.1 installed on Windows under E:\dev\tools (user OK).
+  Used for crash triage and targeted runtime RE, not in the normal smoke path.
 - Play copy of the game for hook testing: `/mnt/e/dev/csf-play` (E:\dev\csf-play). Never deploy into csf-builds.
 
 ## Open decisions (for the user)

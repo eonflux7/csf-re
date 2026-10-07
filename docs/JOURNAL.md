@@ -166,3 +166,8 @@ Dated findings, newest last. Keep entries short; put conclusions into PLAN.md.
   the handler can't run; map offsets via build/dinput8.map.
 - semcheck: skip hook-infrastructure symbols (Registrar ctor no longer inlined) for field offsets; collect
   addresses also from 4-byte .rdata pointer sections (CSF_GLOBAL bindings).
+- Debugger harness: x64dbg 2026.05.27 + x64dbg-automate 0.8.1 (32-bit plugin in release/x32/plugins), Python
+  client in a Windows venv (E:\dev\tools\x64dbg-venv). `tools/dbg.sh crash [secs]` runs the play copy under
+  x32dbg, continues through non-fatal stops, and on the first fatal exception prints registers, asm at eip and
+  the stack, symbolized (game via db/functions.csv, our relocated DLL via the logged base + build/dinput8.map).
+  ini `crashtest 1` triggers a deliberate fault to test it.

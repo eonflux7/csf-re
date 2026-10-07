@@ -9,6 +9,8 @@
 #include "hook.h"
 #include "MinHook.h"
 
+extern "C" IMAGE_DOS_HEADER __ImageBase;  // this DLL's load address (linker-provided)
+
 namespace hook {
 
 static Entry* g_head;
@@ -208,7 +210,7 @@ static void init() {
     if (char* s = strrchr(g_dir, '\\'))
         s[1] = 0;
     g_log = fopen((std::string(g_dir) + "csf_hook.log").c_str(), "w");
-    log("csf hook loaded; exe base %p", GetModuleHandleA(nullptr));
+    log("csf hook loaded; exe base %p; dll base %p", GetModuleHandleA(nullptr), &__ImageBase);
     AddVectoredExceptionHandler(1, crash_handler);
     install_all();
     autopilot_init();
