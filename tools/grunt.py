@@ -721,6 +721,39 @@ def module_ids(spec):
     return out
 
 
+def callers_outside(db):
+    """{ea: number of game functions in OTHER modules that call it} (centrality: what other code waits on)."""
+    out = collections.Counter()
+    for ea, f in db.F.items():
+        r = db.rows.get(ea)
+        if not r or r["region"] != "game":
+            continue
+        for c in f["callees"]:
+            rc = db.rows.get(c)
+            if rc and rc["region"] == "game" and rc["module"] != r["module"]:
+                out[c] += 1
+    return out
+
+
+def rank_modules(db, n=10):
+    """Modules to wave next: undone bytes weighted by how much code elsewhere calls into them
+    (sum over todo functions of size * log2(2 + outside callers)). Returns [(score, id, name, todo_bytes, done%)]."""
+    import math, modules as M
+    fanin = callers_outside(db)
+    names = {m["id"]: m.get("name") or m["id"] for m in M.read_yaml()}
+    score, todo, total = collections.Counter(), collections.Counter(), collections.Counter()
+    for ea, r in db.rows.items():
+        if r["region"] != "game" or not r["module"] or r["module"] == "stl" or ea not in db.F:
+            continue  # stl: VC7.1 container replicas + template impls, written by hand (PLAN), not waved
+        size = db.F[ea]["size"]
+        total[r["module"]] += size
+        if r["status"] == "todo":
+            todo[r["module"]] += size
+            score[r["module"]] += size * math.log2(2 + fanin.get(ea, 0))
+    return [(round(v), m, names.get(m, m), todo[m], 100 * (1 - todo[m] / max(total[m], 1)))
+            for m, v in score.most_common(n)]
+
+
 def select(db, n, max_size, min_size=6, exclude=(), modules=None):
     """Leaf-first: fewest not-done game callees, then smallest. Returns [(ea, example_ea|None)].
     modules: only functions of these module ids (a module wave).
@@ -1099,8 +1132,12 @@ def lanes(args):
     live(mode="lanes", phase="grunting", config=run_config(args, lanes=True),
          counts=dict(total=args.total, batch=args.batch, ok=0, esc=0, pending=0, submitted=0, committed=0))
 
+    fanin = callers_outside(db) if args.hub_callers else {}
+
     def tier_of(ea, ex):
         size = db.F[ea]["size"]
+        if args.hub_callers and fanin.get(ea, 0) >= args.hub_callers and size >= 40:
+            return "L"  # a hub: many functions elsewhere depend on it, so the strong ladder writes it
         if size < args.s_max or (ex is not None and size <= args.m_max):
             return "S"
         return "M" if size <= args.m_max else "L"
@@ -1311,6 +1348,37 @@ def captain_after(wave):
     captain("functions", "--module", ",".join(sorted(wave)))
 
 
+def wave(args):
+    """The RE loop for one module in one command:
+      1. types first (lanes' captain_prep): captain names the module's classes, field-name consensus, rename pass
+      2. produce: lanes over the module (gate + link + commit as pending; --canary verifier groups meanwhile)
+      3. verify: tools/verifier.py --module (baseline, then the module's pending functions, in game)
+      4. review: tools/review.py sample --module (Opus reads a 5% sample against the original)
+      5. tools/linktest.py summary (what is left before the standalone exe links)
+    `wave --next` ranks modules by centrality instead (rank_modules)."""
+    if args.next or not args.module_name:
+        db = DB()
+        print(f"{'score':>8}  {'module':10s} {'name':28s} {'todo KB':>8} {'done':>6}")
+        for sc, m, n, todo, pct in rank_modules(db, 15):
+            print(f"{sc:8d}  {m:10s} {n:28s} {todo / 1024:8.1f} {pct:5.1f}%")
+        print("\nrun: tools/grunt.py wave <module>")
+        return
+    args.module = args.module_name
+    if args.total == 200:  # lanes' default: a wave takes the whole module
+        args.total = 100000
+    lanes(args)
+    py = sys.executable
+    tool = lambda *a: subprocess.run([py, os.path.join(ROOT, "tools", a[0]), *a[1:]])
+    if not args.no_verify:
+        print("wave: verify", flush=True)
+        tool("verifier.py", "--module", args.module)
+    if not args.no_review:
+        print("wave: review sample", flush=True)
+        tool("review.py", "sample", "--module", args.module)
+    print("wave: link test", flush=True)
+    tool("linktest.py")
+
+
 def cost(_):
     """Token totals per writing backend, and how often the Codex review of DeepSeek outputs rejected one (logged
     since the `reviews` field exists): if it almost never rejects, --review-over -1 saves Codex quota."""
@@ -1344,6 +1412,71 @@ def cost(_):
     print(f"codex reviews: {reviewed} on {rev_fns} functions, {rejected} rejections "
           f"({rev_fns_rej} functions had >=1 rejection)" if reviewed else "codex reviews: none logged yet")
     print(f"evidence requests: {ev['reqs']} in {ev['fns']} of {ev['offered']} logged tasks ({ev['ok']} of those passed)")
+    # throughput: latency per model from the call transcripts (work/calls/<ea>/*.json), and what the calls bought
+    lat = collections.defaultdict(list)
+    for fp in glob.glob(os.path.join(ROOT, "work", "calls", "*", "*.json")):
+        try:
+            c = json.load(open(fp))
+        except (OSError, ValueError):
+            continue
+        if c.get("secs") and not c.get("error"):
+            lat[(c.get("kind") or "write", f"{c.get('backend')}:{c.get('model')}@{c.get('effort')}")].append(c["secs"])
+    if lat:
+        print("latency per call (s): kind / model           n     p50     p95")
+        for (kind, mdl), xs in sorted(lat.items(), key=lambda x: -len(x[1])):
+            xs.sort()
+            print(f"  {kind:7} {mdl:42} {len(xs):5} {xs[len(xs) // 2]:7.1f} {xs[min(len(xs) - 1, int(len(xs) * .95))]:7.1f}")
+    try:
+        import verify
+        led = verify.load()
+        ok = sum(1 for e in led.values() if e.get("ok"))
+        diffed = sum(1 for e in led.values() if e.get("diffed") and not e.get("mismatched"))
+        calls = sum(len(v) for v in lat.values())
+        print(f"verified in game: {ok} functions installed in a passing smoke, {diffed} diffed clean; "
+              f"{calls / max(ok, 1):.2f} logged model calls per verified function")
+    except Exception as e:
+        print(f"verified: unavailable ({e})")
+
+
+def lane_args(l):
+    """Arguments of `lanes` (and `wave`, which runs lanes for one module)."""
+    l.add_argument("--total", type=int, default=200)
+    l.add_argument("--module", help="module wave: comma list of module ids/names (tools/modules.py list)")
+    l.add_argument("--batch", type=int, default=60, help="link + commit every N gate passes")
+    l.add_argument("--s-max", type=int, default=150, help="S tier: functions under N bytes (and clone siblings with "
+                   "a done example up to --m-max)")
+    l.add_argument("--m-max", type=int, default=400, help="M tier: functions up to N bytes; L: the rest")
+    # 2026-10-08 after the first tiered menu batches: MiMo dropped (6-12 min thinks, 3 rescues in 140), no Codex xhigh
+    # 2026-10-08 (473 tiered results): S ok 330 = Haiku low 289, strong rung 28, Haiku medium 9 -> medium dropped
+    l.add_argument("--s-ladder", default="claude:claude-haiku-5-5@low:2,codex:gpt-6.1-sol@high:1",
+                   help="backend:model[@effort]:attempts,...")
+    l.add_argument("--m-ladder", default="claude:claude-haiku-5-5@high:2,codex:gpt-6.1-sol@high:2")
+    l.add_argument("--l-ladder", default="codex:gpt-6.1-sol@high:2")
+    l.add_argument("--review-effort", default="medium", help="Codex review effort")
+    l.add_argument("--s-jobs", type=int, default=12, help="S tier: functions in flight")
+    l.add_argument("--m-jobs", type=int, default=6)
+    l.add_argument("--l-jobs", type=int, default=3)
+    l.add_argument("--max-size", type=int, default=600)
+    l.add_argument("--min-size", type=int, default=6)
+    l.add_argument("--claude-model", default="sonnet")
+    l.add_argument("--escalate-claude", action="store_true", help="append Claude x2 to every ladder")
+    l.add_argument("--evidence", type=int, default=3, help="evidence requests per function (tools/evidence.py)")
+    l.add_argument("--evidence-over", type=int, default=150, help="offer evidence requests above N bytes")
+    l.add_argument("--review-over", type=int, default=150, help="Codex reviews non-Codex answers above N bytes "
+                   "(-1: off)")
+    l.add_argument("--canary", type=int, default=300,
+                   help="start one background verifier group every N committed functions (0 = never)")
+    l.add_argument("--no-captain", action="store_true", help="module waves: skip the captain steps (class naming "
+                   "before, placeholder function names after)")
+    l.add_argument("--codex-cap", type=float, default=90, help="pause Codex at this 5h-window %% (0: off)")
+    l.add_argument("--claude-cap", type=float, default=95,
+                   help="pause the grunts' Claude account at this %% of its 5h or 7d window (0: off)")
+    l.add_argument("--codex-reserve", type=float, default=50,
+                   help="from this Codex 5h-window %%, S/M Codex rungs run on --codex-sub (Codex kept for L)")
+    l.add_argument("--codex-sub", default="claude:claude-opus-5-5@medium",
+                   help="backend:model[@effort] standing in for Codex in S/M (empty: off)")
+    l.add_argument("--hub-callers", type=int, default=25,
+                   help="functions called from >= N functions of other modules go to the L (strong) ladder (0: off)")
 
 
 if __name__ == "__main__":
@@ -1371,40 +1504,13 @@ if __name__ == "__main__":
     r.add_argument("--evidence-over", type=int, default=150, help="offer evidence requests above N bytes")
     r.add_argument("--review-over", type=int, default=100, help="Codex-review DeepSeek outputs above N bytes (-1: off)")
     l = sub.add_parser("lanes", help="continuous grunting: one lane, size tiers S/M/L each with its own model ladder")
-    l.add_argument("--total", type=int, default=200)
-    l.add_argument("--module", help="module wave: comma list of module ids/names (tools/modules.py list)")
-    l.add_argument("--batch", type=int, default=60, help="link + commit every N gate passes")
-    l.add_argument("--s-max", type=int, default=150, help="S tier: functions under N bytes (and clone siblings with "
-                   "a done example up to --m-max)")
-    l.add_argument("--m-max", type=int, default=400, help="M tier: functions up to N bytes; L: the rest")
-    # 2026-10-08 after the first tiered menu batches: MiMo dropped (6-12 min thinks, 3 rescues in 140), no Codex xhigh
-    l.add_argument("--s-ladder", default="claude:claude-haiku-5-5@low:2,claude:claude-haiku-5-5@medium:1,codex:gpt-6.1-sol@high:1",
-                   help="backend:model[@effort]:attempts,...")
-    l.add_argument("--m-ladder", default="claude:claude-haiku-5-5@high:2,codex:gpt-6.1-sol@high:2")
-    l.add_argument("--l-ladder", default="codex:gpt-6.1-sol@high:2")
-    l.add_argument("--review-effort", default="medium", help="Codex review effort")
-    l.add_argument("--s-jobs", type=int, default=12, help="S tier: functions in flight")
-    l.add_argument("--m-jobs", type=int, default=6)
-    l.add_argument("--l-jobs", type=int, default=3)
-    l.add_argument("--max-size", type=int, default=600)
-    l.add_argument("--min-size", type=int, default=6)
-    l.add_argument("--claude-model", default="sonnet")
-    l.add_argument("--escalate-claude", action="store_true", help="append Claude x2 to every ladder")
-    l.add_argument("--evidence", type=int, default=3, help="evidence requests per function (tools/evidence.py)")
-    l.add_argument("--evidence-over", type=int, default=150, help="offer evidence requests above N bytes")
-    l.add_argument("--review-over", type=int, default=150, help="Codex reviews non-Codex answers above N bytes "
-                   "(-1: off)")
-    l.add_argument("--canary", type=int, default=300,
-                   help="start one background verifier group every N committed functions (0 = never)")
-    l.add_argument("--no-captain", action="store_true", help="module waves: skip the captain steps (class naming "
-                   "before, placeholder function names after)")
-    l.add_argument("--codex-cap", type=float, default=90, help="pause Codex at this 5h-window %% (0: off)")
-    l.add_argument("--claude-cap", type=float, default=95,
-                   help="pause the grunts' Claude account at this %% of its 5h or 7d window (0: off)")
-    l.add_argument("--codex-reserve", type=float, default=50,
-                   help="from this Codex 5h-window %%, S/M Codex rungs run on --codex-sub (Codex kept for L)")
-    l.add_argument("--codex-sub", default="claude:claude-opus-5-5@medium",
-                   help="backend:model[@effort] standing in for Codex in S/M (empty: off)")
+    lane_args(l)
+    w = sub.add_parser("wave", help="one module, the whole loop: types first, produce, verify, review, link test")
+    lane_args(w)
+    w.add_argument("module_name", nargs="?", help="module id/name; omitted: --next shows the ranking")
+    w.add_argument("--next", action="store_true", help="rank modules by centrality (what to wave next) and exit")
+    w.add_argument("--no-verify", action="store_true")
+    w.add_argument("--no-review", action="store_true")
     sub.add_parser("cost")
     a = ap.parse_args()
-    {"run": run, "lanes": lanes, "cost": cost}[a.cmd](a)
+    {"run": run, "lanes": lanes, "wave": wave, "cost": cost}[a.cmd](a)
