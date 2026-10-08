@@ -1459,6 +1459,17 @@
   "params": "",
   "sig_src": "vote"
  },
+ "0044fc30": {
+  "name": "CHandleTable_Resolve",
+  "name_src": "vote",
+  "votes": {
+   "CHandleTable_Resolve": 7
+  },
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* edx, int handle",
+  "sig_src": "vote"
+ },
  "0044fc60": {
   "name": "GetSceneMenuContext",
   "name_src": "vote",
@@ -1501,6 +1512,36 @@
   "params": "void* self, void* edx",
   "sig_src": "vote"
  },
+ "0045adf0": {
+  "name": "StoreGlobalStateCcIntoTarget",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__stdcall",
+  "params": "uint32_t targetRecord, int unusedArg2, int unusedArg3",
+  "sig_src": "impl",
+  "file": "src/auto/0045adf0.cpp"
+ },
+ "0045b030": {
+  "name": "ResolveNestedFlagRecord",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* , int a2, int a3, uintptr_t a4",
+  "sig_src": "impl",
+  "file": "src/auto/0045b030.cpp"
+ },
+ "0045b060": {
+  "name": "InitSlotFromSourceRecord",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* , int , int , void* a4",
+  "sig_src": "impl",
+  "file": "src/auto/0045b060.cpp"
+ },
  "0045bb60": {
   "name": "ClampIntegerToUnorderedBounds",
   "name_src": "agent",
@@ -1511,6 +1552,166 @@
   "sig_src": "impl",
   "file": "src/auto/0045bb60.cpp"
  },
+ "0045bc30": {
+  "name": "InitStateBlockDefaults",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "uint32_t*",
+  "conv": "__fastcall",
+  "params": "uint32_t* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0045bc30.cpp"
+ },
+ "0045bc60": {
+  "name": "C_008313f8_Destroy",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "void*",
+  "conv": "__fastcall",
+  "params": "void* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/0045bc60.cpp"
+ },
+ "0045bc90": {
+  "name": "SetFlagBit40",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "uint32_t",
+  "conv": "__fastcall",
+  "params": "void* self, void* , char enable",
+  "sig_src": "impl",
+  "file": "src/auto/0045bc90.cpp"
+ },
+ "0045bcc0": {
+  "name": "SetFlagBit80",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "uint32_t",
+  "conv": "__fastcall",
+  "params": "void* self, void* , char enable",
+  "sig_src": "impl",
+  "file": "src/auto/0045bcc0.cpp"
+ },
+ "0045bcf0": {
+  "name": "GetPointerRangeElementCount",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0045bcf0.cpp"
+ },
+ "0045c6f0": {
+  "name": "CopyActiveValueToOutput",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* , void* outSlot, int , int",
+  "sig_src": "impl",
+  "file": "src/auto/0045c6f0.cpp"
+ },
+ "0045dc80": {
+  "name": "ResolveHandleSlotIfValid",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "int* self, void* , int , int , int",
+  "sig_src": "impl",
+  "file": "src/auto/0045dc80.cpp"
+ },
+ "0045f050": {
+  "name": "ApplyRecordCommandToSceneEntity",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* , int , int , std::uint32_t* argSlots",
+  "sig_src": "impl",
+  "file": "src/auto/0045f050.cpp"
+ },
+ "0045f100": {
+  "name": "SceneHandle_ResolveAndSendMoveCommand",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* , int , int , uint32_t* a4",
+  "sig_src": "impl",
+  "file": "src/auto/0045f100.cpp"
+ },
+ "0045f710": {
+  "name": "CopyNodeRangeIntoObject",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* , int , int , void* a4",
+  "sig_src": "impl",
+  "file": "src/auto/0045f710.cpp"
+ },
+ "0045f9a0": {
+  "name": "SceneHandle_RequestAndCopyPair",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* , int , int , uint32_t* a4",
+  "sig_src": "impl",
+  "file": "src/auto/0045f9a0.cpp"
+ },
+ "004600a0": {
+  "name": "ForwardMoveOrderToSceneEntity",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "uint8_t* self, void* , int , int , uint32_t* a4",
+  "sig_src": "impl",
+  "file": "src/auto/004600a0.cpp"
+ },
+ "00460e20": {
+  "name": "ResolveHandleAndStoreTableValue",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__stdcall",
+  "params": "int , int , uint32_t* a3",
+  "sig_src": "impl",
+  "file": "src/auto/00460e20.cpp"
+ },
+ "00461940": {
+  "name": "InitDefaultFields",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "void*",
+  "conv": "__fastcall",
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00461940.cpp"
+ },
+ "00462ae0": {
+  "name": "ResetPairAndCopyEndpoints",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "void*",
+  "conv": "__fastcall",
+  "params": "void* self, void* , const void* source",
+  "sig_src": "impl",
+  "file": "src/auto/00462ae0.cpp"
+ },
+ "00463d40": {
+  "name": "DispatchMoveOrderByHandle",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__stdcall",
+  "params": "int , int , uint32_t* commandRef",
+  "sig_src": "impl",
+  "file": "src/auto/00463d40.cpp"
+ },
  "00464000": {
   "name": "GetIndexedRecordAddress",
   "name_src": "agent",
@@ -1520,6 +1721,16 @@
   "params": "void* self, void* , std::uint32_t index",
   "sig_src": "impl",
   "file": "src/auto/00464000.cpp"
+ },
+ "00464a90": {
+  "name": "ApplyFloatOpToIndexedEntry",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* , int , int , uint32_t* operands",
+  "sig_src": "impl",
+  "file": "src/auto/00464a90.cpp"
  },
  "00468650": {
   "name": "MapTwelveToZero",
@@ -1582,6 +1793,17 @@
   "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* name",
+  "sig_src": "vote"
+ },
+ "004734d0": {
+  "name": "Object_PrepareForDestruction",
+  "name_src": "vote",
+  "votes": {
+   "Object_PrepareForDestruction": 1
+  },
+  "ret": "char*",
+  "conv": "__fastcall",
+  "params": "char** self, void* edx",
   "sig_src": "vote"
  },
  "00475470": {
@@ -4122,7 +4344,7 @@
   "name": "GetValue8B0554",
   "name_src": "agent",
   "votes": {
-   "GetValue8B0554": 5
+   "GetValue8B0554": 6
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -5060,7 +5282,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 84
+   "GetGlobalState_50D190": 85
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -15315,7 +15537,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 77
+   "Mem_Free": 78
   },
   "ret": "int",
   "conv": "__cdecl",
