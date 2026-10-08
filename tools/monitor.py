@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Live terminal dashboard for the RE workflow: Claude | Progress on top, one Work panel below (grunt lanes,
-captain, game/tools, subscription limits with login + billing).
+"""Live terminal dashboard for the RE workflow (Textual app in tools/monitor_app.py; this module holds the data
+readers and Rich renderables, and `--once` prints one Rich frame): Claude | Progress, grunt lanes, captain,
+game/tools, subscription limits with login + billing, plan, commits, escalation queue.
 
   .venv/bin/python tools/monitor.py [--interval 2]
 
@@ -20,7 +21,6 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from limits import codex_usage, deepseek_balance  # noqa: E402
 
 from rich.console import Group
-from rich.live import Live
 from rich.panel import Panel
 from rich.rule import Rule
 from rich.table import Table
@@ -562,88 +562,102 @@ def efficiency(recent):
     return [t]
 
 
-def panel_work(n_results=5):
-    """Everything that runs unattended: grunt lanes (status, wave counters, in flight, results), captain, tools,
-    and the limits they spend."""
+def grunt_snapshot():
+    """One consistent read of grunt's live state + this run's finished functions."""
     st = cached("live", 1, lambda: json.load(open(LIVE)) if os.path.exists(LIVE) else None)
-    nm = cached("names", 30, names)
-    nm = nm if isinstance(nm, dict) else {}
     st = st if isinstance(st, dict) else None
     alive = bool(st) and pid_alive(st.get("pid"))
     since = st.get("started", time.time()) if st else time.time() - 3600
     recent = cached("recent", 3, lambda: read_log_since(since))
-    recent = recent if isinstance(recent, list) else []
-    body = []
-    h = Text("grunt   ", style="bold magenta")
-    if st:
-        c = st.get("counts", {})
-        ph = st.get("phase", "")
-        h.append("RUNNING " if alive else "stopped ", style="bold green" if alive else "bold red")
-        h.append(ph, style="bold red" if "FAIL" in ph else "bold yellow" if ph in ("smoke", "stopping") or
-                 ph.startswith("captain") else "bold")
-        end = time.time() if alive else st.get("updated", time.time())
-        h.append(f"  up {ago(since)}" if alive else f"  ran {dur(end - since)}, ended {ago(end)} ago", style="dim")
-        el = max(1, end - since)
-        n_done = c.get("ok", 0) + c.get("esc", 0)
-        h.append(f"  {n_done / el * 3600:.0f} fn/h", style="bold")
-        body.append(h)
-        t = Text("        ")
-        t.append(f"ok {c.get('ok', 0)}", style="green")
-        t.append(f"  esc {c.get('esc', 0)}", style="red" if c.get("esc") else "dim")
-        if c.get("deferred"):
-            t.append(f"  def {c['deferred']}", style="yellow")
-        t.append(f"  committed {c.get('committed', 0)}", style="cyan")
-        t.append(f"  next smoke {c.get('pending', 0)}/{c.get('batch', '-')}", style="dim")
-        t.append(f"  run {c.get('submitted', 0)}/{c.get('total', '-')}", style="dim")
-        body.append(t)
-        if st.get("codex_paused") and alive:
-            body.append(Text(f"        Codex paused by the quota guard (5h {st.get('codex_5h', 0):.0f}%): "
-                             "DeepSeek lane only", style="bold red"))
-    else:
-        h.append("no run yet", style="dim")
-        body.append(h)
+    nm = cached("names", 30, names)
     calls = sorted((st or {}).get("calls", {}).values(), key=lambda x: x["since"]) if alive else []
-    if calls:
+    return dict(st=st, alive=alive, since=since, recent=recent if isinstance(recent, list) else [],
+                names=nm if isinstance(nm, dict) else {}, calls=calls)
+
+
+def grunt_header(g):
+    st, alive, since = g["st"], g["alive"], g["since"]
+    h = Text("grunt   ", style="bold magenta")
+    if not st:
+        h.append("no run yet", style="dim")
+        return [h]
+    c = st.get("counts", {})
+    ph = st.get("phase", "")
+    h.append("RUNNING " if alive else "stopped ", style="bold green" if alive else "bold red")
+    h.append(ph, style="bold red" if "FAIL" in ph else "bold yellow" if ph in ("smoke", "stopping") or
+             ph.startswith("captain") else "bold")
+    end = time.time() if alive else st.get("updated", time.time())
+    h.append(f"  up {ago(since)}" if alive else f"  ran {dur(end - since)}, ended {ago(end)} ago", style="dim")
+    h.append(f"  {(c.get('ok', 0) + c.get('esc', 0)) / max(1, end - since) * 3600:.0f} fn/h", style="bold")
+    t = Text("        ")
+    t.append(f"ok {c.get('ok', 0)}", style="green")
+    t.append(f"  esc {c.get('esc', 0)}", style="red" if c.get("esc") else "dim")
+    if c.get("deferred"):
+        t.append(f"  def {c['deferred']}", style="yellow")
+    t.append(f"  committed {c.get('committed', 0)}", style="cyan")
+    t.append(f"  next smoke {c.get('pending', 0)}/{c.get('batch', '-')}", style="dim")
+    t.append(f"  run {c.get('submitted', 0)}/{c.get('total', '-')}", style="dim")
+    out = [h, t]
+    if g["calls"]:
         per = collections.Counter()
-        for x in calls:
+        for x in g["calls"]:
             per[x["backend"]] += x.get("n", 1) if x["kind"] != "review" else 0
-        t = Text("        in flight ", style="bold")
-        t.append("  ".join(f"{b} {n}" for b, n in per.items()), style="dim")
-        body.append(t)
-        tb = Table.grid(padding=(0, 1))
-        for kw in ({"min_width": 8}, {"min_width": 11}, {"min_width": 8}, {"justify": "right", "min_width": 6},
-                   {"overflow": "ellipsis", "ratio": 1}):
-            tb.add_column(no_wrap=True, **kw)
-        for x in calls[:6]:
-            n = x.get("n", 1)
-            kind = f"batch×{n}" if x["kind"] == "batch" else x["kind"]
-            tb.add_row("", f"{x['ea']:08x}" + (f"+{n - 1}" if n > 1 else ""),
-                       Text(x["backend"], style=BACKEND_STYLE.get(x["backend"], "")),
-                       Text(ago(x["since"]), style="red" if time.time() - x["since"] > 600 else "dim"),
-                       Text(f"{kind:<8} ", style="dim") + Text(nm.get(x["ea"], "") or ""))
-        if len(calls) > 6:
-            tb.add_row("", Text(f"+{len(calls) - 6} more", style="dim"), "", "", "")
-        body.append(tb)
-    for r in (recent[-n_results:][::-1] if n_results > 0 else []):
+        f = Text("        in flight ", style="bold")
+        f.append("  ".join(f"{b} {n}" for b, n in per.items()), style="dim")
+        out.append(f)
+    if st.get("codex_paused") and alive:
+        out.append(Text(f"        Codex paused by the quota guard (5h {st.get('codex_5h', 0):.0f}%): "
+                        "DeepSeek lane only", style="bold red"))
+    return out
+
+
+def call_rows(g):
+    """In-flight model calls, oldest first: (ea, backend, age, kind, name)."""
+    rows = []
+    for x in g["calls"]:
+        n = x.get("n", 1)
+        rows.append((f"{x['ea']:08x}" + (f"+{n - 1}" if n > 1 else ""),
+                     Text(x["backend"], style=BACKEND_STYLE.get(x["backend"], "")),
+                     Text(ago(x["since"]), style="red" if time.time() - x["since"] > 600 else "dim"),
+                     Text(f"batch×{n}" if x["kind"] == "batch" else x["kind"], style="dim"),
+                     g["names"].get(x["ea"], "") or ""))
+    return rows
+
+
+def result_rows(g, n=None):
+    """Finished functions of the run, newest first: (age, result, by, tags, ea, name or error)."""
+    rows = []
+    for r in g["recent"][::-1][:n]:
         ok = r.get("ok")
         what = r.get("meta", {}).get("name", "") if ok else (r.get("err", "").splitlines() or [""])[0]
         by = (r.get("by") or "").split(":")[0] or {"deep": "deepseek", "main": "codex"}.get(r.get("lane"), "")
-        t = Text(f"{ago(r.get('ts', 0)):>7} ", style="dim", no_wrap=True, overflow="ellipsis")
-        t.append("OK  " if ok else "DEF " if r.get("deferred") else "ESC ",
-                 style="green" if ok else "yellow" if r.get("deferred") else "red")
-        t.append(f"{ {'deepseek': 'ds'}.get(by, by)[:5]:<6}", style=BACKEND_STYLE.get(by, "dim"))
         tags = ([f"b{r['batch']}"] if r.get("batch") else []) + \
                ([f"try{r['attempts']}"] if ok and r.get("attempts", 1) > 1 else [])
-        t.append(f"{' '.join(tags):<6} ", style="dim")
-        t.append(what, style="" if ok else "grey62")
-        body.append(t)
+        rows.append((Text(ago(r.get("ts", 0)), style="dim"),
+                     Text("OK" if ok else "DEF" if r.get("deferred") else "ESC",
+                          style="green" if ok else "yellow" if r.get("deferred") else "red"),
+                     Text({"deepseek": "ds"}.get(by, by)[:5], style=BACKEND_STYLE.get(by, "dim")),
+                     Text(" ".join(tags), style="dim"), f"{r['ea']:08x}",
+                     Text(what, style="" if ok else "grey62")))
+    return rows
+
+
+def panel_work(n_results=5):
+    """Rich version (--once): grunt, in flight, results, captain, tools, limits."""
+    g = grunt_snapshot()
+    body = grunt_header(g)
+    for rows, cap in ((call_rows(g)[:6], 5), (result_rows(g, n_results) if n_results > 0 else [], 6)):
+        if rows:
+            tb = Table.grid(padding=(0, 1))
+            for _ in range(len(rows[0])):
+                tb.add_column(no_wrap=True, overflow="ellipsis")
+            for r in rows:
+                tb.add_row(*r)
+            body.append(tb)
     cap = captain_lines()
     if cap:
-        body.append(Rule(style="grey30"))
-        body += cap
-    body.append(Rule(style="grey30"))
-    body.append(tool_line())
-    body.append(limits_grid(st, recent))
+        body += [Rule(style="grey30")] + cap
+    body += [Rule(style="grey30"), tool_line(), limits_grid(g["st"], g["recent"])]
     return Panel(Group(*body), title="Work · grunt · captain · limits", border_style="magenta")
 
 
@@ -717,58 +731,18 @@ def render(console=None):
     return Group(*parts, panel_work(max(3, free)), plan_p)
 
 
-class Keys:
-    """Single-key toggles without Enter (cbreak stdin read by a thread); the terminal is restored on exit."""
-    def __init__(self):
-        import termios, threading, tty
-        self.ok = sys.stdin.isatty()
-        self.quit = False
-        if not self.ok:
-            return
-        self.fd = sys.stdin.fileno()
-        self.old = termios.tcgetattr(self.fd)
-        tty.setcbreak(self.fd)
-        threading.Thread(target=self.loop, daemon=True).start()
-
-    def loop(self):
-        while not self.quit:
-            ch = sys.stdin.read(1).lower()
-            if ch == "q":
-                self.quit = True
-            elif ch in KEYS:
-                k = KEYS[ch][0]
-                VIEW[k] = not VIEW[k]
-            self.dirty = True
-
-    def restore(self):
-        if self.ok:
-            import termios
-            termios.tcsetattr(self.fd, termios.TCSADRAIN, self.old)
-
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--interval", type=float, default=2)
-    ap.add_argument("--once", action="store_true", help="print one frame and exit")
+    ap.add_argument("--once", action="store_true", help="print one Rich frame and exit (no Textual)")
     a = ap.parse_args()
     if a.once:
         from rich.console import Console
         con = Console()
         con.print(render(con))
         return
-    from rich.console import Console
-    con = Console()
-    keys = Keys()
-    try:
-        with Live(render(con), console=con, refresh_per_second=4, screen=True) as lv:
-            t = 0
-            while not keys.quit:
-                time.sleep(0.1)  # keys apply within 0.1 s; data every --interval
-                if getattr(keys, "dirty", False) or time.time() - t >= a.interval:
-                    keys.dirty, t = False, time.time()
-                    lv.update(render(con))
-    finally:
-        keys.restore()
+    import monitor_app
+    monitor_app.run(a.interval)
 
 if __name__ == "__main__":
     try:
