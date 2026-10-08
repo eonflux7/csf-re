@@ -840,7 +840,7 @@
   "name": "GetGlobal8afc78",
   "name_src": "agent",
   "votes": {
-   "GetGlobal8afc78": 10
+   "GetGlobal8afc78": 11
   },
   "ret": "int32_t",
   "conv": "__cdecl",
@@ -870,14 +870,15 @@
  },
  "0042df80": {
   "name": "MenuManager_SetGameplayControllerState",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MenuManager_SetGameplayControllerState": 6
   },
   "ret": "int",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, int state",
-  "sig_src": "vote"
+  "conv": "__stdcall",
+  "params": "int a1",
+  "sig_src": "impl",
+  "file": "src/auto/0042df80.cpp"
  },
  "0042dfa0": {
   "name": "IsMpStatsDisplayActive",
@@ -890,27 +891,59 @@
   "params": "void* self, void* edx",
   "sig_src": "vote"
  },
+ "0042dfb0": {
+  "name": "HudWidget_ForwardUpdateToSubobject",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0042dfb0.cpp"
+ },
  "0042dfe0": {
-  "name": "RefreshGlobalMenuObject",
-  "name_src": "vote",
+  "name": "Hud_RefreshGlobalMenuObject",
+  "name_src": "agent",
   "votes": {
    "RefreshGlobalMenuObject": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0042dfe0.cpp"
  },
  "0042dff0": {
-  "name": "Global8afc78_SetEnabled",
-  "name_src": "vote",
+  "name": "HudWidget_ForwardSetEnabledToChild",
+  "name_src": "agent",
   "votes": {
    "Global8afc78_SetEnabled": 2
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "uint32_t* self, void* edx, char enabled",
-  "sig_src": "vote"
+  "params": "void* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/0042dff0.cpp"
+ },
+ "0042e010": {
+  "name": "Hud_ClearPendingWidgetState",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "void",
+  "conv": "__fastcall",
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0042e010.cpp"
+ },
+ "0042e1e0": {
+  "name": "HudList_GetEntryCount",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0042e1e0.cpp"
  },
  "0042e200": {
   "name": "CompareStringSubstring",
@@ -923,6 +956,18 @@
   "params": "void* string, void* edx, unsigned int position, unsigned int count, const char* other, unsigned int otherCount",
   "sig_src": "vote"
  },
+ "0042e3b0": {
+  "name": "Hud_CopyDwordPairRangeIfNotNull",
+  "name_src": "agent",
+  "votes": {
+   "HudRecordRangeHelper_42E3B0": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "std::uint32_t source, std::uint32_t sourceEnd, std::uint32_t destination, std::uint32_t",
+  "sig_src": "impl",
+  "file": "src/auto/0042e3b0.cpp"
+ },
  "0042f400": {
   "name": "MenuLoading_AdjustFloatPair",
   "name_src": "vote",
@@ -934,6 +979,79 @@
   "params": "float* pair",
   "sig_src": "vote"
  },
+ "0042fd90": {
+  "name": "CopyTwoDwordArrayWithContext",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "std::uint32_t*",
+  "conv": "__cdecl",
+  "params": "std::uint32_t* destination, std::uint32_t count, std::uint32_t* source, void* context",
+  "sig_src": "impl",
+  "file": "src/auto/0042fd90.cpp"
+ },
+ "00431cf0": {
+  "name": "Hud_ForwardToRecordRangeHelper",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* , int a1, int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/00431cf0.cpp"
+ },
+ "00433b90": {
+  "name": "Hud_ProcessWidgetPair",
+  "name_src": "vote",
+  "votes": {
+   "Hud_ProcessWidgetPair": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int* firstArgument, int* secondArgument, std::uintptr_t context, int* repeatedArgument",
+  "sig_src": "vote"
+ },
+ "00433ea0": {
+  "name": "Hud_ProcessWidgetEntry",
+  "name_src": "vote",
+  "votes": {
+   "Hud_ProcessWidgetEntry": 1
+  },
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* edx, void* a2",
+  "sig_src": "vote"
+ },
+ "00433ef0": {
+  "name": "Hud_ForwardToWidgetEntryIfNonNull",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__stdcall",
+  "params": "int a1, void* a2",
+  "sig_src": "impl",
+  "file": "src/auto/00433ef0.cpp"
+ },
+ "00433f10": {
+  "name": "CopyStringRange_433F10",
+  "name_src": "vote",
+  "votes": {
+   "CopyStringRange_433F10": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "void* a1, void* a2, int a3, void* a4, int a5",
+  "sig_src": "vote"
+ },
+ "00433fc0": {
+  "name": "Hud_ForwardWidgetPairArguments",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* context, void* , int* firstArgument, int* secondArgument",
+  "sig_src": "impl",
+  "file": "src/auto/00433fc0.cpp"
+ },
  "00434150": {
   "name": "ConstructStringFromText",
   "name_src": "vote",
@@ -944,6 +1062,16 @@
   "conv": "__fastcall",
   "params": "void* self, void* edx, const char* text",
   "sig_src": "vote"
+ },
+ "00434400": {
+  "name": "ForwardStringPairTo433F10",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* , void* a1, void* a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/00434400.cpp"
  },
  "00436770": {
   "name": "CSubObject_ReleaseChild",
@@ -1048,6 +1176,28 @@
   "params": "CGuiControl* self, void*",
   "sig_src": "impl",
   "file": "src/auto/004379d0.cpp"
+ },
+ "004382a0": {
+  "name": "HudChild_SetEnabled",
+  "name_src": "vote",
+  "votes": {
+   "HudChild_SetEnabled": 1
+  },
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* , char a2",
+  "sig_src": "vote"
+ },
+ "004386d0": {
+  "name": "MenuObject_Refresh",
+  "name_src": "vote",
+  "votes": {
+   "MenuObject_Refresh": 1
+  },
+  "ret": "void*",
+  "conv": "__fastcall",
+  "params": "void* self, void* edx",
+  "sig_src": "vote"
  },
  "0043c280": {
   "name": "IsFlaggedInFirstThreeStates",
@@ -4097,6 +4247,17 @@
   "params": "int* self, void* edx",
   "sig_src": "vote"
  },
+ "004f2f90": {
+  "name": "HudDebugOverlay_Update",
+  "name_src": "vote",
+  "votes": {
+   "HudDebugOverlay_Update": 1
+  },
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* edx",
+  "sig_src": "vote"
+ },
  "004f31a0": {
   "name": "ConstructSubtitlePanel",
   "name_src": "vote",
@@ -4899,7 +5060,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 83
+   "GetGlobalState_50D190": 84
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -4972,7 +5133,9 @@
  "0050d7f0": {
   "name": "Menus_ForwardCallToChildAt18",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Menus_ForwardCallToChildAt18": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , char a2",
@@ -7794,16 +7957,6 @@
   "sig_src": "impl",
   "file": "src/auto/00534ae0.cpp"
  },
- "00534b70": {
-  "name": "CMenuMpNetworkType_ReleaseSubObject",
-  "name_src": "agent",
-  "votes": {},
-  "ret": "int",
-  "conv": "__fastcall",
-  "params": "CMenuMpNetworkType* self, void*",
-  "sig_src": "impl",
-  "file": "src/auto/00534b70.cpp"
- },
  "00534e40": {
   "name": "CMenuMpPause_InitPauseMenuPanels",
   "name_src": "agent",
@@ -7909,16 +8062,6 @@
   "params": "CMenuMpPause* self, void* , uint32_t* a3",
   "sig_src": "impl",
   "file": "src/auto/00535580.cpp"
- },
- "005355c0": {
-  "name": "CMenuMpGameMode_ReleaseSubObject",
-  "name_src": "agent",
-  "votes": {},
-  "ret": "int",
-  "conv": "__fastcall",
-  "params": "CMenuMpGameMode* self, void*",
-  "sig_src": "impl",
-  "file": "src/auto/005355c0.cpp"
  },
  "005355e0": {
   "name": "CMenuIntroVideo_AdvanceTimerAndFinish",
@@ -8169,16 +8312,6 @@
   "params": "CMenuLoading* self, void*",
   "sig_src": "impl",
   "file": "src/auto/005384d0.cpp"
- },
- "00538520": {
-  "name": "CMenuLoading_ReleaseSubObject",
-  "name_src": "agent",
-  "votes": {},
-  "ret": "int",
-  "conv": "__fastcall",
-  "params": "CMenuLoading* self, void*",
-  "sig_src": "impl",
-  "file": "src/auto/00538520.cpp"
  },
  "00538540": {
   "name": "CMenuLoading_ConfigureLoader",
@@ -9258,16 +9391,6 @@
   "params": "CMenuProfiles* self, void* , void* screen, void* registryHolder",
   "sig_src": "impl",
   "file": "src/auto/0053b9a0.cpp"
- },
- "0053ba80": {
-  "name": "CMenuProfiles_ReleaseSubObject",
-  "name_src": "agent",
-  "votes": {},
-  "ret": "int",
-  "conv": "__fastcall",
-  "params": "CMenuProfiles* self, void*",
-  "sig_src": "impl",
-  "file": "src/auto/0053ba80.cpp"
  },
  "0053baa0": {
   "name": "CMenuProfiles_CheckSchedulerProxyAndDisable",
@@ -10730,16 +10853,6 @@
   "params": "CMenuControls* self, void*",
   "sig_src": "impl",
   "file": "src/auto/00542b70.cpp"
- },
- "00542ba0": {
-  "name": "CMenuDemoExit_ReleaseGui",
-  "name_src": "agent",
-  "votes": {},
-  "ret": "int",
-  "conv": "__fastcall",
-  "params": "CMenuDemoExit* self, void*",
-  "sig_src": "impl",
-  "file": "src/auto/00542ba0.cpp"
  },
  "00542bc0": {
   "name": "CMenuControls_HandleInputEvent",
@@ -12205,7 +12318,7 @@
  },
  "00548b50": {
   "name": "CMenuSoundOptionsPC_RefreshXFiSwitchState",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -12275,16 +12388,6 @@
   "conv": "__fastcall",
   "params": "void* self, void* edx",
   "sig_src": "vote"
- },
- "00549020": {
-  "name": "CMenuOptions_ReleaseSubObject",
-  "name_src": "agent",
-  "votes": {},
-  "ret": "int",
-  "conv": "__fastcall",
-  "params": "CMenuOptions* self, void*",
-  "sig_src": "impl",
-  "file": "src/auto/00549020.cpp"
  },
  "00549040": {
   "name": "CMenuVideoAdvanced_PushSettingsToWidgets",
@@ -13114,16 +13217,6 @@
   "params": "CMenuAccountEdit* self, void* , void* screen, void* registryHolder",
   "sig_src": "impl",
   "file": "src/auto/0055c000.cpp"
- },
- "0055c0e0": {
-  "name": "CMenuAccountEdit_ReleaseSubObject",
-  "name_src": "agent",
-  "votes": {},
-  "ret": "int",
-  "conv": "__fastcall",
-  "params": "CMenuAccountEdit* self, void*",
-  "sig_src": "impl",
-  "file": "src/auto/0055c0e0.cpp"
  },
  "0055c100": {
   "name": "MenuMpAccounts_HandleAccountEvent",
@@ -14216,16 +14309,6 @@
   "params": "CMenuAccounts* self, void* , void* ownerObject, void* keyPoolRef",
   "sig_src": "impl",
   "file": "src/auto/00564bc0.cpp"
- },
- "00564cb0": {
-  "name": "CMenuAccounts_ReleaseSubObject",
-  "name_src": "agent",
-  "votes": {},
-  "ret": "int",
-  "conv": "__fastcall",
-  "params": "CMenuAccounts* self, void*",
-  "sig_src": "impl",
-  "file": "src/auto/00564cb0.cpp"
  },
  "00564cd0": {
   "name": "CMenuAccounts_UpdateField48FromGlobal",
@@ -20281,7 +20364,7 @@
   "name": "CopyTwoDwordsIfDestNonNull",
   "name_src": "agent",
   "votes": {
-   "CopyTwoDwordsIfDestNonNull": 2
+   "CopyTwoDwordsIfDestNonNull": 4
   },
   "ret": "uint32_t*",
   "conv": "__stdcall",
@@ -28616,7 +28699,7 @@
   "name": "___CxxFrameHandler",
   "name_src": "ida",
   "votes": {
-   "___CxxFrameHandler": 39,
+   "___CxxFrameHandler": 41,
    "OriginalCxxFrameHandler": 1
   },
   "ret": "int",
@@ -28628,7 +28711,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 46
+   "RethrowCppException": 48
   },
   "ret": "void",
   "conv": "__stdcall",
