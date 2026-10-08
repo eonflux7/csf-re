@@ -105,7 +105,7 @@ class Monitor(App):
         yield Footer()
 
     def on_mount(self):
-        self.query_one("#inflight", DataTable).add_columns("ea", "backend", "age", "kind", "function")
+        self.query_one("#inflight", DataTable).add_columns("ea", "model", "age", "kind", "function")
         self.query_one("#results", DataTable).add_columns("age", "", "by", "tags", "ea", "function / error")
         self.query_one("#commitlist", DataTable).add_columns("age", "commit", "subject")
         self.query_one("#queuelist", DataTable).add_columns("ea", "age", "reason")

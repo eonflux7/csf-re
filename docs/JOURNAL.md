@@ -488,3 +488,20 @@ state, so a missing `mute` (or `mute 0`) explicitly unmutes. Tested on a hardlin
   grunting, `captain.py family <modules>` names unnamed classes, then the rename pass + build + commit (reverted if
   the build fails); after a run that committed functions, `captain.py functions --module <ids>` renames the
   wave's placeholder functions. Held classes are not re-asked on later runs (`family --retry-held` does).
+
+## 2026-10-08 — Model A/B over OpenCode Go; grunt lanes become one tiered lane
+- OpenCode Go ($10/mo, per-model monthly $ allowances; 5h window = 20 %, week = 50 %) via a service-account key
+  (~/.config/csf-re/opencode_go.key). grunt backend `go`: OpenAI chat/completions or Anthropic /messages (Claude
+  models: adaptive thinking + output_config.effort), `model@effort` pins effort, `x-opencode-session` header
+  required, DeepSeek needs the workspace's Privacy = Global. Streamed with a 240 s idle timeout: non-streamed, a long
+  MiMo think and a hung request looked the same for 20 min.
+- `grunt.py ab` (work/ab/, nothing committed). Track a, 25 new functions under 150 B: deepseek-flash 25/25 $0.0050/fn
+  16 s; **Haiku 5.5 low 24/25 (96 % 1st try) $0.0014/fn 8 s**; GLM-5.3-Flash 25/25 but 80 % 1st try, 40 s. All three
+  8/8 on 48-150 B: the cheap tier can take far more than the old 48 B cut. Track b, 12 functions Codex had won
+  (6-319 B): **Haiku 5.5 high 12/12 100 % 1st $0.0053 20 s**; MiMo 2.6 Pro 12/12 75 % $0.0111 130 s (long thinks on
+  the big ones); Haiku xhigh no better than high at 2x cost; Kimi K2.7 / DeepSeek V4 Pro / MiniMax / Qwen dropped.
+- Caveats: the gate is a weak oracle for big functions; code similarity to Codex's file (0.79 for all three) stops
+  meaning anything above ~250 B (Haiku high vs Haiku xhigh: 0.52); set b is survivors of Codex, with richer packets
+  than Codex had. Codex still reaches answers with ~1.8k output tokens vs 7-20k: the real gap should show on big
+  functions. So the decision is validated by a real wave (smoke + in-game diff), not by the A/B.
+- Lanes are now one lane with size tiers (see PLAN Phase 4); per-tier stats and Go allowances in monitor.py.

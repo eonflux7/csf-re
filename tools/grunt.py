@@ -3,7 +3,7 @@
 
 Usage:
   grunt.py run [--n 10] [--jobs 8] [--max-size 200] [--only ea,ea] [--model deepseek-flash] [--no-smoke]
-  grunt.py lanes [--total 200] [--batch 60] [--flash-jobs 8] [--deep-jobs 6]   continuous, two lanes (see lanes())
+  grunt.py lanes [--total 200] [--batch 60] [--module m1,m2]   continuous, one lane with size tiers S/M/L (see lanes())
   grunt.py cost                      token usage, review hit rate from work/grunt_log.jsonl
 
 Stop a lanes run cleanly: `touch work/grunt_stop` (in-flight calls finish, the batch is smoked and committed).
@@ -120,6 +120,57 @@ GO_PRICE = {"deepseek-flash": (0.30, 0.006, 0.30, 1.20), "deepseek-v4.1-flash": 
             "mimo-v2.6-pro": (0.435, 0.003625, 0.435, 0.87)}  # mimo: models.dev opencode-go (no Zen docs price)
 
 
+GO_SPEND = os.path.join(ROOT, "work", "go_spend.jsonl")  # every Go call: {"ts", "model", "cost"} (all modes, A/B too)
+# Monthly $ allowance per model on the Go plan (opencode.ai/go); windows: 5h = 20 %, week = 50 %, month = 100 %
+GO_LIMIT = {"claude-haiku-5-5": 15, "mimo-v2.6-pro": 30,  # mimo pro: not published (Flash: 60) — conservative
+            "mimo-v2.6-flash": 60, "deepseek-flash": 60, "deepseek-v4.1-flash": 60, "glm-5.3-flash": 60,
+            "kimi-k2.7-code": 60, "minimax-m3": 60, "qwen3.7-plus": 60, "kimi-k3": 15}
+GO_WINDOWS = (("5h", 5 * 3600, 0.20), ("week", 7 * 86400, 0.50), ("month", 30 * 86400, 1.0))
+GO_GUARD = 0.95  # stop using a model at 95 % of any window; its rung is skipped (next model) or the function deferred
+_go_lock = threading.Lock()
+_go_spend = None  # [(ts, model, cost)], loaded once
+GO_BLOCKED = {}  # model -> until ts (Go answered 429 "limit"): skipped without asking
+
+
+def go_spend():
+    global _go_spend
+    with _go_lock:
+        if _go_spend is None:
+            _go_spend = []
+            if os.path.exists(GO_SPEND):
+                for line in open(GO_SPEND):
+                    try:
+                        d = json.loads(line)
+                        _go_spend.append((d["ts"], d["model"], d["cost"]))
+                    except (ValueError, KeyError):
+                        pass
+        return _go_spend
+
+
+def go_windows(model, now=None):
+    """{window: (spent $, cap $)} of one model; cap is None for a model with no known allowance."""
+    now = now or time.time()
+    lim = GO_LIMIT.get(model)
+    sp = [(t, c) for t, m, c in go_spend() if m == model]
+    return {w: (sum(c for t, c in sp if t >= now - secs), lim * frac if lim else None) for w, secs, frac in GO_WINDOWS}
+
+
+def go_guard(model):
+    if GO_BLOCKED.get(model, 0) > time.time():
+        raise RuntimeError(f"go allowance: {model} blocked by Go for {int(GO_BLOCKED[model] - time.time()) // 60} min")
+    for w, (spent, cap) in go_windows(model).items():
+        if cap and spent >= GO_GUARD * cap:
+            raise RuntimeError(f"go allowance: {model} {w} window at ${spent:.2f} of ${cap:.2f}")
+
+
+def go_record(model, cost):
+    go_spend()
+    with _go_lock:
+        _go_spend.append((time.time(), model, cost or 0))
+        with open(GO_SPEND, "a") as f:
+            f.write(json.dumps(dict(ts=time.time(), model=model, cost=round(cost or 0, 6))) + "\n")
+
+
 def go_cost(model, u):
     p = GO_PRICE.get(model.split("@")[0])
     if not p:
@@ -199,6 +250,9 @@ def chat_go(model, messages, effort="high"):
             break
         except urllib.error.HTTPError as e:  # 429 / 5xx: back off; other 4xx are our fault
             msg = e.read().decode(errors="replace")[:300]
+            if e.code == 429 and re.search(r"limit|quota|usage|exceed", msg, re.I):  # an allowance window is full
+                GO_BLOCKED[name] = time.time() + 1800
+                raise RuntimeError(f"go allowance: {name} limited by Go (HTTP 429): {msg[:150]}")
             if attempt == 3 or (e.code < 500 and e.code != 429):
                 raise RuntimeError(f"go {name} HTTP {e.code}: {msg}")
             time.sleep(10 * (attempt + 1))
@@ -222,6 +276,7 @@ def chat_go(model, messages, effort="high"):
                      completion_tokens=u.get("completion_tokens", 0) or 0,
                      reasoning_tokens=(u.get("completion_tokens_details") or {}).get("reasoning_tokens", 0))
     usage |= dict(backend="go", model=model, cost=go_cost(model, usage))
+    go_record(name, usage["cost"])
     return text, usage
 
 
@@ -432,8 +487,12 @@ def log_call(backend, model, effort, messages, text, usage, secs, error=None):
 
 
 def ask(backend, model, messages, key, effort="high"):
+    if "@" in model:  # a pinned effort for every attempt of this rung: "claude-haiku-5-5@low", "gpt-6.1-sol@xhigh"
+        model, effort = model.split("@", 1)
     if backend == "codex" and CODEX_PAUSED.is_set():
         raise RuntimeError("Codex paused by the quota guard")
+    if backend == "go":
+        go_guard(model)
     t0 = time.time()
     shown = CODEX_EFFORT.get(effort, effort) if backend == "codex" else effort  # what the backend really gets
     try:
@@ -569,7 +628,8 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
     os.makedirs(os.path.dirname(tmp), exist_ok=True)
     usage_all, err, meta, text = [], "", {}, ""
     steps = [(b, m) for b, m, n in ladder for _ in range(n)]
-    dead, reviews = set(), []  # reviews: True = reviewer rejected that attempt
+    dead, reviews = set(), []  # dead: rungs that errored (backend, or go:model); reviews: True = reviewer rejected
+    quota_hit = False  # a rung was skipped for quota (Codex paused / Go allowance): defer instead of escalating
     start = 0
     if prior:
         text, err, u = prior
@@ -580,9 +640,10 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
     for attempt, (backend, model) in enumerate(steps):
         if attempt < start:
             continue
-        # first attempt per backend at high effort, retries at max
-        first = attempt == 0 or steps[attempt - 1][0] != backend
-        if backend in dead:
+        # first attempt per rung at high effort, retries at max (a pinned model@effort ignores both)
+        first = attempt == 0 or steps[attempt - 1] != (backend, model)
+        dk = f"go:{model.split('@')[0]}" if backend == "go" else backend
+        if dk in dead:
             continue
         try:
             text, usage = ask(backend, model, msgs, key, "high" if first else "max")
@@ -595,8 +656,9 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
                 text, usage = ask(backend, model, msgs, key, "high" if first else "max")
                 usage_all.append(usage)
                 code, meta = parse(text)
-        except Exception as e:  # out of credit / CLI failure: fall through to the next backend
-            dead.add(backend)
+        except Exception as e:  # out of credit / quota / CLI failure: fall through to the next rung
+            dead.add(dk)
+            quota_hit |= bool(re.search(r"paused by the quota guard|go allowance", str(e)))
             err = f"{backend} error: {e}"
             continue
         if code:
@@ -606,7 +668,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
         else:
             open(tmp, "w").write(code)
             ok, err = gate(ea, tmp, db)
-        if ok and backend == "deepseek" and review_over is not None and review_over >= 0 \
+        if ok and backend in ("deepseek", "go") and review_over is not None and review_over >= 0 \
                 and db.F[ea]["size"] > review_over:
             issues, u = review(ea, packet, code)
             if u:
@@ -621,7 +683,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
                         example=example, reviews=reviews, evidence=n_ev)
         msgs += [{"role": "assistant", "content": text},
                  {"role": "user", "content": f"The gate rejected the file:\n{err}\nFix it and answer again in the same format."}]
-    if "codex" in dead and CODEX_PAUSED.is_set():  # not a real failure: retry in a later run
+    if quota_hit:  # not a real failure: a rung was out of quota — retry in a later run
         return dict(ea=ea, ok=False, deferred=True, attempts=len(usage_all), err=err[:500], usage=usage_all,
                     reviews=reviews)
     qdir = os.path.join(out_dir, "queue") if out_dir else os.path.join(ROOT, "queue")
@@ -906,10 +968,12 @@ def run_config(args, lanes=False):
     """The cost/speed settings of this run, for the monitor."""
     return dict(transport=os.environ.get("CSF_CODEX_TRANSPORT", "direct"), effort=CODEX_EFFORT["high"],
                 retry_effort=CODEX_EFFORT["max"], class_view=os.environ.get("CSF_CLASS_VIEW", "compact"),
-                batch_fns=args.batch_fns, batch_bytes=getattr(args, "batch_bytes", 0),
-                batch_max=getattr(args, "batch_max", 300), tiny=args.tiny,
-                deep_clones=lanes, review_over=args.review_over, codex_cap=getattr(args, "codex_cap", None),
-                backend=getattr(args, "backend", "lanes"), wave=getattr(args, "module", None))
+                batch_fns=getattr(args, "batch_fns", 1), batch_bytes=getattr(args, "batch_bytes", 0),
+                batch_max=getattr(args, "batch_max", 300), tiny=getattr(args, "tiny", None),
+                review_over=args.review_over, codex_cap=getattr(args, "codex_cap", None),
+                backend=getattr(args, "backend", "lanes"), wave=getattr(args, "module", None),
+                **(dict(tiers={t: dict(ladder=getattr(args, f"{t.lower()}_ladder"), jobs=getattr(args, f"{t.lower()}_jobs"))
+                               for t in "SML"}, s_max=args.s_max, m_max=args.m_max) if lanes else {}))
 
 
 def pack(db, eas, fns, budget=0, max_size=300):
@@ -1027,10 +1091,25 @@ def commit(good, title):
     print("committed", flush=True)
 
 
+TIERS = ("S", "M", "L")
+
+
+def ladder_spec(spec):
+    """"go:claude-haiku-5-5@low:2,codex:gpt-6.1-sol:1" -> [("go", "claude-haiku-5-5@low", 2), ("codex", ...)]."""
+    out = []
+    for part in spec.split(","):
+        backend, model, n = part.strip().split(":")
+        out.append((backend, model, int(n)))
+    return out
+
+
 def lanes(args):
-    """Continuous grunting in two lanes: DeepSeek (tiny functions, and clone siblings that have an example; Codex as
-    fallback) and Codex (the rest). Every --batch gate passes: build + in-mission smoke + commit. Stops on a smoke
-    failure (files left uncommitted for bisecting) or after --total functions."""
+    """Continuous grunting in one lane. Each function's size picks its tier and the tier its ladder of models (tried
+    in order, the conversation with the gate errors carried over): S = under --s-max bytes, or a clone sibling with a
+    done example up to --m-max; M = up to --m-max; L = the rest. Each tier has its own in-flight cap, so slow L calls
+    never hold up the S stream. Quota: Codex pauses at --codex-cap of its 5h window (L gets no new work, S/M lose their
+    Codex rung); a Go model stops at 95 % of any allowance window (its rung is skipped). A function whose only
+    remaining rungs were out of quota is deferred, not escalated. Every --batch gate passes: build + smoke + commit."""
     if args.module and not args.no_captain:
         captain_prep(args.module)
     db = DB()
@@ -1038,27 +1117,32 @@ def lanes(args):
     if args.smoke_menu:
         global SMOKE_SHORT
         SMOKE_SHORT = (40, SMOKE_STARTS[1])  # the tour opens ~25 menus at 1.5 s each
-    key = load_key()
+    key = None
     esc = [("claude", args.claude_model, 2)] if args.escalate_claude else []
-    codex = [("codex", args.codex_model, 2)]
-    pools = {"flash": cf.ThreadPoolExecutor(args.flash_jobs), "deep": cf.ThreadPoolExecutor(args.deep_jobs)}
-    caps = {"flash": args.flash_jobs * 2, "deep": args.deep_jobs * 2}
+    ladders = {"S": ladder_spec(args.s_ladder) + esc, "M": ladder_spec(args.m_ladder) + esc,
+               "L": ladder_spec(args.l_ladder) + esc}
+    if any(b == "deepseek" for lad in ladders.values() for b, _, _ in lad):
+        key = load_key()
+    caps = {"S": args.s_jobs, "M": args.m_jobs, "L": args.l_jobs}
+    pool = cf.ThreadPoolExecutor(sum(caps.values()))
     inflight, good, submitted, total_ok, total_esc, total_def = {}, [], 0, 0, 0, 0
     stopping, quota_t = False, 0
     if os.path.exists(STOP):
         os.remove(STOP)
-    live(mode="lanes", phase="grunting", config=run_config(args, lanes=True), counts=dict(total=args.total, batch=args.batch, ok=0, esc=0, pending=0,
-                                                      submitted=0, committed=0))
+    live(mode="lanes", phase="grunting", config=run_config(args, lanes=True),
+         counts=dict(total=args.total, batch=args.batch, ok=0, esc=0, pending=0, submitted=0, committed=0))
 
-    def lane_of(ea, ex):
+    def tier_of(ea, ex):
         size = db.F[ea]["size"]
-        if size < args.tiny or (ex is not None and size <= 400):
-            return "flash", [("deepseek", args.model, 2)] + codex + esc
-        return "deep", codex + esc
+        if size < args.s_max or (ex is not None and size <= args.m_max):
+            return "S"
+        return "M" if size <= args.m_max else "L"
+
+    def codex_only(t):
+        return all(b == "codex" for b, _, _ in ladders[t])
 
     def quota():
-        """Pause/resume Codex on the 5h window (checked every 2 min). While paused the deep lane gets no new work and
-        the flash lane runs without Codex fallback/review."""
+        """Pause/resume Codex on the 5h window (checked every 2 min)."""
         nonlocal quota_t
         if args.codex_cap <= 0 or time.time() - quota_t < 120:
             return
@@ -1069,11 +1153,11 @@ def lanes(args):
             return  # endpoint down: keep the current state
         if pct >= args.codex_cap and not CODEX_PAUSED.is_set():
             CODEX_PAUSED.set()
-            print(f"Codex 5h window at {pct:.0f}% (cap {args.codex_cap}): deep lane paused, resets in {reset // 60} min",
+            print(f"Codex 5h window at {pct:.0f}% (cap {args.codex_cap}): Codex paused, resets in {reset // 60} min",
                   flush=True)
         elif pct < args.codex_cap and CODEX_PAUSED.is_set():
             CODEX_PAUSED.clear()
-            print(f"Codex 5h window at {pct:.0f}%: deep lane resumed", flush=True)
+            print(f"Codex 5h window at {pct:.0f}%: Codex resumed", flush=True)
         live(codex_paused=CODEX_PAUSED.is_set(), codex_5h=pct)
 
     def refill():
@@ -1085,50 +1169,25 @@ def lanes(args):
         if stopping:
             return
         quota()
-        busy = {ea for eas, _ in inflight.values() for ea in eas}
-        cnt = collections.Counter(l for _, l in inflight.values())
-        if CODEX_PAUSED.is_set():
-            cnt["deep"] = caps["deep"]
-        if submitted >= args.total or all(cnt[l] >= caps[l] for l in caps):
+        busy = {ea for ea, _ in inflight.values()}
+        cnt = collections.Counter(t for _, t in inflight.values())
+        for t in TIERS:  # a tier that can only use Codex waits while Codex is paused
+            if CODEX_PAUSED.is_set() and codex_only(t):
+                cnt[t] = caps[t]
+        if submitted >= args.total or all(cnt[t] >= caps[t] for t in TIERS):
             return
-        groups = collections.defaultdict(list)  # module -> small deep-lane functions waiting to fill a Codex batch
-
-        def submit_batch(g):
-            nonlocal submitted
-            if len(g) == 1:
-                fut = pools["deep"].submit(work, g[0], db, key, codex + esc, None, None, args.review_over,
-                                           ev_budget(args, db, g[0]))
-            else:
-                fut = pools["deep"].submit(work_batch, sorted(g), db, key, args.codex_model, None, args.review_over,
-                                           {e: ev_budget(args, db, e) for e in g})
-            inflight[fut] = (tuple(g), "deep")
-            cnt["deep"] += 1
-            submitted += len(g)
-
-        # wide window: the leaf-first head is almost all tiny (flash lane); the deep lane needs larger candidates
+        # wide window: the leaf-first head is almost all small (S); M and L need larger candidates
         for ea, ex in select(db, 4000, args.max_size, args.min_size, exclude=busy, modules=wave):
-            if submitted >= args.total:
+            if submitted >= args.total or all(cnt[t] >= caps[t] for t in TIERS):
                 break
-            lane, ladder = lane_of(ea, ex)
-            if cnt[lane] >= caps[lane]:
+            t = tier_of(ea, ex)
+            if cnt[t] >= caps[t]:
                 continue
-            if lane == "deep" and args.batch_fns > 1 and db.F[ea]["size"] <= args.batch_max:
-                gk = db.class_of(ea) or db.rows[ea]["module"]  # same class first: shared fields/role, same names
-                g = groups[gk]
-                g.append(ea)
-                nb = sum(db.F[e]["size"] for e in g)
-                if len(g) >= args.batch_fns or (args.batch_bytes and nb >= args.batch_bytes):
-                    submit_batch(g)
-                    groups[gk] = []
-                continue
-            fut = pools[lane].submit(work, ea, db, key, ladder, None, ex, args.review_over, ev_budget(args, db, ea))
-            inflight[fut] = ((ea,), lane)
-            cnt[lane] += 1
+            fut = pool.submit(work, ea, db, key, ladders[t], None, ex, args.review_over, ev_budget(args, db, ea))
+            inflight[fut] = (ea, t)
+            cnt[t] += 1
             submitted += 1
-        for g in groups.values():  # partial batches (the window ran out)
-            if g and cnt["deep"] < caps["deep"]:
-                submit_batch(g)
-        live(counts=dict(submitted=submitted))
+        live(counts=dict(submitted=submitted), inflight_tiers=dict(cnt))
 
     def flush():
         nonlocal good, total_ok, total_esc
@@ -1175,11 +1234,11 @@ def lanes(args):
         good = []
         return True
 
-    def handle(r, lane):
+    def handle(r, tier):
         nonlocal total_ok, total_esc, total_def
         ea = r["ea"]
         with open(LOG, "a") as f:
-            f.write(json.dumps(dict(r, ts=time.time(), lane=lane)) + "\n")
+            f.write(json.dumps(dict(r, ts=time.time(), tier=tier, size=db.F[ea]["size"])) + "\n")
         if r["ok"]:
             db.rows[ea]["status"] = "done"  # in memory: siblings may now use it as their example
             good.append(r)
@@ -1190,32 +1249,30 @@ def lanes(args):
         else:
             total_esc += 1
         live(counts=dict(ok=total_ok, esc=total_esc, deferred=total_def, pending=len(good)))
-        print(f"  [{lane}] {ea:08x} {'OK ' if r['ok'] else 'DEF' if r.get('deferred') else 'ESC'} "
+        print(f"  [{tier}] {ea:08x} {'OK ' if r['ok'] else 'DEF' if r.get('deferred') else 'ESC'} "
+              f"{(r.get('by') or '').split(':')[-1] + ' ' if r['ok'] else ''}"
               f"{r.get('meta', {}).get('name', '') if r['ok'] else r.get('err', '')[:90]}"
-              f"{'  (example %08x)' % r['example'] if r.get('example') else ''}"
-              f"{'  [batch %d]' % r['batch'] if r.get('batch') else ''}", flush=True)
+              f"{'  (example %08x)' % r['example'] if r.get('example') else ''}", flush=True)
 
     refill()
     while inflight:
         done, _ = cf.wait(list(inflight), timeout=60, return_when=cf.FIRST_COMPLETED)
         for fu in done:
-            eas, lane = inflight.pop(fu)
+            ea, tier = inflight.pop(fu)
             try:
-                rs = fu.result()
+                r = fu.result()
             except Exception as e:
-                rs = [dict(ea=ea, ok=False, err=f"exception: {e}", usage=[]) for ea in eas]
-            for r in (rs if isinstance(rs, list) else [rs]):
-                handle(r, lane)
+                r = dict(ea=ea, ok=False, err=f"exception: {e}", usage=[])
+            handle(r, tier)
         if len(good) >= args.batch and not flush():
-            for p in pools.values():
-                p.shutdown(wait=True, cancel_futures=True)
+            pool.shutdown(wait=True, cancel_futures=True)
             return
         refill()
     if flush():
         live(phase="stopped" if stopping else "finished")
         if wave and not args.no_captain and total_ok:
             captain_after(wave)
-    print(f"lanes done: {total_ok} ok, {total_esc} escalated", flush=True)
+    print(f"lanes done: {total_ok} ok, {total_esc} escalated, {total_def} deferred", flush=True)
 
 
 def captain(*argv):
@@ -1472,27 +1529,30 @@ if __name__ == "__main__":
     r.add_argument("--evidence", type=int, default=3, help="evidence requests per function (tools/evidence.py)")
     r.add_argument("--evidence-over", type=int, default=150, help="offer evidence requests above N bytes")
     r.add_argument("--review-over", type=int, default=100, help="Codex-review DeepSeek outputs above N bytes (-1: off)")
-    l = sub.add_parser("lanes")
+    l = sub.add_parser("lanes", help="continuous grunting: one lane, size tiers S/M/L each with its own model ladder")
     l.add_argument("--total", type=int, default=200)
     l.add_argument("--module", help="module wave: comma list of module ids/names (tools/modules.py list)")
     l.add_argument("--batch", type=int, default=60, help="smoke + commit every N gate passes")
-    l.add_argument("--flash-jobs", "--tiny-jobs", type=int, default=8, help="flash lane workers (small/clone functions)")
-    l.add_argument("--deep-jobs", "--main-jobs", type=int, default=6, help="deep lane workers (the rest)")
+    l.add_argument("--s-max", type=int, default=150, help="S tier: functions under N bytes (and clone siblings with "
+                   "a done example up to --m-max)")
+    l.add_argument("--m-max", type=int, default=400, help="M tier: functions up to N bytes; L: the rest")
+    l.add_argument("--s-ladder", default="go:claude-haiku-5-5@low:2,go:claude-haiku-5-5@high:1,go:mimo-v2.6-pro:1,"
+                   "codex:gpt-6.1-sol:1", help="backend:model[@effort]:attempts,...")
+    l.add_argument("--m-ladder", default="go:claude-haiku-5-5@high:2,go:mimo-v2.6-pro:1,codex:gpt-6.1-sol:2")
+    l.add_argument("--l-ladder", default="codex:gpt-6.1-sol@xhigh:2")
+    l.add_argument("--s-jobs", type=int, default=12, help="S tier: functions in flight")
+    l.add_argument("--m-jobs", type=int, default=6)
+    l.add_argument("--l-jobs", type=int, default=3)
     l.add_argument("--max-size", type=int, default=600)
     l.add_argument("--min-size", type=int, default=6)
-    l.add_argument("--tiny", type=int, default=48)
-    l.add_argument("--model", default="deepseek-flash")
-    l.add_argument("--codex-model", default="gpt-6.1-sol")
     l.add_argument("--claude-model", default="sonnet")
-    l.add_argument("--escalate-claude", action="store_true")
+    l.add_argument("--escalate-claude", action="store_true", help="append Claude x2 to every ladder")
     l.add_argument("--evidence", type=int, default=3, help="evidence requests per function (tools/evidence.py)")
     l.add_argument("--evidence-over", type=int, default=150, help="offer evidence requests above N bytes")
-    l.add_argument("--review-over", type=int, default=100)
+    l.add_argument("--review-over", type=int, default=150, help="Codex reviews non-Codex answers above N bytes "
+                   "(-1: off)")
     l.add_argument("--no-smoke", action="store_true")
     l.add_argument("--no-bisect", action="store_true", help="stop on a smoke failure instead of bisecting it")
-    l.add_argument("--batch-fns", type=int, default=4, help="deep lane: functions per call (1: off)")
-    l.add_argument("--batch-max", type=int, default=300, help="only functions up to N bytes are batched")
-    l.add_argument("--batch-bytes", type=int, default=0, help="deep lane: close a batch at N bytes of original code (0: off)")
     l.add_argument("--smoke-menu", action="store_true", help="short smokes run the menu tour (GUI module waves)")
     l.add_argument("--no-captain", action="store_true", help="module waves: skip the captain steps (class naming "
                    "before, placeholder function names after)")

@@ -19,6 +19,7 @@ from datetime import datetime, timezone
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from limits import codex_usage, deepseek_balance  # noqa: E402
+from grunt import GO_LIMIT, GO_SPEND, GO_WINDOWS  # noqa: E402
 
 from rich.console import Group
 from rich.panel import Panel
@@ -31,7 +32,22 @@ JOBS = os.path.expanduser("~/.claude/jobs")
 LIVE = os.path.join(ROOT, "work", "grunt_state.json")
 LOG = os.path.join(ROOT, "work", "grunt_log.jsonl")
 CAPTAIN = os.path.join(ROOT, "work", "captain_state.json")
-BACKEND_STYLE = {"codex": "magenta", "deepseek": "cyan", "claude": "yellow"}
+BACKEND_STYLE = {"codex": "magenta", "deepseek": "cyan", "claude": "yellow", "go": "bright_cyan"}
+MODEL_STYLE = {"haiku": "yellow", "mimo": "bright_cyan", "sol": "magenta", "ds": "cyan", "sonnet": "green"}
+
+
+def who(backend, model=""):
+    """Short model label: go:claude-haiku-5-5@low -> haiku·lo, codex:gpt-6.1-sol@xhigh -> sol·xh, mimo-v2.6-pro -> mimo."""
+    base, _, eff = (model or "").partition("@")
+    name = ("haiku" if "haiku" in base else "mimo" + ("-fl" if "flash" in base else "") if "mimo" in base else
+            "sol" if "sol" in base else "ds" + ("-pro" if "pro" in base else "")
+            if backend == "deepseek" or "deepseek" in base else base.split("-")[0] or backend)
+    return name + (f"·{eff[:2]}" if eff else "")
+
+
+def who_text(backend, model=""):
+    w = who(backend, model)
+    return Text(w, style=MODEL_STYLE.get(w.split("·")[0], BACKEND_STYLE.get(backend, "dim")))
 _cache = {}
 
 
@@ -587,15 +603,15 @@ def panel_costs(st=None, recent=()):
                          no_wrap=True, overflow="ellipsis"))
     body += [Text("Codex", style="bold magenta"), account_line("codex")]
     body += usage_rows(cached("codex_usage", 60, codex_usage))
-    body.append(Text("DeepSeek", style="bold cyan"))
-    db_ = cached("ds_balance", 120, deepseek_balance)
+    body.append(Text("OpenCode Go", style="bold bright_cyan"))
+    body.append(Text(" service account key · $10/mo · per-model allowances (5h 20% · week 50% · month)", style="dim",
+                     no_wrap=True, overflow="ellipsis"))
+    gw = cached("go_windows", 15, go_windows)
+    body += gw if isinstance(gw, list) else [Text(f" spend n/a: {str(gw)[:40]}", style="dim")]
+    db_ = cached("ds_balance", 300, deepseek_balance)
     if isinstance(db_, tuple):
         bal = "  ".join(f"{amt} {cur}" for cur, amt in db_[0]) or "?"
-        empty = all(float(a or 0) <= 0.5 for _, a in db_[0]) if db_[0] else True
-        body.append(Text(f" balance {bal}" + ("  — top up" if empty else ""),
-                         style="bold red" if empty or not db_[1] else "green"))
-    else:
-        body.append(Text(f" balance n/a: {str(db_)[:30]}", style="dim"))
+        body.append(Text(f"DeepSeek direct (grunt run only) balance {bal}", style="dim"))
     tot = (st or {}).get("tokens") or {}
     if tot:
         t = Text(" grunt run: ", style="dim")
@@ -605,6 +621,39 @@ def panel_costs(st=None, recent=()):
         body.append(t)
     body += efficiency(list(recent))
     return Panel(Group(*body), title="Costs · usage · logins", border_style="cyan")
+
+
+def go_windows():
+    """One row per Go model used in the last 30 days: $ spent / allowance per window (from work/go_spend.jsonl)."""
+    now, sp = time.time(), collections.defaultdict(list)
+    if os.path.exists(GO_SPEND):
+        for line in open(GO_SPEND):
+            try:
+                d = json.loads(line)
+            except ValueError:
+                continue
+            if d.get("ts", 0) >= now - 30 * 86400:
+                sp[d["model"]].append((d["ts"], d.get("cost") or 0))
+    rows = []
+    week = [m for m in sp if any(ts >= now - 7 * 86400 for ts, _ in sp[m])]  # models in use lately
+    for m in sorted(week, key=lambda m: -sum(c for _, c in sp[m])):
+        lim = GO_LIMIT.get(m)
+        w = who("go", m)
+        t = Text(f" {w:<7}", style=MODEL_STYLE.get(w.split("-")[0], "bright_cyan"))
+        for name, secs, frac in GO_WINDOWS:
+            spent = sum(c for ts, c in sp[m] if ts >= now - secs)
+            pct = spent / (lim * frac) * 100 if lim else None
+            if name == "5h":
+                t.append_text(bar(pct or 0, 6))
+            if name == "month":
+                t.append(f" mo ${spent:.2f}" + (f"/{lim}" if lim else ""), style="dim")
+            elif pct is not None:
+                t.append(f" {name} {pct:.0f}%", style="bold red" if pct >= 90 else "yellow" if pct >= 60 else "dim")
+            else:
+                t.append(f" {name} ${spent:.2f}", style="dim")
+        t.no_wrap, t.overflow = True, "ellipsis"
+        rows.append(t)
+    return rows or [Text(" no Go calls in 30 days", style="dim")]
 
 
 def captain_lines():
@@ -663,10 +712,30 @@ def tool_line():
 
 
 def efficiency(recent):
-    """Quality/cost levers of this run in two short lines."""
+    """Quality/cost levers of this run: per tier (one-lane runs) pass rate, first-try rate, $ per function and which
+    model solved them; older runs: one line."""
     fns = [r for r in recent if not r.get("deferred")]
     if not fns:
         return []
+    if any(r.get("tier") for r in fns):
+        out = []
+        for tier in ("S", "M", "L"):
+            ts = [r for r in fns if r.get("tier") == tier]
+            if not ts:
+                continue
+            ok = [r for r in ts if r.get("ok")]
+            first = sum(r.get("attempts", 1) == 1 for r in ok)
+            go = sum(u.get("cost") or 0 for r in ts for u in r.get("usage", []) if u.get("backend") == "go")
+            cx = sum(u.get("completion_tokens") or 0 for r in ts for u in r.get("usage", []) if u.get("backend") == "codex")
+            wins = collections.Counter(who(*(r.get("by") or ":").split(":", 1)) for r in ok)
+            t = Text(f" {tier} {len(ok)}/{len(ts)} ", style="bold")
+            t.append(f"1st {first / max(1, len(ok)):.0%}", style="green" if first >= 0.75 * len(ok) else "yellow")
+            t.append(f"  go ${go / max(1, len(ok)):.4f}/fn  codex out {kfmt(cx // max(1, len(ts)))}/fn  ", style="dim")
+            for w, n in wins.most_common(4):
+                t.append(f"{w} {n} ", style=MODEL_STYLE.get(w.split("·")[0], "dim"))
+            t.no_wrap, t.overflow = True, "ellipsis"
+            out.append(t)
+        return out
     cx = [u for r in fns for u in r.get("usage", []) if u.get("backend") == "codex"]
     cout = sum(u.get("completion_tokens") or 0 for u in cx)
     ok = [r for r in fns if r.get("ok")]
@@ -717,13 +786,18 @@ def grunt_header(g):
     if g["calls"]:
         per = collections.Counter()
         for x in g["calls"]:
-            per[x["backend"]] += x.get("n", 1) if x["kind"] != "review" else 0
+            per[who(x["backend"], f"{x.get('model', '')}@{x.get('effort', '')}" if x.get("effort") else
+                    x.get("model", ""))] += x.get("n", 1)
         f = Text("        in flight ", style="bold")
-        f.append("  ".join(f"{b} {n}" for b, n in per.items()), style="dim")
+        tiers = st.get("inflight_tiers") or {}
+        if tiers:
+            f.append("  ".join(f"{t} {tiers.get(t, 0)}" for t in ("S", "M", "L")) + "  │  ", style="dim")
+        for w, n in per.most_common():
+            f.append(f"{w} {n}  ", style=MODEL_STYLE.get(w.split("·")[0], "dim"))
         out.append(f)
     if st.get("codex_paused") and alive:
         out.append(Text(f"        Codex paused by the quota guard (5h {st.get('codex_5h', 0):.0f}%): "
-                        "flash lane only", style="bold red"))
+                        "L tier waits, S/M without the Codex rung", style="bold red"))
     return out
 
 
@@ -733,7 +807,8 @@ def call_rows(g):
     for x in g["calls"]:
         n = x.get("n", 1)
         rows.append((f"{x['ea']:08x}" + (f"+{n - 1}" if n > 1 else ""),
-                     Text(x["backend"], style=BACKEND_STYLE.get(x["backend"], "")),
+                     who_text(x["backend"], f"{x.get('model', '')}@{x['effort']}" if x.get("effort") else
+                              x.get("model", "")),
                      Text(ago(x["since"]), style="red" if time.time() - x["since"] > 600 else "dim"),
                      Text(f"batch×{n}" if x["kind"] == "batch" else x["kind"], style="dim"),
                      g["names"].get(x["ea"], "") or ""))
@@ -746,13 +821,14 @@ def result_rows(g, n=None):
     for r in g["recent"][::-1][:n]:
         ok = r.get("ok")
         what = r.get("meta", {}).get("name", "") if ok else (r.get("err", "").splitlines() or [""])[0]
-        by = (r.get("by") or "").split(":")[0] or {"flash": "deepseek", "deep": "codex"}.get(r.get("lane"), "")
-        tags = ([f"b{r['batch']}"] if r.get("batch") else []) + \
+        backend, _, model = (r.get("by") or "").partition(":")
+        backend = backend or {"flash": "deepseek", "deep": "codex"}.get(r.get("lane"), "")
+        tags = ([r["tier"]] if r.get("tier") else []) + ([f"b{r['batch']}"] if r.get("batch") else []) + \
                ([f"try{r['attempts']}"] if ok and r.get("attempts", 1) > 1 else [])
         rows.append((Text(ago(r.get("ts", 0)), style="dim"),
                      Text("OK" if ok else "DEF" if r.get("deferred") else "ESC",
                           style="green" if ok else "yellow" if r.get("deferred") else "red"),
-                     Text({"deepseek": "ds"}.get(by, by)[:5], style=BACKEND_STYLE.get(by, "dim")),
+                     who_text(backend, model) if backend else Text(""),
                      Text(" ".join(tags), style="dim"), f"{r['ea']:08x}",
                      Text(what, style="" if ok else "grey62")))
     return rows

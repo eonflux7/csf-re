@@ -68,7 +68,9 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
    `tools/ida/sync.py`. Fields: `fields:` takes a plain name or "type name[N]" (legacy::string/wstring, arrays).
    Next: field names of the menu/AI bases (CMenuScreen, TCharTask, TAiState), the engine family 0x860178, the
    0x82E598 task subfamily.
-2. Phase 4 lanes runs between Codex windows (auto-bisect, stop file and quota guard make them unattended).
+2. Phase 4 lanes runs (one lane, S/M/L tiers; mostly OpenCode Go now, so Codex windows matter only for L).
+   First tier run: the menu wave (25 menu_* modules, ~500 eligible). Then tune --s-max/--m-max and the ladders on
+   its per-tier stats (monitor Costs pane, `grunt.py cost`).
 3. Opus review sampling and diff tier 2 (catch bug classes before they crash in-game).
 4. Executed coverage: two thirds of the done functions have only passed static checks (`verify.py report`).
 
@@ -137,6 +139,10 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [x] Clone-cluster expansion: after one member passes, derive siblings (same shape, different callees/consts)
       (select() is clone-aware: siblings get the done member as an example and go to the DeepSeek lane)
 - [x] Lanes mode (DeepSeek tiny/clone lane + Codex main lane, continuous smoke+commit) — trial: 45 functions
+- [x] One dynamic lane (2026-10-08, replaces the two lanes): size tiers S < 150 B (+ clone siblings) / M <= 400 B /
+      L, each with a model ladder over OpenCode Go + Codex (S: Haiku 5.5 low -> high -> MiMo 2.6 Pro -> Codex;
+      M: Haiku 5.5 high -> MiMo -> Codex; L: Codex sol xhigh), per-tier in-flight caps, Go allowance guard
+      (work/go_spend.jsonl), quota-blocked rungs defer instead of escalating. Chosen by `grunt.py ab` (work/ab/).
 - [x] Collect CSF_GLOBAL names from src/auto into db/globals.yaml (`tools/globals.py`, run after each batch;
       names substituted into packet pseudocode; pin with src: opus)
 - [x] Lanes: auto-bisect on smoke failure (ini toggles, no rebuild), `work/grunt_stop`, Codex 5h quota guard
