@@ -34,7 +34,7 @@
 - {addr: 0x0082E958, name: g_TParadoString, type: char, uses: 1, src: auto}
 - {addr: 0x0082F318, name: g_TEndString, type: const char, uses: 1, src: auto}
 - {addr: 0x0082FAD0, name: g_TransitionHalfPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 2, src: auto}
+- {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 5, src: auto}
 - {addr: 0x00830A00, name: g_fInv255, type: float, uses: 2, src: opus}
 - {addr: 0x00831090, name: g_FloatMax, type: float, uses: 1, src: auto}
 - {addr: 0x00831304, name: g_C_00831304_Vtable, type: void*, uses: 1, src: auto}
@@ -42,8 +42,9 @@
 - {addr: 0x00834A40, name: g_szIrAPuesto, type: char, uses: 1, src: auto}
 - {addr: 0x0083688C, name: g_szLanzarGranadaName, type: char, uses: 1, src: auto}
 - {addr: 0x00836D7C, name: g_TRodearString, type: char, uses: 1, src: auto}
-- {addr: 0x00843C14, name: g_RasterByteScale, type: float, uses: 2, src: auto}
+- {addr: 0x00843C14, name: g_RasterByteScale, type: float, uses: 3, src: auto}
 - {addr: 0x00846178, name: g_UnitFactorUpperBound, type: float, uses: 1, src: auto}
+- {addr: 0x0085E684, name: g_NumberFormattingMode, type: int, uses: 1, src: auto}
 - {addr: 0x0085FF6C, name: g_Commandos3DGameGatheringVtable, type: void*, uses: 1, src: auto}
 - {addr: 0x0085FF90, name: g_ResourceDescriptorVtable, type: 'std::uint32_t', uses: 1, src: auto}
 - {addr: 0x00860178, name: g_C_00860178_vtable, type: void*, uses: 1, src: auto}
@@ -51,17 +52,20 @@
 - {addr: 0x008634C0, name: g_vtbl_C_008634c0, type: void*, uses: 1, src: auto}
 - {addr: 0x008634C8, name: g_vtbl_C_008634c8, type: void*, uses: 1, src: auto}
 - {addr: 0x00863FF4, name: g_RowTextModeMask, type: uint32_t, uses: 1, src: auto}
-- {addr: 0x00863FF8, name: g_GuiListBoxBaseVtable, type: 'std::uint32_t', uses: 1, src: auto}
+- {addr: 0x00863FF8, name: g_GuiListBoxBaseVtable, type: 'std::uint32_t', uses: 2, src: auto}
 - {addr: 0x00864288, name: g_GuiControlVtable, type: uint32_t, uses: 2, src: auto}
 - {addr: 0x00864A58, name: g_vtbl_C_00864a58, type: void*, uses: 1, src: auto}
 - {addr: 0x00864B30, name: g_GuiBuilderVtable, type: 'std::uint32_t', uses: 1, src: auto}
 - {addr: 0x00864BBC, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x00864BC0, name: g_GuiStaticVtable, type: void*, uses: 1, src: auto}
+- {addr: 0x00864BC0, name: g_GuiStaticVtable, type: void*, uses: 2, src: auto}
 - {addr: 0x00864E18, name: g_GuiEditVtable, type: 'std::uint32_t', uses: 2, src: auto}
 - {addr: 0x00865070, name: g_GuiListBoxVtable, type: void*, uses: 2, src: auto}
+- {addr: 0x00865324, name: g_TextEffectEpsilon, type: float, uses: 1, src: auto}
+- {addr: 0x00865328, name: g_ButtonVtable, type: 'std::uint32_t', uses: 1, src: auto}
 - {addr: 0x008655C0, name: g_vtbl_C_008655c0, type: void*, uses: 1, src: auto}
+- {addr: 0x008655E8, name: g_CameraResourcesVtable, type: void*, uses: 1, src: auto}
 - {addr: 0x008656AC, name: g_fOscillationPi, type: float, uses: 2, src: auto}
-- {addr: 0x008656D0, name: g_vtbl_C_008656d0, type: void*, uses: 1, src: auto}
+- {addr: 0x008656D0, name: g_vtbl_C_008656d0, type: void*, uses: 2, src: auto}
 - {addr: 0x00865758, name: g_vtbl_C_00865758, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008657E0, name: g_C_008657e0Vtable, type: void*, uses: 1, src: auto}
 - {addr: 0x00865870, name: g_C_00865870_VtableFirstSlot, type: void*, uses: 1, src: auto}
@@ -70,10 +74,10 @@
 - {addr: 0x00865AA8, name: g_C_00865aa8_Vtable, type: void*, uses: 1, src: auto}
 - {addr: 0x00865B40, name: g_PanelVtable, type: 'std::uint32_t', uses: 2, src: auto}
 - {addr: 0x00865E04, name: g_vtbl_C_00865e04, type: void*, uses: 1, src: auto}
-- {addr: 0x00865E38, name: g_CGuiSliderVtable, type: void*, uses: 1, src: auto}
+- {addr: 0x00865E38, name: g_CGuiSliderVtable, type: void*, uses: 2, src: auto}
 - {addr: 0x00866340, name: g_ChoiceButtonVtable, type: 'std::uint32_t', uses: 1, src: auto}
 - {addr: 0x00866600, name: g_ChoiceNumButtonVtable, type: 'std::uint32_t', uses: 1, src: auto}
-- {addr: 0x00866B58, name: g_SwitchVtable, type: 'std::uint32_t', uses: 1, src: auto}
+- {addr: 0x00866B58, name: g_SwitchVtable, type: 'std::uint32_t', uses: 2, src: auto}
 - {addr: 0x00866DB8, name: g_CGuiTextureListBoxVtable, type: void*, uses: 2, src: auto}
 - {addr: 0x00867434, name: g_UnitFactorLowerBound, type: float, uses: 1, src: auto}
 - {addr: 0x00872CA4, name: g_vtbl_872CA4, type: void*, uses: 2, src: auto}
@@ -116,28 +120,50 @@
 - {addr: 0x008A7DA4, name: g_CellTextColorSentinelGreen, type: 'volatile std::uint32_t', uses: 2, src: auto}
 - {addr: 0x008A7DA8, name: g_CellTextColorSentinelBlue, type: 'volatile std::uint32_t', uses: 2, src: auto}
 - {addr: 0x008A7DAC, name: g_CellTextColorSentinelAlpha, type: 'volatile std::uint32_t', uses: 2, src: auto}
-- {addr: 0x008A7DB0, name: g_DefaultColorRed, type: float, uses: 1, src: auto}
-- {addr: 0x008A7DB4, name: g_DefaultColorGreen, type: float, uses: 1, src: auto}
-- {addr: 0x008A7DB8, name: g_DefaultColorBlue, type: float, uses: 1, src: auto}
-- {addr: 0x008A7DBC, name: g_DefaultColorAlpha, type: float, uses: 1, src: auto}
+- {addr: 0x008A7DB0, name: g_DefaultColorRed, type: float, uses: 2, src: auto}
+- {addr: 0x008A7DB4, name: g_DefaultColorGreen, type: float, uses: 2, src: auto}
+- {addr: 0x008A7DB8, name: g_DefaultColorBlue, type: float, uses: 2, src: auto}
+- {addr: 0x008A7DBC, name: g_DefaultColorAlpha, type: float, uses: 2, src: auto}
 - {addr: 0x008A7E40, name: g_Float_8A7E40, type: float, uses: 1, src: auto}
 - {addr: 0x008A85E4, name: g_NamedEntryName, type: char*, uses: 2, src: auto}
-- {addr: 0x008A85EC, name: g_PositionKeyword, type: char*, uses: 1, src: auto}
-- {addr: 0x008A85F0, name: g_SizeKeyword, type: char*, uses: 1, src: auto}
+- {addr: 0x008A85E8, name: g_FontKeyword, type: char*, uses: 1, src: auto}
+- {addr: 0x008A85EC, name: g_PositionKey, type: char*, uses: 3, src: auto, alt: [g_PositionKeyword, g_PositionPropertyName]}
+- {addr: 0x008A85F0, name: g_SizeKey, type: char*, uses: 3, src: auto, alt: [g_SizeKeyword, g_SizePropertyName]}
 - {addr: 0x008A85F4, name: g_TwoComponentProperty, type: char*, uses: 1, src: auto}
 - {addr: 0x008A85F8, name: g_TwoComponentProperty2, type: char*, uses: 1, src: auto}
+- {addr: 0x008A8600, name: g_TextKey, type: char*, uses: 2, src: auto, alt: [g_TextPropertyName]}
 - {addr: 0x008A8604, name: g_LookupAttribute, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8628, name: g_ColorKeyword, type: char*, uses: 2, src: auto, alt: [g_InlineColorProperty]}
+- {addr: 0x008A8628, name: g_ColorKeyword, type: char*, uses: 3, src: auto, alt: [g_ColorPropertyName, g_InlineColorProperty]}
 - {addr: 0x008A8630, name: g_Component3Attribute, type: char*, uses: 2, src: auto}
 - {addr: 0x008A8634, name: g_Component0Attribute, type: char*, uses: 2, src: auto}
 - {addr: 0x008A8638, name: g_Component1Attribute, type: char*, uses: 2, src: auto}
 - {addr: 0x008A863C, name: g_Component2Attribute, type: char*, uses: 2, src: auto}
+- {addr: 0x008A8648, name: g_ListBoxTextureKeyword, type: char*, uses: 2, src: auto}
+- {addr: 0x008A8668, name: g_TextureQuadKeyword, type: char*, uses: 1, src: auto}
+- {addr: 0x008A866C, name: g_PrimaryComponentsKeyword, type: char*, uses: 1, src: auto}
+- {addr: 0x008A86A0, name: g_SliderOrientationKeyword, type: char*, uses: 1, src: auto}
+- {addr: 0x008A86A4, name: g_SliderFirstControlKeyword, type: char*, uses: 1, src: auto}
+- {addr: 0x008A86A8, name: g_SliderSecondControlKeyword, type: char*, uses: 1, src: auto}
+- {addr: 0x008A86AC, name: g_SliderThirdControlKeyword, type: char*, uses: 1, src: auto}
+- {addr: 0x008A86B0, name: g_ControlChildrenKeyword, type: char*, uses: 1, src: auto}
+- {addr: 0x008A86B8, name: g_EditNumericKeyword, type: char*, uses: 1, src: auto}
+- {addr: 0x008A86BC, name: g_TextKeyword, type: char*, uses: 4, src: auto, alt: [g_SwitchTextKeyword]}
+- {addr: 0x008A86CC, name: g_SwitchTextureKeyword1, type: char*, uses: 1, src: auto}
+- {addr: 0x008A86D0, name: g_SwitchTextureKeyword2, type: char*, uses: 1, src: auto}
+- {addr: 0x008A86D8, name: g_SwitchTextureKeyword3, type: char*, uses: 1, src: auto}
+- {addr: 0x008A86E0, name: g_SwitchTextureKeyword4, type: char*, uses: 1, src: auto}
+- {addr: 0x008A8700, name: g_SecondaryComponentsKeyword, type: char*, uses: 1, src: auto}
+- {addr: 0x008A8704, name: g_ColorQuadKeyword, type: char*, uses: 1, src: auto}
 - {addr: 0x008A8718, name: g_FloatAttribute, type: char*, uses: 1, src: auto}
 - {addr: 0x008A8720, name: g_EnableFlagProperty, type: char*, uses: 1, src: auto}
-- {addr: 0x008A872C, name: g_ColorModeProperty, type: char*, uses: 1, src: auto}
+- {addr: 0x008A872C, name: g_ColorModeProperty, type: char*, uses: 3, src: auto, alt: [g_ModeKey, g_TextModePropertyName]}
+- {addr: 0x008A8734, name: g_SwitchComponentsKeyword, type: char*, uses: 1, src: auto}
+- {addr: 0x008A873C, name: g_SliderConsoleKeyword, type: char*, uses: 1, src: auto}
+- {addr: 0x008A8744, name: g_StaticFlagKeyword, type: char*, uses: 1, src: auto}
+- {addr: 0x008A874C, name: g_EditIntegerKeyword, type: char*, uses: 1, src: auto}
 - {addr: 0x008A8774, name: g_FirstScalarProperty, type: char*, uses: 1, src: auto}
 - {addr: 0x008A8778, name: g_SecondScalarProperty, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8780, name: g_ColorPropertyAt60, type: char*, uses: 1, src: auto}
+- {addr: 0x008A8780, name: g_ColorPropertyAt60, type: char*, uses: 2, src: auto, alt: [g_InheritColorPropertyName]}
 - {addr: 0x008A8784, name: g_ColorPropertyAt40, type: char*, uses: 2, src: auto, alt: [g_InheritedColorKeyword]}
 - {addr: 0x008A8788, name: g_ColorPropertyAt50, type: char*, uses: 1, src: auto}
 - {addr: 0x008A878C, name: g_ColorPropertyAt70, type: char*, uses: 2, src: auto, alt: [g_StoredColorProperty]}
@@ -209,6 +235,7 @@
 - {addr: 0x008BB738, name: g_Value_8BB738, type: int, uses: 1, src: auto}
 - {addr: 0x008BBB28, name: g_Value8BBB28, type: int, uses: 1, src: auto}
 - {addr: 0x008BBF2C, name: g_Value_8bbf2c, type: int32_t, uses: 1, src: auto}
+- {addr: 0x008BBF34, name: g_ObjectValueTotal, type: 'std::uint32_t', uses: 1, src: auto}
 - {addr: 0x008BBF8C, name: g_Block8BBF8C, type: void*, uses: 2, src: auto, alt: [g_QuadVertexBuffer]}
 - {addr: 0x008BBF90, name: g_Block8BBF90, type: void*, uses: 2, src: auto, alt: [g_QuadIndexBuffer]}
 - {addr: 0x008BC098, name: g_dword_8BC098, type: uint32_t, uses: 1, src: auto}
