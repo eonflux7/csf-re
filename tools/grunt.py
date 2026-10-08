@@ -508,8 +508,10 @@ def _ask(backend, model, messages, key, effort="high"):
     cid = f"{threading.get_ident()}"
     with _live_lock:
         sysmsg = messages[0]["content"]
+        # write = first attempt; then work() says what the call is: retry (same rung, gate errors attached),
+        # escalate (first call of a later rung) or evidence (answering the model's own evidence requests)
         kind = ("review" if sysmsg is REVIEW_SYSTEM else "batch" if sysmsg is SYSTEM_BATCH
-                else "write" if len(messages) <= 2 else "retry" if effort == "max" else "evidence")
+                else "write" if len(messages) <= 2 else getattr(_tl, "step", "retry"))
         _live["calls"][cid] = dict(ea=getattr(_tl, "ea", 0), backend=backend, model=model,
                                    effort=CODEX_EFFORT.get(effort, effort) if backend == "codex" else effort,
                                    kind=kind, n=len(getattr(_tl, "batch", ())) if kind == "batch" else 1,
@@ -646,10 +648,12 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
         if dk in dead:
             continue
         try:
+            _tl.step = "escalate" if first and attempt else "retry"
             text, usage = ask(backend, model, msgs, key, "high" if first else "max")
             usage_all.append(usage)
             code, meta = parse(text)
             while not code and isinstance(meta.get("actions"), list) and meta["actions"] and ev_left > 0:
+                _tl.step = "evidence"
                 reply, used = evidence.answer(db, meta["actions"], ev_left)
                 ev_left, n_ev = ev_left - used, n_ev + used
                 msgs += [{"role": "assistant", "content": text}, {"role": "user", "content": reply}]

@@ -159,6 +159,15 @@ def gate(ea, path, db=None):
         if not found:
             return False, f"could not find compiled function `{fn}` in object file"
         sem = semcheck.check(ea, obj, db) + semcheck.byte_return_of_bool(ea, obj, fn, db)
+        if any(e.startswith(semcheck.VSLOT_ERR) for e in sem):
+            # the build is /Od /Ob0: a helper taking the slot as an argument hides the constant. Optimized, a correct
+            # helper folds back to [vtbl + N]; a wrong one (byte offset used as index) shows [vtbl + 4N] and fails
+            opt = os.path.join(td, "o2.obj")
+            flags = [a for a in compile_cmd() if a not in ("/Od", "/Ob0")] + ["/O2", "/Ob2"]
+            r2 = subprocess.run(flags + [f"/Fo{opt}", "-c", "--", path], capture_output=True, text=True,
+                                cwd=os.path.join(ROOT, "build"))
+            if r2.returncode == 0 and not semcheck.vslot_missing(ea, db, semcheck.our_refs(opt)[1]):
+                sem = [e for e in sem if not e.startswith(semcheck.VSLOT_ERR)]
         if rets and orig and set(rets) != set(orig):
             sem.append(f"calling convention mismatch: original pops {orig} bytes (ret N), yours pops {rets}. "
                        "Fix the calling convention / parameter list (__thiscall → __fastcall with dummy edx; "

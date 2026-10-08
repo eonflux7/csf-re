@@ -189,6 +189,16 @@ def dead_calls(ea, db):
     return dead - live
 
 
+VSLOT_ERR = "the original calls virtual slots"
+
+
+def vslot_missing(ea, db, disps):
+    """Vtable slots the original calls (`call dword ptr [reg + N]`) whose offset N never appears in `disps`."""
+    vslots = sorted({int(m.group(1), 0) for i in code_of(ea, db) if i.mnemonic == "call"
+                     for m in [re.match(r"dword ptr \[(?!esp|ebp)\w+ \+ (0x[0-9a-f]+|\d+)\]$", i.op_str)] if m})
+    return [n for n in vslots if n not in disps]
+
+
 def check(ea, obj, db):
     f = db.F[ea]
     ours, our_disps = our_refs(obj)
@@ -238,6 +248,15 @@ def check(ea, obj, db):
                         "registers untouched to a target whose signature is unknown; a call drops/shifts them. Write a "
                         "naked thunk: `static __declspec(naked) void F() { __asm { mov ecx, [ecx+4] ... jmp dword ptr "
                         "[eax+0x20] } }` (only mov/lea/add/sub, ending in the jmp)")
+    # virtual calls: every vtable slot the original calls (`call [reg + N]`) must be a constant displacement in ours.
+    # A generic helper taking the slot as a runtime argument hides it from every check here — three clones did that
+    # with byte offsets as indices (slot 0x30 -> 0xC0) and crashed the menu tour (2026-10-08, 0x52F950 & co).
+    miss = vslot_missing(ea, db, our_disps)
+    if miss:
+        errs.append(VSLOT_ERR + " " + ", ".join(f"[vtbl + 0x{n:X}]" for n in miss) + " but your "
+                    "code never uses that constant offset: call each one directly with its byte offset as a constant, "
+                    "e.g. `(*reinterpret_cast<R(__fastcall***)(void*, void*)>(obj))[0x30 / 4](obj, nullptr)` — no "
+                    "helper that takes the slot as a runtime argument")
     # pointer adjusted first (add r, K / lea r, [x + K]) then dereferenced at +d: the compiler may fold to [x + K + d]
     adds = {int(m.group(1), 0) for i in code_of(ea, db)
             for m in [re.match(r"(?:add (?!esp|ebp)\w+, |lea \w+, \[(?!esp|ebp)\w+ \+ )(0x[0-9a-f]+|\d+)\]?$",
