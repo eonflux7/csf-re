@@ -9,6 +9,7 @@ Per call site, from each caller's ctree (Hex-Rays counts what the caller actuall
 the callee never reads, which its own prototype drops):
   calls     {callee ea: [argument count at each call site]}
   cleanup   {callee ea: [stack bytes removed right after each call: add esp, N / pop ecx; 0 = none there]}
+  this_args {callee ea: [struct name the first argument points to, per call site]} (typed callers only)
 
 Usage: export_abi.py [--only ea,ea,...]     (default: every function in db/functions.csv; ~2 min)
 """
@@ -72,11 +73,16 @@ def cleanups(ea):
 class Calls(ida_hexrays.ctree_visitor_t):
     def __init__(self):
         super().__init__(ida_hexrays.CV_FAST)
-        self.out = {}
+        self.out, self.objs = {}, {}  # not self.this: SWIG keeps the C++ pointer there
 
     def visit_expr(self, e):
         if e.op == ida_hexrays.cot_call and e.x.op == ida_hexrays.cot_obj:
-            self.out.setdefault(f"{e.x.obj_ea:08x}", []).append(len(e.a))
+            k = f"{e.x.obj_ea:08x}"
+            self.out.setdefault(k, []).append(len(e.a))
+            if len(e.a):  # the first argument's type (thiscall: the object in ecx), for this_class.py
+                t = e.a[0].type
+                if t.is_ptr() and t.get_pointed_object().is_struct():
+                    self.objs.setdefault(k, []).append(t.get_pointed_object().get_type_name() or "")
         return 0
 
 
@@ -86,7 +92,9 @@ targets = ([int(x, 16) for x in args[args.index("--only") + 1].split(",")] if "-
            else [int(r["ea"], 16) for r in rows])
 open_db()
 assert ida_hexrays.init_hexrays_plugin()
-out, fails, t0 = {}, 0, time.time()
+OUT = os.path.join(ROOT, "export", "abi.json")
+out = json.load(open(OUT)) if "--only" in args and os.path.exists(OUT) else {}  # --only updates in place
+fails, t0 = 0, time.time()
 for i, ea in enumerate(targets):
     try:
         cf = ida_hexrays.decompile(ea, flags=ida_hexrays.DECOMP_NO_WAIT | ida_hexrays.DECOMP_NO_CACHE)
@@ -99,10 +107,12 @@ for i, ea in enumerate(targets):
     v = Calls()
     v.apply_to(cf.body, None)
     rec["calls"] = v.out
+    if v.objs:
+        rec["this_args"] = v.objs
     rec["cleanup"] = cleanups(ea)
     out[f"{ea:08x}"] = rec
     if i % 2000 == 0:
         print(f"{i}/{len(targets)} {time.time() - t0:.0f}s", flush=True)
-json.dump(out, open(os.path.join(ROOT, "export", "abi.json"), "w"), separators=(",", ":"))
+json.dump(out, open(OUT, "w"), separators=(",", ":"))
 print(f"done {len(out)} functions, {fails} failed, {time.time() - t0:.0f}s")
 close_db(save=False)

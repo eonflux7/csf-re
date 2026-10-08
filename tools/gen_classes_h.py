@@ -115,6 +115,16 @@ def _param(p, i):
     return t, n
 
 
+def slot_name(a, slot):
+    """Name of a vtable slot: `v` + the target's canonical name without its class prefix (the C++ wrapper here,
+    the IDB's <Class>_vtbl member in ida/sync.py: pseudocode and headers say the same), or vSlot<offset>."""
+    if not a or a.get("name_src") == "addr":  # unnamed target (signature from the binary): named after its slot
+        return f"vSlot{slot * 4:X}"
+    short = re.sub(r"^(C_[0-9a-f]{8}|C[A-Z]\w*?|[A-Z]\w*?)_(?=[A-Z])", "", a["name"], count=1)
+    short = re.sub(r"_[0-9A-F]{5,8}$", "", short) or a["name"]
+    return "v" + short[0].upper() + short[1:]
+
+
 def vmethods(vt, base, used):
     """Non-virtual inline members that call the vtable slots this class introduces (slots past its base's count):
     `slider->vGetValue()` instead of `reinterpret_cast<int (__fastcall*)(void*, void*)>(vtbl[0x244 / 4])(...)`.
@@ -142,12 +152,7 @@ def vmethods(vt, base, used):
                 ret = "void*"
             else:
                 continue
-        if a.get("name_src") == "addr":  # unnamed target (signature from the binary): named after its slot
-            mname = f"vSlot{slot * 4:X}"
-        else:
-            short = re.sub(r"^(C_[0-9a-f]{8}|C[A-Z]\w*?|[A-Z]\w*?)_(?=[A-Z])", "", a["name"], count=1)
-            short = re.sub(r"_[0-9A-F]{5,8}$", "", short) or a["name"]
-            mname = "v" + short[0].upper() + short[1:]
+        mname = slot_name(a, slot)
         if mname in used:
             mname = f"{mname}_{slot:x}"
         used.add(mname)

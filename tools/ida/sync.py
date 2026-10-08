@@ -5,7 +5,10 @@
   comments    one-line summary from db/proposals.jsonl as the function comment (repeatable)
   globals     db/globals.yaml names
   vtables     ??_7<Name>@@6B@ (shows as `const Name::`vftable'`) for classes named in db/types/classes.yaml
-  types       src/types/auto_classes.h structs as local types (C_<vtable> and named)
+  types       src/types/auto_classes.h structs as local types (C_<vtable> and named), typed vtables
+              (<Class>_vtbl + __vftable: tools/vtbl_types.py), db/globals.yaml types on the globals
+  --protos    prototypes the callers' cleanup proves longer than Hex-Rays' (proven_protos)
+  --this      `this` typed as the class (db/types/this_class.json) on __thiscall methods (this_protos)
 
 Usage: .venv/bin/python tools/ida/sync.py [--dry] [--no-types]
 """
@@ -36,17 +39,52 @@ def set_name(ea, name, stats, key):
         stats[key + "_fail"] += 1
 
 
-def header_decls():
-    """auto_classes.h as plain C for the IDA parser: no includes/pragmas/asserts, stdint typedefs."""
+def header_parts():
+    """auto_classes.h as plain C for the IDA parser (no includes/pragmas/asserts/inline wrapper methods, stdint
+    typedefs), and the typed vtables (tools/vtbl_types.py: <Class>_vtbl structs; a root class's `void** vtbl`
+    becomes `<Class>_vtbl *__vftable`, IDA's convention). Two texts, parsed in order: IDA's parser gives up on a
+    long text after errors, so the vtables go on their own; every struct is forward-declared in both."""
     src = open(os.path.join(ROOT, "src", "types", "auto_classes.h")).read()
-    keep = [l for l in src.splitlines() if not l.startswith(("#", "static_assert"))]
+    keep = [l for l in src.splitlines() if not l.startswith(("#", "static_assert"))
+            and not re.match(r"^\s+[^/].*\)\s*(const\s*)?\{.*\}\s*(//.*)?$", l)]  # inline wrappers (C++ only)
     pre = ("typedef unsigned char uint8_t; typedef unsigned short uint16_t; typedef unsigned int uint32_t;"
-           " typedef unsigned long long uint64_t;\n"
+           " typedef unsigned long long uint64_t; typedef signed char int8_t; typedef short int16_t;"
+           " typedef int int32_t; typedef long long int64_t;\n"
            # src/legacy/string.h as C (VC7.1 std::string / std::wstring, 28 bytes)
            "struct legacy_string { uint32_t alloc; union { char buf[16]; char *ptr; } bx; uint32_t size; uint32_t res; };\n"
            "struct legacy_wstring { uint32_t alloc; union { unsigned short buf[8]; unsigned short *ptr; } bx;"
            " uint32_t size; uint32_t res; };\n")
-    return pre + "\n".join(keep).replace("legacy::string", "legacy_string").replace("legacy::wstring", "legacy_wstring")
+    body = "\n".join(keep).replace("legacy::string", "legacy_string").replace("legacy::wstring", "legacy_wstring")
+    import vtbl_types
+    structs = set(re.findall(r"^struct (\w+)", body, re.M))
+    fwd, vt, which = vtbl_types.decls(structs)
+    fwd += "\n" + "\n".join(f"struct {v};" for v in sorted(which.values()))
+
+    def retype(m):
+        name = m.group(1)
+        return m.group(0) if name not in which else m.group(0).replace("void** vtbl;", f"{which[name]} *__vftable;", 1)
+    body = re.sub(r"^struct (\w+) \{\n\s+void\*\* vtbl;", retype, body, flags=re.M)
+    return pre + fwd + "\n" + body + "\n", pre + fwd + "\n" + vt + "\n"
+
+
+def header_decls():
+    return "\n".join(header_parts())
+
+
+def global_types():
+    """db/globals.yaml types IDA can parse (scalars, pointers to scalars or to class structs): {addr: decl}."""
+    import vtbl_types
+    structs = set(re.findall(r"^struct (\w+)", header_decls(), re.M))
+    out = {}
+    for g in yaml.safe_load(open(os.path.join(ROOT, "db", "globals.yaml"))) or []:
+        t = (g.get("type") or "").strip()
+        if not t or "(" in t:
+            continue
+        it = vtbl_types.ida_type(t, structs)
+        if it == "int" and t not in ("int", "int32_t", "std::int32_t", "long"):
+            continue  # unknown by-value type (a table typedef): leave IDA's own
+        out[int(g["addr"])] = f"{it} {g['name']};"
+    return out
 
 
 def proven_protos():
@@ -73,14 +111,37 @@ def proven_protos():
     return out
 
 
+def this_protos():
+    """Methods with a known class (db/types/this_class.json) whose Hex-Rays prototype is __thiscall: the same
+    prototype with `this` typed as a pointer to the class struct (src/types/auto_classes.h, loaded by the types
+    stage). Hex-Rays then shows this->field and types the objects callers pass, which this_class.py propagates."""
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import api, this_class
+    from packet import DB
+    db = DB()
+    abi = api.ida_abi()
+    out = {}
+    for ea, c in this_class.load().items():
+        a = abi.get(ea)
+        if not a or a.get("cc") != "thiscall" or not a.get("args"):
+            continue
+        name = db.cls_name(c["vt"])
+        args = [f"{name} *this"] + [f"{t} {n or f'a{i + 2}'}" for i, (t, n, _) in enumerate(a["args"][1:])]
+        if a["args"][0][0] == f"{name} *":
+            continue
+        out[ea] = f"{a['ret']} __thiscall f({', '.join(args)});"
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry", action="store_true")
     ap.add_argument("--no-types", action="store_true")
     ap.add_argument("--protos", action="store_true", help="only the prototypes stage (proven_protos)")
+    ap.add_argument("--this", action="store_true", help="only the `this` types stage (this_protos)")
     a = ap.parse_args()
-    if a.protos:
-        protos = proven_protos()
+    if a.protos or a.this:
+        protos = proven_protos() if a.protos else this_protos()
         open_db()
         n = bad = 0
         try:
@@ -93,7 +154,8 @@ def main():
                     bad += 1
         finally:
             close_db(save=not a.dry)
-        print(f"prototypes: {len(protos)} proven by caller cleanup, {n} applied, {bad} rejected by IDA")
+        print(f"prototypes ({'caller cleanup' if a.protos else 'this types'}): {len(protos)}, {n} applied, "
+              f"{bad} rejected by IDA")
         return
     rows = list(csv.DictReader(open(os.path.join(ROOT, "db", "functions.csv"))))
     summ = {}
@@ -123,9 +185,14 @@ def main():
                 set_name(int(vt, 16), f"??_7{e['name']}@@6B@", stats, "vt")
         if not a.no_types and not a.dry:
             til = ida_typeinf.get_idati()
-            errs = ida_typeinf.parse_decls(til, header_decls(), None, ida_typeinf.HTI_DCL | ida_typeinf.HTI_PAK1)
+            main_, vtbls = header_parts()
+            errs = ida_typeinf.parse_decls(til, main_, None, ida_typeinf.HTI_DCL | ida_typeinf.HTI_PAK1)
+            stats["vtbl_errors"] = ida_typeinf.parse_decls(til, vtbls, None, ida_typeinf.HTI_DCL | ida_typeinf.HTI_PAK1)
             stats["types"] = sum(1 for _ in re.finditer(r"^struct \w+", header_decls(), re.M))
             stats["type_errors"] = errs
+            stats["gtypes"] = stats["gtypes_fail"] = 0
+            for addr, decl in global_types().items():
+                stats["gtypes" if idc.SetType(addr, decl) else "gtypes_fail"] += 1
     finally:
         close_db(save=not a.dry)
     print(" ".join(f"{k}={v}" for k, v in stats.items()))

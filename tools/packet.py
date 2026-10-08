@@ -22,6 +22,7 @@ class DB:
         from gen_classes_h import load_names
         self.class_names = load_names()  # db/types/classes.yaml, conf >= 0.7
         self.owner = {}
+        self._this = None  # db/types/this_class.json, loaded on first use
         for vt, c in self.classes.items():
             for m in c["methods"]:
                 self.owner.setdefault(int(m, 16), []).append(vt)
@@ -40,10 +41,16 @@ class DB:
         return (r["name"] if r and r["name"] else None)
 
     def class_of(self, ea):
-        """Most-base class among owners (implementation lives in the class that introduced it)."""
+        """Most-base class among owners (implementation lives in the class that introduced it); else the class
+        db/types/this_class.json gives it (constructors, destructors, non-virtual methods via Hex-Rays' typed
+        call sites: tools/this_class.py)."""
         owners = self.owner.get(ea, [])
         if not owners:
-            return None
+            if self._this is None:
+                import this_class
+                self._this = this_class.load()
+            c = self._this.get(ea)
+            return c["vt"] if c and c["vt"] in self.classes else None
         def ancestors(vt):
             seen = []
             while vt and vt in self.classes and vt not in seen:
@@ -315,7 +322,12 @@ def build(db, ea, with_asm_limit=400):
                    "turn it into a call. Write that path as a naked thunk: `static __declspec(naked) void F() { __asm "
                    "{ ... jmp dword ptr [eax+0xNN] } }`, copying the original's register setup (only mov/lea/add/sub/"
                    "test/cmp/je/jne, at most 8, ending in the jmp).")
-    out.append("\n## Hex-Rays pseudocode (names substituted where known)\n```c\n" + substitute_names(db, src) + "\n```")
+    out.append("\n## Hex-Rays pseudocode (names substituted where known)\n"
+               + ("Typed from our headers: `x->m_name` / `x->field_XXXX` are the members of types/auto_classes.h; "
+                  "`x->vName(x, args)` is a virtual call: write `x->vName(args)` (the class's wrapper); "
+                  "`__vftable` is our `vtbl`.\n" if re.search(r"->(v[A-Z]\w*|__vftable|m_\w+|field_[0-9a-fA-F]+)\b", src)
+                  else "")
+               + "```c\n" + substitute_names(db, src) + "\n```")
     if f["size"] <= with_asm_limit:
         out.append("\n## Disassembly (authoritative for signedness / exact semantics)\n```asm\n" +
                    "\n".join(f"{i.address:08x}  {i.mnemonic} {i.op_str}" for i in disasm(ea, f["size"])) + "\n```")
