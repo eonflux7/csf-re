@@ -818,8 +818,10 @@ def crash_suspects(out, batch):
     """Functions of `batch` named by the smoke's crash report: the faulting EIP, then return addresses on the dumped
     stack, that fall inside our DLL, resolved through the linker map of the deployed build to src/auto/<ea>.cpp.
     Most likely first; [] when the crash is elsewhere (game code, no report)."""
+    # the log is CRLF and the DLL base is printed with %p (upper case): both made this miss every crash until
+    # 2026-10-08, so every bisect fell back to the blind binary search
     m = re.search(r"CRASH code=\w+ eip=([0-9a-f]{8}).*?\n\s*eip module [0-9a-f]+ \(ours ([0-9a-f]{8})\); stack:\n"
-                  r"((?:\s+[0-9a-f]{8}(?: [0-9a-f]{8})*\n)*)", out)
+                  r"((?:[ \t]+[0-9a-f]{8}(?: [0-9a-f]{8})*\n)*)", out.replace("\r", ""), re.I)
     if not m or not os.path.exists(DLL_MAP):
         return []
     base, pref, syms = int(m.group(2), 16), 0x10000000, []
@@ -1039,9 +1041,8 @@ def commit(good, title):
     files += [os.path.relpath(p, ROOT) for p in glob.glob(os.path.join(ROOT, "queue", "*.md"))]
     if subprocess.run(["git", "-C", ROOT, "ls-files", "--", "queue"], capture_output=True, text=True).stdout:
         files.append("queue")  # also stages escalations resolved (deleted) since the last commit
-    subprocess.run(["git", "-C", ROOT, "add", "-A", "--", *files], check=False)
-    msg = f"{title}\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
-    subprocess.run(["git", "-C", ROOT, "commit", "-q", "-m", msg, "--", *files], check=False)
+    import repo  # one git lock with tools/verifier.py, which commits concurrently
+    repo.commit(files, title)
     print("committed", flush=True)
 
 
@@ -1071,9 +1072,6 @@ def lanes(args):
     CODEX_SUB = tuple(args.codex_sub.split(":", 1)) if args.codex_sub else None
     db = DB()
     wave = module_ids(args.module)
-    if args.smoke_menu:
-        global SMOKE_SHORT
-        SMOKE_SHORT = (40, SMOKE_STARTS[1])  # the tour opens ~25 menus at 1.5 s each
     key = None
     esc = [("claude", args.claude_model, 2)] if args.escalate_claude else []
     ladders = {"S": ladder_spec(args.s_ladder) + esc, "M": ladder_spec(args.m_ladder) + esc,
@@ -1140,6 +1138,8 @@ def lanes(args):
             print(f"Codex 5h window at {pct:.0f}%: Codex resumed", flush=True)
         live(codex_paused=CODEX_PAUSED.is_set(), codex_reserved=CODEX_RESERVED.is_set(), codex_5h=pct)
 
+    since_canary = 0
+
     def refill():
         nonlocal submitted, stopping
         if not stopping and os.path.exists(STOP):
@@ -1171,54 +1171,44 @@ def lanes(args):
         live(counts=dict(submitted=submitted), inflight_tiers=dict(cnt))
 
     def flush():
-        nonlocal good, total_ok, total_esc
+        """Produce side only: link the batch (the gate compiles each file alone; link errors show up here), commit
+        it as pending. The game-side checks (smoke, bisect, diff) are tools/verifier.py's, run apart: every
+        --canary committed functions one verifier group is started in the background, so nothing waits on it."""
+        nonlocal good, total_ok, total_esc, since_canary
         if not good:
             return True
-        live(phase="smoke")
-        if not args.no_smoke:
-            ok, out = smoke()
-            errs = [l for l in out.splitlines() if re.search(r"\berror\b|FAILED|undefined symbol", l)][:20]
-            print("\n".join(errs + [out[-1200:]]), flush=True)
-            if not ok and out.startswith("build/deploy failed"):
-                # the build sees every file in src/auto: also those of in-flight functions that passed the gate
-                # since the batch was cut (not logged yet) — a culprit can be one of them
-                pending = [ea for ea, _ in inflight.values()]
-                culprits = build_culprits(out, [r["ea"] for r in good] + pending)
-                if culprits:  # compile/link error in this batch's own files (the gate compiles each one alone)
-                    print(f"build failed: culprits {' '.join(f'{c:x}' for c in culprits)}", flush=True)
-                    for c in culprits:
-                        quarantine(c, "build/link failure in the lanes batch build", out)
-                        db.rows[c]["status"] = "todo"
-                    quarantined.update(c for c in culprits if c in pending)
-                    culprits = [c for c in culprits if c not in pending]
-                    good = [r for r in good if r["ea"] not in culprits]
-                    total_ok, total_esc = total_ok - len(culprits), total_esc + len(culprits)
-                    live(counts=dict(ok=total_ok, esc=total_esc, pending=len(good)))
-                    return flush()
-            if not ok and not out.startswith("build/deploy failed") and not args.no_bisect:
-                print(f"smoke failed with {len(good)} new functions: bisecting", flush=True)
-                culprits, why = bisect([r["ea"] for r in good], first_out=out)
-                print(f"bisect: {why}" + (f"; culprits {' '.join(f'{c:x}' for c in culprits)}" if culprits else ""),
-                      flush=True)
-                if culprits:
-                    for c in culprits:
-                        quarantine(c, "in-game smoke failure (lanes auto-bisect)", out)
-                        db.rows[c]["status"] = "todo"
-                    good = [r for r in good if r["ea"] not in culprits]
-                    total_ok, total_esc = total_ok - len(culprits), total_esc + len(culprits)
-                    live(counts=dict(ok=total_ok, esc=total_esc, pending=len(good)))
-                    return flush()
-            if not ok:
-                print(f"SMOKE FAILED with {len(good)} new functions: left uncommitted in src/auto; bisect with "
-                      "csf_hook.ini `disable 0x...`", flush=True)
-                live(phase="SMOKE FAILED")
+        live(phase="link")
+        r = subprocess.run(["ninja", "-C", os.path.join(ROOT, "build")], capture_output=True, text=True)
+        if r.returncode:
+            out = "build/deploy failed:\n" + (r.stdout + r.stderr)[-3000:]
+            # the build sees every file in src/auto: also in-flight ones that passed the gate since the batch was cut
+            pending = [ea for ea, _ in inflight.values()]
+            culprits = build_culprits(out, [r["ea"] for r in good] + pending)
+            if not culprits:
+                print(out, flush=True)
+                live(phase="BUILD FAILED")
                 return False
-            good, rej = diff_rejects(good, out)
-            if rej:
-                print(f"diff mismatches: {len(rej)} sent to queue/", flush=True)
-        commit(good, f"grunt lanes: {len(good)} functions reimplemented")
+            print(f"build failed: culprits {' '.join(f'{c:x}' for c in culprits)}", flush=True)
+            for c in culprits:
+                quarantine(c, "build/link failure in the lanes batch build", out)
+                db.rows[c]["status"] = "todo"
+            quarantined.update(c for c in culprits if c in pending)
+            culprits = [c for c in culprits if c not in pending]
+            good = [r for r in good if r["ea"] not in culprits]
+            total_ok, total_esc = total_ok - len(culprits), total_esc + len(culprits)
+            live(counts=dict(ok=total_ok, esc=total_esc, pending=len(good)))
+            return flush()
+        commit(good, f"grunt lanes: {len(good)} functions reimplemented (pending verification)")
+        since_canary += len(good)
         live(phase="grunting", counts=dict(committed=_live["counts"].get("committed", 0) + len(good), pending=0))
         good = []
+        if args.canary and since_canary >= args.canary:
+            since_canary = 0
+            # one group of the pending functions, in the background (one instance; busy = skipped)
+            subprocess.Popen([sys.executable, os.path.join(ROOT, "tools", "verifier.py"), "--groups", "1"],
+                             stdout=open(os.path.join(ROOT, "work", "verifier.log"), "a"), stderr=subprocess.STDOUT,
+                             start_new_session=True)
+            print("canary: verifier started (work/verifier.log)", flush=True)
         return True
 
     def handle(r, tier):
@@ -1364,7 +1354,7 @@ if __name__ == "__main__":
     l = sub.add_parser("lanes", help="continuous grunting: one lane, size tiers S/M/L each with its own model ladder")
     l.add_argument("--total", type=int, default=200)
     l.add_argument("--module", help="module wave: comma list of module ids/names (tools/modules.py list)")
-    l.add_argument("--batch", type=int, default=60, help="smoke + commit every N gate passes")
+    l.add_argument("--batch", type=int, default=60, help="link + commit every N gate passes")
     l.add_argument("--s-max", type=int, default=150, help="S tier: functions under N bytes (and clone siblings with "
                    "a done example up to --m-max)")
     l.add_argument("--m-max", type=int, default=400, help="M tier: functions up to N bytes; L: the rest")
@@ -1385,9 +1375,8 @@ if __name__ == "__main__":
     l.add_argument("--evidence-over", type=int, default=150, help="offer evidence requests above N bytes")
     l.add_argument("--review-over", type=int, default=150, help="Codex reviews non-Codex answers above N bytes "
                    "(-1: off)")
-    l.add_argument("--no-smoke", action="store_true")
-    l.add_argument("--no-bisect", action="store_true", help="stop on a smoke failure instead of bisecting it")
-    l.add_argument("--smoke-menu", action="store_true", help="short smokes run the menu tour (GUI module waves)")
+    l.add_argument("--canary", type=int, default=300,
+                   help="start one background verifier group every N committed functions (0 = never)")
     l.add_argument("--no-captain", action="store_true", help="module waves: skip the captain steps (class naming "
                    "before, placeholder function names after)")
     l.add_argument("--codex-cap", type=float, default=90, help="pause Codex at this 5h-window %% (0: off)")

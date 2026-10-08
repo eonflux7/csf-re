@@ -7,4 +7,8 @@ PLAY=${CSF_PLAY:-/mnt/e/dev/csf-play}
 ninja -C "$ROOT/build"
 cp "$ROOT/build/dinput8.dll" "$PLAY/dinput8.dll"
 [ -f "$PLAY/csf_hook.ini" ] || cp "$ROOT/hook/csf_hook.ini" "$PLAY/csf_hook.ini"
+# pending functions (never installed in a passing smoke) stay off: the game runs the verified baseline;
+# tools/verifier.py enables them a group at a time. CSF_PENDING_ON=1 deploys everything enabled.
+if [ "${CSF_PENDING_ON:-0}" = 1 ]; then sed -i '/# pending$/d' "$PLAY/csf_hook.ini"
+else "$ROOT/.venv/bin/python" "$ROOT/tools/verify.py" pending --ini "$PLAY/csf_hook.ini"; fi
 echo "deployed to $PLAY"
