@@ -114,9 +114,10 @@ def gate(ea, path, db=None):
     hooks = re.findall(r"HOOK(?:_METHOD)?\(\s*0x([0-9A-Fa-f]+)\s*,\s*&?([\w:]+)", src)
     if len(hooks) != 1 or int(hooks[0][0], 16) != ea:
         errs.append(f"need exactly one HOOK(0x{ea:X}, Fn, \"module\") line; found {hooks}")
-    if re.search(r"\b(malloc|free|calloc|realloc)\s*\(|\bnew\s+[A-Za-z_]|\bdelete\s", src):
-        errs.append("use game::Mem_Alloc/Mem_Free (core/memory.h), not malloc/free/new/delete")
     code_only = re.sub(r"//[^\n]*|/\*.*?\*/", "", src, flags=re.S)
+    bare = re.sub(r'"(?:[^"\\\n]|\\.)*"', '""', code_only)  # comments ("the new block") and strings don't count
+    if re.search(r"\b(malloc|free|calloc|realloc)\s*\(|\bnew\s+[A-Za-z_]|\bdelete\s", bare):
+        errs.append("use game::Mem_Alloc/Mem_Free (core/memory.h), not malloc/free/new/delete")
     for line in code_only.splitlines():
         if re.search(r'"', line) and not re.search(r"^\s*(HOOK|#\s*include)", line):
             stripped = re.sub(r'CSF_STR\(\s*0x[0-9A-Fa-f]+\s*,\s*"(?:[^"\\]|\\.)*"\s*\)', "", line)

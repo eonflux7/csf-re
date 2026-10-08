@@ -266,11 +266,19 @@ def panel_grunts():
         h.append(ph, style="bold red" if "FAIL" in ph else "bold yellow" if ph == "smoke" else "bold")
         h.append(f"  up {ago(since)}", style="dim")
         body.append(h)
+        cfg = st.get("config")
+        if cfg:
+            body += config_lines(cfg)
+        if st.get("codex_paused"):
+            body.append(Text(f"Codex PAUSED by the quota guard (5h at {st.get('codex_5h', 0):.0f}%): main lane idle, "
+                             "Codex work deferred", style="bold red"))
         done = c.get("ok", 0) + c.get("esc", 0)
         el = max(1, time.time() - since)
         line = Text()
         line.append(f"ok {c.get('ok', 0)}", style="green")
         line.append(f"  esc {c.get('esc', 0)}", style="red")
+        if c.get("deferred"):
+            line.append(f"  deferred {c['deferred']}", style="yellow")
         line.append(f"  pending {c.get('pending', 0)}/{c.get('batch', '-')}", style="yellow")
         line.append(f"  committed {c.get('committed', 0)}", style="cyan")
         line.append(f"  submitted {c.get('submitted', 0)}/{c.get('total', '-')}", style="dim")
@@ -279,14 +287,20 @@ def panel_grunts():
         calls = sorted((st.get("calls") or {}).values(), key=lambda x: x["since"])
         if calls and alive:
             tb = Table(box=None, padding=(0, 1), show_header=True, header_style="dim")
-            for col, kw in (("ea", {}), ("backend", {}), ("eff", {}), ("kind", {}), ("age", {"justify": "right"}),
-                            ("name", {"overflow": "ellipsis", "no_wrap": True})):
-                tb.add_column(col, **kw)
+            for col, kw in (("ea", {"min_width": 11}), ("backend", {"min_width": 8}), ("eff", {"min_width": 5}),
+                            ("kind", {"min_width": 8}), ("age", {"justify": "right", "min_width": 5}),
+                            ("name", {"overflow": "ellipsis", "ratio": 1})):
+                tb.add_column(col, no_wrap=True, **kw)
             for x in calls:
                 b = x["backend"]
-                tb.add_row(f"{x['ea']:08x}", Text(b, style=BACKEND_STYLE.get(b, "")), x["effort"], x["kind"],
-                           ago(x["since"]), nm.get(x["ea"], "") or "")
-            body.append(Text(f"in flight ({len(calls)})", style="bold"))
+                n = x.get("n", 1)
+                kind = f"batch×{n}" if x["kind"] == "batch" else x["kind"]
+                lbl = b + ("·cli" if x.get("transport") == "cli" else "")
+                tb.add_row(f"{x['ea']:08x}" + (f"+{n - 1}" if n > 1 else ""), Text(lbl, style=BACKEND_STYLE.get(b, "")),
+                           x["effort"], Text(kind, style="bold" if n > 1 else ""), ago(x["since"]),
+                           nm.get(x["ea"], "") or "")
+            fns = sum(x.get("n", 1) for x in calls if x["kind"] != "review")
+            body.append(Text(f"in flight ({len(calls)} calls, {fns} functions)", style="bold"))
             body.append(tb)
     recent = cached("recent", 3, lambda: read_log_since(since))
     recent = recent if isinstance(recent, list) else []
@@ -299,12 +313,70 @@ def panel_grunts():
             t = Text(f"{ago(r.get('ts', 0)):>6} ", style="dim", no_wrap=True, overflow="ellipsis")
             t.append(f"{by:<8} ", style=BACKEND_STYLE.get(by, "dim"))
             t.append(f"{r['ea']:08x} ")
-            t.append("OK  " if ok else "ESC ", style="green" if ok else "red")
+            t.append("OK  " if ok else "DEF " if r.get("deferred") else "ESC ",
+                     style="green" if ok else "yellow" if r.get("deferred") else "red")
+            tags = []
+            if r.get("batch"):
+                tags.append(f"b{r['batch']}")
+            if ok and r.get("attempts", 1) > 1:
+                tags.append(f"try{r['attempts']}")
+            if r.get("reviews"):
+                tags.append("rev✗" if any(r["reviews"]) else "rev✓")
+            t.append(f"{' '.join(tags):<10} ", style="dim")
             t.append(what, style="" if ok else "grey62")
             lines.append(t)
         body.append(Text("recent results", style="bold"))
         body += lines
     return Panel(Group(*body), title="Grunts", border_style="magenta"), (st if isinstance(st, dict) else None), recent
+
+
+def config_lines(c):
+    """The cost/speed settings the run started with (grunt.run_config)."""
+    t = Text("codex    ", style="magenta")
+    t.append(f"{c.get('transport')} · {c.get('effort')}/{c.get('retry_effort')} · ")
+    if (c.get("batch_fns") or 1) > 1:
+        t.append(f"batch ≤{c["batch_fns"]}" + (f"/{c["batch_bytes"]}B" if c.get("batch_bytes") else "")
+                 + f" (fns ≤{c.get("batch_max")}B)")
+    else:
+        t.append("no batching", style="yellow")
+    t.append(f" · class {c.get("class_view")}", style="" if c.get("class_view") == "compact" else "yellow")
+    t.no_wrap, t.overflow = True, "ellipsis"
+    d = Text("deepseek ", style="cyan")
+    t, d = d, t
+    t.append(f"<{c.get('tiny')} B" + (" + clones" if c.get("deep_clones") else ""))
+    ro = c.get("review_over")
+    t.append(f" · review >{ro} B" if ro is not None and ro >= 0 else " · no review", style="dim")
+    if c.get("codex_cap"):
+        t.append(f" · codex cap {c['codex_cap']:.0f}% of 5h", style="dim")
+    t.no_wrap, t.overflow = True, "ellipsis"
+    return [d, t]
+
+
+def efficiency(recent):
+    """Per-function cost and the savings levers, over this run's finished functions."""
+    fns = [r for r in recent if not r.get("deferred")]
+    if not fns:
+        return []
+    cx = [u for r in fns for u in r.get("usage", []) if u.get("backend") == "codex"]
+    cin = sum((u.get("prompt_tokens") or 0) - (u.get("cached_tokens") or 0) for u in cx)
+    cca = sum(u.get("cached_tokens") or 0 for u in cx)
+    cout = sum(u.get("completion_tokens") or 0 for u in cx)
+    n = len(fns)
+    ok = [r for r in fns if r.get("ok")]
+    first = sum(r.get("attempts", 1) == 1 for r in ok)
+    bat = [r for r in fns if r.get("batch")]
+    revs = [x for r in fns for x in (r.get("reviews") or [])]
+    out = [Text("per function (this run)", style="bold")]
+    out.append(Text(f" codex in {kfmt(cin // n)} out {kfmt(cout // n)}"
+                    + (f"  cache {cca / max(1, cin + cca):.0%}" if cx else "")))
+    t = Text(f" 1st try {first / max(1, len(ok)):.0%}", style="green" if first >= 0.75 * len(ok) else "yellow")
+    t.append(f"  batched {len(bat) / n:.0%}", style="dim")
+    if bat:
+        t.append(f" (avg {sum(r['batch'] for r in bat) / len(bat):.1f})", style="dim")
+    out.append(t)
+    if revs:
+        out.append(Text(f" reviews {len(revs)}, caught {sum(revs)}", style="dim"))
+    return out
 
 
 def bar(pct, width=12):
@@ -344,10 +416,17 @@ def panel_tokens(st, recent):
         h = Text(f"{b} ", style="bold " + BACKEND_STYLE.get(b, ""))
         h.append(f"{t['calls']} calls", style="dim")
         body.append(h)
-        body.append(Text(f" in  {kfmt(t['prompt'])}" + (f" ({kfmt(t['cached'])} cached)" if t["cached"] else "")))
+        body.append(Text(f" in  {kfmt(t['prompt'])}" + (f" ({t['cached'] / max(1, t['prompt']):.0%} cached)"
+                                                         if t["cached"] else "")))
         body.append(Text(f" out {kfmt(t['completion'])}  {kfmt(rate[b] // 10)}/min"))
     if not tot:
         body.append(Text("no calls yet", style="dim"))
+    body += efficiency(recent)
+    c = (st or {}).get("counts") or {}
+    if c.get("autofix"):
+        body.append(Text(f" auto-fixed {c['autofix']} (retries saved)", style="dim"))
+    if c.get("transport_retry"):
+        body.append(Text(f" transport retries {c['transport_retry']}", style="yellow"))
     body.append(Text(""))
     cu = cached("codex_usage", 60, codex_usage)
     body.append(Text("Codex (ChatGPT plan)", style="bold magenta"))
@@ -411,7 +490,8 @@ def panel_procs():
     head.append("game ", style="bold")
     head.append(f"RUNNING pid {g[0]} {g[1]}" if isinstance(g, tuple) else "not running",
                 style="green" if isinstance(g, tuple) else "dim")
-    head.append(f"   codex exec: {codex}", style="magenta" if codex else "dim")
+    if codex:
+        head.append(f"   codex exec (cli transport): {codex}", style="magenta")
     return Panel(Group(head, tb), title="Processes", border_style="blue")
 
 

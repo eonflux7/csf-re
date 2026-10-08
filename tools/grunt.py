@@ -204,9 +204,21 @@ def chat_codex_direct(model, messages, effort="high"):
 
 
 def chat_codex(model, messages, effort="high"):
-    if os.environ.get("CSF_CODEX_TRANSPORT", "direct") == "direct":
-        return chat_codex_direct(model, messages, effort)
-    return chat_codex_cli(model, messages, effort)
+    if os.environ.get("CSF_CODEX_TRANSPORT", "direct") != "direct":
+        return chat_codex_cli(model, messages, effort)
+    for i in range(3):  # transport hiccups (dropped stream, 5xx, timeout) are retried, not counted as an attempt
+        try:
+            return chat_codex_direct(model, messages, effort)
+        except Exception as e:
+            s = str(e)
+            transient = ("stream ended" in s or re.search(r"HTTP 5\d\d", s) or "timed out" in s
+                         or isinstance(e, (urllib.error.URLError, ConnectionError, TimeoutError)))
+            if i == 2 or not transient or CODEX_PAUSED.is_set():
+                raise
+            with _live_lock:
+                c = _live["counts"]
+                c["transport_retry"] = c.get("transport_retry", 0) + 1
+            time.sleep(5 * (i + 1))
 
 
 def chat_codex_cli(model, messages, effort="high"):
@@ -319,10 +331,14 @@ def ask(backend, model, messages, key, effort="high"):
 def _ask(backend, model, messages, key, effort="high"):
     cid = f"{threading.get_ident()}"
     with _live_lock:
+        sysmsg = messages[0]["content"]
+        kind = ("review" if sysmsg is REVIEW_SYSTEM else "batch" if sysmsg is SYSTEM_BATCH
+                else "retry" if len(messages) > 2 else "write")
         _live["calls"][cid] = dict(ea=getattr(_tl, "ea", 0), backend=backend, model=model,
                                    effort=CODEX_EFFORT.get(effort, effort) if backend == "codex" else effort,
-                                   kind="review" if messages[0]["content"] is REVIEW_SYSTEM else "write",
-                                   since=time.time())
+                                   kind=kind, n=len(getattr(_tl, "batch", ())) if kind == "batch" else 1,
+                                   transport=os.environ.get("CSF_CODEX_TRANSPORT", "direct")
+                                   if backend == "codex" else "api", since=time.time())
     live()
     try:
         if backend == "claude":
@@ -348,11 +364,26 @@ def normalize(code):
     """Mechanical fixes applied before the gate (each used to cost a full retry call): the HOOK line's missing
     semicolon; #include "globals.h" when CSF_* macros are used without it (132 of ~220 retries, 2026-10-07)."""
     code = re.sub(r"^(\s*HOOK(?:_METHOD)?\(.*\))\s*$", r"\1;", code, flags=re.M)
+    hr = {"_DWORD": "std::uint32_t", "_WORD": "std::uint16_t", "_BYTE": "std::uint8_t", "_QWORD": "std::uint64_t"}
+    if re.search(r"\b_(DWORD|WORD|BYTE|QWORD)\b", code):  # Hex-Rays types copied from the pseudocode
+        code = re.sub(r"\b_(DWORD|WORD|BYTE|QWORD)\b", lambda m: hr[m.group(0)], code)
+        if "<cstdint>" not in code:
+            code = "#include <cstdint>\n" + code
     if re.search(r"\bCSF_(GLOBAL|FUNC|AT|STR)\b", code) and not re.search(r'#\s*include\s*"globals.h"', code):
         incs = list(re.finditer(r'^\s*#\s*include[^\n]*\n', code, re.M))
         at = incs[-1].end() if incs else 0
         code = code[:at] + '#include "globals.h"\n' + code[at:]
     return code
+
+
+def autofix(code):
+    """normalize(), counted for the monitor (each fix is a retry call saved)."""
+    fixed = normalize(code)
+    if fixed != code:
+        with _live_lock:
+            c = _live["counts"]
+            c["autofix"] = c.get("autofix", 0) + 1
+    return fixed
 
 
 def parse(text):
@@ -449,7 +480,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
             err = f"{backend} error: {e}"
             continue
         if code:
-            code = normalize(code)
+            code = autofix(code)
         if not code:
             ok, err = False, "no ```cpp block found in your answer"
         else:
@@ -500,7 +531,7 @@ def work_batch(eas, db, key, model, out_dir=None, review_over=None):
     """Several small functions in one Codex call (the per-call harness + system prompt, ~5.8k tokens, is paid once).
     Each file is gated alone; a failed or missing one continues as a single-function conversation (work(prior=...))
     from its own part of the answer. Returns a list of work() results; batch usage is split evenly."""
-    _tl.ea = eas[0]
+    _tl.ea, _tl.batch = eas[0], eas
     packets = {ea: build(db, ea) for ea in eas}
     body = "\n\n".join(f"# FUNCTION 0x{ea:08X}\n\n{packets[ea]}" for ea in eas)
     msgs = [{"role": "system", "content": SYSTEM_BATCH},
@@ -509,9 +540,11 @@ def work_batch(eas, db, key, model, out_dir=None, review_over=None):
     try:
         text, usage = ask("codex", model, msgs, key, "high")
     except Exception as e:
+        _tl.batch = ()
         if CODEX_PAUSED.is_set():
             return [dict(ea=ea, ok=False, deferred=True, attempts=0, err=f"codex error: {e}", usage=[]) for ea in eas]
         return [work(ea, db, key, ladder, out_dir, None, review_over) for ea in eas]
+    _tl.batch = ()
     share = {k: (v // len(eas) if isinstance(v, int) else v) for k, v in usage.items()}
     share["batch"] = len(eas)
     parts = {}
@@ -528,7 +561,7 @@ def work_batch(eas, db, key, model, out_dir=None, review_over=None):
         part = parts.get(ea, "")
         code, meta = parse(part)
         if code:
-            code = normalize(code)
+            code = autofix(code)
             tmp = os.path.join(ROOT, "work", "grunt", "codex", f"{ea:08x}.cpp")
             os.makedirs(os.path.dirname(tmp), exist_ok=True)
             open(tmp, "w").write(code)
@@ -734,13 +767,49 @@ def quarantine(ea, why, smoke_out=""):
 STOP = os.path.join(ROOT, "work", "grunt_stop")
 
 
+def run_config(args, lanes=False):
+    """The cost/speed settings of this run, for the monitor."""
+    return dict(transport=os.environ.get("CSF_CODEX_TRANSPORT", "direct"), effort=CODEX_EFFORT["high"],
+                retry_effort=CODEX_EFFORT["max"], class_view=os.environ.get("CSF_CLASS_VIEW", "compact"),
+                batch_fns=args.batch_fns, batch_bytes=getattr(args, "batch_bytes", 0),
+                batch_max=getattr(args, "batch_max", 300), tiny=args.tiny,
+                deep_clones=lanes, review_over=args.review_over, codex_cap=getattr(args, "codex_cap", None),
+                backend=getattr(args, "backend", "lanes"))
+
+
+def pack(db, eas, fns, budget=0, max_size=300):
+    """Codex batches: same class (else module) together, at most `fns` functions and, with a byte budget, at most
+    `budget` bytes of original code per call (many tiny functions share a call, mid-size ones get 2-3). Functions over
+    `max_size` go alone."""
+    groups = collections.defaultdict(list)
+    for ea in sorted(eas):
+        groups[db.class_of(ea) or db.rows[ea]["module"]].append(ea)
+    out = []
+    for g in groups.values():
+        cur, nb = [], 0
+        for ea in g:
+            sz = db.F[ea]["size"]
+            if sz > max_size:
+                out.append([ea])
+                continue
+            if cur and (len(cur) >= fns or (budget and nb + sz > budget)):
+                out.append(cur)
+                cur, nb = [], 0
+            cur.append(ea)
+            nb += sz
+        if cur:
+            out.append(cur)
+    return out
+
+
 def run(args):
     db = DB()
     key = load_key()
     picks = [(int(x, 16), None) for x in args.only.split(",")] if args.only else select(db, args.n, args.max_size, args.min_size, modules=module_ids(args.module))
     targets = [ea for ea, _ in picks]
     example = dict(picks)
-    live(mode="run" + (" (dry)" if args.dry else ""), phase="grunting", counts=dict(total=len(targets), submitted=len(targets)))
+    live(mode="run" + (" (dry)" if args.dry else ""), phase="grunting", config=run_config(args),
+         counts=dict(total=len(targets), submitted=len(targets)))
     esc = [("claude", args.claude_model, 2)] if args.escalate_claude else []
     codex = [("codex", args.codex_model, 2)]
     if args.backend == "claude":
@@ -756,10 +825,15 @@ def run(args):
     with cf.ThreadPoolExecutor(args.jobs) as ex:
         out_dir = os.path.join(ROOT, "work", "ab", args.backend + (f"-{os.environ['CSF_CODEX_EFFORT']}"
                                if os.environ.get("CSF_CODEX_EFFORT") else "")) if args.dry else None
-        if args.batch_fns > 1 and args.backend == "codex":  # several functions per Codex call (work_batch)
-            chunks = [targets[i:i + args.batch_fns] for i in range(0, len(targets), args.batch_fns)]
-            futs = {ex.submit(work_batch, ch, db, key, args.codex_model, out_dir, args.review_over): ch[0]
-                    for ch in chunks}
+        if args.batch_fns > 1 and args.backend in ("codex", "auto"):  # several functions per Codex call
+            solo = [ea for ea in targets if args.backend == "auto" and db.F[ea]["size"] < args.tiny]
+            chunks = pack(db, [ea for ea in targets if ea not in solo], args.batch_fns, args.batch_bytes,
+                          args.batch_max)
+            futs = {ex.submit(work_batch, ch, db, key, args.codex_model, out_dir, args.review_over) if len(ch) > 1
+                    else ex.submit(work, ch[0], db, key, codex + esc, out_dir, None, args.review_over,
+                                   ev_budget(args, db, ch[0])): ch[0] for ch in chunks}
+            futs.update({ex.submit(work, ea, db, key, ladder_of(ea), out_dir, example.get(ea), args.review_over,
+                                   ev_budget(args, db, ea)): ea for ea in solo})
         else:
             futs = {ex.submit(work, ea, db, key, ladder_of(ea), out_dir, example.get(ea), args.review_over,
                               ev_budget(args, db, ea)): ea
@@ -831,11 +905,11 @@ def lanes(args):
     codex = [("codex", args.codex_model, 2)]
     pools = {"deep": cf.ThreadPoolExecutor(args.tiny_jobs), "main": cf.ThreadPoolExecutor(args.main_jobs)}
     caps = {"deep": args.tiny_jobs * 2, "main": args.main_jobs * 2}
-    inflight, good, submitted, total_ok, total_esc = {}, [], 0, 0, 0
+    inflight, good, submitted, total_ok, total_esc, total_def = {}, [], 0, 0, 0, 0
     stopping, quota_t = False, 0
     if os.path.exists(STOP):
         os.remove(STOP)
-    live(mode="lanes", phase="grunting", counts=dict(total=args.total, batch=args.batch, ok=0, esc=0, pending=0,
+    live(mode="lanes", phase="grunting", config=run_config(args, lanes=True), counts=dict(total=args.total, batch=args.batch, ok=0, esc=0, pending=0,
                                                       submitted=0, committed=0))
 
     def lane_of(ea, ex):
@@ -903,7 +977,8 @@ def lanes(args):
                 gk = db.class_of(ea) or db.rows[ea]["module"]  # same class first: shared fields/role, same names
                 g = groups[gk]
                 g.append(ea)
-                if len(g) >= args.batch_fns:
+                nb = sum(db.F[e]["size"] for e in g)
+                if len(g) >= args.batch_fns or (args.batch_bytes and nb >= args.batch_bytes):
                     submit_batch(g)
                     groups[gk] = []
                 continue
@@ -951,7 +1026,7 @@ def lanes(args):
         return True
 
     def handle(r, lane):
-        nonlocal total_ok, total_esc
+        nonlocal total_ok, total_esc, total_def
         ea = r["ea"]
         with open(LOG, "a") as f:
             f.write(json.dumps(dict(r, ts=time.time(), lane=lane)) + "\n")
@@ -961,9 +1036,10 @@ def lanes(args):
             total_ok += 1
         elif r.get("deferred"):
             db.rows[ea]["status"] = "deferred"  # in memory only: not re-picked this run
+            total_def += 1
         else:
             total_esc += 1
-        live(counts=dict(ok=total_ok, esc=total_esc, pending=len(good)))
+        live(counts=dict(ok=total_ok, esc=total_esc, deferred=total_def, pending=len(good)))
         print(f"  [{lane}] {ea:08x} {'OK ' if r['ok'] else 'DEF' if r.get('deferred') else 'ESC'} "
               f"{r.get('meta', {}).get('name', '') if r['ok'] else r.get('err', '')[:90]}"
               f"{'  (example %08x)' % r['example'] if r.get('example') else ''}"
@@ -1041,7 +1117,9 @@ if __name__ == "__main__":
     r.add_argument("--claude-model", default="sonnet")
     r.add_argument("--escalate-claude", action="store_true", help="after 2 DeepSeek failures, try Claude twice")
     r.add_argument("--min-size", type=int, default=6)
-    r.add_argument("--batch-fns", type=int, default=1, help="with --backend codex: functions per Codex call")
+    r.add_argument("--batch-fns", type=int, default=1, help="Codex: max functions per call")
+    r.add_argument("--batch-bytes", type=int, default=0, help="Codex: max bytes of original code per call (0: off)")
+    r.add_argument("--batch-max", type=int, default=300, help="only functions up to N bytes are batched")
     r.add_argument("--dry", action="store_true", help="write to work/ab/<backend>/, no smoke/commit/status")
     r.add_argument("--no-smoke", action="store_true")
     r.add_argument("--evidence", type=int, default=3, help="evidence requests per function (tools/evidence.py)")
@@ -1067,6 +1145,7 @@ if __name__ == "__main__":
     l.add_argument("--no-bisect", action="store_true", help="stop on a smoke failure instead of bisecting it")
     l.add_argument("--batch-fns", type=int, default=4, help="Codex lane: functions per call (1: off)")
     l.add_argument("--batch-max", type=int, default=300, help="only functions up to N bytes are batched")
+    l.add_argument("--batch-bytes", type=int, default=0, help="Codex lane: close a batch at N bytes of original code (0: off)")
     l.add_argument("--smoke-menu", action="store_true", help="short smokes run the menu tour (GUI module waves)")
     l.add_argument("--codex-cap", type=float, default=90, help="pause Codex at this 5h-window %% (0: off)")
     sub.add_parser("cost")

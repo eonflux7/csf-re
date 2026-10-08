@@ -378,3 +378,32 @@ Same 12 GUI functions (50-260 B) each time, dry runs; tokens for all 12 (uncache
 - DeepSeek for mid-size functions: 10/12, the reviewer caught one bad file, the gate the other. Costs Codex only
   a review (~2k in, 0.25k out). Option for when the Codex quota is the bottleneck; not the default yet.
 - A 429 usage_limit now pauses Codex (functions deferred, not escalated). These tests used up the 5h window.
+
+### 2026-10-08 — Batch size A/B, retry causes
+
+Same 24 todo GUI functions (4 classes, 48-300 B), direct backend, high effort, dry runs:
+
+| variant | ok | first try | Codex in (uncached) | Codex out | 5h quota | wall |
+|---|---|---|---|---|---|---|
+| A: batches of 4 (current) | 23* | 22 | 55k | 30k | 5% | 228 s |
+| B: ≤8 fns / ≤800 B per call | 24 | 21 | 46k | 33k | 6% | 390 s |
+| C: DeepSeek <100 B (+review), rest as B | 21 | 18 | 81k (+DS 27k) | 40k (+DS 67k) | 7% | 425 s |
+
+(*) the miss was a dropped stream (transport), now retried in place.
+
+- Output (reasoning, ~1.2k/fn) drives the quota and doesn't shrink with batch size; bigger batches only trim the
+  already-small input and make calls slower. Keep 4. `--batch-bytes` (run + lanes) stays available, default off.
+- DeepSeek for 48-100 B loses: its failures fall back to single Codex calls plus reviews, costing more Codex than
+  doing them in a batch. Keep DeepSeek at <48 B + clones.
+- No cache hits when all calls start at once (A); input is cheap, not worth staggering.
+- Retry causes (216 rejections in transcripts): 60% missing globals.h (auto-fixed since 4c31145). Of the rest:
+  indirect tail jumps written as calls (~29 incl. inline-asm follow-ups) -> packet now warns up front;
+  `__ftol2` "dropped call" (MSVC float->int helper; models faked references + hand x87 code) -> semcheck exempts
+  MSVC code-gen helpers (__ftol2, __allmul/div/rem/shl/shr, __alloca_probe, _chkstk), packet says write the cast;
+  EH-frame handler stubs declared as CSF_FUNC -> packet notes the fs:[0] frame; gate's new/delete check fired on
+  comments ("the new block") -> comments/strings ignored; Hex-Rays `_DWORD`/`_BYTE` -> auto-fixed to <cstdint>.
+  20 accepted files re-gated after these changes: 20/20 pass.
+- Transport: dropped stream / 5xx / timeout retried up to 2x (5 s, 10 s) instead of escalating.
+- Monitor shows the run's settings (transport, effort, batching, DeepSeek tier, review, quota cap), batch size
+  of in-flight calls, Codex tokens per function, cache %, first-try rate, batched share, auto-fixes, deferrals,
+  transport retries; `codex exec` count only when the CLI transport is used.

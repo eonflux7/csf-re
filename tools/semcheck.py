@@ -159,7 +159,10 @@ def orig_refs(ea, db):
 
 
 # Compiler EH/SEH runtime reached from the function's unwind thunk; our compiler emits its own.
-EH_HELPER = re.compile(r"CxxFrameHandler|_EH_prolog|_SEH_prolog|_SEH_epilog|_except_handler|__security_check")
+EH_HELPER = re.compile(r"CxxFrameHandler|_EH_prolog|_SEH_prolog|_SEH_epilog|_except_handler|__security_check"
+                       # MSVC's code-gen helpers for float->int casts, 64-bit arithmetic and stack probes: a plain
+                       # cast / int64 op / large local is the faithful source; clang lowers it its own way
+                       r"|^__ftol2?(_sse)?$|^__a(u)?ll(mul|div|rem|shl|shr)$|^__alloca_probe|^__chkstk$|^_chkstk$")
 
 
 def ida_switches(ea):

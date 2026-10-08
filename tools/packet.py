@@ -187,6 +187,9 @@ def stl_note(ea):
             "size and order). Allocate/free with exactly the functions the original calls.")
 
 
+CODEGEN_HELPER = re.compile(r"^__ftol2?(_sse)?$|^__a(u)?ll(mul|div|rem|shl|shr)$|^__alloca_probe|^_?_chkstk$")
+
+
 def build(db, ea, with_asm_limit=400):
     f = db.F[ea]
     row = db.rows[ea]
@@ -223,6 +226,20 @@ def build(db, ea, with_asm_limit=400):
     note = stl_note(ea)
     if note:
         out.append(note)
+    sw = {int(k) for k in ((ida_view(ea) or {}).get("switches") or {})}
+    tails = [i for i in disasm(ea, f["size"]) if i.mnemonic == "jmp" and not i.op_str.startswith("0x")
+             and i.address not in sw]
+    ins = disasm(ea, f["size"])
+    if any("fs:" in i.op_str for i in ins[:12]):
+        out.append("\n## Exception frame\nThe prologue (`push -1; push 0x...; mov eax, fs:[0]`) is MSVC's C++ "
+                   "exception frame, emitted for locals with destructors / try blocks. Don't reproduce it and don't "
+                   "reference the pushed handler address (not a function); just write the C++ with those locals.")
+    if tails:  # the gate rejects a call here: say so up front (was the most common real retry)
+        out.append(f"\n## Indirect tail jump\nThe original ends in `jmp {tails[0].op_str}` at 0x{tails[0].address:08X}: it "
+                   "forwards the caller's stack args and registers untouched to a target of unknown signature. Do NOT "
+                   "turn it into a call. Write that path as a naked thunk: `static __declspec(naked) void F() { __asm "
+                   "{ ... jmp dword ptr [eax+0xNN] } }`, copying the original's register setup (only mov/lea/add/sub/"
+                   "test/cmp/je/jne, at most 8, ending in the jmp).")
     out.append("\n## Hex-Rays pseudocode (names substituted where known)\n```c\n" + substitute_names(db, src) + "\n```")
     if f["size"] <= with_asm_limit:
         out.append("\n## Disassembly (authoritative for signedness / exact semantics)\n```asm\n" +
@@ -235,6 +252,10 @@ def build(db, ea, with_asm_limit=400):
             cproto = cs.splitlines()[0] if cs else "?"
             status = cr["status"] if cr else "?"
             nm = db.name(c) or f"sub_{c:X}"
+            if CODEGEN_HELPER.search(nm):
+                out.append(f"- 0x{c:08X} `{nm}`: MSVC code-gen helper. Do NOT call or reference it; write the plain C++ "
+                           "it came from (a float->int cast, int64 arithmetic, a large local array)")
+                continue
             out.append(f"- 0x{c:08X} `{nm}` [{status}] rets={ret_bytes(c, db.F[c]['size']) if c in db.F else '?'} "
                        f"proto: `{cproto}`" + ("  NORETURN (throws/aborts): still call it on exactly the same "
                                                "condition, even if the branch looks unreachable" if "__noreturn" in cproto else ""))
