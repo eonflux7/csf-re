@@ -9,8 +9,8 @@
 
 CSF_GLOBAL(int, g_MinimumCountThreshold, 0x840A80);
 
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x50D190, ());
-CSF_FUNC(unsigned int, __fastcall, GlobalState_ApplyEvent, 0x50F790,
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x50D190, ());
+CSF_FUNC(unsigned int, __fastcall, Game_DispatchMenuRequest, 0x50F790,
          (void* self, void* edx, int a2, int a3, int a4, int a5));
 
 static char __fastcall MenuProfiles_CheckProfileCountAndSetState(void* self, void* /*edx*/)
@@ -24,8 +24,8 @@ static char __fastcall MenuProfiles_CheckProfileCountAndSetState(void* self, voi
         return 0;
     }
 
-    void* globalState = reinterpret_cast<void*>(static_cast<intptr_t>(GetGlobalState()));
-    GlobalState_ApplyEvent(globalState, nullptr, 0x47453138, 1, 0x10, 0);
+    void* globalState = reinterpret_cast<void*>(static_cast<intptr_t>(GetGlobalState_50D190()));
+    Game_DispatchMenuRequest(globalState, nullptr, 0x47453138, 1, 0x10, 0);
     CSF_AT(int, self, 0x38) = 6;
     return 1;
 }

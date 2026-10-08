@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(char, __fastcall, CGuiControl_HandleSelectionInput, 0x00718510,
+CSF_FUNC(char, __fastcall, CGuiControl_HandleSelectionInput_718510, 0x00718510,
          (CGuiControl* self, void* edx, int input, int inputData));
 CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x00718700,
          (CGuiSlider* self, void* edx));
@@ -125,7 +125,7 @@ static char __fastcall CGuiSlider_HandleSliderInput(
                 thumb, nullptr, input, inputData);
     }
 
-    CGuiControl_HandleSelectionInput(self, nullptr, input, inputData);
+    CGuiControl_HandleSelectionInput_718510(self, nullptr, input, inputData);
     return CGuiSlider_RedirectConsoleArrowSelection(self, nullptr);
 }
 

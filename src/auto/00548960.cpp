@@ -4,13 +4,13 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(char, __fastcall, CMenuSoundOptions_Update,
+CSF_FUNC(char, __fastcall, CMenuSoundOptions_StoreSliderValueAndRefresh,
          0x0053CEE0, (float* self, void* edx, int updateArgument));
 
 static int __fastcall CMenuSoundOptionsPC_UpdateXFiControls(
     CMenuSoundOptionsPC* self, void* /*edx*/, int updateArgument)
 {
-    CMenuSoundOptions_Update(
+    CMenuSoundOptions_StoreSliderValueAndRefresh(
         reinterpret_cast<float*>(self), nullptr, updateArgument);
 
     int result = static_cast<int>(self->field_005c);

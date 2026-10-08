@@ -4,9 +4,9 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __cdecl, MenuEula_FreeTemporaryText, 0x00690E60,
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60,
          (void* block));
-CSF_FUNC(int, __fastcall, MenuEula_ForwardControlToParent, 0x00718660,
+CSF_FUNC(int, __fastcall, CGuiSlider_ForwardSelfToParent, 0x00718660,
          (void* self, void* edx));
 
 static void* __fastcall CMenuEula_UpdateNavigationButtons(
@@ -56,7 +56,7 @@ static void* __fastcall CMenuEula_UpdateNavigationButtons(
 
     if ((result & 0xffu) == 0)
     {
-        result = static_cast<uint32_t>(MenuEula_ForwardControlToParent(
+        result = static_cast<uint32_t>(CGuiSlider_ForwardSelfToParent(
             reinterpret_cast<void*>(self->field_0030), nullptr));
     }
 
@@ -65,7 +65,7 @@ static void* __fastcall CMenuEula_UpdateNavigationButtons(
         void* block = CSF_AT(void*, temporaryText, 0x04);
         result = reinterpret_cast<uintptr_t>(block);
         if (block)
-            result = static_cast<uint32_t>(MenuEula_FreeTemporaryText(block));
+            result = static_cast<uint32_t>(Mem_FreeDebug(block));
     }
 
     return reinterpret_cast<void*>(result);

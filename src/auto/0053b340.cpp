@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(void, __cdecl, GameOptions_NotifyUnusedOptionState, 0x00506AC0,
+CSF_FUNC(void, __cdecl, Nullsub_506AC0, 0x00506AC0,
          (std::uint32_t state));
 
 static void __fastcall CMenuGameOptions_HandleOptionButtonEvent(
@@ -45,7 +45,7 @@ static void __fastcall CMenuGameOptions_HandleOptionButtonEvent(
         const std::uint32_t state =
             reinterpret_cast<std::uint32_t (__fastcall*)(void*, void*)>(
                 CSF_AT(void**, control, 0)[0x2AC / 4])(control, nullptr);
-        GameOptions_NotifyUnusedOptionState(state);
+        Nullsub_506AC0(state);
         return;
     }
     else if ((button = self->field_0044) != 0 &&

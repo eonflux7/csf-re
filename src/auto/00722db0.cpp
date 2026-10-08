@@ -2,7 +2,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(int, __fastcall, ApplyObjectValue, 0x00714750,
+CSF_FUNC(int, __fastcall, CGuiListBoxBase_SetItemHeight, 0x00714750,
          (int* self, void* edx, int value));
 
 static int __fastcall ForwardLinkedObjectAndApplyValue(
@@ -22,7 +22,7 @@ static int __fastcall ForwardLinkedObjectAndApplyValue(
             int value = reinterpret_cast<int (__fastcall*)(void*, void*, int)>(
                 CSF_AT(void**, object, 0)[6])(object, nullptr, 1);
 
-            return ApplyObjectValue(self, nullptr, value);
+            return CGuiListBoxBase_SetItemHeight(self, nullptr, value);
         }
     }
     return result;

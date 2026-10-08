@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_TestArrowEligibility, 0x00718700,
+CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x00718700,
          (CGuiControl* self, void* edx));
 
 static char __fastcall CGuiSlider_RedirectConsoleArrowSelection(
@@ -26,7 +26,7 @@ static char __fastcall CGuiSlider_RedirectConsoleArrowSelection(
     if (selectedPart == reinterpret_cast<CGuiControl*>(self->m_pArrowUp))
     {
         result = static_cast<std::uint8_t>(
-            CGuiControl_TestArrowEligibility(selectedPart, nullptr));
+            CGuiSlider_IsSelectableAndNotType10(selectedPart, nullptr));
         if (!result)
         {
             auto* arrowDown =
@@ -41,7 +41,7 @@ static char __fastcall CGuiSlider_RedirectConsoleArrowSelection(
     if (selectedPart == reinterpret_cast<CGuiControl*>(self->m_pArrowDown))
     {
         result = static_cast<std::uint8_t>(
-            CGuiControl_TestArrowEligibility(selectedPart, nullptr));
+            CGuiSlider_IsSelectableAndNotType10(selectedPart, nullptr));
         if (!result)
         {
             auto* arrowUp =

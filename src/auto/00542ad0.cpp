@@ -26,7 +26,7 @@ CSF_FUNC(int, __fastcall, MenuControls_StoreParams, 0x542F70, (void* self, void*
 
 // 0x00428480 -- __cdecl query returning an integer result (no callee cleanup; the
 // caller does `add esp, 4`).
-CSF_FUNC(int, __cdecl, MenuControls_QueryParam, 0x428480, (int a1));
+CSF_FUNC(int, __cdecl, MenuBase_DefaultHandler, 0x428480, (int a1));
 
 // 0x00542AD0
 // Forwards the incoming "this" (ecx) plus both of its own stack arguments to the
@@ -35,7 +35,7 @@ CSF_FUNC(int, __cdecl, MenuControls_QueryParam, 0x428480, (int a1));
 static int __fastcall MenuControls_StoreParamsThenQueryParam(void* self, void* /*edx*/, int a1, int a2)
 {
     MenuControls_StoreParams(self, nullptr, a1, a2);
-    return MenuControls_QueryParam(a1);
+    return MenuBase_DefaultHandler(a1);
 }
 
 HOOK(0x542AD0, MenuControls_StoreParamsThenQueryParam, "auto");

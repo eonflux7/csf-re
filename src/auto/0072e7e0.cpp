@@ -6,7 +6,7 @@
 #include "legacy/string.h"
 
 // char __thiscall sub_72C870(_DWORD *this, int a2)  rets=[4]
-CSF_FUNC(char, __fastcall, CGuiRadioGroup_ApplyValue_0x72C870, 0x72C870,
+CSF_FUNC(char, __fastcall, CGuiPanel_AddControl, 0x72C870,
          (CGuiRadioGroup* self, void* /*edx*/, int a2));
 
 // Forward a non-zero value to the group's value handler; a zero value is
@@ -14,7 +14,7 @@ CSF_FUNC(char, __fastcall, CGuiRadioGroup_ApplyValue_0x72C870, 0x72C870,
 static char __fastcall CGuiRadioGroup_SetValueIfNonZero(CGuiRadioGroup* self, void* /*edx*/, int a2)
 {
     if (a2)
-        return CGuiRadioGroup_ApplyValue_0x72C870(self, nullptr, a2);
+        return CGuiPanel_AddControl(self, nullptr, a2);
     return static_cast<char>(a2);
 }
 

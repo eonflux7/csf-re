@@ -4,7 +4,7 @@
 #include "legacy/string.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(legacy::string*, __fastcall, AssignStringBuffer, 0x00429B60,
+CSF_FUNC(legacy::string*, __fastcall, AssignStringRange_429B60, 0x00429B60,
          (legacy::string* self, void* edx, char* text, unsigned int length));
 
 static legacy::string* __fastcall CGuiPanel_SetStoredText(
@@ -22,7 +22,7 @@ static legacy::string* __fastcall CGuiPanel_SetStoredText(
     const unsigned int length =
         static_cast<unsigned int>(cursor - (text + 1));
 
-    return AssignStringBuffer(&self->m_str15C, nullptr, text, length);
+    return AssignStringRange_429B60(&self->m_str15C, nullptr, text, length);
 }
 
 HOOK(0x0072C130, CGuiPanel_SetStoredText, "auto");

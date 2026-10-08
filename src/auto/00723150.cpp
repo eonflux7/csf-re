@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiListBox_GetColumnCount, 0x00714830,
+CSF_FUNC(int, __fastcall, CGuiTextureListBox_GetColumnCount, 0x00714830,
          (CGuiListBox* self, void* edx));
 
 static int __fastcall CGuiListBox_SetRowColor(
@@ -12,7 +12,7 @@ static int __fastcall CGuiListBox_SetRowColor(
     const uint32_t* color)
 {
     uint32_t remaining =
-        static_cast<uint32_t>(CGuiListBox_GetColumnCount(self, nullptr));
+        static_cast<uint32_t>(CGuiTextureListBox_GetColumnCount(self, nullptr));
 
     if (remaining != 0) {
         const uint32_t rowOffset = static_cast<uint32_t>(rowIndex) << 4;

@@ -4,17 +4,17 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(void, __fastcall, PrepareButtonQuadProcessing, 0x007260F0,
+CSF_FUNC(void, __fastcall, CGuiButton_ProcessPermanentQuad, 0x007260F0,
          (CGuiButton* self, void* edx));
 CSF_FUNC(char, __fastcall, IsQuadHandledByEffect, 0x00731ED0,
          (void* self, void* edx, int* quad));
-CSF_FUNC(void, __fastcall, ProcessQuadWithScaledAlpha, 0x00724F90,
+CSF_FUNC(void, __fastcall, CGuiButton_ProcessQuadWithScaledAlpha, 0x00724F90,
          (CGuiButton* self, void* edx, int* quad, float alpha));
 
 static void __fastcall CGuiButton_ProcessCurrentStateQuad(
     CGuiButton* self, void* /*edx*/)
 {
-    PrepareButtonQuadProcessing(self, nullptr);
+    CGuiButton_ProcessPermanentQuad(self, nullptr);
 
     int* hoverQuad = reinterpret_cast<int*>(self->m_pHoverQuad);
     void* effect = reinterpret_cast<void*>(self->m_pFx);
@@ -29,7 +29,7 @@ static void __fastcall CGuiButton_ProcessCurrentStateQuad(
             reinterpret_cast<int*(__fastcall*)(void*, void*)>(
                 CSF_AT(void**, self, 0)[0x264 / 4]);
         int* quad = getOverrideQuad(self, nullptr);
-        ProcessQuadWithScaledAlpha(self, nullptr, quad, 1.0f);
+        CGuiButton_ProcessQuadWithScaledAlpha(self, nullptr, quad, 1.0f);
         return;
     }
 
@@ -47,7 +47,7 @@ static void __fastcall CGuiButton_ProcessCurrentStateQuad(
             quad = reinterpret_cast<int*>(self->m_pIdleQuad);
     }
 
-    ProcessQuadWithScaledAlpha(self, nullptr, quad, 1.0f);
+    CGuiButton_ProcessQuadWithScaledAlpha(self, nullptr, quad, 1.0f);
 }
 
 HOOK(0x00726180, CGuiButton_ProcessCurrentStateQuad, "auto");

@@ -8,7 +8,7 @@ CSF_GLOBAL(uint8_t, g_AccountMenuSecondaryFlag, 0x008B068C);
 CSF_GLOBAL(const char*, g_pszMenu_P_LbFLIn, 0x00899B64);
 
 static void* (__cdecl* const GetGlobalState)() =
-    reinterpret_cast<void* (__cdecl*)()>(0x006A6D70);
+    reinterpret_cast<void* (__cdecl*)()>(CSF_ADDR_FN(0x006A6D70));
 
 static int __fastcall MenuMpAccounts_InitializePlayerList(
     void* self, void* /*edx*/)

@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "globals.h"
 
-CSF_FUNC(void*, __cdecl, GameMemchr, 0x007B0510,
+CSF_FUNC(void*, __cdecl, _memchr, 0x007B0510,
          (const void* buffer, int character, std::size_t count));
 
 static int __fastcall MenuMpPause_FindFirstCharacterNotInSet(
@@ -38,7 +38,7 @@ static int __fastcall MenuMpPause_FindFirstCharacterNotInSet(
         const int character =
             static_cast<int>(*reinterpret_cast<const std::int8_t*>(cursor));
 
-        if (GameMemchr(characterSet, character, setLength) == nullptr)
+        if (_memchr(characterSet, character, setLength) == nullptr)
         {
             char* currentBase = static_cast<char*>(storage);
             if (CSF_AT(std::uint32_t, self, 0x18) >= 0x10)

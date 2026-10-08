@@ -6,14 +6,14 @@
 // Vector assignment helper (clone of the pointer-vector assign; 4-byte elements).
 // Member storage layout: +0x04 = begin, +0x08 = end, +0x0C = capacity end.
 
-CSF_FUNC(int, __cdecl, FreeDebugStorage, 0x00690E60, (void* block));
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_FUNC(void*, __fastcall, ReleaseVectorStorage, 0x006C8D30,
          (void* self, void* edx, void* block, int count));
-CSF_FUNC(void*, __cdecl, CopyMemory, 0x007AEE60,
+CSF_FUNC(void*, __cdecl, _memcpy, 0x007AEE60,
          (void* destination, const void* source, std::size_t bytes));
 CSF_FUNC(int, __cdecl, CopyWordsAndAdvance, 0x0071A3E0,
          (void* source, int sourceEnd, void* destination));
-CSF_FUNC(int, __fastcall, CopySourceRangeToDestination, 0x0050C9F0,
+CSF_FUNC(int, __fastcall, ForwardToMenuManagerDispatch, 0x0050C9F0,
          (void* self, void* edx, int sourceBegin, int sourceEnd, int destinationBegin));
 CSF_FUNC(char, __fastcall, AllocateVectorStorage, 0x00730B40,
          (void* self, void* edx, int count));
@@ -40,7 +40,7 @@ static void* __fastcall AssignWordVector(void* self, void* /*edx*/, void* source
     if (sourceCount == 0) {
         const uint32_t storage = CSF_AT(uint32_t, self, 0x04);
         if (storage != 0)
-            FreeDebugStorage(reinterpret_cast<void*>(storage));
+            Mem_FreeDebug(reinterpret_cast<void*>(storage));
 
         CSF_AT(uint32_t, self, 0x04) = 0;
         CSF_AT(uint32_t, self, 0x08) = 0;
@@ -58,7 +58,7 @@ static void* __fastcall AssignWordVector(void* self, void* /*edx*/, void* source
         const uint32_t copyBegin = CSF_AT(uint32_t, source, 0x04);
         const uint32_t copyBytes =
             GetWordDistance(initialSourceEnd, copyBegin) << 2;
-        CopyMemory(reinterpret_cast<void*>(destinationBegin),
+        _memcpy(reinterpret_cast<void*>(destinationBegin),
                    reinterpret_cast<const void*>(copyBegin), copyBytes);
 
         const uint32_t updatedSourceBegin = CSF_AT(uint32_t, source, 0x04);
@@ -91,7 +91,7 @@ static void* __fastcall AssignWordVector(void* self, void* /*edx*/, void* source
 
         const uint32_t destinationEnd = CSF_AT(uint32_t, self, 0x08);
         const uint32_t sourceEnd = CSF_AT(uint32_t, source, 0x08);
-        const int newEnd = CopySourceRangeToDestination(
+        const int newEnd = ForwardToMenuManagerDispatch(
             self, nullptr, static_cast<int>(split),
             static_cast<int>(sourceEnd), static_cast<int>(destinationEnd));
         CSF_AT(uint32_t, self, 0x08) = static_cast<uint32_t>(newEnd);
@@ -116,7 +116,7 @@ static void* __fastcall AssignWordVector(void* self, void* /*edx*/, void* source
         const uint32_t newStorage = CSF_AT(uint32_t, self, 0x04);
         const uint32_t sourceEnd = CSF_AT(uint32_t, source, 0x08);
         const uint32_t sourceBegin = CSF_AT(uint32_t, source, 0x04);
-        const int newEnd = CopySourceRangeToDestination(
+        const int newEnd = ForwardToMenuManagerDispatch(
             self, nullptr, static_cast<int>(sourceBegin),
             static_cast<int>(sourceEnd), static_cast<int>(newStorage));
         CSF_AT(uint32_t, self, 0x08) = static_cast<uint32_t>(newEnd);

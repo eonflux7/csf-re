@@ -5,7 +5,7 @@
 
 CSF_GLOBAL(std::uint32_t, g_SwitchVtable, 0x00866B58);
 
-CSF_FUNC(int, __fastcall, ReleaseResource, 0x006923C0,
+CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
 CSF_FUNC(int, __fastcall, CGuiControl_Destroy, 0x00719B10,
          (CGuiControl* self, void* edx));
@@ -16,28 +16,28 @@ static int __fastcall CGuiSwitch_Destroy(CGuiSwitch* self, void* /*edx*/)
     CSF_AT(void**, self, 0) = reinterpret_cast<void**>(&g_SwitchVtable);
     if (resource)
     {
-        ReleaseResource(static_cast<std::uint8_t*>(resource) + 4, nullptr);
+        ReleaseObjectReference(static_cast<std::uint8_t*>(resource) + 4, nullptr);
         CSF_AT(void*, self, 0x134) = nullptr;
     }
 
     resource = CSF_AT(void*, self, 0x138);
     if (resource)
     {
-        ReleaseResource(static_cast<std::uint8_t*>(resource) + 4, nullptr);
+        ReleaseObjectReference(static_cast<std::uint8_t*>(resource) + 4, nullptr);
         CSF_AT(void*, self, 0x138) = nullptr;
     }
 
     resource = CSF_AT(void*, self, 0x13C);
     if (resource)
     {
-        ReleaseResource(static_cast<std::uint8_t*>(resource) + 4, nullptr);
+        ReleaseObjectReference(static_cast<std::uint8_t*>(resource) + 4, nullptr);
         CSF_AT(void*, self, 0x13C) = nullptr;
     }
 
     resource = CSF_AT(void*, self, 0x140);
     if (resource)
     {
-        ReleaseResource(static_cast<std::uint8_t*>(resource) + 4, nullptr);
+        ReleaseObjectReference(static_cast<std::uint8_t*>(resource) + 4, nullptr);
         CSF_AT(void*, self, 0x140) = nullptr;
     }
 

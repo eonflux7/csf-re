@@ -4,11 +4,11 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x0050D190, ());
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x0075FDF0, ());
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_75FDF0, 0x0075FDF0, ());
 
 // The original replaces only AL before passing EAX to the control.
-// Preserve the upper bytes, including those returned by GetGlobalState.
+// Preserve the upper bytes, including those returned by GetGlobalState_50D190.
 static uint32_t __fastcall CMenuGameOptions_GetRawDisableArgument(
     CMenuGameOptions* self, void* /*edx*/)
 {
@@ -18,7 +18,7 @@ static uint32_t __fastcall CMenuGameOptions_GetRawDisableArgument(
 
     if (static_cast<uint8_t>(raw) != 0)
     {
-        raw = static_cast<uint32_t>(GetGlobalState());
+        raw = static_cast<uint32_t>(GetGlobalState_50D190());
         if (CSF_AT(uint8_t, reinterpret_cast<void*>(raw), 0xD0) != 0)
             return raw & 0xFFFFFF00u;
     }
@@ -118,7 +118,7 @@ static int __fastcall CMenuGameOptions_RefreshOptionControls(
             (control, nullptr, 1);
     }
 
-    result = static_cast<uint32_t>(GetGlobalValue());
+    result = static_cast<uint32_t>(GetGlobalValue_75FDF0());
     if (CSF_AT(uint8_t, reinterpret_cast<void*>(result), 0xC1) == 0)
     {
         control = reinterpret_cast<void*>(self->field_0048);

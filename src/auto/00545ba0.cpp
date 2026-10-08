@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 
 // Destructor body of CMenuSaveGame (destroys the screen's widgets/listbox).
-CSF_FUNC(void, __fastcall, CMenuSaveGame_DestroyBody, 0x5455C0,
+CSF_FUNC(void, __fastcall, CMenuSaveGame_Destruct, 0x5455C0,
          (CMenuSaveGame* self, void* edx));
 
 // Deleting destructor wrapper: runs the destructor body, then releases the
@@ -12,7 +12,7 @@ CSF_FUNC(void, __fastcall, CMenuSaveGame_DestroyBody, 0x5455C0,
 static void* __fastcall CMenuSaveGame_Destroy(
     CMenuSaveGame* self, void* /*edx*/, char flags)
 {
-    CMenuSaveGame_DestroyBody(self, nullptr);
+    CMenuSaveGame_Destruct(self, nullptr);
     if ((flags & 1) != 0)
         game::Mem_Free(self);
     return self;

@@ -12,7 +12,7 @@ CSF_FUNC(std::uint32_t*, __fastcall, InitializeState, 0x00725350,
          (std::uint32_t* self, void* edx));
 CSF_FUNC(int, __fastcall, CanConfigureEffect, 0x007319C0,
          (void* self, void* edx, int effect));
-CSF_FUNC(char, __fastcall, QueryEffectState, 0x00731AB0,
+CSF_FUNC(char, __fastcall, Fx_IsChannelActive, 0x00731AB0,
          (void* self, void* edx, int effect));
 CSF_FUNC(int, __fastcall, ConfigureEffect, 0x00731A60,
          (void* self, void* edx, int effect, const void* state));
@@ -52,7 +52,7 @@ static void __fastcall CGuiButton_StartTextFadeEffect(
     EffectStateStorage state;
     InitializeState(reinterpret_cast<std::uint32_t*>(&state), nullptr);
 
-    if (static_cast<std::uint8_t>(QueryEffectState(
+    if (static_cast<std::uint8_t>(Fx_IsChannelActive(
             reinterpret_cast<void*>(self->m_pFx), nullptr, 2)) != 0)
     {
         std::uint32_t color[4];
@@ -74,7 +74,7 @@ static void __fastcall CGuiButton_StartTextFadeEffect(
     void* effects = reinterpret_cast<void*>(self->m_pFx);
     state.secondParameter = secondParameter;
     state.mode = static_cast<std::uint8_t>(mode);
-    const char previousState = QueryEffectState(effects, nullptr, 4);
+    const char previousState = Fx_IsChannelActive(effects, nullptr, 4);
 
     effects = reinterpret_cast<void*>(self->m_pFx);
     state.previousState = static_cast<std::uint8_t>(previousState);

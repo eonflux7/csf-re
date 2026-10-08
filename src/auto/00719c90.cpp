@@ -5,7 +5,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __cdecl, CopyMemory, 0x007AEE60,
+CSF_FUNC(void*, __cdecl, _memcpy, 0x007AEE60,
          (void* destination, const void* source, std::size_t byteCount));
 
 static void __fastcall CGuiControl_RemoveListener(
@@ -43,7 +43,7 @@ static void __fastcall CGuiControl_RemoveListener(
         static_cast<std::uint32_t>(
             static_cast<std::int32_t>(end - sourceAddress) >> 2) << 2;
 
-    CopyMemory(reinterpret_cast<void*>(destinationAddress),
+    _memcpy(reinterpret_cast<void*>(destinationAddress),
                reinterpret_cast<const void*>(sourceAddress),
                byteCount);
 

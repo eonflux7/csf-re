@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(char, __fastcall, CGuiControl_ProcessSelectionInput, 0x00718360,
+CSF_FUNC(char, __fastcall, CGuiControl_ProcessSelectionInput_718360, 0x00718360,
          (CGuiControl* self, void* edx, int input));
 CSF_FUNC(int, __fastcall, CGuiSlider_GetPositionFromCoordinate, 0x0072D2B0,
          (CGuiSlider* self, void* edx, int coordinate));
@@ -16,7 +16,7 @@ static int __fastcall CGuiSlider_ProcessInput(CGuiSlider* self, void* /*edx*/, i
     if (static_cast<uint8_t>(result) == 0)
         return result;
 
-    CGuiControl_ProcessSelectionInput(self, nullptr, input);
+    CGuiControl_ProcessSelectionInput_718360(self, nullptr, input);
     bool arrowHandled = false;
 
     void* arrow = reinterpret_cast<void*>(self->m_pArrowUp);

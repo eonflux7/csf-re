@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(std::int32_t**, __fastcall, FindMetricEntry, 0x00739FA0,
+CSF_FUNC(std::int32_t**, __fastcall, FindUnsignedWordTreeEntry, 0x00739FA0,
          (std::int32_t** self, void* edx, std::int32_t** result,
           std::uint16_t* key));
 
@@ -15,7 +15,7 @@ static double __fastcall C_00867444_GetScaledMetricValue(
     std::int32_t* iterator;
     std::int32_t key = 77;
 
-    std::int32_t* entry = *FindMetricEntry(
+    std::int32_t* entry = *FindUnsignedWordTreeEntry(
         reinterpret_cast<std::int32_t**>(
             reinterpret_cast<std::uint8_t*>(self) + 0x28),
         nullptr, &iterator, reinterpret_cast<std::uint16_t*>(&key));

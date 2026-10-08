@@ -7,8 +7,8 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-// int __cdecl GetGlobalState() at 0x50D190
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x50D190, ());
+// int __cdecl GetGlobalState_50D190() at 0x50D190
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x50D190, ());
 
 // const char* g_pszMenu_P_LbLaWa at 0x00899B74
 CSF_GLOBAL(const char*, g_pszMenu_P_LbLaWa, 0x899B74);
@@ -19,7 +19,7 @@ CSF_GLOBAL(const char*, g_pszMenu_P_LbLaWa, 0x899B74);
 // g_pszMenu_P_LbLaWa via vtbl[0x58/4]. Returns the second call's result.
 static int __fastcall MenuAccounts_ResetAndApplyLabel(void* self, void* /*edx*/)
 {
-    *reinterpret_cast<int*>(GetGlobalState() + 0xcc) = -1;
+    *reinterpret_cast<int*>(GetGlobalState_50D190() + 0xcc) = -1;
 
     void* labelObject = *reinterpret_cast<void**>(static_cast<uint8_t*>(self) + 0x38);
     void** labelVtbl = *reinterpret_cast<void***>(labelObject);

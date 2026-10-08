@@ -4,9 +4,9 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(unsigned int, __fastcall, AppendObjectPointer, 0x0050CDF0,
+CSF_FUNC(unsigned int, __fastcall, AppendFourByteElement_50CDF0, 0x0050CDF0,
          (void* self, void* edx, void** value));
-CSF_FUNC(unsigned int, __fastcall, InsertObjectPointers, 0x0050CAA0,
+CSF_FUNC(unsigned int, __fastcall, InsertFourByteElements_50CAA0, 0x0050CAA0,
          (void* self, void* edx, void* position, unsigned int count, void** value));
 
 static void* GetLinkedObject(void* object)
@@ -38,7 +38,7 @@ static unsigned int __fastcall C_00864508_RegisterAndInsertObject(
     if (GetLinkedObject(object))
     {
         if (HasOrderingFlag(GetLinkedObject(object)))
-            return AppendObjectPointer(list, nullptr, &object);
+            return AppendFourByteElement_50CDF0(list, nullptr, &object);
     }
 
     const uint32_t begin = self->field_0048;
@@ -73,7 +73,7 @@ static unsigned int __fastcall C_00864508_RegisterAndInsertObject(
         }
     }
 
-    return InsertObjectPointers(
+    return InsertFourByteElements_50CAA0(
         list, nullptr, reinterpret_cast<void*>(position), 1u, &object);
 }
 

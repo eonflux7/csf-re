@@ -8,9 +8,9 @@ static CSF_GLOBAL(void*, g_FontVtable, 0x00867444);
 
 static CSF_FUNC(C_0085e65c*, __fastcall, ConstructFontBase, 0x00692390,
                 (C_0085e65c* self, void* edx));
-static CSF_FUNC(void*, __fastcall, AllocateFontTreeSentinel, 0x00739A70,
+static CSF_FUNC(void*, __fastcall, CreateEmptyRecord, 0x00739A70,
                 (void* tree, void* edx));
-static CSF_FUNC(int, __fastcall, ClearAndResetFont, 0x00739EC0,
+static CSF_FUNC(int, __fastcall, C_00867444_ClearAndReset, 0x00739EC0,
                 (C_00867444* self, void* edx));
 
 static int __fastcall C_00867444_Construct(
@@ -24,7 +24,7 @@ static int __fastcall C_00867444_Construct(
     CSF_AT(std::uint32_t, self, 0x20) = 0;
     CSF_AT(std::uint8_t, self, 0x10) = 0;
 
-    void* sentinel = AllocateFontTreeSentinel(tree, nullptr);
+    void* sentinel = CreateEmptyRecord(tree, nullptr);
     CSF_AT(void*, self, 0x2C) = sentinel;
     CSF_AT(std::uint8_t, sentinel, 0x49) = 1;
 
@@ -44,7 +44,7 @@ static int __fastcall C_00867444_Construct(
     CSF_AT(std::uint32_t, self, 0x58) = 0;
     CSF_AT(int, self, 0x08) = owner;
 
-    ClearAndResetFont(self, nullptr);
+    C_00867444_ClearAndReset(self, nullptr);
     return static_cast<int>(reinterpret_cast<std::uintptr_t>(self));
 }
 

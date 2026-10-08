@@ -10,9 +10,9 @@ CSF_FUNC(char, __fastcall, MenuMessageBox_AdvanceActiveIndicator,
          0x00529E50, (CMenuMessageBox* self, void* edx));
 CSF_FUNC(uint8_t, __fastcall, CMenuMessageBox_UpdateSlideAnimation,
          0x00529EE0, (CMenuMessageBox* self, void* edx, float deltaTime));
-CSF_FUNC(char, __fastcall, CMenuMessageBox_UpdateButtonState,
+CSF_FUNC(char, __fastcall, MenuMessageBox_CloseAndReportResult,
          0x0052B550, (CMenuMessageBox* self, void* edx));
-CSF_FUNC(void*, __cdecl, MenuMessageBox_GetGlobalSettings,
+CSF_FUNC(void*, __cdecl, GetGlobalValue_8BC1E0,
          0x00756A10, ());
 
 static float MenuMessageBox_ReadFloatBits(const uint32_t& bits)
@@ -44,7 +44,7 @@ static int __fastcall CMenuMessageBox_UpdateTimersAndSelection(
             return MenuMessageBox_ReleaseRasterAndReset(self, nullptr);
     }
 
-    CMenuMessageBox_UpdateButtonState(self, nullptr);
+    MenuMessageBox_CloseAndReportResult(self, nullptr);
     CMenuMessageBox_UpdateSlideAnimation(self, nullptr, deltaTime);
 
     const double indicatorElapsed =
@@ -53,7 +53,7 @@ static int __fastcall CMenuMessageBox_UpdateTimersAndSelection(
     MenuMessageBox_WriteFloatBits(self->field_09a4,
                                   static_cast<float>(indicatorElapsed));
 
-    void* settings = MenuMessageBox_GetGlobalSettings();
+    void* settings = GetGlobalValue_8BC1E0();
     // The timer is read again after the settings accessor.
     if (MenuMessageBox_ReadFloatBits(self->field_09a4) >=
         static_cast<double>(CSF_AT(float, settings, 0x2260)))

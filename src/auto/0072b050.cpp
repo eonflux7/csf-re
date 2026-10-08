@@ -5,10 +5,10 @@
 #include "types/auto_classes.h"
 
 static const auto CGuiControl_CheckProcessingState =
-    reinterpret_cast<int (__fastcall*)(CGuiControl*, void*)>(0x00718700);
+    reinterpret_cast<int (__fastcall*)(CGuiControl*, void*)>(CSF_ADDR_FN(0x00718700));
 
 static const auto CGuiControl_Process =
-    reinterpret_cast<char (__fastcall*)(CGuiControl*, void*, int)>(0x00718400);
+    reinterpret_cast<char (__fastcall*)(CGuiControl*, void*, int)>(CSF_ADDR_FN(0x00718400));
 
 static char __fastcall CGuiPanel_ProcessChildrenAndSelf(
     CGuiPanel* self, void* /*edx*/, int argument)

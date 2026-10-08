@@ -11,7 +11,7 @@
 //   arg4 = self (incoming ecx value)
 //   arg5 = a3   (duplicated, pushed first)
 // ---------------------------------------------------------------------------
-CSF_FUNC(int, __cdecl, ForwardedCall_71B4E0, 0x71B4E0,
+CSF_FUNC(int, __cdecl, CopyRecordRangeWithHandler, 0x71B4E0,
          (void* a1, void* a2, void* a3, void* a4, void* a5));
 
 // ---------------------------------------------------------------------------
@@ -21,12 +21,12 @@ CSF_FUNC(int, __cdecl, ForwardedCall_71B4E0, 0x71B4E0,
 // the original (ret 0xC) is reproduced exactly.
 //   entry : ecx = self, stack args a1, a2, a3
 //   pushes: a3, self, a3, a2, a1
-//   call  : ForwardedCall_71B4E0(a1, a2, a3, self, a3)
+//   call  : CopyRecordRangeWithHandler(a1, a2, a3, self, a3)
 // ---------------------------------------------------------------------------
 static int __fastcall ForwardTo71B4E0(void* self, void* /*edx*/,
                                       void* a1, void* a2, void* a3)
 {
-    return ForwardedCall_71B4E0(a1, a2, a3, self, a3);
+    return CopyRecordRangeWithHandler(a1, a2, a3, self, a3);
 }
 
 HOOK(0x71BC30, ForwardTo71B4E0, "auto");

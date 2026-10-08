@@ -14,7 +14,7 @@ CSF_GLOBAL(uint32_t, g_dwAccountEditScreenState, 0x0089A5EC);
 // Original callees, bound by address.
 CSF_FUNC(void, __cdecl, MenuAccounts_ResetPendingEdit, 0x006A6D40, (void));
 CSF_FUNC(int, __cdecl, GetGlobalDword_73C020, 0x0073C020, (void));
-CSF_FUNC(int, __fastcall, MenuAccounts_ConsumeSelectionId, 0x0073E920, (int* self, void* edx));
+CSF_FUNC(int, __fastcall, MenuCharSelect_FinalizePreviewSlot, 0x0073E920, (int* self, void* edx));
 
 static int __fastcall CMenuAccountEdit_ApplyChangesAndReload(CMenuAccountEdit* self, void* /*edx*/)
 {
@@ -29,7 +29,7 @@ static int __fastcall CMenuAccountEdit_ApplyChangesAndReload(CMenuAccountEdit* s
     MenuAccounts_ResetPendingEdit();
 
     int selection = GetGlobalDword_73C020();
-    MenuAccounts_ConsumeSelectionId(
+    MenuCharSelect_FinalizePreviewSlot(
         reinterpret_cast<int*>(static_cast<std::intptr_t>(selection)), nullptr);
 
     // Re-read self->field_0014 after the calls above, as the original does.

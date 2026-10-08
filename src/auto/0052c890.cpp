@@ -4,13 +4,13 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __cdecl, MenuProgressInput_GetGlobalContext, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, MenuProgressInput_GetDisplay,
+CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
+CSF_FUNC(void*, __fastcall, LookupObjectById,
          0x00652160, (void* self, void* edx));
 
 // Capture the residual EAX value: the original layout routine returns it,
 // although this callee's logical interface is void.
-CSF_FUNC(int, __fastcall, MenuProgressInput_CopyStateToTarget,
+CSF_FUNC(int, __fastcall, CGuiStatic_CopyStateToTarget,
          0x00718230, (void* self, void* edx, int* target));
 
 CSF_GLOBAL(float, g_UnsignedIntegerBias, 0x0082D744);
@@ -38,8 +38,8 @@ static int __fastcall C_008414e8_LayoutInputRows(
     C_008414e8* self, void* /*edx*/)
 {
     void* context = reinterpret_cast<void*>(
-        MenuProgressInput_GetGlobalContext());
-    void* display = MenuProgressInput_GetDisplay(context, nullptr);
+        GetGlobalInt());
+    void* display = LookupObjectById(context, nullptr);
     int* dimensions =
         reinterpret_cast<int* (__fastcall*)(void*, void*)>(
             CSF_AT(void**, display, 0)[0x18 / 4])(display, nullptr);
@@ -51,8 +51,8 @@ static int __fastcall C_008414e8_LayoutInputRows(
         screenHeight += static_cast<double>(g_UnsignedIntegerBias);
     const float heightScale = static_cast<float>(displayHeight / screenHeight);
 
-    context = reinterpret_cast<void*>(MenuProgressInput_GetGlobalContext());
-    display = MenuProgressInput_GetDisplay(context, nullptr);
+    context = reinterpret_cast<void*>(GetGlobalInt());
+    display = LookupObjectById(context, nullptr);
     dimensions =
         reinterpret_cast<int* (__fastcall*)(void*, void*)>(
             CSF_AT(void**, display, 0)[0x18 / 4])(display, nullptr);
@@ -125,7 +125,7 @@ static int __fastcall C_008414e8_LayoutInputRows(
                 CSF_AT(void**, row, 0)[0x110 / 4])(row, nullptr);
 
         row = C_008414e8_GetLayoutRow(self, index);
-        result = MenuProgressInput_CopyStateToTarget(
+        result = CGuiStatic_CopyStateToTarget(
             row, nullptr, reinterpret_cast<int*>(source));
 
         position[1] = static_cast<int>(

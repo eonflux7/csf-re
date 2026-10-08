@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(void, __cdecl, ApplyQuadTime, 0x00725630,
+CSF_FUNC(void, __cdecl, ApplyCenteredRotation, 0x00725630,
          (int quad, float time));
 
 static void __fastcall CGuiButton_ApplyPendingQuadTimes(
@@ -17,7 +17,7 @@ static void __fastcall CGuiButton_ApplyPendingQuadTimes(
         if (*timedFlag != 0) {
             const float time = CSF_AT(float, timedFlag, 4);
             const int quad = CSF_AT(int, timedFlag, -4);
-            ApplyQuadTime(quad, time);
+            ApplyCenteredRotation(quad, time);
             *timedFlag = 0;
         }
 
@@ -28,7 +28,7 @@ static void __fastcall CGuiButton_ApplyPendingQuadTimes(
     if (self->m_bPermanentTimed != 0) {
         const float time = self->m_permanentTime;
         const int quad = static_cast<int>(self->m_pPermanentQuad);
-        ApplyQuadTime(quad, time);
+        ApplyCenteredRotation(quad, time);
         self->m_bPermanentTimed = 0;
     }
 }

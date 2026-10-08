@@ -7,7 +7,7 @@
 #include "legacy/string.h"
 
 // Callee bindings (by address).
-CSF_FUNC(void*, __fastcall, InitEmbeddedSubobject, 0x712CC0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x712CC0, (void* self, void* edx));
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B056C, 0x506BD0, ());
 
 // __thiscall constructor: this in ecx, one stack argument (ret 4).
@@ -19,10 +19,10 @@ static void* __fastcall CMenuProfiles_Construct(void* self, void* /*edx*/, int m
 {
     void* embeddedSubobject = static_cast<uint8_t*>(self) + 4;
 
-    CSF_AT(uint32_t, self, 0) = 0x0083042C;
-    InitEmbeddedSubobject(embeddedSubobject, nullptr);
+    CSF_AT(uint32_t, self, 0) = CSF_ADDR_VT(0x0083042C);
+    C_00830438_Construct(embeddedSubobject, nullptr);
 
-    CSF_AT(uint32_t, self, 0) = 0x00842908;
+    CSF_AT(uint32_t, self, 0) = CSF_ADDR_VT(0x00842908);
     CSF_AT(uint32_t, embeddedSubobject, 0) = 0x008428B8;
     CSF_AT(uint32_t, self, 0x3C) = static_cast<uint32_t>(menuHandle);
     CSF_AT(uint32_t, self, 0x24) = 0;

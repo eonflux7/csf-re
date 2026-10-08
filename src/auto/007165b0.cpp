@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(int, __fastcall, Copy16ByteElement, 0x00715E70,
+CSF_FUNC(int, __fastcall, AssignPointerVector_715E70, 0x00715E70,
          (void* self, void* edx, const void* source));
 
 static int __cdecl Copy16ByteElementRange(int sourceBegin, int sourceEnd,
@@ -19,7 +19,7 @@ static int __cdecl Copy16ByteElementRange(int sourceBegin, int sourceEnd,
 
     do
     {
-        Copy16ByteElement(
+        AssignPointerVector_715E70(
             reinterpret_cast<void*>(destination),
             nullptr,
             reinterpret_cast<const void*>(source));

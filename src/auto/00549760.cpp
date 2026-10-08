@@ -11,7 +11,7 @@
 
 // Original callees (bound by address).
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, LookupObjectByGlobalId, 0x00652160, (int globalId, void* /*edx*/));
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160, (int globalId, void* /*edx*/));
 
 // Returns the settings object stored in CMenuVideoOptions::field_0024 (re-read on every access, as the original does).
 static void* CMenuVideoOptions_GetSettingsObject(CMenuVideoOptions* self)
@@ -70,7 +70,7 @@ static int __fastcall CMenuVideoOptions_FillSettingsSnapshot(CMenuVideoOptions* 
 
     // Fallback: object looked up through the global id.
     int globalId = GetGlobalInt();
-    void* foundObject = LookupObjectByGlobalId(globalId, nullptr);
+    void* foundObject = LookupObjectById(globalId, nullptr);
     if (foundObject == nullptr)
     {
         return 0;

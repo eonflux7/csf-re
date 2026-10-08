@@ -11,8 +11,8 @@
 #include "legacy/string.h"
 
 // Bound original callees and data by address.
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x0050D190, ());
-CSF_FUNC(void*, __fastcall, MenuEula_GetPanelObject, 0x006683F0, (void* self, void* edx));
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
+CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x006683F0, (void* self, void* edx));
 CSF_GLOBAL(const char*, g_pszMenu_P_MePrin, 0x00899AE4);
 
 // CMenuEula::HandleMessage (__thiscall, 2 stack args, ret 8).
@@ -24,7 +24,7 @@ static int __fastcall MenuEula_HandleMessage(void** self, void* /*edx*/, int msg
     if (msg == 1 || msg == 14)
     {
         // Clear the flag in the global state block.
-        uint8_t* globalState = static_cast<uint8_t*>(GetGlobalState());
+        uint8_t* globalState = static_cast<uint8_t*>(GetGlobalState_50D190());
         globalState[0xD0] = 0;
 
         // Slot 19 (+0x4C) of the object at self - 4, no arguments.
@@ -46,7 +46,7 @@ static int __fastcall MenuEula_HandleMessage(void** self, void* /*edx*/, int msg
         const uint8_t flag = *reinterpret_cast<const uint8_t*>(static_cast<uintptr_t>(param) + 56);
         if (flag != 0)
         {
-            void* panel = MenuEula_GetPanelObject(self, nullptr);
+            void* panel = GetReferencedObject(self, nullptr);
             void** panelVtbl = *reinterpret_cast<void***>(panel);
             return reinterpret_cast<int(__fastcall*)(void*, void*)>(panelVtbl[7])(panel, nullptr);
         }

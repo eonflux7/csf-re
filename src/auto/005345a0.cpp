@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 
 // Destructor body of CMenuLanguage (tears down the screen's members/resources).
-CSF_FUNC(void*, __fastcall, CMenuLanguage_DestroyBody, 0x5343E0,
+CSF_FUNC(void*, __fastcall, CMenuLanguage_Destroy_5343E0, 0x5343E0,
          (CMenuLanguage* self, void* edx));
 
 // Deleting destructor wrapper: runs the destructor body, then releases the
@@ -12,7 +12,7 @@ CSF_FUNC(void*, __fastcall, CMenuLanguage_DestroyBody, 0x5343E0,
 static void* __fastcall CMenuLanguage_Destroy(
     CMenuLanguage* self, void* /*edx*/, char flags)
 {
-    CMenuLanguage_DestroyBody(self, nullptr);
+    CMenuLanguage_Destroy_5343E0(self, nullptr);
     if ((flags & 1) != 0)
         game::Mem_Free(self);
     return self;

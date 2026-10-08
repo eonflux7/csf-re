@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Original functions called by this routine.
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x0075FDF0, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_75FDF0, 0x0075FDF0, ());
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B0568, 0x004FDBB0, ());
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B056C, 0x00506BD0, ());
 CSF_FUNC(int, __fastcall, ComputeChildHandleFromSlot, 0x00515BD0, (void* self, void* edx));
@@ -21,7 +21,7 @@ CSF_FUNC(int, __fastcall, ComputeChildHandleFromSlot, 0x00515BD0, (void* self, v
 // Returns the result of the last evaluated call, as the original does.
 static int __fastcall CMenuMissionInfo_SyncPanelWithMissionState(CMenuMissionInfo* self, void* /*edx*/)
 {
-    int gameStateA = GetGlobalValue();
+    int gameStateA = GetGlobalValue_75FDF0();
     if (CSF_AT(uint8_t, reinterpret_cast<void*>(gameStateA), 0xCC))
     {
         int gameStateB = GetGlobalValue_8B0568();

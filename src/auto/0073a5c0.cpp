@@ -5,10 +5,10 @@
 
 static const auto InsertTreeNode =
     reinterpret_cast<std::uint32_t* (__fastcall*)(
-        void*, void*, void**, char, void*, const void*)>(0x0073A360);
+        void*, void*, void**, char, void*, const void*)>(CSF_ADDR_FN(0x0073A360));
 
 static const auto MoveTreeIteratorToPreviousNode =
-    reinterpret_cast<int (__fastcall*)(void*, void*)>(0x00739B20);
+    reinterpret_cast<int (__fastcall*)(void*, void*)>(CSF_ADDR_FN(0x00739B20));
 
 static int __fastcall InsertUniqueUnsignedShortTreeValue(
     void* self, void* /*edx*/, int resultAddress, std::uint16_t* value)

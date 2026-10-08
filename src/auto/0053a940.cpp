@@ -11,16 +11,16 @@
 #include "legacy/string.h"
 
 // Base CMenuScreen constructor, bound by address. __thiscall with no stack args.
-CSF_FUNC(void*, __fastcall, CMenuScreen_BaseConstruct, 0x712CC0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x712CC0, (void* self, void* edx));
 
 // CMenuMain constructor (__thiscall, one stack argument, callee pops 4).
 static CMenuMain* __fastcall CMenuMain_Construct(CMenuMain* self, void* /*edx*/, int menuOwner)
 {
     // Primary vtable (CMenuMain-level header slot).
-    CSF_AT(uint32_t, self, 0x000) = 0x0083042C;
+    CSF_AT(uint32_t, self, 0x000) = CSF_ADDR_VT(0x0083042C);
 
     // Embedded CMenuScreen sub-object at +0x004.
-    CMenuScreen_BaseConstruct(reinterpret_cast<uint8_t*>(self) + 0x004, nullptr);
+    C_00830438_Construct(reinterpret_cast<uint8_t*>(self) + 0x004, nullptr);
 
     self->field_002c = static_cast<uint32_t>(menuOwner);
 
@@ -37,7 +37,7 @@ static CMenuMain* __fastcall CMenuMain_Construct(CMenuMain* self, void* /*edx*/,
     self->field_0014 = 0;
 
     // Final vtable for CMenuMain.
-    CSF_AT(uint32_t, self, 0x000) = 0x00842550;
+    CSF_AT(uint32_t, self, 0x000) = CSF_ADDR_VT(0x00842550);
 
     self->field_0034 = 1;
 

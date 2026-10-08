@@ -3,8 +3,8 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(char, __stdcall, DestroyTreeBranch, 0x00739B80,
-         (void** root));
+CSF_FUNC(char, __fastcall, DestroyTreeBranch, 0x00739B80,
+         (void* tree, void* edx, void** root));
 CSF_FUNC(void**, __fastcall, EraseTreeNode, 0x0073A0A0,
          (void* self, void* edx, void** result, void* node));
 
@@ -16,7 +16,7 @@ static void** __fastcall EraseTreeRange(
 
     if (current == CSF_AT(void*, sentinel, 0x00) && last == sentinel)
     {
-        DestroyTreeBranch(CSF_AT(void**, sentinel, 0x04));
+        DestroyTreeBranch(self, nullptr, CSF_AT(void**, sentinel, 0x04));
 
         sentinel = CSF_AT(void*, self, 0x04);
         CSF_AT(void*, sentinel, 0x04) = sentinel;

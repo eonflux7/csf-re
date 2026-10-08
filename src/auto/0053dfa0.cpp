@@ -10,24 +10,24 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-CSF_FUNC(int, __cdecl, IsMissionPanelSystemReady, 0x0044FB00, ());
+CSF_FUNC(int, __cdecl, MissionInfo_IsPrerequisiteMet, 0x0044FB00, ());
 CSF_FUNC(void*, __cdecl, GetGlobalValue_8B0568, 0x004FDBB0, ());
-CSF_FUNC(void*, __fastcall, GetDefaultDestinationRecord, 0x004FE4A0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, DefaultDestination_Get, 0x004FE4A0, (void* self, void* edx));
 CSF_FUNC(void*, __cdecl, GetGlobal8afc7c, 0x0043E010, ());
 CSF_FUNC(void*, __fastcall, ResolveCurrentPanelKey, 0x0043E5B0, (void* self, void* edx));
-CSF_FUNC(int*, __fastcall, FindPanelEntryByKey, 0x0043E4B0, (void* self, void* edx, void* key));
+CSF_FUNC(int*, __fastcall, MenuLoading_FindMission, 0x0043E4B0, (void* self, void* edx, void* key));
 
 static char __stdcall CMenuMissionInfo_IsCurrentEntryAbsentFromList(int a1)
 {
-    if ((IsMissionPanelSystemReady() & 0xFF) == 0)
+    if ((MissionInfo_IsPrerequisiteMet() & 0xFF) == 0)
         return 0;
 
     void* ownerFirst = GetGlobalValue_8B0568();
-    if (GetDefaultDestinationRecord(ownerFirst, nullptr) == nullptr)
+    if (DefaultDestination_Get(ownerFirst, nullptr) == nullptr)
         return 0;
 
     void* ownerSecond = GetGlobalValue_8B0568();
-    void* destinationRecord = GetDefaultDestinationRecord(ownerSecond, nullptr);
+    void* destinationRecord = DefaultDestination_Get(ownerSecond, nullptr);
     if (CSF_AT(uint32_t, destinationRecord, 0x1C) != 0)
         return 0;
 
@@ -35,7 +35,7 @@ static char __stdcall CMenuMissionInfo_IsCurrentEntryAbsentFromList(int a1)
     void* currentKey = ResolveCurrentPanelKey(panelHolderForKey, nullptr);
 
     void* panelHolderForEntry = GetGlobal8afc7c();
-    int* entry = FindPanelEntryByKey(panelHolderForEntry, nullptr, currentKey);
+    int* entry = MenuLoading_FindMission(panelHolderForEntry, nullptr, currentKey);
     if (entry == nullptr)
         return 0;
 

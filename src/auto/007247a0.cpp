@@ -4,19 +4,19 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, ResetListBoxBase, 0x00716320,
+CSF_FUNC(int, __fastcall, CGuiListBoxBase_ClearItems, 0x00716320,
          (CGuiListBox* self, void* edx));
 CSF_FUNC(int*, __cdecl, ResetWideStringRecordRange, 0x007241E0,
          (int* begin, int* end));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60,
          (void* block));
-CSF_FUNC(int, __fastcall, SetSliderLinkedValue, 0x007143D0,
+CSF_FUNC(int, __fastcall, CGuiListBoxBase_SetSliderLinkedValue, 0x007143D0,
          (CGuiListBox* self, void* edx, int valueBits));
 
 static int __fastcall CGuiListBox_Reset(
     CGuiListBox* self, void* /*edx*/)
 {
-    ResetListBoxBase(self, nullptr);
+    CGuiListBoxBase_ClearItems(self, nullptr);
 
     void* rowText = reinterpret_cast<void*>(self->m_pRowText);
     reinterpret_cast<void (__fastcall*)(void*, void*, const char*)>(
@@ -38,7 +38,7 @@ static int __fastcall CGuiListBox_Reset(
     CSF_AT(uint32_t, self, 0x228) = 0;
     self->field_022c = 1.0f;
 
-    return SetSliderLinkedValue(self, nullptr, 0x3F800000);
+    return CGuiListBoxBase_SetSliderLinkedValue(self, nullptr, 0x3F800000);
 }
 
 HOOK(0x007247A0, CGuiListBox_Reset, "auto");

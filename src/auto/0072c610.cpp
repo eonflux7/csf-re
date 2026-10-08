@@ -4,13 +4,13 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(char, __fastcall, CGuiControl_ProcessSelectionInput, 0x00718360,
+CSF_FUNC(char, __fastcall, CGuiControl_ProcessSelectionInput_718360, 0x00718360,
          (CGuiControl* self, void* edx, int input));
 CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x00718700,
          (CGuiControl* self, void* edx));
 CSF_FUNC(uint32_t*, __fastcall, EraseFourByteVectorElement, 0x0072BA90,
          (uint32_t* self, void* edx, uint32_t* result, char* position));
-CSF_FUNC(uint32_t*, __fastcall, InsertFourByteVectorElement, 0x0072C530,
+CSF_FUNC(uint32_t*, __fastcall, InsertSingleElementAndReturnIterator, 0x0072C530,
          (uint32_t* self, void* edx, uint32_t* result,
           uint32_t* position, uint32_t* element));
 
@@ -87,14 +87,14 @@ static char __fastcall CGuiPanel_ProcessSelectionInput(
                 childrenVector, nullptr, &eraseResult,
                 reinterpret_cast<char*>(self->field_0138 + index * 4u));
 
-            InsertFourByteVectorElement(
+            InsertSingleElementAndReturnIterator(
                 childrenVector, nullptr, &insertResult,
                 reinterpret_cast<uint32_t*>(self->field_0138),
                 &childAddress);
         }
     }
 
-    return CGuiControl_ProcessSelectionInput(self, nullptr, input);
+    return CGuiControl_ProcessSelectionInput_718360(self, nullptr, input);
 }
 
 HOOK(0x0072C610, CGuiPanel_ProcessSelectionInput, "auto");

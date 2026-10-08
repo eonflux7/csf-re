@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x50D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x50D190, ());
 CSF_FUNC(void*, __fastcall, SchedulerBase_GetSchedulerProxy, 0x734A10, (void* self, void* edx));
 
 // 0x0055F390  (__thiscall, one ignored int stack argument, ret 4)
@@ -14,7 +14,7 @@ CSF_FUNC(void*, __fastcall, SchedulerBase_GetSchedulerProxy, 0x734A10, (void* se
 // returning that method's result; otherwise returns the null proxy.
 static void* __fastcall CMenuMpOnline_InvokeSchedulerProxyCallback(void* self, void* /*edx*/, int /*unused*/)
 {
-  void* schedulerBase = GetGlobalState();
+  void* schedulerBase = GetGlobalState_50D190();
   void* schedulerProxy = SchedulerBase_GetSchedulerProxy(schedulerBase, nullptr);
   if (schedulerProxy)
   {

@@ -10,7 +10,7 @@
 // ecx and the single stack arg line up exactly. The helper reads a2 from ebx, and
 // this wrapper never writes ebx (the original 0x7224C0 leaves ebx untouched too),
 // so the caller's ebx is forwarded transparently.
-CSF_FUNC(int, __fastcall, CGuiEdit_UpdateTextState, 0x7215F0, (CGuiEdit* self, void* /*edx*/, char a3));
+CSF_FUNC(int, __fastcall, AdjustTextRangeLeft, 0x7215F0, (CGuiEdit* self, void* /*edx*/, char a3));
 
 // 0x7224C0: if the edit control's character count (wstring size stored at +0x164)
 // is nonzero, store (count - 1) into the two caret / anchor fields (+0x1A8, +0x1B0)
@@ -25,7 +25,7 @@ static int __fastcall CGuiEdit_HandleBackspace(CGuiEdit* self, void* /*edx*/)
     self->field_01a8 = lastIndex;
     self->field_01b0 = lastIndex;
 
-    return CGuiEdit_UpdateTextState(self, nullptr, 0);
+    return AdjustTextRangeLeft(self, nullptr, 0);
 }
 
 HOOK(0x7224C0, CGuiEdit_HandleBackspace, "auto");

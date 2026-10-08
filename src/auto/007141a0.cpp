@@ -4,12 +4,12 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiListBoxBase_IsSelectableAndNotType10,
+CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10,
          0x00718700, (CGuiControl* self, void* edx));
 
 // Capture the entire EAX register: the target forwards it unchanged,
 // even though this callee's inferred return type is char.
-CSF_FUNC(int, __fastcall, CGuiControl_ProcessInputRawResult,
+CSF_FUNC(int, __fastcall, CGuiControl_HandleMouseMovement,
          0x00719400, (CGuiControl* self, void* edx, int inputValue));
 
 static int __fastcall CGuiListBoxBase_ForwardInputToSliderAndBase(
@@ -21,7 +21,7 @@ static int __fastcall CGuiListBoxBase_ForwardInputToSliderAndBase(
     if (static_cast<std::uint8_t>(result) == 0)
         return result;
 
-    result = CGuiListBoxBase_IsSelectableAndNotType10(self, nullptr);
+    result = CGuiSlider_IsSelectableAndNotType10(self, nullptr);
     if (static_cast<std::uint8_t>(result) == 0)
         return result;
 
@@ -39,7 +39,7 @@ static int __fastcall CGuiListBoxBase_ForwardInputToSliderAndBase(
                 slider, nullptr, inputValue);
     }
 
-    return CGuiControl_ProcessInputRawResult(self, nullptr, inputValue);
+    return CGuiControl_HandleMouseMovement(self, nullptr, inputValue);
 }
 
 HOOK(0x007141A0, CGuiListBoxBase_ForwardInputToSliderAndBase, "auto");

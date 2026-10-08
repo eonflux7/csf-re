@@ -19,7 +19,7 @@ static int __fastcall CMenuMissionInfo_Destruct(CMenuMissionInfo* self, void* /*
     void* childObject = reinterpret_cast<void*>(self->field_001c);
 
     // CMenuMissionInfo vtable 0x842E08 and its secondary-base table.
-    self->vtbl = reinterpret_cast<decltype(self->vtbl)>(0x00842E08);
+    self->vtbl = reinterpret_cast<decltype(self->vtbl)>(CSF_ADDR_VT(0x00842E08));
     self->field_0004 = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(&g_VtblCMenuMissionInfoSecondary));
 
     if (childObject != nullptr)
@@ -72,8 +72,8 @@ static int __fastcall CMenuMissionInfo_Destruct(CMenuMissionInfo* self, void* /*
 
     // Base-class destructor chain: +0x04 is stored twice, the first store is overwritten.
     self->field_0004 = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(&g_VtblCMenuScreenIntermediate));
-    self->field_0004 = 0x00830438u;                                  // CMenuScreen secondary vtable 0x830438
-    self->vtbl = reinterpret_cast<decltype(self->vtbl)>(0x0083042C); // g_VtblCMenuScreenBase 0x83042C
+    self->field_0004 = CSF_ADDR_VT(0x00830438);                                  // CMenuScreen secondary vtable 0x830438
+    self->vtbl = reinterpret_cast<decltype(self->vtbl)>(CSF_ADDR_VT(0x0083042C)); // g_VtblCMenuScreenBase 0x83042C
 
     return result;
 }

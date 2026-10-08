@@ -2,7 +2,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-static CSF_FUNC(void, __fastcall, CGuiEdit_UpdateEditingState, 0x00722A40,
+static CSF_FUNC(void, __fastcall, CGuiEdit_UpdateKeyRepeat, 0x00722A40,
                (CGuiEdit* self, void* edx, float deltaTime));
 
 static void __fastcall CGuiEdit_UpdateCursorBlink(
@@ -10,7 +10,7 @@ static void __fastcall CGuiEdit_UpdateCursorBlink(
 {
     // Avoid keeping object state in a register across the original call.
     CGuiEdit* volatile savedSelf = self;
-    CGuiEdit_UpdateEditingState(savedSelf, nullptr, deltaTime);
+    CGuiEdit_UpdateKeyRepeat(savedSelf, nullptr, deltaTime);
     self = savedSelf;
 
     if (self->field_01b4 == 0xFFFFFFFFu)

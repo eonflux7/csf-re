@@ -8,7 +8,7 @@
 CSF_GLOBAL(const char*, g_pszMenu_P_EditG, 0x00899B04);
 
 CSF_FUNC(int, __fastcall, CMenuSaveGame_ResetSelectionState, 0x005449D0, (CMenuSaveGame* self, void* edx));
-CSF_FUNC(void, __fastcall, CMenuSaveGame_SelectEditedSave, 0x00544EA0, (CMenuSaveGame* self, void* edx, void* saveEntry));
+CSF_FUNC(void, __fastcall, CMenuSaveGame_HandleNameDialogResult, 0x00544EA0, (CMenuSaveGame* self, void* edx, void* saveEntry));
 CSF_FUNC(int, __fastcall, CMenuSaveGame_HandleButtonEvent, 0x00545660, (CMenuSaveGame* self, void* edx, uint32_t* event));
 
 // Dispatches a menu message. Event 13 goes to the button handler. Event 14 looks up the
@@ -34,7 +34,7 @@ static void __fastcall CMenuSaveGame_HandleMessage(CMenuSaveGame* self, void* /*
                         ((int (__fastcall*)(CMenuSaveGame*, void*))selfVtbl[0x20 / 4])(self, nullptr));
                     void** rootVtbl = CSF_AT(void**, rootObject, 0);
                     ((void (__fastcall*)(void*, void*, int))rootVtbl[0xc0 / 4])(rootObject, nullptr, 1);
-                    CMenuSaveGame_SelectEditedSave(self, nullptr, saveEntry);
+                    CMenuSaveGame_HandleNameDialogResult(self, nullptr, saveEntry);
                 }
             }
         }

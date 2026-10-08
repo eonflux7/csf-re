@@ -10,22 +10,22 @@ CSF_GLOBAL(const char*, g_MenuMessageBoxPage, 0x00899B28);
 CSF_GLOBAL(const char*, g_MenuIntroPage, 0x00899B2C);
 CSF_GLOBAL(const char*, g_MenuStartPage, 0x00899B8C);
 
-CSF_FUNC(int, __fastcall, MenuManager_IsReadyAndAboveThreshold,
+CSF_FUNC(int, __fastcall, MenuPage_IsReadyAndAboveThreshold,
          0x0050C880, (float* self, void* edx));
-CSF_FUNC(void*, __cdecl, MenuManager_GetState, 0x0050D190, ());
-CSF_FUNC(void*, __cdecl, MenuManager_GetGameSettings, 0x0075FDF0, ());
-CSF_FUNC(void*, __cdecl, MenuManager_GetIntroSettings, 0x00756A10, ());
-CSF_FUNC(void*, __cdecl, MenuManager_GetMenuContext, 0x00506BD0, ());
-CSF_FUNC(void*, __cdecl, MenuManager_GetGameplayController, 0x0042D6D0, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobalValue_75FDF0, 0x0075FDF0, ());
+CSF_FUNC(void*, __cdecl, GetGlobalValue_8BC1E0, 0x00756A10, ());
+CSF_FUNC(void*, __cdecl, GetGlobalValue_8B056C, 0x00506BD0, ());
+CSF_FUNC(void*, __cdecl, GetGlobal8afc78, 0x0042D6D0, ());
 CSF_FUNC(int, __cdecl, MenuManager_FreeBufferAndClear,
          0x0050C9C0, (void* buffer));
-CSF_FUNC(unsigned int, __fastcall, MenuManager_AppendPage,
+CSF_FUNC(unsigned int, __fastcall, AppendFourByteElement_50CDF0,
          0x0050CDF0, (void* buffer, void* edx, void** page));
-CSF_FUNC(int, __fastcall, MenuManager_IsStateFieldF0NonZero,
+CSF_FUNC(int, __fastcall, Object_IsFieldF0NonZero,
          0x0050E210, (void* self, void* edx));
-CSF_FUNC(char, __fastcall, MenuManager_GetInnerByteAt50,
+CSF_FUNC(char, __fastcall, C_Object_GetInnerByteAt0x50,
          0x0050E120, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, MenuManager_ProcessActiveState,
+CSF_FUNC(int, __fastcall, GlobalState_ResetPending,
          0x0050E1E0, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, MenuManager_SetInnerState,
          0x0050E930, (void* self, void* edx, char enabled));
@@ -42,17 +42,17 @@ static std::uintptr_t __fastcall MenuManager_TransitionToGameOrIntro(
     float* self, void* /*edx*/, int /*unused*/)
 {
     std::uintptr_t result = static_cast<std::uint32_t>(
-        MenuManager_IsReadyAndAboveThreshold(self, nullptr));
+        MenuPage_IsReadyAndAboveThreshold(self, nullptr));
     if (static_cast<std::uint8_t>(result) == 0)
         return result;
 
-    void* state = MenuManager_GetState();
+    void* state = GetGlobalState_50D190();
     result = reinterpret_cast<std::uintptr_t>(state);
     if (CSF_AT(std::uint8_t, state, 0xD0) != 0)
         return result;
 
-    void* manager = CSF_AT(void*, MenuManager_GetState(), 0x14);
-    void* settings = MenuManager_GetGameSettings();
+    void* manager = CSF_AT(void*, GetGlobalState_50D190(), 0x14);
+    void* settings = GetGlobalValue_75FDF0();
     result = reinterpret_cast<std::uintptr_t>(settings);
 
     if (CSF_AT(std::uint8_t, settings, 0xCD) == 0)
@@ -96,37 +96,37 @@ static std::uintptr_t __fastcall MenuManager_TransitionToGameOrIntro(
 
     if (static_cast<std::uint8_t>(gamePageStatus) != 0)
     {
-        settings = MenuManager_GetGameSettings();
+        settings = GetGlobalValue_75FDF0();
         result = reinterpret_cast<std::uintptr_t>(settings);
         if (CSF_AT(std::uint8_t, settings, 0xCD) == 0)
             return result;
 
         if (static_cast<std::uint8_t>(
-                MenuManager_IsStateFieldF0NonZero(
-                    MenuManager_GetState(), nullptr)) != 0)
+                Object_IsFieldF0NonZero(
+                    GetGlobalState_50D190(), nullptr)) != 0)
         {
-            MenuManager_ProcessActiveState(MenuManager_GetState(), nullptr);
+            GlobalState_ResetPending(GetGlobalState_50D190(), nullptr);
         }
 
-        if (MenuManager_GetInnerByteAt50(MenuManager_GetState(), nullptr) != 0)
-            MenuManager_SetInnerState(MenuManager_GetState(), nullptr, 0);
+        if (C_Object_GetInnerByteAt0x50(GetGlobalState_50D190(), nullptr) != 0)
+            MenuManager_SetInnerState(GetGlobalState_50D190(), nullptr, 0);
 
         ((void(__fastcall*)(void*, void*, int))
             CSF_AT(void**, gamePage, 0)[0x54 / 4])(
                 gamePage, nullptr, 1);
 
-        if (CSF_AT(std::uint8_t, MenuManager_GetState(), 0x89) != 0)
+        if (CSF_AT(std::uint8_t, GetGlobalState_50D190(), 0x89) != 0)
         {
             void* pageBuffer = reinterpret_cast<std::uint8_t*>(self) + 8;
             MenuManager_FreeBufferAndClear(pageBuffer);
-            MenuManager_AppendPage(pageBuffer, nullptr, &gamePageEntry);
+            AppendFourByteElement_50CDF0(pageBuffer, nullptr, &gamePageEntry);
             ((void(__fastcall*)(void*, void*, void*, int))
                 CSF_AT(void**, manager, 0)[0x64 / 4])(
                     manager, nullptr, pageBuffer, 0);
-            MenuManager_SetMenuState(MenuManager_GetState(), nullptr, 1);
+            MenuManager_SetMenuState(GetGlobalState_50D190(), nullptr, 1);
         }
 
-        void* controller = CSF_AT(void*, MenuManager_GetState(), 0x10);
+        void* controller = CSF_AT(void*, GetGlobalState_50D190(), 0x10);
         if (controller != nullptr)
         {
             ((void(__fastcall*)(void*, void*))
@@ -135,20 +135,20 @@ static std::uintptr_t __fastcall MenuManager_TransitionToGameOrIntro(
         }
 
         MenuManager_SetGameplayControllerState(
-            MenuManager_GetGameplayController(), nullptr, 0);
+            GetGlobal8afc78(), nullptr, 0);
     }
     else
     {
         if (static_cast<std::uint8_t>(
-                MenuManager_IsStateFieldF0NonZero(
-                    MenuManager_GetState(), nullptr)) != 0)
+                Object_IsFieldF0NonZero(
+                    GetGlobalState_50D190(), nullptr)) != 0)
         {
-            MenuManager_ProcessActiveState(MenuManager_GetState(), nullptr);
+            GlobalState_ResetPending(GetGlobalState_50D190(), nullptr);
         }
 
         void* pageBuffer = reinterpret_cast<std::uint8_t*>(self) + 8;
         MenuManager_FreeBufferAndClear(pageBuffer);
-        MenuManager_AppendPage(pageBuffer, nullptr, &messagePageEntry);
+        AppendFourByteElement_50CDF0(pageBuffer, nullptr, &messagePageEntry);
         ((void(__fastcall*)(void*, void*, void*, int))
             CSF_AT(void**, manager, 0)[0x64 / 4])(
                 manager, nullptr, pageBuffer, 0);
@@ -163,7 +163,7 @@ static std::uintptr_t __fastcall MenuManager_TransitionToGameOrIntro(
         CSF_AT(std::uint8_t, introData, 0x11) = 0;
         CSF_AT(std::uint8_t, introData, 0x12) = 0;
 
-        void* introSettings = MenuManager_GetIntroSettings();
+        void* introSettings = GetGlobalValue_8BC1E0();
         const std::uint32_t capacity =
             CSF_AT(std::uint32_t, introSettings, 0x21D0);
         void* textStorage =
@@ -185,11 +185,11 @@ static std::uintptr_t __fastcall MenuManager_TransitionToGameOrIntro(
                 manager, nullptr, g_MenuIntroPage);
     }
 
-    settings = MenuManager_GetGameSettings();
+    settings = GetGlobalValue_75FDF0();
     result = reinterpret_cast<std::uintptr_t>(settings);
     if (CSF_AT(std::uint8_t, settings, 0xCD) != 0)
     {
-        void* context = MenuManager_GetMenuContext();
+        void* context = GetGlobalValue_8B056C();
         result = reinterpret_cast<std::uintptr_t>(context);
         void* innerContext = CSF_AT(void*, context, 0x18);
         if (innerContext != nullptr)

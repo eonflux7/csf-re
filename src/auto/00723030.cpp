@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(int, __fastcall, GetSecondDimensionCount, 0x00714830,
+CSF_FUNC(int, __fastcall, CGuiTextureListBox_GetColumnCount, 0x00714830,
          (void* self, void* edx));
 
 static int __fastcall GetCellStringAddress(
@@ -16,7 +16,7 @@ static int __fastcall GetCellStringAddress(
         return 0;
     }
 
-    if (secondIndex >= GetSecondDimensionCount(self, nullptr))
+    if (secondIndex >= CGuiTextureListBox_GetColumnCount(self, nullptr))
         return 0;
 
     const uint32_t entriesAddress = CSF_AT(uint32_t, self, 0x220);

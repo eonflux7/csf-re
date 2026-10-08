@@ -6,7 +6,7 @@
 
 CSF_GLOBAL(void*, g_GuiStaticVtable, 0x00864BC0);
 
-CSF_FUNC(int, __fastcall, DestroyEmbeddedResource, 0x006923C0,
+CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
 CSF_FUNC(int, __fastcall, CGuiControl_Destroy, 0x00719B10,
          (CGuiControl* self, void* edx));
@@ -19,7 +19,7 @@ static int __fastcall CGuiStatic_Destroy(CGuiStatic* self, void* /*edx*/)
 
     if (resource)
     {
-        DestroyEmbeddedResource(
+        ReleaseObjectReference(
             reinterpret_cast<std::uint8_t*>(resource) + 4, nullptr);
         self->field_0138 = 0;
     }

@@ -14,7 +14,7 @@
 // ===========================================================================
 
 // 0x0050D190  int __cdecl GetGlobalState()
-CSF_FUNC(int, __cdecl, MenuControls_GetGlobalState, 0x50D190, ());
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x50D190, ());
 
 // 0x006B1380  int __cdecl GetGlobalInt()
 CSF_FUNC(int, __cdecl, MenuControls_GetGlobalInt, 0x6B1380, ());
@@ -23,7 +23,7 @@ CSF_FUNC(int, __cdecl, MenuControls_GetGlobalInt, 0x6B1380, ());
 CSF_FUNC(int, __fastcall, MenuControls_ResolveObject, 0x6B1390, (void* self, void* edx));
 
 // 0x00538870  char __thiscall sub_538870(int this)
-CSF_FUNC(char, __fastcall, MenuControls_ResetObject, 0x538870, (void* self, void* edx));
+CSF_FUNC(char, __fastcall, CMenuLoading_ProcessEnabledLoadingSections, 0x538870, (void* self, void* edx));
 
 // Tail dispatch to vtable slot 0x78 of the object received in ecx.
 // Original epilogue (0x00538A39):
@@ -48,7 +48,7 @@ static void __fastcall CMenuControls_ProcessActivation(void* self, void* /*edx*/
         return;
 
     // 0x00543A89: GetGlobalState(); ctx = [eax+0x1C]
-    void* ctx = CSF_AT(void*, reinterpret_cast<void*>(MenuControls_GetGlobalState()), 0x1C);
+    void* ctx = CSF_AT(void*, reinterpret_cast<void*>(GetGlobalState_50D190()), 0x1C);
 
     // 0x005389A3: if (ctx->field_003C != 0) { ... }
     if (CSF_AT(void*, ctx, 0x3C))
@@ -100,7 +100,7 @@ static void __fastcall CMenuControls_ProcessActivation(void* self, void* /*edx*/
     }
 
     // 0x00538A26: sub_538870(ctx)
-    MenuControls_ResetObject(ctx, nullptr);
+    CMenuLoading_ProcessEnabledLoadingSections(ctx, nullptr);
 
     // 0x00538A2D: final = ResolveObject(GetGlobalInt()); tail dispatch [edx+0x78]
     void* final = reinterpret_cast<void*>(

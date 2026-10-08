@@ -3,7 +3,7 @@
 #include "core/memory.h"
 #include "globals.h"
 
-CSF_FUNC(int, __cdecl, MenuSaveGame_ReleaseElements, 0x00544340,
+CSF_FUNC(int, __cdecl, MenuSaveGame_ClearSlotRange, 0x00544340,
          (int* first, int* last, void* container, void* owner));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
@@ -24,7 +24,7 @@ static int* __fastcall MenuSaveGame_ClearStorage(void* self, void* /*edx*/)
     void* container = static_cast<std::uint8_t*>(self) + 4;
     if (result)
     {
-        MenuSaveGame_ReleaseElements(
+        MenuSaveGame_ClearSlotRange(
             result, CSF_AT(int*, container, 0x08), container, self);
 
         result = CSF_AT(int*, container, 0x04);

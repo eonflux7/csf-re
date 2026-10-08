@@ -4,7 +4,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, ColorMatchesSentinel, 0x0042D680,
+CSF_FUNC(int, __fastcall, ColorsMatch, 0x0042D680,
          (float* self, void* edx, float* sentinel));
 
 CSF_GLOBAL(float, g_HalfDurationScale, 0x0082D444);
@@ -20,7 +20,7 @@ static void __fastcall CGuiSwitch_ToggleStateAndUpdateColor(
     if (previousState == 0)
     {
         auto* alternateColor = reinterpret_cast<uint8_t*>(self) + 0x16C;
-        const int matches = ColorMatchesSentinel(
+        const int matches = ColorsMatch(
             reinterpret_cast<float*>(alternateColor), nullptr,
             &g_CellTextColorSentinelRed);
         if (static_cast<uint8_t>(matches) == 0)

@@ -32,9 +32,9 @@ CSF_GLOBAL(const char*, g_pszMenu_P_Tactic, 0x00899B14);
 // ---------------------------------------------------------------------------
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B0568, 0x4FDBB0, ());
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B056C, 0x506BD0, ());
-CSF_FUNC(int, __cdecl, GetGlobalState,        0x50D190, ());
-CSF_FUNC(int, __fastcall, GlobalState_Reset,  0x50D300, (int state, void* edx));
-CSF_FUNC(int, __fastcall, MenuLoading_ActivateEntry, 0x53D740, (int item, void* edx, int arg));
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190,        0x50D190, ());
+CSF_FUNC(int, __fastcall, MenuSystem_ToggleChildFlag,  0x50D300, (int state, void* edx));
+CSF_FUNC(int, __fastcall, CMenuMissionInfo_EnterPanelState, 0x53D740, (int item, void* edx, int arg));
 
 // ---------------------------------------------------------------------------
 // Indirect tail jump of 0x005397FB: entered with ecx = CMenuLoadGame*, it
@@ -81,10 +81,10 @@ static int __fastcall CMenuLoadGame_ActivateSelectedEntry(CMenuLoadGame* self, v
         if (*reinterpret_cast<int*>(GetGlobalValue_8B0568() + 0x5C) == 1)
         {
             // 0x0053973C: we are in a game -> start the selected tactic game
-            int gameState = GetGlobalState();
-            GlobalState_Reset(gameState, nullptr);
+            int gameState = GetGlobalState_50D190();
+            MenuSystem_ToggleChildFlag(gameState, nullptr);
 
-            gameState = GetGlobalState();
+            gameState = GetGlobalState_50D190();
             int child = *reinterpret_cast<int*>(gameState + 0x10);
             if (child != 0)
             {
@@ -92,7 +92,7 @@ static int __fastcall CMenuLoadGame_ActivateSelectedEntry(CMenuLoadGame* self, v
                 reinterpret_cast<void(__fastcall*)(int, void*)>(childVtbl[0x24 / 4])(child, nullptr);
             }
 
-            gameState = GetGlobalState();
+            gameState = GetGlobalState_50D190();
             void* listBox = *reinterpret_cast<void**>(gameState + 0x14);
             void** listVtbl = *reinterpret_cast<void***>(listBox);
             int entry = reinterpret_cast<int(__fastcall*)(void*, void*, const char*)>(listVtbl[0x5C / 4])(
@@ -106,13 +106,13 @@ static int __fastcall CMenuLoadGame_ActivateSelectedEntry(CMenuLoadGame* self, v
                 void** itemOwnerVtbl = *reinterpret_cast<void***>(itemOwner);
                 int item = reinterpret_cast<int(__fastcall*)(void*, void*, const char*)>(itemOwnerVtbl[0x5C / 4])(
                     itemOwner, nullptr, g_pszMenu_P_Tactic);
-                return MenuLoading_ActivateEntry(item, nullptr, 0);
+                return CMenuMissionInfo_EnterPanelState(item, nullptr, 0);
             }
             return activated;
         }
 
         // 0x00539798: not in game -> only refresh the selection
-        int gameState = GetGlobalState();
+        int gameState = GetGlobalState_50D190();
         void* listBox = *reinterpret_cast<void**>(gameState + 0x14);
         void** listVtbl = *reinterpret_cast<void***>(listBox);
         int entry = reinterpret_cast<int(__fastcall*)(void*, void*, const char*)>(listVtbl[0x5C / 4])(

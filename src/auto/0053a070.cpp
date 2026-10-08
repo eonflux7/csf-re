@@ -12,13 +12,13 @@
 #include "legacy/string.h"
 
 // Original game functions bound by address.
-CSF_FUNC(int, __cdecl, CMenuPause_GetGlobalValue, 0x521BB0, ());
-CSF_FUNC(void, __fastcall, CMenuPause_ApplyGlobalValue, 0x5231D0, (int self, void* edx, int a2));
-CSF_FUNC(void, __cdecl, CMenuPause_NullSub, 0x506AC0, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x521BB0, ());
+CSF_FUNC(void, __fastcall, GlobalSetValue_5231D0, 0x5231D0, (int self, void* edx, int a2));
+CSF_FUNC(void, __cdecl, Nullsub_506AC0, 0x506AC0, ());
 CSF_FUNC(int, __fastcall, CMenuPause_RunStateZeroAction, 0x539EF0, (int* self, void* edx));
 CSF_FUNC(int, __fastcall, CMenuPause_RunStateOneAction, 0x539FB0, (int* self, void* edx));
-CSF_FUNC(int, __fastcall, CMenuPause_RunStateThreeAction, 0x539E50, (int* self, void* edx, int a3));
-CSF_FUNC(int, __fastcall, CMenuPause_RunStateFourAction, 0x539EA0, (int* self, void* edx, int a3));
+CSF_FUNC(int, __fastcall, MenuMain_ClearPendingIndexAndForward, 0x539E50, (int* self, void* edx, int a3));
+CSF_FUNC(int, __fastcall, MenuMain_ConsumePendingSelection, 0x539EA0, (int* self, void* edx, int a3));
 
 // Dispatches the pending pause-menu action stored in field_0014.
 // a2 is stored as raw bits into field_003c and forwarded to the action handlers.
@@ -26,9 +26,9 @@ static int __fastcall CMenuPause_DispatchPendingAction(CMenuPause* self, void* /
 {
     self->field_003c = static_cast<uint32_t>(a2);
 
-    int globalValue = CMenuPause_GetGlobalValue();
-    CMenuPause_ApplyGlobalValue(globalValue, nullptr, a2);
-    CMenuPause_NullSub();
+    int globalValue = GetGlobalValue_521BB0();
+    GlobalSetValue_5231D0(globalValue, nullptr, a2);
+    Nullsub_506AC0();
 
     uint32_t state = self->field_0014;
     switch (state)
@@ -51,9 +51,9 @@ static int __fastcall CMenuPause_DispatchPendingAction(CMenuPause* self, void* /
         return static_cast<int>(count);
     }
     case 3u:
-        return CMenuPause_RunStateThreeAction(reinterpret_cast<int*>(self), nullptr, a2);
+        return MenuMain_ClearPendingIndexAndForward(reinterpret_cast<int*>(self), nullptr, a2);
     case 4u:
-        return CMenuPause_RunStateFourAction(reinterpret_cast<int*>(self), nullptr, a2);
+        return MenuMain_ConsumePendingSelection(reinterpret_cast<int*>(self), nullptr, a2);
     default:
         return static_cast<int>(state);
     }

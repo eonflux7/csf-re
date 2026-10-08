@@ -3,7 +3,7 @@
 #include "hook.h"
 
 // __thiscall sub_6932B0(ecx = this, [esp+4] = String1) — looks the key string up inside the object.
-CSF_FUNC(std::uint8_t*, __fastcall, FindByKeyString, 0x6932B0,
+CSF_FUNC(std::uint8_t*, __fastcall, FindProperty, 0x6932B0,
          (std::uint8_t* self, void* /*edx*/, char* key));
 
 // Pointer to the key string constant used for this lookup.
@@ -14,7 +14,7 @@ static std::uint8_t* __stdcall LookupByKeyString(std::uint8_t* object)
     if (!object)
         return nullptr;
 
-    return FindByKeyString(object, nullptr, g_LookupKeyString);
+    return FindProperty(object, nullptr, g_LookupKeyString);
 }
 
 HOOK(0x72CA40, LookupByKeyString, "auto");

@@ -4,7 +4,7 @@
 #include "hook.h"
 
 // Original callee: cdecl, one stack argument, result tested via al.
-CSF_FUNC(int, __cdecl, MenuSaveGame_CheckPendingCondition, 0x007A8ED0, (int condition));
+CSF_FUNC(int, __cdecl, Sub_7A8ED0, 0x007A8ED0, (int condition));
 
 // Global: pointer value stored at 0x899AF4, passed to the menu object's string setter.
 CSF_GLOBAL(const char*, g_pszMenu_P_MeJueg, 0x00899AF4);
@@ -13,7 +13,7 @@ CSF_GLOBAL(const char*, g_pszMenu_P_MeJueg, 0x00899AF4);
 // Field offsets are relative to the sub-object at self-4 (the original's "v5").
 static int __fastcall MenuSaveGame_ProcessPendingState(void* self, void* /*edx*/, int conditionArg, int /*unusedArg*/)
 {
-    int result = MenuSaveGame_CheckPendingCondition(conditionArg);
+    int result = Sub_7A8ED0(conditionArg);
     if (static_cast<uint8_t>(result) != 0)
     {
         result = CSF_AT(int32_t, self, 0x4C);

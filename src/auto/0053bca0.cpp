@@ -14,7 +14,7 @@
 CSF_FUNC(char, __cdecl, ReadFirstStoredIndexedValue, 0x540FF0, (uint32_t key, void* table));
 
 // Thiscall helper (ecx = this). Returns non-zero when the pending state is blocked.
-CSF_FUNC(char, __fastcall, MenuProfiles_IsPendingStateBlocked, 0x53BB80, (void* self, void* edx));
+CSF_FUNC(char, __fastcall, MenuProfiles_CheckProfileCountAndSetState, 0x53BB80, (void* self, void* edx));
 
 // Signature of a __thiscall virtual handler taking one stack argument.
 using MenuProfilesHandlerFn = int(__fastcall*)(void* self, void* edx, void* message);
@@ -65,7 +65,7 @@ static int __fastcall MenuProfiles_HandleEvent(void* self, void* /*edx*/, void* 
     // Tertiary match: id at +0x1C (non-zero) equals message id, and the blocking check passes.
     if (CSF_AT(uint32_t, self, 0x1C) != 0 && CSF_AT(uint32_t, self, 0x1C) == CSF_AT(uint32_t, message, 4))
     {
-        if (!MenuProfiles_IsPendingStateBlocked(self, nullptr))
+        if (!MenuProfiles_CheckProfileCountAndSetState(self, nullptr))
             CSF_AT(uint32_t, self, 0x38) = 0;
     }
 

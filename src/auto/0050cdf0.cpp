@@ -5,13 +5,13 @@
 
 // Copies one four-byte element into the slot at `destination`, using the
 // owning container and a tag for whatever bookkeeping is required (0x50C950).
-CSF_FUNC(int, __cdecl, CopyFourByteElement, 0x0050C950,
+CSF_FUNC(int, __cdecl, CopyDwordsIfNotNull, 0x0050C950,
          (std::uint32_t destination, int count, std::uint32_t* source,
           void* owner, std::uint32_t tag));
 
 // Grows the vector-like container and inserts one element at `position`
 // (0x50CAA0, __thiscall, pops 12 stack bytes).
-CSF_FUNC(unsigned int, __fastcall, InsertFourByteElements, 0x0050CAA0,
+CSF_FUNC(unsigned int, __fastcall, InsertFourByteElements_50CAA0, 0x0050CAA0,
          (void* self, void* edx, std::uint32_t* position,
           std::uint32_t count, std::uint32_t* source));
 
@@ -32,7 +32,7 @@ static unsigned int __fastcall AppendFourByteElement(
         size >= static_cast<std::uint32_t>(
                     static_cast<std::int32_t>(
                         CSF_AT(std::uint32_t, self, 0x0C) - begin) >> 2)) {
-        return InsertFourByteElements(
+        return InsertFourByteElements_50CAA0(
             self, nullptr,
             reinterpret_cast<std::uint32_t*>(
                 CSF_AT(std::uint32_t, self, 0x08)),
@@ -47,7 +47,7 @@ static unsigned int __fastcall AppendFourByteElement(
         static_cast<std::uint32_t>(reinterpret_cast<std::uintptr_t>(self)) &
         0xFFFFFF00u;
 
-    const int result = CopyFourByteElement(end, 1, source, self, tag);
+    const int result = CopyDwordsIfNotNull(end, 1, source, self, tag);
     CSF_AT(std::uint32_t, self, 0x08) = end + 4u;
     return static_cast<unsigned int>(result);
 }

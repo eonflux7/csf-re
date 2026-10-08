@@ -8,7 +8,7 @@ CSF_GLOBAL(float, g_TransitionZero, 0x0082D4CC);
 CSF_GLOBAL(float, g_TransitionOne, 0x0082D4D4);
 CSF_GLOBAL(float, g_TransitionHalfPi, 0x0082FAD0);
 
-CSF_FUNC(int, __fastcall, ApplyTransitionFactor, 0x00718C00,
+CSF_FUNC(int, __fastcall, CGuiControl_ForwardEventToFirstEffect, 0x00718C00,
          (void* self, void* edx, int factorBits));
 
 static int __fastcall UpdateSineCosineTransition(
@@ -91,7 +91,7 @@ static int __fastcall UpdateSineCosineTransition(
                  child, nullptr, factorBits);
     }
 
-    return ApplyTransitionFactor(
+    return CGuiControl_ForwardEventToFirstEffect(
         self, nullptr, CSF_AT(int, self, 0x184));
 }
 

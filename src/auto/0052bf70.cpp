@@ -3,13 +3,13 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(int, __cdecl, MenuProgressInput_TestActivationInput,
+CSF_FUNC(int, __cdecl, Sub_7A8ED0,
          0x007A8ED0, (int input));
 
 static int __fastcall MenuProgressInput_HandleProgressInput(
     void* self, void* /*edx*/, int input, int /*eventData*/)
 {
-    int result = MenuProgressInput_TestActivationInput(input);
+    int result = Sub_7A8ED0(input);
     if (static_cast<std::uint8_t>(result) != 0)
     {
         void* listener = CSF_AT(void*, self, 0x0C);

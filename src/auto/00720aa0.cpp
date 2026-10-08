@@ -6,7 +6,7 @@
 
 CSF_FUNC(int, __fastcall, CGuiControl_ResetInput, 0x00717F70,
          (CGuiControl* self, void* edx));
-CSF_FUNC(int, __fastcall, CGuiControl_ApplyResetScalar, 0x00718C00,
+CSF_FUNC(int, __fastcall, CGuiControl_ForwardEventToFirstEffect, 0x00718C00,
          (CGuiControl* self, void* edx, int valueBits));
 
 static int __fastcall CGuiStatic_ResetState(CGuiStatic* self, void* /*edx*/)
@@ -14,7 +14,7 @@ static int __fastcall CGuiStatic_ResetState(CGuiStatic* self, void* /*edx*/)
     CGuiControl_ResetInput(self, nullptr);
 
     self->field_0140 = 1.0f;
-    CGuiControl_ApplyResetScalar(self, nullptr, 0x3F800000);
+    CGuiControl_ForwardEventToFirstEffect(self, nullptr, 0x3F800000);
 
     void* text = reinterpret_cast<void*>(self->m_pText);
     self->field_0144 = 0;

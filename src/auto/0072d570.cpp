@@ -3,13 +3,13 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_ApplyFloatPair, 0x007198A0,
+CSF_FUNC(int, __fastcall, CGuiControl_SetPosition_7198A0, 0x007198A0,
          (CGuiControl* self, void* edx, float first, float second));
 
 static int __fastcall CGuiSlider_ApplyFloatPair(
     CGuiSlider* self, void* /*edx*/, float first, float second)
 {
-    CGuiControl_ApplyFloatPair(
+    CGuiControl_SetPosition_7198A0(
         reinterpret_cast<CGuiControl*>(self), nullptr, first, second);
 
     void* arrowUp = reinterpret_cast<void*>(self->m_pArrowUp);

@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __cdecl, FormatDecimalText, 0x007AF9BB,
+CSF_FUNC(int, __cdecl, _sprintf, 0x007AF9BB,
          (char* buffer, const char* format, ...));
 
 static int __fastcall CGuiChoiceNumButton_AdjustValueAndUpdateText(
@@ -33,7 +33,7 @@ static int __fastcall CGuiChoiceNumButton_AdjustValueAndUpdateText(
         return 0;
 
     char buffer[256];
-    FormatDecimalText(buffer, CSF_STR(0x0083090C, "%d"),
+    _sprintf(buffer, CSF_STR(0x0083090C, "%d"),
                       static_cast<int32_t>(self->field_0204));
 
     value = static_cast<int32_t>(self->field_0204);

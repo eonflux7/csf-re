@@ -4,14 +4,14 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __cdecl, GetSoundConfiguration, 0x0075FDF0, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_75FDF0, 0x0075FDF0, ());
 CSF_GLOBAL(const char*, g_MenuOptionsPage, 0x00899ACC);
 CSF_GLOBAL(const char*, g_InGameOptionsPage, 0x00899AD4);
 
 static int __fastcall CMenuSoundOptions_ReturnToOptions(
     CMenuSoundOptions* self, void* /*edx*/)
 {
-    void* configuration = reinterpret_cast<void*>(GetSoundConfiguration());
+    void* configuration = reinterpret_cast<void*>(GetGlobalValue_75FDF0());
     if (CSF_AT(std::uint8_t, configuration, 0xCC))
     {
         void* pendingObject = reinterpret_cast<void*>(self->field_0028);

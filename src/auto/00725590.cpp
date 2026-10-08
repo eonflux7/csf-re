@@ -6,12 +6,12 @@
 
 CSF_GLOBAL(std::uint32_t, g_ButtonVtable, 0x00865328);
 
-CSF_FUNC(int, __fastcall, ReleaseQuadInterface, 0x006923C0,
+CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
 CSF_FUNC(int, __fastcall, DestroyEffects, 0x007318F0,
          (void* self, void* edx));
 CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* memory));
-CSF_FUNC(int, __fastcall, DestroyGuiControl, 0x00719B10,
+CSF_FUNC(int, __fastcall, CGuiControl_Destroy, 0x00719B10,
          (void* self, void* edx));
 
 static int __fastcall CGuiButton_Destroy(CGuiButton* self, void* /*edx*/)
@@ -25,7 +25,7 @@ static int __fastcall CGuiButton_Destroy(CGuiButton* self, void* /*edx*/)
         const std::uint32_t quad = *quadSlot;
         if (quad != 0)
         {
-            ReleaseQuadInterface(
+            ReleaseObjectReference(
                 reinterpret_cast<std::uint8_t*>(quad) + 4, nullptr);
             *quadSlot = 0;
         }
@@ -36,7 +36,7 @@ static int __fastcall CGuiButton_Destroy(CGuiButton* self, void* /*edx*/)
     const std::uint32_t permanentQuad = self->m_pPermanentQuad;
     if (permanentQuad != 0)
     {
-        ReleaseQuadInterface(
+        ReleaseObjectReference(
             reinterpret_cast<std::uint8_t*>(permanentQuad) + 4, nullptr);
         self->m_pPermanentQuad = 0;
     }
@@ -57,7 +57,7 @@ static int __fastcall CGuiButton_Destroy(CGuiButton* self, void* /*edx*/)
         self->m_pFx = 0;
     }
 
-    return DestroyGuiControl(self, nullptr);
+    return CGuiControl_Destroy(self, nullptr);
 }
 
 HOOK(0x00725590, CGuiButton_Destroy, "auto");

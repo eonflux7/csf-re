@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(int, __cdecl, MenuAccounts_TestMenuEvent, 0x007A8ED0,
+CSF_FUNC(int, __cdecl, Sub_7A8ED0, 0x007A8ED0,
          (int event));
 
 CSF_GLOBAL(const char*, g_pszMenu_P_LbMePr, 0x00899B40);
@@ -11,7 +11,7 @@ CSF_GLOBAL(const char*, g_pszMenu_P_LbMePr, 0x00899B40);
 static int __fastcall MenuAccounts_HandleEventAndResetControl(
     void* self, void* /*edx*/, int event, int /*unused*/)
 {
-    int result = MenuAccounts_TestMenuEvent(event);
+    int result = Sub_7A8ED0(event);
     if (static_cast<std::uint8_t>(result) == 0)
         return result;
 

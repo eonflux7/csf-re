@@ -11,11 +11,11 @@
 #include "legacy/string.h"
 
 // Vtable addresses written into the object header (primary and secondary bases).
-static constexpr uint32_t kVtblCMenuMpSessions = 0x00845990u;
+static const uint32_t kVtblCMenuMpSessions = CSF_ADDR_VT(0x00845990);
 static constexpr uint32_t kVtblCMenuScreenSecondary = 0x00845940u;
-static constexpr uint32_t kVtblIntermediate830488 = 0x00830488u;
-static constexpr uint32_t kVtblIntermediate830438 = 0x00830438u;
-static constexpr uint32_t kVtblFinal83042C = 0x0083042Cu;
+static const uint32_t kVtblIntermediate830488 = CSF_ADDR_DATA(0x00830488);
+static const uint32_t kVtblIntermediate830438 = CSF_ADDR_VT(0x00830438);
+static const uint32_t kVtblFinal83042C = CSF_ADDR_VT(0x0083042C);
 
 // game::Mem_Free
 CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));

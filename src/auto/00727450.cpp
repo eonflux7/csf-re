@@ -3,15 +3,15 @@
 #include "hook.h"
 
 // 0x00727410: copy-constructs a single 36-byte (0x24) record at `destination` from `source`.
-CSF_FUNC(int, __stdcall, ConstructRecord, 0x00727410,
+CSF_FUNC(int, __stdcall, CopyConstructRecord_727410, 0x00727410,
          (std::uint32_t* destination, std::uint32_t* source));
 
 // 0x0069B820: releases/destroys a single record during exception unwinding.
-CSF_FUNC(int, __stdcall, DestroyRecord, 0x0069B820,
+CSF_FUNC(int, __stdcall, DestroyRecord_69B820, 0x0069B820,
          (std::uint32_t* record));
 
 // 0x007AF666: __CxxThrowException@8 - rethrows the active exception.
-CSF_FUNC(void, __stdcall, RethrowCurrentException, 0x007AF666,
+CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInfo));
 
 // 0x007AF226: ___CxxFrameHandler - referenced by the compiler-generated EH thunk.
@@ -37,7 +37,7 @@ static std::uint32_t* __cdecl CopyConstructRecordRange(
     {
         while (source != sourceEnd)
         {
-            ConstructRecord(destination, source);
+            CopyConstructRecord_727410(destination, source);
             destination += 9;   // records are 36 (0x24) bytes = 9 dwords
             source += 9;
         }
@@ -49,11 +49,11 @@ static std::uint32_t* __cdecl CopyConstructRecordRange(
 
         while (constructed != constructedEnd)
         {
-            DestroyRecord(constructed);
+            DestroyRecord_69B820(constructed);
             constructed += 9;
         }
 
-        RethrowCurrentException(nullptr, nullptr);
+        RethrowCppException(nullptr, nullptr);
         __assume(0);
     }
 

@@ -7,7 +7,7 @@ CSF_FUNC(void, __fastcall, AddObjectReference, 0x006923B0,
          (void* self, void* edx));
 CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
-CSF_FUNC(void, __fastcall, CopyPropertiesToObject, 0x007181E0,
+CSF_FUNC(void, __fastcall, CGuiStatic_CopyPropertiesToObject, 0x007181E0,
          (void* self, void* edx, int* object));
 
 static void __fastcall CGuiButton_SetHoverQuad(
@@ -27,7 +27,7 @@ static void __fastcall CGuiButton_SetHoverQuad(
     if (quad) {
         AddObjectReference(
             reinterpret_cast<std::uint8_t*>(quad) + 4, nullptr);
-        CopyPropertiesToObject(
+        CGuiStatic_CopyPropertiesToObject(
             self, nullptr, reinterpret_cast<int*>(self->m_pHoverQuad));
     }
 }

@@ -6,9 +6,9 @@
 
 // Original callees (bound by address).
 // 0x712CC0: __thiscall, no stack args; constructs the embedded member at this+4.
-CSF_FUNC(void*, __fastcall, MenuEula_InitEmbeddedObject, 0x712CC0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x712CC0, (void* self, void* edx));
 // 0x41E5F0: __thiscall, one stack arg (ret 4); grows the uint32 slot array at this+0x158.
-CSF_FUNC(void*, __fastcall, MenuEula_GrowSlotArray, 0x41E5F0, (void* self, void* edx, int amount));
+CSF_FUNC(void*, __fastcall, GrowButtonArray, 0x41E5F0, (void* self, void* edx, int amount));
 
 // Constructor of CMenuEula (__thiscall, one stack arg, ret 4).
 // Vtable addresses are written as the same immediates the original stores:
@@ -18,12 +18,12 @@ CSF_FUNC(void*, __fastcall, MenuEula_GrowSlotArray, 0x41E5F0, (void* self, void*
 static CMenuEula* __fastcall CMenuEula_Construct(CMenuEula* self, void* /*edx*/, int screenParam)
 {
     // Base vtable first, then construct the embedded member at +4 (its address is this+4).
-    CSF_AT(uint32_t, self, 0x00) = 0x0083042C;
-    MenuEula_InitEmbeddedObject(reinterpret_cast<uint8_t*>(self) + 0x04, nullptr);
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x0083042C);
+    C_00830438_Construct(reinterpret_cast<uint8_t*>(self) + 0x04, nullptr);
 
     // Embedded member's vtable lives at +4; then CMenuEula's vtable at +0.
-    self->field_0004 = 0x00841BC8;
-    CSF_AT(uint32_t, self, 0x00) = 0x00841B78;
+    self->field_0004 = CSF_ADDR_VT(0x00841BC8);
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x00841B78);
 
     self->field_0054 = 7;
     self->field_0050 = 0;
@@ -46,7 +46,7 @@ static CMenuEula* __fastcall CMenuEula_Construct(CMenuEula* self, void* /*edx*/,
     // Ensure capacity of at least 1000 (unsigned compare).
     uint32_t initialCapacity = CSF_AT(uint32_t, self, 0x15C);
     if (initialCapacity < 0x3E8u) {
-        MenuEula_GrowSlotArray(reinterpret_cast<uint8_t*>(self) + 0x158, nullptr,
+        GrowButtonArray(reinterpret_cast<uint8_t*>(self) + 0x158, nullptr,
                                static_cast<int>(1000u - initialCapacity));
     }
 
@@ -56,7 +56,7 @@ static CMenuEula* __fastcall CMenuEula_Construct(CMenuEula* self, void* /*edx*/,
     // Append one zeroed slot; grow first if count >= capacity (unsigned compare).
     uint32_t countBeforeGrow = self->field_0160;
     if (countBeforeGrow >= CSF_AT(uint32_t, self, 0x15C)) {
-        MenuEula_GrowSlotArray(reinterpret_cast<uint8_t*>(self) + 0x158, nullptr,
+        GrowButtonArray(reinterpret_cast<uint8_t*>(self) + 0x158, nullptr,
                                static_cast<int>(CSF_AT(uint32_t, self, 0x164)));
     }
 

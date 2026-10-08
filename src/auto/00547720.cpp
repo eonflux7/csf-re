@@ -6,20 +6,20 @@
 
 CSF_FUNC(int, __cdecl, ResetStringRecordRange, 0x0072EF70,
          (int begin, int end, void* container, void* owner));
-CSF_FUNC(int, __cdecl, MenuExtras_ResetThumbnailRecordRange, 0x00546D60,
+CSF_FUNC(int, __cdecl, MenuExtras_ResetStringRange, 0x00546D60,
          (int begin, int end, void* container, void* owner));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
 static void** const g_MenuExtrasVtable =
-    reinterpret_cast<void**>(0x00843CB8);
+    CSF_VTBL(0x00843CB8);
 static void** const g_MenuExtrasSecondaryVtable =
     reinterpret_cast<void**>(0x00843C68);
 static void** const g_MenuScreenIntermediateSecondaryVtable =
-    reinterpret_cast<void**>(0x00830488);
+    reinterpret_cast<void**>(CSF_ADDR_DATA(0x00830488));
 static void** const g_MenuScreenSecondaryVtable =
-    reinterpret_cast<void**>(0x00830438);
+    CSF_VTBL(0x00830438);
 static void** const g_MenuScreenVtable =
-    reinterpret_cast<void**>(0x0083042C);
+    CSF_VTBL(0x0083042C);
 
 static int __fastcall CMenuExtras_DestroyContents(
     CMenuExtras* self, void* /*edx*/)
@@ -58,7 +58,7 @@ static int __fastcall CMenuExtras_DestroyContents(
     int result = static_cast<int>(self->field_0038);
     if (result)
     {
-        MenuExtras_ResetThumbnailRecordRange(
+        MenuExtras_ResetStringRange(
             result,
             static_cast<int>(self->field_003c),
             reinterpret_cast<std::uint8_t*>(self) + 0x34,

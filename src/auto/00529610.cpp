@@ -5,10 +5,10 @@
 #include "types/auto_classes.h"
 
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, MenuMessageBox_GetDisplayObject, 0x00652160,
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160,
          (void* self, void* edx));
 // Capture the residual EAX value: this callee is logically void.
-CSF_FUNC(int, __fastcall, MenuMessageBox_CopyStaticState, 0x00718230,
+CSF_FUNC(int, __fastcall, CGuiStatic_CopyStateToTarget, 0x00718230,
          (void* self, void* edx, int* target));
 
 CSF_GLOBAL(float, g_UnsignedIntegerBias, 0x0082D744);
@@ -30,7 +30,7 @@ static int __fastcall CMenuMessageBox_UpdateStaticLayout(
     if (!initialStatic || !reference)
         return static_cast<int>(initialStatic);
 
-    void* display = MenuMessageBox_GetDisplayObject(
+    void* display = LookupObjectById(
         reinterpret_cast<void*>(GetGlobalInt()), nullptr);
     void* dimensions =
         reinterpret_cast<void* (__fastcall*)(void*, void*)>(
@@ -43,7 +43,7 @@ static int __fastcall CMenuMessageBox_UpdateStaticLayout(
         screenHeight += g_UnsignedIntegerBias;
     const float verticalScale = static_cast<float>(displayHeight / screenHeight);
 
-    display = MenuMessageBox_GetDisplayObject(
+    display = LookupObjectById(
         reinterpret_cast<void*>(GetGlobalInt()), nullptr);
     dimensions =
         reinterpret_cast<void* (__fastcall*)(void*, void*)>(
@@ -105,7 +105,7 @@ static int __fastcall CMenuMessageBox_UpdateStaticLayout(
         CSF_AT(void**, control, 0)[0xA0 / 4])(control, nullptr, size);
 
     control = reinterpret_cast<void*>(self->field_0058);
-    return MenuMessageBox_CopyStaticState(control, nullptr, stateTarget);
+    return CGuiStatic_CopyStateToTarget(control, nullptr, stateTarget);
 }
 
 HOOK(0x00529610, CMenuMessageBox_UpdateStaticLayout, "auto");

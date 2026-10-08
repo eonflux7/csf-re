@@ -1,4 +1,5 @@
 #include <cstdint>
+#include "globals.h"
 #include "hook.h"
 
 // 0x004AA010 (6 bytes)
@@ -11,7 +12,7 @@
 // did so that any pointer-identity checks behave identically.
 static const char* GetPausaTag()
 {
-    return reinterpret_cast<const char*>(0x836924);
+    return reinterpret_cast<const char*>(CSF_ADDR_DATA(0x836924));
 }
 
 HOOK(0x4AA010, GetPausaTag, "auto");

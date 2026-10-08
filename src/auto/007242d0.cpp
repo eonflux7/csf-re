@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __cdecl, DestroyElementRange, 0x006DEC40,
+CSF_FUNC(int, __cdecl, ResetRecordRange, 0x006DEC40,
          (int* begin, int* end, ...));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
@@ -15,7 +15,7 @@ static int* __fastcall CGuiTextureListBox_ClearBaseStorage(
     auto* storage = reinterpret_cast<std::uint8_t*>(self) + 0x188;
 
     if (result != nullptr) {
-        DestroyElementRange(
+        ResetRecordRange(
             result,
             reinterpret_cast<int*>(CSF_AT(std::uint32_t, self, 0x190)),
             storage, self);

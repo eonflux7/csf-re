@@ -4,7 +4,7 @@
 
 // int sub_538A50(int* a1@<ecx>, int a2@<esi>, float a3)  — rets 4
 // Second argument lives in esi; it is forwarded untouched from our caller's esi.
-CSF_FUNC(int, __fastcall, CMenuLoading_Sub538A50, 0x538A50, (int* a1, void* edx, float a3));
+CSF_FUNC(int, __fastcall, CMenuLoading_AdvanceLoadingProgress, 0x538A50, (int* a1, void* edx, float a3));
 
 // Adds the delta a3 to the running accumulator (field_0030) and, when the
 // running total first exceeds the previously reported peak (field_0034),
@@ -16,7 +16,7 @@ static void __fastcall CMenuLoading_AccumulateProgress(CMenuLoading* self, void*
     if (accumulated > self->field_0034)
     {
         self->field_0034 = accumulated;
-        CMenuLoading_Sub538A50(reinterpret_cast<int*>(self), nullptr, 0.0f);
+        CMenuLoading_AdvanceLoadingProgress(reinterpret_cast<int*>(self), nullptr, 0.0f);
     }
 }
 

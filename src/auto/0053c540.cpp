@@ -11,11 +11,11 @@
 #include "legacy/string.h"
 
 // Global state accessor (cdecl, no arguments; the caller's pushed argument is not popped).
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x00521BB0, ());
+CSF_FUNC(void*, __cdecl, GetGlobalValue_521BB0, 0x00521BB0, ());
 // Global settings accessor whose byte at +0xD3 is the demo flag (cdecl, no arguments).
-CSF_FUNC(void*, __cdecl, GetGlobalSettings, 0x0075FDF0, ());
+CSF_FUNC(void*, __cdecl, GetGlobalValue_75FDF0, 0x0075FDF0, ());
 // Receives the raw dword of the countdown timer (ret 4).
-CSF_FUNC(void, __fastcall, GlobalState_StoreRawDword, 0x005231D0, (void* self, void* edx, uint32_t rawBits));
+CSF_FUNC(void, __fastcall, GlobalSetValue_5231D0, 0x005231D0, (void* self, void* edx, uint32_t rawBits));
 // Switches the demo-exit screen to the campaign menu (thiscall, ret 0).
 CSF_FUNC(int, __fastcall, CMenuDemoExit_SwitchToCampaign, 0x0053C4A0, (void* self, void* edx));
 
@@ -32,12 +32,12 @@ static uint32_t FloatBitsOf(float value)
 // (or the pending menu, if one is set) and disarms the timer by setting it to -1.0f.
 static void __fastcall CMenuDemoExit_UpdateCountdown(CMenuDemoExit* self, void* /*edx*/, float deltaSeconds)
 {
-    // The original pushes the raw timer dword before calling GetGlobalState, then passes it to the callee.
+    // The original pushes the raw timer dword before calling GetGlobalValue_521BB0, then passes it to the callee.
     uint32_t timerBitsBeforeCall = FloatBitsOf(self->m_timer);
-    void* globalState = GetGlobalState();
-    GlobalState_StoreRawDword(globalState, nullptr, timerBitsBeforeCall);
+    void* globalState = GetGlobalValue_521BB0();
+    GlobalSetValue_5231D0(globalState, nullptr, timerBitsBeforeCall);
 
-    void* settings = GetGlobalSettings();
+    void* settings = GetGlobalValue_75FDF0();
     if (CSF_AT(uint8_t, settings, 0xD3) != 0)
         return;
 

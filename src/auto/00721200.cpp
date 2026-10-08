@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 
 static const auto CGuiControl_CheckInteractionState =
-    reinterpret_cast<int (__fastcall*)(CGuiControl*, void*)>(0x00718700);
+    reinterpret_cast<int (__fastcall*)(CGuiControl*, void*)>(CSF_ADDR_FN(0x00718700));
 
 static uint32_t __fastcall CGuiEdit_ResetEditState(
     CGuiEdit* self, void* /*edx*/, int /*arg2*/, int /*arg3*/)

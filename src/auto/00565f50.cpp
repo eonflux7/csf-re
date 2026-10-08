@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Embedded base sub-object initializer (__thiscall, no stack args).
-CSF_FUNC(void*, __fastcall, CMenuEmbeddedBase_Init, 0x712CC0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x712CC0, (void* self, void* edx));
 
 // CMenuMpGameMode constructor (__thiscall, one stack arg: owning menu/parent).
 // Initializes the CMenuScreen base, the embedded sub-object at +4, and the
@@ -22,16 +22,16 @@ static CMenuMpGameMode* __fastcall CMenuMpGameMode_Construct(CMenuMpGameMode* se
     void* embeddedBase = reinterpret_cast<uint8_t*>(self) + 4;
 
     // Base CMenuScreen vtable.
-    CSF_AT(uint32_t, self, 0x0) = 0x0083042C;
+    CSF_AT(uint32_t, self, 0x0) = CSF_ADDR_VT(0x0083042C);
 
-    CMenuEmbeddedBase_Init(embeddedBase, nullptr);
+    C_00830438_Construct(embeddedBase, nullptr);
 
     CSF_AT(uint32_t, self, 0x1C) = static_cast<uint32_t>(parentMenu);
     CSF_AT(uint32_t, self, 0x18) = 0;
     CSF_AT(uint32_t, self, 0x14) = 0;
 
     // Final CMenuMpGameMode vtable and embedded sub-object vtable.
-    CSF_AT(uint32_t, self, 0x0) = 0x00845CA8;
+    CSF_AT(uint32_t, self, 0x0) = CSF_ADDR_VT(0x00845CA8);
     CSF_AT(uint32_t, self, 0x4) = 0x00845C58;
 
     CSF_AT(uint32_t, self, 0x20) = 0;

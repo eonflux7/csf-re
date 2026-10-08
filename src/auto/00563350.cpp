@@ -5,7 +5,7 @@
 
 // Callees of CMenuMpSessions_ShowFriendlyFireOptionState
 CSF_FUNC(int, __cdecl, GetGlobal8B0688, 0x00550CC0, ());
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x006A6D70, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_6A6D70, 0x006A6D70, ());
 CSF_FUNC(std::uint32_t, __cdecl, GetGlobalDword_73C020, 0x0073C020, ());
 CSF_FUNC(int, __fastcall, ForwardToSub6687B0AtOffset9c, 0x0073D4C0, (void* self, void* edx));
 CSF_FUNC(bool, __fastcall, CMenuMpSessions_RefreshOptionState, 0x00562770, (CMenuMpSessions* self, void* edx, char a3, char a4));
@@ -48,7 +48,7 @@ static int __fastcall CMenuMpSessions_ShowFriendlyFireOptionState(CMenuMpSession
     if (isOnlineMatch)
     {
         // Global state object, vtable slot 51 (+0xCC), no args
-        void* globalState = GetGlobalState();
+        void* globalState = GetGlobalState_6A6D70();
         reinterpret_cast<void(__fastcall*)(void*, void*)>(
             CSF_AT(void**, globalState, 0)[51])(globalState, nullptr);
     }

@@ -11,7 +11,7 @@
 //   arg4 = self    (incoming ecx value)
 //   arg5 = a3      (pushed first, same value as arg3)
 // ---------------------------------------------------------------------------
-CSF_FUNC(int, __cdecl, MenuExtras_ForwardTarget, 0x5470D0,
+CSF_FUNC(int, __cdecl, ConstructRecordRange, 0x5470D0,
          (const void* a1, const void* a2, int a3, void* self, int a5));
 
 // ---------------------------------------------------------------------------
@@ -21,13 +21,13 @@ CSF_FUNC(int, __cdecl, MenuExtras_ForwardTarget, 0x5470D0,
 // count of the original (ret 0xC) is reproduced exactly.
 //   entry : ecx = self, stack args a1, a2, a3
 //   pushes: a3, self, a3, a2, a1
-//   call  : MenuExtras_ForwardTarget(a1, a2, a3, self, a3)
+//   call  : ConstructRecordRange(a1, a2, a3, self, a3)
 // ---------------------------------------------------------------------------
 static int __fastcall MenuExtras_ForwardToTarget(void* self, void* /*edx*/,
                                                  const void* a1, const void* a2,
                                                  int a3)
 {
-    return MenuExtras_ForwardTarget(a1, a2, a3, self, a3);
+    return ConstructRecordRange(a1, a2, a3, self, a3);
 }
 
 HOOK(0x547700, MenuExtras_ForwardToTarget, "auto");

@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Thiscall callee at 0x53B540 (one stack arg: this, ret 0).
-CSF_FUNC(int, __fastcall, CMenuGameOptions_PrepareSliderBinding, 0x53B540,
+CSF_FUNC(int, __fastcall, CMenuGameOptions_ApplyToggleSettings, 0x53B540,
          (CMenuGameOptionsPC* self, void* edx));
 
 // Refreshes the attached option sub-object (at +0x24) with the slider value (+0x5C)
@@ -23,7 +23,7 @@ static int __fastcall CMenuGameOptionsPC_PushSliderValueToOptions(CMenuGameOptio
     int result = static_cast<int>(self->field_0024);
     if (result != 0)
     {
-        CMenuGameOptions_PrepareSliderBinding(self, nullptr);
+        CMenuGameOptions_ApplyToggleSettings(self, nullptr);
 
         // Slider value is passed as its raw 32-bit pattern (float bits on the stack).
         uint32_t sliderBits = *reinterpret_cast<uint32_t*>(&self->field_005c);

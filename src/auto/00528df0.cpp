@@ -3,12 +3,12 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(uint8_t, __cdecl, IsConfirmationInput, 0x007A8ED0, (int input));
+CSF_FUNC(uint8_t, __cdecl, Sub_7A8ED0, 0x007A8ED0, (int input));
 
 static int __fastcall MenuMessageBox_HandleInput(
     void* self, void* /*edx*/, int input, int /*unused*/)
 {
-    if (IsConfirmationInput(input))
+    if (Sub_7A8ED0(input))
     {
         if (CSF_AT(uint32_t, self, 0x78) & 0x800u)
             CSF_AT(uint8_t, self, 0x81) = 1;

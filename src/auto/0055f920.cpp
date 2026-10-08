@@ -6,7 +6,7 @@
 CSF_FUNC(int, __cdecl, GetGlobal8B0688, 0x550CC0, ());
 
 // Original __thiscall helpers (this in ecx, no stack arguments).
-CSF_FUNC(int, __fastcall, MenuMpOnline_HandleOnlineNavigation, 0x55EF30, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, CMenuMpOnline_ProcessPendingDialogs, 0x55EF30, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, MenuMpOnline_ProcessPendingNavigation, 0x55F010, (void* self, void* edx));
 
 CSF_GLOBAL(int, g_MpNetworkType, 0x89A5F0);
@@ -25,7 +25,7 @@ static int __fastcall MenuMpOnline_RouteNavigation(void* self, void* /*edx*/, in
     }
 
     if (useOnlinePath) {
-        return MenuMpOnline_HandleOnlineNavigation(self, nullptr);
+        return CMenuMpOnline_ProcessPendingDialogs(self, nullptr);
     }
     return MenuMpOnline_ProcessPendingNavigation(self, nullptr);
 }

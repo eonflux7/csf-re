@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void, __fastcall, CGuiControl_UpdateQuad, 0x007181E0,
+CSF_FUNC(void, __fastcall, CGuiStatic_CopyPropertiesToObject, 0x007181E0,
          (void* self, void* edx, int* quad));
 CSF_FUNC(int, __fastcall, CGuiControl_SendEvent, 0x00718280,
          (void* self, void* edx, int eventId));
@@ -16,7 +16,7 @@ static int __fastcall CGuiPanel_SendEvent(
     {
         if (eventId <= 3)
         {
-            CGuiControl_UpdateQuad(
+            CGuiStatic_CopyPropertiesToObject(
                 self, nullptr, reinterpret_cast<int*>(self->m_pBackgroundQuad));
         }
         else

@@ -10,12 +10,12 @@
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B0568, 0x4FDBB0, ());
 
 // 0x00501E50 — method invoked on the fetched object; returns a _String_base*.
-CSF_FUNC(void*, __fastcall, MenuInfo_FetchStringFromObject, 0x501E50, (unsigned int* self, void* edx));
+CSF_FUNC(void*, __fastcall, ReleaseMenuStringTable, 0x501E50, (unsigned int* self, void* edx));
 
 // Thin wrapper: fetch the global object, then forward to its string accessor.
 static void* __cdecl MenuMissionInfo_FetchGlobalString()
 {
-    return MenuInfo_FetchStringFromObject(
+    return ReleaseMenuStringTable(
         reinterpret_cast<unsigned int*>(GetGlobalValue_8B0568()), nullptr);
 }
 

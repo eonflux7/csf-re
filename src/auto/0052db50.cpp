@@ -4,30 +4,30 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void, __fastcall, ResetScenarioStars, 0x0052DA80,
+CSF_FUNC(void, __fastcall, CMenuScenarioSelect_ClearBriefingAndResetStars, 0x0052DA80,
          (CMenuScenarioSelect* self, void* edx));
-CSF_FUNC(void*, __cdecl, GetScenarioService, 0x00506BD0, ());
+CSF_FUNC(void*, __cdecl, GetGlobalValue_8B056C, 0x00506BD0, ());
 CSF_FUNC(void*, __fastcall, GetScenarioCollection, 0x00515CE0,
          (void* self, void* edx));
 CSF_FUNC(int, __cdecl, FormatScenarioText, 0x00692660,
          (void* destination, const char* format, int value, int mode));
-CSF_FUNC(int, __fastcall, SetScenarioText, 0x00720DF0,
+CSF_FUNC(int, __fastcall, C_00720DF0_ForwardCallToChildVtblSlot16, 0x00720DF0,
          (void* self, void* edx, const void* text));
-CSF_FUNC(int, __cdecl, FreeScenarioText, 0x00690E60, (void* allocation));
-CSF_FUNC(int, __cdecl, FormatStarName, 0x007AF9BB,
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* allocation));
+CSF_FUNC(int, __cdecl, _sprintf, 0x007AF9BB,
          (char* destination, const char* format, ...));
 
 static int __fastcall CMenuScenarioSelect_UpdateSelectedScenarioStars(
     CMenuScenarioSelect* self, void* /*edx*/)
 {
-    // Neither this routine nor ResetScenarioStars consumes incoming ESI.
+    // Neither this routine nor CMenuScenarioSelect_ClearBriefingAndResetStars consumes incoming ESI.
     std::uint32_t result = self->field_0068;
     if (!result)
         return static_cast<int>(result);
 
-    ResetScenarioStars(self, nullptr);
+    CMenuScenarioSelect_ClearBriefingAndResetStars(self, nullptr);
 
-    void* service = GetScenarioService();
+    void* service = GetGlobalValue_8B056C();
     result = reinterpret_cast<std::uintptr_t>(service);
     void* scenarioManager = CSF_AT(void*, service, 0x08);
     if (!scenarioManager)
@@ -92,13 +92,13 @@ static int __fastcall CMenuScenarioSelect_UpdateSelectedScenarioStars(
             if (CSF_AT(std::uint32_t, scenarioText, 0x18) < 8)
                 text = scenarioText + 4;
 
-            SetScenarioText(
+            C_00720DF0_ForwardCallToChildVtblSlot16(
                 reinterpret_cast<void*>(self->field_0068), nullptr, text);
 
             for (std::uint32_t star = 1; star <= 5; ++star) {
-                FormatStarName(emptyStarName,
+                _sprintf(emptyStarName,
                                CSF_STR(0x008415FC, "EstrellaN%d"), star);
-                FormatStarName(filledStarName,
+                _sprintf(filledStarName,
                                CSF_STR(0x008415F0, "Estrella%d"), star);
 
                 void* screen = reinterpret_cast<void*>(self->field_0018);
@@ -136,7 +136,7 @@ static int __fastcall CMenuScenarioSelect_UpdateSelectedScenarioStars(
         void* allocation = CSF_AT(void*, scenarioText, 0x04);
         result = reinterpret_cast<std::uintptr_t>(allocation);
         if (allocation)
-            return FreeScenarioText(allocation);
+            return Mem_FreeDebug(allocation);
     }
 
     return static_cast<int>(result);

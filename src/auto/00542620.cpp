@@ -8,13 +8,13 @@
 CSF_GLOBAL(uint32_t, g_CharacterSelectState8B0694, 0x8B0694);
 CSF_GLOBAL(uint32_t, g_MenuMPCharacterSelect_LastState, 0x8B0698);
 
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x50D190, ());
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x50D190, ());
 CSF_FUNC(int, __cdecl, GetGlobal8B0688, 0x550CC0, ());
 
 // 0x542620 (tail-merges into the state comparison routine at 0x551DD0).
 static bool __cdecl MenuMPCharacterSelect_HasStateChanged()
 {
-    uint8_t* globalState = reinterpret_cast<uint8_t*>(GetGlobalState());
+    uint8_t* globalState = reinterpret_cast<uint8_t*>(GetGlobalState_50D190());
     if (CSF_AT(uint8_t, globalState, 0xD0) == 0)
         return false;
 

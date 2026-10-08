@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(void*, __fastcall, CopyStringRange, 0x004109E0,
+CSF_FUNC(void*, __fastcall, AssignStringSubstring, 0x004109E0,
          (void* self, void* edx, const void* source,
           std::uint32_t position, std::uint32_t count));
 
@@ -13,7 +13,7 @@ static void* __fastcall CopyConstructStringPairRecord(
     CSF_AT(std::uint32_t, self, 0x18) = 15;
     CSF_AT(std::uint32_t, self, 0x14) = 0;
     CSF_AT(std::uint8_t, self, 0x04) = 0;
-    CopyStringRange(self, nullptr, source, 0, 0xFFFFFFFFu);
+    AssignStringSubstring(self, nullptr, source, 0, 0xFFFFFFFFu);
 
     auto* secondString = static_cast<std::uint8_t*>(self) + 0x1C;
     const auto* sourceSecondString =
@@ -22,7 +22,7 @@ static void* __fastcall CopyConstructStringPairRecord(
     CSF_AT(std::uint32_t, secondString, 0x18) = 15;
     CSF_AT(std::uint32_t, secondString, 0x14) = 0;
     CSF_AT(std::uint8_t, secondString, 0x04) = 0;
-    CopyStringRange(secondString, nullptr, sourceSecondString, 0, 0xFFFFFFFFu);
+    AssignStringSubstring(secondString, nullptr, sourceSecondString, 0, 0xFFFFFFFFu);
 
     CSF_AT(std::uint32_t, self, 0x38) =
         CSF_AT(std::uint32_t, source, 0x38);

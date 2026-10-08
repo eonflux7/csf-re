@@ -11,7 +11,7 @@
 //   arg4 = this    (incoming ecx value)
 //   arg5 = a3      (pushed first)
 // ---------------------------------------------------------------------------
-CSF_FUNC(void*, __cdecl, ForwardedCall, 0x714410,
+CSF_FUNC(void*, __cdecl, CopyConstructTwelveByteRange, 0x714410,
          (void* a1, void* a2, void* a3, void* a4, void* a5));
 
 // ---------------------------------------------------------------------------
@@ -21,12 +21,12 @@ CSF_FUNC(void*, __cdecl, ForwardedCall, 0x714410,
 // the original (ret 0xC) is reproduced exactly.
 //   entry : ecx = self, stack args a1, a2, a3
 //   pushes: a3, self, a3, a2, a1
-//   call  : ForwardedCall(a1, a2, a3, self, a3)
+//   call  : CopyConstructTwelveByteRange(a1, a2, a3, self, a3)
 // ---------------------------------------------------------------------------
 static void* __fastcall ForwardTo714410(void* self, void* /*edx*/,
                                         void* a1, void* a2, void* a3)
 {
-    return ForwardedCall(a1, a2, a3, self, a3);
+    return CopyConstructTwelveByteRange(a1, a2, a3, self, a3);
 }
 
 HOOK(0x714A40, ForwardTo714410, "auto");

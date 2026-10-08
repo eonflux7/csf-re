@@ -9,7 +9,7 @@ CSF_FUNC(int, __cdecl, RwRasterDestroy, 0x00627570,
 CSF_FUNC(std::uint32_t*, __cdecl, CopyStringRecordRange, 0x00727320,
          (std::uint32_t* first, std::uint32_t* last,
           std::uint32_t* destination));
-CSF_FUNC(int, __cdecl, DestroyStringRecordRange, 0x00727370,
+CSF_FUNC(int, __cdecl, ForwardArgumentsToProcessor_727370, 0x00727370,
          (std::uint32_t* first, std::uint32_t* last));
 
 CSF_GLOBAL(float, g_RasterByteScale, 0x00843C14);
@@ -74,7 +74,7 @@ static void __fastcall C_008655e8_ReleaseRaster(
     CopyStringRecordRange(destination + 9, last, destination);
 
     const std::uint32_t oldEnd = CSF_AT(std::uint32_t, self, 0x4C);
-    DestroyStringRecordRange(
+    ForwardArgumentsToProcessor_727370(
         reinterpret_cast<std::uint32_t*>(oldEnd - 36u),
         reinterpret_cast<std::uint32_t*>(oldEnd));
 

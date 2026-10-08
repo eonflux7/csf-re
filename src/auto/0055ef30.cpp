@@ -3,7 +3,7 @@
 #include "globals.h"
 #include "hook.h"
 
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x006A6D70, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_6A6D70, 0x006A6D70, ());
 
 CSF_GLOBAL(const char*, g_pszMenu_P_MsgBox, 0x00899B28);
 CSF_GLOBAL(const char*, g_pszMenu_P_LbTpQM, 0x00899B4C);
@@ -40,7 +40,7 @@ static uint32_t CallVirtualWithInt(void* object, uint32_t byteOffset, int argume
 
 static int __cdecl MenuMpOnline_IsOnlineGateOpen()
 {
-    void* globalState = GetGlobalState();
+    void* globalState = GetGlobalState_6A6D70();
     return static_cast<int>(CallVirtualNoArgs(globalState, 0x1C));
 }
 

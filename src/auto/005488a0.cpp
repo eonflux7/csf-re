@@ -3,9 +3,9 @@
 #include "core/memory.h"
 #include "globals.h"
 
-CSF_FUNC(std::uint8_t, __cdecl, MenuExtras_IsExitInput, 0x007A8ED0,
+CSF_FUNC(std::uint8_t, __cdecl, Sub_7A8ED0, 0x007A8ED0,
          (int input));
-CSF_FUNC(void, __fastcall, MenuExtras_ProcessSelection, 0x005464E0,
+CSF_FUNC(void, __fastcall, CMenuExtras_SelectThumbnailFromControl, 0x005464E0,
          (void* self, void* edx, int selection));
 CSF_FUNC(char, __fastcall, MenuExtras_PerformAlternateAction, 0x00548650,
          (void* self, void* edx));
@@ -13,7 +13,7 @@ CSF_FUNC(char, __fastcall, MenuExtras_PerformAlternateAction, 0x00548650,
 static void __fastcall MenuExtras_HandleInput(
     void* self, void* /*edx*/, int input, int /*unused*/)
 {
-    if (MenuExtras_IsExitInput(input) != 0)
+    if (Sub_7A8ED0(input) != 0)
     {
         CSF_AT(std::uint8_t, self, 0x42) = 1;
         return;
@@ -32,7 +32,7 @@ static void __fastcall MenuExtras_HandleInput(
                 CSF_AT(void**, selectionObject, 0)[0x104 / 4])(
                     selectionObject, nullptr);
 
-        MenuExtras_ProcessSelection(
+        CMenuExtras_SelectThumbnailFromControl(
             static_cast<std::uint8_t*>(self) - 4, nullptr, selection);
         break;
     }

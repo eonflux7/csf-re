@@ -6,7 +6,7 @@
 // current index stored at this+0x84. Index 0..3 picks one of four float fields
 // from the global value block; any other index yields g_FloatMax.
 
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x753A30, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_753A30, 0x753A30, ());
 CSF_GLOBAL(float, g_FloatMax, 0x831090);
 
 static double __fastcall MenuSystem_GetIndexedGlobalFloat(void* self, void* /*edx*/)
@@ -16,13 +16,13 @@ static double __fastcall MenuSystem_GetIndexedGlobalFloat(void* self, void* /*ed
     switch (selectorIndex)
     {
     case 0:
-        return static_cast<double>(CSF_AT(float, GetGlobalValue(), 0x10C));
+        return static_cast<double>(CSF_AT(float, GetGlobalValue_753A30(), 0x10C));
     case 1:
-        return static_cast<double>(CSF_AT(float, GetGlobalValue(), 0x110));
+        return static_cast<double>(CSF_AT(float, GetGlobalValue_753A30(), 0x110));
     case 2:
-        return static_cast<double>(CSF_AT(float, GetGlobalValue(), 0x114));
+        return static_cast<double>(CSF_AT(float, GetGlobalValue_753A30(), 0x114));
     case 3:
-        return static_cast<double>(CSF_AT(float, GetGlobalValue(), 0x118));
+        return static_cast<double>(CSF_AT(float, GetGlobalValue_753A30(), 0x118));
     default:
         return static_cast<double>(g_FloatMax);
     }

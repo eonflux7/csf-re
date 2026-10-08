@@ -4,7 +4,7 @@
 #include "hook.h"
 
 // Bound original callees
-CSF_FUNC(uint8_t, __cdecl, MenuScenarioSelect_QueryFlag, 0x007A8ED0, (int a1));
+CSF_FUNC(uint8_t, __cdecl, Sub_7A8ED0, 0x007A8ED0, (int a1));
 CSF_FUNC(int, __cdecl, MenuScenarioSelect_FallbackHandle, 0x00428500, (int a1));
 
 // Original: int __thiscall sub_52F100(this, a2, a3); ret 8
@@ -13,7 +13,7 @@ CSF_FUNC(int, __cdecl, MenuScenarioSelect_FallbackHandle, 0x00428500, (int a1));
 // forward a2 to the fallback handler.
 static int __fastcall MenuScenarioSelect_DispatchOnFlag(void* self, void* /*edx*/, int a2, int /*a3*/)
 {
-    if (MenuScenarioSelect_QueryFlag(a2))
+    if (Sub_7A8ED0(a2))
     {
         void* baseObj = reinterpret_cast<uint8_t*>(self) - 4;
         void** vtbl = CSF_AT(void**, baseObj, 0);

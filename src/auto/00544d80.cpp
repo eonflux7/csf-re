@@ -10,7 +10,7 @@
 
 // std::_String_base::assign-style helper at 0x4109E0.
 // __thiscall: ecx = destination element, stack = (source, 0, -1), callee pops 12.
-CSF_FUNC(void*, __fastcall, StringBase_AssignFrom, 0x4109E0,
+CSF_FUNC(void*, __fastcall, AssignStringSubstring, 0x4109E0,
          (void* self, void* edx, void* source, int zero, int minusOne));
 
 // Fills every 36-byte slot in [first, last) with the string from `source`
@@ -21,7 +21,7 @@ static char __cdecl MenuSaveGame_FillSlotRange(uint8_t* first, uint8_t* last, ui
     char result = 0;
     for (uint8_t* slot = first; slot != last; slot += 36)
     {
-        StringBase_AssignFrom(slot, nullptr, source, 0, -1);
+        AssignStringSubstring(slot, nullptr, source, 0, -1);
 
         CSF_AT(uint8_t, slot, 0x1C) = CSF_AT(uint8_t, source, 0x1C);
         CSF_AT(uint8_t, slot, 0x1D) = CSF_AT(uint8_t, source, 0x1D);

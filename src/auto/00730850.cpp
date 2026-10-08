@@ -4,7 +4,7 @@
 #include "core/memory.h"
 
 // Copy-constructs a single 4-byte element in place (the container's element copier).
-CSF_FUNC(std::uint32_t*, __stdcall, CopyConstructPointerElement,
+CSF_FUNC(std::uint32_t*, __stdcall, CopyDwordIfNotNull,
          0x00730830, (std::uint32_t* destination, std::uint32_t* source));
 
 // MSVC C++ runtime rethrow (compiles to __CxxThrowException(0, 0) / `throw;`).
@@ -12,7 +12,7 @@ CSF_FUNC(void, __stdcall, RethrowCppException,
          0x007AF666, (void* exceptionObject, void* throwInformation));
 
 // Referenced by the compiler-generated exception frame of this function.
-CSF_FUNC(int, __cdecl, HandleCppExceptionFrame, 0x007AF226, (...));
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226, (...));
 CSF_GLOBAL(std::uint8_t, g_PointerRangeCopyExceptionInformation, 0x00892848);
 
 // Equivalent of MSVC's _Uninitialized_copy over a range of 4-byte elements:
@@ -27,7 +27,7 @@ static std::uint32_t* __cdecl CopyConstructPointerRange(
     {
         while (source != sourceEnd)
         {
-            CopyConstructPointerElement(destination, source);
+            CopyDwordIfNotNull(destination, source);
             ++destination;
             ++source;
         }

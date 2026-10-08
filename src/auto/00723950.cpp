@@ -3,25 +3,25 @@
 #include "core/memory.h"
 #include "globals.h"
 
-CSF_FUNC(void*, __stdcall, ReleaseRecordStorage, 0x006C8D30,
+CSF_FUNC(void*, __stdcall, ReleaseVectorStorage, 0x006C8D30,
          (void* storage, int count));
 CSF_FUNC(int, __fastcall, GetRecordCount, 0x006D4160,
          (void* self, void* edx));
 CSF_FUNC(int, __cdecl, ResetWideStringsInRecordRange, 0x007233D0,
          (std::uint32_t* first, std::uint32_t* last));
-CSF_FUNC(int, __stdcall, DestroyRecordRange, 0x00723560,
+CSF_FUNC(int, __stdcall, ForwardArgumentsToProcessor_723560, 0x00723560,
          (std::uint32_t* first, std::uint32_t* last));
 CSF_FUNC(std::uint32_t*, __cdecl, CopyStringRecordsForward, 0x00723580,
          (std::uint32_t* first, std::uint32_t* last, std::uint32_t* destination));
-CSF_FUNC(std::uint32_t*, __cdecl, CopyConstructRecordRange, 0x007236C0,
+CSF_FUNC(std::uint32_t*, __cdecl, CopyConstructRecordRange_7236C0, 0x007236C0,
          (std::uint32_t* first, std::uint32_t* last, std::uint32_t* destination));
 CSF_FUNC(int, __fastcall, ClearWideStringRecordStorage, 0x00723750,
          (void* self, void* edx));
-CSF_FUNC(std::uint32_t*, __cdecl, AssignExistingRecordRange, 0x007237A0,
+CSF_FUNC(std::uint32_t*, __cdecl, ForwardTo723580, 0x007237A0,
          (std::uint32_t* first, std::uint32_t* last, std::uint32_t* destination));
-CSF_FUNC(std::uint32_t*, __stdcall, ConstructReplacementRecordRange, 0x00723930,
+CSF_FUNC(std::uint32_t*, __stdcall, ForwardTo7236C0, 0x00723930,
          (std::uint32_t* first, std::uint32_t* last, std::uint32_t* destination));
-CSF_FUNC(char, __fastcall, AllocateRecordStorage, 0x00775690,
+CSF_FUNC(char, __fastcall, AllocateRecordStorage_775690, 0x00775690,
          (void* self, void* edx, int count));
 
 static std::uint32_t CountRecordsBetween(std::uint32_t first, std::uint32_t last)
@@ -85,12 +85,12 @@ static int __fastcall AssignWideStringRecords(void* self, void* /*edx*/, void* s
         auto* split = RecordPointer(
             currentSourceBegin + static_cast<std::uint32_t>(existingCount) * 60u);
 
-        AssignExistingRecordRange(
+        ForwardTo723580(
             RecordPointer(currentSourceBegin), split, RecordPointer(destinationBegin));
 
         auto* sourceEnd = RecordPointer(CSF_AT(std::uint32_t, source, 0x08));
         auto* destinationEnd = RecordPointer(CSF_AT(std::uint32_t, self, 0x08));
-        auto* constructedEnd = CopyConstructRecordRange(split, sourceEnd, destinationEnd);
+        auto* constructedEnd = CopyConstructRecordRange_7236C0(split, sourceEnd, destinationEnd);
         CSF_AT(std::uint32_t, self, 0x08) =
             static_cast<std::uint32_t>(reinterpret_cast<std::uintptr_t>(constructedEnd));
         return result;
@@ -98,22 +98,22 @@ static int __fastcall AssignWideStringRecords(void* self, void* /*edx*/, void* s
 
     if (destinationBegin) {
         auto* destinationEnd = RecordPointer(CSF_AT(std::uint32_t, self, 0x08));
-        DestroyRecordRange(RecordPointer(destinationBegin), destinationEnd);
+        ForwardArgumentsToProcessor_723560(RecordPointer(destinationBegin), destinationEnd);
 
         const std::uint32_t storage = CSF_AT(std::uint32_t, self, 0x04);
         const std::uint32_t storageEnd = CSF_AT(std::uint32_t, self, 0x0C);
-        ReleaseRecordStorage(
+        ReleaseVectorStorage(
             reinterpret_cast<void*>(storage),
             static_cast<int>(CountRecordsBetween(storage, storageEnd)));
     }
 
     const int replacementCount = GetRecordCount(source, nullptr);
-    if (AllocateRecordStorage(self, nullptr, replacementCount)) {
+    if (AllocateRecordStorage_775690(self, nullptr, replacementCount)) {
         auto* destination = RecordPointer(CSF_AT(std::uint32_t, self, 0x04));
         auto* sourceEnd = RecordPointer(CSF_AT(std::uint32_t, source, 0x08));
         auto* sourceFirst = RecordPointer(CSF_AT(std::uint32_t, source, 0x04));
         auto* constructedEnd =
-            ConstructReplacementRecordRange(sourceFirst, sourceEnd, destination);
+            ForwardTo7236C0(sourceFirst, sourceEnd, destination);
         CSF_AT(std::uint32_t, self, 0x08) =
             static_cast<std::uint32_t>(reinterpret_cast<std::uintptr_t>(constructedEnd));
     }

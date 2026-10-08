@@ -6,7 +6,7 @@
 
 static int (__fastcall* const CGuiControl_PassesEligibilityCheck)(
     CGuiControl* self, void* edx) =
-    reinterpret_cast<int (__fastcall*)(CGuiControl*, void*)>(0x00718700);
+    reinterpret_cast<int (__fastcall*)(CGuiControl*, void*)>(CSF_ADDR_FN(0x00718700));
 
 static CGuiControl* __fastcall CGuiPanel_FindFirstEligibleChild(
     CGuiPanel* self, void* /*edx*/)

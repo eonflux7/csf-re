@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(char, __fastcall, CGuiControl_ProcessInput, 0x00719400,
+CSF_FUNC(char, __fastcall, CGuiControl_HandleMouseMovement, 0x00719400,
          (CGuiControl* self, void* edx, void* input));
 
 // Same shape as the sibling override 0x72B150, but forwards the event to each
@@ -45,7 +45,7 @@ static char __fastcall CGuiPanel_ProcessInputEvent(
             CSF_AT(void**, child, 0)[0x34 / 4])(child, nullptr, input);
     }
 
-    return CGuiControl_ProcessInput(self, nullptr, input);
+    return CGuiControl_HandleMouseMovement(self, nullptr, input);
 }
 
 HOOK(0x0072B1E0, CGuiPanel_ProcessInputEvent, "auto");

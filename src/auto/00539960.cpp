@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __fastcall, StringBase_AssignCString, 0x00429B60,
+CSF_FUNC(void*, __fastcall, AssignStringRange_429B60, 0x00429B60,
          (void* self, void* edx, char* text, unsigned int length));
 
 static CMenuLoadGame* __fastcall CMenuLoadGame_PrepareLoadState(
@@ -13,7 +13,7 @@ static CMenuLoadGame* __fastcall CMenuLoadGame_PrepareLoadState(
     self->field_0018 = 0;
     self->field_011c = 0;
     self->field_0100 = 0;
-    StringBase_AssignCString(
+    AssignStringRange_429B60(
         reinterpret_cast<uint8_t*>(self) + 0x1C,
         edx, const_cast<char*>(CSF_STR(0x0082E65C, "")), 0);
     self->field_0104 = 0;

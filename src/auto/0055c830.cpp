@@ -7,12 +7,12 @@
 
 CSF_GLOBAL(int, g_SelectedAccountIndex, 0x0089A5E8);
 
-CSF_FUNC(void*, __cdecl, GetAccountManager, 0x00506BD0, ());
-CSF_FUNC(int, __fastcall, InitializeAccountRecord, 0x00518890,
+CSF_FUNC(void*, __cdecl, GetGlobalValue_8B056C, 0x00506BD0, ());
+CSF_FUNC(int, __fastcall, CMenuAccountEdit_ResetInnerObject, 0x00518890,
          (void* self, void* edx));
-CSF_FUNC(int, __fastcall, CMenuAccountEdit_ClearChildTextsAndRefresh,
+CSF_FUNC(int, __fastcall, MenuAccounts_ClearChildTextsAndRefresh,
          0x0055C6A0, (CMenuAccountEdit* self, void* edx));
-CSF_FUNC(char*, __cdecl, CopyAccountName, 0x007AFEC0,
+CSF_FUNC(char*, __cdecl, _strncpy, 0x007AFEC0,
          (char* destination, const char* source, std::size_t count));
 
 static int __fastcall CMenuAccountEdit_LoadSelectedAccount(
@@ -22,12 +22,12 @@ static int __fastcall CMenuAccountEdit_LoadSelectedAccount(
 
     if (g_SelectedAccountIndex == -1)
     {
-        InitializeAccountRecord(bytes + 0x34, nullptr);
+        CMenuAccountEdit_ResetInnerObject(bytes + 0x34, nullptr);
     }
     else
     {
-        GetAccountManager();
-        void* manager = GetAccountManager();
+        GetGlobalValue_8B056C();
+        void* manager = GetGlobalValue_8B056C();
         void* accountStore = CSF_AT(void*, manager, 0x14);
         const int selectedIndex = g_SelectedAccountIndex;
 
@@ -41,11 +41,11 @@ static int __fastcall CMenuAccountEdit_LoadSelectedAccount(
         for (std::size_t i = 0; i < 0x93; ++i)
             destination[i] = source[i];
 
-        CopyAccountName(reinterpret_cast<char*>(bytes + 0x28C),
+        _strncpy(reinterpret_cast<char*>(bytes + 0x28C),
                         reinterpret_cast<const char*>(bytes + 0x5D), 0x14);
     }
 
-    const int result = CMenuAccountEdit_ClearChildTextsAndRefresh(self, nullptr);
+    const int result = MenuAccounts_ClearChildTextsAndRefresh(self, nullptr);
     self->field_0280 = 1;
     return result;
 }

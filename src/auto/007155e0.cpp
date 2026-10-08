@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(void*, __fastcall, GetResourceFactory, 0x00686C10,
+CSF_FUNC(void*, __fastcall, GetCachedObjectProvider, 0x00686C10,
          (void* self, void* edx));
 
 static std::uint32_t __fastcall InvokeLazyIndexedResource(
@@ -28,7 +28,7 @@ static std::uint32_t __fastcall InvokeLazyIndexedResource(
 
     if (CSF_AT(void*, reinterpret_cast<void*>(initialEntryAddress), 8) == nullptr)
     {
-        void* factory = GetResourceFactory(self, nullptr);
+        void* factory = GetCachedObjectProvider(self, nullptr);
         const std::uint32_t destinationAddress =
             CSF_AT(std::uint32_t, self, 0x19C) + byteOffset;
 

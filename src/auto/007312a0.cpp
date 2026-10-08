@@ -11,7 +11,7 @@
 //   arg4 = incoming ecx  (the object / context pointer, pushed as `push ecx`)
 //   arg5 = a3            (pushed first, duplicate of arg3)
 // ---------------------------------------------------------------------------
-CSF_FUNC(int, __cdecl, ForwardedCall, 0x7310F0,
+CSF_FUNC(int, __cdecl, ForwardRangeToHandler, 0x7310F0,
          (int a1, int a2, int a3, void* a4, int a5));
 
 // ---------------------------------------------------------------------------
@@ -21,12 +21,12 @@ CSF_FUNC(int, __cdecl, ForwardedCall, 0x7310F0,
 // callee-popped byte count of the original (ret 0xC) is reproduced exactly.
 //   entry : ecx = self, stack args a1, a2, a3
 //   pushes: a3, self, a3, a2, a1
-//   call  : ForwardedCall(a1, a2, a3, self, a3)
+//   call  : ForwardRangeToHandler(a1, a2, a3, self, a3)
 // ---------------------------------------------------------------------------
 static int __fastcall ForwardTo7310F0(void* self, void* /*edx*/,
                                       int a1, int a2, int a3)
 {
-    return ForwardedCall(a1, a2, a3, self, a3);
+    return ForwardRangeToHandler(a1, a2, a3, self, a3);
 }
 
 HOOK(0x7312A0, ForwardTo7310F0, "auto");

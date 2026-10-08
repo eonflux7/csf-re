@@ -12,7 +12,7 @@ CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x00718700,
          (void* self, void* edx));
 
 // Capture the entire EAX forwarded by the original, not just AL.
-CSF_FUNC(int, __fastcall, CGuiControl_HandleSelectionInput, 0x00718510,
+CSF_FUNC(int, __fastcall, CGuiControl_HandleSelectionInput_718510, 0x00718510,
          (void* self, void* edx, int action, int inputData));
 
 static int __fastcall CGuiListBoxBase_HandleSelectionInput(
@@ -37,7 +37,7 @@ static int __fastcall CGuiListBoxBase_HandleSelectionInput(
     else if (action == 1)
         CGuiListBoxBase_SelectNextItem(self, nullptr);
 
-    return CGuiControl_HandleSelectionInput(self, nullptr, action, inputData);
+    return CGuiControl_HandleSelectionInput_718510(self, nullptr, action, inputData);
 }
 
 HOOK(0x00716F70, CGuiListBoxBase_HandleSelectionInput, "auto");

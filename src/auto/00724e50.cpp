@@ -5,11 +5,11 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void, __fastcall, AddReference, 0x006923B0,
+CSF_FUNC(void, __fastcall, AddObjectReference, 0x006923B0,
          (void* self, void* edx));
-CSF_FUNC(int, __fastcall, ReleaseReference, 0x006923C0,
+CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
-CSF_FUNC(void, __fastcall, CopyPropertiesToObject, 0x007181E0,
+CSF_FUNC(void, __fastcall, CGuiStatic_CopyPropertiesToObject, 0x007181E0,
          (CGuiButton* self, void* edx, void* object));
 
 CSF_GLOBAL(float, g_HalfDurationScale, 0x0082D444);
@@ -23,7 +23,7 @@ static int __fastcall CGuiButton_SetPermanentQuad(
 
     if (result != 0)
     {
-        result = static_cast<std::uint32_t>(ReleaseReference(
+        result = static_cast<std::uint32_t>(ReleaseObjectReference(
             reinterpret_cast<std::uint8_t*>(result) + 4, nullptr));
         self->m_pPermanentQuad = 0;
     }
@@ -31,8 +31,8 @@ static int __fastcall CGuiButton_SetPermanentQuad(
     self->m_pPermanentQuad = reinterpret_cast<std::uint32_t>(quad);
     if (quad)
     {
-        AddReference(static_cast<std::uint8_t*>(quad) + 4, nullptr);
-        CopyPropertiesToObject(
+        AddObjectReference(static_cast<std::uint8_t*>(quad) + 4, nullptr);
+        CGuiStatic_CopyPropertiesToObject(
             self, nullptr, reinterpret_cast<void*>(self->m_pPermanentQuad));
 
         result = self->m_pText;

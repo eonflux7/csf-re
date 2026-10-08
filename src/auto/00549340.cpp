@@ -4,7 +4,7 @@
 #include "globals.h"
 
 // int __thiscall sub_5491A0(int* this, int a2)  -- ret 4
-CSF_FUNC(int, __fastcall, CMenuVideoAdvanced_DispatchEvent13, 0x5491A0,
+CSF_FUNC(int, __fastcall, CMenuVideoAdvanced_ApplyChangedOption, 0x5491A0,
          (CMenuVideoAdvanced* self, void* /*edx*/, uint32_t* a2));
 
 // Handles a menu event: for event id 13 the video-option change is dispatched and the
@@ -16,7 +16,7 @@ static int __fastcall CMenuVideoAdvanced_HandleEvent(CMenuVideoAdvanced* self, v
 
     if (*a2 == 13u)
     {
-        CMenuVideoAdvanced_DispatchEvent13(self, nullptr, a2);
+        CMenuVideoAdvanced_ApplyChangedOption(self, nullptr, a2);
 
         // vtable pointer is re-read after the call (the callee may replace it)
         void** vtbl = *reinterpret_cast<void***>(self);

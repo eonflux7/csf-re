@@ -5,13 +5,13 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-static CSF_FUNC(int, __cdecl, CompareNamePrefix, 0x007B00B0,
+static CSF_FUNC(int, __cdecl, _strncmp, 0x007B00B0,
                (const char* name, const char* prefix, std::size_t length));
 static CSF_FUNC(std::int32_t, __cdecl, ParseThumbnailIndex, 0x007AFD89,
                (const char* text));
-static CSF_FUNC(int, __cdecl, ResolveThumbnailResource, 0x00692440,
+static CSF_FUNC(int, __cdecl, MenuMessageBox_ResolveEntryByKey, 0x00692440,
                (int resource, int mode));
-static CSF_FUNC(int, __fastcall, ForwardThumbnailToChild, 0x00720DF0,
+static CSF_FUNC(int, __fastcall, C_00720DF0_ForwardCallToChildVtblSlot16, 0x00720DF0,
                (void* self, void* edx, int resource));
 
 static void __fastcall CMenuExtras_SelectThumbnailFromControl(
@@ -24,7 +24,7 @@ static void __fastcall CMenuExtras_SelectThumbnailFromControl(
         reinterpret_cast<const char* (__fastcall*)(void*, void*)>(
             CSF_AT(void**, control, 0)[0x74 / 4])(control, nullptr);
 
-    if (CompareNamePrefix(name, CSF_STR(0x00843C48, "thumb"), 5) != 0)
+    if (_strncmp(name, CSF_STR(0x00843C48, "thumb"), 5) != 0)
         return;
 
     const char* suffix =
@@ -56,10 +56,10 @@ static void __fastcall CMenuExtras_SelectThumbnailFromControl(
         return;
 
     const std::uint32_t entryAddress = self->field_0038 + index * 68u;
-    const int resource = ResolveThumbnailResource(
+    const int resource = MenuMessageBox_ResolveEntryByKey(
         CSF_AT(int, reinterpret_cast<void*>(entryAddress), 0), 1);
 
-    ForwardThumbnailToChild(
+    C_00720DF0_ForwardCallToChildVtblSlot16(
         reinterpret_cast<void*>(self->field_0030), nullptr, resource);
     self->field_0028 = index;
 }

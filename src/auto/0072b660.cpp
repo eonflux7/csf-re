@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(char, __fastcall, CGuiControl_HandleSelectionInput, 0x00718510,
+CSF_FUNC(char, __fastcall, CGuiControl_HandleSelectionInput_718510, 0x00718510,
          (CGuiControl* self, void* edx, int direction, int input));
 CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x00718700,
          (CGuiControl* self, void* edx));
@@ -46,7 +46,7 @@ static char __fastcall CGuiPanel_HandleDirectionalInput(
     }
 
     result =
-        CGuiControl_HandleSelectionInput(self, nullptr, direction, input);
+        CGuiControl_HandleSelectionInput_718510(self, nullptr, direction, input);
 
     auto* currentControl =
         reinterpret_cast<CGuiControl*>(self->field_014c);

@@ -13,7 +13,7 @@ CSF_FUNC(int, __cdecl, Mem_Free, 0x691110, (void* p));
 
 // 0x53A8D0: destructor body (member teardown / base-destructor chain) that runs
 // after CMenuMainPC restores its vtable pointers.
-CSF_FUNC(void, __fastcall, CMenuMainPC_CleanUp, 0x53A8D0,
+CSF_FUNC(void, __fastcall, CMenuMain_Destruct, 0x53A8D0,
          (CMenuMainPC* self, void* edx));
 
 // CMenuMainPC destructor: restores the primary vtable (offset 0x00) and the
@@ -22,10 +22,10 @@ CSF_FUNC(void, __fastcall, CMenuMainPC_CleanUp, 0x53A8D0,
 // Always returns the object pointer in eax.
 static void* __fastcall CMenuMainPC_Destroy(CMenuMainPC* self, void* /*edx*/, char a2)
 {
-    CSF_AT(uint32_t, self, 0x0000) = 0x00843830u;
+    CSF_AT(uint32_t, self, 0x0000) = CSF_ADDR_VT(0x00843830);
     self->field_0004 = 0x008437E0u;
 
-    CMenuMainPC_CleanUp(self, nullptr);
+    CMenuMain_Destruct(self, nullptr);
 
     if ((a2 & 1) != 0)
         Mem_Free(self);

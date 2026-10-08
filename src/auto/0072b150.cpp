@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(char, __fastcall, CGuiControl_ProcessInput, 0x00719400,
+CSF_FUNC(char, __fastcall, CGuiControl_HandleMouseMovement, 0x00719400,
          (CGuiControl* self, void* edx, void* input));
 
 static char __fastcall CGuiPanel_ProcessInput(
@@ -46,7 +46,7 @@ static char __fastcall CGuiPanel_ProcessInput(
             CSF_AT(void**, child, 0)[0x30 / 4])(child, nullptr, input);
     }
 
-    return CGuiControl_ProcessInput(self, nullptr, input);
+    return CGuiControl_HandleMouseMovement(self, nullptr, input);
 }
 
 HOOK(0x0072B150, CGuiPanel_ProcessInput, "auto");

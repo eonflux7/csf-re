@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_IsInputAllowed, 0x00718700,
+CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x00718700,
          (CGuiControl* self, void* edx));
 
 static int __fastcall CGuiListBoxBase_ClearControlKeyState(
@@ -21,7 +21,7 @@ static int __fastcall CGuiListBoxBase_ClearControlKeyState(
     if (static_cast<uint8_t>(result) == 0)
         return result;
 
-    result = CGuiControl_IsInputAllowed(self, nullptr);
+    result = CGuiSlider_IsSelectableAndNotType10(self, nullptr);
     if (static_cast<uint8_t>(result) == 0)
         return result;
 

@@ -10,9 +10,9 @@
 CSF_FUNC(int, __fastcall, Sub_537BF0_BaseInit, 0x00537BF0, (void* self, void* edx, int a2, int a3));
 
 // Vtable addresses installed by the constructor, bound by their literal addresses.
-static constexpr uint32_t kMenuControlsPrimaryVtbl   = 0x00843720;
+static const uint32_t kMenuControlsPrimaryVtbl   = CSF_ADDR_VT(0x00843720);
 static constexpr uint32_t kMenuControlsSecondaryVtbl = 0x008436D0;
-static constexpr uint32_t kMenuControlsTertiaryVtbl  = 0x008436CC;
+static const uint32_t kMenuControlsTertiaryVtbl  = CSF_ADDR_VT(0x008436CC);
 
 static void* __fastcall C_00843720_Construct(void* self, void* /*edx*/, int a2, int a3)
 {

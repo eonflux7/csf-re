@@ -7,7 +7,7 @@
 // Original engine functions, bound by address.
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, (void));
 CSF_FUNC(int, __cdecl, GetGlobalValue_8BC1E0, 0x00756A10, (void));
-CSF_FUNC(void*, __fastcall, GetTextureByIndex, 0x00652160, (int index, void* /*edx*/));
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160, (int index, void* /*edx*/));
 
 // Float constant (0.85f) used to inset the centered frame.
 CSF_GLOBAL(float, g_FrameInsetScale, 0x008405DC);
@@ -16,7 +16,7 @@ CSF_GLOBAL(float, g_FrameInsetScale, 0x008405DC);
 // Reads of the record's first and second dwords are done by the caller.
 static int* CMenuLoading_GetReferenceSizeRecord()
 {
-    void* texture = GetTextureByIndex(GetGlobalInt(), nullptr);
+    void* texture = LookupObjectById(GetGlobalInt(), nullptr);
     void* sizeRecord = reinterpret_cast<void* (__fastcall*)(void*, void*)>(
         CSF_AT(void**, texture, 0)[6])(texture, nullptr);
     return static_cast<int*>(sizeRecord);

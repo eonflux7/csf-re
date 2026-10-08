@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Original functions, bound by address.
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x50D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x50D190, ());
 CSF_FUNC(int, __fastcall, SchedulerBase_GetSchedulerProxy, 0x734A10, (void* self, void* edx));
 
 // Original globals.
@@ -27,7 +27,7 @@ static void* g_pendingTailTarget = nullptr;
 // the original would tail-jump through [this->vtbl + 0x4c].
 static int __fastcall CMenuMpSessions_ResolveDispatch(CMenuMpSessions* self, void* /*edx*/)
 {
-    void* globalState = GetGlobalState();
+    void* globalState = GetGlobalState_50D190();
     int schedulerProxyCode = SchedulerBase_GetSchedulerProxy(globalState, nullptr);
 
     int stepMinusOne = schedulerProxyCode - 1;

@@ -15,7 +15,7 @@ CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x690E60, (void* block));
 
 // Releases the node list at the embedded range (0x469760, cdecl, four arguments).
 // Caller pushes: first node, &field_0038 (head), [this+0x40] (last), this (owner).
-CSF_FUNC(int, __cdecl, ListRange_Destroy, 0x469760,
+CSF_FUNC(int, __cdecl, DestroyElementRange, 0x469760,
          (void* first, void* head, void* last, void* owner));
 
 // Releases the fader's owned resources and resets it to its default state.
@@ -42,7 +42,7 @@ static int* __fastcall CMenuScreenFader_ReleaseResources(CMenuScreenFader* self,
     int* result = nullptr;
     if (self->field_003c)
     {
-        ListRange_Destroy(reinterpret_cast<void*>(self->field_003c),
+        DestroyElementRange(reinterpret_cast<void*>(self->field_003c),
                           reinterpret_cast<uint8_t*>(self) + 0x38,
                           reinterpret_cast<void*>(CSF_AT(uint32_t, self, 0x40)),
                           self);

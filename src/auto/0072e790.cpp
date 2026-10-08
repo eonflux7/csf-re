@@ -11,7 +11,7 @@ CSF_FUNC(void*, __fastcall, CGuiPanel_Construct, 0x72C580, (void* self, void* /*
 static CGuiRadioGroup* __fastcall CGuiRadioGroup_Construct(CGuiRadioGroup* self, void* /*edx*/, int a2, int a3)
 {
     CGuiPanel_Construct(self, nullptr, a2, a3);
-    *reinterpret_cast<uint32_t*>(self) = 0x008660C8u;  // CGuiRadioGroup vtable
+    *reinterpret_cast<uint32_t*>(self) = CSF_ADDR_VT(0x008660C8);  // CGuiRadioGroup vtable
     return self;
 }
 

@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(void*, __fastcall, AssignStringRange, 0x004109E0,
+CSF_FUNC(void*, __fastcall, AssignStringSubstring, 0x004109E0,
          (void* self, void* edx, void* source,
           std::uint32_t position, std::uint32_t count));
 
@@ -19,8 +19,8 @@ static std::uint32_t* __cdecl FillStringPairRecordRange(
 
         do
         {
-            AssignStringRange(first, nullptr, source, 0, 0xFFFFFFFFu);
-            AssignStringRange(
+            AssignStringSubstring(first, nullptr, source, 0, 0xFFFFFFFFu);
+            AssignStringSubstring(
                 reinterpret_cast<std::uint8_t*>(first) + 0x1C,
                 nullptr, secondSourceString, 0, 0xFFFFFFFFu);
 

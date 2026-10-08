@@ -3,15 +3,15 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void, __cdecl, MenuEula_EmptyHook, 0x506AC0, ());
-CSF_FUNC(void*, __fastcall, CMenuEula_ProcessStep1, 0x533660, (CMenuEula* self, void* edx));
-CSF_FUNC(void*, __fastcall, CMenuEula_ProcessStep2, 0x532E40, (CMenuEula* self, void* edx));
-CSF_FUNC(void*, __fastcall, CMenuEula_UpdateNavigationButtonsStep4, 0x532ED0, (CMenuEula* self, void* edx));
-CSF_FUNC(void*, __fastcall, CMenuEula_UpdateNavigationButtonsStep6, 0x532F70, (CMenuEula* self, void* edx));
+CSF_FUNC(void, __cdecl, Nullsub_506AC0, 0x506AC0, ());
+CSF_FUNC(void*, __fastcall, CMenuEula_LoadTextIntoNameAndSetState, 0x533660, (CMenuEula* self, void* edx));
+CSF_FUNC(void*, __fastcall, CMenuEula_RefreshState, 0x532E40, (CMenuEula* self, void* edx));
+CSF_FUNC(void*, __fastcall, CMenuEula_UpdateNavigationButtons_532ED0, 0x532ED0, (CMenuEula* self, void* edx));
+CSF_FUNC(void*, __fastcall, CMenuEula_UpdateNavigationButtons_532F70, 0x532F70, (CMenuEula* self, void* edx));
 
 static void* __fastcall CMenuEula_RunStateMachine(CMenuEula* self, void* /*edx*/, int /*unusedArg*/)
 {
-    MenuEula_EmptyHook();
+    Nullsub_506AC0();
 
     const uint32_t state = self->field_0018;
     void* result = reinterpret_cast<void*>(static_cast<uintptr_t>(state));
@@ -27,22 +27,22 @@ static void* __fastcall CMenuEula_RunStateMachine(CMenuEula* self, void* /*edx*/
         break;
     }
     case 1u:
-        result = CMenuEula_ProcessStep1(self, nullptr);
+        result = CMenuEula_LoadTextIntoNameAndSetState(self, nullptr);
         break;
     case 2u:
-        result = CMenuEula_ProcessStep2(self, nullptr);
+        result = CMenuEula_RefreshState(self, nullptr);
         break;
     case 3u:
         self->field_0018 = 4;
         break;
     case 4u:
-        result = CMenuEula_UpdateNavigationButtonsStep4(self, nullptr);
+        result = CMenuEula_UpdateNavigationButtons_532ED0(self, nullptr);
         break;
     case 5u:
         self->field_0018 = 6;
         break;
     case 6u:
-        result = CMenuEula_UpdateNavigationButtonsStep6(self, nullptr);
+        result = CMenuEula_UpdateNavigationButtons_532F70(self, nullptr);
         break;
     default:
         break;

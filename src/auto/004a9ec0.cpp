@@ -14,7 +14,7 @@
 // read-only data section (0x83566C).
 static const char* __cdecl GetTDefaultString()
 {
-    return reinterpret_cast<const char*>(0x83566C);
+    return reinterpret_cast<const char*>(CSF_ADDR_DATA(0x83566C));
 }
 
 HOOK(0x4A9EC0, GetTDefaultString, "auto");

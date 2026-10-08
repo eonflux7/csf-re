@@ -6,7 +6,7 @@
 using NavigationDispatchTable = const std::uint32_t[4];
 CSF_GLOBAL(NavigationDispatchTable, g_SliderNavigationDispatchTable, 0x0072E550);
 
-CSF_FUNC(int, __fastcall, CGuiControl_IsNavigationTargetEligible, 0x00718700,
+CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x00718700,
          (std::uint8_t* self, void* edx));
 
 static std::uint8_t* __fastcall CGuiSlider_NavigateFromSelectedPart(
@@ -42,7 +42,7 @@ static std::uint8_t* __fastcall CGuiSlider_NavigateFromSelectedPart(
     if (!target)
         return result;
 
-    const int eligibility = CGuiControl_IsNavigationTargetEligible(target, nullptr);
+    const int eligibility = CGuiSlider_IsSelectableAndNotType10(target, nullptr);
     result = reinterpret_cast<std::uint8_t*>(
         static_cast<std::uintptr_t>(eligibility));
 

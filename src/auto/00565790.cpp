@@ -8,12 +8,12 @@
 #include "types/auto_classes.h"
 
 // Original functions called by this routine, bound by address.
-CSF_FUNC(void*, __cdecl, GetGlobalStateRoot, 0x0050D190, ());
-CSF_FUNC(void*, __cdecl, GetGlobalValue, 0x00521BB0, ());
-CSF_FUNC(void, __fastcall, ApplyGlobalValueBinding, 0x00521DE0, (void* self, void* edx));
-CSF_FUNC(void*, __cdecl, GetGlobalStateObject, 0x006A6D70, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobalValue_521BB0, 0x00521BB0, ());
+CSF_FUNC(void, __fastcall, MenuProgressInput_UpdateGlobalState, 0x00521DE0, (void* self, void* edx));
+CSF_FUNC(void*, __cdecl, GetGlobalState_6A6D70, 0x006A6D70, ());
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, GetObjectForGlobalInt, 0x00652160, (int globalIntValue, void* edx));
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160, (int globalIntValue, void* edx));
 CSF_FUNC(int, __fastcall, CGuiSlider_ForwardSelfToParent, 0x00718660, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, MenuAccounts_ResetConfiguration, 0x00565FA0, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, CMenuMpNetworkType_ScrollViewportToTarget, 0x00534F20, (void* self, void* edx));
@@ -38,7 +38,7 @@ static int __fastcall CMenuMpNetworkType_InitializeScreen(CMenuMpNetworkType* se
     // No GUI object attached yet: the global state root binds this screen (vtable slot 0x18).
     if (self->field_0038 == 0)
     {
-        void* stateRoot = GetGlobalStateRoot();
+        void* stateRoot = GetGlobalState_50D190();
         reinterpret_cast<VirtualVoidPtrArg>(CSF_AT(void**, stateRoot, 0)[6])(stateRoot, nullptr, self);
     }
 
@@ -62,7 +62,7 @@ static int __fastcall CMenuMpNetworkType_InitializeScreen(CMenuMpNetworkType* se
 
     self->field_0034 = static_cast<uint32_t>(entryMode);
 
-    ApplyGlobalValueBinding(GetGlobalValue(), nullptr);
+    MenuProgressInput_UpdateGlobalState(GetGlobalValue_521BB0(), nullptr);
 
     // Virtual slot 0x16C on the GUI object, no arguments, result unused.
     {
@@ -71,21 +71,21 @@ static int __fastcall CMenuMpNetworkType_InitializeScreen(CMenuMpNetworkType* se
     }
 
     // If a global state object exists, query its state (slot 0x1C); when it is not 2, notify it once more.
-    if (GetGlobalStateObject() != nullptr)
+    if (GetGlobalState_6A6D70() != nullptr)
     {
-        void* stateObject = GetGlobalStateObject();
+        void* stateObject = GetGlobalState_6A6D70();
         int stateValue = reinterpret_cast<VirtualIntNoArgs>(CSF_AT(void**, stateObject, 0)[7])(stateObject, nullptr);
         if (stateValue != 2)
         {
-            void* stateObjectAgain = GetGlobalStateObject();
+            void* stateObjectAgain = GetGlobalState_6A6D70();
             reinterpret_cast<VirtualIntNoArgs>(CSF_AT(void**, stateObjectAgain, 0)[7])(stateObjectAgain, nullptr);
         }
     }
 
     // Second notification of the global state object (slot 0x1C), guarded the same way.
-    if (GetGlobalStateObject() != nullptr)
+    if (GetGlobalState_6A6D70() != nullptr)
     {
-        void* stateObject = GetGlobalStateObject();
+        void* stateObject = GetGlobalState_6A6D70();
         reinterpret_cast<VirtualIntNoArgs>(CSF_AT(void**, stateObject, 0)[7])(stateObject, nullptr);
     }
 
@@ -116,21 +116,21 @@ static int __fastcall CMenuMpNetworkType_InitializeScreen(CMenuMpNetworkType* se
     }
 
     // If a global state object exists, call its slot 0x44 with argument 0.
-    if (GetGlobalStateObject() != nullptr)
+    if (GetGlobalState_6A6D70() != nullptr)
     {
-        void* stateObject = GetGlobalStateObject();
+        void* stateObject = GetGlobalState_6A6D70();
         reinterpret_cast<VirtualVoidIntArg>(CSF_AT(void**, stateObject, 0)[17])(stateObject, nullptr, 0);
     }
 
     // Look up an object from the global int and call its slot 0x18, twice.
     {
         int globalIntValue = GetGlobalInt();
-        void* lookedUpObject = GetObjectForGlobalInt(globalIntValue, nullptr);
+        void* lookedUpObject = LookupObjectById(globalIntValue, nullptr);
         reinterpret_cast<VirtualVoidNoArgs>(CSF_AT(void**, lookedUpObject, 0)[6])(lookedUpObject, nullptr);
     }
     {
         int globalIntValue = GetGlobalInt();
-        void* lookedUpObject = GetObjectForGlobalInt(globalIntValue, nullptr);
+        void* lookedUpObject = LookupObjectById(globalIntValue, nullptr);
         reinterpret_cast<VirtualVoidNoArgs>(CSF_AT(void**, lookedUpObject, 0)[6])(lookedUpObject, nullptr);
     }
 

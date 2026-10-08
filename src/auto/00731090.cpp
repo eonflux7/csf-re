@@ -4,7 +4,7 @@
 #include "core/memory.h"
 
 // __thiscall: ecx = destination element address, one stack argument (source element address).
-CSF_FUNC(int, __fastcall, Transfer16ByteElement, 0x00730EA0,
+CSF_FUNC(int, __fastcall, AssignDwordVector, 0x00730EA0,
          (void* self, void* edx, int source));
 
 // Moves 16-byte elements backwards (from the end of [destinationBegin, ...) towards
@@ -23,7 +23,7 @@ static int __cdecl Transfer16ByteElementsBackward(
     {
         source -= 16u;
         destination -= 16u;
-        Transfer16ByteElement(
+        AssignDwordVector(
             reinterpret_cast<void*>(destination),
             nullptr,
             static_cast<int>(source));

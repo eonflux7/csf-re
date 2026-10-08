@@ -3,20 +3,20 @@
 #include "core/memory.h"
 #include "globals.h"
 
-CSF_FUNC(void*, __cdecl, MenuLoading_GetGlobalState, 0x0050D190, ());
-CSF_FUNC(void*, __cdecl, MenuLoading_GetMissionDatabase, 0x0043E010, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobal8afc7c, 0x0043E010, ());
 CSF_FUNC(void*, __fastcall, MenuLoading_FindMission, 0x0043E4B0,
          (void* database, void* edx, const char* name));
-CSF_FUNC(void*, __fastcall, MenuLoading_AssignString, 0x00429B60,
+CSF_FUNC(void*, __fastcall, AssignStringRange_429B60, 0x00429B60,
          (void* destination, const char* edx, const char* source, uint32_t length));
-CSF_FUNC(void*, __cdecl, MenuLoading_GetLanguageDatabase, 0x0069B700, ());
-CSF_FUNC(int, __fastcall, MenuLoading_FindLanguage, 0x0069BC50,
+CSF_FUNC(void*, __cdecl, GetGlobalValue_69B700, 0x0069B700, ());
+CSF_FUNC(int, __fastcall, MenuScenarioSelect_LookupString, 0x0069BC50,
          (void* database, void* edx, const char* name));
-CSF_FUNC(uint16_t*, __cdecl, MenuLoading_GetLocalizedText, 0x00692440,
+CSF_FUNC(uint16_t*, __cdecl, MenuMessageBox_ResolveEntryByKey, 0x00692440,
          (uint32_t identifier, int language));
 CSF_FUNC(void, __cdecl, MenuLoading_CopyLocalizedText, 0x006956C0,
          (uint16_t* destination, const uint16_t* source, int capacity));
-CSF_FUNC(int, __cdecl, MenuLoading_FreeStringStorage, 0x00690E60,
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60,
          (void* storage));
 
 // The additional input is EDI, not a stack argument.
@@ -47,27 +47,27 @@ uint16_t* __regcall MenuLoading_GetLoadingText(
 
     *destination = 0;
 
-    if (CSF_AT(uint8_t, MenuLoading_GetGlobalState(), 0xD0) != 0)
+    if (CSF_AT(uint8_t, GetGlobalState_50D190(), 0xD0) != 0)
     {
         const uint32_t mode =
-            CSF_AT(uint32_t, MenuLoading_GetGlobalState(), 0xCC);
+            CSF_AT(uint32_t, GetGlobalState_50D190(), 0xCC);
 
         if (mode == 0)
         {
             const uint16_t* text =
-                MenuLoading_GetLocalizedText(0x67313339, 8);
+                MenuMessageBox_ResolveEntryByKey(0x67313339, 8);
             MenuLoading_CopyLocalizedText(destination, text, capacity);
         }
         else if (mode == 1)
         {
             const uint16_t* text =
-                MenuLoading_GetLocalizedText(0x67313430, 8);
+                MenuMessageBox_ResolveEntryByKey(0x67313430, 8);
             MenuLoading_CopyLocalizedText(destination, text, capacity);
         }
         else if (mode == 3)
         {
             const uint16_t* text =
-                MenuLoading_GetLocalizedText(0x67313432, 8);
+                MenuMessageBox_ResolveEntryByKey(0x67313432, 8);
             MenuLoading_CopyLocalizedText(destination, text, capacity);
         }
 
@@ -87,7 +87,7 @@ uint16_t* __regcall MenuLoading_GetLoadingText(
     if (missionName[6] < 16)
         missionKey = reinterpret_cast<const char*>(&missionName[1]);
 
-    void* database = MenuLoading_GetMissionDatabase();
+    void* database = GetGlobal8afc7c();
     void* mission = MenuLoading_FindMission(database, nullptr, missionKey);
 
     if (mission != nullptr)
@@ -108,7 +108,7 @@ uint16_t* __regcall MenuLoading_GetLoadingText(
         while (languageSource[length] != 0)
             ++length;
 
-        MenuLoading_AssignString(
+        AssignStringRange_429B60(
             languageName, languageSource, languageSource, length);
 
         const char* languageKey =
@@ -116,21 +116,21 @@ uint16_t* __regcall MenuLoading_GetLoadingText(
         if (languageName[6] < 16)
             languageKey = reinterpret_cast<const char*>(&languageName[1]);
 
-        void* languages = MenuLoading_GetLanguageDatabase();
-        int language = MenuLoading_FindLanguage(languages, nullptr, languageKey);
+        void* languages = GetGlobalValue_69B700();
+        int language = MenuScenarioSelect_LookupString(languages, nullptr, languageKey);
         if (language == 0)
             language = 8;
 
         const uint32_t identifier = CSF_AT(uint32_t, mission, 0x7C);
         const uint16_t* text =
-            MenuLoading_GetLocalizedText(identifier, language);
+            MenuMessageBox_ResolveEntryByKey(identifier, language);
         MenuLoading_CopyLocalizedText(destination, text, capacity);
 
         if (languageName[6] >= 16)
         {
             void* storage = reinterpret_cast<void*>(languageName[1]);
             if (storage != nullptr)
-                MenuLoading_FreeStringStorage(storage);
+                Mem_FreeDebug(storage);
         }
     }
 
@@ -138,7 +138,7 @@ uint16_t* __regcall MenuLoading_GetLoadingText(
     {
         void* storage = reinterpret_cast<void*>(missionName[1]);
         if (storage != nullptr)
-            MenuLoading_FreeStringStorage(storage);
+            Mem_FreeDebug(storage);
     }
 
     return destination;

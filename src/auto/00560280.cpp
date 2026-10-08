@@ -5,29 +5,29 @@
 #include "types/auto_classes.h"
 
 static const auto GetSessionManager =
-    reinterpret_cast<void* (__cdecl*)()>(0x004FDBB0);
+    reinterpret_cast<void* (__cdecl*)()>(CSF_ADDR_FN(0x004FDBB0));
 static const auto SetSessionName =
-    reinterpret_cast<void (__fastcall*)(void*, void*, char*, char)>(0x00501990);
+    reinterpret_cast<void (__fastcall*)(void*, void*, char*, char)>(CSF_ADDR_FN(0x00501990));
 static const auto NotifySessionTransition =
-    reinterpret_cast<void (__cdecl*)(int)>(0x00506AC0);
+    reinterpret_cast<void (__cdecl*)(int)>(CSF_ADDR_FN(0x00506AC0));
 static const auto GetMenuState =
-    reinterpret_cast<void* (__cdecl*)()>(0x0050D190);
+    reinterpret_cast<void* (__cdecl*)()>(CSF_ADDR_FN(0x0050D190));
 static const auto ResetSessionState =
-    reinterpret_cast<int (__fastcall*)(void*, void*)>(0x0050E1E0);
+    reinterpret_cast<int (__fastcall*)(void*, void*)>(CSF_ADDR_FN(0x0050E1E0));
 static const auto SendMenuEvent =
-    reinterpret_cast<std::uint32_t (__fastcall*)(void*, void*, int, int, int, int)>(0x0050F790);
+    reinterpret_cast<std::uint32_t (__fastcall*)(void*, void*, int, int, int, int)>(CSF_ADDR_FN(0x0050F790));
 static const auto GetOnlineContext =
-    reinterpret_cast<void* (__cdecl*)()>(0x00550CC0);
+    reinterpret_cast<void* (__cdecl*)()>(CSF_ADDR_FN(0x00550CC0));
 static const auto GetNetworkState =
-    reinterpret_cast<void* (__cdecl*)()>(0x006A6D70);
+    reinterpret_cast<void* (__cdecl*)()>(CSF_ADDR_FN(0x006A6D70));
 static const auto CheckSessionTransitionReady =
-    reinterpret_cast<std::uint32_t (__fastcall*)(void*, void*)>(0x00734A10);
+    reinterpret_cast<std::uint32_t (__fastcall*)(void*, void*)>(CSF_ADDR_FN(0x00734A10));
 static const auto GetMultiplayerController =
-    reinterpret_cast<void* (__cdecl*)()>(0x0073C020);
+    reinterpret_cast<void* (__cdecl*)()>(CSF_ADDR_FN(0x0073C020));
 static const auto SetControllerSession =
-    reinterpret_cast<char (__fastcall*)(void*, void*, int)>(0x0073F120);
+    reinterpret_cast<char (__fastcall*)(void*, void*, int)>(CSF_ADDR_FN(0x0073F120));
 static const auto RefreshControllerSession =
-    reinterpret_cast<int (__fastcall*)(void*, void*)>(0x0073F340);
+    reinterpret_cast<int (__fastcall*)(void*, void*)>(CSF_ADDR_FN(0x0073F340));
 
 CSF_GLOBAL(int, g_MpNetworkType, 0x0089A5F0);
 CSF_GLOBAL(std::uint8_t, g_OnlineMatchFlag, 0x008B068C);

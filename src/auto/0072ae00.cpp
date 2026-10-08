@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_DrawContent, 0x00719A20,
+CSF_FUNC(int, __fastcall, CGuiListBoxBase_PrepareListRendering, 0x00719A20,
          (CGuiControl* self, void* edx));
 
 static int __fastcall CGuiPanel_Draw(CGuiPanel* self, void* /*edx*/)
@@ -23,7 +23,7 @@ static int __fastcall CGuiPanel_Draw(CGuiPanel* self, void* /*edx*/)
             CSF_AT(void**, background, 0)[8 / 4])(background, nullptr);
     }
 
-    CGuiControl_DrawContent(self, nullptr);
+    CGuiListBoxBase_PrepareListRendering(self, nullptr);
 
     const std::uint32_t childrenBegin = self->field_0138;
     std::int32_t childCount = 0;

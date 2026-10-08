@@ -13,9 +13,9 @@ CSF_FUNC(int, __fastcall, C_008655e8_FindRasterIndex, 0x00727020,
 CSF_FUNC(int*, __cdecl, LoadNamedRaster, 0x006E2EF0, (char* name));
 CSF_FUNC(void*, __fastcall, AssignResourceString, 0x00429C60,
          (void* self, void* edx, char* text));
-CSF_FUNC(std::uint32_t*, __fastcall, AppendRasterEntry, 0x00728160,
+CSF_FUNC(std::uint32_t*, __fastcall, AppendElement36, 0x00728160,
          (void* self, void* edx, int* entry));
-CSF_FUNC(int, __fastcall, ResetStringStorage, 0x00727250,
+CSF_FUNC(int, __fastcall, ResetStringStorage_727250, 0x00727250,
          (int* self, void* edx));
 
 static int* __fastcall C_008655e8_AcquireRaster(
@@ -54,7 +54,7 @@ static int* __fastcall C_008655e8_AcquireRaster(
     CSF_AT(int*, entry, 0) = raster;
 
     AssignResourceString(entry + 4, nullptr, normalizedName);
-    AppendRasterEntry(
+    AppendElement36(
         reinterpret_cast<std::uint8_t*>(self) + 0x44,
         nullptr, reinterpret_cast<int*>(entry));
 
@@ -69,7 +69,7 @@ static int* __fastcall C_008655e8_AcquireRaster(
     self->field_0054 += static_cast<std::uint32_t>(
         static_cast<std::int64_t>(storageBytes));
 
-    ResetStringStorage(reinterpret_cast<int*>(entry), nullptr);
+    ResetStringStorage_727250(reinterpret_cast<int*>(entry), nullptr);
     return raster;
 }
 

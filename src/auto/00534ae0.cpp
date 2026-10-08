@@ -6,26 +6,26 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-CSF_FUNC(uint32_t, __cdecl, GetGlobalState, 0x0050D190, ());
+CSF_FUNC(uint32_t, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 CSF_FUNC(int, __fastcall, MenuSystem_ToggleChildFlag, 0x0050D300, (void* self, void* edx));
-CSF_FUNC(uint32_t, __cdecl, GetGlobalValue, 0x00521BB0, ());
+CSF_FUNC(uint32_t, __cdecl, GetGlobalValue_521BB0, 0x00521BB0, ());
 CSF_FUNC(int, __fastcall, FlushGlobalValueState, 0x00521F80, (void* self, void* edx));
 CSF_FUNC(void, __fastcall, ApplyGlobalValueSettings, 0x005233D0, (void* self, void* edx));
 CSF_FUNC(uint32_t, __fastcall, GetSceneMenuContext, 0x0044FC60, (void* self, void* edx));
-CSF_FUNC(uint32_t, __cdecl, GetSceneGlobalHandle, 0x0042D6D0, ());
-CSF_FUNC(int, __fastcall, ApplyPauseSceneOption, 0x0042DF80, (void* self, void* edx, int option));
+CSF_FUNC(uint32_t, __cdecl, GetGlobal8afc78, 0x0042D6D0, ());
+CSF_FUNC(int, __fastcall, MenuManager_SetGameplayControllerState, 0x0042DF80, (void* self, void* edx, int option));
 CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 
 static void __fastcall CMenuMpPause_OnActivate(CMenuMpPause* self, void* /*edx*/, int a2)
 {
-    void* menuState = reinterpret_cast<void*>(GetGlobalState());
+    void* menuState = reinterpret_cast<void*>(GetGlobalState_50D190());
     MenuSystem_ToggleChildFlag(menuState, nullptr);
 
     void* owner = reinterpret_cast<void*>(self->field_0010);
     void** ownerVtbl = *reinterpret_cast<void***>(owner);
     reinterpret_cast<void(__fastcall*)(void*, void*, CMenuMpPause*, int)>(ownerVtbl[24])(owner, nullptr, self, 1);
 
-    void* globalStateSecond = reinterpret_cast<void*>(GetGlobalState());
+    void* globalStateSecond = reinterpret_cast<void*>(GetGlobalState_50D190());
     uint32_t childObject = CSF_AT(uint32_t, globalStateSecond, 0x10);
     if (childObject != 0) {
         void* child = reinterpret_cast<void*>(childObject);
@@ -39,16 +39,16 @@ static void __fastcall CMenuMpPause_OnActivate(CMenuMpPause* self, void* /*edx*/
         if (sceneInner != 0) {
             uint8_t sceneFlag = *reinterpret_cast<uint8_t*>(sceneInner - 0x26D);
             if (sceneFlag != 0) {
-                uint32_t handle = GetSceneGlobalHandle();
-                ApplyPauseSceneOption(reinterpret_cast<void*>(handle), nullptr, a2);
+                uint32_t handle = GetGlobal8afc78();
+                MenuManager_SetGameplayControllerState(reinterpret_cast<void*>(handle), nullptr, a2);
             }
         }
     }
 
     if (self->field_0044) {
-        uint32_t firstValue = GetGlobalValue();
+        uint32_t firstValue = GetGlobalValue_521BB0();
         FlushGlobalValueState(reinterpret_cast<void*>(firstValue), nullptr);
-        uint32_t secondValue = GetGlobalValue();
+        uint32_t secondValue = GetGlobalValue_521BB0();
         ApplyGlobalValueSettings(reinterpret_cast<void*>(secondValue), nullptr);
     }
 }

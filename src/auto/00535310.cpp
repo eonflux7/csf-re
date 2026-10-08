@@ -12,14 +12,14 @@
 #include "legacy/string.h"
 
 // Vtable of the CMenuScreen base sub-object at +0x00 (written first, overwritten at the end).
-static constexpr uint32_t kCMenuScreenBaseVtable = 0x0083042C;
+static const uint32_t kCMenuScreenBaseVtable = CSF_ADDR_VT(0x0083042C);
 // Vtable of the embedded sub-object at +0x04 (the one passed to the init call).
 static constexpr uint32_t kEmbeddedSubobjectVtable = 0x00841D20;
 // Final vtable of CMenuMpPause.
-static constexpr uint32_t kCMenuMpPauseVtable = 0x00841D70;
+static const uint32_t kCMenuMpPauseVtable = CSF_ADDR_VT(0x00841D70);
 
 // Initializes the embedded sub-object at this+0x04 (original sub_712CC0, thiscall, no extra args).
-CSF_FUNC(void, __fastcall, MenuEmbeddedSubobject_Init, 0x00712CC0, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, C_00830438_Construct, 0x00712CC0, (void* self, void* edx));
 
 static CMenuMpPause* __fastcall CMenuMpPause_Construct(CMenuMpPause* self, void* /*edx*/, int ownerArg)
 {
@@ -27,7 +27,7 @@ static CMenuMpPause* __fastcall CMenuMpPause_Construct(CMenuMpPause* self, void*
     CSF_AT(uint32_t, self, 0x000) = kCMenuScreenBaseVtable;
 
     void* embeddedSubobject = reinterpret_cast<uint8_t*>(self) + 0x004;
-    MenuEmbeddedSubobject_Init(embeddedSubobject, nullptr);
+    C_00830438_Construct(embeddedSubobject, nullptr);
 
     self->field_003c = static_cast<uint32_t>(ownerArg);
 

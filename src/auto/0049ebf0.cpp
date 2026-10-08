@@ -4,7 +4,7 @@
 #include "core/memory.h"
 
 // Original callee: int __thiscall sub_6E85F0(_DWORD* this, int a2)  -- ret 4
-CSF_FUNC(int, __fastcall, Sub_6E85F0, 0x6E85F0, (uint32_t* self, void* edx, int a2));
+CSF_FUNC(int, __fastcall, C_00861e98_StoreValue54, 0x6E85F0, (uint32_t* self, void* edx, int a2));
 
 // 0x0049EBF0:
 //   push ebp / mov ebp, esp
@@ -16,7 +16,7 @@ CSF_FUNC(int, __fastcall, Sub_6E85F0, 0x6E85F0, (uint32_t* self, void* edx, int 
 static int __fastcall ForwardToSubObjectAt30(void* self, void* /*edx*/, int a1)
 {
     uint32_t* subObject = CSF_AT(uint32_t*, self, 0x30);
-    return Sub_6E85F0(subObject, nullptr, a1);
+    return C_00861e98_StoreValue54(subObject, nullptr, a1);
 }
 
 HOOK(0x49EBF0, ForwardToSubObjectAt30, "auto");

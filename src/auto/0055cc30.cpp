@@ -4,18 +4,18 @@
 #include "types/auto_classes.h"
 
 // Original: 0x695590, __cdecl, 3 stack args. Copies 33 bytes of the edit-field sub-object into a text buffer.
-CSF_FUNC(unsigned int, __cdecl, Edit_CopyTextToBuffer, 0x695590,
+CSF_FUNC(unsigned int, __cdecl, CopyTrucoStringToWide, 0x695590,
          (void* sourceField, void* destBuffer, int maxLength));
 
 // Original: 0x692660, __cdecl, 4 stack args. Looks up localized text by key "ae03" and writes the result into a handle.
-CSF_FUNC(int, __cdecl, Localization_FormatKeyToHandle, 0x692660,
+CSF_FUNC(int, __cdecl, FormatScenarioText, 0x692660,
          (void* outHandle, const char* key, void* argBuffer, int flag));
 
 // Original: 0x50D190, __cdecl, no args. Returns the global game state object.
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x50D190, ());
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x50D190, ());
 
 // Original: 0x50F860, __thiscall (ret 12). Shows a UI message from a text block with the given id and flags.
-CSF_FUNC(unsigned int, __fastcall, GameUi_ShowMessage, 0x50F860,
+CSF_FUNC(unsigned int, __fastcall, SaveGame_ShowMessage, 0x50F860,
          (int self, void* edx, int messageBlock, int messageId, int flags));
 
 // Original: 0x690E60, __cdecl, 1 arg. Frees a block allocated by the debug heap.
@@ -33,15 +33,15 @@ static void* __fastcall CMenuAccountEdit_ShowAe03MessageAndSetState2(CMenuAccoun
     block[4] = nullptr;
     *reinterpret_cast<uint16_t*>(&block[0]) = 0;
 
-    Edit_CopyTextToBuffer(reinterpret_cast<uint8_t*>(self) + 0x3c, textBuffer, 33);
-    Localization_FormatKeyToHandle(stringHandle, CSF_STR(0x845500, "ae03"), textBuffer, 1);
+    CopyTrucoStringToWide(reinterpret_cast<uint8_t*>(self) + 0x3c, textBuffer, 33);
+    FormatScenarioText(stringHandle, CSF_STR(0x845500, "ae03"), textBuffer, 1);
 
     // Small-buffer optimisation: inline storage when stateFlag < 8, otherwise heap pointer in block[0].
     void* messageBlock = (stateFlag < 8) ? static_cast<void*>(block) : block[0];
     int messageBlockArg = static_cast<int>(reinterpret_cast<uintptr_t>(messageBlock));
 
-    int globalState = GetGlobalState();
-    unsigned int showResult = GameUi_ShowMessage(globalState, nullptr, messageBlockArg, 12, 0);
+    int globalState = GetGlobalState_50D190();
+    unsigned int showResult = SaveGame_ShowMessage(globalState, nullptr, messageBlockArg, 12, 0);
     void* result = reinterpret_cast<void*>(static_cast<uintptr_t>(showResult));
 
     self->field_0280 = 2;

@@ -4,18 +4,18 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __fastcall, CopyStringSubstring, 0x004109E0,
+CSF_FUNC(void*, __fastcall, AssignStringSubstring, 0x004109E0,
          (void* destination, void* edx, const void* source,
           unsigned int position, unsigned int count));
-CSF_FUNC(void*, __fastcall, AssignStringRange, 0x00429B60,
+CSF_FUNC(void*, __fastcall, AssignStringRange_429B60, 0x00429B60,
          (void* destination, void* edx, char* source, unsigned int count));
 CSF_FUNC(int, __fastcall, CompareStringSubstring, 0x0042E200,
          (void* string, void* edx, unsigned int position,
           unsigned int count, const char* other, unsigned int otherCount));
-CSF_FUNC(void*, __cdecl, ClearPageState, 0x0050C300, (void* pageState));
+CSF_FUNC(void*, __cdecl, CMenuLanguage_ClearPageState, 0x0050C300, (void* pageState));
 CSF_FUNC(void*, __fastcall, AddScene, 0x0052FEF0,
          (CMenuSceneSelect* self, void* edx, void* sceneName));
-CSF_FUNC(int, __cdecl, FreeDebugMemory, 0x00690E60, (void* block));
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_FUNC(bool, __cdecl, SceneNamesMatch, 0x00694AA0,
          (char* first, char* second));
 
@@ -23,11 +23,11 @@ CSF_FUNC(bool, __cdecl, SceneNamesMatch, 0x00694AA0,
 CSF_FUNC(std::uint32_t, __cdecl, CloseSceneFile, 0x00697980, (void* file));
 CSF_FUNC(void*, __cdecl, OpenSceneFile, 0x00698350,
          (const char* path, const char* mode, int flags));
-CSF_FUNC(std::uint32_t, __cdecl, SceneFileExists, 0x00698B20,
+CSF_FUNC(std::uint32_t, __cdecl, MenuManager_CheckPageAvailability, 0x00698B20,
          (const char* path, char flags));
-CSF_FUNC(void, __fastcall, SelectListItem, 0x00716A60,
+CSF_FUNC(void, __fastcall, CGuiListBoxBase_AddSelectedItem, 0x00716A60,
          (void* list, void* edx, int index));
-CSF_FUNC(void*, __cdecl, GetGlobalSettings, 0x00756A10, ());
+CSF_FUNC(void*, __cdecl, GetGlobalValue_8BC1E0, 0x00756A10, ());
 
 static void* __fastcall CMenuSceneSelect_PopulateSceneList(
     CMenuSceneSelect* self, void* /*edx*/)
@@ -40,15 +40,15 @@ static void* __fastcall CMenuSceneSelect_PopulateSceneList(
     reinterpret_cast<ClearList>(CSF_AT(void**, result, 0)[0x298 / 4])(
         result, nullptr);
 
-    ClearPageState(reinterpret_cast<std::uint8_t*>(self) + 0x38);
+    CMenuLanguage_ClearPageState(reinterpret_cast<std::uint8_t*>(self) + 0x38);
 
-    void* settings = GetGlobalSettings();
+    void* settings = GetGlobalValue_8BC1E0();
     alignas(4) std::uint8_t currentScene[28];
     CSF_AT(std::uint32_t, currentScene, 0x18) = 15;
     CSF_AT(std::uint32_t, currentScene, 0x14) = 0;
     CSF_AT(char, currentScene, 0x04) = 0;
 
-    CopyStringSubstring(
+    AssignStringSubstring(
         currentScene, nullptr,
         reinterpret_cast<std::uint8_t*>(settings) + 0x48C, 0, 0xFFFFFFFFu);
 
@@ -61,7 +61,7 @@ static void* __fastcall CMenuSceneSelect_PopulateSceneList(
     }
 
     const std::uint32_t existsResult =
-        SceneFileExists(CSF_STR(0x008419CC, "Menus/Escenas.txt"), 0);
+        MenuManager_CheckPageAvailability(CSF_STR(0x008419CC, "Menus/Escenas.txt"), 0);
     result = reinterpret_cast<void*>(existsResult);
 
     if (static_cast<std::uint8_t>(existsResult) != 0)
@@ -97,14 +97,14 @@ static void* __fastcall CMenuSceneSelect_PopulateSceneList(
                     while (line[length] != '\0')
                         ++length;
 
-                    AssignStringRange(lineString, line, line, length);
+                    AssignStringRange_429B60(lineString, line, line, length);
                     AddScene(self, nullptr, lineString);
 
                     if (CSF_AT(std::uint32_t, lineString, 0x18) >= 16)
                     {
                         void* block = CSF_AT(void*, lineString, 0x04);
                         if (block)
-                            FreeDebugMemory(block);
+                            Mem_FreeDebug(block);
                     }
 
                     CSF_AT(std::uint32_t, lineString, 0x18) = 15;
@@ -117,7 +117,7 @@ static void* __fastcall CMenuSceneSelect_PopulateSceneList(
                         file, nullptr, line, 256);
             }
 
-            SelectListItem(
+            CGuiListBoxBase_AddSelectedItem(
                 reinterpret_cast<void*>(self->field_0050), nullptr, 0);
             result = reinterpret_cast<void*>(CloseSceneFile(file));
         }
@@ -129,7 +129,7 @@ static void* __fastcall CMenuSceneSelect_PopulateSceneList(
         if (result)
         {
             result = reinterpret_cast<void*>(
-                static_cast<std::uint32_t>(FreeDebugMemory(result)));
+                static_cast<std::uint32_t>(Mem_FreeDebug(result)));
         }
     }
 

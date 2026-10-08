@@ -5,7 +5,7 @@
 
 // Copies `count` four-byte elements from `source` into the array slot at
 // `position`, returning the value produced by the underlying copy.
-CSF_FUNC(int, __cdecl, CopyFourByteElementsAt, 0x00533D20,
+CSF_FUNC(int, __cdecl, CopyFourByteElements_533D20, 0x00533D20,
          (std::uint32_t position, int count, const std::uint32_t* source,
           void* owner, std::uint32_t tag));
 
@@ -45,7 +45,7 @@ static std::uint32_t __fastcall PushBackFourByteElement(
         static_cast<std::uint32_t>(reinterpret_cast<std::uintptr_t>(self)) &
         0xFFFFFF00u;
 
-    const int result = CopyFourByteElementsAt(end, 1, source, self, tag);
+    const int result = CopyFourByteElements_533D20(end, 1, source, self, tag);
     CSF_AT(std::uint32_t, self, 0x08) = end + 4u;
     return static_cast<std::uint32_t>(result);
 }

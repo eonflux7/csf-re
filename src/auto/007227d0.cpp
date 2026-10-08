@@ -4,21 +4,21 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(void, __fastcall, ProcessBackspace, 0x00721C10,
+CSF_FUNC(void, __fastcall, CGuiEdit_DeleteCharacter, 0x00721C10,
          (CGuiEdit* self, void* edx));
 CSF_FUNC(int, __fastcall, DeleteAtTextPosition, 0x007223E0,
          (CGuiEdit* self, void* edx));
-CSF_FUNC(int, __fastcall, ResetScrollIfTextPresent, 0x007224A0,
+CSF_FUNC(int, __fastcall, CGuiEdit_ResetScrollIfTextPresent, 0x007224A0,
          (CGuiEdit* self, void* edx));
-CSF_FUNC(int, __fastcall, MoveToTextEnd, 0x007224C0,
+CSF_FUNC(int, __fastcall, CGuiEdit_HandleBackspace, 0x007224C0,
          (CGuiEdit* self, void* edx));
-CSF_FUNC(int, __fastcall, MoveTextRangeLeft, 0x00722560,
+CSF_FUNC(int, __fastcall, CGuiEdit_MoveTextRangeLeft, 0x00722560,
          (CGuiEdit* self, void* edx));
-CSF_FUNC(void, __fastcall, MoveTextRangeRight, 0x007225B0,
+CSF_FUNC(void, __fastcall, CGuiEdit_MoveTextRangeRight, 0x007225B0,
          (CGuiEdit* self, void* edx));
-CSF_FUNC(void, __fastcall, MoveIndicesLeft, 0x00722600,
+CSF_FUNC(void, __fastcall, CGuiEdit_MoveIndicesLeft, 0x00722600,
          (CGuiEdit* self, void* edx));
-CSF_FUNC(int, __fastcall, MoveIndicesRight, 0x007226E0,
+CSF_FUNC(int, __fastcall, CGuiEdit_MoveIndicesRight, 0x007226E0,
          (CGuiEdit* self, void* edx));
 
 using NavigationDispatchTable = std::uint32_t[13];
@@ -37,27 +37,27 @@ unsigned char __fastcall CGuiEdit_HandleNavigationKey(
         switch (key)
         {
         case 199:
-            ResetScrollIfTextPresent(self, nullptr);
+            CGuiEdit_ResetScrollIfTextPresent(self, nullptr);
             handled = 1;
             break;
         case 201:
-            MoveTextRangeLeft(self, nullptr);
+            CGuiEdit_MoveTextRangeLeft(self, nullptr);
             handled = 1;
             break;
         case 203:
-            MoveIndicesLeft(self, nullptr);
+            CGuiEdit_MoveIndicesLeft(self, nullptr);
             handled = 1;
             break;
         case 205:
-            MoveIndicesRight(self, nullptr);
+            CGuiEdit_MoveIndicesRight(self, nullptr);
             handled = 1;
             break;
         case 207:
-            MoveToTextEnd(self, nullptr);
+            CGuiEdit_HandleBackspace(self, nullptr);
             handled = 1;
             break;
         case 209:
-            MoveTextRangeRight(self, nullptr);
+            CGuiEdit_MoveTextRangeRight(self, nullptr);
             handled = 1;
             break;
         case 211:
@@ -71,7 +71,7 @@ unsigned char __fastcall CGuiEdit_HandleNavigationKey(
 
     if (key == 14)
     {
-        ProcessBackspace(self, nullptr);
+        CGuiEdit_DeleteCharacter(self, nullptr);
         handled = 1;
     }
 

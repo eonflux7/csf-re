@@ -3,14 +3,14 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(std::uint32_t*, __fastcall, CopyElementWithContext, 0x007685C0,
+CSF_FUNC(std::uint32_t*, __fastcall, CopyMenuElementIntoSlot, 0x007685C0,
          (void* context, void* edx, std::uint32_t* destination,
           std::uint32_t* source));
 
 CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInformation));
 
-CSF_FUNC(int, __cdecl, HandleCppExceptionFrame, 0x007AF226,
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226,
          (void* exceptionRecord, void* frame, void* context,
           void* dispatcherContext));
 
@@ -33,7 +33,7 @@ static std::uint32_t* __cdecl CopyTwentyFourByteElements(
     {
         while (count != 0)
         {
-            result = CopyElementWithContext(context, nullptr, destination, source);
+            result = CopyMenuElementIntoSlot(context, nullptr, destination, source);
 
             --count;
             destination = reinterpret_cast<std::uint32_t*>(

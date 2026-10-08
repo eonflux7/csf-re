@@ -4,17 +4,17 @@
 #include "core/memory.h"
 
 // Constructs one 36-byte array entry inside `context` from the supplied source.
-CSF_FUNC(std::uint32_t*, __fastcall, ConstructElement, 0x00544C60,
+CSF_FUNC(std::uint32_t*, __fastcall, MenuSaveGame_CopySaveEntry, 0x00544C60,
          (void* context, void* edx, std::uint32_t* element, std::uint32_t* source));
 
 // Destroys one already-constructed 36-byte array entry inside `context`
 // (used while unwinding a partially built array).
-CSF_FUNC(void, __fastcall, DestroyElement, 0x00469270,
+CSF_FUNC(void, __fastcall, DestroyRecord_469270, 0x00469270,
          (void* context, void* edx, std::uint32_t* element));
 
-CSF_FUNC(void, __stdcall, RethrowGameException, 0x007AF666,
+CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInformation));
-CSF_FUNC(int, __cdecl, HandleGameCppException, 0x007AF226,
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226,
          (void* exceptionRecord, void* frame, void* context, void* dispatcher));
 
 CSF_GLOBAL(std::uint8_t, g_ElementArrayExceptionInfo, 0x0088B680);
@@ -35,7 +35,7 @@ static std::uint32_t* __cdecl MenuSaveGame_ConstructElementArray(
     {
         while (count != 0)
         {
-            result = ConstructElement(context, nullptr, currentElement, source);
+            result = MenuSaveGame_CopySaveEntry(context, nullptr, currentElement, source);
             --count;
             currentElement += 9; // 36 bytes per entry
         }
@@ -45,11 +45,11 @@ static std::uint32_t* __cdecl MenuSaveGame_ConstructElementArray(
         std::uint32_t* element = destination;
         while (element != currentElement)
         {
-            DestroyElement(context, nullptr, element);
+            DestroyRecord_469270(context, nullptr, element);
             element += 9; // 36 bytes per entry
         }
 
-        RethrowGameException(nullptr, nullptr);
+        RethrowCppException(nullptr, nullptr);
         __builtin_unreachable();
     }
 

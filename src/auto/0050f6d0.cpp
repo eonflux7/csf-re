@@ -1,4 +1,5 @@
 #include <cstdint>
+#include "globals.h"
 #include "hook.h"
 #include "types/auto_classes.h"
 
@@ -9,7 +10,7 @@
 // string in the original data segment). No `this` state is used or modified.
 static const char* __fastcall C_0082fbe8_GetConstantName(C_0082fbe8* /*self*/, void* /*edx*/)
 {
-    return reinterpret_cast<const char*>(0x0082E65C);
+    return reinterpret_cast<const char*>(CSF_ADDR_DATA(0x0082E65C));
 }
 
 HOOK(0x0050F6D0, C_0082fbe8_GetConstantName, "auto");

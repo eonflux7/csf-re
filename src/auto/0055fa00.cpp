@@ -11,11 +11,11 @@
 #include "legacy/string.h"
 
 // Vtable addresses written into the object header during teardown.
-static constexpr uint32_t kVtblCMenuMpOnline = 0x00845740u;   // primary vtable of CMenuMpOnline
+static const uint32_t kVtblCMenuMpOnline = CSF_ADDR_VT(0x00845740);   // primary vtable of CMenuMpOnline
 static constexpr uint32_t kVtblCMenuScreenChain = 0x008456F0u; // CMenuScreen-side intermediate vtable
-static constexpr uint32_t kVtblIntermediate830488 = 0x00830488u;
-static constexpr uint32_t kVtblIntermediate830438 = 0x00830438u;
-static constexpr uint32_t kVtblFinal83042C = 0x0083042Cu;
+static const uint32_t kVtblIntermediate830488 = CSF_ADDR_DATA(0x00830488);
+static const uint32_t kVtblIntermediate830438 = CSF_ADDR_VT(0x00830438);
+static const uint32_t kVtblFinal83042C = CSF_ADDR_VT(0x0083042C);
 
 // game::Mem_Free (0x691110), __cdecl, one argument.
 CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));

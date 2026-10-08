@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 
 // Base destructor body (member cleanup) called before the optional heap free.
-CSF_FUNC(int, __fastcall, CMenuMessageBox_DestroyBody, 0x52AF50,
+CSF_FUNC(int, __fastcall, CMenuMessageBox_DestructBody, 0x52AF50,
          (CMenuMessageBox* self, void* edx));
 
 // Scalar deleting destructor: run the destructor body, then free the object
@@ -12,7 +12,7 @@ CSF_FUNC(int, __fastcall, CMenuMessageBox_DestroyBody, 0x52AF50,
 static CMenuMessageBox* __fastcall CMenuMessageBox_Destroy(
     CMenuMessageBox* self, void* /*edx*/, char flags)
 {
-    CMenuMessageBox_DestroyBody(self, nullptr);
+    CMenuMessageBox_DestructBody(self, nullptr);
     if ((flags & 1) != 0)
         game::Mem_Free(self);
     return self;

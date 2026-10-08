@@ -4,29 +4,29 @@
 #include "globals.h"
 
 CSF_FUNC(void*, __cdecl, MenuMpAccounts_CreateListSentinel, 0x00552DD0, ());
-CSF_FUNC(void*, __cdecl, MenuMpAccounts_GetAccountManager, 0x0073C020, ());
+CSF_FUNC(void*, __cdecl, GetGlobalDword_73C020, 0x0073C020, ());
 CSF_FUNC(int, __fastcall, MenuMpAccounts_FillPlayerList, 0x0073F3B0,
          (void* self, void* edx, void* list));
-CSF_FUNC(int, __fastcall, MenuMpAccounts_GetStoredSelection, 0x00714CA0,
+CSF_FUNC(int, __fastcall, GetStoredValueAtIndex, 0x00714CA0,
          (void* self, void* edx, int index));
-CSF_FUNC(void*, __fastcall, MenuMpAccounts_GetListControl, 0x0072FF80,
+CSF_FUNC(void*, __fastcall, CGuiStatic_GetField0134, 0x0072FF80,
          (void* self, void* edx));
-CSF_FUNC(int, __fastcall, MenuMpAccounts_ClearList, 0x00715660,
+CSF_FUNC(int, __fastcall, CGuiListBoxBase_ClearStorageAndSendEvent, 0x00715660,
          (void* self, void* edx));
-CSF_FUNC(void, __fastcall, MenuMpAccounts_SelectItem, 0x00716A60,
+CSF_FUNC(void, __fastcall, CGuiListBoxBase_AddSelectedItem, 0x00716A60,
          (void* self, void* edx, int index));
 CSF_FUNC(void*, __fastcall, MenuMpAccounts_GetPlayerName, 0x00741010,
          (void* self, void* edx));
-CSF_FUNC(int, __fastcall, MenuMpAccounts_CheckName, 0x00696BB0,
+CSF_FUNC(int, __fastcall, SaveGame_ValidateName, 0x00696BB0,
          (void* self, void* edx, const char* text));
 CSF_FUNC(int, __fastcall, MenuMpAccounts_CompareNames, 0x005158F0,
          (void* self, void* edx, unsigned int offset, unsigned int length,
           const uint16_t* text, unsigned int textLength));
 CSF_FUNC(int, __stdcall, MenuMpAccounts_FormatPlayerStatus, 0x0055DFC0,
          (void* player, uint16_t* buffer));
-CSF_FUNC(void, __cdecl, MenuMpAccounts_ReportInvalidPlayerId, 0x00646D30,
+CSF_FUNC(void, __cdecl, Game_RaiseStatusNotice, 0x00646D30,
          (int first, int second, int error, int fourth));
-CSF_FUNC(int, __cdecl, MenuMpAccounts_FreeListNode, 0x00690E60,
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60,
          (void* node));
 
 CSF_GLOBAL(uint8_t, g_EmptyAccountName, 0x0082E65C);
@@ -43,19 +43,19 @@ static void** __fastcall MenuMpAccounts_RefreshPlayerList(
     listState[2] = 0;
     int row = 0;
 
-    void* manager = MenuMpAccounts_GetAccountManager();
+    void* manager = GetGlobalDword_73C020();
     MenuMpAccounts_FillPlayerList(manager, nullptr, listState);
 
-    int selectedItem = MenuMpAccounts_GetStoredSelection(
+    int selectedItem = GetStoredValueAtIndex(
         CSF_AT(void*, self, 0x24), nullptr, 0);
 
-    void* control = MenuMpAccounts_GetListControl(
+    void* control = CGuiStatic_GetField0134(
         CSF_AT(void*, self, 0x24), nullptr);
     int savedPosition =
         reinterpret_cast<int(__fastcall*)(void*, void*)>(
             CSF_AT(void**, control, 0)[0x270 / 4])(control, nullptr);
 
-    MenuMpAccounts_ClearList(CSF_AT(void*, self, 0x24), nullptr);
+    CGuiListBoxBase_ClearStorageAndSendEvent(CSF_AT(void*, self, 0x24), nullptr);
 
     void* listBox = CSF_AT(void*, self, 0x24);
     reinterpret_cast<void(__fastcall*)(void*, void*)>(
@@ -67,12 +67,12 @@ static void** __fastcall MenuMpAccounts_RefreshPlayerList(
         void* player = CSF_AT(void*, node, 0x08);
         void* name = MenuMpAccounts_GetPlayerName(player, nullptr);
 
-        if (static_cast<uint8_t>(MenuMpAccounts_CheckName(
+        if (static_cast<uint8_t>(SaveGame_ValidateName(
                 name, nullptr,
                 reinterpret_cast<const char*>(&g_EmptyAccountName))) != 0)
         {
             void* managerName = static_cast<uint8_t*>(
-                MenuMpAccounts_GetAccountManager()) + 0x0C;
+                GetGlobalDword_73C020()) + 0x0C;
             name = MenuMpAccounts_GetPlayerName(player, nullptr);
 
             unsigned int managerNameLength =
@@ -95,7 +95,7 @@ static void** __fastcall MenuMpAccounts_RefreshPlayerList(
                 uint32_t playerId = CSF_AT(uint32_t, player, 0x2C);
                 if ((playerId & 0x003FFFFFu) == 0)
                 {
-                    MenuMpAccounts_ReportInvalidPlayerId(
+                    Game_RaiseStatusNotice(
                         0, 0, -536870898, 0);
                     playerId = 0;
                 }
@@ -131,13 +131,13 @@ static void** __fastcall MenuMpAccounts_RefreshPlayerList(
         node = CSF_AT(void*, node, 0);
     }
 
-    control = MenuMpAccounts_GetListControl(
+    control = CGuiStatic_GetField0134(
         CSF_AT(void*, self, 0x24), nullptr);
     reinterpret_cast<void(__fastcall*)(void*, void*, int, int)>(
         CSF_AT(void**, control, 0)[0x26C / 4])(
             control, nullptr, savedPosition, 0);
 
-    MenuMpAccounts_SelectItem(
+    CGuiListBoxBase_AddSelectedItem(
         CSF_AT(void*, self, 0x24), nullptr, selectedItem);
 
     listBox = CSF_AT(void*, self, 0x24);
@@ -155,14 +155,14 @@ static void** __fastcall MenuMpAccounts_RefreshPlayerList(
     while (node != reinterpret_cast<void*>(listState[1]))
     {
         void* next = CSF_AT(void*, node, 0);
-        MenuMpAccounts_FreeListNode(node);
+        Mem_FreeDebug(node);
         node = next;
     }
 
     void* sentinel = reinterpret_cast<void*>(listState[1]);
     if (sentinel)
         return reinterpret_cast<void**>(
-            static_cast<uint32_t>(MenuMpAccounts_FreeListNode(sentinel)));
+            static_cast<uint32_t>(Mem_FreeDebug(sentinel)));
     return reinterpret_cast<void**>(node);
 }
 

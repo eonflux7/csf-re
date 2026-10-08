@@ -11,9 +11,9 @@
 #include "legacy/string.h"
 
 // Callees bound by address.
-CSF_FUNC(void, __fastcall, InitMenuScreenBase, 0x712CC0, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, C_00830438_Construct, 0x712CC0, (void* self, void* edx));
 CSF_FUNC(void, __fastcall, ResetInnerBuffer, 0x501170, (void* self, void* edx));
-CSF_FUNC(void, __fastcall, AssignStdStringRange, 0x429B60, (void* self, void* edx, char* text, unsigned int length));
+CSF_FUNC(void, __fastcall, AssignStringRange_429B60, 0x429B60, (void* self, void* edx, char* text, unsigned int length));
 
 // Vtables and data referenced by the original, bound by address.
 CSF_GLOBAL(uint8_t, g_VtblCMenuScreenBase, 0x83042C);
@@ -22,17 +22,17 @@ CSF_GLOBAL(uint8_t, g_VtblCMenuLoadGame, 0x842220);
 CSF_GLOBAL(uint8_t, g_EmptyStringLiteral, 0x82E65C);
 
 // Vtable pointer values stored into the object (immediates from the original).
-static constexpr uint32_t kVtblCMenuScreenBaseAddr = 0x0083042C;
-static constexpr uint32_t kVtblCMenuLoadGameSubAddr = 0x00842280;
-static constexpr uint32_t kVtblCMenuLoadGameAddr = 0x00842220;
-static constexpr uint32_t kEmptyStringLiteralAddr = 0x0082E65C;
+static const uint32_t kVtblCMenuScreenBaseAddr = CSF_ADDR_VT(0x0083042C);
+static const uint32_t kVtblCMenuLoadGameSubAddr = CSF_ADDR_VT(0x00842280);
+static const uint32_t kVtblCMenuLoadGameAddr = CSF_ADDR_VT(0x00842220);
+static const uint32_t kEmptyStringLiteralAddr = CSF_ADDR_DATA(0x0082E65C);
 
 // CMenuLoadGame constructor: __thiscall with one stack argument (ret 4).
 static CMenuLoadGame* __fastcall CMenuLoadGame_Construct(CMenuLoadGame* self, void* /*edx*/, int ownerArg)
 {
     // Base vtable (0x83042C), then base sub-object init at this + 4.
     CSF_AT(uint32_t, self, 0) = kVtblCMenuScreenBaseAddr;
-    InitMenuScreenBase(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
+    C_00830438_Construct(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
 
     // Sub-object vtable (0x842280) stored at this + 4.
     self->field_0004 = kVtblCMenuLoadGameSubAddr;
@@ -58,7 +58,7 @@ static CMenuLoadGame* __fastcall CMenuLoadGame_Construct(CMenuLoadGame* self, vo
     self->field_0100 = 0;
 
     // Assign empty literal (0x82E65C), length 0, to the inner string at this + 0x1C.
-    AssignStdStringRange(innerStr, nullptr,
+    AssignStringRange_429B60(innerStr, nullptr,
                          reinterpret_cast<char*>(kEmptyStringLiteralAddr), 0);
 
     self->field_0104 = 0;

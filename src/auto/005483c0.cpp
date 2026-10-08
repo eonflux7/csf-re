@@ -4,13 +4,13 @@
 #include "core/memory.h"
 
 // Copy-constructs a run of 32-byte elements into raw storage.
-CSF_FUNC(std::uint32_t, __cdecl, CopyConstructElementArray32,
+CSF_FUNC(std::uint32_t, __cdecl, MenuExtras_ConstructStringElementArray,
          0x00547600,
          (std::uint32_t destination, int count, int* source,
           void* containerContext, int* sourceContext));
 
 // Grows the storage (reallocating/copying) and inserts count copies.
-CSF_FUNC(std::uint32_t, __fastcall, InsertElementCopies32,
+CSF_FUNC(std::uint32_t, __fastcall, InsertElementCopies32_5479F0,
          0x005479F0,
          (void* self, void* edx, char* position,
           unsigned int count, int* source));
@@ -31,7 +31,7 @@ static std::uint32_t __fastcall AppendElement32(
             static_cast<std::int32_t>(
                 CSF_AT(std::uint32_t, self, 12) - begin) >> 5))
     {
-        return InsertElementCopies32(
+        return InsertElementCopies32_5479F0(
             self, nullptr,
             reinterpret_cast<char*>(CSF_AT(std::uint32_t, self, 8)),
             1, source);
@@ -40,7 +40,7 @@ static std::uint32_t __fastcall AppendElement32(
     const std::uint32_t insertionAddress =
         CSF_AT(std::uint32_t, self, 8);
 
-    const std::uint32_t result = CopyConstructElementArray32(
+    const std::uint32_t result = MenuExtras_ConstructStringElementArray(
         insertionAddress, 1, source, self, source);
 
     CSF_AT(std::uint32_t, self, 8) = insertionAddress + 32;

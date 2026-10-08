@@ -5,7 +5,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_PrepareDrawing, 0x00719A20,
+CSF_FUNC(int, __fastcall, CGuiListBoxBase_PrepareListRendering, 0x00719A20,
          (CGuiControl* self, void* edx));
 
 static void __fastcall DrawSwitchComponent(void* component, void* /*edx*/)
@@ -22,7 +22,7 @@ static int* __fastcall CGuiSwitch_Draw(CGuiSwitch* self, void* /*edx*/)
     if ((reinterpret_cast<std::uintptr_t>(result) & 0xFFu) != 0)
         return result;
 
-    CGuiControl_PrepareDrawing(self, nullptr);
+    CGuiListBoxBase_PrepareListRendering(self, nullptr);
 
     void* component = CSF_AT(void*, self, 0x140);
     if (component)

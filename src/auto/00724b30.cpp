@@ -4,9 +4,9 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __fastcall, GetColumnCount, 0x00714830,
+CSF_FUNC(int, __fastcall, CGuiTextureListBox_GetColumnCount, 0x00714830,
          (CGuiListBox* self, void* edx));
-CSF_FUNC(std::uint32_t*, __fastcall, InitializeTextStyle, 0x00530AB0,
+CSF_FUNC(std::uint32_t*, __fastcall, MpServerInfo_InitDefaultStyle, 0x00530AB0,
          (std::uint32_t* self, void* edx));
 CSF_FUNC(std::uint32_t*, __fastcall, CopyConstructStringRecord, 0x007234F0,
          (std::uint32_t* self, void* edx, std::uint32_t* source));
@@ -28,16 +28,16 @@ CSF_FUNC(std::uint32_t, __fastcall, InsertRowCells, 0x00724470,
           std::uint32_t count, void* cells));
 CSF_FUNC(int, __cdecl, ResetWideStringsInRecordRange, 0x007233D0,
          (std::uint32_t begin, std::uint32_t end));
-CSF_FUNC(int, __cdecl, FreeDebugMemory, 0x00690E60, (void* block));
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
 static int __fastcall CGuiListBox_InsertRows(
     CGuiListBox* self, void* /*edx*/, std::uint32_t count)
 {
     const std::uint32_t columnCount =
-        static_cast<std::uint32_t>(GetColumnCount(self, nullptr));
+        static_cast<std::uint32_t>(CGuiTextureListBox_GetColumnCount(self, nullptr));
 
     std::uint32_t style[15];
-    InitializeTextStyle(style, nullptr);
+    MpServerInfo_InitDefaultStyle(style, nullptr);
 
     void* rowText = reinterpret_cast<void*>(self->m_pRowText);
     if (rowText) {
@@ -76,14 +76,14 @@ static int __fastcall CGuiListBox_InsertRows(
     if (block) {
         ResetWideStringsInRecordRange(
             reinterpret_cast<std::uint32_t>(block), cells[2]);
-        result = FreeDebugMemory(block);
+        result = Mem_FreeDebug(block);
     }
 
     if (style[12] >= 8) {
         const std::uint32_t styleStorage = style[7];
         result = static_cast<int>(styleStorage);
         if (styleStorage)
-            result = FreeDebugMemory(reinterpret_cast<void*>(styleStorage));
+            result = Mem_FreeDebug(reinterpret_cast<void*>(styleStorage));
     }
     return result;
 }

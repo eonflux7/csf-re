@@ -8,9 +8,9 @@
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B0568, 0x004FDBB0, ());
 CSF_FUNC(void, __fastcall, GlobalMenu_SetSelectedScenarioName, 0x00501990,
          (void* self, void* edx, const char* name, char flag));
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x00521BB0, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x00521BB0, ());
 CSF_FUNC(int, __fastcall, GlobalMenu_BeginSelectionUpdate, 0x00521E80, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, GlobalMenu_EndSelectionUpdate, 0x00521F10, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, Sub_521F10, 0x00521F10, (void* self, void* edx));
 
 // Original data.
 CSF_GLOBAL(const char*, g_pszMenu_P_Juego, 0x00899AF0);
@@ -41,7 +41,7 @@ static int __fastcall CMenuScenarioSelect_ApplySelectionWork(CMenuScenarioSelect
         return globalResult;
     }
 
-    int contextA = GetGlobalValue();
+    int contextA = GetGlobalValue_521BB0();
     GlobalMenu_BeginSelectionUpdate(reinterpret_cast<void*>(contextA), nullptr);
 
     // vtable slot 0x60: obj->Method(self, 1)
@@ -51,8 +51,8 @@ static int __fastcall CMenuScenarioSelect_ApplySelectionWork(CMenuScenarioSelect
         ((void(__fastcall*)(void*, void*, void*, int))vtbl[0x60 / 4])(obj, nullptr, self, 1);
     }
 
-    int contextB = GetGlobalValue();
-    GlobalMenu_EndSelectionUpdate(reinterpret_cast<void*>(contextB), nullptr);
+    int contextB = GetGlobalValue_521BB0();
+    Sub_521F10(reinterpret_cast<void*>(contextB), nullptr);
 
     // vtable slot 0x58: obj->Method(g_pszMenu_P_Juego)
     {

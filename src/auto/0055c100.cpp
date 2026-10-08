@@ -6,7 +6,7 @@
 CSF_GLOBAL(int, g_MpNetworkType, 0x0089A5F0);
 
 static void* (__fastcall* const GetEventActionObject)(void*, void*) =
-    reinterpret_cast<void* (__fastcall*)(void*, void*)>(0x006683F0);
+    reinterpret_cast<void* (__fastcall*)(void*, void*)>(CSF_ADDR_FN(0x006683F0));
 
 static int __fastcall MenuMpAccounts_HandleAccountEvent(
     void* self, void* /*edx*/, int eventCode, uint32_t eventData)

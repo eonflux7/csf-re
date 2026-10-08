@@ -9,14 +9,14 @@ static CSF_GLOBAL(std::uint8_t, g_OnlineMatchFlag, 0x008B068C);
 
 static CSF_FUNC(void*, __fastcall, MenuMpAccounts_FindAccountByName,
                 0x0055BCB0, (void* self, void* edx, char* name));
-static CSF_FUNC(int, __fastcall, MenuMpAccounts_ReadPlayerName,
+static CSF_FUNC(int, __fastcall, MenuAccounts_CopyWideNameToBuffer,
                 0x0055D430, (void* self, void* edx, std::uint16_t* destination));
-static CSF_FUNC(int, __cdecl, MenuMpAccounts_GetLocalizedText,
+static CSF_FUNC(int, __cdecl, MenuMessageBox_ResolveEntryByKey,
                 0x00692440, (int identifier, int mode));
-static CSF_FUNC(unsigned int, __cdecl, MenuMpAccounts_ConvertPlayerName,
+static CSF_FUNC(unsigned int, __cdecl, ConvertWideTextToNarrow,
                 0x00695620, (std::uint16_t* source, char* destination,
                              unsigned int capacity));
-static CSF_FUNC(void*, __cdecl, GetGlobalState, 0x006A6D70, ());
+static CSF_FUNC(void*, __cdecl, GetGlobalState_6A6D70, 0x006A6D70, ());
 
 static int CMenuPlayerInfo_SetControlFlag(void* control, int flag)
 {
@@ -53,11 +53,11 @@ static std::uint8_t __fastcall CMenuPlayerInfo_UpdateFriendshipControls(
     std::uint16_t wideName[256];
     char name[256] = {};
 
-    MenuMpAccounts_ReadPlayerName(
+    MenuAccounts_CopyWideNameToBuffer(
         reinterpret_cast<void*>(self->field_0048), nullptr, wideName);
-    MenuMpAccounts_ConvertPlayerName(wideName, name, 256);
+    ConvertWideTextToNarrow(wideName, name, 256);
 
-    void* globalState = GetGlobalState();
+    void* globalState = GetGlobalState_6A6D70();
     void* accounts = reinterpret_cast<void*(__fastcall*)(void*, void*)>(
         CSF_AT(void**, globalState, 0)[0xF4 / 4])(globalState, nullptr);
     void* account = MenuMpAccounts_FindAccountByName(accounts, nullptr, name);
@@ -118,7 +118,7 @@ static std::uint8_t __fastcall CMenuPlayerInfo_UpdateFriendshipControls(
     // The original saves this vtable before the localization call.
     void** textVtable = CSF_AT(void**, textControl, 0);
     const int localizedText =
-        MenuMpAccounts_GetLocalizedText(textIdentifier, 1);
+        MenuMessageBox_ResolveEntryByKey(textIdentifier, 1);
     const int result = reinterpret_cast<int(__fastcall*)(void*, void*, int)>(
         textVtable[0x40 / 4])(textControl, nullptr, localizedText);
 

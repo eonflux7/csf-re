@@ -17,7 +17,7 @@ CSF_GLOBAL(unsigned int, g_fpControlWord_8BB3F4, 0x8BB3F4);
 // Reads a global at 0x8B0560 (no args, cdecl-style)
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B0560, 0x4FA6B0, ());
 // Thiscall, no stack args; returns a sub-object pointer for this+4
-CSF_FUNC(void*, __fastcall, MenuControls_ResolveChildHandle, 0x6683F0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x6683F0, (void* self, void* edx));
 // Thiscall, one stack arg, ret 4
 CSF_FUNC(void, __fastcall, MenuControls_ApplyChildIndex, 0x712D90, (void* self, void* edx, int index));
 CSF_FUNC(char, __cdecl, MenuControls_RefreshCursor, 0x4F9A20, ());
@@ -28,7 +28,7 @@ CSF_FUNC(int, __cdecl, MenuControls_UpdateScrollBars, 0x519020, ());
 CSF_FUNC(int, __cdecl, MenuControls_UpdateEntries, 0x519090, ());
 CSF_FUNC(int, __cdecl, MenuControls_UpdateTooltips, 0x519100, ());
 // CRT _controlfp(newValue, mask), the callee of the 0x69D8C0 tail stub
-CSF_FUNC(unsigned int, __cdecl, MenuControls_ControlFp, 0x7B070F, (unsigned int newValue, unsigned int mask));
+CSF_FUNC(unsigned int, __cdecl, __controlfp, 0x7B070F, (unsigned int newValue, unsigned int mask));
 
 static unsigned int __fastcall MenuControls_RefreshAndRestoreFpControl(char* self, void* /*edx*/)
 {
@@ -38,7 +38,7 @@ static unsigned int __fastcall MenuControls_RefreshAndRestoreFpControl(char* sel
 
     // Original pushes savedGlobalValue as a stack arg for ApplyChildIndex,
     // while ResolveChildHandle is called with ecx = self + 4 (ret 0).
-    void* childHandle = MenuControls_ResolveChildHandle(self + 4, nullptr);
+    void* childHandle = GetReferencedObject(self + 4, nullptr);
     MenuControls_ApplyChildIndex(childHandle, nullptr, savedGlobalValue);
 
     MenuControls_RefreshHighlight();
@@ -51,7 +51,7 @@ static unsigned int __fastcall MenuControls_RefreshAndRestoreFpControl(char* sel
 
     // Inlined body of the tail stub at 0x69D8C0:
     //   eax = [0x8BB3F4]; eax = _controlfp(eax, 0x300); [0x8BB3F4] = eax; return eax
-    unsigned int newFpControlWord = MenuControls_ControlFp(g_fpControlWord_8BB3F4, 0x300u);
+    unsigned int newFpControlWord = __controlfp(g_fpControlWord_8BB3F4, 0x300u);
     g_fpControlWord_8BB3F4 = newFpControlWord;
     return newFpControlWord;
 }

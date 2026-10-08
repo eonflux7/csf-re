@@ -6,9 +6,9 @@
 
 CSF_FUNC(int, __fastcall, CGuiStatic_InvokeTextVirtual, 0x00724D00,
          (CGuiChoiceButton* self, void* edx));
-CSF_FUNC(int, __cdecl, ResolveChoiceText, 0x00692440,
+CSF_FUNC(int, __cdecl, MenuMessageBox_ResolveEntryByKey, 0x00692440,
          (int textId, int context));
-CSF_FUNC(std::uint32_t*, __fastcall, AssignChoiceText, 0x00696F90,
+CSF_FUNC(std::uint32_t*, __fastcall, MenuProgressInput_AssignText, 0x00696F90,
          (std::uint32_t* self, void* edx, std::int16_t* text));
 
 static int __fastcall CGuiChoiceButton_RefreshChoiceTexts(
@@ -37,10 +37,10 @@ static int __fastcall CGuiChoiceButton_RefreshChoiceTexts(
             const std::uint32_t textId = CSF_AT(std::uint32_t, record, 0);
             if (textId)
             {
-                const int text = ResolveChoiceText(
+                const int text = MenuMessageBox_ResolveEntryByKey(
                     static_cast<int>(textId),
                     CSF_AT(int, self, 0x204));
-                AssignChoiceText(
+                MenuProgressInput_AssignText(
                     reinterpret_cast<std::uint32_t*>(
                         reinterpret_cast<std::uint8_t*>(record) + 4),
                     nullptr,

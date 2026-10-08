@@ -5,7 +5,7 @@
 
 CSF_FUNC(int, __cdecl, GetGlobal8afc78, 0x0042D6D0, ());
 CSF_FUNC(uint8_t, __fastcall, IsMpStatsDisplayActive, 0x0042DFA0, (void* self, void* edx));
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x0050D190, ());
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 CSF_FUNC(int, __fastcall, CMenuMpScoreBar_ApplyChildDisplayMode, 0x005408F0, (CMenuMpScoreBar* self, void* edx));
 
 // Calls virtual slot 0xA8 (vtable index 42) of a child object with one stack argument.
@@ -36,7 +36,7 @@ static int __fastcall CMenuMpScoreBar_RefreshChildVisibility(CMenuMpScoreBar* se
 
     if (isActive)
     {
-        void* globalState = reinterpret_cast<void*>(GetGlobalState());
+        void* globalState = reinterpret_cast<void*>(GetGlobalState_50D190());
         const int childEnabledArg = (CSF_AT(uint32_t, globalState, 0xCC) == 3) ? 0 : 1;
         SetScoreBarChildEnabled(self->field_0018, childEnabledArg);
         SetScoreBarChildEnabled(self->field_001c, childEnabledArg);

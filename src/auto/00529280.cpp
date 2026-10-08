@@ -4,9 +4,9 @@
 #include "globals.h"
 
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, GetDisplayContext, 0x00652160,
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160,
          (void* self, void* edx));
-CSF_FUNC(int, __fastcall, ForwardLayoutToChild, 0x00720DF0,
+CSF_FUNC(int, __fastcall, C_00720DF0_ForwardCallToChildVtblSlot16, 0x00720DF0,
          (void* self, void* edx, void* layout));
 
 CSF_GLOBAL(float, g_UnsignedIntegerBias, 0x0082D744);
@@ -24,12 +24,12 @@ static int __fastcall MenuMessageBox_UpdateHorizontalLayout(
     if (!CSF_AT(void*, self, 0x58) || !result)
         return result;
 
-    void* context = GetDisplayContext(
+    void* context = LookupObjectById(
         reinterpret_cast<void*>(GetGlobalInt()), nullptr);
     ((void*(__fastcall*)(void*, void*))CSF_AT(void**, context, 0)[6])(
         context, nullptr);
 
-    context = GetDisplayContext(
+    context = LookupObjectById(
         reinterpret_cast<void*>(GetGlobalInt()), nullptr);
     void* dimensions =
         ((void*(__fastcall*)(void*, void*))CSF_AT(void**, context, 0)[6])(
@@ -49,7 +49,7 @@ static int __fastcall MenuMessageBox_UpdateHorizontalLayout(
         CSF_AT(void**, control, 0)[38])(control, nullptr, origin);
 
     std::uint32_t size[2] = {0, 0};
-    context = GetDisplayContext(
+    context = LookupObjectById(
         reinterpret_cast<void*>(GetGlobalInt()), nullptr);
     dimensions =
         ((void*(__fastcall*)(void*, void*))CSF_AT(void**, context, 0)[6])(
@@ -65,7 +65,7 @@ static int __fastcall MenuMessageBox_UpdateHorizontalLayout(
     ((void(__fastcall*)(void*, void*, std::uint32_t*))
         CSF_AT(void**, control, 0)[40])(control, nullptr, size);
 
-    return ForwardLayoutToChild(
+    return C_00720DF0_ForwardCallToChildVtblSlot16(
         CSF_AT(void*, self, 0x58), nullptr,
         static_cast<std::uint8_t*>(self) + 0x90);
 }

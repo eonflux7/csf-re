@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __cdecl, MenuProgressInput_GetGlobalValue, 0x00521BB0, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x00521BB0, ());
 CSF_FUNC(void, __fastcall, MenuProgressInput_UpdateGlobalState, 0x00521DE0,
          (void* self, void* edx));
 
@@ -14,7 +14,7 @@ static int __fastcall CMenuProgressBar_BindProgressControl(
     self->field_001c = static_cast<uint32_t>(context);
 
     MenuProgressInput_UpdateGlobalState(
-        reinterpret_cast<void*>(MenuProgressInput_GetGlobalValue()), nullptr);
+        reinterpret_cast<void*>(GetGlobalValue_521BB0()), nullptr);
 
     void* screen = reinterpret_cast<void*>(self->field_0020);
     reinterpret_cast<void(__fastcall*)(void*, void*)>(

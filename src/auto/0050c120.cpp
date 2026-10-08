@@ -5,16 +5,16 @@
 // MSVC-generated range "copy-construct N records" step. The original forwards a
 // context/allocator argument in ECX before each call, but the instantiated
 // callee bodies do not consume ECX, so both are bound as __stdcall.
-CSF_FUNC(int*, __stdcall, CopyConstructRecord, 0x00410B50,
+CSF_FUNC(int*, __stdcall, CopyConstructRecord_410B50, 0x00410B50,
          (void* destination, const void* source));
 
 // MSVC-generated element destructor invoked by the cleanup continuation.
-CSF_FUNC(int, __stdcall, DestroyRecord, 0x00469270, (void* record));
+CSF_FUNC(int, __stdcall, DestroyRecord_469270, 0x00469270, (void* record));
 
-CSF_FUNC(void, __stdcall, RethrowCurrentException, 0x007AF666,
+CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInfo));
 
-CSF_FUNC(int, __cdecl, OriginalCxxFrameHandler, 0x007AF226,
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226,
          (void* exceptionRecord, void* frame, void* context, void* dispatcher));
 
 // Compiler-generated EH code/info referenced by the scope table: bind by
@@ -38,7 +38,7 @@ static void* __cdecl CopyConstructRecordRange(
     {
         while (source != sourceEnd)
         {
-            CopyConstructRecord(destination, source);
+            CopyConstructRecord_410B50(destination, source);
             destination = static_cast<std::uint8_t*>(destination) + 0x1C;
             source = static_cast<std::uint8_t*>(source) + 0x1C;
         }
@@ -50,11 +50,11 @@ static void* __cdecl CopyConstructRecordRange(
 
         while (constructed != destination)
         {
-            DestroyRecord(constructed);
+            DestroyRecord_469270(constructed);
             constructed = static_cast<std::uint8_t*>(constructed) + 0x1C;
         }
 
-        RethrowCurrentException(nullptr, nullptr);
+        RethrowCppException(nullptr, nullptr);
         __assume(0);
     }
 

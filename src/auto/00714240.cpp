@@ -10,7 +10,7 @@
 #include "types/auto_classes.h"
 
 // 0x00718700 - BOOL __thiscall sub_718700(_BYTE *this), implemented elsewhere.
-CSF_FUNC(int, __fastcall, Sub_718700, 0x718700, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x718700, (void* self, void* edx));
 
 static int __fastcall CGuiListBoxBase_UpdateIfEnabled(CGuiListBoxBase* self, void* /*edx*/, int /*a2*/, int /*a3*/)
 {
@@ -23,7 +23,7 @@ static int __fastcall CGuiListBoxBase_UpdateIfEnabled(CGuiListBoxBase* self, voi
         if ((uint8_t)result)
         {
             // mov ecx, esi ; call 0x718700
-            return Sub_718700(self, nullptr);
+            return CGuiSlider_IsSelectableAndNotType10(self, nullptr);
         }
     }
     return result;

@@ -9,10 +9,10 @@
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, (void));
 
 // Original 0x6B1660: int __thiscall (this)
-CSF_FUNC(int, __fastcall, MenuRuntime_ReinitForGlobal, 0x006B1660, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, GlobalIntApply, 0x006B1660, (void* self, void* edx));
 
 // Original 0x4109E0: std::_String_base* __thiscall (this, source, offset, count), ret 12
-CSF_FUNC(void*, __fastcall, StringBase_AssignSubstr, 0x004109E0,
+CSF_FUNC(void*, __fastcall, AssignStringSubstring, 0x004109E0,
          (void* self, void* edx, const void* source, uint32_t offset, uint32_t count));
 
 // Original 0x541580: __cdecl (string, 2, 0) as pushed by the caller; caller pops 4 and reuses
@@ -32,7 +32,7 @@ static void* __fastcall CMenuScreenFader_SwitchScreenByName(CMenuScreenFader* se
                                                            int /*unusedArgument*/)
 {
     // Runtime object lookup (result discarded, as in the original).
-    MenuRuntime_ReinitForGlobal(reinterpret_cast<void*>(static_cast<uintptr_t>(GetGlobalInt())), nullptr);
+    GlobalIntApply(reinterpret_cast<void*>(static_cast<uintptr_t>(GetGlobalInt())), nullptr);
 
     // Local std::string-like object at [ebp-0x1c]:
     //   +0x04 = buffer pointer (Block), +0x14 = size, +0x18 = capacity.
@@ -41,7 +41,7 @@ static void* __fastcall CMenuScreenFader_SwitchScreenByName(CMenuScreenFader* se
     *reinterpret_cast<uint32_t*>(localString + 0x14) = 0;
     localString[0x04] = 0;
 
-    StringBase_AssignSubstr(localString, nullptr,
+    AssignStringSubstring(localString, nullptr,
                             reinterpret_cast<uint8_t*>(self) + 4, 0u, 0xFFFFFFFFu);
 
     void* lookedUpPage = MenuPage_LookupByName(localString, 2, 0);

@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(bool, __cdecl, MatchesLookupString, 0x00694AA0,
+CSF_FUNC(bool, __cdecl, SceneNamesMatch, 0x00694AA0,
          (char* lookupString, uint8_t* entryString));
 
 static int __fastcall C_008655e8_FindEntryByName(
@@ -21,7 +21,7 @@ static int __fastcall C_008655e8_FindEntryByName(
             reinterpret_cast<uint8_t* (__fastcall*)(void*, void*)>(
                 CSF_AT(void**, entry, 0)[3])(entry, nullptr);
 
-        if (MatchesLookupString(name, entryName))
+        if (SceneNamesMatch(name, entryName))
         {
             return static_cast<int>(
                 reinterpret_cast<uint32_t*>(self->field_0034)[index]);

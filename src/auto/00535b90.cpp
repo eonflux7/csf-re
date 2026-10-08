@@ -3,9 +3,9 @@
 #include "core/memory.h"
 #include "globals.h"
 
-CSF_FUNC(void*, __fastcall, MenuMpPause_GetEventReceiver, 0x006683F0,
+CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x006683F0,
          (void* self, void* edx));
-CSF_FUNC(void*, __fastcall, MenuMpPause_ApplyEventAction, 0x00535900,
+CSF_FUNC(void*, __fastcall, CMenuIntroVideo_RefreshState, 0x00535900,
          (void* self, void* edx));
 
 static void __fastcall MenuMpPause_HandleEvent(
@@ -16,7 +16,7 @@ static void __fastcall MenuMpPause_HandleEvent(
 
     if (eventCode == 50 && CSF_AT(std::uint8_t, eventData, 0x38) != 0)
     {
-        void* receiver = MenuMpPause_GetEventReceiver(self, nullptr);
+        void* receiver = GetReferencedObject(self, nullptr);
         reinterpret_cast<void (__fastcall*)(void*, void*)>(
             CSF_AT(void**, receiver, 0)[7])(receiver, nullptr);
     }
@@ -32,7 +32,7 @@ static void __fastcall MenuMpPause_HandleEvent(
         return;
     }
 
-    MenuMpPause_ApplyEventAction(
+    CMenuIntroVideo_RefreshState(
         static_cast<std::uint8_t*>(self) - 4, nullptr);
 }
 

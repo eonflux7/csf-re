@@ -27,7 +27,7 @@
 CSF_FUNC(void, __fastcall, CMenuControls_ResetStateIfThree, 0x542E20, (void* self, void* edx, int a2, int a3));
 
 // 0x004284C0 -- __cdecl query returning an integer result (no callee cleanup).
-CSF_FUNC(int, __cdecl, MenuControls_QueryResult, 0x4284C0, (int a1));
+CSF_FUNC(int, __cdecl, MenuOptions_ProcessValue_4284C0, 0x4284C0, (int a1));
 
 // 0x00542B10
 // Forwards the incoming "this" (ecx) plus both of its own stack arguments to the
@@ -37,7 +37,7 @@ CSF_FUNC(int, __cdecl, MenuControls_QueryResult, 0x4284C0, (int a1));
 static int __fastcall MenuControls_ResetStateIfThreeThenQueryState(void* self, void* /*edx*/, int menuArg, int modeArg)
 {
     CMenuControls_ResetStateIfThree(self, nullptr, menuArg, modeArg);
-    return MenuControls_QueryResult(menuArg);
+    return MenuOptions_ProcessValue_4284C0(menuArg);
 }
 
 HOOK(0x542B10, MenuControls_ResetStateIfThreeThenQueryState, "auto");

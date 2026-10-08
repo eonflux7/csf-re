@@ -3,8 +3,8 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __cdecl, MenuMessageBox_GetGlobalContext, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, MenuMessageBox_GetDisplay, 0x00652160,
+CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160,
          (void* self, void* edx));
 
 CSF_GLOBAL(float, g_UnsignedIntegerBias, 0x0082D744);
@@ -25,8 +25,8 @@ static int MenuMessageBox_GetElementHeight(void* object)
 
 static void* MenuMessageBox_GetCurrentDisplay()
 {
-    const int context = MenuMessageBox_GetGlobalContext();
-    return MenuMessageBox_GetDisplay(
+    const int context = GetGlobalInt();
+    return LookupObjectById(
         reinterpret_cast<void*>(context), nullptr);
 }
 

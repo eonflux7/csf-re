@@ -4,7 +4,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, ScaleBaseLayout, 0x00713E60,
+CSF_FUNC(int, __fastcall, C_00863f60_ScaleCoordinates, 0x00713E60,
          (C_00865a10* self, void* edx, int horizontalBits, int verticalBits));
 
 CSF_GLOBAL(float, g_HalfDurationScale, 0x0082D444);
@@ -32,7 +32,7 @@ static std::uint32_t RoundScaledInteger(std::uint32_t value, float scale)
 static int __fastcall C_00865a10_ScaleLayout(
     C_00865a10* self, void* /*edx*/, int horizontalBits, int verticalBits)
 {
-    ScaleBaseLayout(self, nullptr, horizontalBits, verticalBits);
+    C_00863f60_ScaleCoordinates(self, nullptr, horizontalBits, verticalBits);
 
     float horizontalScale;
     float verticalScale;

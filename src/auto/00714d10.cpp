@@ -11,7 +11,7 @@
 //   arg4 = ecx (incoming ecx value)
 //   arg5 = a3  (pushed first)
 // ---------------------------------------------------------------------------
-CSF_FUNC(int, __cdecl, ForwardedCall, 0x714980,
+CSF_FUNC(int, __cdecl, CopyConstructPointerRange_714980, 0x714980,
          (int a1, int a2, int a3, int a4, int a5));
 
 // ---------------------------------------------------------------------------
@@ -21,12 +21,12 @@ CSF_FUNC(int, __cdecl, ForwardedCall, 0x714980,
 // the original (ret 0xC) is reproduced exactly.
 //   entry : ecx = self, stack args a1, a2, a3
 //   pushes: a3, self, a3, a2, a1
-//   call  : ForwardedCall(a1, a2, a3, self, a3)
+//   call  : CopyConstructPointerRange_714980(a1, a2, a3, self, a3)
 // ---------------------------------------------------------------------------
 static int __fastcall ForwardTo714980(void* self, void* /*edx*/,
                                       int a1, int a2, int a3)
 {
-    return ForwardedCall(a1, a2, a3, static_cast<int>(reinterpret_cast<intptr_t>(self)), a3);
+    return CopyConstructPointerRange_714980(a1, a2, a3, static_cast<int>(reinterpret_cast<intptr_t>(self)), a3);
 }
 
 HOOK(0x714D10, ForwardTo714980, "auto");

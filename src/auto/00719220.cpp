@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 
 // This entry consumes ST(0), not a normal C++ stack argument.
-CSF_FUNC(std::int64_t, __cdecl, X87TruncateToInt64, 0x007AF86C, ());
+CSF_FUNC(std::int64_t, __cdecl, __ftol2, 0x007AF86C, ());
 
 static void __fastcall CGuiControl_SetPosAnim(
     CGuiControl* self, void* /*edx*/, std::uint32_t positionAnimation)
@@ -33,7 +33,7 @@ static void __fastcall CGuiControl_SetPosAnim(
                     animation, nullptr, initialPosition, 0);
 
         // Express the x87 helper's truncation without an invalid ABI call.
-        (void)X87TruncateToInt64;
+        (void)__ftol2;
         std::uint32_t position[2];
         position[0] = static_cast<std::uint32_t>(
             static_cast<std::int64_t>(initialPosition[0]));

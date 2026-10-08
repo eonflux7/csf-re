@@ -5,20 +5,20 @@
 #include "types/auto_classes.h"
 
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B056C, 0x00506BD0, ());
-CSF_FUNC(std::uint32_t*, __fastcall, MenuSoundOptions_ConstructEmbeddedBase,
+CSF_FUNC(std::uint32_t*, __fastcall, C_00830438_Construct,
          0x00712CC0, (std::uint32_t* self, void* edx));
 
 static CMenuSoundOptions* __fastcall CMenuSoundOptions_Construct(
     CMenuSoundOptions* self, void* /*edx*/, int parameter)
 {
-    CSF_AT(void**, self, 0) = reinterpret_cast<void**>(0x0083042C);
+    CSF_AT(void**, self, 0) = CSF_VTBL(0x0083042C);
 
-    MenuSoundOptions_ConstructEmbeddedBase(
+    C_00830438_Construct(
         reinterpret_cast<std::uint32_t*>(
             reinterpret_cast<std::uint8_t*>(self) + 4),
         nullptr);
 
-    CSF_AT(void**, self, 0) = reinterpret_cast<void**>(0x00842AD0);
+    CSF_AT(void**, self, 0) = CSF_VTBL(0x00842AD0);
     self->field_0004 = 0x00842A80;
 
     self->field_0030 = 1.0f;

@@ -13,7 +13,7 @@ CSF_FUNC(int, __cdecl, Mem_Free, 0x691110, (void* p));
 
 // 0x539B20: destructor body / member teardown of the CMenuLoadGame chain; runs after
 // the CMenuLoadGameInGame destructor restores the vtable pointers, before the free.
-CSF_FUNC(void, __fastcall, CMenuLoadGameInGame_CleanUp, 0x539B20,
+CSF_FUNC(void, __fastcall, CMenuLoadGame_DestroyBody, 0x539B20,
          (CMenuLoadGameInGame* self, void* edx));
 
 // CMenuLoadGameInGame destructor: restores the primary vtable (offset 0x00) and the
@@ -22,10 +22,10 @@ CSF_FUNC(void, __fastcall, CMenuLoadGameInGame_CleanUp, 0x539B20,
 // pointer in eax.
 static void* __fastcall CMenuLoadGameInGame_Destroy(CMenuLoadGameInGame* self, void* /*edx*/, char a2)
 {
-    CSF_AT(uint32_t, self, 0x0000) = 0x00842328u;
+    CSF_AT(uint32_t, self, 0x0000) = CSF_ADDR_VT(0x00842328);
     self->field_0004 = 0x008422D8u;
 
-    CMenuLoadGameInGame_CleanUp(self, nullptr);
+    CMenuLoadGame_DestroyBody(self, nullptr);
 
     if ((a2 & 1) != 0)
         Mem_Free(self);

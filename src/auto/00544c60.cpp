@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // std::_String_base::assign-style helper: __thiscall, 3 stack args (src, pos, count), ret 12.
-CSF_FUNC(void*, __fastcall, StringBaseAssign, 0x004109E0, (void* self, void* edx, const void* source, uint32_t position, uint32_t count));
+CSF_FUNC(void*, __fastcall, AssignStringSubstring, 0x004109E0, (void* self, void* edx, const void* source, uint32_t position, uint32_t count));
 
 // Copies a string-based save entry record from a2 into a1.
 // a1 layout: string at +0x1C (base +0x00..+0x1B), +0x14 length, +0x18 capacity, +0x04 flag byte.
@@ -27,7 +27,7 @@ static int __stdcall MenuSaveGame_CopySaveEntry(int a1, int a2)
         CSF_AT(uint32_t, dst, 0x18) = 15;
         CSF_AT(uint32_t, dst, 0x14) = 0;
         CSF_AT(uint8_t, dst, 0x04) = 0;
-        StringBaseAssign(dst, nullptr, src + 0x1C, 0, 0xFFFFFFFFu);
+        AssignStringSubstring(dst, nullptr, src + 0x1C, 0, 0xFFFFFFFFu);
 
         result = static_cast<int>(CSF_AT(uint32_t, src, 0x1C));
         CSF_AT(uint32_t, dst, 0x1C) = static_cast<uint32_t>(result);

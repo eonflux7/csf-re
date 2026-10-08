@@ -5,11 +5,11 @@
 #include "types/auto_classes.h"
 
 CSF_FUNC(void*, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, GetDisplayInterface, 0x00652160,
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160,
          (void* self, void* edx));
-CSF_FUNC(void*, __fastcall, ResolvePanelIdentifier, 0x00693360,
+CSF_FUNC(void*, __fastcall, LookupNamedElement, 0x00693360,
          (void* self, void* edx, const char* name));
-CSF_FUNC(int, __cdecl, FormatInteger, 0x007AF9BB,
+CSF_FUNC(int, __cdecl, _sprintf, 0x007AF9BB,
          (char* buffer, const char* format, ...));
 
 CSF_GLOBAL(float, g_UnsignedIntegerBias, 0x0082D744);
@@ -38,7 +38,7 @@ static int __fastcall C_008414e8_InitializePrincipalPanel(
 
     void* identifierContext = CSF_AT(void*, layoutContext, 0);
     void** rootVtable = CSF_AT(void**, root, 0);
-    void* identifier = ResolvePanelIdentifier(
+    void* identifier = LookupNamedElement(
         identifierContext, nullptr, CSF_STR(0x00841304, ".PANEL_PRINCIPAL"));
 
     void* panel =
@@ -49,13 +49,13 @@ static int __fastcall C_008414e8_InitializePrincipalPanel(
     if (result == 0)
         return 0;
 
-    void* display = GetDisplayInterface(GetGlobalInt(), nullptr);
+    void* display = LookupObjectById(GetGlobalInt(), nullptr);
     void* dimensions =
         ((void* (__fastcall*)(void*, void*))
             CSF_AT(void**, display, 0)[0x18 / 4])(display, nullptr);
     uint32_t width = CSF_AT(uint32_t, dimensions, 0);
 
-    display = GetDisplayInterface(GetGlobalInt(), nullptr);
+    display = LookupObjectById(GetGlobalInt(), nullptr);
     dimensions =
         ((void* (__fastcall*)(void*, void*))
             CSF_AT(void**, display, 0)[0x18 / 4])(display, nullptr);
@@ -73,7 +73,7 @@ static int __fastcall C_008414e8_InitializePrincipalPanel(
     ((void (__fastcall*)(void*, void*, float, float))
         panelVtable[0x150 / 4])(panel, nullptr, widthScale, heightScale);
 
-    display = GetDisplayInterface(GetGlobalInt(), nullptr);
+    display = LookupObjectById(GetGlobalInt(), nullptr);
     dimensions =
         ((void* (__fastcall*)(void*, void*))
             CSF_AT(void**, display, 0)[0x18 / 4])(display, nullptr);
@@ -120,7 +120,7 @@ static int __fastcall C_008414e8_InitializePrincipalPanel(
     for (uint32_t index = 0; index < 4; ++index)
     {
         char childName[2];
-        FormatInteger(childName, CSF_STR(0x0083090C, "%d"), index);
+        _sprintf(childName, CSF_STR(0x0083090C, "%d"), index);
 
         panel = reinterpret_cast<void*>(self->field_001c);
         void* child =

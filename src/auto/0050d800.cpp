@@ -6,7 +6,7 @@
 //
 // 0x536AF0 is not a function boundary (the gate rejects binding it by address),
 // so its body is reproduced inline here. That chunk:
-//     push esi / mov esi, ecx / call GetGlobalState (0x50D190)
+//     push esi / mov esi, ecx / call GetGlobalState_50D190 (0x50D190)
 //     if (globalState[0xD0] != 0)  -> tail-call 0x542840(inner->field_014C)
 //     else                         -> return inner->byte_0x273
 
@@ -18,7 +18,7 @@
 #include "legacy/string.h"
 
 // int __cdecl sub_50D190() : pointer to the shared global game state block
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x50D190, (void));
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x50D190, (void));
 
 // char __thiscall sub_542840(std::uint8_t *this) : state flag query on the sub-object
 CSF_FUNC(char, __fastcall, Menus_QueryObjectStateFlag, 0x542840, (uint8_t* self, void* /*edx*/));
@@ -32,7 +32,7 @@ static char __fastcall Menus_GetInnerObjectFlag(void* self, void* /*edx*/)
     // --- inlined body of the 0x536AF0 chunk (not a bindable function start) ---
 
     // call 0x50D190 ; mov cl, byte ptr [eax+0xd0] ; test cl, cl ; je
-    if (*reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(GetGlobalState()) + 0xD0))
+    if (*reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(GetGlobalState_50D190()) + 0xD0))
     {
         // mov ecx, dword ptr [esi+0x14c] ; jmp 0x542840
         return Menus_QueryObjectStateFlag(

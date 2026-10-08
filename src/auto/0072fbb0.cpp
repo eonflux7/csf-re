@@ -12,7 +12,7 @@ CSF_FUNC(void, __fastcall, CGuiButton_Ctor, 0x725390, (CGuiButton* self, void* e
 static CGuiRadioButton* __fastcall CGuiRadioButton_Ctor(CGuiRadioButton* self, void* /*edx*/, int a2, int a3)
 {
     CGuiButton_Ctor(self, nullptr, a2, a3);
-    CSF_AT(void*, self, 0x0) = reinterpret_cast<void*>(0x8668B8); // CGuiRadioButton vtable
+    CSF_AT(void*, self, 0x0) = reinterpret_cast<void*>(CSF_ADDR_VT(0x8668B8)); // CGuiRadioButton vtable
     self->field_01e8 = 0;
     return self;
 }

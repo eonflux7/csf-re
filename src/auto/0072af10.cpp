@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __cdecl, CompareStringsIgnoreCase, 0x007B0C41,
+CSF_FUNC(int, __cdecl, __stricmp, 0x007B0C41,
          (const char* first, const char* second));
 
 static int __fastcall CGuiPanel_FindChildById(
@@ -25,7 +25,7 @@ static int __fastcall CGuiPanel_FindChildById(
             (reinterpret_cast<const char* (__fastcall*)(void*, void*)>(
                 CSF_AT(void**, child, 0)[0x74 / 4]))(child, nullptr);
 
-        if (CompareStringsIgnoreCase(childId, id) == 0)
+        if (__stricmp(childId, id) == 0)
         {
             return static_cast<int>(
                 reinterpret_cast<uint32_t*>(self->field_0138)[index]);

@@ -19,7 +19,7 @@ static void __fastcall C_00867444_Destroy(
     C_00867444* self, void* /*edx*/)
 {
     void* owner = CSF_AT(void*, self, 0x08);
-    CSF_AT(void**, self, 0) = reinterpret_cast<void**>(0x00867444);
+    CSF_AT(void**, self, 0) = CSF_VTBL(0x00867444);
     reinterpret_cast<void(__fastcall*)(void*, void*, C_00867444*)>(
         CSF_AT(void**, owner, 0)[0x90 / 4])(owner, nullptr, self);
 
@@ -56,7 +56,7 @@ static void __fastcall C_00867444_Destroy(
     CSF_AT(std::uint32_t, self, 0x20) = 0;
     CSF_AT(std::uint8_t, self, 0x10) = 0;
 
-    CSF_AT(void**, self, 0) = reinterpret_cast<void**>(0x008673FC);
+    CSF_AT(void**, self, 0) = CSF_VTBL(0x008673FC);
     C_0085e65c_InitVtable(reinterpret_cast<C_0085e65c*>(self), nullptr);
 }
 

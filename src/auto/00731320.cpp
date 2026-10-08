@@ -4,9 +4,9 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __fastcall, CGuiListBoxBase_ClearContents, 0x00716320,
+CSF_FUNC(int, __fastcall, CGuiListBoxBase_ClearItems, 0x00716320,
          (CGuiListBoxBase* self, void* edx));
-CSF_FUNC(int, __cdecl, DestroyElementRange, 0x006DEC40,
+CSF_FUNC(int, __cdecl, ResetRecordRange, 0x006DEC40,
          (int* begin, int* end, ...));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_FUNC(int, __fastcall, CGuiListBoxBase_SetSliderLinkedValue, 0x007143D0,
@@ -15,13 +15,13 @@ CSF_FUNC(int, __fastcall, CGuiListBoxBase_SetSliderLinkedValue, 0x007143D0,
 static int __fastcall CGuiTextureListBox_ClearTextureRows(
     CGuiTextureListBox* self, void* /*edx*/)
 {
-    CGuiListBoxBase_ClearContents(self, nullptr);
+    CGuiListBoxBase_ClearItems(self, nullptr);
 
     int* begin = reinterpret_cast<int*>(self->field_01fc);
     auto* storage = reinterpret_cast<std::uint8_t*>(self) + 0x1F8;
 
     if (begin != nullptr) {
-        DestroyElementRange(
+        ResetRecordRange(
             begin, reinterpret_cast<int*>(self->field_0200),
             storage, self);
 

@@ -4,7 +4,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(void*, __cdecl, CopyBytes, 0x007AEE60,
+CSF_FUNC(void*, __cdecl, _memcpy, 0x007AEE60,
          (void* destination, const void* source, std::size_t byteCount));
 
 static std::uint32_t* __fastcall EraseFourByteVectorElement(
@@ -18,7 +18,7 @@ static std::uint32_t* __fastcall EraseFourByteVectorElement(
         (CSF_AT(std::uint32_t, self, 0x08) -
          static_cast<std::uint32_t>(sourceAddress)) & 0xFFFFFFFCu;
 
-    CopyBytes(element, reinterpret_cast<const void*>(sourceAddress), byteCount);
+    _memcpy(element, reinterpret_cast<const void*>(sourceAddress), byteCount);
 
     CSF_AT(std::uint32_t, self, 0x08) =
         CSF_AT(std::uint32_t, self, 0x08) - 4u;

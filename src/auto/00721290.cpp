@@ -6,8 +6,8 @@
 
 CSF_GLOBAL(std::uint32_t, g_GuiEditVtable, 0x00864E18);
 
-CSF_FUNC(int, __cdecl, FreeDebugBlock, 0x00690E60, (void* block));
-CSF_FUNC(int, __fastcall, DestroyGuiControl, 0x00719B10,
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
+CSF_FUNC(int, __fastcall, CGuiControl_Destroy, 0x00719B10,
          (CGuiControl* self, void* edx));
 
 static int __fastcall CGuiEdit_Destroy(CGuiEdit* self, void* /*edx*/)
@@ -35,7 +35,7 @@ static int __fastcall CGuiEdit_Destroy(CGuiEdit* self, void* /*edx*/)
     {
         void* buffer = CSF_AT(void*, self, 0x18C);
         if (buffer)
-            FreeDebugBlock(buffer);
+            Mem_FreeDebug(buffer);
     }
     CSF_AT(std::uint32_t, self, 0x1A0) = 7;
     CSF_AT(std::uint32_t, self, 0x19C) = 0;
@@ -45,7 +45,7 @@ static int __fastcall CGuiEdit_Destroy(CGuiEdit* self, void* /*edx*/)
     {
         void* buffer = CSF_AT(void*, self, 0x170);
         if (buffer)
-            FreeDebugBlock(buffer);
+            Mem_FreeDebug(buffer);
     }
     CSF_AT(std::uint32_t, self, 0x184) = 7;
     CSF_AT(std::uint32_t, self, 0x180) = 0;
@@ -55,13 +55,13 @@ static int __fastcall CGuiEdit_Destroy(CGuiEdit* self, void* /*edx*/)
     {
         void* buffer = CSF_AT(void*, self, 0x154);
         if (buffer)
-            FreeDebugBlock(buffer);
+            Mem_FreeDebug(buffer);
     }
     CSF_AT(std::uint32_t, self, 0x164) = 0;
     CSF_AT(std::uint32_t, self, 0x168) = 7;
     CSF_AT(std::uint16_t, self, 0x154) = 0;
 
-    return DestroyGuiControl(static_cast<CGuiControl*>(self), nullptr);
+    return CGuiControl_Destroy(static_cast<CGuiControl*>(self), nullptr);
 }
 
 HOOK(0x00721290, CGuiEdit_Destroy, "auto");

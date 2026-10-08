@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(int, __cdecl, MenuMpOnline_TestEventEligibility, 0x007A8ED0,
+CSF_FUNC(int, __cdecl, Sub_7A8ED0, 0x007A8ED0,
          (int event));
 CSF_FUNC(int, __cdecl, GetGlobal8B0688, 0x00550CC0, ());
 CSF_GLOBAL(int, g_MpNetworkType, 0x0089A5F0);
@@ -12,7 +12,7 @@ CSF_GLOBAL(std::uint8_t, g_OnlineMatchFlag, 0x008B068C);
 static int __fastcall MenuMpOnline_HandleMatchTransitionEvent(
     void* self, void* /*edx*/, int event, int /*unused*/)
 {
-    int result = MenuMpOnline_TestEventEligibility(event);
+    int result = Sub_7A8ED0(event);
     if (static_cast<std::uint8_t>(result) == 0)
         return result;
 

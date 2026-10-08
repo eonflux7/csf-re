@@ -4,7 +4,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, ReleaseTextureReference, 0x006923C0,
+CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
 CSF_FUNC(const void*, __cdecl, RwImageSetPath, 0x00625270,
          (const void* path));
@@ -17,11 +17,11 @@ static int __fastcall C_00865a10_LoadTextures(
 {
     void* texture = reinterpret_cast<void*>(self->field_0050);
     if (texture)
-        ReleaseTextureReference(static_cast<uint8_t*>(texture) + 4, nullptr);
+        ReleaseObjectReference(static_cast<uint8_t*>(texture) + 4, nullptr);
 
     texture = reinterpret_cast<void*>(self->field_0054);
     if (texture)
-        ReleaseTextureReference(static_cast<uint8_t*>(texture) + 4, nullptr);
+        ReleaseObjectReference(static_cast<uint8_t*>(texture) + 4, nullptr);
 
     RwImageSetPath(CSF_STR(0x00841C64, "Menus/Textures/"));
 

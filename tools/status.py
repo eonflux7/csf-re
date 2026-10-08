@@ -3,7 +3,7 @@
 
 Usage: tools/status.py [--modules]
 """
-import collections, csv, os, re, subprocess, sys
+import json, collections, csv, os, re, subprocess, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -76,6 +76,12 @@ def main():
         print("\n".join(verify.summary_lines()))
     except Exception as e:  # no build dir yet etc.
         print(f"\n== Verification depth: unavailable ({e})")
+    lt = os.path.join(ROOT, "work", "linktest.json")
+    if os.path.exists(lt):  # tools/linktest.py: what is left before the standalone exe links
+        import linktest, time
+        age = (time.time() - os.path.getmtime(lt)) / 3600
+        print(f"\n== Cutover link test ({age:.0f} h ago; `tools/linktest.py` to refresh)")
+        print("".join("  " + l + "\n" for l in linktest.summary(json.load(open(lt))).splitlines()), end="")
     q = os.path.join(ROOT, "queue")
     if os.path.isdir(q):
         items = [f for f in os.listdir(q) if not f.startswith(".")]

@@ -4,16 +4,16 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __fastcall, MenuExtras_CopyStringRange, 0x00403B60,
+CSF_FUNC(void*, __fastcall, MenuExtras_AssignStringRange, 0x00403B60,
          (void* destination, void* edx, const void* source,
           uint32_t start, uint32_t count));
-CSF_FUNC(int, __cdecl, MenuExtras_DestroyThumbnailRange, 0x00546D60,
+CSF_FUNC(int, __cdecl, MenuExtras_ResetStringRange, 0x00546D60,
          (void* begin, void* end, void* container, uint32_t byteOffset));
 CSF_FUNC(int, __fastcall, CMenuExtras_ResetActiveExtra, 0x005477E0,
          (CMenuExtras* self, void* edx));
-CSF_FUNC(int, __cdecl, MenuExtras_FreeContainerStorage, 0x00690E60,
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60,
          (void* block));
-CSF_FUNC(int, __cdecl, MenuExtras_FreeStringStorage, 0x00691110,
+CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110,
          (void* block));
 
 CSF_GLOBAL(const char*, g_MenuExtrasCampaignMenuName, 0x00899AD8);
@@ -74,7 +74,7 @@ static int __fastcall CMenuExtras_HandleBackAction(
         firstString[6] = 15;
         firstString[5] = 0;
         *reinterpret_cast<uint8_t*>(&firstString[1]) = 0;
-        MenuExtras_CopyStringRange(
+        MenuExtras_AssignStringRange(
             firstString, nullptr, record + 4, 0, UINT32_MAX);
 
         void* firstObject = CSF_AT(void*, record, 0x20);
@@ -84,7 +84,7 @@ static int __fastcall CMenuExtras_HandleBackAction(
         secondString[6] = 15;
         secondString[5] = 0;
         *reinterpret_cast<uint8_t*>(&secondString[1]) = 0;
-        MenuExtras_CopyStringRange(
+        MenuExtras_AssignStringRange(
             secondString, nullptr, record + 0x28, 0, UINT32_MAX);
 
         if (firstObject)
@@ -103,7 +103,7 @@ static int __fastcall CMenuExtras_HandleBackAction(
         }
 
         if (secondString[6] >= 16)
-            MenuExtras_FreeStringStorage(
+            Mem_Free(
                 reinterpret_cast<void*>(secondString[1]));
 
         const bool freeFirstString = firstString[6] >= 16;
@@ -112,7 +112,7 @@ static int __fastcall CMenuExtras_HandleBackAction(
         *reinterpret_cast<uint8_t*>(&secondString[1]) = 0;
 
         if (freeFirstString)
-            MenuExtras_FreeStringStorage(
+            Mem_Free(
                 reinterpret_cast<void*>(firstString[1]));
 
         firstString[6] = 15;
@@ -124,14 +124,14 @@ static int __fastcall CMenuExtras_HandleBackAction(
 
     if (self->field_0038)
     {
-        MenuExtras_DestroyThumbnailRange(
+        MenuExtras_ResetStringRange(
             reinterpret_cast<void*>(self->field_0038),
             CSF_AT(void*, self, 0x3C),
             reinterpret_cast<uint8_t*>(self) + 0x34,
             byteOffset);
 
         if (self->field_0038)
-            MenuExtras_FreeContainerStorage(
+            Mem_FreeDebug(
                 reinterpret_cast<void*>(self->field_0038));
     }
 

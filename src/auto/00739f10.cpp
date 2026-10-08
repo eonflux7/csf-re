@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(char, __fastcall, ClearTreeNodes, 0x00739B80,
+CSF_FUNC(char, __fastcall, DestroyTreeBranch, 0x00739B80,
          (void* tree, void* edx, void** block));
 
 static int __fastcall C_00867444_ResetState(
@@ -25,7 +25,7 @@ static int __fastcall C_00867444_ResetState(
 
     auto* sentinel = reinterpret_cast<void*>(self->field_002c);
     void** firstNode = CSF_AT(void**, sentinel, 0x04);
-    ClearTreeNodes(reinterpret_cast<uint8_t*>(self) + 0x28,
+    DestroyTreeBranch(reinterpret_cast<uint8_t*>(self) + 0x28,
                    nullptr, firstNode);
 
     sentinel = reinterpret_cast<void*>(self->field_002c);

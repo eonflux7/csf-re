@@ -17,7 +17,7 @@
 CSF_FUNC(int, __cdecl, GetGlobal8B0688, 0x550CC0, ());
 
 // char __thiscall sub_551B70() -- ret 0
-CSF_FUNC(char, __fastcall, MenuObject_CheckState, 0x551B70, (void* self, void* edx));
+CSF_FUNC(char, __fastcall, MenuMpPause_GetMatchButtonState, 0x551B70, (void* self, void* edx));
 
 static int __cdecl MenuMpCharacterSelect_IsActive()
 {
@@ -25,7 +25,7 @@ static int __cdecl MenuMpCharacterSelect_IsActive()
     if ( GetGlobal8B0688() )                            // call 0x550CC0; test eax,eax
     {
         // call 0x550CC0 again; mov ecx, eax; call 0x551B70
-        if ( MenuObject_CheckState(reinterpret_cast<void*>(GetGlobal8B0688()), nullptr) )
+        if ( MenuMpPause_GetMatchButtonState(reinterpret_cast<void*>(GetGlobal8B0688()), nullptr) )
             return 1;                                   // mov eax, 1
     }
     return result;                                      // xor eax, eax

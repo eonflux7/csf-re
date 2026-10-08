@@ -5,22 +5,22 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-CSF_FUNC(int, __fastcall, ResetControlInput, 0x00717F70,
+CSF_FUNC(int, __fastcall, CGuiControl_ResetInput, 0x00717F70,
          (CGuiControl* self, void* edx));
-CSF_FUNC(int, __fastcall, ForwardEventToFirstEffect, 0x00718C00,
+CSF_FUNC(int, __fastcall, CGuiControl_ForwardEventToFirstEffect, 0x00718C00,
          (CGuiControl* self, void* edx, int event));
 CSF_FUNC(int*, __fastcall, EraseWideStringRange, 0x004F21D0,
          (legacy::wstring* self, void* edx, int* result,
           int first, unsigned int last));
-CSF_FUNC(int, __fastcall, ClearTextAndPositions, 0x007213C0,
+CSF_FUNC(int, __fastcall, CGuiEdit_ClearTextAndPositions, 0x007213C0,
          (CGuiEdit* self, void* edx));
 
 static int __fastcall CGuiEdit_Reset(CGuiEdit* self, void* /*edx*/)
 {
-    ResetControlInput(static_cast<CGuiControl*>(self), nullptr);
+    CGuiControl_ResetInput(static_cast<CGuiControl*>(self), nullptr);
 
     self->field_014c = 1.0f;
-    ForwardEventToFirstEffect(static_cast<CGuiControl*>(self),
+    CGuiControl_ForwardEventToFirstEffect(static_cast<CGuiControl*>(self),
                              nullptr, 0x3F800000);
 
     const std::uint32_t capacity =
@@ -44,7 +44,7 @@ static int __fastcall CGuiEdit_Reset(CGuiEdit* self, void* /*edx*/)
     EraseWideStringRange(&self->m_wtext2, nullptr, &eraseResult,
                         static_cast<int>(first), last);
 
-    ClearTextAndPositions(self, nullptr);
+    CGuiEdit_ClearTextAndPositions(self, nullptr);
 
     void* text = reinterpret_cast<void*>(self->m_pText);
     if (text)

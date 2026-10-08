@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Callee at 0x6683F0: __thiscall with no stack args, returns a sub-object pointer in eax.
-CSF_FUNC(void*, __fastcall, MenuProgress_GetChildFromSelf, 0x6683F0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x6683F0, (void* self, void* edx));
 
 // Dispatches a menu input/command code for a progress bar / text input control.
 // Codes 1, 14 and 28 are forwarded to the object one dword before `self`
@@ -39,7 +39,7 @@ static char __fastcall MenuProgress_HandleInputCode(void* self, void* /*edx*/, i
         result = CSF_AT(uint8_t, reinterpret_cast<void*>(static_cast<uintptr_t>(a3)), 56);
         if (result)
         {
-            void* child = MenuProgress_GetChildFromSelf(self, nullptr);
+            void* child = GetReferencedObject(self, nullptr);
             void** vtbl = *reinterpret_cast<void***>(child);
             result = reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x1c / 4])(child, nullptr);
         }

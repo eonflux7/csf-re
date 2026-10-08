@@ -4,15 +4,15 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __cdecl, FreeDebugStorage, 0x00690E60,
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60,
          (void* storage));
 CSF_FUNC(int, __cdecl, SetAllocationMode, 0x006910B0,
          (int mode));
 CSF_FUNC(int, __cdecl, ResetRecordRange, 0x006DEC40,
          (std::uint32_t* first, std::uint32_t* last, ...));
-CSF_FUNC(int, __fastcall, AssignColumnStorage, 0x00715CD0,
+CSF_FUNC(int, __fastcall, AssignTwelveByteVector, 0x00715CD0,
          (void* self, void* edx, void* source));
-CSF_FUNC(int, __fastcall, AssignAuxiliaryStorage, 0x00715E70,
+CSF_FUNC(int, __fastcall, AssignPointerVector_715E70, 0x00715E70,
          (void* self, void* edx, void* source));
 CSF_FUNC(int, __fastcall, AssignRecordStorage, 0x007172A0,
          (void* self, void* edx, void* source));
@@ -72,7 +72,7 @@ static void* __fastcall CGuiListBoxBase_RebuildStorage(
             CSF_AT(std::uint32_t*, self, 0x190);
         ResetRecordRange(firstRecord, lastRecord, records, self);
         if (CSF_AT(std::uint32_t, self, 0x18C) != 0)
-            FreeDebugStorage(CSF_AT(void*, self, 0x18C));
+            Mem_FreeDebug(CSF_AT(void*, self, 0x18C));
     }
 
     CSF_AT(std::uint32_t, self, 0x18C) = 0;
@@ -97,7 +97,7 @@ static void* __fastcall CGuiListBoxBase_RebuildStorage(
                 void* storage = CSF_AT(void*, fields, 0);
                 if (storage != nullptr)
                 {
-                    FreeDebugStorage(storage);
+                    Mem_FreeDebug(storage);
                     recordBlock = reinterpret_cast<void*>(temporary[1]);
                 }
                 CSF_AT(std::uint32_t, fields, 0) = 0;
@@ -107,7 +107,7 @@ static void* __fastcall CGuiListBoxBase_RebuildStorage(
             }
             while (recordFields - 4 != recordEnd);
         }
-        FreeDebugStorage(recordBlock);
+        Mem_FreeDebug(recordBlock);
     }
 
     temporary[1] = 0;
@@ -115,41 +115,41 @@ static void* __fastcall CGuiListBoxBase_RebuildStorage(
     temporary[3] = 0;
 
     void* columns = reinterpret_cast<std::uint8_t*>(self) + 0x198;
-    AssignColumnStorage(temporary, nullptr, columns);
+    AssignTwelveByteVector(temporary, nullptr, columns);
     if (self->m_columnsBegin != 0)
-        FreeDebugStorage(reinterpret_cast<void*>(self->m_columnsBegin));
+        Mem_FreeDebug(reinterpret_cast<void*>(self->m_columnsBegin));
 
     self->m_columnsBegin = 0;
     self->m_columnsEnd = 0;
     CSF_AT(std::uint32_t, self, 0x1A4) = 0;
     SetAllocationMode(2);
-    AssignColumnStorage(columns, nullptr, temporary);
+    AssignTwelveByteVector(columns, nullptr, temporary);
     SetAllocationMode(0);
 
     if (temporary[1] != 0)
-        FreeDebugStorage(reinterpret_cast<void*>(temporary[1]));
+        Mem_FreeDebug(reinterpret_cast<void*>(temporary[1]));
 
     temporary[1] = 0;
     temporary[2] = 0;
     temporary[3] = 0;
 
     void* auxiliary = reinterpret_cast<std::uint8_t*>(self) + 0x1A8;
-    AssignAuxiliaryStorage(temporary, nullptr, auxiliary);
+    AssignPointerVector_715E70(temporary, nullptr, auxiliary);
     if (CSF_AT(std::uint32_t, self, 0x1AC) != 0)
-        FreeDebugStorage(CSF_AT(void*, self, 0x1AC));
+        Mem_FreeDebug(CSF_AT(void*, self, 0x1AC));
 
     CSF_AT(std::uint32_t, self, 0x1AC) = 0;
     CSF_AT(std::uint32_t, self, 0x1B0) = 0;
     CSF_AT(std::uint32_t, self, 0x1B4) = 0;
     SetAllocationMode(2);
-    AssignAuxiliaryStorage(auxiliary, nullptr, temporary);
+    AssignPointerVector_715E70(auxiliary, nullptr, temporary);
     SetAllocationMode(0);
 
     void* finalBlock = reinterpret_cast<void*>(temporary[1]);
     if (finalBlock != nullptr)
     {
         return reinterpret_cast<void*>(
-            static_cast<std::uintptr_t>(FreeDebugStorage(finalBlock)));
+            static_cast<std::uintptr_t>(Mem_FreeDebug(finalBlock)));
     }
     return finalBlock;
 }

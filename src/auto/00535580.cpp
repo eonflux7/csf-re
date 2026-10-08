@@ -5,7 +5,7 @@
 
 // 0x00535460 - __thiscall(CMenuMpPause* this, uint32_t* a3), ret 4
 // Handles the command payload once it has been recognized.
-CSF_FUNC(void*, __fastcall, CMenuMpPause_DispatchCommand, 0x535460, (CMenuMpPause* self, void* /*edx*/, uint32_t* a3));
+CSF_FUNC(void*, __fastcall, CMenuMpPause_HandleButtonEvent, 0x535460, (CMenuMpPause* self, void* /*edx*/, uint32_t* a3));
 
 // 0x00535580 - __thiscall(CMenuMpPause* this, uint32_t* a3), ret 4
 // Inspects the first dword of the incoming command; only id 13 is forwarded to the
@@ -13,7 +13,7 @@ CSF_FUNC(void*, __fastcall, CMenuMpPause_DispatchCommand, 0x535460, (CMenuMpPaus
 static void* __fastcall CMenuMpPause_HandleCommand(CMenuMpPause* self, void* /*edx*/, uint32_t* a3)
 {
     if (*a3 == 13)
-        return CMenuMpPause_DispatchCommand(self, nullptr, a3);
+        return CMenuMpPause_HandleButtonEvent(self, nullptr, a3);
     return a3;
 }
 

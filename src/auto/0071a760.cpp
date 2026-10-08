@@ -4,9 +4,9 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __cdecl, CompareNamesIgnoringCase, 0x007B0C41,
+CSF_FUNC(int, __cdecl, __stricmp, 0x007B0C41,
          (const char* first, const char* second));
-CSF_FUNC(int, __fastcall, DestroyEntryObject, 0x00694380,
+CSF_FUNC(int, __fastcall, MenuExtras_CloseFile, 0x00694380,
          (void* self, void* edx));
 CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
 
@@ -30,7 +30,7 @@ static int __fastcall C_00864508_ReleaseNamedEntryObject(
                   reinterpret_cast<std::uint8_t*>(entry) + 0x20)
             : CSF_AT(const char*, entry, 0x20);
 
-        result = CompareNamesIgnoringCase(entryName, name);
+        result = __stricmp(entryName, name);
         if (result != 0)
             continue;
 
@@ -41,7 +41,7 @@ static int __fastcall C_00864508_ReleaseNamedEntryObject(
 
         if (object)
         {
-            DestroyEntryObject(object, nullptr);
+            MenuExtras_CloseFile(object, nullptr);
             Mem_Free(object);
 
             entry = reinterpret_cast<void*>(self->field_0014 + matchedOffset);

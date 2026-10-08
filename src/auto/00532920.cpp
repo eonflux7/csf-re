@@ -4,8 +4,8 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(void*, __cdecl, GetGlobalValue, 0x00521BB0, ());
-CSF_FUNC(void, __fastcall, GlobalValueObj_Refresh, 0x00521DE0, (void* self, void* edx));
+CSF_FUNC(void*, __cdecl, GetGlobalValue_521BB0, 0x00521BB0, ());
+CSF_FUNC(void, __fastcall, MenuProgressInput_UpdateGlobalState, 0x00521DE0, (void* self, void* edx));
 CSF_FUNC(void*, __fastcall, CMenuMpServerInfo_ApplyReadyState, 0x005322A0, (CMenuMpServerInfo* self, void* edx, char a2));
 
 static int __fastcall CMenuMpServerInfo_SetServerEntryAndRefresh(CMenuMpServerInfo* self, void* /*edx*/, int a2, int /*a3, unused*/)
@@ -13,8 +13,8 @@ static int __fastcall CMenuMpServerInfo_SetServerEntryAndRefresh(CMenuMpServerIn
     self->field_01f4 = 0;
     self->field_01e8 = static_cast<uint32_t>(a2);
 
-    void* globalValueObj = GetGlobalValue();
-    GlobalValueObj_Refresh(globalValueObj, nullptr);
+    void* globalValueObj = GetGlobalValue_521BB0();
+    MenuProgressInput_UpdateGlobalState(globalValueObj, nullptr);
 
     // Virtual call on the server data object, vtable slot 0x16C / 4.
     void* dataObj = reinterpret_cast<void*>(self->field_01ec);

@@ -5,7 +5,7 @@
 #include "globals.h"
 
 // Original helpers, bound by address.
-CSF_FUNC(uint8_t*, __cdecl, GetGlobalValue, 0x0075FDF0, ());
+CSF_FUNC(uint8_t*, __cdecl, GetGlobalValue_75FDF0, 0x0075FDF0, ());
 CSF_FUNC(void*, __cdecl, InitStringFromLiteral, 0x00692720, (void* returnSlot, const char* text, int count));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
@@ -31,7 +31,7 @@ static uint8_t* __fastcall CMenuGameOptions_SendOkQuestionGE03(CMenuGameOptions*
     self->field_0028 = reinterpret_cast<uint32_t>(result);
 
     if (result != nullptr) {
-        result = GetGlobalValue();
+        result = GetGlobalValue_75FDF0();
         if (result[204] == 0) {
             // Object returned by the vtable slot at +0x110 on the button.
             void* buttonObject = reinterpret_cast<void*>(self->field_0028);

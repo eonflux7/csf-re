@@ -3,7 +3,7 @@
 #include "hook.h"
 
 // Concurrency runtime helpers bound by address.
-CSF_FUNC(int, __cdecl, Concurrency_GetGlobalState, 0x0050D190, ());
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 CSF_FUNC(int, __fastcall, SchedulerBase_GetSchedulerProxy, 0x00734A10, (void* self, void* edx));
 
 // Original: __thiscall (this in ecx, one stack arg), ret 4.
@@ -12,7 +12,7 @@ CSF_FUNC(int, __fastcall, SchedulerBase_GetSchedulerProxy, 0x00734A10, (void* se
 static int __fastcall MenuMpOnline_CheckSchedulerProxyAndDispatch(uint8_t* self, void* /*edx*/, int /*unusedArg*/)
 {
     int result = SchedulerBase_GetSchedulerProxy(
-        reinterpret_cast<void*>(Concurrency_GetGlobalState()), nullptr);
+        reinterpret_cast<void*>(GetGlobalState_50D190()), nullptr);
 
     if (result == 0x1000)
     {
@@ -22,7 +22,7 @@ static int __fastcall MenuMpOnline_CheckSchedulerProxyAndDispatch(uint8_t* self,
     }
 
     result = SchedulerBase_GetSchedulerProxy(
-        reinterpret_cast<void*>(Concurrency_GetGlobalState()), nullptr);
+        reinterpret_cast<void*>(GetGlobalState_50D190()), nullptr);
 
     if (result == 0x800)
     {

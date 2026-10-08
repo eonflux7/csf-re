@@ -11,7 +11,7 @@
 //   arg4 = self  (incoming ecx value)
 //   arg5 = a3    (pushed first)
 // ---------------------------------------------------------------------------
-CSF_FUNC(int, __cdecl, ForwardedCall, 0x549BA0,
+CSF_FUNC(int, __cdecl, MenuVideoOptions_CopyElementRange, 0x549BA0,
          (int a1, int a2, int a3, void* self, int a5));
 
 // ---------------------------------------------------------------------------
@@ -22,12 +22,12 @@ CSF_FUNC(int, __cdecl, ForwardedCall, 0x549BA0,
 // is reproduced exactly.
 //   entry : ecx = self, stack args a1, a2, a3
 //   pushes: a3, self, a3, a2, a1
-//   call  : ForwardedCall(a1, a2, a3, self, a3)
+//   call  : MenuVideoOptions_CopyElementRange(a1, a2, a3, self, a3)
 // ---------------------------------------------------------------------------
 static int __fastcall MenuVideoOptions_ForwardCall(void* self, void* /*edx*/,
                                                    int a1, int a2, int a3)
 {
-    return ForwardedCall(a1, a2, a3, self, a3);
+    return MenuVideoOptions_CopyElementRange(a1, a2, a3, self, a3);
 }
 
 HOOK(0x549EE0, MenuVideoOptions_ForwardCall, "auto");

@@ -13,7 +13,7 @@ static CSF_FUNC(std::uint32_t, __fastcall, InsertQueuedObjectChange, 0x0071B9C0,
     (void* self, void* edx, char* position, std::uint32_t count,
      std::uint32_t* source));
 
-static CSF_FUNC(void*, __cdecl, CopyMemory, 0x007AEE60,
+static CSF_FUNC(void*, __cdecl, _memcpy, 0x007AEE60,
     (void* destination, const void* source, std::size_t size));
 
 static std::uint32_t __fastcall C_00864508_QueueObjectChange(
@@ -163,7 +163,7 @@ static std::uint32_t __fastcall C_00864508_QueueObjectChange(
         static_cast<std::uint32_t>(
             static_cast<std::int32_t>(end - source) >> 2) << 2;
 
-    CopyMemory(reinterpret_cast<void*>(destination),
+    _memcpy(reinterpret_cast<void*>(destination),
                reinterpret_cast<const void*>(source), bytes);
 
     const std::uint32_t result = self->field_0028 - 4;

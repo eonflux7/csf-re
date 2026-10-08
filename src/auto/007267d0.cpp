@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(void*, __cdecl, AllocateMemory, 0x006910F0, (std::size_t size));
+CSF_FUNC(void*, __cdecl, Mem_Alloc, 0x006910F0, (std::size_t size));
 CSF_FUNC(void*, __fastcall, InitializeResourceWrapper, 0x00737A70,
          (void* self, void* edx, C_008655e8* owner));
 CSF_FUNC(int, __cdecl, RwTextureDestroy, 0x006317E0, (int texture));
@@ -21,7 +21,7 @@ static int __fastcall C_008655e8_CreateTextureWrapper(
     if (!texture)
         return 0;
 
-    void* memory = AllocateMemory(0x90);
+    void* memory = Mem_Alloc(0x90);
     void* wrapper = nullptr;
     if (memory)
         wrapper = InitializeResourceWrapper(memory, nullptr, self);

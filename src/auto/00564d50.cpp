@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Callee: __cdecl, no arguments, returns the global scheduler state object.
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x0050D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 
 // Callee: __thiscall (ecx = scheduler base), no stack arguments, returns the proxy kind.
 CSF_FUNC(int, __fastcall, SchedulerBase_GetSchedulerProxy, 0x00734A10, (void* self, void* edx));
@@ -21,7 +21,7 @@ CSF_FUNC(int, __fastcall, SchedulerBase_GetSchedulerProxy, 0x00734A10, (void* se
 // Any other kind is returned unchanged.
 static int __fastcall MenuAccounts_DispatchByProxyKind(void* self, void* /*edx*/, int /*unusedStackArg*/)
 {
-    void* schedulerBase = GetGlobalState();
+    void* schedulerBase = GetGlobalState_50D190();
     int proxyKind = SchedulerBase_GetSchedulerProxy(schedulerBase, nullptr);
 
     if (proxyKind == 4)

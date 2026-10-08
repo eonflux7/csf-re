@@ -3,8 +3,8 @@
 #include "hook.h"
 
 // Original engine helpers, bound by address.
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x0050D190, ());
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x0075FDF0, ());
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_75FDF0, 0x0075FDF0, ());
 CSF_FUNC(int, __cdecl, GetGlobal8afc78, 0x0042D6D0, ());
 CSF_FUNC(char, __fastcall, CMenuControls_RunActionChecked, 0x0042CDA0, (int** self, void* edx));
 CSF_FUNC(int, __fastcall, Global8afc78_SetEnabled, 0x0042DFF0, (uint32_t* self, void* edx, char enabled));
@@ -14,11 +14,11 @@ CSF_FUNC(int, __fastcall, Global8afc78_SetEnabled, 0x0042DFF0, (uint32_t* self, 
 // On success, forwards a cleared flag to the object returned by GetGlobal8afc78.
 static char __fastcall CMenuControls_TryActivate(int** self, void* /*edx*/)
 {
-    uint8_t* globalState = reinterpret_cast<uint8_t*>(GetGlobalState());
+    uint8_t* globalState = reinterpret_cast<uint8_t*>(GetGlobalState_50D190());
     if (CSF_AT(uint8_t, globalState, 0xD0))
         return 0;
 
-    uint8_t* globalValue = reinterpret_cast<uint8_t*>(GetGlobalValue());
+    uint8_t* globalValue = reinterpret_cast<uint8_t*>(GetGlobalValue_75FDF0());
     if (!CSF_AT(uint8_t, globalValue, 0xCC))
         return 0;
 

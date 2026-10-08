@@ -4,7 +4,7 @@
 
 // Parent-object handler invoked when exactly one pending action flag is set.
 // Original: 0x528E70, __thiscall, no stack args (ret 0).
-CSF_FUNC(int, __fastcall, MenuMessageBox_InvokeParentHandler, 0x528E70, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, CMenuMessageBox_MarkCurrentButtonFlag, 0x528E70, (void* self, void* edx));
 
 // Clears the pending-flag dirty byte at +0x7D and, when the pending flag word
 // (+0x78) is exactly one of the single bits 0x1..0x400, dispatches to the
@@ -25,7 +25,7 @@ static char __fastcall MenuMessageBox_ProcessSingleFlagCommand(uint8_t* self, vo
     {
         if (pendingFlags == singleBit)
         {
-            return static_cast<char>(MenuMessageBox_InvokeParentHandler(self - 4, nullptr));
+            return static_cast<char>(CMenuMessageBox_MarkCurrentButtonFlag(self - 4, nullptr));
         }
     }
 

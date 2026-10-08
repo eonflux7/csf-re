@@ -4,14 +4,14 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int**, __fastcall, FindNodeByKey, 0x00739FA0,
+CSF_FUNC(int**, __fastcall, FindUnsignedWordTreeEntry, 0x00739FA0,
          (int** container, void* edx, int** result, uint16_t* key));
 
 static int* __fastcall C_00867444_FindValueByKey(
     C_00867444* self, void* /*edx*/, int16_t key)
 {
     int* result;
-    int* node = *FindNodeByKey(
+    int* node = *FindUnsignedWordTreeEntry(
         reinterpret_cast<int**>(reinterpret_cast<uint8_t*>(self) + 0x28),
         nullptr,
         &result,

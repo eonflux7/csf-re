@@ -3,7 +3,7 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(std::uint32_t, __fastcall, AppendListenerEntry, 0x0071A100,
+CSF_FUNC(std::uint32_t, __fastcall, AppendFourByteElement_71A100, 0x0071A100,
          (void* self, void* edx, std::uint32_t* listener));
 
 static void __fastcall CGuiControl_AddListener(
@@ -33,7 +33,7 @@ static void __fastcall CGuiControl_AddListener(
         }
     }
 
-    AppendListenerEntry(
+    AppendFourByteElement_71A100(
         reinterpret_cast<std::uint8_t*>(self) + 0xFC, nullptr, &listener);
 }
 

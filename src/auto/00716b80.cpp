@@ -8,7 +8,7 @@ CSF_FUNC(int, __fastcall, CGuiListBoxBase_ComputeScrollRange, 0x00714100,
          (CGuiListBoxBase* self, void* edx));
 CSF_FUNC(int, __fastcall, CGuiListBoxBase_ClearStorageAndSendEvent, 0x00715660,
          (CGuiListBoxBase* self, void* edx));
-CSF_FUNC(void, __fastcall, CGuiListBoxBase_SelectItem, 0x00716A60,
+CSF_FUNC(void, __fastcall, CGuiListBoxBase_AddSelectedItem, 0x00716A60,
          (CGuiListBoxBase* self, void* edx, int index));
 
 static int __fastcall CGuiListBoxBase_SelectPreviousItem(
@@ -60,7 +60,7 @@ static int __fastcall CGuiListBoxBase_SelectPreviousItem(
                 self->field_0168 -= 1u;
             }
 
-            CGuiListBoxBase_SelectItem(self, nullptr, precedingIndex);
+            CGuiListBoxBase_AddSelectedItem(self, nullptr, precedingIndex);
         }
         else if (self->m_bCycle != 0)
         {
@@ -107,7 +107,7 @@ static int __fastcall CGuiListBoxBase_SelectPreviousItem(
             const int currentCount =
                 reinterpret_cast<int(__fastcall*)(void*, void*)>(
                     CSF_AT(void**, self, 0)[0x274 / 4])(self, nullptr);
-            CGuiListBoxBase_SelectItem(
+            CGuiListBoxBase_AddSelectedItem(
                 self, nullptr,
                 static_cast<int32_t>(
                     static_cast<uint32_t>(currentCount) - 1u));
@@ -115,7 +115,7 @@ static int __fastcall CGuiListBoxBase_SelectPreviousItem(
     }
     else
     {
-        CGuiListBoxBase_SelectItem(self, nullptr, 0);
+        CGuiListBoxBase_AddSelectedItem(self, nullptr, 0);
     }
 
     selectionBegin = self->field_01ac;

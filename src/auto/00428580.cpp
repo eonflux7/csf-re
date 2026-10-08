@@ -14,7 +14,7 @@
 // Sets the object's vtable pointer to 0x00830030 (constructor-style init).
 static void __fastcall C_00830030_InitVtbl(C_00830030* self, void* /*edx*/)
 {
-    self->vtbl = reinterpret_cast<void**>(0x00830030);
+    self->vtbl = CSF_VTBL(0x00830030);
 }
 
 HOOK(0x428580, C_00830030_InitVtbl, "auto");

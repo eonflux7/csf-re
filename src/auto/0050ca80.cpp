@@ -11,7 +11,7 @@
 //   arg4 = self   (the incoming ecx value)
 //   arg5 = a3     (pushed first)
 // ---------------------------------------------------------------------------
-CSF_FUNC(int, __cdecl, ForwardedCall, 0x50C8E0,
+CSF_FUNC(int, __cdecl, MenuManager_CopyDwordRangeIfNotNull, 0x50C8E0,
          (int a1, int a2, int a3, int a4, int a5));
 
 // ---------------------------------------------------------------------------
@@ -21,12 +21,12 @@ CSF_FUNC(int, __cdecl, ForwardedCall, 0x50C8E0,
 // the original (ret 0xC) is reproduced exactly.
 //   entry : ecx = self, stack args a1, a2, a3
 //   pushes: a3, self, a3, a2, a1
-//   call  : ForwardedCall(a1, a2, a3, self, a3)
+//   call  : MenuManager_CopyDwordRangeIfNotNull(a1, a2, a3, self, a3)
 // ---------------------------------------------------------------------------
 static int __fastcall ForwardTo50C8E0(int self, void* /*edx*/,
                                       int a1, int a2, int a3)
 {
-    return ForwardedCall(a1, a2, a3, self, a3);
+    return MenuManager_CopyDwordRangeIfNotNull(a1, a2, a3, self, a3);
 }
 
 HOOK(0x50CA80, ForwardTo50C8E0, "auto");

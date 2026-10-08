@@ -5,7 +5,7 @@
 
 CSF_GLOBAL(void*, g_CGuiSliderVtable, 0x00865E38);
 
-CSF_FUNC(int, __fastcall, CGuiControl_Dtor, 0x00719B10,
+CSF_FUNC(int, __fastcall, CGuiControl_Destroy, 0x00719B10,
          (CGuiControl* self, void* edx));
 
 static int __fastcall CGuiSlider_Destroy(
@@ -40,7 +40,7 @@ static int __fastcall CGuiSlider_Destroy(
         self->m_pThumb = 0;
     }
 
-    return CGuiControl_Dtor(
+    return CGuiControl_Destroy(
         reinterpret_cast<CGuiControl*>(self), nullptr);
 }
 

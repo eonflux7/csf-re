@@ -11,7 +11,7 @@
 //   arg4 = self  (incoming ecx value)
 //   arg5 = a3    (pushed first)
 // ---------------------------------------------------------------------------
-CSF_FUNC(void*, __cdecl, ForwardedCall, 0x546DF0,
+CSF_FUNC(void*, __cdecl, CopyConstructRecordRange_546DF0, 0x546DF0,
          (void* a1, void* a2, void* a3, void* a4, void* a5));
 
 // ---------------------------------------------------------------------------
@@ -22,12 +22,12 @@ CSF_FUNC(void*, __cdecl, ForwardedCall, 0x546DF0,
 // It duplicates the third stack argument and splices the incoming ecx value
 // between the first and second arguments:
 //   pushes: a3, self, a3, a2, a1
-//   call  : ForwardedCall(a1, a2, a3, self, a3)
+//   call  : CopyConstructRecordRange_546DF0(a1, a2, a3, self, a3)
 // ---------------------------------------------------------------------------
 static void* __fastcall ForwardWithSelfInserted(void* self, void* /*edx*/,
                                                 void* a1, void* a2, void* a3)
 {
-    return ForwardedCall(a1, a2, a3, self, a3);
+    return CopyConstructRecordRange_546DF0(a1, a2, a3, self, a3);
 }
 
 HOOK(0x546FB0, ForwardWithSelfInserted, "auto");

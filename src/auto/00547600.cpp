@@ -7,19 +7,19 @@
 // 'context' as the allocator/callback object.  The original is a __thiscall
 // (ecx = context, stack = element, source); declared as __fastcall so the
 // register arguments line up.
-CSF_FUNC(std::uint32_t*, __fastcall, ConstructStringElement, 0x00547090,
+CSF_FUNC(std::uint32_t*, __fastcall, MenuExtras_InitStringFromPair, 0x00547090,
          (void* context, void* edx, std::uint32_t* element, std::uint32_t* source));
 
 // Destroys one already-constructed element (__thiscall, ecx = context).
-CSF_FUNC(int, __fastcall, DestroyStringElement, 0x005466C0,
+CSF_FUNC(int, __fastcall, ResetStringStorage_5466C0, 0x005466C0,
          (void* context, void* edx, std::uint32_t* element));
 
 // Rethrows the in-flight exception (MSVC _CxxThrowException).
-CSF_FUNC(void, __stdcall, RethrowGameException, 0x007AF666,
+CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInformation));
 
 // MSVC C++ frame handler referenced by the exception-handler thunk.
-CSF_FUNC(int, __cdecl, HandleGameCppException, 0x007AF226,
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226,
          (void* exceptionRecord, void* frame, void* context, void* dispatcher));
 
 // Exception-type data loaded by the exception-handler thunk before jumping
@@ -42,7 +42,7 @@ static std::uint32_t* __cdecl MenuExtras_ConstructStringElementArray(
     {
         while (count != 0)
         {
-            result = ConstructStringElement(context, nullptr, currentElement, source);
+            result = MenuExtras_InitStringFromPair(context, nullptr, currentElement, source);
             --count;
             currentElement += 8; // element size == 0x20 bytes
         }
@@ -52,11 +52,11 @@ static std::uint32_t* __cdecl MenuExtras_ConstructStringElementArray(
         std::uint32_t* element = destination;
         while (element != currentElement)
         {
-            DestroyStringElement(context, nullptr, element);
+            ResetStringStorage_5466C0(context, nullptr, element);
             element += 8;
         }
 
-        RethrowGameException(nullptr, nullptr);
+        RethrowCppException(nullptr, nullptr);
         __builtin_unreachable();
     }
 

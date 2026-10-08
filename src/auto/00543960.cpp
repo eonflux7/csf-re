@@ -9,12 +9,12 @@
 // GetValue8B055C, which leaves it on the stack for 4F9B00 to pop. The C++ version
 // passes a3 directly as the float argument, which is the same effect.
 
-CSF_FUNC(unsigned int, __cdecl, ControlFp, 0x007B070F, (unsigned int newValue, unsigned int mask));
+CSF_FUNC(unsigned int, __cdecl, __controlfp, 0x007B070F, (unsigned int newValue, unsigned int mask));
 CSF_FUNC(void, __fastcall, MenuControls_InitDisplayState, 0x00536B90, (void* self, void* edx, int a3));
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x00518A50, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_518A50, 0x00518A50, ());
 CSF_FUNC(int, __fastcall, GetGlobalValueTarget_518A60, 0x00518A60, (void* self, void* edx));
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B0584, 0x00518FD0, ());
-CSF_FUNC(void, __fastcall, NullSub_506AC0, 0x00506AC0, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, Nullsub_506AC0, 0x00506AC0, (void* self, void* edx));
 CSF_FUNC(int, __cdecl, GetValue8B0588, 0x00519040, ());
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B0560, 0x004FA6B0, ());
 CSF_FUNC(char, __fastcall, ApplyGlobalValue_4FA7C0, 0x004FA7C0, (void* self, void* edx));
@@ -23,17 +23,17 @@ CSF_FUNC(char, __fastcall, ApplyFloatValue_4F9B00, 0x004F9B00, (void* self, void
 
 static char __fastcall CMenuControls_ApplyValueAndRefresh(void* self, void* edx, int a3)
 {
-    ControlFp(0x10000u, 0x30300u);
+    __controlfp(0x10000u, 0x30300u);
     MenuControls_InitDisplayState(self, edx, a3);
 
-    void* globalObject = reinterpret_cast<void*>(GetGlobalValue());
+    void* globalObject = reinterpret_cast<void*>(GetGlobalValue_518A50());
     GetGlobalValueTarget_518A60(globalObject, nullptr);
 
     void* displayObject = reinterpret_cast<void*>(GetGlobalValue_8B0584());
-    NullSub_506AC0(displayObject, nullptr);
+    Nullsub_506AC0(displayObject, nullptr);
 
     void* secondaryObject = reinterpret_cast<void*>(GetValue8B0588());
-    NullSub_506AC0(secondaryObject, nullptr);
+    Nullsub_506AC0(secondaryObject, nullptr);
 
     void* tertiaryObject = reinterpret_cast<void*>(GetGlobalValue_8B0560());
     ApplyGlobalValue_4FA7C0(tertiaryObject, nullptr);

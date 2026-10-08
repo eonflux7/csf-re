@@ -12,7 +12,7 @@ CSF_FUNC(int, __fastcall, Sub_68F650, 0x68F650, (void* self, void* edx, float a1
 // exact __thiscall signature (written as __fastcall), so it pops the 4-byte argument.
 static int __fastcall ForwardFloatToGlobalHandler(void* /*self*/, void* /*edx*/, float a1)
 {
-    return Sub_68F650(reinterpret_cast<void*>(static_cast<uintptr_t>(0x8BABFC)), nullptr, a1);
+    return Sub_68F650(reinterpret_cast<void*>(static_cast<uintptr_t>(CSF_ADDR_DATA(0x8BABFC))), nullptr, a1);
 }
 
 HOOK(0x73C660, ForwardFloatToGlobalHandler, "auto");

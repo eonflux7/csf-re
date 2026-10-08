@@ -4,14 +4,14 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __fastcall, IsSelectableAndNotType10, 0x00718700,
+CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x00718700,
          (CGuiEdit* self, void* edx));
 
 // This helper additionally consumes the incoming EBX implicitly.
 CSF_FUNC(char, __fastcall, IsEditKeyAllowed, 0x00722880,
          (CGuiEdit* self, void* edx, int key));
 
-CSF_FUNC(char, __fastcall, HandleSelectionInput, 0x00718510,
+CSF_FUNC(char, __fastcall, CGuiControl_HandleSelectionInput_718510, 0x00718510,
          (CGuiEdit* self, void* edx, int key, int flags));
 
 // Keep this wrapper unoptimized to preserve the implicit EBX input.
@@ -25,7 +25,7 @@ static __attribute__((optnone)) char __fastcall CGuiEdit_OnKeyDownStoreKeyAlt(
         return enabled;
 
     const char selectable = static_cast<char>(
-        IsSelectableAndNotType10(self, nullptr));
+        CGuiSlider_IsSelectableAndNotType10(self, nullptr));
     if (selectable == 0)
         return selectable;
 
@@ -42,7 +42,7 @@ static __attribute__((optnone)) char __fastcall CGuiEdit_OnKeyDownStoreKeyAlt(
         }
     }
 
-    return HandleSelectionInput(self, nullptr, key, flags);
+    return CGuiControl_HandleSelectionInput_718510(self, nullptr, key, flags);
 }
 
 HOOK(0x007229C0, CGuiEdit_OnKeyDownStoreKeyAlt, "auto");

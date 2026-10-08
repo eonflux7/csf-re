@@ -17,7 +17,7 @@ static CMenuLoadGameInGame* __fastcall CMenuLoadGameInGame_Construct(
     CMenuLoadGameInGame* self, void* /*edx*/, int a2)
 {
   CMenuLoadGame_Construct(self, nullptr, a2);
-  CSF_AT(void*, self, 0) = reinterpret_cast<void*>(0x00842328);
+  CSF_AT(void*, self, 0) = reinterpret_cast<void*>(CSF_ADDR_VT(0x00842328));
   self->field_0004 = 0x008422D8;
   return self;
 }

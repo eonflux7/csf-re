@@ -5,9 +5,9 @@
 #include "legacy/string.h"
 #include "globals.h"
 
-CSF_FUNC(int, __fastcall, ConstructGuiControl, 0x0071A010,
+CSF_FUNC(int, __fastcall, CGuiControl_Construct_71A010, 0x0071A010,
          (CGuiControl* self, void* edx, int argument1, int argument2));
-CSF_FUNC(legacy::string*, __fastcall, AssignStringRange, 0x00429B60,
+CSF_FUNC(legacy::string*, __fastcall, AssignStringRange_429B60, 0x00429B60,
          (legacy::string* self, void* edx,
           const char* text, unsigned int length));
 
@@ -16,7 +16,7 @@ CSF_GLOBAL(std::uint32_t, g_PanelVtable, 0x00865B40);
 static CGuiPanel* __fastcall CGuiPanel_Construct(
     CGuiPanel* self, void* /*edx*/, int argument1, int argument2)
 {
-    ConstructGuiControl(self, nullptr, argument1, argument2);
+    CGuiControl_Construct_71A010(self, nullptr, argument1, argument2);
 
     CSF_AT(void**, self, 0) =
         reinterpret_cast<void**>(&g_PanelVtable);
@@ -28,7 +28,7 @@ static CGuiPanel* __fastcall CGuiPanel_Construct(
     CSF_AT(std::uint32_t, self, 0x170) = 0;
     CSF_AT(std::uint8_t, self, 0x160) = 0;
     self->field_0158 = 0;
-    AssignStringRange(
+    AssignStringRange_429B60(
         &self->m_str15C, nullptr, CSF_STR(0x0082E65C, ""), 0);
 
     self->field_0188 = 1;

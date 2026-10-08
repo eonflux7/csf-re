@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __cdecl, CompareNamesIgnoreCase, 0x007B0C41,
+CSF_FUNC(int, __cdecl, __stricmp, 0x007B0C41,
          (const char* left, const char* right));
 
 static int __fastcall C_00864508_FindValueByName(
@@ -33,7 +33,7 @@ static int __fastcall C_00864508_FindValueByName(
         else
             entryName = CSF_AT(const char*, entry, 0x04);
 
-        if (CompareNamesIgnoreCase(entryName, name) == 0)
+        if (__stricmp(entryName, name) == 0)
         {
             // The comparison may change the entry array; reload its base.
             auto* matchedEntry = reinterpret_cast<uint8_t*>(

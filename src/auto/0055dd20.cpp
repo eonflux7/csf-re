@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Callee: global state accessor (__cdecl, no args).
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x006A6D70, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_6A6D70, 0x006A6D70, ());
 
 // Data referenced by the original.
 CSF_GLOBAL(const char*, g_pszMenu_P_MeJuMP, 0x00899AF8);
@@ -28,12 +28,12 @@ using VirtListRefreshVoid = void (__fastcall*)(void* self, void* edx, CMenuPlaye
 static int __fastcall CMenuPlayerList_ResetAndShowDefaultLabel(CMenuPlayerList* self, void* /*edx*/)
 {
     // Optional: if global state exists and its child reports true, clear that child's state.
-    if (GetGlobalState())
+    if (GetGlobalState_6A6D70())
     {
-        void* stateA = GetGlobalState();
+        void* stateA = GetGlobalState_6A6D70();
         if (reinterpret_cast<VirtNoArgRet>(CSF_AT(void**, stateA, 0)[0xF4 / 4])(stateA, nullptr))
         {
-            void* stateB = GetGlobalState();
+            void* stateB = GetGlobalState_6A6D70();
             void* child = reinterpret_cast<VirtNoArgRet>(CSF_AT(void**, stateB, 0)[0xF4 / 4])(stateB, nullptr);
             reinterpret_cast<VirtIntArgVoid>(CSF_AT(void**, child, 0)[0x18 / 4])(child, nullptr, 0);
         }

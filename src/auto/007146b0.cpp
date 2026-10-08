@@ -4,13 +4,13 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_CheckInteractionState, 0x00718700,
+CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x00718700,
          (CGuiControl* self, void* edx));
-CSF_FUNC(int, __fastcall, CGuiControl_Activate, 0x00718660,
+CSF_FUNC(int, __fastcall, CGuiSlider_ForwardSelfToParent, 0x00718660,
          (CGuiControl* self, void* edx));
 
 // Preserve the complete EAX value forwarded by the original target.
-CSF_FUNC(int, __fastcall, CGuiControl_ProcessInput, 0x00718360,
+CSF_FUNC(int, __fastcall, CGuiControl_ProcessSelectionInput_718360, 0x00718360,
          (CGuiControl* self, void* edx, int input));
 
 static int __fastcall CGuiListBoxBase_ProcessInput(
@@ -39,7 +39,7 @@ static int __fastcall CGuiListBoxBase_ProcessInput(
         corner[0] = right;
 
         if (static_cast<std::uint8_t>(
-                CGuiControl_CheckInteractionState(self, nullptr)) != 0)
+                CGuiSlider_IsSelectableAndNotType10(self, nullptr)) != 0)
         {
             slider = reinterpret_cast<void*>(self->m_pSlider);
             if (((std::uint8_t(__fastcall*)(
@@ -51,13 +51,13 @@ static int __fastcall CGuiListBoxBase_ProcessInput(
                         CSF_AT(void**, self, 0)[0xBC / 4])(
                             self, nullptr) == 0)
                 {
-                    CGuiControl_Activate(self, nullptr);
+                    CGuiSlider_ForwardSelfToParent(self, nullptr);
                 }
             }
         }
     }
 
-    return CGuiControl_ProcessInput(self, nullptr, input);
+    return CGuiControl_ProcessSelectionInput_718360(self, nullptr, input);
 }
 
 HOOK(0x007146B0, CGuiListBoxBase_ProcessInput, "auto");

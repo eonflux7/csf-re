@@ -3,7 +3,7 @@
 #include "globals.h"
 #include "hook.h"
 
-CSF_FUNC(int, __cdecl, FreeDebugStorage, 0x00690E60, (void* block));
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 // 0x6C8D30 is invoked with ecx = this (mov ecx, esi before the call), so bind
 // it as a __thiscall-style callee (self in ecx, two stack args, ret 8).
 CSF_FUNC(void*, __fastcall, ReleaseVectorStorage, 0x006C8D30,
@@ -14,7 +14,7 @@ CSF_FUNC(int, __fastcall, ForwardToDispatchDeferred, 0x00730980,
          (void* self, void* edx, int first, int last, int destination));
 CSF_FUNC(char, __fastcall, AllocateVectorStorage, 0x00730B40,
          (void* self, void* edx, int count));
-CSF_FUNC(void*, __cdecl, CopyMemory, 0x007AEE60,
+CSF_FUNC(void*, __cdecl, _memcpy, 0x007AEE60,
          (void* destination, const void* source, std::size_t bytes));
 
 static uint32_t GetWordDistance(uint32_t end, uint32_t begin)
@@ -40,7 +40,7 @@ static void* __fastcall AssignDwordVector(void* self, void* /*edx*/,
     if (sourceCount == 0) {
         const uint32_t storage = CSF_AT(uint32_t, self, 0x04);
         if (storage != 0)
-            FreeDebugStorage(reinterpret_cast<void*>(storage));
+            Mem_FreeDebug(reinterpret_cast<void*>(storage));
 
         CSF_AT(uint32_t, self, 0x04) = 0;
         CSF_AT(uint32_t, self, 0x08) = 0;
@@ -57,7 +57,7 @@ static void* __fastcall AssignDwordVector(void* self, void* /*edx*/,
         // Enough room already: plain memcpy of the whole source range.
         const uint32_t copyBegin = CSF_AT(uint32_t, source, 0x04);
         const uint32_t copyBytes = GetWordDistance(sourceEnd, copyBegin) << 2;
-        CopyMemory(reinterpret_cast<void*>(selfBegin),
+        _memcpy(reinterpret_cast<void*>(selfBegin),
                    reinterpret_cast<const void*>(copyBegin),
                    static_cast<std::size_t>(copyBytes));
 

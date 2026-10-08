@@ -10,16 +10,16 @@
 CSF_FUNC(const char*, __cdecl, GetTrucoString, 0x428B10, ());
 CSF_FUNC(unsigned int, __cdecl, CopyTrucoStringToWide, 0x695590, (const char* src, uint16_t* dst, int maxCount));
 CSF_FUNC(int, __cdecl, CompareWideStrings, 0x6957B0, (uint16_t* a, uint16_t* b));
-CSF_FUNC(int, __cdecl, GetOwnerGlobal, 0x506BD0, ());
-CSF_FUNC(int, __cdecl, GetPlayerStateGlobal, 0x756A10, ());
-CSF_FUNC(int, __cdecl, GetActiveSessionGlobal, 0x75FDF0, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_8B056C, 0x506BD0, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_8BC1E0, 0x756A10, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_75FDF0, 0x75FDF0, ());
 
 // __thiscall method: self = ecx, edx unused. Returns eax as the original does:
-// full eax from GetActiveSessionGlobal on the store path, or the compare result's
+// full eax from GetGlobalValue_75FDF0 on the store path, or the compare result's
 // upper bytes merged with the flag byte on the early-exit path.
 static int __fastcall MenuProfiles_UpdateTrucoFlag(uint8_t* self, void* /*edx*/)
 {
-    void* globalObj = reinterpret_cast<void*>(static_cast<uintptr_t>(GetOwnerGlobal()));
+    void* globalObj = reinterpret_cast<void*>(static_cast<uintptr_t>(GetGlobalValue_8B056C()));
     void* ownerObj = reinterpret_cast<void*>(static_cast<uintptr_t>(CSF_AT(uint32_t, globalObj, 8)));
 
     uint16_t trucoWide[128];
@@ -53,10 +53,10 @@ static int __fastcall MenuProfiles_UpdateTrucoFlag(uint8_t* self, void* /*edx*/)
 
     CSF_AT(uint8_t, self, 0x40) = flag;
 
-    void* playerState = reinterpret_cast<void*>(static_cast<uintptr_t>(GetPlayerStateGlobal()));
+    void* playerState = reinterpret_cast<void*>(static_cast<uintptr_t>(GetGlobalValue_8BC1E0()));
     CSF_AT(uint8_t, playerState, 0x50) = flag;
 
-    void* activeSession = reinterpret_cast<void*>(static_cast<uintptr_t>(GetActiveSessionGlobal()));
+    void* activeSession = reinterpret_cast<void*>(static_cast<uintptr_t>(GetGlobalValue_75FDF0()));
     CSF_AT(uint8_t, activeSession, 0xD2) = flag;
 
     return static_cast<int>(reinterpret_cast<uintptr_t>(activeSession));

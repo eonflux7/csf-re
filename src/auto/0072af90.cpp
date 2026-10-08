@@ -4,9 +4,9 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(char, __fastcall, CGuiControl_ProcessInput, 0x00718300,
+CSF_FUNC(char, __fastcall, CGuiControl_HandleSelectionInput_718300, 0x00718300,
          (CGuiControl* self, void* edx, int input));
-CSF_FUNC(int, __fastcall, CGuiControl_CheckInputEligibility, 0x00718700,
+CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x00718700,
          (CGuiControl* self, void* edx));
 
 static char __fastcall CGuiPanel_ProcessChildrenAndInput(
@@ -19,7 +19,7 @@ static char __fastcall CGuiPanel_ProcessChildrenAndInput(
         return result;
 
     result = static_cast<char>(
-        CGuiControl_CheckInputEligibility(self, nullptr));
+        CGuiSlider_IsSelectableAndNotType10(self, nullptr));
     if (!result)
         return result;
 
@@ -61,7 +61,7 @@ static char __fastcall CGuiPanel_ProcessChildrenAndInput(
         }
     }
 
-    return CGuiControl_ProcessInput(self, nullptr, input);
+    return CGuiControl_HandleSelectionInput_718300(self, nullptr, input);
 }
 
 HOOK(0x0072AF90, CGuiPanel_ProcessChildrenAndInput, "auto");

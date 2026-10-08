@@ -12,7 +12,7 @@
 
 // 0x0053BCA0: handles listbox event id 13 for the profiles dialog.
 // Original prototype: int __thiscall sub_53BCA0(char *this, int a2)  (ret 4)
-CSF_FUNC(int, __fastcall, CMenuProfiles_HandleConfirmCommand, 0x53BCA0,
+CSF_FUNC(int, __fastcall, MenuProfiles_HandleEvent, 0x53BCA0,
          (CMenuProfiles* self, void* /*edx*/, int a2));
 
 // Dispatches a profiles-listbox event (event id in *a2):
@@ -24,7 +24,7 @@ static int __fastcall CMenuProfiles_HandleListEvent(CMenuProfiles* self, void* /
     int eventId = *a2;
 
     if (eventId == 13)
-        return CMenuProfiles_HandleConfirmCommand(self, nullptr, reinterpret_cast<int>(a2));
+        return MenuProfiles_HandleEvent(self, nullptr, reinterpret_cast<int>(a2));
 
     int result = eventId - 14;
 

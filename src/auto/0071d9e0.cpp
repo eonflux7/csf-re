@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(std::uint8_t*, __fastcall, FindAttribute, 0x006932B0,
+CSF_FUNC(std::uint8_t*, __fastcall, FindProperty, 0x006932B0,
          (std::uint8_t* node, void* edx, char* name));
 CSF_FUNC(double, __fastcall, ReadFloatAttribute, 0x00693990,
          (std::uint8_t* node, void* edx, char* name));
@@ -18,7 +18,7 @@ static int __stdcall CGuiBuilder_ReadNonzeroFloatAttribute(
         return 0;
 
     *output = 0.0f;
-    if (FindAttribute(node, nullptr, g_FloatAttribute))
+    if (FindProperty(node, nullptr, g_FloatAttribute))
         *output = static_cast<float>(
             ReadFloatAttribute(node, nullptr, g_FloatAttribute));
 

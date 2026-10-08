@@ -13,7 +13,7 @@ CSF_FUNC(int, __cdecl, Mem_Free, 0x691110, (void* p));
 
 // 0x542E60: destructor body (member teardown / base-destructor chain) that runs
 // after CMenuControlsInGame restores its vtable pointers.
-CSF_FUNC(int, __fastcall, CMenuControlsInGame_CleanUp, 0x542E60,
+CSF_FUNC(int, __fastcall, CMenuControls_Destruct_542E60, 0x542E60,
          (CMenuControlsInGame* self, void* edx));
 
 // CMenuControlsInGame destructor: restores the primary vtable (offset 0x00) and
@@ -23,10 +23,10 @@ CSF_FUNC(int, __fastcall, CMenuControlsInGame_CleanUp, 0x542E60,
 static CMenuControlsInGame* __fastcall CMenuControlsInGame_Destroy(
     CMenuControlsInGame* self, void* /*edx*/, char a2)
 {
-    CSF_AT(uint32_t, self, 0x0000) = 0x00843550u;
+    CSF_AT(uint32_t, self, 0x0000) = CSF_ADDR_VT(0x00843550);
     self->field_0004 = 0x00843500u;
 
-    CMenuControlsInGame_CleanUp(self, nullptr);
+    CMenuControls_Destruct_542E60(self, nullptr);
 
     if ((a2 & 1) != 0)
         Mem_Free(self);

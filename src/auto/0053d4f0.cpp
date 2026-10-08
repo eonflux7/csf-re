@@ -14,7 +14,7 @@
 
 // 0x6923C0 : releases/destroys an object whose head is a vtable pointer.
 // Prototype from the packet: int __thiscall sub_6923C0(void (__thiscall ***this)(void *, int))
-CSF_FUNC(int, __fastcall, ReleaseObjectWithVtable, 0x6923C0, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x6923C0, (void* self, void* edx));
 
 static void __fastcall CMenuMissionInfo_ReleaseStoredObject(void* self, void* /*edx*/)
 {
@@ -25,7 +25,7 @@ static void __fastcall CMenuMissionInfo_ReleaseStoredObject(void* self, void* /*
     uint32_t pManagedObject = CSF_AT(uint32_t, pStoredObject, 0x158);
     if (pManagedObject)
     {
-        ReleaseObjectWithVtable(reinterpret_cast<void*>(pManagedObject + 4), nullptr);
+        ReleaseObjectReference(reinterpret_cast<void*>(pManagedObject + 4), nullptr);
         CSF_AT(uint32_t, pStoredObject, 0x158) = 0;
     }
 }

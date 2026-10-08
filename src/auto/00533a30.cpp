@@ -3,7 +3,7 @@
 #include "core/memory.h"
 #include "globals.h"
 
-CSF_FUNC(void*, __fastcall, GetMenuEventOwner, 0x006683F0,
+CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x006683F0,
          (void* self, void* edx));
 
 static int __fastcall MenuMpPause_HandleMenuEvent(
@@ -28,7 +28,7 @@ static int __fastcall MenuMpPause_HandleMenuEvent(
         return static_cast<std::int32_t>(
             reinterpret_cast<std::uintptr_t>(eventData));
 
-    void* owner = GetMenuEventOwner(self, nullptr);
+    void* owner = GetReferencedObject(self, nullptr);
     void** vtable = CSF_AT(void**, owner, 0);
     return reinterpret_cast<int (__fastcall*)(void*, void*)>(
         vtable[0x1C / 4])(owner, nullptr);

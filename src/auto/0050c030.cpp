@@ -4,9 +4,9 @@
 #include "globals.h"
 
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, GetInterfaceProvider, 0x006B1390,
+CSF_FUNC(void*, __fastcall, MenuControls_ResolveObject, 0x006B1390,
          (void* self, void* edx));
-CSF_FUNC(void*, __fastcall, GetPairProvider, 0x00652160,
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160,
          (void* self, void* edx));
 
 static int __fastcall MenuManager_InitializeCachedInterface(
@@ -16,7 +16,7 @@ static int __fastcall MenuManager_InitializeCachedInterface(
     if (result != 0)
         return result;
 
-    void* provider = GetInterfaceProvider(
+    void* provider = MenuControls_ResolveObject(
         reinterpret_cast<void*>(GetGlobalInt()), nullptr);
 
     result = ((int(__fastcall*)(void*, void*))
@@ -26,14 +26,14 @@ static int __fastcall MenuManager_InitializeCachedInterface(
     if (result == 0)
         return result;
 
-    provider = GetPairProvider(
+    provider = LookupObjectById(
         reinterpret_cast<void*>(GetGlobalInt()), nullptr);
 
     void* source = ((void*(__fastcall*)(void*, void*))
         CSF_AT(void**, provider, 0)[0x18 / 4])(provider, nullptr);
     const std::uint32_t firstValue = CSF_AT(std::uint32_t, source, 0);
 
-    provider = GetPairProvider(
+    provider = LookupObjectById(
         reinterpret_cast<void*>(GetGlobalInt()), nullptr);
 
     void* getPair = CSF_AT(void**, provider, 0)[0x18 / 4];

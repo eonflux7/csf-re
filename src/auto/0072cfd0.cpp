@@ -5,7 +5,7 @@
 
 CSF_FUNC(int, __fastcall, CGuiControl_SetSelectable, 0x007186D0,
          (void* self, void* edx, char selectable));
-CSF_FUNC(int, __fastcall, CGuiControl_IsSelectable, 0x00718700,
+CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x00718700,
          (void* self, void* edx));
 
 static char __fastcall RefreshChildControlStates(void* self, void* /*edx*/)
@@ -56,7 +56,7 @@ static char __fastcall RefreshChildControlStates(void* self, void* /*edx*/)
     if (control != nullptr)
     {
         result = static_cast<char>(
-            CGuiControl_IsSelectable(control, nullptr));
+            CGuiSlider_IsSelectableAndNotType10(control, nullptr));
         if (result != 0)
         {
             control = CSF_AT(void*, self, 0x144);
@@ -70,7 +70,7 @@ static char __fastcall RefreshChildControlStates(void* self, void* /*edx*/)
     if (control != nullptr)
     {
         result = static_cast<char>(
-            CGuiControl_IsSelectable(control, nullptr));
+            CGuiSlider_IsSelectableAndNotType10(control, nullptr));
         if (result != 0)
         {
             control = CSF_AT(void*, self, 0x148);
@@ -84,7 +84,7 @@ static char __fastcall RefreshChildControlStates(void* self, void* /*edx*/)
     if (control != nullptr)
     {
         result = static_cast<char>(
-            CGuiControl_IsSelectable(control, nullptr));
+            CGuiSlider_IsSelectableAndNotType10(control, nullptr));
         if (result != 0)
         {
             control = CSF_AT(void*, self, 0x14C);

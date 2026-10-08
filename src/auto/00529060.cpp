@@ -17,7 +17,7 @@ CSF_FUNC(void*, __cdecl, MenuMessageBox_ResolveEntryByKey, 0x00692440, (int a1, 
 CSF_FUNC(int, __cdecl, MenuMessageBox_TestEntryAgainstFlag, 0x00695500, (uint16_t* entry, char* flagByte));
 
 // Attaches the entry into the sub-object slot; returns eax as the callee left it.
-CSF_FUNC(int, __cdecl, MenuMessageBox_AssignEntryToSlot, 0x00695680, (char* slot, char* entry));
+CSF_FUNC(int, __cdecl, Sub_695680, 0x00695680, (char* slot, char* entry));
 
 CSF_GLOBAL(uint8_t, g_byte_82E65C, 0x0082E65C);
 
@@ -40,7 +40,7 @@ static int __fastcall CMenuMessageBox_TryAttachResolvedEntry(void* self, void* /
         return flagResult;
     }
 
-    int result = MenuMessageBox_AssignEntryToSlot(
+    int result = Sub_695680(
         reinterpret_cast<char*>(static_cast<uint8_t*>(self) + 0x90),
         reinterpret_cast<char*>(entry));
     CSF_AT(uint8_t, self, 0x80) = 1;

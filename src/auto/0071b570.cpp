@@ -2,17 +2,17 @@
 #include "globals.h"
 #include "hook.h"
 
-CSF_FUNC(int, __fastcall, CallHandlerIfNonNull, 0x0071B4C0,
+CSF_FUNC(int, __fastcall, CallHandlerIfNonNull_71B4C0, 0x0071B4C0,
          (void* context, void* edx, std::uint32_t destination,
           std::uint32_t* source));
 
-CSF_FUNC(unsigned int, __fastcall, DestroyRecord, 0x0043E300,
+CSF_FUNC(unsigned int, __fastcall, DestroyRecord_43E300, 0x0043E300,
          (std::uint32_t* self, void* edx));
 
-CSF_FUNC(void, __stdcall, RethrowCurrentException, 0x007AF666,
+CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInfo));
 
-CSF_FUNC(int, __cdecl, HandleCppExceptionFrame, 0x007AF226,
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226,
          (void* exceptionRecord, void* frame, void* context, void* dispatcher));
 
 // This embedded EH entry is not a standalone function start.
@@ -36,7 +36,7 @@ static __declspec(noinline) int __cdecl FillNonEmptyRecordRange(
     {
         do
         {
-            result = CallHandlerIfNonNull(
+            result = CallHandlerIfNonNull_71B4C0(
                 context, nullptr, destination, source);
 
             --count;
@@ -49,12 +49,12 @@ static __declspec(noinline) int __cdecl FillNonEmptyRecordRange(
         std::uint32_t completed = destinationBegin;
         while (completed != destination)
         {
-            DestroyRecord(
+            DestroyRecord_43E300(
                 reinterpret_cast<std::uint32_t*>(completed), nullptr);
             completed += 0x40u;
         }
 
-        RethrowCurrentException(nullptr, nullptr);
+        RethrowCppException(nullptr, nullptr);
         __assume(0);
     }
 

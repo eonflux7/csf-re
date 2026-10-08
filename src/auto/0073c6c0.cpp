@@ -27,11 +27,11 @@ CSF_GLOBAL(float, g_Value_0082D4CC, 0x82D4CC);
 CSF_GLOBAL(uint8_t, g_FloatHelper_008BABC0, 0x8BABC0);
 
 // 0x00646D30 : __cdecl failure/diagnostics reporter (caller pops 16 bytes).
-CSF_FUNC(void, __cdecl, ReportInterpolationFailure, 0x646D30,
+CSF_FUNC(void, __cdecl, Game_RaiseStatusNotice, 0x646D30,
          (int a, int b, int code, int c));
 
 // 0x0068F560 : __stdcall interpolation helper, 4 stack args (callee pops 16).
-CSF_FUNC(void, __stdcall, InterpolateSegment, 0x68F560,
+CSF_FUNC(void, __stdcall, C_008BABFC_AddRangedFloat, 0x68F560,
          (float from, float t, float zero, float to));
 
 static char __stdcall InterpolateRangeChecked(float start, float end, float step)
@@ -52,11 +52,11 @@ static char __stdcall InterpolateRangeChecked(float start, float end, float step
     if (!(step <= g_Value_0082D4CC) && !(end < start))
     {
         float factor = (end - start) / step;
-        InterpolateSegment(start, factor, 0.0f, end);
+        C_008BABFC_AddRangedFloat(start, factor, 0.0f, end);
         return 1;
     }
 
-    ReportInterpolationFailure(0, 0, -536674299, 0);  // 0xE0030005
+    Game_RaiseStatusNotice(0, 0, -536674299, 0);  // 0xE0030005
     return 0;
 }
 

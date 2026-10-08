@@ -7,7 +7,7 @@
 // Original calls: GetGlobalValue_8B056C (0x506BD0, __cdecl, no args) and
 // sub_53D740 (0x53D740, __fastcall-style: ecx=this, edi passed through, one stack arg).
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B056C, 0x506BD0, ());
-CSF_FUNC(int, __fastcall, CMenuMissionInfo_RefreshIfSelected, 0x53D740, (void* self, void* edx, int a3));
+CSF_FUNC(int, __fastcall, CMenuMissionInfo_EnterPanelState, 0x53D740, (void* self, void* edx, int a3));
 
 // Refreshes the mission info panel when the global game state is in mode 1 with
 // its secondary flag clear and the selected record flag set.
@@ -32,7 +32,7 @@ static int __fastcall CMenuMissionInfo_RefreshOnBriefingReady(void* self, void* 
         uint8_t* info = reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(result));
         if (*(info + 4) != 0)
         {
-            return CMenuMissionInfo_RefreshIfSelected(self_bytes - 4, nullptr, 1);
+            return CMenuMissionInfo_EnterPanelState(self_bytes - 4, nullptr, 1);
         }
     }
     return static_cast<int>(result);

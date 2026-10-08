@@ -6,7 +6,7 @@
 #include "types/auto_classes.h"
 
 // Binding to the original callee at 0x549CF0 (__thiscall, no stack args).
-CSF_FUNC(int, __fastcall, CMenuVideoOptions_PrepareMenuState, 0x549CF0, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, CMenuVideoOptions_ValidateAndApplyMode, 0x549CF0, (void* self, void* edx));
 
 // Global string pointers used as button labels.
 CSF_GLOBAL(const char*, g_pszMenu_P_Option, 0x899ACC);
@@ -16,7 +16,7 @@ CSF_GLOBAL(const char*, g_pszMenu_P_OptIng, 0x899AD4);
 // (when non-zero) or pushes the matching option label to the child object at +0x14.
 static int __fastcall CMenuVideoOptions_UpdateOptionsButtonLabel(CMenuVideoOptions* self, void* /*edx*/)
 {
-    CMenuVideoOptions_PrepareMenuState(self, nullptr);
+    CMenuVideoOptions_ValidateAndApplyMode(self, nullptr);
 
     // Virtual call on the child object at +0x14, slot 0x60 (24): (child, this, 0)
     void* child = reinterpret_cast<void*>(self->field_0014);

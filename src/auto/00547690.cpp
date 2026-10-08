@@ -5,7 +5,7 @@
 
 static const auto MenuExtras_InsertRecords =
     reinterpret_cast<int (__fastcall*)(
-        void*, void*, char*, unsigned int, std::uint32_t*)>(0x005472C0);
+        void*, void*, char*, unsigned int, std::uint32_t*)>(CSF_ADDR_FN(0x005472C0));
 
 static std::uint32_t* __fastcall MenuExtras_InsertRecordAndGetIterator(
     void* self, void* /*edx*/, std::uint32_t* result,

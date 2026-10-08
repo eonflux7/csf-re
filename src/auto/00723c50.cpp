@@ -4,7 +4,7 @@
 #include "core/memory.h"
 
 // 16-byte element assign/copy: __thiscall(this = destination, source). Callee pops 4 bytes.
-CSF_FUNC(int, __fastcall, Transfer16ByteElement, 0x00723950,
+CSF_FUNC(int, __fastcall, AssignWideStringRecords, 0x00723950,
          (void* self, void* edx, int source));
 
 // Copies 16-byte elements backward from [sourceBegin, sourceEnd) into the block
@@ -23,7 +23,7 @@ static int __cdecl Move16ByteElementsBackward(
     {
         source -= 16u;
         destination -= 16u;
-        Transfer16ByteElement(
+        AssignWideStringRecords(
             reinterpret_cast<void*>(destination),
             nullptr,
             static_cast<int>(source));

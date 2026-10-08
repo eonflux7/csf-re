@@ -7,7 +7,7 @@
 CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10,
          0x00718700, (uint8_t* self, void* edx));
 
-CSF_FUNC(char, __fastcall, CGuiButton_HandleEvent,
+CSF_FUNC(char, __fastcall, CGuiButton_HandleSelectionInput,
          0x007259A0, (CGuiButton* self, void* edx, int event, int argument));
 
 static char __fastcall CGuiChoiceNumButton_HandleEvent(
@@ -37,7 +37,7 @@ static char __fastcall CGuiChoiceNumButton_HandleEvent(
             CSF_AT(void**, self, 0)[0x2B0 / 4]))(self, nullptr, value);
     }
 
-    return CGuiButton_HandleEvent(self, nullptr, event, argument);
+    return CGuiButton_HandleSelectionInput(self, nullptr, event, argument);
 }
 
 HOOK(0x0072F9D0, CGuiChoiceNumButton_HandleEvent, "auto");

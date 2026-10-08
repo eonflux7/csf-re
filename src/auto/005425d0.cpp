@@ -8,7 +8,7 @@
 // ---------------------------------------------------------------------------
 // Original engine entry points used by this menu tick.
 // ---------------------------------------------------------------------------
-CSF_FUNC(int, __cdecl, GetGlobalState,        0x50D190, ());
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190,        0x50D190, ());
 CSF_FUNC(int, __cdecl, GetGlobalDword_73C020, 0x73C020, ());
 CSF_FUNC(int, __cdecl, ReturnZero,            0x4B2A30, ());
 CSF_FUNC(int, __cdecl, Sub_743FD0,            0x743FD0, ());
@@ -26,7 +26,7 @@ CSF_GLOBAL(uint8_t, g_MenuMpCharacterSelectLookup, 0x8B9A90);  // ecx object for
 // body is reproduced here inline.
 static char __cdecl MenuMpCharacterSelect_TickCameraPreview()
 {
-    int state = GetGlobalState();
+    int state = GetGlobalState_50D190();
     char result = (char)state;
 
     if (CSF_AT(uint8_t, (void*)(uintptr_t)state, 0xd0) != 0)

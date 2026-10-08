@@ -11,10 +11,10 @@
 #include "legacy/string.h"
 
 // Original functions called by the continue handler, bound by address.
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x521BB0, ());
-CSF_FUNC(int, __fastcall, ProcessGlobalValueHandle, 0x521F80, (void* self, void* edx));
-CSF_FUNC(void, __fastcall, ApplyGlobalValueToSubsystem, 0x5233D0, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, CMenuScreen_CloseWithCode, 0x539D10, (void* self, void* edx, int code));
+CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x521BB0, ());
+CSF_FUNC(int, __fastcall, FlushGlobalValueState, 0x521F80, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, ApplyGlobalValueSettings, 0x5233D0, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, CMenuPause_CloseAndReturnResult, 0x539D10, (void* self, void* edx, int code));
 
 // Global string pointer, value is the const char* stored at the address.
 CSF_GLOBAL(const char*, g_pszMenu_P_Juego, 0x899AF0);
@@ -25,11 +25,11 @@ static int __fastcall CMenuPause_OnContinueClicked(CMenuPause* self, void* /*edx
     int result = static_cast<int>(self->field_0010);
     if (result)
     {
-        int firstGlobal = GetGlobalValue();
-        ProcessGlobalValueHandle(reinterpret_cast<void*>(static_cast<uintptr_t>(firstGlobal)), nullptr);
+        int firstGlobal = GetGlobalValue_521BB0();
+        FlushGlobalValueState(reinterpret_cast<void*>(static_cast<uintptr_t>(firstGlobal)), nullptr);
 
-        int secondGlobal = GetGlobalValue();
-        ApplyGlobalValueToSubsystem(reinterpret_cast<void*>(static_cast<uintptr_t>(secondGlobal)), nullptr);
+        int secondGlobal = GetGlobalValue_521BB0();
+        ApplyGlobalValueSettings(reinterpret_cast<void*>(static_cast<uintptr_t>(secondGlobal)), nullptr);
 
         // Reload the owner pointer from the field after the calls above.
         void* owner = reinterpret_cast<void*>(static_cast<uintptr_t>(self->field_0010));
@@ -45,7 +45,7 @@ static int __fastcall CMenuPause_OnContinueClicked(CMenuPause* self, void* /*edx
             reinterpret_cast<TargetMethod>(targetVtable[0x54 / 4])(notifyTarget, nullptr, 1);
         }
 
-        return CMenuScreen_CloseWithCode(self, nullptr, 0);
+        return CMenuPause_CloseAndReturnResult(self, nullptr, 0);
     }
     return result;
 }

@@ -6,9 +6,9 @@
 
 CSF_FUNC(int, __fastcall, CGuiSlider_GetField0148, 0x00730110,
          (CGuiRadioButton* self, void* edx));
-CSF_FUNC(void, __fastcall, CGuiButton_UpdateSelection, 0x00726090,
+CSF_FUNC(void, __fastcall, CGuiButton_ResetEffects, 0x00726090,
          (CGuiRadioButton* self, void* edx, char selected));
-CSF_FUNC(void, __fastcall, CGuiButton_ActivateSelection, 0x00725740,
+CSF_FUNC(void, __fastcall, CGuiButton_StartTextColorEffect, 0x00725740,
          (CGuiRadioButton* self, void* edx));
 
 static void __fastcall CGuiRadioButton_SetSelected(
@@ -30,11 +30,11 @@ static void __fastcall CGuiRadioButton_SetSelected(
     self->m_bSelected = newSelection;
 
     if (CGuiSlider_GetField0148(self, nullptr) != 1)
-        CGuiButton_UpdateSelection(self, nullptr, selected);
+        CGuiButton_ResetEffects(self, nullptr, selected);
 
     if (selected)
     {
-        CGuiButton_ActivateSelection(self, nullptr);
+        CGuiButton_StartTextColorEffect(self, nullptr);
         reinterpret_cast<void(__fastcall*)(void*, void*, int)>(
             CSF_AT(void**, self, 0)[0x138 / 4])(self, nullptr, 13);
     }

@@ -4,20 +4,20 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __cdecl, MenuMpAccounts_GetScreenManager, 0x0050D190, ());
-CSF_FUNC(void*, __cdecl, MenuMpAccounts_GetGlobalValue, 0x00521BB0, ());
-CSF_FUNC(void, __fastcall, MenuMpAccounts_PrepareGlobalValue, 0x00521DE0,
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobalValue_521BB0, 0x00521BB0, ());
+CSF_FUNC(void, __fastcall, MenuProgressInput_UpdateGlobalState, 0x00521DE0,
          (void* self, void* edx));
 CSF_FUNC(int, __fastcall, CMenuAccountEdit_ApplyHeldPositionDelta, 0x0055C1B0,
          (CMenuAccountEdit* self, void* edx));
-CSF_FUNC(void*, __fastcall, MenuMpAccounts_GetAssociatedObject, 0x00652160,
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160,
          (void* self, void* edx));
-CSF_FUNC(void*, __cdecl, MenuMpAccounts_GetNetworkManager, 0x006A6D70, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_6A6D70, 0x006A6D70, ());
 CSF_FUNC(int, __cdecl, MenuMpAccounts_PrepareNetworkAccount, 0x006A7350, ());
-CSF_FUNC(void*, __cdecl, MenuMpAccounts_GetGlobalService, 0x006B1380, ());
-CSF_FUNC(int, __fastcall, MenuMpAccounts_ForwardControlToParent, 0x00718660,
+CSF_FUNC(void*, __cdecl, GetGlobalInt, 0x006B1380, ());
+CSF_FUNC(int, __fastcall, CGuiSlider_ForwardSelfToParent, 0x00718660,
          (void* self, void* edx));
-CSF_FUNC(void*, __cdecl, MenuMpAccounts_GetAccountService, 0x0073C020, ());
+CSF_FUNC(void*, __cdecl, GetGlobalDword_73C020, 0x0073C020, ());
 CSF_FUNC(char, __fastcall, MenuMpAccounts_SetAccountScreen, 0x0073F120,
          (void* self, void* edx, void* screen));
 
@@ -35,7 +35,7 @@ static int __fastcall CMenuAccountEdit_InitializeControls(
 {
     if (!self->field_0284)
     {
-        void* manager = MenuMpAccounts_GetScreenManager();
+        void* manager = GetGlobalState_50D190();
         reinterpret_cast<void(__fastcall*)(void*, void*, CMenuAccountEdit*)>(
             CSF_AT(void**, manager, 0)[0x18 / 4])(manager, nullptr, self);
     }
@@ -44,7 +44,7 @@ static int __fastcall CMenuAccountEdit_InitializeControls(
         CSF_AT(void**, self, 0)[0x50 / 4])(self, nullptr);
 
     self->field_0014 = static_cast<std::uint32_t>(context);
-    MenuMpAccounts_PrepareGlobalValue(MenuMpAccounts_GetGlobalValue(), nullptr);
+    MenuProgressInput_UpdateGlobalState(GetGlobalValue_521BB0(), nullptr);
 
     void* screen = reinterpret_cast<void*>(self->field_0284);
     reinterpret_cast<void(__fastcall*)(void*, void*)>(
@@ -66,7 +66,7 @@ static int __fastcall CMenuAccountEdit_InitializeControls(
     self->field_0020 = control;
     if (control)
     {
-        MenuMpAccounts_ForwardControlToParent(
+        CGuiSlider_ForwardSelfToParent(
             reinterpret_cast<void*>(control), nullptr);
         CSF_AT(std::uint8_t, reinterpret_cast<void*>(self->field_0020), 0x14A) = 1;
         CSF_AT(std::uint8_t, reinterpret_cast<void*>(self->field_0020), 0x1C6) = 0;
@@ -105,13 +105,13 @@ static int __fastcall CMenuAccountEdit_InitializeControls(
         CSF_AT(std::uint8_t, reinterpret_cast<void*>(self->field_002c), 0x1C6) = 0;
     }
 
-    void* associated = MenuMpAccounts_GetAssociatedObject(
-        MenuMpAccounts_GetGlobalService(), nullptr);
+    void* associated = LookupObjectById(
+        GetGlobalInt(), nullptr);
     reinterpret_cast<void(__fastcall*)(void*, void*)>(
         CSF_AT(void**, associated, 0)[0x18 / 4])(associated, nullptr);
 
-    associated = MenuMpAccounts_GetAssociatedObject(
-        MenuMpAccounts_GetGlobalService(), nullptr);
+    associated = LookupObjectById(
+        GetGlobalInt(), nullptr);
     reinterpret_cast<void(__fastcall*)(void*, void*)>(
         CSF_AT(void**, associated, 0)[0x18 / 4])(associated, nullptr);
 
@@ -150,8 +150,8 @@ static int __fastcall CMenuAccountEdit_InitializeControls(
         MenuMpAccounts_PrepareNetworkAccount();
 
         void* activeScreen = CSF_AT(
-            void*, MenuMpAccounts_GetScreenManager(), 0x10);
-        void* networkManager = MenuMpAccounts_GetNetworkManager();
+            void*, GetGlobalState_50D190(), 0x10);
+        void* networkManager = GetGlobalState_6A6D70();
         void* screenMethod = CSF_AT(void**, activeScreen, 0)[0x64 / 4];
         void** networkVtable = CSF_AT(void**, networkManager, 0);
 
@@ -162,8 +162,8 @@ static int __fastcall CMenuAccountEdit_InitializeControls(
             networkVtable[0x9C / 4])(networkManager, nullptr, screenValue);
 
         activeScreen = CSF_AT(
-            void*, MenuMpAccounts_GetScreenManager(), 0x10);
-        void* accountService = MenuMpAccounts_GetAccountService();
+            void*, GetGlobalState_50D190(), 0x10);
+        void* accountService = GetGlobalDword_73C020();
         MenuMpAccounts_SetAccountScreen(accountService, nullptr, activeScreen);
     }
 

@@ -20,10 +20,10 @@ CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_GLOBAL(uint8_t, g_VtblCMenuScreenBase, 0x0083042C);
 
 // Vtable and secondary vtable values written by the original (immediate data).
-static constexpr uint32_t kVtblCMenuEula      = 0x00841B78u;
-static constexpr uint32_t kVtblCMenuEulaSub   = 0x00841BC8u;
-static constexpr uint32_t kVtblCMenuScreenA   = 0x00830488u;
-static constexpr uint32_t kVtblCMenuScreenB   = 0x00830438u;
+static const uint32_t kVtblCMenuEula      = CSF_ADDR_VT(0x00841B78);
+static const uint32_t kVtblCMenuEulaSub   = CSF_ADDR_VT(0x00841BC8);
+static const uint32_t kVtblCMenuScreenA   = CSF_ADDR_DATA(0x00830488);
+static const uint32_t kVtblCMenuScreenB   = CSF_ADDR_VT(0x00830438);
 
 // Releases the owned sub-object, the two buffers, and resets the object to the
 // CMenuScreen base state. Mirrors the original sequence exactly.

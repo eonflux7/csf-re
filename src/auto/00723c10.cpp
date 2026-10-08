@@ -5,7 +5,7 @@
 
 // Per-element copy/handling routine: __thiscall with one stack argument
 // (this in ecx, source pointer pushed) so it pops 4 stack bytes.
-CSF_FUNC(int, __fastcall, Copy16ByteElement, 0x00723950,
+CSF_FUNC(int, __fastcall, AssignWideStringRecords, 0x00723950,
          (void* self, void* edx, const void* source));
 
 // Copies a range [sourceBegin, sourceEnd) of 16-byte elements into
@@ -23,7 +23,7 @@ static int __cdecl Copy16ByteElementRange(int sourceBegin, int sourceEnd,
 
     do
     {
-        Copy16ByteElement(
+        AssignWideStringRecords(
             reinterpret_cast<void*>(destination),
             nullptr,
             reinterpret_cast<const void*>(source));

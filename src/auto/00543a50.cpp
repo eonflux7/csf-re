@@ -5,7 +5,7 @@
 #include "globals.h"
 
 // 0x50D190: returns a pointer (typed int by the packet) to the global game state object.
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x50D190, ());
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x50D190, ());
 
 // 0x4285D0: __thiscall helper, bool result in al, pops 4 stack bytes (one stack argument).
 CSF_FUNC(bool, __fastcall, MenuControls_QueryFlag, 0x4285D0, (void* self, void* edx, int value));
@@ -15,7 +15,7 @@ CSF_FUNC(bool, __fastcall, MenuControls_QueryFlag, 0x4285D0, (void* self, void* 
 // (byte offset 0x60); otherwise just return the global state pointer value.
 static int __fastcall CMenuControls_HandleGlobalStateFlag(void* self, void* /*edx*/)
 {
-    int result = GetGlobalState();
+    int result = GetGlobalState_50D190();
     if (reinterpret_cast<const uint8_t*>(static_cast<uintptr_t>(result))[0xD0])
     {
         // mov ecx, [esi+0x14]

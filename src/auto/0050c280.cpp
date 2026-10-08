@@ -13,7 +13,7 @@ CSF_FUNC(void, __fastcall, CMenuScreenFader_AdvanceFade, 0x0050BF70,
          (CMenuScreenFader* self, void* edx, float deltaSeconds));
 CSF_FUNC(void, __fastcall, CMenuScreenFader_AdvanceFadeTimer, 0x0050BFB0,
          (CMenuScreenFader* self, void* edx, float deltaSeconds));
-CSF_FUNC(void*, __fastcall, CMenuScreenFader_SwitchToTargetScreen, 0x0050C1B0,
+CSF_FUNC(void*, __fastcall, CMenuScreenFader_SwitchScreenByName, 0x0050C1B0,
          (CMenuScreenFader* self, void* edx, float deltaSeconds));
 
 // Advances the fader state machine by one frame, then pushes the black overlay alpha
@@ -28,7 +28,7 @@ static int __fastcall CMenuScreenFader_Update(CMenuScreenFader* self, void* /*ed
             CMenuScreenFader_AdvanceFade(self, nullptr, deltaSeconds);
             break;
         case 2:
-            CMenuScreenFader_SwitchToTargetScreen(self, nullptr, deltaSeconds);
+            CMenuScreenFader_SwitchScreenByName(self, nullptr, deltaSeconds);
             break;
         case 3:
             CMenuScreenFader_AdvanceFadeTimer(self, nullptr, deltaSeconds);

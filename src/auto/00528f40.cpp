@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Resolves the tracked object held behind this+0x04 (lib helper, __thiscall, no args).
-CSF_FUNC(void**, __fastcall, MenuMessageBox_ResolveHeldObject_6683F0, 0x006683F0, (void* self, void* edx));
+CSF_FUNC(void**, __fastcall, GetReferencedObject, 0x006683F0, (void* self, void* edx));
 
 // Invokes the virtual method at byte offset `byteOffset` (slot = byteOffset / 4) on a polymorphic object.
 template <typename R, typename... A>
@@ -27,13 +27,13 @@ static inline R MessageBox_VCall(void* obj, int byteOffset, A... args)
 // result, or 0 when the first status check (vtable offset 0x30 on the held object) fails.
 static int __fastcall CMenuMessageBox_CenterOnTarget(CMenuMessageBox* self, void* /*edx*/)
 {
-    void** statusHolder = MenuMessageBox_ResolveHeldObject_6683F0(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
+    void** statusHolder = GetReferencedObject(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
     int statusOk = MessageBox_VCall<int>(statusHolder, 0x30);
     if (statusOk == 0)
         return statusOk;
 
-    void** yHolder = MenuMessageBox_ResolveHeldObject_6683F0(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
-    void** xHolder = MenuMessageBox_ResolveHeldObject_6683F0(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
+    void** yHolder = GetReferencedObject(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
+    void** xHolder = GetReferencedObject(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
 
     void* yPos = MessageBox_VCall<void*>(yHolder, 0x30);
     int32_t targetY = *reinterpret_cast<int32_t*>(static_cast<uint8_t*>(yPos) + 0x18);

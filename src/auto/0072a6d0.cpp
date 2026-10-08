@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __fastcall, CGuiPanel_GetPositionSource, 0x006683F0,
+CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x006683F0,
          (CGuiPanel* self, void* edx));
 
 static uint32_t* __fastcall CGuiPanel_SynchronizePosition(
@@ -17,19 +17,19 @@ static uint32_t* __fastcall CGuiPanel_SynchronizePosition(
     using SetPosition =
         uint32_t* (__fastcall*)(void*, void*, uint32_t*, uint32_t);
 
-    void* source = CGuiPanel_GetPositionSource(self, nullptr);
+    void* source = GetReferencedObject(self, nullptr);
     if (!source)
         return nullptr;
 
-    source = CGuiPanel_GetPositionSource(self, nullptr);
+    source = GetReferencedObject(self, nullptr);
     void* sourceData =
         reinterpret_cast<GetSourceData>(
             CSF_AT(void**, source, 0)[0x30 / 4])(source, nullptr);
     if (!sourceData)
         return nullptr;
 
-    void* verticalSource = CGuiPanel_GetPositionSource(self, nullptr);
-    void* horizontalSource = CGuiPanel_GetPositionSource(self, nullptr);
+    void* verticalSource = GetReferencedObject(self, nullptr);
+    void* horizontalSource = GetReferencedObject(self, nullptr);
 
     sourceData =
         reinterpret_cast<GetSourceData>(

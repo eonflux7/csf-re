@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __cdecl, MenuMpSessions_GetLocalizedText, 0x00692440,
+CSF_FUNC(int, __cdecl, MenuMessageBox_ResolveEntryByKey, 0x00692440,
          (int textId, int variant));
 
 using ModeDispatchTable = volatile std::uint32_t[6];
@@ -24,7 +24,7 @@ static void MenuMpSessions_SetLocalizedControlText(void* control, int textId)
 
     // The original captures this vtable before resolving the localized text.
     void** textVtable = CSF_AT(void**, textObject, 0);
-    int text = MenuMpSessions_GetLocalizedText(textId, 1);
+    int text = MenuMessageBox_ResolveEntryByKey(textId, 1);
     ((void(__fastcall*)(void*, void*, int))
         textVtable[0x40 / 4])(textObject, nullptr, text);
 }

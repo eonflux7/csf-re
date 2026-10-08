@@ -5,7 +5,7 @@
 
 CSF_FUNC(char, __fastcall, ProcessAnimatedQuad, 0x00731C70,
          (void* self, void* edx, void* quad));
-CSF_FUNC(int, __fastcall, UpdateButtonQuadState, 0x00725B40,
+CSF_FUNC(int, __fastcall, SubmitAndCommitObjectState, 0x00725B40,
          (void* self, void* edx));
 CSF_FUNC(void, __fastcall, CGuiButton_ProcessQuadWithScaledAlpha2, 0x00725010,
          (void* self, void* edx, void* quad, float alpha));
@@ -72,7 +72,7 @@ static void __fastcall CGuiButton_UpdateQuad(void* self, void* /*edx*/)
         return;
     }
 
-    UpdateButtonQuadState(self, nullptr);
+    SubmitAndCommitObjectState(self, nullptr);
     CGuiButton_ProcessQuadWithScaledAlpha2(
         self, nullptr, CSF_AT(void*, self, 0x134), 1.0f);
 

@@ -4,10 +4,10 @@
 #include "core/memory.h"
 
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
-CSF_FUNC(std::uint8_t, __stdcall, DestroyTreeBranchRecursive,
-         0x00739B80, (void** block));
+static std::uint8_t __fastcall DestroyTreeBranch(void* tree, void* edx, void** block);  // self-recursion: call the reimplementation directly
 
-static std::uint8_t __stdcall DestroyTreeBranch(void** block)
+// __thiscall: the tree in ecx is only passed on to the recursion (as the original does).
+static std::uint8_t __fastcall DestroyTreeBranch(void* tree, void* /*edx*/, void** block)
 {
     void** node = block;
     void** blockToFree = block;
@@ -15,7 +15,7 @@ static std::uint8_t __stdcall DestroyTreeBranch(void** block)
 
     while (sentinelFlag == 0)
     {
-        DestroyTreeBranchRecursive(CSF_AT(void**, node, 0x08));
+        DestroyTreeBranch(tree, nullptr, CSF_AT(void**, node, 0x08));
         node = CSF_AT(void**, node, 0x00);
 
         if (blockToFree != nullptr)

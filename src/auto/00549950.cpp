@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void, __fastcall, CMenuVideoOptions_DecodeResolution, 0x00549840,
+CSF_FUNC(void, __fastcall, CMenuVideoOptions_ParseResolutionPair, 0x00549840,
          (CMenuVideoOptions* self, void* edx, int selection,
           int* width, int* height));
 
@@ -41,7 +41,7 @@ static int __fastcall CMenuVideoOptions_GetMatchingQualityPreset(
             resolutionVtable[0x2B4 / 4])(
                 resolutionControl, nullptr, selectedIndex);
 
-    CMenuVideoOptions_DecodeResolution(
+    CMenuVideoOptions_ParseResolutionPair(
         self, nullptr, resolutionSelection, &width, &height);
 
     int preset;

@@ -4,14 +4,14 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(std::uint32_t*, __fastcall, MenuVideoOptions_ConstructEmbeddedBase,
+CSF_FUNC(std::uint32_t*, __fastcall, C_00830438_Construct,
          0x00712CC0, (std::uint32_t* self, void* edx));
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B056C, 0x00506BD0, ());
 
 static void** const g_MenuScreenVtable =
-    reinterpret_cast<void**>(0x0083042C);
+    CSF_VTBL(0x0083042C);
 static void** const g_MenuVideoOptionsVtable =
-    reinterpret_cast<void**>(0x00844148);
+    CSF_VTBL(0x00844148);
 static void** const g_MenuVideoOptionsSecondaryVtable =
     reinterpret_cast<void**>(0x008440F8);
 
@@ -22,7 +22,7 @@ static CMenuVideoOptions* __fastcall CMenuVideoOptions_Construct(
         reinterpret_cast<std::uint8_t*>(self) + 4);
 
     CSF_AT(void**, self, 0) = g_MenuScreenVtable;
-    MenuVideoOptions_ConstructEmbeddedBase(embeddedBase, nullptr);
+    C_00830438_Construct(embeddedBase, nullptr);
 
     CSF_AT(void**, self, 0) = g_MenuVideoOptionsVtable;
     self->field_0004 = reinterpret_cast<std::uintptr_t>(

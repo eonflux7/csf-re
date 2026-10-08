@@ -9,13 +9,13 @@
 CSF_FUNC(void*, __cdecl, GetGlobalValue_8B0568, 0x4FDBB0, ());
 
 // Mission-ready probe (0x44FB00): no arguments, result tested through al.
-CSF_FUNC(bool, __cdecl, IsMissionReady_44FB00, 0x44FB00, ());
+CSF_FUNC(bool, __cdecl, MissionInfo_IsPrerequisiteMet, 0x44FB00, ());
 
 // Returns a sub-object pointer from the global object (0x4FE4A0): __thiscall, no stack args.
-CSF_FUNC(void*, __fastcall, GetGlobalSubobject_4FE4A0, 0x4FE4A0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, DefaultDestination_Get, 0x4FE4A0, (void* self, void* edx));
 
 // Panel handlers (0x53DFA0 / 0x53DEF0): __thiscall with one stack arg, ret 4.
-CSF_FUNC(bool, __fastcall, CMenuMissionInfo_TryHandleSecondaryPanel, 0x53DFA0,
+CSF_FUNC(bool, __fastcall, CMenuMissionInfo_IsCurrentEntryAbsentFromList, 0x53DFA0,
          (CMenuMissionInfo* self, void* edx, int a1));
 CSF_FUNC(bool, __fastcall, CMenuMissionInfo_TryHandleTertiaryPanel, 0x53DEF0,
          (CMenuMissionInfo* self, void* edx, int a1));
@@ -25,12 +25,12 @@ CSF_FUNC(bool, __fastcall, CMenuMissionInfo_TryHandleTertiaryPanel, 0x53DEF0,
 static int __fastcall CMenuMissionInfo_CheckAdvanceCondition(CMenuMissionInfo* self, void* /*edx*/, int a2)
 {
     if (self->field_0090 < self->field_008c) {
-        if (IsMissionReady_44FB00()) {
+        if (MissionInfo_IsPrerequisiteMet()) {
             void* globalObject = GetGlobalValue_8B0568();
-            void* subObject = GetGlobalSubobject_4FE4A0(globalObject, nullptr);
+            void* subObject = DefaultDestination_Get(globalObject, nullptr);
             if (subObject != nullptr) {
                 globalObject = GetGlobalValue_8B0568();
-                subObject = GetGlobalSubobject_4FE4A0(globalObject, nullptr);
+                subObject = DefaultDestination_Get(globalObject, nullptr);
                 if (CSF_AT(uint32_t, subObject, 0x1C) == 0) {
                     return 1;
                 }
@@ -38,7 +38,7 @@ static int __fastcall CMenuMissionInfo_CheckAdvanceCondition(CMenuMissionInfo* s
         }
     }
 
-    if (CMenuMissionInfo_TryHandleSecondaryPanel(self, nullptr, a2)) {
+    if (CMenuMissionInfo_IsCurrentEntryAbsentFromList(self, nullptr, a2)) {
         return 1;
     }
     if (CMenuMissionInfo_TryHandleTertiaryPanel(self, nullptr, a2)) {

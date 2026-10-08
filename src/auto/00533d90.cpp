@@ -6,7 +6,7 @@
 CSF_FUNC(const void*, __cdecl, RwImageSetPath, 0x00625270,
          (const void* path));
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, GetTextureProvider, 0x006B1390,
+CSF_FUNC(void*, __fastcall, MenuControls_ResolveObject, 0x006B1390,
          (void* self, void* edx));
 
 // x86 __regcall assigns integer arguments to EAX, ECX, EDX, EDI,
@@ -22,7 +22,7 @@ static void* __regcall MenuMpPause_LoadTexture(
     RwImageSetPath(CSF_STR(0x00841C64, "Menus/Textures/"));
 
     const int globalContext = GetGlobalInt();
-    void* provider = GetTextureProvider(
+    void* provider = MenuControls_ResolveObject(
         reinterpret_cast<void*>(globalContext), nullptr);
 
     const char* name;

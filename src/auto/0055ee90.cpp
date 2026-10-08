@@ -13,7 +13,7 @@
 CSF_GLOBAL(float, g_fIntroVideoDuration, 0x0082E118);
 
 CSF_FUNC(int, __cdecl, GetGlobalDword_73C020, 0x0073C020, (void));
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x0050D190, (void));
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x0050D190, (void));
 CSF_FUNC(int, __fastcall, GlobalState_ResetPending, 0x0050E1E0, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, MenuMpOnline_RefreshForState, 0x0055ECA0, (void* self, void* edx));
 CSF_FUNC(uint8_t, __fastcall, GlobalFlag_IsSet, 0x007A7B50, (void* ecxArg, void* edx));
@@ -29,7 +29,7 @@ static void __fastcall MenuMpOnline_TickIntroTimer(void* self, void* /*edx*/, fl
     if (accumulated > g_fIntroVideoDuration) {
         const int globalDword = GetGlobalDword_73C020();
         if (GlobalFlag_IsSet(reinterpret_cast<void*>(static_cast<intptr_t>(globalDword)), nullptr)) {
-            const int globalState = GetGlobalState();
+            const int globalState = GetGlobalState_50D190();
             GlobalState_ResetPending(reinterpret_cast<void*>(static_cast<intptr_t>(globalState)), nullptr);
             CSF_AT(int, self, 0x18) = 2;
             MenuMpOnline_RefreshForState(self, nullptr);

@@ -7,7 +7,7 @@
 CSF_FUNC(int, __cdecl, Mem_AllocDebug, 0x00690DC0,
          (std::size_t size, int flags, int tag));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
-CSF_FUNC(void, __stdcall, RethrowException, 0x007AF666,
+CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInfo));
 
 static void __cdecl InitializeRecordWords(void* record)
@@ -41,7 +41,7 @@ static int __cdecl CreateEmptyRecord()
         if (address != 0) {
             Mem_FreeDebug(record);
         }
-        RethrowException(nullptr, nullptr);
+        RethrowCppException(nullptr, nullptr);
         __assume(0);
     }
 

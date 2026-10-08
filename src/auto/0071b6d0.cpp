@@ -7,9 +7,9 @@
 
 CSF_FUNC(void*, __fastcall, ConstructStringFromText, 0x00434150,
          (void* self, void* edx, const char* text));
-CSF_FUNC(void*, __fastcall, AssignStringRange, 0x004109E0,
+CSF_FUNC(void*, __fastcall, AssignStringSubstring, 0x004109E0,
          (void* self, void* edx, void* source, uint32_t start, uint32_t count));
-CSF_FUNC(int, __fastcall, DestroyString, 0x00544310,
+CSF_FUNC(int, __fastcall, CMenuSaveGame_ResetStringStorage, 0x00544310,
          (void* self, void* edx));
 
 static bool TextEquals(const char* left, const char* right)
@@ -99,9 +99,9 @@ static int __fastcall C_00864508_ActivateEntry(
         else
             source = storedName;
 
-        AssignStringRange(storedName, nullptr, source, 0, UINT32_MAX);
+        AssignStringSubstring(storedName, nullptr, source, 0, UINT32_MAX);
         if (constructTemporary)
-            DestroyString(temporaryString, nullptr);
+            CMenuSaveGame_ResetStringStorage(temporaryString, nullptr);
     }
 
     ((void(__fastcall*)(void*, void*, uint32_t))

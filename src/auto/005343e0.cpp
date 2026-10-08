@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 
 // Callees, bound by address.
-CSF_FUNC(void, __cdecl, Vector_DestroyRange, 0x00469760,
+CSF_FUNC(void, __cdecl, DestroyElementRange, 0x00469760,
          (void* firstElement, void* endElement, void* rangeHeader, void* ownerObject));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
@@ -18,7 +18,7 @@ static int* __fastcall CMenuLanguage_Destroy(CMenuLanguage* self, void* /*edx*/)
     uint32_t ownedObjectWord = self->field_0030;
 
     // CMenuLanguage vtable (0x841CD0) and its secondary-base vtable (0x841C80).
-    CSF_AT(void*, self, 0) = reinterpret_cast<void*>(0x841CD0);
+    CSF_AT(void*, self, 0) = reinterpret_cast<void*>(CSF_ADDR_VT(0x841CD0));
     self->field_0004 = reinterpret_cast<uint32_t>(&g_VtblCMenuLanguageSecondary);
 
     if (ownedObjectWord != 0) {
@@ -57,7 +57,7 @@ static int* __fastcall CMenuLanguage_Destroy(CMenuLanguage* self, void* /*edx*/)
     int* eaxAtReturn = reinterpret_cast<int*>(beginWord);
     if (beginWord != 0) {
         uint32_t endWord = CSF_AT(uint32_t, self, 0x18);
-        Vector_DestroyRange(reinterpret_cast<void*>(beginWord),
+        DestroyElementRange(reinterpret_cast<void*>(beginWord),
                             reinterpret_cast<void*>(endWord),
                             rangeHeader,
                             self);
@@ -76,8 +76,8 @@ static int* __fastcall CMenuLanguage_Destroy(CMenuLanguage* self, void* /*edx*/)
     // The first +4 store is volatile so it is not removed as a dead store.
     *reinterpret_cast<volatile uint32_t*>(reinterpret_cast<uint8_t*>(self) + 4) =
         reinterpret_cast<uint32_t>(&g_VtblCMenuScreenSecondaryA);
-    self->field_0004 = 0x830438;
-    CSF_AT(void*, self, 0) = reinterpret_cast<void*>(0x83042C);  // g_VtblCMenuScreenBase
+    self->field_0004 = CSF_ADDR_VT(0x830438);
+    CSF_AT(void*, self, 0) = reinterpret_cast<void*>(CSF_ADDR_VT(0x83042C));  // g_VtblCMenuScreenBase
 
     return eaxAtReturn;
 }

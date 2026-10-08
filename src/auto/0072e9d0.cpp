@@ -4,10 +4,10 @@
 #include "types/auto_classes.h"
 
 static const auto CGuiSlider_IsSelectableAndNotType10 =
-    reinterpret_cast<int (__fastcall*)(CGuiControl*, void*)>(0x00718700);
+    reinterpret_cast<int (__fastcall*)(CGuiControl*, void*)>(CSF_ADDR_FN(0x00718700));
 
 static const auto CGuiButton_HandleInputEvent =
-    reinterpret_cast<char (__fastcall*)(CGuiButton*, void*, int, int)>(0x007259A0);
+    reinterpret_cast<char (__fastcall*)(CGuiButton*, void*, int, int)>(CSF_ADDR_FN(0x007259A0));
 
 static char __fastcall CGuiChoiceButton_HandleInputEvent(
     CGuiChoiceButton* self, void* /*edx*/, int event, int argument)

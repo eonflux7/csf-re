@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, LegacyString_MatchesNarrowName,
+CSF_FUNC(int, __fastcall, MenuAccount_GateCheck_696B60,
          0x00696B60, (std::uint16_t* self, void* edx, char* name));
 
 static int __fastcall CGuiChoiceButton_SelectChoiceByName(
@@ -33,7 +33,7 @@ static int __fastcall CGuiChoiceButton_SelectChoiceByName(
         const std::uint32_t nameAddress =
             CSF_AT(std::uint32_t, self, 0x1F4) + byteOffset + 4;
 
-        result = LegacyString_MatchesNarrowName(
+        result = MenuAccount_GateCheck_696B60(
             reinterpret_cast<std::uint16_t*>(nameAddress), nullptr, name);
 
         if (static_cast<std::uint8_t>(result) != 0)

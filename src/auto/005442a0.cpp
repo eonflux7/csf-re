@@ -12,7 +12,7 @@
 
 // Callees bound by address.
 CSF_FUNC(int, __fastcall, CMenuProfiles_ResetCampaignControls, 0x0053B970, (void* self, void* edx));
-CSF_FUNC(void, __fastcall, CMenuSaveGame_ResetSaveSession, 0x0053C070, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, MenuProfiles_UpdateTrucoFlag, 0x0053C070, (void* self, void* edx));
 
 // Original: int __thiscall CMenuSaveGame::sub_5442A0(void)
 // Notifies the sub-object at +0x28 (vtbl slot 1) with the value at +0x30,
@@ -27,7 +27,7 @@ static int __fastcall CMenuSaveGame_ShutdownAndReturnResult(void* self, void* /*
     ((void(__fastcall*)(void*, void*, uint32_t))CSF_AT(void**, notifyTarget, 0)[1])(
         notifyTarget, nullptr, notifyValue);
 
-    CMenuSaveGame_ResetSaveSession(self, nullptr);
+    MenuProfiles_UpdateTrucoFlag(self, nullptr);
     CMenuProfiles_ResetCampaignControls(self, nullptr);
 
     void* resultTarget = CSF_AT(void*, self, 0x24);

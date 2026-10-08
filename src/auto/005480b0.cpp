@@ -8,10 +8,10 @@
 #include "hook.h"
 
 // Helper that resolves a companion object from the menu subobject (__thiscall, ecx = self, no stack args).
-CSF_FUNC(void*, __fastcall, MenuExtras_GetCompanionObject, 0x6683F0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x6683F0, (void* self, void* edx));
 
 // Finalizes the menu state when the input-disabled flag is set (__thiscall on CMenuExtras, ecx = self - 4, no stack args).
-CSF_FUNC(int, __fastcall, CMenuExtras_ProcessDisabledState, 0x5477E0, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, CMenuExtras_ResetActiveExtra, 0x5477E0, (void* self, void* edx));
 
 // Selects the thumbnail matching a control index (__thiscall on CMenuExtras, one stack arg, ret 4).
 CSF_FUNC(void, __fastcall, CMenuExtras_SelectThumbnailFromControl, 0x5464E0, (void* self, void* edx, int control));
@@ -21,7 +21,7 @@ static void __fastcall CMenuExtras_HandleCommandMessage(void* self, void* /*edx*
 {
     if (CSF_AT(uint8_t, self, 0x43))
     {
-        CMenuExtras_ProcessDisabledState(reinterpret_cast<uint8_t*>(self) - 4, nullptr);
+        CMenuExtras_ResetActiveExtra(reinterpret_cast<uint8_t*>(self) - 4, nullptr);
         return;
     }
 
@@ -36,7 +36,7 @@ static void __fastcall CMenuExtras_HandleCommandMessage(void* self, void* /*edx*
         void* argumentObject = reinterpret_cast<void*>(static_cast<uintptr_t>(argument));
         if (CSF_AT(uint8_t, argumentObject, 0x38))
         {
-            void* companion = MenuExtras_GetCompanionObject(self, nullptr);
+            void* companion = GetReferencedObject(self, nullptr);
             void** companionVtbl = CSF_AT(void**, companion, 0);
             // Virtual slot at byte offset 0x1C.
             reinterpret_cast<void (__fastcall*)(void*, void*)>(companionVtbl[0x1C / 4])(companion, nullptr);

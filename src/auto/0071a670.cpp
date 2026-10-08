@@ -4,13 +4,13 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(void*, __cdecl, AllocateResourceMemory, 0x006910F0, (unsigned int size));
-CSF_FUNC(int, __cdecl, FreeResourceMemory, 0x00691110, (void* memory));
-CSF_FUNC(void*, __fastcall, ConstructResource, 0x00692B10, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, DestroyResource, 0x00694380, (void* self, void* edx));
-CSF_FUNC(char, __fastcall, LoadResource, 0x00694770,
+CSF_FUNC(void*, __cdecl, Mem_Alloc, 0x006910F0, (unsigned int size));
+CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* memory));
+CSF_FUNC(void*, __fastcall, MenuExtras_InitializeFile, 0x00692B10, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, MenuExtras_CloseFile, 0x00694380, (void* self, void* edx));
+CSF_FUNC(char, __fastcall, MenuExtras_LoadFile, 0x00694770,
          (void* self, void* edx, const char* name));
-CSF_FUNC(int, __cdecl, CompareNamesIgnoringCase, 0x007B0C41,
+CSF_FUNC(int, __cdecl, __stricmp, 0x007B0C41,
          (const char* first, const char* second));
 
 static const char* GetEntryName(void* entry)
@@ -38,7 +38,7 @@ static int __fastcall C_00864508_GetOrLoadNamedResource(
     for (;;)
     {
         void* entry = reinterpret_cast<void*>(self->field_0014 + offset);
-        if (CompareNamesIgnoringCase(GetEntryName(entry), name) == 0)
+        if (__stricmp(GetEntryName(entry), name) == 0)
             break;
 
         ++index;
@@ -50,17 +50,17 @@ static int __fastcall C_00864508_GetOrLoadNamedResource(
     void* entry = reinterpret_cast<void*>(self->field_0014 + (index << 6));
     if (CSF_AT(uint32_t, entry, 0x3C) == 0)
     {
-        void* memory = AllocateResourceMemory(0x3C);
-        void* resource = memory ? ConstructResource(memory, nullptr) : nullptr;
+        void* memory = Mem_Alloc(0x3C);
+        void* resource = memory ? MenuExtras_InitializeFile(memory, nullptr) : nullptr;
         CSF_AT(void*, entry, 0x3C) = resource;
 
-        if (!LoadResource(resource, nullptr, GetEntryName(entry)))
+        if (!MenuExtras_LoadFile(resource, nullptr, GetEntryName(entry)))
         {
             void* failedResource = CSF_AT(void*, entry, 0x3C);
             if (failedResource)
             {
-                DestroyResource(failedResource, nullptr);
-                FreeResourceMemory(failedResource);
+                MenuExtras_CloseFile(failedResource, nullptr);
+                Mem_Free(failedResource);
                 CSF_AT(uint32_t, entry, 0x3C) = 0;
             }
         }

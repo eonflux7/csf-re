@@ -12,7 +12,7 @@
 
 CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 CSF_FUNC(int, __cdecl, GetGlobalState_6A6D70, 0x006A6D70, ());
-CSF_FUNC(int, __fastcall, GetSchedulerProxyKind, 0x00734A10, (void* schedulerBase, void* /*edx*/));
+CSF_FUNC(int, __fastcall, SchedulerBase_GetSchedulerProxy, 0x00734A10, (void* schedulerBase, void* /*edx*/));
 
 // Set by the dispatch helper when the 0x1000 path requires the tail jump.
 static int g_tailJumpPending = 0;
@@ -28,7 +28,7 @@ static int __fastcall MenuMpOnline_DispatchSchedulerProxy(void* self, void* /*ed
     g_tailJumpObject = nullptr;
 
     int schedulerBase = GetGlobalState_50D190();
-    int proxyKind = GetSchedulerProxyKind(reinterpret_cast<void*>(schedulerBase), nullptr);
+    int proxyKind = SchedulerBase_GetSchedulerProxy(reinterpret_cast<void*>(schedulerBase), nullptr);
 
     if (proxyKind == 0x800) {
         int globalState = GetGlobalState_6A6D70();

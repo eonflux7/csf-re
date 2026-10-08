@@ -6,7 +6,7 @@
 
 CSF_GLOBAL(std::uint32_t, g_GuiBuilderVtable, 0x00864B30);
 
-CSF_FUNC(void*, __fastcall, GrowControlArray, 0x0041E5F0,
+CSF_FUNC(void*, __fastcall, GrowButtonArray, 0x0041E5F0,
          (void* self, void* edx, int additionalCapacity));
 CSF_FUNC(std::uint32_t*, __fastcall, InitializeDefaultColorPalette, 0x0071DF80,
          (std::uint32_t* self, void* edx));
@@ -47,7 +47,7 @@ static CGuiBuilder* __fastcall CGuiBuilder_Construct(
 
     const std::uint32_t capacity = self->field_0010;
     if (capacity < 2)
-        GrowControlArray(controlArray, nullptr, static_cast<int>(2 - capacity));
+        GrowButtonArray(controlArray, nullptr, static_cast<int>(2 - capacity));
 
     self->field_0014 = 2;
     const std::uint32_t count = self->field_0014;

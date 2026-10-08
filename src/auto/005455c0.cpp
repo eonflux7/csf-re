@@ -21,8 +21,8 @@ static int __fastcall CMenuSaveGame_Destruct(CMenuSaveGame* self, void* /*edx*/)
     // Owned virtual object at +0x44: slot 0 is the deleting destructor, arg 1 = delete flag.
     const uint32_t ownedObjectValue = self->field_0044;
 
-    WriteDwordAt(self, 0x00, 0x843B30); // CMenuSaveGame primary vtable
-    WriteDwordAt(self, 0x04, 0x843B70); // CMenuSaveGame secondary vtable
+    WriteDwordAt(self, 0x00, CSF_ADDR_VT(0x843B30)); // CMenuSaveGame primary vtable
+    WriteDwordAt(self, 0x04, CSF_ADDR_VT(0x843B70)); // CMenuSaveGame secondary vtable
 
     if (ownedObjectValue != 0) {
         void* ownedObject = reinterpret_cast<void*>(ownedObjectValue);
@@ -55,9 +55,9 @@ static int __fastcall CMenuSaveGame_Destruct(CMenuSaveGame* self, void* /*edx*/)
     WriteDwordAt(self, 0x28, 0);
     WriteDwordAt(self, 0x2C, 0);
 
-    WriteDwordAt(self, 0x04, 0x830488); // intermediate base secondary vtable
-    WriteDwordAt(self, 0x04, 0x830438); // CMenuScreen secondary base vtable
-    WriteDwordAt(self, 0x00, 0x83042C); // CMenuScreen base vtable
+    WriteDwordAt(self, 0x04, CSF_ADDR_DATA(0x830488)); // intermediate base secondary vtable
+    WriteDwordAt(self, 0x04, CSF_ADDR_VT(0x830438)); // CMenuScreen secondary base vtable
+    WriteDwordAt(self, 0x00, CSF_ADDR_VT(0x83042C)); // CMenuScreen base vtable
 
     return result;
 }

@@ -13,7 +13,7 @@
 // Callees, bound by address.
 CSF_FUNC(char, __cdecl, ReadFirstStoredIndexedValue, 0x540FF0, (int a1, uint32_t* a2));
 CSF_FUNC(int, __fastcall, SaveSlotInfo_AssignFromRecord, 0x512D80, (void* self, void* edx, uint32_t record));
-CSF_FUNC(void*, __fastcall, StdString_AssignSubstring, 0x4109E0, (void* self, void* edx, void* source, uint32_t offset, uint32_t count));
+CSF_FUNC(void*, __fastcall, AssignStringSubstring, 0x4109E0, (void* self, void* edx, void* source, uint32_t offset, uint32_t count));
 
 // Reads the key dword stored at +4 of a save record (record is an address value).
 static uint32_t SaveRecord_ReadKeyField(uint32_t record)
@@ -68,7 +68,7 @@ static int __fastcall CMenuLoadGame_SelectSaveRecordAndRefresh(CMenuLoadGame* se
                     SaveSlotInfo_AssignFromRecord(reinterpret_cast<uint8_t*>(self) + 0x38, nullptr, recordAddress);
 
                     // Assign the string at +0x88 into the string object at +0x1C (offset 0, count npos).
-                    StdString_AssignSubstring(reinterpret_cast<uint8_t*>(self) + 0x1C, nullptr,
+                    AssignStringSubstring(reinterpret_cast<uint8_t*>(self) + 0x1C, nullptr,
                                               reinterpret_cast<uint8_t*>(self) + 0x88, 0u, 0xFFFFFFFFu);
 
                     // Refresh through vtable slot 0x50 (index 20) on self.

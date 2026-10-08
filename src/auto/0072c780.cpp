@@ -6,13 +6,13 @@
 // int __cdecl sub_72A770(int a1, int a2, int a3) -- but the call site pushes
 // five dwords and cleans 0x14 bytes (see the verified clone at 0x007199B0),
 // so it is bound with the real five-argument __cdecl signature.
-CSF_FUNC(int, __cdecl, CopyFourByteElementsWithContext, 0x0072A770,
+CSF_FUNC(int, __cdecl, CopyFourByteElementsWithContext_72A770, 0x0072A770,
          (std::uint32_t destination, int count, const std::uint32_t* source,
           void* owner, std::uint32_t tag));
 
 // unsigned int __thiscall sub_72C170(int *this, std::uint32_t *Src, unsigned int a3,
 //                                   std::uint32_t *a4)   -- pops 12 bytes (3 stack args).
-CSF_FUNC(std::uint32_t, __fastcall, InsertFourByteElements, 0x0072C170,
+CSF_FUNC(std::uint32_t, __fastcall, InsertElements, 0x0072C170,
          (void* self, void* edx, std::uint32_t* position,
           std::uint32_t count, std::uint32_t* source));
 
@@ -38,7 +38,7 @@ static std::uint32_t __fastcall AppendFourByteElementWithContext(
         size >= static_cast<std::uint32_t>(
                     static_cast<std::int32_t>(
                         CSF_AT(std::uint32_t, self, 0x0C) - begin) >> 2)) {
-        return InsertFourByteElements(
+        return InsertElements(
             self, nullptr,
             reinterpret_cast<std::uint32_t*>(
                 CSF_AT(std::uint32_t, self, 0x08)),
@@ -54,7 +54,7 @@ static std::uint32_t __fastcall AppendFourByteElementWithContext(
         0xFFFFFF00u;
 
     const int result =
-        CopyFourByteElementsWithContext(end, 1, source, self, tag);
+        CopyFourByteElementsWithContext_72A770(end, 1, source, self, tag);
     CSF_AT(std::uint32_t, self, 0x08) = end + 4u;
     return static_cast<std::uint32_t>(result);
 }

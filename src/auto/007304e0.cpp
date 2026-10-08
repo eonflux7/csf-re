@@ -3,7 +3,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_SetPosition, 0x007198A0,
+CSF_FUNC(int, __fastcall, CGuiControl_SetPosition_7198A0, 0x007198A0,
          (CGuiControl* self, void* edx, float x, float y));
 
 // CGuiSwitch::SetPosition(float x, float y)
@@ -13,7 +13,7 @@ CSF_FUNC(int, __fastcall, CGuiControl_SetPosition, 0x007198A0,
 static int __fastcall CGuiSwitch_SetPosition(
     CGuiSwitch* self, void* /*edx*/, float x, float y)
 {
-    CGuiControl_SetPosition(self, nullptr, x, y);
+    CGuiControl_SetPosition_7198A0(self, nullptr, x, y);
 
     if (self->m_pText == 0)
         return 0;

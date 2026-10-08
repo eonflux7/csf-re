@@ -6,10 +6,10 @@
 // producing the destination range. If the handler throws, the already built
 // destination elements are destroyed and the exception is rethrown.
 CSF_FUNC(int, __stdcall, ForwardToHandlerIfNonNull, 0x007310D0, (int a1, int a2));
-CSF_FUNC(int, __stdcall, DestroyElement, 0x006B5220, (int* element));
-CSF_FUNC(void, __stdcall, RethrowCurrentException, 0x007AF666,
+CSF_FUNC(int, __stdcall, DestroyElementThroughContext, 0x006B5220, (int* element));
+CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInfo));
-CSF_FUNC(int, __cdecl, OriginalCxxFrameHandler, 0x007AF226,
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226,
          (void* exceptionRecord, void* frame, void* context, void* dispatcher));
 
 // Compiler-generated exception-handling stubs: bound by address, not called.
@@ -40,11 +40,11 @@ static int __cdecl ForwardRangeToHandler(
 
         while (constructed != constructedEnd)
         {
-            DestroyElement(reinterpret_cast<int*>(constructed));
+            DestroyElementThroughContext(reinterpret_cast<int*>(constructed));
             constructed += 16;
         }
 
-        RethrowCurrentException(nullptr, nullptr);
+        RethrowCppException(nullptr, nullptr);
         __assume(0);
     }
 

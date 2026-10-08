@@ -18,7 +18,7 @@ static void __fastcall CMenuSoundOptions_Destruct(CMenuSoundOptions* self, void*
 {
     void* child = reinterpret_cast<void*>(self->field_001c);
 
-    CSF_AT(uint32_t, self, 0) = 0x00842AD0;   // CMenuSoundOptions vtable
+    CSF_AT(uint32_t, self, 0) = CSF_ADDR_VT(0x00842AD0);   // CMenuSoundOptions vtable
     self->field_0004 = 0x00842A80;            // CMenuScreen intermediate vtable
 
     if (child) {
@@ -27,9 +27,9 @@ static void __fastcall CMenuSoundOptions_Destruct(CMenuSoundOptions* self, void*
         self->field_001c = 0;
     }
 
-    self->field_0004 = 0x00830488;
-    self->field_0004 = 0x00830438;
-    CSF_AT(uint32_t, self, 0) = 0x0083042C;
+    self->field_0004 = CSF_ADDR_DATA(0x00830488);
+    self->field_0004 = CSF_ADDR_VT(0x00830438);
+    CSF_AT(uint32_t, self, 0) = CSF_ADDR_VT(0x0083042C);
 }
 
 HOOK(0x0053CCE0, CMenuSoundOptions_Destruct, "auto");

@@ -3,9 +3,9 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, ReleaseTextureReference, 0x006923C0,
+CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
-CSF_FUNC(int, __fastcall, DestroyBaseObject, 0x00713F40,
+CSF_FUNC(int, __fastcall, C_00863f60_Destroy, 0x00713F40,
          (void* self, void* edx));
 CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* memory));
 
@@ -18,13 +18,13 @@ static C_00865a10* __fastcall C_00865a10_Destroy(
     CSF_AT(void**, self, 0) = &g_C_00865a10_Vtable;
 
     if (texture)
-        ReleaseTextureReference(static_cast<uint8_t*>(texture) + 4, nullptr);
+        ReleaseObjectReference(static_cast<uint8_t*>(texture) + 4, nullptr);
 
     texture = reinterpret_cast<void*>(self->field_0054);
     if (texture)
-        ReleaseTextureReference(static_cast<uint8_t*>(texture) + 4, nullptr);
+        ReleaseObjectReference(static_cast<uint8_t*>(texture) + 4, nullptr);
 
-    DestroyBaseObject(self, nullptr);
+    C_00863f60_Destroy(self, nullptr);
 
     if ((flags & 1) != 0)
         Mem_Free(self);

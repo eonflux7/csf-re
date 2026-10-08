@@ -7,7 +7,7 @@
 
 // void __thiscall sub_53B510(this) : recomputes the screen layout before the
 // slider widgets are queried. Called with ecx == the menu screen object.
-CSF_FUNC(void, __fastcall, CMenuGameOptions_RefreshLayout, 0x53B510,
+CSF_FUNC(void, __fastcall, CMenuGameOptions_SyncOptionFlagsFromSource, 0x53B510,
          (CMenuGameOptions* self, void* /*edx*/));
 
 // Re-reads the slider widget state: pulls its current value (virtual slot at
@@ -18,7 +18,7 @@ static int __fastcall CMenuGameOptionsPC_SyncSliderFromControl(CMenuGameOptionsP
     int result = static_cast<int>(self->field_0024);
     if (result)
     {
-        CMenuGameOptions_RefreshLayout(self, nullptr);
+        CMenuGameOptions_SyncOptionFlagsFromSource(self, nullptr);
 
         void* widget = reinterpret_cast<void*>(self->field_0024);
         void** vtbl = *reinterpret_cast<void***>(widget);

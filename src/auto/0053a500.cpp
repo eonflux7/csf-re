@@ -7,12 +7,12 @@
 #include "legacy/string.h"
 
 // Vtable pointer values stored into the object (the original writes these immediates).
-static constexpr uint32_t kCMenuScreenVtable = 0x0083042C;     // CMenuScreen base vtable
+static const uint32_t kCMenuScreenVtable = CSF_ADDR_VT(0x0083042C);     // CMenuScreen base vtable
 static constexpr uint32_t kEmbeddedMenuPartVtable = 0x00842438; // vtable of the member at +0x04
-static constexpr uint32_t kCMenuPauseVtable = 0x00842488;       // CMenuPause vtable
+static const uint32_t kCMenuPauseVtable = CSF_ADDR_VT(0x00842488);       // CMenuPause vtable
 
 // Initializer of the embedded member object at CMenuPause+0x04 (__thiscall, no stack args).
-CSF_FUNC(void*, __fastcall, InitEmbeddedMenuPart, 0x00712CC0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x00712CC0, (void* self, void* edx));
 
 // Constructor of CMenuPause. Original: std::uint32_t *__thiscall sub_53A500(std::uint32_t *this, int a2), ret 4.
 static CMenuPause* __fastcall CMenuPause_Construct(CMenuPause* self, void* /*edx*/, int restoreArg)
@@ -23,7 +23,7 @@ static CMenuPause* __fastcall CMenuPause_Construct(CMenuPause* self, void* /*edx
     // First vtable write: CMenuScreen base vtable (0x0083042C).
     CSF_AT(uint32_t, self, 0x00) = kCMenuScreenVtable;
 
-    InitEmbeddedMenuPart(embeddedPart, nullptr);
+    C_00830438_Construct(embeddedPart, nullptr);
 
     self->field_0038 = static_cast<uint32_t>(restoreArg);
 

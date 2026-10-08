@@ -5,16 +5,16 @@
 // MSVC-generated range "construct one record" step. The original forwards the
 // context/allocator argument in ECX (__thiscall-style call), but the
 // instantiated callee body does not consume ECX, so it is bound as __stdcall.
-CSF_FUNC(int*, __stdcall, CallHandlerIfNonNull, 0x00716060,
+CSF_FUNC(int*, __stdcall, CallHandlerIfNonNull_716060, 0x00716060,
          (int* destination, int* source));
 
 // MSVC-generated element destructor invoked by the cleanup continuation.
-CSF_FUNC(int, __stdcall, DestroyRecord, 0x006B5220, (int* record));
+CSF_FUNC(int, __stdcall, DestroyElementThroughContext, 0x006B5220, (int* record));
 
-CSF_FUNC(void, __stdcall, RethrowCurrentException, 0x007AF666,
+CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInfo));
 
-CSF_FUNC(int, __cdecl, OriginalCxxFrameHandler, 0x007AF226,
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226,
          (void* exceptionRecord, void* frame, void* context, void* dispatcher));
 
 // Compiler-generated EH code/info referenced by the scope table: bind by
@@ -39,7 +39,7 @@ static int* __cdecl CopyConstructRecordRange(
         // Records are 16 bytes each; the pointer advances 4 dwords.
         while (source != sourceEnd)
         {
-            CallHandlerIfNonNull(destination, source);
+            CallHandlerIfNonNull_716060(destination, source);
             destination += 4;
             source += 4;
         }
@@ -52,11 +52,11 @@ static int* __cdecl CopyConstructRecordRange(
 
         while (constructed != constructedEnd)
         {
-            DestroyRecord(constructed);
+            DestroyElementThroughContext(constructed);
             constructed += 4;
         }
 
-        RethrowCurrentException(nullptr, nullptr);
+        RethrowCppException(nullptr, nullptr);
         __assume(0);
     }
 

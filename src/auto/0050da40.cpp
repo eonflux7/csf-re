@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Callee: returns pointer to the global value block (cdecl, no args).
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x753A30, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_753A30, 0x753A30, ());
 
 CSF_GLOBAL(float, g_TransitionOne, 0x82D4D4);
 
@@ -28,15 +28,15 @@ static float __fastcall MenuSystem_GetTermTransitionScale(void* self, void* /*ed
         const int32_t stateCode = CSF_AT(int32_t, self, 0x84);
         if (stateCode == 0)
         {
-            return CSF_AT(float, GetGlobalValue(), 0x100);
+            return CSF_AT(float, GetGlobalValue_753A30(), 0x100);
         }
         if (stateCode == 2)
         {
-            return CSF_AT(float, GetGlobalValue(), 0x104);
+            return CSF_AT(float, GetGlobalValue_753A30(), 0x104);
         }
         if (stateCode == 3)
         {
-            return CSF_AT(float, GetGlobalValue(), 0x108);
+            return CSF_AT(float, GetGlobalValue_753A30(), 0x108);
         }
     }
     return defaultValue;

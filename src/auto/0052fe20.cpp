@@ -12,7 +12,7 @@ CSF_GLOBAL(uint8_t, off_830438, 0x00830438);
 CSF_GLOBAL(uint8_t, g_VtblCMenuScreenBase, 0x0083042C);
 
 // Container-release helper (cdecl, caller pops 0x10 bytes). Original pushes four arguments.
-CSF_FUNC(int, __cdecl, MenuMpServerInfo_ReleaseSceneList, 0x00469760,
+CSF_FUNC(int, __cdecl, DestroyElementRange, 0x00469760,
          (uint32_t firstEntry, uint32_t secondEntry, void* ownerSubobject, void* owner));
 
 // Game heap free used by the original (cdecl, caller pops 4 bytes).
@@ -26,8 +26,8 @@ static int* __fastcall CMenuSceneSelect_Destroy(CMenuSceneSelect* self, void* /*
     // Original reads the owned object pointer first, before writing the vtable slots.
     void* ownedObject = reinterpret_cast<void*>(self->field_0014);
 
-    CSF_AT(uint32_t, self, 0x00) = 0x00841978u;
-    self->field_0004 = 0x00841928u;
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x00841978);
+    self->field_0004 = CSF_ADDR_DATA(0x00841928);
 
     if (ownedObject != nullptr) {
         // Slot 0 of the owned object's vtable is called with flag 1 (__thiscall, callee pops 4).
@@ -41,7 +41,7 @@ static int* __fastcall CMenuSceneSelect_Destroy(CMenuSceneSelect* self, void* /*
     uint32_t sceneHead = self->field_003c;
     int* result = reinterpret_cast<int*>(sceneHead);
     if (sceneHead != 0) {
-        MenuMpServerInfo_ReleaseSceneList(
+        DestroyElementRange(
             sceneHead,
             CSF_AT(uint32_t, self, 0x40),
             reinterpret_cast<uint8_t*>(self) + 0x38,
@@ -73,9 +73,9 @@ static int* __fastcall CMenuSceneSelect_Destroy(CMenuSceneSelect* self, void* /*
     // Byte-width store (mov byte ptr [esi+0x1C], bl): only the low byte of field_001c is cleared.
     CSF_AT(uint8_t, self, 0x1C) = 0;
 
-    self->field_0004 = 0x00830488u;
-    self->field_0004 = 0x00830438u;
-    CSF_AT(uint32_t, self, 0x00) = 0x0083042Cu;
+    self->field_0004 = CSF_ADDR_DATA(0x00830488);
+    self->field_0004 = CSF_ADDR_VT(0x00830438);
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x0083042C);
 
     return result;
 }

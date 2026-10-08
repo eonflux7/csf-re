@@ -7,7 +7,7 @@
 CSF_GLOBAL(std::uint32_t, g_PanelVtable, 0x00865B40);
 
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
-CSF_FUNC(int, __fastcall, ReleaseReferencedObject, 0x006923C0,
+CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
 CSF_FUNC(int, __fastcall, CGuiControl_Destroy, 0x00719B10,
          (C_00830438* self, void* edx));
@@ -19,7 +19,7 @@ static int __fastcall CGuiPanel_Destroy(CGuiPanel* self, void* /*edx*/)
 
     if (backgroundQuad != 0)
     {
-        ReleaseReferencedObject(
+        ReleaseObjectReference(
             reinterpret_cast<void*>(backgroundQuad + 4u), nullptr);
         self->m_pBackgroundQuad = 0;
     }
@@ -27,7 +27,7 @@ static int __fastcall CGuiPanel_Destroy(CGuiPanel* self, void* /*edx*/)
     const std::uint32_t pointerQuad = self->m_pPointerQuad;
     if (pointerQuad != 0)
     {
-        ReleaseReferencedObject(
+        ReleaseObjectReference(
             reinterpret_cast<void*>(pointerQuad + 4u), nullptr);
         self->m_pPointerQuad = 0;
     }

@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_PrepareRefresh, 0x00719A20,
+CSF_FUNC(int, __fastcall, CGuiListBoxBase_PrepareListRendering, 0x00719A20,
          (CGuiSlider* self, void* edx));
 CSF_FUNC(int, __fastcall, CGuiSlider_RefreshStandardState, 0x0072CF80,
          (CGuiSlider* self, void* edx));
@@ -19,7 +19,7 @@ static char __fastcall CGuiSlider_RefreshState(CGuiSlider* self, void* /*edx*/)
 
     if (result == 0)
     {
-        CGuiControl_PrepareRefresh(self, nullptr);
+        CGuiListBoxBase_PrepareListRendering(self, nullptr);
 
         if (self->m_bConsole != 0)
             result = RefreshChildControlStates(self, nullptr);

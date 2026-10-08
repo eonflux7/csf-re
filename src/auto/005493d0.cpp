@@ -4,9 +4,9 @@
 #include "globals.h"
 
 // Original callees, bound by address.
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x00521BB0, ());
-CSF_FUNC(void, __fastcall, MenuVideo_ApplyGlobalValue, 0x00521DE0, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, CMenuVideoAdvanced_RefreshCachedSettings, 0x0053AD90, (void* self, void* edx));
+CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x00521BB0, ());
+CSF_FUNC(void, __fastcall, MenuProgressInput_UpdateGlobalState, 0x00521DE0, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, CMenuOptions_LayoutOptionButtons, 0x0053AD90, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, CMenuVideoAdvanced_ResetOptionState, 0x00548D20, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, CMenuVideoAdvanced_PushSettingsToWidgets, 0x00549040, (void* self, void* edx));
 
@@ -37,14 +37,14 @@ static int __fastcall CMenuVideoAdvanced_InitializeAndLoadSettings(CMenuVideoAdv
 
     CMenuVideoAdvanced_ResetOptionState(self, nullptr);
 
-    int globalValue = GetGlobalValue();
-    MenuVideo_ApplyGlobalValue(reinterpret_cast<void*>(static_cast<std::uintptr_t>(globalValue)), nullptr);
+    int globalValue = GetGlobalValue_521BB0();
+    MenuProgressInput_UpdateGlobalState(reinterpret_cast<void*>(static_cast<std::uintptr_t>(globalValue)), nullptr);
 
     // Virtual slot 0x44 (17) on self, with the settings object as its single stack argument.
     reinterpret_cast<void(__fastcall*)(void*, void*, int)>(CSF_AT(void**, self, 0)[17])(
         self, nullptr, static_cast<int>(self->field_001c));
 
-    CMenuVideoAdvanced_RefreshCachedSettings(self, nullptr);
+    CMenuOptions_LayoutOptionButtons(self, nullptr);
     CMenuVideoAdvanced_PushSettingsToWidgets(self, nullptr);
 
     return static_cast<int>(self->field_001c);

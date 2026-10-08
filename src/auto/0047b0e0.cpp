@@ -18,7 +18,7 @@
 #include "legacy/string.h"
 
 // Address of the NUL-terminated "TModoNinguno" literal inside the module's .rdata.
-static const uintptr_t kModoNingunoStringAddr = 0x00831F30u;
+static const uintptr_t kModoNingunoStringAddr = CSF_ADDR_DATA(0x00831F30);
 
 // Returns the mode token string "TModoNinguno".
 static const char* __cdecl GetModoNingunoString()

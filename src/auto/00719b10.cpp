@@ -7,9 +7,9 @@
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
 static void** const g_GuiControlVtable =
-    reinterpret_cast<void**>(0x00864288);
+    CSF_VTBL(0x00864288);
 static void** const g_ControlBaseVtable =
-    reinterpret_cast<void**>(0x00830438);
+    CSF_VTBL(0x00830438);
 
 static int __fastcall CGuiControl_Destroy(CGuiControl* self, void* /*edx*/)
 {

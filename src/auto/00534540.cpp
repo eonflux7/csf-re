@@ -9,12 +9,12 @@
 #include "types/auto_classes.h"
 
 // Original callee: CMenuScreen inner base constructor (__thiscall, no stack args, returns this).
-CSF_FUNC(void*, __fastcall, CMenuScreenInner_Construct, 0x712CC0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x712CC0, (void* self, void* edx));
 
 // Vtable addresses referenced by the original constructor, spelled out by address.
-static constexpr uintptr_t kVtblCMenuScreenBase = 0x0083042C;   // CMenuScreen base vtable (written before base ctor)
-static constexpr uintptr_t kVtblCMenuLanguage = 0x00841CD0;     // CMenuLanguage primary vtable
-static constexpr uintptr_t kVtblCMenuLanguageInner = 0x00841C80; // CMenuLanguage inner sub-object vtable
+static const uintptr_t kVtblCMenuScreenBase = CSF_ADDR_VT(0x0083042C);   // CMenuScreen base vtable (written before base ctor)
+static const uintptr_t kVtblCMenuLanguage = CSF_ADDR_VT(0x00841CD0);     // CMenuLanguage primary vtable
+static const uintptr_t kVtblCMenuLanguageInner = CSF_ADDR_DATA(0x00841C80); // CMenuLanguage inner sub-object vtable
 
 // Constructor of CMenuLanguage (__thiscall, one stack arg -> ret 4).
 // Mirrors the original store order exactly: base vtable, base ctor, own vtables,
@@ -23,7 +23,7 @@ static CMenuLanguage* __fastcall CMenuLanguage_Ctor(CMenuLanguage* self, void* /
 {
     // Install the CMenuScreen base vtable at +0, then construct the embedded base at +4.
     CSF_AT(void*, self, 0x00) = reinterpret_cast<void*>(kVtblCMenuScreenBase);
-    CMenuScreenInner_Construct(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
+    C_00830438_Construct(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
 
     // Install CMenuLanguage vtables: primary at +0, inner sub-object vtable at +4.
     CSF_AT(void*, self, 0x00) = reinterpret_cast<void*>(kVtblCMenuLanguage);

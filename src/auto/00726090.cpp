@@ -5,9 +5,9 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, UpdatePrimaryButtonEffect, 0x00725A60,
+CSF_FUNC(int, __fastcall, CGuiButton_StartHoverEffect, 0x00725A60,
          (CGuiButton* self, void* edx, char enabled));
-CSF_FUNC(int, __fastcall, UpdateSecondaryButtonEffect, 0x00725830,
+CSF_FUNC(int, __fastcall, CGuiButton_UpdateTextColor, 0x00725830,
          (CGuiButton* self, void* edx, char enabled));
 CSF_FUNC(int, __fastcall, SetEffectState, 0x00731AD0,
          (void* self, void* edx, int state));
@@ -22,8 +22,8 @@ static void __fastcall CGuiButton_ResetEffects(
 
     if (activationValue != g_fZero && self->m_bEffects != 0)
     {
-        UpdatePrimaryButtonEffect(self, nullptr, enabled);
-        UpdateSecondaryButtonEffect(self, nullptr, enabled);
+        CGuiButton_StartHoverEffect(self, nullptr, enabled);
+        CGuiButton_UpdateTextColor(self, nullptr, enabled);
 
         reinterpret_cast<void (__fastcall*)(void*, void*)>(
             CSF_AT(void**, self, 0)[0x1E0 / 4])(self, nullptr);

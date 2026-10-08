@@ -6,7 +6,7 @@
 // Original functions called by the target, bound by address.
 CSF_FUNC(void*, __cdecl, GetGlobalValue_8B056C, 0x506BD0, ());
 CSF_FUNC(int, __fastcall, sub_517150, 0x517150, (void* self, void* edx));
-CSF_FUNC(int*, __fastcall, sub_515CE0, 0x515CE0, (void* self, void* edx));
+CSF_FUNC(int*, __fastcall, GetScenarioCollection, 0x515CE0, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, CGuiListBoxBase_ClearStorageAndSendEvent, 0x715660, (void* self, void* edx));
 CSF_FUNC(void, __fastcall, CGuiListBoxBase_AddSelectedItem, 0x716A60, (void* self, void* edx, int itemIndex));
 
@@ -24,7 +24,7 @@ static void __cdecl CMenuProfiles_RebuildProfileListBox(void* listBox)
     reinterpret_cast<void(__fastcall*)(void*, void*)>(
         CSF_AT(void**, profileManager, 0)[0x34 / 4])(profileManager, nullptr);
     sub_517150(profileManager, nullptr);
-    int* profileRecords = sub_515CE0(profileManager, nullptr);
+    int* profileRecords = GetScenarioCollection(profileManager, nullptr);
 
     // Record count of the vector at profileRecords: (end - begin) / 80,
     // computed with the original's signed multiply-high and sign correction.

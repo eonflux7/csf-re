@@ -4,10 +4,10 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __cdecl, MenuProgressInput_GetGlobalValue, 0x00521BB0, ());
-CSF_FUNC(void, __fastcall, MenuProgressInput_SetGlobalInputValue, 0x005231D0,
+CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x00521BB0, ());
+CSF_FUNC(void, __fastcall, GlobalSetValue_5231D0, 0x005231D0,
          (void* self, void* edx, int value));
-CSF_FUNC(void, __cdecl, MenuProgressInput_PostInputUpdate, 0x00506AC0, ());
+CSF_FUNC(void, __cdecl, Nullsub_506AC0, 0x00506AC0, ());
 CSF_FUNC(int, __fastcall, CGuiSlider_ForwardSelfToParent, 0x00718660,
          (void* self, void* edx));
 
@@ -16,10 +16,10 @@ static uint8_t __fastcall CMenuTextInput_SetInputValueAndNotify(
 {
     self->field_001c = static_cast<uint32_t>(value);
 
-    const int globalObject = MenuProgressInput_GetGlobalValue();
-    MenuProgressInput_SetGlobalInputValue(
+    const int globalObject = GetGlobalValue_521BB0();
+    GlobalSetValue_5231D0(
         reinterpret_cast<void*>(globalObject), nullptr, value);
-    MenuProgressInput_PostInputUpdate();
+    Nullsub_506AC0();
 
     uint8_t result = static_cast<uint8_t>(
         reinterpret_cast<int(__fastcall*)(void*, void*)>(

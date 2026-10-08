@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(void*, __fastcall, GetRelatedObject, 0x006683F0,
+CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x006683F0,
          (void* self, void* edx));
 
 static int __fastcall HandleObjectNotification(
@@ -25,7 +25,7 @@ static int __fastcall HandleObjectNotification(
 
             if (CSF_AT(std::uint8_t, payloadObject, 0x38) != 0)
             {
-                void* relatedObject = GetRelatedObject(self, nullptr);
+                void* relatedObject = GetReferencedObject(self, nullptr);
                 return ((int(__fastcall*)(void*, void*))
                     CSF_AT(void**, relatedObject, 0)[7])(
                         relatedObject, nullptr);

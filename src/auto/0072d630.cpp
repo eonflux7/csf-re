@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_RefreshState, 0x00718660,
+CSF_FUNC(int, __fastcall, CGuiSlider_ForwardSelfToParent, 0x00718660,
          (CGuiControl* self, void* edx));
 
 static int __fastcall CGuiSlider_SetSelectedPart(
@@ -32,7 +32,7 @@ static int __fastcall CGuiSlider_SetSelectedPart(
         }
     }
 
-    return CGuiControl_RefreshState(self, nullptr);
+    return CGuiSlider_ForwardSelfToParent(self, nullptr);
 }
 
 HOOK(0x0072D630, CGuiSlider_SetSelectedPart, "auto");

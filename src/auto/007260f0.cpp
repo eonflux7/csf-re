@@ -4,9 +4,9 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void, __fastcall, ProcessQuadWithScaledAlpha, 0x00724F90,
+CSF_FUNC(void, __fastcall, CGuiButton_ProcessQuadWithScaledAlpha, 0x00724F90,
          (CGuiButton* self, void* edx, void* quad, float alpha));
-CSF_FUNC(int, __fastcall, PreparePermanentQuad, 0x00725B40,
+CSF_FUNC(int, __fastcall, SubmitAndCommitObjectState, 0x00725B40,
          (CGuiButton* self, void* edx));
 CSF_FUNC(char, __fastcall, IsQuadEffectActive, 0x00731E60,
          (void* self, void* edx, void* quad));
@@ -24,7 +24,7 @@ static void __fastcall CGuiButton_ProcessPermanentQuad(
     {
         const float alpha = static_cast<float>(
             static_cast<double>(self->field_01d8) * g_fInv255);
-        ProcessQuadWithScaledAlpha(self, nullptr, quad, alpha);
+        CGuiButton_ProcessQuadWithScaledAlpha(self, nullptr, quad, alpha);
         return;
     }
 
@@ -38,8 +38,8 @@ static void __fastcall CGuiButton_ProcessPermanentQuad(
 
     if (useFullAlpha != 0)
     {
-        PreparePermanentQuad(self, nullptr);
-        ProcessQuadWithScaledAlpha(
+        SubmitAndCommitObjectState(self, nullptr);
+        CGuiButton_ProcessQuadWithScaledAlpha(
             self, nullptr,
             reinterpret_cast<void*>(self->m_pPermanentQuad), 1.0f);
         return;
@@ -49,7 +49,7 @@ static void __fastcall CGuiButton_ProcessPermanentQuad(
     quad = reinterpret_cast<void*>(self->m_pPermanentQuad);
     const float alpha =
         static_cast<float>(static_cast<double>(height) * g_fInv255);
-    ProcessQuadWithScaledAlpha(self, nullptr, quad, alpha);
+    CGuiButton_ProcessQuadWithScaledAlpha(self, nullptr, quad, alpha);
 }
 
 HOOK(0x007260F0, CGuiButton_ProcessPermanentQuad, "auto");

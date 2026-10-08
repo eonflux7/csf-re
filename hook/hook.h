@@ -8,6 +8,9 @@
 // csf_hook.ini (next to the exe) can disable hooks by address or module, for batch bisecting.
 #pragma once
 #include <cstdint>
+#ifdef CSF_STANDALONE
+#include "globals.h"  // csf::fn_slot
+#endif
 
 namespace hook {
 
@@ -52,6 +55,14 @@ struct Registrar {
 
 #define HOOK_CAT2(a, b) a##b
 #define HOOK_CAT(a, b) HOOK_CAT2(a, b)
+#ifdef CSF_STANDALONE
+// Cutover: no patching. HOOK/HOOK_METHOD define the address slot every CSF_FUNC(.., addr, ..) calls through
+// (src/globals.h); vtable slots are filled by the generated csf::vt tables; a trampoline's original is gone.
+#define HOOK(addr, fn, module) template <> void* const ::csf::fn_slot<(addr)>::p = (void*)&fn
+#define HOOK_METHOD(addr, mfn, module) template <> void* const ::csf::fn_slot<(addr)>::p = ::hook::to_ptr(mfn)
+#define HOOK_TRAMP(addr, fn, orig, module) HOOK(addr, fn, module)
+#define HOOK_VSLOT(vtbl, slot, mfn, module) static_assert(true)
+#else
 #define HOOK(addr, fn, module) \
     static ::hook::Registrar HOOK_CAT(hook_reg_, __LINE__)(addr, 0, (void*)&fn, #fn, module, ::hook::Kind::Jmp)
 #define HOOK_METHOD(addr, mfn, module) \
@@ -63,3 +74,4 @@ struct Registrar {
                                                            (void**)&orig)
 #define HOOK_VSLOT(vtbl, slot, mfn, module) \
     static ::hook::Registrar HOOK_CAT(hook_reg_, __LINE__)(vtbl, slot, ::hook::to_ptr(mfn), #mfn, module, ::hook::Kind::VSlot)
+#endif  // CSF_STANDALONE

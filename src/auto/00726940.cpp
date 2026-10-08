@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, ReleaseForwardedObject, 0x006923C0,
+CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
 
 static int __fastcall C_008655e8_ForwardAndReleaseObject(
@@ -27,7 +27,7 @@ static int __fastcall C_008655e8_ForwardAndReleaseObject(
                 recipient, nullptr, object);
     }
 
-    ReleaseForwardedObject(object, nullptr);
+    ReleaseObjectReference(object, nullptr);
     return static_cast<int>(reinterpret_cast<std::intptr_t>(recipient));
 }
 

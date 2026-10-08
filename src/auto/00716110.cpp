@@ -6,12 +6,12 @@
 
 CSF_GLOBAL(std::uint32_t, g_GuiListBoxBaseVtable, 0x00863FF8);
 
-CSF_FUNC(int, __cdecl, FreeDebugMemory, 0x00690E60, (void* block));
-CSF_FUNC(int, __fastcall, ReleaseEmbeddedObject, 0x006923C0,
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
+CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
-CSF_FUNC(int, __cdecl, DestroyColumnRecords, 0x006DEC40,
+CSF_FUNC(int, __cdecl, ResetRecordRange, 0x006DEC40,
          (int* begin, int* end));
-CSF_FUNC(int, __fastcall, DestroyGuiControl, 0x00719B10,
+CSF_FUNC(int, __fastcall, CGuiControl_Destroy, 0x00719B10,
          (CGuiControl* self, void* edx));
 
 static void DeleteGuiObject(void* object)
@@ -29,7 +29,7 @@ static int __fastcall CGuiListBoxBase_Destroy(
 
     if (embeddedOwner != 0)
     {
-        ReleaseEmbeddedObject(
+        ReleaseObjectReference(
             reinterpret_cast<std::uint8_t*>(embeddedOwner) + 4, nullptr);
         self->field_0138 = 0;
     }
@@ -109,7 +109,7 @@ static int __fastcall CGuiListBoxBase_Destroy(
 
     void* allocation = reinterpret_cast<void*>(self->field_01ac);
     if (allocation != nullptr)
-        FreeDebugMemory(allocation);
+        Mem_FreeDebug(allocation);
 
     self->field_01ac = 0;
     self->field_01b0 = 0;
@@ -117,7 +117,7 @@ static int __fastcall CGuiListBoxBase_Destroy(
 
     allocation = reinterpret_cast<void*>(self->m_columnsBegin);
     if (allocation != nullptr)
-        FreeDebugMemory(allocation);
+        Mem_FreeDebug(allocation);
 
     auto* recordsContainer = reinterpret_cast<std::uint8_t*>(self) + 0x188;
     self->m_columnsBegin = 0;
@@ -128,7 +128,7 @@ static int __fastcall CGuiListBoxBase_Destroy(
         reinterpret_cast<int*>(CSF_AT(std::uint32_t, recordsContainer, 4));
     if (recordsBegin != nullptr)
     {
-        DestroyColumnRecords(
+        ResetRecordRange(
             recordsBegin,
             reinterpret_cast<int*>(
                 CSF_AT(std::uint32_t, recordsContainer, 8)));
@@ -136,14 +136,14 @@ static int __fastcall CGuiListBoxBase_Destroy(
         allocation = reinterpret_cast<void*>(
             CSF_AT(std::uint32_t, recordsContainer, 4));
         if (allocation != nullptr)
-            FreeDebugMemory(allocation);
+            Mem_FreeDebug(allocation);
     }
 
     CSF_AT(std::uint32_t, recordsContainer, 4) = 0;
     CSF_AT(std::uint32_t, recordsContainer, 8) = 0;
     CSF_AT(std::uint32_t, recordsContainer, 12) = 0;
 
-    return DestroyGuiControl(static_cast<CGuiControl*>(self), nullptr);
+    return CGuiControl_Destroy(static_cast<CGuiControl*>(self), nullptr);
 }
 
 HOOK(0x00716110, CGuiListBoxBase_Destroy, "auto");

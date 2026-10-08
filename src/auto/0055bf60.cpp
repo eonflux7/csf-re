@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-static CSF_FUNC(void*, __fastcall, MenuMpAccounts_GrowEntryArray, 0x0041E5F0,
+static CSF_FUNC(void*, __fastcall, GrowButtonArray, 0x0041E5F0,
                (void* self, void* edx, int growth));
 
 static std::uint32_t __fastcall C_008453a4_AddUniqueEntry(
@@ -28,7 +28,7 @@ static std::uint32_t __fastcall C_008453a4_AddUniqueEntry(
 
 Append:
     if (self->field_0010 >= self->field_000c) {
-        MenuMpAccounts_GrowEntryArray(
+        GrowButtonArray(
             reinterpret_cast<std::uint8_t*>(self) + 0x08,
             nullptr,
             CSF_AT(int, self, 0x14));

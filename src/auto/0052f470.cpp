@@ -5,13 +5,13 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __cdecl, MenuScenarioSelect_GetSelectionContext,
+CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0,
          0x00521BB0, ());
-CSF_FUNC(void, __fastcall, MenuScenarioSelect_SetContextSelection,
+CSF_FUNC(void, __fastcall, GlobalSetValue_5231D0,
          0x005231D0, (int context, void* edx, int selection));
-CSF_FUNC(void, __cdecl, MenuScenarioSelect_RunSelectionUpdateCallback,
+CSF_FUNC(void, __cdecl, Nullsub_506AC0,
          0x00506AC0, ());
-CSF_FUNC(void, __fastcall, MenuScenarioSelect_UpdateSelectionControl,
+CSF_FUNC(void, __fastcall, MenuMpCharacterSelect_UpdatePreview,
          0x00542420, (int control, void* edx, float selection));
 CSF_FUNC(int, __fastcall, CMenuMpLoadout_ForwardSelectionIfReady,
          0x0052EF10, (CMenuMpLoadout* self, void* edx));
@@ -23,16 +23,16 @@ static int __fastcall CMenuMpLoadout_SetSelection(
     std::memcpy(&selectionBits, &selection, sizeof(selectionBits));
     self->field_003c = selectionBits;
 
-    const int context = MenuScenarioSelect_GetSelectionContext();
-    MenuScenarioSelect_SetContextSelection(
+    const int context = GetGlobalValue_521BB0();
+    GlobalSetValue_5231D0(
         context, nullptr, static_cast<int>(selectionBits));
 
-    MenuScenarioSelect_RunSelectionUpdateCallback();
+    Nullsub_506AC0();
 
     reinterpret_cast<void (__fastcall*)(CMenuMpLoadout*, void*)>(
         CSF_AT(void**, self, 0)[0x50 / 4])(self, nullptr);
 
-    MenuScenarioSelect_UpdateSelectionControl(
+    MenuMpCharacterSelect_UpdatePreview(
         static_cast<int>(self->field_0058), nullptr, selection);
 
     return CMenuMpLoadout_ForwardSelectionIfReady(self, nullptr);

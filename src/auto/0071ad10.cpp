@@ -4,14 +4,14 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(char, __fastcall, C_00864508_PrepareChildProcessing, 0x0071A940,
+CSF_FUNC(char, __fastcall, C_00864508_DoAllReferencedObjectsPassCheck, 0x0071A940,
          (C_00864508* self, void* edx));
 
 static char __fastcall C_00864508_DispatchToChildrenReverseExcluding(
     C_00864508* self, void* /*edx*/, int argument)
 {
     const char preparationResult =
-        C_00864508_PrepareChildProcessing(self, nullptr);
+        C_00864508_DoAllReferencedObjectsPassCheck(self, nullptr);
     if (!preparationResult)
         return preparationResult;
 

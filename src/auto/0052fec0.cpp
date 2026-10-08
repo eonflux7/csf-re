@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 
 // 0x0052FE20 - CMenuSceneSelect body destructor (called before the optional free).
-CSF_FUNC(int*, __fastcall, CMenuSceneSelect_DestroyBody, 0x52FE20,
+CSF_FUNC(int*, __fastcall, CMenuSceneSelect_Destroy_52FE20, 0x52FE20,
          (CMenuSceneSelect* self, void* edx));
 
 // Scoped deleting destructor: tears the object down and, when bit 0 of the
@@ -12,7 +12,7 @@ CSF_FUNC(int*, __fastcall, CMenuSceneSelect_DestroyBody, 0x52FE20,
 static void* __fastcall CMenuSceneSelect_Destroy(
     CMenuSceneSelect* self, void* /*edx*/, char flags)
 {
-    CMenuSceneSelect_DestroyBody(self, nullptr);
+    CMenuSceneSelect_Destroy_52FE20(self, nullptr);
     if ((flags & 1) != 0)
         game::Mem_Free(self);
     return self;

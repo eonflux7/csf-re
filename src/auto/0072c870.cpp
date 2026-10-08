@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(unsigned int, __fastcall, AppendPanelControl, 0x0072C780,
+CSF_FUNC(unsigned int, __fastcall, AppendFourByteElementWithContext, 0x0072C780,
          (void* self, void* edx, std::uint32_t* control));
 
 static int __fastcall CGuiPanel_AddControl(
@@ -28,7 +28,7 @@ static int __fastcall CGuiPanel_AddControl(
                     control, nullptr, self);
 
             self->field_0148 = 0;
-            AppendPanelControl(
+            AppendFourByteElementWithContext(
                 reinterpret_cast<std::uint8_t*>(self) + 0x134,
                 nullptr, &controlAddress);
 

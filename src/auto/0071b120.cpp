@@ -7,7 +7,7 @@
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_FUNC(int, __fastcall, C_00864508_RemoveObjectAtIndex, 0x0071ABC0,
          (C_00864508* self, void* edx, int index));
-CSF_FUNC(void*, __cdecl, CopyArrayBytes, 0x007AEE60,
+CSF_FUNC(void*, __cdecl, _memcpy, 0x007AEE60,
          (void* destination, const void* source, std::size_t size));
 
 static uint32_t GetSignedStrideCount(uint32_t end, uint32_t begin,
@@ -61,7 +61,7 @@ static uint32_t* __fastcall C_00864508_RemoveObjectsNotInList(
             const uint32_t next = entry + 4;
             const uint32_t bytes =
                 GetSignedStrideCount(self->field_004c, next, 2) << 2;
-            CopyArrayBytes(reinterpret_cast<void*>(entry),
+            _memcpy(reinterpret_cast<void*>(entry),
                            reinterpret_cast<void*>(next), bytes);
             self->field_004c = self->field_004c - 4;
         }
@@ -129,7 +129,7 @@ static uint32_t* __fastcall C_00864508_RemoveObjectsNotInList(
             const uint32_t next = result + 4;
             const uint32_t bytes =
                 GetSignedStrideCount(self->field_004c, next, 2) << 2;
-            CopyArrayBytes(reinterpret_cast<void*>(result),
+            _memcpy(reinterpret_cast<void*>(result),
                            reinterpret_cast<void*>(next), bytes);
             result = self->field_004c - 4;
             self->field_004c = result;

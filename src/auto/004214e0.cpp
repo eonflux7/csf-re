@@ -13,7 +13,7 @@
 // identity with the rest of the game stays intact.)
 static const char* GetNavegandoString()
 {
-    return reinterpret_cast<const char*>(0x0082F910);
+    return reinterpret_cast<const char*>(CSF_ADDR_DATA(0x0082F910));
 }
 
 HOOK(0x4214E0, GetNavegandoString, "auto");

@@ -8,11 +8,11 @@ CSF_FUNC(std::uint8_t*, __fastcall, FindProperty, 0x006932B0,
          (std::uint8_t* self, void* edx, char* name));
 CSF_FUNC(std::uint32_t, __fastcall, GetComponent, 0x00692BD0,
          (std::uint8_t* self, void* edx, unsigned int index));
-CSF_FUNC(int, __fastcall, ConvertComponentToInteger, 0x00692C40,
+CSF_FUNC(int, __fastcall, ParseIntegerComponent, 0x00692C40,
          (unsigned int component));
 CSF_FUNC(int, __fastcall, ReadIntegerProperty, 0x00693910,
          (std::uint8_t* self, void* edx, char* name));
-CSF_FUNC(char, __fastcall, ReadStringProperty, 0x006939C0,
+CSF_FUNC(char, __fastcall, MenuExtras_ReadText, 0x006939C0,
          (std::uint8_t* self, void* edx, char* name, char* buffer, int capacity));
 CSF_FUNC(char, __stdcall, CGuiBuilder_ReadFourComponents, 0x0071DA70,
          (std::uint8_t* property, float* components));
@@ -62,8 +62,8 @@ static void __fastcall CGuiBuilder_ApplyTextProperties(
     {
         const auto first = GetComponent(position, nullptr, 0);
         const auto second = GetComponent(position, nullptr, 1);
-        y = static_cast<std::uint32_t>(ConvertComponentToInteger(second));
-        x = static_cast<std::uint32_t>(ConvertComponentToInteger(first));
+        y = static_cast<std::uint32_t>(ParseIntegerComponent(second));
+        x = static_cast<std::uint32_t>(ParseIntegerComponent(first));
     }
 
     std::uint32_t width = 0;
@@ -73,8 +73,8 @@ static void __fastcall CGuiBuilder_ApplyTextProperties(
     {
         const auto first = GetComponent(size, nullptr, 0);
         const auto second = GetComponent(size, nullptr, 1);
-        height = static_cast<std::uint32_t>(ConvertComponentToInteger(second));
-        width = static_cast<std::uint32_t>(ConvertComponentToInteger(first));
+        height = static_cast<std::uint32_t>(ParseIntegerComponent(second));
+        width = static_cast<std::uint32_t>(ParseIntegerComponent(first));
     }
 
     std::uint32_t rectangle[4];
@@ -86,7 +86,7 @@ static void __fastcall CGuiBuilder_ApplyTextProperties(
 
     auto* textProperty = FindProperty(properties, nullptr, g_TextPropertyName);
     if (textProperty)
-        ReadStringProperty(textProperty, nullptr, g_TextPropertyName, text, 256);
+        MenuExtras_ReadText(textProperty, nullptr, g_TextPropertyName, text, 256);
 
     int textMode = 2;
     if (FindProperty(properties, nullptr, g_TextModePropertyName))

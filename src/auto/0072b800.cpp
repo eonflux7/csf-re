@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_CheckResourceCreationState,
+CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10,
          0x00718700, (CGuiControl* self, void* edx));
 
 // Same shape as 0x0072B590: if the control is in a usable state, forward the
@@ -20,7 +20,7 @@ static int __fastcall CGuiPanel_ForwardToChildren(
     if (static_cast<std::uint8_t>(result) == 0)
         return result;
 
-    result = CGuiControl_CheckResourceCreationState(self, nullptr);
+    result = CGuiSlider_IsSelectableAndNotType10(self, nullptr);
     if (static_cast<std::uint8_t>(result) == 0)
         return result;
 

@@ -3,9 +3,9 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(char, __fastcall, CGuiControl_ProcessInput, 0x00718300,
+CSF_FUNC(char, __fastcall, CGuiControl_HandleSelectionInput_718300, 0x00718300,
          (CGuiControl* self, void* edx, void* input));
-CSF_FUNC(int, __fastcall, CGuiControl_IsInteractionAllowed, 0x00718700,
+CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x00718700,
          (CGuiControl* self, void* edx));
 
 static char __fastcall CGuiSlider_ProcessInput(
@@ -22,7 +22,7 @@ static char __fastcall CGuiSlider_ProcessInput(
         CSF_AT(std::uint32_t, input, 0x18)
     };
 
-    result = CGuiControl_ProcessInput(self, nullptr, input);
+    result = CGuiControl_HandleSelectionInput_718300(self, nullptr, input);
 
     CGuiControl* part = reinterpret_cast<CGuiControl*>(self->m_pThumb);
     if (part)
@@ -33,7 +33,7 @@ static char __fastcall CGuiSlider_ProcessInput(
         {
             part = reinterpret_cast<CGuiControl*>(self->m_pThumb);
             if (static_cast<std::uint8_t>(
-                    CGuiControl_IsInteractionAllowed(part, nullptr)))
+                    CGuiSlider_IsSelectableAndNotType10(part, nullptr)))
             {
                 part = reinterpret_cast<CGuiControl*>(self->m_pThumb);
                 ((void(__fastcall*)(void*, void*, int))
@@ -74,7 +74,7 @@ static char __fastcall CGuiSlider_ProcessInput(
         {
             part = reinterpret_cast<CGuiControl*>(self->m_pArrowUp);
             if (static_cast<std::uint8_t>(
-                    CGuiControl_IsInteractionAllowed(part, nullptr)))
+                    CGuiSlider_IsSelectableAndNotType10(part, nullptr)))
             {
                 part = reinterpret_cast<CGuiControl*>(self->m_pArrowUp);
                 ((void(__fastcall*)(void*, void*, int))
@@ -97,7 +97,7 @@ static char __fastcall CGuiSlider_ProcessInput(
         {
             part = reinterpret_cast<CGuiControl*>(self->m_pArrowDown);
             if (static_cast<std::uint8_t>(
-                    CGuiControl_IsInteractionAllowed(part, nullptr)))
+                    CGuiSlider_IsSelectableAndNotType10(part, nullptr)))
             {
                 part = reinterpret_cast<CGuiControl*>(self->m_pArrowDown);
                 ((void(__fastcall*)(void*, void*, int))

@@ -3,22 +3,22 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(std::uint32_t, __fastcall, ClearRecordStorage, 0x6B59F0,
+CSF_FUNC(std::uint32_t, __fastcall, ClearRecordStorage_6B59F0, 0x6B59F0,
          (void* self, void* edx));
-CSF_FUNC(char, __fastcall, AllocateRecordStorage, 0x410BD0,
+CSF_FUNC(char, __fastcall, AllocateRecordStorage_410BD0, 0x410BD0,
          (void* self, void* edx, std::uint32_t count));
 CSF_FUNC(std::uint32_t, __fastcall, DestroyRecordRange, 0x50FBB0,
          (void* self, void* edx, std::uint32_t first, std::uint32_t last));
-CSF_FUNC(void*, __fastcall, ReleaseRecordStorage, 0x6C8D30,
+CSF_FUNC(void*, __fastcall, ReleaseVectorStorage, 0x6C8D30,
          (void* self, void* edx, void* storage, std::uint32_t capacity));
 
 // These helpers are pushed extra context arguments by the original callers.
 CSF_FUNC(std::uint32_t, __cdecl, ResetRecordRange, 0x6DEC40,
          (std::uint32_t first, std::uint32_t last, ...));
-CSF_FUNC(std::uint32_t, __cdecl, Copy16ByteElementRange, 0x7165B0,
+CSF_FUNC(std::uint32_t, __cdecl, Copy16ByteElementRange_7165B0, 0x7165B0,
          (std::uint32_t first, std::uint32_t last,
           std::uint32_t destination, ...));
-CSF_FUNC(std::uint32_t, __cdecl, CopyConstructRecordRange, 0x716080,
+CSF_FUNC(std::uint32_t, __cdecl, CopyConstructRecordRange_716080, 0x716080,
          (std::uint32_t first, std::uint32_t last,
           std::uint32_t destination, ...));
 CSF_FUNC(std::uint32_t, __cdecl, ForwardTo7165B0, 0x716B20,
@@ -48,7 +48,7 @@ static int __fastcall AssignRecordStorage(
 
     if (sourceCount == 0)
     {
-        ClearRecordStorage(self, nullptr);
+        ClearRecordStorage_6B59F0(self, nullptr);
         return static_cast<int>(reinterpret_cast<std::uintptr_t>(self));
     }
 
@@ -59,7 +59,7 @@ static int __fastcall AssignRecordStorage(
 
     if (sourceCount <= destinationCount)
     {
-        const std::uint32_t copiedEnd = Copy16ByteElementRange(
+        const std::uint32_t copiedEnd = Copy16ByteElementRange_7165B0(
             sourceBegin, CSF_AT(std::uint32_t, source, 0x8),
             destinationBegin, source);
 
@@ -107,7 +107,7 @@ static int __fastcall AssignRecordStorage(
             CSF_AT(std::uint32_t, self, 0x8);
         const std::uint32_t currentSourceEnd =
             CSF_AT(std::uint32_t, source, 0x8);
-        const std::uint32_t newEnd = CopyConstructRecordRange(
+        const std::uint32_t newEnd = CopyConstructRecordRange_716080(
             split, currentSourceEnd, currentDestinationEnd, self, source);
         CSF_AT(std::uint32_t, self, 0x8) = newEnd;
     }
@@ -122,7 +122,7 @@ static int __fastcall AssignRecordStorage(
                 CSF_AT(std::uint32_t, self, 0x4);
             const std::uint32_t storageEnd =
                 CSF_AT(std::uint32_t, self, 0xC);
-            ReleaseRecordStorage(
+            ReleaseVectorStorage(
                 self, nullptr,
                 reinterpret_cast<void*>(currentDestinationBegin),
                 GetRecordCount(currentDestinationBegin, storageEnd));
@@ -135,7 +135,7 @@ static int __fastcall AssignRecordStorage(
                              CSF_AT(std::uint32_t, source, 0x8))
             : 0;
 
-        if (AllocateRecordStorage(self, nullptr, requiredCount) != 0)
+        if (AllocateRecordStorage_410BD0(self, nullptr, requiredCount) != 0)
         {
             const std::uint32_t newDestinationBegin =
                 CSF_AT(std::uint32_t, self, 0x4);

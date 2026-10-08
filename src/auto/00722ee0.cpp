@@ -4,9 +4,9 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiListBox_GetSelectedItemCount,
+CSF_FUNC(int, __fastcall, CGuiListBox_GetItemCount_714860,
          0x00714860, (CGuiListBox* self, void* edx));
-CSF_FUNC(int, __fastcall, CGuiListBox_GetSelectedItemIndex,
+CSF_FUNC(int, __fastcall, GetStoredValueAtIndex,
          0x00714CA0, (CGuiListBox* self, void* edx, int selectionIndex));
 
 CSF_GLOBAL(float, g_CellTextColorSentinelRed,   0x008A7DA0);
@@ -19,12 +19,12 @@ static float* __fastcall CGuiListBox_GetCellTextColor(
 {
     const std::uint32_t selectionCount =
         static_cast<std::uint32_t>(
-            CGuiListBox_GetSelectedItemCount(self, nullptr));
+            CGuiListBox_GetItemCount_714860(self, nullptr));
 
     std::uint32_t selectionIndex = 0;
     while (selectionIndex < selectionCount)
     {
-        if (CGuiListBox_GetSelectedItemIndex(
+        if (GetStoredValueAtIndex(
                 self, nullptr, static_cast<int>(selectionIndex)) == rowIndex)
         {
             break;

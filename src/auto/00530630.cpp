@@ -4,12 +4,12 @@
 
 // Original function at 0x00530630 (size 35 bytes)
 // Prototype: int __thiscall sub_530630(int *this)
-// It calls GetGlobalValue (0x521BB0), then calls sub_5225D0 on the result,
+// It calls GetGlobalValue_521BB0 (0x521BB0), then calls Menu_5225D0 on the result,
 // then if the member pointer at offset 0x1E8 is non-null, it tail-jumps
 // to a virtual method at vtable slot 0x50/4 = 20 of that object.
 
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x521BB0, ());
-CSF_FUNC(int, __fastcall, sub_5225D0, 0x5225D0, (void* self, void* edx));
+CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x521BB0, ());
+CSF_FUNC(int, __fastcall, Menu_5225D0, 0x5225D0, (void* self, void* edx));
 
 // Naked thunk performing the indirect tail jump.
 // The object pointer is passed in ecx (first __fastcall argument).
@@ -25,8 +25,8 @@ static __declspec(naked) int CMenuMpServerInfo_TailCallMemberVirtual(int* obj, v
 
 static int __fastcall CMenuMpServerInfo_InvokeMemberAction(int* self, void* /*edx*/)
 {
-    int* global = (int*)GetGlobalValue();
-    sub_5225D0(global, nullptr);
+    int* global = (int*)GetGlobalValue_521BB0();
+    Menu_5225D0(global, nullptr);
 
     int* member = CSF_AT(int*, self, 0x1e8);
     if (member)

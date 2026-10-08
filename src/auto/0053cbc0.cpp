@@ -5,8 +5,8 @@
 #include "core/memory.h"
 
 // Callees bound by address.
-CSF_FUNC(int, __cdecl, Legacy_ForwardKeyCode, 0x00428480, (int keyCode));
-CSF_FUNC(void*, __fastcall, MenuSoundOptions_GetChildObject, 0x006683F0, (void* self, void* edx));
+CSF_FUNC(int, __cdecl, MenuBase_DefaultHandler, 0x00428480, (int keyCode));
+CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x006683F0, (void* self, void* edx));
 
 // Original: int __thiscall sub_53CBC0(this, a2, a3); ret 8.
 // Behaviour:
@@ -24,11 +24,11 @@ static int __fastcall MenuSoundOptions_HandleKey(void* self, void* /*edx*/, int 
     }
     else if (keyCode == 50 && CSF_AT(uint8_t, reinterpret_cast<void*>(eventData), 0x38) != 0)
     {
-        void* child = MenuSoundOptions_GetChildObject(self, nullptr);
+        void* child = GetReferencedObject(self, nullptr);
         ((void(__fastcall*)(void*, void*))CSF_AT(void**, child, 0)[28 / 4])(child, nullptr);
-        return Legacy_ForwardKeyCode(keyCode);
+        return MenuBase_DefaultHandler(keyCode);
     }
-    return Legacy_ForwardKeyCode(keyCode);
+    return MenuBase_DefaultHandler(keyCode);
 }
 
 HOOK(0x0053CBC0, MenuSoundOptions_HandleKey, "auto");

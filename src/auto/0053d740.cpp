@@ -4,18 +4,18 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x0050D190, ());
-CSF_FUNC(void, __fastcall, GlobalState_SetFlagA, 0x0050DC80, (void* self, void* edx, char flag));
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
+CSF_FUNC(void, __fastcall, MenuManager_SetMenuState, 0x0050DC80, (void* self, void* edx, char flag));
 CSF_FUNC(void, __fastcall, CMenuMissionInfo_ResetBichosPhotoFlags, 0x0053D530, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, CSubObject_ReleaseChild, 0x00436770, (void** self, void* edx));
 
 static int __fastcall CMenuMissionInfo_EnterPanelState(CMenuMissionInfo* self, void* /*edx*/, int /*a3*/)
 {
     // Si el estado global tiene el flag en +0x89, lo limpia (sub_50DC80(state, 1)).
-    if (CSF_AT(uint8_t, GetGlobalState(), 0x89))
+    if (CSF_AT(uint8_t, GetGlobalState_50D190(), 0x89))
     {
-        void* globalState = GetGlobalState();
-        GlobalState_SetFlagA(globalState, nullptr, 1);
+        void* globalState = GetGlobalState_50D190();
+        MenuManager_SetMenuState(globalState, nullptr, 1);
     }
 
     CMenuMissionInfo_ResetBichosPhotoFlags(self, nullptr);
@@ -27,7 +27,7 @@ static int __fastcall CMenuMissionInfo_EnterPanelState(CMenuMissionInfo* self, v
         owner, nullptr, self, 1);
 
     // Objeto de estado global +0x10: si existe, llamada virtual slot 36/4 = 9.
-    void* globalState = GetGlobalState();
+    void* globalState = GetGlobalState_50D190();
     void* globalChild = reinterpret_cast<void*>(CSF_AT(uint32_t, globalState, 0x10));
     if (globalChild)
     {

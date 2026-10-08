@@ -4,9 +4,9 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(void*, __fastcall, ConstructControllerBase, 0x00712CC0,
+CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x00712CC0,
          (void* self, void* edx));
-CSF_FUNC(void*, __fastcall, AssignStringRange, 0x00429B60,
+CSF_FUNC(void*, __fastcall, AssignStringRange_429B60, 0x00429B60,
          (void* self, void* edx, const char* text, unsigned int length));
 CSF_FUNC(unsigned int, __fastcall, ReserveFirstCollection, 0x006DAD80,
          (void* self, void* edx, unsigned int capacity));
@@ -21,7 +21,7 @@ static C_00864508* __fastcall C_00864508_Initialize(
     C_00864508* self, void* /*edx*/, void* owner,
     uint32_t firstParameter, uint32_t secondParameter)
 {
-    ConstructControllerBase(self, nullptr);
+    C_00830438_Construct(self, nullptr);
     self->vtbl = reinterpret_cast<decltype(self->vtbl)>(&g_ControllerVtable);
 
     self->field_0014 = 0;
@@ -68,7 +68,7 @@ static C_00864508* __fastcall C_00864508_Initialize(
     ((void (__fastcall*)(void*, void*, uint32_t*))
         CSF_AT(void**, manager, 0)[0xA0 / 4])(manager, nullptr, parameters);
 
-    AssignStringRange(
+    AssignStringRange_429B60(
         reinterpret_cast<uint8_t*>(self) + 0x7C,
         nullptr, CSF_STR(0x0082E65C, ""), 0);
 

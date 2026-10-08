@@ -4,7 +4,7 @@
 #include "globals.h"
 
 // 0x0053A110 - __thiscall(int this, int a2), ret 4 - handles the command payload
-CSF_FUNC(void*, __fastcall, CMenuPause_DispatchCommand, 0x53A110, (CMenuPause* self, void* /*edx*/, uint32_t* a2));
+CSF_FUNC(void*, __fastcall, CMenuPause_DispatchButtonEvent, 0x53A110, (CMenuPause* self, void* /*edx*/, uint32_t* a2));
 
 // 0x0053A4E0 - __thiscall(void* this, uint32_t* a2), ret 4
 // Inspects the first dword of the incoming command; only id 13 is forwarded to the handler,
@@ -12,7 +12,7 @@ CSF_FUNC(void*, __fastcall, CMenuPause_DispatchCommand, 0x53A110, (CMenuPause* s
 static void* __fastcall CMenuPause_HandleCommand(CMenuPause* self, void* /*edx*/, uint32_t* a2)
 {
     if (*a2 == 13)
-        return CMenuPause_DispatchCommand(self, nullptr, a2);
+        return CMenuPause_DispatchButtonEvent(self, nullptr, a2);
     return a2;
 }
 

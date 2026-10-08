@@ -7,8 +7,8 @@
 CSF_GLOBAL(int, g_SelectedAccountIndex, 0x0089A5E8);
 
 CSF_FUNC(void*, __cdecl, GetGlobalValue_8B056C, 0x00506BD0, ());
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x0050D190, ());
-CSF_FUNC(std::uint32_t, __fastcall, MenuMpAccounts_DisplayAccountMessage,
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
+CSF_FUNC(std::uint32_t, __fastcall, Game_DispatchMenuRequest,
          0x0050F790,
          (void* self, void* edx, int message, int option1, int option2, int option3));
 
@@ -47,8 +47,8 @@ static std::uint32_t __fastcall CMenuAccountEdit_SaveAccountChanges(
                 CSF_AT(void**, accountService, 0)[0x54 / 4])(
                     accountService, nullptr);
 
-        void* globalState = GetGlobalState();
-        const std::uint32_t result = MenuMpAccounts_DisplayAccountMessage(
+        void* globalState = GetGlobalState_50D190();
+        const std::uint32_t result = Game_DispatchMenuRequest(
             globalState, nullptr, errorMessage, 1, 1, 0);
 
         if (!creatingAccount)
@@ -58,8 +58,8 @@ static std::uint32_t __fastcall CMenuAccountEdit_SaveAccountChanges(
     }
 
     const int successMessage = creatingAccount ? 0x41453131 : 0x41453137;
-    void* globalState = GetGlobalState();
-    const std::uint32_t result = MenuMpAccounts_DisplayAccountMessage(
+    void* globalState = GetGlobalState_50D190();
+    const std::uint32_t result = Game_DispatchMenuRequest(
         globalState, nullptr, successMessage, 1, 1, 0);
     self->field_0280 = 4;
     return result;

@@ -15,7 +15,7 @@
 // exactly 0x00833000 (callers may compare the pointer identity).
 static const char* __cdecl GetTAtacarRafagaString()
 {
-    return reinterpret_cast<const char*>(0x00833000u);
+    return reinterpret_cast<const char*>(CSF_ADDR_DATA(0x00833000));
 }
 
 HOOK(0x47F5D0, GetTAtacarRafagaString, "auto");

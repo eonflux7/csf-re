@@ -3,26 +3,26 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(std::uint32_t, __fastcall, ClearRecordStorage, 0x724420,
+CSF_FUNC(std::uint32_t, __fastcall, ClearRecordStorage_724420, 0x724420,
          (void* self, void* edx));
-CSF_FUNC(char, __fastcall, AllocateRecordStorage, 0x410BD0,
+CSF_FUNC(char, __fastcall, AllocateRecordStorage_410BD0, 0x410BD0,
          (void* self, void* edx, std::uint32_t count));
-CSF_FUNC(void*, __stdcall, ReleaseRecordStorage, 0x6C8D30,
+CSF_FUNC(void*, __stdcall, ReleaseVectorStorage, 0x6C8D30,
          (void* storage, std::uint32_t capacity));
 
 // Preserve the additional context arguments pushed by the original caller.
-CSF_FUNC(std::uint32_t, __cdecl, Copy16ByteElementRange, 0x723C10,
+CSF_FUNC(std::uint32_t, __cdecl, Copy16ByteElementRange_723C10, 0x723C10,
          (std::uint32_t first, std::uint32_t last, std::uint32_t destination, ...));
 CSF_FUNC(std::uint32_t, __cdecl, ResetWideStringRecordRange, 0x7241E0,
          (std::uint32_t first, std::uint32_t last, ...));
-CSF_FUNC(std::uint32_t, __cdecl, AssignRecordRange, 0x723FB0,
+CSF_FUNC(std::uint32_t, __cdecl, ForwardTo723C10, 0x723FB0,
          (std::uint32_t first, std::uint32_t last, std::uint32_t destination));
-CSF_FUNC(std::uint32_t, __cdecl, CopyConstructRecordRange, 0x724090,
+CSF_FUNC(std::uint32_t, __cdecl, CopyConstructRecordRange_724090, 0x724090,
          (std::uint32_t first, std::uint32_t last, std::uint32_t destination, ...));
 
-CSF_FUNC(std::uint32_t, __fastcall, DestroyRecordRangeWithContext, 0x7243D0,
+CSF_FUNC(std::uint32_t, __fastcall, ForwardArgumentsAndContextToProcessor, 0x7243D0,
          (void* self, void* edx, std::uint32_t first, std::uint32_t last));
-CSF_FUNC(std::uint32_t, __fastcall, ConstructRecordRangeWithContext, 0x7243B0,
+CSF_FUNC(std::uint32_t, __fastcall, ForwardTo724090, 0x7243B0,
          (void* self, void* edx, std::uint32_t first,
           std::uint32_t last, std::uint32_t destination));
 
@@ -46,7 +46,7 @@ static int __fastcall AssignWideStringRecordStorage(
 
     if (sourceCount == 0)
     {
-        ClearRecordStorage(self, nullptr);
+        ClearRecordStorage_724420(self, nullptr);
         return static_cast<int>(reinterpret_cast<std::uintptr_t>(self));
     }
 
@@ -57,7 +57,7 @@ static int __fastcall AssignWideStringRecordStorage(
 
     if (sourceCount <= destinationCount)
     {
-        const std::uint32_t copiedEnd = Copy16ByteElementRange(
+        const std::uint32_t copiedEnd = Copy16ByteElementRange_723C10(
             sourceBegin, CSF_AT(std::uint32_t, source, 0x8),
             destinationBegin, source);
 
@@ -97,13 +97,13 @@ static int __fastcall AssignWideStringRecordStorage(
             CSF_AT(std::uint32_t, source, 0x4);
         const std::uint32_t split = currentSourceBegin + (existingCount << 4);
 
-        AssignRecordRange(currentSourceBegin, split, destinationBegin);
+        ForwardTo723C10(currentSourceBegin, split, destinationBegin);
 
         const std::uint32_t currentDestinationEnd =
             CSF_AT(std::uint32_t, self, 0x8);
         const std::uint32_t currentSourceEnd =
             CSF_AT(std::uint32_t, source, 0x8);
-        const std::uint32_t newEnd = CopyConstructRecordRange(
+        const std::uint32_t newEnd = CopyConstructRecordRange_724090(
             split, currentSourceEnd, currentDestinationEnd, self, source);
         CSF_AT(std::uint32_t, self, 0x8) = newEnd;
     }
@@ -111,7 +111,7 @@ static int __fastcall AssignWideStringRecordStorage(
     {
         if (destinationBegin != 0)
         {
-            DestroyRecordRangeWithContext(
+            ForwardArgumentsAndContextToProcessor(
                 self, nullptr, destinationBegin,
                 CSF_AT(std::uint32_t, self, 0x8));
 
@@ -119,7 +119,7 @@ static int __fastcall AssignWideStringRecordStorage(
                 CSF_AT(std::uint32_t, self, 0x4);
             const std::uint32_t storageEnd =
                 CSF_AT(std::uint32_t, self, 0xC);
-            ReleaseRecordStorage(
+            ReleaseVectorStorage(
                 reinterpret_cast<void*>(currentDestinationBegin),
                 GetRecordCount(currentDestinationBegin, storageEnd));
         }
@@ -130,7 +130,7 @@ static int __fastcall AssignWideStringRecordStorage(
             ? GetRecordCount(currentSourceBegin, CSF_AT(std::uint32_t, source, 0x8))
             : 0;
 
-        if (AllocateRecordStorage(self, nullptr, requiredCount) != 0)
+        if (AllocateRecordStorage_410BD0(self, nullptr, requiredCount) != 0)
         {
             const std::uint32_t newDestinationBegin =
                 CSF_AT(std::uint32_t, self, 0x4);
@@ -138,7 +138,7 @@ static int __fastcall AssignWideStringRecordStorage(
                 CSF_AT(std::uint32_t, source, 0x8);
             const std::uint32_t newSourceBegin =
                 CSF_AT(std::uint32_t, source, 0x4);
-            const std::uint32_t newEnd = ConstructRecordRangeWithContext(
+            const std::uint32_t newEnd = ForwardTo724090(
                 self, nullptr, newSourceBegin, currentSourceEnd,
                 newDestinationBegin);
             CSF_AT(std::uint32_t, self, 0x8) = newEnd;

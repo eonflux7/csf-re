@@ -4,7 +4,7 @@
 #include "globals.h"
 #include "hook.h"
 
-CSF_FUNC(int, __cdecl, IsAlpha, 0x007B1927, (int character));
+CSF_FUNC(int, __cdecl, _isalpha, 0x007B1927, (int character));
 CSF_GLOBAL(void*, g_BaseDirectoryString, 0x008BAF8C);
 
 static char __cdecl PrefixBaseDirectoryIfRelative(char* path)
@@ -18,7 +18,7 @@ static char __cdecl PrefixBaseDirectoryIfRelative(char* path)
     if (firstCharacter == 0x5C || firstCharacter == 0x2F)
         return 0;
 
-    if (IsAlpha(static_cast<int>(firstCharacter)) && path[1] == 0x3A)
+    if (_isalpha(static_cast<int>(firstCharacter)) && path[1] == 0x3A)
         return 0;
 
     auto* directoryString =

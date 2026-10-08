@@ -4,11 +4,11 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __fastcall, InsertCharacter, 0x00721DC0,
+CSF_FUNC(int, __fastcall, CGuiEdit_InsertCharacter, 0x00721DC0,
          (CGuiEdit* self, void* edx, std::int16_t character));
-CSF_FUNC(unsigned char, __fastcall, HandleNavigationKey, 0x007227D0,
+CSF_FUNC(unsigned char, __fastcall, CGuiEdit_HandleNavigationKey, 0x007227D0,
          (CGuiEdit* self, void* edx, int key));
-CSF_FUNC(unsigned char, __fastcall, HandleAlternateKey, 0x00722880,
+CSF_FUNC(unsigned char, __fastcall, IsEditKeyAllowed, 0x00722880,
          (CGuiEdit* self, void* edx, int key));
 
 CSF_GLOBAL(float, g_ValueScale, 0x0082D4EC);
@@ -41,7 +41,7 @@ void __fastcall CGuiEdit_UpdateKeyRepeat(
             return;
         }
 
-        InsertCharacter(self, nullptr, static_cast<std::int16_t>(character));
+        CGuiEdit_InsertCharacter(self, nullptr, static_cast<std::int16_t>(character));
         self->field_01b8 = 0.0f;
         return;
     }
@@ -62,11 +62,11 @@ void __fastcall CGuiEdit_UpdateKeyRepeat(
     if (key == 0xFFFFFFFFu)
     {
         int alternateKey = static_cast<int>(self->field_01c0);
-        HandleAlternateKey(self, nullptr, alternateKey);
+        IsEditKeyAllowed(self, nullptr, alternateKey);
     }
     else
     {
-        HandleNavigationKey(self, nullptr, static_cast<int>(key));
+        CGuiEdit_HandleNavigationKey(self, nullptr, static_cast<int>(key));
     }
 
     self->field_01b8 = 0.0f;

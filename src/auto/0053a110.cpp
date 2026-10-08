@@ -9,7 +9,7 @@ CSF_GLOBAL(const char*, g_pszMenu_P_LoGame, 0x00899B08);
 CSF_GLOBAL(const char*, g_pszMenu_P_LbFrI2, 0x00899B60);
 
 // Original 0x00539D10 (sub_539D10): __thiscall, one stack argument, ret 4.
-CSF_FUNC(int, __fastcall, CMenuScreen_HandleButtonAction, 0x00539D10, (CMenuPause* self, void* edx, int actionCode));
+CSF_FUNC(int, __fastcall, CMenuPause_CloseAndReturnResult, 0x00539D10, (CMenuPause* self, void* edx, int actionCode));
 
 // Dispatches a button event (identified by the id stored at +4 of a2) to the matching
 // CMenuPause action. Every comparison re-reads both the menu field and a2+4, and every
@@ -21,7 +21,7 @@ static int __fastcall CMenuPause_DispatchButtonEvent(CMenuPause* self, void* /*e
 
     // Continue button: base handler with action code 1.
     if (self->field_0020 != 0 && self->field_0020 == CSF_AT(uint32_t, a2, 4))
-        return CMenuScreen_HandleButtonAction(self, nullptr, 1);
+        return CMenuPause_CloseAndReturnResult(self, nullptr, 1);
 
     // Virtual slot 19 (+0x4C) on self, no arguments.
     if (self->field_0024 != 0 && self->field_0024 == CSF_AT(uint32_t, a2, 4))

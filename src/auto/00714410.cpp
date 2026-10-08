@@ -13,7 +13,7 @@ CSF_FUNC(void, __stdcall, RethrowCppException,
          0x007AF666, (void* exceptionObject, void* throwInformation));
 
 // Referenced by the SEH funclet emitted for this function.
-CSF_FUNC(int, __cdecl, HandleCppExceptionFrame, 0x007AF226, (...));
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226, (...));
 CSF_GLOBAL(std::uint8_t, g_TwelveByteRangeCopyExceptionInformation, 0x00891868);
 
 // Copies a range of 12-byte elements from [source, sourceEnd) into

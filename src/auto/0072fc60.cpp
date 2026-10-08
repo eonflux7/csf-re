@@ -7,7 +7,7 @@
 CSF_FUNC(int, __cdecl, Mem_Free, 0x691110, (void* a1));
 
 // 0x00725590  int __thiscall sub_725590(CGuiButton* this)  -- base (CGuiButton) destructor
-CSF_FUNC(int, __fastcall, CGuiButton_Destructor, 0x725590, (CGuiButton* self, void* edx));
+CSF_FUNC(int, __fastcall, CGuiButton_Destroy_725590, 0x725590, (CGuiButton* self, void* edx));
 
 // Scalar deleting destructor for CGuiRadioButton.
 // - installs its own vtable (0x8668B8)
@@ -17,8 +17,8 @@ CSF_FUNC(int, __fastcall, CGuiButton_Destructor, 0x725590, (CGuiButton* self, vo
 static CGuiRadioButton* __fastcall CGuiRadioButton_ScalarDeletingDestructor(
     CGuiRadioButton* self, void* /*edx*/, char a2)
 {
-    self->vtbl = reinterpret_cast<void**>(0x8668B8);
-    CGuiButton_Destructor(self, nullptr);
+    self->vtbl = CSF_VTBL(0x8668B8);
+    CGuiButton_Destroy_725590(self, nullptr);
     if ((a2 & 1) != 0)
         Mem_Free(self);
     return self;

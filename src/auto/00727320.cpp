@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(void*, __fastcall, AssignStringRange, 0x004109E0,
+CSF_FUNC(void*, __fastcall, AssignStringSubstring, 0x004109E0,
          (void* self, void* edx, void* source,
           std::uint32_t position, std::uint32_t count));
 
@@ -20,7 +20,7 @@ static std::uint32_t* __cdecl CopyStringRecordRange(
         CSF_AT(std::uint32_t, destination, 0x00) =
             CSF_AT(std::uint32_t, first, 0x00);
 
-        AssignStringRange(
+        AssignStringSubstring(
             reinterpret_cast<std::uint8_t*>(destination) + 0x04,
             nullptr,
             reinterpret_cast<std::uint8_t*>(first) + 0x04,

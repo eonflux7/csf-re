@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(std::int32_t*, __fastcall, CopyReferencedObjectList,
+CSF_FUNC(std::int32_t*, __fastcall, ConstructPointerVectorCopy_71C0A0,
          0x0071C0A0, (std::int32_t* self, void* edx, void* source));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
@@ -15,7 +15,7 @@ static unsigned char __fastcall C_00864508_NotifyReferencedObjectsIfEnabled(
         return enabled;
 
     std::int32_t snapshot[4];
-    std::int32_t* copyResult = CopyReferencedObjectList(
+    std::int32_t* copyResult = ConstructPointerVectorCopy_71C0A0(
         snapshot, nullptr, reinterpret_cast<std::uint8_t*>(self) + 0x44);
     unsigned char result = static_cast<unsigned char>(
         reinterpret_cast<std::uintptr_t>(copyResult));

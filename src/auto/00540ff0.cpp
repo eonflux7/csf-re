@@ -5,13 +5,13 @@
 #include "core/memory.h"
 
 // __thiscall callee: int CGuiListBox::GetItemCount(void)
-CSF_FUNC(int, __fastcall, ListBox_GetItemCount, 0x00714860, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, CGuiListBox_GetItemCount_714860, 0x00714860, (void* self, void* edx));
 
 // __thiscall callee: int GetStoredValueAtIndex(int index), pops 4
 CSF_FUNC(int, __fastcall, StoredValue_GetAtIndex, 0x00714CA0, (void* self, void* edx, int index));
 
 // __thiscall callee: int GetIndexedTableValue(int value, int extra), pops 8
-CSF_FUNC(int, __fastcall, IndexedTable_GetValue, 0x00714C20, (void* self, void* edx, int value, int extra));
+CSF_FUNC(int, __fastcall, GetIndexedTableValue_714C20, 0x00714C20, (void* self, void* edx, int value, int extra));
 
 static void* ListBoxPointerFromInt(int listBox)
 {
@@ -28,14 +28,14 @@ static char __cdecl ReadFirstStoredIndexedValue(int listBox, int* outValue)
 
     void* listBoxObj = ListBoxPointerFromInt(listBox);
 
-    if (ListBox_GetItemCount(listBoxObj, nullptr) <= 0)
+    if (CGuiListBox_GetItemCount_714860(listBoxObj, nullptr) <= 0)
         return 0;
 
     int storedIndex = StoredValue_GetAtIndex(listBoxObj, nullptr, 0);
     if (storedIndex == -1)
         return 0;
 
-    *outValue = IndexedTable_GetValue(listBoxObj, nullptr, storedIndex, 0);
+    *outValue = GetIndexedTableValue_714C20(listBoxObj, nullptr, storedIndex, 0);
     return 1;
 }
 

@@ -6,7 +6,7 @@
 
 // Original calls, bound by address.
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, GetObjectForGlobalIndex, 0x006B1390, (int globalIndex, void* edx));
+CSF_FUNC(void*, __fastcall, MenuControls_ResolveObject, 0x006B1390, (int globalIndex, void* edx));
 CSF_FUNC(void*, __cdecl, GetGlobalValue_8BC1E0, 0x00756A10, ());
 
 // Sets the loader object from the global index, then configures it with
@@ -16,7 +16,7 @@ static int __fastcall CMenuLoading_ConfigureLoader(CMenuLoading* self, void* /*e
     self->field_004c = 0;
 
     int globalIndex = GetGlobalInt();
-    void* indexedObject = GetObjectForGlobalIndex(globalIndex, nullptr);
+    void* indexedObject = MenuControls_ResolveObject(globalIndex, nullptr);
 
     // Virtual slot 0x44 / 4 = 17 on indexedObject; result becomes the loader.
     int loaderHandle = ((int(__fastcall*)(void*, void*))CSF_AT(void**, indexedObject, 0)[17])(indexedObject, nullptr);

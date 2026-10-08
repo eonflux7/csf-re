@@ -3,10 +3,10 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(void*, __fastcall, MenuMessageBox_GetDisplayService, 0x00652160,
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160,
          (void* self, void* edx));
-CSF_FUNC(void*, __cdecl, MenuMessageBox_GetGlobalContext, 0x006B1380, ());
-CSF_FUNC(void, __fastcall, MenuMessageBox_CopyStateToTarget, 0x00718230,
+CSF_FUNC(void*, __cdecl, GetGlobalInt, 0x006B1380, ());
+CSF_FUNC(void, __fastcall, CGuiStatic_CopyStateToTarget, 0x00718230,
          (void* self, void* edx, void* target));
 CSF_FUNC(void, __fastcall, MenuMessageBox_LayoutOptionControl, 0x005299A0,
          (void* self, void* edx, std::uint32_t index,
@@ -59,8 +59,8 @@ static std::uint8_t __fastcall MenuMessageBox_UpdateLayout(
             reinterpret_cast<std::uintptr_t>(headerControl));
     }
 
-    void* context = MenuMessageBox_GetGlobalContext();
-    void* display = MenuMessageBox_GetDisplayService(context, nullptr);
+    void* context = GetGlobalInt();
+    void* display = LookupObjectById(context, nullptr);
     void* resolution = MenuMessageBox_GetVirtualObject(display, 0x18 / 4);
     const double resolutionHeight =
         static_cast<double>(CSF_AT(std::int32_t, resolution, 4));
@@ -74,8 +74,8 @@ static std::uint8_t __fastcall MenuMessageBox_UpdateLayout(
     const float verticalScale =
         static_cast<float>(resolutionHeight / screenHeight);
 
-    context = MenuMessageBox_GetGlobalContext();
-    display = MenuMessageBox_GetDisplayService(context, nullptr);
+    context = GetGlobalInt();
+    display = LookupObjectById(context, nullptr);
     MenuMessageBox_GetVirtualObject(display, 0x18 / 4);
 
     void* header = MenuMessageBox_GetVirtualObject(
@@ -121,7 +121,7 @@ static std::uint8_t __fastcall MenuMessageBox_UpdateLayout(
         CSF_AT(void*, self, 0x5C), 0x98 / 4, position);
     MenuMessageBox_SetVirtualPair(
         CSF_AT(void*, self, 0x5C), 0xA0 / 4, extent);
-    MenuMessageBox_CopyStateToTarget(
+    CGuiStatic_CopyStateToTarget(
         CSF_AT(void*, self, 0x5C), nullptr, body);
 
     void* firstOption = MenuMessageBox_GetVirtualObject(

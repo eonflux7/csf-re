@@ -9,7 +9,7 @@ CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10,
 
 // Capture the entire EAX register: the target forwards it unchanged,
 // even though this callee's inferred return type is char.
-CSF_FUNC(int, __fastcall, CGuiControl_ProcessInputRawResult,
+CSF_FUNC(int, __fastcall, CGuiControl_HandleMouseMovement,
          0x00719400, (CGuiControl* self, void* edx, int inputValue));
 
 static int __fastcall CGuiListBoxBase_ForwardInputToSliderAndControl(
@@ -39,7 +39,7 @@ static int __fastcall CGuiListBoxBase_ForwardInputToSliderAndControl(
                 slider, nullptr, inputValue);
     }
 
-    return CGuiControl_ProcessInputRawResult(self, nullptr, inputValue);
+    return CGuiControl_HandleMouseMovement(self, nullptr, inputValue);
 }
 
 HOOK(0x00714150, CGuiListBoxBase_ForwardInputToSliderAndControl, "auto");

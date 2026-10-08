@@ -10,7 +10,7 @@ CSF_GLOBAL(void*, g_vtbl_CGuiCharacterPreview, 0x8432B0);
 
 CSF_FUNC(int, __fastcall, CGuiCharacterPreview_ReleaseResources, 0x541ED0, (void* self, void*));
 CSF_FUNC(int, __fastcall, CGuiControl_Destroy, 0x719B10, (void* self, void*));
-CSF_FUNC(int, __cdecl, GameHeap_Free, 0x691110, (void* p));
+CSF_FUNC(int, __cdecl, Mem_Free, 0x691110, (void* p));
 
 // Scalar deleting destructor: restores the CGuiCharacterPreview vtable, releases the
 // preview resources, destroys the CGuiControl base and frees the object when the
@@ -23,7 +23,7 @@ static int* __fastcall CGuiCharacterPreview_DestroyAndFreeIfFlag(void* self, voi
     CGuiControl_Destroy(self, nullptr);
 
     if ((a2 & 1) != 0)
-        GameHeap_Free(self);
+        Mem_Free(self);
 
     return static_cast<int*>(self);
 }

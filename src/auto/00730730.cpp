@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(char, __fastcall, CGuiControl_HandleSelectionInput, 0x00718510,
+CSF_FUNC(char, __fastcall, CGuiControl_HandleSelectionInput_718510, 0x00718510,
          (CGuiControl* self, void* edx, int input, int context));
 CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x00718700,
          (CGuiControl* self, void* edx));
@@ -44,7 +44,7 @@ static char __fastcall CGuiSwitch_HandleSelectionInput(
         CGuiSwitch_ToggleStateAndUpdateColor(self, nullptr);
     }
 
-    return CGuiControl_HandleSelectionInput(self, nullptr, input, context);
+    return CGuiControl_HandleSelectionInput_718510(self, nullptr, input, context);
 }
 
 HOOK(0x00730730, CGuiSwitch_HandleSelectionInput, "auto");

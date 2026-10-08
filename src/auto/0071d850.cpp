@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, ReleaseResourceReference, 0x006923C0,
+CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
 
 static char __fastcall CGuiBuilder_AssignCurrentResource(
@@ -27,7 +27,7 @@ static char __fastcall CGuiBuilder_AssignCurrentResource(
     reinterpret_cast<void (__fastcall*)(void*, void*, void*)>(
         CSF_AT(void**, control, 0)[0x248 / 4])(control, nullptr, resource);
 
-    return static_cast<char>(ReleaseResourceReference(
+    return static_cast<char>(ReleaseObjectReference(
         static_cast<uint8_t*>(resource) + 4, nullptr));
 }
 

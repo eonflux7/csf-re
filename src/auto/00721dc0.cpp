@@ -9,10 +9,10 @@ CSF_FUNC(std::uint32_t*, __fastcall, InsertWideCharacter, 0x00695B30,
          (legacy::wstring* self, void* edx, std::uint32_t* result,
           void* position, std::int16_t character));
 
-CSF_FUNC(int, __fastcall, CGuiEdit_RebuildVisibleTextFromEnd, 0x007215F0,
+CSF_FUNC(int, __fastcall, AdjustTextRangeLeft, 0x007215F0,
          (CGuiEdit* self, void* edx, char forceHiddenCaret));
 
-CSF_FUNC(int, __fastcall, CGuiEdit_RebuildVisibleTextFromStart, 0x00721900,
+CSF_FUNC(int, __fastcall, AdjustTextRangeRight, 0x00721900,
          (CGuiEdit* self, void* edx, char forceHiddenCaret));
 
 static int __fastcall CGuiEdit_InsertCharacter(
@@ -103,8 +103,8 @@ static int __fastcall CGuiEdit_InsertCharacter(
                         insertionPosition, character);
 
     if (rebuildFromStart)
-        return CGuiEdit_RebuildVisibleTextFromStart(self, nullptr, 0);
-    return CGuiEdit_RebuildVisibleTextFromEnd(self, nullptr, 0);
+        return AdjustTextRangeRight(self, nullptr, 0);
+    return AdjustTextRangeLeft(self, nullptr, 0);
 }
 
 HOOK(0x00721DC0, CGuiEdit_InsertCharacter, "auto");

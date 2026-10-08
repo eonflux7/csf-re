@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_CheckResourceCreationState,
+CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10,
          0x00718700, (CGuiControl* self, void* edx));
 
 static int __fastcall CGuiPanel_CreateChildResources(
@@ -17,7 +17,7 @@ static int __fastcall CGuiPanel_CreateChildResources(
     if (static_cast<std::uint8_t>(result) == 0)
         return result;
 
-    result = CGuiControl_CheckResourceCreationState(self, nullptr);
+    result = CGuiSlider_IsSelectableAndNotType10(self, nullptr);
     if (static_cast<std::uint8_t>(result) == 0)
         return result;
 

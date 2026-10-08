@@ -5,13 +5,13 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-// Scheduler lookup: GetGlobalState() returns the global state, then
+// Scheduler lookup: GetGlobalState_50D190() returns the global state, then
 // SchedulerBase::GetSchedulerProxy is a __thiscall method taking that state as `this`.
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x50D190, ());
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x50D190, ());
 CSF_FUNC(int, __fastcall, SchedulerBase_GetSchedulerProxy, 0x734A10, (void* self, void* edx));
 
 // Helper that clears the stats sub-object (cdecl, one argument, returns int*).
-CSF_FUNC(int*, __cdecl, MenuSaveGame_ResetStatsSubobject, 0x541650, (void* subobject));
+CSF_FUNC(int*, __cdecl, MenuSaveGame_ClearListContainer, 0x541650, (void* subobject));
 
 // Layout forwarder. The original is __usercall with ebx carrying the first input;
 // only the two stack arguments are expressible here (see notes).
@@ -22,7 +22,7 @@ CSF_FUNC(void, __cdecl, MenuMpStats_ForwardToLayout541230, 0x541570, (int a2, in
 static void __fastcall MenuSaveGame_RefreshLayoutForScheduler(void* self, uint32_t groupIndexEbx)
 {
     int schedulerProxyKind = SchedulerBase_GetSchedulerProxy(
-        reinterpret_cast<void*>(GetGlobalState()), nullptr);
+        reinterpret_cast<void*>(GetGlobalState_50D190()), nullptr);
 
     if (schedulerProxyKind == 4)
     {
@@ -48,7 +48,7 @@ static void __fastcall MenuSaveGame_RefreshLayoutForScheduler(void* self, uint32
     ((void(__fastcall*)(void*, void*))menuVtbl[91])(menuObject, nullptr);
 
     void* statsSubobject = static_cast<uint8_t*>(self) + 0x20;
-    MenuSaveGame_ResetStatsSubobject(statsSubobject);
+    MenuSaveGame_ClearListContainer(statsSubobject);
 
     int trailingValue = CSF_AT(int, self, 0x1C);
     MenuMpStats_ForwardToLayout541230(static_cast<int>(reinterpret_cast<uintptr_t>(statsSubobject)),

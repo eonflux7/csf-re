@@ -6,7 +6,7 @@
 #include "types/auto_classes.h"
 
 // std::string assign from a source string (source, startPos, count), __thiscall with 3 stack args.
-CSF_FUNC(void*, __fastcall, StdString_AssignRange, 0x488830, (void* self, void* edx, const void* source, uint32_t startPos, uint32_t count));
+CSF_FUNC(void*, __fastcall, AssignStringRange_488830, 0x488830, (void* self, void* edx, const void* source, uint32_t startPos, uint32_t count));
 
 // Game debug-heap free, __cdecl, one argument.
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x690E60, (void* block));
@@ -29,7 +29,7 @@ static void* __fastcall CMenuEula_LoadTextIntoNameAndSetState(void* self, void* 
         CSF_AT(void**, textProvider, 0)[0x93])(textProvider, nullptr, tempFrame, 1);
 
     // Assign into the member string at +0x3C (address of the embedded sub-object).
-    void* assignResult = StdString_AssignRange(
+    void* assignResult = AssignStringRange_488830(
         static_cast<uint8_t*>(self) + 0x3C, nullptr, sourceString, 0u, 0xFFFFFFFFu);
 
     CSF_AT(uint32_t, self, 0x18) = 2u;

@@ -11,16 +11,16 @@
 #include "legacy/string.h"
 
 // Base-part constructor invoked on the embedded sub-object at +0x04 (thiscall, no stack args).
-CSF_FUNC(void*, __fastcall, CMenuEmbeddedBase_Construct, 0x712CC0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x712CC0, (void* self, void* edx));
 
 // CMenuMpScoreBar constructor (thiscall, one stack arg: owner/parent value stored at +0x34).
 static CMenuMpScoreBar* __fastcall CMenuMpScoreBar_Construct(CMenuMpScoreBar* self, void* /*edx*/, int ownerValue)
 {
     // Primary vtable (CMenuScreen-family part of CMenuMpScoreBar).
-    CSF_AT(uint32_t, self, 0x00) = 0x0083042C;
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x0083042C);
 
     // Construct the embedded sub-object at +0x04.
-    CMenuEmbeddedBase_Construct(reinterpret_cast<uint8_t*>(self) + 0x04, nullptr);
+    C_00830438_Construct(reinterpret_cast<uint8_t*>(self) + 0x04, nullptr);
 
     // Stored argument.
     self->field_0034 = static_cast<uint32_t>(ownerValue);
@@ -40,7 +40,7 @@ static CMenuMpScoreBar* __fastcall CMenuMpScoreBar_Construct(CMenuMpScoreBar* se
     self->field_0024 = 0;
 
     // Final vtable for CMenuMpScoreBar.
-    CSF_AT(uint32_t, self, 0x00) = 0x008430F8;
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x008430F8);
 
     return self;
 }

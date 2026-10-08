@@ -5,7 +5,7 @@
 // 0x007A8ED0 - query/predicate invoked with the caller-supplied argument.
 // Returns its value in eax; only the low byte is tested by the target.
 // Caller cleans the stack (add esp, 4) => __cdecl, one argument.
-CSF_FUNC(int, __cdecl, CMenuMpSessions_SessionQuery, 0x7A8ED0, (int a));
+CSF_FUNC(int, __cdecl, Sub_7A8ED0, 0x7A8ED0, (int a));
 
 // 0x005604D0 - menu_mp_sessions / CMenuMpSessions.
 // Runs a query on the given argument; if it succeeds and the cached session
@@ -13,7 +13,7 @@ CSF_FUNC(int, __cdecl, CMenuMpSessions_SessionQuery, 0x7A8ED0, (int a));
 // owning object's virtual method at vtable slot 19 (0x4C/4) and returns that.
 static int __fastcall CMenuMpSessions_ResolveSession(void* self, void* /*edx*/, int a2, int a3)
 {
-  int result = CMenuMpSessions_SessionQuery(a2);
+  int result = Sub_7A8ED0(a2);
   if ((uint8_t)result)
   {
     // Re-read the cached session pointer (0x10) after the query call.

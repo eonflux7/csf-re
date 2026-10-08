@@ -8,7 +8,7 @@ CSF_GLOBAL(char*, g_FontKeyword, 0x008A85E8);
 
 CSF_FUNC(std::uint8_t*, __fastcall, FindProperty, 0x006932B0,
          (std::uint8_t* self, void* edx, char* keyword));
-CSF_FUNC(char, __fastcall, ReadPropertyString, 0x006939C0,
+CSF_FUNC(char, __fastcall, MenuExtras_ReadText, 0x006939C0,
          (std::uint8_t* self, void* edx, char* keyword, char* buffer, int capacity));
 
 static int __fastcall CGuiBuilder_GetFont(
@@ -18,7 +18,7 @@ static int __fastcall CGuiBuilder_GetFont(
         return 0;
 
     char buffer[256]{};
-    ReadPropertyString(properties, nullptr, g_FontKeyword, buffer, 256);
+    MenuExtras_ReadText(properties, nullptr, g_FontKeyword, buffer, 256);
 
     void* manager = reinterpret_cast<void*>(self->field_0004);
     return reinterpret_cast<int(__fastcall*)(void*, void*, char*)>(

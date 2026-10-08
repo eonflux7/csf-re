@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(std::uint8_t*, __fastcall, FindAttribute, 0x006932B0,
+CSF_FUNC(std::uint8_t*, __fastcall, FindProperty, 0x006932B0,
          (std::uint8_t* node, void* edx, char* name));
 CSF_FUNC(char, __fastcall, CopyAttributeText, 0x00692D40,
          (std::uint8_t* attribute, void* edx, char* buffer, int capacity));
@@ -19,7 +19,7 @@ static std::uint8_t* __stdcall CGuiBuilder_ResolveObjectFromAttribute(
         return nullptr;
 
     std::uint8_t* attribute =
-        FindAttribute(node, nullptr, g_LookupAttribute);
+        FindProperty(node, nullptr, g_LookupAttribute);
     if (!attribute)
         return nullptr;
 

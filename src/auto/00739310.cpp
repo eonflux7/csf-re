@@ -16,7 +16,7 @@ CSF_FUNC(void, __fastcall, C_0085e65c_InitVtable, 0x6923A0, (C_0085e65c* self, v
 //   Mem_Free, then returns the pointer.
 static C_008673fc* __fastcall C_008673fc_ScalarDeletingDestructor(C_008673fc* self, void* /*edx*/, char a2)
 {
-    self->vtbl = reinterpret_cast<void**>(0x8673FC);
+    self->vtbl = CSF_VTBL(0x8673FC);
     C_0085e65c_InitVtable(self, nullptr);
     if ((a2 & 1) != 0)
         Mem_Free(self);

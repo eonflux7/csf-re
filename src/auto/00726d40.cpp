@@ -5,7 +5,7 @@
 
 // Copy-constructs one element of a pointer range: source and destination are
 // passed on the stack, the construction context travels in ECX (ret 8).
-CSF_FUNC(std::uint32_t*, __fastcall, CopyConstructPointerElement,
+CSF_FUNC(std::uint32_t*, __fastcall, CopyDwordIfNotNull,
          0x00730830,
          (void* constructionContext, void* /*edx*/,
           std::uint32_t* destination, std::uint32_t* source));
@@ -14,7 +14,7 @@ CSF_FUNC(std::uint32_t*, __fastcall, CopyConstructPointerElement,
 CSF_FUNC(void, __stdcall, RethrowCppException,
          0x007AF666, (void* exceptionObject, void* throwInformation));
 
-CSF_FUNC(int, __cdecl, HandleCppExceptionFrame, 0x007AF226, (...));
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226, (...));
 CSF_GLOBAL(std::uint8_t, g_PointerRangeCopyExceptionInformation, 0x008922E4);
 
 // Copies the pointer range [source, sourceEnd) into the destination range,
@@ -31,7 +31,7 @@ static int __cdecl CopyConstructPointerRange(
     {
         while (source != sourceEnd)
         {
-            CopyConstructPointerElement(
+            CopyDwordIfNotNull(
                 constructionContext,
                 nullptr,
                 reinterpret_cast<std::uint32_t*>(destination),

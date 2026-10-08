@@ -6,12 +6,12 @@
 
 static int (__fastcall* const CGuiStatic_InvokeTextVirtual)(
     CGuiChoiceButton*, void*) =
-    reinterpret_cast<int (__fastcall*)(CGuiChoiceButton*, void*)>(0x00724CE0);
+    reinterpret_cast<int (__fastcall*)(CGuiChoiceButton*, void*)>(CSF_ADDR_FN(0x00724CE0));
 
 static std::uint32_t* (__fastcall* const EraseWideStringRange)(
     void*, void*, unsigned int, unsigned int) =
     reinterpret_cast<std::uint32_t* (__fastcall*)(
-        void*, void*, unsigned int, unsigned int)>(0x004856E0);
+        void*, void*, unsigned int, unsigned int)>(CSF_ADDR_FN(0x004856E0));
 
 static int __fastcall CGuiChoiceButton_ClearChoiceStrings(
     CGuiChoiceButton* self, void* /*edx*/)

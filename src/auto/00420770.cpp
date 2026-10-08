@@ -13,7 +13,7 @@
 // Returns the literal string "TBlending".
 static const char* __cdecl GetTBlendingName()
 {
-    return reinterpret_cast<const char*>(0x82f558);
+    return reinterpret_cast<const char*>(CSF_ADDR_DATA(0x82f558));
 }
 
 HOOK(0x420770, GetTBlendingName, "auto");

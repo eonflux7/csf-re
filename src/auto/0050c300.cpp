@@ -12,7 +12,7 @@
 
 // Callee 0x469760: the caller pushes four arguments and cleans up with add esp,0x10.
 // Argument order (first to last): [a1+4], [a1+8], a1, a1.
-CSF_FUNC(int, __cdecl, MenuLanguage_ReleaseChildren, 0x00469760,
+CSF_FUNC(int, __cdecl, DestroyElementRange, 0x00469760,
          (int* first, int* second, int* self_a, int* self_b));
 
 // Game debug heap free used by the original (Mem_FreeDebug).
@@ -26,7 +26,7 @@ static int* __cdecl CMenuLanguage_ClearPageState(int* a1)
     if (result)
     {
         int* secondary = CSF_AT(int*, a1, 0x8);
-        MenuLanguage_ReleaseChildren(result, secondary, a1, a1);
+        DestroyElementRange(result, secondary, a1, a1);
 
         result = CSF_AT(int*, a1, 0x4);
         if (result)

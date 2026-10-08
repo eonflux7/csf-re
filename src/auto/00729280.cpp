@@ -8,7 +8,7 @@ CSF_GLOBAL(void*, g_vtbl_C_008658f8, 0x008658F8);
 
 CSF_FUNC(int, __fastcall, C_00863f60_Destroy, 0x00713F40,
          (C_00863f60* self, void* edx));
-CSF_FUNC(int, __cdecl, FreeGameMemory, 0x00691110, (void* memory));
+CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* memory));
 
 static C_008658f8* __fastcall C_008658f8_Destroy(
     C_008658f8* self, void* /*edx*/, char flags)
@@ -27,7 +27,7 @@ static C_008658f8* __fastcall C_008658f8_Destroy(
     C_00863f60_Destroy(reinterpret_cast<C_00863f60*>(self), nullptr);
 
     if (flags & 1)
-        FreeGameMemory(self);
+        Mem_Free(self);
 
     return self;
 }

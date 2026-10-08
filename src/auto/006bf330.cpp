@@ -11,11 +11,11 @@
 #include "hook.h"
 
 // Real implementation reached by the tail jump: __thiscall, ret 0.
-CSF_FUNC(char*, __fastcall, Sub_6B35C0, 0x6B35C0, (char* self, void* edx));
+CSF_FUNC(char*, __fastcall, GetInnerObjectAtOffset4, 0x6B35C0, (char* self, void* edx));
 
 static char* __fastcall AdjustThisMinus4AndForward(char* self, void* /*edx*/)
 {
-    return Sub_6B35C0(self - 4, nullptr);
+    return GetInnerObjectAtOffset4(self - 4, nullptr);
 }
 
 HOOK(0x6BF330, AdjustThisMinus4AndForward, "auto");

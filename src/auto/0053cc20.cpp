@@ -13,17 +13,17 @@
 #include "globals.h"
 
 // 0x007A8ED0 - one-argument predicate; only the low byte of its result is tested.
-CSF_FUNC(int, __cdecl, MenuSoundOptions_IsActivationEvent, 0x7A8ED0, (int a2));
+CSF_FUNC(int, __cdecl, Sub_7A8ED0, 0x7A8ED0, (int a2));
 
 // 0x00428500 - one-argument handler; its return value becomes this function's result.
-CSF_FUNC(int, __cdecl, MenuSoundOptions_ProcessEvent, 0x428500, (int a2));
+CSF_FUNC(int, __cdecl, MenuScenarioSelect_FallbackHandle, 0x428500, (int a2));
 
 // Virtual entry invoked as `call dword ptr [eax+0x4c]` with ecx = self-4.
 typedef void (__fastcall* MenuSoundOptions_VirtualActivateFn)(void* self, void* edx);
 
 static int __fastcall CMenuSoundOptions_HandleEvent(void* self, void* /*edx*/, int a2, int a3)
 {
-  if ((uint8_t)MenuSoundOptions_IsActivationEvent(a2))
+  if ((uint8_t)Sub_7A8ED0(a2))
   {
     // The owning object starts 4 bytes before the `this` passed in ecx
     // (secondary sub-object); its vtable pointer lives at self-4.
@@ -33,7 +33,7 @@ static int __fastcall CMenuSoundOptions_HandleEvent(void* self, void* /*edx*/, i
         reinterpret_cast<MenuSoundOptions_VirtualActivateFn>(CSF_AT(void*, vtbl, 0x4C));
     activate(owner, nullptr);
   }
-  return MenuSoundOptions_ProcessEvent(a2);
+  return MenuScenarioSelect_FallbackHandle(a2);
 }
 
 HOOK(0x53CC20, CMenuSoundOptions_HandleEvent, "auto");

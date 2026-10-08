@@ -5,7 +5,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x50D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x50D190, ());
 
 CSF_GLOBAL(const char*, g_pszMenu_P_EEULA, 0x899B94);
 CSF_GLOBAL(const char*, g_pszMenu_P_Option, 0x899ACC);
@@ -38,14 +38,14 @@ static int __fastcall CMenuMain_DispatchButtonEvent(CMenuMain* self, void* /*edx
     uint32_t campaignButtonId = self->field_001c;
     if (campaignButtonId != 0 && campaignButtonId == CSF_AT(uint32_t, eventObj, 4)) {
         CMenuMain_NotifyOwnerMenu(self, 0);
-        void* globalState = GetGlobalState();
+        void* globalState = GetGlobalState_50D190();
         return reinterpret_cast<GlobalStateCallFn>(CSF_AT(void**, globalState, 0)[24])(globalState, nullptr);
     }
 
     // MultiPlayer button (field_0020)
     uint32_t multiplayerButtonId = self->field_0020;
     if (multiplayerButtonId != 0 && multiplayerButtonId == CSF_AT(uint32_t, eventObj, 4)) {
-        void* globalState = GetGlobalState();
+        void* globalState = GetGlobalState_50D190();
         CSF_AT(uint8_t, globalState, 0xD0) = 1;
         CMenuMain_NotifyOwnerMenu(self, 0);
         return CMenuMain_RequestOwnerScreen(self, g_pszMenu_P_EEULA);

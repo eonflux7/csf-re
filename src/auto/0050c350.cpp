@@ -11,7 +11,7 @@
 //   arg4 = self    (the incoming ecx value)
 //   arg5 = a3      (pushed first, re-read from [ebp+0x10])
 // ---------------------------------------------------------------------------
-CSF_FUNC(int, __cdecl, ForwardedCall, 0x50C120,
+CSF_FUNC(int, __cdecl, CopyConstructRecordRange_50C120, 0x50C120,
          (void* a1, void* a2, int a3, void* a4, int a5));
 
 // ---------------------------------------------------------------------------
@@ -21,12 +21,12 @@ CSF_FUNC(int, __cdecl, ForwardedCall, 0x50C120,
 // callee-popped byte count of 0xC.
 //   entry : ecx = self, stack args a1, a2, a3
 //   pushes: a3, self, a3, a2, a1
-//   call  : ForwardedCall(a1, a2, a3, self, a3)
+//   call  : CopyConstructRecordRange_50C120(a1, a2, a3, self, a3)
 // ---------------------------------------------------------------------------
 static int __fastcall ForwardTo50C120(void* self, void* /*edx*/,
                                       void* a1, void* a2, int a3)
 {
-    return ForwardedCall(a1, a2, a3, self, a3);
+    return CopyConstructRecordRange_50C120(a1, a2, a3, self, a3);
 }
 
 HOOK(0x50C350, ForwardTo50C120, "auto");

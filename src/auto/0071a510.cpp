@@ -6,14 +6,14 @@
 // 0x0071A2E0: copy-constructs one 8-byte element into `destination` from `source`.
 // The construction context (the target's fourth argument) is passed in ECX, so the
 // callee is a __thiscall with two stack arguments (ret 8) -> bound as __fastcall.
-CSF_FUNC(void, __fastcall, ConstructEightByteElement,
+CSF_FUNC(void, __fastcall, CopyTwoDwordsIfDestNonNull,
          0x0071A2E0, (void* constructionContext, void* /*edx*/,
                       std::uint32_t* destination, std::uint32_t* source));
 
 // Exception machinery referenced by the SEH frame of the original function.
 CSF_FUNC(void, __stdcall, RethrowCppException,
          0x007AF666, (void* exceptionObject, void* throwInformation));
-CSF_FUNC(int, __cdecl, HandleCppExceptionFrame,
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler,
          0x007AF226, (void* exceptionRecord, void* frame, void* contextRecord, void* dispatcherContext));
 CSF_GLOBAL(std::uint8_t, g_EightByteRangeCopyExceptionInformation, 0x00891C74);
 
@@ -31,7 +31,7 @@ static std::uint32_t* __cdecl CopyConstructEightByteElementRange(
     {
         while (source != sourceEnd)
         {
-            ConstructEightByteElement(constructionContext, nullptr, destination, source);
+            CopyTwoDwordsIfDestNonNull(constructionContext, nullptr, destination, source);
             destination += 2; // +8 bytes: one element
             source += 2;
         }

@@ -6,7 +6,7 @@
 
 CSF_FUNC(char, __cdecl, NormalizeResourceName, 0x006949D0,
          (char* source, char* destination, unsigned int capacity));
-CSF_FUNC(bool, __cdecl, ResourceNamesMatch, 0x00694AA0,
+CSF_FUNC(bool, __cdecl, SceneNamesMatch, 0x00694AA0,
          (char* first, char* second));
 
 static int __fastcall C_008655e8_FindRasterIndex(
@@ -37,7 +37,7 @@ static int __fastcall C_008655e8_FindRasterIndex(
             storedName = CSF_AT(char*, entry, 0x08);
 
         // Deliberately compare the original input, not the normalized buffer.
-        if (ResourceNamesMatch(source, storedName))
+        if (SceneNamesMatch(source, storedName))
             return static_cast<int>(index);
     }
 

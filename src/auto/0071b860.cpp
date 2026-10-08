@@ -7,9 +7,9 @@
 
 CSF_GLOBAL(float, g_fZero, 0x0082D4CC);
 
-CSF_FUNC(int, __fastcall, C_00864508_ProcessEntry, 0x0071B6D0,
+CSF_FUNC(int, __fastcall, C_00864508_ActivateEntry, 0x0071B6D0,
          (C_00864508* self, void* edx, int index));
-CSF_FUNC(void*, __cdecl, CopyEntryBytes, 0x007AEE60,
+CSF_FUNC(void*, __cdecl, _memcpy, 0x007AEE60,
          (void* destination, const void* source, std::size_t size));
 
 static int __fastcall C_00864508_UpdatePendingEntries(
@@ -47,7 +47,7 @@ static int __fastcall C_00864508_UpdatePendingEntries(
         bool removeEntry = false;
         // The original tests x87 C0, which also treats unordered as true.
         if (!active || !(self->field_0078 >= g_fZero)) {
-            C_00864508_ProcessEntry(self, nullptr, static_cast<int>(index));
+            C_00864508_ActivateEntry(self, nullptr, static_cast<int>(index));
             removeEntry = true;
         } else {
             void* attachedObject =
@@ -55,7 +55,7 @@ static int __fastcall C_00864508_UpdatePendingEntries(
                     CSF_AT(void**, object, 0)[0x20 / 4])(object, nullptr);
 
             if (attachedObject == nullptr) {
-                C_00864508_ProcessEntry(self, nullptr, static_cast<int>(index));
+                C_00864508_ActivateEntry(self, nullptr, static_cast<int>(index));
                 attachedObject =
                     ((void*(__fastcall*)(void*, void*))
                         CSF_AT(void**, object, 0)[0x20 / 4])(object, nullptr);
@@ -73,7 +73,7 @@ static int __fastcall C_00864508_UpdatePendingEntries(
                             attachedObject, nullptr);
 
                 if (!retainEntry) {
-                    C_00864508_ProcessEntry(
+                    C_00864508_ActivateEntry(
                         self, nullptr, static_cast<int>(index));
                     const std::uint32_t parameter =
                         __builtin_bit_cast(std::uint32_t, self->field_0078);
@@ -109,7 +109,7 @@ static int __fastcall C_00864508_UpdatePendingEntries(
                 static_cast<std::uint32_t>(
                     static_cast<std::int32_t>(self->field_0028 - source) >> 2)
                 << 2;
-            CopyEntryBytes(reinterpret_cast<void*>(result),
+            _memcpy(reinterpret_cast<void*>(result),
                            reinterpret_cast<const void*>(source), byteCount);
             result = self->field_0028 - 4;
             self->field_0028 = result;

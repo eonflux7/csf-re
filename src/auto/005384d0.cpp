@@ -11,7 +11,7 @@
 
 // Releases the object owned at +0x3C through the helper at 0x6923C0 (ecx = ptr + 4),
 // and the two interface objects at +0x2C and +0x54 via their vtable slot 0 (deleting call, arg 1).
-CSF_FUNC(int, __fastcall, CMenuLoading_ReleaseBlock_6923C0, 0x6923C0, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x6923C0, (void* self, void* edx));
 
 static int __fastcall CMenuLoading_ReleaseOwnedObjects(CMenuLoading* self, void* /*edx*/)
 {
@@ -29,7 +29,7 @@ static int __fastcall CMenuLoading_ReleaseOwnedObjects(CMenuLoading* self, void*
     if (result)
     {
         void* block = reinterpret_cast<void*>(static_cast<uintptr_t>(self->field_003c + 4));
-        result = CMenuLoading_ReleaseBlock_6923C0(block, nullptr);
+        result = ReleaseObjectReference(block, nullptr);
         self->field_003c = 0;
     }
 

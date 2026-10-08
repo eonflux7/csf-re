@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_SetScale, 0x007198A0,
+CSF_FUNC(int, __fastcall, CGuiControl_SetPosition_7198A0, 0x007198A0,
          (CGuiStatic* self, void* edx, float scaleX, float scaleY));
 CSF_FUNC(void, __fastcall, CGuiStatic_CopyPropertiesToObject, 0x007181E0,
          (CGuiStatic* self, void* edx, int* target));
@@ -14,7 +14,7 @@ CSF_FUNC(void, __fastcall, CGuiStatic_CopyStateToTarget, 0x00718230,
 static int __fastcall CGuiStatic_SetScale(
     CGuiStatic* self, void* /*edx*/, float scaleX, float scaleY)
 {
-    CGuiControl_SetScale(self, nullptr, scaleX, scaleY);
+    CGuiControl_SetPosition_7198A0(self, nullptr, scaleX, scaleY);
     CGuiStatic_CopyPropertiesToObject(
         self, nullptr, reinterpret_cast<int*>(self->field_0138));
 

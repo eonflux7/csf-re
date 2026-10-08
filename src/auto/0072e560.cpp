@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_CanNavigateTo, 0x00718700,
+CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x00718700,
          (CGuiControl* self, void* edx));
 
 using SliderNavigationJumpTable = std::uint32_t[9];
@@ -57,7 +57,7 @@ static std::uint8_t* __fastcall CGuiSlider_NavigateFromSelectedPart(
     if (target == nullptr)
         return nullptr;
 
-    const int navigationAllowed = CGuiControl_CanNavigateTo(target, nullptr);
+    const int navigationAllowed = CGuiSlider_IsSelectableAndNotType10(target, nullptr);
     result = reinterpret_cast<std::uint8_t*>(
         static_cast<std::uint32_t>(navigationAllowed));
 

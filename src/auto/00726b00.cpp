@@ -6,17 +6,17 @@
 
 CSF_FUNC(char, __cdecl, NormalizeResourceName, 0x006949D0,
          (char* source, char* destination, unsigned int capacity));
-CSF_FUNC(void*, __cdecl, FindNamedTexture, 0x00631950,
+CSF_FUNC(void*, __cdecl, RwTexDictionaryFindNamedTexture, 0x00631950,
          (void* dictionary, char* name));
 CSF_FUNC(void*, __cdecl, TryLoadTexture, 0x006E2ED0,
          (char* name, char* status));
 CSF_FUNC(void*, __cdecl, LoadTextureWithOptions, 0x006E2EB0,
          (char* name, char option, char* status));
-CSF_FUNC(int, __cdecl, SetTextureName, 0x00631800,
+CSF_FUNC(int, __cdecl, RwTextureSetName, 0x00631800,
          (void* texture, char* name));
-CSF_FUNC(int, __cdecl, AddDictionaryTexture, 0x006318E0,
+CSF_FUNC(int, __cdecl, RwTexDictionaryAddTexture, 0x006318E0,
          (void* dictionary, void* texture));
-CSF_FUNC(int, __cdecl, GetDictionaryStreamSize, 0x006307D0,
+CSF_FUNC(int, __cdecl, RwTexDictionaryStreamGetSize, 0x006307D0,
          (void* dictionary));
 
 static int __fastcall C_008655e8_AcquireTexture(
@@ -28,7 +28,7 @@ static int __fastcall C_008655e8_AcquireTexture(
     char normalizedName[256] = {};
     NormalizeResourceName(source, normalizedName, 256);
 
-    void* texture = FindNamedTexture(
+    void* texture = RwTexDictionaryFindNamedTexture(
         reinterpret_cast<void*>(self->field_002c), normalizedName);
 
     if (texture)
@@ -47,10 +47,10 @@ static int __fastcall C_008655e8_AcquireTexture(
 
     if (texture)
     {
-        SetTextureName(texture, normalizedName);
-        AddDictionaryTexture(
+        RwTextureSetName(texture, normalizedName);
+        RwTexDictionaryAddTexture(
             reinterpret_cast<void*>(self->field_002c), texture);
-        self->field_0030 = GetDictionaryStreamSize(
+        self->field_0030 = RwTexDictionaryStreamGetSize(
             reinterpret_cast<void*>(self->field_002c));
     }
 

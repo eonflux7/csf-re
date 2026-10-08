@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Resolves the helper object held behind this+0x04 (lib, __thiscall, no stack args).
-CSF_FUNC(void**, __fastcall, MenuPause_ResolveHeldObject_6683F0, 0x006683F0, (void* self, void* edx));
+CSF_FUNC(void**, __fastcall, GetReferencedObject, 0x006683F0, (void* self, void* edx));
 
 // Calls the virtual method at byte offset `byteOffset` (slot = offset / 4) on a polymorphic object.
 template <typename R, typename... A>
@@ -29,13 +29,13 @@ static int __fastcall MenuPause_ScrollViewToTrackedDelta(void* self, void* /*edx
 {
     uint8_t* base = static_cast<uint8_t*>(self);
 
-    void** statusHolder = MenuPause_ResolveHeldObject_6683F0(base + 4, nullptr);
+    void** statusHolder = GetReferencedObject(base + 4, nullptr);
     int statusOk = MenuPause_VCall<int>(statusHolder, 0x30);
     if (statusOk == 0)
         return statusOk;
 
-    void** positionHolder = MenuPause_ResolveHeldObject_6683F0(base + 4, nullptr);
-    void** targetHolder = MenuPause_ResolveHeldObject_6683F0(base + 4, nullptr);
+    void** positionHolder = GetReferencedObject(base + 4, nullptr);
+    void** targetHolder = GetReferencedObject(base + 4, nullptr);
 
     void* positionObj = MenuPause_VCall<void*>(positionHolder, 0x30);
     int32_t trackedY = *reinterpret_cast<int32_t*>(static_cast<uint8_t*>(positionObj) + 0x18);

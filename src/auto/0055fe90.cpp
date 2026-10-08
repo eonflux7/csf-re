@@ -5,20 +5,20 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void, __cdecl, MenuMpOnline_RunUpdateNotification, 0x00506AC0, ());
-CSF_FUNC(void*, __cdecl, MenuMpOnline_GetMenuState, 0x0050D190, ());
-CSF_FUNC(void*, __cdecl, MenuMpOnline_GetUpdateManager, 0x00521BB0, ());
-CSF_FUNC(void, __fastcall, MenuMpOnline_UpdateManager, 0x005231D0,
+CSF_FUNC(void, __cdecl, Nullsub_506AC0, 0x00506AC0, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobalValue_521BB0, 0x00521BB0, ());
+CSF_FUNC(void, __fastcall, GlobalSetValue_5231D0, 0x005231D0,
          (void* self, void* edx, int updateArgument));
-CSF_FUNC(void*, __cdecl, MenuMpOnline_GetOnlineContext, 0x00550CC0, ());
-CSF_FUNC(void*, __cdecl, MenuMpOnline_GetNetworkState, 0x006A6D70, ());
-CSF_FUNC(void*, __cdecl, MenuMpOnline_GetNetworkManager, 0x0073C020, ());
+CSF_FUNC(void*, __cdecl, GetGlobal8B0688, 0x00550CC0, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_6A6D70, 0x006A6D70, ());
+CSF_FUNC(void*, __cdecl, GetGlobalDword_73C020, 0x0073C020, ());
 CSF_FUNC(char, __fastcall, MenuMpOnline_UpdateNetworkManager, 0x0073D550,
          (void* self, void* edx, int updateArgument));
 
-CSF_FUNC(void, __fastcall, CMenuMpOnline_UpdateTransition, 0x0055EE90,
+CSF_FUNC(void, __fastcall, MenuMpOnline_TickIntroTimer, 0x0055EE90,
          (CMenuMpOnline* self, void* edx, float updateArgument));
-CSF_FUNC(void*, __fastcall, CMenuMpOnline_DispatchSchedulerProxyThunk, 0x0055EEE0,
+CSF_FUNC(void*, __fastcall, MenuMpOnline_DispatchSchedulerProxyThunk, 0x0055EEE0,
          (CMenuMpOnline* self, void* edx));
 CSF_FUNC(void*, __fastcall, CMenuMpOnline_ProcessMatchSelection, 0x0055F0B0,
          (CMenuMpOnline* self, void* edx, int updateArgument));
@@ -30,19 +30,19 @@ CSF_FUNC(void*, __fastcall, CMenuMpOnline_DispatchOnSchedulerProxy, 0x0055F3B0,
          (CMenuMpOnline* self, void* edx, int updateArgument));
 CSF_FUNC(void*, __fastcall, CMenuMpOnline_DispatchOnlineState, 0x0055F410,
          (CMenuMpOnline* self, void* edx, int updateArgument));
-CSF_FUNC(void*, __fastcall, CMenuMpOnline_CheckSchedulerProxyAndDispatch, 0x0055F470,
+CSF_FUNC(void*, __fastcall, MenuMpOnline_CheckSchedulerProxyAndDispatch, 0x0055F470,
          (CMenuMpOnline* self, void* edx, int updateArgument));
 CSF_FUNC(void*, __fastcall, CMenuMpOnline_ResolveSchedulerProxy, 0x0055F4C0,
          (CMenuMpOnline* self, void* edx, int updateArgument));
-CSF_FUNC(void*, __fastcall, CMenuMpOnline_ResolveAlternateSchedulerProxy, 0x0055F4F0,
+CSF_FUNC(void*, __fastcall, MenuMpOnline_ResolveSchedulerProxy, 0x0055F4F0,
          (CMenuMpOnline* self, void* edx, int updateArgument));
 CSF_FUNC(void*, __fastcall, CMenuMpOnline_ProcessPendingOperation, 0x0055F550,
          (CMenuMpOnline* self, void* edx, int updateArgument));
-CSF_FUNC(unsigned int, __fastcall, CMenuMpOnline_ProcessMatchSearch, 0x0055F610,
+CSF_FUNC(unsigned int, __fastcall, MenuMpOnline_HandleConnectionState, 0x0055F610,
          (CMenuMpOnline* self, void* edx, int updateArgument));
 CSF_FUNC(int, __fastcall, CMenuMpOnline_OpenAuUnPaMenu, 0x0055F8C0,
          (CMenuMpOnline* self, void* edx));
-CSF_FUNC(int, __fastcall, CMenuMpOnline_RouteNavigation, 0x0055F920,
+CSF_FUNC(int, __fastcall, MenuMpOnline_RouteNavigation, 0x0055F920,
          (CMenuMpOnline* self, void* edx, int updateArgument));
 CSF_FUNC(unsigned int, __fastcall, CMenuMpOnline_ProcessInitialState, 0x0055FCB0,
          (CMenuMpOnline* self, void* edx, int updateArgument));
@@ -63,17 +63,17 @@ static void __fastcall CMenuMpOnline_UpdateAndDispatch(
             CSF_AT(void**, child, 0)[0xB8 / 4])(child, nullptr, 1);
     }
 
-    void* manager = MenuMpOnline_GetUpdateManager();
-    MenuMpOnline_UpdateManager(manager, nullptr, updateArgument);
-    MenuMpOnline_RunUpdateNotification();
+    void* manager = GetGlobalValue_521BB0();
+    GlobalSetValue_5231D0(manager, nullptr, updateArgument);
+    Nullsub_506AC0();
 
-    manager = MenuMpOnline_GetNetworkManager();
+    manager = GetGlobalDword_73C020();
     MenuMpOnline_UpdateNetworkManager(manager, nullptr, updateArgument);
 
     int updateNetworkState;
-    if (MenuMpOnline_GetOnlineContext())
+    if (GetGlobal8B0688())
     {
-        MenuMpOnline_GetOnlineContext();
+        GetGlobal8B0688();
         updateNetworkState = g_OnlineMatchFlag;
     }
     else
@@ -83,13 +83,13 @@ static void __fastcall CMenuMpOnline_UpdateAndDispatch(
 
     if (updateNetworkState)
     {
-        void* networkState = MenuMpOnline_GetNetworkState();
+        void* networkState = GetGlobalState_6A6D70();
         reinterpret_cast<void(__fastcall*)(void*, void*, int)>(
             CSF_AT(void**, networkState, 0)[0x18 / 4])(
                 networkState, nullptr, updateArgument);
     }
 
-    void* menuState = MenuMpOnline_GetMenuState();
+    void* menuState = GetGlobalState_50D190();
     if (reinterpret_cast<std::uint8_t(__fastcall*)(void*, void*)>(
             CSF_AT(void**, menuState, 0)[0x6C / 4])(menuState, nullptr))
     {
@@ -110,7 +110,7 @@ static void __fastcall CMenuMpOnline_UpdateAndDispatch(
         CMenuMpOnline_ProcessMatchSelection(self, nullptr, updateArgument);
         break;
     case 4:
-        CMenuMpOnline_RouteNavigation(self, nullptr, updateArgument);
+        MenuMpOnline_RouteNavigation(self, nullptr, updateArgument);
         break;
     case 5:
         CMenuMpOnline_HandleOnlineState(self, nullptr, updateArgument);
@@ -119,7 +119,7 @@ static void __fastcall CMenuMpOnline_UpdateAndDispatch(
         CMenuMpOnline_InvokeSchedulerProxyCallback(self, nullptr, updateArgument);
         break;
     case 7:
-        CMenuMpOnline_ProcessMatchSearch(self, nullptr, updateArgument);
+        MenuMpOnline_HandleConnectionState(self, nullptr, updateArgument);
         break;
     case 8:
         CMenuMpOnline_DispatchOnSchedulerProxy(self, nullptr, updateArgument);
@@ -128,19 +128,19 @@ static void __fastcall CMenuMpOnline_UpdateAndDispatch(
         CMenuMpOnline_DispatchOnlineState(self, nullptr, updateArgument);
         break;
     case 10:
-        CMenuMpOnline_CheckSchedulerProxyAndDispatch(self, nullptr, updateArgument);
+        MenuMpOnline_CheckSchedulerProxyAndDispatch(self, nullptr, updateArgument);
         break;
     case 11:
         CMenuMpOnline_ResolveSchedulerProxy(self, nullptr, updateArgument);
         break;
     case 12:
-        CMenuMpOnline_ResolveAlternateSchedulerProxy(self, nullptr, updateArgument);
+        MenuMpOnline_ResolveSchedulerProxy(self, nullptr, updateArgument);
         break;
     case 13:
         CMenuMpOnline_ProcessPendingOperation(self, nullptr, updateArgument);
         break;
     case 14:
-        CMenuMpOnline_DispatchSchedulerProxyThunk(self, nullptr);
+        MenuMpOnline_DispatchSchedulerProxyThunk(self, nullptr);
         break;
     case 15:
         reinterpret_cast<void(__fastcall*)(void*, void*)>(
@@ -153,7 +153,7 @@ static void __fastcall CMenuMpOnline_UpdateAndDispatch(
     {
         float transitionArgument;
         std::memcpy(&transitionArgument, &updateArgument, sizeof(transitionArgument));
-        CMenuMpOnline_UpdateTransition(self, nullptr, transitionArgument);
+        MenuMpOnline_TickIntroTimer(self, nullptr, transitionArgument);
         break;
     }
     default:

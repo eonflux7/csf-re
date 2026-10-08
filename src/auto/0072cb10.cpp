@@ -5,7 +5,7 @@
 #include "core/memory.h"
 
 static void* (__cdecl* const AllocateGameMemory)(std::size_t) =
-    reinterpret_cast<void* (__cdecl*)(std::size_t)>(0x006910F0);
+    reinterpret_cast<void* (__cdecl*)(std::size_t)>(CSF_ADDR_FN(0x006910F0));
 
 static std::uint32_t* __cdecl CreateVariantObject(int kind)
 {
@@ -15,7 +15,7 @@ static std::uint32_t* __cdecl CreateVariantObject(int kind)
     {
         auto* object = static_cast<std::uint32_t*>(AllocateGameMemory(4u));
         if (object)
-            CSF_AT(void*, object, 0x00) = reinterpret_cast<void*>(0x00865E28);
+            CSF_AT(void*, object, 0x00) = reinterpret_cast<void*>(CSF_ADDR_VT(0x00865E28));
         return object;
     }
 
@@ -23,7 +23,7 @@ static std::uint32_t* __cdecl CreateVariantObject(int kind)
     {
         auto* object = static_cast<std::uint32_t*>(AllocateGameMemory(4u));
         if (object)
-            CSF_AT(void*, object, 0x00) = reinterpret_cast<void*>(0x00865E10);
+            CSF_AT(void*, object, 0x00) = reinterpret_cast<void*>(CSF_ADDR_VT(0x00865E10));
         return object;
     }
 
@@ -31,7 +31,7 @@ static std::uint32_t* __cdecl CreateVariantObject(int kind)
     {
         auto* object = static_cast<std::uint32_t*>(AllocateGameMemory(4u));
         if (object)
-            CSF_AT(void*, object, 0x00) = reinterpret_cast<void*>(0x00865E1C);
+            CSF_AT(void*, object, 0x00) = reinterpret_cast<void*>(CSF_ADDR_VT(0x00865E1C));
         return object;
     }
 

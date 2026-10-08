@@ -6,8 +6,8 @@
 CSF_GLOBAL(float, g_HalfDurationScale, 0x0082D444);
 CSF_GLOBAL(float, g_DegreesToRadians, 0x00865320);
 
-CSF_FUNC(std::uint32_t*, __cdecl, CreateRotationMatrix, 0x00624D40, ());
-CSF_FUNC(int, __cdecl, DestroyRotationMatrix, 0x00624D10,
+CSF_FUNC(std::uint32_t*, __cdecl, RwMatrixCreate, 0x00624D40, ());
+CSF_FUNC(int, __cdecl, RwMatrixDestroy, 0x00624D10,
          (std::uint32_t* matrix));
 CSF_FUNC(int, __fastcall, TranslateMatrixHandle, 0x006ADBB0,
          (void* self, void* edx, float x, float y, float z));
@@ -42,7 +42,7 @@ static void __cdecl ApplyCenteredRotation(void* object, float degrees)
         static_cast<double>(position[1]));
 
     RotationMatrixHandle handle;
-    handle.matrix = CreateRotationMatrix();
+    handle.matrix = RwMatrixCreate();
     handle.owned = 1;
 
     CSF_AT(std::uint32_t, handle.matrix, 0x28) = 0x3F800000;
@@ -72,7 +72,7 @@ static void __cdecl ApplyCenteredRotation(void* object, float degrees)
      CSF_AT(void**, object, 0)[24])(object, nullptr, &handle);
 
     if (handle.owned)
-        DestroyRotationMatrix(handle.matrix);
+        RwMatrixDestroy(handle.matrix);
 }
 
 HOOK(0x00725630, ApplyCenteredRotation, "auto");

@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Gate query (cdecl, one stack arg, result tested via al).
-CSF_FUNC(uint8_t, __cdecl, MenuAccounts_QueryGate, 0x007A8ED0, (int eventCode));
+CSF_FUNC(uint8_t, __cdecl, Sub_7A8ED0, 0x007A8ED0, (int eventCode));
 
 // Menu sub-object handler (thiscall, no stack args), invoked on the enclosing object.
 CSF_FUNC(void, __fastcall, MenuAccounts_ResetOnSelect, 0x0055D130, (void* self, void* edx));
@@ -22,7 +22,7 @@ static void __fastcall MenuAccounts_HandleEventCode(uint32_t* self, void* /*edx*
 {
     uint8_t* owner = reinterpret_cast<uint8_t*>(self) - 4;
 
-    if (MenuAccounts_QueryGate(eventCode)) {
+    if (Sub_7A8ED0(eventCode)) {
         // Virtual slot at byte offset 0x4C (slot 19) on the owner's vtable.
         void** vtbl = *reinterpret_cast<void***>(owner);
         ((void(__fastcall*)(void*, void*))vtbl[0x4C / 4])(owner, nullptr);

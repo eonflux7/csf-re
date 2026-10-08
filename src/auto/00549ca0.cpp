@@ -18,7 +18,7 @@ static void __fastcall CMenuVideoOptions_Destruct(CMenuVideoOptions* self, void*
 {
     void* child = reinterpret_cast<void*>(self->field_001c);
 
-    CSF_AT(uint32_t, self, 0) = 0x00844148;   // CMenuVideoOptions vtable
+    CSF_AT(uint32_t, self, 0) = CSF_ADDR_VT(0x00844148);   // CMenuVideoOptions vtable
     self->field_0004 = 0x008440F8;            // CMenuScreen intermediate vtable
 
     if (child) {
@@ -27,9 +27,9 @@ static void __fastcall CMenuVideoOptions_Destruct(CMenuVideoOptions* self, void*
         self->field_001c = 0;
     }
 
-    self->field_0004 = 0x00830488;
-    self->field_0004 = 0x00830438;
-    CSF_AT(uint32_t, self, 0) = 0x0083042C;
+    self->field_0004 = CSF_ADDR_DATA(0x00830488);
+    self->field_0004 = CSF_ADDR_VT(0x00830438);
+    CSF_AT(uint32_t, self, 0) = CSF_ADDR_VT(0x0083042C);
 }
 
 HOOK(0x00549CA0, CMenuVideoOptions_Destruct, "auto");

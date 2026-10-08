@@ -23,15 +23,15 @@
 // either. edx is no callee's input and is forwarded unchanged, exactly as the
 // original (which never touches edx) does. No stack arguments are involved.
 
-CSF_FUNC(int, __fastcall, CMenuMessageBox_HandleStateFlagClear, 0x528AE0, (CMenuMessageBox* self, void* /*edx*/));
-CSF_FUNC(int, __fastcall, CMenuMessageBox_HandleStateFlagSet, 0x52B650, (CMenuMessageBox* self, void* /*edx*/));
+CSF_FUNC(int, __fastcall, MenuMessageBox_CollapseLayout, 0x528AE0, (CMenuMessageBox* self, void* /*edx*/));
+CSF_FUNC(int, __fastcall, CMenuMessageBox_RefreshLayoutAndButtons, 0x52B650, (CMenuMessageBox* self, void* /*edx*/));
 
 static int __fastcall CMenuMessageBox_DispatchByStateFlag(CMenuMessageBox* self, void* edx)
 {
     if (self->field_08ac != 0)
-        return CMenuMessageBox_HandleStateFlagSet(self, edx);
+        return CMenuMessageBox_RefreshLayoutAndButtons(self, edx);
 
-    return CMenuMessageBox_HandleStateFlagClear(self, edx);
+    return MenuMessageBox_CollapseLayout(self, edx);
 }
 
 HOOK(0x52B9A0, CMenuMessageBox_DispatchByStateFlag, "auto");

@@ -11,10 +11,10 @@
 #include "legacy/string.h"
 
 // Callee: int __thiscall sub_539D10(std::uint32_t **this, int a2)
-CSF_FUNC(int, __fastcall, MenuMain_HandleAcceptCommand, 0x00539D10, (void* self, void* edx, int a2));
+CSF_FUNC(int, __fastcall, CMenuPause_CloseAndReturnResult, 0x00539D10, (void* self, void* edx, int a2));
 
 // Callee: sub_6683F0(this) - receives 'this' in ecx, returns object pointer in eax
-CSF_FUNC(void*, __fastcall, MenuMain_GetCommandTarget, 0x006683F0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x006683F0, (void* self, void* edx));
 
 static int __fastcall MenuMain_HandleCommand(void* self, void* /*edx*/, int commandId, int commandArg)
 {
@@ -25,7 +25,7 @@ static int __fastcall MenuMain_HandleCommand(void* self, void* /*edx*/, int comm
         if (CSF_AT(int32_t, self, 0x10) == -1)
         {
             void* subObject = reinterpret_cast<uint8_t*>(self) - 4;
-            return MenuMain_HandleAcceptCommand(subObject, nullptr, 1);
+            return CMenuPause_CloseAndReturnResult(subObject, nullptr, 1);
         }
         return 0;
     }
@@ -36,7 +36,7 @@ static int __fastcall MenuMain_HandleCommand(void* self, void* /*edx*/, int comm
     {
         if (CSF_AT(uint8_t, reinterpret_cast<void*>(commandArg), 0x38) != 0)
         {
-            void* target = MenuMain_GetCommandTarget(self, nullptr);
+            void* target = GetReferencedObject(self, nullptr);
             void** vtbl = *reinterpret_cast<void***>(target);
             return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[7])(target, nullptr);
         }

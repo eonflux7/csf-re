@@ -11,12 +11,12 @@
 #include "legacy/string.h"
 
 // Vtable addresses stored into the object by the constructor.
-static constexpr uintptr_t kCMenuScreenBaseVtableAddr = 0x0083042C;
-static constexpr uintptr_t kCMenuGameOptionsVtableAddr = 0x00842788;
+static const uintptr_t kCMenuScreenBaseVtableAddr = CSF_ADDR_VT(0x0083042C);
+static const uintptr_t kCMenuGameOptionsVtableAddr = CSF_ADDR_VT(0x00842788);
 static constexpr uintptr_t kEmbeddedSubobjectVtableAddr = 0x00842738;
 
 CSF_FUNC(void*, __cdecl, GetGlobalValue_8B056C, 0x00506BD0, ());
-CSF_FUNC(void*, __fastcall, ConstructEmbeddedSubobject, 0x00712CC0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x00712CC0, (void* self, void* edx));
 
 // Constructor of CMenuGameOptions: installs the base vtable, constructs the
 // embedded subobject at +4, installs the derived vtable, initializes option
@@ -26,7 +26,7 @@ CSF_FUNC(void*, __fastcall, ConstructEmbeddedSubobject, 0x00712CC0, (void* self,
 static char* __fastcall CMenuGameOptions_Construct(CMenuGameOptions* self, void* /*edx*/, int a2)
 {
     CSF_AT(uintptr_t, self, 0) = kCMenuScreenBaseVtableAddr;
-    ConstructEmbeddedSubobject(reinterpret_cast<void*>(reinterpret_cast<uint8_t*>(self) + 4), nullptr);
+    C_00830438_Construct(reinterpret_cast<void*>(reinterpret_cast<uint8_t*>(self) + 4), nullptr);
 
     CSF_AT(uintptr_t, self, 0) = kCMenuGameOptionsVtableAddr;
     CSF_AT(uintptr_t, self, 4) = kEmbeddedSubobjectVtableAddr;

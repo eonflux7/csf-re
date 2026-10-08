@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 
 // Destructor body of CMenuLoading (releases owned members / resources).
-CSF_FUNC(void, __fastcall, CMenuLoading_DestroyBody, 0x5388E0,
+CSF_FUNC(void, __fastcall, CMenuLoading_ReleaseMembersAndResetVtable, 0x5388E0,
          (CMenuLoading* self, void* edx));
 
 // Deleting destructor wrapper: runs the destructor body, then frees the object
@@ -12,7 +12,7 @@ CSF_FUNC(void, __fastcall, CMenuLoading_DestroyBody, 0x5388E0,
 static CMenuLoading* __fastcall CMenuLoading_Destroy(
     CMenuLoading* self, void* /*edx*/, char flags)
 {
-    CMenuLoading_DestroyBody(self, nullptr);
+    CMenuLoading_ReleaseMembersAndResetVtable(self, nullptr);
     if ((flags & 1) != 0)
         game::Mem_Free(self);
     return self;

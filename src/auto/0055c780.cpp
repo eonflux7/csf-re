@@ -7,7 +7,7 @@ CSF_GLOBAL(int, g_MpNetworkType, 0x0089A5F0);
 
 CSF_FUNC(int, __stdcall, MenuMpAccounts_HasInvalidAccountNameCharacters, 0x0055C240, (const char* accountName, int flags));
 CSF_FUNC(void*, __fastcall, GetContainerDataPtr, 0x00721270, (void* self, void* edx));
-CSF_FUNC(int, __cdecl, WideString_Length, 0x00695560, (uint16_t* text));
+CSF_FUNC(int, __cdecl, GetWideTextLength, 0x00695560, (uint16_t* text));
 CSF_FUNC(int, __cdecl, WideString_Compare, 0x00695760, (uint16_t* first, int16_t* second));
 
 // Returns the account-edit validation code:
@@ -31,7 +31,7 @@ static int __fastcall MenuMpAccounts_ValidateAccountEditFields(void* self, void*
         return 3;
 
     void* passwordString = GetContainerDataPtr(CSF_AT(void*, self, 0x24), nullptr);
-    uint32_t passwordLength = static_cast<uint32_t>(WideString_Length(static_cast<uint16_t*>(passwordString)));
+    uint32_t passwordLength = static_cast<uint32_t>(GetWideTextLength(static_cast<uint16_t*>(passwordString)));
     if (passwordLength < 4 || passwordLength > 0x10)
         return 4;
 

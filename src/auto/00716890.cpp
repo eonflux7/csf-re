@@ -3,13 +3,13 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiListBoxBase_DestroyBody, 0x716110,
+CSF_FUNC(int, __fastcall, CGuiListBoxBase_Destroy_716110, 0x716110,
          (CGuiListBoxBase* self, void* edx));
 
 static void* __fastcall CGuiListBoxBase_Destroy(
     CGuiListBoxBase* self, void* /*edx*/, char flags)
 {
-    CGuiListBoxBase_DestroyBody(self, nullptr);
+    CGuiListBoxBase_Destroy_716110(self, nullptr);
     if ((flags & 1) != 0)
         game::Mem_Free(self);
     return self;

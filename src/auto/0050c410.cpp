@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __fastcall, StdStringBase_Assign, 0x00429B60, (void* self, void* edx, char* text, unsigned int length));
+CSF_FUNC(void*, __fastcall, AssignStringRange_429B60, 0x00429B60, (void* self, void* edx, char* text, unsigned int length));
 CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
 CSF_GLOBAL(uint8_t, g_byte_82E65C, 0x0082E65C);
 
@@ -12,7 +12,7 @@ CSF_GLOBAL(uint8_t, g_byte_82E65C, 0x0082E65C);
 // The incoming edx is forwarded unchanged to the string-assign callee, as in the original.
 static int __fastcall CMenuScreenFader_ResetState(CMenuScreenFader* self, void* edx)
 {
-    StdStringBase_Assign(reinterpret_cast<uint8_t*>(self) + 4, edx,
+    AssignStringRange_429B60(reinterpret_cast<uint8_t*>(self) + 4, edx,
                          reinterpret_cast<char*>(&g_byte_82E65C), 0u);
 
     int result = 0;

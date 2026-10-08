@@ -10,7 +10,7 @@ CSF_FUNC(int, __cdecl, GetGlobalState_6A6D70, 0x6A6D70, ());
 CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x50D190, ());
 
 // 0x0050E1E0 - __thiscall; `this` is the value returned by GetGlobalState_50D190.
-CSF_FUNC(int, __fastcall, Sub_50E1E0, 0x50E1E0, (int* self, void* edx));
+CSF_FUNC(int, __fastcall, GlobalState_ResetPending, 0x50E1E0, (int* self, void* edx));
 
 // Checks the global online state; when unavailable, refreshes the other global
 // state object and then invokes this menu's virtual handler (vtable slot 19).
@@ -21,7 +21,7 @@ static int __fastcall CMenuMpOnline_HandleOnlineState(void* self, void* /*edx*/,
     if (!result)
     {
         void* state2 = reinterpret_cast<void*>(GetGlobalState_50D190());
-        Sub_50E1E0(reinterpret_cast<int*>(state2), nullptr);
+        GlobalState_ResetPending(reinterpret_cast<int*>(state2), nullptr);
         return ((int(__fastcall*)(void*, void*))CSF_AT(void**, self, 0)[19])(self, nullptr);
     }
     return result;

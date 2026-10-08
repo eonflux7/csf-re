@@ -3,9 +3,9 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(std::uint32_t*, __fastcall, AssignWideText, 0x00696F90,
+CSF_FUNC(std::uint32_t*, __fastcall, MenuProgressInput_AssignText, 0x00696F90,
          (void* self, void* edx, std::int16_t* text));
-CSF_FUNC(int, __fastcall, RefreshTextState, 0x007215F0,
+CSF_FUNC(int, __fastcall, AdjustTextRangeLeft, 0x007215F0,
          (void* self, void* edx, char flag));
 
 static int* __fastcall SynchronizeAttachedObjectText(
@@ -37,7 +37,7 @@ static int* __fastcall SynchronizeAttachedObjectText(
         attachedVtable[22])(
             CSF_AT(void*, self, 0x134), nullptr, state);
 
-    AssignWideText(
+    MenuProgressInput_AssignText(
         static_cast<std::uint8_t*>(self) + 0x150, nullptr, text);
 
     result = CSF_AT(int*, self, 0x164);
@@ -50,7 +50,7 @@ static int* __fastcall SynchronizeAttachedObjectText(
     CSF_AT(std::uint32_t, self, 0x1A8) = lastIndex;
 
     return reinterpret_cast<int*>(
-        RefreshTextState(self, nullptr, 0));
+        AdjustTextRangeLeft(self, nullptr, 0));
 }
 
 HOOK(0x00722320, SynchronizeAttachedObjectText, "auto");

@@ -11,7 +11,7 @@
 //   arg4 = this  (incoming ecx value)
 //   arg5 = a3    (pushed first, i.e. deepest)
 // ---------------------------------------------------------------------------
-CSF_FUNC(int, __cdecl, DispatchFiveArgs, 0x727450,
+CSF_FUNC(int, __cdecl, CopyConstructRecordRange_727450, 0x727450,
          (void* a1, void* a2, void* a3, void* a4, void* a5));
 
 // ---------------------------------------------------------------------------
@@ -21,12 +21,12 @@ CSF_FUNC(int, __cdecl, DispatchFiveArgs, 0x727450,
 // byte count is reproduced exactly.
 //   entry : ecx = self, stack args a1, a2, a3
 //   pushes: a3, self, a3, a2, a1
-//   call  : DispatchFiveArgs(a1, a2, a3, self, a3)
+//   call  : CopyConstructRecordRange_727450(a1, a2, a3, self, a3)
 // ---------------------------------------------------------------------------
 static int __fastcall ForwardTo727450(void* self, void* /*edx*/,
                                       void* a1, void* a2, void* a3)
 {
-    return DispatchFiveArgs(a1, a2, a3, self, a3);
+    return CopyConstructRecordRange_727450(a1, a2, a3, self, a3);
 }
 
 HOOK(0x727850, ForwardTo727450, "auto");

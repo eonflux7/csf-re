@@ -5,7 +5,7 @@
 
 CSF_FUNC(void*, __cdecl, GetGlobalValue_8B056C, 0x506BD0, ());
 CSF_FUNC(void, __fastcall, CGuiListBoxBase_AddSelectedItem, 0x716A60, (void* self, void* edx, int itemIndex));
-CSF_FUNC(int*, __fastcall, CMenuMpGameMode_FinishListRefresh, 0x515CE0, (void* self, void* edx));
+CSF_FUNC(int*, __fastcall, GetScenarioCollection, 0x515CE0, (void* self, void* edx));
 CSF_GLOBAL(int, g_MpNetworkType, 0x89A5F0);
 
 // Rebuilds the multiplayer game-mode list: resets the global list state, clears the list box,
@@ -58,7 +58,7 @@ static int* __fastcall CMenuMpGameMode_PopulateModesForNetworkType(void* self, v
     // Tail call: finish the refresh on the global manager's +8 object and return its result.
     void* globalManagerD = GetGlobalValue_8B056C();
     void* finishTarget = *CSF_AT(void**, globalManagerD, 8);
-    return CMenuMpGameMode_FinishListRefresh(finishTarget, nullptr);
+    return GetScenarioCollection(finishTarget, nullptr);
 }
 
 HOOK(0x00564F00, CMenuMpGameMode_PopulateModesForNetworkType, "auto");

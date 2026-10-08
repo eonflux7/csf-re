@@ -7,7 +7,7 @@
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B056C, 0x506BD0, ());
 
 // __thiscall, no stack args; returns a pointer to the objective entry list header.
-CSF_FUNC(int*, __fastcall, GetObjectiveEntryList, 0x515CE0, (int* self, void* edx));
+CSF_FUNC(int*, __fastcall, GetScenarioCollection, 0x515CE0, (int* self, void* edx));
 
 // __thiscall, one stack arg (callee pops 4); assigns the value to the subpanel at this+0x30.
 CSF_FUNC(int, __fastcall, ObjectivePanel_Assign, 0x5150F0, (void* self, void* edx, int value));
@@ -19,7 +19,7 @@ static char __fastcall CMenuMissionInfo_LoadObjectiveFromMissionData(CMenuMissio
     int* missionData = *reinterpret_cast<int**>(static_cast<uintptr_t>(globalRoot) + 8);
 
     // Entry list header: [1] = begin, [2] = end, entries are 80 bytes each.
-    int* entryList = GetObjectiveEntryList(missionData, nullptr);
+    int* entryList = GetScenarioCollection(missionData, nullptr);
     int entriesBegin = entryList[1];
     if (!entriesBegin)
         return 0;

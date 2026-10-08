@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 
 static const auto C_00860a30_SetFlag0C =
-    reinterpret_cast<void (__fastcall*)(C_00860a30*, void*, int)>(0x006C9FE0);
+    reinterpret_cast<void (__fastcall*)(C_00860a30*, void*, int)>(CSF_ADDR_FN(0x006C9FE0));
 
 static void __fastcall C_00862490_SetFlag28AndNotify(
     C_00862490* self, void* /*edx*/, char setBaseFlag)

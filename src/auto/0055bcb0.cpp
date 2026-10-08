@@ -4,7 +4,7 @@
 #include "globals.h"
 
 static int (__cdecl* const CompareNamesIgnoreCase)(const char*, const char*) =
-    reinterpret_cast<int (__cdecl*)(const char*, const char*)>(0x007B0C41);
+    reinterpret_cast<int (__cdecl*)(const char*, const char*)>(CSF_ADDR_FN(0x007B0C41));
 
 static int __fastcall MenuMpAccounts_FindAccountByName(
     void* self, void* /*edx*/, const char* name)

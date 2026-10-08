@@ -8,23 +8,23 @@ CSF_FUNC(void*, __fastcall, MenuExtras_InitializeFile, 0x00692B10,
          (void* self, void* edx));
 CSF_FUNC(char, __fastcall, MenuExtras_LoadFile, 0x00694770,
          (void* self, void* edx, const char* path));
-CSF_FUNC(void*, __fastcall, MenuExtras_FindSection, 0x00693360,
+CSF_FUNC(void*, __fastcall, LookupNamedElement, 0x00693360,
          (void* self, void* edx, const char* name));
 CSF_FUNC(std::uint32_t, __fastcall, MenuExtras_GetChildCount, 0x00692B80,
          (void* self, void* edx));
-CSF_FUNC(void*, __fastcall, MenuExtras_GetChild, 0x00692BD0,
+CSF_FUNC(void*, __fastcall, GetComponent, 0x00692BD0,
          (void* self, void* edx, std::uint32_t index));
 CSF_FUNC(char, __fastcall, MenuExtras_ReadText, 0x006939C0,
          (void* self, void* edx, const char* name, char* buffer, int capacity));
 CSF_FUNC(std::uint32_t, __fastcall, MenuExtras_ReserveThumbnails, 0x00547160,
          (void* self, void* edx, std::uint32_t count));
-CSF_FUNC(std::uint32_t*, __fastcall, MenuExtras_AppendThumbnail, 0x00547930,
+CSF_FUNC(std::uint32_t*, __fastcall, AppendElement68, 0x00547930,
          (void* self, void* edx, std::uint32_t* entry));
 CSF_FUNC(int, __cdecl, MenuExtras_ParseDescriptionId, 0x00698D90,
          (const char* text));
 CSF_FUNC(void*, __fastcall, MenuExtras_AssignString, 0x00403C60,
          (void* self, int registerArgument, char* text, std::uint32_t length));
-CSF_FUNC(int, __cdecl, MenuExtras_FreeStringStorage, 0x00691110,
+CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110,
          (void* storage));
 CSF_FUNC(int, __fastcall, MenuExtras_CloseFile, 0x00694380,
          (void* self, void* edx));
@@ -44,7 +44,7 @@ static int __fastcall CMenuExtras_LoadThumbnails(CMenuExtras* self, void* /*edx*
     void* root = reinterpret_cast<void*>(file[0]);
     if (root)
     {
-        void* section = MenuExtras_FindSection(
+        void* section = LookupNamedElement(
             root, nullptr, CSF_STR(0x00843D18, ".THUMBNAILS"));
         if (section)
         {
@@ -55,7 +55,7 @@ static int __fastcall CMenuExtras_LoadThumbnails(CMenuExtras* self, void* /*edx*
 
             for (std::uint32_t index = 0; index < count; ++index)
             {
-                void* child = MenuExtras_GetChild(section, nullptr, index);
+                void* child = GetComponent(section, nullptr, index);
                 if (!child)
                     continue;
 
@@ -93,12 +93,12 @@ static int __fastcall CMenuExtras_LoadThumbnails(CMenuExtras* self, void* /*edx*
                     scene, sceneLength);
 
                 CSF_AT(std::uint32_t, entry, 0x20) = 0;
-                MenuExtras_AppendThumbnail(
+                AppendElement68(
                     thumbnails, nullptr, reinterpret_cast<std::uint32_t*>(entry));
 
                 if (CSF_AT(std::uint32_t, entry, 0x40) >= 16)
                 {
-                    MenuExtras_FreeStringStorage(reinterpret_cast<void*>(
+                    Mem_Free(reinterpret_cast<void*>(
                         CSF_AT(std::uint32_t, entry, 0x2C)));
                 }
 
@@ -110,7 +110,7 @@ static int __fastcall CMenuExtras_LoadThumbnails(CMenuExtras* self, void* /*edx*
 
                 if (screenshotHasHeapStorage)
                 {
-                    MenuExtras_FreeStringStorage(reinterpret_cast<void*>(
+                    Mem_Free(reinterpret_cast<void*>(
                         CSF_AT(std::uint32_t, entry, 0x08)));
                 }
                 CSF_AT(std::uint32_t, entry, 0x1C) = 15;

@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // std::_String_base::assign(src, pos, count) style helper, __thiscall, ret 12.
-CSF_FUNC(void*, __fastcall, MenuExtras_StringAssignSubstr, 0x488830,
+CSF_FUNC(void*, __fastcall, AssignStringRange_488830, 0x488830,
          (void* self, void* edx, const void* src, int pos, int count));
 
 // Copies 32-byte entries (a DWORD at +0, a std::string at +4) from the range
@@ -29,7 +29,7 @@ static uint32_t* __cdecl MenuExtras_CopyEntriesBackward(int begin, int end, uint
         src -= 32;
         out -= 8;
         *out = value;
-        MenuExtras_StringAssignSubstr(
+        AssignStringRange_488830(
             reinterpret_cast<uint8_t*>(out) + 4,
             nullptr,
             reinterpret_cast<const uint8_t*>(src) + 4,

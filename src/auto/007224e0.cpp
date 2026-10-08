@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiEdit_UpdateIndexState, 0x007215F0,
+CSF_FUNC(int, __fastcall, AdjustTextRangeLeft, 0x007215F0,
          (CGuiEdit* self, void* edx, char argument));
 
 // Keep register allocation minimal: the original helper implicitly receives EBX.
@@ -29,7 +29,7 @@ CGuiEdit_MoveIndicesToTextEnd(CGuiEdit* self, void* /*edx*/)
     self->field_01a8 = lastIndex;
     self->field_01b0 = lastIndex;
 
-    return CGuiEdit_UpdateIndexState(self, nullptr, 0);
+    return AdjustTextRangeLeft(self, nullptr, 0);
 }
 
 HOOK(0x007224E0, CGuiEdit_MoveIndicesToTextEnd, "auto");

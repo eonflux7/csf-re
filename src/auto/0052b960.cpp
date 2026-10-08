@@ -15,19 +15,19 @@
 #include "types/auto_classes.h"
 
 // 0x528C20 - selector 0 handler: plain __thiscall, float arg on stack (pops 4).
-CSF_FUNC(void, __fastcall, CMenuMessageBox_RunAction0, 0x00528C20,
+CSF_FUNC(void, __fastcall, CMenuMessageBox_UpdateOpeningAnimation, 0x00528C20,
          (CMenuMessageBox* self, void* /*edx*/, float a3));
 
 // 0x52B650 - selector 1 handler: second arg in ebx, returns int, pops nothing (ret 0).
-CSF_FUNC(int, __fastcall, CMenuMessageBox_RunAction1, 0x0052B650,
+CSF_FUNC(int, __fastcall, CMenuMessageBox_RefreshLayoutAndButtons, 0x0052B650,
          (CMenuMessageBox* self, void* arg_ebx));
 
 // 0x52B930 - selector 2 handler: second arg in ebx plus float on stack (pops 4).
-CSF_FUNC(unsigned int, __fastcall, CMenuMessageBox_RunAction2, 0x0052B930,
+CSF_FUNC(unsigned int, __fastcall, MenuMessageBox_IncrementPhaseCounter, 0x0052B930,
          (CMenuMessageBox* self, void* arg_ebx, float a3));
 
 // 0x52B770 - selector 3 handler: second arg in ebx plus float on stack (pops 4).
-CSF_FUNC(int, __fastcall, CMenuMessageBox_RunAction3, 0x0052B770,
+CSF_FUNC(int, __fastcall, CMenuMessageBox_UpdateTimersAndSelection, 0x0052B770,
          (CMenuMessageBox* self, void* arg_ebx, float a3));
 
 static void __fastcall CMenuMessageBox_DispatchAction(CMenuMessageBox* self,
@@ -38,17 +38,17 @@ static void __fastcall CMenuMessageBox_DispatchAction(CMenuMessageBox* self,
     switch (self->field_0028)
     {
     case 0:
-        CMenuMessageBox_RunAction0(self, nullptr, a3);
+        CMenuMessageBox_UpdateOpeningAnimation(self, nullptr, a3);
         return;
     case 1:
         // Return value is unused by the original (just a call + fallthrough).
-        CMenuMessageBox_RunAction1(self, arg_ebx);
+        CMenuMessageBox_RefreshLayoutAndButtons(self, arg_ebx);
         return;
     case 2:
-        CMenuMessageBox_RunAction2(self, arg_ebx, a3);
+        MenuMessageBox_IncrementPhaseCounter(self, arg_ebx, a3);
         return;
     case 3:
-        CMenuMessageBox_RunAction3(self, arg_ebx, a3);
+        CMenuMessageBox_UpdateTimersAndSelection(self, arg_ebx, a3);
         return;
     default:
         return;

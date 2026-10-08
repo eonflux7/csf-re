@@ -6,7 +6,7 @@
 
 // Callees bound by address.
 CSF_FUNC(int, __fastcall, CMenuMpSessions_ApplySessionControlStates, 0x00560500, (CMenuMpSessions* self, void* edx));
-CSF_FUNC(int, __fastcall, CMenuMpSessions_RefreshSessionDisplay, 0x00560890, (CMenuMpSessions* self, void* edx));
+CSF_FUNC(int, __fastcall, CMenuMpSessions_RebuildPartidasList, 0x00560890, (CMenuMpSessions* self, void* edx));
 CSF_FUNC(int, __fastcall, CGuiSlider_ForwardSelfToParent, 0x00718660, (void* self, void* edx));
 
 // Pending session mode published by another screen; consumed (reset to -1) here.
@@ -77,7 +77,7 @@ static int __fastcall CMenuMpSessions_EnterScreen(CMenuMpSessions* self, void* /
         CMenuMpSessions_SetStatusTag(self, 0x636d3034u);
     }
 
-    CMenuMpSessions_RefreshSessionDisplay(self, nullptr);
+    CMenuMpSessions_RebuildPartidasList(self, nullptr);
 
     self->field_01e4 = 0;
     self->field_001c = 2;

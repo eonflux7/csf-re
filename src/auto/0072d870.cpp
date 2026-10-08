@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 
 static const auto CGuiControl_ApplySetting =
-    reinterpret_cast<int (__fastcall*)(CGuiControl*, void*, int)>(0x00718C00);
+    reinterpret_cast<int (__fastcall*)(CGuiControl*, void*, int)>(CSF_ADDR_FN(0x00718C00));
 
 static int __fastcall CGuiSlider_ApplySettingToParts(
     CGuiSlider* self, void* /*edx*/, int setting)

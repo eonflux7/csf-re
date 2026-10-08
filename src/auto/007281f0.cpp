@@ -6,7 +6,7 @@
 
 CSF_FUNC(int*, __cdecl, RwRasterCreate, 0x00627770,
          (int width, int height, int depth, int flags));
-CSF_FUNC(std::uint32_t*, __fastcall, InsertRasterRecord, 0x00728160,
+CSF_FUNC(std::uint32_t*, __fastcall, AppendElement36, 0x00728160,
          (void* self, void* edx, int* record));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
@@ -25,7 +25,7 @@ static int* __fastcall C_008655e8_CreateTrackedRaster(
         record[8] = 1;
         record[0] = reinterpret_cast<int>(raster);
 
-        InsertRasterRecord(
+        AppendElement36(
             reinterpret_cast<std::uint8_t*>(self) + 0x44,
             nullptr, record);
 

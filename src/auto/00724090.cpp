@@ -7,15 +7,15 @@ CSF_FUNC(std::uint32_t*, __stdcall, CallSub723B00IfNonNull, 0x00724020,
          (std::uint32_t* destination, std::uint32_t* source));
 
 // Destroys one already-constructed record (stdcall, pops 4).
-CSF_FUNC(int, __stdcall, DestroyConstructedRecord, 0x00724040,
+CSF_FUNC(int, __stdcall, ResetWideStringRecordStorage, 0x00724040,
          (int* record));
 
 // _CxxThrowException(0, 0): rethrows the exception currently being handled.
-CSF_FUNC(void, __stdcall, RethrowCurrentException, 0x007AF666,
+CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInfo));
 
 // __CxxFrameHandler, reached through the compiler-generated EH stub below.
-CSF_FUNC(int, __cdecl, OriginalCxxFrameHandler, 0x007AF226,
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226,
          (void* exceptionRecord, void* frame, void* context, void* dispatcher));
 
 // Compiler-generated EH stub (mov eax,<info>; jmp __CxxFrameHandler) and its
@@ -51,11 +51,11 @@ static std::uint32_t* __cdecl CopyConstructRecordRange(
 
         while (constructed != constructedEnd)
         {
-            DestroyConstructedRecord(reinterpret_cast<int*>(constructed));
+            ResetWideStringRecordStorage(reinterpret_cast<int*>(constructed));
             constructed += 4;
         }
 
-        RethrowCurrentException(nullptr, nullptr);
+        RethrowCppException(nullptr, nullptr);
         __assume(0);
     }
 

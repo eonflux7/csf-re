@@ -13,7 +13,7 @@ static void* VtableEntry(void* obj, std::uint32_t slotByteOffset)
 CSF_GLOBAL(float, g_fZero, 0x0082D4CC);
 CSF_GLOBAL(float, g_fDimOverlayAlpha, 0x008413BC);
 
-CSF_FUNC(int, __fastcall, CMenuMessageBox_UpdateButtonLayout, 0x0052B020, (CMenuMessageBox* self, void* edx));
+CSF_FUNC(int, __fastcall, MenuMessageBox_PreCloseCleanup, 0x0052B020, (CMenuMessageBox* self, void* edx));
 
 static int __fastcall CMenuMessageBox_RefreshLayoutAndButtons(CMenuMessageBox* self, void* /*edx*/)
 {
@@ -56,7 +56,7 @@ static int __fastcall CMenuMessageBox_RefreshLayoutAndButtons(CMenuMessageBox* s
 
     // The return value of this call is not used directly, but its upper 24 bits
     // are forwarded below because the original only overwrites the low byte (sete al).
-    const int buttonLayoutResult = CMenuMessageBox_UpdateButtonLayout(self, nullptr);
+    const int buttonLayoutResult = MenuMessageBox_PreCloseCleanup(self, nullptr);
     const std::uint32_t isButtonFieldZero = (self->field_08a8 == 0) ? 1u : 0u;
     const std::uint32_t flagArg =
         (static_cast<std::uint32_t>(buttonLayoutResult) & 0xFFFFFF00u) | isButtonFieldZero;

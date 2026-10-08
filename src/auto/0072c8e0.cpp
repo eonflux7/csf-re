@@ -4,12 +4,12 @@
 #include "types/auto_classes.h"
 
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
-CSF_FUNC(unsigned int, __fastcall, PointerVector_Append, 0x0072C780,
+CSF_FUNC(unsigned int, __fastcall, AppendFourByteElementWithContext, 0x0072C780,
          (void* self, void* edx, uint32_t* value));
-CSF_FUNC(unsigned int, __fastcall, PointerVector_InsertCopies, 0x0072C170,
+CSF_FUNC(unsigned int, __fastcall, InsertElements, 0x0072C170,
          (void* self, void* edx, uint32_t* position,
           unsigned int count, uint32_t* value));
-CSF_FUNC(int, __fastcall, PointerVector_Assign, 0x0072C3D0,
+CSF_FUNC(int, __fastcall, AssignPointerVector_72C3D0, 0x0072C3D0,
          (void* self, void* edx, void* source));
 CSF_FUNC(unsigned int, __fastcall, PointerVector_InsertRange, 0x0072BEE0,
          (void* self, void* edx, uint32_t* position,
@@ -47,7 +47,7 @@ static void* __fastcall CGuiPanel_ReorderControls(
 
         if (!isActive)
         {
-            PointerVector_Append(inactive, nullptr, entry);
+            AppendFourByteElementWithContext(inactive, nullptr, entry);
         }
         else
         {
@@ -67,13 +67,13 @@ static void* __fastcall CGuiPanel_ReorderControls(
 
             if (insertAtBeginning)
             {
-                PointerVector_InsertCopies(
+                InsertElements(
                     active, nullptr,
                     reinterpret_cast<uint32_t*>(activeBegin), 1u, entry);
             }
             else
             {
-                PointerVector_Append(active, nullptr, entry);
+                AppendFourByteElementWithContext(active, nullptr, entry);
             }
             cachedActiveEnd = active[2];
         }
@@ -91,7 +91,7 @@ static void* __fastcall CGuiPanel_ReorderControls(
     self->field_013c = 0;
     CSF_AT(uint32_t, self, 0x140) = 0;
 
-    PointerVector_Assign(controlVector, nullptr, active);
+    AssignPointerVector_72C3D0(controlVector, nullptr, active);
 
     uint32_t* inactiveEnd = reinterpret_cast<uint32_t*>(inactive[2]);
     uint32_t* destinationEnd =

@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __fastcall, AssignStringFromRecord, 0x00470FD0,
+CSF_FUNC(void*, __fastcall, MenuManager_AppendPageName, 0x00470FD0,
          (void* self, void* edx, void* sourceString));
 
 static int __fastcall C_00864508_AssignStringsForSelectedIds(
@@ -54,7 +54,7 @@ static int __fastcall C_00864508_AssignStringsForSelectedIds(
                             std::uint32_t,
                             reinterpret_cast<void*>(selectedAddress), 0))
                     {
-                        AssignStringFromRecord(
+                        MenuManager_AppendPageName(
                             destinationString, nullptr,
                             reinterpret_cast<void*>(recordAddress + 0x1Cu));
                     }

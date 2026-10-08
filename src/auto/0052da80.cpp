@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 
 // Game CRT sprintf (cdecl). The original pushes exactly one int vararg per call.
-CSF_FUNC(int, __cdecl, CRT_Sprintf, 0x007AF9BB, (char* buffer, const char* format, int value));
+CSF_FUNC(int, __cdecl, _sprintf, 0x007AF9BB, (char* buffer, const char* format, int value));
 
 // __thiscall with one stack argument (ret 4), bound as __fastcall.
 CSF_FUNC(int, __fastcall, C_00720DF0_ForwardCallToChildVtblSlot16, 0x00720DF0, (void* self, void* edx, void* block));
@@ -49,8 +49,8 @@ static void __fastcall CMenuScenarioSelect_ClearBriefingAndResetStars(CMenuScena
     for (uint32_t index = 1; index <= 5; ++index) {
         char nameN[56];
         char name[52];
-        CRT_Sprintf(nameN, CSF_STR(0x008415FC, "EstrellaN%d"), static_cast<int>(index));
-        CRT_Sprintf(name, CSF_STR(0x008415F0, "Estrella%d"), static_cast<int>(index));
+        _sprintf(nameN, CSF_STR(0x008415FC, "EstrellaN%d"), static_cast<int>(index));
+        _sprintf(name, CSF_STR(0x008415F0, "Estrella%d"), static_cast<int>(index));
 
         void* controlN = ScenarioSelect_FindControlByName(self, nameN);
         if (controlN != nullptr) {

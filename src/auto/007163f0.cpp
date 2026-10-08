@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(std::uint32_t, __fastcall, InsertRepeatedDwords, 0x00555B70,
+CSF_FUNC(std::uint32_t, __fastcall, AppendDwordCopies_555B70, 0x00555B70,
          (void* self, void* edx, std::uint32_t* position,
           std::uint32_t count, std::uint32_t* value));
 CSF_FUNC(int, __fastcall, InsertColumnRecords, 0x00715970,
@@ -39,7 +39,7 @@ static void __fastcall CGuiListBoxBase_AppendColumns(
             auto* insertionPosition = reinterpret_cast<std::uint32_t*>(
                 CSF_AT(std::uint32_t, rowStorage, 0x8));
 
-            InsertRepeatedDwords(
+            AppendDwordCopies_555B70(
                 rowStorage, nullptr, insertionPosition,
                 static_cast<std::uint32_t>(count), &defaultValue);
 

@@ -3,7 +3,7 @@
 #include "core/memory.h"
 #include "globals.h"
 
-CSF_FUNC(void, __fastcall, CopyStateToTarget, 0x00718230,
+CSF_FUNC(void, __fastcall, CGuiStatic_CopyStateToTarget, 0x00718230,
          (void* self, void* edx, void* target));
 
 static void __fastcall MenuMessageBox_LayoutOptionControl(
@@ -57,7 +57,7 @@ static void __fastcall MenuMessageBox_LayoutOptionControl(
     ((void(__fastcall*)(void*, void*, std::uint32_t*))
         CSF_AT(void**, control, 0)[38])(control, nullptr, position);
 
-    CopyStateToTarget(
+    CGuiStatic_CopyStateToTarget(
         CSF_AT(void*, self, 0x60 + index * 4), nullptr, child);
 
     if (child)

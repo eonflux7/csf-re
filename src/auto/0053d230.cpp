@@ -13,7 +13,7 @@ CSF_FUNC(int, __cdecl, Mem_Free, 0x691110, (void* p));
 
 // 0x53CCE0: base-class teardown body (CMenuSoundOptions cleanup chain) run right after
 // the derived class restores its vtable pointers. Takes only `this`.
-CSF_FUNC(void, __fastcall, CMenuSoundOptions_CleanUp, 0x53CCE0,
+CSF_FUNC(void, __fastcall, CMenuSoundOptions_Destruct_53CCE0, 0x53CCE0,
          (CMenuSoundOptionsInGame* self, void* edx));
 
 // CMenuSoundOptionsInGame destructor: restores the primary vtable pointer (offset 0x00)
@@ -22,10 +22,10 @@ CSF_FUNC(void, __fastcall, CMenuSoundOptions_CleanUp, 0x53CCE0,
 // Always returns the object pointer in eax.
 static void* __fastcall CMenuSoundOptionsInGame_Destroy(CMenuSoundOptionsInGame* self, void* /*edx*/, char a2)
 {
-    CSF_AT(uint32_t, self, 0x0000) = 0x00842BC8u;
+    CSF_AT(uint32_t, self, 0x0000) = CSF_ADDR_VT(0x00842BC8);
     self->field_0004 = 0x00842B78u;
 
-    CMenuSoundOptions_CleanUp(self, nullptr);
+    CMenuSoundOptions_Destruct_53CCE0(self, nullptr);
 
     if ((a2 & 1) != 0)
         Mem_Free(self);

@@ -4,9 +4,9 @@
 #include "types/auto_classes.h"
 
 // Callees, bound by address.
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x521BB0, ());
-CSF_FUNC(void, __fastcall, GlobalValueObject_Apply, 0x521DE0, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, CMenuMpScoreBar_UpdateDisplay, 0x540940, (CMenuMpScoreBar* self, void* edx));
+CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x521BB0, ());
+CSF_FUNC(void, __fastcall, MenuProgressInput_UpdateGlobalState, 0x521DE0, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, CMenuMpScoreBar_RefreshChildVisibility, 0x540940, (CMenuMpScoreBar* self, void* edx));
 
 // The menu object at +0x30 is re-read from the score bar each time the original reloads it.
 static void* GetMenuObject(CMenuMpScoreBar* self)
@@ -31,7 +31,7 @@ static int __fastcall CMenuMpScoreBar_InitializeControls(CMenuMpScoreBar* self, 
     self->field_0024 = 0;
     self->field_002c = static_cast<uint32_t>(a2);
 
-    GlobalValueObject_Apply(reinterpret_cast<void*>(GetGlobalValue()), nullptr);
+    MenuProgressInput_UpdateGlobalState(reinterpret_cast<void*>(GetGlobalValue_521BB0()), nullptr);
 
     // Vtable slot +0x16C (index 91): __thiscall () -> void.
     {
@@ -46,7 +46,7 @@ static int __fastcall CMenuMpScoreBar_InitializeControls(CMenuMpScoreBar* self, 
     self->field_0020 = static_cast<uint32_t>(MenuObject_LookupByName(GetMenuObject(self), CSF_STR(0x843148, "LogoAliados")));
     self->field_0024 = static_cast<uint32_t>(MenuObject_LookupByName(GetMenuObject(self), CSF_STR(0x843138, "LogoAlemanes")));
 
-    CMenuMpScoreBar_UpdateDisplay(self, nullptr);
+    CMenuMpScoreBar_RefreshChildVisibility(self, nullptr);
 
     // Vtable slot +0x0A8 (index 42): __thiscall (int 0) -> void.
     {

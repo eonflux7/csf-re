@@ -3,8 +3,8 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-// 0x00521BB0 : int __cdecl GetGlobalValue()
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x521BB0, ());
+// 0x00521BB0 : int __cdecl GetGlobalValue_521BB0()
+CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x521BB0, ());
 
 // 0x00521F10 : __thiscall, no stack args (rets=[0]); ecx set explicitly by caller
 CSF_FUNC(int, __fastcall, Sub_521F10, 0x521F10, (void* self, void* edx));
@@ -23,7 +23,7 @@ static int __fastcall CMenuScenarioSelect_ReleaseOwnedObject(CMenuScenarioSelect
         void** vtbl = *reinterpret_cast<void***>(owned);
         reinterpret_cast<void(__fastcall*)(void*, void*, int)>(vtbl[0])(owned, nullptr, 1);
         self->field_0018 = 0;
-        void* globalValue = reinterpret_cast<void*>(static_cast<uintptr_t>(GetGlobalValue()));
+        void* globalValue = reinterpret_cast<void*>(static_cast<uintptr_t>(GetGlobalValue_521BB0()));
         Sub_521F10(globalValue, nullptr);
         return Sub_43F890(reinterpret_cast<uint8_t*>(self) + 0x44, nullptr);
     }

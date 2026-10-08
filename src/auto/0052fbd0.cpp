@@ -6,7 +6,7 @@
 
 CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x006683F0,
          (void* self, void* edx));
-CSF_FUNC(int, __cdecl, GetMenuContextValue, 0x00518980, ());
+CSF_FUNC(int, __cdecl, GetValue_8B0574, 0x00518980, ());
 
 // Moves the list-box child so that its current position lines up with the
 // position of the object referenced through the sub-object at self + 0x04.
@@ -27,7 +27,7 @@ static int __fastcall CMenuSceneSelect_AlignChildToReferencedPosition(
     if (!positionObject)
         return 0;
 
-    GetMenuContextValue();
+    GetValue_8B0574();
 
     void* verticalObject = GetReferencedObject(reference, nullptr);
     void* horizontalObject = GetReferencedObject(reference, nullptr);

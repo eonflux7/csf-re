@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(void*, __cdecl, AllocateGameMemory, 0x006910F0,
+CSF_FUNC(void*, __cdecl, Mem_Alloc, 0x006910F0,
          (std::uint32_t size));
 CSF_FUNC(void*, __fastcall, ConstructSubtitlePanel, 0x004F31A0,
          (void* self, void* edx));
@@ -11,26 +11,26 @@ CSF_FUNC(int, __fastcall, SetSubtitlePanelPosition, 0x004F1CE0,
          (void* self, void* edx, float x, float y));
 CSF_FUNC(int, __fastcall, SetSubtitlePanelSize, 0x004F1D70,
          (void* self, void* edx, float width, float height));
-CSF_FUNC(void*, __cdecl, GetGlobalContext, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, GetDisplayInterface, 0x00652160,
+CSF_FUNC(void*, __cdecl, GetGlobalInt, 0x006B1380, ());
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160,
          (void* self, void* edx));
-CSF_FUNC(void*, __cdecl, OpenSubtitleFile, 0x00698350,
+CSF_FUNC(void*, __cdecl, OpenSceneFile, 0x00698350,
          (const char* path, const char* mode, int flags));
-CSF_FUNC(bool, __cdecl, ReadWideTextLine, 0x00545E00,
+CSF_FUNC(bool, __cdecl, MenuExtras_ReadWideTextLine, 0x00545E00,
          (void* file, std::uint16_t* buffer, int capacity));
 CSF_FUNC(int, __cdecl, GetWideTextLength, 0x00695560,
          (std::uint16_t* text));
 CSF_FUNC(unsigned int, __cdecl, ConvertWideTextToNarrow, 0x00695620,
          (std::uint16_t* source, char* destination, unsigned int length));
-CSF_FUNC(double, __cdecl, ParseSubtitleTime, 0x007B04AF,
+CSF_FUNC(double, __cdecl, _atof, 0x007B04AF,
          (const char* text));
-CSF_FUNC(void*, __fastcall, AssignWideSubtitleText, 0x00696F90,
+CSF_FUNC(void*, __fastcall, MenuProgressInput_AssignText, 0x00696F90,
          (void* self, void* edx, std::int16_t* text));
-CSF_FUNC(std::uint32_t, __fastcall, AppendSubtitleElement, 0x005483C0,
+CSF_FUNC(std::uint32_t, __fastcall, AppendElement32_5483C0, 0x005483C0,
          (void* self, void* edx, int* source));
-CSF_FUNC(int, __cdecl, FreeSubtitleStringStorage, 0x00690E60,
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60,
          (void* block));
-CSF_FUNC(int, __cdecl, CloseSubtitleFile, 0x00697980,
+CSF_FUNC(int, __cdecl, CloseSceneFile, 0x00697980,
          (void* file));
 
 CSF_GLOBAL(float, g_UnsignedIntegerBias, 0x0082D744);
@@ -49,7 +49,7 @@ static double ConvertUnsignedDimension(std::uint32_t value)
 static int __fastcall MenuExtras_LoadMakingOfSubtitles(
     void* self, void* /*edx*/)
 {
-    void* panelStorage = AllocateGameMemory(100);
+    void* panelStorage = Mem_Alloc(100);
     void* panel = panelStorage
         ? ConstructSubtitlePanel(panelStorage, nullptr)
         : nullptr;
@@ -62,13 +62,13 @@ static int __fastcall MenuExtras_LoadMakingOfSubtitles(
     CSF_AT(std::uint8_t, CSF_AT(void*, self, 0x48), 0x58) = 1;
     CSF_AT(std::uint8_t, CSF_AT(void*, self, 0x48), 0x59) = 1;
 
-    void* display = GetDisplayInterface(GetGlobalContext(), nullptr);
+    void* display = LookupObjectById(GetGlobalInt(), nullptr);
     void* dimensions =
         reinterpret_cast<void* (__fastcall*)(void*, void*)>(
             CSF_AT(void**, display, 0)[6])(display, nullptr);
     const std::uint32_t width = CSF_AT(std::uint32_t, dimensions, 0);
 
-    display = GetDisplayInterface(GetGlobalContext(), nullptr);
+    display = LookupObjectById(GetGlobalInt(), nullptr);
     dimensions =
         reinterpret_cast<void* (__fastcall*)(void*, void*)>(
             CSF_AT(void**, display, 0)[6])(display, nullptr);
@@ -87,7 +87,7 @@ static int __fastcall MenuExtras_LoadMakingOfSubtitles(
     SetSubtitlePanelSize(
         CSF_AT(void*, self, 0x48), nullptr, scaledWidth, scaledHeight);
 
-    void* file = OpenSubtitleFile(
+    void* file = OpenSceneFile(
         CSF_STR(0x00843D3C, "texts/makingof.sub"),
         CSF_STR(0x0083E130, "r"), 0);
     if (!file)
@@ -110,20 +110,20 @@ static int __fastcall MenuExtras_LoadMakingOfSubtitles(
 
         for (;;)
         {
-            if (!ReadWideTextLine(file, wideLine, 500))
+            if (!MenuExtras_ReadWideTextLine(file, wideLine, 500))
                 break;
 
             const int length = GetWideTextLength(wideLine);
             ConvertWideTextToNarrow(wideLine, narrowLine, length);
             CSF_AT(float, subtitleElement, 0) =
-                static_cast<float>(ParseSubtitleTime(narrowLine));
+                static_cast<float>(_atof(narrowLine));
 
-            const bool textRead = ReadWideTextLine(file, wideLine, 500);
+            const bool textRead = MenuExtras_ReadWideTextLine(file, wideLine, 500);
             GetWideTextLength(wideLine);
-            AssignWideSubtitleText(
+            MenuProgressInput_AssignText(
                 subtitleElement + 4, nullptr,
                 reinterpret_cast<std::int16_t*>(wideLine));
-            AppendSubtitleElement(
+            AppendElement32_5483C0(
                 static_cast<std::uint8_t*>(self) + 0x4C, nullptr,
                 reinterpret_cast<int*>(subtitleElement));
 
@@ -135,12 +135,12 @@ static int __fastcall MenuExtras_LoadMakingOfSubtitles(
         {
             void* block = CSF_AT(void*, subtitleElement, 8);
             if (block)
-                FreeSubtitleStringStorage(block);
+                Mem_FreeDebug(block);
         }
     }
 
     CSF_AT(std::uint32_t, self, 0x5C) = 0;
-    return CloseSubtitleFile(file);
+    return CloseSceneFile(file);
 }
 
 HOOK(0x00548430, MenuExtras_LoadMakingOfSubtitles, "auto");

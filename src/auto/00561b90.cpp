@@ -5,13 +5,13 @@
 #include "types/auto_classes.h"
 
 static void** const g_MenuScreenVtable =
-    reinterpret_cast<void**>(0x0083042C);
+    CSF_VTBL(0x0083042C);
 static void** const g_MpSessionsVtable =
-    reinterpret_cast<void**>(0x00845990);
+    CSF_VTBL(0x00845990);
 static void** const g_MpSessionsSecondaryVtable =
     reinterpret_cast<void**>(0x00845940);
 
-CSF_FUNC(std::uint32_t*, __fastcall, MenuMpSessions_ConstructEmbeddedBase,
+CSF_FUNC(std::uint32_t*, __fastcall, C_00830438_Construct,
          0x00712CC0, (std::uint32_t* self, void* edx));
 CSF_FUNC(int, __fastcall, CMenuMpSessions_InitializeState,
          0x00560140, (CMenuMpSessions* self, void* edx));
@@ -21,7 +21,7 @@ static int __fastcall CMenuMpSessions_Construct(
 {
     CSF_AT(void**, self, 0x00) = g_MenuScreenVtable;
 
-    MenuMpSessions_ConstructEmbeddedBase(
+    C_00830438_Construct(
         reinterpret_cast<std::uint32_t*>(
             reinterpret_cast<std::uint8_t*>(self) + 4),
         nullptr);

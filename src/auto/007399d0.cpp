@@ -11,7 +11,7 @@ CSF_FUNC(std::uint32_t*, __fastcall, InitializeRecordWithPayload,
          0x00739480,
          (std::uint32_t* self, void* edx, int first, int second,
           int third, const void* payload, char flag));
-CSF_FUNC(void, __stdcall, RethrowException, 0x007AF666,
+CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInfo));
 
 static std::uint32_t* __stdcall CreateRecordWithPayload(
@@ -29,7 +29,7 @@ static std::uint32_t* __stdcall CreateRecordWithPayload(
         if (record) {
             Mem_FreeDebug(record);
         }
-        RethrowException(nullptr, nullptr);
+        RethrowCppException(nullptr, nullptr);
         __assume(0);
     }
 

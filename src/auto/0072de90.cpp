@@ -5,7 +5,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(char, __fastcall, CGuiControl_UpdateBase,
+CSF_FUNC(char, __fastcall, CGuiControl_HandleMouseMovement,
          0x00719400, (CGuiControl* self, void* edx, int updateArgument));
 CSF_FUNC(char, __fastcall, CGuiSlider_UpdateConsoleArrowSelectability,
          0x0072CEF0, (CGuiSlider* self, void* edx));
@@ -126,7 +126,7 @@ static std::uint32_t TruncateSignedRatioToLowWord(
 static int __fastcall CGuiSlider_UpdateDraggedThumb(
     CGuiSlider* self, void* /*edx*/, int updateArgument)
 {
-    CGuiControl_UpdateBase(self, nullptr, updateArgument);
+    CGuiControl_HandleMouseMovement(self, nullptr, updateArgument);
 
     int result = reinterpret_cast<int (__fastcall*)(void*, void*)>(
         CSF_AT(void**, self, 0)[0x6C / 4])(self, nullptr);

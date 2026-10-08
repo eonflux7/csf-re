@@ -9,13 +9,13 @@ CSF_GLOBAL(float, g_ColorChannelScale, 0x0082FEA8);
 
 CSF_FUNC(int, __fastcall, ColorsMatch, 0x0042D680,
          (float* current, void* edx, float* target));
-CSF_FUNC(int, __fastcall, Fx_SetChannelParameters, 0x00731A60,
+CSF_FUNC(int, __fastcall, ConfigureEffect, 0x00731A60,
          (void* self, void* edx, int channel, void* parameters));
-CSF_FUNC(int, __fastcall, Fx_StartChannel, 0x00731A80,
+CSF_FUNC(int, __fastcall, StartEffect, 0x00731A80,
          (void* self, void* edx, int channel));
 CSF_FUNC(char, __fastcall, Fx_IsChannelActive, 0x00731AB0,
          (void* self, void* edx, int channel));
-CSF_FUNC(int, __fastcall, Fx_StopChannel, 0x00731AD0,
+CSF_FUNC(int, __fastcall, SetEffectState, 0x00731AD0,
          (void* self, void* edx, int channel));
 
 static int __fastcall CGuiButton_UpdateTextColor(
@@ -74,7 +74,7 @@ static int __fastcall CGuiButton_UpdateTextColor(
             ColorsMatch(reinterpret_cast<float*>(currentColor), nullptr,
                         reinterpret_cast<float*>(targetColor))))
     {
-        return Fx_StopChannel(
+        return SetEffectState(
             reinterpret_cast<void*>(self->m_pFx), nullptr, 2);
     }
 
@@ -113,9 +113,9 @@ static int __fastcall CGuiButton_UpdateTextColor(
     parameters.value1C = 0;
     parameters.value20 = 0;
 
-    Fx_SetChannelParameters(
+    ConfigureEffect(
         reinterpret_cast<void*>(self->m_pFx), nullptr, 2, &parameters);
-    return Fx_StartChannel(
+    return StartEffect(
         reinterpret_cast<void*>(self->m_pFx), nullptr, 2);
 }
 

@@ -5,7 +5,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_UpdateRenderState, 0x00719A20,
+CSF_FUNC(int, __fastcall, CGuiListBoxBase_PrepareListRendering, 0x00719A20,
          (CGuiControl* self, void* edx));
 CSF_GLOBAL(float, g_Inv255, 0x00830A00);
 
@@ -16,7 +16,7 @@ static int __fastcall CGuiStatic_Render(CGuiStatic* self, void* /*edx*/)
     if (static_cast<std::uint8_t>(result) != 0)
         return result;
 
-    CGuiControl_UpdateRenderState(self, nullptr);
+    CGuiListBoxBase_PrepareListRendering(self, nullptr);
 
     std::uint32_t originalColor[4];
     std::uint32_t renderColor[4];

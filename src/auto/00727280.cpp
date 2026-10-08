@@ -4,7 +4,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __cdecl, CopyMemory, 0x007AEE60,
+CSF_FUNC(void*, __cdecl, _memcpy, 0x007AEE60,
          (void* destination, const void* source, std::size_t byteCount));
 
 static std::uint32_t __fastcall C_008655e8_RemoveEntry(
@@ -39,7 +39,7 @@ static std::uint32_t __fastcall C_008655e8_RemoveEntry(
         static_cast<std::uint32_t>(
             static_cast<std::int32_t>(end - source) >> 2) << 2;
 
-    CopyMemory(reinterpret_cast<void*>(destination),
+    _memcpy(reinterpret_cast<void*>(destination),
                reinterpret_cast<const void*>(source), byteCount);
 
     const std::uint32_t newEnd = self->field_0020 - 4;

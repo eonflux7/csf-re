@@ -14,7 +14,7 @@
 CSF_FUNC(int, __fastcall, SchedulerBase_GetSchedulerProxy, 0x734A10, (void* self, void* edx));
 
 // Global scheduler state accessor (cdecl, no args).
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x50D190, ());
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x50D190, ());
 
 // Refresh selection and add item (usercall: ecx=this, ebx=a2 passed through by the caller).
 CSF_FUNC(int, __fastcall, MenuControls_RefreshSelectionAndAddItem, 0x542C90, (CMenuControls* self, void* edx));
@@ -23,7 +23,7 @@ CSF_FUNC(int, __fastcall, MenuControls_RefreshSelectionAndAddItem, 0x542C90, (CM
 CSF_FUNC(void*, __cdecl, MenuControls_BuildConfigEntries, 0x42AC60, (int a1, int a2, int a3, void* a4));
 
 // Config row binder (usercall in the original: esi=this, ebx=caller's ebx; stack args a3..a5, callee does not pop).
-CSF_FUNC(void, __cdecl, MenuControls_BindConfigEntry, 0x42AF90, (int a3, void* a4, uint32_t a5));
+CSF_FUNC(void, __cdecl, SetSelectionRefresh_42AF90, 0x42AF90, (int a3, void* a4, uint32_t a5));
 
 // Listbox add-selected-item (thiscall, one stack arg, ret 4).
 CSF_FUNC(int, __fastcall, CGuiListBoxBase_AddSelectedItem, 0x716A60, (void* self, void* edx, int a2));
@@ -40,7 +40,7 @@ static int CMenuControls_ApplySelectedConfiguration(CMenuControls* self)
         static_cast<int>(self->field_02d0),
         static_cast<void*>(selfBytes + 0x48));
 
-    MenuControls_BindConfigEntry(
+    SetSelectionRefresh_42AF90(
         static_cast<int>(self->field_02c8),
         static_cast<void*>(selfBytes + 0x48),
         self->field_002c);
@@ -75,7 +75,7 @@ static int __fastcall CMenuControls_StepStateMachine(CMenuControls* self, void* 
         return static_cast<int>(state - 4);
     }
 
-    int globalState = GetGlobalState();
+    int globalState = GetGlobalState_50D190();
     uint32_t schedulerProxy = static_cast<uint32_t>(
         SchedulerBase_GetSchedulerProxy(reinterpret_cast<void*>(globalState), nullptr));
 

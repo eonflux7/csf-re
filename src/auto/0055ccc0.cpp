@@ -6,33 +6,33 @@
 CSF_GLOBAL(int, g_SelectedAccountIndex, 0x0089A5E8);
 CSF_GLOBAL(int, g_MpNetworkType, 0x0089A5F0);
 
-CSF_FUNC(void*, __cdecl, GetAccountManager, 0x00506BD0, ());
-CSF_FUNC(void*, __cdecl, GetNetworkManager, 0x0050D190, ());
-CSF_FUNC(void*, __cdecl, GetMultiplayerService, 0x006A6D70, ());
+CSF_FUNC(void*, __cdecl, GetGlobalValue_8B056C, 0x00506BD0, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_6A6D70, 0x006A6D70, ());
 
-CSF_FUNC(int, __fastcall, InitializeAccountRequest, 0x00501870,
+CSF_FUNC(int, __fastcall, MenuBuffer_Init, 0x00501870,
          (void* self, void* edx));
-CSF_FUNC(unsigned int, __fastcall, DestroyAccountRequest, 0x004FF3C0,
+CSF_FUNC(unsigned int, __fastcall, MenuBuffer_Destroy, 0x004FF3C0,
          (void* self, void* edx));
-CSF_FUNC(int, __fastcall, RefreshNetworkAccountState, 0x0050E1E0,
+CSF_FUNC(int, __fastcall, GlobalState_ResetPending, 0x0050E1E0,
          (void* self, void* edx));
-CSF_FUNC(int, __fastcall, CheckNetworkAccountReadiness, 0x00734A10,
+CSF_FUNC(int, __fastcall, SchedulerBase_GetSchedulerProxy, 0x00734A10,
          (void* self, void* edx));
-CSF_FUNC(unsigned int, __fastcall, SendAccountRequest, 0x0050F790,
+CSF_FUNC(unsigned int, __fastcall, Game_DispatchMenuRequest, 0x0050F790,
          (void* self, void* edx, int requestId, int flags,
           int mode, void* request));
-CSF_FUNC(unsigned int, __fastcall, ShowAccountMessage, 0x0050F860,
+CSF_FUNC(unsigned int, __fastcall, SaveGame_ShowMessage, 0x0050F860,
          (void* self, void* edx, const void* message, int flags, int mode));
 CSF_FUNC(char, __fastcall, CheckAccountName, 0x005184B0,
          (void* self, void* edx, const char* name, char mode));
-CSF_FUNC(int, __fastcall, CommitAccountEdit, 0x0055C9D0,
+CSF_FUNC(int, __fastcall, MenuAccounts_FallbackToList, 0x0055C9D0,
          (void* self, void* edx));
 
-CSF_FUNC(unsigned int, __cdecl, ConvertAccountNameToWide, 0x00695590,
+CSF_FUNC(unsigned int, __cdecl, CopyTrucoStringToWide, 0x00695590,
          (const char* source, std::uint16_t* destination, int limit));
-CSF_FUNC(int, __cdecl, FormatAccountMessage, 0x00692660,
+CSF_FUNC(int, __cdecl, FormatScenarioText, 0x00692660,
          (void* destination, const char* key, const void* argument, int mode));
-CSF_FUNC(int, __cdecl, FreeAccountMessageStorage, 0x00690E60,
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60,
          (void* block));
 
 static char __fastcall MenuMpAccounts_SubmitAccountEdit(
@@ -42,7 +42,7 @@ static char __fastcall MenuMpAccounts_SubmitAccountEdit(
 
     if (g_MpNetworkType == 3)
     {
-        void* service = GetMultiplayerService();
+        void* service = GetGlobalState_6A6D70();
         int status =
             reinterpret_cast<int(__fastcall*)(void*, void*)>(
                 CSF_AT(void**, service, 0)[0x1C / 4])(service, nullptr);
@@ -51,11 +51,11 @@ static char __fastcall MenuMpAccounts_SubmitAccountEdit(
         {
             if (status == 5)
             {
-                void* manager = GetNetworkManager();
-                status = CheckNetworkAccountReadiness(manager, nullptr);
+                void* manager = GetGlobalState_50D190();
+                status = SchedulerBase_GetSchedulerProxy(manager, nullptr);
                 if (status != 0)
                 {
-                    service = GetMultiplayerService();
+                    service = GetGlobalState_6A6D70();
                     status =
                         reinterpret_cast<int(__fastcall*)(void*, void*)>(
                             CSF_AT(void**, service, 0)[0x2C / 4])(
@@ -66,10 +66,10 @@ static char __fastcall MenuMpAccounts_SubmitAccountEdit(
             return static_cast<char>(status);
         }
 
-        void* manager = GetNetworkManager();
-        RefreshNetworkAccountState(manager, nullptr);
+        void* manager = GetGlobalState_50D190();
+        GlobalState_ResetPending(manager, nullptr);
 
-        service = GetMultiplayerService();
+        service = GetGlobalState_6A6D70();
         const int requestId =
             reinterpret_cast<int(__fastcall*)(void*, void*)>(
                 CSF_AT(void**, service, 0)[0x20 / 4])(service, nullptr);
@@ -77,32 +77,32 @@ static char __fastcall MenuMpAccounts_SubmitAccountEdit(
         if (requestId == 0x494C3538)
         {
             alignas(4) std::uint8_t request[180];
-            InitializeAccountRequest(request, nullptr);
+            MenuBuffer_Init(request, nullptr);
             request[0x18] = 1;
 
-            manager = GetNetworkManager();
-            SendAccountRequest(manager, nullptr, 0x41453230, 1, 0, request);
+            manager = GetGlobalState_50D190();
+            Game_DispatchMenuRequest(manager, nullptr, 0x41453230, 1, 0, request);
 
-            service = GetMultiplayerService();
+            service = GetGlobalState_6A6D70();
             reinterpret_cast<void(__fastcall*)(void*, void*, char*, char*)>(
                 CSF_AT(void**, service, 0)[0x3C / 4])(
                     service, nullptr, accountName,
                     reinterpret_cast<char*>(self) + 0x5D);
 
             CSF_AT(int, self, 0x280) = 8;
-            return static_cast<char>(DestroyAccountRequest(request, nullptr));
+            return static_cast<char>(MenuBuffer_Destroy(request, nullptr));
         }
 
         if (requestId != -1)
         {
-            manager = GetNetworkManager();
+            manager = GetGlobalState_50D190();
             const unsigned int result =
-                SendAccountRequest(manager, nullptr, requestId, 32, 1, nullptr);
+                Game_DispatchMenuRequest(manager, nullptr, requestId, 32, 1, nullptr);
             CSF_AT(int, self, 0x280) = 3;
             return static_cast<char>(result);
         }
 
-        return static_cast<char>(CommitAccountEdit(self, nullptr));
+        return static_cast<char>(MenuAccounts_FallbackToList(self, nullptr));
     }
 
     alignas(4) std::uint8_t message[32];
@@ -113,13 +113,13 @@ static char __fastcall MenuMpAccounts_SubmitAccountEdit(
     CSF_AT(std::uint32_t, message, 0x14) = 0;
     CSF_AT(std::uint16_t, message, 0x04) = 0;
 
-    ConvertAccountNameToWide(accountName, wideName, 33);
+    CopyTrucoStringToWide(accountName, wideName, 33);
 
     if (g_SelectedAccountIndex == -1 &&
-        CheckAccountName(CSF_AT(void*, GetAccountManager(), 0x14),
+        CheckAccountName(CSF_AT(void*, GetGlobalValue_8B056C(), 0x14),
                          nullptr, accountName, 1))
     {
-        FormatAccountMessage(message, CSF_STR(0x008454F8, "ae24"),
+        FormatScenarioText(message, CSF_STR(0x008454F8, "ae24"),
                              wideName, 1);
 
         const std::uint32_t capacity =
@@ -128,8 +128,8 @@ static char __fastcall MenuMpAccounts_SubmitAccountEdit(
         if (capacity < 8)
             messageText = message + 0x04;
 
-        void* manager = GetNetworkManager();
-        ShowAccountMessage(manager, nullptr, messageText, 1, 0);
+        void* manager = GetGlobalState_50D190();
+        SaveGame_ShowMessage(manager, nullptr, messageText, 1, 0);
         CSF_AT(int, self, 0x280) = 3;
     }
     else
@@ -141,11 +141,11 @@ static char __fastcall MenuMpAccounts_SubmitAccountEdit(
     {
         void* block = CSF_AT(void*, message, 0x04);
         if (block)
-            FreeAccountMessageStorage(block);
+            Mem_FreeDebug(block);
     }
 
     if (shouldCommit)
-        return static_cast<char>(CommitAccountEdit(self, nullptr));
+        return static_cast<char>(MenuAccounts_FallbackToList(self, nullptr));
 
     return shouldCommit;
 }

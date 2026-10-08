@@ -9,14 +9,14 @@
 #include "legacy/string.h"
 
 // Base constructor of CMenuSoundOptions (__thiscall, one stack argument, ret 4).
-CSF_FUNC(void*, __fastcall, CMenuSoundOptions_BaseConstruct, 0x0053CFC0, (void* self, void* edx, int a2));
+CSF_FUNC(void*, __fastcall, CMenuSoundOptions_Construct, 0x0053CFC0, (void* self, void* edx, int a2));
 
-static constexpr uint32_t kVtblCMenuSoundOptionsPC = 0x00843DB8;
+static const uint32_t kVtblCMenuSoundOptionsPC = CSF_ADDR_VT(0x00843DB8);
 static constexpr uint32_t kVtblSecondaryBase = 0x00843D68;
 
 static CMenuSoundOptionsPC* __fastcall CMenuSoundOptionsPC_Construct(CMenuSoundOptionsPC* self, void* /*edx*/, int a2)
 {
-    CMenuSoundOptions_BaseConstruct(self, nullptr, a2);
+    CMenuSoundOptions_Construct(self, nullptr, a2);
 
     CSF_AT(uint32_t, self, 0x5C) = 0;
     CSF_AT(uint32_t, self, 0x60) = 0;

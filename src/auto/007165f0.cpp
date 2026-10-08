@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(int, __fastcall, Transfer16ByteElement, 0x00715E70,
+CSF_FUNC(int, __fastcall, AssignPointerVector_715E70, 0x00715E70,
          (void* self, void* edx, int source));
 
 static int __cdecl Transfer16ByteElementsBackward(
@@ -20,7 +20,7 @@ static int __cdecl Transfer16ByteElementsBackward(
     {
         source -= 16u;
         destination -= 16u;
-        Transfer16ByteElement(
+        AssignPointerVector_715E70(
             reinterpret_cast<void*>(destination),
             nullptr,
             static_cast<int>(source));

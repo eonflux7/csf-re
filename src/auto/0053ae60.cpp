@@ -6,8 +6,8 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x521BB0, ());
-CSF_FUNC(void, __fastcall, GlobalValue_Apply, 0x521DE0, (void* self, void* edx));
+CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x521BB0, ());
+CSF_FUNC(void, __fastcall, MenuProgressInput_UpdateGlobalState, 0x521DE0, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, CMenuOptions_LayoutOptionButtons, 0x53AD90, (CMenuOptions* self, void* edx));
 
 // Returns the child screen object stored at +0x1C, re-read on every use.
@@ -32,8 +32,8 @@ static int __fastcall CMenuOptions_SetupScreen(CMenuOptions* self, void* /*edx*/
 
     self->field_0014 = static_cast<uint32_t>(screenArg);
 
-    int globalValue = GetGlobalValue();
-    GlobalValue_Apply(reinterpret_cast<void*>(static_cast<uintptr_t>(globalValue)), nullptr);
+    int globalValue = GetGlobalValue_521BB0();
+    MenuProgressInput_UpdateGlobalState(reinterpret_cast<void*>(static_cast<uintptr_t>(globalValue)), nullptr);
 
     // Child object virtual slot 0x16C (no arguments, result ignored).
     {

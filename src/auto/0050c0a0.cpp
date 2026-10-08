@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // __cdecl _stricmp, bound by address.
-CSF_FUNC(int, __cdecl, MenuManager_StriCmp, 0x007B0C41, (const char* left, const char* right));
+CSF_FUNC(int, __cdecl, __stricmp, 0x007B0C41, (const char* left, const char* right));
 
 // Looks up a page name in a menu page table (vector-like, 28-byte entries).
 // Each entry holds a std::string-like name at +4 (inline when capacity at +24 < 16,
@@ -45,7 +45,7 @@ static int __cdecl MenuManager_ContainsPageName(char* searchName, int pageTable)
             else
                 entryName = *reinterpret_cast<const char* const*>(entry + 4);
 
-            if (MenuManager_StriCmp(entryName, searchName) == 0)
+            if (__stricmp(entryName, searchName) == 0)
                 break;
 
             ++matchIndex;

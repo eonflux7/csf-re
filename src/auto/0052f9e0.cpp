@@ -4,12 +4,12 @@
 #include "globals.h"
 
 // Vtable/data addresses referenced by the original constructor.
-static constexpr uint32_t kVtblCMenuCreditsPartial = 0x0083042C; // intermediate vtable, overwritten below
+static const uint32_t kVtblCMenuCreditsPartial = CSF_ADDR_VT(0x0083042C); // intermediate vtable, overwritten below
 static constexpr uint32_t kVtblCMenuCreditsSubBase = 0x00841868; // vtable stored at this+4
-static constexpr uint32_t kVtblCMenuCredits = 0x008418B8;        // final vtable stored at this+0
+static const uint32_t kVtblCMenuCredits = CSF_ADDR_VT(0x008418B8);        // final vtable stored at this+0
 
 // __thiscall callees, bound by address (arg count: this only).
-CSF_FUNC(void*, __fastcall, UiBase_ConstructMember, 0x00712CC0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x00712CC0, (void* self, void* edx));
 CSF_FUNC(void*, __fastcall, UiSubObject_Construct, 0x00508310, (void* self, void* edx));
 
 // CMenuCredits constructor: __thiscall, one stack argument (ret 4).
@@ -17,7 +17,7 @@ static CMenuCredits* __fastcall CMenuCredits_Initialize(CMenuCredits* self, void
 {
     // Provisional vtable, then construct the embedded base member at this+4.
     CSF_AT(uint32_t, self, 0x000) = kVtblCMenuCreditsPartial;
-    UiBase_ConstructMember(reinterpret_cast<uint8_t*>(self) + 0x004, nullptr);
+    C_00830438_Construct(reinterpret_cast<uint8_t*>(self) + 0x004, nullptr);
 
     // Final vtables.
     CSF_AT(uint32_t, self, 0x000) = kVtblCMenuCredits;

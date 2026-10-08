@@ -6,9 +6,9 @@
 
 CSF_GLOBAL(int, g_SelectedAccountIndex, 0x0089A5E8);
 
-CSF_FUNC(void*, __cdecl, MenuAccounts_GetAccountManager, 0x00506BD0, ());
-CSF_FUNC(void*, __cdecl, MenuAccounts_GetGlobalState, 0x0050D190, ());
-CSF_FUNC(unsigned int, __fastcall, MenuAccounts_ApplyAccountResult, 0x0050F790,
+CSF_FUNC(void*, __cdecl, GetGlobalValue_8B056C, 0x00506BD0, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
+CSF_FUNC(unsigned int, __fastcall, Game_DispatchMenuRequest, 0x0050F790,
          (void* self, void* edx, int result, int flag1, int flag2, int flag3));
 
 static __declspec(naked) int __fastcall MenuAccounts_TailDispatch(
@@ -25,7 +25,7 @@ static int __fastcall MenuAccounts_CommitAccountSelection(
 {
     CSF_AT(std::uint32_t, self, 0x28) = 1;
 
-    void* manager = MenuAccounts_GetAccountManager();
+    void* manager = GetGlobalValue_8B056C();
     void* accounts = CSF_AT(void*, manager, 0x14);
 
     const std::uint8_t accepted =
@@ -37,7 +37,7 @@ static int __fastcall MenuAccounts_CommitAccountSelection(
     {
         CSF_AT(std::uint32_t, self, 0x28) = 3;
 
-        manager = MenuAccounts_GetAccountManager();
+        manager = GetGlobalValue_8B056C();
         accounts = CSF_AT(void*, manager, 0x14);
 
         const int result =
@@ -45,8 +45,8 @@ static int __fastcall MenuAccounts_CommitAccountSelection(
                  CSF_AT(void**, accounts, 0)[0x54 / 4])(
                 accounts, nullptr);
 
-        void* state = MenuAccounts_GetGlobalState();
-        MenuAccounts_ApplyAccountResult(state, nullptr, result, 1, 1, 0);
+        void* state = GetGlobalState_50D190();
+        Game_DispatchMenuRequest(state, nullptr, result, 1, 1, 0);
     }
 
     g_SelectedAccountIndex = -1;

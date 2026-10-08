@@ -15,7 +15,7 @@ CSF_GLOBAL(const char*, g_pszMenu_P_Juego, 0x899AF0);
 CSF_GLOBAL(const char*, g_pszMenu_P_TmPart, 0x899B20);
 
 // Resets the pause menu panel state (__thiscall, one stack arg, ret 4).
-CSF_FUNC(void, __fastcall, CMenuMpPause_ResetPanelState, 0x534AE0, (CMenuMpPause* self, void* edx, int a2));
+CSF_FUNC(void, __fastcall, CMenuMpPause_OnActivate, 0x534AE0, (CMenuMpPause* self, void* edx, int a2));
 
 // Virtual slot 0x5c: find a child panel by name. Returns the child or null.
 static void* FindChildPanelByName(void* panel, const char* name)
@@ -55,7 +55,7 @@ static void __fastcall CMenuMpPause_InitPauseMenuPanels(CMenuMpPause* self, void
         SetPanelChildState(reinterpret_cast<void*>(self->field_0010), tmPartPanel);
 
     self->field_0044 = 1;
-    CMenuMpPause_ResetPanelState(self, nullptr, 0);
+    CMenuMpPause_OnActivate(self, nullptr, 0);
 }
 
 HOOK(0x534E40, CMenuMpPause_InitPauseMenuPanels, "auto");

@@ -15,7 +15,7 @@
 // stored in the game's read-only data (0x0082F850 -> "TFreeMove").
 static const char* __fastcall TFreeMove_GetName(TFreeMove* /*self*/, void* /*edx*/)
 {
-    return reinterpret_cast<const char*>(0x0082F850); // "TFreeMove"
+    return reinterpret_cast<const char*>(CSF_ADDR_DATA(0x0082F850)); // "TFreeMove"
 }
 
 HOOK(0x421440, TFreeMove_GetName, "auto");

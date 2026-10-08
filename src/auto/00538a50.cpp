@@ -12,8 +12,8 @@
 
 // Callees bound by address.
 CSF_FUNC(void*, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, GetGlobalManagerChild, 0x006B1390, (void* self, void* edx));
-CSF_FUNC(void*, __fastcall, GetGlobalLoadingPresenter, 0x00652160, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, MenuControls_ResolveObject, 0x006B1390, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, CMenuLoading_LayoutCenteredFrameEdges, 0x005385D0, (CMenuLoading* self, void* edx));
 CSF_FUNC(char, __fastcall, CMenuLoading_ProcessEnabledLoadingSections, 0x00538870, (CMenuLoading* self, void* edx));
 
@@ -72,15 +72,15 @@ static int __fastcall CMenuLoading_AdvanceLoadingProgress(CMenuLoading* self, vo
     self->field_0034 = updatedElapsedSeconds;
 
     if (initialProgressObject != 0) {
-        void* loadingManagerChild = GetGlobalManagerChild(GetGlobalInt(), nullptr);
+        void* loadingManagerChild = MenuControls_ResolveObject(GetGlobalInt(), nullptr);
         if (CallVirtualBool(loadingManagerChild, 27)) {
             CallVirtualVoid(reinterpret_cast<void*>(self->field_003c), 31);
-            void* managerChildAfter = GetGlobalManagerChild(GetGlobalInt(), nullptr);
+            void* managerChildAfter = MenuControls_ResolveObject(GetGlobalInt(), nullptr);
             CallVirtualVoid(managerChildAfter, 28);
         }
     }
 
-    void* managerChildForLoad = GetGlobalManagerChild(GetGlobalInt(), nullptr);
+    void* managerChildForLoad = MenuControls_ResolveObject(GetGlobalInt(), nullptr);
     bool isLoadingActive = CallVirtualBoolWithIntArg(managerChildForLoad, 29, 0);
 
     if (isLoadingActive) {
@@ -126,11 +126,11 @@ static int __fastcall CMenuLoading_AdvanceLoadingProgress(CMenuLoading* self, vo
         CMenuLoading_ProcessEnabledLoadingSections(self, nullptr);
         CMenuLoading_LayoutCenteredFrameEdges(self, nullptr);
 
-        void* childManagerForFinish = GetGlobalManagerChild(GetGlobalInt(), nullptr);
+        void* childManagerForFinish = MenuControls_ResolveObject(GetGlobalInt(), nullptr);
         CallVirtualVoid(childManagerForFinish, 30);
     }
 
-    void* loadingPresenter = GetGlobalLoadingPresenter(GetGlobalInt(), nullptr);
+    void* loadingPresenter = LookupObjectById(GetGlobalInt(), nullptr);
     return CallVirtualInt(loadingPresenter, 11);
 }
 

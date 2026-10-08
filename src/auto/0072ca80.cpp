@@ -3,7 +3,7 @@
 #include "hook.h"
 
 // 0x6932B0: __thiscall lookup helper taking a key string (rets 4).
-CSF_FUNC(std::uint8_t*, __fastcall, FindByKeyString, 0x6932B0,
+CSF_FUNC(std::uint8_t*, __fastcall, FindProperty, 0x6932B0,
          (std::uint8_t* self, void* /*edx*/, char* key));
 
 // Key string used by this variant of the lookup.
@@ -14,7 +14,7 @@ static std::uint8_t* __stdcall FindElementByKeyString(std::uint8_t* object)
     if (!object)
         return nullptr;
 
-    return FindByKeyString(object, nullptr, g_LookupKeyString);
+    return FindProperty(object, nullptr, g_LookupKeyString);
 }
 
 HOOK(0x72CA80, FindElementByKeyString, "auto");

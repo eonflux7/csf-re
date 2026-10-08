@@ -17,7 +17,7 @@ static C_00843ed0* __fastcall CMenuExtras_Construct(
     C_00843ed0* self, void* /*edx*/, int a2)
 {
   CMenuMissionInfo_Construct(self, nullptr, a2);
-  CSF_AT(void*, self, 0) = reinterpret_cast<void*>(0x00843ED0);
+  CSF_AT(void*, self, 0) = reinterpret_cast<void*>(CSF_ADDR_VT(0x00843ED0));
   self->field_0004 = 0x00843E80;
   return self;
 }

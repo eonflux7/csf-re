@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 
 static int (__cdecl* const Mem_FreeDebug)(void*) =
-    reinterpret_cast<int (__cdecl*)(void*)>(0x00690E60);
+    reinterpret_cast<int (__cdecl*)(void*)>(CSF_ADDR_FN(0x00690E60));
 
 static int __fastcall CGuiListBoxBase_ClearStorageAndSendEvent(
     CGuiListBoxBase* self, void* /*edx*/)

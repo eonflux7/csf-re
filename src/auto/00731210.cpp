@@ -10,9 +10,9 @@ CSF_FUNC(int, __fastcall, ForwardToHandlerIfNonNull, 0x007310D0,
 // __thiscall on the original: ecx = context, one stack argument.
 CSF_FUNC(void, __fastcall, DestroyElementThroughContext, 0x006B5220,
          (void* context, void* edx, std::uint8_t* element));
-CSF_FUNC(void, __stdcall, RethrowGameException, 0x007AF666,
+CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInformation));
-CSF_FUNC(int, __cdecl, HandleGameCppException, 0x007AF226,
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226,
          (void* exceptionRecord, void* frame, void* context, void* dispatcher));
 
 CSF_GLOBAL(std::uint8_t, g_ArrayConstructionExceptionInfo, 0x00892A5C);
@@ -51,7 +51,7 @@ static int __cdecl CopyConstructElementArray(
             element += 16;
         }
 
-        RethrowGameException(nullptr, nullptr);
+        RethrowCppException(nullptr, nullptr);
         __builtin_unreachable();
     }
 

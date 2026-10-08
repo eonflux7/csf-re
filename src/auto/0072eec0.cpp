@@ -7,13 +7,13 @@
 // __thiscall sub_724D20(int *this) -> CGuiStatic_DispatchTextObject
 static int (__fastcall* const CGuiStatic_DispatchTextObject)(
     CGuiChoiceButton*, void*) =
-    reinterpret_cast<int (__fastcall*)(CGuiChoiceButton*, void*)>(0x00724D20);
+    reinterpret_cast<int (__fastcall*)(CGuiChoiceButton*, void*)>(CSF_ADDR_FN(0x00724D20));
 
 // __thiscall sub_4856E0(std::uint32_t *this, unsigned int pos, unsigned int len)  (ret 8)
 static std::uint32_t* (__fastcall* const EraseWideStringRange)(
     void*, void*, unsigned int, unsigned int) =
     reinterpret_cast<std::uint32_t* (__fastcall*)(
-        void*, void*, unsigned int, unsigned int)>(0x004856E0);
+        void*, void*, unsigned int, unsigned int)>(CSF_ADDR_FN(0x004856E0));
 
 // Dispatches the control's text object, then for every wide-string entry in the
 // choice vector (stride 0x20, begin at +0x1F4 / end at +0x1F8) erases the

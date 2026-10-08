@@ -5,15 +5,15 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-CSF_FUNC(std::uint32_t*, __fastcall, EraseWideStringCharacter, 0x00532CB0,
+CSF_FUNC(std::uint32_t*, __fastcall, MenuEula_ComputeWriteCursorForEndPointer, 0x00532CB0,
          (legacy::wstring* self, void* edx, std::uint32_t* result,
           std::uint16_t* position));
 
 // The apparent EBX arguments are actually saves of a nonvolatile register.
 // Each routine takes only one stack argument.
-CSF_FUNC(int, __fastcall, CGuiEdit_RebuildFromVisibleEnd, 0x007215F0,
+CSF_FUNC(int, __fastcall, AdjustTextRangeLeft, 0x007215F0,
          (CGuiEdit* self, void* edx, char atStart));
-CSF_FUNC(int, __fastcall, CGuiEdit_RebuildFromVisibleStart, 0x00721900,
+CSF_FUNC(int, __fastcall, AdjustTextRangeRight, 0x00721900,
          (CGuiEdit* self, void* edx, char atStart));
 
 static std::uint16_t* __fastcall CGuiEdit_GetWideCharacterAddress(
@@ -54,21 +54,21 @@ static void __fastcall CGuiEdit_DeleteCharacter(CGuiEdit* self, void* /*edx*/)
         if (currentIndex != 0)
         {
             self->field_01a8 = currentIndex - 1u;
-            EraseWideStringCharacter(
+            MenuEula_ComputeWriteCursorForEndPointer(
                 &self->m_wtext0, nullptr, &erasedIterator,
                 CGuiEdit_GetWideCharacterAddress(self, nullptr, originalIndex));
-            CGuiEdit_RebuildFromVisibleStart(self, nullptr, 0);
+            AdjustTextRangeRight(self, nullptr, 0);
         }
         else
         {
             if (textState == 0)
             {
-                EraseWideStringCharacter(
+                MenuEula_ComputeWriteCursorForEndPointer(
                     &self->m_wtext0, nullptr, &erasedIterator,
                     CGuiEdit_GetWideCharacterAddress(
                         self, nullptr, originalIndex));
             }
-            CGuiEdit_RebuildFromVisibleStart(self, nullptr, 1);
+            AdjustTextRangeRight(self, nullptr, 1);
         }
         return;
     }
@@ -83,10 +83,10 @@ static void __fastcall CGuiEdit_DeleteCharacter(CGuiEdit* self, void* /*edx*/)
         if (currentIndex != 0)
             self->field_01a8 = currentIndex - 1u;
 
-        EraseWideStringCharacter(
+        MenuEula_ComputeWriteCursorForEndPointer(
             &self->m_wtext0, nullptr, &erasedIterator,
             CGuiEdit_GetWideCharacterAddress(self, nullptr, originalIndex));
-        CGuiEdit_RebuildFromVisibleEnd(self, nullptr, 0);
+        AdjustTextRangeLeft(self, nullptr, 0);
     }
     else
     {
@@ -96,10 +96,10 @@ static void __fastcall CGuiEdit_DeleteCharacter(CGuiEdit* self, void* /*edx*/)
         if (currentIndex != 0)
             self->field_01a8 = currentIndex - 1u;
 
-        EraseWideStringCharacter(
+        MenuEula_ComputeWriteCursorForEndPointer(
             &self->m_wtext0, nullptr, &erasedIterator,
             CGuiEdit_GetWideCharacterAddress(self, nullptr, originalIndex));
-        CGuiEdit_RebuildFromVisibleStart(
+        AdjustTextRangeRight(
             self, nullptr, static_cast<char>(originalIndex == 0));
     }
 }

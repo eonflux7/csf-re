@@ -8,7 +8,7 @@ CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_FUNC(std::uint32_t, __cdecl, CopyConstructElementArray32, 0x0072F090,
          (std::uint32_t destination, int count, std::uint32_t* source,
           void* container, int choiceId));
-CSF_FUNC(std::uint32_t, __fastcall, InsertChoiceRecords, 0x0072F220,
+CSF_FUNC(std::uint32_t, __fastcall, InsertElementCopies32_72F220, 0x0072F220,
          (void* self, void* edx, char* position, unsigned int count,
           std::uint32_t* source));
 
@@ -59,7 +59,7 @@ static char* __fastcall CGuiChoiceButton_AddChoiceId(
                                              records, choiceId);
         CSF_AT(std::uint32_t, records, 8) = destination + 32;
     } else {
-        result = InsertChoiceRecords(
+        result = InsertElementCopies32_72F220(
             records, nullptr,
             reinterpret_cast<char*>(CSF_AT(std::uint32_t, records, 8)),
             1, temporary);

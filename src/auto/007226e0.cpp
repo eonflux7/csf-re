@@ -4,9 +4,9 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __fastcall, CGuiEdit_UpdateTextRange, 0x007215F0,
+CSF_FUNC(int, __fastcall, AdjustTextRangeLeft, 0x007215F0,
          (CGuiEdit* self, void* edx, char mode));
-CSF_FUNC(int, __fastcall, CGuiEdit_ApplyRangeReset, 0x00721900,
+CSF_FUNC(int, __fastcall, AdjustTextRangeRight, 0x00721900,
          (CGuiEdit* self, void* edx, char mode));
 
 // The original callees have an implicit EBX input. Keep this routine
@@ -43,7 +43,7 @@ int __fastcall CGuiEdit_MoveIndicesRight(CGuiEdit* self, void* /*edx*/)
                 if (nextLast < length)
                     self->field_01b0 = nextLast;
 
-                CGuiEdit_UpdateTextRange(self, nullptr, 0);
+                AdjustTextRangeLeft(self, nullptr, 0);
                 goto WrapAtEnd;
             }
 
@@ -52,7 +52,7 @@ int __fastcall CGuiEdit_MoveIndicesRight(CGuiEdit* self, void* /*edx*/)
                 self->field_01a8 = nextFirst;
         }
 
-        return CGuiEdit_UpdateTextRange(self, nullptr, 0);
+        return AdjustTextRangeLeft(self, nullptr, 0);
     }
 
     {
@@ -74,14 +74,14 @@ int __fastcall CGuiEdit_MoveIndicesRight(CGuiEdit* self, void* /*edx*/)
             if (nextLast < length)
                 self->field_01b0 = nextLast;
 
-            return CGuiEdit_UpdateTextRange(self, nullptr, 0);
+            return AdjustTextRangeLeft(self, nullptr, 0);
         }
 
         std::uint32_t nextFirst = first + 1u;
         if (nextFirst < length)
             self->field_01a8 = nextFirst;
 
-        return CGuiEdit_UpdateTextRange(self, nullptr, 0);
+        return AdjustTextRangeLeft(self, nullptr, 0);
     }
 
 WrapAtEnd:
@@ -95,7 +95,7 @@ WrapAtEnd:
         {
             self->field_01a8 = 0;
             self->field_01ac = 0;
-            return CGuiEdit_ApplyRangeReset(self, nullptr, 1);
+            return AdjustTextRangeRight(self, nullptr, 1);
         }
 
         return static_cast<int>(currentLength);

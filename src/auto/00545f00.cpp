@@ -5,9 +5,9 @@
 
 // Bound callees (addresses from the packet)
 CSF_FUNC(void*, __cdecl, GetGlobalValue_8B056C, 0x506BD0, ());
-CSF_FUNC(uint32_t*, __fastcall, MenuExtras_GetEntryVectorHeader, 0x515CE0, (void* self, void* edx));
+CSF_FUNC(uint32_t*, __fastcall, GetScenarioCollection, 0x515CE0, (void* self, void* edx));
 CSF_FUNC(void*, __cdecl, GetGlobal8afc7c, 0x43E010, ());
-CSF_FUNC(uint32_t*, __fastcall, MenuExtras_LookupRecordById, 0x43E4B0, (void* self, void* edx, int recordId));
+CSF_FUNC(uint32_t*, __fastcall, MenuLoading_FindMission, 0x43E4B0, (void* self, void* edx, int recordId));
 
 // Returns 1 when the entry list of the CMenuExtras instance contains an entry whose id matches
 // the first dword of the record found for recordId and whose flag byte (+8) is nonzero.
@@ -21,7 +21,7 @@ static char __stdcall CMenuExtras_IsThumbnailUnlocked(int recordId)
     if (extrasObject == nullptr)
         return 0;
 
-    uint32_t* entryRange = MenuExtras_GetEntryVectorHeader(extrasObject, nullptr);
+    uint32_t* entryRange = GetScenarioCollection(extrasObject, nullptr);
     uint32_t rangeBegin = entryRange[1];
     if (rangeBegin == 0)
         return 0;
@@ -33,7 +33,7 @@ static char __stdcall CMenuExtras_IsThumbnailUnlocked(int recordId)
         reinterpret_cast<void* (__fastcall*)(void*, void*)>(CSF_AT(void**, extrasObject, 0)[9])(extrasObject, nullptr));
 
     void* recordManager = GetGlobal8afc7c();
-    uint32_t* recordPtr = MenuExtras_LookupRecordById(recordManager, nullptr, recordId);
+    uint32_t* recordPtr = MenuLoading_FindMission(recordManager, nullptr, recordId);
     if (recordPtr == nullptr)
         return isUnlocked;
 

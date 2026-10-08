@@ -4,12 +4,12 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-static constexpr std::uint32_t kGuiBuilderVtableAddress = 0x00864B30;
-static constexpr std::uint32_t kBaseBuilderVtableAddress = 0x00864A58;
+static const std::uint32_t kGuiBuilderVtableAddress = CSF_ADDR_VT(0x00864B30);
+static const std::uint32_t kBaseBuilderVtableAddress = CSF_ADDR_VT(0x00864A58);
 
-CSF_FUNC(int, __fastcall, ReleaseReference, 0x006923C0,
+CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
-CSF_FUNC(int, __cdecl, FreeBuilderStorage, 0x00691110,
+CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110,
          (void* storage));
 
 static int __fastcall CGuiBuilder_Destroy(
@@ -42,7 +42,7 @@ static int __fastcall CGuiBuilder_Destroy(
     void* referencedObject = reinterpret_cast<void*>(self->field_0084);
     if (referencedObject)
     {
-        ReleaseReference(
+        ReleaseObjectReference(
             static_cast<std::uint8_t*>(referencedObject) + 4, nullptr);
         self->field_0084 = 0;
     }
@@ -51,7 +51,7 @@ static int __fastcall CGuiBuilder_Destroy(
     int result = 0;
     if (storage)
     {
-        result = FreeBuilderStorage(storage);
+        result = Mem_Free(storage);
         self->field_000c = 0;
     }
 

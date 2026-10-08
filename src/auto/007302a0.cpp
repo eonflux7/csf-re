@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_Construct, 0x0071A010,
+CSF_FUNC(int, __fastcall, CGuiControl_Construct_71A010, 0x0071A010,
          (CGuiControl* self, void* edx, int argument1, int argument2));
 CSF_FUNC(char, __fastcall, CGuiControl_SetDraggable, 0x007180B0,
          (CGuiControl* self, void* edx, char draggable));
@@ -18,7 +18,7 @@ CSF_GLOBAL(volatile std::uint32_t, g_CellTextColorSentinelAlpha, 0x008A7DAC);
 static int __fastcall CGuiSwitch_Construct(
     CGuiSwitch* self, void* /*edx*/, int argument1, int argument2)
 {
-    CGuiControl_Construct(
+    CGuiControl_Construct_71A010(
         reinterpret_cast<CGuiControl*>(self), nullptr, argument1, argument2);
 
     CSF_AT(std::uint32_t, self, 0x000) =

@@ -4,7 +4,7 @@
 #include "globals.h"
 
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, GetDisplayContext, 0x00652160,
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160,
          (void* self, void* edx));
 
 CSF_GLOBAL(float, g_UnsignedIntegerBias, 0x0082D744);
@@ -23,7 +23,7 @@ static int __fastcall MenuMessageBox_UpdateCombinedHeight(
     if (!control || !CSF_AT(void*, self, 0x5C) || !layout)
         return static_cast<int>(reinterpret_cast<std::uintptr_t>(control));
 
-    void* context = GetDisplayContext(
+    void* context = LookupObjectById(
         reinterpret_cast<void*>(GetGlobalInt()), nullptr);
     void* dimensions =
         ((void*(__fastcall*)(void*, void*))CSF_AT(void**, context, 0)[6])(

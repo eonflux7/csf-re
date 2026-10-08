@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Callee: unknown prototype, __thiscall-style with ecx=this and no stack args (ret 0).
-CSF_FUNC(int, __fastcall, Lib_GetMenuChildFromSelf, 0x6683F0, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, GetReferencedObject, 0x6683F0, (void* self, void* edx));
 
 // Global: pointer value stored at 0x899B40 (first element of the menu label-name table).
 CSF_GLOBAL(const char*, g_pszMenu_P_LbMePr, 0x899B40);
@@ -61,7 +61,7 @@ static int __fastcall MenuAccounts_HandleInputEvent(char* self, void* /*edx*/, i
         char* argBlock = reinterpret_cast<char*>(a3);
         if (argBlock[0x38] != 0)
         {
-            void* child = reinterpret_cast<void*>(Lib_GetMenuChildFromSelf(self, nullptr));
+            void* child = reinterpret_cast<void*>(GetReferencedObject(self, nullptr));
             void** vtbl = CSF_AT(void**, child, 0);
             return ((int(__fastcall*)(void*, void*))vtbl[28 / 4])(child, nullptr);
         }

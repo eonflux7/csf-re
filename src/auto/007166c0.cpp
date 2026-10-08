@@ -6,11 +6,11 @@
 
 static const auto CGuiControl_Construct =
     reinterpret_cast<int (__fastcall*)(C_00830438*, void*, void*, int)>(
-        0x0071A010);
+        CSF_ADDR_FN(0x0071A010));
 
 static const auto CGuiControl_GetRelatedObject =
     reinterpret_cast<void* (__fastcall*)(CGuiListBoxBase*, void*)>(
-        0x00686C10);
+        CSF_ADDR_FN(0x00686C10));
 
 CSF_GLOBAL(std::uint32_t, g_GuiListBoxBaseVtable, 0x00863FF8);
 

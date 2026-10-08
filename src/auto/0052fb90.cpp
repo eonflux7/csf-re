@@ -4,7 +4,7 @@
 #include "globals.h"
 
 // Callee at 0x006683F0: __thiscall with no stack args, returns a sub-object pointer.
-CSF_FUNC(void*, __fastcall, MenuMpServerInfo_ResolveSubobject, 0x006683F0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x006683F0, (void* self, void* edx));
 
 // Dispatches a command code (a2) for the menu object. Returns a 32-bit value in eax.
 // a2 == 1  : invokes virtual slot 19 (+0x4C) on the object located 4 bytes before self.
@@ -24,7 +24,7 @@ static int __fastcall MenuMpServerInfo_HandleCommand(void* self, void* /*edx*/, 
         result = a3;
         uint8_t* sceneSelect = reinterpret_cast<uint8_t*>(a3);
         if (*(sceneSelect + 0x38) != 0) {
-            void* subObject = MenuMpServerInfo_ResolveSubobject(self, nullptr);
+            void* subObject = GetReferencedObject(self, nullptr);
             void** vtbl = *reinterpret_cast<void***>(subObject);
             return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[7])(subObject, nullptr);
         }

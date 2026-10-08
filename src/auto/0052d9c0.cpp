@@ -6,24 +6,24 @@
 #include "types/auto_classes.h"
 
 // Original callees, bound by address.
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x0050D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 CSF_FUNC(int, __fastcall, SchedulerBase_GetSchedulerProxy, 0x00734A10, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, CMenuScenarioSelect_RebuildForGlobalMode, 0x0052D940, (CMenuScenarioSelect* self, void* edx));
+CSF_FUNC(int, __fastcall, CMenuScenarioSelect_ApplySelection, 0x0052D940, (CMenuScenarioSelect* self, void* edx));
 
 // Stores the mode into the global state (+0x84), runs the rebuild on the scenario select screen,
 // then clears the screen's pending flag (+0x38). Returns the rebuild's result.
 static int CMenuScenarioSelect_ApplyGlobalModeAndRebuild(CMenuScenarioSelect* self, uint32_t mode)
 {
-    void* globalState = GetGlobalState();
+    void* globalState = GetGlobalState_50D190();
     CSF_AT(uint32_t, globalState, 0x84) = mode;
-    int rebuildResult = CMenuScenarioSelect_RebuildForGlobalMode(self, nullptr);
+    int rebuildResult = CMenuScenarioSelect_ApplySelection(self, nullptr);
     self->field_0038 = 0;
     return rebuildResult;
 }
 
 static int __fastcall CMenuScenarioSelect_MapProxyCodeToGlobalMode(CMenuScenarioSelect* self, void* /*edx*/)
 {
-    int proxyCode = SchedulerBase_GetSchedulerProxy(GetGlobalState(), nullptr);
+    int proxyCode = SchedulerBase_GetSchedulerProxy(GetGlobalState_50D190(), nullptr);
 
     if (proxyCode > 0x100) {
         if (proxyCode == 0x200) {

@@ -4,16 +4,16 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __fastcall, CMenuMessageBox_InitializeButtons, 0x0052A0F0,
+CSF_FUNC(int, __fastcall, CMenuMessageBox_InitializeFourControls, 0x0052A0F0,
          (CMenuMessageBox* self, void* edx, void* context));
 CSF_FUNC(int, __fastcall, CMenuMessageBox_InitializeSlotButtons, 0x0052A1B0,
          (CMenuMessageBox* self, void* edx, void* context));
-CSF_FUNC(void*, __fastcall, MenuMessageBox_GetDisplayObject, 0x00652160,
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160,
          (void* self, void* edx));
-CSF_FUNC(void*, __fastcall, MenuMessageBox_ResolveName, 0x00693360,
+CSF_FUNC(void*, __fastcall, LookupNamedElement, 0x00693360,
          (void* self, void* edx, const char* name));
-CSF_FUNC(void*, __cdecl, MenuMessageBox_GetDisplayManager, 0x006B1380, ());
-CSF_FUNC(void*, __cdecl, MenuMessageBox_GetGlobalState, 0x00756A10, ());
+CSF_FUNC(void*, __cdecl, GetGlobalInt, 0x006B1380, ());
+CSF_FUNC(void*, __cdecl, GetGlobalValue_8BC1E0, 0x00756A10, ());
 
 CSF_GLOBAL(float, g_UnsignedIntegerBias, 0x0082D744);
 CSF_GLOBAL(float, g_Const20, 0x0082E0F0);
@@ -38,7 +38,7 @@ static int __fastcall CMenuMessageBox_InitializePanel(
         CSF_AT(void**, context, 0)[0x54 / 4])(context, nullptr);
     void** resourceVtable = CSF_AT(void**, resource, 0);
     void* nameResolver = CSF_AT(void*, nameContext, 0);
-    void* panelName = MenuMessageBox_ResolveName(
+    void* panelName = LookupNamedElement(
         nameResolver, nullptr, CSF_STR(0x00841304, ".PANEL_PRINCIPAL"));
 
     void* panel = ((void* (__fastcall*)(void*, void*, void*))
@@ -50,23 +50,23 @@ static int __fastcall CMenuMessageBox_InitializePanel(
     ((void (__fastcall*)(void*, void*, int))
         CSF_AT(void**, panel, 0)[0xC8 / 4])(panel, nullptr, 1);
 
-    CMenuMessageBox_InitializeButtons(self, nullptr, context);
+    CMenuMessageBox_InitializeFourControls(self, nullptr, context);
     CMenuMessageBox_InitializeSlotButtons(self, nullptr, context);
 
-    void* globalState = MenuMessageBox_GetGlobalState();
+    void* globalState = GetGlobalValue_8BC1E0();
     panel = reinterpret_cast<void*>(self->field_0894);
     std::uint32_t panelStyle = CSF_AT(std::uint32_t, globalState, 0x18F4);
     ((void (__fastcall*)(void*, void*, std::uint32_t))
         CSF_AT(void**, panel, 0)[0x170 / 4])(panel, nullptr, panelStyle);
 
-    void* display = MenuMessageBox_GetDisplayObject(
-        MenuMessageBox_GetDisplayManager(), nullptr);
+    void* display = LookupObjectById(
+        GetGlobalInt(), nullptr);
     void* dimensions = ((void* (__fastcall*)(void*, void*))
         CSF_AT(void**, display, 0)[0x18 / 4])(display, nullptr);
     std::uint32_t displayWidth = CSF_AT(std::uint32_t, dimensions, 0);
 
-    display = MenuMessageBox_GetDisplayObject(
-        MenuMessageBox_GetDisplayManager(), nullptr);
+    display = LookupObjectById(
+        GetGlobalInt(), nullptr);
     dimensions = ((void* (__fastcall*)(void*, void*))
         CSF_AT(void**, display, 0)[0x18 / 4])(display, nullptr);
     std::uint32_t displayHeight = CSF_AT(std::uint32_t, dimensions, 4);
@@ -82,8 +82,8 @@ static int __fastcall CMenuMessageBox_InitializePanel(
     ((void (__fastcall*)(void*, void*, float, float))
         panelVtable[0x150 / 4])(panel, nullptr, widthScale, heightScale);
 
-    display = MenuMessageBox_GetDisplayObject(
-        MenuMessageBox_GetDisplayManager(), nullptr);
+    display = LookupObjectById(
+        GetGlobalInt(), nullptr);
     dimensions = ((void* (__fastcall*)(void*, void*))
         CSF_AT(void**, display, 0)[0x18 / 4])(display, nullptr);
     double signedWidth = static_cast<double>(CSF_AT(std::int32_t, dimensions, 0));

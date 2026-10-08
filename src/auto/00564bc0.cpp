@@ -12,8 +12,8 @@ CSF_GLOBAL(uint32_t, g_ScreenHeight, 0x00899BA0);
 
 // Callees, bound by address.
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, ResolveGlobalManager, 0x00652160, (int managerIndex, void* /*edx*/));
-CSF_FUNC(uint8_t*, __fastcall, StringPool_LookupHandle, 0x00693360, (uint8_t* pool, void* /*edx*/, const char* name));
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160, (int managerIndex, void* /*edx*/));
+CSF_FUNC(uint8_t*, __fastcall, LookupNamedElement, 0x00693360, (uint8_t* pool, void* /*edx*/, const char* name));
 
 static void* AsPointer(uint32_t value)
 {
@@ -63,7 +63,7 @@ static int __fastcall CMenuAccounts_ResolveListaCuentasPanel(CMenuAccounts* self
     void* stringPool = CSF_AT(void*, keyPoolRef, 0);
     void** containerVtable = CSF_AT(void**, container, 0);
 
-    uint8_t* panelKeyHandle = StringPool_LookupHandle(reinterpret_cast<uint8_t*>(stringPool), nullptr, CSF_STR(0x00841304, ".PANEL_PRINCIPAL"));
+    uint8_t* panelKeyHandle = LookupNamedElement(reinterpret_cast<uint8_t*>(stringPool), nullptr, CSF_STR(0x00841304, ".PANEL_PRINCIPAL"));
 
     // Find the panel child through the container's vtable slot 6 (offset 0x18).
     void* panel = reinterpret_cast<void* (__fastcall*)(void*, void*, void*)>(containerVtable[6])(container, nullptr, panelKeyHandle);
@@ -74,13 +74,13 @@ static int __fastcall CMenuAccounts_ResolveListaCuentasPanel(CMenuAccounts* self
 
     // First metric: dword at offset 0 of the record returned by the first resolved manager.
     const int widthManagerIndex = GetGlobalInt();
-    void* widthManager = ResolveGlobalManager(widthManagerIndex, nullptr);
+    void* widthManager = LookupObjectById(widthManagerIndex, nullptr);
     void* widthRecord = CallNoArgGetterSlot6(widthManager);
     const uint32_t widthMetric = CSF_AT(uint32_t, widthRecord, 0);
 
     // Second metric: dword at offset 4 of the record returned by the second resolved manager.
     const int heightManagerIndex = GetGlobalInt();
-    void* heightManager = ResolveGlobalManager(heightManagerIndex, nullptr);
+    void* heightManager = LookupObjectById(heightManagerIndex, nullptr);
     void* heightRecord = CallNoArgGetterSlot6(heightManager);
     const uint32_t heightMetric = CSF_AT(uint32_t, heightRecord, 4);
 

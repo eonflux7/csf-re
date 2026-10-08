@@ -14,7 +14,7 @@
 CSF_GLOBAL(const char*, g_pszMenu_P_MeJueg, 0x00899AF4);
 
 // Resolves the active child panel from the menu object (__thiscall, no stack args).
-CSF_FUNC(void*, __fastcall, CMenuSaveGame_ResolveActiveChild, 0x006683F0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x006683F0, (void* self, void* edx));
 
 // Command dispatcher for CMenuSaveGame (__thiscall, 2 stack args, ret 8).
 static int __fastcall CMenuSaveGame_HandleCommand(int* self, void* /*edx*/, int a2, int a3)
@@ -43,7 +43,7 @@ static int __fastcall CMenuSaveGame_HandleCommand(int* self, void* /*edx*/, int 
         void* panelArg = reinterpret_cast<void*>(static_cast<uintptr_t>(a3));
         if (CSF_AT(uint8_t, panelArg, 0x38))
         {
-            void* activeChild = CMenuSaveGame_ResolveActiveChild(self, nullptr);
+            void* activeChild = GetReferencedObject(self, nullptr);
             return ((int(__fastcall*)(void*, void*))(CSF_AT(void**, activeChild, 0)[7]))(activeChild, nullptr);
         }
     }

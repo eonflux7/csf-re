@@ -6,11 +6,11 @@
 
 static int (__fastcall* const CGuiListBoxBase_ClearStorageAndSendEvent)(
     CGuiListBoxBase*, void*) =
-    reinterpret_cast<int (__fastcall*)(CGuiListBoxBase*, void*)>(0x00715660);
+    reinterpret_cast<int (__fastcall*)(CGuiListBoxBase*, void*)>(CSF_ADDR_FN(0x00715660));
 
 static void (__fastcall* const CGuiListBoxBase_SelectItem)(
     CGuiListBoxBase*, void*, int) =
-    reinterpret_cast<void (__fastcall*)(CGuiListBoxBase*, void*, int)>(0x00716A60);
+    reinterpret_cast<void (__fastcall*)(CGuiListBoxBase*, void*, int)>(CSF_ADDR_FN(0x00716A60));
 
 static int __fastcall CGuiListBoxBase_SelectNextItem(
     CGuiListBoxBase* self, void* /*edx*/)

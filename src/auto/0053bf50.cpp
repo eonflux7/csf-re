@@ -6,8 +6,8 @@
 
 // Original game functions called by this routine, bound by address.
 CSF_FUNC(void*, __cdecl, GetGlobalValue_8B056C, 0x506BD0, ());
-CSF_FUNC(void, __cdecl, GuiControl_ResetCachedState, 0x541090, (void* control));
-CSF_FUNC(int*, __fastcall, MenuProfiles_GetRecordVector, 0x515CE0, (int* owner, void* edx));
+CSF_FUNC(void, __cdecl, CMenuProfiles_RebuildProfileListBox, 0x541090, (void* control));
+CSF_FUNC(int*, __fastcall, GetScenarioCollection, 0x515CE0, (int* owner, void* edx));
 CSF_FUNC(int, __fastcall, CGuiSlider_ForwardSelfToParent, 0x718660, (void* self, void* edx));
 
 // The record vector is viewed as int[]: [1] = first record, [2] = end. Records are 80 bytes.
@@ -41,7 +41,7 @@ static void MenuProfiles_SetWidgetEnabledByRecordCount(CMenuProfiles* self, uint
     if (!CSF_AT(void*, self, widgetOffset))
         return;
 
-    int32_t* recordVector = MenuProfiles_GetRecordVector(recordOwner, nullptr);
+    int32_t* recordVector = GetScenarioCollection(recordOwner, nullptr);
     const int32_t recordCount = MenuProfiles_CountRecords(recordVector);
 
     void* widget = CSF_AT(void*, self, widgetOffset);
@@ -52,7 +52,7 @@ static void MenuProfiles_SetWidgetEnabledByRecordCount(CMenuProfiles* self, uint
 
 static int __fastcall CMenuProfiles_SyncButtonsToProfileCount(CMenuProfiles* self, void* /*edx*/)
 {
-    GuiControl_ResetCachedState(CSF_AT(void*, self, 0x14));
+    CMenuProfiles_RebuildProfileListBox(CSF_AT(void*, self, 0x14));
 
     int* recordOwner = CSF_AT(int*, GetGlobalValue_8B056C(), 8);
 
@@ -60,7 +60,7 @@ static int __fastcall CMenuProfiles_SyncButtonsToProfileCount(CMenuProfiles* sel
     MenuProfiles_SetWidgetEnabledByRecordCount(self, 0x20, recordOwner);
     MenuProfiles_SetWidgetEnabledByRecordCount(self, 0x14, recordOwner);
 
-    int32_t* recordVector = MenuProfiles_GetRecordVector(recordOwner, nullptr);
+    int32_t* recordVector = GetScenarioCollection(recordOwner, nullptr);
     int result = 0;
     bool sliderLookupNeeded = false;
 

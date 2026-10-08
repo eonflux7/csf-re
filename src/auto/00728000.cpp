@@ -8,14 +8,14 @@
 CSF_GLOBAL(void*, g_CameraResourcesVtable, 0x008655E8);
 
 CSF_FUNC(int, __cdecl, InitializeQuadGeometryBuffers, 0x00739340, ());
-CSF_FUNC(void*, __cdecl, CreateFrame, 0x006235D0, ());
-CSF_FUNC(void*, __cdecl, SetFrameIdentity, 0x006238C0, (void* frame));
-CSF_FUNC(int, __fastcall, CreateCameraSubRasters, 0x00726C70,
+CSF_FUNC(void*, __cdecl, RwFrameCreate, 0x006235D0, ());
+CSF_FUNC(void*, __cdecl, RwFrameSetIdentity, 0x006238C0, (void* frame));
+CSF_FUNC(int, __fastcall, C_008655e8_CreateCameraSubRasters, 0x00726C70,
          (C_008655e8* self, void* edx,
           int x, int y, int width, int height));
-CSF_FUNC(int, __cdecl, SetObjectFrame, 0x0063CE30,
+CSF_FUNC(int, __cdecl, _rwObjectHasFrameSetFrame, 0x0063CE30,
          (void* object, void* frame));
-CSF_FUNC(void*, __cdecl, AllocateGameMemory, 0x006910F0,
+CSF_FUNC(void*, __cdecl, Mem_Alloc, 0x006910F0,
          (std::size_t size));
 CSF_FUNC(std::uint32_t*, __fastcall, InitializeOwnerHelper, 0x006AFB80,
          (std::uint32_t* self, void* edx, std::uint32_t owner));
@@ -50,12 +50,12 @@ static C_008655e8* __fastcall C_008655e8_InitializeCameraResources(
     self->field_0004 = 0;
     self->field_0028 = 0;
 
-    void* frame = CreateFrame();
+    void* frame = RwFrameCreate();
     self->field_0008 = reinterpret_cast<std::uintptr_t>(frame);
-    SetFrameIdentity(frame);
+    RwFrameSetIdentity(frame);
 
-    CreateCameraSubRasters(self, nullptr, x, y, width, height);
-    SetObjectFrame(
+    C_008655e8_CreateCameraSubRasters(self, nullptr, x, y, width, height);
+    _rwObjectHasFrameSetFrame(
         reinterpret_cast<void*>(self->field_000c),
         reinterpret_cast<void*>(self->field_0008));
 
@@ -67,7 +67,7 @@ static C_008655e8* __fastcall C_008655e8_InitializeCameraResources(
     self->field_0068 = 0;
     self->field_007c = 0;
 
-    void* helperStorage = AllocateGameMemory(0x34);
+    void* helperStorage = Mem_Alloc(0x34);
     if (helperStorage)
     {
         self->field_0080 = reinterpret_cast<std::uintptr_t>(

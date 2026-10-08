@@ -8,14 +8,14 @@
 
 // Vtable addresses stored as immediate values, matching the original's
 // `mov dword ptr [reg], imm32` stores.
-static constexpr uint32_t kCMenuScreenPrimaryVtable = 0x0083042Cu;   // off_83042C
+static const uint32_t kCMenuScreenPrimaryVtable = CSF_ADDR_VT(0x0083042C);   // off_83042C
 static constexpr uint32_t kCMenuScreenSubobjectVtable = 0x00841E90u; // off_841E90
-static constexpr uint32_t kCMenuIntroVideoVtable = 0x00841EE0u;      // off_841EE0
+static const uint32_t kCMenuIntroVideoVtable = CSF_ADDR_VT(0x00841EE0);      // off_841EE0
 
 // Callees, bound by address.
-CSF_FUNC(uint32_t*, __fastcall, CMenuIntroVideo_InitEmbeddedBase, 0x00712CC0, (uint32_t* self, void* edx));
+CSF_FUNC(uint32_t*, __fastcall, C_00830438_Construct, 0x00712CC0, (uint32_t* self, void* edx));
 CSF_FUNC(void*, __cdecl, GetGlobalValue_8B056C, 0x00506BD0, ());
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x0050D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 
 // __thiscall constructor (ret 4): initializes the embedded CMenuScreen base at +4,
 // sets the intro-video vtables, and fills in the video-playback state fields.
@@ -25,7 +25,7 @@ static CMenuIntroVideo* __fastcall CMenuIntroVideo_Construct(CMenuIntroVideo* se
     CSF_AT(uint32_t, self, 0) = kCMenuScreenPrimaryVtable;
 
     // Construct the embedded base sub-object at this + 4.
-    CMenuIntroVideo_InitEmbeddedBase(
+    C_00830438_Construct(
         reinterpret_cast<uint32_t*>(reinterpret_cast<uint8_t*>(self) + 4), nullptr);
 
     // Install the final vtables.
@@ -45,7 +45,7 @@ static CMenuIntroVideo* __fastcall CMenuIntroVideo_Construct(CMenuIntroVideo* se
     self->field_0020 = 0;
 
     // Query a virtual method (vtable slot 0x48 / 4 = 18) on the global state object.
-    void* globalState = GetGlobalState();
+    void* globalState = GetGlobalState_50D190();
     uint8_t stateFlag = reinterpret_cast<uint8_t(__fastcall*)(void*, void*)>(
         CSF_AT(void**, globalState, 0)[18])(globalState, nullptr);
     self->field_0028 = stateFlag;

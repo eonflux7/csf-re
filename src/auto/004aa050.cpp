@@ -13,7 +13,7 @@
 // Returns the literal name string "TIrAInteractivo".
 static const char* __cdecl GetIrAInteractivoName()
 {
-    return reinterpret_cast<const char*>(0x83649c);
+    return reinterpret_cast<const char*>(CSF_ADDR_DATA(0x83649c));
 }
 
 HOOK(0x4AA050, GetIrAInteractivoName, "auto");

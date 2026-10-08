@@ -6,7 +6,7 @@
 
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
-CSF_FUNC(int, __fastcall, DestroyRecordAttachment, 0x00694380,
+CSF_FUNC(int, __fastcall, MenuExtras_CloseFile, 0x00694380,
          (void* self, void* edx));
 CSF_FUNC(int, __cdecl, ClearRecordStringRange, 0x0071B600,
          (std::uint32_t first, std::uint32_t last));
@@ -14,7 +14,7 @@ CSF_FUNC(int, __cdecl, ClearRecordStringRange, 0x0071B600,
 static int __fastcall C_00864508_DestroyMembers(
     C_00864508* self, void* /*edx*/)
 {
-    self->vtbl = reinterpret_cast<void**>(0x00864508);
+    self->vtbl = CSF_VTBL(0x00864508);
 
     const std::uint32_t recordBegin = self->field_0014;
     std::uint32_t remainingRecords = recordBegin
@@ -33,7 +33,7 @@ static int __fastcall C_00864508_DestroyMembers(
                        0x3C));
             if (attachment != nullptr)
             {
-                DestroyRecordAttachment(attachment, nullptr);
+                MenuExtras_CloseFile(attachment, nullptr);
                 Mem_Free(attachment);
                 CSF_AT(std::uint32_t,
                        reinterpret_cast<void*>(self->field_0014 + recordOffset),
@@ -144,7 +144,7 @@ static int __fastcall C_00864508_DestroyMembers(
     self->field_0018 = 0;
     self->field_001c = 0;
 
-    self->vtbl = reinterpret_cast<void**>(0x00830438);
+    self->vtbl = CSF_VTBL(0x00830438);
     return static_cast<int>(result);
 }
 

@@ -3,13 +3,14 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-static CSF_FUNC(char, __stdcall, DestroyTreeNodes, 0x00739B80,
-                (void** root));
+CSF_FUNC(char, __fastcall, DestroyTreeBranch, 0x00739B80,
+         (void* tree, void* edx, void** root));
 
 static int __fastcall C_00867444_ClearAndReset(
     C_00867444* self, void* /*edx*/)
 {
-    DestroyTreeNodes(
+    DestroyTreeBranch(
+        reinterpret_cast<uint8_t*>(self) + 0x28, nullptr,  // the embedded tree at +0x28 (ecx)
         CSF_AT(void**, reinterpret_cast<void*>(self->field_002c), 0x04));
 
     uint32_t sentinelAddress = self->field_002c;

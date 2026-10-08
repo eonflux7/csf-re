@@ -4,9 +4,9 @@
 #include "globals.h"
 
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, GetPreviewRenderer, 0x006B13B0,
+CSF_FUNC(void*, __fastcall, ResolveRwManager, 0x006B13B0,
          (void* self, void* edx));
-CSF_FUNC(void*, __fastcall, GetSceneManager, 0x00652020,
+CSF_FUNC(void*, __fastcall, ResolveClumpManager, 0x00652020,
          (void* self, void* edx));
 
 CSF_GLOBAL(float, g_PreviewLeftScale, 0x008434F4);
@@ -95,7 +95,7 @@ static int __fastcall MenuMpCharacterSelect_CreatePreview(
     preview.values[7] = blackBlue;
     preview.values[8] = blackAlpha;
 
-    void* renderer = GetPreviewRenderer(
+    void* renderer = ResolveRwManager(
         reinterpret_cast<void*>(GetGlobalInt()), nullptr);
     void* previewObject = ((void*(__fastcall*)(void*, void*, void*))
         CSF_AT(void**, renderer, 0)[0x18 / 4])(renderer, nullptr, &preview);
@@ -117,7 +117,7 @@ static int __fastcall MenuMpCharacterSelect_CreatePreview(
         cameraDescription[5] = 0x461C4000;
         cameraDescription[8] = 0xFFFFFFFF;
 
-        renderer = GetPreviewRenderer(
+        renderer = ResolveRwManager(
             reinterpret_cast<void*>(GetGlobalInt()), nullptr);
         void* camera = ((void*(__fastcall*)(void*, void*, void*))
             CSF_AT(void**, renderer, 0)[0x10 / 4])(
@@ -154,7 +154,7 @@ static int __fastcall MenuMpCharacterSelect_CreatePreview(
             CSF_AT(void**, previewObject, 0)[0x4C / 4])(
                 previewObject, nullptr, 4, 0);
 
-        void* sceneManager = GetSceneManager(
+        void* sceneManager = ResolveClumpManager(
             reinterpret_cast<void*>(GetGlobalInt()), nullptr);
         void* light = ((void*(__fastcall*)(void*, void*, int, int))
             CSF_AT(void**, sceneManager, 0)[0x28 / 4])(

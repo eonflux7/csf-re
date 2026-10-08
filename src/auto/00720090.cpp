@@ -5,7 +5,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __cdecl, AllocateGameMemory, 0x006910F0,
+CSF_FUNC(void*, __cdecl, Mem_Alloc, 0x006910F0,
          (std::size_t size));
 CSF_FUNC(void*, __fastcall, CGuiButton_Ctor, 0x00725390,
          (void* storage, void* edx, std::uint32_t arg1, void* arg2));
@@ -17,7 +17,7 @@ CSF_FUNC(void, __fastcall, CGuiBuilder_ReadButtonProps, 0x0071FCB0,
 static void* __fastcall CGuiBuilder_CreateButton(
     CGuiBuilder* self, void* /*edx*/, std::uint8_t* node)
 {
-    void* storage = AllocateGameMemory(0x1F0);
+    void* storage = Mem_Alloc(0x1F0);
     void* button = nullptr;
 
     if (storage)

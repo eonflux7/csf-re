@@ -7,7 +7,7 @@
 // It is called with four stack arguments: the two forwarded pointers, the saved
 // caller context (the thunk's incoming ecx) and a duplicate of the second
 // pointer.
-CSF_FUNC(int*, __cdecl, ProcessForwardedArguments, 0x007241E0,
+CSF_FUNC(int*, __cdecl, ResetWideStringRecordRange, 0x007241E0,
          (int* firstArgument, int* secondArgument, std::uintptr_t context, int* repeatedArgument));
 
 // 0x007243D0 - forwards its two pointer arguments together with the incoming
@@ -16,7 +16,7 @@ CSF_FUNC(int*, __cdecl, ProcessForwardedArguments, 0x007241E0,
 static int* __fastcall ForwardArgumentsAndContextToProcessor(
     void* context, void* /*edx*/, int* firstArgument, int* secondArgument)
 {
-    return ProcessForwardedArguments(
+    return ResetWideStringRecordRange(
         firstArgument,
         secondArgument,
         reinterpret_cast<std::uintptr_t>(context),

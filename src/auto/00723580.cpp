@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(void*, __fastcall, AssignStringRange, 0x00488830,
+CSF_FUNC(void*, __fastcall, AssignStringRange_488830, 0x00488830,
          (void* self, void* edx, void* source,
           std::uint32_t position, std::uint32_t count));
 
@@ -33,7 +33,7 @@ static std::uint32_t* __cdecl CopyStringRecordsForward(
             CSF_AT(std::uint32_t, destinationRecord, 0x14) =
                 CSF_AT(std::uint32_t, sourceRecord, 0x14);
 
-            AssignStringRange(destinationRecord + 0x18, nullptr,
+            AssignStringRange_488830(destinationRecord + 0x18, nullptr,
                               sourceRecord + 0x18, 0, UINT32_MAX);
 
             CSF_AT(std::uint32_t, destinationRecord, 0x34) =

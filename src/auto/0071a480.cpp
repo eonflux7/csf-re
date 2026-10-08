@@ -5,7 +5,7 @@
 
 // Copy-constructs a single 4-byte element (destination = source) using the
 // context/allocator carried in the caller's 4th argument.
-CSF_FUNC(std::uint32_t*, __stdcall, CopyConstructPointerElement,
+CSF_FUNC(std::uint32_t*, __stdcall, CopyDwordIfNotNull,
          0x00730830, (std::uint32_t* destination, std::uint32_t* source));
 
 // Catch-all handler: rethrows the active C++ exception.
@@ -13,7 +13,7 @@ CSF_FUNC(void, __stdcall, RethrowCppException,
          0x007AF666, (void* exceptionObject, void* throwInformation));
 
 // MSVC C++ exception dispatch routine referenced through the frame funclet.
-CSF_FUNC(int, __cdecl, HandleCppExceptionFrame, 0x007AF226, (...));
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226, (...));
 
 // Per-instantiation exception information block used by the frame funclet.
 CSF_GLOBAL(std::uint8_t, g_ConstructRangeExceptionInformation, 0x00891D14);
@@ -30,7 +30,7 @@ static int __cdecl CopyConstructPointerRangeWithContext(
     {
         while (source != sourceEnd)
         {
-            CopyConstructPointerElement(
+            CopyDwordIfNotNull(
                 reinterpret_cast<std::uint32_t*>(destination),
                 reinterpret_cast<std::uint32_t*>(source));
 

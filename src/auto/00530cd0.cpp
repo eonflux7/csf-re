@@ -30,7 +30,7 @@ CSF_FUNC(int, __fastcall, FormatterSetPattern, 0x00697100, (void* self, void* ed
 CSF_FUNC(void*, __cdecl, FormatCountTextBuffer, 0x00696A80, (void* outString));
 
 // __thiscall string assignment: (this=dest, src, pos=0, count=-1)
-CSF_FUNC(void*, __fastcall, StringAssignRange, 0x00488830, (void* self, void* edx, void* src, uint32_t pos, uint32_t count));
+CSF_FUNC(void*, __fastcall, AssignStringRange_488830, 0x00488830, (void* self, void* edx, void* src, uint32_t pos, uint32_t count));
 
 // Builds "{d0}/{d1}" from two counters of the info object into outString.
 static void* __stdcall FormatCountText(int infoObject, void* outString)
@@ -46,7 +46,7 @@ static void* __stdcall FormatCountText(int infoObject, void* outString)
     FormatterSetPattern(frame.formatter, nullptr, CSF_STR(0x00841B30, "{d0}/{d1}"));
 
     void* formattedText = FormatCountTextBuffer(outString);
-    StringAssignRange(outString, nullptr, formattedText, 0, 0xFFFFFFFFu);
+    AssignStringRange_488830(outString, nullptr, formattedText, 0, 0xFFFFFFFFu);
 
     return outString;
 }

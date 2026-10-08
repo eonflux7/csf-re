@@ -12,8 +12,8 @@
 // Sets the selected language value, applies the global setting, invokes the
 // child's virtual slot 0x16C, scrolls the view and returns the child object.
 
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x521BB0, ());
-CSF_FUNC(void, __fastcall, ApplyGlobalValueToObject, 0x521DE0, (void* self, void* edx));
+CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x521BB0, ());
+CSF_FUNC(void, __fastcall, MenuProgressInput_UpdateGlobalState, 0x521DE0, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, MenuPause_ScrollViewToTrackedDelta, 0x533B40, (CMenuLanguage* self, void* edx));
 
 static int __fastcall CMenuLanguage_SelectLanguage(CMenuLanguage* self, void* /*edx*/, int selectedLanguage, int unused3)
@@ -26,8 +26,8 @@ static int __fastcall CMenuLanguage_SelectLanguage(CMenuLanguage* self, void* /*
     self->field_0058 = 1;
     self->field_0034 = static_cast<uint32_t>(selectedLanguage);
 
-    void* globalValueObject = reinterpret_cast<void*>(GetGlobalValue());
-    ApplyGlobalValueToObject(globalValueObject, nullptr);
+    void* globalValueObject = reinterpret_cast<void*>(GetGlobalValue_521BB0());
+    MenuProgressInput_UpdateGlobalState(globalValueObject, nullptr);
 
     void* child = reinterpret_cast<void*>(self->field_0030);
     void** childVtbl = *reinterpret_cast<void***>(child);

@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __fastcall, MenuAccounts_InitializeEmbeddedBase, 0x00712CC0,
+CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x00712CC0,
          (void* self, void* edx));
 CSF_FUNC(void, __fastcall, C_00861bd8_ClearField0010, 0x006E5090,
          (void* self, void* edx));
@@ -14,11 +14,11 @@ CSF_GLOBAL(void*, g_MenuAccountsPostInitialize, 0x00845B38);
 static CMenuAccounts* __fastcall CMenuAccounts_Construct(
     CMenuAccounts* self, void* /*edx*/, int /*unused*/)
 {
-    CSF_AT(uint32_t, self, 0x00) = 0x0083042C;
-    MenuAccounts_InitializeEmbeddedBase(
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x0083042C);
+    C_00830438_Construct(
         reinterpret_cast<uint8_t*>(self) + 4, nullptr);
 
-    CSF_AT(uint32_t, self, 0x00) = 0x00845AF8;
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x00845AF8);
     self->field_0004 = 0x00845AA8;
     self->field_003c = 0;
     self->field_0018 = 0;

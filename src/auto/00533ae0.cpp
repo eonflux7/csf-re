@@ -14,12 +14,12 @@
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
 
 // Resolves an object from a global id (thiscall; ecx = this, edx unused).
-CSF_FUNC(int, __fastcall, ResolveObjectFromId, 0x006B1390, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, MenuControls_ResolveObject, 0x006B1390, (void* self, void* edx));
 
 static int __cdecl MenuMpPause_ApplyDisplayRectToCurrentObject()
 {
     int objectId = GetGlobalInt();
-    int resolved = ResolveObjectFromId(reinterpret_cast<void*>(static_cast<uintptr_t>(objectId)), nullptr);
+    int resolved = MenuControls_ResolveObject(reinterpret_cast<void*>(static_cast<uintptr_t>(objectId)), nullptr);
 
     // Vtable slot 18 (+0x48): returns the target object pointer.
     void* target = reinterpret_cast<void*>(static_cast<uintptr_t>(resolved));

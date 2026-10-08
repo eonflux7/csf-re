@@ -5,21 +5,21 @@
 
 CSF_GLOBAL(float, g_fZero, 0x0082D4CC);
 
-CSF_FUNC(void, __cdecl, MenuMessageBox_InvokeZeroDurationCallback,
+CSF_FUNC(void, __cdecl, Nullsub_506AC0,
          0x00506AC0, (int argument));
 CSF_FUNC(std::uint32_t*, __fastcall, MenuMessageBox_AssignConfiguration,
          0x0050F160, (void* self, void* edx, int configuration));
 CSF_FUNC(int, __fastcall, MenuMessageBox_ResetTextPlaceholders,
          0x00528A80, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, MenuMessageBox_UpdateConfiguration,
+CSF_FUNC(int, __fastcall, CMenuMessageBox_InitializeControls,
          0x005290B0, (void* self, void* edx));
-CSF_FUNC(std::uint32_t*, __fastcall, MenuMessageBox_UpdateLayout,
+CSF_FUNC(std::uint32_t*, __fastcall, CMenuMessageBox_RefreshLayoutAndCacheBounds,
          0x0052AE50, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, MenuMessageBox_ApplyLayout,
+CSF_FUNC(int, __fastcall, CMenuMessageBox_RefreshLayoutAndButtons,
          0x0052B650, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, MenuMessageBox_UpdatePresentation,
+CSF_FUNC(int, __fastcall, MenuMessageBox_PreCloseCleanup,
          0x0052B020, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, MenuMessageBox_ForwardToChildren,
+CSF_FUNC(int, __fastcall, CMenuMessageBox_ForwardToChildren,
          0x0052A7F0, (void* self, void* edx, int argument));
 
 static void MenuMessageBox_SetChildState(void* child, std::uint8_t flag)
@@ -44,7 +44,7 @@ static int __fastcall MenuMessageBox_ApplyConfiguration(
     if (CSF_AT(float, self, 0x8B4) == g_fZero &&
         CSF_AT(std::uint32_t, self, 0x7C) == 0)
     {
-        MenuMessageBox_InvokeZeroDurationCallback(0);
+        Nullsub_506AC0(0);
     }
 
     reinterpret_cast<void (__fastcall*)(void*, void*)>(
@@ -98,11 +98,11 @@ static int __fastcall MenuMessageBox_ApplyConfiguration(
     if (child)
         MenuMessageBox_SetChildState(child, CSF_AT(std::uint8_t, self, 0x8B9));
 
-    MenuMessageBox_UpdateConfiguration(self, nullptr);
-    MenuMessageBox_UpdateLayout(self, nullptr);
-    MenuMessageBox_ApplyLayout(self, nullptr);
-    MenuMessageBox_UpdatePresentation(self, nullptr);
-    MenuMessageBox_ForwardToChildren(self, nullptr, 0);
+    CMenuMessageBox_InitializeControls(self, nullptr);
+    CMenuMessageBox_RefreshLayoutAndCacheBounds(self, nullptr);
+    CMenuMessageBox_RefreshLayoutAndButtons(self, nullptr);
+    MenuMessageBox_PreCloseCleanup(self, nullptr);
+    CMenuMessageBox_ForwardToChildren(self, nullptr, 0);
 
     const std::uint32_t state = CSF_AT(std::uint32_t, self, 0x8A8);
     panel = CSF_AT(void*, self, 0x894);

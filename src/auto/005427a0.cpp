@@ -11,7 +11,7 @@
 CSF_GLOBAL(const char*, g_pszMenu_P_CharMP, 0x899AFC);
 
 // Original helper called on the object stored at menu+0x58 (__thiscall, ret 0).
-CSF_FUNC(int, __fastcall, Sub_541ED0, 0x541ED0, (int* self, void* edx));
+CSF_FUNC(int, __fastcall, CGuiCharacterPreview_ReleaseResources, 0x541ED0, (int* self, void* edx));
 
 // Looks up the P_CharMP menu through the app's menu manager (app->field_0x18) and
 // then releases the two child objects referenced by the returned menu (menu+0x58
@@ -32,7 +32,7 @@ static int __fastcall MenuMPCharSelect_GetCharMpMenuAndReleaseChildren(void* sel
     // mov ecx, [esi + 0x58] ; if (ecx) call 0x541ED0
     int* childA = CSF_AT(int*, reinterpret_cast<void*>(menu), 0x58);
     if (childA)
-        result = Sub_541ED0(childA, nullptr);
+        result = CGuiCharacterPreview_ReleaseResources(childA, nullptr);
 
     // reload [esi + 0x58] ; if non-null: virtual[0](childA, 1) then store 0
     childA = CSF_AT(int*, reinterpret_cast<void*>(menu), 0x58);

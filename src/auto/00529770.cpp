@@ -4,7 +4,7 @@
 #include "core/memory.h"
 
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, MenuMessageBox_GetDisplayInterface, 0x00652160,
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160,
          (void* self, void* edx));
 
 CSF_GLOBAL(float, g_UnsignedIntegerBias, 0x0082D744);
@@ -35,7 +35,7 @@ static char __fastcall MenuMessageBox_UpdateLayerLayout(
         return 0;
 
     void* globalObject = reinterpret_cast<void*>(GetGlobalInt());
-    void* display = MenuMessageBox_GetDisplayInterface(globalObject, nullptr);
+    void* display = LookupObjectById(globalObject, nullptr);
     void* displaySize = reinterpret_cast<GetObject>(
         CSF_AT(void**, display, 0)[0x18 / 4])(display, nullptr);
 
@@ -49,7 +49,7 @@ static char __fastcall MenuMessageBox_UpdateLayerLayout(
     const float heightScale = static_cast<float>(displayHeight / screenHeight);
 
     globalObject = reinterpret_cast<void*>(GetGlobalInt());
-    display = MenuMessageBox_GetDisplayInterface(globalObject, nullptr);
+    display = LookupObjectById(globalObject, nullptr);
     reinterpret_cast<GetObject>(
         CSF_AT(void**, display, 0)[0x18 / 4])(display, nullptr);
 

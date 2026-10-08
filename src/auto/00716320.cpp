@@ -4,32 +4,32 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __fastcall, ResetInput, 0x00717F70,
+CSF_FUNC(int, __fastcall, CGuiControl_ResetInput, 0x00717F70,
          (CGuiControl* self, void* edx));
-CSF_FUNC(int, __cdecl, DestroyItemRange, 0x006DEC40,
+CSF_FUNC(int, __cdecl, ResetRecordRange, 0x006DEC40,
          (int* begin, int* end, void* container, CGuiListBoxBase* owner));
-CSF_FUNC(int, __cdecl, FreeDebugMemory, 0x00690E60,
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60,
          (void* block));
-CSF_FUNC(int, __fastcall, ForwardEventToFirstEffect, 0x00718C00,
+CSF_FUNC(int, __fastcall, CGuiControl_ForwardEventToFirstEffect, 0x00718C00,
          (CGuiControl* self, void* edx, int event));
 
 static int __fastcall CGuiListBoxBase_ClearItems(
     CGuiListBoxBase* self, void* /*edx*/)
 {
-    ResetInput(self, nullptr);
+    CGuiControl_ResetInput(self, nullptr);
 
     self->m_bLayoutDirty = 1;
     self->field_01dc = 1;
 
     auto* itemContainer = reinterpret_cast<std::uint8_t*>(self) + 0x188;
     if (self->field_018c != 0) {
-        DestroyItemRange(
+        ResetRecordRange(
             reinterpret_cast<int*>(self->field_018c),
             reinterpret_cast<int*>(self->field_0190),
             itemContainer, self);
 
         if (self->field_018c != 0)
-            FreeDebugMemory(reinterpret_cast<void*>(self->field_018c));
+            Mem_FreeDebug(reinterpret_cast<void*>(self->field_018c));
     }
 
     self->field_018c = 0;
@@ -37,7 +37,7 @@ static int __fastcall CGuiListBoxBase_ClearItems(
     CSF_AT(std::uint32_t, self, 0x194) = 0;
 
     if (self->field_01ac != 0)
-        FreeDebugMemory(reinterpret_cast<void*>(self->field_01ac));
+        Mem_FreeDebug(reinterpret_cast<void*>(self->field_01ac));
 
     self->field_01ac = 0;
     self->field_01b0 = 0;
@@ -61,7 +61,7 @@ static int __fastcall CGuiListBoxBase_ClearItems(
 
     self->field_0168 = sliderValue;
     self->field_01f0 = 1.0f;
-    return ForwardEventToFirstEffect(self, nullptr, 0x3F800000);
+    return CGuiControl_ForwardEventToFirstEffect(self, nullptr, 0x3F800000);
 }
 
 HOOK(0x00716320, CGuiListBoxBase_ClearItems, "auto");

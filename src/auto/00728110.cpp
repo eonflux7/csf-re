@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(std::uint32_t, __fastcall, AppendEntry, 0x00727F20,
+CSF_FUNC(std::uint32_t, __fastcall, AppendFourByteElement_727F20, 0x00727F20,
          (void* self, void* edx, std::uint32_t* value));
 
 static std::uint32_t __fastcall C_008655e8_AddUniqueEntry(
@@ -31,7 +31,7 @@ static std::uint32_t __fastcall C_008655e8_AddUniqueEntry(
     }
 
     if (index == count) {
-        return AppendEntry(
+        return AppendFourByteElement_727F20(
             reinterpret_cast<std::uint8_t*>(self) + 0x18,
             nullptr, &value);
     }

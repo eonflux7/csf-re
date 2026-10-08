@@ -10,7 +10,7 @@
 // stored in the game's read-only data at 0x00834EC0.
 static const char* __cdecl GetTSubirName_4A7D90()
 {
-    return reinterpret_cast<const char*>(0x00834EC0);
+    return reinterpret_cast<const char*>(CSF_ADDR_DATA(0x00834EC0));
 }
 
 HOOK(0x4A7D90, GetTSubirName_4A7D90, "auto");

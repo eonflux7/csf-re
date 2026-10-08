@@ -10,13 +10,13 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x521BB0, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x521BB0, ());
 CSF_FUNC(void, __cdecl, Nullsub_506AC0, 0x506AC0, ());
-CSF_FUNC(void, __fastcall, MenuScenarioSelect_ApplyGlobalWithDelta, 0x5231D0, (int globalValue, void* edx, int deltaBits));
+CSF_FUNC(void, __fastcall, GlobalSetValue_5231D0, 0x5231D0, (int globalValue, void* edx, int deltaBits));
 CSF_FUNC(void, __fastcall, CMenuScenarioSelect_RefreshState, 0x52DF20, (CMenuScenarioSelect* self, void* edx));
 CSF_FUNC(void, __fastcall, CMenuScenarioSelect_UpdateAnimations, 0x52DD80, (CMenuScenarioSelect* self, void* edx, float deltaTime));
-CSF_FUNC(int, __fastcall, CMenuScenarioSelect_ProcessStateTwo, 0x52D9C0, (CMenuScenarioSelect* self, void* edx));
-CSF_FUNC(int, __fastcall, MenuScenarioSelect_FinishWithGlobal, 0x521F10, (int globalValue, void* edx));
+CSF_FUNC(int, __fastcall, CMenuScenarioSelect_MapProxyCodeToGlobalMode, 0x52D9C0, (CMenuScenarioSelect* self, void* edx));
+CSF_FUNC(int, __fastcall, Sub_521F10, 0x521F10, (int globalValue, void* edx));
 CSF_GLOBAL(const char*, g_pszMenu_P_LbMePr, 0x899B40);
 
 // Stores the frame delta, refreshes the screen, then dispatches on the screen state.
@@ -29,7 +29,7 @@ static int __fastcall CMenuScenarioSelect_UpdateWithDelta(CMenuScenarioSelect* s
     std::int32_t deltaBits = 0;
     std::memcpy(&deltaBits, &deltaTime, sizeof(float));
 
-    MenuScenarioSelect_ApplyGlobalWithDelta(GetGlobalValue(), nullptr, deltaBits);
+    GlobalSetValue_5231D0(GetGlobalValue_521BB0(), nullptr, deltaBits);
     Nullsub_506AC0();
     CMenuScenarioSelect_RefreshState(self, nullptr);
     CMenuScenarioSelect_UpdateAnimations(self, nullptr, deltaTime);
@@ -47,11 +47,11 @@ static int __fastcall CMenuScenarioSelect_UpdateWithDelta(CMenuScenarioSelect* s
             CSF_AT(void**, secondTarget, 0)[22]);
         setTextFn(secondTarget, nullptr, g_pszMenu_P_LbMePr);
 
-        return MenuScenarioSelect_FinishWithGlobal(GetGlobalValue(), nullptr);
+        return Sub_521F10(GetGlobalValue_521BB0(), nullptr);
     }
     if (stateCode == 2)
     {
-        return CMenuScenarioSelect_ProcessStateTwo(self, nullptr);
+        return CMenuScenarioSelect_MapProxyCodeToGlobalMode(self, nullptr);
     }
     return static_cast<int>(stateCode - 2);
 }

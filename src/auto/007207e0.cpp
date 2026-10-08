@@ -6,21 +6,21 @@
 
 CSF_FUNC(void, __fastcall, ReadTextControlProps, 0x00720420,
          (CGuiBuilder* self, void* edx, uint8_t* node, void* control));
-CSF_FUNC(void*, __fastcall, GetFont, 0x0071DB60,
+CSF_FUNC(void*, __fastcall, CGuiBuilder_GetFont, 0x0071DB60,
          (CGuiBuilder* self, void* edx, uint8_t* node));
-CSF_FUNC(int, __fastcall, ApplyLinkedFont, 0x00722DB0,
+CSF_FUNC(int, __fastcall, ForwardLinkedObjectAndApplyValue, 0x00722DB0,
          (void* self, void* edx, void* font));
-CSF_FUNC(int, __fastcall, ReleaseFontReference, 0x006923C0,
+CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
-CSF_FUNC(uint8_t*, __fastcall, FindAttribute, 0x006932B0,
+CSF_FUNC(uint8_t*, __fastcall, FindProperty, 0x006932B0,
          (uint8_t* node, void* edx, char* keyword));
-CSF_FUNC(void*, __fastcall, CreateText, 0x0071F910,
+CSF_FUNC(void*, __fastcall, CGuiBuilder_CreateText, 0x0071F910,
          (CGuiBuilder* self, void* edx, uint8_t* node));
-CSF_FUNC(int, __fastcall, ReplaceOwnedText, 0x00722D70,
+CSF_FUNC(int, __fastcall, ReplaceOwnedObject, 0x00722D70,
          (void* self, void* edx, void* text));
-CSF_FUNC(int, __fastcall, SetPrimaryComponents, 0x00722E10,
+CSF_FUNC(int, __fastcall, SetFourDwordsAt1F8, 0x00722E10,
          (void* self, void* edx, void* components));
-CSF_FUNC(char, __stdcall, ReadFourComponents, 0x0071DA70,
+CSF_FUNC(char, __stdcall, CGuiBuilder_ReadFourComponents, 0x0071DA70,
          (uint8_t* node, float* components));
 
 CSF_GLOBAL(char*, g_TextKeyword, 0x008A86BC);
@@ -37,33 +37,33 @@ static void __fastcall CGuiBuilder_ApplyTextAndComponentProps(
 
     ReadTextControlProps(self, nullptr, node, control);
 
-    void* font = GetFont(self, nullptr, node);
+    void* font = CGuiBuilder_GetFont(self, nullptr, node);
     if (font)
     {
-        ApplyLinkedFont(control, nullptr, font);
-        ReleaseFontReference(font, nullptr);
+        ForwardLinkedObjectAndApplyValue(control, nullptr, font);
+        ReleaseObjectReference(font, nullptr);
     }
 
-    uint8_t* attribute = FindAttribute(node, nullptr, g_TextKeyword);
+    uint8_t* attribute = FindProperty(node, nullptr, g_TextKeyword);
     if (attribute)
     {
-        void* text = CreateText(self, nullptr, attribute);
+        void* text = CGuiBuilder_CreateText(self, nullptr, attribute);
         if (text)
         {
-            ReplaceOwnedText(control, nullptr, text);
+            ReplaceOwnedObject(control, nullptr, text);
             void* textComponents =
                 reinterpret_cast<void* (__fastcall*)(void*, void*)>(
                     CSF_AT(void**, text, 0)[0x64 / 4])(text, nullptr);
-            SetPrimaryComponents(control, nullptr, textComponents);
+            SetFourDwordsAt1F8(control, nullptr, textComponents);
         }
     }
 
-    attribute = FindAttribute(node, nullptr, g_PrimaryComponentsKeyword);
-    if (ReadFourComponents(attribute, components))
-        SetPrimaryComponents(control, nullptr, components);
+    attribute = FindProperty(node, nullptr, g_PrimaryComponentsKeyword);
+    if (CGuiBuilder_ReadFourComponents(attribute, components))
+        SetFourDwordsAt1F8(control, nullptr, components);
 
-    attribute = FindAttribute(node, nullptr, g_SecondaryComponentsKeyword);
-    if (ReadFourComponents(attribute, components))
+    attribute = FindProperty(node, nullptr, g_SecondaryComponentsKeyword);
+    if (CGuiBuilder_ReadFourComponents(attribute, components))
     {
         uint32_t first = CSF_AT(uint32_t, components, 0);
         uint32_t second = CSF_AT(uint32_t, components, 4);

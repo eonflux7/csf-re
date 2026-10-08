@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 
 // Destructor body of CMenuMissionInfo (destroys the panels / owned members of the menu screen).
-CSF_FUNC(void, __fastcall, CMenuMissionInfo_DestroyBody, 0x53EC00,
+CSF_FUNC(void, __fastcall, CMenuMissionInfo_Destruct, 0x53EC00,
          (CMenuMissionInfo* self, void* edx));
 
 // Deleting destructor wrapper: runs the destructor body, then frees the object
@@ -12,7 +12,7 @@ CSF_FUNC(void, __fastcall, CMenuMissionInfo_DestroyBody, 0x53EC00,
 static void* __fastcall CMenuMissionInfo_Destroy(
     CMenuMissionInfo* self, void* /*edx*/, char flags)
 {
-    CMenuMissionInfo_DestroyBody(self, nullptr);
+    CMenuMissionInfo_Destruct(self, nullptr);
     if ((flags & 1) != 0)
         game::Mem_Free(self);
     return self;

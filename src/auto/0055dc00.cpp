@@ -5,7 +5,7 @@
 #include "globals.h"
 
 CSF_FUNC(int, __cdecl, GetGlobal8B0688, 0x00550CC0, ());
-CSF_FUNC(int, __fastcall, CMenuPlayerInfo_RefreshPlayerControls, 0x0055D880,
+CSF_FUNC(int, __fastcall, CMenuPlayerInfo_SetFriendRequestTextByState, 0x0055D880,
          (CMenuPlayerInfo* self, void* edx));
 
 static int __fastcall CMenuPlayerInfo_HandleControlEvent(
@@ -47,7 +47,7 @@ static int __fastcall CMenuPlayerInfo_HandleControlEvent(
                         voiceService, nullptr, playerId);
             }
 
-            CMenuPlayerInfo_RefreshPlayerControls(self, nullptr);
+            CMenuPlayerInfo_SetFriendRequestTextByState(self, nullptr);
         }
     }
 

@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 
 static const auto CGuiButton_ProcessSelectionChange =
-    reinterpret_cast<void (__fastcall *)(CGuiButton*, void*, char)>(0x00726090);
+    reinterpret_cast<void (__fastcall *)(CGuiButton*, void*, char)>(CSF_ADDR_FN(0x00726090));
 
 static void __fastcall CGuiButton_SetSelected(
     CGuiButton* self, void* /*edx*/, char selected)

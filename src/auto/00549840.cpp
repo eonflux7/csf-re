@@ -6,11 +6,11 @@
 #include "types/auto_classes.h"
 
 // CRT atol (shown as j__atol in the decompilation). cdecl, one argument, caller cleans the stack.
-CSF_FUNC(int, __cdecl, CrtAtol, 0x007AFD89, (const char* text));
+CSF_FUNC(int, __cdecl, ParseThumbnailIndex, 0x007AFD89, (const char* text));
 
 // Text-source reader: cdecl (source, buffer, maxLength). Copies up to 256 bytes into the buffer.
 // Its return value is not used by this function.
-CSF_FUNC(unsigned int, __cdecl, CopyTextSourceToBuffer, 0x00695620, (int source, char* buffer, unsigned int maxLength));
+CSF_FUNC(unsigned int, __cdecl, ConvertWideTextToNarrow, 0x00695620, (int source, char* buffer, unsigned int maxLength));
 
 // Signature of the vtable slot 8 accessor on the resolution source object (__thiscall, so __fastcall here).
 using GetCurrentModePairFn = int* (__fastcall*)(void* self, void* edx);
@@ -45,7 +45,7 @@ static void __fastcall CMenuVideoOptions_ParseResolutionPair(CMenuVideoOptions* 
     *outWidth = modeWidth;
     *outHeight = modeHeight;
 
-    CopyTextSourceToBuffer(textSource, rawText, 256);
+    ConvertWideTextToNarrow(textSource, rawText, 256);
 
     // Length of the text (strlen equivalent).
     unsigned int textLength = 0;
@@ -75,11 +75,11 @@ static void __fastcall CMenuVideoOptions_ParseResolutionPair(CMenuVideoOptions* 
     // First token: copies separatorIndex - 1 bytes (as in the original), terminates at separatorIndex, parses.
     CopyTextBytes(token, rawText, separatorIndex - 1);
     token[separatorIndex] = '\0';
-    *outWidth = CrtAtol(token);
+    *outWidth = ParseThumbnailIndex(token);
 
     // Second token: copies textLength - separatorIndex bytes starting at separatorIndex + 2, parses.
     CopyTextBytes(token, rawText + separatorIndex + 2, textLength - separatorIndex);
-    *outHeight = CrtAtol(token);
+    *outHeight = ParseThumbnailIndex(token);
 }
 
 HOOK(0x00549840, CMenuVideoOptions_ParseResolutionPair, "auto");

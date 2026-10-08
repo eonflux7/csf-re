@@ -8,11 +8,11 @@ CSF_FUNC(uint32_t*, __cdecl, RwMatrixCreate, 0x00624D40, ());
 CSF_FUNC(int, __cdecl, RwMatrixDestroy, 0x00624D10, (uint32_t* matrix));
 CSF_FUNC(int, __fastcall, ScaleMatrix, 0x006ADB60,
          (void* self, void* edx, uint32_t x, uint32_t y, uint32_t z));
-CSF_FUNC(int, __fastcall, TranslateMatrix, 0x006ADBB0,
+CSF_FUNC(int, __fastcall, TranslateMatrixHandle, 0x006ADBB0,
          (void* self, void* edx, uint32_t x, uint32_t y, uint32_t z));
-CSF_FUNC(int, __fastcall, RotateMatrix, 0x006AE210,
+CSF_FUNC(int, __fastcall, RotateMatrixHandle, 0x006AE210,
          (void* self, void* edx, float radians));
-CSF_FUNC(int, __fastcall, InvokeWithScaledFourthComponent, 0x00728AF0,
+CSF_FUNC(int, __fastcall, C_00865a10_InvokeWithScaledFourthComponent, 0x00728AF0,
          (C_00865a10* self, void* edx, void* texture));
 
 CSF_GLOBAL(float, g_DegreesToRadians, 0x008656B0);
@@ -62,25 +62,25 @@ static char __fastcall C_00865a10_ApplyTextureTransform(
 
     const uint32_t negativeY = NegateFloatBits(pivotY);
     const uint32_t negativeX = NegateFloatBits(pivotX);
-    TranslateMatrix(&handle, nullptr, negativeX, negativeY, 0);
+    TranslateMatrixHandle(&handle, nullptr, negativeX, negativeY, 0);
 
     const float radians = static_cast<float>(
         static_cast<double>(angleDegrees) *
         static_cast<double>(g_DegreesToRadians));
-    RotateMatrix(&handle, nullptr, radians);
+    RotateMatrixHandle(&handle, nullptr, radians);
 
     ScaleMatrix(&handle, nullptr, scaleX, scaleY, 0x3F800000);
-    TranslateMatrix(&handle, nullptr, pivotX, pivotY, 0);
+    TranslateMatrixHandle(&handle, nullptr, pivotX, pivotY, 0);
 
     const uint32_t translationY = translation[1];
     const uint32_t translationX = translation[0];
-    TranslateMatrix(&handle, nullptr, translationX, translationY, 0);
+    TranslateMatrixHandle(&handle, nullptr, translationX, translationY, 0);
 
     texture = reinterpret_cast<void*>(self->field_0050);
     ((void (__fastcall*)(void*, void*, void*))
         CSF_AT(void**, texture, 0)[0x60 / 4])(texture, nullptr, &handle);
 
-    InvokeWithScaledFourthComponent(
+    C_00865a10_InvokeWithScaledFourthComponent(
         self, nullptr, reinterpret_cast<void*>(self->field_0050));
 
     const char owned = handle.owned;

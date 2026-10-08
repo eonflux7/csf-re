@@ -11,7 +11,7 @@ CSF_GLOBAL(uint8_t, g_byte_82E65C, 0x0082E65C);
 CSF_FUNC(int, __cdecl, MenuSaveGame_ClearSlotRange, 0x00544340,
          (int* a1, int* a2, void* a3, void* a4));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
-CSF_FUNC(void*, __fastcall, MenuSaveGame_InitEmbeddedWithFlag, 0x00697130,
+CSF_FUNC(void*, __fastcall, TextInputSubobject_Init, 0x00697130,
          (void* self, void* edx, uint8_t* flagByte));
 
 static int __fastcall CMenuProfilesPC_OpenProfileNameEdit(CMenuProfilesPC* self, void* /*edx*/)
@@ -42,7 +42,7 @@ static int __fastcall CMenuProfilesPC_OpenProfileNameEdit(CMenuProfilesPC* self,
     CSF_AT(uint32_t, self, 0x54) = 0;
 
     // Initialise the embedded sub-object at +0x58 with the global flag byte.
-    MenuSaveGame_InitEmbeddedWithFlag(
+    TextInputSubobject_Init(
         reinterpret_cast<uint8_t*>(self) + 0x58, nullptr, &g_byte_82E65C);
 
     CSF_AT(uint8_t, self, 0x74) = 1;

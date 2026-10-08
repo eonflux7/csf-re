@@ -4,14 +4,14 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(void*, __cdecl, GetGlobalValue, 0x0075FDF0, ());
+CSF_FUNC(void*, __cdecl, GetGlobalValue_75FDF0, 0x0075FDF0, ());
 CSF_GLOBAL(const char*, g_MenuOptionsText, 0x00899ACC);
 CSF_GLOBAL(const char*, g_MenuInGameOptionsText, 0x00899AD4);
 
 static int __fastcall CMenuVideoOptions_UpdateOptionsMenu(
     CMenuVideoOptions* self, void* /*edx*/)
 {
-    void* globalState = GetGlobalValue();
+    void* globalState = GetGlobalValue_75FDF0();
     if (CSF_AT(std::uint8_t, globalState, 0xCC) != 0)
     {
         void* subordinate = reinterpret_cast<void*>(self->field_0020);

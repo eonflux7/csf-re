@@ -10,10 +10,10 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x0050D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
 CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160, (int objectId, void* edx));
-CSF_FUNC(void*, __fastcall, GetMenuChildAccessor, 0x006683F0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x006683F0, (void* self, void* edx));
 
 // Returns the function pointer stored at the given byte offset of the object's vtable.
 static void* VtblSlot(void* obj, int byteOffset)
@@ -25,7 +25,7 @@ static int __fastcall CMenuMain_UpdateLayoutAlignment(CMenuMain* self, void* /*e
 {
     uint8_t* screenSubObject = reinterpret_cast<uint8_t*>(self) + 4;
 
-    void* childAccessor = GetMenuChildAccessor(screenSubObject, nullptr);
+    void* childAccessor = GetReferencedObject(screenSubObject, nullptr);
     int isChildReady = reinterpret_cast<int(__fastcall*)(void*, void*)>(
         VtblSlot(childAccessor, 0x30))(childAccessor, nullptr);
     if (isChildReady == 0)
@@ -34,7 +34,7 @@ static int __fastcall CMenuMain_UpdateLayoutAlignment(CMenuMain* self, void* /*e
     if (self->field_0034 != 0)
     {
         // Build an 8-dword viewport record from the global state object and the current screen size.
-        void* globalState = GetGlobalState();
+        void* globalState = GetGlobalState_50D190();
         void* stateSettings = CSF_AT(void*, globalState, 0x10);
         void* sourceRect = reinterpret_cast<void*(__fastcall*)(void*, void*)>(
             VtblSlot(stateSettings, 0x30))(stateSettings, nullptr);
@@ -55,7 +55,7 @@ static int __fastcall CMenuMain_UpdateLayoutAlignment(CMenuMain* self, void* /*e
         viewportRect[5] = halfWidth;
         viewportRect[6] = halfHeight;
 
-        void* globalStateAgain = GetGlobalState();
+        void* globalStateAgain = GetGlobalState_50D190();
         void* stateSettingsAgain = CSF_AT(void*, globalStateAgain, 0x10);
         int updateResult = reinterpret_cast<int(__fastcall*)(void*, void*, uint32_t*)>(
             VtblSlot(stateSettingsAgain, 0x40))(stateSettingsAgain, nullptr, viewportRect);
@@ -65,8 +65,8 @@ static int __fastcall CMenuMain_UpdateLayoutAlignment(CMenuMain* self, void* /*e
     }
 
     // Align the layout object with the offset between two child widgets.
-    void* accessorA = GetMenuChildAccessor(screenSubObject, nullptr);
-    void* accessorB = GetMenuChildAccessor(screenSubObject, nullptr);
+    void* accessorA = GetReferencedObject(screenSubObject, nullptr);
+    void* accessorB = GetReferencedObject(screenSubObject, nullptr);
 
     void* childA = reinterpret_cast<void*(__fastcall*)(void*, void*)>(
         VtblSlot(accessorA, 0x30))(accessorA, nullptr);

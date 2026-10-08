@@ -6,7 +6,7 @@
 #include "types/auto_classes.h"
 
 // Base constructor of the embedded CMenuScreen sub-object at +0x04 (no stack args).
-CSF_FUNC(void*, __fastcall, MenuScreenSubobject_BaseInit, 0x00712CC0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x00712CC0, (void* self, void* edx));
 
 // Constructor of the sub-object embedded at +0x34; one stack argument (ret 4).
 CSF_FUNC(void*, __fastcall, TextInputSubobject_Init, 0x00697130, (void* self, void* edx, uint8_t* arg));
@@ -27,13 +27,13 @@ static CMenuTextInput* __fastcall CMenuTextInput_Construct(CMenuTextInput* self,
     void* secondary = reinterpret_cast<uint8_t*>(self) + 4;
 
     // Primary vtable of the CMenuScreen base (0x0083042C), stored at [this+0].
-    CSF_AT(uint32_t, self, 0x00) = 0x0083042Cu;
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x0083042C);
     (void)AddressOf(&g_VtblCMenuScreenBase);
-    MenuScreenSubobject_BaseInit(secondary, nullptr);
+    C_00830438_Construct(secondary, nullptr);
 
     // Final CMenuTextInput vtable (0x00841450) at [this+0], secondary vtable (0x00841400) at [this+4].
-    CSF_AT(uint32_t, self, 0x00) = 0x00841450u;
-    self->field_0004 = 0x00841400u;
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x00841450);
+    self->field_0004 = CSF_ADDR_DATA(0x00841400);
     (void)AddressOf(&g_VtblCMenuTextInput);
     (void)AddressOf(&g_VtblCMenuTextInputSecondary);
 

@@ -17,7 +17,7 @@ static CMenuMainPC* __fastcall CMenuMainPC_Construct(CMenuMainPC* self,
 {
     CMenuMain_Construct(self, nullptr, a2);
 
-    *reinterpret_cast<uint32_t*>(self) = 0x00843830u; // CMenuMainPC vtable
+    *reinterpret_cast<uint32_t*>(self) = CSF_ADDR_VT(0x00843830); // CMenuMainPC vtable
     self->field_0004 = 0x008437E0u;                   // secondary vtable
     self->field_003c = 1;
 

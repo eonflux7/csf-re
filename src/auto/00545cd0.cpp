@@ -9,8 +9,8 @@ CSF_GLOBAL(uint32_t, g_ScreenWidth, 0x00899B9C);
 CSF_GLOBAL(uint32_t, g_ScreenHeight, 0x00899BA0);
 
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, GetGlobalIndexedObject, 0x00652160, (int globalIndex, void* edx));
-CSF_FUNC(uint8_t*, __fastcall, UiNameTable_Lookup, 0x00693360, (void* self, void* edx, const char* name));
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160, (int globalIndex, void* edx));
+CSF_FUNC(uint8_t*, __fastcall, LookupNamedElement, 0x00693360, (void* self, void* edx, const char* name));
 
 // Field words hold raw 32-bit values; these convert without changing bits.
 static void* AsPointer(uint32_t raw)
@@ -44,7 +44,7 @@ static int __fastcall CMenuExtras_LocatePanelAndInitThumbs(CMenuExtras* self, vo
     void* rootContainer = ((void* (__fastcall*)(void*, void*))CSF_AT(void**, ownerNode, 0)[21])(ownerNode, nullptr);
     void* nameTable = CSF_AT(void*, nameTableRef, 0);
     void** rootVtable = CSF_AT(void**, rootContainer, 0);
-    void* panelKey = UiNameTable_Lookup(nameTable, nullptr, CSF_STR(0x00841304, ".PANEL_PRINCIPAL"));
+    void* panelKey = LookupNamedElement(nameTable, nullptr, CSF_STR(0x00841304, ".PANEL_PRINCIPAL"));
     void* panel = ((void* (__fastcall*)(void*, void*, void*))rootVtable[6])(rootContainer, nullptr, panelKey);
     self->field_0018 = AsWord(panel);
     result = static_cast<int>(AsWord(panel));
@@ -54,11 +54,11 @@ static int __fastcall CMenuExtras_LocatePanelAndInitThumbs(CMenuExtras* self, vo
     ((void (__fastcall*)(void*, void*, int))CSF_AT(void**, panel, 0)[56])(panel, nullptr, 1);
 
     // Two layout components, each read from a freshly fetched global-indexed record (+0 and +4).
-    void* layoutObjectX = GetGlobalIndexedObject(GetGlobalInt(), nullptr);
+    void* layoutObjectX = LookupObjectById(GetGlobalInt(), nullptr);
     void* pointRecordX = ((void* (__fastcall*)(void*, void*))CSF_AT(void**, layoutObjectX, 0)[6])(layoutObjectX, nullptr);
     uint32_t pixelX = CSF_AT(uint32_t, pointRecordX, 0);
 
-    void* layoutObjectY = GetGlobalIndexedObject(GetGlobalInt(), nullptr);
+    void* layoutObjectY = LookupObjectById(GetGlobalInt(), nullptr);
     void* pointRecordY = ((void* (__fastcall*)(void*, void*))CSF_AT(void**, layoutObjectY, 0)[6])(layoutObjectY, nullptr);
     uint32_t pixelY = CSF_AT(uint32_t, pointRecordY, 4);
 

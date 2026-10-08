@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(char, __fastcall, InitializePointerStorage, 0x730B40,
+CSF_FUNC(char, __fastcall, AllocateVectorStorage, 0x730B40,
          (int* self, void* edx, int count));
 
 CSF_FUNC(int, __fastcall, ForwardTo71A480, 0x71AF10,
@@ -13,7 +13,7 @@ CSF_FUNC(int, __fastcall, ForwardTo71A480, 0x71AF10,
 CSF_FUNC(int, __fastcall, DestroyPointerStorage, 0x558790,
          (int* self, void* edx));
 
-CSF_FUNC(void, __stdcall, RethrowCurrentException, 0x7AF666,
+CSF_FUNC(void, __stdcall, RethrowCppException, 0x7AF666,
          (void* exceptionObject, void* throwInformation));
 
 // Copy-constructs a pointer-range storage object (source @ +4 / +8) into `self`.
@@ -29,7 +29,7 @@ static int* __fastcall ConstructPointerVectorCopy(
         count = static_cast<std::int32_t>(byteCount) >> 2;
     }
 
-    if (InitializePointerStorage(self, nullptr, count))
+    if (AllocateVectorStorage(self, nullptr, count))
     {
         try
         {
@@ -43,7 +43,7 @@ static int* __fastcall ConstructPointerVectorCopy(
         catch (...)
         {
             DestroyPointerStorage(self, nullptr);
-            RethrowCurrentException(nullptr, nullptr);
+            RethrowCppException(nullptr, nullptr);
         }
     }
 

@@ -8,7 +8,7 @@
 #include "legacy/string.h"
 
 // 0x0053BF50  int __thiscall sub_53BF50(int this)
-CSF_FUNC(int, __fastcall, MenuSaveGame_Sub53BF50, 0x53BF50, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, CMenuProfiles_SyncButtonsToProfileCount, 0x53BF50, (void* self, void* edx));
 
 // 0x005442E0
 // Clears the currently selected entry of the save-game menu:
@@ -22,7 +22,7 @@ static int __fastcall CMenuSaveGame_ResetSelection(void* self, void* /*edx*/)
   // (*list)->vtbl[2](list, item)
   ((void (__fastcall*)(void*, void*, void*))CSF_AT(void**, list, 0)[2])(list, nullptr, item);
 
-  MenuSaveGame_Sub53BF50(self, nullptr);
+  CMenuProfiles_SyncButtonsToProfileCount(self, nullptr);
 
   void* control = reinterpret_cast<void*>(CSF_AT(uint32_t, self, 0x24));
 

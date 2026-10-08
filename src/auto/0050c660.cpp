@@ -8,9 +8,9 @@
 
 static CSF_GLOBAL(uint8_t, g_PageNameSentinel, 0x0082E65C);
 
-static CSF_FUNC(void*, __fastcall, MenuManager_AssignString, 0x00429B60,
+static CSF_FUNC(void*, __fastcall, AssignStringRange_429B60, 0x00429B60,
                (void* self, void* edx, char* text, uint32_t length));
-static CSF_FUNC(void*, __fastcall, MenuManager_CopySubstring, 0x004109E0,
+static CSF_FUNC(void*, __fastcall, AssignStringSubstring, 0x004109E0,
                (void* self, void* edx, void* source, uint32_t start, uint32_t count));
 static CSF_FUNC(void*, __fastcall, MenuManager_AppendPageName, 0x00470FD0,
                (void* self, void* edx, void* name));
@@ -18,22 +18,22 @@ static CSF_FUNC(int, __fastcall, MenuManager_InitializeCachedInterface, 0x0050C0
                (CMenuScreenFader* self, void* edx));
 static CSF_FUNC(int, __cdecl, MenuManager_ContainsPageName, 0x0050C0A0,
                (char* name, void* names));
-static CSF_FUNC(void*, __cdecl, MenuManager_GetGlobalState, 0x0050D190, ());
-static CSF_FUNC(void*, __cdecl, MenuManager_ProcessPageString, 0x00541580,
+static CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
+static CSF_FUNC(void*, __cdecl, MenuPage_LookupByName, 0x00541580,
                (void* string));
-static CSF_FUNC(int, __fastcall, MenuManager_ResetStringStorage, 0x00544310,
+static CSF_FUNC(int, __fastcall, CMenuSaveGame_ResetStringStorage, 0x00544310,
                (void* self, void* edx));
-static CSF_FUNC(int, __cdecl, MenuManager_FreeCachedStorage, 0x00691110,
+static CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110,
                (void* memory));
-static CSF_FUNC(char, __cdecl, MenuManager_SetOptionsByte40, 0x00697330,
+static CSF_FUNC(char, __cdecl, SetOptionsByteAt40, 0x00697330,
                (char value));
-static CSF_FUNC(char, __cdecl, MenuManager_GetOptionsByte40, 0x00697350, ());
+static CSF_FUNC(char, __cdecl, GetOptionsByte40, 0x00697350, ());
 static CSF_FUNC(bool, __cdecl, MenuManager_CheckPageAvailability, 0x00698B20,
                (const char* name, char mode));
-static CSF_FUNC(void*, __cdecl, MenuManager_GetPageController, 0x006B1380, ());
-static CSF_FUNC(char, __fastcall, MenuManager_RequestPage, 0x006B15D0,
+static CSF_FUNC(void*, __cdecl, GetGlobalInt, 0x006B1380, ());
+static CSF_FUNC(char, __fastcall, MenuRuntime_SetPageByIndex, 0x006B15D0,
                (void* self, void* edx, void* name, int mode, int flags));
-static CSF_FUNC(int, __cdecl, MenuManager_ComparePageNames, 0x007B0C41,
+static CSF_FUNC(int, __cdecl, __stricmp, 0x007B0C41,
                (const char* left, const char* right));
 
 static uint32_t MenuManager_GetStringLength(const char* text)
@@ -61,14 +61,14 @@ static int __fastcall CMenuScreenFader_RequestScreen(
         static_cast<uint8_t>(
             MenuManager_ContainsPageName(pageName, bytes + 0x38)) == 0)
     {
-        const char previousOption = MenuManager_GetOptionsByte40();
+        const char previousOption = GetOptionsByte40();
         if (previousOption == 0)
-            MenuManager_SetOptionsByte40(1);
+            SetOptionsByteAt40(1);
 
         MenuManager_InitializeTemporaryString(temporaryString);
         const uint32_t length = MenuManager_GetStringLength(pageName);
-        MenuManager_AssignString(temporaryString, pageName, pageName, length);
-        MenuManager_ProcessPageString(temporaryString);
+        AssignStringRange_429B60(temporaryString, pageName, pageName, length);
+        MenuPage_LookupByName(temporaryString);
 
         const char* temporaryName;
         if (CSF_AT(uint32_t, temporaryString, 0x18) < 16)
@@ -79,12 +79,12 @@ static int __fastcall CMenuScreenFader_RequestScreen(
 
         const bool available =
             MenuManager_CheckPageAvailability(temporaryName, 0);
-        MenuManager_SetOptionsByte40(previousOption);
+        SetOptionsByteAt40(previousOption);
 
         if (!available)
-            return MenuManager_ResetStringStorage(temporaryString, nullptr);
+            return CMenuSaveGame_ResetStringStorage(temporaryString, nullptr);
 
-        MenuManager_ResetStringStorage(temporaryString, nullptr);
+        CMenuSaveGame_ResetStringStorage(temporaryString, nullptr);
     }
 
     const char* currentName;
@@ -93,11 +93,11 @@ static int __fastcall CMenuScreenFader_RequestScreen(
     else
         currentName = reinterpret_cast<const char*>(self->field_0008);
 
-    const int comparison = MenuManager_ComparePageNames(pageName, currentName);
+    const int comparison = __stricmp(pageName, currentName);
     if (comparison == 0)
         return comparison;
 
-    void* globalState = MenuManager_GetGlobalState();
+    void* globalState = GetGlobalState_50D190();
     void* interfaceObject = CSF_AT(void*, globalState, 0x14);
     void* timingObject =
         reinterpret_cast<void* (__fastcall*)(void*, void*)>(
@@ -112,7 +112,7 @@ static int __fastcall CMenuScreenFader_RequestScreen(
     std::memcpy(&self->field_0028, &durationBits, sizeof(durationBits));
 
     const uint32_t length = MenuManager_GetStringLength(pageName);
-    MenuManager_AssignString(bytes + 4, pageName + 1, pageName, length);
+    AssignStringRange_429B60(bytes + 4, pageName + 1, pageName, length);
 
     if (static_cast<uint8_t>(
             MenuManager_ContainsPageName(pageName, bytes + 0x38)) == 0)
@@ -135,19 +135,19 @@ static int __fastcall CMenuScreenFader_RequestScreen(
     {
         if (self->field_0048 != 0)
         {
-            MenuManager_FreeCachedStorage(
+            Mem_Free(
                 reinterpret_cast<void*>(self->field_0048));
             self->field_0048 = 0;
         }
 
         MenuManager_InitializeTemporaryString(temporaryString);
-        MenuManager_CopySubstring(
+        AssignStringSubstring(
             temporaryString, nullptr, bytes + 4, 0, UINT32_MAX);
-        void* processedName = MenuManager_ProcessPageString(temporaryString);
-        void* controller = MenuManager_GetPageController();
-        MenuManager_RequestPage(controller, nullptr, processedName, 2, 0);
+        void* processedName = MenuPage_LookupByName(temporaryString);
+        void* controller = GetGlobalInt();
+        MenuRuntime_SetPageByIndex(controller, nullptr, processedName, 2, 0);
         self->m_state = 3;
-        MenuManager_ResetStringStorage(temporaryString, nullptr);
+        CMenuSaveGame_ResetStringStorage(temporaryString, nullptr);
     }
     else
     {

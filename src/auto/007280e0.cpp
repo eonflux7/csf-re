@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 
 // Sub-object destructor body, called first by the deleting-destructor wrapper.
-CSF_FUNC(int, __fastcall, C_008655e8_DestroyBody, 0x727BD0,
+CSF_FUNC(int, __fastcall, C_008655e8_Destroy_727BD0, 0x727BD0,
          (C_008655e8* self, void* edx));
 
 // Deleting destructor: runs the body, frees the object when the flags low bit is set,
@@ -12,7 +12,7 @@ CSF_FUNC(int, __fastcall, C_008655e8_DestroyBody, 0x727BD0,
 static void* __fastcall C_008655e8_Destroy(
     C_008655e8* self, void* /*edx*/, char flags)
 {
-    C_008655e8_DestroyBody(self, nullptr);
+    C_008655e8_Destroy_727BD0(self, nullptr);
     if ((flags & 1) != 0)
         game::Mem_Free(self);
     return self;

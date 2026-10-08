@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-CSF_FUNC(void*, __fastcall, StringBase_Assign, 0x00429B60,
+CSF_FUNC(void*, __fastcall, AssignStringRange_429B60, 0x00429B60,
          (void* self, void* edx, const char* text, unsigned int length));
 
 static CMenuScenarioSelect* __fastcall CMenuScenarioSelect_ResetSelectionFields(
@@ -18,13 +18,13 @@ static CMenuScenarioSelect* __fastcall CMenuScenarioSelect_ResetSelectionFields(
     self->field_0060 = 0;
     self->field_006c = 0;
 
-    StringBase_Assign(reinterpret_cast<uint8_t*>(self) + 0x78, edx,
+    AssignStringRange_429B60(reinterpret_cast<uint8_t*>(self) + 0x78, edx,
                       CSF_STR(0x0082E65C, ""), 0);
 
     self->field_0068 = 0;
     self->field_0064 = 0;
 
-    StringBase_Assign(reinterpret_cast<uint8_t*>(self) + 0x1C, nullptr,
+    AssignStringRange_429B60(reinterpret_cast<uint8_t*>(self) + 0x1C, nullptr,
                       CSF_STR(0x0082E65C, ""), 0);
 
     self->field_0038 = 0;

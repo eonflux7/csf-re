@@ -3,11 +3,11 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(int, __cdecl, CopyFourByteElements, 0x007199B0,
+CSF_FUNC(int, __cdecl, CopyFourByteElements_7199B0, 0x007199B0,
          (std::uint32_t destination, int count, const std::uint32_t* source,
           void* owner, std::uint32_t tag));
 
-CSF_FUNC(std::uint32_t, __fastcall, InsertFourByteElements, 0x00719DB0,
+CSF_FUNC(std::uint32_t, __fastcall, InsertFourByteElements_719DB0, 0x00719DB0,
          (void* self, void* edx, std::uint32_t* position,
           std::uint32_t count, std::uint32_t* source));
 
@@ -28,7 +28,7 @@ static std::uint32_t __fastcall AppendFourByteElement(
         size >= static_cast<std::uint32_t>(
                     static_cast<std::int32_t>(
                         CSF_AT(std::uint32_t, self, 0x0C) - begin) >> 2)) {
-        return InsertFourByteElements(
+        return InsertFourByteElements_719DB0(
             self, nullptr,
             reinterpret_cast<std::uint32_t*>(
                 CSF_AT(std::uint32_t, self, 0x08)),
@@ -42,7 +42,7 @@ static std::uint32_t __fastcall AppendFourByteElement(
         static_cast<std::uint32_t>(reinterpret_cast<std::uintptr_t>(self)) &
         0xFFFFFF00u;
 
-    const int result = CopyFourByteElements(end, 1, source, self, tag);
+    const int result = CopyFourByteElements_7199B0(end, 1, source, self, tag);
     CSF_AT(std::uint32_t, self, 0x08) = end + 4u;
     return static_cast<std::uint32_t>(result);
 }

@@ -13,7 +13,7 @@ CSF_FUNC(int, __fastcall, CGuiControl_SendEvent, 0x00718280,
          (void* self, void* edx, int event));
 CSF_FUNC(int, __fastcall, CGuiSlider_ForwardSelfToParent, 0x00718660,
          (void* self, void* edx));
-CSF_FUNC(void, __fastcall, CGuiSwitch_UpdateSelection, 0x007303E0,
+CSF_FUNC(void, __fastcall, CGuiSwitch_ToggleStateAndUpdateColor, 0x007303E0,
          (CGuiSwitch* self, void* edx));
 
 static void CGuiSwitch_RefreshChildState(
@@ -102,7 +102,7 @@ static int __fastcall CGuiSwitch_HandleEvent(
                     CSF_AT(void**, recipient, 0)[0x24 / 4])(
                         recipient, nullptr, 0);
             }
-            CGuiSwitch_UpdateSelection(self, nullptr);
+            CGuiSwitch_ToggleStateAndUpdateColor(self, nullptr);
             reinterpret_cast<void(__fastcall*)(void*, void*, int)>(
                 CSF_AT(void**, self, 0)[0x138 / 4])(
                     self, nullptr, 13);

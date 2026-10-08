@@ -6,7 +6,7 @@
 #include "legacy/string.h"
 
 // 0x69B700 - cdecl, no stack args (rets=[0]); returns the global object used for the lookup below.
-CSF_FUNC(int, __cdecl, MenuScenarioSelect_GetGlobalValue, 0x69B700, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_69B700, 0x69B700, ());
 
 // 0x69BC50 - __thiscall (ecx = object, one stack arg, ret 4); lookup keyed by a string.
 CSF_FUNC(int, __fastcall, MenuScenarioSelect_LookupString, 0x69BC50, (void* self, void* edx, const char* key));
@@ -22,7 +22,7 @@ static int __stdcall CMenuScenarioSelect_LookupValueByName(CMenuScenarioSelect* 
     else
         key = reinterpret_cast<const char*>(static_cast<uintptr_t>(a1->field_0004));
 
-    void* globalObject = reinterpret_cast<void*>(MenuScenarioSelect_GetGlobalValue());
+    void* globalObject = reinterpret_cast<void*>(GetGlobalValue_69B700());
     int value = MenuScenarioSelect_LookupString(globalObject, nullptr, key);
     if (!value)
         return 8;

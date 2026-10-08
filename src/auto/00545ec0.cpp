@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(int, __fastcall, MenuExtras_ResolveGlobalObject, 0x006B1390,
+CSF_FUNC(int, __fastcall, MenuControls_ResolveObject, 0x006B1390,
          (void* self, void* edx));
 CSF_FUNC(int, __fastcall, MenuExtras_UpdateThumbnailObject, 0x004F2930,
          (int* self, void* edx));
@@ -26,7 +26,7 @@ static int __fastcall CMenuExtras_ReleaseThumbnailAndDispatch(
 {
     int globalHandle = GetGlobalInt();
     void* object = reinterpret_cast<void*>(
-        MenuExtras_ResolveGlobalObject(
+        MenuControls_ResolveObject(
             reinterpret_cast<void*>(static_cast<std::uintptr_t>(globalHandle)),
             nullptr));
 
@@ -43,7 +43,7 @@ static int __fastcall CMenuExtras_ReleaseThumbnailAndDispatch(
 
     globalHandle = GetGlobalInt();
     object = reinterpret_cast<void*>(
-        MenuExtras_ResolveGlobalObject(
+        MenuControls_ResolveObject(
             reinterpret_cast<void*>(static_cast<std::uintptr_t>(globalHandle)),
             nullptr));
 

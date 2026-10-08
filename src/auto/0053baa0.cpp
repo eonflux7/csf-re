@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // __cdecl, no arguments; returns the global scheduler state object in eax.
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x50D190, ());
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x50D190, ());
 
 // __thiscall on the scheduler base (object in ecx); returns the scheduler proxy kind in eax.
 CSF_FUNC(int, __fastcall, SchedulerBase_GetSchedulerProxy, 0x734A10, (void* self, void* edx));
@@ -22,7 +22,7 @@ CSF_FUNC(int, __fastcall, SchedulerBase_GetSchedulerProxy, 0x734A10, (void* self
 // proxy kind unchanged.
 static int __fastcall CMenuProfiles_CheckSchedulerProxyAndDisable(void* self, void* /*edx*/)
 {
-    void* schedulerBase = reinterpret_cast<void*>(GetGlobalState());
+    void* schedulerBase = reinterpret_cast<void*>(GetGlobalState_50D190());
     int proxyKind = SchedulerBase_GetSchedulerProxy(schedulerBase, nullptr);
 
     if (proxyKind == 0x10 || proxyKind == 0x800 || proxyKind == 0x1000)

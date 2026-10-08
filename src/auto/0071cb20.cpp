@@ -6,7 +6,7 @@
 
 CSF_FUNC(char, __fastcall, C_00864508_DoAllReferencedObjectsPassCheck,
          0x0071A940, (C_00864508* self, void* edx));
-CSF_FUNC(std::int32_t*, __fastcall, CopyReferencedObjectList,
+CSF_FUNC(std::int32_t*, __fastcall, ConstructPointerVectorCopy_71C0A0,
          0x0071C0A0, (std::int32_t* self, void* edx, void* source));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
@@ -18,7 +18,7 @@ static char __fastcall C_00864508_DispatchReferencedTwoArgumentOperation(
         return result;
 
     std::int32_t snapshot[4];
-    CopyReferencedObjectList(
+    ConstructPointerVectorCopy_71C0A0(
         snapshot, nullptr, reinterpret_cast<std::uint8_t*>(self) + 0x44);
 
     void** objects = reinterpret_cast<void**>(

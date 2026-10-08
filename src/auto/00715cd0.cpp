@@ -9,8 +9,8 @@ CSF_FUNC(std::uint32_t*, __cdecl, CopyAssignTwelveByteRange, 0x004EF1F0,
          (std::uint32_t* first, std::uint32_t* last, std::uint32_t* destination));
 CSF_FUNC(std::uint32_t*, __cdecl, CopyAssignTwelveBytePrefix, 0x004EF420,
          (std::uint32_t* first, std::uint32_t* last, std::uint32_t* destination));
-CSF_FUNC(int, __cdecl, FreeDebugStorage, 0x00690E60, (void* block));
-CSF_FUNC(void*, __stdcall, ReleaseTwelveByteStorage, 0x006C8D30,
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
+CSF_FUNC(void*, __stdcall, ReleaseVectorStorage, 0x006C8D30,
          (void* block, int capacity));
 CSF_FUNC(std::uint32_t, __cdecl, CopyConstructTwelveByteRange, 0x00714410,
          (std::uint32_t first, std::uint32_t last,
@@ -46,7 +46,7 @@ static void* __fastcall AssignTwelveByteVector(
     {
         const std::uint32_t storage = CSF_AT(std::uint32_t, self, 0x04);
         if (storage != 0)
-            FreeDebugStorage(reinterpret_cast<void*>(storage));
+            Mem_FreeDebug(reinterpret_cast<void*>(storage));
 
         CSF_AT(std::uint32_t, self, 0x04) = 0;
         CSF_AT(std::uint32_t, self, 0x08) = 0;
@@ -109,7 +109,7 @@ static void* __fastcall AssignTwelveByteVector(
     {
         const std::uint32_t currentCapacity = CountTwelveByteElements(
             CSF_AT(std::uint32_t, self, 0x0C), destinationBegin);
-        ReleaseTwelveByteStorage(
+        ReleaseVectorStorage(
             reinterpret_cast<void*>(destinationBegin),
             static_cast<std::int32_t>(currentCapacity));
     }

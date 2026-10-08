@@ -22,10 +22,10 @@
 // ---------------------------------------------------------------------------
 
 // 0x0050D190 - returns the address of the global game-state block (as int).
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x50D190, ());
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x50D190, ());
 
 // 0x0055F720 - refresh this menu object's contents; __thiscall, no stack args.
-CSF_FUNC(int, __fastcall, CMenuMpOnline_RefreshContents, 0x55F720, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, CMenuMpOnline_ActivateOnlineMenu, 0x55F720, (void* self, void* edx));
 
 // ---------------------------------------------------------------------------
 // Tail dispatch to virtual slot 21 (byte offset 0x54).
@@ -53,10 +53,10 @@ static __declspec(naked) int __fastcall CMenuMpOnline_DispatchVirtual21(void* /*
 // ---------------------------------------------------------------------------
 static int __fastcall CMenuMpOnline_ResetStateAndRedraw(void** self, void* /*edx*/)
 {
-    // *(std::uint32_t *)(GetGlobalState() + 0xCC) = -1;
-    CSF_AT(int, reinterpret_cast<void*>(static_cast<uintptr_t>(GetGlobalState())), 0xCC) = -1;
+    // *(std::uint32_t *)(GetGlobalState_50D190() + 0xCC) = -1;
+    CSF_AT(int, reinterpret_cast<void*>(static_cast<uintptr_t>(GetGlobalState_50D190())), 0xCC) = -1;
 
-    CMenuMpOnline_RefreshContents(self, nullptr);
+    CMenuMpOnline_ActivateOnlineMenu(self, nullptr);
 
     return CMenuMpOnline_DispatchVirtual21(self, nullptr);
 }

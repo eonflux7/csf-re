@@ -5,23 +5,23 @@
 #include "types/auto_classes.h"
 
 static const auto FindPanelKey =
-    reinterpret_cast<void* (__fastcall*)(void*, void*, const char*)>(0x00693360);
+    reinterpret_cast<void* (__fastcall*)(void*, void*, const char*)>(CSF_ADDR_FN(0x00693360));
 static const auto GetGlobalContext =
-    reinterpret_cast<int (__cdecl*)()>(0x006B1380);
+    reinterpret_cast<int (__cdecl*)()>(CSF_ADDR_FN(0x006B1380));
 static const auto GetDisplayObject =
-    reinterpret_cast<void* (__fastcall*)(void*, void*)>(0x00652160);
+    reinterpret_cast<void* (__fastcall*)(void*, void*)>(CSF_ADDR_FN(0x00652160));
 static const auto AllocatePanel =
-    reinterpret_cast<void* (__cdecl*)(std::uint32_t)>(0x006910F0);
+    reinterpret_cast<void* (__cdecl*)(std::uint32_t)>(CSF_ADDR_FN(0x006910F0));
 static const auto ConstructInterfacePanel =
-    reinterpret_cast<void* (__fastcall*)(void*, void*)>(0x00438010);
+    reinterpret_cast<void* (__fastcall*)(void*, void*)>(CSF_ADDR_FN(0x00438010));
 static const auto ConstructInterfaceDocument =
-    reinterpret_cast<void* (__fastcall*)(void*, void*)>(0x00692B10);
+    reinterpret_cast<void* (__fastcall*)(void*, void*)>(CSF_ADDR_FN(0x00692B10));
 static const auto LoadInterfaceDocument =
-    reinterpret_cast<char (__fastcall*)(void*, void*, const char*)>(0x00694770);
+    reinterpret_cast<char (__fastcall*)(void*, void*, const char*)>(CSF_ADDR_FN(0x00694770));
 static const auto ConfigureInterfacePanel =
-    reinterpret_cast<char (__fastcall*)(void*, void*, std::uint32_t)>(0x00437A50);
+    reinterpret_cast<char (__fastcall*)(void*, void*, std::uint32_t)>(CSF_ADDR_FN(0x00437A50));
 static const auto DestroyInterfaceDocument =
-    reinterpret_cast<int (__fastcall*)(void*, void*)>(0x00694380);
+    reinterpret_cast<int (__fastcall*)(void*, void*)>(CSF_ADDR_FN(0x00694380));
 
 CSF_GLOBAL(float, g_UnsignedIntegerBias, 0x0082D744);
 CSF_GLOBAL(std::uint32_t, g_ScreenWidth, 0x00899B9C);

@@ -10,9 +10,9 @@ CSF_GLOBAL(uint32_t, g_ScreenWidth, 0x00899B9C);
 CSF_GLOBAL(uint32_t, g_ScreenHeight, 0x00899BA0);
 
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, LookupObjectByHandle, 0x00652160,
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160,
          (int handle, void* edx));
-CSF_FUNC(uint8_t*, __fastcall, LookupNamedEntry, 0x00693360,
+CSF_FUNC(uint8_t*, __fastcall, LookupNamedElement, 0x00693360,
          (void* table, void* edx, const char* name));
 
 static uint64_t MenuSoundOptions_UnsignedValue(uint32_t bits)
@@ -140,7 +140,7 @@ static int __fastcall CMenuSoundOptions_InitPanelAndSliders(
 
     // This vtable is loaded before the name lookup in the original.
     void** rootVtable = CSF_AT(void**, rootObject, 0);
-    uint8_t* panelEntry = LookupNamedEntry(
+    uint8_t* panelEntry = LookupNamedElement(
         *static_cast<void**>(tableHolder), nullptr,
         CSF_STR(0x00841304, ".PANEL_PRINCIPAL"));
 
@@ -151,12 +151,12 @@ static int __fastcall CMenuSoundOptions_InitPanelAndSliders(
         return 0;
     }
 
-    void* xHandleObject = LookupObjectByHandle(GetGlobalInt(), nullptr);
+    void* xHandleObject = LookupObjectById(GetGlobalInt(), nullptr);
     void* xResult = reinterpret_cast<void* (__fastcall*)(void*, void*)>(
         CSF_AT(void**, xHandleObject, 0)[0x18 / 4])(xHandleObject, nullptr);
     const uint32_t xRawBits = CSF_AT(uint32_t, xResult, 0);
 
-    void* yHandleObject = LookupObjectByHandle(GetGlobalInt(), nullptr);
+    void* yHandleObject = LookupObjectById(GetGlobalInt(), nullptr);
     void* yResult = reinterpret_cast<void* (__fastcall*)(void*, void*)>(
         CSF_AT(void**, yHandleObject, 0)[0x18 / 4])(yHandleObject, nullptr);
     const uint32_t yRawBits = CSF_AT(uint32_t, yResult, 0x04);

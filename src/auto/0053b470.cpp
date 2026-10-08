@@ -13,13 +13,13 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x75FDF0, (void));
+CSF_FUNC(int, __cdecl, GetGlobalValue_75FDF0, 0x75FDF0, (void));
 CSF_GLOBAL(const char*, g_pszMenu_P_Option, 0x00899ACC);
 CSF_GLOBAL(const char*, g_pszMenu_P_OptIng, 0x00899AD4);
 
 static int __fastcall CMenuGameOptions_RefreshMuteButtonText(CMenuGameOptions* self, void* /*edx*/)
 {
-    uint8_t* globals = reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(GetGlobalValue()));
+    uint8_t* globals = reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(GetGlobalValue_75FDF0()));
     if (globals[0xCC])
     {
         void* extra = reinterpret_cast<void*>(static_cast<uintptr_t>(self->field_0020));

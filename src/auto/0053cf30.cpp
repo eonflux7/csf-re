@@ -4,7 +4,7 @@
 #include "globals.h"
 
 // void __thiscall CMenuSoundOptions::DispatchEvent13(CMenuSoundOptions* self, uint32_t* event)
-CSF_FUNC(int, __fastcall, CMenuSoundOptions_DispatchEvent13, 0x53C9E0,
+CSF_FUNC(int, __fastcall, CMenuSoundOptions_HandleVolumeSliderEvent, 0x53C9E0,
          (CMenuSoundOptions* self, void* /*edx*/, uint32_t* a2));
 
 // Handles a menu event: for event id 13 the sound-option change is dispatched and then
@@ -15,7 +15,7 @@ static int __fastcall CMenuSoundOptions_HandleEvent(CMenuSoundOptions* self, voi
 
     if (*a2 == 13u)
     {
-        CMenuSoundOptions_DispatchEvent13(self, nullptr, a2);
+        CMenuSoundOptions_HandleVolumeSliderEvent(self, nullptr, a2);
 
         // vtable is re-read after the call (the callee may replace it)
         void** vtbl = *reinterpret_cast<void***>(self);

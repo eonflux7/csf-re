@@ -7,7 +7,7 @@
 
 CSF_FUNC(int, __fastcall, C_00864508_RemoveObjectAtIndex, 0x0071ABC0,
          (C_00864508* self, void* edx, int index));
-CSF_FUNC(void*, __cdecl, CopyArrayBytes, 0x007AEE60,
+CSF_FUNC(void*, __cdecl, _memcpy, 0x007AEE60,
          (void* destination, const void* source, std::size_t size));
 
 CSF_GLOBAL(float, g_fZero, 0x0082D4CC);
@@ -103,7 +103,7 @@ static int __fastcall C_00864508_ProcessPendingRemovals(
                     static_cast<std::int32_t>(
                         self->field_004c - nextAddress) >> 2) << 2;
 
-            CopyArrayBytes(reinterpret_cast<void*>(slotAddress),
+            _memcpy(reinterpret_cast<void*>(slotAddress),
                            reinterpret_cast<const void*>(nextAddress),
                            byteCount);
             self->field_004c -= 4;

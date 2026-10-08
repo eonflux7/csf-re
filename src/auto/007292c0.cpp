@@ -5,7 +5,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, C_00863f60_ForwardScaleToAttachedObject,
+CSF_FUNC(int, __fastcall, C_00863f60_ScaleCoordinates,
          0x00713E60, (C_00863f60* self, void* edx, int xScaleBits, int yScaleBits));
 
 CSF_GLOBAL(float, g_HalfDurationScale, 0x0082D444);
@@ -30,7 +30,7 @@ static int __fastcall C_008658f8_ScaleOwnedGeometry(
     int yScaleBits;
     std::memcpy(&xScaleBits, &xScale, sizeof(xScaleBits));
     std::memcpy(&yScaleBits, &yScale, sizeof(yScaleBits));
-    C_00863f60_ForwardScaleToAttachedObject(
+    C_00863f60_ScaleCoordinates(
         self, nullptr, xScaleBits, yScaleBits);
 
     void* child = reinterpret_cast<void*>(self->field_0030);

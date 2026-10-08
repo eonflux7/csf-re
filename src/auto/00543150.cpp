@@ -4,23 +4,23 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(std::uint32_t*, __fastcall, MenuControls_ConstructEmbeddedBase,
+CSF_FUNC(std::uint32_t*, __fastcall, C_00830438_Construct,
          0x00712CC0, (void* self, void* edx));
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B056C, 0x00506BD0, ());
 
 static void** const g_MenuScreenVtable =
-    reinterpret_cast<void**>(0x0083042C);
+    CSF_VTBL(0x0083042C);
 static void** const g_MenuControlsEmbeddedVtable =
     reinterpret_cast<void**>(0x008435A8);
 static void** const g_MenuControlsVtable =
-    reinterpret_cast<void**>(0x008435F8);
+    CSF_VTBL(0x008435F8);
 
 static CMenuControls* __fastcall CMenuControls_Construct(
     CMenuControls* self, void* /*edx*/, int configuration)
 {
     CSF_AT(void**, self, 0) = g_MenuScreenVtable;
 
-    MenuControls_ConstructEmbeddedBase(
+    C_00830438_Construct(
         reinterpret_cast<std::uint8_t*>(self) + 4, nullptr);
 
     self->field_0004 =

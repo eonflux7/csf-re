@@ -10,15 +10,15 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-// int __cdecl GetGlobalState(void)
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x50D190, ());
+// int __cdecl GetGlobalState_50D190(void)
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x50D190, ());
 
 // Reads a flag byte and a float threshold from the menu page object, then
 // checks whether the current menu-state value reaches that threshold.
 // Layout: byte +0 = cached result, byte +1 = enabled flag, float +4 = threshold.
 static int __fastcall MenuPage_IsReadyAndAboveThreshold(float* self, void* /*edx*/)
 {
-    void* globalState = GetGlobalState();
+    void* globalState = GetGlobalState_50D190();
     void* menuObj = CSF_AT(void*, globalState, 0x14);
 
     int result = 0;

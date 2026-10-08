@@ -3,9 +3,9 @@
 #include "core/memory.h"
 #include "globals.h"
 
-CSF_FUNC(int, __fastcall, SubmitObjectState, 0x00731A60,
+CSF_FUNC(int, __fastcall, ConfigureEffect, 0x00731A60,
          (void* self, void* edx, int index, void* state));
-CSF_FUNC(int, __fastcall, CommitObjectState, 0x00731A80,
+CSF_FUNC(int, __fastcall, StartEffect, 0x00731A80,
          (void* self, void* edx, int index));
 
 static int __fastcall SubmitAndCommitObjectState(void* self, void* /*edx*/)
@@ -37,8 +37,8 @@ static int __fastcall SubmitAndCommitObjectState(void* self, void* /*edx*/)
     CSF_AT(std::uint32_t, state, 0x08) = value1D8;
     CSF_AT(std::uint32_t, state, 0x18) = value118;
 
-    SubmitObjectState(receiver, nullptr, 0, state);
-    return CommitObjectState(CSF_AT(void*, self, 0x1D4), nullptr, 0);
+    ConfigureEffect(receiver, nullptr, 0, state);
+    return StartEffect(CSF_AT(void*, self, 0x1D4), nullptr, 0);
 }
 
 HOOK(0x00725B40, SubmitAndCommitObjectState, "auto");

@@ -4,15 +4,15 @@
 #include "core/memory.h"
 
 // sub_547090: __thiscall(context), pops 8 bytes (destination, source)
-CSF_FUNC(void*, __fastcall, ConstructElementThroughContext, 0x00547090,
+CSF_FUNC(void*, __fastcall, MenuExtras_InitStringFromPair, 0x00547090,
          (void* context, void* edx, std::uint32_t* destination,
           std::uint32_t* source));
 // sub_5466C0: __thiscall(context), pops 4 bytes (element)
-CSF_FUNC(int, __fastcall, DestroyElementThroughContext, 0x005466C0,
+CSF_FUNC(int, __fastcall, ResetStringStorage_5466C0, 0x005466C0,
          (void* context, void* edx, std::uint32_t* element));
-CSF_FUNC(void, __stdcall, RethrowGameException, 0x007AF666,
+CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInformation));
-CSF_FUNC(int, __cdecl, HandleGameCppException, 0x007AF226,
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226,
          (void* exceptionRecord, void* frame, void* context, void* dispatcher));
 
 CSF_GLOBAL(std::uint8_t, g_ArrayConstructionExceptionInfo, 0x00892774);
@@ -34,7 +34,7 @@ static void* __cdecl CopyConstructElementArray32(
     {
         while (count != 0)
         {
-            result = ConstructElementThroughContext(
+            result = MenuExtras_InitStringFromPair(
                 context, nullptr, currentElement, source);
             --count;
             currentElement += 8;
@@ -45,11 +45,11 @@ static void* __cdecl CopyConstructElementArray32(
         std::uint32_t* element = destination;
         while (element != currentElement)
         {
-            DestroyElementThroughContext(context, nullptr, element);
+            ResetStringStorage_5466C0(context, nullptr, element);
             element += 8;
         }
 
-        RethrowGameException(nullptr, nullptr);
+        RethrowCppException(nullptr, nullptr);
         __builtin_unreachable();
     }
 

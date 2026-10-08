@@ -4,8 +4,8 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __cdecl, GetSoundConfiguration, 0x0075FDF0, ());
-CSF_FUNC(int, __cdecl, GetAcousticCapabilities, 0x0070DDE0, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_75FDF0, 0x0075FDF0, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_70DDE0, 0x0070DDE0, ());
 
 static int __fastcall CMenuSoundOptions_InitializeSoundSwitch(
     CMenuSoundOptions* self, void* /*edx*/, void* controls)
@@ -22,14 +22,14 @@ static int __fastcall CMenuSoundOptions_InitializeSoundSwitch(
     if (!soundSwitch)
         return 0;
 
-    void* configuration = reinterpret_cast<void*>(GetSoundConfiguration());
+    void* configuration = reinterpret_cast<void*>(GetGlobalValue_75FDF0());
     const int enabled = CSF_AT(std::uint8_t, configuration, 0xCC);
     soundSwitch = reinterpret_cast<void*>(self->field_0024);
     ((int(__fastcall*)(void*, void*, int, int, int))
         CSF_AT(void**, soundSwitch, 0)[0x68 / 4])(
             soundSwitch, nullptr, enabled, 1, 1);
 
-    void* capabilities = reinterpret_cast<void*>(GetAcousticCapabilities());
+    void* capabilities = reinterpret_cast<void*>(GetGlobalValue_70DDE0());
     const unsigned char supported =
         ((unsigned char(__fastcall*)(void*, void*))
             CSF_AT(void**, capabilities, 0)[0x50 / 4])(

@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 
 // 0x714E10: base-class helper invoked before dispatching to the row text object.
-CSF_FUNC(int, __fastcall, CGuiListBoxBase_PreDrawRow, 0x714E10,
+CSF_FUNC(int, __fastcall, CGuiListBoxBase_ReleaseHeaderAndColumnTexts, 0x714E10,
          (CGuiListBox* self, void* edx));
 
 // Tail-dispatches to the row text object's vtable slot +0x38 (slot 14).
@@ -29,7 +29,7 @@ static __declspec(naked) int __fastcall CGuiListBox_TailDispatchRowTextSlot14(
 static int __fastcall CGuiListBox_RenderRowText(
     CGuiListBox* self, void* /*edx*/)
 {
-    CGuiListBoxBase_PreDrawRow(self, nullptr);
+    CGuiListBoxBase_ReleaseHeaderAndColumnTexts(self, nullptr);
     [[clang::musttail]] return CGuiListBox_TailDispatchRowTextSlot14(self, nullptr);
 }
 

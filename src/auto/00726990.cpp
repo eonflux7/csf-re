@@ -5,18 +5,18 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(void*, __cdecl, AllocateMemory, 0x006910F0, (std::size_t size));
-CSF_FUNC(void*, __fastcall, InitializeTextureView, 0x00738AF0,
+CSF_FUNC(void*, __cdecl, Mem_Alloc, 0x006910F0, (std::size_t size));
+CSF_FUNC(void*, __fastcall, InitializeTextureView_738AF0, 0x00738AF0,
          (void* self, void* edx, C_008655e8* owner));
 CSF_FUNC(int, __cdecl, RwTextureDestroy, 0x006317E0, (int texture));
 
 static int __fastcall C_008655e8_CreateTextureView(
     C_008655e8* self, void* /*edx*/, int textureKey)
 {
-    void* memory = AllocateMemory(0x38);
+    void* memory = Mem_Alloc(0x38);
     void* view = nullptr;
     if (memory)
-        view = InitializeTextureView(memory, nullptr, self);
+        view = InitializeTextureView_738AF0(memory, nullptr, self);
 
     if (textureKey)
     {

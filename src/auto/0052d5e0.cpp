@@ -4,10 +4,10 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x0050D190, ());
-CSF_FUNC(int, __cdecl, ResolveProgressDisplayValue, 0x00692440,
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
+CSF_FUNC(int, __cdecl, MenuMessageBox_ResolveEntryByKey, 0x00692440,
          (int value, int category));
-CSF_FUNC(int, __fastcall, ForwardProgressValueToChild, 0x00720DF0,
+CSF_FUNC(int, __fastcall, C_00720DF0_ForwardCallToChildVtblSlot16, 0x00720DF0,
          (void* self, void* edx, int value));
 
 CSF_GLOBAL(float, g_ProgressScale, 0x0082E03C);
@@ -19,7 +19,7 @@ static int __fastcall CMenuProgressBar_UpdateProgress(
     if (result == 0)
         return result;
 
-    const int initialState = GetGlobalState();
+    const int initialState = GetGlobalState_50D190();
     void* child = reinterpret_cast<void*>(self->field_0010);
     const float progress = CSF_AT(
         float, reinterpret_cast<void*>(initialState), 0xFC);
@@ -51,19 +51,19 @@ static int __fastcall CMenuProgressBar_UpdateProgress(
         CSF_AT(void**, geometry, 0)[0x24 / 4])(
             geometry, nullptr, newExtent);
 
-    result = GetGlobalState();
+    result = GetGlobalState_50D190();
     if (self->field_0018 !=
         CSF_AT(uint32_t, reinterpret_cast<void*>(result), 0xF8))
     {
-        const int refreshedState = GetGlobalState();
+        const int refreshedState = GetGlobalState_50D190();
         const uint32_t displayValue = CSF_AT(
             uint32_t, reinterpret_cast<void*>(refreshedState), 0xF8);
         self->field_0018 = displayValue;
 
         const int resolvedValue =
-            ResolveProgressDisplayValue(static_cast<int>(displayValue), 8);
+            MenuMessageBox_ResolveEntryByKey(static_cast<int>(displayValue), 8);
 
-        return ForwardProgressValueToChild(
+        return C_00720DF0_ForwardCallToChildVtblSlot16(
             reinterpret_cast<void*>(self->field_0010), nullptr, resolvedValue);
     }
 

@@ -12,7 +12,7 @@
 
 // Original callees (no-argument helpers, bound by address).
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B056C, 0x506BD0, ());
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x75FDF0, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_75FDF0, 0x75FDF0, ());
 
 // Tail path 1: ecx = this; mov eax,[ecx]; jmp [eax+0x4C] (vtable slot 19).
 // Caller's stack (return address) is left untouched, as the original's pop esi + jmp does.
@@ -45,7 +45,7 @@ static int __fastcall MenuControls_DispatchTail(int* self, void* /*edx*/)
         ((void(__stdcall*)(void*))targetVtbl[7])(CSF_AT(void*, self, 0x48));
     }
 
-    if (!CSF_AT(uint8_t, GetGlobalValue(), 0xCC))
+    if (!CSF_AT(uint8_t, GetGlobalValue_75FDF0(), 0xCC))
     {
         return TailJumpVtblSlot19(self, nullptr);
     }

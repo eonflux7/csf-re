@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, MenuProgressInput_GetDisplay,
+CSF_FUNC(void*, __fastcall, LookupObjectById,
          0x00652160, (void* self, void* edx));
 
 CSF_GLOBAL(float, g_UnsignedIntegerBias, 0x0082D744);
@@ -14,7 +14,7 @@ CSF_GLOBAL(unsigned int, g_ScreenHeight, 0x00899BA0);
 
 static void* MenuProgressInput_GetDisplayDimensions()
 {
-    void* display = MenuProgressInput_GetDisplay(
+    void* display = LookupObjectById(
         reinterpret_cast<void*>(GetGlobalInt()), nullptr);
     return ((void* (__fastcall*)(void*, void*))
         CSF_AT(void**, display, 0)[0x18 / 4])(display, nullptr);

@@ -10,7 +10,7 @@ CSF_FUNC(int*, __cdecl, ResetWideStringRecordRange, 0x007241E0,
          (int* begin, int* end));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60,
          (void* block));
-CSF_FUNC(int, __fastcall, DestroyListBoxBase, 0x00716110,
+CSF_FUNC(int, __fastcall, CGuiListBoxBase_Destroy_716110, 0x00716110,
          (CGuiListBox* self, void* edx));
 
 static int __fastcall CGuiListBox_Destroy(
@@ -40,7 +40,7 @@ static int __fastcall CGuiListBox_Destroy(
     CSF_AT(uint32_t, self, 0x224) = 0;
     CSF_AT(uint32_t, self, 0x228) = 0;
 
-    return DestroyListBoxBase(self, nullptr);
+    return CGuiListBoxBase_Destroy_716110(self, nullptr);
 }
 
 HOOK(0x00724720, CGuiListBox_Destroy, "auto");

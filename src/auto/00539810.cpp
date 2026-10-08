@@ -16,9 +16,9 @@
 #include "legacy/string.h"
 
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B0568, 0x4FDBB0, ());
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x50D190, ());
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x50D190, ());
 CSF_FUNC(int, __fastcall, MenuSystem_ToggleChildFlag, 0x50D300, (int self, void* edx));
-CSF_FUNC(int, __fastcall, Sub_53D740, 0x53D740, (int a1, void* a2, int a3));
+CSF_FUNC(int, __fastcall, CMenuMissionInfo_EnterPanelState, 0x53D740, (int a1, void* a2, int a3));
 
 CSF_GLOBAL(const char*, g_pszMenu_P_Campan, 0x899AD8);
 CSF_GLOBAL(const char*, g_pszMenu_P_Juego, 0x899AF0);
@@ -89,9 +89,9 @@ static int __fastcall CMenuLoadGame_ListboxLoadGames(CMenuLoadGame* self, void* 
 
     if (mode == 1) {
         // 0x0053973C
-        int gstate = GetGlobalState();
+        int gstate = GetGlobalState_50D190();
         MenuSystem_ToggleChildFlag(gstate, nullptr);
-        gstate = GetGlobalState();
+        gstate = GetGlobalState_50D190();
         void* gstatePtr = reinterpret_cast<void*>(static_cast<uintptr_t>(gstate));
         void* v4 = CSF_AT(void*, gstatePtr, 0x10);
         if (v4 != nullptr) {
@@ -99,7 +99,7 @@ static int __fastcall CMenuLoadGame_ListboxLoadGames(CMenuLoadGame* self, void* 
             using V24Fn = int(__fastcall*)(void* c, void* edx);
             reinterpret_cast<V24Fn>(v4Vtbl[0x24 / 4])(v4, nullptr);
         }
-        gstate = GetGlobalState();
+        gstate = GetGlobalState_50D190();
         gstatePtr = reinterpret_cast<void*>(static_cast<uintptr_t>(gstate));
         void* v5 = CSF_AT(void*, gstatePtr, 0x14);
         void** v5Vtbl = *reinterpret_cast<void***>(v5);
@@ -114,14 +114,14 @@ static int __fastcall CMenuLoadGame_ListboxLoadGames(CMenuLoadGame* self, void* 
             void** childVtbl = *reinterpret_cast<void***>(child);
             using V5cFn2 = int(__fastcall*)(void* c, void* edx, const char* psz);
             int ecxArg = reinterpret_cast<V5cFn2>(childVtbl[0x5c / 4])(child, nullptr, g_pszMenu_P_Tactic);
-            return Sub_53D740(ecxArg, nullptr, 0);
+            return CMenuMissionInfo_EnterPanelState(ecxArg, nullptr, 0);
         }
         return v74Result;
     }
 
     // 0x00539798
     {
-        int gstate = GetGlobalState();
+        int gstate = GetGlobalState_50D190();
         void* gstatePtr = reinterpret_cast<void*>(static_cast<uintptr_t>(gstate));
         void* v8 = CSF_AT(void*, gstatePtr, 0x14);
         void** v8Vtbl = *reinterpret_cast<void***>(v8);

@@ -4,9 +4,9 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void, __fastcall, CGuiControl_RefreshAuxiliaryDrawable, 0x007181E0,
+CSF_FUNC(void, __fastcall, CGuiStatic_CopyPropertiesToObject, 0x007181E0,
          (void* self, void* edx, int* drawable));
-CSF_FUNC(void, __fastcall, CGuiControl_RefreshTextDrawable, 0x00718230,
+CSF_FUNC(void, __fastcall, CGuiStatic_CopyStateToTarget, 0x00718230,
          (void* self, void* edx, int* drawable));
 CSF_FUNC(int, __fastcall, CGuiControl_SendEvent, 0x00718280,
          (void* self, void* edx, int eventId));
@@ -18,9 +18,9 @@ static int __fastcall CGuiStatic_SendEvent(
     {
         if (eventId <= 3)
         {
-            CGuiControl_RefreshAuxiliaryDrawable(
+            CGuiStatic_CopyPropertiesToObject(
                 self, nullptr, reinterpret_cast<int*>(self->field_0138));
-            CGuiControl_RefreshTextDrawable(
+            CGuiStatic_CopyStateToTarget(
                 self, nullptr, reinterpret_cast<int*>(self->m_pText));
         }
         else if (eventId == 6)

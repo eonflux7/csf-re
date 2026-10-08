@@ -4,15 +4,15 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x0050D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 CSF_FUNC(int, __cdecl, OnlineMenu_PrepareEnvironment, 0x0054EC30, ());
-CSF_FUNC(void*, __cdecl, GetGlobalValue, 0x00521BB0, ());
-CSF_FUNC(void, __fastcall, OnlineMenu_ResetSharedState, 0x00521DE0,
+CSF_FUNC(void*, __cdecl, GetGlobalValue_521BB0, 0x00521BB0, ());
+CSF_FUNC(void, __fastcall, MenuProgressInput_UpdateGlobalState, 0x00521DE0,
          (void* self, void* edx));
 CSF_FUNC(int, __fastcall, OnlineMenu_SetSharedText, 0x00521E30,
          (void* self, void* edx, const char* text));
 CSF_FUNC(void*, __cdecl, GetGlobalInt, 0x006B1380, ());
-CSF_FUNC(void*, __fastcall, OnlineMenu_GetService, 0x00652160,
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160,
          (void* self, void* edx));
 CSF_FUNC(void*, __cdecl, GetGlobalValue_8BC1E0, 0x00756A10, ());
 CSF_FUNC(int, __fastcall, CMenuMpOnline_ScrollViewToTarget, 0x00542CD0,
@@ -20,16 +20,16 @@ CSF_FUNC(int, __fastcall, CMenuMpOnline_ScrollViewToTarget, 0x00542CD0,
 CSF_FUNC(int, __fastcall, CMenuMpOnline_RefreshOnlineMatchState, 0x0055EE30,
          (CMenuMpOnline* self, void* edx));
 CSF_FUNC(void*, __cdecl, GetGlobalDword_73C020, 0x0073C020, ());
-CSF_FUNC(std::uint8_t, __fastcall, OnlineMenu_IsServiceReady, 0x007A7B50,
+CSF_FUNC(std::uint8_t, __fastcall, GlobalFlag_IsSet, 0x007A7B50,
          (void* self, void* edx));
-CSF_FUNC(int, __fastcall, CMenuMpOnline_StartOnlineFlow, 0x0055ECA0,
+CSF_FUNC(int, __fastcall, MenuMpOnline_RefreshForState, 0x0055ECA0,
          (CMenuMpOnline* self, void* edx));
-CSF_FUNC(void*, __fastcall, OnlineMenu_ConstructRequest, 0x00501870,
+CSF_FUNC(void*, __fastcall, MenuBuffer_Init, 0x00501870,
          (void* self, void* edx));
-CSF_FUNC(unsigned int, __fastcall, OnlineMenu_SubmitRequest, 0x0050F790,
+CSF_FUNC(unsigned int, __fastcall, Game_DispatchMenuRequest, 0x0050F790,
          (void* self, void* edx, std::uint32_t id, int mode,
           int flags, void* request));
-CSF_FUNC(unsigned int, __fastcall, OnlineMenu_DestroyRequest, 0x004FF3C0,
+CSF_FUNC(unsigned int, __fastcall, MenuBuffer_Destroy, 0x004FF3C0,
          (void* self, void* edx));
 
 static int __fastcall CMenuMpOnline_Initialize(
@@ -37,7 +37,7 @@ static int __fastcall CMenuMpOnline_Initialize(
 {
     if (!self->field_0014)
     {
-        void* state = GetGlobalState();
+        void* state = GetGlobalState_50D190();
         ((void(__fastcall*)(void*, void*, CMenuMpOnline*))
              CSF_AT(void**, state, 0)[0x18 / 4])(state, nullptr, self);
     }
@@ -71,7 +71,7 @@ static int __fastcall CMenuMpOnline_Initialize(
     ((void(__fastcall*)(void*, void*))menuVtable[0x40 / 4])(self, nullptr);
 
     self->field_003c = static_cast<std::uint32_t>(context);
-    OnlineMenu_ResetSharedState(GetGlobalValue(), nullptr);
+    MenuProgressInput_UpdateGlobalState(GetGlobalValue_521BB0(), nullptr);
 
     screen = reinterpret_cast<void*>(self->field_0014);
     ((void(__fastcall*)(void*, void*))
@@ -112,11 +112,11 @@ static int __fastcall CMenuMpOnline_Initialize(
             friendsButton, nullptr, 1);
     }
 
-    void* service = OnlineMenu_GetService(GetGlobalInt(), nullptr);
+    void* service = LookupObjectById(GetGlobalInt(), nullptr);
     ((void(__fastcall*)(void*, void*))
          CSF_AT(void**, service, 0)[0x18 / 4])(service, nullptr);
 
-    service = OnlineMenu_GetService(GetGlobalInt(), nullptr);
+    service = LookupObjectById(GetGlobalInt(), nullptr);
     ((void(__fastcall*)(void*, void*))
          CSF_AT(void**, service, 0)[0x18 / 4])(service, nullptr);
 
@@ -126,12 +126,12 @@ static int __fastcall CMenuMpOnline_Initialize(
     ((void(__fastcall*)(void*, void*, void*))
          menuVtable[0x44 / 4])(self, nullptr, screen);
 
-    void* state = GetGlobalState();
+    void* state = GetGlobalState_50D190();
     void* stateMember = CSF_AT(void*, state, 0x10);
     ((void(__fastcall*)(void*, void*))
          CSF_AT(void**, stateMember, 0)[0x08 / 4])(stateMember, nullptr);
 
-    state = GetGlobalState();
+    state = GetGlobalState_50D190();
     CSF_AT(std::uint8_t, state, 0xD0) = 1;
 
     void* settings = GetGlobalValue_8BC1E0();
@@ -140,26 +140,26 @@ static int __fastcall CMenuMpOnline_Initialize(
     const char* text = capacity < 16
         ? reinterpret_cast<const char*>(sharedString + 4)
         : CSF_AT(const char*, sharedString, 4);
-    void* sharedState = GetGlobalValue();
+    void* sharedState = GetGlobalValue_521BB0();
     OnlineMenu_SetSharedText(sharedState, nullptr, text);
 
     CMenuMpOnline_ScrollViewToTarget(self, nullptr);
     CMenuMpOnline_RefreshOnlineMatchState(self, nullptr);
 
-    if (OnlineMenu_IsServiceReady(GetGlobalDword_73C020(), nullptr))
+    if (GlobalFlag_IsSet(GetGlobalDword_73C020(), nullptr))
     {
-        CMenuMpOnline_StartOnlineFlow(self, nullptr);
+        MenuMpOnline_RefreshForState(self, nullptr);
     }
     else
     {
         alignas(4) std::uint8_t request[0xB4];
         self->field_0018 = 18;
         self->field_0050 = 0;
-        OnlineMenu_ConstructRequest(request, nullptr);
+        MenuBuffer_Init(request, nullptr);
         CSF_AT(std::uint8_t, request, 0x18) = 1;
-        state = GetGlobalState();
-        OnlineMenu_SubmitRequest(state, nullptr, 0x444E5331, 2, 0, request);
-        OnlineMenu_DestroyRequest(request, nullptr);
+        state = GetGlobalState_50D190();
+        Game_DispatchMenuRequest(state, nullptr, 0x444E5331, 2, 0, request);
+        MenuBuffer_Destroy(request, nullptr);
     }
 
     return static_cast<int>(self->field_0014);

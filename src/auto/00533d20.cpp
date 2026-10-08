@@ -15,7 +15,7 @@ CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInformation));
 
 // Frame handler targeted by the original's SEH stub.
-CSF_FUNC(int, __cdecl, HandleCppExceptionFrame, 0x007AF226,
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226,
          (void* exceptionRecord, void* frame, void* context,
           void* dispatcherContext));
 

@@ -8,8 +8,8 @@
 #include "legacy/string.h"
 
 // Callees bound by address.
-CSF_FUNC(void, __fastcall, ReleaseOwnedBlockAtPlus4, 0x006923C0, (void* block /* this+4 */, void* edx));
-CSF_FUNC(int, __fastcall, DestroyEmbeddedBaseAtPlus10, 0x0069AE90, (void* embedded, void* edx));
+CSF_FUNC(void, __fastcall, ReleaseObjectReference, 0x006923C0, (void* block /* this+4 */, void* edx));
+CSF_FUNC(int, __fastcall, Base10_Destroy, 0x0069AE90, (void* embedded, void* edx));
 
 static int __fastcall CMenuLoading_ReleaseMembersAndResetVtable(CMenuLoading* self, void* /*edx*/)
 {
@@ -17,7 +17,7 @@ static int __fastcall CMenuLoading_ReleaseMembersAndResetVtable(CMenuLoading* se
     void* ownedAt2C = reinterpret_cast<void*>(self->field_002c);
 
     // Install the CMenuLoading vtable and the embedded/base vtables (same order as original).
-    CSF_AT(uint32_t, self, 0x00) = 0x00842150u;
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x00842150);
     CSF_AT(uint32_t, self, 0x04) = 0x00842100u;
     CSF_AT(uint32_t, self, 0x10) = 0x008420F8u;
 
@@ -30,7 +30,7 @@ static int __fastcall CMenuLoading_ReleaseMembersAndResetVtable(CMenuLoading* se
     // Release the block at +0x3C (heap block, pointer offset +4).
     uint32_t blockAt3C = self->field_003c;
     if (blockAt3C != 0) {
-        ReleaseOwnedBlockAtPlus4(reinterpret_cast<void*>(blockAt3C + 4), nullptr);
+        ReleaseObjectReference(reinterpret_cast<void*>(blockAt3C + 4), nullptr);
         self->field_003c = 0;
     }
 
@@ -56,12 +56,12 @@ static int __fastcall CMenuLoading_ReleaseMembersAndResetVtable(CMenuLoading* se
     }
 
     // Tear down the embedded sub-object at +0x10 (its address, not its contents).
-    int result = DestroyEmbeddedBaseAtPlus10(reinterpret_cast<void*>(reinterpret_cast<uint8_t*>(self) + 0x10), nullptr);
+    int result = Base10_Destroy(reinterpret_cast<void*>(reinterpret_cast<uint8_t*>(self) + 0x10), nullptr);
 
     // Restore the base vtable pointers at +0x04 and finally +0x00.
-    CSF_AT(uint32_t, self, 0x04) = 0x00830488u;
-    CSF_AT(uint32_t, self, 0x04) = 0x00830438u;
-    CSF_AT(uint32_t, self, 0x00) = 0x0083042Cu;
+    CSF_AT(uint32_t, self, 0x04) = CSF_ADDR_DATA(0x00830488);
+    CSF_AT(uint32_t, self, 0x04) = CSF_ADDR_VT(0x00830438);
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x0083042C);
 
     return result;
 }

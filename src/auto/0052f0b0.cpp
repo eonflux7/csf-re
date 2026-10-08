@@ -14,7 +14,7 @@
 CSF_FUNC(int, __cdecl, MenuBase_DefaultHandler, 0x00428480, (int message));
 
 // Returns a linked sub-object of a menu (thiscall, no stack args).
-CSF_FUNC(void*, __fastcall, MenuBase_GetLinkedSubObject, 0x006683F0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x006683F0, (void* self, void* edx));
 
 // Message code that triggers the linked sub-object refresh.
 static const int kRefreshMessage = 50;
@@ -40,7 +40,7 @@ static int __fastcall MenuBase_OnCommand(void* self, void* /*edx*/, int message,
         uint8_t flag = CSF_AT(uint8_t, paramObj, 0x38);
         if (flag != 0)
         {
-            void* linked = MenuBase_GetLinkedSubObject(self, nullptr);
+            void* linked = GetReferencedObject(self, nullptr);
             void** linkedVtbl = CSF_AT(void**, linked, 0);
             ((void(__fastcall*)(void*, void*))linkedVtbl[kLinkedObjectNotifySlot])(linked, nullptr);
             return MenuBase_DefaultHandler(message);

@@ -10,8 +10,8 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-// 0x0050D190: int __cdecl GetGlobalState(void)
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x0050D190, ());
+// 0x0050D190: int __cdecl GetGlobalState_50D190(void)
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 
 // Global string pointers used for the BotonControles label.
 CSF_GLOBAL(const char*, g_pszMenu_P_MeJueg, 0x00899AF4);
@@ -28,7 +28,7 @@ static int __fastcall CMenuOptionsPC_RefreshBotonControlesLabel(CMenuOptionsPC* 
     void** ownerVtbl = CSF_AT(void**, owner, 0);
     ((void(__fastcall*)(void*, void*, CMenuOptionsPC*, int))ownerVtbl[0x60 / 4])(owner, nullptr, self, 0);
 
-    uint8_t* globalState = reinterpret_cast<uint8_t*>(GetGlobalState());
+    uint8_t* globalState = reinterpret_cast<uint8_t*>(GetGlobalState_50D190());
     uint8_t stateFlag = CSF_AT(uint8_t, globalState, 0xD0);
 
     const char* labelText = g_pszMenu_P_MeJuMP;

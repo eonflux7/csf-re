@@ -10,7 +10,7 @@ CSF_FUNC(void, __fastcall, AddObjectReference, 0x006923B0,
 CSF_FUNC(void, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
 // 0x007181E0 : __thiscall, copies shared GUI properties onto the given object
-CSF_FUNC(void, __fastcall, CopyPropertiesToObject, 0x007181E0,
+CSF_FUNC(void, __fastcall, CGuiStatic_CopyPropertiesToObject, 0x007181E0,
          (void* self, void* edx, int* object));
 
 // Sets the switch's associated (ref-counted) quad/object stored at +0x13C,
@@ -31,7 +31,7 @@ static void __fastcall CGuiSwitch_SetQuad(CGuiSwitch* self, void* /*edx*/, int* 
     if (quad) {
         AddObjectReference(
             reinterpret_cast<std::uint8_t*>(quad) + 4, nullptr);
-        CopyPropertiesToObject(
+        CGuiStatic_CopyPropertiesToObject(
             self, nullptr,
             reinterpret_cast<int*>(CSF_AT(std::uint32_t, self, 0x13C)));
     }

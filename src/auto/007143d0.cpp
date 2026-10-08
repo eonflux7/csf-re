@@ -5,7 +5,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_ApplyLinkedValue, 0x00718C00,
+CSF_FUNC(int, __fastcall, CGuiControl_ForwardEventToFirstEffect, 0x00718C00,
          (CGuiControl* self, void* edx, int value));
 
 static int __fastcall CGuiListBoxBase_SetSliderLinkedValue(
@@ -23,7 +23,7 @@ static int __fastcall CGuiListBoxBase_SetSliderLinkedValue(
         setter(slider, nullptr, value);
     }
 
-    return CGuiControl_ApplyLinkedValue(self, nullptr, value);
+    return CGuiControl_ForwardEventToFirstEffect(self, nullptr, value);
 }
 
 HOOK(0x007143D0, CGuiListBoxBase_SetSliderLinkedValue, "auto");

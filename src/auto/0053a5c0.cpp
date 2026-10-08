@@ -10,7 +10,7 @@
 // 0x501870: __fastcall with two register args (ecx, edx), no stack args, ret 0.
 CSF_FUNC(int, __fastcall, MenuBuffer_Init, 0x00501870, (void* buffer, void* edx));
 // 0x50D190: __cdecl, no args, ret 0.
-CSF_FUNC(int, __cdecl, Game_GetGlobalState, 0x0050D190, ());
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 // 0x50F790: __thiscall with four stack args, ret 16 (__fastcall with ecx/edx + 4 stack args).
 CSF_FUNC(unsigned int, __fastcall, Game_DispatchMenuRequest, 0x0050F790,
          (void* self, void* edx, int a2, int a3, int a4, void* a5));
@@ -26,7 +26,7 @@ static unsigned int __fastcall CMenuPause_OpenSubmenuRequest(CMenuPause* self, v
     MenuBuffer_Init(requestBuffer, edx);
     requestBuffer[2] = 2;
 
-    int globalState = Game_GetGlobalState();
+    int globalState = GetGlobalState_50D190();
     Game_DispatchMenuRequest(reinterpret_cast<void*>(globalState), nullptr,
                              0x67653130, 1, 3, requestBuffer);
 

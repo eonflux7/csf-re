@@ -7,9 +7,9 @@
 
 // Callees, bound by address.
 CSF_FUNC(void, __cdecl, Nullsub_506AC0, 0x506AC0, ());
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x50D190, ());
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x521BB0, ());
-CSF_FUNC(void, __fastcall, GlobalValue_Apply, 0x5231D0, (void* self, void* edx, int value));
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x50D190, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x521BB0, ());
+CSF_FUNC(void, __fastcall, GlobalSetValue_5231D0, 0x5231D0, (void* self, void* edx, int value));
 CSF_FUNC(int, __fastcall, SchedulerBase_GetSchedulerProxy, 0x734A10, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, CMenuVideoOptions_GetMatchingQualityPreset, 0x549950, (CMenuVideoOptions* self, void* edx));
 CSF_FUNC(int, __fastcall, CMenuVideoOptions_UpdateOptionsMenu, 0x549630, (CMenuVideoOptions* self, void* edx));
@@ -31,15 +31,15 @@ static char __fastcall CMenuVideoOptions_ApplySelection(CMenuVideoOptions* self,
     }
 
     const int selectionSnapshot = static_cast<int>(self->field_0078);
-    const int globalValue = GetGlobalValue();
-    GlobalValue_Apply(reinterpret_cast<void*>(static_cast<intptr_t>(globalValue)), nullptr, selectionSnapshot);
+    const int globalValue = GetGlobalValue_521BB0();
+    GlobalSetValue_5231D0(reinterpret_cast<void*>(static_cast<intptr_t>(globalValue)), nullptr, selectionSnapshot);
     Nullsub_506AC0();
 
     char result = static_cast<char>(self->field_007c);
     if (self->field_007c != 0)
     {
         const int proxy = SchedulerBase_GetSchedulerProxy(
-            reinterpret_cast<void*>(static_cast<intptr_t>(GetGlobalState())), nullptr);
+            reinterpret_cast<void*>(static_cast<intptr_t>(GetGlobalState_50D190())), nullptr);
         const int remaining = proxy - 1;
         result = static_cast<char>(remaining);
         if (remaining == 0)

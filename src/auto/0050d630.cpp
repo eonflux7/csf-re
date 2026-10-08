@@ -3,8 +3,8 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __cdecl, MenuSystem_GetGameState, 0x004FDBB0, ());
-CSF_FUNC(int, __cdecl, MenuSystem_GetSceneState, 0x00756A10, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_8B0568, 0x004FDBB0, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_8BC1E0, 0x00756A10, ());
 CSF_FUNC(char, __fastcall, MenuSystem_PrepareLanguageSelection, 0x00534210,
          (void* self, void* edx));
 
@@ -20,7 +20,7 @@ static int __fastcall CMenuManager_SelectInitialScreen(
     using PanelMethod = int (__fastcall*)(void*, void*, const char*);
     using CloseMethod = void (__fastcall*)(void*, void*);
 
-    int result = MenuSystem_GetGameState();
+    int result = GetGlobalValue_8B0568();
     if (CSF_AT(std::uint8_t,
                reinterpret_cast<void*>(static_cast<std::uintptr_t>(result)),
                0xB4) != 0)
@@ -32,7 +32,7 @@ static int __fastcall CMenuManager_SelectInitialScreen(
             panels, nullptr, name);
     }
 
-    result = MenuSystem_GetSceneState();
+    result = GetGlobalValue_8BC1E0();
     if (CSF_AT(std::uint8_t,
                reinterpret_cast<void*>(static_cast<std::uintptr_t>(result)),
                0xA6C) != 0)
@@ -44,13 +44,13 @@ static int __fastcall CMenuManager_SelectInitialScreen(
             panels, nullptr, name);
     }
 
-    result = MenuSystem_GetGameState();
+    result = GetGlobalValue_8B0568();
     if (CSF_AT(std::uint8_t,
                reinterpret_cast<void*>(static_cast<std::uintptr_t>(result)),
                0xB4) != 0)
         return result;
 
-    result = MenuSystem_GetSceneState();
+    result = GetGlobalValue_8BC1E0();
     if (CSF_AT(std::uint8_t,
                reinterpret_cast<void*>(static_cast<std::uintptr_t>(result)),
                0xA6C) != 0)

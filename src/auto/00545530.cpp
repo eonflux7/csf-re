@@ -11,10 +11,10 @@
 #include "legacy/string.h"
 
 // Base-class constructor for the embedded sub-object at +0x04 (ecx = this+4, __thiscall, no stack args).
-CSF_FUNC(void*, __fastcall, MenuScreenSubObject_Construct, 0x712CC0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x712CC0, (void* self, void* edx));
 
 // Constructor for the embedded sub-object at +0x5C (ecx = this+0x5C, __thiscall, no stack args).
-CSF_FUNC(void*, __fastcall, SaveGameListSubObject_Construct, 0x5445F0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, MenuSaveGame_ResetState, 0x5445F0, (void* self, void* edx));
 
 // Returns a pointer (as int) to a global settings record; caller reads its +4 dword. __cdecl, no args.
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B056C, 0x506BD0, ());
@@ -26,16 +26,16 @@ CSF_GLOBAL(uint8_t, g_VtblCMenuSaveGame, 0x843B30);
 
 // Vtable pointer values stored by the constructor. The literal addresses are kept explicit
 // so the stored vtable pointers are visibly the original's 0x83042C / 0x843B70 / 0x843B30.
-static constexpr uint32_t kVtblCMenuScreenBaseAddr = 0x0083042Cu;
-static constexpr uint32_t kVtblCMenuSaveGameSubObjectAddr = 0x00843B70u;
-static constexpr uint32_t kVtblCMenuSaveGameAddr = 0x00843B30u;
+static const uint32_t kVtblCMenuScreenBaseAddr = CSF_ADDR_VT(0x0083042C);
+static const uint32_t kVtblCMenuSaveGameSubObjectAddr = CSF_ADDR_VT(0x00843B70);
+static const uint32_t kVtblCMenuSaveGameAddr = CSF_ADDR_VT(0x00843B30);
 
 // CMenuSaveGame constructor. Stack arg: owner/context value stored at +0x48. Callee pops 4 (ret 4).
 static CMenuSaveGame* __fastcall CMenuSaveGame_Construct(CMenuSaveGame* self, void* /*edx*/, int ownerContext)
 {
     // Install base-class vtable (0x83042C), then construct the embedded sub-object at +0x04.
     CSF_AT(uint32_t, self, 0) = kVtblCMenuScreenBaseAddr;
-    MenuScreenSubObject_Construct(reinterpret_cast<uint8_t*>(self) + 0x04, nullptr);
+    C_00830438_Construct(reinterpret_cast<uint8_t*>(self) + 0x04, nullptr);
     // Sub-object vtable (0x843B70) installed at +0x04.
     CSF_AT(uint32_t, reinterpret_cast<uint8_t*>(self) + 0x04, 0) = kVtblCMenuSaveGameSubObjectAddr;
     // Final CMenuSaveGame vtable (0x843B30).
@@ -49,7 +49,7 @@ static CMenuSaveGame* __fastcall CMenuSaveGame_Construct(CMenuSaveGame* self, vo
     self->field_003c = 0;
 
     // Construct the embedded sub-object at +0x5C.
-    SaveGameListSubObject_Construct(reinterpret_cast<uint8_t*>(self) + 0x5C, nullptr);
+    MenuSaveGame_ResetState(reinterpret_cast<uint8_t*>(self) + 0x5C, nullptr);
 
     self->field_0048 = static_cast<uint32_t>(ownerContext);
     self->field_0044 = 0;

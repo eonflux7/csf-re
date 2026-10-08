@@ -8,19 +8,19 @@ CSF_GLOBAL(uint8_t, g_FriendsMode, 0x008B067C);
 
 CSF_FUNC(void, __fastcall, MenuMpPause_PrepareInitialization, 0x007438A0,
          (CMenuMpPause* self, void* edx));
-CSF_FUNC(void*, __fastcall, MenuMpPause_GetSceneCharacter, 0x0044FC60,
+CSF_FUNC(void*, __fastcall, GetSceneMenuContext, 0x0044FC60,
          (void* self, void* edx));
-CSF_FUNC(uint32_t, __cdecl, MenuMpPause_GetLocalizedText, 0x00692440,
+CSF_FUNC(uint32_t, __cdecl, MenuMessageBox_ResolveEntryByKey, 0x00692440,
          (uint32_t identifier, int variant));
-CSF_FUNC(void*, __cdecl, MenuMpPause_GetNetworkState, 0x00550CC0, ());
+CSF_FUNC(void*, __cdecl, GetGlobal8B0688, 0x00550CC0, ());
 CSF_FUNC(uint32_t, __fastcall, MenuMpPause_GetMatchButtonState, 0x00551B70,
          (void* self, void* edx));
-CSF_FUNC(int, __fastcall, MenuMpPause_ScrollViewportToTarget, 0x00534F20,
+CSF_FUNC(int, __fastcall, CMenuMpNetworkType_ScrollViewportToTarget, 0x00534F20,
          (CMenuMpPause* self, void* edx));
-CSF_FUNC(void*, __cdecl, MenuMpPause_GetGlobalState, 0x0050D190, ());
-CSF_FUNC(void*, __cdecl, MenuMpPause_GetGlobalValue, 0x00753A30, ());
-CSF_FUNC(void*, __cdecl, MenuMpPause_GetInputManager, 0x0042D6D0, ());
-CSF_FUNC(int, __fastcall, MenuMpPause_SetInputMode, 0x0042DF80,
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobalValue_753A30, 0x00753A30, ());
+CSF_FUNC(void*, __cdecl, GetGlobal8afc78, 0x0042D6D0, ());
+CSF_FUNC(int, __fastcall, MenuManager_SetGameplayControllerState, 0x0042DF80,
          (void* self, void* edx, int mode));
 CSF_FUNC(char, __fastcall, MenuMpPause_ResetMenuController, 0x0042CAB0,
          (void* self, void* edx));
@@ -90,7 +90,7 @@ static int __fastcall CMenuMpPause_InitializeControls(
         MenuMpPause_AsPointer(self->field_0038),
         CSF_STR(0x00841DFC, "BotonSuicide"));
 
-    void* character = MenuMpPause_GetSceneCharacter(g_CurrentScene, nullptr);
+    void* character = GetSceneMenuContext(g_CurrentScene, nullptr);
     const uint32_t canSuicide =
         character && CSF_AT(uint8_t, character, 0x3A4) == 0 ? 1u : 0u;
     MenuMpPause_SetControlState(
@@ -121,7 +121,7 @@ static int __fastcall CMenuMpPause_InitializeControls(
         void* caption = reinterpret_cast<void*(__fastcall*)(void*, void*)>(
             CSF_AT(void**, friends, 0)[0x110 / 4])(friends, nullptr);
         void** captionVtable = CSF_AT(void**, caption, 0);
-        const uint32_t text = MenuMpPause_GetLocalizedText(
+        const uint32_t text = MenuMessageBox_ResolveEntryByKey(
             friendsMode ? 0x494E4738u : 0x494E4739u, 1);
         reinterpret_cast<void(__fastcall*)(void*, void*, uint32_t)>(
             captionVtable[0x40 / 4])(caption, nullptr, text);
@@ -135,7 +135,7 @@ static int __fastcall CMenuMpPause_InitializeControls(
     {
         void** matchVtable =
             CSF_AT(void**, MenuMpPause_AsPointer(matchButton), 0);
-        void* networkState = MenuMpPause_GetNetworkState();
+        void* networkState = GetGlobal8B0688();
         // Preserve the full EAX value: the original pushes EAX, not AL.
         const uint32_t enabled =
             MenuMpPause_GetMatchButtonState(networkState, nullptr);
@@ -145,23 +145,23 @@ static int __fastcall CMenuMpPause_InitializeControls(
                 enabled, 1, 1);
     }
 
-    MenuMpPause_ScrollViewportToTarget(self, nullptr);
+    CMenuMpNetworkType_ScrollViewportToTarget(self, nullptr);
 
-    void* state = MenuMpPause_GetGlobalState();
+    void* state = GetGlobalState_50D190();
     void* stateListener = CSF_AT(void*, state, 0x10);
     if (stateListener != nullptr)
     {
-        void* globalValue = MenuMpPause_GetGlobalValue();
+        void* globalValue = GetGlobalValue_753A30();
         const uint32_t value = CSF_AT(uint32_t, globalValue, 0x200);
         reinterpret_cast<void(__fastcall*)(void*, void*, uint32_t)>(
             CSF_AT(void**, stateListener, 0)[0x20 / 4])(
                 stateListener, nullptr, value);
     }
 
-    void* inputManager = MenuMpPause_GetInputManager();
-    MenuMpPause_SetInputMode(inputManager, nullptr, 0);
+    void* inputManager = GetGlobal8afc78();
+    MenuManager_SetGameplayControllerState(inputManager, nullptr, 0);
 
-    state = MenuMpPause_GetGlobalState();
+    state = GetGlobalState_50D190();
     void* activeController = CSF_AT(void*, state, 0x74);
     if (activeController != nullptr)
     {
@@ -173,9 +173,9 @@ static int __fastcall CMenuMpPause_InitializeControls(
     MenuMpPause_SetControlHidden(
         MenuMpPause_AsPointer(self->field_0038), 0);
 
-    state = MenuMpPause_GetGlobalState();
+    state = GetGlobalState_50D190();
     MenuMpPause_ResetMenuController(CSF_AT(void*, state, 0x18), nullptr);
-    state = MenuMpPause_GetGlobalState();
+    state = GetGlobalState_50D190();
     MenuMpPause_RefreshGlobalState(state, nullptr);
 
     return static_cast<int>(self->field_0038);

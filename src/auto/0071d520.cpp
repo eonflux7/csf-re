@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(int, __fastcall, AssignChildUpdateList, 0x0071C140,
+CSF_FUNC(int, __fastcall, AssignWordVector, 0x0071C140,
          (void* destination, void* edx, void* source));
 
 static char __fastcall UpdateChildrenAndElapsedTime(
@@ -19,7 +19,7 @@ static char __fastcall UpdateChildrenAndElapsedTime(
     reinterpret_cast<void(__fastcall*)(void*, void*, float)>(
         CSF_AT(void**, controller, 0)[79])(controller, nullptr, deltaTime);
 
-    AssignChildUpdateList(
+    AssignWordVector(
         static_cast<std::uint8_t*>(self) + 0x54, nullptr,
         static_cast<std::uint8_t*>(self) + 0x44);
 

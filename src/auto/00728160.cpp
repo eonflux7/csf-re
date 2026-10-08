@@ -5,7 +5,7 @@
 
 CSF_FUNC(int, __cdecl, CopyConstructElementArray36, 0x00727540,
          (int destination, int count, std::uint32_t* source));
-CSF_FUNC(std::uint32_t*, __fastcall, InsertElement36, 0x00727F90,
+CSF_FUNC(std::uint32_t*, __fastcall, InsertElement36_727F90, 0x00727F90,
          (void* self, void* edx, std::uint32_t* result,
           char* position, int* element));
 
@@ -43,7 +43,7 @@ static std::uint32_t* __fastcall AppendElement36(
 
     char* position = reinterpret_cast<char*>(
         CSF_AT(std::uint32_t, self, 0x08));
-    return InsertElement36(
+    return InsertElement36_727F90(
         self, nullptr, reinterpret_cast<std::uint32_t*>(&element),
         position, element);
 }

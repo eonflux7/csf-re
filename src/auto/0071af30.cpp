@@ -4,11 +4,11 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(void*, __cdecl, AllocateDocumentMemory, 0x006910F0, (std::size_t size));
-CSF_FUNC(int, __cdecl, FreeDocumentMemory, 0x00691110, (void* memory));
-CSF_FUNC(void*, __fastcall, ConstructDocument, 0x00692B10, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, DestroyDocument, 0x00694380, (void* self, void* edx));
-CSF_FUNC(char, __fastcall, LoadDocument, 0x00694770,
+CSF_FUNC(void*, __cdecl, Mem_Alloc, 0x006910F0, (std::size_t size));
+CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* memory));
+CSF_FUNC(void*, __fastcall, MenuExtras_InitializeFile, 0x00692B10, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, MenuExtras_CloseFile, 0x00694380, (void* self, void* edx));
+CSF_FUNC(char, __fastcall, MenuExtras_LoadFile, 0x00694770,
          (void* self, void* edx, const char* source));
 
 static void __fastcall C_00864508_ReloadMatchingDocuments(
@@ -78,9 +78,9 @@ static void __fastcall C_00864508_ReloadMatchingDocuments(
 
                 if (!skipDocument)
                 {
-                    void* document = AllocateDocumentMemory(0x3C);
+                    void* document = Mem_Alloc(0x3C);
                     if (document)
-                        document = ConstructDocument(document, nullptr);
+                        document = MenuExtras_InitializeFile(document, nullptr);
 
                     CSF_AT(std::uint32_t, record, 0x3C) =
                         reinterpret_cast<std::uint32_t>(document);
@@ -91,7 +91,7 @@ static void __fastcall C_00864508_ReloadMatchingDocuments(
                         : reinterpret_cast<const char*>(
                               CSF_AT(std::uint32_t, record, 0x20));
 
-                    if (LoadDocument(document, nullptr, source))
+                    if (MenuExtras_LoadFile(document, nullptr, source))
                     {
                         const std::uint32_t objectOffset = objectIndex * 4;
                         void* object = reinterpret_cast<void*>(
@@ -169,8 +169,8 @@ static void __fastcall C_00864508_ReloadMatchingDocuments(
                         CSF_AT(std::uint32_t, record, 0x3C));
                     if (temporaryDocument)
                     {
-                        DestroyDocument(temporaryDocument, nullptr);
-                        FreeDocumentMemory(temporaryDocument);
+                        MenuExtras_CloseFile(temporaryDocument, nullptr);
+                        Mem_Free(temporaryDocument);
                         CSF_AT(std::uint32_t, record, 0x3C) = 0;
                     }
                 }

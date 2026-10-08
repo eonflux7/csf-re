@@ -12,7 +12,7 @@ CSF_FUNC(int, __fastcall, StartEffect, 0x00731A80,
          (void* self, void* edx, int effect));
 
 // Capture full EAX: the target tests AL but returns EAX on early exits.
-CSF_FUNC(int, __fastcall, QueryEffectStateRegister, 0x00731AB0,
+CSF_FUNC(int, __fastcall, Fx_IsChannelActive, 0x00731AB0,
          (void* self, void* edx, int effect));
 
 static int __fastcall CGuiButton_StartHoverEffect(
@@ -60,10 +60,10 @@ static int __fastcall CGuiButton_StartHoverEffect(
     state.reservedValue = 0;
 
     const std::uint8_t hoverActive = static_cast<std::uint8_t>(
-        QueryEffectStateRegister(
+        Fx_IsChannelActive(
             reinterpret_cast<void*>(self->m_pFx), nullptr, 1));
 
-    result = QueryEffectStateRegister(
+    result = Fx_IsChannelActive(
         reinterpret_cast<void*>(self->m_pFx), nullptr, 4);
     if (static_cast<std::uint8_t>(result) != 0 || enabled == 0)
         return result;

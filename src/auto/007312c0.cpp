@@ -10,13 +10,13 @@ CSF_GLOBAL(void*, g_CGuiTextureListBoxVtable, 0x00866DB8);
 
 // Releases every record in the range [first, last) of the dynamic array owned
 // by the list box (cdecl, 4 args -> the caller cleans 16 bytes).
-CSF_FUNC(int, __cdecl, DestroyRecordRange, 0x006DEC40,
+CSF_FUNC(int, __cdecl, ResetRecordRange, 0x006DEC40,
          (int* first, int* last, void* owner, void* self));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60,
          (void* block));
 
 // Base list-box destructor (thiscall, no stack args).
-CSF_FUNC(int, __fastcall, CGuiListBoxBase_Destroy, 0x00716110,
+CSF_FUNC(int, __fastcall, CGuiListBoxBase_Destroy_716110, 0x00716110,
          (CGuiTextureListBox* self, void* edx));
 
 static int __fastcall CGuiTextureListBox_Destroy(
@@ -30,7 +30,7 @@ static int __fastcall CGuiTextureListBox_Destroy(
     const std::uint32_t first = CSF_AT(std::uint32_t, range, 4);
     if (first)
     {
-        DestroyRecordRange(
+        ResetRecordRange(
             reinterpret_cast<int*>(first),
             reinterpret_cast<int*>(CSF_AT(std::uint32_t, range, 8)),
             range,
@@ -46,7 +46,7 @@ static int __fastcall CGuiTextureListBox_Destroy(
     CSF_AT(std::uint32_t, range, 8) = 0;
     CSF_AT(std::uint32_t, range, 0xC) = 0;
 
-    return CGuiListBoxBase_Destroy(self, nullptr);
+    return CGuiListBoxBase_Destroy_716110(self, nullptr);
 }
 
 HOOK(0x007312C0, CGuiTextureListBox_Destroy, "auto");

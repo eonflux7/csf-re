@@ -13,7 +13,7 @@ CSF_FUNC(int, __cdecl, Mem_Free, 0x691110, (void* p));
 
 // 0x53CCE0: CMenuSoundOptions teardown body (member clean-up / base-destructor chain)
 // that runs after CMenuSoundOptionsPC restores its vtable pointers.
-CSF_FUNC(int, __fastcall, CMenuSoundOptions_CleanUp, 0x53CCE0,
+CSF_FUNC(int, __fastcall, CMenuSoundOptions_Destruct_53CCE0, 0x53CCE0,
          (CMenuSoundOptionsPC* self, void* edx));
 
 // CMenuSoundOptionsPC destructor: restores the primary vtable at +0x00 and the
@@ -24,10 +24,10 @@ CSF_FUNC(int, __fastcall, CMenuSoundOptions_CleanUp, 0x53CCE0,
 static CMenuSoundOptionsPC* __fastcall CMenuSoundOptionsPC_Destroy(
     CMenuSoundOptionsPC* self, void* /*edx*/, char a2)
 {
-    CSF_AT(uint32_t, self, 0x0000) = 0x00843DB8u;
+    CSF_AT(uint32_t, self, 0x0000) = CSF_ADDR_VT(0x00843DB8);
     self->field_0004 = 0x00843D68u;
 
-    CMenuSoundOptions_CleanUp(self, nullptr);
+    CMenuSoundOptions_Destruct_53CCE0(self, nullptr);
 
     if ((a2 & 1) != 0)
         Mem_Free(self);

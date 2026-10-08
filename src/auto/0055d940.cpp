@@ -7,20 +7,20 @@
 static CSF_GLOBAL(std::uint8_t, g_AccountMenuStateFlag, 0x008B0901);
 static CSF_GLOBAL(std::uint8_t, g_OnlineMatchFlag, 0x008B068C);
 
-static CSF_FUNC(void*, __cdecl, GetGlobalValue, 0x00521BB0, ());
-static CSF_FUNC(void, __fastcall, MenuMpAccounts_PrepareGlobalMenu,
+static CSF_FUNC(void*, __cdecl, GetGlobalValue_521BB0, 0x00521BB0, ());
+static CSF_FUNC(void, __fastcall, MenuProgressInput_UpdateGlobalState,
                 0x00521DE0, (void* self, void* edx));
-static CSF_FUNC(int, __fastcall, CMenuPlayerInfo_RefreshScreen,
+static CSF_FUNC(int, __fastcall, CMenuOptions_LayoutOptionButtons,
                 0x0053AD90, (CMenuPlayerInfo* self, void* edx));
 static CSF_FUNC(std::uint8_t, __fastcall, CMenuPlayerInfo_UpdateFriendshipControls,
                 0x0055D4C0, (CMenuPlayerInfo* self, void* edx));
 static CSF_FUNC(int, __fastcall, CMenuPlayerInfo_SetFriendRequestTextByState,
                 0x0055D880, (CMenuPlayerInfo* self, void* edx));
-static CSF_FUNC(int, __cdecl, MenuMpAccounts_GetWideStringLength,
+static CSF_FUNC(int, __cdecl, GetWideTextLength,
                 0x00695560, (std::uint16_t* text));
-static CSF_FUNC(std::int16_t, __cdecl, MenuMpAccounts_CopyWideString,
+static CSF_FUNC(std::int16_t, __cdecl, Sub_695680,
                 0x00695680, (char* destination, char* source));
-static CSF_FUNC(void*, __cdecl, GetGlobalState, 0x006A6D70, ());
+static CSF_FUNC(void*, __cdecl, GetGlobalState_6A6D70, 0x006A6D70, ());
 static CSF_FUNC(int, __fastcall, C_00720DF0_ForwardCallToChildVtblSlot16,
                 0x00720DF0, (void* self, void* edx, std::uint16_t* text));
 
@@ -53,7 +53,7 @@ static int __fastcall CMenuPlayerInfo_InitializePlayerControls(
         initialVtable[0x40 / 4])(self, nullptr);
 
     self->field_0014 = context;
-    MenuMpAccounts_PrepareGlobalMenu(GetGlobalValue(), nullptr);
+    MenuProgressInput_UpdateGlobalState(GetGlobalValue_521BB0(), nullptr);
 
     void* root = reinterpret_cast<void*>(self->field_001c);
     reinterpret_cast<void(__fastcall*)(void*, void*)>(
@@ -98,14 +98,14 @@ static int __fastcall CMenuPlayerInfo_InitializePlayerControls(
         char* source = reinterpret_cast<char*>(self->field_0048);
         if (CSF_AT(std::uint8_t, source, 0x200) & 0x40)
         {
-            MenuMpAccounts_CopyWideString(
+            Sub_695680(
                 reinterpret_cast<char*>(playerName), source + 2);
-            int length = MenuMpAccounts_GetWideStringLength(playerName);
+            int length = GetWideTextLength(playerName);
             playerName[length - 1] = 0;
         }
         else
         {
-            MenuMpAccounts_CopyWideString(
+            Sub_695680(
                 reinterpret_cast<char*>(playerName), source);
         }
 
@@ -123,11 +123,11 @@ static int __fastcall CMenuPlayerInfo_InitializePlayerControls(
     root = reinterpret_cast<void*>(self->field_001c);
     reinterpret_cast<void(__fastcall*)(CMenuPlayerInfo*, void*, void*)>(
         CSF_AT(void**, self, 0)[0x44 / 4])(self, nullptr, root);
-    CMenuPlayerInfo_RefreshScreen(self, nullptr);
+    CMenuOptions_LayoutOptionButtons(self, nullptr);
 
     if (g_AccountMenuStateFlag && g_OnlineMatchFlag)
     {
-        void* state = GetGlobalState();
+        void* state = GetGlobalState_6A6D70();
         void* accountManager =
             reinterpret_cast<void*(__fastcall*)(void*, void*)>(
                 CSF_AT(void**, state, 0)[0xF4 / 4])(state, nullptr);

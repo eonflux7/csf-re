@@ -18,7 +18,7 @@ static void __fastcall CMenuMain_Destruct(CMenuMain* self, void* /*edx*/)
 {
     void* child = reinterpret_cast<void*>(self->field_0018);
 
-    CSF_AT(uint32_t, self, 0) = 0x00842550;   // CMenuMain vtable
+    CSF_AT(uint32_t, self, 0) = CSF_ADDR_VT(0x00842550);   // CMenuMain vtable
     self->field_0004 = 0x00842500;            // CMenuScreen intermediate vtable
 
     if (child) {
@@ -27,9 +27,9 @@ static void __fastcall CMenuMain_Destruct(CMenuMain* self, void* /*edx*/)
         self->field_0018 = 0;
     }
 
-    self->field_0004 = 0x00830488;
-    self->field_0004 = 0x00830438;
-    CSF_AT(uint32_t, self, 0) = 0x0083042C;
+    self->field_0004 = CSF_ADDR_DATA(0x00830488);
+    self->field_0004 = CSF_ADDR_VT(0x00830438);
+    CSF_AT(uint32_t, self, 0) = CSF_ADDR_VT(0x0083042C);
 }
 
 HOOK(0x0053A8D0, CMenuMain_Destruct, "auto");

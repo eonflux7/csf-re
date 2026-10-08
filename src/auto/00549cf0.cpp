@@ -28,9 +28,9 @@ struct VideoModeRequest {
     uint32_t f2C;          // +0x2C (1)
 };
 
-CSF_FUNC(int, __fastcall, MenuScreen_PrepareVideoMode, 0x00549760, (void* self, void* edx, void* request));
-CSF_FUNC(int, __fastcall, VideoMode_Validate, 0x00549C10, (void* self, void* edx, void* settings));
-CSF_FUNC(int, __fastcall, MenuVideoOptions_ApplyVideoSettings, 0x005496A0, (void* self, void* edx, void* settings));
+CSF_FUNC(int, __fastcall, CMenuVideoOptions_FillSettingsSnapshot, 0x00549760, (void* self, void* edx, void* request));
+CSF_FUNC(int, __fastcall, MenuVideo_IsSettingsDifferent, 0x00549C10, (void* self, void* edx, void* settings));
+CSF_FUNC(int, __fastcall, CMenuVideoOptions_ApplyVideoSettings, 0x005496A0, (void* self, void* edx, void* settings));
 
 static int __fastcall CMenuVideoOptions_ValidateAndApplyMode(CMenuVideoOptions* self, void* /*edx*/)
 {
@@ -49,14 +49,14 @@ static int __fastcall CMenuVideoOptions_ValidateAndApplyMode(CMenuVideoOptions* 
     request.f28        = 1;
     request.f2C        = 1;
 
-    MenuScreen_PrepareVideoMode(self, nullptr, &request);
+    CMenuVideoOptions_FillSettingsSnapshot(self, nullptr, &request);
 
     // Sub-object at +0x28 (address, not a loaded pointer).
     void* settingsSubObject = reinterpret_cast<uint8_t*>(self) + 0x28;
 
-    int isValid = VideoMode_Validate(&request, nullptr, settingsSubObject);
+    int isValid = MenuVideo_IsSettingsDifferent(&request, nullptr, settingsSubObject);
     if (static_cast<uint8_t>(isValid) != 0)
-        return MenuVideoOptions_ApplyVideoSettings(self, nullptr, settingsSubObject);
+        return CMenuVideoOptions_ApplyVideoSettings(self, nullptr, settingsSubObject);
 
     return isValid;
 }

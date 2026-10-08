@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 
 // Destructor body of CMenuExtras (releases owned menu resources / members).
-CSF_FUNC(void, __fastcall, CMenuExtras_DestroyBody, 0x547720,
+CSF_FUNC(void, __fastcall, CMenuExtras_DestroyContents, 0x547720,
          (CMenuExtras* self, void* edx));
 
 // Deleting destructor wrapper: runs the destructor body, then frees the object
@@ -12,7 +12,7 @@ CSF_FUNC(void, __fastcall, CMenuExtras_DestroyBody, 0x547720,
 static void* __fastcall CMenuExtras_Destroy(
     CMenuExtras* self, void* /*edx*/, char flags)
 {
-    CMenuExtras_DestroyBody(self, nullptr);
+    CMenuExtras_DestroyContents(self, nullptr);
     if ((flags & 1) != 0)
         game::Mem_Free(self);
     return self;

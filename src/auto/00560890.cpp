@@ -17,7 +17,7 @@ CSF_FUNC(void*, __cdecl, GetGlobalDword_8B0680, 0x0054E520, ());
 CSF_FUNC(uint8_t*, __fastcall, GetSessionEntryByIndex, 0x0054E610, (void* self, void* edx, int index));
 
 // Copies `byteCount` bytes from `source` to `destination` (cdecl, three stack args).
-CSF_FUNC(uint32_t, __cdecl, CopyEntryBytes, 0x00695590, (const uint8_t* source, uint8_t* destination, int byteCount));
+CSF_FUNC(uint32_t, __cdecl, CopyTrucoStringToWide, 0x00695590, (const uint8_t* source, uint8_t* destination, int byteCount));
 
 // Clears the listbox items and sends its event (__thiscall, no stack args).
 CSF_FUNC(int, __fastcall, CGuiListBoxBase_ClearStorageAndSendEvent, 0x00715660, (void* self, void* edx));
@@ -65,7 +65,7 @@ static int __fastcall CMenuMpSessions_RebuildPartidasList(CMenuMpSessions* self,
         const int requiredFlags = MenuMpSessions_FilterModeToEntryFlags(self->field_0018);
         if (entry != nullptr && (CSF_AT(int8_t, entry, 0x300) & requiredFlags) != 0)
         {
-            CopyEntryBytes(entry + 0x100, entryText, 0x100);
+            CopyTrucoStringToWide(entry + 0x100, entryText, 0x100);
 
             // Add the row through the listbox vtable (slot 0x294).
             void* listBox = reinterpret_cast<void*>(self->field_0034);

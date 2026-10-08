@@ -5,10 +5,10 @@
 #include "types/auto_classes.h"
 
 static const auto Mem_FreeDebug =
-    reinterpret_cast<int (__cdecl*)(void*)>(0x00690E60);
+    reinterpret_cast<int (__cdecl*)(void*)>(CSF_ADDR_FN(0x00690E60));
 
 static const auto CGuiSlider_ForwardSelfToParent =
-    reinterpret_cast<int (__fastcall*)(void*, void*)>(0x00718660);
+    reinterpret_cast<int (__fastcall*)(void*, void*)>(CSF_ADDR_FN(0x00718660));
 
 static void* __fastcall CMenuEula_UpdateNavigationButtons(
     CMenuEula* self, void* /*edx*/)

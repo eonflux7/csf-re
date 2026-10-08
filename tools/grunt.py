@@ -428,9 +428,13 @@ def _ask(backend, model, messages, key, effort="high"):
         live()
 
 
-def normalize(code):
+def normalize(code, ea=None):
     """Mechanical fixes applied before the gate (each used to cost a full retry call): the HOOK line's missing
-    semicolon; #include "globals.h" when CSF_* macros are used without it (132 of ~220 retries, 2026-10-07)."""
+    semicolon; #include "globals.h" when CSF_* macros are used without it (132 of ~220 retries, 2026-10-07);
+    raw original addresses -> CSF_VTBL / CSF_ADDR_* (tools/addrfix.py, needed to link standalone); callee
+    bindings renamed to the one canonical name per address (tools/api.py, db/api.json)."""
+    import addrfix, api
+    code = api.canonicalize(addrfix.fix(code, ea))
     code = re.sub(r"^(\s*HOOK(?:_METHOD)?\(.*\))\s*$", r"\1;", code, flags=re.M)
     hr = {"_DWORD": "std::uint32_t", "_WORD": "std::uint16_t", "_BYTE": "std::uint8_t", "_QWORD": "std::uint64_t"}
     if re.search(r"\b_(DWORD|WORD|BYTE|QWORD)\b", code):  # Hex-Rays types copied from the pseudocode
@@ -444,9 +448,9 @@ def normalize(code):
     return code
 
 
-def autofix(code):
+def autofix(code, ea=None):
     """normalize(), counted for the monitor (each fix is a retry call saved)."""
-    fixed = normalize(code)
+    fixed = normalize(code, ea)
     if fixed != code:
         with _live_lock:
             c = _live["counts"]
@@ -571,7 +575,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
             err = f"{backend} error: {e}"
             continue
         if code:
-            code = autofix(code)
+            code = autofix(code, ea)
         if not code:
             ok, err = False, "no ```cpp block found in your answer"
         else:
@@ -654,7 +658,7 @@ def work_batch(eas, db, key, model, out_dir=None, review_over=None, ev=None):
         part = parts.get(ea, "")
         code, meta = parse(part)
         if code:
-            code = autofix(code)
+            code = autofix(code, ea)
             tmp = os.path.join(ROOT, "work", "grunt", "codex", f"{ea:08x}.cpp")
             os.makedirs(os.path.dirname(tmp), exist_ok=True)
             open(tmp, "w").write(code)
@@ -1029,8 +1033,9 @@ def commit(good, title):
                                                             ("name", "summary", "confidence", "field_names", "class_guess", "notes")})) + "\n")
     save_csv(rows)
     subprocess.run([sys.executable, os.path.join(ROOT, "tools", "globals.py")], check=False)
+    subprocess.run([sys.executable, os.path.join(ROOT, "tools", "api.py"), "build"], check=False)  # canonical bindings
     files = [f"src/auto/{r['ea']:08x}.cpp" for r in good] + ["db/functions.csv", "db/proposals.jsonl", "db/globals.yaml",
-                                                       "db/verify.json"]
+                                                       "db/verify.json", "db/api.json"]
     files += [os.path.relpath(p, ROOT) for p in glob.glob(os.path.join(ROOT, "queue", "*.md"))]
     if subprocess.run(["git", "-C", ROOT, "ls-files", "--", "queue"], capture_output=True, text=True).stdout:
         files.append("queue")  # also stages escalations resolved (deleted) since the last commit

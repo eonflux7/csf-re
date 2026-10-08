@@ -5,17 +5,17 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __cdecl, AllocateSliderMemory, 0x006910F0,
+CSF_FUNC(void*, __cdecl, Mem_Alloc, 0x006910F0,
          (std::size_t size));
-CSF_FUNC(void*, __fastcall, ConstructSlider, 0x0072D8D0,
+CSF_FUNC(void*, __fastcall, CGuiSlider_Construct, 0x0072D8D0,
          (void* self, void* edx, std::uint32_t owner, void* member));
-CSF_FUNC(std::uint8_t*, __fastcall, FindControlProperty, 0x006932B0,
+CSF_FUNC(std::uint8_t*, __fastcall, FindProperty, 0x006932B0,
          (std::uint8_t* self, void* edx, char* keyword));
-CSF_FUNC(char, __fastcall, ReadControlPropertyText, 0x006939C0,
+CSF_FUNC(char, __fastcall, MenuExtras_ReadText, 0x006939C0,
          (std::uint8_t* self, void* edx, char* keyword, char* buffer, int capacity));
-CSF_FUNC(std::uint8_t*, __fastcall, ReadCommonControlProperties, 0x0071EBD0,
+CSF_FUNC(std::uint8_t*, __fastcall, CGuiBuilder_ReadControlProps, 0x0071EBD0,
          (CGuiBuilder* self, void* edx, void* control, std::uint8_t* properties));
-CSF_FUNC(int, __cdecl, CompareTextIgnoringCase, 0x007B0C41,
+CSF_FUNC(int, __cdecl, __stricmp, 0x007B0C41,
          (const char* left, const char* right));
 
 CSF_GLOBAL(char*, g_SliderOrientationKeyword, 0x008A86A0);
@@ -29,22 +29,22 @@ static int __fastcall CGuiBuilder_CreateSlider(
 {
     char orientation[256] = {};
 
-    void* slider = AllocateSliderMemory(0x16C);
+    void* slider = Mem_Alloc(0x16C);
     if (slider)
     {
-        slider = ConstructSlider(
+        slider = CGuiSlider_Construct(
             slider, nullptr, self->field_0004,
             reinterpret_cast<std::uint8_t*>(self) + 0x0C);
     }
 
-    ReadCommonControlProperties(self, nullptr, slider, properties);
+    CGuiBuilder_ReadControlProps(self, nullptr, slider, properties);
 
-    if (FindControlProperty(properties, nullptr, g_SliderOrientationKeyword))
+    if (FindProperty(properties, nullptr, g_SliderOrientationKeyword))
     {
-        ReadControlPropertyText(
+        MenuExtras_ReadText(
             properties, nullptr, g_SliderOrientationKeyword, orientation, 256);
 
-        if (CompareTextIgnoringCase(
+        if (__stricmp(
                 orientation, CSF_STR(0x00864B8C, "HORIZONTAL")) == 0)
         {
             reinterpret_cast<void(__fastcall*)(void*, void*, int)>(
@@ -54,7 +54,7 @@ static int __fastcall CGuiBuilder_CreateSlider(
     }
 
     std::uint8_t* property =
-        FindControlProperty(properties, nullptr, g_SliderFirstControlKeyword);
+        FindProperty(properties, nullptr, g_SliderFirstControlKeyword);
     if (property)
     {
         void** builderVtable = CSF_AT(void**, self, 0);
@@ -67,7 +67,7 @@ static int __fastcall CGuiBuilder_CreateSlider(
     }
 
     property =
-        FindControlProperty(properties, nullptr, g_SliderSecondControlKeyword);
+        FindProperty(properties, nullptr, g_SliderSecondControlKeyword);
     if (property)
     {
         void** builderVtable = CSF_AT(void**, self, 0);
@@ -80,7 +80,7 @@ static int __fastcall CGuiBuilder_CreateSlider(
     }
 
     property =
-        FindControlProperty(properties, nullptr, g_SliderThirdControlKeyword);
+        FindProperty(properties, nullptr, g_SliderThirdControlKeyword);
     if (property)
     {
         void** sliderVtable = CSF_AT(void**, slider, 0);
@@ -92,11 +92,11 @@ static int __fastcall CGuiBuilder_CreateSlider(
             sliderVtable[0x250 / 4])(slider, nullptr, control);
     }
 
-    if (FindControlProperty(properties, nullptr, g_SliderConsoleKeyword))
+    if (FindProperty(properties, nullptr, g_SliderConsoleKeyword))
     {
         char* keyword = g_SliderConsoleKeyword;
         char consoleText[256] = {};
-        ReadControlPropertyText(
+        MenuExtras_ReadText(
             properties, nullptr, keyword, consoleText, 256);
 
         const auto* consoleConstant = reinterpret_cast<const std::uint8_t*>(

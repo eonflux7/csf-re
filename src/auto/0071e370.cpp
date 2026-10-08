@@ -14,7 +14,7 @@ CSF_FUNC(std::uint32_t, __fastcall, GetComponent, 0x00692BD0,
          (std::uint8_t* node, void* edx, unsigned int index));
 CSF_FUNC(int, __fastcall, ParseIntegerComponent, 0x00692C40,
          (std::uint32_t component));
-CSF_FUNC(char, __stdcall, ReadFourComponents, 0x0071DA70,
+CSF_FUNC(char, __stdcall, CGuiBuilder_ReadFourComponents, 0x0071DA70,
          (std::uint8_t* node, float* components));
 
 static int __fastcall CGuiBuilder_CreateColorQuad(
@@ -71,7 +71,7 @@ static int __fastcall CGuiBuilder_CreateColorQuad(
         color[2] = 0.0f;
         color[3] = 1.0f;
         property = FindProperty(node, nullptr, g_ColorKeyword);
-        if (ReadFourComponents(property, color))
+        if (CGuiBuilder_ReadFourComponents(property, color))
         {
             ((void (__fastcall*)(void*, void*, float*))
              CSF_AT(void**, quad, 0)[0x2C / 4])(quad, nullptr, color);

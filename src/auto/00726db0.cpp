@@ -5,7 +5,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __cdecl, CopyBytes, 0x007AEE60,
+CSF_FUNC(void*, __cdecl, _memcpy, 0x007AEE60,
          (void* destination, const void* source, std::size_t byteCount));
 
 static void __fastcall C_008655e8_RemoveEntry(
@@ -35,7 +35,7 @@ static void __fastcall C_008655e8_RemoveEntry(
 
     auto* destination =
         reinterpret_cast<uint8_t*>(self->field_0034) + index * 4u;
-    CopyBytes(destination, destination + 4u, (newCount - index) * 4u);
+    _memcpy(destination, destination + 4u, (newCount - index) * 4u);
 }
 
 HOOK(0x00726DB0, C_008655e8_RemoveEntry, "auto");

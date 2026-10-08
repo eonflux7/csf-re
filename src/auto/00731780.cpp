@@ -6,7 +6,7 @@
 
 CSF_FUNC(int, __fastcall, CGuiTextureListBox_GetColumnCount, 0x00714830,
          (CGuiTextureListBox* self, void* edx));
-CSF_FUNC(unsigned int, __fastcall, ResizeDwordVector, 0x00731000,
+CSF_FUNC(unsigned int, __fastcall, ResizeDwordVector_731000, 0x00731000,
          (unsigned int* self, void* edx, unsigned int count, int value));
 CSF_FUNC(void*, __fastcall, InsertTextureRows, 0x00731440,
          (void* self, void* edx, int position,
@@ -24,7 +24,7 @@ static void* __fastcall CGuiTextureListBox_AppendEmptyTextureRows(
     row[1] = 0;
     row[2] = 0;
     row[3] = 0;
-    ResizeDwordVector(row, nullptr, columnCount, 0);
+    ResizeDwordVector_731000(row, nullptr, columnCount, 0);
 
     InsertTextureRows(
         reinterpret_cast<std::uint8_t*>(self) + 0x1F8,

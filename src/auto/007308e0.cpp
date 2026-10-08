@@ -5,7 +5,7 @@
 
 // Copies a single four-byte element from `source` into `destination` using a
 // caller supplied context object (allocator / owning container, etc.).
-CSF_FUNC(std::uint32_t*, __fastcall, CopyElementWithContext, 0x00730830,
+CSF_FUNC(std::uint32_t*, __fastcall, CopyDwordIfNotNull, 0x00730830,
          (void* context, void* edx, std::uint32_t* destination,
           std::uint32_t* source));
 
@@ -14,7 +14,7 @@ CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInformation));
 
 // Frame handler referenced through the compiler generated handler stub.
-CSF_FUNC(int, __cdecl, HandleCppExceptionFrame, 0x007AF226,
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226,
          (void* exceptionRecord, void* frame, void* context,
           void* dispatcherContext));
 
@@ -24,7 +24,7 @@ CSF_GLOBAL(std::uint8_t, g_ElementCopyExceptionHandlerStub, 0x008280F0);
 CSF_GLOBAL(std::uint8_t, g_ElementCopyExceptionMetadata, 0x008928E8);
 
 // Copies `count` four-byte elements from `source` into the consecutive slots at
-// `destination`, forwarding each to CopyElementWithContext with `context`.
+// `destination`, forwarding each to CopyDwordIfNotNull with `context`.
 static std::uint32_t* __cdecl CopyFourByteElementsWithContext(
     std::uint32_t* destination,
     std::uint32_t count,
@@ -39,7 +39,7 @@ static std::uint32_t* __cdecl CopyFourByteElementsWithContext(
     {
         while (count != 0)
         {
-            result = CopyElementWithContext(context, nullptr, destination, source);
+            result = CopyDwordIfNotNull(context, nullptr, destination, source);
 
             --count;
             destination = reinterpret_cast<std::uint32_t*>(

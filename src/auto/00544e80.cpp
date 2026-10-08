@@ -11,7 +11,7 @@
 //   arg4 = this  (incoming ecx value)
 //   arg5 = a3    (pushed first)
 // ---------------------------------------------------------------------------
-CSF_FUNC(int, __cdecl, MenuSaveGame_ForwardedCall, 0x544CA0,
+CSF_FUNC(int, __cdecl, CopyConstructRecordRange_544CA0, 0x544CA0,
          (int a1, int a2, int a3, int a4, int a5));
 
 // ---------------------------------------------------------------------------
@@ -21,12 +21,12 @@ CSF_FUNC(int, __cdecl, MenuSaveGame_ForwardedCall, 0x544CA0,
 // count of the original (ret 0xC) is reproduced exactly.
 //   entry : ecx = self, stack args a1, a2, a3
 //   pushes: a3, self, a3, a2, a1
-//   call  : MenuSaveGame_ForwardedCall(a1, a2, a3, self, a3)
+//   call  : CopyConstructRecordRange_544CA0(a1, a2, a3, self, a3)
 // ---------------------------------------------------------------------------
 static int __fastcall CMenuSaveGame_ForwardToHelper(void* self, void* /*edx*/,
                                                     int a1, int a2, int a3)
 {
-    return MenuSaveGame_ForwardedCall(a1, a2, a3, reinterpret_cast<int>(self), a3);
+    return CopyConstructRecordRange_544CA0(a1, a2, a3, reinterpret_cast<int>(self), a3);
 }
 
 HOOK(0x544E80, CMenuSaveGame_ForwardToHelper, "auto");

@@ -5,7 +5,7 @@
 
 // Copy `count` four-byte elements from `source` into `destination`,
 // passing the owning container and a context tag to the element hook.
-CSF_FUNC(int, __cdecl, CopyFourByteElementsWithContext, 0x00726E80,
+CSF_FUNC(int, __cdecl, CopyFourByteElementsWithContext_726E80, 0x00726E80,
          (std::uint32_t destination, int count, const std::uint32_t* source,
           void* owner, std::uint32_t tag));
 
@@ -49,7 +49,7 @@ static std::uint32_t __fastcall AppendFourByteElement(
         0xFFFFFF00u;
 
     const int result =
-        CopyFourByteElementsWithContext(end, 1, source, self, tag);
+        CopyFourByteElementsWithContext_726E80(end, 1, source, self, tag);
     CSF_AT(std::uint32_t, self, 0x08) = end + 4u;
     return static_cast<std::uint32_t>(result);
 }

@@ -12,7 +12,7 @@
 
 // Callee 0x544340: the caller pushes four arguments and cleans up with add esp,0x10.
 // Argument order (first to last): [a1+4], [a1+8], a1, a1.
-CSF_FUNC(int, __cdecl, MenuSaveGame_ReleaseSlotChildren, 0x00544340,
+CSF_FUNC(int, __cdecl, MenuSaveGame_ClearSlotRange, 0x00544340,
          (int* first, int* second, int* self_a, int* self_b));
 
 // Game heap free used by the original (Mem_FreeDebug).
@@ -26,7 +26,7 @@ static int* __cdecl MenuSaveGame_ClearSlotState(int* a1)
     if (result)
     {
         int* secondary = CSF_AT(int*, a1, 0x8);
-        MenuSaveGame_ReleaseSlotChildren(result, secondary, a1, a1);
+        MenuSaveGame_ClearSlotRange(result, secondary, a1, a1);
 
         result = CSF_AT(int*, a1, 0x4);
         if (result)

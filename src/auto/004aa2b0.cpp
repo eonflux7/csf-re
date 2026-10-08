@@ -15,7 +15,7 @@
 static const char* __cdecl GetTEntrarString()
 {
     CSF_STR(0x838DBC, "TEntrar");
-    return reinterpret_cast<const char*>(0x838DBC);
+    return reinterpret_cast<const char*>(CSF_ADDR_DATA(0x838DBC));
 }
 
 HOOK(0x4AA2B0, GetTEntrarString, "auto");

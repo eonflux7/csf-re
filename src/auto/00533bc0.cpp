@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "globals.h"
 
-CSF_FUNC(void*, __cdecl, GameMemchr, 0x007B0510,
+CSF_FUNC(void*, __cdecl, _memchr, 0x007B0510,
          (const void* buffer, int character, std::size_t count));
 
 static int __fastcall MenuMpPause_FindSubstring(
@@ -36,7 +36,7 @@ static int __fastcall MenuMpPause_FindSubstring(
     std::uintptr_t searchStart =
         reinterpret_cast<std::uintptr_t>(data) + position;
 
-    char* candidate = static_cast<char*>(GameMemchr(
+    char* candidate = static_cast<char*>(_memchr(
         reinterpret_cast<const void*>(searchStart),
         static_cast<int>(*reinterpret_cast<const std::int8_t*>(pattern)),
         candidateCount));
@@ -72,7 +72,7 @@ static int __fastcall MenuMpPause_FindSubstring(
             searchStart - candidateAddress - 1u);
         searchStart = candidateAddress + 1u;
 
-        candidate = static_cast<char*>(GameMemchr(
+        candidate = static_cast<char*>(_memchr(
             reinterpret_cast<const void*>(searchStart),
             static_cast<int>(*reinterpret_cast<const std::int8_t*>(pattern)),
             candidateCount));

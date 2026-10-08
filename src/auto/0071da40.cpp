@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, InitializeEmptyPanel, 0x0072C7F0,
+CSF_FUNC(int, __fastcall, CGuiPanel_ConstructFromSource, 0x0072C7F0,
          (void* self, void* edx, void* builderContext));
 
 static int __fastcall CGuiBuilder_CreateEmptyPanel(CGuiBuilder* self, void* /*edx*/)
@@ -14,7 +14,7 @@ static int __fastcall CGuiBuilder_CreateEmptyPanel(CGuiBuilder* self, void* /*ed
     if (!panel)
         return 0;
 
-    return InitializeEmptyPanel(
+    return CGuiPanel_ConstructFromSource(
         panel, nullptr, reinterpret_cast<std::uint8_t*>(self) + 0x0C);
 }
 

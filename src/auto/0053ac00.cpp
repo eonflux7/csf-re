@@ -6,10 +6,10 @@
 #include "types/auto_classes.h"
 
 // Original: void sub_521BB0(void) - cdecl, returns a global value (interpreted as an int handle).
-CSF_FUNC(int, __cdecl, GetGlobalValue, 0x00521BB0, ());
+CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x00521BB0, ());
 
 // Original: void __thiscall sub_5231D0(int this, int a2) - ret 4.
-CSF_FUNC(void, __fastcall, CMenuOptions_ApplyGlobalSelection, 0x005231D0, (void* self, void* edx, int a2));
+CSF_FUNC(void, __fastcall, GlobalSetValue_5231D0, 0x005231D0, (void* self, void* edx, int a2));
 
 // Original: void nullsub_2(void) - empty.
 CSF_FUNC(void, __cdecl, Nullsub_506AC0, 0x00506AC0, ());
@@ -34,10 +34,10 @@ static void __fastcall CMenuOptions_SetActiveTab(CMenuOptions* self, void* /*edx
     }
 
     // Original pushes field_0034 as the stack argument consumed by ApplyGlobalSelection
-    // (the push also remains on the stack during GetGlobalValue, which ignores it).
+    // (the push also remains on the stack during GetGlobalValue_521BB0, which ignores it).
     int selection = static_cast<int>(self->field_0034);
-    int globalHandle = GetGlobalValue();
-    CMenuOptions_ApplyGlobalSelection(reinterpret_cast<void*>(static_cast<intptr_t>(globalHandle)), nullptr, selection);
+    int globalHandle = GetGlobalValue_521BB0();
+    GlobalSetValue_5231D0(reinterpret_cast<void*>(static_cast<intptr_t>(globalHandle)), nullptr, selection);
     Nullsub_506AC0();
 }
 

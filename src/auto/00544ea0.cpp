@@ -5,34 +5,34 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __fastcall, SaveGame_CopyStringRange, 0x00488830,
+CSF_FUNC(void*, __fastcall, AssignStringRange_488830, 0x00488830,
          (void* destination, void* edx, const void* source,
           uint32_t position, uint32_t count));
 CSF_FUNC(void*, __fastcall, SaveGame_AssignString, 0x004F25F0,
          (void* destination, void* edx, const void* source));
-CSF_FUNC(int, __fastcall, SaveGame_ConstructRecord, 0x00501170,
+CSF_FUNC(int, __fastcall, ResetInnerBuffer, 0x00501170,
          (void* record, void* edx));
 CSF_FUNC(uint32_t, __fastcall, SaveGame_DestroyRecord, 0x00500A80,
          (void* record, void* edx));
 CSF_FUNC(int, __fastcall, SaveGame_ValidateName, 0x00696BB0,
          (void* name, void* edx, const uint8_t* separator));
-CSF_FUNC(void*, __cdecl, SaveGame_ConstructLocalizedString, 0x00692720,
+CSF_FUNC(void*, __cdecl, InitStringFromLiteral, 0x00692720,
          (void* destination, const char* key, int option));
 CSF_FUNC(int, __fastcall, SaveGame_DestroyLocalizedString, 0x00428E90,
          (void* string, void* edx));
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x0050D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 CSF_FUNC(uint32_t, __fastcall, SaveGame_ShowMessage, 0x0050F860,
          (void* state, void* edx, const void* text, int kind, int option));
-CSF_FUNC(int*, __cdecl, SaveGame_ClearListContainer, 0x00541650,
+CSF_FUNC(int*, __cdecl, MenuSaveGame_ClearListContainer, 0x00541650,
          (int* container));
-CSF_FUNC(int, __cdecl, SaveGame_FreeStringStorage, 0x00690E60,
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60,
          (void* storage));
 
 // These bindings cannot express the original additional EBX argument.
 // Both call sites require EBX == 0; see metadata.
 CSF_FUNC(void, __fastcall, CMenuSaveGame_RefreshSaveGameList, 0x00544900,
          (CMenuSaveGame* self, void* edx));
-CSF_FUNC(void, __cdecl, SaveGame_ForwardToListLayout, 0x00541570,
+CSF_FUNC(void, __cdecl, MenuMpStats_ForwardToLayout541230, 0x00541570,
          (void* container, uint32_t value));
 
 CSF_GLOBAL(uint8_t, g_SaveGameNameSeparator, 0x0082E65C);
@@ -51,7 +51,7 @@ static void __fastcall CMenuSaveGame_HandleNameDialogResult(
     name[6] = 7;
     name[5] = 0;
     CSF_AT(uint16_t, name, 4) = 0;
-    SaveGame_CopyStringRange(
+    AssignStringRange_488830(
         name, nullptr, static_cast<uint8_t*>(result) + 0x34,
         0, UINT32_MAX);
 
@@ -107,7 +107,7 @@ static void __fastcall CMenuSaveGame_HandleNameDialogResult(
             else
             {
                 alignas(4) uint8_t record[200];
-                SaveGame_ConstructRecord(record, nullptr);
+                ResetInnerBuffer(record, nullptr);
 
                 void* saveManager =
                     reinterpret_cast<void*>(self->field_0058);
@@ -115,7 +115,7 @@ static void __fastcall CMenuSaveGame_HandleNameDialogResult(
                     CSF_AT(void**, saveManager, 0)[0x0C / 4])(
                         saveManager, nullptr, record + 0x1C);
 
-                SaveGame_CopyStringRange(
+                AssignStringRange_488830(
                     record, nullptr, name, 0, UINT32_MAX);
 
                 saveManager = reinterpret_cast<void*>(self->field_0058);
@@ -143,7 +143,7 @@ static void __fastcall CMenuSaveGame_HandleNameDialogResult(
             message[6] = 7;
             self->field_0050 = 5;
 
-            SaveGame_ConstructLocalizedString(
+            InitStringFromLiteral(
                 message, CSF_STR(0x00843B24, "GEN7"), 1);
 
             const void* text =
@@ -151,7 +151,7 @@ static void __fastcall CMenuSaveGame_HandleNameDialogResult(
             if (message[6] < 8)
                 text = reinterpret_cast<uint8_t*>(message) + 4;
 
-            void* state = GetGlobalState();
+            void* state = GetGlobalState_50D190();
             SaveGame_ShowMessage(state, nullptr, text, 16, 0);
             SaveGame_DestroyLocalizedString(message, nullptr);
         }
@@ -166,8 +166,8 @@ static void __fastcall CMenuSaveGame_HandleNameDialogResult(
             CSF_AT(void**, dialog, 0)[0x16C / 4])(dialog, nullptr);
 
         void* container = reinterpret_cast<uint8_t*>(self) + 0x20;
-        SaveGame_ClearListContainer(static_cast<int*>(container));
-        SaveGame_ForwardToListLayout(container, self->field_001c);
+        MenuSaveGame_ClearListContainer(static_cast<int*>(container));
+        MenuMpStats_ForwardToLayout541230(container, self->field_001c);
         self->field_0050 = UINT32_MAX;
     }
 
@@ -175,7 +175,7 @@ static void __fastcall CMenuSaveGame_HandleNameDialogResult(
     {
         void* storage = reinterpret_cast<void*>(name[1]);
         if (storage)
-            SaveGame_FreeStringStorage(storage);
+            Mem_FreeDebug(storage);
     }
 }
 

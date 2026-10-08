@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 
 static void* (__fastcall* const ResolveInstanceFactory)(void*, void*) =
-    reinterpret_cast<void* (__fastcall*)(void*, void*)>(0x00686C10);
+    reinterpret_cast<void* (__fastcall*)(void*, void*)>(CSF_ADDR_FN(0x00686C10));
 
 static int __fastcall C_008657e0_ReplaceInstance(
     C_008657e0* self, void* /*edx*/, int configuration, int value)

@@ -24,7 +24,7 @@ CSF_FUNC(void, __fastcall, C_008BABFC_AddRangedFloat, 0x0068F560,
          (void* self, void* /*edx*/, float from, float value, float zero, float to));
 
 // 0x00646D30: error/report helper, __cdecl with four arguments (pops nothing).
-CSF_FUNC(void, __cdecl, ReportFloatRangeError_646D30, 0x00646D30,
+CSF_FUNC(void, __cdecl, Game_RaiseStatusNotice, 0x00646D30,
          (int, int, uint32_t, int));
 
 // Replaces 0x0073C670. Returns 1 after registering the range, 0 after reporting
@@ -36,7 +36,7 @@ static char __stdcall ProcessRangedFloat(float from, float to, float step)
     // unordered/NaN comparisons never take it.
     if (step <= g_FloatZero_0082D4CC || to < from)
     {
-        ReportFloatRangeError_646D30(0, 0, 0xE0030005u, 0);
+        Game_RaiseStatusNotice(0, 0, 0xE0030005u, 0);
         return 0;
     }
 

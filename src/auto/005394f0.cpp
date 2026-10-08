@@ -12,13 +12,13 @@ CSF_FUNC(char, __fastcall, CMenuLoading_UpdatePortraits, 0x00538DD0,
          (CMenuLoading* self, void* edx, void* context));
 CSF_FUNC(void*, __fastcall, CMenuLoading_InitializePanelContents, 0x00539050,
          (CMenuLoading* self, void* edx));
-CSF_FUNC(std::uint16_t*, __cdecl, CMenuLoading_GetBriefingText, 0x00539340,
+CSF_FUNC(std::uint16_t*, __cdecl, MenuLoading_GetLoadingText, 0x00539340,
          (std::uint16_t* buffer, int capacity));
-CSF_FUNC(void*, __fastcall, GetDisplaySettings, 0x00652160,
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160,
          (void* self, void* edx));
-CSF_FUNC(void, __fastcall, ResetPanelState, 0x006923B0,
+CSF_FUNC(void, __fastcall, AddObjectReference, 0x006923B0,
          (void* self, void* edx));
-CSF_FUNC(void*, __fastcall, InternPanelName, 0x00693360,
+CSF_FUNC(void*, __fastcall, LookupNamedElement, 0x00693360,
          (void* self, void* edx, const char* name));
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
 CSF_FUNC(int, __fastcall, C_00720DF0_ForwardCallToChildVtblSlot16, 0x00720DF0,
@@ -40,7 +40,7 @@ static char __fastcall CMenuLoading_InitializePanel(
 
     void* nameRegistry = CSF_AT(void*, context, 0);
     void** containerVtable = CSF_AT(void**, panelContainer, 0);
-    void* panelName = InternPanelName(
+    void* panelName = LookupNamedElement(
         nameRegistry, nullptr, CSF_STR(0x00841304, ".PANEL_PRINCIPAL"));
 
     void* panel =
@@ -51,7 +51,7 @@ static char __fastcall CMenuLoading_InitializePanel(
 
     if (result)
     {
-        void* settings = GetDisplaySettings(
+        void* settings = LookupObjectById(
             reinterpret_cast<void*>(GetGlobalInt()), nullptr);
         void* dimensions =
             ((void*(__fastcall*)(void*, void*))
@@ -59,7 +59,7 @@ static char __fastcall CMenuLoading_InitializePanel(
         const std::uint32_t viewportWidth =
             CSF_AT(std::uint32_t, dimensions, 0);
 
-        settings = GetDisplaySettings(
+        settings = LookupObjectById(
             reinterpret_cast<void*>(GetGlobalInt()), nullptr);
         dimensions =
             ((void*(__fastcall*)(void*, void*))
@@ -116,7 +116,7 @@ static char __fastcall CMenuLoading_InitializePanel(
         ((void*(__fastcall*)(void*, void*))
             CSF_AT(void**, panel, 0)[0xdc / 4])(panel, nullptr);
     self->field_003c = reinterpret_cast<std::uint32_t>(panelState);
-    ResetPanelState(static_cast<std::uint8_t*>(panelState) + 4, nullptr);
+    AddObjectReference(static_cast<std::uint8_t*>(panelState) + 4, nullptr);
 
     panel = reinterpret_cast<void*>(self->field_002c);
     ((void(__fastcall*)(void*, void*, int))
@@ -168,7 +168,7 @@ static char __fastcall CMenuLoading_InitializePanel(
             CSF_AT(void**, self, 0)[0x5c / 4])(self, nullptr);
 
         std::uint16_t textBuffer[1024];
-        std::uint16_t* text = CMenuLoading_GetBriefingText(textBuffer, 1024);
+        std::uint16_t* text = MenuLoading_GetLoadingText(textBuffer, 1024);
         C_00720DF0_ForwardCallToChildVtblSlot16(
             reinterpret_cast<void*>(self->field_0028), nullptr, text);
     }

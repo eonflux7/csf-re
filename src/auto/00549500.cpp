@@ -26,7 +26,7 @@ CSF_FUNC(int, __fastcall, CMenuAccountEdit_HandleEmbeddedControlEvent, 0x55DE90,
          (void* self, void* edx, int a2, int a3));
 
 // 0x00428480 -- __cdecl query returning an integer result (no callee cleanup).
-CSF_FUNC(int, __cdecl, MenuVideoOptions_QueryState, 0x428480, (int a1));
+CSF_FUNC(int, __cdecl, MenuBase_DefaultHandler, 0x428480, (int a1));
 
 // 0x00549500
 // Forwards the incoming "this" (ecx) plus both of its own stack arguments to the
@@ -36,7 +36,7 @@ static int __fastcall MenuVideoOptions_HandleEmbeddedControlEventThenQuery(
     void* self, void* /*edx*/, int a1, int a2)
 {
     CMenuAccountEdit_HandleEmbeddedControlEvent(self, nullptr, a1, a2);
-    return MenuVideoOptions_QueryState(a1);
+    return MenuBase_DefaultHandler(a1);
 }
 
 HOOK(0x549500, MenuVideoOptions_HandleEmbeddedControlEventThenQuery, "auto");

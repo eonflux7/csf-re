@@ -11,17 +11,17 @@ struct PlayerIconStringArgument {
 };
 static_assert(sizeof(PlayerIconStringArgument) == 28);
 
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x006A6D70, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_6A6D70, 0x006A6D70, ());
 CSF_FUNC(void*, __cdecl, GetGlobal8B0688, 0x00550CC0, ());
 CSF_FUNC(void*, __fastcall, MenuMpAccounts_FindAccountByName, 0x0055BCB0,
          (void* self, void* edx, char* name));
-CSF_FUNC(unsigned int, __cdecl, ConvertWideNameToNarrow, 0x00695620,
+CSF_FUNC(unsigned int, __cdecl, ConvertWideTextToNarrow, 0x00695620,
          (const std::uint16_t* source, char* destination, unsigned int count));
 CSF_FUNC(void, __cdecl, AppendWideString, 0x00695700,
          (std::uint16_t* destination, const std::uint16_t* source));
-CSF_FUNC(void*, __fastcall, ConstructWideStringFromNarrow, 0x00697100,
+CSF_FUNC(void*, __fastcall, FormatterSetPattern, 0x00697100,
          (void* self, void* edx, const void* text));
-CSF_FUNC(void*, __cdecl, FormatPlayerIconMarker, 0x00696A80,
+CSF_FUNC(void*, __cdecl, FormatCountTextBuffer, 0x00696A80,
          (void* destination, PlayerIconStringArgument format,
           int icon, int formattingMode));
 CSF_FUNC(std::uint8_t, __cdecl, IsAlternatePlayerState, 0x00743920,
@@ -47,9 +47,9 @@ static int __stdcall CMenuPlayerList_BuildPlayerStatusIcons(
     int connectionIcon = -1;
     int flags = 0;
 
-    ConvertWideNameToNarrow(playerName, narrowName, 16);
+    ConvertWideTextToNarrow(playerName, narrowName, 16);
 
-    void* state = GetGlobalState();
+    void* state = GetGlobalState_6A6D70();
     void* accounts =
         reinterpret_cast<void* (__fastcall*)(void*, void*)>(
             CSF_AT(void**, state, 0)[0xF4 / 4])(state, nullptr);
@@ -103,26 +103,26 @@ static int __stdcall CMenuPlayerList_BuildPlayerStatusIcons(
 
     PlayerIconStringArgument accountText;
     PlayerIconStringArgument connectionText;
-    ConstructWideStringFromNarrow(
+    FormatterSetPattern(
         &accountText, nullptr, &g_EmptyPlayerIconText);
-    ConstructWideStringFromNarrow(
+    FormatterSetPattern(
         &connectionText, nullptr, &g_EmptyPlayerIconText);
 
     if (accountIcon != -1) {
         const int formattingMode = g_NumberFormattingMode;
         PlayerIconStringArgument format;
-        ConstructWideStringFromNarrow(
+        FormatterSetPattern(
             &format, nullptr, CSF_STR(0x008456C8, "@@{d0}/  "));
-        FormatPlayerIconMarker(
+        FormatCountTextBuffer(
             &accountText, format, accountIcon, formattingMode);
     }
 
     if (connectionIcon != -1) {
         const int formattingMode = g_NumberFormattingMode;
         PlayerIconStringArgument format;
-        ConstructWideStringFromNarrow(
+        FormatterSetPattern(
             &format, nullptr, CSF_STR(0x00841B28, "@@{d0}/"));
-        FormatPlayerIconMarker(
+        FormatCountTextBuffer(
             &connectionText, format, connectionIcon, formattingMode);
     }
 

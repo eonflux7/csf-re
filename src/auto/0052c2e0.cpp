@@ -5,11 +5,11 @@
 #include "types/auto_classes.h"
 
 // Vtable addresses referenced by this function, bound as immediate constants.
-static constexpr uintptr_t kVtblCMenuTextInputEdit = 0x00841450;
-static constexpr uintptr_t kVtblCMenuScreenBaseEdit = 0x00841400;
-static constexpr uintptr_t kVtblCMenuTextInputIntermediate = 0x00830488;
-static constexpr uintptr_t kVtblCMenuTextInputFinal = 0x00830438;
-static constexpr uintptr_t kVtblCMenuScreenRoot = 0x0083042C;
+static const uintptr_t kVtblCMenuTextInputEdit = CSF_ADDR_VT(0x00841450);
+static const uintptr_t kVtblCMenuScreenBaseEdit = CSF_ADDR_DATA(0x00841400);
+static const uintptr_t kVtblCMenuTextInputIntermediate = CSF_ADDR_DATA(0x00830488);
+static const uintptr_t kVtblCMenuTextInputFinal = CSF_ADDR_VT(0x00830438);
+static const uintptr_t kVtblCMenuScreenRoot = CSF_ADDR_VT(0x0083042C);
 
 // Callees bound by address.
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x690E60, (void* block));

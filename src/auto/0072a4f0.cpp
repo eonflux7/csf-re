@@ -5,10 +5,10 @@
 #include "types/auto_classes.h"
 
 static int (__fastcall* const CGuiControl_IsFocusEligible)(CGuiControl*, void*) =
-    reinterpret_cast<int (__fastcall*)(CGuiControl*, void*)>(0x00718700);
+    reinterpret_cast<int (__fastcall*)(CGuiControl*, void*)>(CSF_ADDR_FN(0x00718700));
 
 static int (__fastcall* const CGuiControl_ResolveFocusState)(CGuiControl*, void*) =
-    reinterpret_cast<int (__fastcall*)(CGuiControl*, void*)>(0x00718660);
+    reinterpret_cast<int (__fastcall*)(CGuiControl*, void*)>(CSF_ADDR_FN(0x00718660));
 
 static int __fastcall CGuiPanel_SetFocusedControl(
     CGuiPanel* self, void* /*edx*/, CGuiControl* control)

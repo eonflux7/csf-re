@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Resolves the object held behind this+0x04 (lib helper, __thiscall, no args).
-CSF_FUNC(void**, __fastcall, MenuProfiles_ResolveHeldObject_6683F0, 0x006683F0, (void* self, void* edx));
+CSF_FUNC(void**, __fastcall, GetReferencedObject, 0x006683F0, (void* self, void* edx));
 
 // Invokes virtual slot `slot` (byte offset / 4) on a polymorphic object.
 // Calling convention matches the original __thiscall virtual calls (ecx = this, stack args).
@@ -30,13 +30,13 @@ static int __fastcall CMenuProfiles_SyncListboxScrollToSelection(CMenuProfiles* 
 {
     uint8_t* selfBytes = reinterpret_cast<uint8_t*>(self);
 
-    void** statusHolder = MenuProfiles_ResolveHeldObject_6683F0(selfBytes + 4, nullptr);
+    void** statusHolder = GetReferencedObject(selfBytes + 4, nullptr);
     int statusOk = MenuProfiles_VCall<int>(statusHolder, 0x30);
     if (statusOk == 0)
         return statusOk;
 
-    void** holderA = MenuProfiles_ResolveHeldObject_6683F0(selfBytes + 4, nullptr);
-    void** holderB = MenuProfiles_ResolveHeldObject_6683F0(selfBytes + 4, nullptr);
+    void** holderA = GetReferencedObject(selfBytes + 4, nullptr);
+    void** holderB = GetReferencedObject(selfBytes + 4, nullptr);
 
     void* posA = MenuProfiles_VCall<void*>(holderA, 0x30);
     int32_t posAY = CSF_AT(int32_t, posA, 0x18);

@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Callees and data bound by address.
-CSF_FUNC(void*, __fastcall, SaveGameSubObject_Init, 0x697130, (void* self, void* /*edx*/, uint8_t* flagByte));
+CSF_FUNC(void*, __fastcall, TextInputSubobject_Init, 0x697130, (void* self, void* /*edx*/, uint8_t* flagByte));
 CSF_FUNC(int, __cdecl, MenuSaveGame_ClearSlotRange, 0x544340, (int* firstSlot, int* lastSlot, void* menuSlots, void* owner));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x690E60, (void* block));
 CSF_GLOBAL(uint8_t, g_SaveGameFlagByte, 0x82E65C);
@@ -36,7 +36,7 @@ static void* __fastcall MenuSaveGame_ResetState(void* self, void* /*edx*/)
 
     CSF_AT(uint32_t, base, 0x00) = 0;
 
-    SaveGameSubObject_Init(base + 0x14, nullptr, &g_SaveGameFlagByte);
+    TextInputSubobject_Init(base + 0x14, nullptr, &g_SaveGameFlagByte);
 
     CSF_AT(uint8_t, base, 0x30) = 0;
 

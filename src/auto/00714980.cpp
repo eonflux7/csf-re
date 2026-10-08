@@ -3,13 +3,13 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(std::uint32_t*, __stdcall, CopyConstructPointerElement,
+CSF_FUNC(std::uint32_t*, __stdcall, CopyDwordIfNotNull,
          0x00730830, (std::uint32_t* destination, std::uint32_t* source));
 
 CSF_FUNC(void, __stdcall, RethrowCppException,
          0x007AF666, (void* exceptionObject, void* throwInformation));
 
-CSF_FUNC(int, __cdecl, HandleCppExceptionFrame, 0x007AF226, (...));
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226, (...));
 CSF_GLOBAL(std::uint8_t, g_PointerRangeCopyExceptionInformation, 0x00891908);
 
 static int __cdecl CopyConstructPointerRange(
@@ -22,7 +22,7 @@ static int __cdecl CopyConstructPointerRange(
     {
         while (source != sourceEnd)
         {
-            CopyConstructPointerElement(
+            CopyDwordIfNotNull(
                 reinterpret_cast<std::uint32_t*>(destination),
                 reinterpret_cast<std::uint32_t*>(source));
             destination += 4u;

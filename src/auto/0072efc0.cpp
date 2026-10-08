@@ -6,15 +6,15 @@
 // If any construction throws, the already-constructed elements are destroyed
 // and the exception is rethrown. Used by the STL / container copy machinery.
 
-CSF_FUNC(void, __stdcall, ConstructElement, 0x00547090,
+CSF_FUNC(void, __stdcall, MenuExtras_InitStringFromPair, 0x00547090,
          (std::uint32_t* destination, std::uint32_t* source));
 
-CSF_FUNC(void, __stdcall, DestroyElement, 0x005466C0, (std::uint32_t* element));
+CSF_FUNC(void, __stdcall, ResetStringStorage_5466C0, 0x005466C0, (std::uint32_t* element));
 
-CSF_FUNC(void, __stdcall, RethrowCurrentException, 0x007AF666,
+CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInfo));
 
-CSF_FUNC(int, __cdecl, OriginalCxxFrameHandler, 0x007AF226,
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226,
          (void* exceptionRecord, void* frame, void* context, void* dispatcher));
 
 // Compiler-generated EH handler stub and its scope table (bind addresses, not symbols).
@@ -36,7 +36,7 @@ static std::uint32_t* __cdecl CopyConstructElementRange(
     {
         while (source != sourceEnd)
         {
-            ConstructElement(destination, source);
+            MenuExtras_InitStringFromPair(destination, source);
             destination += 8; // 0x20 bytes per element
             source += 8;      // 0x20 bytes per element
         }
@@ -48,11 +48,11 @@ static std::uint32_t* __cdecl CopyConstructElementRange(
 
         while (constructed != constructedEnd)
         {
-            DestroyElement(constructed);
+            ResetStringStorage_5466C0(constructed);
             constructed += 8; // 0x20 bytes per element
         }
 
-        RethrowCurrentException(nullptr, nullptr);
+        RethrowCppException(nullptr, nullptr);
         __assume(0);
     }
 

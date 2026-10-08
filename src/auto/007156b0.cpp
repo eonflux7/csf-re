@@ -4,12 +4,12 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, IsSelectableAndNotType10, 0x00718700,
+CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x00718700,
          (CGuiListBoxBase* self, void* edx));
-CSF_FUNC(int, __fastcall, ClearSelectionAndSendEvent, 0x00715660,
+CSF_FUNC(int, __fastcall, CGuiListBoxBase_ClearStorageAndSendEvent, 0x00715660,
          (CGuiListBoxBase* self, void* edx));
 // Capture EAX even though this callee is nominally void.
-CSF_FUNC(int, __fastcall, SelectRow, 0x00716A60,
+CSF_FUNC(int, __fastcall, CGuiListBoxBase_AddSelectedItem, 0x00716A60,
          (CGuiListBoxBase* self, void* edx, int row));
 CSF_GLOBAL(char*, g_NamedEntryName, 0x008A85E4);
 
@@ -55,7 +55,7 @@ static int __fastcall CGuiListBoxBase_UpdateSelectionDisplay(
     if (!columnCount)
         return SignedWord(static_cast<uint32_t>(product));
 
-    int result = IsSelectableAndNotType10(self, nullptr);
+    int result = CGuiSlider_IsSelectableAndNotType10(self, nullptr);
     if (!(static_cast<uint32_t>(result) & 0xFFu))
         return result;
 
@@ -138,16 +138,16 @@ static int __fastcall CGuiListBoxBase_UpdateSelectionDisplay(
 
     if (selectedRow < SignedWord(self->field_0168))
     {
-        ClearSelectionAndSendEvent(self, nullptr);
-        return SelectRow(self, nullptr, SignedWord(self->field_0168));
+        CGuiListBoxBase_ClearStorageAndSendEvent(self, nullptr);
+        return CGuiListBoxBase_AddSelectedItem(self, nullptr, SignedWord(self->field_0168));
     }
 
     const int32_t lastVisible =
         SignedWord(static_cast<uint32_t>(endRow) - 1u);
     if (selectedRow > lastVisible)
     {
-        ClearSelectionAndSendEvent(self, nullptr);
-        return SelectRow(self, nullptr, lastVisible);
+        CGuiListBoxBase_ClearStorageAndSendEvent(self, nullptr);
+        return CGuiListBoxBase_AddSelectedItem(self, nullptr, lastVisible);
     }
 
     return result;

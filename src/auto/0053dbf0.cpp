@@ -4,15 +4,15 @@
 #include "globals.h"
 #include "types/auto_classes.h"
 
-// Original calls: GetGlobalState (0x50D190, __cdecl, no args) -> scheduler base in eax.
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x0050D190, (void));
+// Original calls: GetGlobalState_50D190 (0x50D190, __cdecl, no args) -> scheduler base in eax.
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x0050D190, (void));
 
 // Concurrency::details::SchedulerBase::GetSchedulerProxy (0x734A10, __thiscall, ecx = scheduler base).
 CSF_FUNC(int, __fastcall, SchedulerBase_GetSchedulerProxy, 0x00734A10, (void* self, void* edx));
 
 // sub_53D740 (0x53D740): usercall, ecx = this, edi = a2 (forwarded from the caller), one stack arg, ret 4.
 // Bound here as __fastcall with the stack argument in position 3; see notes regarding edi.
-CSF_FUNC(int, __fastcall, CMenuMissionInfo_PrepareForClose, 0x0053D740,
+CSF_FUNC(int, __fastcall, CMenuMissionInfo_EnterPanelState, 0x0053D740,
          (CMenuMissionInfo* self, void* edx, int flag));
 
 // sub_53DAA0 (0x53DAA0): __thiscall void, no stack args.
@@ -25,11 +25,11 @@ static void __fastcall CMenuMissionInfo_ClosePanelAndDeactivate(CMenuMissionInfo
     if (self->field_00a6 == 0)
         return;
 
-    void* schedulerBase = reinterpret_cast<void*>(static_cast<uintptr_t>(GetGlobalState()));
+    void* schedulerBase = reinterpret_cast<void*>(static_cast<uintptr_t>(GetGlobalState_50D190()));
     if (SchedulerBase_GetSchedulerProxy(schedulerBase, nullptr) != 16)
         return;
 
-    CMenuMissionInfo_PrepareForClose(self, nullptr, 0);
+    CMenuMissionInfo_EnterPanelState(self, nullptr, 0);
 
     // Re-read the child object pointer after the call above.
     void* childObject = reinterpret_cast<void*>(static_cast<uintptr_t>(self->field_001c));

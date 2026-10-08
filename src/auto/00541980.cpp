@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Base sub-object initializer at 0x712CC0 (__thiscall, no stack args).
-CSF_FUNC(void*, __fastcall, MenuSubObject_InitBase, 0x00712CC0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x00712CC0, (void* self, void* edx));
 
 // Constructs CMenuMpStats in place. Takes one stack argument (popped by ret 4).
 // The original stores vtable addresses as immediates, so they are written as immediates here.
@@ -20,10 +20,10 @@ CSF_FUNC(void*, __fastcall, MenuSubObject_InitBase, 0x00712CC0, (void* self, voi
 static CMenuMpStats* __fastcall CMenuMpStats_Construct(CMenuMpStats* self, void* /*edx*/, int ownerArg)
 {
     // mov dword ptr [esi], 0x83042c
-    *reinterpret_cast<uint32_t*>(self) = 0x0083042Cu;
+    *reinterpret_cast<uint32_t*>(self) = CSF_ADDR_VT(0x0083042C);
 
     // call 0x712CC0 on this+4
-    MenuSubObject_InitBase(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
+    C_00830438_Construct(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
 
     // mov eax, [ebp+8]; mov [esi+0x88], eax
     self->field_0088 = static_cast<uint32_t>(ownerArg);
@@ -40,7 +40,7 @@ static CMenuMpStats* __fastcall CMenuMpStats_Construct(CMenuMpStats* self, void*
     self->field_0080 = 0;
 
     // mov dword ptr [esi], 0x843230
-    *reinterpret_cast<uint32_t*>(self) = 0x00843230u;
+    *reinterpret_cast<uint32_t*>(self) = CSF_ADDR_VT(0x00843230);
 
     return self;
 }

@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __fastcall, ConstructGuiControlFromSource, 0x0071A170,
+CSF_FUNC(int, __fastcall, CGuiControl_Construct_71A170, 0x0071A170,
          (CGuiControl* self, void* edx, int source));
 
 CSF_GLOBAL(std::uint32_t, g_PanelVtable, 0x00865B40);
@@ -12,7 +12,7 @@ CSF_GLOBAL(std::uint32_t, g_PanelVtable, 0x00865B40);
 static CGuiPanel* __fastcall CGuiPanel_ConstructFromSource(
     CGuiPanel* self, void* /*edx*/, int source)
 {
-    ConstructGuiControlFromSource(self, nullptr, source);
+    CGuiControl_Construct_71A170(self, nullptr, source);
 
     CSF_AT(void**, self, 0) =
         reinterpret_cast<void**>(&g_PanelVtable);

@@ -10,7 +10,7 @@ CSF_FUNC(int, __cdecl, ResetStringRecordRange, 0x0072EF70,
          (int begin, int end, ...));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60,
          (void* block));
-CSF_FUNC(int, __fastcall, CGuiButton_Destroy, 0x00725590,
+CSF_FUNC(int, __fastcall, CGuiButton_Destroy_725590, 0x00725590,
          (CGuiChoiceButton* self, void* edx));
 
 static int __fastcall CGuiChoiceButton_Destroy(
@@ -38,7 +38,7 @@ static int __fastcall CGuiChoiceButton_Destroy(
     CSF_AT(std::uint32_t, records, 8) = 0;
     CSF_AT(std::uint32_t, records, 0xC) = 0;
 
-    return CGuiButton_Destroy(self, nullptr);
+    return CGuiButton_Destroy_725590(self, nullptr);
 }
 
 HOOK(0x0072F140, CGuiChoiceButton_Destroy, "auto");

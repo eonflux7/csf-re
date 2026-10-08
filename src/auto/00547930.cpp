@@ -4,12 +4,12 @@
 #include "core/memory.h"
 
 // Copy-constructs one 68-byte element into the uninitialized slot at `destination`.
-CSF_FUNC(std::uint32_t*, __cdecl, CopyConstructElement68, 0x00546E80,
+CSF_FUNC(std::uint32_t*, __cdecl, MenuExtras_ConstructElementArray, 0x00546E80,
          (std::uint32_t* destination, int count, const std::uint32_t* source,
           void* container, const std::uint32_t* sourceCopy));
 
 // Inserts one 68-byte element at `position`, reallocating the buffer if needed.
-CSF_FUNC(std::uint32_t*, __fastcall, InsertElement68, 0x00547690,
+CSF_FUNC(std::uint32_t*, __fastcall, MenuExtras_InsertRecordAndGetIterator, 0x00547690,
          (void* self, void* edx, std::uint32_t* result,
           char* position, const std::uint32_t* element));
 
@@ -37,7 +37,7 @@ static std::uint32_t* __fastcall AppendElement68(
         if (size < capacity)
         {
             const std::uint32_t end = CSF_AT(std::uint32_t, self, 0x08);
-            std::uint32_t* const result = CopyConstructElement68(
+            std::uint32_t* const result = MenuExtras_ConstructElementArray(
                 reinterpret_cast<std::uint32_t*>(static_cast<std::uintptr_t>(end)),
                 1, element, self, element);
 
@@ -48,7 +48,7 @@ static std::uint32_t* __fastcall AppendElement68(
 
     char* const position = reinterpret_cast<char*>(
         CSF_AT(std::uint32_t, self, 0x08));
-    return InsertElement68(
+    return MenuExtras_InsertRecordAndGetIterator(
         self, nullptr, reinterpret_cast<std::uint32_t*>(&element),
         position, element);
 }

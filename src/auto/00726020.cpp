@@ -7,7 +7,7 @@ CSF_FUNC(char, __fastcall, CGuiControl_OnKeyDown, 0x007184C0,
          (CGuiControl* self, void* edx, int key, int context));
 CSF_FUNC(int, __fastcall, CGuiSlider_IsSelectableAndNotType10, 0x00718700,
          (CGuiControl* self, void* edx));
-CSF_FUNC(void, __fastcall, CGuiButton_ActivateLinkedObject, 0x00725740,
+CSF_FUNC(void, __fastcall, CGuiButton_StartTextColorEffect, 0x00725740,
          (CGuiButton* self, void* edx));
 
 static char __fastcall CGuiButton_OnKeyDown(
@@ -41,7 +41,7 @@ static char __fastcall CGuiButton_OnKeyDown(
                 CSF_AT(void**, associatedObject, 0)[0x24 / 4])(
                     associatedObject, nullptr, 0);
         }
-        CGuiButton_ActivateLinkedObject(self, nullptr);
+        CGuiButton_StartTextColorEffect(self, nullptr);
     }
 
     return CGuiControl_OnKeyDown(self, nullptr, key, context);

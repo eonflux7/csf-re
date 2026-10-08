@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Resolves the object held behind this+0x04 (lib helper, __thiscall, no args).
-CSF_FUNC(void**, __fastcall, MenuPause_ResolveHeldObject_6683F0, 0x006683F0, (void* self, void* edx));
+CSF_FUNC(void**, __fastcall, GetReferencedObject, 0x006683F0, (void* self, void* edx));
 
 // Invokes virtual slot at byte offset `slot` on a polymorphic object.
 template <typename R, typename... A>
@@ -27,13 +27,13 @@ static inline R MenuNetType_VCall(void* obj, int slot, A... args)
 // the held object) fails; otherwise returns the result of the forwarding call.
 static int __fastcall CMenuMpNetworkType_ScrollViewportToTarget(CMenuMpNetworkType* self, void* /*edx*/)
 {
-    void** holderStatus = MenuPause_ResolveHeldObject_6683F0(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
+    void** holderStatus = GetReferencedObject(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
     int statusOk = MenuNetType_VCall<int>(holderStatus, 0x30);
     if (statusOk == 0)
         return statusOk;
 
-    void** targetA = MenuPause_ResolveHeldObject_6683F0(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
-    void** targetB = MenuPause_ResolveHeldObject_6683F0(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
+    void** targetA = GetReferencedObject(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
+    void** targetB = GetReferencedObject(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
 
     void* posA = MenuNetType_VCall<void*>(targetA, 0x30);
     int32_t targetAY = CSF_AT(int32_t, posA, 0x18);

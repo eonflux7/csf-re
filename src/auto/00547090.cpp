@@ -5,7 +5,7 @@
 #include "core/memory.h"
 
 // std::_String_base::assign-style helper (__thiscall, 3 stack args: src, pos, count; ret 12).
-CSF_FUNC(void*, __fastcall, StringBase_AssignRange, 0x00488830,
+CSF_FUNC(void*, __fastcall, AssignStringRange_488830, 0x00488830,
          (void* self, void* edx, const void* src, uint32_t pos, uint32_t count));
 
 // Initializes a string-like object at a1 from the pair at a2: copies the first dword into
@@ -20,7 +20,7 @@ static void* __stdcall MenuExtras_InitStringFromPair(uint32_t* a1, uint32_t* a2)
         *reinterpret_cast<uint32_t*>(reinterpret_cast<uint8_t*>(a1) + 28) = 7;
         *reinterpret_cast<uint32_t*>(reinterpret_cast<uint8_t*>(a1) + 24) = 0;
         *reinterpret_cast<uint16_t*>(reinterpret_cast<uint8_t*>(a1) + 8) = 0;
-        return StringBase_AssignRange(reinterpret_cast<uint8_t*>(a1) + 4, nullptr,
+        return AssignStringRange_488830(reinterpret_cast<uint8_t*>(a1) + 4, nullptr,
                                       a2 + 1, 0u, 0xFFFFFFFFu);
     }
     return a1;

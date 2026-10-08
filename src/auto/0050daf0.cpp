@@ -3,9 +3,9 @@
 #include "core/memory.h"
 #include "globals.h"
 
-CSF_FUNC(char, __fastcall, MenuSystem_UpdateChildrenAndElapsedTime,
+CSF_FUNC(char, __fastcall, UpdateChildrenAndElapsedTime,
          0x0071D520, (void* self, void* edx, float elapsedTime));
-CSF_FUNC(void, __fastcall, MenuSystem_UpdateMessageBoxIfEnabled,
+CSF_FUNC(void, __fastcall, CMenuMessageBox_UpdateIfEnabled,
          0x005288D0, (void* self, void* edx, float elapsedTime));
 CSF_FUNC(int, __fastcall, MenuSystem_UpdatePendingMenu,
          0x004FB920, (void* self, void* edx, int elapsedTimeBits));
@@ -15,7 +15,7 @@ CSF_GLOBAL(const char*, g_IntroMenuName, 0x00899B2C);
 static int __fastcall MenuSystem_UpdateFrame(void* self, void* /*edx*/)
 {
     const float elapsedTime = CSF_AT(float, self, 0xA0);
-    MenuSystem_UpdateChildrenAndElapsedTime(
+    UpdateChildrenAndElapsedTime(
         CSF_AT(void*, self, 0x14), nullptr, elapsedTime);
 
     const float frameTime = CSF_AT(float, self, 0xA0);
@@ -26,7 +26,7 @@ static int __fastcall MenuSystem_UpdateFrame(void* self, void* /*edx*/)
     void* messageBox = CSF_AT(void*, self, 0x80);
     if (messageBox)
     {
-        MenuSystem_UpdateMessageBoxIfEnabled(
+        CMenuMessageBox_UpdateIfEnabled(
             messageBox, nullptr, CSF_AT(float, self, 0xA0));
     }
 

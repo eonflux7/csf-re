@@ -4,11 +4,11 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-static CSF_FUNC(int, __fastcall, ResetFontState, 0x00739F10,
+static CSF_FUNC(int, __fastcall, C_00867444_ResetState, 0x00739F10,
                 (C_00867444* self, void* edx));
-static CSF_FUNC(void*, __cdecl, OpenFontFile, 0x00698350,
+static CSF_FUNC(void*, __cdecl, OpenSceneFile, 0x00698350,
                 (const char* filename, const char* mode, int flags));
-static CSF_FUNC(void, __cdecl, CloseFontFile, 0x00697980,
+static CSF_FUNC(void, __cdecl, CloseSceneFile, 0x00697980,
                 (void* file));
 static CSF_FUNC(char, __fastcall, LoadFontVersion1, 0x0073A680,
                 (C_00867444* self, void* edx, void* file));
@@ -20,7 +20,7 @@ static CSF_FUNC(char, __fastcall, LoadFontVersion3, 0x0073AE60,
 static char __fastcall C_00867444_LoadFontFile(
     C_00867444* self, void* /*edx*/)
 {
-    ResetFontState(self, nullptr);
+    C_00867444_ResetState(self, nullptr);
 
     const char* filename;
     if (CSF_AT(std::uint32_t, self, 0x24) < 16u)
@@ -28,7 +28,7 @@ static char __fastcall C_00867444_LoadFontFile(
     else
         filename = CSF_AT(const char*, self, 0x10);
 
-    void* file = OpenFontFile(filename, CSF_STR(0x0083E130, "r"), 0);
+    void* file = OpenSceneFile(filename, CSF_STR(0x0083E130, "r"), 0);
     if (!file)
         return 0;
 
@@ -41,7 +41,7 @@ static char __fastcall C_00867444_LoadFontFile(
     {
         if (header[i] != expectedHeader[i])
         {
-            CloseFontFile(file);
+            CloseSceneFile(file);
             return 0;
         }
     }
@@ -64,7 +64,7 @@ static char __fastcall C_00867444_LoadFontFile(
         break;
     }
 
-    CloseFontFile(file);
+    CloseSceneFile(file);
     return result;
 }
 

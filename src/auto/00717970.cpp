@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void, __fastcall, CGuiTextureListBox_AddRows, 0x007178D0,
+CSF_FUNC(void, __fastcall, CGuiListBoxBase_AppendRows, 0x007178D0,
          (CGuiTextureListBox* self, void* edx, int count));
 
 CSF_FUNC(int, __fastcall, CGuiListBoxBase_UpdateSliderFromVisibleRowCount,
@@ -15,7 +15,7 @@ static int __fastcall CGuiTextureListBox_ExtendToRowIndex(
 {
     if (rowIndex == -1)
     {
-        CGuiTextureListBox_AddRows(self, nullptr, 1);
+        CGuiListBoxBase_AppendRows(self, nullptr, 1);
     }
     else
     {
@@ -34,7 +34,7 @@ static int __fastcall CGuiTextureListBox_ExtendToRowIndex(
             static_cast<uint32_t>(rowIndex) -
             static_cast<uint32_t>(refreshedCount) + 1u);
 
-        CGuiTextureListBox_AddRows(self, nullptr, additionalRows);
+        CGuiListBoxBase_AppendRows(self, nullptr, additionalRows);
     }
 
     self->m_bLayoutDirty = 1;

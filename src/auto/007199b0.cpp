@@ -3,14 +3,14 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(std::uint32_t*, __fastcall, CopyElementWithContext, 0x00730830,
+CSF_FUNC(std::uint32_t*, __fastcall, CopyDwordIfNotNull, 0x00730830,
          (void* context, void* edx, std::uint32_t* destination,
           std::uint32_t* source));
 
 CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInformation));
 
-CSF_FUNC(int, __cdecl, HandleCppExceptionFrame, 0x007AF226,
+CSF_FUNC(int, __cdecl, ___CxxFrameHandler, 0x007AF226,
          (void* exceptionRecord, void* frame, void* context,
           void* dispatcherContext));
 
@@ -32,7 +32,7 @@ static int __cdecl CopyFourByteElements(
         while (count != 0)
         {
             result = static_cast<int>(reinterpret_cast<std::uintptr_t>(
-                CopyElementWithContext(context, nullptr, destination, source)));
+                CopyDwordIfNotNull(context, nullptr, destination, source)));
 
             --count;
             destination = reinterpret_cast<std::uint32_t*>(

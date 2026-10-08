@@ -5,8 +5,8 @@
 #include "types/auto_classes.h"
 
 // Callees, bound by address.
-CSF_FUNC(void, __fastcall, CMenuMpPause_ActivateContinueButton, 0x00534AE0, (CMenuMpPause* self, void* edx, int flag));
-CSF_FUNC(unsigned int, __fastcall, CMenuMpPause_ActivateSubScreenButton, 0x005353E0, (CMenuMpPause* self, void* edx));
+CSF_FUNC(void, __fastcall, CMenuMpPause_OnActivate, 0x00534AE0, (CMenuMpPause* self, void* edx, int flag));
+CSF_FUNC(unsigned int, __fastcall, MenuMpPause_OpenPauseDialog, 0x005353E0, (CMenuMpPause* self, void* edx));
 CSF_FUNC(int, __cdecl, GetGlobal8B0688, 0x00550CC0, ());
 
 // Globals referenced by the original.
@@ -40,7 +40,7 @@ static void PanelSetLabelText(void* panel, const char* text)
 static void __fastcall CMenuMpPause_HandleButtonEvent(CMenuMpPause* self, void* edx, void* event)
 {
     if (IsButtonFieldMatchingEvent(self->field_0018, event)) {
-        CMenuMpPause_ActivateContinueButton(self, nullptr, 1);
+        CMenuMpPause_OnActivate(self, nullptr, 1);
         return;
     }
     if (IsButtonFieldMatchingEvent(self->field_0028, event)) {
@@ -68,7 +68,7 @@ static void __fastcall CMenuMpPause_HandleButtonEvent(CMenuMpPause* self, void* 
         return;
     }
     if (IsButtonFieldMatchingEvent(self->field_0020, event)) {
-        CMenuMpPause_ActivateSubScreenButton(self, edx);
+        MenuMpPause_OpenPauseDialog(self, edx);
         return;
     }
     if (IsButtonFieldMatchingEvent(self->field_0024, event)) {

@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(std::uint32_t, __fastcall, InsertRepeatedValue, 0x00730BA0,
+CSF_FUNC(std::uint32_t, __fastcall, AppendDwordCopies_730BA0, 0x00730BA0,
          (void* self, void* edx, std::uint32_t* position,
           std::uint32_t count, std::uint32_t* value));
 
@@ -22,7 +22,7 @@ static std::uint32_t __fastcall CGuiTextureListBox_AppendZeroEntries(
 
         const std::uint32_t insertionCount = count;
         count = 0;
-        return InsertRepeatedValue(
+        return AppendDwordCopies_730BA0(
             entry, nullptr, position, insertionCount, &count);
     }
 

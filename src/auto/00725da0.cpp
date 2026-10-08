@@ -12,7 +12,7 @@ CSF_FUNC(int, __fastcall, CGuiControl_SendEvent, 0x00718280,
          (void* self, void* edx, int event));
 CSF_FUNC(int, __fastcall, CGuiSlider_ForwardSelfToParent, 0x00718660,
          (void* self, void* edx));
-CSF_FUNC(void, __fastcall, CGuiButton_ApplyClickTextEffect, 0x00725740,
+CSF_FUNC(void, __fastcall, CGuiButton_StartTextColorEffect, 0x00725740,
          (void* self, void* edx));
 
 static void CGuiButton_CopyBoundsToQuad(
@@ -145,7 +145,7 @@ static int __fastcall CGuiButton_HandleEvent(
             ((int(__fastcall*)(void*, void*, int))
                  CSF_AT(void**, self, 0)[0x138 / 4])(
                 self, nullptr, 13);
-            CGuiButton_ApplyClickTextEffect(self, nullptr);
+            CGuiButton_StartTextColorEffect(self, nullptr);
         }
         self->field_0148 = 0;
         break;

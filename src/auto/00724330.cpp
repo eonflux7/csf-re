@@ -4,12 +4,12 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(std::uint32_t*, __fastcall, InitializeTextStyle, 0x00530AB0,
+CSF_FUNC(std::uint32_t*, __fastcall, MpServerInfo_InitDefaultStyle, 0x00530AB0,
          (std::uint32_t* self, void* edx));
 CSF_FUNC(int, __fastcall, UpdateRowTextRange, 0x00723C90,
          (void* self, void* edx, char* text, std::uint32_t count,
           std::uint32_t* style));
-CSF_FUNC(int, __cdecl, FreeDebugMemory, 0x00690E60, (void* block));
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
 static void __fastcall CGuiListBox_UpdateRowText(
     CGuiListBox* self, void* /*edx*/, int row, std::uint32_t count)
@@ -18,7 +18,7 @@ static void __fastcall CGuiListBox_UpdateRowText(
         return;
 
     std::uint32_t style[15];
-    InitializeTextStyle(style, nullptr);
+    MpServerInfo_InitDefaultStyle(style, nullptr);
 
     void* rowText = reinterpret_cast<void*>(self->m_pRowText);
     if (rowText) {
@@ -44,7 +44,7 @@ static void __fastcall CGuiListBox_UpdateRowText(
     if (style[12] >= 8) {
         void* block = reinterpret_cast<void*>(style[7]);
         if (block)
-            FreeDebugMemory(block);
+            Mem_FreeDebug(block);
     }
 }
 

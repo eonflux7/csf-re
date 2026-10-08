@@ -10,7 +10,7 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-CSF_FUNC(int, __cdecl, GetGlobalState, 0x0050D190, (void));
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x0050D190, (void));
 CSF_FUNC(int, __fastcall, GlobalStateSlot_ReadActiveId, 0x0050E1C0, (void* self, void* edx));
 
 // Calls the virtual handler at vtable slot 0x48 (slot 18) with the message pointer.
@@ -54,7 +54,7 @@ static int __fastcall CMenuMpOnline_HandleMessage(CMenuMpOnline* self, void* /*e
     if (messageId == 14)
     {
         const uint32_t sourceId = message[1];
-        const int globalStateValue = GetGlobalState();
+        const int globalStateValue = GetGlobalState_50D190();
         void* globalState = reinterpret_cast<void*>(static_cast<uintptr_t>(globalStateValue));
         const int resolvedId = GlobalStateSlot_ReadActiveId(globalState, nullptr);
 

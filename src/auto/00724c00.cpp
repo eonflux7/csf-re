@@ -4,19 +4,19 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(void*, __fastcall, ClearListBoxBase, 0x007176E0,
+CSF_FUNC(void*, __fastcall, CGuiListBoxBase_RebuildStorage, 0x007176E0,
          (CGuiListBox* self, void* edx));
-CSF_FUNC(int, __fastcall, AssignRowStorage, 0x007248C0,
+CSF_FUNC(int, __fastcall, AssignWideStringRecordStorage, 0x007248C0,
          (void* self, void* edx, void* source));
 CSF_FUNC(int*, __cdecl, ResetWideStringRecordRange, 0x007241E0,
          (int* begin, int* end));
 CSF_FUNC(int, __cdecl, SetAllocationMode, 0x006910B0, (int mode));
-CSF_FUNC(int, __cdecl, FreeDebugMemory, 0x00690E60, (void* block));
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
 static int __fastcall CGuiListBox_ClearRowStorage(
     CGuiListBox* self, void* /*edx*/)
 {
-    ClearListBoxBase(self, nullptr);
+    CGuiListBoxBase_RebuildStorage(self, nullptr);
 
     void* rowText = reinterpret_cast<void*>(self->m_pRowText);
     if (rowText) {
@@ -29,7 +29,7 @@ static int __fastcall CGuiListBox_ClearRowStorage(
     temporary[1] = 0;
     temporary[2] = 0;
     temporary[3] = 0;
-    AssignRowStorage(temporary, nullptr, storage);
+    AssignWideStringRecordStorage(temporary, nullptr, storage);
 
     int* begin = reinterpret_cast<int*>(
         CSF_AT(std::uint32_t, storage, 4));
@@ -41,7 +41,7 @@ static int __fastcall CGuiListBox_ClearRowStorage(
         void* block = reinterpret_cast<void*>(
             CSF_AT(std::uint32_t, storage, 4));
         if (block)
-            FreeDebugMemory(block);
+            Mem_FreeDebug(block);
     }
 
     CSF_AT(std::uint32_t, storage, 4) = 0;
@@ -49,7 +49,7 @@ static int __fastcall CGuiListBox_ClearRowStorage(
     CSF_AT(std::uint32_t, storage, 12) = 0;
     SetAllocationMode(2);
 
-    AssignRowStorage(storage, nullptr, temporary);
+    AssignWideStringRecordStorage(storage, nullptr, temporary);
     int result = SetAllocationMode(0);
 
     void* block = reinterpret_cast<void*>(temporary[1]);
@@ -57,7 +57,7 @@ static int __fastcall CGuiListBox_ClearRowStorage(
         ResetWideStringRecordRange(
             reinterpret_cast<int*>(block),
             reinterpret_cast<int*>(temporary[2]));
-        result = FreeDebugMemory(block);
+        result = Mem_FreeDebug(block);
     }
     return result;
 }

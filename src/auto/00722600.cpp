@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiEdit_RefreshVisibleText, 0x00721900,
+CSF_FUNC(int, __fastcall, AdjustTextRangeRight, 0x00721900,
          (CGuiEdit* self, void* edx, char forceStart));
 CSF_FUNC(int, __fastcall, CGuiEdit_MoveIndicesToTextEnd, 0x007224E0,
          (CGuiEdit* self, void* edx));
@@ -28,7 +28,7 @@ CGuiEdit_MoveIndicesLeft(CGuiEdit* self, void* /*edx*/)
         if (caretIndex != 0)
         {
             self->field_01a8 = caretIndex - 1;
-            CGuiEdit_RefreshVisibleText(self, nullptr, 0);
+            AdjustTextRangeRight(self, nullptr, 0);
         }
         else if (static_cast<std::uint8_t>(atStart) != 0)
         {
@@ -36,7 +36,7 @@ CGuiEdit_MoveIndicesLeft(CGuiEdit* self, void* /*edx*/)
         }
         else
         {
-            CGuiEdit_RefreshVisibleText(self, nullptr, 1);
+            AdjustTextRangeRight(self, nullptr, 1);
         }
         return;
     }
@@ -49,7 +49,7 @@ CGuiEdit_MoveIndicesLeft(CGuiEdit* self, void* /*edx*/)
             self->field_01ac = visibleStart - 1;
         if (caretIndex != 0)
             self->field_01a8 = caretIndex - 1;
-        CGuiEdit_RefreshVisibleText(self, nullptr, 0);
+        AdjustTextRangeRight(self, nullptr, 0);
         return;
     }
 
@@ -61,7 +61,7 @@ CGuiEdit_MoveIndicesLeft(CGuiEdit* self, void* /*edx*/)
     }
     if (caretIndex != 0)
         self->field_01a8 = caretIndex - 1;
-    CGuiEdit_RefreshVisibleText(self, nullptr, forceStart);
+    AdjustTextRangeRight(self, nullptr, forceStart);
 }
 
 HOOK(0x00722600, CGuiEdit_MoveIndicesLeft, "auto");

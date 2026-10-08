@@ -12,8 +12,8 @@
 
 // Game functions bound by address.
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, (void));
-CSF_FUNC(void*, __fastcall, ResolveObjectFromIntId, 0x00652160, (int objectId, void* edx));
-CSF_FUNC(void*, __fastcall, FindUiElementByName, 0x00693360, (void* finder, void* edx, const char* name));
+CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160, (int objectId, void* edx));
+CSF_FUNC(void*, __fastcall, LookupNamedElement, 0x00693360, (void* finder, void* edx, const char* name));
 
 // Game data bound by address.
 CSF_GLOBAL(float, g_UnsignedIntegerBias, 0x0082D744);
@@ -54,7 +54,7 @@ static int __fastcall CMenuScenarioSelect_InitMainPanelAndListbox(CMenuScenarioS
     void* finderObject = *reinterpret_cast<void**>(a5);
     void** hostVtable = CSF_AT(void**, hostObject, 0);
 
-    void* panelNameMatch = FindUiElementByName(finderObject, nullptr, CSF_STR(0x00841304, ".PANEL_PRINCIPAL"));
+    void* panelNameMatch = LookupNamedElement(finderObject, nullptr, CSF_STR(0x00841304, ".PANEL_PRINCIPAL"));
     void* mainPanel = ((void* (__fastcall*)(void*, void*, void*))hostVtable[6])(hostObject, nullptr, panelNameMatch);
     self->field_0018 = MenuScenarioSelect_PointerToField(mainPanel);
     if (mainPanel == nullptr)
@@ -62,13 +62,13 @@ static int __fastcall CMenuScenarioSelect_InitMainPanelAndListbox(CMenuScenarioS
 
     // Record word 0 comes from the first resolved object.
     const int firstGlobalId = GetGlobalInt();
-    void* firstResolved = ResolveObjectFromIntId(firstGlobalId, nullptr);
+    void* firstResolved = LookupObjectById(firstGlobalId, nullptr);
     void* firstRecord = ((void* (__fastcall*)(void*, void*))CSF_AT(void**, firstResolved, 0)[6])(firstResolved, nullptr);
     const uint32_t layoutXRaw = CSF_AT(uint32_t, firstRecord, 0);
 
     // Record word 1 comes from the second resolved object.
     const int secondGlobalId = GetGlobalInt();
-    void* secondResolved = ResolveObjectFromIntId(secondGlobalId, nullptr);
+    void* secondResolved = LookupObjectById(secondGlobalId, nullptr);
     void* secondRecord = ((void* (__fastcall*)(void*, void*))CSF_AT(void**, secondResolved, 0)[6])(secondResolved, nullptr);
     const uint32_t layoutYRaw = CSF_AT(uint32_t, secondRecord, 4);
 

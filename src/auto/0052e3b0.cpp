@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __fastcall, CMenuScreen_ConstructEmbeddedBase,
+CSF_FUNC(void*, __fastcall, C_00830438_Construct,
          0x712CC0, (void* self, void* edx));
 CSF_FUNC(unsigned int, __fastcall, MenuScenarioSelect_InitializeStorage,
          0x440150, (void* self, void* edx, unsigned int count));
@@ -18,12 +18,12 @@ CSF_GLOBAL(uint8_t, g_VtblCMenuScenarioSelectSecondary, 0x841638);
 static CMenuScenarioSelect* __fastcall CMenuScenarioSelect_Construct(
     CMenuScenarioSelect* self, void* /*edx*/, int context)
 {
-    self->vtbl = reinterpret_cast<decltype(self->vtbl)>(0x83042C);
-    CMenuScreen_ConstructEmbeddedBase(
+    self->vtbl = reinterpret_cast<decltype(self->vtbl)>(CSF_ADDR_VT(0x83042C));
+    C_00830438_Construct(
         reinterpret_cast<uint8_t*>(self) + 4, nullptr);
 
-    self->vtbl = reinterpret_cast<decltype(self->vtbl)>(0x841688);
-    self->field_0004 = 0x841638;
+    self->vtbl = reinterpret_cast<decltype(self->vtbl)>(CSF_ADDR_VT(0x841688));
+    self->field_0004 = CSF_ADDR_DATA(0x841638);
 
     self->field_0030 = 0;
     self->field_0034 = 15;

@@ -15,7 +15,7 @@ CSF_FUNC(int, __fastcall, MissionInfo_ResetPageObjectsStub, 0x00436EB0, (void* s
 CSF_FUNC(uint8_t, __stdcall, CMenuMissionInfo_IsIndexOnLastPage, 0x0053D5D0, (int pageIndex));
 // Original takes `this` in ecx, the new page index on the stack (ret 4), and a2 in edi.
 // edi cannot be expressed in portable C++ here; see notes in the metadata.
-CSF_FUNC(int, __fastcall, MissionInfo_RefreshPage, 0x0053E2F0, (void* self, void* edx, int newPageIndex));
+CSF_FUNC(int, __fastcall, CMenuMissionInfo_RefreshPanelAtIndex, 0x0053E2F0, (void* self, void* edx, int newPageIndex));
 
 // Original: 0x0053E9E0 (CMenuMissionInfo), ret 0.
 // Field offsets 0x84 (controller object pointer) and 0x88 (current page index) are not
@@ -41,7 +41,7 @@ static char __fastcall CMenuMissionInfo_TryAdvanceToNextPage(void* self, void* /
     // Advance page index, store it, then refresh the page.
     uint32_t nextPageIndex = CSF_AT(uint32_t, self, 0x88) + 1u;
     CSF_AT(uint32_t, self, 0x88) = nextPageIndex;
-    return static_cast<char>(MissionInfo_RefreshPage(self, nullptr, static_cast<int>(nextPageIndex)));
+    return static_cast<char>(CMenuMissionInfo_RefreshPanelAtIndex(self, nullptr, static_cast<int>(nextPageIndex)));
 }
 
 HOOK(0x0053E9E0, CMenuMissionInfo_TryAdvanceToNextPage, "auto");

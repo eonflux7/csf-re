@@ -4,12 +4,12 @@
 #include "core/memory.h"
 
 // __thiscall(context, element, source): ecx = context, 2 stack args (ret 8).
-CSF_FUNC(int, __fastcall, ConstructElementFromSource, 0x00727410,
+CSF_FUNC(int, __fastcall, CopyConstructRecord_727410, 0x00727410,
          (void* context, void* edx, std::uint8_t* element, void* source));
 // __thiscall(context, element): ecx = context, 1 stack arg (ret 4).
-CSF_FUNC(void, __fastcall, DestroyElementThroughContext, 0x0069B820,
+CSF_FUNC(void, __fastcall, DestroyRecord_69B820, 0x0069B820,
          (void* context, void* edx, std::uint8_t* element));
-CSF_FUNC(void, __stdcall, RethrowGameException, 0x007AF666,
+CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666,
          (void* exceptionObject, void* throwInformation));
 
 // Exception info structure installed by the SEH funclet at 0x828040.
@@ -33,7 +33,7 @@ static int __cdecl CopyConstructElementArray36(
     {
         while (count != 0)
         {
-            result = ConstructElementFromSource(context, nullptr, currentElement, source);
+            result = CopyConstructRecord_727410(context, nullptr, currentElement, source);
             --count;
             currentElement += 36;
         }
@@ -43,11 +43,11 @@ static int __cdecl CopyConstructElementArray36(
         std::uint8_t* element = destination;
         while (element != currentElement)
         {
-            DestroyElementThroughContext(context, nullptr, element);
+            DestroyRecord_69B820(context, nullptr, element);
             element += 36;
         }
 
-        RethrowGameException(nullptr, nullptr);
+        RethrowCppException(nullptr, nullptr);
         __builtin_unreachable();
     }
 

@@ -4,7 +4,7 @@
 #include "core/memory.h"
 
 // Copy-constructs a run of 64-byte elements into raw storage.
-CSF_FUNC(std::uint32_t, __cdecl, CopyConstructElementArray64,
+CSF_FUNC(std::uint32_t, __cdecl, FillRecordsWithHandler,
          0x0071B570,
          (std::uint32_t destination, int count, int* source,
           void* containerContext, int* sourceContext));
@@ -40,7 +40,7 @@ static std::uint32_t __fastcall AppendElement64(
     const std::uint32_t insertionAddress =
         CSF_AT(std::uint32_t, self, 8);
 
-    const std::uint32_t result = CopyConstructElementArray64(
+    const std::uint32_t result = FillRecordsWithHandler(
         insertionAddress, 1, source, self, source);
 
     CSF_AT(std::uint32_t, self, 8) = insertionAddress + 64;

@@ -5,9 +5,9 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __cdecl, AllocateGameMemory, 0x006910F0,
+CSF_FUNC(void*, __cdecl, Mem_Alloc, 0x006910F0,
          (std::size_t size));
-CSF_FUNC(void*, __fastcall, ConstructChoiceButton, 0x0072F4E0,
+CSF_FUNC(void*, __fastcall, CGuiChoiceButton_Construct, 0x0072F4E0,
          (void* storage, void* edx, int parent, void* context));
 CSF_FUNC(void, __fastcall, CGuiBuilder_ReadButtonProps, 0x0071FCB0,
          (CGuiBuilder* self, void* edx, void* control, std::uint8_t* node));
@@ -15,12 +15,12 @@ CSF_FUNC(void, __fastcall, CGuiBuilder_ReadButtonProps, 0x0071FCB0,
 static void* __fastcall CGuiBuilder_CreateChoiceButton(
     CGuiBuilder* self, void* /*edx*/, std::uint8_t* node)
 {
-    void* storage = AllocateGameMemory(0x208);
+    void* storage = Mem_Alloc(0x208);
     void* control = nullptr;
 
     if (storage)
     {
-        control = ConstructChoiceButton(
+        control = CGuiChoiceButton_Construct(
             storage,
             nullptr,
             static_cast<int>(self->field_0004),

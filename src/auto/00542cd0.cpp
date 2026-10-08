@@ -11,7 +11,7 @@
 #include "legacy/string.h"
 
 // Resolves the object held behind this+0x04 (lib helper, __thiscall, no args).
-CSF_FUNC(void**, __fastcall, MpOnline_ResolveHeldObject_6683F0, 0x006683F0, (void* self, void* edx));
+CSF_FUNC(void**, __fastcall, GetReferencedObject, 0x006683F0, (void* self, void* edx));
 
 // Reads the function pointer at byte offset `byteOffset` in the vtable of `obj` and calls it
 // with the object as `this`. Byte offset / 4 is the vtable slot index.
@@ -29,13 +29,13 @@ static inline R MpOnline_VCall(void* obj, int byteOffset, A... args)
 // when the first status check (slot 0x30 on the first held object) fails.
 static int __fastcall CMenuMpOnline_ScrollViewToTarget(CMenuMpOnline* self, void* /*edx*/)
 {
-    void** holderStatus = MpOnline_ResolveHeldObject_6683F0(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
+    void** holderStatus = GetReferencedObject(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
     int statusOk = MpOnline_VCall<int>(holderStatus, 0x30);
     if (statusOk == 0)
         return statusOk;
 
-    void** targetA = MpOnline_ResolveHeldObject_6683F0(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
-    void** targetB = MpOnline_ResolveHeldObject_6683F0(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
+    void** targetA = GetReferencedObject(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
+    void** targetB = GetReferencedObject(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
 
     void* posA = MpOnline_VCall<void*>(targetA, 0x30);
     int32_t targetY = *reinterpret_cast<int32_t*>(static_cast<uint8_t*>(posA) + 0x18);

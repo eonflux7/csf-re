@@ -14,7 +14,7 @@
 CSF_FUNC(int, __cdecl, GetGlobal8B0688, 0x550CC0, ());
 
 // Builds a message/resource handle from a 4-char code and a flag (__cdecl, 2 args).
-CSF_FUNC(int, __cdecl, MakeMessageHandle, 0x692440, (int code, int flag));
+CSF_FUNC(int, __cdecl, MenuMessageBox_ResolveEntryByKey, 0x692440, (int code, int flag));
 
 // Refreshes the friend-request/voice label of the player info panel based on whether
 // the local state object reports the target player as eligible.
@@ -36,12 +36,12 @@ static int __fastcall CMenuPlayerInfo_SetFriendRequestTextByState(CMenuPlayerInf
     void* labelObj = reinterpret_cast<void*>(self->field_0024);
 
     // Original picks between two message codes ("OP13" / "OP12") depending on eligibility.
-    // Both branches call slot 68 on the label object first, then MakeMessageHandle(code, 1).
+    // Both branches call slot 68 on the label object first, then MenuMessageBox_ResolveEntryByKey(code, 1).
     void* labelHandle = reinterpret_cast<void* (__fastcall*)(void*, void*)>(
         CSF_AT(void**, labelObj, 0)[68])(labelObj, nullptr);
 
     int messageCode = isEligible ? 0x4f503133 : 0x4f503132;
-    int messageHandle = MakeMessageHandle(messageCode, 1);
+    int messageHandle = MenuMessageBox_ResolveEntryByKey(messageCode, 1);
 
     // Final virtual call on the label handle, slot 16, with the message handle.
     return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(

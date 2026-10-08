@@ -137,6 +137,13 @@ def gate(ea, path, db=None):
                 errs.append(f"bare string literal (use CSF_STR(0xADDR, \"text\")): {line.strip()[:120]}")
     db = db or DB()
     errs += check_bindings(src, db)
+    import addrfix, api
+    errs += api.binding_errors(src, db)
+    raw = sorted({v for _, _, v, _ in addrfix.raw_hits(src)})
+    if raw:  # the hook build would work, the standalone build can't link them (src/globals.h)
+        errs.append("raw original address(es) " + ", ".join(f"0x{v:X}" for v in raw) + " in code: use CSF_VTBL(0x..) "
+                    "for a vtable, CSF_ADDR_FN / CSF_ADDR_DATA / CSF_ADDR_VT(0x..) for an address used as a value, "
+                    "CSF_GLOBAL / CSF_STR / CSF_FUNC otherwise")
     if errs:
         return False, "\n".join(errs)
     with tempfile.TemporaryDirectory() as td:

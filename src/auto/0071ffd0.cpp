@@ -5,8 +5,8 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void*, __cdecl, AllocateGameMemory, 0x006910F0, (std::size_t size));
-CSF_FUNC(std::uint32_t*, __fastcall, ConstructChoiceNumButton, 0x0072F7C0,
+CSF_FUNC(void*, __cdecl, Mem_Alloc, 0x006910F0, (std::size_t size));
+CSF_FUNC(std::uint32_t*, __fastcall, CGuiChoiceNumButton_Construct, 0x0072F7C0,
          (std::uint32_t* storage, void* edx, std::uint32_t parent, void* context));
 CSF_FUNC(void, __fastcall, CGuiBuilder_ReadButtonProps, 0x0071FCB0,
          (CGuiBuilder* self, void* edx, std::uint32_t* button, std::uint8_t* node));
@@ -14,12 +14,12 @@ CSF_FUNC(void, __fastcall, CGuiBuilder_ReadButtonProps, 0x0071FCB0,
 static std::uint32_t* __fastcall CGuiBuilder_CreateChoiceNumButton(
     CGuiBuilder* self, void* /*edx*/, std::uint8_t* node)
 {
-    void* storage = AllocateGameMemory(0x208);
+    void* storage = Mem_Alloc(0x208);
     std::uint32_t* button = nullptr;
 
     if (storage)
     {
-        button = ConstructChoiceNumButton(
+        button = CGuiChoiceNumButton_Construct(
             static_cast<std::uint32_t*>(storage),
             nullptr,
             self->field_0004,

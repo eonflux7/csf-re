@@ -8,7 +8,7 @@ CSF_FUNC(int, __fastcall, CGuiSlider_ForwardSelfToParent, 0x00718660,
          (CGuiChoiceNumButton* self, void* edx));
 CSF_FUNC(int, __fastcall, CGuiControl_SetField0148, 0x00725120,
          (CGuiChoiceNumButton* self, void* edx, int state));
-CSF_FUNC(void, __fastcall, CGuiControl_FinalizeInteraction, 0x00725740,
+CSF_FUNC(void, __fastcall, CGuiButton_StartTextColorEffect, 0x00725740,
          (CGuiChoiceNumButton* self, void* edx));
 CSF_FUNC(int, __fastcall, CGuiButton_HandleEvent, 0x00725DA0,
          (CGuiChoiceNumButton* self, void* edx, int event));
@@ -64,7 +64,7 @@ static int __fastcall CGuiChoiceNumButton_HandleNumericChoiceEvent(
 
             ((void(__fastcall*)(void*, void*, int))
                  CSF_AT(void**, self, 0)[0x138 / 4])(self, nullptr, 13);
-            CGuiControl_FinalizeInteraction(self, nullptr);
+            CGuiButton_StartTextColorEffect(self, nullptr);
         }
     }
 

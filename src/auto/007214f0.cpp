@@ -4,9 +4,9 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CGuiControl_Ctor, 0x0071A010,
+CSF_FUNC(int, __fastcall, CGuiControl_Construct_71A010, 0x0071A010,
          (CGuiControl* self, void* edx, int parent, int argument));
-CSF_FUNC(int, __fastcall, CGuiEdit_InitializeState, 0x007213C0,
+CSF_FUNC(int, __fastcall, CGuiEdit_ClearTextAndPositions, 0x007213C0,
          (CGuiEdit* self, void* edx));
 
 CSF_GLOBAL(std::uint32_t, g_GuiEditVtable, 0x00864E18);
@@ -14,7 +14,7 @@ CSF_GLOBAL(std::uint32_t, g_GuiEditVtable, 0x00864E18);
 static int __fastcall CGuiEdit_Construct(
     CGuiEdit* self, void* /*edx*/, int parent, int argument)
 {
-    CGuiControl_Ctor(reinterpret_cast<CGuiControl*>(self), nullptr,
+    CGuiControl_Construct_71A010(reinterpret_cast<CGuiControl*>(self), nullptr,
                      parent, argument);
 
     CSF_AT(std::uint32_t, self, 0) =
@@ -47,7 +47,7 @@ static int __fastcall CGuiEdit_Construct(
     self->field_01bc = 0xFFFFFFFFu;
     self->field_01c0 = 16;
 
-    CGuiEdit_InitializeState(self, nullptr);
+    CGuiEdit_ClearTextAndPositions(self, nullptr);
 
     self->m_pText = 0;
     if (parent != 0) {

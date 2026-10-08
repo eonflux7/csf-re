@@ -11,13 +11,13 @@
 #include "legacy/string.h"
 
 // Global scheduler state accessor (cdecl, no arguments, returns in eax).
-CSF_FUNC(void*, __cdecl, GetGlobalState, 0x0050D190, ());
+CSF_FUNC(void*, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 
 // Concurrency::details::SchedulerBase::GetSchedulerProxy (thiscall, no stack args, ret 0).
 CSF_FUNC(int, __fastcall, SchedulerBase_GetSchedulerProxy, 0x00734A10, (void* self, void* edx));
 
 // Resets the listbox subobject embedded at +0x20 of CMenuSaveGame (cdecl, one stack argument).
-CSF_FUNC(int*, __cdecl, CMenuSaveGame_ResetListboxSubobject, 0x00541650, (int* subobject));
+CSF_FUNC(int*, __cdecl, MenuSaveGame_ClearListContainer, 0x00541650, (int* subobject));
 
 // Forwards the listbox state to the MP stats layout. The original passes two stack
 // arguments (subobject pointer, then field_001c) and also takes ebx as an input register,
@@ -33,7 +33,7 @@ static constexpr std::size_t kVtblSlotRefreshHost = 0x16C / 4;     // byte offse
 // Plain __fastcall (ecx = this, edx unused, no stack args) so the callee pops 0 bytes.
 static void __fastcall CMenuSaveGame_RefreshListboxIfProxyReady(CMenuSaveGame* self, void* /*edx*/)
 {
-    void* globalState = GetGlobalState();
+    void* globalState = GetGlobalState_50D190();
     if (SchedulerBase_GetSchedulerProxy(globalState, nullptr) != kSchedulerProxyReadyValue)
         return;
 
@@ -46,7 +46,7 @@ static void __fastcall CMenuSaveGame_RefreshListboxIfProxyReady(CMenuSaveGame* s
     reinterpret_cast<void(__fastcall*)(void*, void*)>(CSF_AT(void**, host, 0)[kVtblSlotRefreshHost])(host, nullptr);
 
     int* listboxSubobject = reinterpret_cast<int*>(reinterpret_cast<std::uint8_t*>(self) + kListboxSubobjectOffset);
-    CMenuSaveGame_ResetListboxSubobject(listboxSubobject);
+    MenuSaveGame_ClearListContainer(listboxSubobject);
 
     // Re-read the selected index after the reset call, as the original does.
     int selectedIndex = static_cast<int>(self->field_001c);

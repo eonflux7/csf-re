@@ -5,7 +5,7 @@
 
 CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x006683F0,
          (void* self, void* edx));
-CSF_FUNC(int, __cdecl, GetMenuContextValue, 0x00518980, ());
+CSF_FUNC(int, __cdecl, GetValue_8B0574, 0x00518980, ());
 
 static int __fastcall MenuScenarioSelect_AlignChildToReferencedPosition(
     void* self, void* /*edx*/)
@@ -24,7 +24,7 @@ static int __fastcall MenuScenarioSelect_AlignChildToReferencedPosition(
     if (!positionObject)
         return 0;
 
-    GetMenuContextValue();
+    GetValue_8B0574();
 
     void* verticalObject = GetReferencedObject(reference, nullptr);
     void* horizontalObject = GetReferencedObject(reference, nullptr);

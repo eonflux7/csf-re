@@ -6,7 +6,7 @@
 
 CSF_FUNC(int, __fastcall, CGuiControl_SendEvent, 0x00718280,
          (void* self, void* edx, int eventId));
-CSF_FUNC(int, __fastcall, CGuiControl_PrepareInputEvent, 0x00718660,
+CSF_FUNC(int, __fastcall, CGuiSlider_ForwardSelfToParent, 0x00718660,
          (void* self, void* edx));
 
 static int __fastcall CGuiEdit_SendEvent(
@@ -49,7 +49,7 @@ static int __fastcall CGuiEdit_SendEvent(
             return CGuiControl_SendEvent(self, nullptr, eventId);
         }
 
-        CGuiControl_PrepareInputEvent(self, nullptr);
+        CGuiSlider_ForwardSelfToParent(self, nullptr);
 
         if ((((int (__fastcall*)(void*, void*))
                   CSF_AT(void**, self, 0)[0x140 / 4])(
@@ -65,7 +65,7 @@ static int __fastcall CGuiEdit_SendEvent(
     }
 
     case 18:
-        CGuiControl_PrepareInputEvent(self, nullptr);
+        CGuiSlider_ForwardSelfToParent(self, nullptr);
         ((int (__fastcall*)(void*, void*, int))
             CSF_AT(void**, self, 0)[0x138 / 4])(self, nullptr, 13);
         return CGuiControl_SendEvent(self, nullptr, eventId);

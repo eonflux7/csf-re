@@ -5,7 +5,7 @@
 
 CSF_FUNC(int, __cdecl, ResetWideStringsInRecordRange, 0x007233D0,
          (int begin, int end));
-CSF_FUNC(std::uint32_t*, __cdecl, MoveWideStringRecords, 0x00723580,
+CSF_FUNC(std::uint32_t*, __cdecl, CopyStringRecordsForward, 0x00723580,
          (std::uint32_t* first, std::uint32_t* last,
           std::uint32_t* destination));
 
@@ -18,7 +18,7 @@ static std::uint32_t* __fastcall EraseWideStringRecords(
 {
     if (first != last)
     {
-        std::uint32_t* newEnd = MoveWideStringRecords(
+        std::uint32_t* newEnd = CopyStringRecordsForward(
             last,
             reinterpret_cast<std::uint32_t*>(
                 static_cast<std::uintptr_t>(CSF_AT(std::uint32_t, self, 0x08))),

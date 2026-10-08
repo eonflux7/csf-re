@@ -5,7 +5,7 @@
 // int __cdecl sub_718C20(int a1, int a2, int a3, int context, int flag)
 // The original pushes five arguments (0x14 bytes) before this cdecl call,
 // even though Hex-Rays only reports the three leading ones.
-CSF_FUNC(int, __cdecl, CoreDispatch, 0x718C20, (int a1, int a2, int a3, uint32_t context, uint32_t flag));
+CSF_FUNC(int, __cdecl, CopyConstructPointerRange_718C20, 0x718C20, (int a1, int a2, int a3, uint32_t context, uint32_t flag));
 
 // Reimplementation of sub_719AE0.
 //
@@ -14,7 +14,7 @@ CSF_FUNC(int, __cdecl, CoreDispatch, 0x718C20, (int a1, int a2, int a3, uint32_t
 // "self" parameter (__fastcall keeps the stack layout and the ret 12 of the
 // original). It relays exactly:
 //
-//     CoreDispatch(a1, a2, a3, ecx, ecx & 0xFFFFFF00)
+//     CopyConstructPointerRange_718C20(a1, a2, a3, ecx, ecx & 0xFFFFFF00)
 //
 // The fifth value is not simply zero: the original pushes ecx (prologue
 // `push ecx`), then writes a single zero byte over that stack slot
@@ -25,7 +25,7 @@ static int __fastcall ForwardToCoreDispatch(void* self, void* /*edx*/, int a1, i
 {
     const uint32_t context = reinterpret_cast<uint32_t>(self);
     const uint32_t flag = context & 0xFFFFFF00u;
-    return CoreDispatch(a1, a2, a3, context, flag);
+    return CopyConstructPointerRange_718C20(a1, a2, a3, context, flag);
 }
 
 HOOK(0x719AE0, ForwardToCoreDispatch, "auto");

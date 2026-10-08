@@ -10,7 +10,7 @@
 
 // std::string-like assign from another string at (pos, count); __thiscall, ret 12.
 // Pushes: src, 0 (pos), -1 (count = npos). Returns this.
-CSF_FUNC(void*, __fastcall, StringAssignSubstr, 0x403B60,
+CSF_FUNC(void*, __fastcall, MenuExtras_AssignStringRange, 0x403B60,
          (void* self, void* edx, const void* src, uint32_t pos, uint32_t count));
 
 // Copies a range of 0x44-byte records from src into [first, last).
@@ -22,10 +22,10 @@ static uint32_t* __cdecl CopyMenuExtrasRecordRange(uint32_t* first, uint32_t* la
     while (cursor != last)
     {
         cursor[0] = src[0];
-        StringAssignSubstr(cursor + 1, nullptr, src + 1, 0, 0xFFFFFFFFu);
+        MenuExtras_AssignStringRange(cursor + 1, nullptr, src + 1, 0, 0xFFFFFFFFu);
         cursor[8] = src[8];
         cursor[9] = src[9];
-        StringAssignSubstr(cursor + 10, nullptr, src + 10, 0, 0xFFFFFFFFu);
+        MenuExtras_AssignStringRange(cursor + 10, nullptr, src + 10, 0, 0xFFFFFFFFu);
         cursor += 17;
     }
     return last;

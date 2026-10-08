@@ -12,7 +12,7 @@
 
 // Callees, bound by address.
 CSF_FUNC(int, __fastcall, CMenuMessageBox_DestroyOwnedObject, 0x528A20, (void* self, void* edx));
-CSF_FUNC(uint32_t, __fastcall, Member8A0_Reset, 0x4FF3C0, (void* self, void* edx));
+CSF_FUNC(uint32_t, __fastcall, MenuBuffer_Destroy, 0x4FF3C0, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, Base10_Destroy, 0x69AE90, (void* self, void* edx));
 CSF_FUNC(void, __cdecl, Mem_Free, 0x691110, (void* block));
 
@@ -20,7 +20,7 @@ CSF_FUNC(void, __cdecl, Mem_Free, 0x691110, (void* block));
 // original's immediate addresses, in the same order as the original.
 static int __fastcall CMenuMessageBox_DestructBody(CMenuMessageBox* self, void* /*edx*/)
 {
-    CSF_AT(uint32_t, self, 0x00) = 0x00841370u;
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x00841370);
     self->field_0004 = 0x00841320u;
     CSF_AT(uint32_t, self, 0x10) = 0x00841318u;
 
@@ -32,12 +32,12 @@ static int __fastcall CMenuMessageBox_DestructBody(CMenuMessageBox* self, void* 
         self->field_0954 = 0;
     }
 
-    Member8A0_Reset(reinterpret_cast<uint8_t*>(self) + 0x8A0, nullptr);
+    MenuBuffer_Destroy(reinterpret_cast<uint8_t*>(self) + 0x8A0, nullptr);
     int result = Base10_Destroy(reinterpret_cast<uint8_t*>(self) + 0x10, nullptr);
 
-    self->field_0004 = 0x00830488u;
-    self->field_0004 = 0x00830438u;
-    CSF_AT(uint32_t, self, 0x00) = 0x0083042Cu;
+    self->field_0004 = CSF_ADDR_DATA(0x00830488);
+    self->field_0004 = CSF_ADDR_VT(0x00830438);
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x0083042C);
     return result;
 }
 

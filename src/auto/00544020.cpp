@@ -4,13 +4,13 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, CMenuGameOptions_InvokeBaseInit, 0x00548C40,
+CSF_FUNC(int, __fastcall, CMenuOptions_ResolvePanelAndApplyScale, 0x00548C40,
          (void* self, void* edx, int a2, int a3));
 
 static int __fastcall CMenuGameOptionsPC_SyncSliderMouseValue(
     CMenuGameOptionsPC* self, void* /*edx*/, int a2, int a3)
 {
-    int result = CMenuGameOptions_InvokeBaseInit(self, nullptr, a2, a3);
+    int result = CMenuOptions_ResolvePanelAndApplyScale(self, nullptr, a2, a3);
 
     uint32_t optionsHandle = self->field_001c;
     if (optionsHandle == 0)

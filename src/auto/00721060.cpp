@@ -16,12 +16,12 @@
 #include "types/auto_classes.h"
 
 // Shared implementation that 0x00720FD0 forward-targets (__thiscall, ret 4).
-CSF_FUNC(void, __fastcall, CGuiStatic_SharedFloatImpl, 0x00720FD0,
+CSF_FUNC(void, __fastcall, UpdateSineInterpolatedValue, 0x00720FD0,
          (CGuiStatic* self, void* /*edx*/, float value));
 
 static void __fastcall CGuiStatic_ForwardFloat(CGuiStatic* self, void* /*edx*/, float value)
 {
-    CGuiStatic_SharedFloatImpl(self, nullptr, value);
+    UpdateSineInterpolatedValue(self, nullptr, value);
 }
 
 HOOK(0x00721060, CGuiStatic_ForwardFloat, "auto");

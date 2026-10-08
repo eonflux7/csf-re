@@ -10,9 +10,9 @@ CSF_GLOBAL(int, g_MpNetworkType, 0x0089A5F0);
 CSF_GLOBAL(std::uint8_t, g_OnlineMatchFlag, 0x008B068C);
 
 CSF_FUNC(int, __cdecl, GetGlobal8B0688, 0x00550CC0, ());
-CSF_FUNC(void, __cdecl, Mp_RefreshNetworkModeFlags, 0x006A6D40, ());
+CSF_FUNC(void, __cdecl, MenuAccounts_ResetPendingEdit, 0x006A6D40, ());
 CSF_FUNC(int, __cdecl, GetGlobalDword_73C020, 0x0073C020, ());
-CSF_FUNC(int, __fastcall, SessionSetup_FromHandle, 0x0073E920, (int* self, void* edx));
+CSF_FUNC(int, __fastcall, MenuCharSelect_FinalizePreviewSlot, 0x0073E920, (int* self, void* edx));
 
 static int __fastcall CMenuMpOnline_ActivateOnlineMenu(void* self, void* /*edx*/)
 {
@@ -44,10 +44,10 @@ static int __fastcall CMenuMpOnline_ActivateOnlineMenu(void* self, void* /*edx*/
     }
 
     if (onlineActive)
-        Mp_RefreshNetworkModeFlags();
+        MenuAccounts_ResetPendingEdit();
 
     int sessionHandle = GetGlobalDword_73C020();
-    return SessionSetup_FromHandle(reinterpret_cast<int*>(sessionHandle), nullptr);
+    return MenuCharSelect_FinalizePreviewSlot(reinterpret_cast<int*>(sessionHandle), nullptr);
 }
 
 HOOK(0x0055F720, CMenuMpOnline_ActivateOnlineMenu, "auto");

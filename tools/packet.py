@@ -262,9 +262,12 @@ def build(db, ea, with_asm_limit=400):
                 out.append(f"- 0x{c:08X} `{nm}`: MSVC code-gen helper. Do NOT call or reference it; write the plain C++ "
                            "it came from (a float->int cast, int64 arithmetic, a large local array)")
                 continue
+            import api
+            canon = api.decl_line(c)
             out.append(f"- 0x{c:08X} `{nm}` [{status}] rets={ret_bytes(c, db.F[c]['size']) if c in db.F else '?'} "
-                       f"proto: `{cproto}`" + ("  NORETURN (throws/aborts): still call it on exactly the same "
-                                               "condition, even if the branch looks unreachable" if "__noreturn" in cproto else ""))
+                       + (f"bind as: `{canon}`" if canon else f"proto: `{cproto}`")
+                       + ("  NORETURN (throws/aborts): still call it on exactly the same "
+                          "condition, even if the branch looks unreachable" if "__noreturn" in cproto else ""))
     gl = [d for d in f["drefs"]]
     if gl:
         out.append("\n## Data referenced\n" + "\n".join(
