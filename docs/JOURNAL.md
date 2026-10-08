@@ -524,8 +524,9 @@ state, so a missing `mute` (or `mute 0`) explicitly unmutes. Tested on a hardlin
   ended 121 ok / 2 escalated / 18 deferred, and before the stop Codex had quietly absorbed the S/M work.
 - Grunts now call Haiku 5.5 (and Opus 5.5) through `claude -p` on a second subscription (CLAUDE_CONFIG_DIR =
   ~/.config/csf-re/claude-grunts); the captain stays on the main account, and the grunt backend refuses to run if
-  the grunts' login is missing (never falls back onto the main account). Each call carries ~4k tokens of CLI
-  overhead.
+  the grunts' login is missing (never falls back onto the main account). CLI overhead per call ~560 tokens
+  (cached) with --strict-mcp-config --setting-sources "" --disable-slash-commands, like the captain; without
+  them ~4k (the account's claude.ai connectors alone ~3.4k). --bare would be leaner but takes API keys only.
 - Quota: lanes polls the grunts' account usage (same oauth/usage endpoint as the monitor, shared cache file) and
   pauses it at 95 % of 5h/7d. Once Codex's 5h window passes 50 %, S/M Codex rungs run on Opus 5.5 medium, so
   Codex high stays for L. The Go backend, spend ledger and the A/B tooling are removed (results stay in work/ab/).

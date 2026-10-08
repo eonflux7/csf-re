@@ -169,7 +169,9 @@ def chat_claude(model, messages, effort=None):
     for m in messages[1:]:
         tag = "PACKET / REQUEST" if m["role"] == "user" else "YOUR PREVIOUS ANSWER"
         convo.append(f"=== {tag} ===\n{m['content']}")
+    # no tools/settings/MCP/skills: ~560 fixed tokens instead of ~4k (the account's claude.ai connectors alone ~3.4k)
     r = subprocess.run(["claude", "-p", "--tools", "", "--model", model, "--no-session-persistence",
+                        "--strict-mcp-config", "--setting-sources", "", "--disable-slash-commands",
                         "--output-format", "json", "--system-prompt", system, *eff],
                        input="\n\n".join(convo), capture_output=True, text=True, cwd=CLAUDE_CWD, timeout=900, env=env)
     d = json.loads(r.stdout)
