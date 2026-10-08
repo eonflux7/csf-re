@@ -281,19 +281,26 @@ def chat_go(model, messages, effort="high"):
 
 
 CLAUDE_CWD = os.path.expanduser("~/.cache/csf-re-claude")  # outside the repo: no CLAUDE.md / memory pulled in
+# The grunts' own Claude account (a second subscription, logged in once with
+# `CLAUDE_CONFIG_DIR=~/.config/csf-re/claude-grunts claude` -> /login); the captain keeps the main account.
+CLAUDE_GRUNTS = os.path.expanduser("~/.config/csf-re/claude-grunts")
 
 
-def chat_claude(model, messages):
-    """Claude via the Claude Code CLI in headless mode (user's subscription). No tools."""
+def chat_claude(model, messages, effort=None):
+    """Claude via the Claude Code CLI in headless mode (the grunts' account if it is set up). No tools."""
     os.makedirs(CLAUDE_CWD, exist_ok=True)
+    env = dict(os.environ)
+    if os.path.isdir(CLAUDE_GRUNTS):
+        env["CLAUDE_CONFIG_DIR"] = CLAUDE_GRUNTS
+    eff = ["--effort", effort] if effort in ("low", "medium", "high", "xhigh", "max") else []
     system = messages[0]["content"]
     convo = []
     for m in messages[1:]:
         tag = "PACKET / REQUEST" if m["role"] == "user" else "YOUR PREVIOUS ANSWER"
         convo.append(f"=== {tag} ===\n{m['content']}")
     r = subprocess.run(["claude", "-p", "--tools", "", "--model", model, "--no-session-persistence",
-                        "--output-format", "json", "--system-prompt", system],
-                       input="\n\n".join(convo), capture_output=True, text=True, cwd=CLAUDE_CWD, timeout=900)
+                        "--output-format", "json", "--system-prompt", system, *eff],
+                       input="\n\n".join(convo), capture_output=True, text=True, cwd=CLAUDE_CWD, timeout=900, env=env)
     d = json.loads(r.stdout)
     if d.get("is_error") or d.get("terminal_reason") not in (None, "completed", "end_turn"):
         raise RuntimeError(f"claude -p failed: {d.get('terminal_reason')} {str(d.get('result'))[:200]}")
@@ -453,6 +460,9 @@ def live(**kw):
         os.replace(tmp, LIVE)
 
 
+CODEX_RESERVED = threading.Event()  # Codex 5h window past --codex-reserve: S/M Codex rungs go to CODEX_SUB
+CODEX_SUB = None  # (backend, model) standing in for Codex in S/M while reserved or paused, e.g. claude:...@medium
+CLAUDE_FOR_GO = False  # a Go Claude rung out of allowance runs on the grunts' Claude account instead
 CODEX_PAUSED = threading.Event()  # set by the lanes quota guard: no new Codex calls (writes, fallbacks, reviews)
 
 
@@ -520,7 +530,7 @@ def _ask(backend, model, messages, key, effort="high"):
     live()
     try:
         if backend == "claude":
-            text, usage = chat_claude(model, messages)
+            text, usage = chat_claude(model, messages, effort)
         elif backend == "codex":
             text, usage = chat_codex(model, messages, effort)
         elif backend == "go":
@@ -614,7 +624,31 @@ def example_section(db, ex):
             f"```cpp\n{open(path).read()}\n```")
 
 
-def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evidence_budget=0, prior=None):
+def go_out(model):
+    try:
+        go_guard(model.split("@")[0])
+        return False
+    except RuntimeError:
+        return True
+
+
+def claude_grunts_ready():
+    """The grunts' Claude account is logged in (never fall back onto the main account the captain uses)."""
+    return os.path.exists(os.path.join(CLAUDE_GRUNTS, ".credentials.json"))
+
+
+def substitute(backend, model, tier):
+    """The rung that really runs: Codex is kept for L once its 5h window is past the reserve; Go Claude models fall
+    back to the grunts' own Claude account when their Go allowance is spent."""
+    if backend == "codex" and tier in ("S", "M") and CODEX_SUB and (CODEX_SUB[0] != "claude" or claude_grunts_ready()) and (CODEX_RESERVED.is_set() or CODEX_PAUSED.is_set()):
+        return CODEX_SUB
+    if backend == "go" and CLAUDE_FOR_GO and model.startswith("claude-") and claude_grunts_ready() and go_out(model):
+        return "claude", model
+    return backend, model
+
+
+def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evidence_budget=0, prior=None,
+         tier=None):
     """ladder: [(backend, model, attempts), ...] tried in order; the conversation (with gate errors) carries over.
     example: ea of a done clone sibling (its file is shown). review_over: Codex-review DeepSeek outputs above N bytes.
     evidence_budget: read-only evidence requests the model may make (tools/evidence.py); they aren't attempts.
@@ -647,7 +681,8 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
             continue
         # first attempt per rung at high effort, retries at max (a pinned model@effort ignores both)
         first = attempt == 0 or steps[attempt - 1] != (backend, model)
-        dk = f"go:{model.split('@')[0]}" if backend == "go" else backend
+        backend, model = substitute(backend, model, tier)
+        dk = f"{backend}:{model.split('@')[0]}" if backend in ("go", "claude") else backend
         if dk in dead:
             continue
         try:
@@ -665,7 +700,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
                 code, meta = parse(text)
         except Exception as e:  # out of credit / quota / CLI failure: fall through to the next rung
             dead.add(dk)
-            quota_hit |= bool(re.search(r"paused by the quota guard|go allowance", str(e)))
+            quota_hit |= bool(re.search(r"paused by the quota guard|go allowance|usage limit|rate limit", str(e), re.I))
             err = f"{backend} error: {e}"
             continue
         if code:
@@ -978,6 +1013,7 @@ def run_config(args, lanes=False):
                 batch_fns=getattr(args, "batch_fns", 1), batch_bytes=getattr(args, "batch_bytes", 0),
                 batch_max=getattr(args, "batch_max", 300), tiny=getattr(args, "tiny", None),
                 review_over=args.review_over, codex_cap=getattr(args, "codex_cap", None),
+                codex_reserve=getattr(args, "codex_reserve", None), codex_sub=getattr(args, "codex_sub", None),
                 backend=getattr(args, "backend", "lanes"), wave=getattr(args, "module", None),
                 **(dict(tiers={t: dict(ladder=getattr(args, f"{t.lower()}_ladder"), jobs=getattr(args, f"{t.lower()}_jobs"))
                                for t in "SML"}, s_max=args.s_max, m_max=args.m_max, review_effort=args.review_effort) if lanes else {}))
@@ -1119,8 +1155,10 @@ def lanes(args):
     remaining rungs were out of quota is deferred, not escalated. Every --batch gate passes: build + smoke + commit."""
     if args.module and not args.no_captain:
         captain_prep(args.module)
-    global REVIEW_EFFORT
+    global REVIEW_EFFORT, CODEX_SUB, CLAUDE_FOR_GO
     REVIEW_EFFORT = args.review_effort
+    CODEX_SUB = tuple(args.codex_sub.split(":", 1)) if args.codex_sub else None
+    CLAUDE_FOR_GO = args.claude_for_go
     db = DB()
     wave = module_ids(args.module)
     if args.smoke_menu:
@@ -1161,6 +1199,13 @@ def lanes(args):
             pct, reset = codex_usage()["5h"]
         except Exception:
             return  # endpoint down: keep the current state
+        if CODEX_SUB and pct >= args.codex_reserve and not CODEX_RESERVED.is_set():
+            CODEX_RESERVED.set()
+            print(f"Codex 5h window at {pct:.0f}% (reserve {args.codex_reserve}): S/M Codex rungs -> "
+                  f"{':'.join(CODEX_SUB)}, Codex kept for L", flush=True)
+        elif pct < args.codex_reserve and CODEX_RESERVED.is_set():
+            CODEX_RESERVED.clear()
+            print(f"Codex 5h window at {pct:.0f}%: S/M Codex rungs back on Codex", flush=True)
         if pct >= args.codex_cap and not CODEX_PAUSED.is_set():
             CODEX_PAUSED.set()
             print(f"Codex 5h window at {pct:.0f}% (cap {args.codex_cap}): Codex paused, resets in {reset // 60} min",
@@ -1193,7 +1238,8 @@ def lanes(args):
             t = tier_of(ea, ex)
             if cnt[t] >= caps[t]:
                 continue
-            fut = pool.submit(work, ea, db, key, ladders[t], None, ex, args.review_over, ev_budget(args, db, ea))
+            fut = pool.submit(work, ea, db, key, ladders[t], None, ex, args.review_over, ev_budget(args, db, ea),
+                              tier=t)
             inflight[fut] = (ea, t)
             cnt[t] += 1
             submitted += 1
@@ -1577,6 +1623,12 @@ if __name__ == "__main__":
     l.add_argument("--no-captain", action="store_true", help="module waves: skip the captain steps (class naming "
                    "before, placeholder function names after)")
     l.add_argument("--codex-cap", type=float, default=90, help="pause Codex at this 5h-window %% (0: off)")
+    l.add_argument("--codex-reserve", type=float, default=50,
+                   help="from this Codex 5h-window %%, S/M Codex rungs run on --codex-sub (Codex kept for L)")
+    l.add_argument("--codex-sub", default="claude:claude-opus-5-5@medium",
+                   help="backend:model[@effort] standing in for Codex in S/M (empty: off)")
+    l.add_argument("--claude-for-go", action=argparse.BooleanOptionalAction, default=True,
+                   help="Go Claude rungs out of allowance run on the grunts' Claude account")
     sub.add_parser("cost")
     b = sub.add_parser("ab", help="model A/B over OpenCode Go (work/ab/, nothing committed)")
     b.add_argument("--track", choices=["a", "b"], required=True,

@@ -33,21 +33,23 @@ LIVE = os.path.join(ROOT, "work", "grunt_state.json")
 LOG = os.path.join(ROOT, "work", "grunt_log.jsonl")
 CAPTAIN = os.path.join(ROOT, "work", "captain_state.json")
 BACKEND_STYLE = {"codex": "magenta", "deepseek": "cyan", "claude": "yellow", "go": "bright_cyan"}
-MODEL_STYLE = {"haiku": "yellow", "mimo": "bright_cyan", "sol": "magenta", "ds": "cyan", "sonnet": "green"}
+MODEL_STYLE = {"haiku": "yellow", "mimo": "bright_cyan", "sol": "magenta", "ds": "cyan", "sonnet": "green", "opus": "bright_red"}
 
 
 def who(backend, model=""):
     """Short model label: go:claude-haiku-5-5@low -> haiku·lo, codex:gpt-6.1-sol@xhigh -> sol·xh, mimo-v2.6-pro -> mimo."""
     base, _, eff = (model or "").partition("@")
-    name = ("haiku" if "haiku" in base else "mimo" + ("-fl" if "flash" in base else "") if "mimo" in base else
+    name = ("haiku" if "haiku" in base else "opus" if "opus" in base else "sonnet" if "sonnet" in base else "mimo" + ("-fl" if "flash" in base else "") if "mimo" in base else
             "sol" if "sol" in base else "ds" + ("-pro" if "pro" in base else "")
             if backend == "deepseek" or "deepseek" in base else base.split("-")[0] or backend)
+    if backend == "claude":  # the grunts' Claude account (vs the same model over Go)
+        name = "c-" + name
     return name + (f"·{eff[:2]}" if eff else "")
 
 
 def who_text(backend, model=""):
     w = who(backend, model)
-    return Text(w, style=MODEL_STYLE.get(w.split("·")[0], BACKEND_STYLE.get(backend, "dim")))
+    return Text(w, style=MODEL_STYLE.get(w.split("·")[0].removeprefix("c-"), BACKEND_STYLE.get(backend, "dim")))
 _cache = {}
 
 
@@ -732,7 +734,7 @@ def efficiency(recent):
             t.append(f"1st {first / max(1, len(ok)):.0%}", style="green" if first >= 0.75 * len(ok) else "yellow")
             t.append(f"  go ${go / max(1, len(ok)):.4f}/fn  codex out {kfmt(cx // max(1, len(ts)))}/fn  ", style="dim")
             for w, n in wins.most_common(4):
-                t.append(f"{w} {n} ", style=MODEL_STYLE.get(w.split("·")[0], "dim"))
+                t.append(f"{w} {n} ", style=MODEL_STYLE.get(w.split("·")[0].removeprefix("c-"), "dim"))
             t.no_wrap, t.overflow = True, "ellipsis"
             out.append(t)
         return out
@@ -793,7 +795,7 @@ def grunt_header(g):
         if tiers:
             f.append("  ".join(f"{t} {tiers.get(t, 0)}" for t in ("S", "M", "L")) + "  │  ", style="dim")
         for w, n in per.most_common():
-            f.append(f"{w} {n}  ", style=MODEL_STYLE.get(w.split("·")[0], "dim"))
+            f.append(f"{w} {n}  ", style=MODEL_STYLE.get(w.split("·")[0].removeprefix("c-"), "dim"))
         out.append(f)
     if st.get("codex_paused") and alive:
         out.append(Text(f"        Codex paused by the quota guard (5h {st.get('codex_5h', 0):.0f}%): "
