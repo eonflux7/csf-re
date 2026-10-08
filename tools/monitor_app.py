@@ -13,6 +13,7 @@ from rich.text import Text
 from textual import work
 from textual.app import App, ComposeResult
 from textual.binding import Binding
+from textual.coordinate import Coordinate
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets import Collapsible, DataTable, Footer, Header, Markdown, Static, TabbedContent, TabPane
 
@@ -167,16 +168,31 @@ class Monitor(App):
 
     # ------------------------------------------------------------ apply (UI thread)
 
-    @staticmethod
-    def fill(table, rows, keys=None):
-        """Replace a table's rows, keeping the cursor row and the scroll position."""
-        cur, sy = table.cursor_row, table.scroll_y
+    def fill(self, table, rows):
+        """Show rows without disturbing the reader: unchanged data = no-op; same row count = only the changed cells
+        are updated in place (scroll and cursor untouched); otherwise rebuilt, then cursor and scroll restored
+        after the layout pass (restoring before it clamps the scroll to 0)."""
+        plain = [tuple(str(c) for c in r) for r in rows]
+        old = getattr(table, "_plain", None)
+        if plain == old:
+            return
+        table._plain = plain
+        if old is not None and len(old) == len(plain) and table.row_count == len(plain):
+            for y, (a, b) in enumerate(zip(old, plain)):
+                for x, (ca, cb) in enumerate(zip(a, b)):
+                    if ca != cb:
+                        table.update_cell_at(Coordinate(y, x), rows[y][x])
+            return
+        cur, sx, sy = table.cursor_row, table.scroll_x, table.scroll_y
         table.clear()
-        for i, r in enumerate(rows):
-            table.add_row(*r, key=keys[i] if keys else None)
-        if rows and table.cursor_type != "none":
-            table.move_cursor(row=min(cur, len(rows) - 1), animate=False)
-        table.scroll_y = sy
+        for r in rows:
+            table.add_row(*r)
+
+        def restore():
+            if rows and table.cursor_type != "none":
+                table.move_cursor(row=min(cur, len(rows) - 1), animate=False, scroll=False)
+            table.scroll_to(x=sx, y=sy, animate=False)
+        self.call_after_refresh(restore)
 
     def apply(self, s):
         c = self.query_one("#claude", Static)
