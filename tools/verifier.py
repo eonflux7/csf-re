@@ -94,10 +94,12 @@ def rows():
 def groups(pending, size, modules=None):
     """Pending functions grouped by module (a group never mixes more modules than needed to fill it)."""
     rs = rows()
+    if modules:  # names (hud) or ids (m42CF50), as everywhere else
+        modules = grunt.module_ids(",".join(sorted(modules)))
     by = collections.defaultdict(list)
     for ea in pending:
         m = rs.get(ea, {}).get("module") or "?"
-        if not modules or m in modules or (rs.get(ea, {}).get("module_name") in modules):
+        if not modules or m in modules:
             by[m].append(ea)
     out, cur = [], []
     for m in sorted(by, key=lambda k: -len(by[k])):
