@@ -115,39 +115,259 @@
 - {addr: 0x008928E8, name: g_ElementCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00892A0C, name: g_ForwardRangeExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00892A5C, name: g_ArrayConstructionExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x00899520, name: g_pszConfig_Control, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899524, name: g_pszKey_CONTROL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899528, name: g_pszKey_DEVICE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089952C, name: g_pszKey_DEVICE_ID, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899530, name: g_pszKey_ID_ESTATICO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899534, name: g_pszKey_SYMBOL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899538, name: g_pszKey_LISTADATOS_PC, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899544, name: g_pszKey_ID, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089954C, name: g_pszKey_TEXTURAS_ICONOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899550, name: g_pszKey_SPRITES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899554, name: g_pszKey_CROSSFIRES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899558, name: g_pszKey_FILTROS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089955C, name: g_pszKey_DISFRACES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899560, name: g_pszKey_GALONES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899564, name: g_pszKey_TEXTO_DISFRAZ, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899568, name: g_pszKey_POS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899574, name: g_pszKey_FONDO_DATOS_MIRILLA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899578, name: g_pszKey_VIDA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089957C, name: g_pszKey_CANSANCIO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899580, name: g_pszKey_POSTURA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899584, name: g_pszKey_MARCADORES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899588, name: g_pszKey_BOTIQUIN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089958C, name: g_pszKey_ARMAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899590, name: g_pszKey_ARMAS_INTERCAMBIO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899594, name: g_pszKey_ITEMS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899598, name: g_pszKey_NUMEROS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089959C, name: g_pszKey_NUMEROS_RED, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995A0, name: g_pszKey_FONDOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995A4, name: g_pszKey_TEXTURE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995A8, name: g_pszKey_ID_hud, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995AC, name: g_pszKey_TOP, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995B0, name: g_pszKey_LEFT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995B4, name: g_pszKey_WIDTH, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995B8, name: g_pszKey_HEIGHT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995BC, name: g_pszKey_TEX_V0, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995C0, name: g_pszKey_TEX_U0, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995C4, name: g_pszKey_TEX_V1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995C8, name: g_pszKey_TEX_U1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995CC, name: g_pszKey_ICON, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995D0, name: g_pszKey_SPRITES_MINIMAPA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995D4, name: g_pszKey_INDICADOR_DANYO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995D8, name: g_pszKey_VISTO_DE_LEJOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995DC, name: g_psz_SOLDADO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995E0, name: g_psz_SUBOFICIAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995E4, name: g_psz_OFICIAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995E8, name: g_psz_GENERAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995EC, name: g_psz_GESTAPO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995F0, name: g_pszKey_CONTEXTO_COGER_ITEM, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995F4, name: g_pszKey_RADAR_LINEAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995F8, name: g_pszKey_NOMBRE_PLAYER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008995FC, name: g_pszKey_FUENTE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899600, name: g_pszKey_DELTA_X, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899604, name: g_pszKey_DELTA_Y, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899608, name: g_pszKey_MAX_VALUE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089960C, name: g_pszKey_ALARMA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899610, name: g_pszKey_ICONO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899614, name: g_pszKey_RELLENO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899618, name: g_pszKey_BANNER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089961C, name: g_pszKey_QUICK_LOADSAVE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899620, name: g_pszKey_SPRITES_CGuiControl, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899624, name: g_pszKey_SPRITES_MINIMAPA_CGuiControl, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089962C, name: g_pszKey_MAPA_TACTICO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899630, name: g_pszKey_SANITARIO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899634, name: g_pszKey_TOP_CGuiControl, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899638, name: g_pszKey_LEFT_CGuiControl, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089963C, name: g_pszKey_WIDTH_CGuiControl, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899640, name: g_pszKey_HEIGHT_CGuiControl, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899644, name: g_pszKey_TEX_V0_CGuiControl, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899648, name: g_pszKey_TEX_U0_CGuiControl, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089964C, name: g_pszKey_TEX_V1_CGuiControl, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899650, name: g_pszKey_TEX_U1_CGuiControl, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899654, name: g_pszKey_FADE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899658, name: g_pszKey_MAXOPACITY, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089965C, name: g_pszKey_POS_89965C, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899660, name: g_pszKey_SIZE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899664, name: g_pszKey_FUENTE_899664, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899668, name: g_pszKey_DEGREE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089966C, name: g_pszKey_NUM_ESCALAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899670, name: g_pszKey_VERTEX_BUF2D, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899674, name: g_pszKey_DIRECCIONES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899678, name: g_pszKey_GENERAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089967C, name: g_pszKey_ALPHA_SOLID, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899680, name: g_pszKey_TEX_V0_899680, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899684, name: g_pszKey_TEX_U0_899684, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899688, name: g_pszKey_TEX_V1_899688, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089968C, name: g_pszKey_TEX_U1_89968C, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899690, name: g_pszKey_MINIMAPA_RADAR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899694, name: g_pszKey_MINIMAPA_RTS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899698, name: g_pszKey_NUM_VERTEX, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996AC, name: g_pszKey_SOLID, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996B0, name: g_pszKey_TEX_W, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996B4, name: g_pszKey_TEX_H, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996B8, name: g_pszKey_CAMPANYAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996BC, name: g_pszKey_NOMBRE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996C0, name: g_pszKey_INICIO_SCN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996C4, name: g_pszKey_LISTA_ESCENARIOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996C8, name: g_pszKey_ESCENARIO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996CC, name: g_pszKey_ESCENARIO_ID, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996D0, name: g_pszKey_ESCENARIO_INICIO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996D4, name: g_pszKey_SCREENSHOT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996D8, name: g_pszKey_PANTALLA_CARGA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996DC, name: g_pszKey_LAST_MISSION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996E0, name: g_pszKey_DESCRIPCION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996E4, name: g_pszKey_BRIEFING_CAMPAGNA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996E8, name: g_pszKey_BRIEFING_CARGA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996EC, name: g_pszKey_FICHERO_DESCRIPCION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996F0, name: g_pszKey_FICHERO_BRIEFING_CAMPAGNA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008996F4, name: g_pszKey_FICHERO_BRIEFING_CARGA, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x0089972C, name: g_CurrentSceneIndex, type: int, uses: 0, src: captain, conf: 0.85}
 - {addr: 0x00899738, name: g_numScenes, type: unsigned int, uses: 0, src: captain, conf: 0.85}
-- {addr: 0x00899AA4, name: g_szMenuHelpFile, type: const char*, uses: 0, src: captain, conf: 0.9}
-- {addr: 0x00899AB0, name: g_szMenuVideoFile, type: const char*, uses: 0, src: captain, conf: 0.9}
-- {addr: 0x00899AB4, name: g_szMenuVideoInGameFile, type: const char*, uses: 0, src: captain, conf: 0.85}
-- {addr: 0x00899AB8, name: g_szMenuGameOptionsInGameFile, type: const char*, uses: 0, src: captain, conf: 0.85}
-- {addr: 0x00899AC8, name: g_szMenuSoundInGameFile, type: const char*, uses: 0, src: captain, conf: 0.85}
-- {addr: 0x00899ACC, name: g_szMenuOptionsFile, type: const char*, uses: 0, src: captain, conf: 0.9}
-- {addr: 0x00899AD0, name: g_ScreenCredits, type: const char*, uses: 0, src: captain, conf: 0.9}
-- {addr: 0x00899AD4, name: g_ScreenOptionsIngame, type: const char*, uses: 0, src: captain, conf: 0.85}
-- {addr: 0x00899AD8, name: g_ScreenCampaign, type: const char*, uses: 0, src: captain, conf: 0.88}
-- {addr: 0x00899AE4, name: g_ScreenMainMenu, type: const char*, uses: 0, src: captain, conf: 0.92}
-- {addr: 0x00899AE8, name: g_ScreenSceneSelect, type: const char*, uses: 0, src: captain, conf: 0.85}
-- {addr: 0x00899AF0, name: g_ScreenGame, type: void*, uses: 1, src: captain, conf: 0.7}
-- {addr: 0x00899AF4, name: g_ScreenGameMenu, type: const char*, uses: 0, src: captain, conf: 0.88}
-- {addr: 0x00899AF8, name: g_ScreenGameMenuMP, type: char*, uses: 0, src: captain, conf: 0.85}
-- {addr: 0x00899AFC, name: g_ScreenCharacterMP, type: char*, uses: 0, src: captain, conf: 0.8}
-- {addr: 0x00899B08, name: g_ScreenLoadGame, type: char*, uses: 0, src: captain, conf: 0.9}
-- {addr: 0x00899B0C, name: g_ScreenLoadMenu, type: char*, uses: 0, src: captain, conf: 0.85}
-- {addr: 0x00899B14, name: g_ScreenTactic, type: char*, uses: 0, src: captain, conf: 0.85}
-- {addr: 0x00899B18, name: g_ScreenStatsMP, type: char*, uses: 0, src: captain, conf: 0.85}
-- {addr: 0x00899B20, name: g_MenuPanelTmPartPath, type: const char*, uses: 0, src: captain, conf: 0.85}
-- {addr: 0x00899B28, name: g_MenuPanelMsgBoxPath, type: const char*, uses: 0, src: captain, conf: 0.9}
-- {addr: 0x00899B2C, name: g_MenuPanelIntroPath, type: const char*, uses: 0, src: captain, conf: 0.9}
-- {addr: 0x00899B30, name: g_MenuPanelLbSlCuPath, type: const char*, uses: 0, src: captain, conf: 0.85}
-- {addr: 0x00899B50, name: g_LobbyCustomMatchMenuFbsPath, type: const char*, uses: 0, src: captain, conf: 0.75}
-- {addr: 0x00899B98, name: g_MenuPanelSalDemPath, type: const char*, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x00899740, name: g_pszKey_ICONOS_ESTADO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008997F0, name: g_psz_DISTRACCION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089985C, name: g_psz_POBJ_PROYECTIL_GRANADA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899860, name: g_psz_POBJ_PROYECTIL_DINAMITA_PEGAJOSA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899864, name: g_psz_POBJ_PROYECTIL_OBUS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899868, name: g_psz_POBJ_PROYECTIL_CUCHILLO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089986C, name: g_psz_POBJ_PROYECTIL_BOTE_GAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899870, name: g_psz_POBJ_PROYECTIL_BOTE_HUMO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899874, name: g_psz_POBJ_PROYECTIL_COKTEL_MOLOTOV, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899878, name: g_psz_POBJ_PROYECTIL_MINA_ANTITANQUE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x0089987C, name: g_psz_POBJ_PAQUETE_CIGARRILLOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899880, name: g_psz_POBJ_MONEDA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008998A4, name: g_psz_DISTRACCION_8998A4, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008998D8, name: g_pszKey_TEXTURAS_STRINGSHOW, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008998E0, name: g_pszKey_CONTEXTO_GLOBAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008998E4, name: g_pszKey_MARCO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008998E8, name: g_pszKey_POS_8998E8, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008998EC, name: g_pszKey_SIZE_8998EC, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008998F0, name: g_pszKey_CONTEXTO_EVENTOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008998F4, name: g_pszKey_POS_8998F4, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008998FC, name: g_pszKey_VENTANADRAMATICA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899900, name: g_pszWeap_d_franco, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899904, name: g_pszWeap_d_prism, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899908, name: g_pszWeap_d_agua, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A24, name: g_pszKey_AUTO_AIM, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A28, name: g_pszKey_SUBTITLES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A2C, name: g_pszKey_INVERT_VIEW, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A30, name: g_pszKey_SENSIBILIDAD, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A34, name: g_pszKey_GAME_VIBRATION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A38, name: g_pszKey_VOICE_MUTED, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A44, name: g_pszKey_CONTROLES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A48, name: g_pszKey_MUSIC, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A4C, name: g_pszKey_FX, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A50, name: g_pszKey_OUTPUT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A54, name: g_pszKey_REVERB, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A58, name: g_pszKey_EAX, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A5C, name: g_pszKey_QUALITY, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A60, name: g_pszKey_MODE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A64, name: g_pszKey_BRIGHTNESS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A68, name: g_pszKey_NOISE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A6C, name: g_pszKey_VERTICAL_SYNC, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A70, name: g_pszKey_ANTIALIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A74, name: g_pszKey_SHADOWS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A78, name: g_pszKey_TEX_FILTER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A7C, name: g_pszKey_TEX_QUALITY, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A80, name: g_pszKey_MODEL_QUALITY, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A84, name: g_pszKey_EFFECTS_QUALITY, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A88, name: g_pszKey_WATER_QUALITY, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A8C, name: g_pszKey_SOUND, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A90, name: g_pszKey_VIDEO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A94, name: g_pszKey_CONTROLS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A98, name: g_pszKey_JUEGO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899A9C, name: g_pszKey_VERSION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899AA0, name: g_pszKey_OPCIONES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899AA4, name: g_pszMenu_P_Help, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_szMenuHelpFile]}
+- {addr: 0x00899AA8, name: g_pszMenu_P_Contro, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899AAC, name: g_pszMenu_P_ConIng, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899AB0, name: g_pszMenu_P_Video, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_szMenuVideoFile]}
+- {addr: 0x00899AB4, name: g_pszMenu_P_VideoI, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_szMenuVideoInGameFile]}
+- {addr: 0x00899AB8, name: g_pszMenu_P_MOGIng, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_szMenuGameOptionsInGameFile]}
+- {addr: 0x00899ABC, name: g_pszMenu_P_MOG, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899AC0, name: g_pszMenu_P_Idioma, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899AC4, name: g_pszMenu_P_Sound, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899AC8, name: g_pszMenu_P_SoundI, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_szMenuSoundInGameFile]}
+- {addr: 0x00899ACC, name: g_pszMenu_P_Option, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_szMenuOptionsFile]}
+- {addr: 0x00899AD0, name: g_pszMenu_P_Credits, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_ScreenCredits]}
+- {addr: 0x00899AD4, name: g_pszMenu_P_OptIng, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_ScreenOptionsIngame]}
+- {addr: 0x00899AD8, name: g_pszMenu_P_Campan, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_ScreenCampaign]}
+- {addr: 0x00899ADC, name: g_pszMenu_P_SShots, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899AE0, name: g_pszMenu_P_Profil, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899AE4, name: g_pszMenu_P_MePrin, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_ScreenMainMenu]}
+- {addr: 0x00899AE8, name: g_pszMenu_P_Scenes, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_ScreenSceneSelect]}
+- {addr: 0x00899AEC, name: g_pszMenu_P_Carga, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899AF0, name: g_pszMenu_P_Juego, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_ScreenGame]}
+- {addr: 0x00899AF4, name: g_pszMenu_P_MeJueg, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_ScreenGameMenu]}
+- {addr: 0x00899AF8, name: g_pszMenu_P_MeJuMP, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_ScreenGameMenuMP]}
+- {addr: 0x00899AFC, name: g_pszMenu_P_CharMP, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_ScreenCharacterMP]}
+- {addr: 0x00899B00, name: g_pszMenu_P_Edit, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B04, name: g_pszMenu_P_EditG, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B08, name: g_pszMenu_P_LoGame, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_ScreenLoadGame]}
+- {addr: 0x00899B0C, name: g_pszMenu_P_LoMenu, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_ScreenLoadMenu]}
+- {addr: 0x00899B10, name: g_pszMenu_P_SaGame, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B14, name: g_pszMenu_P_Tactic, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_ScreenTactic]}
+- {addr: 0x00899B18, name: g_pszMenu_P_EstaMP, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_ScreenStatsMP]}
+- {addr: 0x00899B1C, name: g_pszMenu_P_VictMP, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B20, name: g_pszMenu_P_TmPart, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_MenuPanelTmPartPath]}
+- {addr: 0x00899B24, name: g_pszMenu_P_ProgBr, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B28, name: g_pszMenu_P_MsgBox, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_MenuPanelMsgBoxPath]}
+- {addr: 0x00899B2C, name: g_pszMenu_P_Intro, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_MenuPanelIntroPath]}
+- {addr: 0x00899B30, name: g_pszMenu_P_LbSlCu, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_MenuPanelLbSlCuPath]}
+- {addr: 0x00899B34, name: g_pszMenu_P_LbCuLa, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B38, name: g_pszMenu_P_LbCuCr, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B3C, name: g_pszMenu_P_LbCuMo, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B40, name: g_pszMenu_P_LbMePr, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B48, name: g_pszMenu_P_LbQMch, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B4C, name: g_pszMenu_P_LbTpQM, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B50, name: g_pszMenu_P_LbCMch, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_LobbyCustomMatchMenuFbsPath]}
+- {addr: 0x00899B54, name: g_pszMenu_P_LbOMch, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B58, name: g_pszMenu_P_LbFrie, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B5C, name: g_pszMenu_P_LbFrIn, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B60, name: g_pszMenu_P_LbFrI2, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B64, name: g_pszMenu_P_LbFLIn, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B68, name: g_pszMenu_P_LbFIOp, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B74, name: g_pszMenu_P_LbLaWa, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B84, name: g_pszMenu_P_VideoA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B88, name: g_pszMenu_P_MeCaPa, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B8C, name: g_pszMenu_P_Start, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B90, name: g_pszMenu_P_AuUnPa, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B94, name: g_pszMenu_P_EEULA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899B98, name: g_pszMenu_P_SalDem, type: const char*, uses: 0, src: captain, conf: 1.0, alt: [g_MenuPanelSalDemPath]}
 - {addr: 0x00899B9C, name: g_ScreenWidth, type: unsigned int, uses: 0, src: captain, conf: 0.9}
 - {addr: 0x00899BA0, name: g_ScreenHeight, type: unsigned int, uses: 0, src: captain, conf: 0.9}
+- {addr: 0x00899BA4, name: g_pszKey_DATE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BA8, name: g_pszKey_YEAR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BAC, name: g_pszKey_MONTH, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BB0, name: g_pszKey_DAY, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BB4, name: g_pszKey_HOUR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BB8, name: g_pszKey_MINUTE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BBC, name: g_pszKey_SECOND, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BC0, name: g_pszKey_VERSION_profiles_savegames, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BC4, name: g_pszKey_PERFILES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BC8, name: g_pszKey_NOMBRE_profiles_savegames, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BCC, name: g_pszKey_KEY, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BD0, name: g_pszKey_CURRENT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BD4, name: g_pszKey_CAMPA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BD8, name: g_pszKey_ESCENARIO_ID_profiles_savegames, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BDC, name: g_pszKey_PUNTUACION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BE0, name: g_pszKey_MISION_EXITO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BE4, name: g_pszKey_NUM_ESTRELLAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899BE8, name: g_pszKey_COMMANDO_DIF, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899D78, name: g_psz_Gfx_Textures, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899EAC, name: g_psz_VinylD_1, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x0089A5E8, name: g_SelectedAccountIndex, type: int, uses: 0, src: captain, conf: 0.75}
 - {addr: 0x0089A5F0, name: g_MpNetworkType, type: int, uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008A669C, name: g_NextUniqueId, type: 'std::int32_t', uses: 2, src: captain, conf: 0.75, alt: [g_FallbackContext]}
-- {addr: 0x008A6788, name: g_off_008A6788, type: void*, uses: 1, src: auto}
+- {addr: 0x008A6788, name: g_pszKey_PC, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_off_008A6788]}
+- {addr: 0x008A6B90, name: g_pszKey_PREFERENCES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A6B94, name: g_psz_asyn, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A6B98, name: g_psz_asyn_8A6B98, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A6B9C, name: g_psz_vfs, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A6BA0, name: g_psz_vfs_8A6BA0, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A6BA4, name: g_psz_win, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A6BA8, name: g_psz_1_1_4, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A7D6C, name: g_AxisX, type: float, uses: 0, src: captain, conf: 0.85}
 - {addr: 0x008A7D70, name: g_AxisX_Y, type: float, uses: 0, src: captain, conf: 0.85}
 - {addr: 0x008A7D74, name: g_AxisX_Z, type: float, uses: 0, src: captain, conf: 0.85}
@@ -170,68 +390,686 @@
 - {addr: 0x008A7DB8, name: g_DefaultColorBlue, type: float, uses: 2, src: auto}
 - {addr: 0x008A7DBC, name: g_DefaultColorAlpha, type: float, uses: 2, src: auto}
 - {addr: 0x008A7E40, name: g_Float_8A7E40, type: float, uses: 1, src: auto}
-- {addr: 0x008A85E4, name: g_NamedEntryName, type: char*, uses: 2, src: auto}
-- {addr: 0x008A85E8, name: g_FontKeyword, type: char*, uses: 1, src: auto}
-- {addr: 0x008A85EC, name: g_PositionKey, type: char*, uses: 3, src: auto, alt: [g_PositionKeyword, g_PositionPropertyName]}
-- {addr: 0x008A85F0, name: g_SizeKey, type: char*, uses: 3, src: auto, alt: [g_SizeKeyword, g_SizePropertyName]}
-- {addr: 0x008A85F4, name: g_TwoComponentProperty, type: char*, uses: 1, src: auto}
-- {addr: 0x008A85F8, name: g_TwoComponentProperty2, type: char*, uses: 1, src: auto}
-- {addr: 0x008A85FC, name: g_FourComponentPropertyName, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8600, name: g_TextKey, type: char*, uses: 2, src: auto, alt: [g_TextPropertyName]}
-- {addr: 0x008A8604, name: g_LookupAttribute, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8628, name: g_ColorKeyword, type: char*, uses: 3, src: auto, alt: [g_ColorPropertyName, g_InlineColorProperty]}
+- {addr: 0x008A7F18, name: g_pszKey_VERSION_gfx_collision_shapes, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F1C, name: g_pszKey_SHAPE_TYPE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F20, name: g_pszKey_USE_OBJETO3D, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F24, name: g_pszKey_INTERNAL_SHAPES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F28, name: g_pszKey_RADIUS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F2C, name: g_pszKey_CENTER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F30, name: g_pszKey_DIM, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F34, name: g_pszKey_BONE_ID, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F38, name: g_pszKey_BONE_INDEX, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F3C, name: g_pszKey_ATOMIC_ID, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F40, name: g_pszKey_ATOMIC_INDEX, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F44, name: g_pszKey_LABEL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F48, name: g_pszKey_HOTPOINTS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F4C, name: g_pszKey_OFFSET, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F50, name: g_pszKey_MATERIAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F78, name: g_pszKey_VERSION_gfx_texture_loader, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F7C, name: g_pszKey_MAX_PARTICULAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F80, name: g_pszKey_AREA_EMISION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F84, name: g_pszKey_EMISSION_DURATION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F88, name: g_pszKey_PART_PER_EMIS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F8C, name: g_pszKey_PART_PER_EMIS_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F90, name: g_pszKey_GAP_EMIS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F94, name: g_pszKey_GAP_EMIS_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F98, name: g_pszKey_PART_LIFE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F9C, name: g_pszKey_PART_LIFE_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FA0, name: g_pszKey_PART_INIT_VELO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FA4, name: g_pszKey_PART_INIT_VELO_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FA8, name: g_pszKey_PART_INIT_DIR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FAC, name: g_pszKey_PART_INIT_DIR_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FB0, name: g_pszKey_FORCE_EMIS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FB4, name: g_pszKey_PART_2D_ROTATION_START, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FB8, name: g_pszKey_PART_2D_ROTATION_START_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FBC, name: g_pszKey_PART_2D_ROTATION_END, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FC0, name: g_pszKey_PART_2D_ROTATION_END_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FC4, name: g_pszKey_PART_START_COLOR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FC8, name: g_pszKey_PART_START_COLOR_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FCC, name: g_pszKey_PART_END_COLOR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FD0, name: g_pszKey_PART_END_COLOR_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FD4, name: g_pszKey_PART_START_COLOR_ALPHA_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FD8, name: g_pszKey_PART_END_COLOR_ALPHA_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FDC, name: g_pszKey_PART_COLOR_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FE0, name: g_pszKey_PART_START_SIZE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FE4, name: g_pszKey_PART_START_SIZE_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FE8, name: g_pszKey_PART_END_SIZE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FEC, name: g_pszKey_PART_END_SIZE_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FF0, name: g_pszKey_PART_SIZE_SCALE_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FF4, name: g_pszKey_USE_REGULAR_SIZE_SCALE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FF8, name: g_pszKey_PART_UV0, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7FFC, name: g_pszKey_PART_UV1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8000, name: g_pszKey_TEXTURE_gfx_texture_loader, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8004, name: g_pszKey_MODEL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8008, name: g_pszKey_ADITIVE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A800C, name: g_pszKey_BBOX, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8010, name: g_pszKey_FRICCION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8014, name: g_pszKey_AREA_TYPE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8018, name: g_pszKey_AREA_CENTER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A801C, name: g_pszKey_AREA_RADIUS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8020, name: g_pszKey_AREA_RADIUS_GAP, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8024, name: g_pszKey_AREA_HEIGHT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8028, name: g_pszKey_AREA_EMIT_ANGLE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A802C, name: g_pszKey_ORIENT_TYPE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8030, name: g_pszKey_SPARKS_MODE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8034, name: g_pszKey_SPARKS_SIZE_FACTOR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8038, name: g_pszKey_ORIENT_AT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A803C, name: g_pszKey_ORIENT_AT_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8040, name: g_pszKey_ORIENT_UP, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8044, name: g_pszKey_ORIENT_UP_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8048, name: g_psz_BOX, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8054, name: g_psz_FACING, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A80F4, name: g_psz_P_m, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A85E4, name: g_psz_MarcoSeleccion, type: const char*, uses: 2, src: captain, conf: 1.0, alt: [g_NamedEntryName]}
+- {addr: 0x008A85E8, name: g_pszKey_FUENTE_gui_builder, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_FontKeyword]}
+- {addr: 0x008A85EC, name: g_pszKey_XY, type: const char*, uses: 3, src: captain, conf: 1.0, alt: [g_PositionKey, g_PositionKeyword, g_PositionPropertyName]}
+- {addr: 0x008A85F0, name: g_pszKey_SIZE_gui_builder, type: const char*, uses: 3, src: captain, conf: 1.0, alt: [g_SizeKey, g_SizeKeyword, g_SizePropertyName]}
+- {addr: 0x008A85F4, name: g_pszKey_POSF, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_TwoComponentProperty]}
+- {addr: 0x008A85F8, name: g_pszKey_SIZEF, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_TwoComponentProperty2]}
+- {addr: 0x008A85FC, name: g_pszKey_SRECTF, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_FourComponentPropertyName]}
+- {addr: 0x008A8600, name: g_pszKey_ID_gui_builder, type: const char*, uses: 2, src: captain, conf: 1.0, alt: [g_TextKey, g_TextPropertyName]}
+- {addr: 0x008A8604, name: g_pszKey_ID_INICIAL, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_LookupAttribute]}
+- {addr: 0x008A8608, name: g_pszKey_ID_LEFT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A860C, name: g_pszKey_ID_RIGHT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8610, name: g_pszKey_ID_UP, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8614, name: g_pszKey_ID_DOWN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8618, name: g_pszKey_MOUSE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A861C, name: g_pszKey_DRAG, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8620, name: g_pszKey_DEBUG_RECT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8624, name: g_pszKey_CADENA_CHAR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8628, name: g_pszKey_COLOR, type: const char*, uses: 3, src: captain, conf: 1.0, alt: [g_ColorKeyword, g_ColorPropertyName, g_InlineColorProperty]}
+- {addr: 0x008A862C, name: g_pszKey_COLOR_NOFOCUS, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A8630, name: g_Component3Attribute, type: char*, uses: 2, src: auto}
 - {addr: 0x008A8634, name: g_Component0Attribute, type: char*, uses: 2, src: auto}
 - {addr: 0x008A8638, name: g_Component1Attribute, type: char*, uses: 2, src: auto}
 - {addr: 0x008A863C, name: g_Component2Attribute, type: char*, uses: 2, src: auto}
-- {addr: 0x008A8648, name: g_ListBoxTextureKeyword, type: char*, uses: 2, src: auto}
-- {addr: 0x008A8668, name: g_TextureQuadKeyword, type: char*, uses: 2, src: auto, alt: [g_TextureSectionName]}
-- {addr: 0x008A866C, name: g_PrimaryComponentsKeyword, type: char*, uses: 1, src: auto}
-- {addr: 0x008A86A0, name: g_SliderOrientationKeyword, type: char*, uses: 1, src: auto}
-- {addr: 0x008A86A4, name: g_SliderFirstControlKeyword, type: char*, uses: 1, src: auto}
-- {addr: 0x008A86A8, name: g_SliderSecondControlKeyword, type: char*, uses: 1, src: auto}
-- {addr: 0x008A86AC, name: g_SliderThirdControlKeyword, type: char*, uses: 1, src: auto}
-- {addr: 0x008A86B0, name: g_ControlChildrenKeyword, type: char*, uses: 1, src: auto}
-- {addr: 0x008A86B8, name: g_EditNumericKeyword, type: char*, uses: 1, src: auto}
-- {addr: 0x008A86BC, name: g_TextKeyword, type: char*, uses: 4, src: auto, alt: [g_SwitchTextKeyword]}
-- {addr: 0x008A86CC, name: g_SwitchTextureKeyword1, type: char*, uses: 1, src: auto}
-- {addr: 0x008A86D0, name: g_SwitchTextureKeyword2, type: char*, uses: 1, src: auto}
-- {addr: 0x008A86D8, name: g_SwitchTextureKeyword3, type: char*, uses: 1, src: auto}
-- {addr: 0x008A86E0, name: g_SwitchTextureKeyword4, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8700, name: g_SecondaryComponentsKeyword, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8704, name: g_ColorQuadKeyword, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8718, name: g_FloatAttribute, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8720, name: g_EnableFlagProperty, type: char*, uses: 1, src: auto}
-- {addr: 0x008A872C, name: g_ColorModeProperty, type: char*, uses: 3, src: auto, alt: [g_ModeKey, g_TextModePropertyName]}
-- {addr: 0x008A8734, name: g_SwitchComponentsKeyword, type: char*, uses: 1, src: auto}
-- {addr: 0x008A873C, name: g_SliderConsoleKeyword, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8744, name: g_StaticFlagKeyword, type: char*, uses: 1, src: auto}
-- {addr: 0x008A874C, name: g_EditIntegerKeyword, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8754, name: g_ScalarSectionName, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8758, name: g_Property20, type: char*, uses: 1, src: auto}
-- {addr: 0x008A875C, name: g_Property24, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8760, name: g_Property28, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8764, name: g_Property2C, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8768, name: g_Property30, type: char*, uses: 1, src: auto}
-- {addr: 0x008A876C, name: g_Property34, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8770, name: g_SecondarySectionName, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8774, name: g_FirstScalarProperty, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8778, name: g_SecondScalarProperty, type: char*, uses: 1, src: auto}
-- {addr: 0x008A877C, name: g_AdditionalSectionName, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8780, name: g_ColorPropertyAt60, type: char*, uses: 2, src: auto, alt: [g_InheritColorPropertyName]}
-- {addr: 0x008A8784, name: g_ColorPropertyAt40, type: char*, uses: 2, src: auto, alt: [g_InheritedColorKeyword]}
-- {addr: 0x008A8788, name: g_ColorPropertyAt50, type: char*, uses: 1, src: auto}
-- {addr: 0x008A878C, name: g_ColorPropertyAt70, type: char*, uses: 2, src: auto, alt: [g_StoredColorProperty]}
+- {addr: 0x008A8640, name: g_pszKey_TEXTURA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8644, name: g_pszKey_RASTER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8648, name: g_pszKey_SLIDER, type: const char*, uses: 2, src: captain, conf: 1.0, alt: [g_ListBoxTextureKeyword]}
+- {addr: 0x008A864C, name: g_pszKey_RENDER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8650, name: g_pszKey_FLIP, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8654, name: g_pszKey_U1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8658, name: g_pszKey_U2, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A865C, name: g_pszKey_V1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8660, name: g_pszKey_V2, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8664, name: g_pszKey_FONDO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8668, name: g_pszKey_POINTER, type: const char*, uses: 2, src: captain, conf: 1.0, alt: [g_TextureQuadKeyword, g_TextureSectionName]}
+- {addr: 0x008A866C, name: g_pszKey_COLOR_TEXTO, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_PrimaryComponentsKeyword]}
+- {addr: 0x008A8670, name: g_pszKey_LINEAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8674, name: g_pszKey_COLOR_LINEAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A867C, name: g_pszKey_VERTICAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8684, name: g_pszKey_AUTOSIZE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8688, name: g_pszKey_ROWFILL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A868C, name: g_pszKey_INTERLINEA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8690, name: g_pszKey_CABECERA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8694, name: g_pszKey_COLUMNAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8698, name: g_pszKey_COLOR_FONDO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A869C, name: g_pszKey_WIDTH_gui_builder, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A86A0, name: g_pszKey_MODO, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_SliderOrientationKeyword]}
+- {addr: 0x008A86A4, name: g_pszKey_BOTON, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_SliderFirstControlKeyword]}
+- {addr: 0x008A86A8, name: g_pszKey_FLECHA_UP, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_SliderSecondControlKeyword]}
+- {addr: 0x008A86AC, name: g_pszKey_FLECHA_DOWN, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_SliderThirdControlKeyword]}
+- {addr: 0x008A86B0, name: g_pszKey_CONTROLES_gui_builder, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_ControlChildrenKeyword]}
+- {addr: 0x008A86B4, name: g_pszKey_TIPO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A86B8, name: g_pszKey_BLINK_TIME, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_EditNumericKeyword]}
+- {addr: 0x008A86BC, name: g_pszKey_TEXTO, type: const char*, uses: 4, src: captain, conf: 1.0, alt: [g_SwitchTextKeyword, g_TextKeyword]}
+- {addr: 0x008A86C0, name: g_pszKey_EFECTOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A86C4, name: g_pszKey_ALINEAMIENTO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A86C8, name: g_pszKey_HORIZONTAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A86CC, name: g_pszKey_ON, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_SwitchTextureKeyword1]}
+- {addr: 0x008A86D0, name: g_pszKey_OFF, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_SwitchTextureKeyword2]}
+- {addr: 0x008A86D4, name: g_pszKey_REPOSO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A86D8, name: g_pszKey_ACTIVO, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_SwitchTextureKeyword3]}
+- {addr: 0x008A86DC, name: g_pszKey_PULSADO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A86E0, name: g_pszKey_PERMANENTE, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_SwitchTextureKeyword4]}
+- {addr: 0x008A86E4, name: g_pszKey_CADENA_FLI, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A86E8, name: g_pszKey_CADENA_FILE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A86EC, name: g_pszKey_QUAD_BACKGROUND, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A86F0, name: g_pszKey_QUAD_VARIABLE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A86F4, name: g_pszKey_QUAD_FOCUS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A86F8, name: g_pszKey_QUAD_BLINKING_FOCUS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A86FC, name: g_pszKey_QUAD_SELECTED, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8700, name: g_pszKey_COLOR_TEXTO_SELEC, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_SecondaryComponentsKeyword]}
+- {addr: 0x008A8704, name: g_pszKey_QUAD, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_ColorQuadKeyword]}
+- {addr: 0x008A8708, name: g_pszKey_SELECCIONABLE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8718, name: g_pszKey_ROTATE, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_FloatAttribute]}
+- {addr: 0x008A871C, name: g_pszKey_BORDER_FOCUS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8720, name: g_pszKey_ONLY_RENDER_WITH_FOCUS, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_EnableFlagProperty]}
+- {addr: 0x008A8724, name: g_pszKey_BORDER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8728, name: g_pszKey_BORDER_TEX, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A872C, name: g_pszKey_DISTANCE, type: const char*, uses: 3, src: captain, conf: 1.0, alt: [g_ColorModeProperty, g_ModeKey, g_TextModePropertyName]}
+- {addr: 0x008A8730, name: g_pszKey_COLOR_TEXTO_FOCUS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8734, name: g_pszKey_COLOR_TEXTO_OFF, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_SwitchComponentsKeyword]}
+- {addr: 0x008A8738, name: g_pszKey_COLOR_FRAME, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A873C, name: g_pszKey_TYPE_SLIDER, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_SliderConsoleKeyword]}
+- {addr: 0x008A8740, name: g_pszKey_VIDEO_gui_builder, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8744, name: g_pszKey_BLINK_ENABLE, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_StaticFlagKeyword]}
+- {addr: 0x008A8748, name: g_pszKey_CYCLE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A874C, name: g_pszKey_LENGTH, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_EditIntegerKeyword]}
+- {addr: 0x008A8750, name: g_pszKey_MAPPED, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8754, name: g_pszKey_BUTTON_EFFECTS, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_ScalarSectionName]}
+- {addr: 0x008A8758, name: g_pszKey_FLICKERING_TIME, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_Property20]}
+- {addr: 0x008A875C, name: g_pszKey_FOCUS_TIME, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_Property24]}
+- {addr: 0x008A8760, name: g_pszKey_FOCUS_TIME_MAX, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_Property28]}
+- {addr: 0x008A8764, name: g_pszKey_CLICK_TIME, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_Property2C]}
+- {addr: 0x008A8768, name: g_pszKey_DESINTEGRATE_PIXELS_SEG, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_Property30]}
+- {addr: 0x008A876C, name: g_pszKey_DESINTEGRATE_HORIZONTAL_SCALE, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_Property34]}
+- {addr: 0x008A8770, name: g_pszKey_SCREEN_EFFECTS, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_SecondarySectionName]}
+- {addr: 0x008A8774, name: g_pszKey_FADE_MENUS, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_FirstScalarProperty]}
+- {addr: 0x008A8778, name: g_pszKey_FADE_VIDEOS, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_SecondScalarProperty]}
+- {addr: 0x008A877C, name: g_pszKey_CONFIG_CONTROLS, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_AdditionalSectionName]}
+- {addr: 0x008A8780, name: g_pszKey_FIXED_COLORBORDER, type: const char*, uses: 2, src: captain, conf: 1.0, alt: [g_ColorPropertyAt60, g_InheritColorPropertyName]}
+- {addr: 0x008A8784, name: g_pszKey_FIXED_COLORQUAD, type: const char*, uses: 2, src: captain, conf: 1.0, alt: [g_ColorPropertyAt40, g_InheritedColorKeyword]}
+- {addr: 0x008A8788, name: g_pszKey_FIXED_COLORFONT, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_ColorPropertyAt50]}
+- {addr: 0x008A878C, name: g_pszKey_FIXED_COLORBLINKINGBORDER, type: const char*, uses: 2, src: captain, conf: 1.0, alt: [g_ColorPropertyAt70, g_StoredColorProperty]}
 - {addr: 0x008A8790, name: g_IdTableStart, type: uint16_t, uses: 1, src: auto}
-- {addr: 0x008A889C, name: g_PrimaryTextureName, type: const char*, uses: 1, src: auto}
-- {addr: 0x008A88A0, name: g_SecondaryTextureName, type: const char*, uses: 1, src: auto}
-- {addr: 0x008A88A4, name: g_SearchKeyString, type: char*, uses: 1, src: auto}
-- {addr: 0x008A88A8, name: g_LookupKeyString, type: char*, uses: 1, src: auto}
-- {addr: 0x008A88AC, name: g_LookupKeyString, type: char*, uses: 1, src: auto}
-- {addr: 0x008A88B0, name: g_LookupKeyString, type: char*, uses: 1, src: auto}
-- {addr: 0x008A88B4, name: g_LookupKeyString, type: char*, uses: 1, src: auto}
-- {addr: 0x008A88B8, name: g_LookupKeyString, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8BD0, name: g_ImpactPfxNames, type: const char*, uses: 1, src: captain, conf: 0.75, alt: [g_LookupNames]}
+- {addr: 0x008A889C, name: g_psz_Esquina, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_PrimaryTextureName]}
+- {addr: 0x008A88A0, name: g_psz_Segmento, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_SecondaryTextureName]}
+- {addr: 0x008A88A4, name: g_pszKey_COMMON_PC, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_SearchKeyString]}
+- {addr: 0x008A88A8, name: g_pszKey_CONTROLES_PC, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_LookupKeyString]}
+- {addr: 0x008A88AC, name: g_pszKey_COMMON_PS2, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_LookupKeyString]}
+- {addr: 0x008A88B0, name: g_pszKey_CONTROLES_PS2, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_LookupKeyString]}
+- {addr: 0x008A88B4, name: g_pszKey_COMMON_XBOX, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_LookupKeyString]}
+- {addr: 0x008A88B8, name: g_pszKey_CONTROLES_XBOX, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_LookupKeyString]}
+- {addr: 0x008A8928, name: g_pszKey_VERSION_game_config, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A892C, name: g_pszKey_MATERIALES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8930, name: g_pszKey_NOMBRE_TIPO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8934, name: g_pszKey_FLAGS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8938, name: g_pszKey_FLAG, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A893C, name: g_pszKey_ID_game_config, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8940, name: g_pszKey_SONIDO_IMPACTO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8944, name: g_pszKey_TEXTURA_DECALS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8948, name: g_pszKey_EFECTO_IMPACTO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A894C, name: g_pszKey_SONIDO_PISADA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8950, name: g_pszKey_COLOR_game_config, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8958, name: g_pszKey_INTERFAZ_SELECCION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8AEC, name: g_pszConfig_sonidos, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8BD0, name: g_psz_PFX_IMPACTO_BALA, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_ImpactPfxNames, g_LookupNames]}
+- {addr: 0x008A8BD4, name: g_psz_PFX_IMPACTO_BALA_HUMANO_1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8BDC, name: g_psz_PFX_EXPLOSION_GRANADA_1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8BF0, name: g_psz_PFX_ESTELA_PISTOLA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8BF4, name: g_psz_PFX_ESTELA_RIFLE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8BF8, name: g_psz_PFX_ESTELA_RIFLE_PRECISION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8BFC, name: g_psz_PFX_ESTELA_ESCOPETA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C00, name: g_psz_PFX_ESTELA_SMG, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C04, name: g_psz_PFX_ESTELA_MG, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C08, name: g_psz_PFX_ESTELA_PISTOLA_SILENCIADOR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C0C, name: g_psz_PFX_ESTELA_TANQUE_GUN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C10, name: g_psz_PFX_ESTELA_ARMA_SDK, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C14, name: g_psz_PFX_ESTELA_AMETRALLADORA_ESTATICA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C18, name: g_psz_PFX_HUMO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C1C, name: g_psz_PFX_GAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C28, name: g_psz_PFX_COKTEL_MOLOTOV_1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C30, name: g_psz_PFX_EXPLOSION_VEHI_1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C50, name: g_psz_PFX_EXPLOSION_BOMBA_SABOTAGE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C54, name: g_psz_PFX_RAIN_FX_FIRST_PLANE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C58, name: g_psz_PFX_RAIN_FX_BACK_PLANE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C5C, name: g_psz_PFX_RAIN_FX_NEAR_1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C64, name: g_psz_PFX_RAIN_FX_FAR_1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C68, name: g_psz_PFX_SNOW_FX_FIRST_PLANE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C6C, name: g_psz_PFX_SNOW_FX_BACK_PLANE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C70, name: g_psz_PFX_SNOW_FX_NEAR_1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C7C, name: g_psz_PFX_SNOW_FX_FAR_1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C84, name: g_psz_PFX_ROTURA_CRISTAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C88, name: g_psz_PFX_WATER_SPLASH, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C8C, name: g_psz_PFX_VAHO_SOLDADO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C90, name: g_psz_PFX_VAHO_PLAYER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C94, name: g_psz_PFX_CASQUILLOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C98, name: g_psz_PFX_VEHICLE_HUMO_DAMAGE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8C9C, name: g_psz_PFX_EXPLOSION_AGUA_1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CA4, name: g_psz_PFX_EXPLOSION_AGUA_UNDER_1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CAC, name: g_pszKey_VERSION_8A8CAC, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CB0, name: g_pszKey_LISTADATOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CB4, name: g_pszKey_ID_8A8CB4, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CB8, name: g_pszKey_NOMBRE_8A8CB8, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CBC, name: g_pszKey_FILE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CC0, name: g_pszKey_VOLUMEN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CC4, name: g_pszKey_LOOP, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CC8, name: g_pszKey_ES3D, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CCC, name: g_pszKey_LOCALIZABLE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CD0, name: g_pszKey_ESAMBIENTE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CD4, name: g_pszKey_AGUA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CD8, name: g_pszKey_RADIO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CDC, name: g_pszKey_RADIO_LOGICO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CE0, name: g_pszKey_NUM_WAVES_PS2, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CE4, name: g_pszKey_QUALITY_8A8CE4, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CE8, name: g_pszKey_QUALITY_PS2, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CEC, name: g_pszKey_QUALITY_XBOX, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CF0, name: g_pszKey_NOMBRE_8A8CF0, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CF4, name: g_pszKey_TIPO_8A8CF4, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CF8, name: g_pszKey_GRUPOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8CFC, name: g_pszKey_PUNTOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8D00, name: g_pszKey_ID_8A8D00, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8D04, name: g_pszKey_POS_8A8D04, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8D08, name: g_pszKey_ROT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8D0C, name: g_pszKey_ROT_X, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8D10, name: g_pszKey_CONEXIONES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8D14, name: g_pszKey_PUNTO_ORI, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8D18, name: g_pszKey_PUNTO_DST, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8D1C, name: g_pszKey_GRUPO_ORI, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8D20, name: g_pszKey_GRUPO_DST, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8D38, name: g_psz_PISTOLA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8DC0, name: g_psz_SMG, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8DCC, name: g_psz_MANUAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8DD8, name: g_psz_NINGUNA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8DE4, name: g_psz_CORTO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8DF0, name: g_psz_IZQUIERDA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8DF8, name: g_psz_NINGUNO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8E08, name: g_psz_NINGUNO_app_config, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8E18, name: g_psz_REPOSO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A8EF8, name: g_psz_DISTRAIDO_IDLE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9058, name: g_psz_DISTRAIDO_IDLE_ARMA1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9318, name: g_psz_ESTATICO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A93E8, name: g_psz_ESTATICO_8A93E8, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9448, name: g_psz_SUBIR_VEHICULO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A94A0, name: g_psz_DESTRUCCION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A94B8, name: g_psz_PLAYER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9544, name: g_psz_NINGUNO_8A9544, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9560, name: g_psz_NINGUNO_8A9560, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A95C8, name: g_psz_BASIC, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A95EC, name: g_psz_ALIADO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A95F8, name: g_psz_NINGUNO_8A95F8, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9610, name: g_psz_DE_PIE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A961C, name: g_psz_DISTRAIDO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A962C, name: g_psz_DISTRACCION_8A962C, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A963C, name: g_psz_NO_RECARGUES_POR_TU_CUENTA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9648, name: g_psz_ANDAR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9654, name: g_psz_NULL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9688, name: g_psz_NINGUNO_app_config_2, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9690, name: g_psz_ESTATICO_app_config, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A969C, name: g_psz_ESTATICO_app_config_2, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A96A4, name: g_psz_ESTATICO_app_config_3, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A96B8, name: g_psz_ESTATICO_app_config_4, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A96D0, name: g_psz_PARTICLE_SYSTEM, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A96F0, name: g_psz_START_GAME, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A97A8, name: g_psz_FACIL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9800, name: g_pszKey_VERSION_8A9800, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9804, name: g_pszKey_LISTADATOS_8A9804, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9808, name: g_pszKey_ID_8A9808, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A980C, name: g_pszKey_REF_ID, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9810, name: g_pszKey_REF_ID2, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9814, name: g_pszKey_SONIDO_MUERTE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9818, name: g_pszKey_NOMBRE_8A9818, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A981C, name: g_pszKey_FLI_NOMBRE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9820, name: g_pszKey_TIPO_8A9820, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9824, name: g_pszKey_SUBTIPO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9828, name: g_pszKey_GRADO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A982C, name: g_pszKey_HOMBRE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9830, name: g_pszKey_MODELO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9834, name: g_pszKey_MODELO_TERCERA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9838, name: g_pszKey_LOD1_NOMBRE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A983C, name: g_pszKey_LOD2_NOMBRE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9840, name: g_pszKey_LOD1_DIST, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9844, name: g_pszKey_LOD2_DIST, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9848, name: g_pszKey_DAMAGE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A984C, name: g_pszKey_MODELO_COLISION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9850, name: g_pszKey_MODO_COLISION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9854, name: g_pszKey_MATERIAL_8A9854, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9858, name: g_pszKey_TAM, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A985C, name: g_pszKey_BBOX_8A985C, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9860, name: g_pszKey_INF, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9864, name: g_pszKey_SUP, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9868, name: g_pszKey_EXTERNAL_SHAPE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A986C, name: g_pszKey_EXTERNAL_SHAPE_OFFSET, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9870, name: g_pszKey_CO_MODEL_EX, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9874, name: g_pszKey_COMPOR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9878, name: g_pszKey_VIDA_8A9878, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A987C, name: g_pszKey_ENERGIA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9880, name: g_pszKey_ANIMACIONES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9884, name: g_pszKey_ALTURA_CABEZA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9888, name: g_pszKey_ARMAS_8A9888, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A988C, name: g_pszKey_ITEMS_8A988C, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9890, name: g_pszKey_ANGULO_VISTA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9894, name: g_pszKey_DISTANCIA_VISTA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9898, name: g_pszKey_DISTANCIA_LARGA_VISTA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A989C, name: g_pszKey_PORCENTAJE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98A0, name: g_pszKey_WAV_CALL_REPARTIDOR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98A4, name: g_pszKey_FOCO_INFO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98A8, name: g_pszKey_FOCO_TEXTURA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98AC, name: g_pszKey_VEHICLE_INFO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98B0, name: g_pszKey_VEH_MAX_VEL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98B4, name: g_pszKey_VEH_MAX_BACK_VEL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98B8, name: g_pszKey_VEH_MAX_ACCEL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98BC, name: g_pszKey_VEH_MAX_DECEL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98C0, name: g_pszKey_VEH_MIN_TURN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98C4, name: g_pszKey_VEH_LOW_CONTACT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98C8, name: g_pszKey_VEH_BALANCEO_MULT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98CC, name: g_pszKey_VEH_PITCH_INERTIAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98D0, name: g_pszKey_VEH_ROLL_INERTIAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98D4, name: g_pszKey_VEH_PITCH_EXT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98D8, name: g_pszKey_VEH_ROLL_EXT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98DC, name: g_pszKey_OCLUSOR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98E0, name: g_pszKey_IGNORE_PVS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98E4, name: g_pszKey_IGNORE_BSPHERE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98E8, name: g_pszKey_VEHICLE_VIDA_CHASIS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98EC, name: g_pszKey_VEHICLE_VIDA_MOTOR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98F0, name: g_pszKey_VEHICLE_VIDA_RUEDAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98F4, name: g_pszKey_VEHICLE_VIDA_BAJOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98F8, name: g_pszKey_PHYSIC, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A98FC, name: g_pszKey_MODEL_FILE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9900, name: g_pszKey_DYNAMIC, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9904, name: g_pszKey_MOVING, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9908, name: g_pszKey_MASS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A990C, name: g_pszKey_BOUNCE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9910, name: g_pszKey_SLIDE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9914, name: g_pszKey_SHADOW, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9918, name: g_pszKey_MULTIPLAYER_RESPAWN_TIME, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A991C, name: g_pszKey_EXPLOSION_DAMAGE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9920, name: g_pszKey_EXPLOSION_RADIO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9924, name: g_pszKey_DUMMIES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9928, name: g_pszKey_ID_input_bindings, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A992C, name: g_pszKey_NOMBRE_input_bindings, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9930, name: g_pszKey_POS_input_bindings, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9934, name: g_pszKey_ROT_input_bindings, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9938, name: g_pszKey_ROT_X_input_bindings, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9948, name: g_pszKey_AREAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A994C, name: g_pszKey_PUNTOS_8A994C, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9950, name: g_pszKey_ID_8A9950, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9954, name: g_pszKey_TIPO_8A9954, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9958, name: g_pszKey_NOMBRE_8A9958, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A995C, name: g_pszKey_HEIGHT_8A995C, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9964, name: g_pszKey_POS_8A9964, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9970, name: g_pszKey_REVERB_8A9970, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9974, name: g_pszKey_FLAGS_8A9974, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9978, name: g_pszKey_OCLUSION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A997C, name: g_pszKey_LIMITREVERB, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9980, name: g_pszKey_VERSION_8A9980, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9984, name: g_pszKey_LISTADATOS_8A9984, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9988, name: g_pszKey_ID_8A9988, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A998C, name: g_pszKey_NOMBRE_8A998C, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9990, name: g_pszKey_NUM_ANIMS_PS2, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9994, name: g_pszKey_NUM_ANIMS_XBOX, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9998, name: g_pszKey_FILE_8A9998, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A999C, name: g_pszKey_FILES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99A0, name: g_pszKey_LOOP_8A99A0, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99A4, name: g_pszKey_BLEND_IN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99A8, name: g_pszKey_VEL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99AC, name: g_pszKey_TRASLACION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99B0, name: g_pszKey_ROTACION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99C0, name: g_pszKey_SOUNDS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99C4, name: g_pszKey_SND_ID, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99C8, name: g_pszKey_SND_TIME, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99D4, name: g_pszKey_MODEL3D_ITEM, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99D8, name: g_pszKey_MANO_ITEM, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99DC, name: g_pszKey_SONIDO_PC, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99E0, name: g_pszKey_SONIDO_PS2, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99E4, name: g_pszKey_SONIDO_XBOX, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99E8, name: g_pszKey_VERSION_game_data_defs, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99EC, name: g_pszKey_PLAYER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99F0, name: g_pszKey_SCRIPT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99F4, name: g_pszKey_ANIMACIONES_game_data_defs, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99F8, name: g_pszKey_TIPO_8A99F8, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A99FC, name: g_pszKey_MALLA_NAVEGACION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A00, name: g_pszKey_MAPA_SECTORES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A04, name: g_pszKey_MALLA_DUMMIES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A08, name: g_pszKey_MALLA_AREAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A0C, name: g_pszKey_MALLA_LUCES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A10, name: g_pszKey_MALLA_SCENE_OBJS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A14, name: g_pszKey_MUNDOVIS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A18, name: g_pszKey_RWS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A1C, name: g_pszKey_SIMPLIFICADO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A20, name: g_pszKey_TEXTURAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A2C, name: g_pszKey_SONIDO_AMBIENTE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A30, name: g_pszKey_CIELO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A34, name: g_pszKey_CIELOSPEED1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A38, name: g_pszKey_CIELOSPEED2, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A3C, name: g_pszKey_CIELOSPEED3, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A40, name: g_pszKey_CIELO_MODULATE2X, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A44, name: g_pszKey_MODULATE2X, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A48, name: g_pszKey_AMBIENTE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A4C, name: g_pszKey_AMBESCENA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A50, name: g_pszKey_VIEWPORT_AMB_ADD, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A54, name: g_pszKey_CAMERANEAR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A58, name: g_pszKey_CAMERAFAR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A5C, name: g_pszKey_CAMERAFOV, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A60, name: g_pszKey_FOGENABLED, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A64, name: g_pszKey_FOGTYPE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A68, name: g_pszKey_FOGCOLOR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A70, name: g_pszKey_FOGDENSITY, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A74, name: g_pszKey_FOGDISTANCE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A78, name: g_pszKey_ATMOSFERICFX, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A7C, name: g_pszKey_VAHOENABLED, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A80, name: g_pszKey_BICHOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A84, name: g_pszKey_EFECTOS_game_data_defs, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A88, name: g_pszKey_AGUAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A8C, name: g_pszKey_CLASSID, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A90, name: g_pszKey_ID_8A9A90, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A94, name: g_pszKey_NOMBRE_game_data_defs, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A98, name: g_pszKey_POS_game_data_defs, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9A9C, name: g_pszKey_CELDA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AA0, name: g_pszKey_GRUPO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AA4, name: g_pszKey_PUNTO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AA8, name: g_pszKey_ANGULO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AAC, name: g_pszKey_ANGULO_X, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AB0, name: g_pszKey_COLISION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AB4, name: g_pszKey_FLAGS_game_data_defs, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9ABC, name: g_pszKey_GRUPOS_BICHOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AC0, name: g_pszKey_DUMMY, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AC4, name: g_pszKey_PRIORITY, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AC8, name: g_pszKey_SHARE_GROUP, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9ACC, name: g_pszKey_MINIMAPA_RTS_game_data_defs, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AD0, name: g_pszKey_RADIO_RTS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AD4, name: g_pszKey_TEXTURA_RTS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AD8, name: g_pszKey_ORIGEN_RTS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9ADC, name: g_pszKey_DESTINO_RTS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AE0, name: g_pszKey_MTACTICO_ORIGEN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AE4, name: g_pszKey_MTACTICO_DESTINO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AE8, name: g_pszKey_MTACTICO_TEXTURA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AEC, name: g_pszKey_FLIS_ESCENARIO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AF0, name: g_pszKey_BRIDGES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AF4, name: g_pszKey_VISUALRWS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AF8, name: g_pszKey_PHYSICRWS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9AFC, name: g_pszKey_CONTROL_POINTS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B00, name: g_pszKey_TYPE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B04, name: g_pszKey_P1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B08, name: g_pszKey_P2, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B0C, name: g_pszKey_HEIGHT_game_data_defs, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B10, name: g_pszKey_SCN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B14, name: g_pszKey_SAVEGAME_DESCR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B18, name: g_pszKey_SAVEGAME_SCENE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B1C, name: g_pszKey_GLOW_ON, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B20, name: g_pszKey_GLOW_CUTCOLOR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B24, name: g_pszKey_GLOW_INTENSITY, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B28, name: g_pszKey_GLOW_DISPLACEMENT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B2C, name: g_pszKey_BICHOS_game_data_defs, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B30, name: g_pszKey_NOMBRE_game_data_defs_2, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B34, name: g_pszKey_VIDEO_OPENING, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B38, name: g_pszKey_PUNTERIA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B3C, name: g_pszKey_MULTIPLAYER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B40, name: g_pszKey_MPDEATHMATCH, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B44, name: g_pszKey_MPTDEATHMATCH, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B48, name: g_pszKey_MPPOSTMEN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B4C, name: g_pszKey_MPPOSTMEN_IDPOSTMAN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B50, name: g_pszKey_MPFRANCOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B54, name: g_pszKey_PUNTUACION_MAXIMA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B58, name: g_pszKey_PUNTUACION_MINIMA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B5C, name: g_pszKey_INVERTIR_NORTE_SUR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B60, name: g_pszKey_DOOR_BOX, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B64, name: g_pszKey_PORTRAIT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B68, name: g_pszKey_SEGUNDA_EXPLOSION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B6C, name: g_pszKey_BANDO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B70, name: g_pszKey_GRUPO_VISUAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B74, name: g_pszKey_AGUA_DIFFUSEADD, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B78, name: g_pszKey_AGUA_DIFFUSEMOD, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B7C, name: g_pszKey_AGUA_SPECULAR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B80, name: g_pszKey_AGUA_SPECULARLEVEL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B84, name: g_pszKey_AGUA_SPECULARGLOSS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B88, name: g_pszKey_AGUA_SPECULARENV, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B8C, name: g_pszKey_AGUA_UVOSC, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B90, name: g_pszKey_AGUA_TRANSPARENCY, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B94, name: g_pszKey_AGUA_BLUR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B98, name: g_pszKey_AGUA_DISPLACEMENTVEL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9B9C, name: g_pszKey_AGUA_UVSCALE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BA0, name: g_pszKey_AGUA_ENVOSC, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BA4, name: g_pszKey_AGUA_TEXNM, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BA8, name: g_pszKey_AGUA_NORMALPERT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BAC, name: g_pszKey_AGUA_HEIGHTOSCSIZE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BB0, name: g_pszKey_AGUA_HEIGHTOSCVEL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BB4, name: g_pszKey_AGUA_NORMALMAPZ, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BB8, name: g_pszKey_AGUA_FOGTYPE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BBC, name: g_pszKey_AGUA_FOGCOLOR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BC4, name: g_pszKey_AGUA_FOGDENSITY, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BC8, name: g_pszKey_AGUA_FOGDISTANCE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BCC, name: g_pszKey_INICIO_COMMANDO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BD0, name: g_pszKey_INICIO_SNIPER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BD4, name: g_pszKey_INICIO_SPY, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BD8, name: g_pszKey_ELIMINAR_MUERTOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BDC, name: g_pszKey_DISTANCES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BE0, name: g_pszKey_DISTANCESSCALE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BE4, name: g_pszKey_CLASSID_stl, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BE8, name: g_pszKey_DISTANCE_stl, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BEC, name: g_pszKey_DISTMIN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BF0, name: g_pszKey_DISTALPHA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BF4, name: g_psz_DEFAULT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BF8, name: g_pszKey_VERSION_8A9BF8, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9BFC, name: g_pszKey_LISTADATOS_8A9BFC, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C00, name: g_pszKey_ESCENA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C04, name: g_pszKey_SMG, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C08, name: g_pszKey_MG, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C0C, name: g_pszKey_RIFLE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C10, name: g_pszKey_ALIADOS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C14, name: g_pszKey_FACIL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C18, name: g_pszKey_NORMAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C1C, name: g_pszKey_DIFICIL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C20, name: g_pszKey_COMANDO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C24, name: g_pszKey_FOG, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C28, name: g_pszKey_VER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C2C, name: g_pszKey_MIN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C30, name: g_pszKey_MAX, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C34, name: g_pszKey_DIS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C38, name: g_pszKey_LIGHTS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C44, name: g_pszKey_POS_8A9C44, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C4C, name: g_pszKey_COLOR_8A9C4C, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C50, name: g_pszKey_RADIO_8A9C50, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C54, name: g_pszKey_MODULATE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C58, name: g_pszKey_SCENEOBJS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C5C, name: g_pszKey_ID_8A9C5C, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C60, name: g_pszKey_ANIMACION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C64, name: g_pszKey_TIPO_OFFSET, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C68, name: g_pszKey_OFFSET_8A9C68, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C70, name: g_pszKey_VERSION_8A9C70, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C74, name: g_pszKey_LISTADATOS_8A9C74, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C78, name: g_pszKey_ID_8A9C78, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C7C, name: g_pszKey_NOMBRE_8A9C7C, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C80, name: g_pszKey_FLI_NOMBRE_8A9C80, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C84, name: g_pszKey_FILE_8A9C84, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C88, name: g_pszKey_FILE2, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C8C, name: g_pszKey_TIPO_8A9C8C, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C90, name: g_pszKey_PUNTERIA_8A9C90, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C94, name: g_pszKey_AUTOMATISMO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C98, name: g_pszKey_GRADO_8A9C98, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9C9C, name: g_pszKey_ORDEN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CA0, name: g_pszKey_FOGONAZO_DFF, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CA4, name: g_pszKey_FOGONAZO_TEXTURE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CA8, name: g_pszKey_FOGONAZO_COLOR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CAC, name: g_pszKey_FOGONAZO_DURACION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CB0, name: g_pszKey_FOGONAZO_RADIO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CB4, name: g_pszKey_FOGONAZO_ANCHO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CB8, name: g_pszKey_FOGONAZO_ALTO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CBC, name: g_pszKey_CARGA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CC0, name: g_pszKey_ALCANCE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CC4, name: g_pszKey_PESO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CC8, name: g_pszKey_PERSONAJE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CCC, name: g_pszKey_NODROP, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CD0, name: g_pszKey_ALCANCE_RANGO_MIN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CD4, name: g_pszKey_ALCANCE_RANGO_MAX, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CD8, name: g_pszKey_LIMITE_ANGULAR_HORIZONTAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CDC, name: g_pszKey_LIMITE_ANGULAR_VERTICAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CE0, name: g_pszKey_DESVIACION_H, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CE4, name: g_pszKey_DESVIACION_V, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CE8, name: g_pszKey_DESVIACION_FA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CEC, name: g_pszKey_BALAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CF0, name: g_pszKey_CARGADORES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CF4, name: g_pszKey_MAX_CARGADORES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CF8, name: g_pszKey_BALAS_DISPONIBLES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9CFC, name: g_pszKey_MAX_BALAS_DISPONIBLES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D00, name: g_pszKey_DAMAGE_8A9D00, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D04, name: g_pszKey_FORCE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D08, name: g_pszKey_DISPERSION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D0C, name: g_pszKey_RADIO_8A9D0C, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D10, name: g_pszKey_CADENCIA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D18, name: g_pszKey_WAVE_DISPARO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D1C, name: g_pszKey_WAVE_DISPARO_SIN_BALAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D20, name: g_pszKey_WAVE_DISPARO_PLAYER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D24, name: g_pszKey_WAVE_RECARGA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D2C, name: g_pszKey_DECALUV1, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D30, name: g_pszKey_DECALUV2, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D34, name: g_pszKey_MANO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D38, name: g_pszKey_ANIMACIONES_8A9D38, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D3C, name: g_pszKey_ANIMACIONES_PLAYER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D40, name: g_pszKey_ANIMACIONES_PLAYER_TERCERA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D44, name: g_pszKey_ANIMACIONES_MULTIPLAYER, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D48, name: g_pszKey_ANIMACIONES_BOT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D4C, name: g_pszKey_TIEMPO_DETONACION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D50, name: g_pszKey_VELOCIDAD, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D54, name: g_pszKey_ANGULO_LANZAMIENTO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D58, name: g_pszKey_VELOCIDAD_CORTO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D5C, name: g_pszKey_ANGULO_LANZAMIENTO_CORTO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D60, name: g_pszKey_ATENUACION_BOTE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D64, name: g_pszKey_APUNTAR_FOV, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D68, name: g_pszKey_APUNTAR_VELOCIDAD, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D6C, name: g_pszKey_ANGULO_PUNTO_MIRA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D70, name: g_pszKey_PULSO_ANGULO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D74, name: g_pszKey_PULSO_TIEMPO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D78, name: g_pszKey_PULSO_FACTOR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D7C, name: g_pszKey_PULSO_ESTABLE_DURACION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D80, name: g_pszKey_PULSO_ESTABLE_COOLDOWN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D84, name: g_pszKey_PHYSIC_8A9D84, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D88, name: g_pszKey_MODEL_FILE_8A9D88, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D8C, name: g_pszKey_MASS_8A9D8C, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D90, name: g_pszKey_BOUNCE_8A9D90, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D94, name: g_pszKey_SLIDE_8A9D94, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D98, name: g_pszKey_BBOX_8A9D98, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9D9C, name: g_pszKey_INF_8A9D9C, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DA0, name: g_pszKey_SUP_8A9DA0, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DA4, name: g_pszKey_VERSION_net_perf_counters, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DA8, name: g_pszKey_REGISTROS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DAC, name: g_pszKey_ID_net_perf_counters, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DB0, name: g_pszKey_TIPO_net_perf_counters, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DB4, name: g_pszKey_FILE_net_perf_counters, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DB8, name: g_pszKey_DUMMY_net_perf_counters, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DBC, name: g_pszKey_PRIORITY_net_perf_counters, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DC0, name: g_pszKey_REFLEXION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DC4, name: g_pszKey_BACKPLANE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DC8, name: g_pszKey_FOLLOW_ROT, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DCC, name: g_pszKey_LOOP_net_perf_counters, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DD0, name: g_pszKey_AUTOSTART, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DD4, name: g_pszKey_USE_STATIC_ANIM, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DD8, name: g_pszKey_START_IN_LOOP, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DDC, name: g_pszKey_USE_ALPHA_COLOR, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DE0, name: g_pszKey_USE_GLOBAL_POS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DE4, name: g_pszKey_ALPHA_INI, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DE8, name: g_pszKey_ALPHA_END, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DEC, name: g_pszKey_COLOR_INI, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DF0, name: g_pszKey_COLOR_END, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DF4, name: g_pszKey_NOMBRE_net_perf_counters, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9DFC, name: g_pszKey_LONGITUD, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E00, name: g_pszKey_VELOCIDAD_net_perf_counters, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E04, name: g_pszKey_FRECUENCIA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E08, name: g_pszKey_SIZE_net_perf_counters, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E0C, name: g_pszKey_ADITIVO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E10, name: g_pszKey_WIDTH_net_perf_counters, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E14, name: g_pszKey_HEIGHT_net_perf_counters, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E18, name: g_pszKey_CAM_ALIGNED, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E1C, name: g_pszKey_NUM_FRAMES, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E20, name: g_pszKey_NUM_ROWS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E24, name: g_pszKey_FRAMES_PER_ROW, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E28, name: g_pszKey_FPS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E2C, name: g_pszKey_FALLOUT_INI, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E30, name: g_pszKey_FALLOUT_END, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E34, name: g_pszKey_FADE_DIST, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E38, name: g_pszKey_FADE_DIST_MIN, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E3C, name: g_pszKey_FADE_DIST_ALPHA, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E40, name: g_pszKey_DURATION, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E44, name: g_pszKey_RADIUS_net_perf_counters, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E48, name: g_pszKey_FADEIN_TIME, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E4C, name: g_pszKey_FADEOUT_TIME, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E50, name: g_pszKey_USE_FRACTAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E54, name: g_pszKey_FRACTAL_TIMING, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E58, name: g_pszKey_FRACTAL_TIMING_BIAS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E5C, name: g_pszKey_FRACTAL_SMOOTHNESS, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E60, name: g_pszKey_QUALITY_CFG, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9E68, name: g_psz_NONE, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008AFC60, name: g_Value_8afc60, type: int, uses: 1, src: auto}
 - {addr: 0x008AFC78, name: g_Value_8afc78, type: int32_t, uses: 2, src: auto}
 - {addr: 0x008AFC7C, name: g_Value8afc7c, type: int, uses: 1, src: auto}
