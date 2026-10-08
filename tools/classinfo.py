@@ -23,7 +23,7 @@ KIDS = collections.defaultdict(list)
 for vt, c in C.items():
     if c["base"]:
         KIDS[c["base"]].append(vt)
-NAMES_PATH = os.path.join(ROOT, "db", "class_names.yaml")
+NAMES_PATH = os.path.join(ROOT, "db", "types", "classes.yaml")
 
 
 def class_names():
@@ -31,7 +31,8 @@ def class_names():
         return {}
     import yaml
     d = yaml.safe_load(open(NAMES_PATH)) or {}
-    return {f"{k:08x}" if isinstance(k, int) else str(k).lower(): v for k, v in d.items()}
+    return {f"{k:08x}" if isinstance(k, int) else str(k).lower(): v["name"] for k, v in d.items()
+            if isinstance(v, dict) and v.get("name") and v.get("conf", 0) >= 0.7}
 
 
 def strs(ea):

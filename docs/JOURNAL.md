@@ -441,3 +441,17 @@ calls (`--bare` needs an API key). Monitor has a Captain panel (work/captain_sta
 - The other ~60 are 0.2-0.5 guesses from call-graph position (unnamed classes, placeholder function names, no
   strings; e.g. m45AAF0 47 KB). Left unnamed: name them just before their wave, once classes/fields are recovered.
 - Grunt packets now carry `Module: <name> (<note>)`; non-class functions are prefixed by the module subsystem.
+
+### 2026-10-08 — Captain: classes / placeholder functions don't fit batch naming (yet)
+
+- `captain.py classes` (classinfo sheet + creation-site code + ctor body + method names + module): 12 classes,
+  Sonnet vs Opus twice. Both agree on families (CGuiFont, CGuiEffect*, CGfxClumpObject) but at 0.35-0.65;
+  1-2/12 clear 0.7. Opus ~2.5x cost, no better. Class identity needs behaviour across many functions ->
+  agentic per-family sessions at wave prep (as done for GUI). Nothing applied; proposals kept as hints.
+- `captain.py functions` (290 placeholder names: GetField0050, IsField90Null, ReturnMinusOne...; packet = body +
+  per-caller call line and the two after it): 1/30 applied for either model (only string-attested
+  GetTSubirName -> TSubir_GetName). Tiny accessors' meaning lives in callers that are unnamed themselves.
+  Re-run after waves name the callers (Sonnet: ~$0.002/function). Nothing applied.
+- What batch naming is good for: self-contained evidence (strings/keys, data tables, RW API, module evidence):
+  globals and modules worked; classes/accessors don't.
+- classinfo.py read the old db/class_names.yaml (names never shown); now db/types/classes.yaml.

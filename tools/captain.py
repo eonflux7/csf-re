@@ -620,6 +620,348 @@ def account(u):
     t["calls"] = t.get("calls", 0) + 1
 
 
+# ---------------------------------------------------------------- job: classes
+
+SYSTEM_CLASSES = """You are a reverse engineer naming the C++ classes of a 2006 MSVC game (Commandos: Strike Force,
+PC; Pyro Studios, Spanish identifiers). There is no RTTI. For each class you get a sheet: vtable, size, base chain
+and derived classes, ctors/dtors and who creates the object (with strings near the creation site), library calls,
+strings used by its methods, field accesses (+offset:size r/w) and field names grunts proposed, the names earlier
+automated passes gave its methods, and its module.
+
+The game's own conventions (attested in the binary): C* for classes (CVector3, CMenuScreen, CGuiControl,
+CInterpolatorHermite3D), T* for AI tasks/states (TCombate, TFncRastrear: these return their own name from a
+GetName virtual), S* for plain structs, Net* for NetZ network objects. Use English for C* names unless a Spanish
+type-name string is attested.
+
+- name: one of those prefixes + PascalCase. Must differ from every existing class name (listed). A base and its
+  derived classes should read as a family (CMenuScreen -> CMenuMain).
+- attested: true only when the exact name appears as a type-name string in the evidence.
+- confidence: 0.9+ the role is clear, 0.7-0.85 good evidence, 0.5-0.65 plausible, <0.5 unclear (best guess).
+- why: one short sentence of the deciding evidence.
+Method names are hints (they can be wrong); creation sites, strings and library calls are stronger.
+
+Existing class names (taken): {names}
+
+Answer only with the JSON object."""
+
+SCHEMA_CLASSES = {
+    "type": "object",
+    "properties": {"classes": {"type": "array", "items": {"type": "object", "properties": {
+        "vtable": {"type": "string"}, "name": {"type": "string"}, "attested": {"type": "boolean"},
+        "confidence": {"type": "number"}, "why": {"type": "string"}},
+        "required": ["vtable", "name", "attested", "confidence", "why"]}}},
+    "required": ["classes"],
+}
+CLASSES_YAML = os.path.join(ROOT, "db", "types", "classes.yaml")
+
+
+def class_packet(db, ci, vt, mod_name):
+    import contextlib, io
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        ci.sheet(vt)
+    txt = buf.getvalue().strip()
+    txt = re.sub(r"(field names \(grunts\):.{0,600}).*", r"\1", txt)
+    txt = re.sub(r"(fields:(?: \S+){0,40}).*", r"\1", txt)
+    # creation sites: the code around `new` + ctor call (factory switch cases, keys, strings name the class)
+    sites = []
+    for ct in db.classes[vt]["ctors"][:2]:
+        cte = int(ct, 16)
+        for caller in sorted(db.F.get(cte, {}).get("callers", []))[:3]:
+            src = pseudo(caller)
+            if not src:
+                continue
+            ls = src.splitlines()
+            hits = [i for i, l in enumerate(ls) if f"sub_{cte:X}(" in l]
+            for i in hits[:1]:
+                win = [l.strip() for l in ls[max(0, i - 6):i + 3] if l.strip()]
+                sites.append(f"{db.name(caller) or f'sub_{caller:X}'}:\n    " + "\n    ".join(
+                    substitute_names(db, GENERIC_T.sub("T", l))[:150] for l in win))
+        src = pseudo(cte)
+        if src and len(src.splitlines()) <= 28:
+            sites.append("ctor body:\n    " + "\n    ".join(substitute_names(db, GENERIC_T.sub("T", l.strip()))[:150]
+                                                     for l in src.splitlines()[1:] if l.strip() and l.strip() not in "{}"))
+    if sites:
+        txt += "\ncreation sites:\n  " + "\n  ".join(sites[:4])
+    own = sorted(int(m, 16) for m in db.classes[vt]["methods"])
+    mn = [re.sub(r"^C_[0-9a-f]{8}_", "", db.rows[e]["name"]) for e in own if db.rows.get(e, {}).get("name")]
+    if mn:
+        txt += "\nmethod names (automated, hints): " + ", ".join(mn[:40])
+    mods = collections.Counter(db.rows[e]["module"] for e in own if e in db.rows)
+    if mods:
+        txt += "\nmodule: " + ", ".join(f"{mod_name(m)}({n})" for m, n in mods.most_common(3))
+    return txt
+
+
+def job_classes(args):
+    import classinfo as ci
+    db = DB()
+    for e, f in db.F.items():  # reverse call graph (creation sites)
+        for c in f["callees"]:
+            if c in db.F:
+                db.F[c].setdefault("callers", []).append(e)
+    allnames = {v["name"] for v in db.class_names.values()}
+    import yaml
+    raw = yaml.safe_load(open(CLASSES_YAML)) or {}
+    have = {(f"{k:08x}" if isinstance(k, int) else str(k).lower()) for k in raw}  # any entry, even low conf
+    allnames |= {v.get("name") for v in raw.values() if isinstance(v, dict)}
+    named_methods = collections.Counter()
+    for ea, r in db.rows.items():
+        m = re.match(r"C_([0-9a-f]{8})_", r["name"] or "")
+        if m:
+            named_methods[m.group(1)] += 1
+    held_path = os.path.join(WORK, "held_classes.jsonl")
+    if args.retry_held and os.path.exists(held_path):
+        args.only = (args.only or set()) | {json.loads(l).get("vtable", "").lower().replace("0x", "") for l in open(held_path)}
+    todo = [vt for vt in db.classes if vt not in have and (not args.only or vt in args.only)
+            and (named_methods[vt] or len(db.classes[vt]["methods"]) >= args.min_methods)]
+    todo.sort(key=lambda vt: (-named_methods[vt], -len(db.classes[vt]["methods"])))
+    todo = todo[:args.limit]
+    # families together: order by root of the chain within the priority list, keep batches small
+    root = {vt: (ci.chain(vt) or [vt])[-1] for vt in todo}
+    fam = collections.defaultdict(list)
+    for vt in todo:
+        fam[root[vt]].append(vt)
+    order = []
+    for vt in todo:
+        if vt not in order:
+            order += [x for x in fam[root[vt]] if x not in order]
+    batches = [order[i:i + args.batch] for i in range(0, len(order), args.batch)]
+    system = SYSTEM_CLASSES.format(names=", ".join(sorted(n for n in allnames if n)))
+    live(job="classes", phase="running", model=args.model, effort=args.effort,
+         counts=dict(total=len(order), batches=len(batches), done=0, applied=0, held=0, rejected=0, fn_proposals=0))
+    print(f"{len(order)} classes in {len(batches)} calls", flush=True)
+    applied = []
+    for bi, batch in enumerate(batches):
+        prompt = f"Name these {len(batch)} classes.\n\n" + "\n\n".join(class_packet(db, ci, vt, module_name) for vt in batch)
+        if args.dry:
+            print(prompt)
+            return
+        live(current=dict(batch=bi + 1, addrs=batch, since=time.time(), chars=len(prompt)))
+        try:
+            out, u = chat(args.model, args.effort, system, prompt, SCHEMA_CLASSES)
+        except Exception as e:
+            print(f"batch {bi + 1}: {e}", flush=True)
+            bump(errors=1)
+            continue
+        account(u)
+        acc, held, rej = [], [], []
+        for p in out.get("classes", []):
+            vt = str(p.get("vtable", "")).lower().replace("0x", "").zfill(8)
+            n = p.get("name", "")
+            if vt not in batch:
+                rej.append(dict(p, reason="not in this batch"))
+            elif not re.fullmatch(r"(C|T|S|Net)[A-Z][A-Za-z0-9_]{1,40}", n) or re.fullmatch(r"C_?[0-9a-fA-F]{6,8}", n):
+                rej.append(dict(p, reason=f"name {n!r} breaks the convention"))
+            elif n in allnames:
+                rej.append(dict(p, reason=f"name {n!r} already taken"))
+            else:
+                p["vtable"] = vt
+                (acc if p["confidence"] >= args.min_conf else held).append(p)
+                allnames.add(n)
+        if acc and not args.no_apply:
+            with Locked(), open(CLASSES_YAML, "a") as f:
+                if not applied:
+                    f.write(f"\n# ---- captain {time.strftime('%Y-%m-%d')} ({args.model}): names only; review before relying on them\n")
+                for p in acc:
+                    why = p["why"].replace('"', "'")[:200]
+                    f.write(f'"{p["vtable"]}": {{name: {p["name"]}, attested: {str(bool(p["attested"])).lower()}, '
+                            f'conf: {round(p["confidence"], 2)}, src: captain, why: "{why}"}}\n')
+            applied += acc
+        with open(held_path, "a") as f:
+            for e in held + rej:
+                f.write(json.dumps(dict(e, ts=time.time(), model=args.model)) + "\n")
+        rec = dict(ts=time.time(), job="classes", batch=batch, usage=u,
+                   accepted=[(p["vtable"], p["name"], "class", p["confidence"]) for p in acc],
+                   held=[(p["vtable"], p["name"], p["confidence"]) for p in held],
+                   rejected=[(p.get("vtable"), p.get("name"), p["reason"]) for p in rej],
+                   why={p["vtable"]: p["why"] for p in acc + held})
+        with open(LOG, "a") as f:
+            f.write(json.dumps(rec) + "\n")
+        bump(done=len(batch), applied=len(acc), held=len(held), rejected=len(rej))
+        _live["recent"] = (rec["accepted"] + [(a, n, "", c) for a, n, c in rec["held"]] + _live["recent"])[:12]
+        live(current=None)
+        print(f"batch {bi + 1}/{len(batches)}: {len(acc)} applied, {len(held)} held, {len(rej)} rejected, "
+              f"{u['secs']}s, in {u['input'] + u['cache_write'] + u['cache_read']} out {u['output']}", flush=True)
+    if applied and not args.no_apply:
+        with Locked():
+            subprocess.run(["git", "-C", ROOT, "commit", "-q", "-m",
+                            f"captain: {len(applied)} classes named (classes.yaml only; rename pass separate)\n\n"
+                            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>", "--", "db/types/classes.yaml"])
+    live(phase="finished", current=None)
+
+
+# ---------------------------------------------------------------- job: functions (placeholder names)
+
+FN_PLACEHOLDER = re.compile(
+    r"^(?:C_[0-9a-f]{8}_|[A-Z]\w*?_)?(Return(MinusOne|Zero|One|True|False|\d+)|Get(Returned)?Const(ant)?\w*|"
+    r"Is\w*Field\w*Null|\w*Field_?0?[0-9A-Fa-f]{2,4}\w*|\w*At0x\w*|\w*Offset[0-9A-F]+\w*|\w*_[0-9A-F]{6}|"
+    r"\w*(Vtbl|Slot)\d+\w*|\w*Unk\w*|[Ss]ub_[0-9A-F]+|Nullsub\w*)$")
+
+SYSTEM_FUNCTIONS = """You are a reverse engineer renaming functions of a 2006 MSVC game (Commandos: Strike Force, PC;
+Pyro Studios, Spanish identifiers). Earlier automated passes gave these functions placeholder names that only
+describe mechanics (GetField0050, ReturnMinusOne, InvokeVtbl34, IsField90Null). For each you get its pseudocode,
+how its callers use it (distinct call lines with counts, F = this function), its class and module.
+
+Name what it means in the game, from the evidence:
+- PascalCase English verb phrase; keep the given prefix (ClassName_ or C_<vtable>_) when there is one, else
+  prefix with the module's subsystem in PascalCase when it fits (module hud_objectives -> HudObjectives_...).
+- A tiny function shared by unrelated classes (identical code folded by the linker) gets a neutral name that
+  says what it does to its argument (e.g. GetSecondPointer, ReturnFalse is fine for a real constant stub).
+- Never placeholders: no field offsets, slot numbers or addresses in the name unless nothing else is known.
+- confidence: 0.9+ clear, 0.7-0.85 good, <0.6 unsure (still give your best name).
+Answer only with the JSON object."""
+
+SCHEMA_FUNCTIONS = {
+    "type": "object",
+    "properties": {"functions": {"type": "array", "items": {"type": "object", "properties": {
+        "ea": {"type": "string"}, "name": {"type": "string"}, "confidence": {"type": "number"},
+        "why": {"type": "string"}}, "required": ["ea", "name", "confidence", "why"]}}},
+    "required": ["functions"],
+}
+
+
+def function_packet(db, ea):
+    r, f = db.rows[ea], db.F[ea]
+    src = pseudo(ea) or ""
+    lines = [l for l in src.splitlines() if l.strip()]
+    body = "\n".join(substitute_names(db, GENERIC_T.sub("T", l)) for l in lines[:40])
+    ctx = []  # per caller: its name, the call line and the two after it (what the result is used for)
+    tok = re.compile(rf"\b(?:sub_{ea:X}|{re.escape(r['name'])})\(")
+    seen = set()
+    for c in sorted(f.get("callers", []), key=lambda c: (not db.rows.get(c, {}).get("name"), c))[:12]:
+        ls = (pseudo(c) or "").splitlines()
+        for i, l in enumerate(ls):
+            if tok.search(l):
+                win = [norm_line(tok.sub("F(", x), re.compile(r"(?!x)x")) for x in ls[i:i + 3] if x.strip() not in ("{", "}", "")]
+                key = tuple(win)
+                if key not in seen:
+                    seen.add(key)
+                    ctx.append(f"  in {db.name(c) or f'sub_{c:X}'}:  " + "  /  ".join(substitute_names(db, w)[:110] for w in win))
+                break
+        if len(ctx) >= 6:
+            break
+    slots = [(vt_, i) for vt_, c_ in db.classes.items() for i, m in enumerate(c_.get("slots", []) or []) if int(m, 16) == ea]
+    vt = db.class_of(ea)
+    mod = db.modules.get(r["module"], {})
+    out = [f"### 0x{ea:08X}  current name: {r['name']}  ({f['size']} bytes, {len(f.get('callers', []))} callers)"]
+    if vt:
+        out.append(f"class: {db.cls_name(vt)}")
+    if mod.get("name"):
+        out.append(f"module: {mod['name']}" + (f" ({mod.get('note', '')[:80]})" if mod.get("note") else ""))
+    out.append("```c\n" + body + ("\n..." if len(lines) > 40 else "") + "\n```")
+    if ctx:
+        out.append("callers:\n" + "\n".join(ctx))
+    elif not f.get("callers"):
+        out.append("no direct callers: a virtual method (called through the vtable)")
+    return "\n".join(out)
+
+
+def job_functions(args):
+    from triage import load_csv, save_csv
+    db = DB()
+    for e, f in db.F.items():
+        for c in f["callees"]:
+            if c in db.F:
+                db.F[c].setdefault("callers", []).append(e)
+    taken = {r["name"] for r in db.rows.values() if r["name"]}
+    todo = [ea for ea, r in db.rows.items() if r["region"] == "game" and r["name"] and FN_PLACEHOLDER.match(r["name"])
+            and (not args.only or ea in args.only)]
+    by_mod = sorted(todo, key=lambda e: (db.class_of(e) or "", db.rows[e]["module"], e))  # class/module together
+    by_mod = by_mod[:args.limit]
+    batches = [by_mod[i:i + args.batch] for i in range(0, len(by_mod), args.batch)]
+    live(job="functions", phase="running", model=args.model, effort=args.effort,
+         counts=dict(total=len(by_mod), batches=len(batches), done=0, applied=0, held=0, rejected=0, fn_proposals=0))
+    print(f"{len(by_mod)} placeholder-named functions in {len(batches)} calls", flush=True)
+    renames = {}
+    for bi, batch in enumerate(batches):
+        prompt = f"Rename these {len(batch)} functions.\n\n" + "\n\n".join(function_packet(db, e) for e in batch)
+        if args.dry:
+            print(prompt)
+            return
+        live(current=dict(batch=bi + 1, addrs=[f"0x{e:X}" for e in batch], since=time.time(), chars=len(prompt)))
+        try:
+            out, u = chat(args.model, args.effort, SYSTEM_FUNCTIONS, prompt, SCHEMA_FUNCTIONS)
+        except Exception as e:
+            print(f"batch {bi + 1}: {e}", flush=True)
+            bump(errors=1)
+            continue
+        account(u)
+        acc, held, rej = [], [], []
+        for p in out.get("functions", []):
+            try:
+                ea = int(str(p["ea"]), 16)
+            except ValueError:
+                ea = None
+            n = p.get("name", "")
+            if ea not in batch:
+                rej.append(dict(p, reason="not in this batch"))
+            elif not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{2,80}", n) or (FN_PLACEHOLDER.match(n) and p["confidence"] < 0.9):
+                rej.append(dict(p, reason=f"name {n!r} is still a placeholder / bad identifier"))
+            elif n in taken and n != db.rows[ea]["name"]:
+                rej.append(dict(p, reason=f"name {n!r} already used"))
+            else:
+                p["ea_i"] = ea
+                (acc if p["confidence"] >= args.min_conf else held).append(p)
+                taken.add(n)
+        if acc and not args.no_apply:
+            for p in acc:
+                renames[p["ea_i"]] = (db.rows[p["ea_i"]]["name"], p["name"])
+        with open(os.path.join(WORK, "held_functions.jsonl"), "a") as f:
+            for e in held + rej:
+                f.write(json.dumps({k: v for k, v in dict(e, ts=time.time(), model=args.model).items() if k != "ea_i"}) + "\n")
+        rec = dict(ts=time.time(), job="functions", batch=[f"0x{e:X}" for e in batch], usage=u,
+                   accepted=[(f"0x{p['ea_i']:X}", p["name"], db.rows[p["ea_i"]]["name"], p["confidence"]) for p in acc],
+                   held=[(f"0x{p['ea_i']:X}", p["name"], p["confidence"]) for p in held],
+                   rejected=[(p.get("ea"), p.get("name"), p["reason"]) for p in rej],
+                   why={f"0x{p['ea_i']:X}": p["why"] for p in acc + held})
+        with open(LOG, "a") as f:
+            f.write(json.dumps(rec) + "\n")
+        bump(done=len(batch), applied=len(acc), held=len(held), rejected=len(rej))
+        _live["recent"] = ([(a, n, "fn", c) for a, n, _, c in rec["accepted"]] + [(a, n, "", c) for a, n, c in rec["held"]]
+                           + _live["recent"])[:12]
+        live(current=None)
+        print(f"batch {bi + 1}/{len(batches)}: {len(acc)} applied, {len(held)} held, {len(rej)} rejected, "
+              f"{u['secs']}s, in {u['input'] + u['cache_write'] + u['cache_read']} out {u['output']}", flush=True)
+    if renames:
+        apply_function_renames(renames)
+    live(phase="finished", current=None)
+
+
+def apply_function_renames(renames):
+    """functions.csv (name_src captain) + the identifier in the function's own src/auto file (its HOOK'd name);
+    other files bind by address with their own local names. Rebuild; on a build failure the src edits are undone."""
+    from triage import load_csv, save_csv
+    with Locked():
+        rows = load_csv()
+        changed = []
+        for ea, (old, new) in renames.items():
+            r = rows.get(ea) if isinstance(next(iter(rows)), int) else rows.get(f"{ea:08x}")
+            if r is None:
+                continue
+            r["name"], r["name_src"] = new, "captain"
+            p = os.path.join(ROOT, "src", "auto", f"{ea:08x}.cpp")
+            if os.path.exists(p):
+                t = open(p).read()
+                t2 = re.sub(rf"\b{re.escape(old)}\b", new, t)
+                if t2 != t:
+                    open(p, "w").write(t2)
+                    changed.append(p)
+        save_csv(rows)
+    b = subprocess.run(["ninja", "-C", os.path.join(ROOT, "build")], capture_output=True, text=True)
+    if b.returncode:
+        print("build failed after renames: reverting src edits\n" + b.stdout[-800:], flush=True)
+        subprocess.run(["git", "-C", ROOT, "checkout", "--"] + changed)
+        changed = []
+    files = ["db/functions.csv"] + [os.path.relpath(p, ROOT) for p in changed]
+    with Locked():
+        subprocess.run(["git", "-C", ROOT, "commit", "-q", "-m",
+                        f"captain: {len(renames)} placeholder function names replaced\n\n"
+                        "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>", "--"] + files)
+    print(f"{len(renames)} renamed, {len(changed)} src files updated, build {'ok' if not b.returncode else 'FAILED'}",
+          flush=True)
+
+
 # ---------------------------------------------------------------- job: globals
 
 def job_globals(args):
@@ -742,6 +1084,26 @@ def main():
     mm.add_argument("--dry", action="store_true")
     mm.add_argument("--no-apply", action="store_true")
     mm.add_argument("--retry-held", action="store_true", help="re-ask held/rejected modules of earlier runs")
+    cl = sub.add_parser("classes", help="name unnamed classes (db/types/classes.yaml)")
+    cl.add_argument("--limit", type=int, default=1000)
+    cl.add_argument("--batch", type=int, default=6)
+    cl.add_argument("--min-methods", type=int, default=3, help="also classes without named methods if this many methods")
+    cl.add_argument("--model", default="opus")
+    cl.add_argument("--effort", default="medium")
+    cl.add_argument("--min-conf", type=float, default=0.7)
+    cl.add_argument("--only", type=lambda s: {x.lower().replace("0x", "").zfill(8) for x in s.split(",")})
+    cl.add_argument("--dry", action="store_true")
+    cl.add_argument("--no-apply", action="store_true")
+    cl.add_argument("--retry-held", action="store_true")
+    fn = sub.add_parser("functions", help="replace placeholder function names (db/functions.csv + own src file)")
+    fn.add_argument("--limit", type=int, default=1000)
+    fn.add_argument("--batch", type=int, default=10)
+    fn.add_argument("--model", default="sonnet")
+    fn.add_argument("--effort", default="medium")
+    fn.add_argument("--min-conf", type=float, default=0.75)
+    fn.add_argument("--only", type=lambda s: {int(x, 16) for x in s.split(",")})
+    fn.add_argument("--dry", action="store_true")
+    fn.add_argument("--no-apply", action="store_true")
     st = sub.add_parser("strings", help="mechanical: pointer-to-string globals named after the string")
     st.add_argument("--dry", action="store_true")
     st.add_argument("--show", type=int, default=30)
@@ -759,7 +1121,8 @@ def main():
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except BlockingIOError:
         sys.exit("captain is already running (work/captain.lock)")
-    {"globals": job_globals, "strings": job_strings, "modules": job_modules}[a.cmd](a)
+    {"globals": job_globals, "strings": job_strings, "modules": job_modules,
+     "classes": job_classes, "functions": job_functions}[a.cmd](a)
 
 
 if __name__ == "__main__":
