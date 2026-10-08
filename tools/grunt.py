@@ -109,6 +109,82 @@ def chat(model, messages, key, effort="high"):
             time.sleep(5 * (attempt + 1))
 
 
+GO_URL = "https://opencode.ai/zen/go/v1"
+GO_KEY = os.path.expanduser("~/.config/csf-re/opencode_go.key")
+# $/1M tokens (input, cached read, cache write, output) — Zen list prices; Go bills these against per-model allowances
+GO_PRICE = {"deepseek-flash": (0.30, 0.006, 0.30, 1.20), "deepseek-v4.1-flash": (0.30, 0.006, 0.30, 1.20),
+            "deepseek-v4-pro": (1.74, 0.145, 1.74, 3.48), "claude-haiku-5-5": (0.10, 0.01, 0.125, 0.50),
+            "glm-5.3-flash": (0.15, 0.03, 0.15, 0.50), "qwen3.8-flash": (0.15, 0.016, 0.20, 0.47),
+            "qwen3.7-plus": (0.40, 0.04, 0.50, 1.60), "kimi-k2.7-code": (0.95, 0.19, 0.95, 4.00),
+            "minimax-m3": (0.30, 0.06, 0.30, 1.20), "mimo-v2.6-flash": (0, 0, 0, 0)}
+
+
+def go_cost(model, u):
+    p = GO_PRICE.get(model.split("@")[0])
+    if not p:
+        return None
+    pin, cr, cw, out = p
+    cached, wrote = u.get("cached_tokens", 0) or 0, u.get("cache_write_tokens", 0) or 0
+    fresh = max(0, (u.get("prompt_tokens", 0) or 0) - cached - wrote)
+    return (fresh * pin + cached * cr + wrote * cw + (u.get("completion_tokens", 0) or 0) * out) / 1e6
+
+
+def chat_go(model, messages, effort="high"):
+    """OpenCode Go. `model` may pin an effort for every attempt: "claude-haiku-5-5@low". Claude models speak the
+    Anthropic /messages format (adaptive thinking + output_config.effort, prompt caching on), the rest OpenAI
+    chat/completions. Go wants a coding-agent shaped client: its own User-Agent and a stable x-opencode-session (one
+    per function and model, like one agent session per task)."""
+    name, _, pinned = model.partition("@")
+    effort = pinned or effort
+    key = open(GO_KEY).read().strip()
+    hdr = {"Authorization": f"Bearer {key}", "Content-Type": "application/json", "User-Agent": "csf-re-grunt/1.0",
+           "x-opencode-session": f"csf-re-{getattr(_tl, 'ea', 0):08x}-{name}"}
+    if name.startswith("claude-"):
+        url = f"{GO_URL}/messages"
+        hdr |= {"x-api-key": key, "anthropic-version": "2023-06-01"}
+        body = dict(model=name, max_tokens=64000, system=messages[0]["content"], messages=messages[1:],
+                    thinking={"type": "adaptive"}, output_config={"effort": effort},
+                    cache_control={"type": "ephemeral"})
+    else:
+        url = f"{GO_URL}/chat/completions"
+        body = dict(model=name, messages=messages, max_tokens=64000,
+                    reasoning_effort=effort if name.startswith("deepseek") or effort != "max" else "high")
+        if name.startswith("deepseek"):
+            body["thinking"] = {"type": "enabled"}
+    req = urllib.request.Request(url, data=json.dumps(body).encode(), headers=hdr)
+    for attempt in range(4):
+        try:
+            with urllib.request.urlopen(req, timeout=1200) as r:
+                d = json.load(r)
+            break
+        except urllib.error.HTTPError as e:  # 429 / 5xx: back off; other 4xx are our fault
+            msg = e.read().decode(errors="replace")[:300]
+            if attempt == 3 or (e.code < 500 and e.code != 429):
+                raise RuntimeError(f"go {name} HTTP {e.code}: {msg}")
+            time.sleep(10 * (attempt + 1))
+        except Exception:
+            if attempt == 3:
+                raise
+            time.sleep(10 * (attempt + 1))
+    if name.startswith("claude-"):
+        text = "".join(c.get("text", "") for c in d.get("content", []) if c.get("type") == "text")
+        u = d.get("usage", {})
+        cached, wrote = u.get("cache_read_input_tokens", 0) or 0, u.get("cache_creation_input_tokens", 0) or 0
+        usage = dict(prompt_tokens=(u.get("input_tokens", 0) or 0) + cached + wrote, cached_tokens=cached,
+                     cache_write_tokens=wrote, completion_tokens=u.get("output_tokens", 0) or 0,
+                     reasoning_tokens=(u.get("output_tokens_details") or {}).get("thinking_tokens", 0))
+    else:
+        text = d["choices"][0]["message"].get("content") or ""
+        u = d.get("usage", {})
+        usage = dict(prompt_tokens=u.get("prompt_tokens", 0) or 0,
+                     cached_tokens=(u.get("prompt_tokens_details") or {}).get("cached_tokens", 0) or 0,
+                     cache_write_tokens=(u.get("prompt_tokens_details") or {}).get("cache_write_tokens", 0) or 0,
+                     completion_tokens=u.get("completion_tokens", 0) or 0,
+                     reasoning_tokens=(u.get("completion_tokens_details") or {}).get("reasoning_tokens", 0))
+    usage |= dict(backend="go", model=model, cost=go_cost(model, usage))
+    return text, usage
+
+
 CLAUDE_CWD = os.path.expanduser("~/.cache/csf-re-claude")  # outside the repo: no CLAUDE.md / memory pulled in
 
 
@@ -346,6 +422,8 @@ def _ask(backend, model, messages, key, effort="high"):
             text, usage = chat_claude(model, messages)
         elif backend == "codex":
             text, usage = chat_codex(model, messages, effort)
+        elif backend == "go":
+            text, usage = chat_go(model, messages, effort)
         else:
             text, usage = chat(model, messages, key, effort)
         with _live_lock:
@@ -446,7 +524,8 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
     msgs = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": packet}]
     path = os.path.join(out_dir or os.path.join(ROOT, "src", "auto"), f"{ea:08x}.cpp")
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    tmp = os.path.join(ROOT, "work", "grunt", ladder[0][0], f"{ea:08x}.cpp")
+    tmp = os.path.join(out_dir, "tmp", f"{ea:08x}.cpp") if out_dir else \
+        os.path.join(ROOT, "work", "grunt", ladder[0][0], f"{ea:08x}.cpp")  # A/B arms run the same ea in parallel
     os.makedirs(os.path.dirname(tmp), exist_ok=True)
     usage_all, err, meta, text = [], "", {}, ""
     steps = [(b, m) for b, m, n in ladder for _ in range(n)]
@@ -1137,6 +1216,157 @@ def captain_after(wave):
     captain("functions", "--module", ",".join(sorted(wave)))
 
 
+AB = os.path.join(ROOT, "work", "ab")
+
+
+def ab_set(db, track, n, seed):
+    """One A/B track's functions, chosen once into work/ab/<track>/set.json (arms added later run the same set).
+    a: not-yet-done functions of DeepSeek-lane shape (2/3 under 48 bytes, 1/3 of 48-150: can cheap models take more?).
+    b: done functions Codex won as a single (non-batched) task, 70% Codex-only and 30% after DeepSeek failed twice;
+    Codex's logged attempts and tokens are the baseline, its committed file the reference for code similarity."""
+    p = os.path.join(AB, track, "set.json")
+    if os.path.exists(p):
+        return json.load(open(p))
+    import random
+    rnd = random.Random(seed)
+    if track == "a":
+        cands = select(db, 4000, 150, 6)
+        tiny = [c for c in cands if db.F[c[0]]["size"] < 48]
+        mid = [c for c in cands if db.F[c[0]]["size"] >= 48]
+        picks = rnd.sample(tiny, min(len(tiny), n - n // 3)) + rnd.sample(mid, min(len(mid), n // 3))
+        s = dict(fns=[dict(ea=ea, example=ex) for ea, ex in picks])
+    else:
+        pools = {"codex_only": [], "ds_first": []}
+        for line in open(LOG):
+            r = json.loads(line)
+            if not (r.get("ok") and str(r.get("by", "")).startswith("codex") and not r.get("batch")) or \
+                    not os.path.exists(os.path.join(ROOT, "src", "auto", f"{r['ea']:08x}.cpp")):
+                continue
+            us = r.get("usage", [])
+            ds = sum(u.get("backend") in (None, "deepseek") for u in us)
+            cx = [u for u in us if u.get("backend") == "codex"]
+            pools["ds_first" if ds else "codex_only"].append(dict(
+                ea=r["ea"], example=None, kind="ds_first" if ds else "codex_only",
+                codex_attempt=r["attempts"] - (2 if ds else 0),  # ladder: deepseek x2, then codex
+                codex_in=sum(u.get("prompt_tokens", 0) or 0 for u in cx),
+                codex_out=sum(u.get("completion_tokens", 0) or 0 for u in cx)))
+        k = round(n * 0.3)
+        s = dict(fns=rnd.sample(pools["codex_only"], min(len(pools["codex_only"]), n - k)) +
+                 rnd.sample(pools["ds_first"], min(len(pools["ds_first"]), k)))
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    json.dump(s, open(p, "w"), indent=1)
+    return s
+
+
+def code_sim(a, b):
+    """Similarity (0..1) of two files' compiled code, normalized as in verify.py (names and the HOOK stub left
+    out); 1.0 = the same machine code."""
+    import difflib, tempfile
+    from gate import compile_cmd
+    from verify import _normalize
+    outs = []
+    with tempfile.TemporaryDirectory() as td:
+        for i, src in enumerate((a, b)):
+            obj = os.path.join(td, f"{i}.obj")
+            r = subprocess.run(compile_cmd() + [f"/Fo{obj}", "-c", "--", os.path.abspath(src)], capture_output=True,
+                               text=True, cwd=os.path.join(ROOT, "build"))
+            if r.returncode:
+                return None
+            dis = subprocess.run(["llvm-objdump-21", "-d", "-r", "--x86-asm-syntax=intel", obj],
+                                 capture_output=True, text=True).stdout
+            outs.append(_normalize(dis).splitlines())
+    return round(difflib.SequenceMatcher(None, *outs, autojunk=False).ratio(), 3)
+
+
+def ab(args):
+    """Model A/B over OpenCode Go: every arm (a Go model, optionally @effort) writes every function of the track's set
+    with the production prompt, gate and attempt count, into work/ab/<track>/<arm>/ — nothing is committed or smoked.
+    Results append to work/ab/<track>/results.jsonl (finished arm/function pairs are skipped on a rerun)."""
+    global LIVE
+    LIVE = os.path.join(AB, "state.json")  # never clobber a lanes run's monitor state
+    db = DB()
+    fns = ab_set(db, args.track, args.n, args.seed)["fns"]
+    res = os.path.join(AB, args.track, "results.jsonl")
+    done = {(r["arm"], r["ea"]) for r in map(json.loads, open(res))} if os.path.exists(res) else set()
+    jobs = [(arm, f) for f in fns for arm in args.arms.split(",") if (arm, f["ea"]) not in done]
+    print(f"track {args.track}: {len(fns)} functions, {len(jobs)} arm runs to do", flush=True)
+    live(mode=f"ab {args.track}", phase="grunting", counts=dict(total=len(jobs), ok=0, esc=0))
+    lock = threading.Lock()
+
+    def one(arm, f):
+        ea = f["ea"]
+        t0 = time.time()
+        r = work(ea, db, None, [("go", arm, args.attempts)], os.path.join(AB, args.track, arm.replace("@", "_")),
+                 f.get("example"), None, ev_budget(args, db, ea))
+        r.update(arm=arm, size=db.F[ea]["size"], secs=round(time.time() - t0, 1),
+                 cost=round(sum(u.get("cost") or 0 for u in r["usage"]), 5))
+        if r["ok"] and args.track == "b":
+            r["sim"] = code_sim(os.path.join(AB, args.track, arm.replace("@", "_"), f"{ea:08x}.cpp"),
+                                os.path.join(ROOT, "src", "auto", f"{ea:08x}.cpp"))
+        return r
+
+    with cf.ThreadPoolExecutor(args.jobs) as ex:
+        futs = [ex.submit(one, arm, f) for arm, f in jobs]
+        for fu in cf.as_completed(futs):
+            try:
+                r = fu.result()
+            except Exception as e:
+                print(f"  error: {e}", flush=True)
+                continue
+            with lock:
+                with open(res, "a") as fh:
+                    fh.write(json.dumps(r) + "\n")
+                live(counts={"ok" if r["ok"] else "esc": _live["counts"].get("ok" if r["ok"] else "esc", 0) + 1})
+            print(f"  {r['arm']:<26} {r['ea']:08x} {r['size']:4d}B {'OK ' if r['ok'] else 'ESC'} "
+                  f"try {r['attempts']}  ${r['cost']:.4f}  {r['secs']:.0f}s"
+                  + (f"  sim {r['sim']}" if r.get("sim") is not None else ""), flush=True)
+    ab_report(args)
+
+
+def ab_report(_):
+    """work/ab/report.md: per track and arm — success, first-try rate, $ and tokens per solved function, time;
+    track b also code similarity to the committed Codex file, with Codex's logged run as the baseline row."""
+    import statistics
+    out = []
+    for track in ("a", "b"):
+        res = os.path.join(AB, track, "results.jsonl")
+        if not os.path.exists(res):
+            continue
+        rs = [json.loads(l) for l in open(res)]
+        fns = {f["ea"]: f for f in json.load(open(os.path.join(AB, track, "set.json")))["fns"]}
+        out += [f"## Track {track} ({len(fns)} functions)", "",
+                "| arm | ok | 1st try | ok <48B | ok ≥48B | $ total | $ / ok fn | in tok / fn | out tok / fn "
+                "| median s |" + (" sim | same code |" if track == "b" else ""),
+                "|---|---|---|---|---|---|---|---|---|---|" + ("---|---|" if track == "b" else "")]
+        if track == "b":
+            n = len(fns)
+            first = sum(f["codex_attempt"] == 1 for f in fns.values())
+            out.append(f"| codex gpt-6.1-sol (logged) | {n}/{n} | {first / n:.0%} | | | quota | quota "
+                       f"| {sum(f['codex_in'] for f in fns.values()) // n} "
+                       f"| {sum(f['codex_out'] for f in fns.values()) // n} | | 1.0 | |")
+        for arm in dict.fromkeys(r["arm"] for r in rs):
+            a = [r for r in rs if r["arm"] == arm]
+            ok = [r for r in a if r["ok"]]
+            small = [r for r in a if r["size"] < 48]
+            big = [r for r in a if r["size"] >= 48]
+            usage = [u for r in a for u in r["usage"]]
+            cost = sum(r["cost"] for r in a)
+            row = (f"| {arm} | {len(ok)}/{len(a)} | {sum(r['attempts'] == 1 for r in ok) / max(1, len(a)):.0%} "
+                   f"| {sum(r['ok'] for r in small)}/{len(small)} | {sum(r['ok'] for r in big)}/{len(big)} "
+                   f"| {cost:.3f} | {cost / max(1, len(ok)):.4f} "
+                   f"| {sum(u.get('prompt_tokens', 0) or 0 for u in usage) // max(1, len(a))} "
+                   f"| {sum(u.get('completion_tokens', 0) or 0 for u in usage) // max(1, len(a))} "
+                   f"| {statistics.median(r['secs'] for r in a):.0f} |")
+            if track == "b":
+                sims = [r["sim"] for r in ok if r.get("sim") is not None]
+                row += (f" {statistics.mean(sims):.2f} | {sum(s == 1.0 for s in sims)} |" if sims else " | |")
+            out.append(row)
+        out.append("")
+    os.makedirs(AB, exist_ok=True)
+    open(os.path.join(AB, "report.md"), "w").write("# Model A/B over OpenCode Go\n\n" + "\n".join(out))
+    print("\n".join(out))
+
+
 def cost(_):
     """Token totals per writing backend, and how often the Codex review of DeepSeek outputs rejected one (logged
     since the `reviews` field exists): if it almost never rejects, --review-over -1 saves Codex quota."""
@@ -1222,5 +1452,16 @@ if __name__ == "__main__":
                    "before, placeholder function names after)")
     l.add_argument("--codex-cap", type=float, default=90, help="pause Codex at this 5h-window %% (0: off)")
     sub.add_parser("cost")
+    b = sub.add_parser("ab", help="model A/B over OpenCode Go (work/ab/, nothing committed)")
+    b.add_argument("--track", choices=["a", "b"], required=True,
+                   help="a: DeepSeek-lane alternatives on new functions; b: Codex alternatives on Codex-won functions")
+    b.add_argument("--arms", required=True, help="comma list of Go models, optionally model@effort")
+    b.add_argument("--n", type=int, default=25)
+    b.add_argument("--seed", type=int, default=1)
+    b.add_argument("--attempts", type=int, default=2, help="attempts per arm (production rungs use 2)")
+    b.add_argument("--jobs", type=int, default=8)
+    b.add_argument("--evidence", type=int, default=3)
+    b.add_argument("--evidence-over", type=int, default=150)
+    sub.add_parser("ab-report")
     a = ap.parse_args()
-    {"run": run, "lanes": lanes, "cost": cost}[a.cmd](a)
+    {"run": run, "lanes": lanes, "cost": cost, "ab": ab, "ab-report": ab_report}[a.cmd](a)
