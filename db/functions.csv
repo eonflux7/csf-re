@@ -6251,7 +6251,7 @@ ea,size,region,module,name,name_src,status
 0050bee0,144,game,m50A360,,,todo
 0050bf70,55,game,m50BF70,CMenuScreenFader_AdvanceFade,agent,done
 0050bfb0,49,game,m50BF70,CMenuScreenFader_AdvanceFadeTimer,agent,done
-0050bff0,43,game,m50BF70,,,todo
+0050bff0,43,game,m50BF70,CMenuScreenFader_ReleaseOverlayAndDispatch,agent,done
 0050c020,15,game,m50BF70,CMenuScreenFader_ShowOverlay,agent,done
 0050c030,110,game,m50BF70,,,todo
 0050c0a0,113,game,m50BF70,MenuManager_ContainsPageName,agent,done
@@ -7030,11 +7030,11 @@ ea,size,region,module,name,name_src,status
 00529360,551,game,m5287F0,,,todo
 00529590,115,game,m5287F0,MenuMessageBox_ApplyChildBounds,agent,done
 00529610,337,game,m5287F0,CMenuMessageBox_UpdateStaticLayout,agent,done
-00529770,404,game,m5287F0,,,todo
+00529770,404,game,m5287F0,MenuMessageBox_UpdateLayerLayout,agent,done
 00529910,135,game,m5287F0,MenuMessageBox_UpdateChildClipping,agent,done
 005299a0,227,game,m5287F0,MenuMessageBox_LayoutOptionControl,agent,done
 00529a90,245,game,m5287F0,MenuMessageBox_UpdateCombinedHeight,agent,done
-00529b90,416,game,m5287F0,,,todo
+00529b90,416,game,m5287F0,CMenuMessageBox_UpdateHorizontalAnimation,agent,done
 00529d30,285,game,m5287F0,,,todo
 00529e50,130,game,m5287F0,MenuMessageBox_AdvanceActiveIndicator,agent,done
 00529ee0,341,game,m5287F0,,,todo
@@ -7086,7 +7086,7 @@ ea,size,region,module,name,name_src,status
 0052c6e0,327,game,m52BD10,C_008414e8_CenterContentPanel,agent,done
 0052c830,92,game,m52BD10,C_008414e8_QueryRectFromAnchors,agent,done
 0052c890,319,game,m52BD10,C_008414e8_LayoutInputRows,agent,done
-0052c9d0,274,game,m52BD10,,,todo
+0052c9d0,274,game,m52BD10,MenuProgressInput_ApplyCollapsedBounds,agent,done
 0052caf0,383,game,m52BD10,,,todo
 0052cc70,377,game,m52BD10,,,todo
 0052cdf0,175,game,m52BD10,MenuProgressInput_ResetTextInputLayout,agent,done
@@ -7101,7 +7101,7 @@ ea,size,region,module,name,name_src,status
 0052d550,98,game,m52BD10,,,todo
 0052d5c0,4,game,m52BD10,,,todo
 0052d5e0,159,game,m52BD10,,,todo
-0052d680,64,game,m52BD10,,,todo
+0052d680,64,game,m52BD10,CMenuProgressBar_Construct,agent,done
 0052d6c0,81,game,m52BD10,,,todo
 0052d720,36,game,m52D720,CMenuScenarioSelect_ForwardAction,agent,done
 0052d750,247,game,m52D720,,,todo
@@ -7176,7 +7176,7 @@ ea,size,region,module,name,name_src,status
 00530660,161,game,m52FB30,CMenuMpServerInfo_SetChildStatesIfAllPresent,agent,done
 00530710,83,game,m52FB30,CMenuMpServerInfo_DisableChildControls,agent,done
 00530770,132,game,m52FB30,CMenuMpServerInfo_ShowPanelsForState,agent,done
-00530800,436,game,m52FB30,,,todo
+00530800,436,game,m52FB30,CMenuMpServerInfo_UpdateStatisticsLayout,agent,done
 005309c0,7,game,m52FB30,CMenuMpServerInfo_GetField01ec,agent,done
 005309e0,106,game,m52FB30,,,todo
 00530a50,87,game,m52FB30,,,todo
@@ -7344,10 +7344,10 @@ ea,size,region,module,name,name_src,status
 005394f0,466,game,m5384C0,,,todo
 005396d0,27,game,m5384C0,CMenuLoadGame_InitBotonLoad,agent,done
 005396f0,36,game,m5384C0,CMenuLoadGame_SetField011CAndNotify,agent,done
-00539810,22,game,m5384C0,,,todo
+00539810,22,game,m5384C0,CMenuLoadGame_ListboxLoadGames,agent,done
 00539830,241,game,m5384C0,,,todo
 00539930,43,game,m5384C0,CMenuLoadGame_ActivateSelectedEntry,agent,done
-00539960,50,game,m5384C0,,,todo
+00539960,50,game,m5384C0,CMenuLoadGame_ResetStateAndForwardToVirtual,agent,done
 005399a0,181,game,m5384C0,,,todo
 00539a60,21,game,m5384C0,CMenuLoadGame_HandleCommand,agent,done
 00539a80,142,game,m5384C0,,,todo
@@ -7370,7 +7370,7 @@ ea,size,region,module,name,name_src,status
 0053a220,30,game,m539CE0,CMenuPause_ApplyLabelToChild,agent,done
 0053a240,50,game,m539CE0,,,todo
 0053a280,73,game,m539CE0,,,todo
-0053a2d0,65,game,m539CE0,,,todo
+0053a2d0,65,game,m539CE0,MenuMain_HandleCommand,agent,done
 0053a320,43,game,m539CE0,CMenuPause_HandleAction,agent,done
 0053a360,378,game,m539CE0,,,todo
 0053a4e0,21,game,m539CE0,CMenuPause_HandleCommand,agent,done
@@ -7383,7 +7383,7 @@ ea,size,region,module,name,name_src,status
 0053a690,33,game,m539CE0,CMenuMain_SetValueAndNotify,agent,done
 0053a6c0,212,game,m539CE0,CMenuMain_DispatchButtonEvent,agent,done
 0053a7a0,36,game,m539CE0,CMenuMain_NotifyOwnerIfTrue,agent,done
-0053a7d0,241,game,m539CE0,,,todo
+0053a7d0,241,game,m539CE0,CMenuMain_UpdateLayoutAlignment,agent,done
 0053a8d0,58,game,m539CE0,CMenuMain_Destruct,agent,done
 0053a920,21,game,m539CE0,CMenuMain_HandleCommand,agent,done
 0053a940,79,game,m539CE0,,,todo
@@ -7427,7 +7427,7 @@ ea,size,region,module,name,name_src,status
 0053b8a0,16,game,m53AB80,CMenuOptionsPC_PlayVideoMenuSound,agent,done
 0053b8b0,30,game,m53AB80,CMenuOptionsPC_ApplyChildContextAndLabel,agent,done
 0053b8e0,46,game,m53AB80,CMenuOptionsPC_Destroy,agent,done
-0053b910,34,game,m53B910,,,todo
+0053b910,34,game,m53B910,CMenuProfiles_ResetState,agent,done
 0053b940,39,game,m53B910,CMenuProfiles_ResetProfileControls,agent,done
 0053b970,39,game,m53B910,CMenuProfiles_ResetCampaignControls,agent,done
 0053b9a0,212,game,m53B910,,,todo
@@ -7468,7 +7468,7 @@ ea,size,region,module,name,name_src,status
 0053cc20,47,game,m53C680,CMenuSoundOptions_HandleEvent,agent,done
 0053cc50,16,game,m53C680,CMenuSoundOptions_StoreControlValue,agent,done
 0053cc60,16,game,m53C680,CMenuSoundOptions_UpdateToggleFlagFromControl,agent,done
-0053cc70,57,game,m53C680,,,todo
+0053cc70,57,game,m53C680,CMenuSoundOptions_ReleaseSoundAndChain,agent,done
 0053ccb0,15,game,m53C680,CMenuSoundOptions_CallMemberVirtualSlot11,agent,done
 0053ccc0,18,game,m53C680,CMenuSoundOptions_DispatchFlagToMember,agent,done
 0053cce0,58,game,m53C680,CMenuSoundOptions_Destruct,agent,done
@@ -7599,7 +7599,7 @@ ea,size,region,module,name,name_src,status
 00542bc0,40,game,m542AA0,CMenuControls_HandleInputEvent,agent,done
 00542bf0,65,game,m542AA0,MenuControls_IsIdNotInTwoSlots,agent,done
 00542c40,66,game,m542AA0,MenuControls_DispatchTail,agent,done
-00542c90,61,game,m542AA0,,,todo
+00542c90,61,game,m542AA0,MenuControls_RefreshSelectionAndAddItem,agent,done
 00542cd0,124,game,m542AA0,CMenuMpOnline_ScrollViewToTarget,agent,done
 00542d50,44,game,m542AA0,CMenuControls_ApplyPendingState,agent,done
 00542d80,41,game,m542AA0,CMenuControls_TryAdvanceToState2,agent,done
@@ -7700,7 +7700,7 @@ ea,size,region,module,name,name_src,status
 00545f00,209,game,m545CC0,,,todo
 00545fe0,1277,game,m545CC0,,,todo
 005464e0,165,game,m545CC0,,,todo
-00546590,217,game,m545CC0,,,todo
+00546590,217,game,m545CC0,CMenuExtras_ApplyPanelMode,agent,done
 00546670,78,game,m545CC0,,,todo
 005466c0,54,game,m545CC0,ResetStringStorage,agent,done
 00546700,94,game,m545CC0,,,todo
@@ -7715,7 +7715,7 @@ ea,size,region,module,name,name_src,status
 00546fb0,32,game,m545CC0,ForwardWithSelfInserted,agent,done
 00546fd0,82,game,m545CC0,,,todo
 00547030,32,game,m545CC0,ForwardTo546F10,agent,done
-00547050,64,game,m545CC0,,,todo
+00547050,64,game,m545CC0,MenuExtras_CopyEntriesBackward,agent,done
 00547090,57,game,m545CC0,MenuExtras_InitStringFromPair,agent,done
 005470d0,143,game,m545CC0,ConstructRecordRange,agent,done
 00547160,291,game,stl,,,todo
@@ -7756,7 +7756,7 @@ ea,size,region,module,name,name_src,status
 00548c40,212,game,m548C40,,,todo
 00548d20,760,game,m548C40,,,todo
 00549020,25,game,m548C40,CMenuOptions_ReleaseSubObject,agent,done
-00549040,295,game,m548C40,,,todo
+00549040,295,game,m548C40,CMenuVideoAdvanced_PushSettingsToWidgets,agent,done
 00549170,33,game,m548C40,CMenuVideoAdvanced_SetValueAndNotify,agent,done
 005491a0,324,game,m548C40,CMenuVideoAdvanced_ApplyChangedOption,agent,done
 00549300,56,game,m548C40,CMenuVideoAdvanced_ReturnToVideoMenu,agent,done
@@ -8134,7 +8134,7 @@ ea,size,region,module,name,name_src,status
 0055bec0,49,game,m55BCB0,C_008453a4_ContainsValue,agent,done
 0055bf00,91,game,m55BCB0,C_008453a4_RemoveItemByValue,agent,done
 0055bf60,95,game,m55BCB0,,,todo
-0055bfc0,53,game,m55BCB0,,,todo
+0055bfc0,53,game,m55BCB0,CMenuAccountEdit_ResetAndForward,agent,done
 0055c000,221,game,m55BCB0,,,todo
 0055c0e0,31,game,m55BCB0,CMenuAccountEdit_ReleaseSubObject,agent,done
 0055c100,108,game,m55BCB0,MenuMpAccounts_HandleAccountEvent,agent,done
@@ -8195,7 +8195,7 @@ ea,size,region,module,name,name_src,status
 0055ee30,83,game,m55EBA0,CMenuMpOnline_RefreshOnlineMatchState,agent,done
 0055ee90,75,game,m55EBA0,,,todo
 0055eee0,69,game,m55EBA0,,,todo
-0055ef30,215,game,m55EBA0,,,todo
+0055ef30,215,game,m55EBA0,CMenuMpOnline_ProcessPendingDialogs,agent,done
 0055f010,153,game,m55EBA0,MenuMpOnline_ProcessPendingNavigation,agent,done
 0055f0b0,681,game,m55EBA0,,,todo
 0055f360,42,game,m55EBA0,CMenuMpOnline_HandleOnlineState,agent,done
@@ -8215,7 +8215,7 @@ ea,size,region,module,name,name_src,status
 0055f860,85,game,m55EBA0,,,todo
 0055f8c0,27,game,m55EBA0,CMenuMpOnline_OpenAuUnPaMenu,agent,done
 0055f8f0,33,game,m55EBA0,CMenuMpOnline_ResetStateAndRedraw,agent,done
-0055f920,64,game,m55EBA0,,,todo
+0055f920,64,game,m55EBA0,MenuMpOnline_RouteNavigation,agent,done
 0055f960,52,game,m55EBA0,MenuMpOnline_HandleCommand,agent,done
 0055f9a0,95,game,m55EBA0,MenuMpOnline_HandleMatchTransitionEvent,agent,done
 0055fa00,81,game,m55EBA0,,,todo
