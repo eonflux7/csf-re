@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Generate the differential-test table for hooked functions (build/diff_table.inc, included by hook/diff.cpp).
 
-A function qualifies when running the original and ours back to back is safe and comparable: no calls at all
-(leaf, incl. no tail jumps out), and every memory write goes through `this` (ecx, never reassigned) or to an
-absolute global. The harness snapshots `this` (bytes the function can touch) and the written globals, runs the
+A function qualifies when running the original and ours back to back is safe and comparable: no calls except to
+pure functions (tier 2: no writes outside their own frame, transitively - running them twice changes nothing; no
+tail jumps out), and every memory write goes through `this` (ecx, never reassigned) or to an absolute global. The harness snapshots `this` (bytes the function can touch) and the written globals, runs the
 original, restores, runs ours, and compares return value + memory.
 
 Usage: difftable.py [--out build/diff_table.inc]
@@ -19,11 +19,65 @@ SIZE = {"byte": 1, "word": 2, "dword": 4, "qword": 8}
 CONV = {"__cdecl": 0, "__stdcall": 1, "__thiscall": 2, "__fastcall": 3}
 
 
+PURE_CACHE = os.path.join(ROOT, "work", "pure_cache.json")  # the binary never changes: purity is computed once
+_pure = None
+
+
+def _pure_load():
+    global _pure
+    if _pure is None:
+        import json
+        try:
+            _pure = {int(k, 16): v for k, v in json.load(open(PURE_CACHE)).items()}
+        except (OSError, ValueError):
+            _pure = {}
+    return _pure
+
+
+def _pure_save():
+    import json
+    os.makedirs(os.path.dirname(PURE_CACHE), exist_ok=True)
+    json.dump({f"{k:08x}": v for k, v in _pure.items()}, open(PURE_CACHE, "w"))
+
+
+def is_pure(db, ea, depth=0):
+    """A function the diff may run twice (tier 2: callees of a diffed function run once for the original, once for
+    ours): no memory writes except its own stack frame (esp/ebp-relative), no indirect calls/jumps, no rep/int, and
+    every direct callee pure too. Getters, math, string compares. Cached in work/pure_cache.json."""
+    pure = _pure_load()
+    if ea in pure:
+        return pure[ea]
+    f = db.F.get(ea)
+    if f is None or depth > 12:
+        return False
+    pure[ea] = False  # recursion guard (a cycle is not proven pure)
+    ok = True
+    for i in disasm(ea, min(f["size"], 4000)):
+        m = i.mnemonic
+        if m.startswith("rep") or m in ("int", "int3", "cpuid", "stosd", "stosb", "movsd", "movsb"):
+            ok = False
+        elif m == "call" or (m == "jmp" and not (i.op_str.startswith("0x") and f["ea"] <= int(i.op_str, 16) < f["end"])):
+            ok = i.op_str.startswith("0x") and is_pure(db, int(i.op_str, 16), depth + 1)
+        else:
+            mw = re.match(r"(byte|word|dword|qword|tbyte) ptr (?:\w+:)?\[(.*?)\]", i.op_str.split(",")[0])
+            if mw and (m in WRITE_OPS or m in ("fstp", "fst", "fistp", "fist", "inc", "dec")) \
+                    and m not in ("movsx", "movzx") and not re.match(r"(esp|ebp)\b", mw.group(2)):
+                ok = False
+        if not ok:
+            break
+    pure[ea] = ok
+    return ok
+
+
 def analyze(db, ea):
     f = db.F[ea]
     ins = list(disasm(ea, f["size"]))
     for i in ins:
-        if i.mnemonic == "call" or i.mnemonic.startswith("rep") or i.mnemonic in ("int3", "int"):
+        if i.mnemonic == "call":  # tier 2: a direct call to a pure function (safe to run twice)
+            if i.op_str.startswith("0x") and is_pure(db, int(i.op_str, 16)):
+                continue
+            return None
+        if i.mnemonic.startswith("rep") or i.mnemonic in ("int3", "int"):
             return None
         if i.mnemonic == "jmp" or i.mnemonic.startswith("j"):
             if not i.op_str.startswith("0x") or not (f["ea"] <= int(i.op_str, 16) < f["end"]):
@@ -113,6 +167,8 @@ def main():
                 "// ret(0 int32 1 float 2 double 3 void 4 int64 5 int8 6 int16), this_size, nglobs, {{addr, size}...},\n"
                 "// nfl, {snapshot offset of a float store (+0x8000: double)...}}\n")
         f.write("\n".join(rows) + "\n")
+    if _pure is not None:
+        _pure_save()
     print(f"{len(rows)} diffable functions -> {os.path.relpath(out, ROOT)}")
 
 
