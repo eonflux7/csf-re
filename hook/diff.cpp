@@ -25,7 +25,9 @@ extern char g_dir[MAX_PATH];
 namespace {
 
 struct Glob { uint32_t addr, size; };
-struct DiffInfo { uint32_t addr, conv, argbytes, ret, this_size, nglobs; Glob globs[4]; };
+// fl: snapshot offsets the original writes with FPU/SSE stores (+0x8000 = double): compared with a relative
+// tolerance (x87 80-bit intermediates vs clang's SSE math differ in the last bits; that is not a behavior change).
+struct DiffInfo { uint32_t addr, conv, argbytes, ret, this_size, nglobs; Glob globs[4]; uint32_t nfl, fl[8]; };
 const DiffInfo kTable[] = {
 #include "diff_table.inc"
 };
@@ -135,9 +137,37 @@ void report(Slot& s, const Regs* r, const char* what) {
     fflush(g_log);
 }
 
+bool fp_close(double a, double b, double rel) {
+    if (a == b || (a != a && b != b))
+        return true;
+    double d = a > b ? a - b : b - a, m = (a < 0 ? -a : a) > (b < 0 ? -b : b) ? (a < 0 ? -a : a) : (b < 0 ? -b : b);
+    return d <= rel * m || d < 1e-30;
+}
+
+// Length of the float/double the original stores at snapshot offset i (0 = none): compared with fp_close.
+uint32_t fp_at(const DiffInfo& d, uint32_t i, uint32_t& start) {
+    for (uint32_t k = 0; k < d.nfl; ++k) {
+        uint32_t o = d.fl[k] & 0x7FFF, n = d.fl[k] & 0x8000 ? 8 : 4;
+        if (i >= o && i < o + n) {
+            start = o;
+            return n;
+        }
+    }
+    return 0;
+}
+
 void compare_mem(Slot& s, const Regs* r, const Snap& o, const Snap& u) {
     for (uint32_t i = 0; i < o.len; ++i)
         if (o.buf[i] != u.buf[i]) {
+            uint32_t at, n = fp_at(*s.info, i, at);
+            if (n && at + n <= o.len) {
+                bool close = n == 4 ? fp_close(*(const float*)(o.buf + at), *(const float*)(u.buf + at), 1e-5)
+                                    : fp_close(*(const double*)(o.buf + at), *(const double*)(u.buf + at), 1e-12);
+                if (close) {
+                    i = at + n - 1;
+                    continue;
+                }
+            }
             char w[128];
             snprintf(w, sizeof w, "memory byte %u differs: orig %02X ours %02X", i, o.buf[i], u.buf[i]);
             report(s, r, w);
@@ -187,8 +217,7 @@ R run(int i, Regs* r, Invoke invoke) {
             report(s, r, w);
         }
     } else {
-        bool same = s.info->ret == 1 ? (float)ro == (float)ru || ((float)ro != (float)ro && (float)ru != (float)ru)
-                                     : memcmp(&ro, &ru, sizeof ro) == 0;
+        bool same = s.info->ret == 1 ? fp_close((float)ro, (float)ru, 1e-5) : fp_close(ro, ru, 1e-12);
         if (!same) {
             char w[96];
             snprintf(w, sizeof w, "fp return orig %.9g ours %.9g", (double)ro, (double)ru);

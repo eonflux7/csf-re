@@ -1,11 +1,8 @@
-#include <cmath>
 #include <cstdint>
-#include <cstring>
 #include "globals.h"
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_GLOBAL(float, g_UnsignedIntegerBias, 0x0082D744);
 CSF_GLOBAL(uint32_t, g_ScreenWidth, 0x00899B9C);
 CSF_GLOBAL(uint32_t, g_ScreenHeight, 0x00899BA0);
 
@@ -14,117 +11,6 @@ CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160,
          (int handle, void* edx));
 CSF_FUNC(uint8_t*, __fastcall, LookupNamedElement, 0x00693360,
          (void* table, void* edx, const char* name));
-
-static uint64_t MenuSoundOptions_UnsignedValue(uint32_t bits)
-{
-    const int64_t signedValue = static_cast<int32_t>(bits);
-    if (signedValue < 0) {
-        return static_cast<uint64_t>(
-            signedValue + static_cast<int64_t>(g_UnsignedIntegerBias));
-    }
-    return static_cast<uint64_t>(signedValue);
-}
-
-static float MenuSoundOptions_BitsToFloat(uint32_t bits)
-{
-    float value;
-    std::memcpy(&value, &bits, sizeof value);
-    return value;
-}
-
-static int MenuSoundOptions_BitLength(uint64_t value)
-{
-    int length = 0;
-    while (value != 0) {
-        value >>= 1;
-        ++length;
-    }
-    return length;
-}
-
-static uint32_t MenuSoundOptions_NextQuotientBit(uint64_t& remainder,
-                                                uint64_t divisor)
-{
-    remainder <<= 1;
-    if (remainder >= divisor) {
-        remainder -= divisor;
-        return 1;
-    }
-    return 0;
-}
-
-// Reproduce extended-precision division followed by the float store:
-// round first to 64 significant bits, then to 24, both nearest-even.
-static float MenuSoundOptions_RatioToFloat(uint32_t numeratorBits,
-                                           uint32_t denominatorBits)
-{
-    const uint64_t numerator = MenuSoundOptions_UnsignedValue(numeratorBits);
-    const uint64_t denominator = MenuSoundOptions_UnsignedValue(denominatorBits);
-    if (denominator == 0) {
-        return MenuSoundOptions_BitsToFloat(
-            numerator == 0 ? 0xFFC00000u : 0x7F800000u);
-    }
-    if (numerator == 0) {
-        return 0.0f;
-    }
-
-    uint64_t remainder = numerator % denominator;
-    const uint64_t integerPart = numerator / denominator;
-    uint64_t significand = 0;
-    int exponent = 0;
-
-    if (integerPart != 0) {
-        const int integerBits = MenuSoundOptions_BitLength(integerPart);
-        significand = integerPart << (64 - integerBits);
-        exponent = integerBits - 64;
-        for (int position = 63 - integerBits; position >= 0; --position) {
-            if (MenuSoundOptions_NextQuotientBit(remainder, denominator) != 0) {
-                significand |= 1ULL << position;
-            }
-        }
-    } else {
-        int fractionPosition = 0;
-        uint32_t bit;
-        do {
-            bit = MenuSoundOptions_NextQuotientBit(remainder, denominator);
-            ++fractionPosition;
-        } while (bit == 0);
-
-        significand = 1ULL << 63;
-        exponent = -fractionPosition - 63;
-        for (int position = 62; position >= 0; --position) {
-            if (MenuSoundOptions_NextQuotientBit(remainder, denominator) != 0) {
-                significand |= 1ULL << position;
-            }
-        }
-    }
-
-    const uint32_t roundBit =
-        MenuSoundOptions_NextQuotientBit(remainder, denominator);
-    const bool stickyBits = remainder != 0;
-
-    if (roundBit != 0 && (stickyBits || (significand & 1ULL) != 0)) {
-        ++significand;
-        if (significand == 0) {
-            significand = 1ULL << 63;
-            ++exponent;
-        }
-    }
-
-    uint64_t mantissa24 = significand >> 40;
-    const uint64_t lowBits = significand & ((1ULL << 40) - 1);
-    const uint64_t halfUnit = 1ULL << 39;
-    if (lowBits > halfUnit ||
-        (lowBits == halfUnit && (mantissa24 & 1ULL) != 0)) {
-        ++mantissa24;
-    }
-    if (mantissa24 == (1ULL << 24)) {
-        mantissa24 >>= 1;
-        ++exponent;
-    }
-
-    return std::ldexp(static_cast<float>(mantissa24), exponent + 40);
-}
 
 static int __fastcall CMenuSoundOptions_InitPanelAndSliders(
     CMenuSoundOptions* self, void* /*edx*/,
@@ -161,8 +47,9 @@ static int __fastcall CMenuSoundOptions_InitPanelAndSliders(
         CSF_AT(void**, yHandleObject, 0)[0x18 / 4])(yHandleObject, nullptr);
     const uint32_t yRawBits = CSF_AT(uint32_t, yResult, 0x04);
 
-    const float yRatio = MenuSoundOptions_RatioToFloat(yRawBits, g_ScreenHeight);
-    const float xRatio = MenuSoundOptions_RatioToFloat(xRawBits, g_ScreenWidth);
+    // panel position as a fraction of the screen (unsigned ints divided as floats)
+    const float yRatio = static_cast<float>(yRawBits) / static_cast<float>(g_ScreenHeight);
+    const float xRatio = static_cast<float>(xRawBits) / static_cast<float>(g_ScreenWidth);
 
     void* panelForPlacement = reinterpret_cast<void*>(self->field_001c);
     reinterpret_cast<void (__fastcall*)(void*, void*, float, float)>(

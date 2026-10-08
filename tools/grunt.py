@@ -24,7 +24,8 @@ PROPOSALS = os.path.join(ROOT, "db", "proposals.jsonl")
 
 SYSTEM = r"""You reimplement single functions of a 2006 MSVC 7.1 x86 game (Commandos: Strike Force, Pyro Studios;
 identifiers/strings are Spanish) as C++20, to be compiled with clang-cl for 32-bit MSVC ABI into a hook DLL that
-replaces the original function inside the running game. Goal: exact functional equivalence, readable code.
+replaces the original function inside the running game, and later builds standalone. Goal: the same observable
+behavior (calls, memory writes, return value), written as the readable C++ a programmer would have written.
 
 Output exactly two fenced blocks: first ```cpp (the whole file), then ```json (metadata). Nothing else.
 
@@ -47,15 +48,24 @@ File rules:
     CSF_FUNC(int, __cdecl, Foo, 0x401230, (int a, char* b));
     CSF_FUNC(void, __fastcall, Bar_Method, 0x402000, (C_xxx* self, void* edx, int a));  // a __thiscall callee
     ... Bar_Method(obj, nullptr, 5);
-  Use the callee's real arg count (from its prototype / ret N). Known names from the packet are fine to use.
-- Virtual calls: ((RET(__fastcall*)(void*, void*, ARGS...))obj->vtbl[SLOT])(obj, nullptr, args...) where
-  SLOT = byte offset / 4. If obj's type is unknown use CSF_AT(void**, p, 0)[SLOT].
-- Globals: CSF_GLOBAL(type, g_Name, 0xADDR); then use g_Name.
+  Use the callee's real arg count (from its prototype / ret N). When the packet gives a callee's
+  "bind as" line, copy it exactly (one name and signature per address across the codebase).
+- Virtual calls: when the packet lists a typed wrapper for the slot (`obj->vName(args)`), use it. Otherwise
+  ((RET(__fastcall*)(void*, void*, ARGS...))obj->vtbl[SLOT])(obj, nullptr, args...) where SLOT = byte offset / 4;
+  if obj's type is unknown use CSF_AT(void**, p, 0)[SLOT].
+- Globals: CSF_GLOBAL(type, g_Name, 0xADDR); then use g_Name. Never write an original address as a plain number:
+  a vtable is CSF_VTBL(0xADDR) (e.g. `self->vtbl = CSF_VTBL(0x830030);`), an address used as a value is
+  CSF_ADDR_FN(0xADDR) (function) / CSF_ADDR_DATA(0xADDR) (data) / CSF_ADDR_VT(0xADDR) (vtable compare). The
+  standalone build resolves these by address; a bare number would point into the old exe.
 - String constants of the original: ALWAYS CSF_STR(0xADDR, "text") with the address from the packet, never a
   bare string literal (callers may compare pointers). Same for other constant data: bind by address.
 - Fields: use the declared struct fields (types/auto_classes.h; never redefine those structs). For an offset
   that is not a declared field (inside a pad_ array, or no class given) use CSF_AT(type, ptr, 0xOFF).
   Pointer-sized fields declared uint32_t: cast as needed, e.g. reinterpret_cast<C_xxx*>(self->field_0010).
+- Fidelity is behavioral, not bit-for-bit code generation. Floating point: write the natural expression the
+  source had (`(float)x / (float)g_ScreenWidth`, a plain float compare); never emulate x87 80-bit intermediates,
+  rounding steps, or float bit patterns - last-bit differences are accepted by the in-game diff. Don't reproduce
+  register contents, stack layout or compiler idioms (MSVC helpers like __ftol2 are a plain cast).
 - Preserve exact semantics: signed vs unsigned compares (check the disassembly when given: jl/jg = signed,
   jb/ja = unsigned), integer widths and truncation, float vs double, evaluation and call order, side effects.
   Do not "fix" bugs. Do not drop calls whose results are unused.
@@ -471,7 +481,8 @@ def parse(text):
 REVIEW_SYSTEM = """You review a C++ reimplementation of one x86 function from a 2006 MSVC game against the original's
 disassembly and pseudocode. Look only for real behavioral differences: wrong offsets, signedness, widths, float vs
 double, missing/extra/reordered calls or memory accesses, wrong loop bounds, wrong constants, values cached across
-calls where the original reloads. Ignore naming and style. Output exactly one ```json block:
+calls where the original reloads. Ignore naming and style, last-bit floating-point rounding (x87 extended
+precision vs SSE), and register/stack-layout artifacts: those are not behavior. Output exactly one ```json block:
 {"ok": true|false, "issues": ["<concrete difference, with the asm address>", ...]}"""
 
 
