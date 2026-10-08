@@ -28,6 +28,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 JOBS = os.path.expanduser("~/.claude/jobs")
 LIVE = os.path.join(ROOT, "work", "grunt_state.json")
 LOG = os.path.join(ROOT, "work", "grunt_log.jsonl")
+CAPTAIN = os.path.join(ROOT, "work", "captain_state.json")
 BACKEND_STYLE = {"codex": "magenta", "deepseek": "cyan", "claude": "yellow"}
 _cache = {}
 
@@ -306,7 +307,7 @@ def panel_grunts():
     recent = recent if isinstance(recent, list) else []
     if recent:
         lines = []
-        for r in recent[-10:][::-1]:
+        for r in recent[-(10 if alive else 4):][::-1]:  # idle grunts: keep the panel short
             ok = r.get("ok")
             what = r.get("meta", {}).get("name", "") if ok else (r.get("err", "").splitlines() or [""])[0]
             by = (r.get("by") or "").split(":")[0] or {"deep": "ds-lane", "main": "gpt-lane"}.get(r.get("lane"), "")
@@ -449,9 +450,58 @@ def panel_tokens(st, recent):
     return Panel(Group(*body), title="Tokens · limits", border_style="cyan")
 
 
+# ---------------------------------------------------------------- captain
+
+def panel_captain():
+    """tools/captain.py (naming worker, one instance): job, progress, outcome counts, tokens/cost, current call."""
+    st = cached("captain", 1, lambda: json.load(open(CAPTAIN)) if os.path.exists(CAPTAIN) else None)
+    if not isinstance(st, dict):
+        return None
+    alive = pid_alive(st.get("pid"))
+    if not alive and time.time() - st.get("updated", 0) > 3 * 3600:
+        return None  # an old finished run: hide
+    c, t = st.get("counts", {}), st.get("tokens", {})
+    h = Text()
+    h.append("RUNNING " if alive else "stopped ", style="bold green" if alive else "dim")
+    h.append(f"{st.get('job', '')}  ", style="bold")
+    h.append(f"{st.get('model', '')}/{st.get('effort', '')}  {st.get('phase', '')}  up {ago(st.get('started', 0))}",
+             style="dim")
+    body = [h]
+    tot = c.get("total", 0)
+    line = Text()
+    line.append_text(bar(c.get("done", 0) / max(1, tot) * 100, 16))
+    line.append(f" {c.get('done', 0)}/{tot}  ")
+    line.append(f"applied {c.get('applied', 0)}", style="green")
+    line.append(f"  held {c.get('held', 0)}", style="yellow")
+    line.append(f"  rejected {c.get('rejected', 0)}", style="red")
+    line.append(f"  fn names {c.get('fn_proposals', 0)}", style="dim")
+    if c.get("errors"):
+        line.append(f"  errors {c['errors']}", style="bold red")
+    body.append(line)
+    if t:
+        cin = t.get("input", 0) + t.get("cache_write", 0) + t.get("cache_read", 0)
+        body.append(Text(f"{t.get('calls', 0)} calls  in {kfmt(cin)} ({t.get('cache_read', 0) / max(1, cin):.0%} cached)"
+                         f"  out {kfmt(t.get('output', 0))}  ≈${t.get('cost_usd', 0):.2f}"
+                         + (f"  per item in {kfmt(cin // max(1, c.get('done', 1)))} out "
+                            f"{kfmt(t.get('output', 0) // max(1, c.get('done', 1)))}" if c.get("done") else ""),
+                         style="dim"))
+    cur = st.get("current")
+    if cur and alive:
+        body.append(Text(f"calling: batch {cur.get('batch')} ({len(cur.get('addrs', []))} items, "
+                         f"{kfmt(cur.get('chars', 0) // 4)} tok)  {ago(cur.get('since', time.time()))}  "
+                         + " ".join(cur.get("addrs", [])), style="cyan", no_wrap=True, overflow="ellipsis"))
+    for r in st.get("recent", [])[:6]:
+        a, n, ty, conf = (list(r) + [None] * 4)[:4]
+        t_ = Text(f"  {a} ", style="dim")
+        t_.append(f"{n}", style="green" if ty else "yellow")
+        t_.append(f"  {ty or 'held'}  {conf}", style="dim")
+        body.append(t_)
+    return Panel(Group(*body), title="Captain", border_style="bright_blue"), alive
+
+
 # ---------------------------------------------------------------- processes
 
-PROC_PAT = re.compile(r"tools/(grunt|smoke|rwname|deploy|semcheck|difftable|dbg)|codex exec|tools/ida/")
+PROC_PAT = re.compile(r"tools/(grunt|captain|smoke|rwname|deploy|semcheck|difftable|dbg)|codex exec|tools/ida/")
 
 
 def procs():
@@ -588,7 +638,10 @@ def render():
     side.add_column(ratio=3)
     side.add_column(ratio=2, min_width=34, max_width=44)
     side.add_row(g, panel_tokens(st, recent))
-    return Group(clock, panel_claude(), side, panel_procs(), panel_plan(), panel_session())
+    cap = panel_captain()
+    if cap and cap[1]:  # running: right under Claude, so a short terminal doesn't crop it
+        return Group(clock, panel_claude(), cap[0], side, panel_procs(), panel_plan(), panel_session())
+    return Group(clock, panel_claude(), side, *([cap[0]] if cap else []), panel_procs(), panel_plan(), panel_session())
 
 
 def main():

@@ -102,7 +102,8 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
       neighbours together, 80% of file boundaries found); known .cpp names are hard boundaries. 269 modules
       (median 5.7 KB), 148 named by Opus; functions.csv module column = module id
 - [ ] Name the remaining 121 modules as their classes get named (`modules.py show`, `modules.py name FILE`)
-- [ ] Find globals: data refs → `db/globals.yaml` draft
+- [x] Find globals: data refs → `db/globals.yaml` (captain, 2026-10-08: 921 string-pointer globals named mechanically,
+      67 of the 87 cross-module globals by Opus; 19 held in work/captain/held.jsonl for review)
 - [ ] Locate Xbox XBE code, diff vs PC for structure confirmation (optional)
 
 ### Phase 2 — types and module carving (Opus) — started early, see Current focus

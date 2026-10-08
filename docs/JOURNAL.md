@@ -407,3 +407,26 @@ Same 24 todo GUI functions (4 classes, 48-300 B), direct backend, high effort, d
 - Monitor shows the run's settings (transport, effort, batching, DeepSeek tier, review, quota cap), batch size
   of in-flight calls, Codex tokens per function, cache %, first-try rate, batched share, auto-fixes, deferrals,
   transport retries; `codex exec` count only when the CLI transport is used.
+
+### 2026-10-08 — Captain (naming worker), globals
+
+`tools/captain.py`: one-instance naming/RE worker beside grunt, Claude via `claude -p` (`--tools "" --setting-sources ""
+--strict-mcp-config --disable-slash-commands --system-prompt ... --json-schema`): ~560 fixed tokens, cached across
+calls (`--bare` needs an API key). Monitor has a Captain panel (work/captain_state.json).
+
+- Packet per global = mechanical facts (initial data with pointer targets: string text / function / vtable;
+  neighbouring globals' values; extent; writers) + *distinct* usage lines with counts (0x8AFC90: 812 accessors in
+  ~1.6k chars), IDA's bogus library types (Concurrency::...) stripped, short consumer functions inlined.
+- Sonnet vs Opus on the same 12 (no apply): Opus right where they differed (0x8B68C0 = RwEngineInstance, zero
+  vector, MP network type), typed them, held 5 vs 9. ~3x cost ($0.07 vs $0.02 per 6-global call) and time (20 s
+  vs 6.5 s); absolute cost trivial -> Opus for globals. Re-test Sonnet for bulk function renames.
+- Run 1 (87 cross-module globals, 11 calls, $0.66): 38 applied, 44 held. Held = packet gaps: string-pointer
+  globals showed only the pointer (model guessed "MissionBriefing" for "Menus/P_Help.fbs"), char* types refused,
+  one 26-global over-merged cluster. Fixed (pointer targets shown, string types, clusters cut at --batch); retry
+  of the held: 29 more applied ($0.46), 19 held.
+- Names applied in a run are now visible to its later calls (families came out in four styles before).
+- Mechanical `captain.py strings`: never-written globals pointing to a string are named after it, no model:
+  921 (config/asset keys `.TOP` -> g_pszKey_TOP, Menus/P_Help.fbs -> g_pszMenu_P_Help, PFX names; duplicates
+  qualified by module). globals.yaml: 1136 entries, 962 pinned by the captain.
+- globals.py: takes work/db.lock (captain writes concurrently), keeps src captain pinned, drops .text addresses
+  (18 EH-stub "globals").
