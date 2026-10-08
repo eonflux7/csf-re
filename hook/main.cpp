@@ -1,4 +1,5 @@
-// Hook DLL entry. Loaded as a dinput8.dll proxy from the game directory.
+// Hook DLL entry. Loaded as a dinput8.dll proxy from the game directory (the play exe imports it as CSFHOOK.dll:
+// tools/playexe.py).
 #include <windows.h>
 #include <cstdarg>
 #include <cstdio>
@@ -202,7 +203,7 @@ static LONG CALLBACK crash_handler(EXCEPTION_POINTERS* ep) {
     HMODULE self = nullptr;
     GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
                        (LPCSTR)c->Eip, &self);
-    log("  eip module %p (ours %p); stack:", self, GetModuleHandleA("dinput8.dll"));
+    log("  eip module %p (ours %p); stack:", self, (void*)&__ImageBase);
     const uint32_t* sp = (const uint32_t*)c->Esp;
     for (int i = 0; i < 24; i += 6)
         log("   %08x %08x %08x %08x %08x %08x", sp[i], sp[i + 1], sp[i + 2], sp[i + 3], sp[i + 4], sp[i + 5]);

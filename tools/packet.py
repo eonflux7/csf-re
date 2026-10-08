@@ -115,6 +115,11 @@ def pseudo(ea):
     return open(p).read() if os.path.exists(p) else None
 
 
+def proto_of(src):
+    """The prototype line of exported pseudocode (export_pseudo.py writes the function's comment lines above it)."""
+    return next((l for l in (src or "").splitlines() if l.strip() and not l.lstrip().startswith("//")), "")
+
+
 def substitute_names(db, text):
     def rep(m):
         ea = int(m.group(1), 16)
@@ -278,7 +283,7 @@ def build(db, ea, with_asm_limit=400):
         raise SystemExit(f"no pseudocode for {ea:08x}")
     out = []
     rets = ret_bytes(ea, f["size"])
-    proto = src.splitlines()[0]
+    proto = proto_of(src)
     out.append(f"## Target function 0x{ea:08X} (size {f['size']} bytes, region {row['region']})")
     out.append(f"Hex-Rays prototype: `{proto}`")
     out.append(f"Original `ret` immediate(s): {rets}  (stack bytes the callee pops; must match exactly)")
@@ -344,7 +349,7 @@ def build(db, ea, with_asm_limit=400):
         for c in f["callees"]:
             cr = db.rows.get(c)
             cs = pseudo(c)
-            cproto = cs.splitlines()[0] if cs else "?"
+            cproto = proto_of(cs) or "?"
             status = cr["status"] if cr else "?"
             nm = db.name(c) or f"sub_{c:X}"
             if CODEGEN_HELPER.search(nm):

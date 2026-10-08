@@ -80,7 +80,8 @@ def build_tree():
 
 def deploy(group):
     """Copy the tree's DLL; pending hooks off except this group's."""
-    shutil.copy(os.path.join(TREE, "build", "dinput8.dll"), os.path.join(PLAY, "dinput8.dll"))
+    import playexe
+    shutil.copy(os.path.join(TREE, "build", "dinput8.dll"), os.path.join(PLAY, playexe.ensure(PLAY)))
     if not os.path.exists(INI):
         shutil.copy(os.path.join(TREE, "hook", "csf_hook.ini"), INI)
     open(GROUP_FILE, "w").write("\n".join(group) + "\n")

@@ -10,7 +10,7 @@ Usage: difftable.py [--out build/diff_table.inc]
 """
 import glob, os, re, sys
 sys.path.insert(0, os.path.dirname(__file__))
-from packet import DB, disasm, ret_bytes, pseudo
+from packet import DB, disasm, ret_bytes, pseudo, proto_of
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WRITE_OPS = {"mov", "add", "sub", "or", "and", "xor", "inc", "dec", "fstp", "fst", "fistp", "fist", "neg", "not",
@@ -163,7 +163,7 @@ def analyze(db, ea):
     if len(globs) > 8 or this_max > 12288:  # hook/diff.cpp: Snap buf 16 KiB, globs[8]
         return None
     src = pseudo(ea) or ""
-    proto = src.splitlines()[0] if src else ""
+    proto = proto_of(src)
     conv = next((v for k, v in CONV.items() if k in proto), 0)
     rets = ret_bytes(ea, f["size"])
     argbytes = rets[0] if rets and rets[0] else 0

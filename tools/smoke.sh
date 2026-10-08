@@ -32,14 +32,17 @@ WINPLAY=$(wslpath -w "$PLAY")
 result=$(powershell.exe -NoProfile -Command "
 \$p = Start-Process -FilePath '$WINPLAY\\CommXPC.exe' -WorkingDirectory '$WINPLAY' -PassThru
 \$t0 = Get-Date; \$ready = \$false
+\$nohook = \$false
 while (-not \$p.HasExited -and ((Get-Date) - \$t0).TotalSeconds -lt ${CSF_READY_TIMEOUT:-120}) {
+  # no hook log after 10 s: our DLL isn't running, so neither is windowed/off-screen/muted mode: kill it now
+  if (((Get-Date) - \$t0).TotalSeconds -gt 10 -and -not (Test-Path '$WINPLAY\\csf_hook.log')) { \$nohook = \$true; break }
   try { if (Select-String -Path '$WINPLAY\\csf_hook.log' -SimpleMatch '$READY' -Quiet) { \$ready = \$true; break } } catch {}
   Start-Sleep -Milliseconds 250
 }
 \$rs = [int]((Get-Date) - \$t0).TotalSeconds
 \$alive = \$ready -and -not \$p.WaitForExit(${SECS}000)
 if (-not \$p.HasExited) { Stop-Process -Id \$p.Id -Force; \$p.WaitForExit(5000) | Out-Null }
-Write-Output \"pid=\$(\$p.Id) ready=\$ready after=\${rs}s alive=\$alive exit=\$(if(\$alive){'killed'}else{\$p.ExitCode}) stillrunning=\$(-not \$p.HasExited)\"
+Write-Output \"nohook=\$nohook pid=\$(\$p.Id) ready=\$ready after=\${rs}s alive=\$alive exit=\$(if(\$alive){'killed'}else{\$p.ExitCode}) stillrunning=\$(-not \$p.HasExited)\"
 " | tr -d '\r')
 echo "$result"
 echo "---- hits"; { tr -d "\r" < "$PLAY/csf_hook_hits.txt"; } 2>/dev/null | sort -k2 -n -r | head -10
@@ -55,6 +58,7 @@ case "$result" in
                 echo "SMOKE OK (alive after ${SECS}s)"
                 # verification ledger (db/verify.json): which functions ran / were diffed, tied to their code hash
                 [ "${CSF_NO_LEDGER:-0}" = 1 ] || "$(dirname "$0")/../.venv/bin/python" "$(dirname "$0")/verify.py" ingest;;
+  *nohook=True*) echo "SMOKE FAIL (no csf_hook.log within 10s: the hook DLL did not initialize; game killed)"; exit 1;;
   *ready=False*) echo "SMOKE FAIL (never ready: no '$READY' in csf_hook.log within ${CSF_READY_TIMEOUT:-120}s)"; exit 1;;
   *) echo "SMOKE FAIL (exited/crashed early)"; exit 1;;
 esac
