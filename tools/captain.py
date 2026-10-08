@@ -121,7 +121,7 @@ def usage(db, addr, accessors, max_patterns=14):
             if not tok.search(line):
                 continue
             n = substitute_names(db, norm_line(line, tok))
-            if re.search(r"\bG\s*=[^=]", n) or re.search(r"\bG\s*(\+\+|--|[-+|&^]=)", n):
+            if re.search(r"\bG\s*=[^=]", n) or re.search(r"\bG\s*(\+\+|--|[-+|&^]=)|(\+\+|--)G\b", n):
                 writes[n] += 1
                 writers.add(ea)
             else:

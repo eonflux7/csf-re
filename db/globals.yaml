@@ -1059,6 +1059,7 @@
 - {addr: 0x008AFC84, name: g_Value8AFC84, type: int, uses: 2, src: auto}
 - {addr: 0x008AFC90, name: g_pCurrentScene, type: void*, uses: 2, src: captain, conf: 0.7, alt: [g_pGlobalObject_8AFC90]}
 - {addr: 0x008AFD9C, name: g_GlobalValue, type: int32_t, uses: 1, src: auto}
+- {addr: 0x008B044C, name: g_AiSearchCostThisFrame, type: int, uses: 0, src: opus}
 - {addr: 0x008B0554, name: g_Value8B0554, type: int, uses: 1, src: auto}
 - {addr: 0x008B0558, name: g_Value8B0558, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008B055C, name: g_Value8B055C, type: int, uses: 1, src: auto}
@@ -1083,6 +1084,7 @@
 - {addr: 0x008B0680, name: g_Global_8B0680, type: int, uses: 1, src: auto}
 - {addr: 0x008B0684, name: g_GlobalValue, type: int, uses: 1, src: auto}
 - {addr: 0x008B0688, name: g_Int8B0688, type: int, uses: 1, src: auto}
+- {addr: 0x008B0690, name: g_MpSessionState, type: int, uses: 0, src: opus}
 - {addr: 0x008B08F4, name: g_Value_8B08F4, type: int, uses: 1, src: auto}
 - {addr: 0x008B08F8, name: g_Value_8B08F8, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008B09EC, name: g_PTankPluginOffset, type: 'std::int32_t', uses: 0, src: captain, conf: 0.7}
@@ -1091,6 +1093,8 @@
 - {addr: 0x008BABFC, name: g_NetZFloatTripletSink_8BABFC, type: uint8_t, uses: 2, src: opus}
 - {addr: 0x008BAD60, name: g_Value8BAD60, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008BAD64, name: g_dword_8BAD64, type: int32_t, uses: 1, src: auto}
+- {addr: 0x008BAD78, name: g_MemDebugFile, type: const char*, uses: 0, src: opus}
+- {addr: 0x008BAD7C, name: g_MemDebugLine, type: int, uses: 0, src: opus}
 - {addr: 0x008BAD88, name: g_bMemDebugTrackingEnabled, type: bool, uses: 0, src: captain, conf: 0.75}
 - {addr: 0x008BAD8C, name: g_MemDebugTotalAllocatedBytes, type: int, uses: 0, src: captain, conf: 0.85}
 - {addr: 0x008BAD98, name: g_unk_8BAD98, type: uint8_t, uses: 1, src: auto}
@@ -1106,7 +1110,7 @@
 - {addr: 0x008BB404, name: g_GlobalValue_8BB404, type: int, uses: 1, src: auto}
 - {addr: 0x008BB408, name: g_8BB408, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008BB418, name: g_GlobalState, type: int, uses: 1, src: auto}
-- {addr: 0x008BB420, name: g_Dword_8BB420, type: uint32_t, uses: 2, src: opus}
+- {addr: 0x008BB420, name: g_ZeroVectorX, type: float, uses: 2, src: opus, alt: [g_Dword_8BB420]}
 - {addr: 0x008BB424, name: g_ZeroVectorY, type: float, uses: 0, src: captain, conf: 0.8}
 - {addr: 0x008BB428, name: g_ZeroVectorZ, type: float, uses: 0, src: captain, conf: 0.8}
 - {addr: 0x008BB430, name: g_BlackClearColor, type: 'std::uint32_t', uses: 1, src: captain, conf: 0.7, alt: [g_CameraClearColor]}
