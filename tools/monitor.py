@@ -144,12 +144,13 @@ USAGE_CACHE = os.path.join(ROOT, "work", "claude_usage.json")
 def claude_usage():
     """5h / 7d windows of the Claude plan, from the endpoint Claude Code's /usage reads (own OAuth token).
     Rate-limited (429) when polled often: asked at most every 10 min (across monitor restarts: work/
-    claude_usage.json), 30 min after an error; meanwhile the last good answer is shown with its age."""
+    claude_usage.json), after an error again after its Retry-After or 5 min; meanwhile the last good answer is
+    shown with its age."""
     try:
         c = json.load(open(USAGE_CACHE))
     except (OSError, ValueError):
         c = {}
-    wait = 1800 if c.get("error") else 600
+    wait = c.get("retry_after") or 300 if c.get("error") else 600
     if time.time() - c.get("asked", 0) >= wait:
         c["asked"] = time.time()
         try:
@@ -161,6 +162,8 @@ def claude_usage():
                                                      (("5h", "five_hour"), ("7d", "seven_day")) if d.get(w)})
         except Exception as e:
             c["error"] = str(e)[:60]
+            ra = getattr(e, "headers", None) and e.headers.get("retry-after")
+            c["retry_after"] = min(3600, max(60, int(ra))) if ra and str(ra).isdigit() else None
         json.dump(c, open(USAGE_CACHE, "w"))
     if not c.get("u"):
         raise RuntimeError(c.get("error") or "no data yet")
