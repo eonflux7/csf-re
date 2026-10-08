@@ -97,6 +97,7 @@ def reads_before_write(ea, db, reg):
     from packet import disasm
     if ea not in db.F:
         return False
+    prologue = True  # MSVC frame/SEH setup and register saves: a `push ecx` there reserves a stack slot
     for i in disasm(ea, min(db.F[ea]["size"], 400)):
         ops = i.op_str
         m = i.mnemonic
@@ -108,7 +109,15 @@ def reads_before_write(ea, db, reg):
         dst, srcs = parts[0], parts[1:]
         written = dst == reg and m in ("mov", "lea", "pop", "movzx", "movsx") or \
             (m == "xor" and len(parts) == 2 and parts[0] == parts[1] == reg)
-        if m == "push":  # `push ecx` at entry is MSVC reserving a stack slot, not a use of the value
+        if m == "push" and prologue and (dst in ("ebp", "ebx", "esi", "edi", "eax", "ecx") or dst.startswith(("0x", "-"))):
+            continue  # `push ecx` in the prologue = `sub esp, 4`; after it (0x431CF0, 0x544390) it passes `this` on
+        if prologue and (m == "mov" and ops in ("ebp, esp", "eax, dword ptr fs:[0]", "dword ptr fs:[0], esp")
+                         or m == "sub" and dst == "esp"):
+            continue
+        prologue = False
+        if m == "push":
+            if re.search(rf"\b{reg}\b", dst):
+                return True
             continue
         if m == "lea" and srcs and srcs[0] == f"[{dst}]":  # `lea ecx, [ecx]`: alignment padding
             continue
@@ -123,7 +132,155 @@ def reads_before_write(ea, db, reg):
 
 
 def norm_name(n):
-    return n if re.fullmatch(r"[A-Za-z_]\w*", n or "") else None
+    return n if re.fullmatch(r"[A-Za-z_]\w*", n or "") and not ADDR_NAME.fullmatch(n) else None
+
+
+ADDR_NAME = re.compile(r"sub_[0-9A-Fa-f]{6,8}")  # the placeholder of an unnamed address (name_src addr)
+
+# Hex-Rays type -> C type for a binding. Pointers to anything but scalars become void* (classes are declared in
+# types/auto_classes.h; a binding must not depend on header order).
+SCALAR = {
+    "int": "int", "signed int": "int", "BOOL": "int", "_BOOL4": "int", "LONG": "int", "HRESULT": "int",
+    "unsigned int": "unsigned int", "_DWORD": "uint32_t", "DWORD": "uint32_t", "unsigned __int32": "uint32_t",
+    "__int32": "int", "size_t": "uint32_t", "UINT": "unsigned int",
+    "__int16": "int16_t", "short": "int16_t", "signed __int16": "int16_t",
+    "unsigned __int16": "uint16_t", "_WORD": "uint16_t", "WORD": "uint16_t", "unsigned short": "uint16_t",
+    "char": "char", "signed __int8": "int8_t", "__int8": "int8_t",
+    "unsigned __int8": "uint8_t", "_BYTE": "uint8_t", "BYTE": "uint8_t", "unsigned char": "uint8_t",
+    "bool": "bool", "_BOOL1": "bool", "float": "float", "double": "double", "long double": "double",
+    "__int64": "int64_t", "unsigned __int64": "uint64_t", "_QWORD": "uint64_t", "void": "void",
+    "wchar_t": "wchar_t",
+}
+WIDE = {"double", "int64_t", "uint64_t"}  # 8 stack bytes
+
+
+def c_type(t):
+    """C spelling of a Hex-Rays type, or None (by-value struct, function pointer, unknown scalar)."""
+    t = re.sub(r"\b(struct|union|enum)\s+", "", t.replace("const ", "").strip())
+    stars = t.count("*")
+    base = t.replace("*", "").strip()
+    if "(" in t or "[" in t or "@" in t:
+        return None
+    if stars:
+        b = SCALAR.get(base)
+        if b and b != "void" and stars == 1:
+            return b + "*"
+        return "void" + "*" * stars
+    return SCALAR.get(base)
+
+
+_abi = None
+
+
+def ida_abi():
+    """export/abi.json (tools/ida/export_abi.py): Hex-Rays' prototype of every function (calling convention,
+    argument types and locations) and the argument count at each call site it decompiled."""
+    global _abi
+    if _abi is None:
+        p = os.path.join(ROOT, "export", "abi.json")
+        _abi = {int(k, 16): v for k, v in json.load(open(p)).items()} if os.path.exists(p) else {}
+        callers = collections.defaultdict(list)
+        for v in _abi.values():
+            for c, ns in (v.get("calls") or {}).items():
+                callers[int(c, 16)] += ns
+        for c, ns in callers.items():
+            if c in _abi:
+                _abi[c]["site_nargs"] = ns
+    return _abi
+
+
+def takes_reg(ea, db, reg):
+    """Does the function take an argument in `reg` (ecx/edx)? Hex-Rays' data flow decides (export/abi.json);
+    the straight-line scan only where Hex-Rays has nothing (it took `push ecx` for a slot reservation even when
+    the value was a live `this` passed on)."""
+    a = ida_abi().get(ea)
+    if a and a.get("cc") and any(loc == reg for _, _, loc in a.get("args", [])):
+        return True
+    # an exact read in the entry block (no branch before it) is a fact even where Hex-Rays says no: thunks like
+    # `mov ecx, [ecx+0x30]; jmp target` get the target's prototype from Hex-Rays and lose their `this`
+    return reads_before_write(ea, db, reg)
+
+
+def abi_sig(ea, db):
+    """Signature of an address from Hex-Rays' prototype (export/abi.json), refined by exact binary facts:
+      - cdecl argument count: the callers' cleanup (`add esp, N` right after the call) when the call sites agree,
+        else the most arguments Hex-Rays saw pushed at any call site (its own prototype drops unused ones);
+      - callee-popped conventions: the argument bytes must equal the original's `ret N`.
+    __thiscall becomes __fastcall (self, edx dummy, ...) as CSF_FUNC binds it. None when it can't be bound from C
+    (other register arguments, by-value structs) or Hex-Rays disagrees with the binary."""
+    from packet import ret_bytes
+    a = ida_abi().get(ea)
+    if not a or not a.get("cc") or ea not in db.F:
+        return None
+    cc = a["cc"]
+    if cc not in ("cdecl", "stdcall", "thiscall", "fastcall", "ellipsis"):
+        return None
+    ret = c_type(a["ret"])
+    if ret is None:
+        return None
+    want = {"thiscall": ["ecx"], "fastcall": ["ecx", "edx"]}.get(cc, [])
+    params, stack, regs = [], 0, []
+    for t0, n, loc in a["args"]:
+        t = c_type(t0)
+        if t is None or t == "void":
+            return None
+        n = "self" if n == "this" else (n or f"a{len(params) + 1}")
+        if loc == "stack":
+            stack += 8 if t in WIDE else 4
+        elif loc in ("ecx", "edx"):
+            regs.append(loc)
+        else:
+            return None
+        params.append((t, n, loc))
+    if regs != want[:len(regs)]:
+        return None  # register arguments out of the convention's order: a usercall in disguise
+    rets = ret_bytes(ea, db.F[ea]["size"])
+    callee_pops = cc in ("stdcall", "thiscall", "fastcall")
+    if rets and (not callee_pops and set(rets) != {0} or callee_pops and set(rets) != {stack}):
+        return None
+    if cc == "cdecl" and all(t not in WIDE for t, _, _ in params):
+        n = caller_cleanup(db).get(ea)
+        if n is not None:
+            n //= 4
+        else:  # Hex-Rays' count at the call sites: the majority, never one site (a misread caller says 7 for 0)
+            sites = collections.Counter(a.get("site_nargs", []))
+            top = sites.most_common(1)
+            n = top[0][0] if top and top[0][1] * 2 > sum(sites.values()) else len(params)
+        if n > len(params):
+            params += [("int", f"a{i + 1}", "stack") for i in range(len(params), n)]
+    out = [f"{t} {n}" for t, n, _ in params]
+    if cc == "thiscall":
+        out = ["void* self", "void* edx"] + out[1:]
+        cc = "fastcall"
+    elif cc == "fastcall" and len(regs) == 1 and len(out) > 1:
+        out = out[:1] + ["void* edx"] + out[1:]  # one register argument: the edx slot is unused
+    elif cc == "ellipsis":
+        out.append("...")
+        cc = "cdecl"
+    elif cc == "stdcall" and not params:
+        cc = "cdecl"  # nothing to pop: the same ABI, spelled as the grunts and the gate expect
+    if cc in ("stdcall", "cdecl") and (cc == "stdcall" or not params) and reads_before_write(ea, db, "ecx"):
+        out = ["void* self", "void* edx"] + out  # see takes_reg: a thunk reading `this` before its jump
+        cc = "fastcall"
+    return dict(ret=ret, conv="__" + cc, params=", ".join(out), sig_src="abi")
+
+
+_cleanup = None
+
+
+def caller_cleanup(db=None):
+    """ea -> stack bytes its callers remove right after `call ea` (export/abi.json `cleanup`: `add esp, N`, a
+    `pop ecx` = 4); the smallest seen, since MSVC may merge the cleanup of consecutive calls into one larger add.
+    Sites without a cleanup right after the call (deferred, or the epilogue's mov esp, ebp) say nothing; trusted
+    when at least half the sites clean up explicitly. Only cdecl callees use it."""
+    global _cleanup
+    if _cleanup is None:
+        seen = collections.defaultdict(list)
+        for v in ida_abi().values():
+            for c, ns in (v.get("cleanup") or {}).items():
+                seen[int(c, 16)] += ns
+        _cleanup = {t: min(x for x in v if x) for t, v in seen.items() if sum(1 for x in v if x) * 2 >= len(v)}
+    return _cleanup
 
 
 def build(write_votes=True):
@@ -136,7 +293,7 @@ def build(write_votes=True):
     votes_written = 0
     for ea in sorted(set(impls) | set(decls)):
         r = byea.get(ea)
-        votes = collections.Counter(d[2] for d in decls.get(ea, []))
+        votes = collections.Counter(d[2] for d in decls.get(ea, []) if norm_name(d[2]))
         name, src = (r["name"], r["name_src"] or "csv") if r and norm_name(r["name"]) else (None, None)
         if not name and votes:
             name, src = votes.most_common(1)[0][0], "vote"
@@ -159,9 +316,23 @@ def build(write_votes=True):
             sig = dict(ret=best[0], conv=best[1], params=best[2], sig_src="vote")
         api[ea] = dict(name=name, name_src=src, votes=dict(votes), **sig)
         taken[name] += 1
+    # every other function: its binary-checked Hex-Rays signature (abi_sig), so each callee in a packet comes with
+    # a `bind as` line; unnamed ones carry the sub_ placeholder (name_src addr: never forced onto a file's own name)
+    n_abi = 0
+    for ea in sorted(db.F):
+        if ea in api:
+            continue
+        sig = abi_sig(ea, db)
+        if not sig:
+            continue
+        r = byea.get(ea)
+        name, src = (r["name"], r["name_src"] or "csv") if r and norm_name(r["name"]) else (f"sub_{ea:X}", "addr")
+        api[ea] = dict(name=name, name_src=src, votes={}, **sig)
+        taken[name] += 1
+        n_abi += 1
     # one name per address: a name two addresses share gets the address appended (both, so neither looks canonical)
     for ea, a in api.items():
-        if taken[a["name"]] > 1:
+        if taken[a["name"]] > 1 and a["name_src"] != "addr":
             a["name"] = f"{a['name']}_{ea:X}"
     json.dump({f"{ea:08x}": a for ea, a in sorted(api.items())}, open(API, "w"), indent=1)
     if write_votes and votes_written:
@@ -176,6 +347,7 @@ def build(write_votes=True):
             w = csv.DictWriter(open(FUNCS, "w", newline=""), fieldnames=list(cur[0].keys()), lineterminator="\n")
             w.writeheader()
             w.writerows(cur)
+    print(f"api: {len(api)} addresses, {n_abi} with a signature from the binary only (sig_src abi)")
     return api, votes_written
 
 
@@ -204,7 +376,7 @@ def canonicalize(src):
     for m in list(DECL.finditer(src)):
         ea, local = int(m.group(4), 16), m.group(3)
         a = api.get(ea)
-        if not a or a["name"] == local:
+        if not a or a["name"] == local or a["name_src"] == "addr":
             continue
         want = a["name"]
         if re.search(rf"\b{re.escape(want)}\b", src) or (own and own.group(2) == want):
@@ -222,7 +394,7 @@ def binding_errors(src, db):
         if own and ea == int(own.group(1), 16):
             errs.append(f"CSF_FUNC {name} binds this file's own address 0x{ea:X}: for recursion call your function "
                         f"{own.group(2)} directly (declare it ahead)")
-        elif conv != "__fastcall" and reads_before_write(ea, db, "ecx"):
+        elif conv != "__fastcall" and takes_reg(ea, db, "ecx"):
             errs.append(f"CSF_FUNC {name}: 0x{ea:X} reads ecx (`this`) on entry, so bind it __fastcall "
                         f"(void* self, void* edx, ...stack args) and pass the right object, not {conv}")
     return errs
@@ -234,8 +406,8 @@ def check():
     impls, decls = scan()
     out = []
     for ea, ds in sorted(decls.items()):
-        need_ecx = reads_before_write(ea, db, "ecx")
-        need_edx = reads_before_write(ea, db, "edx")
+        need_ecx = takes_reg(ea, db, "ecx")
+        need_edx = takes_reg(ea, db, "edx")
         for ret, conv, name, params, f in ds:
             n = nparams(params)
             if need_ecx and conv != "__fastcall":

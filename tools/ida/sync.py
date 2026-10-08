@@ -49,11 +49,52 @@ def header_decls():
     return pre + "\n".join(keep).replace("legacy::string", "legacy_string").replace("legacy::wstring", "legacy_wstring")
 
 
+def proven_protos():
+    """Prototypes the binary proves Hex-Rays wrong on (its own prototype is built from the body alone): cdecl
+    functions whose callers remove more stack bytes than Hex-Rays' arguments take (`add esp, N` right after every
+    call; tools/api.py caller_cleanup). The unused trailing arguments are added as int. Applying them makes
+    Hex-Rays read the callers right too (it trusts a callee's prototype: with 3 args instead of 5 it dropped the
+    pushed `this` of 0x431CF0 and called it stdcall). Re-run export_abi.py after; repeat until nothing is left."""
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import api
+    from packet import DB
+    db = DB()
+    abi, clean = api.ida_abi(), api.caller_cleanup(db)
+    out = {}
+    for ea, a in abi.items():
+        if a.get("cc") != "cdecl" or ea not in clean:
+            continue
+        n = clean[ea] // 4
+        if n <= len(a["args"]) or any(t in ("double", "__int64", "unsigned __int64") for t, _, _ in a["args"]):
+            continue
+        args = [f"{t} {nm or f'a{i + 1}'}" for i, (t, nm, _) in enumerate(a["args"])]
+        args += [f"int a{i + 1}" for i in range(len(args), n)]
+        out[ea] = f"{a['ret']} __cdecl f({', '.join(args)});"
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry", action="store_true")
     ap.add_argument("--no-types", action="store_true")
+    ap.add_argument("--protos", action="store_true", help="only the prototypes stage (proven_protos)")
     a = ap.parse_args()
+    if a.protos:
+        protos = proven_protos()
+        open_db()
+        n = bad = 0
+        try:
+            for ea, decl in protos.items():
+                if a.dry:
+                    continue
+                if idc.SetType(ea, decl):
+                    n += 1
+                else:
+                    bad += 1
+        finally:
+            close_db(save=not a.dry)
+        print(f"prototypes: {len(protos)} proven by caller cleanup, {n} applied, {bad} rejected by IDA")
+        return
     rows = list(csv.DictReader(open(os.path.join(ROOT, "db", "functions.csv"))))
     summ = {}
     for l in open(os.path.join(ROOT, "db", "proposals.jsonl")):

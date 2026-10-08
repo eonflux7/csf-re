@@ -274,7 +274,7 @@ def build(db, ea, with_asm_limit=400):
     vt = db.class_of(ea)
     if vt and "__thiscall" not in proto:
         import api
-        if not api.reads_before_write(ea, db, "ecx"):  # a shared stub in a vtable (`ret 0x10`): no `this` at all
+        if not api.takes_reg(ea, db, "ecx"):  # a shared stub in a vtable (`ret 0x10`): no `this` at all
             out.append(f"Listed in {db.cls_name(vt)}'s vtable but never reads ecx: write it as a plain function "
                        "(no `this` parameter), keeping the original's `ret` immediate.")
             vt = None
@@ -334,7 +334,9 @@ def build(db, ea, with_asm_limit=400):
             import api
             canon = api.decl_line(c)
             out.append(f"- 0x{c:08X} `{nm}` [{status}] rets={ret_bytes(c, db.F[c]['size']) if c in db.F else '?'} "
-                       + (f"bind as: `{canon}`" if canon else f"proto: `{cproto}`")
+                       + (f"bind as: `{canon}`" + ("  (unnamed: keep this signature, the name is yours to choose)"
+                                                   if api.load()[c]["name_src"] == "addr" else "")
+                          if canon else f"proto: `{cproto}`")
                        + ("  NORETURN (throws/aborts): still call it on exactly the same "
                           "condition, even if the branch looks unreachable" if "__noreturn" in cproto else ""))
     vs = vtable_refs(db, ea, f["size"])
