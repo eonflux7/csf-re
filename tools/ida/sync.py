@@ -15,7 +15,7 @@ Usage: .venv/bin/python tools/ida/sync.py [--dry] [--no-types]
 import argparse, collections, csv, json, os, re, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from common import ROOT, open_db, close_db  # noqa: E402  (imports idapro first)
-import ida_funcs, ida_name, ida_typeinf, idc  # noqa: E402
+import ida_funcs, ida_name, ida_typeinf, idaapi, idc  # noqa: E402
 import yaml  # noqa: E402
 
 sys.path.insert(0, os.path.join(ROOT, "tools"))
@@ -101,6 +101,46 @@ def global_types():
     return out
 
 
+GENERIC = {"void *", "int", "unsigned int", "_DWORD", "uint32_t", "int32_t"}
+
+
+def class_globals():
+    """Globals passed as `this` to classed methods (db/types/arg_types.json `globals`, this_class.py):
+    {addr: (decl, size)}: `Class *` for a global holding a pointer, `Class` for the object itself (size = the
+    class's known size, to check that no other data item lies inside; 0 = unknown: left alone)."""
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import this_class
+    from packet import DB
+    db = DB()
+    out = {}
+    for g, v in (this_class.load_args().get("globals") or {}).items():
+        name = db.cls_name(v["vt"])
+        if v["kind"] == "ptr":
+            out[int(g, 16)] = (f"{name} *", 4)
+        else:
+            out[int(g, 16)] = (name, db.classes.get(v["vt"], {}).get("size") or 0)
+    return out
+
+
+def type_class_global(addr, decl, size):
+    """Apply a class type to a global unless it would swallow another data item or keep a better type."""
+    import ida_bytes, ida_nalt
+    old = ida_typeinf.tinfo_t()
+    if ida_nalt.get_tinfo(old, addr) and old.dstr() not in GENERIC and not old.is_ptr() and not old.is_struct():
+        return False  # a specific scalar type already (float, a table): not ours to replace
+    if size <= 0:  # class size unknown: the IDB struct's extent (its known fields) is a safe lower bound
+        st = ida_typeinf.tinfo_t()
+        size = st.get_size() if st.get_named_type(ida_typeinf.get_idati(), decl) else 0
+        if size in (0, idaapi.BADSIZE):
+            return False
+    nxt = ida_bytes.next_head(addr, addr + size)
+    while nxt != idaapi.BADADDR and nxt < addr + size:
+        if ida_bytes.has_xref(ida_bytes.get_flags(nxt)) or idc.get_name(nxt, 0):
+            return False  # another named / referenced item inside: the object isn't that big here
+        nxt = ida_bytes.next_head(nxt, addr + size)
+    return bool(idc.SetType(addr, decl))
+
+
 def proven_protos():
     """Prototypes the binary proves Hex-Rays wrong on (its own prototype is built from the body alone): cdecl
     functions whose callers remove more stack bytes than Hex-Rays' arguments take (`add esp, N` right after every
@@ -158,15 +198,23 @@ def this_protos():
         a = abi.get(ea)
         if a and a.get("cc") == "thiscall" and a.get("args"):
             want[ea][0] = db.cls_name(c["vt"])
-    for ea, ps in this_class.load_args()["params"].items():
+    targs = this_class.load_args()
+    for ea, ps in targs["params"].items():
         for i, vt in ps.items():
             want[int(ea, 16)].setdefault(int(i), db.cls_name(vt))
+    rets = {int(ea, 16): db.cls_name(vt) for ea, vt in (targs.get("returns") or {}).items()}
+    for ea in rets:
+        want.setdefault(ea, {})
     out = {}
     for ea, ps in want.items():
         a = abi.get(ea)
-        if not a or not a.get("cc") or a["cc"] in ("usercall", "userpurge") or not a.get("args"):
+        if not a or not a.get("cc") or a["cc"] in ("usercall", "userpurge") or (not a.get("args") and ea not in rets):
             continue
-        args, changed = [], False
+        ret, changed = a["ret"], False
+        if ea in rets and ret != f"{rets[ea]} *":
+            ret, changed = f"{rets[ea]} *", True
+            ps = {**ps, "ret": rets[ea]}
+        args = []
         for i, (t, n, _) in enumerate(a["args"]):
             n = n or f"a{i + 1}"
             if i in ps and t != f"{ps[i]} *":
@@ -176,8 +224,47 @@ def this_protos():
             args.append("...")
         if changed:
             cc = {"ellipsis": "cdecl"}.get(a["cc"], a["cc"])
-            out[ea] = (f"{a['ret']} __{cc} f({', '.join(args)});", ps)
+            out[ea] = (f"{ret} __{cc} f({', '.join(args) or 'void'});", ps)
     return out
+
+
+def type_stack_objects():
+    """Locals that are objects on the stack (db/types/arg_types.json `locals`: &local passed as `this` to a classed
+    method, class size known and fitting before the next variable) typed as that class in Hex-Rays' saved user
+    info, so the function's pseudocode shows v5.m_field / CFoo::Bar(&v5). Returns (typed, not found)."""
+    import ida_hexrays
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import this_class
+    from packet import DB
+    db = DB()
+    til = ida_typeinf.get_idati()
+    done = miss = 0
+    for fea, offs in (this_class.load_args().get("locals") or {}).items():
+        ea = int(fea, 16)
+        try:
+            cf = ida_hexrays.decompile(ea, flags=ida_hexrays.DECOMP_NO_WAIT)
+        except ida_hexrays.DecompilationFailure:
+            cf = None
+        if not cf:
+            miss += len(offs)
+            continue
+        for off, vt in offs.items():
+            st = ida_typeinf.tinfo_t()
+            lv = next((v for v in cf.get_lvars() if v.is_stk_var() and v.location.stkoff() == int(off)), None)
+            if lv is None or not st.get_named_type(til, db.cls_name(vt)):
+                miss += 1
+                continue
+            if lv.type().dstr() == db.cls_name(vt):
+                done += 1
+                continue
+            info = ida_hexrays.lvar_saved_info_t()
+            info.ll = lv
+            info.type = st
+            if ida_hexrays.modify_user_lvar_info(ea, ida_hexrays.MLI_TYPE, info):
+                done += 1
+            else:
+                miss += 1
+    return done, miss
 
 
 def retype_args(ea, ps):
@@ -199,11 +286,14 @@ def retype_args(ea, ps):
     til = ida_typeinf.get_idati()
     for i, name in ps.items():
         st = ida_typeinf.tinfo_t()
-        if i >= ftd.size() or not st.get_named_type(til, name):
+        if (i != "ret" and i >= ftd.size()) or not st.get_named_type(til, name):
             return False
         ptr = ida_typeinf.tinfo_t()
         ptr.create_ptr(st)
-        ftd[i].type = ptr
+        if i == "ret":
+            ftd.rettype = ptr
+        else:
+            ftd[i].type = ptr
     new = ida_typeinf.tinfo_t()
     return new.create_func(ftd) and ida_typeinf.apply_tinfo(ea, new, ida_typeinf.TINFO_DEFINITE)
 
@@ -231,10 +321,11 @@ def main():
                     if bad < 6:
                         print(f"  rejected 0x{ea:X}: {decl}")
                     bad += 1
+            stk = (0, 0) if a.protos or a.dry else type_stack_objects()
         finally:
             close_db(save=not a.dry)
         print(f"prototypes ({'caller cleanup' if a.protos else 'this types'}): {len(protos)}, {n} applied, "
-              f"{bad} rejected by IDA")
+              f"{bad} rejected by IDA" + ("" if a.protos else f"; stack objects typed: {stk[0]} ({stk[1]} not found)"))
         return
     rows = list(csv.DictReader(open(os.path.join(ROOT, "db", "functions.csv"))))
     summ = {}
@@ -272,6 +363,9 @@ def main():
             stats["gtypes"] = stats["gtypes_fail"] = 0
             for addr, decl in global_types().items():
                 stats["gtypes" if idc.SetType(addr, decl) else "gtypes_fail"] += 1
+            stats["class_globals"] = stats["class_globals_skip"] = 0
+            for addr, (decl, size) in class_globals().items():
+                stats["class_globals" if type_class_global(addr, decl, size) else "class_globals_skip"] += 1
     finally:
         close_db(save=not a.dry)
     print(" ".join(f"{k}={v}" for k, v in stats.items()))

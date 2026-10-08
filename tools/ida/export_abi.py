@@ -10,7 +10,9 @@ the callee never reads, which its own prototype drops):
   calls     {callee ea: [argument count at each call site]}
   cleanup   {callee ea: [stack bytes removed right after each call: add esp, N / pop ecx; 0 = none there]}
   this_args {callee ea: [struct name the first argument points to, per call site]} (typed callers only)
-  arg0_src  {callee ea: [["p", i] = the caller's i-th parameter | ["f", struct, offset] = a struct member]}:
+  arg0_src  {callee ea: [["p", i] = the caller's i-th parameter | ["f", struct, offset] = a struct member |
+            ["g", global, "inst"|"ptr"] = a global (the object / a pointer to it) | ["r", callee] = a call's result |
+            ["l", stack offset, room] = an object on the caller's stack]}:
             what the first argument is made of, so a callee's class types that parameter / member (this_class.py)
   order     per block, the direct callees of its call statements in order; consts: the numbers it computes with
             (literals, case values, float literals / .rdata floats; not pointer offsets): semcheck.behaviour
@@ -78,15 +80,33 @@ class Calls(ida_hexrays.ctree_visitor_t):
     def __init__(self, cf):
         super().__init__(ida_hexrays.CV_FAST)
         self.out, self.objs, self.src = {}, {}, {}  # not self.this: SWIG keeps the C++ pointer there
+        self.assigned = {}  # local idx -> [callee | None per assignment]
+        self.lvars = cf.get_lvars()
+        self.stk = sorted({v.location.stkoff() for v in self.lvars if v.is_stk_var()})
         self.args = list(cf.argidx)
 
     def arg0_source(self, x):
         """Where the first argument comes from, when that can type it: ["p", i] the caller's i-th parameter,
-        ["f", struct, offset] a member of a typed struct (x->m / x.m). Casts are looked through."""
+        ["f", struct, offset] a member of a typed struct (x->m / x.m), ["g", ea, "inst"|"ptr"] a global that is the
+        object (&g) or holds a pointer to it (g), ["r", callee] what a call returned (directly, or through a local
+        assigned once from that call: resolved in resolve()). Casts are looked through."""
         while x.op == ida_hexrays.cot_cast:
             x = x.x
         if x.op == ida_hexrays.cot_var and x.v.idx in self.args:
             return ["p", self.args.index(x.v.idx)]
+        if x.op == ida_hexrays.cot_var:
+            return ["v", x.v.idx]
+        if x.op == ida_hexrays.cot_ref and x.x.op == ida_hexrays.cot_var and self.lvars[x.x.v.idx].is_stk_var():
+            lv = self.lvars[x.x.v.idx]  # an object on the stack: ["l", stack offset, room up to the next variable]
+            off = lv.location.stkoff()
+            nxt = min((o for o in self.stk if o > off), default=None)
+            return ["l", off, (nxt - off) if nxt is not None else 0]
+        if x.op == ida_hexrays.cot_ref and x.x.op == ida_hexrays.cot_obj and not ida_funcs.get_func(x.x.obj_ea):
+            return ["g", f"{x.x.obj_ea:08x}", "inst"]
+        if x.op == ida_hexrays.cot_obj and not ida_funcs.get_func(x.obj_ea):
+            return ["g", f"{x.obj_ea:08x}", "ptr"]
+        if x.op == ida_hexrays.cot_call and x.x.op == ida_hexrays.cot_obj and ida_funcs.get_func(x.x.obj_ea):
+            return ["r", f"{x.x.obj_ea:08x}"]
         if x.op == ida_hexrays.cot_memptr and x.x.type.is_ptr():
             return self.member(x.x.type.get_pointed_object(), x.m)
         if x.op == ida_hexrays.cot_memref:
@@ -102,7 +122,28 @@ class Calls(ida_hexrays.ctree_visitor_t):
             return None
         return ["f", st.get_type_name() or "", off, udm.name]
 
+    def resolve(self):
+        """["v", idx] -> ["r", callee] when the local is assigned exactly once, from a direct call; else dropped."""
+        for k, srcs in list(self.src.items()):
+            out = []
+            for s in srcs:
+                if s[0] != "v":
+                    out.append(s)
+                elif len(self.assigned.get(s[1], ())) == 1 and self.assigned[s[1]][0]:
+                    out.append(["r", self.assigned[s[1]][0]])
+            if out:
+                self.src[k] = out
+            else:
+                del self.src[k]
+
     def visit_expr(self, e):
+        if e.op == ida_hexrays.cot_asg and e.x.op == ida_hexrays.cot_var:
+            y = e.y
+            while y.op == ida_hexrays.cot_cast:
+                y = y.x
+            callee = (f"{y.x.obj_ea:08x}" if y.op == ida_hexrays.cot_call and y.x.op == ida_hexrays.cot_obj
+                      and ida_funcs.get_func(y.x.obj_ea) else None)
+            self.assigned.setdefault(e.x.v.idx, []).append(callee)
         if e.op == ida_hexrays.cot_call and e.x.op == ida_hexrays.cot_obj:
             k = f"{e.x.obj_ea:08x}"
             self.out.setdefault(k, []).append(len(e.a))
@@ -111,7 +152,7 @@ class Calls(ida_hexrays.ctree_visitor_t):
                 if t.is_ptr() and t.get_pointed_object().is_struct():
                     self.objs.setdefault(k, []).append(t.get_pointed_object().get_type_name() or "")
                 src = self.arg0_source(e.a[0])
-                if src and (src[0] == "p" or src[1]):
+                if src and (src[0] in ("p", "v", "g", "r", "l") or src[1]):
                     self.src.setdefault(k, []).append(src)
         return 0
 
@@ -222,6 +263,7 @@ for i, ea in enumerate(targets):
     rec = proto(cf.type) or {}
     v = Calls(cf)
     v.apply_to(cf.body, None)
+    v.resolve()
     rec["calls"] = v.out
     if v.objs:
         rec["this_args"] = v.objs

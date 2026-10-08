@@ -87,6 +87,8 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 - [ ] Name the remaining ~80 unnamed modules just before their wave (`modules.py show`, captain modules)
 - [ ] Locate Xbox XBE code, diff vs PC for structure confirmation (optional)
 
+- [x] Gate: the original's constants and call order checked against Hex-Rays (semcheck.behaviour; 2/2358 false
+      flags); compile fix-its without a model call; named Win32 constants measured and dropped (62 call sites)
 - [x] Gate failure kinds logged per attempt (`fails`, `grunt.py cost`); packet: vtable references with the line
       to write (dropped vtable stores were 23% of rejections), no this-class on vtable stubs that never read ecx
 - [x] IDA used fully: signatures for every function (api.json 2750 -> 21746 addresses; callee bind lines 40% ->
@@ -96,9 +98,11 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
       grunt output +43%, guesses -33%, pass rate and tokens flat (`CSF_AB_ARM`, `CSF_PACKET_LEGACY` for re-runs)
 
 ### Types & structure
-- [ ] Globals holding class instances: type them from the calls they receive (`this_args` on a global), like params
-- [ ] Unclassed methods left (29% of undone ones): callers that pass pointers from untyped places (locals from
-      lookups, return values): type return values from what callers do with them
+- [x] Globals holding class instances / pointers, return values and stack objects passed as `this` typed through
+      Hex-Rays (export_abi `arg0_src` g/r/l, arg_types.json, sync.py): 39 globals, 23 return values, 231 stack
+      objects. Small effect (members +0.4%); returns need >= 2 agreeing callers (an allocator got typed from one)
+- [ ] Unclassed methods left (29% of undone ones): what remains comes from lookups through containers / tables
+      (untyped element pointers); needs element types of STL instances (db/stl.json) or table globals
 - [ ] Member pointer types into src/types/auto_classes.h too (IDB only now: 227 members): needs a build check per
       member, code using them as uint32_t
 - [ ] Field names of the menu/AI bases: CMenuScreen, TCharTask, TAiState, CCharWeaponFsm
@@ -110,6 +114,7 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 - [ ] Typed returns for virtual wrappers that return class pointers (now void*: header order)
 
 ### Verification
+- [x] Diff: copies of `this` and contained callees (750 -> 788 functions); snapshot 16 KiB, 8 globals
 - [ ] Diff tier 3: functions whose callees have side effects (record the original's callee calls, replay them for
       ours; callee writes into `this` and thread safety are the hard parts; needs live iteration)
 - [ ] AI combat coverage: the T* AI tasks and GUI input handlers only run in real play. Needs savegames taken in

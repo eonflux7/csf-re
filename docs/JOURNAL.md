@@ -612,3 +612,31 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   tokens flat (14.2k/13.6k/14.7k), notes admitting a guess 33 -> 24 -> 22, **named members in the output
   87 -> 91 -> 124**; in classed methods raw offsets 106 -> 91 and named 95 -> 126. The stage-1 arm showed the raw
   offsets sit on untyped objects; typing parameters, members and plain classes is what moved the output.
+
+## 2026-10-09 — Behaviour checks in the gate; the play copy loads the hook again; last context rounds
+
+- **Gate beyond references** (`semcheck.behaviour`, from `export_abi.py` `consts` / `order`): the original's
+  numbers (literals, case values, float literals and .rdata floats, not pointer offsets) must appear in ours, and
+  calls Hex-Rays shows as consecutive statements of one block keep their order (each callee called once in both).
+  Equivalent forms accepted (x*8 / x<<3, x/255 / x*(1/255), case 203 vs `x - 200` case 3, a float global read by
+  address, 0x24C bytes vs 0x93 dwords, a sign-bit mask vs `< 0`). Survey over the 2358 verified files: 2 flagged,
+  both equivalent rewrites. Mutation tests: a changed constant and swapped calls are caught (small constants like
+  3 -> 10 slip: too many other matches).
+- **Compile fix-its**: `reinterpret_cast<T*>(nullptr)` (21 retries), clang's did-you-mean for unknown type names
+  (old class names) applied and re-gated without a model call; hint for C array assignment.
+- **In-game diff was already there** (hook/diff.cpp, verifier quarantines mismatches): widened with copies of
+  `this` (`mov esi, ecx`) and contained callees: 750 -> 788. The rest is blocked by virtual calls (862) and callees
+  with side effects (513): that is diff tier 3 (record/replay), still in the backlog.
+- **Smokes were fullscreen and audible**: processes started from WSL inherit the "prefer System32 images"
+  mitigation (`PreferSystem32Images=1`, also through powershell Start-Process), so the game took System32's
+  dinput8.dll and never loaded our proxy (no hooks, no windowed/off-screen/muted mode). `tools/playexe.py` renames
+  the play exe's import to CSFHOOK.dll; `smoke.sh` kills a game whose hook log doesn't appear within 10 s.
+- **Prototype line**: export_pseudo writes comment lines above the prototype; difftable read conventions/returns
+  from the comment (every diff entry cdecl/int: crash) and packets showed it as "Hex-Rays prototype". `proto_of`.
+  FR01 60 s: 283 functions diffed, menu tour 150, 0 mismatches.
+- **Last context rounds**: globals, return values and stack objects passed as `this` now typed (39 / 23 / 231).
+  First attempt typed 112 return values from single callers: the allocator 0x6910F0 got a class from one ctor call
+  and Hex-Rays spread it (190 functions worse). With >= 2 agreeing callers and half the call sites: 113 functions
+  better, 10 slightly worse; members +0.4%. The propagate loop also stopped early (it counted only new methods).
+  Named Win32 constants: 62 call sites in all game code, and grunts can't include windows.h: dropped.
+  Conclusion: context from IDA is near its limit; checks (gate, diff tier 3) are where quality still grows.

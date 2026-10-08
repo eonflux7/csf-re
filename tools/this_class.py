@@ -22,7 +22,7 @@ def load_args():
     try:
         return json.load(open(ARGS))
     except (OSError, ValueError):
-        return dict(params={}, fields={})
+        return dict(params={}, fields={}, globals={}, returns={}, locals={})
 
 
 def load():
@@ -77,6 +77,8 @@ def build():
     #   another parameter: that parameter points to the class (sync.py --this types it);
     #   a 4-byte struct member: the member points to the class (sync.py types it in the IDB's struct).
     this_h, par_h, fld_h = collections.defaultdict(list), collections.defaultdict(list), collections.defaultdict(list)
+    glob_h, ret_h = collections.defaultdict(list), collections.defaultdict(list)
+    stk_h = collections.defaultdict(list)  # (caller, stack offset) -> [(class, room)]
     for caller, a in abi.items():
         thiscall = a.get("cc") == "thiscall"
         for callee, srcs in (a.get("arg0_src") or {}).items():
@@ -90,6 +92,12 @@ def build():
                     par_h[(caller, s[1])].append(c["vt"])
                 elif s[0] == "f" and len(s) == 4:
                     fld_h[(s[1], s[3])].append(c["vt"])
+                elif s[0] == "g" and 0x401000 <= int(s[1], 16) < 0x900000:  # Hex-Rays objects at small
+                    glob_h[(s[1], s[2])].append(c["vt"])                   # "addresses" are constants
+                elif s[0] == "r":
+                    ret_h[s[1]].append((caller, c["vt"]))
+                elif s[0] == "l":
+                    stk_h[(caller, s[1])].append((c["vt"], s[2]))
 
     def nca(vts):
         chains = [ancestors(v) for v in set(vts)]
@@ -111,11 +119,54 @@ def build():
         base = nca(vts)
         if base and st:
             fields[st][name] = base
-    json.dump(dict(params=params, fields=fields), open(ARGS, "w"), indent=0, sort_keys=True)
+    # a global passed as `this`: the object itself (&g_x) or a pointer to it (g_p); both kinds seen = a conflict
+    globs = {}
+    for (g, kind), vts in glob_h.items():
+        base = nca(vts)
+        if base and g not in globs:
+            globs[g] = dict(vt=base, kind=kind)
+        elif g in globs:
+            globs[g] = None
+    globs = {g: v for g, v in globs.items() if v}
+    # a call's result passed as `this`: the function returns a pointer to that class (not when it returns
+    # nothing / a float, Hex-Rays' own prototype disagreeing)
+    # Only when >= 2 callers agree and at least half of the function's call sites use the result that way: one
+    # caller passing an allocator's result to a ctor typed the allocator 0x6910F0 as returning that class, and
+    # Hex-Rays spread it to every allocation (2026-10-09).
+    nsites = collections.Counter()
+    for caller, a in abi.items():
+        for callee, counts in (a.get("calls") or {}).items():
+            nsites[callee] += len(counts)
+    rets = {}
+    for ea, votes in ret_h.items():
+        a = abi.get(int(ea, 16)) or {}
+        callers = {c for c, _ in votes}
+        if len(callers) < 2 or len(votes) < 0.5 * nsites[ea]:
+            continue
+        base = nca([v for _, v in votes])
+        if base and a.get("ret") and a["ret"] not in ("void", "float", "double", "char", "bool", "__int16", "__int8"):
+            rets[ea] = base
+    # an object on a caller's stack (&local passed as `this`): typed when the class's size is known and fits
+    # before the next stack variable (a smaller guess would overlap its neighbours in Hex-Rays)
+    locs = collections.defaultdict(dict)
+    for (caller, off), seen in stk_h.items():
+        base = nca([v for v, _ in seen])
+        size = db.classes.get(base, {}).get("size") or 0 if base else 0
+        room = min(r for _, r in seen)
+        if base and 0 < size <= room:
+            locs[f"{caller:08x}"][str(off)] = base
+    new_args = dict(params=params, fields=fields, globals=globs, returns=rets, locals=locs)
+    old_args = json.loads(json.dumps(load_args(), sort_keys=True))
+    args_changed = json.loads(json.dumps(new_args, sort_keys=True)) != old_args
+    json.dump(new_args, open(ARGS, "w"), indent=0, sort_keys=True)
     print(f"arg types: {sum(len(v) for v in params.values())} parameters, {sum(len(v) for v in fields.values())} "
-          f"struct members point to a class; {n_back} methods classed from what they pass to classed methods")
+          f"struct members, {len(globs)} globals, {len(rets)} return values point to a class, "
+          f"{sum(len(v) for v in locs.values())} stack objects typed; {n_back} methods "
+          f"classed from what they pass to classed methods")
     json.dump({f"{ea:08x}": v for ea, v in sorted(res.items())}, open(OUT, "w"), indent=0)
-    new = len(set(res) - set(old))
+    # progress = new methods, or any parameter / member / global / return / stack type not yet pushed to the IDB
+    # (propagate.sh stops on "0 new"; types derived in a round are applied by the next round's sync)
+    new = len(set(res) - set(old)) + (1 if args_changed else 0)
     srcs = collections.Counter(v["src"] for v in res.values())
     print(f"this_class: {len(res)} methods with a class ({dict(srcs)}); {new} new since the last run")
     return res, new
