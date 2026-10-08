@@ -140,8 +140,9 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
       (select() is clone-aware: siblings get the done member as an example and go to the DeepSeek lane)
 - [x] Lanes mode (DeepSeek tiny/clone lane + Codex main lane, continuous smoke+commit) — trial: 45 functions
 - [x] One dynamic lane (2026-10-08, replaces the two lanes): size tiers S < 150 B (+ clone siblings) / M <= 400 B /
-      L, each with a model ladder over OpenCode Go + Codex (S: Haiku 5.5 low -> high -> MiMo 2.6 Pro -> Codex;
-      M: Haiku 5.5 high -> MiMo -> Codex; L: Codex sol xhigh), per-tier in-flight caps, Go allowance guard
+      L, each with a model ladder over OpenCode Go + Codex (S: Haiku 5.5 low x2 -> medium -> Codex high;
+      M: Haiku 5.5 high x2 -> Codex high x2, Codex review at medium; L: Codex high x2; MiMo dropped and no xhigh
+      after the first menu batches), per-tier in-flight caps, Go allowance guard
       (work/go_spend.jsonl), quota-blocked rungs defer instead of escalating. Chosen by `grunt.py ab` (work/ab/).
 - [x] Collect CSF_GLOBAL names from src/auto into db/globals.yaml (`tools/globals.py`, run after each batch;
       names substituted into packet pseudocode; pin with src: opus)

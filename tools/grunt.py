@@ -583,12 +583,15 @@ calls where the original reloads. Ignore naming and style. Output exactly one ``
 {"ok": true|false, "issues": ["<concrete difference, with the asm address>", ...]}"""
 
 
+REVIEW_EFFORT = "medium"  # lanes --review-effort; reviewing is easier than writing (was high until 2026-10-08)
+
+
 def review(ea, packet, code):
     """Second opinion by Codex on a gate-passed file. Returns '' if fine, the issues text, or None if not run."""
     msgs = [{"role": "system", "content": REVIEW_SYSTEM},
             {"role": "user", "content": f"{packet}\n\n## Reimplementation under review\n```cpp\n{code}\n```"}]
     try:
-        text, usage = ask("codex", "gpt-6.1-sol", msgs, None, "high")
+        text, usage = ask("codex", "gpt-6.1-sol", msgs, None, REVIEW_EFFORT)
     except Exception:
         return None, None
     m = re.search(r"```json\s*\n(.*?)```", text, re.S)
@@ -977,7 +980,7 @@ def run_config(args, lanes=False):
                 review_over=args.review_over, codex_cap=getattr(args, "codex_cap", None),
                 backend=getattr(args, "backend", "lanes"), wave=getattr(args, "module", None),
                 **(dict(tiers={t: dict(ladder=getattr(args, f"{t.lower()}_ladder"), jobs=getattr(args, f"{t.lower()}_jobs"))
-                               for t in "SML"}, s_max=args.s_max, m_max=args.m_max) if lanes else {}))
+                               for t in "SML"}, s_max=args.s_max, m_max=args.m_max, review_effort=args.review_effort) if lanes else {}))
 
 
 def pack(db, eas, fns, budget=0, max_size=300):
@@ -1116,6 +1119,8 @@ def lanes(args):
     remaining rungs were out of quota is deferred, not escalated. Every --batch gate passes: build + smoke + commit."""
     if args.module and not args.no_captain:
         captain_prep(args.module)
+    global REVIEW_EFFORT
+    REVIEW_EFFORT = args.review_effort
     db = DB()
     wave = module_ids(args.module)
     if args.smoke_menu:
@@ -1549,10 +1554,12 @@ if __name__ == "__main__":
     l.add_argument("--s-max", type=int, default=150, help="S tier: functions under N bytes (and clone siblings with "
                    "a done example up to --m-max)")
     l.add_argument("--m-max", type=int, default=400, help="M tier: functions up to N bytes; L: the rest")
-    l.add_argument("--s-ladder", default="go:claude-haiku-5-5@low:2,go:claude-haiku-5-5@high:1,go:mimo-v2.6-pro:1,"
-                   "codex:gpt-6.1-sol:1", help="backend:model[@effort]:attempts,...")
-    l.add_argument("--m-ladder", default="go:claude-haiku-5-5@high:2,go:mimo-v2.6-pro:1,codex:gpt-6.1-sol:2")
-    l.add_argument("--l-ladder", default="codex:gpt-6.1-sol@xhigh:2")
+    # 2026-10-08 after the first tiered menu batches: MiMo dropped (6-12 min thinks, 3 rescues in 140), no Codex xhigh
+    l.add_argument("--s-ladder", default="go:claude-haiku-5-5@low:2,go:claude-haiku-5-5@medium:1,codex:gpt-6.1-sol@high:1",
+                   help="backend:model[@effort]:attempts,...")
+    l.add_argument("--m-ladder", default="go:claude-haiku-5-5@high:2,codex:gpt-6.1-sol@high:2")
+    l.add_argument("--l-ladder", default="codex:gpt-6.1-sol@high:2")
+    l.add_argument("--review-effort", default="medium", help="Codex review effort")
     l.add_argument("--s-jobs", type=int, default=12, help="S tier: functions in flight")
     l.add_argument("--m-jobs", type=int, default=6)
     l.add_argument("--l-jobs", type=int, default=3)

@@ -505,3 +505,16 @@ state, so a missing `mute` (or `mute 0`) explicitly unmutes. Tested on a hardlin
   than Codex had. Codex still reaches answers with ~1.8k output tokens vs 7-20k: the real gap should show on big
   functions. So the decision is validated by a real wave (smoke + in-game diff), not by the A/B.
 - Lanes are now one lane with size tiers (see PLAN Phase 4); per-tier stats and Go allowances in monitor.py.
+
+## 2026-10-08 — First tiered batches (menu wave): 136 committed, one copied bug, MiMo dropped
+- 140 results: S 120/120 gate (Haiku low 114, 88 % first try), M 16/17 (Haiku high 15; Codex review rejected 5 of
+  20 Haiku-high answers, each then fixed), L 3/3 Codex. Go spend for the lot: $0.55.
+- Link failure 0x53CC70 (asm naming its own __fastcall helper, again): gate now rejects undefined self-references
+  (llvm-nm); lanes also searches in-flight files for batch-build culprits (one landed after the batch was cut).
+- Menu-tour crash, bisect 33 smokes: 3 Haiku-low clones of one shape — the first one's file became the siblings'
+  example, so its bug was copied: a generic VCall helper indexed the vtable with the byte offset (slot 0x30 -> 0xC0).
+  /Od /Ob0 build: the helper hid the offset from semcheck. New rule: every vtable slot the original calls must
+  appear as a constant displacement; if not, rechecked on an /O2 compile (a correct helper folds back). Over all
+  2040 files: 2 more latent copies (quarantined), 5 Codex runtime-slot files waived after checking every N / 4.
+- MiMo 2.6 Pro: 3 rescues in 140, 6-12+ min per call. Ladders now S: Haiku low x2 -> Haiku medium -> Codex high;
+  M: Haiku high x2 -> Codex high x2; L: Codex high x2; review at medium. No xhigh (not worth its quota).
