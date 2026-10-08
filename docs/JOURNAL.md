@@ -467,3 +467,10 @@ which separates e.g. CMenuLoadGameInGame / CMenuLoadGameMainMenu. Names: CMenuMa
 CMenu{LoadGame,SoundOptions,Controls,VideoOptions}InGame, CMenuGameOptionsInGamePC, CMenuProfilesPC,
 CMenuMpSessionsPC, CMenuDemoExit, CGuiCharacterPreview. Held: CMenuIntro 0.65, CMenuMissionInfoInGame 0.6, two
 DO-filter classes (0x8453a4/0x845368) < 0.5. Use it at every wave prep (module wave = its classes first).
+
+## 2026-10-08 — Smokes are muted
+csf_hook.ini `mute 1` (written by tools/smoke.sh unless CSF_MUTE=0) mutes the game's WASAPI audio session on the
+default output device (src/core/devcmd.cpp, from CDevCommandLine::Set, on a separate MTA thread). That catches
+whatever API the game plays through and leaves the saved sound options alone. Windows remembers per-app session
+state, so a missing `mute` (or `mute 0`) explicitly unmutes. Tested on a hardlinked private play copy
+(CSF_PLAY=/mnt/e/dev/csf-play-mute) because a grunt lane was using the shared one: SMOKE OK, SetMute hr=0.

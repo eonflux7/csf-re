@@ -2,6 +2,8 @@
 // arguments, and parses -scene <name>, -log, -instance (CDevCommandLine::Parse, 0x4FB850).
 // csf_hook.ini `cmdline <args>` overrides it (`windowed 1` forces windowed mode), e.g. `cmdline -scene Parachut` for unattended smoke tests.
 #include <windows.h>
+#include <audiopolicy.h>
+#include <mmdeviceapi.h>
 #include "globals.h"
 #include "hook.h"
 #include "legacy/string.h"
@@ -12,6 +14,41 @@ namespace {
 CSF_FUNC(void, __fastcall, String_Assign, 0x429B60, (void* str, void* edx, const char* p, unsigned int len));
 CSF_FUNC(char, __fastcall, DevCommandLine_Parse, 0x4FB850, (void* self, void* edx));
 CSF_FUNC(uint8_t*, __cdecl, VideoOptions_Get, 0x753A30, ());  // +284: bFullScreen (read by window creation)
+
+// `mute 1` (unattended smokes): mute this process's audio session on the default output device (WASAPI; covers
+// whatever API the game plays through, without touching its saved sound options). Windows remembers per-app
+// session state, so `mute` absent or 0 explicitly unmutes: a playtest after a smoke is not left silent.
+// Runs on its own MTA thread so the game's main-thread COM apartment is left alone.
+void ApplyMute() {
+    static BOOL mute;
+    const char* m = hook::ini_string("mute");
+    mute = m && *m && *m != '0';
+    HANDLE t = CreateThread(nullptr, 0, [](void*) -> DWORD {
+        HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+        bool uninit = SUCCEEDED(hr);
+        IMMDeviceEnumerator* en = nullptr;
+        IMMDevice* dev = nullptr;
+        IAudioSessionManager* mgr = nullptr;
+        ISimpleAudioVolume* vol = nullptr;
+        hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&en);
+        if (SUCCEEDED(hr)) hr = en->GetDefaultAudioEndpoint(eRender, eConsole, &dev);
+        if (SUCCEEDED(hr)) hr = dev->Activate(__uuidof(IAudioSessionManager), CLSCTX_ALL, nullptr, (void**)&mgr);
+        if (SUCCEEDED(hr)) hr = mgr->GetSimpleAudioVolume(nullptr, FALSE, &vol);
+        if (SUCCEEDED(hr)) hr = vol->SetMute(mute, nullptr);
+        if (mute || FAILED(hr))
+            hook::log("devcmd: audio %s (hr=%08lx)", mute ? "muted" : "unmute", (unsigned long)hr);
+        if (vol) vol->Release();
+        if (mgr) mgr->Release();
+        if (dev) dev->Release();
+        if (en) en->Release();
+        if (uninit) CoUninitialize();
+        return 0;
+    }, nullptr, 0, nullptr);
+    if (t) {
+        WaitForSingleObject(t, 5000);
+        CloseHandle(t);
+    }
+}
 
 // 0x4FB8F0: CDevCommandLine::Set(const char*) — store the text (std::string at +0), then parse it.
 char __fastcall DevCommandLine_Set(void* self, void* /*edx*/, const char* text) {
@@ -25,6 +62,7 @@ char __fastcall DevCommandLine_Set(void* self, void* /*edx*/, const char* text) 
         VideoOptions_Get()[284] = 0;
         hook::log("devcmd: windowed mode forced");
     }
+    ApplyMute();
     String_Assign(self, nullptr, text, (unsigned int)strlen(text));
     return DevCommandLine_Parse(self, nullptr);
 }

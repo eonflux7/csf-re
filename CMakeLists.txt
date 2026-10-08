@@ -17,5 +17,5 @@ add_library(csf_hook SHARED hook/main.cpp hook/autopilot.cpp hook/diff.cpp hook/
 set_target_properties(csf_hook PROPERTIES OUTPUT_NAME dinput8)
 target_include_directories(csf_hook PRIVATE hook src ${CMAKE_BINARY_DIR})  # build/: diff_table.inc
 target_compile_options(csf_hook PRIVATE /W3 /EHsc /Zc:threadSafeInit- -Wno-microsoft-cast -Wno-invalid-offsetof)
-target_link_libraries(csf_hook PRIVATE minhook kernel32 user32)
+target_link_libraries(csf_hook PRIVATE minhook kernel32 user32 ole32)
 target_link_options(csf_hook PRIVATE /MAP:${CMAKE_BINARY_DIR}/dinput8.map)
