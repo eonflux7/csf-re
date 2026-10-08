@@ -562,7 +562,7 @@ def efficiency(recent):
     return [t]
 
 
-def panel_work():
+def panel_work(n_results=5):
     """Everything that runs unattended: grunt lanes (status, wave counters, in flight, results), captain, tools,
     and the limits they spend."""
     st = cached("live", 1, lambda: json.load(open(LIVE)) if os.path.exists(LIVE) else None)
@@ -624,7 +624,7 @@ def panel_work():
         if len(calls) > 6:
             tb.add_row("", Text(f"+{len(calls) - 6} more", style="dim"), "", "", "")
         body.append(tb)
-    for r in recent[-(5 if alive else 3):][::-1]:
+    for r in (recent[-n_results:][::-1] if n_results > 0 else []):
         ok = r.get("ok")
         what = r.get("meta", {}).get("name", "") if ok else (r.get("err", "").splitlines() or [""])[0]
         by = (r.get("by") or "").split(":")[0] or {"deep": "deepseek", "main": "codex"}.get(r.get("lane"), "")
@@ -647,13 +647,103 @@ def panel_work():
     return Panel(Group(*body), title="Work · grunt · captain · limits", border_style="magenta")
 
 
-def render():
+VIEW = {"plan": False, "focus": False, "help": False}
+KEYS = {"p": ("plan", "open plan items of every phase"), "f": ("focus", "current focus (PLAN.md)"),
+        "h": ("help", "this help")}
+
+
+def focus():
+    txt = open(os.path.join(ROOT, "docs", "PLAN.md")).read()
+    m = re.search(r"## Current focus.*?\n(.*?)\n## ", txt, re.S)
+    items = re.findall(r"^(\d+)\. (.+?)(?=\n\d+\. |\Z)", m.group(1).strip(), re.S | re.M) if m else []
+    return [(n, re.sub(r"\s+", " ", t).replace("`", "").replace("**", "")) for n, t in items]
+
+
+def open_items():
+    txt = open(os.path.join(ROOT, "docs", "PLAN.md")).read()
+    out = []
+    for ph in re.split(r"\n(?=### )", txt):
+        m = re.match(r"### (.+)", ph)
+        if not m:
+            continue
+        its = re.findall(r"^- \[ \] (.+)$", ph, re.M)
+        if its:
+            out.append((m.group(1).split("—")[0].strip(), [i.replace("`", "") for i in its]))
+    return out
+
+
+def panel_plan():
+    """Bottom: collapsed = the next open items of the current phase; `p` all open items, `f` current focus."""
+    body = []
+    if VIEW["focus"]:
+        fo = cached("focus", 10, focus)
+        for n, t in (fo if isinstance(fo, list) else []):
+            body.append(Text(f"{n}. {t}", style="white", no_wrap=True, overflow="ellipsis"))
+    if VIEW["plan"]:
+        oi = cached("open_items", 10, open_items)
+        for ph, its in (oi if isinstance(oi, list) else []):
+            body.append(Text(ph, style="bold yellow"))
+            body += [Text("  ☐ " + it, no_wrap=True, overflow="ellipsis") for it in its]
+    if not body:
+        p = cached("plan", 10, plan)
+        if isinstance(p, tuple):
+            name, d, n, open_ = p
+            body.append(Text(f"{name.split('—')[0].strip()} ({d}/{n}) next:", style="bold"))
+            body += [Text("  ☐ " + re.sub(r"`", "", it), no_wrap=True, overflow="ellipsis") for it in open_[:3]]
+    hint = Text()
+    for k, (name, _) in list(KEYS.items()) + [("q", ("quit", ""))]:
+        hint.append(f" {k}", style="bold yellow")
+        hint.append(f" {name}" + (" ✓" if VIEW.get(name) else "") + " ", style="bold" if VIEW.get(name) else "dim")
+    return Panel(Group(*body), title="Plan", subtitle=hint, subtitle_align="right", border_style="yellow")
+
+
+def render(console=None):
+    """Everything sized to the terminal: the free rows go to the grunt results list."""
     clock = Text(datetime.now().strftime("%H:%M:%S") + "  csf-re monitor", style="dim", justify="right")
     top = Table.grid(expand=True)
     top.add_column(ratio=3)
     top.add_column(ratio=2, min_width=36)
     top.add_row(panel_claude(), panel_progress())
-    return Group(clock, top, panel_work())
+    plan_p = panel_plan()
+    parts = [clock, top]
+    if VIEW["help"]:
+        parts.append(Panel(Group(*[Text(f"{k}  {v[1]}") for k, v in KEYS.items()], Text("q  quit")),
+                           title="Keys", border_style="dim"))
+    if console is None:
+        return Group(*parts, panel_work(), plan_p)
+    opts = console.options
+    used = sum(len(console.render_lines(x, opts, pad=False)) for x in parts + [plan_p, panel_work(0)])
+    free = console.size.height - used - 1
+    return Group(*parts, panel_work(max(3, free)), plan_p)
+
+
+class Keys:
+    """Single-key toggles without Enter (cbreak stdin read by a thread); the terminal is restored on exit."""
+    def __init__(self):
+        import termios, threading, tty
+        self.ok = sys.stdin.isatty()
+        self.quit = False
+        if not self.ok:
+            return
+        self.fd = sys.stdin.fileno()
+        self.old = termios.tcgetattr(self.fd)
+        tty.setcbreak(self.fd)
+        threading.Thread(target=self.loop, daemon=True).start()
+
+    def loop(self):
+        while not self.quit:
+            ch = sys.stdin.read(1).lower()
+            if ch == "q":
+                self.quit = True
+            elif ch in KEYS:
+                k = KEYS[ch][0]
+                VIEW[k] = not VIEW[k]
+            self.dirty = True
+
+    def restore(self):
+        if self.ok:
+            import termios
+            termios.tcsetattr(self.fd, termios.TCSADRAIN, self.old)
 
 
 def main():
@@ -663,13 +753,22 @@ def main():
     a = ap.parse_args()
     if a.once:
         from rich.console import Console
-        Console().print(render())
+        con = Console()
+        con.print(render(con))
         return
-    with Live(render(), refresh_per_second=4, screen=True) as lv:
-        while True:
-            time.sleep(a.interval)
-            lv.update(render())
-
+    from rich.console import Console
+    con = Console()
+    keys = Keys()
+    try:
+        with Live(render(con), console=con, refresh_per_second=4, screen=True) as lv:
+            t = 0
+            while not keys.quit:
+                time.sleep(0.1)  # keys apply within 0.1 s; data every --interval
+                if getattr(keys, "dirty", False) or time.time() - t >= a.interval:
+                    keys.dirty, t = False, time.time()
+                    lv.update(render(con))
+    finally:
+        keys.restore()
 
 if __name__ == "__main__":
     try:
