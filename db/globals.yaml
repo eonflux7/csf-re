@@ -6,7 +6,7 @@
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 2, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
 - {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 1, src: auto}
-- {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 2, src: auto}
+- {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 3, src: auto}
 - {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC84, name: g_flt_0082DC84, type: float, uses: 1, src: auto}
 - {addr: 0x0082DDEC, name: g_Const200_0f, type: float, uses: 1, src: auto}
@@ -69,6 +69,17 @@
 - {addr: 0x00867434, name: g_UnitFactorLowerBound, type: float, uses: 1, src: auto}
 - {addr: 0x00867444, name: g_FontVtable, type: void*, uses: 1, src: auto}
 - {addr: 0x00872CA4, name: g_vtbl_872CA4, type: void*, uses: 2, src: auto}
+- {addr: 0x0088AB14, name: g_CopyDwordRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088AB64, name: g_DwordCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088B50C, name: g_DwordRangeCopyExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088B55C, name: g_FourByteCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088B630, name: g_RangeExceptionCatchInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088B680, name: g_ElementArrayExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088B754, name: g_RangeExceptionCatchInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088B7F4, name: g_MenuExtrasExceptionTypeInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088B844, name: g_RangeExceptionCatchInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088BA3C, name: g_CopyRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088BA8C, name: g_TwentyFourByteCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00891868, name: g_TwelveByteRangeCopyExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008918B8, name: g_TwelveByteCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00891908, name: g_PointerRangeCopyExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
@@ -1084,9 +1095,11 @@
 - {addr: 0x008B0680, name: g_Global_8B0680, type: int, uses: 1, src: auto}
 - {addr: 0x008B0684, name: g_GlobalValue, type: int, uses: 1, src: auto}
 - {addr: 0x008B0688, name: g_Int8B0688, type: int, uses: 1, src: auto}
+- {addr: 0x008B068C, name: g_AccountMenuSecondaryFlag, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008B0690, name: g_MpSessionState, type: int, uses: 0, src: opus}
 - {addr: 0x008B08F4, name: g_Value_8B08F4, type: int, uses: 1, src: auto}
 - {addr: 0x008B08F8, name: g_Value_8B08F8, type: int32_t, uses: 1, src: auto}
+- {addr: 0x008B0901, name: g_AccountMenuStateFlag, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008B09EC, name: g_PTankPluginOffset, type: 'std::int32_t', uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008B68C0, name: g_pRwEngineInstance, type: void*, uses: 2, src: captain, conf: 0.9, alt: [g_008B68C0, g_pDispatchTable]}
 - {addr: 0x008BABC0, name: g_NetZFloatSink_8BABC0, type: uint8_t, uses: 3, src: opus}
