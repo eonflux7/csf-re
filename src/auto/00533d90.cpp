@@ -1,0 +1,58 @@
+#include <cstdint>
+#include "globals.h"
+#include "hook.h"
+#include "core/memory.h"
+
+CSF_FUNC(const void*, __cdecl, RwImageSetPath, 0x00625270,
+         (const void* path));
+CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
+CSF_FUNC(void*, __fastcall, GetTextureProvider, 0x006B1390,
+         (void* self, void* edx));
+
+// x86 __regcall assigns integer arguments to EAX, ECX, EDX, EDI,
+// then ESI. The sixth argument is on the caller-cleaned stack.
+static void* __regcall MenuMpPause_LoadTexture(
+    std::uint32_t /*eax*/,
+    std::uint32_t /*ecx*/,
+    std::uint32_t /*edx*/,
+    std::uint32_t /*edi*/,
+    std::uint32_t textureOption,
+    const void* textureName)
+{
+    RwImageSetPath(CSF_STR(0x00841C64, "Menus/Textures/"));
+
+    const int globalContext = GetGlobalInt();
+    void* provider = GetTextureProvider(
+        reinterpret_cast<void*>(globalContext), nullptr);
+
+    const char* name;
+    if (CSF_AT(std::uint32_t, textureName, 0x18) < 0x10u)
+        name = reinterpret_cast<const char*>(textureName) + 4;
+    else
+        name = CSF_AT(const char*, textureName, 0x04);
+
+    using LoadTexture = void* (__fastcall*)(
+        void*, void*, const char*, std::uint32_t);
+
+    void* texture =
+        reinterpret_cast<LoadTexture>(CSF_AT(void**, provider, 0)[0x38 / 4])(
+            provider, nullptr, name, textureOption);
+
+    if (texture)
+    {
+        using SetTextureRegion = void (__fastcall*)(
+            void*, void*, const std::uint32_t*);
+
+        auto setRegion = reinterpret_cast<SetTextureRegion>(
+            CSF_AT(void**, texture, 0)[0x4C / 4]);
+
+        std::uint32_t region[4] = {
+            0, 0, 0x3F800000u, 0x3F800000u
+        };
+        setRegion(texture, nullptr, region);
+    }
+
+    return texture;
+}
+
+HOOK(0x00533D90, MenuMpPause_LoadTexture, "auto");
