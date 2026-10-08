@@ -800,40 +800,79 @@ def set_disabled(eas):
     open(ini, "w").write("\n".join(lines) + "\n")
 
 
-def bisect(batch, max_culprits=4):
-    """The deployed DLL holds `batch` (uncommitted) and its smoke failed. Find the culprits by toggling hooks in the
-    ini (no rebuild): control run with the whole batch off, then binary search with the rest of the batch off.
-    Returns (culprits, why): culprits=None when the batch is not to blame or the result is unreliable."""
-    n = 0
+DLL_MAP = os.path.join(ROOT, "build", "dinput8.map")
 
-    def fails(on):
+
+def crash_suspects(out, batch):
+    """Functions of `batch` named by the smoke's crash report: the faulting EIP, then return addresses on the dumped
+    stack, that fall inside our DLL, resolved through the linker map of the deployed build to src/auto/<ea>.cpp.
+    Most likely first; [] when the crash is elsewhere (game code, no report)."""
+    m = re.search(r"CRASH code=\w+ eip=([0-9a-f]{8}).*?\n\s*eip module [0-9a-f]+ \(ours ([0-9a-f]{8})\); stack:\n"
+                  r"((?:\s+[0-9a-f]{8}(?: [0-9a-f]{8})*\n)*)", out)
+    if not m or not os.path.exists(DLL_MAP):
+        return []
+    base, pref, syms = int(m.group(2), 16), 0x10000000, []
+    for l in open(DLL_MAP, errors="replace"):
+        if l.strip().startswith("Preferred load address is"):
+            pref = int(l.split()[-1], 16)
+        f = re.match(r"\s*\d{4}:[0-9a-f]{8}\s+\S+\s+([0-9a-f]{8,16})\s+(?:f\s+)?(?:i\s+)?(\S+)", l)
+        if f:
+            syms.append((int(f.group(1), 16), f.group(2)))
+    syms.sort()
+    addrs = [int(m.group(1), 16)] + [int(w, 16) for w in m.group(3).split()]
+    out_eas, want = [], set(batch)
+    for a in addrs:
+        va = a - base + pref
+        i = max((k for k in range(len(syms)) if syms[k][0] <= va), default=None) if base <= a < base + 0x1000000 \
+            else None
+        o = re.match(r"([0-9a-f]{8})\.cpp\.obj$", syms[i][1]) if i is not None else None
+        if o and int(o.group(1), 16) in want and int(o.group(1), 16) not in out_eas:
+            out_eas.append(int(o.group(1), 16))
+    return out_eas
+
+
+def bisect(batch, max_culprits=4, first_out=""):
+    """The deployed DLL holds `batch` (uncommitted) and its smoke failed (its output: first_out). Find the culprits
+    by toggling hooks in the ini (no rebuild). Each failed run's crash report is read first (crash_suspects): the
+    named function is taken and the rest re-run, ~1 smoke per culprit. When a crash names none of the batch: a
+    control run with the whole batch off (once), then binary search with the rest off (a half that passes clears
+    it; the other half is taken without its own smoke). A run of the rest that passes ends it.
+    Returns (culprits, why): culprits=None when the batch is not to blame or the result is unreliable."""
+    n, controlled = 0, False
+
+    def run(on):
         nonlocal n
         n += 1
         set_disabled(set(batch) - set(on))
         live(phase=f"bisect: smoke {n} ({len(on)} on)")
-        return not smoke(deploy=False)[0]
+        ok, out = smoke(deploy=False)
+        return not ok, out
 
     try:
-        if fails([]):
-            return None, "control run (whole batch disabled) also fails: crash is not from this batch"
-        culprits, rest = [], list(batch)
-        while fails(rest):
+        culprits, rest, out, named = [], list(batch), first_out, 0
+        while True:
+            sus = crash_suspects(out, rest)
+            if sus:
+                c, named = sus[0], named + 1
+            else:
+                if not controlled:
+                    controlled = True
+                    if run([])[0]:
+                        return None, "control run (whole batch disabled) also fails: crash is not from this batch"
+                    if not culprits and not run(rest)[0]:
+                        return None, "the full batch passed on re-run: flaky crash, not bisectable"
+                cur = rest
+                while len(cur) > 1:
+                    a, b = cur[:len(cur) // 2], cur[len(cur) // 2:]
+                    cur = a if run(a)[0] else b
+                c = cur[0]
+            culprits.append(c)
+            rest.remove(c)
+            failed, out = run(rest)
+            if not failed:
+                return culprits, f"{n} smokes ({named} named by crash reports)"
             if len(culprits) >= max_culprits:
                 return None, f"more than {max_culprits} culprits: {' '.join(f'{c:x}' for c in culprits)} ..."
-            cur = rest
-            while len(cur) > 1:
-                a, b = cur[:len(cur) // 2], cur[len(cur) // 2:]
-                if fails(a):
-                    cur = a
-                elif fails(b):
-                    cur = b
-                else:
-                    return None, f"neither half of {len(cur)} fails alone (interaction or flaky crash)"
-            culprits.append(cur[0])
-            rest.remove(cur[0])
-        if not culprits:
-            return None, "the full batch passed on re-run: flaky crash, not bisectable"
-        return culprits, f"{n} smokes"
     finally:
         set_disabled([])
 
@@ -1146,7 +1185,7 @@ def lanes(args):
                     return flush()
             if not ok and not out.startswith("build/deploy failed") and not args.no_bisect:
                 print(f"smoke failed with {len(good)} new functions: bisecting", flush=True)
-                culprits, why = bisect([r["ea"] for r in good])
+                culprits, why = bisect([r["ea"] for r in good], first_out=out)
                 print(f"bisect: {why}" + (f"; culprits {' '.join(f'{c:x}' for c in culprits)}" if culprits else ""),
                       flush=True)
                 if culprits:
