@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 
 // 0x00713E80: char __thiscall sub_713E80(int this)  -- shared preparation/refresh routine.
-CSF_FUNC(char, __fastcall, C_008657e0_PrepareUpdate, 0x00713E80,
+CSF_FUNC(char, __fastcall, C_00863f60_PrepareUpdate, 0x00713E80,
          (C_008657e0* self, void* edx));
 
 // Tail-jump forwarder: ecx = this, dispatch through vtbl slot 0x8c/4 = 35.
@@ -28,7 +28,7 @@ static int __fastcall C_008657e0_ConditionalUpdate(
     if (static_cast<std::uint8_t>(result) == 0)
         return result;
 
-    C_008657e0_PrepareUpdate(self, nullptr);
+    C_00863f60_PrepareUpdate(self, nullptr);
 
     [[clang::musttail]] return C_008657e0_ForwardUpdate(self, nullptr);
 }

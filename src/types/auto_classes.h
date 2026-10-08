@@ -4067,54 +4067,60 @@ struct COptionsFile : C_0083fdf4 {
 };
 static_assert(sizeof(COptionsFile) == 0x50);
 
-struct C_0084004c {
+// CMenuScreenFader (vtable 0x0084004C): Created by CMenuManager ctor 00510860 into +0x68; update 0050c280 runs state machine (1 fade out, 2 switch to screen named by string at +4 via 0050c1b0, 3 fade in) and sets a black overlay alpha 255-progress*255.
+struct CMenuScreenFader {
     void** vtbl;
     uint8_t pad_0004[0x4];
     uint32_t field_0008;
     uint8_t pad_000c[0xc];
     uint32_t field_0018;
     uint32_t field_001c;
-    float field_0020;
-    uint32_t field_0024;
+    float m_fadeProgress;
+    uint32_t m_state;
     float field_0028;
-    uint8_t field_002c;
+    uint8_t m_bIdle;
     uint8_t pad_002d[0x3];
     float field_0030;
-    uint32_t field_0034;
+    uint32_t m_pOverlay;
     uint8_t pad_0038[0x4];
     uint32_t field_003c;
     uint8_t pad_0040[0x8];
     uint32_t field_0048;
 };
-static_assert(sizeof(C_0084004c) == 0x4c);
+static_assert(sizeof(CMenuScreenFader) == 0x4c);
+static_assert(offsetof(CMenuScreenFader, m_fadeProgress) == 0x20);
+static_assert(offsetof(CMenuScreenFader, m_state) == 0x24);
+static_assert(offsetof(CMenuScreenFader, m_bIdle) == 0x2c);
+static_assert(offsetof(CMenuScreenFader, m_pOverlay) == 0x34);
 
-struct C_008405e0 : C_008315f8 {
+// CMenuManager (vtable 0x008405E0): Owner of every menu screen: loads Menus/Escenas.fbs; 0050e610 registers each screen pointer with its panel name (P_Juego, P_MePrin, P_Intro, P_MOG...), and 00511450 (PC-derived 008407a8 init) allocates all CMenu* screens into its fields.
+struct CMenuManager : C_008315f8 {
     uint32_t field_0004;
     uint32_t field_0008;
     uint32_t field_000c;
-    uint32_t field_0010;
+    uint32_t m_pGuiRoot;
     uint32_t field_0014;
-    uint32_t field_0018;
-    uint32_t field_001c;
-    uint32_t field_0020;
-    uint32_t field_0024;
+    uint32_t m_pScreenGame;
+    uint32_t m_pScreenLoading;
+    uint32_t m_pScreenGameMenu;
+    uint32_t m_pScreenProfiles;
     uint32_t field_0028;
     uint32_t field_002c;
-    uint32_t field_0030;
+    uint32_t m_pScreenMainMenu;
     uint32_t field_0034;
-    uint32_t field_0038;
+    uint32_t m_pScreenTactic;
     uint32_t field_003c;
     uint32_t field_0040;
     uint32_t field_0044;
-    uint32_t field_0048;
-    uint32_t field_004c;
+    uint32_t m_pScreenGameOptionsInGame;
+    uint32_t m_pScreenGameOptions;
     uint32_t field_0050;
-    uint32_t field_0054;
+    uint32_t m_pScreenIntro;
     uint32_t field_0058;
-    uint32_t field_005c;
+    uint32_t m_pScreenMsgBox;
     uint32_t field_0060;
     uint32_t field_0064;
-    uint32_t field_0068;
+    uint32_t m_pFader;
     uint32_t field_006c;
     uint8_t field_0070;
     uint8_t pad_0071[0x3];
@@ -4166,6 +4172,18 @@ struct C_008405e0 : C_008315f8 {
     uint8_t pad_0109[0x3];
     uint32_t field_010c;
 };
+static_assert(offsetof(CMenuManager, m_pGuiRoot) == 0x10);
+static_assert(offsetof(CMenuManager, m_pScreenGame) == 0x18);
+static_assert(offsetof(CMenuManager, m_pScreenLoading) == 0x1c);
+static_assert(offsetof(CMenuManager, m_pScreenGameMenu) == 0x20);
+static_assert(offsetof(CMenuManager, m_pScreenProfiles) == 0x24);
+static_assert(offsetof(CMenuManager, m_pScreenMainMenu) == 0x30);
+static_assert(offsetof(CMenuManager, m_pScreenTactic) == 0x38);
+static_assert(offsetof(CMenuManager, m_pScreenGameOptionsInGame) == 0x48);
+static_assert(offsetof(CMenuManager, m_pScreenGameOptions) == 0x4c);
+static_assert(offsetof(CMenuManager, m_pScreenIntro) == 0x54);
+static_assert(offsetof(CMenuManager, m_pScreenMsgBox) == 0x5c);
+static_assert(offsetof(CMenuManager, m_pFader) == 0x68);
 
 struct C_008728a0 {
     void** vtbl;
@@ -4297,7 +4315,7 @@ struct C_00840754 {
     uint32_t field_0074;
 };
 
-struct C_008407a8 : C_008405e0 {
+struct C_008407a8 : CMenuManager {
     uint32_t field_0110;
     uint32_t field_0114;
     uint32_t field_0118;
@@ -5254,15 +5272,17 @@ struct CMenuLoadGame : CMenuScreen {
     uint32_t field_011c;
 };
 
-struct C_00842328 : CMenuLoadGame {
+// CMenuLoadGameInGame (vtable 0x00842328): CMenuLoadGame subclass allocated in 00511450 into manager +0x110, registered in 00511810 under g_pszMenu_P_LoGame (in-game load screen).
+struct CMenuLoadGameInGame : CMenuLoadGame {
     uint8_t pad_0120[0x4];
 };
-static_assert(sizeof(C_00842328) == 0x124);
+static_assert(sizeof(CMenuLoadGameInGame) == 0x124);
 
-struct C_008423d8 : CMenuLoadGame {
+// CMenuLoadGameMainMenu (vtable 0x008423D8): CMenuLoadGame subclass allocated in 00511450 into manager +0x114, registered under g_pszMenu_P_LoMenu (00511810/00511a40), the main-menu load screen.
+struct CMenuLoadGameMainMenu : CMenuLoadGame {
     uint8_t pad_0120[0x4];
 };
-static_assert(sizeof(C_008423d8) == 0x124);
+static_assert(sizeof(CMenuLoadGameMainMenu) == 0x124);
 
 // CMenuPause (vtable 0x00842488): BotonContinue/Load/Save/Restart/Opciones/Exit
 struct CMenuPause : CMenuScreen {
@@ -5363,15 +5383,20 @@ struct CMenuProfiles : CMenuScreen {
     uint8_t field_0040;
 };
 
-struct C_00842a08 : CMenuScreen {
+// CMenuDemoExit (vtable 0x00842A08): Only created when the demo flag (global+211, or +272/+274) is set (sub_511450). It is registered as g_pszMenu_P_SalDem ('salida demo') in sub_511810. sub_53C540 counts down 15 s and then goes back to P_Campan.
+struct CMenuDemoExit : CMenuScreen {
     uint8_t pad_0008[0x8];
-    uint32_t field_0010;
-    uint32_t field_0014;
+    uint32_t m_pManager;
+    uint32_t m_pGui;
     uint32_t field_0018;
-    float field_001c;
-    uint32_t field_0020;
+    float m_timer;
+    uint32_t m_pPendingMenu;
 };
-static_assert(sizeof(C_00842a08) == 0x24);
+static_assert(sizeof(CMenuDemoExit) == 0x24);
+static_assert(offsetof(CMenuDemoExit, m_pManager) == 0x10);
+static_assert(offsetof(CMenuDemoExit, m_pGui) == 0x14);
+static_assert(offsetof(CMenuDemoExit, m_timer) == 0x1c);
+static_assert(offsetof(CMenuDemoExit, m_pPendingMenu) == 0x20);
 
 // CMenuSoundOptions (vtable 0x00842AD0): SliderFX, SliderMusic, GroupRadioAcoustic
 struct CMenuSoundOptions : CMenuScreen {
@@ -5398,10 +5423,11 @@ struct CMenuSoundOptions : CMenuScreen {
     uint8_t field_0058;
 };
 
-struct C_00842bc8 : CMenuSoundOptions {
+// CMenuSoundOptionsInGame (vtable 0x00842BC8): Derives from CMenuSoundOptions and is registered as P_SoundI (mgr+0x124, sub_511810), next to P_Sound (CMenuSoundOptionsPC). It only overrides vtable slot 12 (IsInGame) to return true.
+struct CMenuSoundOptionsInGame : CMenuSoundOptions {
     uint8_t pad_0059[0x3];
 };
-static_assert(sizeof(C_00842bc8) == 0x5c);
+static_assert(sizeof(CMenuSoundOptionsInGame) == 0x5c);
 
 // CMenuMissionInfo (vtable 0x00842E08): PanelObjetivos, PanelMapaTactico, PanelKillsReport, PanelBichos, tab buttons
 struct CMenuMissionInfo : CMenuScreen {
@@ -5477,18 +5503,26 @@ struct CMenuMpStats : CMenuScreen {
 };
 static_assert(sizeof(CMenuMpStats) == 0x8c);
 
-struct C_008432b0 : CGuiControl {
+// CGuiCharacterPreview (vtable 0x008432B0): A CGuiControl subclass created by sub_52F360 in the scenario select/MP loadout module. sub_542070 builds its own camera and light (light uses -π start angle), sub_5422D0 attaches a character clump and its weapon clump and plays animation dword_843288[idx]. sub_541F60 renders them between RwCameraEnd
+struct CGuiCharacterPreview : CGuiControl {
     uint8_t pad_0131[0x3];
-    uint32_t field_0134;
-    uint32_t field_0138;
-    uint32_t field_013c;
-    uint32_t field_0140;
-    uint32_t field_0144;
-    uint32_t field_0148;
-    uint32_t field_014c;
+    uint32_t m_pScene;
+    uint32_t m_pCamera;
+    uint32_t m_pCharacter;
+    uint32_t m_pCharClump;
+    uint32_t m_pWeaponClump;
+    uint32_t m_pLight;
+    uint32_t m_angle;
     uint8_t pad_0150[0x8];
 };
-static_assert(sizeof(C_008432b0) == 0x158);
+static_assert(sizeof(CGuiCharacterPreview) == 0x158);
+static_assert(offsetof(CGuiCharacterPreview, m_pScene) == 0x134);
+static_assert(offsetof(CGuiCharacterPreview, m_pCamera) == 0x138);
+static_assert(offsetof(CGuiCharacterPreview, m_pCharacter) == 0x13c);
+static_assert(offsetof(CGuiCharacterPreview, m_pCharClump) == 0x140);
+static_assert(offsetof(CGuiCharacterPreview, m_pWeaponClump) == 0x144);
+static_assert(offsetof(CGuiCharacterPreview, m_pLight) == 0x148);
+static_assert(offsetof(CGuiCharacterPreview, m_angle) == 0x14c);
 
 // CMenuControls (vtable 0x008435F8): ListboxConfiguracion, BotonMovement/Look/Attack, BotonSave/Reset
 struct CMenuControls : CMenuScreen {
@@ -5517,9 +5551,10 @@ struct CMenuControls : CMenuScreen {
 };
 static_assert(sizeof(CMenuControls) == 0x2e0);
 
-struct C_00843550 : CMenuControls {
+// CMenuControlsInGame (vtable 0x00843550): Derives from CMenuControls and is registered as P_ConIng (mgr+0x138, sub_511810). It overrides slot 12 to return true, so sub_542B70's back action goes to P_OptIng instead of P_Option.
+struct CMenuControlsInGame : CMenuControls {
 };
-static_assert(sizeof(C_00843550) == 0x2e0);
+static_assert(sizeof(CMenuControlsInGame) == 0x2e0);
 
 struct C_00843720 {
     void** vtbl;
@@ -5607,16 +5642,19 @@ struct CMenuGameOptionsPC : CMenuGameOptions {
 };
 static_assert(sizeof(CMenuGameOptionsPC) == 0x64);
 
-struct C_008438f0 : CMenuGameOptionsPC {
+// CMenuGameOptionsInGamePC (vtable 0x008438F0): CMenuGameOptionsPC subclass (ctor 00543f50 calls 00543fc0) stored by 00511450 into manager +0x48, which 0050e610 registers as g_pszMenu_P_MOGIng (in-game game options); plain CMenuGameOptionsPC goes to +0x4c (P_MOG).
+struct CMenuGameOptionsInGamePC : CMenuGameOptionsPC {
 };
-static_assert(sizeof(C_008438f0) == 0x64);
+static_assert(sizeof(CMenuGameOptionsInGamePC) == 0x64);
 
-struct C_00843a90 : CMenuProfiles {
+// CMenuProfilesPC (vtable 0x00843A90): Derives from CMenuProfiles. The PC menu manager sub_511450 creates it and stores it at mgr+0x24, which sub_50E610 registers as P_Profil. Its own methods (sub_544550, sub_5443B0) handle typing a profile name through the P_Edit edit screen, in place of the console flow.
+struct CMenuProfilesPC : CMenuProfiles {
     uint8_t pad_0041[0x33];
-    uint8_t field_0074;
+    uint8_t m_editingName;
     uint8_t pad_0075[0x3];
 };
-static_assert(sizeof(C_00843a90) == 0x78);
+static_assert(sizeof(CMenuProfilesPC) == 0x78);
+static_assert(offsetof(CMenuProfilesPC, m_editingName) == 0x74);
 
 // CMenuSaveGame (vtable 0x00843B30): ListboxSaveGames, BotonNew, BotonErase
 struct CMenuSaveGame : CMenuScreen {
@@ -5748,9 +5786,10 @@ struct CMenuVideoOptions : CMenuScreen {
 };
 static_assert(sizeof(CMenuVideoOptions) == 0x80);
 
-struct C_008440a0 : CMenuVideoOptions {
+// CMenuVideoOptionsInGame (vtable 0x008440A0): CMenuVideoOptions subclass allocated in 00511450 into manager +0x12C (plain CMenuVideoOptions goes to +0x128); 00511810 registers +0x128 as g_pszMenu_P_Video and +0x12C as g_pszMenu_P_VideoI (in-game video options). Own slot 20 (00549520) pushes a control value to a global system.
+struct CMenuVideoOptionsInGame : CMenuVideoOptions {
 };
-static_assert(sizeof(C_008440a0) == 0x80);
+static_assert(sizeof(CMenuVideoOptionsInGame) == 0x80);
 
 struct C_00844200 {
     void** vtbl;
@@ -6233,9 +6272,10 @@ struct CMenuMpGameMode : CMenuScreen {
 };
 static_assert(sizeof(CMenuMpGameMode) == 0x30);
 
-struct C_00845d48 : CMenuMpSessions {
+// CMenuMpSessionsPC (vtable 0x00845D48): CMenuMpSessions subclass (ctor 00565FE0 calls base ctor 00561B90) created twice by PC-derived init 0050A110 (after base init 00509960, which creates plain CMenuMpSessions with modes 2/3/4) with mode +0x1E0 = 1 and 0; own slot 21 (00566010) submits session settings via 005617D0 when a global flag is 
+struct CMenuMpSessionsPC : CMenuMpSessions {
 };
-static_assert(sizeof(C_00845d48) == 0x210);
+static_assert(sizeof(CMenuMpSessionsPC) == 0x210);
 
 struct C_0084cdc8 {
     void** vtbl;

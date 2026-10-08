@@ -6,7 +6,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(int, __fastcall, C_00865aa8_UpdateBaseState, 0x00713EF0,
+CSF_FUNC(int, __fastcall, C_00863f60_UpdateBaseState, 0x00713EF0,
          (C_00865aa8* self, void* edx, int elapsedTimeBits));
 
 CSF_GLOBAL(float, g_fZero, 0x0082D4CC);
@@ -15,7 +15,7 @@ CSF_GLOBAL(float, g_fOscillationPi, 0x008656AC);
 static void __fastcall C_00865aa8_AdvanceOscillation(
     C_00865aa8* self, void* /*edx*/, int elapsedTimeBits)
 {
-    C_00865aa8_UpdateBaseState(self, nullptr, elapsedTimeBits);
+    C_00863f60_UpdateBaseState(self, nullptr, elapsedTimeBits);
 
     void* linkedObject =
         ((void* (__fastcall*)(void*, void*))self->vtbl[6])(

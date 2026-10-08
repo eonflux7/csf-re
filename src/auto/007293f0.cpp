@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_FUNC(int, __fastcall, C_00865aa8_ApplyUpdatedState, 0x00728DE0,
+CSF_FUNC(int, __fastcall, C_008657e0_ApplyUpdatedState, 0x00728DE0,
          (C_00865aa8* self, void* edx));
 
 static int __fastcall C_00865aa8_UpdateLinkedValue(
@@ -56,7 +56,7 @@ static int __fastcall C_00865aa8_UpdateLinkedValue(
                 valueObject, nullptr, updatedValue);
     }
 
-    return C_00865aa8_ApplyUpdatedState(self, nullptr);
+    return C_008657e0_ApplyUpdatedState(self, nullptr);
 }
 
 HOOK(0x007293F0, C_00865aa8_UpdateLinkedValue, "auto");

@@ -5,7 +5,7 @@
 
 // Shared helper: prepares/refreshes the object (bound at the address the
 // original calls). Called as a __thiscall with no stack arguments.
-CSF_FUNC(char, __fastcall, C_00865980_PrepareUpdate, 0x00713E80,
+CSF_FUNC(char, __fastcall, C_00863f60_PrepareUpdate, 0x00713E80,
          (C_00865980* self, void* edx));
 
 // Tail jump into vtable slot 0x88 (slot 34) forwarding ecx unchanged.
@@ -27,7 +27,7 @@ static int __fastcall C_00865980_ConditionalUpdate(
     if (static_cast<std::uint8_t>(result) == 0)
         return result;
 
-    C_00865980_PrepareUpdate(self, nullptr);
+    C_00863f60_PrepareUpdate(self, nullptr);
 
     [[clang::musttail]] return C_00865980_ForwardUpdate(self, nullptr);
 }

@@ -791,6 +791,204 @@ def job_classes(args):
     live(phase="finished", current=None)
 
 
+# ---------------------------------------------------------------- job: family (agentic class naming)
+
+SYSTEM_FAMILY = """You are a reverse engineer naming the unnamed C++ classes of one area of a 2006 MSVC game
+(Commandos: Strike Force, PC; Pyro Studios, Spanish identifiers). There is no RTTI. You work in the project
+repository with read-only tools; investigate until each class's role is clear, then answer with the JSON object.
+
+Where the evidence is (all addresses lowercase 8-hex in file names, e.g. 0053c5e0):
+  export/funcs/<ea>.c      Hex-Rays pseudocode of a function (callees appear as sub_XXXXXX)
+  db/functions.csv         ea,size,region,module,name,...: the current names of functions (C_<vtable>_ = method
+                           of an unnamed class; CMenuX_ = method of a named class)
+  src/auto/<ea>.cpp        our reimplementation of a function (better names, typed fields), when it exists
+  db/types/classes.yaml    the named classes (keys = vtable) with the evidence for each
+  export/strings.json      {address: string} of every string in the binary
+  db/modules.yaml          source modules (id, address range, name, classes)
+Commands you may run (Bash, nothing else):
+  .venv/bin/python tools/classinfo.py <vtable>         class sheet: base chain, ctors/dtors and their callers,
+                                                       field accesses, method slots
+  .venv/bin/python tools/evidence.py pseudo <ea>       pseudocode with current names substituted
+  .venv/bin/python tools/evidence.py callers <ea>      who calls a function
+  .venv/bin/python tools/evidence.py class <vt|name>   struct + vtable slots with names
+Strong evidence: who creates the object and what it is stored into (factory switch cases, .fbs file names,
+control/keyword strings), strings and library calls in its methods, the named base/derived classes. Method
+names in functions.csv were given by automated passes and can be wrong. Budget your reading: start from the
+creation sites and the biggest methods; stop when the role is clear.
+
+The game's conventions (attested): C* classes (CVector3, CMenuScreen, CGuiControl), T* AI tasks/states,
+S* plain structs, Net* NetZ objects. English C* names unless a Spanish type-name string is attested. A derived
+class should read as its family (CMenuScreen -> CMenuSaveGame). Names must differ from every existing class.
+
+Per class: name, attested (true only if the exact name is a type-name string in the binary), confidence (0.9+
+role clear, 0.7-0.85 good evidence, 0.5-0.65 plausible, <0.5 unclear), why (the deciding evidence, one or two
+sentences with addresses), and fields: up to 12 {offset: name} you established (e.g. "0x0058": "m_selected"),
+only fields whose meaning you saw (offset hex as in classinfo)."""
+
+SCHEMA_FAMILY = {
+    "type": "object",
+    "properties": {"classes": {"type": "array", "items": {"type": "object", "properties": {
+        "vtable": {"type": "string"}, "name": {"type": "string"}, "attested": {"type": "boolean"},
+        "confidence": {"type": "number"}, "why": {"type": "string"},
+        "fields": {"type": "object", "additionalProperties": {"type": "string"}}},
+        "required": ["vtable", "name", "attested", "confidence", "why"]}}},
+    "required": ["classes"],
+}
+FAMILY_TOOLS = ["Read", "Grep", "Glob", "Bash(.venv/bin/python tools/classinfo.py:*)",
+                "Bash(.venv/bin/python tools/evidence.py:*)"]
+
+
+def agent(model, effort, system, prompt, schema, budget):
+    """One agentic headless session in the repo: read-only tools, everything else denied (dontAsk)."""
+    cmd = ["claude", "-p", "--tools", "Read,Grep,Glob,Bash", "--allowedTools", *FAMILY_TOOLS,
+           "--permission-mode", "dontAsk", "--model", model, "--effort", effort, "--no-session-persistence",
+           "--strict-mcp-config", "--setting-sources", "", "--disable-slash-commands", "--output-format", "json",
+           "--max-budget-usd", str(budget), "--system-prompt", system, "--json-schema", json.dumps(schema)]
+    t0 = time.time()
+    r = subprocess.run(cmd, input=prompt, capture_output=True, text=True, cwd=ROOT, timeout=3600)
+    try:
+        d = json.loads(r.stdout)
+    except ValueError:
+        raise RuntimeError(f"claude -p rc={r.returncode}: {(r.stderr or r.stdout)[-300:]}")
+    out = d.get("structured_output")
+    if out is None:
+        m = re.search(r"\{.*\}", d.get("result") or "", re.S)
+        out = json.loads(m.group(0)) if m else {}
+    if d.get("is_error") and not out:
+        raise RuntimeError(f"claude -p error: {str(d.get('result'))[:300]}")
+    u = d.get("usage", {})
+    usage = dict(input=u.get("input_tokens", 0), cache_write=u.get("cache_creation_input_tokens", 0),
+                 cache_read=u.get("cache_read_input_tokens", 0), output=u.get("output_tokens", 0),
+                 cost_usd=d.get("total_cost_usd", 0), secs=round(time.time() - t0, 1), model=model, effort=effort,
+                 turns=d.get("num_turns", 0))
+    return out, usage
+
+
+def family_targets(db, modules):
+    """Unnamed classes listed by the modules whose name matches one of the globs, grouped by module."""
+    import fnmatch, yaml
+    raw = yaml.safe_load(open(CLASSES_YAML)) or {}
+    have = {(f"{k:08x}" if isinstance(k, int) else str(k).lower()) for k in raw}
+    groups, seen = [], set()
+    for m in yaml.safe_load(open(os.path.join(ROOT, "db", "modules.yaml"))):
+        if not any(fnmatch.fnmatch(m.get("name") or m["id"], g) or m["id"] == g for g in modules):
+            continue
+        vts = [c[2:] for c in m.get("classes", []) if re.fullmatch(r"C_[0-9a-f]{8}", c)]
+        vts = [v for v in vts if v in db.classes and v not in have and v not in seen]
+        seen |= set(vts)
+        if vts:
+            groups.append((m, vts))
+    return groups
+
+
+def job_family(args):
+    import classinfo as ci
+    db = DB()
+    for e, f in db.F.items():
+        for c in f["callees"]:
+            if c in db.F:
+                db.F[c].setdefault("callers", []).append(e)
+    import yaml
+    raw = yaml.safe_load(open(CLASSES_YAML)) or {}
+    allnames = {v["name"] for v in db.class_names.values()} | {v.get("name") for v in raw.values() if isinstance(v, dict)}
+    groups = family_targets(db, args.modules)
+    # sessions of up to --batch classes; neighbouring modules share one session (same family, shared reading)
+    sessions, cur = [], []
+    for m, vts in groups:
+        for vt in vts:
+            cur.append((m, vt))
+            if len(cur) >= args.batch:
+                sessions.append(cur)
+                cur = []
+    if cur:
+        sessions.append(cur)
+    n = sum(len(s) for s in sessions)
+    live(job="family", phase="running", model=args.model, effort=args.effort,
+         counts=dict(total=n, batches=len(sessions), done=0, applied=0, held=0, rejected=0))
+    print(f"{n} classes in {len(sessions)} sessions", flush=True)
+    held_path = os.path.join(WORK, "held_family.jsonl")
+    applied = []
+    for si, sess in enumerate(sessions):
+        batch = [vt for _, vt in sess]
+        named = sorted({db.class_names[c[2:]]["name"] for m, _ in sess for c in m.get("classes", [])
+                        if c[2:] in db.class_names} | {c for m, _ in sess for c in m.get("classes", [])
+                                                         if not c.startswith("C_")})
+        prompt = (f"Name these {len(batch)} unnamed classes. Modules: "
+                  + ", ".join(sorted({f"{m['id']} {m.get('name') or ''}".strip() for m, _ in sess}))
+                  + (f". Named classes in the same modules: {', '.join(named)}" if named else "")
+                  + "\n\nExisting class names (taken): " + ", ".join(sorted(x for x in allnames if x))
+                  + "\n\nStarting sheets (dig further with the tools):\n\n"
+                  + "\n\n".join(class_packet(db, ci, vt, module_name) for vt in batch))
+        if args.dry:
+            print(prompt)
+            return
+        live(current=dict(batch=si + 1, addrs=batch, since=time.time(), chars=len(prompt)))
+        try:
+            out, u = agent(args.model, args.effort, SYSTEM_FAMILY, prompt, SCHEMA_FAMILY, args.budget)
+        except Exception as e:
+            print(f"session {si + 1}: {e}", flush=True)
+            bump(errors=1)
+            continue
+        account(u)
+        acc, held, rej = [], [], []
+        for p in out.get("classes", []):
+            vt = str(p.get("vtable", "")).lower().replace("0x", "").zfill(8)
+            nm = p.get("name", "")
+            if vt not in batch:
+                rej.append(dict(p, reason="not in this session"))
+            elif not re.fullmatch(r"(C|T|S|Net)[A-Z][A-Za-z0-9_]{1,40}", nm) or re.fullmatch(r"C_?[0-9a-fA-F]{6,8}", nm):
+                rej.append(dict(p, reason=f"name {nm!r} breaks the convention"))
+            elif nm in allnames:
+                rej.append(dict(p, reason=f"name {nm!r} already taken"))
+            else:
+                p["vtable"] = vt
+                (acc if p["confidence"] >= args.min_conf else held).append(p)
+                allnames.add(nm)
+        if acc and not args.no_apply:
+            with Locked(), open(CLASSES_YAML, "a") as f:
+                if not applied:
+                    f.write(f"\n# ---- captain family {time.strftime('%Y-%m-%d')} ({args.model}, agentic): "
+                            + ", ".join(args.modules) + "\n")
+                for p in acc:
+                    why = p["why"].replace('"', "'").replace("\n", " ")[:300]
+                    fl = {k: v for k, v in (p.get("fields") or {}).items()
+                          if re.fullmatch(r"(0x)?[0-9a-fA-F]{1,4}", k) and re.fullmatch(r"[A-Za-z_]\w{1,40}", v)}
+                    fs = (", fields: {" + ", ".join(f"0x{int(k, 16):04X}: {v}" for k, v in sorted(
+                        fl.items(), key=lambda kv: int(kv[0], 16))) + "}") if fl else ""
+                    f.write(f'"{vt_key(p["vtable"])}": {{name: {p["name"]}, attested: '
+                            f'{str(bool(p["attested"])).lower()}, conf: {round(p["confidence"], 2)}, src: captain, '
+                            f'why: "{why}"{fs}}}\n')
+            applied += acc
+        with open(held_path, "a") as f:
+            for e in held + rej:
+                f.write(json.dumps(dict(e, ts=time.time(), model=args.model)) + "\n")
+        rec = dict(ts=time.time(), job="family", batch=batch, usage=u,
+                   accepted=[(p["vtable"], p["name"], "class", p["confidence"]) for p in acc],
+                   held=[(p["vtable"], p["name"], p["confidence"]) for p in held],
+                   rejected=[(p.get("vtable"), p.get("name"), p["reason"]) for p in rej],
+                   why={p["vtable"]: p["why"] for p in acc + held})
+        with open(LOG, "a") as f:
+            f.write(json.dumps(rec) + "\n")
+        bump(done=len(batch), applied=len(acc), held=len(held), rejected=len(rej))
+        _live["recent"] = (rec["accepted"] + [(a, nm, "", c) for a, nm, c in rec["held"]] + _live["recent"])[:12]
+        live(current=None)
+        print(f"session {si + 1}/{len(sessions)}: {len(acc)} applied, {len(held)} held, {len(rej)} rejected, "
+              f"{u['turns']} turns, {u['secs']}s, ${u['cost_usd']:.2f}", flush=True)
+        for p in acc + held:
+            print(f"   {p['vtable']} {p['name']:28} {p['confidence']:.2f}  {p['why'][:110]}", flush=True)
+    if applied and not args.no_apply:
+        with Locked():
+            subprocess.run(["git", "-C", ROOT, "commit", "-q", "-m",
+                            f"captain family: {len(applied)} classes named ({', '.join(args.modules)}; classes.yaml "
+                            "only, rename pass separate)\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+                            "--", "db/types/classes.yaml"])
+    live(phase="finished", current=None)
+
+
+def vt_key(vt):
+    return vt.lower().zfill(8)
+
+
 # ---------------------------------------------------------------- job: functions (placeholder names)
 
 FN_PLACEHOLDER = re.compile(
@@ -1104,6 +1302,15 @@ def main():
     fn.add_argument("--only", type=lambda s: {int(x, 16) for x in s.split(",")})
     fn.add_argument("--dry", action="store_true")
     fn.add_argument("--no-apply", action="store_true")
+    fa = sub.add_parser("family", help="agentic: one read-only Claude session per group of unnamed classes")
+    fa.add_argument("modules", nargs="+", help="module names/ids or globs (menu_*)")
+    fa.add_argument("--batch", type=int, default=6, help="classes per session")
+    fa.add_argument("--model", default="opus")
+    fa.add_argument("--effort", default="medium")
+    fa.add_argument("--budget", type=float, default=3.0, help="USD cap per session")
+    fa.add_argument("--min-conf", type=float, default=0.7)
+    fa.add_argument("--dry", action="store_true")
+    fa.add_argument("--no-apply", action="store_true")
     st = sub.add_parser("strings", help="mechanical: pointer-to-string globals named after the string")
     st.add_argument("--dry", action="store_true")
     st.add_argument("--show", type=int, default=30)
@@ -1122,7 +1329,8 @@ def main():
     except BlockingIOError:
         sys.exit("captain is already running (work/captain.lock)")
     {"globals": job_globals, "strings": job_strings, "modules": job_modules,
-     "classes": job_classes, "functions": job_functions}[a.cmd](a)
+     "classes": job_classes, "functions": job_functions,
+     "family": job_family}[a.cmd](a)
 
 
 if __name__ == "__main__":

@@ -455,3 +455,15 @@ calls (`--bare` needs an API key). Monitor has a Captain panel (work/captain_sta
 - What batch naming is good for: self-contained evidence (strings/keys, data tables, RW API, module evidence):
   globals and modules worked; classes/accessors don't.
 - classinfo.py read the old db/class_names.yaml (names never shown); now db/types/classes.yaml.
+
+## 2026-10-08 — captain family: agentic class naming per module group
+`captain.py family <module globs>`: one headless Opus session per ≤6 unnamed classes, cwd = repo, read-only tools
+(Read/Grep/Glob + Bash limited to classinfo.py / evidence.py, `--permission-mode dontAsk`, `--max-budget-usd 3`).
+The batch class packet stays the starting sheet; the session follows creation sites itself. Menu modules: 16
+unnamed classes, 3 sessions, 27-49 turns, 90-150 s, **$1.84 total; 12 applied (conf ≥ 0.7), 4 held** — vs 1-2 of 12
+for the one-shot batch job. The deciding evidence was what batch packets lack: the CMenuManager registry
+(0x511450 allocates every screen into a manager slot, 0x511810 registers it under its g_pszMenu_P_* panel name),
+which separates e.g. CMenuLoadGameInGame / CMenuLoadGameMainMenu. Names: CMenuManager, CMenuScreenFader,
+CMenu{LoadGame,SoundOptions,Controls,VideoOptions}InGame, CMenuGameOptionsInGamePC, CMenuProfilesPC,
+CMenuMpSessionsPC, CMenuDemoExit, CGuiCharacterPreview. Held: CMenuIntro 0.65, CMenuMissionInfoInGame 0.6, two
+DO-filter classes (0x8453a4/0x845368) < 0.5. Use it at every wave prep (module wave = its classes first).

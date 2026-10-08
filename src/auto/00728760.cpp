@@ -3,7 +3,7 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(char, __fastcall, C_008656d0_PrepareUpdate, 0x00713E80,
+CSF_FUNC(char, __fastcall, C_00863f60_PrepareUpdate, 0x00713E80,
          (C_008656d0* self, void* edx));
 
 static __declspec(naked) int __fastcall C_008656d0_ForwardUpdate(
@@ -24,7 +24,7 @@ static int __fastcall C_008656d0_ConditionalUpdate(
     if (static_cast<std::uint8_t>(result) == 0)
         return result;
 
-    C_008656d0_PrepareUpdate(self, nullptr);
+    C_00863f60_PrepareUpdate(self, nullptr);
 
     [[clang::musttail]] return C_008656d0_ForwardUpdate(self, nullptr);
 }
