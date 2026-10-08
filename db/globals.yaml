@@ -115,7 +115,33 @@
 - {addr: 0x008928E8, name: g_ElementCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00892A0C, name: g_ForwardRangeExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00892A5C, name: g_ArrayConstructionExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0089972C, name: g_CurrentSceneIndex, type: int, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x00899738, name: g_numScenes, type: unsigned int, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x00899AA4, name: g_szMenuHelpFile, type: const char*, uses: 0, src: captain, conf: 0.9}
+- {addr: 0x00899AB0, name: g_szMenuVideoFile, type: const char*, uses: 0, src: captain, conf: 0.9}
+- {addr: 0x00899AB4, name: g_szMenuVideoInGameFile, type: const char*, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x00899AB8, name: g_szMenuGameOptionsInGameFile, type: const char*, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x00899AC8, name: g_szMenuSoundInGameFile, type: const char*, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x00899ACC, name: g_szMenuOptionsFile, type: const char*, uses: 0, src: captain, conf: 0.9}
+- {addr: 0x00899AD0, name: g_ScreenCredits, type: const char*, uses: 0, src: captain, conf: 0.9}
+- {addr: 0x00899AD4, name: g_ScreenOptionsIngame, type: const char*, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x00899AD8, name: g_ScreenCampaign, type: const char*, uses: 0, src: captain, conf: 0.88}
+- {addr: 0x00899AE4, name: g_ScreenMainMenu, type: const char*, uses: 0, src: captain, conf: 0.92}
+- {addr: 0x00899AE8, name: g_ScreenSceneSelect, type: const char*, uses: 0, src: captain, conf: 0.85}
 - {addr: 0x00899AF0, name: g_ScreenGame, type: void*, uses: 1, src: captain, conf: 0.7}
+- {addr: 0x00899AF4, name: g_ScreenGameMenu, type: const char*, uses: 0, src: captain, conf: 0.88}
+- {addr: 0x00899AF8, name: g_ScreenGameMenuMP, type: char*, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x00899AFC, name: g_ScreenCharacterMP, type: char*, uses: 0, src: captain, conf: 0.8}
+- {addr: 0x00899B08, name: g_ScreenLoadGame, type: char*, uses: 0, src: captain, conf: 0.9}
+- {addr: 0x00899B0C, name: g_ScreenLoadMenu, type: char*, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x00899B14, name: g_ScreenTactic, type: char*, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x00899B18, name: g_ScreenStatsMP, type: char*, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x00899B20, name: g_MenuPanelTmPartPath, type: const char*, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x00899B28, name: g_MenuPanelMsgBoxPath, type: const char*, uses: 0, src: captain, conf: 0.9}
+- {addr: 0x00899B2C, name: g_MenuPanelIntroPath, type: const char*, uses: 0, src: captain, conf: 0.9}
+- {addr: 0x00899B30, name: g_MenuPanelLbSlCuPath, type: const char*, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x00899B50, name: g_LobbyCustomMatchMenuFbsPath, type: const char*, uses: 0, src: captain, conf: 0.75}
+- {addr: 0x00899B98, name: g_MenuPanelSalDemPath, type: const char*, uses: 0, src: captain, conf: 0.85}
 - {addr: 0x00899B9C, name: g_ScreenWidth, type: unsigned int, uses: 0, src: captain, conf: 0.9}
 - {addr: 0x00899BA0, name: g_ScreenHeight, type: unsigned int, uses: 0, src: captain, conf: 0.9}
 - {addr: 0x0089A5E8, name: g_SelectedAccountIndex, type: int, uses: 0, src: captain, conf: 0.75}
@@ -135,7 +161,7 @@
 - {addr: 0x008A7D94, name: g_ColorWhite_G, type: float, uses: 1, src: captain, conf: 0.8, alt: [g_FadeGreen]}
 - {addr: 0x008A7D98, name: g_ColorWhite_B, type: float, uses: 1, src: captain, conf: 0.8, alt: [g_FadeBlue]}
 - {addr: 0x008A7D9C, name: g_ColorWhite_A, type: float, uses: 1, src: captain, conf: 0.8, alt: [g_FadeAlpha]}
-- {addr: 0x008A7DA0, name: g_CellTextColorSentinelRed, type: float, uses: 3, src: auto}
+- {addr: 0x008A7DA0, name: g_ColorBlack, type: float, uses: 3, src: captain, conf: 0.88, alt: [g_CellTextColorSentinelRed]}
 - {addr: 0x008A7DA4, name: g_ColorBlack_G, type: float, uses: 2, src: captain, conf: 0.8, alt: [g_CellTextColorSentinelGreen]}
 - {addr: 0x008A7DA8, name: g_ColorBlack_B, type: float, uses: 2, src: captain, conf: 0.8, alt: [g_CellTextColorSentinelBlue]}
 - {addr: 0x008A7DAC, name: g_ColorBlack_A, type: float, uses: 2, src: captain, conf: 0.8, alt: [g_CellTextColorSentinelAlpha]}
@@ -205,7 +231,7 @@
 - {addr: 0x008A88B0, name: g_LookupKeyString, type: char*, uses: 1, src: auto}
 - {addr: 0x008A88B4, name: g_LookupKeyString, type: char*, uses: 1, src: auto}
 - {addr: 0x008A88B8, name: g_LookupKeyString, type: char*, uses: 1, src: auto}
-- {addr: 0x008A8BD0, name: g_LookupNames, type: LookupNameTable, uses: 1, src: auto}
+- {addr: 0x008A8BD0, name: g_ImpactPfxNames, type: const char*, uses: 1, src: captain, conf: 0.75, alt: [g_LookupNames]}
 - {addr: 0x008AFC60, name: g_Value_8afc60, type: int, uses: 1, src: auto}
 - {addr: 0x008AFC78, name: g_Value_8afc78, type: int32_t, uses: 2, src: auto}
 - {addr: 0x008AFC7C, name: g_Value8afc7c, type: int, uses: 1, src: auto}
@@ -263,7 +289,7 @@
 - {addr: 0x008BB420, name: g_Dword_8BB420, type: uint32_t, uses: 2, src: opus}
 - {addr: 0x008BB424, name: g_ZeroVectorY, type: float, uses: 0, src: captain, conf: 0.8}
 - {addr: 0x008BB428, name: g_ZeroVectorZ, type: float, uses: 0, src: captain, conf: 0.8}
-- {addr: 0x008BB430, name: g_CameraClearColor, type: 'std::uint32_t', uses: 1, src: auto}
+- {addr: 0x008BB430, name: g_BlackClearColor, type: 'std::uint32_t', uses: 1, src: captain, conf: 0.7, alt: [g_CameraClearColor]}
 - {addr: 0x008BB448, name: g_ZeroVector2X, type: float, uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008BB44C, name: g_ZeroVector2Y, type: float, uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008BB450, name: g_Value_8BB450, type: int, uses: 1, src: auto}
