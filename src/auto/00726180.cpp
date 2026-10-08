@@ -34,7 +34,7 @@ static void __fastcall CGuiButton_ProcessCurrentStateQuad(
     }
 
     int* quad = nullptr;
-    const std::uint32_t state = self->field_0148;
+    const std::uint32_t state = self->m_state;
     if (state == 0) {
         quad = reinterpret_cast<int*>(self->m_pIdleQuad);
     } else if (state == 1 || state == 2) {

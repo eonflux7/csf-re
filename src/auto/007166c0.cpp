@@ -56,7 +56,7 @@ static CGuiListBoxBase* __fastcall CGuiListBoxBase_Construct(
     self->field_01e8 = 0;
     self->field_01ec = 0x3F800000;
 
-    self->field_01b8 = 20;
+    self->m_rowHeight = 20;
     self->field_01c8 = 20;
     self->field_01c4 = 20;
 

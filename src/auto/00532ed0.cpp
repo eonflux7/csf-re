@@ -32,7 +32,7 @@ static void* __fastcall CMenuEula_UpdateNavigationButtons(
     CSF_AT(uint32_t, temporaryText, 0x14) = 0;
     CSF_AT(uint16_t, temporaryText, 0x04) = 0;
 
-    void* textControl = reinterpret_cast<void*>(self->field_0034);
+    void* textControl = reinterpret_cast<void*>(self->m_textControl);
     void* textInfo = reinterpret_cast<GetTextInfo>(
         CSF_AT(void**, textControl, 0)[0x24C / 4])(
             textControl, nullptr, temporaryText, 0);

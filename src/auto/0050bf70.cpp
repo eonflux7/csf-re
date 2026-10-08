@@ -20,10 +20,10 @@ static void __fastcall CMenuScreenFader_AdvanceFade(CMenuScreenFader* self, void
 {
     float elapsed = deltaSeconds + self->field_0030;
     self->field_0030 = elapsed;
-    self->m_fadeProgress = g_TransitionOne - elapsed / self->field_0028;
+    self->m_fadeProgress = g_TransitionOne - elapsed / self->m_fadeDuration;
 
     // Unordered (NaN) compares leave the reset branch untaken, matching the original jne.
-    if (elapsed >= self->field_0028)
+    if (elapsed >= self->m_fadeDuration)
     {
         self->field_0030 = 0.0f;
         self->m_fadeProgress = 0.0f;

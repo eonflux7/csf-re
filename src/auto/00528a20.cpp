@@ -25,7 +25,7 @@ static void __fastcall CMenuMessageBox_DestroyOwnedObject(
         self->field_004c = 0;
         self->field_0050 = 0;
         self->field_0054 = 0;
-        self->field_0058 = 0;
+        self->m_staticControl = 0;
         self->field_005c = 0;
         self->field_0060 = 0;
         self->field_006c = 0;

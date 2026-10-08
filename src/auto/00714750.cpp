@@ -15,7 +15,7 @@ static int __fastcall CGuiListBoxBase_SetItemHeight(
         static_cast<uint32_t>(itemHeight) + 2u * initialSpacing;
 
     self->m_bLayoutDirty = 1;
-    self->field_01b8 = static_cast<uint32_t>(itemHeight);
+    self->m_rowHeight = static_cast<uint32_t>(itemHeight);
 
     const uint32_t firstExtent =
         *reinterpret_cast<uint32_t* (__fastcall*)(CGuiListBoxBase*, void*)>(
@@ -25,7 +25,7 @@ static int __fastcall CGuiListBoxBase_SetItemHeight(
     self->field_01c4 = firstExtent;
     self->field_01d0 = 0;
 
-    const uint32_t currentHeight = self->field_01b8;
+    const uint32_t currentHeight = self->m_rowHeight;
     self->field_01cc = 0;
     const uint32_t currentSpacing = self->m_lineSpacing;
     self->field_01c8 = initialPaddedHeight;

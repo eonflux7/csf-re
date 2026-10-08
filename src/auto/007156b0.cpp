@@ -75,7 +75,7 @@ static int __fastcall CGuiListBoxBase_UpdateSelectionDisplay(
         CSF_AT(uint32_t, dimensions, 4) -
         self->field_0178 - self->field_0174);
     const int32_t rowPitch =
-        SignedWord(self->field_01b8 + 2u * self->m_lineSpacing);
+        SignedWord(self->m_rowHeight + 2u * self->m_lineSpacing);
     const int32_t remainder = availableHeight % rowPitch;
     const uint8_t drawSelection = self->field_01dd;
     const int32_t wholeHeight = SignedWord(
@@ -102,7 +102,7 @@ static int __fastcall CGuiListBoxBase_UpdateSelectionDisplay(
                 static_cast<uint32_t>(*selectedRow) -
                 static_cast<uint32_t>(firstVisible);
             const uint32_t pitch =
-                self->field_01b8 + 2u * self->m_lineSpacing;
+                self->m_rowHeight + 2u * self->m_lineSpacing;
             const uint32_t topOffset =
                 rowOffset * pitch + self->field_01d0;
             const uint32_t left =

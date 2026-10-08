@@ -8,7 +8,7 @@
 static int __fastcall CGuiChoiceNumButton_SetRange(
     CGuiChoiceNumButton* self, void* /*edx*/, int a2, int a3)
 {
-    self->field_01f0 = static_cast<uint32_t>(a2);
+    self->m_minValue = static_cast<uint32_t>(a2);
     void** vtbl = *reinterpret_cast<void***>(self);
     self->field_01f4 = static_cast<uint32_t>(a3);
     return ((int(__fastcall*)(CGuiChoiceNumButton*, void*, int))vtbl[0x2B0 / 4])(

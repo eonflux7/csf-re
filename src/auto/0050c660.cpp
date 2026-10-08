@@ -109,7 +109,7 @@ static int __fastcall CMenuScreenFader_RequestScreen(
                 timingObject, nullptr);
 
     const uint32_t durationBits = CSF_AT(uint32_t, timingData, 0x1C);
-    std::memcpy(&self->field_0028, &durationBits, sizeof(durationBits));
+    std::memcpy(&self->m_fadeDuration, &durationBits, sizeof(durationBits));
 
     const uint32_t length = MenuManager_GetStringLength(pageName);
     AssignStringRange_429B60(bytes + 4, pageName + 1, pageName, length);
@@ -123,7 +123,7 @@ static int __fastcall CMenuScreenFader_RequestScreen(
     if (self->m_state == 3)
     {
         const double reversedProgress =
-            static_cast<double>(self->field_0028) -
+            static_cast<double>(self->m_fadeDuration) -
             static_cast<double>(self->field_0030);
         self->m_state = 1;
         self->m_bIdle = 0;

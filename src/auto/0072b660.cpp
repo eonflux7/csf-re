@@ -26,19 +26,19 @@ static char __fastcall CGuiPanel_HandleDirectionalInput(
     if (result == 0)
         return result;
 
-    const std::uint32_t initialBegin = self->field_0138;
+    const std::uint32_t initialBegin = self->m_childrenBegin;
     const std::uint32_t initialCount =
         initialBegin != 0
             ? static_cast<std::uint32_t>(
                   static_cast<std::int32_t>(
-                      self->field_013c - initialBegin) >> 2)
+                      self->m_childrenEnd - initialBegin) >> 2)
             : 0;
 
     for (std::uint32_t index = 0; index < initialCount; ++index)
     {
         auto* child = reinterpret_cast<CGuiControl*>(
             CSF_AT(std::uint32_t,
-                   reinterpret_cast<void*>(self->field_0138),
+                   reinterpret_cast<void*>(self->m_childrenBegin),
                    index * 4));
 
         ((void(__fastcall*)(CGuiControl*, void*, int, int))
@@ -98,12 +98,12 @@ static char __fastcall CGuiPanel_HandleDirectionalInput(
         }
 
         ++attempts;
-        const std::uint32_t childrenBegin = self->field_0138;
+        const std::uint32_t childrenBegin = self->m_childrenBegin;
 
         if (childrenBegin != 0 &&
             attempts < static_cast<std::uint32_t>(
                            static_cast<std::int32_t>(
-                               self->field_013c - childrenBegin) >> 2))
+                               self->m_childrenEnd - childrenBegin) >> 2))
         {
             if (focusCandidate == nullptr)
             {

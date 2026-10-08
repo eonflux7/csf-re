@@ -68,7 +68,7 @@ static int __fastcall CGuiListBoxBase_SelectPreviousItem(
             const int range =
                 CGuiListBoxBase_ComputeScrollRange(self, nullptr);
             const int32_t rowPitch = static_cast<int32_t>(
-                self->field_01b8 + 2u * self->m_lineSpacing);
+                self->m_rowHeight + 2u * self->m_lineSpacing);
 
             const int remainder = range % rowPitch;
             const int wholeRange = static_cast<int32_t>(

@@ -16,21 +16,21 @@ CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x6923C0, (void* self, void* e
 static int __fastcall CMenuLoading_ReleaseOwnedObjects(CMenuLoading* self, void* /*edx*/)
 {
     // Step 1: object at +0x2C, virtual slot 0 with argument 1, then clear the field.
-    if (self->field_002c)
+    if (self->m_ownedObjectA)
     {
-        void* owned = reinterpret_cast<void*>(static_cast<uintptr_t>(self->field_002c));
+        void* owned = reinterpret_cast<void*>(static_cast<uintptr_t>(self->m_ownedObjectA));
         ((void(__fastcall*)(void*, void*, int))CSF_AT(void**, owned, 0)[0])(owned, nullptr, 1);
-        self->field_002c = 0;
+        self->m_ownedObjectA = 0;
     }
 
     // Step 2: the result starts as the value at +0x3C. If non-null, release the block at +0x3C + 4
     // and store its return value as the result, then clear the field.
-    int result = static_cast<int>(self->field_003c);
+    int result = static_cast<int>(self->m_ownedBlock);
     if (result)
     {
-        void* block = reinterpret_cast<void*>(static_cast<uintptr_t>(self->field_003c + 4));
+        void* block = reinterpret_cast<void*>(static_cast<uintptr_t>(self->m_ownedBlock + 4));
         result = ReleaseObjectReference(block, nullptr);
-        self->field_003c = 0;
+        self->m_ownedBlock = 0;
     }
 
     // Step 3: object at +0x54, virtual slot 0 with argument 1; its return value becomes the result.

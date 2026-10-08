@@ -22,7 +22,7 @@ static int __fastcall CGuiTextureListBox_ClearTextureRows(
 
     if (begin != nullptr) {
         ResetRecordRange(
-            begin, reinterpret_cast<int*>(self->field_0200),
+            begin, reinterpret_cast<int*>(self->m_textureRowsEnd),
             storage, self);
 
         begin = reinterpret_cast<int*>(self->field_01fc);
@@ -31,7 +31,7 @@ static int __fastcall CGuiTextureListBox_ClearTextureRows(
     }
 
     self->field_01fc = 0;
-    self->field_0200 = 0;
+    self->m_textureRowsEnd = 0;
     CSF_AT(std::uint32_t, self, 0x204) = 0;
     self->field_0208 = 0x3F800000u;
     return CGuiListBoxBase_SetSliderLinkedValue(self, nullptr, 0x3F800000);

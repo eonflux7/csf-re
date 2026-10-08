@@ -26,7 +26,7 @@ static int __fastcall CMenuMessageBox_UpdateStaticLayout(
         reinterpret_cast<void* (__fastcall*)(void*, void*)>(
             CSF_AT(void**, container, 0)[0x1CC / 4])(container, nullptr);
 
-    const std::uint32_t initialStatic = self->field_0058;
+    const std::uint32_t initialStatic = self->m_staticControl;
     if (!initialStatic || !reference)
         return static_cast<int>(initialStatic);
 
@@ -56,7 +56,7 @@ static int __fastcall CMenuMessageBox_UpdateStaticLayout(
         screenWidth += g_UnsignedIntegerBias;
     const float horizontalScale = static_cast<float>(displayWidth / screenWidth);
 
-    void* control = reinterpret_cast<void*>(self->field_0058);
+    void* control = reinterpret_cast<void*>(self->m_staticControl);
     int* stateTarget =
         reinterpret_cast<int* (__fastcall*)(void*, void*)>(
             CSF_AT(void**, control, 0)[0x110 / 4])(control, nullptr);
@@ -96,15 +96,15 @@ static int __fastcall CMenuMessageBox_UpdateStaticLayout(
     size[0] = CSF_AT(std::uint32_t, referenceSize, 0)
             - static_cast<std::uint32_t>(widthReduction);
 
-    control = reinterpret_cast<void*>(self->field_0058);
+    control = reinterpret_cast<void*>(self->m_staticControl);
     reinterpret_cast<void (__fastcall*)(void*, void*, std::uint32_t*)>(
         CSF_AT(void**, control, 0)[0x98 / 4])(control, nullptr, position);
 
-    control = reinterpret_cast<void*>(self->field_0058);
+    control = reinterpret_cast<void*>(self->m_staticControl);
     reinterpret_cast<void (__fastcall*)(void*, void*, std::uint32_t*)>(
         CSF_AT(void**, control, 0)[0xA0 / 4])(control, nullptr, size);
 
-    control = reinterpret_cast<void*>(self->field_0058);
+    control = reinterpret_cast<void*>(self->m_staticControl);
     return CGuiStatic_CopyStateToTarget(control, nullptr, stateTarget);
 }
 

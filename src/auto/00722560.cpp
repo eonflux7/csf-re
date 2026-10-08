@@ -22,13 +22,13 @@ static __attribute__((optnone)) int __fastcall CGuiEdit_MoveTextRangeLeft(
         return 0;
 
     const std::uint32_t previousPosition = position - 1u;
-    self->field_01a8 = previousPosition;
+    self->m_caretIndex = previousPosition;
     self->field_01b0 = previousPosition;
     self->field_01ac = previousPosition;
 
     AdjustTextRangeLeft(self, nullptr, 0);
 
-    self->field_01a8 = self->field_01ac;
+    self->m_caretIndex = self->field_01ac;
     return AdjustTextRangeRight(self, nullptr, 1);
 }
 

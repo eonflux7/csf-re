@@ -34,16 +34,16 @@ static char __fastcall CGuiPanel_ProcessSelectionInput(
     if (!result)
         return result;
 
-    const uint32_t childrenBegin = self->field_0138;
+    const uint32_t childrenBegin = self->m_childrenBegin;
     const uint32_t childCount = childrenBegin
         ? static_cast<uint32_t>(
-              static_cast<int32_t>(self->field_013c - childrenBegin) >> 2)
+              static_cast<int32_t>(self->m_childrenEnd - childrenBegin) >> 2)
         : 0;
 
     for (uint32_t index = 0; index < childCount; ++index)
     {
         uint32_t childAddress =
-            reinterpret_cast<uint32_t*>(self->field_0138)[index];
+            reinterpret_cast<uint32_t*>(self->m_childrenBegin)[index];
         CGuiControl* child = reinterpret_cast<CGuiControl*>(childAddress);
 
         if (!static_cast<uint8_t>(
@@ -85,11 +85,11 @@ static char __fastcall CGuiPanel_ProcessSelectionInput(
 
             EraseFourByteVectorElement(
                 childrenVector, nullptr, &eraseResult,
-                reinterpret_cast<char*>(self->field_0138 + index * 4u));
+                reinterpret_cast<char*>(self->m_childrenBegin + index * 4u));
 
             InsertSingleElementAndReturnIterator(
                 childrenVector, nullptr, &insertResult,
-                reinterpret_cast<uint32_t*>(self->field_0138),
+                reinterpret_cast<uint32_t*>(self->m_childrenBegin),
                 &childAddress);
         }
     }

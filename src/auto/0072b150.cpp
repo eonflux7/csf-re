@@ -30,18 +30,18 @@ static char __fastcall CGuiPanel_ProcessInput(
                 pointerQuad, nullptr, position);
     }
 
-    const uint32_t childrenBegin = self->field_0138;
+    const uint32_t childrenBegin = self->m_childrenBegin;
     uint32_t childCount = 0;
     if (childrenBegin)
     {
         childCount = static_cast<uint32_t>(
-            static_cast<int32_t>(self->field_013c - childrenBegin) >> 2);
+            static_cast<int32_t>(self->m_childrenEnd - childrenBegin) >> 2);
     }
 
     for (uint32_t index = 0; index < childCount; ++index)
     {
         void* child =
-            reinterpret_cast<void**>(self->field_0138)[index];
+            reinterpret_cast<void**>(self->m_childrenBegin)[index];
         reinterpret_cast<void (__fastcall*)(void*, void*, void*)>(
             CSF_AT(void**, child, 0)[0x30 / 4])(child, nullptr, input);
     }

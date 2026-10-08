@@ -7,11 +7,11 @@
 static int __fastcall CGuiRadioGroup_FindSelectedChild(
     CGuiRadioGroup* self, void* /*edx*/)
 {
-    const std::uint32_t childrenBegin = self->field_0138;
+    const std::uint32_t childrenBegin = self->m_childrenBegin;
     std::uint32_t childCount = 0;
     if (childrenBegin != 0) {
         childCount = static_cast<std::uint32_t>(
-            static_cast<std::int32_t>(self->field_013c - childrenBegin) >> 2);
+            static_cast<std::int32_t>(self->m_childrenEnd - childrenBegin) >> 2);
     }
 
     int selectedChild = 0;
@@ -21,7 +21,7 @@ static int __fastcall CGuiRadioGroup_FindSelectedChild(
             break;
 
         void* child =
-            reinterpret_cast<void**>(self->field_0138)[index];
+            reinterpret_cast<void**>(self->m_childrenBegin)[index];
 
         const auto isSelected =
             reinterpret_cast<std::uint8_t (__fastcall*)(void*, void*)>(

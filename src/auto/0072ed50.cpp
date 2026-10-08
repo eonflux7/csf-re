@@ -7,17 +7,17 @@
 static void __fastcall CGuiChoiceButton_SelectChoice(
     CGuiChoiceButton* self, void* /*edx*/, std::uint32_t choiceIndex)
 {
-    const std::uint32_t choicesBegin = self->field_01f4;
+    const std::uint32_t choicesBegin = self->m_choicesBegin;
     if (choicesBegin == 0)
         return;
 
     // Preserve the original wrapping subtraction and arithmetic shift.
     const std::uint32_t choiceCount = static_cast<std::uint32_t>(
-        static_cast<std::int32_t>(self->field_01f8 - choicesBegin) >> 5);
+        static_cast<std::int32_t>(self->m_choicesEnd - choicesBegin) >> 5);
     if (choiceIndex >= choiceCount)
         return;
 
-    self->field_0200 = choiceIndex;
+    self->m_currentChoiceIndex = choiceIndex;
     void* textObject =
         (reinterpret_cast<void* (__fastcall*)(void*, void*)>(
             CSF_AT(void**, self, 0)[0x110 / 4]))(self, nullptr);
@@ -25,7 +25,7 @@ static void __fastcall CGuiChoiceButton_SelectChoice(
         return;
 
     void* choiceRecord = reinterpret_cast<void*>(
-        self->field_01f4 + (self->field_0200 << 5));
+        self->m_choicesBegin + (self->m_currentChoiceIndex << 5));
 
     if (CSF_AT(std::uint32_t, choiceRecord, 0) != 0)
     {
@@ -35,7 +35,7 @@ static void __fastcall CGuiChoiceButton_SelectChoice(
 
         // The preceding call may change the selection or its storage.
         choiceRecord = reinterpret_cast<void*>(
-            self->field_01f4 + (self->field_0200 << 5));
+            self->m_choicesBegin + (self->m_currentChoiceIndex << 5));
         const std::uint32_t parameter = self->field_0204;
         const std::uint32_t resource = CSF_AT(std::uint32_t, choiceRecord, 0);
 

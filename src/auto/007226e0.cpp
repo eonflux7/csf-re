@@ -30,14 +30,14 @@ int __fastcall CGuiEdit_MoveIndicesRight(CGuiEdit* self, void* /*edx*/)
     {
         if (textState == 0)
         {
-            std::uint32_t first = self->field_01a8;
+            std::uint32_t first = self->m_caretIndex;
             std::uint32_t last = self->field_01b0;
 
             if (first == last)
             {
                 std::uint32_t nextFirst = first + 1u;
                 if (nextFirst < length)
-                    self->field_01a8 = nextFirst;
+                    self->m_caretIndex = nextFirst;
 
                 std::uint32_t nextLast = last + 1u;
                 if (nextLast < length)
@@ -49,7 +49,7 @@ int __fastcall CGuiEdit_MoveIndicesRight(CGuiEdit* self, void* /*edx*/)
 
             std::uint32_t nextFirst = first + 1u;
             if (nextFirst < length)
-                self->field_01a8 = nextFirst;
+                self->m_caretIndex = nextFirst;
         }
 
         return AdjustTextRangeLeft(self, nullptr, 0);
@@ -57,7 +57,7 @@ int __fastcall CGuiEdit_MoveIndicesRight(CGuiEdit* self, void* /*edx*/)
 
     {
         std::uint32_t last = self->field_01b0;
-        std::uint32_t first = self->field_01a8;
+        std::uint32_t first = self->m_caretIndex;
         std::uint32_t nextLast = last + 1u;
 
         if (nextLast == length)
@@ -69,7 +69,7 @@ int __fastcall CGuiEdit_MoveIndicesRight(CGuiEdit* self, void* /*edx*/)
         {
             std::uint32_t nextFirst = first + 1u;
             if (nextFirst < length)
-                self->field_01a8 = nextFirst;
+                self->m_caretIndex = nextFirst;
 
             if (nextLast < length)
                 self->field_01b0 = nextLast;
@@ -79,7 +79,7 @@ int __fastcall CGuiEdit_MoveIndicesRight(CGuiEdit* self, void* /*edx*/)
 
         std::uint32_t nextFirst = first + 1u;
         if (nextFirst < length)
-            self->field_01a8 = nextFirst;
+            self->m_caretIndex = nextFirst;
 
         return AdjustTextRangeLeft(self, nullptr, 0);
     }
@@ -87,13 +87,13 @@ int __fastcall CGuiEdit_MoveIndicesRight(CGuiEdit* self, void* /*edx*/)
 WrapAtEnd:
     {
         // Inline continuation at 0x00722530, not a separate function entry.
-        std::uint32_t first = self->field_01a8;
+        std::uint32_t first = self->m_caretIndex;
         std::uint32_t currentLength = CSF_AT(std::uint32_t, self, 0x164);
         std::uint32_t nextFirst = first + 1u;
 
         if (nextFirst == currentLength && currentLength != 0)
         {
-            self->field_01a8 = 0;
+            self->m_caretIndex = 0;
             self->field_01ac = 0;
             return AdjustTextRangeRight(self, nullptr, 1);
         }

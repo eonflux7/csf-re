@@ -21,19 +21,19 @@ static int __fastcall CGuiPanel_ForwardOperationToChildren(
     if (static_cast<std::uint8_t>(result) == 0)
         return result;
 
-    const std::uint32_t childrenBegin = self->field_0138;
+    const std::uint32_t childrenBegin = self->m_childrenBegin;
     result = static_cast<std::int32_t>(childrenBegin);
 
     const std::uint32_t childCount = childrenBegin != 0
         ? static_cast<std::uint32_t>(
               static_cast<std::int32_t>(
-                  self->field_013c - childrenBegin) >> 2)
+                  self->m_childrenEnd - childrenBegin) >> 2)
         : 0;
 
     for (std::uint32_t index = 0; index < childCount; ++index)
     {
         void* child =
-            reinterpret_cast<void**>(self->field_0138)[index];
+            reinterpret_cast<void**>(self->m_childrenBegin)[index];
 
         result =
             ((int(__fastcall*)(void*, void*, int))

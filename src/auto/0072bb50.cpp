@@ -34,12 +34,12 @@ static int __fastcall CGuiPanel_Destroy(CGuiPanel* self, void* /*edx*/)
 
     self->field_0148 = 1;
 
-    const std::uint32_t childrenBegin = self->field_0138;
+    const std::uint32_t childrenBegin = self->m_childrenBegin;
     std::uint32_t childCount = 0;
     if (childrenBegin != 0)
     {
         const std::uint32_t byteDifference =
-            self->field_013c - childrenBegin;
+            self->m_childrenEnd - childrenBegin;
         childCount = static_cast<std::uint32_t>(
             static_cast<std::int32_t>(byteDifference) >> 2);
     }
@@ -48,7 +48,7 @@ static int __fastcall CGuiPanel_Destroy(CGuiPanel* self, void* /*edx*/)
     {
         const std::uint32_t byteOffset = index * 4u;
         void* child = CSF_AT(
-            void*, reinterpret_cast<void*>(self->field_0138), byteOffset);
+            void*, reinterpret_cast<void*>(self->m_childrenBegin), byteOffset);
 
         if (child != nullptr)
         {
@@ -56,7 +56,7 @@ static int __fastcall CGuiPanel_Destroy(CGuiPanel* self, void* /*edx*/)
                 CSF_AT(void**, child, 0)[0])(child, nullptr, 1);
 
             CSF_AT(std::uint32_t,
-                   reinterpret_cast<void*>(self->field_0138),
+                   reinterpret_cast<void*>(self->m_childrenBegin),
                    byteOffset) = 0;
         }
     }
@@ -72,12 +72,12 @@ static int __fastcall CGuiPanel_Destroy(CGuiPanel* self, void* /*edx*/)
     CSF_AT(std::uint32_t, self, 0x170) = 0;
     CSF_AT(std::uint8_t, self, 0x160) = 0;
 
-    const std::uint32_t childrenStorage = self->field_0138;
+    const std::uint32_t childrenStorage = self->m_childrenBegin;
     if (childrenStorage != 0)
         Mem_FreeDebug(reinterpret_cast<void*>(childrenStorage));
 
-    self->field_0138 = 0;
-    self->field_013c = 0;
+    self->m_childrenBegin = 0;
+    self->m_childrenEnd = 0;
     self->field_0140 = 0;
 
     return CGuiControl_Destroy(

@@ -18,7 +18,7 @@ static CGuiTextureListBox* __fastcall CGuiTextureListBox_Construct(
 
     CSF_AT(void**, self, 0) = &g_CGuiTextureListBoxVtable;
     self->field_01fc = 0;
-    self->field_0200 = 0;
+    self->m_textureRowsEnd = 0;
     self->field_0204 = 0;
 
     CGuiListBoxBase_SetLineSpacing(self, nullptr, 0);

@@ -40,12 +40,12 @@ static int __fastcall CGuiEdit_InsertCharacter(
         }
         else
         {
-            const std::uint32_t caretIndex = self->field_01a8;
+            const std::uint32_t caretIndex = self->m_caretIndex;
             const std::uint32_t visibleEnd = self->field_01b0;
             insertionIndex = caretIndex + 1;
             if (caretIndex == visibleEnd)
                 self->field_01b0 = visibleEnd + 1;
-            self->field_01a8 = insertionIndex;
+            self->m_caretIndex = insertionIndex;
             rebuildFromStart = false;
         }
     }
@@ -56,9 +56,9 @@ static int __fastcall CGuiEdit_InsertCharacter(
 
         if (nextVisibleEnd == previousLength)
         {
-            const std::uint32_t caretIndex = self->field_01a8;
+            const std::uint32_t caretIndex = self->m_caretIndex;
             insertionIndex = caretIndex + 1;
-            self->field_01a8 = insertionIndex;
+            self->m_caretIndex = insertionIndex;
 
             if (caretIndex < visibleStart)
             {
@@ -72,15 +72,15 @@ static int __fastcall CGuiEdit_InsertCharacter(
         }
         else if (caretHidden != 0)
         {
-            insertionIndex = self->field_01a8 + 1;
-            self->field_01a8 = insertionIndex;
+            insertionIndex = self->m_caretIndex + 1;
+            self->m_caretIndex = insertionIndex;
             rebuildFromStart = true;
         }
         else
         {
-            const std::uint32_t caretIndex = self->field_01a8;
+            const std::uint32_t caretIndex = self->m_caretIndex;
             insertionIndex = caretIndex + 1;
-            self->field_01a8 = insertionIndex;
+            self->m_caretIndex = insertionIndex;
             if (caretIndex == visibleEnd)
                 self->field_01b0 = nextVisibleEnd;
             rebuildFromStart = false;

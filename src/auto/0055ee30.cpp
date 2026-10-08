@@ -39,9 +39,9 @@ static int __fastcall CMenuMpOnline_RefreshOnlineMatchState(CMenuMpOnline* self,
     }
 
     int result = 0;
-    if (self->field_0028)
+    if (self->m_friendsButton)
     {
-        void* childB = reinterpret_cast<void*>(self->field_0028);
+        void* childB = reinterpret_cast<void*>(self->m_friendsButton);
         result = ((int(__fastcall*)(void*, void*, int))CSF_AT(void**, childB, 0)[0xA8 / 4])(childB, nullptr, 1);
     }
     return result;

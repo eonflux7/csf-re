@@ -55,7 +55,7 @@ static int __fastcall CMenuMpOnline_Initialize(
     self->field_001c = 0;
     self->field_0020 = 0;
     self->field_0024 = 0;
-    self->field_0028 = 0;
+    self->m_friendsButton = 0;
     self->field_002c = 0;
     self->field_0030 = 0;
     self->field_0034 = 0;
@@ -103,7 +103,7 @@ static int __fastcall CMenuMpOnline_Initialize(
         ((std::uint32_t(__fastcall*)(void*, void*, const char*))
              CSF_AT(void**, screen, 0)[0xFC / 4])(
             screen, nullptr, CSF_STR(0x00841DDC, "BotonFriends"));
-    self->field_0028 = button;
+    self->m_friendsButton = button;
     if (button)
     {
         void* friendsButton = reinterpret_cast<void*>(button);

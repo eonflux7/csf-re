@@ -54,7 +54,7 @@ static int __fastcall CGuiEdit_ClearTextAndPositions(
         EraseWideStringRange(text, nullptr, &iteratorResult, begin, end);
     }
 
-    self->field_01a8 = 0;
+    self->m_caretIndex = 0;
     self->field_01ac = 0;
     self->field_01b0 = 0;
     return 0;

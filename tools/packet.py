@@ -160,8 +160,39 @@ def compact_class(db, vt, ea, size):
             disp.add(0)
     used = sorted(o for o in disp if o in fields)
     lines = [f"- +0x{o:03X} {fields[o][0]}::{fields[o][2]}  ({fields[o][1]})" for o in used]
-    return ("Fields at the offsets this function uses (declared in types/auto_classes.h, DO NOT redefine; "
+    text = ("Fields at the offsets this function uses (declared in types/auto_classes.h, DO NOT redefine; "
             "access through the struct, other offsets via CSF_AT):\n" + ("\n".join(lines) if lines else "(none declared)"))
+    # virtual calls this function makes at slot offsets the class chain has a typed wrapper for
+    slots = {int(m.group(1), 0) for i in disasm(ea, size) if i.mnemonic in ("call", "jmp")
+             for m in [re.search(r"\[e\w\w \+ (0x[0-9a-f]+|\d+)\]", i.op_str)] if m}
+    if 0 in disp:
+        slots.add(0)
+    vm = [(o, cls, l) for o, (cls, l) in class_vmethods(db, vt).items() if o in slots]
+    if vm:
+        text += ("\nVirtual calls with typed wrappers (when the object is this class or a base, call e.g. "
+                 "`self->vName(args)` instead of casting vtbl[slot]):\n" +
+                 "\n".join(f"- slot +0x{o:X}: {cls}::{l}" for o, cls, l in sorted(vm)))
+    return text
+
+
+_hdr_vm = None
+
+
+def class_vmethods(db, vt):
+    """{slot offset: (class, wrapper signature)} for vt and its bases (auto_classes.h vmethods)."""
+    global _hdr_vm
+    if _hdr_vm is None:
+        hdr = open(os.path.join(ROOT, "src", "types", "auto_classes.h")).read()
+        _hdr_vm = {}
+        for m in re.finditer(r"^struct (\w+)[^{]*\{\n(.*?)\n\};", hdr, re.S | re.M):
+            _hdr_vm[m.group(1)] = {int(o, 16): sig for sig, o in re.findall(
+                r"^\s+(\S.*?\))\s*\{ return .*?// slot \+0x([0-9A-F]+) ->", m.group(2), re.M)}
+    out, x = {}, vt
+    while x:
+        for o, sig in _hdr_vm.get(db.cls_name(x), {}).items():
+            out.setdefault(o, (db.cls_name(x), sig))
+        x = db.classes.get(x, {}).get("base")
+    return out
 
 
 STL_LAYOUT = {

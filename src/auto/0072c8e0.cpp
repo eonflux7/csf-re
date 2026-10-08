@@ -26,16 +26,16 @@ static void* __fastcall CGuiPanel_ReorderControls(
 
     uint32_t cachedActiveEnd = 0;
     uint32_t* inactiveBegin = nullptr;
-    const uint32_t originalBegin = self->field_0138;
+    const uint32_t originalBegin = self->m_childrenBegin;
     const uint32_t count = originalBegin
         ? static_cast<uint32_t>(
-              static_cast<int32_t>(self->field_013c - originalBegin) >> 2)
+              static_cast<int32_t>(self->m_childrenEnd - originalBegin) >> 2)
         : 0;
 
     for (uint32_t index = 0; index < count; ++index)
     {
         void* child = reinterpret_cast<void*>(
-            reinterpret_cast<uint32_t*>(self->field_0138)[index]);
+            reinterpret_cast<uint32_t*>(self->m_childrenBegin)[index]);
 
         const uint8_t isActive =
             reinterpret_cast<uint8_t(__fastcall*)(void*, void*)>(
@@ -43,7 +43,7 @@ static void* __fastcall CGuiPanel_ReorderControls(
 
         // The virtual call can change the panel's storage.
         uint32_t* entry =
-            reinterpret_cast<uint32_t*>(self->field_0138 + index * 4u);
+            reinterpret_cast<uint32_t*>(self->m_childrenBegin + index * 4u);
 
         if (!isActive)
         {
@@ -82,20 +82,20 @@ static void* __fastcall CGuiPanel_ReorderControls(
     if (count)
         inactiveBegin = reinterpret_cast<uint32_t*>(inactive[1]);
 
-    const uint32_t oldStorage = self->field_0138;
+    const uint32_t oldStorage = self->m_childrenBegin;
     void* controlVector = reinterpret_cast<uint8_t*>(self) + 0x134;
     if (oldStorage)
         Mem_FreeDebug(reinterpret_cast<void*>(oldStorage));
 
-    self->field_0138 = 0;
-    self->field_013c = 0;
+    self->m_childrenBegin = 0;
+    self->m_childrenEnd = 0;
     CSF_AT(uint32_t, self, 0x140) = 0;
 
     AssignPointerVector_72C3D0(controlVector, nullptr, active);
 
     uint32_t* inactiveEnd = reinterpret_cast<uint32_t*>(inactive[2]);
     uint32_t* destinationEnd =
-        reinterpret_cast<uint32_t*>(self->field_013c);
+        reinterpret_cast<uint32_t*>(self->m_childrenEnd);
     PointerVector_InsertRange(
         controlVector, nullptr, destinationEnd,
         inactiveBegin, inactiveEnd, preferredControl);

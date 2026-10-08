@@ -22,16 +22,16 @@ static int __fastcall CGuiPanel_HandleKeyDown(
     if ((result & 0xFF) == 0)
         return result;
 
-    const uint32_t initialBegin = self->field_0138;
+    const uint32_t initialBegin = self->m_childrenBegin;
     const uint32_t initialCount = initialBegin
         ? static_cast<uint32_t>(
-              static_cast<int32_t>(self->field_013c - initialBegin) >> 2)
+              static_cast<int32_t>(self->m_childrenEnd - initialBegin) >> 2)
         : 0;
 
     for (uint32_t index = 0; index < initialCount; ++index)
     {
         CGuiControl* child =
-            reinterpret_cast<CGuiControl**>(self->field_0138)[index];
+            reinterpret_cast<CGuiControl**>(self->m_childrenBegin)[index];
         ((void (__fastcall*)(void*, void*, int, int))
          CSF_AT(void**, child, 0)[0x08 / 4])(
             child, nullptr, key, modifiers);
@@ -128,12 +128,12 @@ static int __fastcall CGuiPanel_HandleKeyDown(
         }
 
         ++attempts;
-        const uint32_t childrenBegin = self->field_0138;
+        const uint32_t childrenBegin = self->m_childrenBegin;
         if (childrenBegin)
         {
             const uint32_t count = static_cast<uint32_t>(
                 static_cast<int32_t>(
-                    self->field_013c - childrenBegin) >> 2);
+                    self->m_childrenEnd - childrenBegin) >> 2);
 
             if (attempts < count && !nextFocus)
             {

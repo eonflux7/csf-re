@@ -126,8 +126,8 @@ static int __fastcall CMenuMessageBox_InitializePanel(
     void* staticControl = ((void* (__fastcall*)(void*, void*, const char*))
         CSF_AT(void**, panel, 0)[0xFC / 4])(
             panel, nullptr, CSF_STR(0x00841274, "Static"));
-    self->field_0058 = reinterpret_cast<std::uint32_t>(staticControl);
-    return static_cast<int>(self->field_0058);
+    self->m_staticControl = reinterpret_cast<std::uint32_t>(staticControl);
+    return static_cast<int>(self->m_staticControl);
 }
 
 HOOK(0x0052A280, CMenuMessageBox_InitializePanel, "auto");

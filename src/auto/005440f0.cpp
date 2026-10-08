@@ -26,7 +26,7 @@ static int __fastcall CMenuGameOptionsPC_PushSliderValueToOptions(CMenuGameOptio
         CMenuGameOptions_ApplyToggleSettings(self, nullptr);
 
         // Slider value is passed as its raw 32-bit pattern (float bits on the stack).
-        uint32_t sliderBits = *reinterpret_cast<uint32_t*>(&self->field_005c);
+        uint32_t sliderBits = *reinterpret_cast<uint32_t*>(&self->m_sliderValue);
 
         void* subObject = reinterpret_cast<void*>(self->field_0024);
 

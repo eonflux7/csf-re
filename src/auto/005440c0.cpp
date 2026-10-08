@@ -23,7 +23,7 @@ static int __fastcall CMenuGameOptionsPC_SyncSliderFromControl(CMenuGameOptionsP
         void* widget = reinterpret_cast<void*>(self->field_0024);
         void** vtbl = *reinterpret_cast<void***>(widget);
         float value = reinterpret_cast<float(__fastcall*)(void*, void*)>(vtbl[0x34 / 4])(widget, nullptr);
-        self->field_005c = value;
+        self->m_sliderValue = value;
 
         // Reload the widget pointer: the previous virtual call may have changed it.
         widget = reinterpret_cast<void*>(self->field_0024);

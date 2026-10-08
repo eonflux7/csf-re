@@ -17,9 +17,9 @@ static void __fastcall CMenuScreenFader_AdvanceFadeTimer(CMenuScreenFader* self,
 {
     float accumulated = elapsedTime + self->field_0030;
     self->field_0030 = accumulated;
-    self->m_fadeProgress = accumulated / self->field_0028;
+    self->m_fadeProgress = accumulated / self->m_fadeDuration;
 
-    if (accumulated >= self->field_0028)
+    if (accumulated >= self->m_fadeDuration)
     {
         self->m_fadeProgress = 1.0f;
         self->field_0030 = 0.0f;

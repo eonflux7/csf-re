@@ -29,7 +29,7 @@ static int __fastcall CGuiListBoxBase_HandleSliderOverflow(
         CSF_AT(std::uint32_t, dimensions, 4);
     const std::uint32_t lowerInset = self->field_0178;
     const std::uint32_t upperInset = self->field_0174;
-    const std::uint32_t rowHeight = self->field_01b8;
+    const std::uint32_t rowHeight = self->m_rowHeight;
 
     availableHeightBits -= lowerInset;
     availableHeightBits -= upperInset;

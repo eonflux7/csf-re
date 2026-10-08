@@ -66,15 +66,15 @@ static int64_t ConvertDoubleToInt64Truncated(double value)
 
 static int __fastcall CMenuLoading_AdvanceLoadingProgress(CMenuLoading* self, void* /*edx*/, float elapsedDelta)
 {
-    // Original order: read field_003c, store the accumulated elapsed time into field_0034, then branch.
+    // Original order: read m_ownedBlock, store the accumulated elapsed time into field_0034, then branch.
     const float updatedElapsedSeconds = elapsedDelta + self->field_0034;
-    const uint32_t initialProgressObject = self->field_003c;
+    const uint32_t initialProgressObject = self->m_ownedBlock;
     self->field_0034 = updatedElapsedSeconds;
 
     if (initialProgressObject != 0) {
         void* loadingManagerChild = MenuControls_ResolveObject(GetGlobalInt(), nullptr);
         if (CallVirtualBool(loadingManagerChild, 27)) {
-            CallVirtualVoid(reinterpret_cast<void*>(self->field_003c), 31);
+            CallVirtualVoid(reinterpret_cast<void*>(self->m_ownedBlock), 31);
             void* managerChildAfter = MenuControls_ResolveObject(GetGlobalInt(), nullptr);
             CallVirtualVoid(managerChildAfter, 28);
         }
@@ -118,8 +118,8 @@ static int __fastcall CMenuLoading_AdvanceLoadingProgress(CMenuLoading* self, vo
             CallVirtualVoid(reinterpret_cast<void*>(self->field_0040), 77);
         }
 
-        if (self->field_002c != 0) {
-            CallVirtualVoid(reinterpret_cast<void*>(self->field_002c), 77);
+        if (self->m_ownedObjectA != 0) {
+            CallVirtualVoid(reinterpret_cast<void*>(self->m_ownedObjectA), 77);
         }
 
         CallVirtualVoid(self, 24);

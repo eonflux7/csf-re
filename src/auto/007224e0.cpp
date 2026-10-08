@@ -26,7 +26,7 @@ CGuiEdit_MoveIndicesToTextEnd(CGuiEdit* self, void* /*edx*/)
         return 0;
 
     const std::uint32_t lastIndex = length - 1;
-    self->field_01a8 = lastIndex;
+    self->m_caretIndex = lastIndex;
     self->field_01b0 = lastIndex;
 
     return AdjustTextRangeLeft(self, nullptr, 0);

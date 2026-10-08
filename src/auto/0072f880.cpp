@@ -17,10 +17,10 @@ static int __fastcall CGuiChoiceNumButton_AdjustValueAndUpdateText(
 
     self->field_0204 = adjustedBits;
     if (value > maximum)
-        value = static_cast<int32_t>(self->field_01f0);
+        value = static_cast<int32_t>(self->m_minValue);
 
     const bool belowMinimum =
-        value < static_cast<int32_t>(self->field_01f0);
+        value < static_cast<int32_t>(self->m_minValue);
     self->field_0204 = static_cast<uint32_t>(value);
     if (belowMinimum)
         value = maximum;
@@ -37,7 +37,7 @@ static int __fastcall CGuiChoiceNumButton_AdjustValueAndUpdateText(
                       static_cast<int32_t>(self->field_0204));
 
     value = static_cast<int32_t>(self->field_0204);
-    const int32_t minimum = static_cast<int32_t>(self->field_01f0);
+    const int32_t minimum = static_cast<int32_t>(self->m_minValue);
 
     if (value > minimum &&
         value < static_cast<int32_t>(self->field_01f8))

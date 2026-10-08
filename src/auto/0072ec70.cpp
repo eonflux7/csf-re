@@ -7,16 +7,16 @@
 static uint32_t __fastcall CGuiChoiceButton_SelectChoiceById(
     CGuiChoiceButton* self, void* /*edx*/, int32_t choiceId)
 {
-    const uint32_t begin = self->field_01f4;
+    const uint32_t begin = self->m_choicesBegin;
     const uint32_t count = begin
         ? static_cast<uint32_t>(
-              static_cast<int32_t>(self->field_01f8 - begin) >> 5)
+              static_cast<int32_t>(self->m_choicesEnd - begin) >> 5)
         : 0;
 
     if (count == 0)
         return count;
 
-    auto* entry = reinterpret_cast<uint8_t*>(self->field_01f4);
+    auto* entry = reinterpret_cast<uint8_t*>(self->m_choicesBegin);
     uint32_t index = 0;
 
     do {

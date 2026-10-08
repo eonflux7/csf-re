@@ -16,8 +16,8 @@ static CGuiPanel* __fastcall CGuiPanel_ConstructFromSource(
 
     CSF_AT(void**, self, 0) =
         reinterpret_cast<void**>(&g_PanelVtable);
-    self->field_0138 = 0;
-    self->field_013c = 0;
+    self->m_childrenBegin = 0;
+    self->m_childrenEnd = 0;
     self->field_0140 = 0;
     CSF_AT(std::uint32_t, self, 0x170) = 0;
     CSF_AT(std::uint32_t, self, 0x174) = 15;

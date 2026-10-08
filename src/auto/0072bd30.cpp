@@ -12,18 +12,18 @@ CSF_FUNC(char, __fastcall, CGuiControl_Update, 0x00719530,
 static char __fastcall CGuiPanel_Update(
     CGuiPanel* self, void* /*edx*/, float deltaTime)
 {
-    const std::uint32_t childrenBegin = self->field_0138;
+    const std::uint32_t childrenBegin = self->m_childrenBegin;
     std::uint32_t childCount = 0;
 
     if (childrenBegin != 0)
     {
         childCount = static_cast<std::uint32_t>(
-            static_cast<std::int32_t>(self->field_013c - childrenBegin) >> 2);
+            static_cast<std::int32_t>(self->m_childrenEnd - childrenBegin) >> 2);
     }
 
     for (std::uint32_t index = 0; index < childCount; ++index)
     {
-        void* child = reinterpret_cast<void**>(self->field_0138)[index];
+        void* child = reinterpret_cast<void**>(self->m_childrenBegin)[index];
         ((void(__fastcall*)(void*, void*, float))
             CSF_AT(void**, child, 0)[0x13C / 4])(
                 child, nullptr, deltaTime);

@@ -43,7 +43,7 @@ static int __fastcall CMenuManager_ReleaseOwnedScreens(CMenuManager* self, void*
     ReleaseScreenSlot(self->m_pScreenGame);                 // +0x18
     ReleaseScreenSlot(self->m_pScreenGameMenu);             // +0x20
     ReleaseScreenSlot(self->m_pScreenProfiles);             // +0x24
-    ReleaseScreenSlot(self->field_0028);                    // +0x28
+    ReleaseScreenSlot(self->m_pScreenLoading);                    // +0x28
     ReleaseScreenSlot(self->field_002c);                    // +0x2C
     ReleaseScreenSlot(self->m_pScreenIntro);                // +0x54
     ReleaseScreenSlot(self->field_0044);                    // +0x44

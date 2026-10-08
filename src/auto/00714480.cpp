@@ -17,7 +17,7 @@ static char __fastcall CGuiListBoxBase_SnapHeightToRowIncrement(
         const std::uint32_t height = size[1];
         const std::uint32_t inset178 = self->field_0178;
         const std::uint32_t inset174 = self->field_0174;
-        const std::uint32_t rowHeight = self->field_01b8;
+        const std::uint32_t rowHeight = self->m_rowHeight;
         const std::uint32_t lineSpacing = self->m_lineSpacing;
 
         const std::int32_t remainder =

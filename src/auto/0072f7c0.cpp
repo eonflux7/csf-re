@@ -19,7 +19,7 @@ static CGuiChoiceNumButton* __fastcall CGuiChoiceNumButton_Construct(
     self->field_01fc = 0;
     CSF_AT(std::uint32_t, self, 0x0) =
         reinterpret_cast<std::uintptr_t>(&g_ChoiceNumButtonVtable);
-    self->field_01f0 = 0x80000000u;
+    self->m_minValue = 0x80000000u;
     self->field_01f8 = 0x7FFFFFFFu;
     self->field_0200 = 1;
 

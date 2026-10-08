@@ -7,20 +7,20 @@
 static int __fastcall CGuiChoiceButton_GetCurrentChoiceValue(
     CGuiChoiceButton* self, void* /*edx*/, unsigned int index)
 {
-    const std::uint32_t choicesBegin = self->field_01f4;
+    const std::uint32_t choicesBegin = self->m_choicesBegin;
     if (choicesBegin == 0)
         return 0;
 
     const std::int32_t byteCount =
-        static_cast<std::int32_t>(self->field_01f8 - choicesBegin);
+        static_cast<std::int32_t>(self->m_choicesEnd - choicesBegin);
     const std::uint32_t choiceCount =
         static_cast<std::uint32_t>(byteCount >> 5);
 
     if (index >= choiceCount)
         return 0;
 
-    const std::uint32_t currentIndex = self->field_0200;
-    const std::uint32_t currentBegin = self->field_01f4;
+    const std::uint32_t currentIndex = self->m_currentChoiceIndex;
+    const std::uint32_t currentBegin = self->m_choicesBegin;
     const std::uint32_t choiceAddress = currentBegin + (currentIndex << 5);
     return CSF_AT(int, reinterpret_cast<void*>(choiceAddress), 0);
 }

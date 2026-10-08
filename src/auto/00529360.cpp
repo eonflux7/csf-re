@@ -59,7 +59,7 @@ static int __fastcall CMenuMessageBox_UpdateLayout(
 
     uint32_t firstHeight = 0;
     uint32_t secondHeight = 0;
-    void* element = reinterpret_cast<void*>(self->field_0058);
+    void* element = reinterpret_cast<void*>(self->m_staticControl);
     if (element) {
         void* content = MenuMessageBox_CallPointerMethod(element, 0x110 / 4);
         if (content)

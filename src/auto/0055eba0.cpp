@@ -88,7 +88,7 @@ static int __fastcall CMenuMpOnline_InitMainPanelAndFriendsButton(CMenuMpOnline*
     void* buttonPanel = MenuMpOnline_FieldToPointer(self->field_0014);
     void* friendsButton = ((void* (__fastcall*)(void*, void*, const char*))CSF_AT(void**, buttonPanel, 0)[63])(
         buttonPanel, nullptr, CSF_STR(0x00841DDC, "BotonFriends"));
-    self->field_0028 = MenuMpOnline_PointerToField(friendsButton);
+    self->m_friendsButton = MenuMpOnline_PointerToField(friendsButton);
     if (friendsButton == nullptr)
         return 0;
 

@@ -51,7 +51,7 @@ static int __fastcall CGuiListBoxBase_DrawVisibleCells(
     {
         uint32_t extent[2];
         extent[0] = 0;
-        extent[1] = self->field_01b8 + 2u * self->m_lineSpacing;
+        extent[1] = self->m_rowHeight + 2u * self->m_lineSpacing;
 
         if (rowIndex > self->field_0168)
         {

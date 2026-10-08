@@ -28,7 +28,7 @@ static void* __fastcall CGuiTextureListBox_AppendEmptyTextureRows(
 
     InsertTextureRows(
         reinterpret_cast<std::uint8_t*>(self) + 0x1F8,
-        nullptr, static_cast<int>(self->field_0200), count, row);
+        nullptr, static_cast<int>(self->m_textureRowsEnd), count, row);
 
     void* block = reinterpret_cast<void*>(row[1]);
     if (block != nullptr) {

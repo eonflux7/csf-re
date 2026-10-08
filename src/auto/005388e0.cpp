@@ -14,7 +14,7 @@ CSF_FUNC(int, __fastcall, Base10_Destroy, 0x0069AE90, (void* embedded, void* edx
 static int __fastcall CMenuLoading_ReleaseMembersAndResetVtable(CMenuLoading* self, void* /*edx*/)
 {
     // Read the object at +0x2C before any vtable is overwritten.
-    void* ownedAt2C = reinterpret_cast<void*>(self->field_002c);
+    void* ownedAt2C = reinterpret_cast<void*>(self->m_ownedObjectA);
 
     // Install the CMenuLoading vtable and the embedded/base vtables (same order as original).
     CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x00842150);
@@ -24,14 +24,14 @@ static int __fastcall CMenuLoading_ReleaseMembersAndResetVtable(CMenuLoading* se
     // Release the object at +0x2C (virtual slot 0, flag 1).
     if (ownedAt2C != nullptr) {
         ((void(__fastcall*)(void*, void*, int))(*reinterpret_cast<void***>(ownedAt2C))[0])(ownedAt2C, nullptr, 1);
-        self->field_002c = 0;
+        self->m_ownedObjectA = 0;
     }
 
     // Release the block at +0x3C (heap block, pointer offset +4).
-    uint32_t blockAt3C = self->field_003c;
+    uint32_t blockAt3C = self->m_ownedBlock;
     if (blockAt3C != 0) {
         ReleaseObjectReference(reinterpret_cast<void*>(blockAt3C + 4), nullptr);
-        self->field_003c = 0;
+        self->m_ownedBlock = 0;
     }
 
     // Release the object at +0x54.

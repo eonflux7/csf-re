@@ -37,7 +37,7 @@ static int __fastcall CGuiListBoxBase_RenderVisibleRowHighlights(
         CSF_AT(uint32_t, dimensions, 4)
         - self->field_0174 - self->field_0178;
     const int32_t rowStride = static_cast<int32_t>(
-        self->field_01b8 + self->m_lineSpacing * 2u);
+        self->m_rowHeight + self->m_lineSpacing * 2u);
     const int32_t remainder =
         static_cast<int32_t>(availableHeight) % rowStride;
     const uint8_t highlightsEnabled = self->field_0140;
@@ -69,7 +69,7 @@ static int __fastcall CGuiListBoxBase_RenderVisibleRowHighlights(
 
         uint32_t position[2] = {origin[0], origin[1]};
         const uint32_t highlightStride =
-            self->field_01b8 + self->m_lineSpacing * 2u;
+            self->m_rowHeight + self->m_lineSpacing * 2u;
         const uint32_t rowOffset =
             (static_cast<uint32_t>(rowIndices[index]) - self->field_0168)
             * highlightStride + self->field_01c0;

@@ -4,7 +4,7 @@
 #include "types/auto_classes.h"
 
 // 0x714750: helper the original tail-invokes after the line spacing change; receives the
-// previous value of field_01b8 (== +0x1B8) as its argument.
+// previous value of m_rowHeight (== +0x1B8) as its argument.
 CSF_FUNC(int, __fastcall, CGuiListBoxBase_SetItemHeight, 0x714750,
          (CGuiListBoxBase* self, void* edx, int a2));
 
@@ -12,7 +12,7 @@ CSF_FUNC(int, __fastcall, CGuiListBoxBase_SetItemHeight, 0x714750,
 // old contents of +0x1B8, then returns the helper's result.
 static int __fastcall CGuiListBoxBase_SetLineSpacing(CGuiListBoxBase* self, void* /*edx*/, int a2)
 {
-    const int previousValue = static_cast<int>(self->field_01b8);
+    const int previousValue = static_cast<int>(self->m_rowHeight);
     self->m_lineSpacing = static_cast<uint32_t>(a2);
     return CGuiListBoxBase_SetItemHeight(self, nullptr, previousValue);
 }

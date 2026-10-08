@@ -24,10 +24,10 @@ CGuiEdit_MoveIndicesLeft(CGuiEdit* self, void* /*edx*/)
     const std::uint32_t visibleStart = self->field_01ac;
     if (visibleStart == 0)
     {
-        const std::uint32_t caretIndex = self->field_01a8;
+        const std::uint32_t caretIndex = self->m_caretIndex;
         if (caretIndex != 0)
         {
-            self->field_01a8 = caretIndex - 1;
+            self->m_caretIndex = caretIndex - 1;
             AdjustTextRangeRight(self, nullptr, 0);
         }
         else if (static_cast<std::uint8_t>(atStart) != 0)
@@ -42,13 +42,13 @@ CGuiEdit_MoveIndicesLeft(CGuiEdit* self, void* /*edx*/)
     }
 
     const std::uint32_t endPlusOne = self->field_01b0 + 1u;
-    const std::uint32_t caretIndex = self->field_01a8;
+    const std::uint32_t caretIndex = self->m_caretIndex;
     if (endPlusOne == textLength)
     {
         if (caretIndex < visibleStart)
             self->field_01ac = visibleStart - 1;
         if (caretIndex != 0)
-            self->field_01a8 = caretIndex - 1;
+            self->m_caretIndex = caretIndex - 1;
         AdjustTextRangeRight(self, nullptr, 0);
         return;
     }
@@ -60,7 +60,7 @@ CGuiEdit_MoveIndicesLeft(CGuiEdit* self, void* /*edx*/)
         self->field_01ac = visibleStart - 1;
     }
     if (caretIndex != 0)
-        self->field_01a8 = caretIndex - 1;
+        self->m_caretIndex = caretIndex - 1;
     AdjustTextRangeRight(self, nullptr, forceStart);
 }
 

@@ -29,16 +29,16 @@ static char __fastcall CGuiPanel_ProcessChildrenAndInput(
     if (!result)
         return result;
 
-    const std::uint32_t childrenBegin = self->field_0138;
+    const std::uint32_t childrenBegin = self->m_childrenBegin;
     const std::uint32_t childCount = childrenBegin
         ? static_cast<std::uint32_t>(
-              static_cast<std::int32_t>(self->field_013c - childrenBegin) >> 2)
+              static_cast<std::int32_t>(self->m_childrenEnd - childrenBegin) >> 2)
         : 0;
 
     for (std::uint32_t childIndex = 0; childIndex < childCount; ++childIndex)
     {
         CGuiControl* child =
-            reinterpret_cast<CGuiControl**>(self->field_0138)[childIndex];
+            reinterpret_cast<CGuiControl**>(self->m_childrenBegin)[childIndex];
 
         const int previousState =
             ((int(__fastcall*)(void*, void*))

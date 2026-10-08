@@ -11,11 +11,11 @@ static int __fastcall CGuiPanel_UpdateMouseHover(
     CGuiPanel* self, void* /*edx*/,
     std::int32_t* mousePosition, int inputState)
 {
-    const std::uint32_t childrenBegin = self->field_0138;
+    const std::uint32_t childrenBegin = self->m_childrenBegin;
     std::int32_t childCount = 0;
     if (childrenBegin != 0) {
         childCount =
-            static_cast<std::int32_t>(self->field_013c - childrenBegin) >> 2;
+            static_cast<std::int32_t>(self->m_childrenEnd - childrenBegin) >> 2;
     }
 
     std::uint32_t panelPositionBuffer[2];
@@ -24,7 +24,7 @@ static int __fastcall CGuiPanel_UpdateMouseHover(
 
     for (std::int32_t index = childCount - 1; index >= 0; --index) {
         void* child =
-            reinterpret_cast<void**>(self->field_0138)[index];
+            reinterpret_cast<void**>(self->m_childrenBegin)[index];
 
         auto* panelPosition =
             ((std::uint32_t* (__fastcall*)(void*, void*, std::uint32_t*))

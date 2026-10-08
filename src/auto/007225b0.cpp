@@ -23,12 +23,12 @@ static __attribute__((optnone)) void __fastcall CGuiEdit_MoveTextRangeRight(
     if (nextPosition >= textLength)
         return;
 
-    self->field_01a8 = nextPosition;
+    self->m_caretIndex = nextPosition;
     self->field_01ac = nextPosition;
 
     AdjustTextRangeRight(self, nullptr, 0);
 
-    self->field_01a8 = self->field_01b0;
+    self->m_caretIndex = self->field_01b0;
     AdjustTextRangeLeft(self, nullptr, 0);
 }
 

@@ -44,7 +44,7 @@ static int __fastcall CMenuMpOnline_HandleMessage(CMenuMpOnline* self, void* /*e
             self->field_0036 = 1;
             return ForwardToVirtualMessageHandler(self, message);
         }
-        if (sourceId == self->field_0028)
+        if (sourceId == self->m_friendsButton)
         {
             self->field_0037 = 1;
         }

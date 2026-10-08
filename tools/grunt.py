@@ -1264,25 +1264,33 @@ def captain(*argv):
 
 
 def captain_prep(module_arg):
-    """Wave prep: name the wave's unnamed classes (agentic captain session), then the rename pass so this wave's
-    packets and the files already done use the names. Runs only when classes.yaml changed."""
+    """Wave prep (types first): name the wave's unnamed classes (agentic captain session), pool the field names all
+    grunts proposed so far (tools/fields.py apply: consensus per class+offset), then the rename pass so this wave's
+    packets and the files already done use the names. Prints the wave's field coverage before and after."""
     names = [m.strip() for m in module_arg.split(",") if m.strip()]
-    yml = os.path.join(ROOT, "db", "types", "classes.yaml")
-    before = open(yml).read()
+    tool = lambda *a: subprocess.run([sys.executable, os.path.join(ROOT, "tools", a[0]), *a[1:]],
+                                     capture_output=True, text=True).stdout.strip()
+    print("wave prep: field coverage " + tool("fields.py", "coverage", "--module", module_arg).splitlines()[-1],
+          flush=True)
+    watched = [os.path.join(ROOT, "db", "types", f) for f in ("classes.yaml", "field_consensus.yaml")]
+    before = [open(f).read() if os.path.exists(f) else "" for f in watched]
     live(mode="lanes", phase="captain: naming classes")
     print(f"wave prep: captain family {module_arg}", flush=True)
     captain("family", *names)
-    if open(yml).read() == before:
+    print("wave prep: " + tool("fields.py", "apply"), flush=True)
+    if [open(f).read() if os.path.exists(f) else "" for f in watched] == before:
         return
-    subprocess.run([sys.executable, os.path.join(ROOT, "tools", "rename_classes.py")], check=False)
+    tool("rename_classes.py")
+    tool("fields.py", "fixbuild")  # references rename_classes leaves (files with several class types)
     if subprocess.run(["ninja", "-C", os.path.join(ROOT, "build")], capture_output=True).returncode:
         print("wave prep: build failed after the class rename pass: reverting it", flush=True)
         subprocess.run(["git", "-C", ROOT, "checkout", "--", "src", "db/functions.csv"], check=False)
         return
-    subprocess.run(["git", "-C", ROOT, "add", "-A", "--", "src", "db/functions.csv"], check=False)
-    subprocess.run(["git", "-C", ROOT, "commit", "-q", "-m", "Class rename pass (wave prep: captain family)\n\n"
-                    "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>", "--", "src", "db/functions.csv"],
-                   check=False)
+    import repo
+    repo.commit(["src", "db/functions.csv", "db/types"], "Class/field rename pass (wave prep: captain family + "
+                "field consensus)")
+    print("wave prep: field coverage now " + tool("fields.py", "coverage", "--module", module_arg).splitlines()[-1],
+          flush=True)
 
 
 def captain_after(wave):

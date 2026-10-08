@@ -47,7 +47,7 @@ static int __fastcall CMenuMessageBox_InitializeControls(
     CMenuMessageBox_BindAndInitializeControl(
         self, self->field_0054, CSF_STR(0x0084127C, "BotonSlot5"));
     return CMenuMessageBox_BindAndInitializeControl(
-        self, self->field_0058, CSF_STR(0x00841274, "Static"));
+        self, self->m_staticControl, CSF_STR(0x00841274, "Static"));
 }
 
 HOOK(0x005290B0, CMenuMessageBox_InitializeControls, "auto");

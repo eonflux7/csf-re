@@ -122,7 +122,7 @@ static int __fastcall CGuiButton_HandleEvent(
             1)
         {
             CGuiSlider_ForwardSelfToParent(self, nullptr);
-            self->field_0148 = 2;
+            self->m_state = 2;
         }
         break;
 
@@ -130,7 +130,7 @@ static int __fastcall CGuiButton_HandleEvent(
         if ((((int(__fastcall*)(void*, void*))
                   CSF_AT(void**, self, 0)[0x140 / 4])(self, nullptr) &
              1) &&
-            self->field_0148 == 2)
+            self->m_state == 2)
         {
             void* links = CSF_AT(
                 void*, reinterpret_cast<void*>(self->field_0010), 0);
@@ -147,7 +147,7 @@ static int __fastcall CGuiButton_HandleEvent(
                 self, nullptr, 13);
             CGuiButton_StartTextColorEffect(self, nullptr);
         }
-        self->field_0148 = 0;
+        self->m_state = 0;
         break;
 
     default:

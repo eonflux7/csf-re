@@ -17,21 +17,21 @@ static char __fastcall CGuiPanel_ResetChildFocusAndAnimation(
     ((void(__fastcall*)(void*, void*))
         CSF_AT(void**, self, 0)[0x268 / 4])(self, nullptr);
 
-    const std::uint32_t childrenBegin = self->field_0138;
+    const std::uint32_t childrenBegin = self->m_childrenBegin;
     const std::int32_t childCount = childrenBegin
-        ? (static_cast<std::int32_t>(self->field_013c - childrenBegin) >> 2)
+        ? (static_cast<std::int32_t>(self->m_childrenEnd - childrenBegin) >> 2)
         : 0;
     bool forwardedChild = false;
 
     for (std::int32_t index = childCount - 1; index >= 0; --index)
     {
         auto* child =
-            reinterpret_cast<CGuiControl**>(self->field_0138)[index];
+            reinterpret_cast<CGuiControl**>(self->m_childrenBegin)[index];
         ((void(__fastcall*)(void*, void*))
             CSF_AT(void**, child, 0)[0x16C / 4])(child, nullptr);
 
         // Reload: the preceding virtual call may have changed the child list.
-        child = reinterpret_cast<CGuiControl**>(self->field_0138)[index];
+        child = reinterpret_cast<CGuiControl**>(self->m_childrenBegin)[index];
 
         std::uint32_t pointStorage[2];
         auto* relativePoint =
@@ -51,7 +51,7 @@ static char __fastcall CGuiPanel_ResetChildFocusAndAnimation(
                 CSF_AT(void**, child, 0)[0x154 / 4])(
                     child, nullptr, point);
 
-        child = reinterpret_cast<CGuiControl**>(self->field_0138)[index];
+        child = reinterpret_cast<CGuiControl**>(self->m_childrenBegin)[index];
         if (containsPoint)
         {
             ((void(__fastcall*)(void*, void*, int))
@@ -60,7 +60,7 @@ static char __fastcall CGuiPanel_ResetChildFocusAndAnimation(
             if (self->field_0189)
             {
                 child =
-                    reinterpret_cast<CGuiControl**>(self->field_0138)[index];
+                    reinterpret_cast<CGuiControl**>(self->m_childrenBegin)[index];
                 const int controlType =
                     ((int(__fastcall*)(void*, void*))
                         CSF_AT(void**, child, 0)[0x60 / 4])(child, nullptr);
@@ -68,7 +68,7 @@ static char __fastcall CGuiPanel_ResetChildFocusAndAnimation(
                 if (controlType != 10)
                 {
                     child =
-                        reinterpret_cast<CGuiControl**>(self->field_0138)[index];
+                        reinterpret_cast<CGuiControl**>(self->m_childrenBegin)[index];
                     CGuiSlider_ForwardSelfToParent(child, nullptr);
                     forwardedChild = true;
                 }

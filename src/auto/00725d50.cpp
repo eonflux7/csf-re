@@ -15,7 +15,7 @@ CSF_FUNC(int, __fastcall, SetEffectIndex, 0x00731960,
 static int __fastcall CGuiButton_ResetStateAndEffects(
     CGuiButton* self, void* /*edx*/)
 {
-    self->field_0148 = 0;
+    self->m_state = 0;
     CGuiControl_ResetInput(self, nullptr);
 
     if (self->m_bStateTimes) {

@@ -20,7 +20,7 @@ static int __fastcall CGuiEdit_ResetScrollIfTextPresent(CGuiEdit* self, void* /*
     if (textSize == 0)
         return 0;
 
-    self->field_01a8 = 0;
+    self->m_caretIndex = 0;
     self->field_01ac = 0;
 
     // edx carries the loaded size value in the original (register reuse);

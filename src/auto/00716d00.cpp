@@ -53,7 +53,7 @@ static int __fastcall CGuiListBoxBase_SelectNextItem(
             const uint32_t height = CSF_AT(uint32_t, size, 4);
             const uint32_t bottomInset = self->field_0178;
             const uint32_t topInset = self->field_0174;
-            const uint32_t itemHeight = self->field_01b8;
+            const uint32_t itemHeight = self->m_rowHeight;
             const uint32_t lineSpacing = self->m_lineSpacing;
 
             const int32_t availableHeight =

@@ -25,12 +25,12 @@ static int __fastcall CGuiPanel_Draw(CGuiPanel* self, void* /*edx*/)
 
     CGuiListBoxBase_PrepareListRendering(self, nullptr);
 
-    const std::uint32_t childrenBegin = self->field_0138;
+    const std::uint32_t childrenBegin = self->m_childrenBegin;
     std::int32_t childCount = 0;
     if (childrenBegin != 0)
     {
         childCount = static_cast<std::int32_t>(
-            self->field_013c - childrenBegin) >> 2;
+            self->m_childrenEnd - childrenBegin) >> 2;
     }
 
     for (std::int32_t index = childCount - 1; index >= 0; --index)
@@ -39,7 +39,7 @@ static int __fastcall CGuiPanel_Draw(CGuiPanel* self, void* /*edx*/)
             static_cast<std::uint32_t>(index) * 4;
         void* child = reinterpret_cast<void*>(
             CSF_AT(std::uint32_t,
-                   reinterpret_cast<void*>(self->field_0138), byteOffset));
+                   reinterpret_cast<void*>(self->m_childrenBegin), byteOffset));
 
         const int childHidden =
             reinterpret_cast<int(__fastcall*)(void*, void*)>(
@@ -49,7 +49,7 @@ static int __fastcall CGuiPanel_Draw(CGuiPanel* self, void* /*edx*/)
         {
             child = reinterpret_cast<void*>(
                 CSF_AT(std::uint32_t,
-                       reinterpret_cast<void*>(self->field_0138), byteOffset));
+                       reinterpret_cast<void*>(self->m_childrenBegin), byteOffset));
 
             reinterpret_cast<void(__fastcall*)(void*, void*)>(
                 CSF_AT(void**, child, 0)[0x134 / 4])(child, nullptr);

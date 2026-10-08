@@ -42,7 +42,7 @@ static void __fastcall CGuiEdit_DeleteCharacter(CGuiEdit* self, void* /*edx*/)
 
     void* const textObject = reinterpret_cast<void*>(self->m_pText);
     void** const textVtable = CSF_AT(void**, textObject, 0);
-    const std::uint32_t originalIndex = self->field_01a8;
+    const std::uint32_t originalIndex = self->m_caretIndex;
     const std::uint8_t textState = static_cast<std::uint8_t>(
         ((int(__fastcall*)(void*, void*))textVtable[0x88 / 4])(
             textObject, nullptr));
@@ -50,10 +50,10 @@ static void __fastcall CGuiEdit_DeleteCharacter(CGuiEdit* self, void* /*edx*/)
     const std::uint32_t visibleStart = self->field_01ac;
     if (visibleStart == 0)
     {
-        const std::uint32_t currentIndex = self->field_01a8;
+        const std::uint32_t currentIndex = self->m_caretIndex;
         if (currentIndex != 0)
         {
-            self->field_01a8 = currentIndex - 1u;
+            self->m_caretIndex = currentIndex - 1u;
             MenuEula_ComputeWriteCursorForEndPointer(
                 &self->m_wtext0, nullptr, &erasedIterator,
                 CGuiEdit_GetWideCharacterAddress(self, nullptr, originalIndex));
@@ -79,9 +79,9 @@ static void __fastcall CGuiEdit_DeleteCharacter(CGuiEdit* self, void* /*edx*/)
         if (visibleEnd != 0)
             self->field_01b0 = visibleEnd - 1u;
 
-        const std::uint32_t currentIndex = self->field_01a8;
+        const std::uint32_t currentIndex = self->m_caretIndex;
         if (currentIndex != 0)
-            self->field_01a8 = currentIndex - 1u;
+            self->m_caretIndex = currentIndex - 1u;
 
         MenuEula_ComputeWriteCursorForEndPointer(
             &self->m_wtext0, nullptr, &erasedIterator,
@@ -90,11 +90,11 @@ static void __fastcall CGuiEdit_DeleteCharacter(CGuiEdit* self, void* /*edx*/)
     }
     else
     {
-        const std::uint32_t currentIndex = self->field_01a8;
+        const std::uint32_t currentIndex = self->m_caretIndex;
         if (currentIndex < visibleStart)
             self->field_01ac = visibleStart - 1u;
         if (currentIndex != 0)
-            self->field_01a8 = currentIndex - 1u;
+            self->m_caretIndex = currentIndex - 1u;
 
         MenuEula_ComputeWriteCursorForEndPointer(
             &self->m_wtext0, nullptr, &erasedIterator,

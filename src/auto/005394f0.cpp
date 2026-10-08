@@ -27,7 +27,7 @@ CSF_FUNC(int, __fastcall, C_00720DF0_ForwardCallToChildVtblSlot16, 0x00720DF0,
 static char __fastcall CMenuLoading_InitializePanel(
     CMenuLoading* self, void* /*edx*/, void* menuSource, void* context)
 {
-    std::uint32_t result = self->field_002c;
+    std::uint32_t result = self->m_ownedObjectA;
     if (result)
         return static_cast<char>(result);
 
@@ -47,7 +47,7 @@ static char __fastcall CMenuLoading_InitializePanel(
         ((void*(__fastcall*)(void*, void*, void*))
             containerVtable[0x18 / 4])(panelContainer, nullptr, panelName);
     result = reinterpret_cast<std::uint32_t>(panel);
-    self->field_002c = result;
+    self->m_ownedObjectA = result;
 
     if (result)
     {
@@ -67,7 +67,7 @@ static char __fastcall CMenuLoading_InitializePanel(
         const std::uint32_t viewportHeight =
             CSF_AT(std::uint32_t, dimensions, 4);
 
-        panel = reinterpret_cast<void*>(self->field_002c);
+        panel = reinterpret_cast<void*>(self->m_ownedObjectA);
         void** panelVtable = CSF_AT(void**, panel, 0);
 
         double height = static_cast<double>(
@@ -102,7 +102,7 @@ static char __fastcall CMenuLoading_InitializePanel(
                     panel, nullptr, widthScale, heightScale);
     }
 
-    panel = reinterpret_cast<void*>(self->field_002c);
+    panel = reinterpret_cast<void*>(self->m_ownedObjectA);
     if (!panel)
         return static_cast<char>(result);
 
@@ -111,18 +111,18 @@ static char __fastcall CMenuLoading_InitializePanel(
 
     CMenuLoading_InitializePanelContents(self, nullptr);
 
-    panel = reinterpret_cast<void*>(self->field_002c);
+    panel = reinterpret_cast<void*>(self->m_ownedObjectA);
     void* panelState =
         ((void*(__fastcall*)(void*, void*))
             CSF_AT(void**, panel, 0)[0xdc / 4])(panel, nullptr);
-    self->field_003c = reinterpret_cast<std::uint32_t>(panelState);
+    self->m_ownedBlock = reinterpret_cast<std::uint32_t>(panelState);
     AddObjectReference(static_cast<std::uint8_t*>(panelState) + 4, nullptr);
 
-    panel = reinterpret_cast<void*>(self->field_002c);
+    panel = reinterpret_cast<void*>(self->m_ownedObjectA);
     ((void(__fastcall*)(void*, void*, int))
         CSF_AT(void**, panel, 0)[0xd8 / 4])(panel, nullptr, 0);
 
-    panel = reinterpret_cast<void*>(self->field_002c);
+    panel = reinterpret_cast<void*>(self->m_ownedObjectA);
     void* progress =
         ((void*(__fastcall*)(void*, void*, const char*))
             CSF_AT(void**, panel, 0)[0xfc / 4])(
@@ -131,7 +131,7 @@ static char __fastcall CMenuLoading_InitializePanel(
 
     if (progress)
     {
-        panel = reinterpret_cast<void*>(self->field_002c);
+        panel = reinterpret_cast<void*>(self->m_ownedObjectA);
         ((void(__fastcall*)(void*, void*, void*))
             CSF_AT(void**, panel, 0)[0x100 / 4])(panel, nullptr, progress);
 
@@ -155,7 +155,7 @@ static char __fastcall CMenuLoading_InitializePanel(
         }
     }
 
-    panel = reinterpret_cast<void*>(self->field_002c);
+    panel = reinterpret_cast<void*>(self->m_ownedObjectA);
     void* briefing =
         ((void*(__fastcall*)(void*, void*, const char*))
             CSF_AT(void**, panel, 0)[0xfc / 4])(
@@ -173,7 +173,7 @@ static char __fastcall CMenuLoading_InitializePanel(
             reinterpret_cast<void*>(self->field_0028), nullptr, text);
     }
 
-    panel = reinterpret_cast<void*>(self->field_002c);
+    panel = reinterpret_cast<void*>(self->m_ownedObjectA);
     void* portraits =
         ((void*(__fastcall*)(void*, void*, const char*))
             CSF_AT(void**, panel, 0)[0xfc / 4])(
@@ -182,7 +182,7 @@ static char __fastcall CMenuLoading_InitializePanel(
 
     if (portraits)
     {
-        panel = reinterpret_cast<void*>(self->field_002c);
+        panel = reinterpret_cast<void*>(self->m_ownedObjectA);
         ((void(__fastcall*)(void*, void*, void*))
             CSF_AT(void**, panel, 0)[0x100 / 4])(panel, nullptr, portraits);
         return CMenuLoading_UpdatePortraits(self, nullptr, context);

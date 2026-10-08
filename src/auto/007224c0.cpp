@@ -22,7 +22,7 @@ static int __fastcall CGuiEdit_HandleBackspace(CGuiEdit* self, void* /*edx*/)
         return 0;
 
     uint32_t lastIndex = charCount - 1;
-    self->field_01a8 = lastIndex;
+    self->m_caretIndex = lastIndex;
     self->field_01b0 = lastIndex;
 
     return AdjustTextRangeLeft(self, nullptr, 0);

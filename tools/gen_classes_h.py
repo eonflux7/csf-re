@@ -25,6 +25,16 @@ def load_names():
         k = f"{k:08x}" if isinstance(k, int) else str(k).lower()
         if v.get("conf", 0) >= MIN_CONF:
             out[k] = v
+    # field names by consensus of the grunts' proposals (tools/fields.py apply), under the curated ones
+    cp = os.path.join(ROOT, "db", "types", "field_consensus.yaml")
+    cons = (yaml.safe_load(open(cp)) or {}) if os.path.exists(cp) else {}
+    for k, fs in cons.items():
+        k = f"{k:08x}" if isinstance(k, int) else str(k).lower()
+        if k in out:
+            own = {int(str(o), 16) for o in (out[k].get("fields") or {})}
+            merged = dict(out[k].get("fields") or {})
+            merged.update({o: n for o, n in fs.items() if int(str(o), 16) not in own})
+            out[k] = dict(out[k], fields=merged)
     return out
 
 
@@ -75,8 +85,92 @@ def ctype(size, rw):
     return {1: "uint8_t", 2: "uint16_t", 4: "uint32_t", 8: "uint64_t"}.get(size)
 
 
+BUILTIN = re.compile(r"^(const\s+)?(unsigned\s+|signed\s+)?(void|bool|char|short|int|long|float|double|"
+                     r"(std::)?u?int(8|16|32|64)_t|(std::)?size_t|uintptr_t|wchar_t)(\s+long)?(\s*\*)*$")
+
+
+def _api():
+    p = os.path.join(ROOT, "db", "api.json")
+    return {int(k, 16): v for k, v in json.load(open(p)).items()} if os.path.exists(p) else {}
+
+
+def _vtables():
+    return {v["addr"]: v for v in json.load(open(os.path.join(ROOT, "db", "vtables.json")))}
+
+
+def _param(p, i):
+    """(type, name) of one parameter; class-typed pointers become void* (the header declares classes in base
+    order, a wrapper may name a class declared later). None = can't express it here (function pointer, by-value
+    class)."""
+    p = re.sub(r"/\*.*?\*/", "", p).strip()
+    if "(" in p or "[" in p or not p:
+        return None
+    m = re.match(r"^(.*?[\s\*&])(\w+)$", p)
+    t, n = (m.group(1).strip(), m.group(2)) if m and not BUILTIN.match(p) else (p, f"a{i}")
+    if not BUILTIN.match(t):
+        if t.endswith("*"):
+            t = "void*"
+        else:
+            return None
+    return t, n
+
+
+def vmethods(vt, base, used):
+    """Non-virtual inline members that call the vtable slots this class introduces (slots past its base's count):
+    `slider->vGetValue()` instead of `reinterpret_cast<int (__fastcall*)(void*, void*)>(vtbl[0x244 / 4])(...)`.
+    Named after the slot target's canonical name (db/api.json), class prefix dropped; only slots whose target has
+    a known __fastcall (this, edx, ...) signature. No layout change; the gate's slot check sees the displacement."""
+    VT, API = _VT, _API
+    v = VT.get(vt)
+    if not v:
+        return []
+    first = VT[base]["nslots"] if base and base in VT else 0
+    out = []
+    for slot in range(first, v["nslots"]):
+        a = API.get(int(v["slots"][slot], 16))
+        if not a or a["conv"] != "__fastcall":
+            continue
+        ps = [x for x in a["params"].split(",")] if a["params"].strip() not in ("", "void") else []
+        if len(ps) < 2:
+            continue
+        args = [_param(x, i) for i, x in enumerate(ps[2:], 1)]
+        if any(x is None for x in args):
+            continue
+        ret = a["ret"].strip()
+        if not BUILTIN.match(ret):
+            if ret.endswith("*"):
+                ret = "void*"
+            else:
+                continue
+        short = re.sub(r"^(C_[0-9a-f]{8}|C[A-Z]\w*?|[A-Z]\w*?)_(?=[A-Z])", "", a["name"], count=1)
+        short = re.sub(r"_[0-9A-F]{5,8}$", "", short) or a["name"]
+        mname = "v" + short[0].upper() + short[1:]
+        if mname in used:
+            mname = f"{mname}_{slot:x}"
+        used.add(mname)
+        names = []
+        for i, (t, n) in enumerate(args, 1):
+            k = 0
+            while n in names or n in ("this", "self") or n in [x[1] for x in args[i:]]:
+                k += 1
+                n = f"p{i}_{k}"
+            names.append(n)
+        sig = ", ".join(f"{t} {n}" for (t, _), n in zip(args, names))
+        fptr = ", ".join(["void*", "void*"] + [t for t, _ in args])
+        call = ", ".join(["this", "nullptr"] + names)
+        out.append(f"    {ret} {mname}({sig}) {{ return reinterpret_cast<{ret}(__fastcall*)({fptr})>"
+                   f"(vtbl[0x{slot * 4:x} / 4])({call}); }}  // slot +0x{slot * 4:X} -> 0x{v['slots'][slot].upper()}")
+    return out
+
+
+_VT, _API = {}, {}
+
+
 def main():
+    global _VT, _API
+    _VT, _API = _vtables(), _api()
     order, seen = [], set()
+    nwrap = 0
 
 
     def visit(vt):
@@ -146,6 +240,12 @@ def main():
             cur = o + size
         if end > cur:
             lines.append(f"    uint8_t pad_{cur:04x}[0x{end - cur:x}];")
+        used = {re.search(r"(\w+)(\[\w+\])?;$", l).group(1) for l in lines if re.search(r"(\w+)(\[\w+\])?;$", l)}
+        vm = vmethods(vt, C[vt]["base"], used)
+        if vm:
+            lines.append("    // virtual calls through this class's own vtable slots (tools/gen_classes_h.py vmethods)")
+            lines += vm
+            nwrap += len(vm)
         lines.append("};")
         if c["size"]:
             lines.append(f"static_assert(sizeof({name(vt)}) == 0x{c['size']:x});")
@@ -156,7 +256,7 @@ def main():
     out.append("#pragma pack(pop)")
     os.makedirs(os.path.join(ROOT, "src", "types"), exist_ok=True)
     open(os.path.join(ROOT, "src", "types", "auto_classes.h"), "w").write("\n".join(out) + "\n")
-    print(f"wrote {len(order)} classes")
+    print(f"wrote {len(order)} classes, {nwrap} virtual-call wrappers")
 
 
 if __name__ == "__main__":

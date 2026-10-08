@@ -16,7 +16,7 @@ static int __fastcall CGuiListBoxBase_UpdateSliderFromVisibleRowCount(
     std::uint32_t availableHeight = CSF_AT(std::uint32_t, dimensions, 4);
     const std::uint32_t adjustment178 = self->field_0178;
     const std::uint32_t adjustment174 = self->field_0174;
-    const std::uint32_t rowHeight = self->field_01b8;
+    const std::uint32_t rowHeight = self->m_rowHeight;
     availableHeight -= adjustment178;
     availableHeight -= adjustment174;
 

@@ -11,10 +11,10 @@ static int (__fastcall* const CGuiControl_PassesEligibilityCheck)(
 static CGuiControl* __fastcall CGuiPanel_FindFirstEligibleChild(
     CGuiPanel* self, void* /*edx*/)
 {
-    const std::uint32_t initialBegin = self->field_0138;
+    const std::uint32_t initialBegin = self->m_childrenBegin;
     std::uint32_t childCount = 0;
     if (initialBegin != 0) {
-        const std::uint32_t byteDifference = self->field_013c - initialBegin;
+        const std::uint32_t byteDifference = self->m_childrenEnd - initialBegin;
         childCount = static_cast<std::uint32_t>(
             static_cast<std::int32_t>(byteDifference) >> 2);
     }
@@ -24,7 +24,7 @@ static CGuiControl* __fastcall CGuiPanel_FindFirstEligibleChild(
          index < childCount && result == nullptr;
          ++index) {
         auto* child = reinterpret_cast<CGuiControl**>(
-            self->field_0138)[index];
+            self->m_childrenBegin)[index];
 
         const auto virtualPredicate =
             reinterpret_cast<std::uint8_t (__fastcall*)(void*, void*)>(
