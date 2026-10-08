@@ -790,7 +790,7 @@ def run_config(args, lanes=False):
                 batch_fns=args.batch_fns, batch_bytes=getattr(args, "batch_bytes", 0),
                 batch_max=getattr(args, "batch_max", 300), tiny=args.tiny,
                 deep_clones=lanes, review_over=args.review_over, codex_cap=getattr(args, "codex_cap", None),
-                backend=getattr(args, "backend", "lanes"))
+                backend=getattr(args, "backend", "lanes"), wave=getattr(args, "module", None))
 
 
 def pack(db, eas, fns, budget=0, max_size=300):

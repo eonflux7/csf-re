@@ -360,6 +360,8 @@ _live = dict(pid=os.getpid(), started=time.time(), job="", phase="", model="", e
 
 def live(**kw):
     _live.update(kw)
+    if "--dry" in sys.argv:  # a dry run must not replace the monitor's view of the last real run
+        return
     _live["updated"] = time.time()
     tmp = f"{STATE}.{os.getpid()}"
     with open(tmp, "w") as f:
