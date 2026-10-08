@@ -3,7 +3,7 @@
 
 Usage:
   grunt.py run [--n 10] [--jobs 8] [--max-size 200] [--only ea,ea] [--model deepseek-flash] [--no-smoke]
-  grunt.py lanes [--total 200] [--batch 60] [--tiny-jobs 8] [--main-jobs 6]   continuous, two lanes (see lanes())
+  grunt.py lanes [--total 200] [--batch 60] [--flash-jobs 8] [--deep-jobs 6]   continuous, two lanes (see lanes())
   grunt.py cost                      token usage, review hit rate from work/grunt_log.jsonl
 
 Stop a lanes run cleanly: `touch work/grunt_stop` (in-flight calls finish, the batch is smoked and committed).
@@ -1041,8 +1041,8 @@ def lanes(args):
     key = load_key()
     esc = [("claude", args.claude_model, 2)] if args.escalate_claude else []
     codex = [("codex", args.codex_model, 2)]
-    pools = {"deep": cf.ThreadPoolExecutor(args.tiny_jobs), "main": cf.ThreadPoolExecutor(args.main_jobs)}
-    caps = {"deep": args.tiny_jobs * 2, "main": args.main_jobs * 2}
+    pools = {"flash": cf.ThreadPoolExecutor(args.flash_jobs), "deep": cf.ThreadPoolExecutor(args.deep_jobs)}
+    caps = {"flash": args.flash_jobs * 2, "deep": args.deep_jobs * 2}
     inflight, good, submitted, total_ok, total_esc, total_def = {}, [], 0, 0, 0, 0
     stopping, quota_t = False, 0
     if os.path.exists(STOP):
@@ -1053,12 +1053,12 @@ def lanes(args):
     def lane_of(ea, ex):
         size = db.F[ea]["size"]
         if size < args.tiny or (ex is not None and size <= 400):
-            return "deep", [("deepseek", args.model, 2)] + codex + esc
-        return "main", codex + esc
+            return "flash", [("deepseek", args.model, 2)] + codex + esc
+        return "deep", codex + esc
 
     def quota():
-        """Pause/resume Codex on the 5h window (checked every 2 min). While paused the main lane gets no new work and
-        the DeepSeek lane runs without Codex fallback/review."""
+        """Pause/resume Codex on the 5h window (checked every 2 min). While paused the deep lane gets no new work and
+        the flash lane runs without Codex fallback/review."""
         nonlocal quota_t
         if args.codex_cap <= 0 or time.time() - quota_t < 120:
             return
@@ -1069,11 +1069,11 @@ def lanes(args):
             return  # endpoint down: keep the current state
         if pct >= args.codex_cap and not CODEX_PAUSED.is_set():
             CODEX_PAUSED.set()
-            print(f"Codex 5h window at {pct:.0f}% (cap {args.codex_cap}): main lane paused, resets in {reset // 60} min",
+            print(f"Codex 5h window at {pct:.0f}% (cap {args.codex_cap}): deep lane paused, resets in {reset // 60} min",
                   flush=True)
         elif pct < args.codex_cap and CODEX_PAUSED.is_set():
             CODEX_PAUSED.clear()
-            print(f"Codex 5h window at {pct:.0f}%: main lane resumed", flush=True)
+            print(f"Codex 5h window at {pct:.0f}%: deep lane resumed", flush=True)
         live(codex_paused=CODEX_PAUSED.is_set(), codex_5h=pct)
 
     def refill():
@@ -1088,31 +1088,31 @@ def lanes(args):
         busy = {ea for eas, _ in inflight.values() for ea in eas}
         cnt = collections.Counter(l for _, l in inflight.values())
         if CODEX_PAUSED.is_set():
-            cnt["main"] = caps["main"]
+            cnt["deep"] = caps["deep"]
         if submitted >= args.total or all(cnt[l] >= caps[l] for l in caps):
             return
-        groups = collections.defaultdict(list)  # module -> small main-lane functions waiting to fill a Codex batch
+        groups = collections.defaultdict(list)  # module -> small deep-lane functions waiting to fill a Codex batch
 
         def submit_batch(g):
             nonlocal submitted
             if len(g) == 1:
-                fut = pools["main"].submit(work, g[0], db, key, codex + esc, None, None, args.review_over,
+                fut = pools["deep"].submit(work, g[0], db, key, codex + esc, None, None, args.review_over,
                                            ev_budget(args, db, g[0]))
             else:
-                fut = pools["main"].submit(work_batch, sorted(g), db, key, args.codex_model, None, args.review_over,
+                fut = pools["deep"].submit(work_batch, sorted(g), db, key, args.codex_model, None, args.review_over,
                                            {e: ev_budget(args, db, e) for e in g})
-            inflight[fut] = (tuple(g), "main")
-            cnt["main"] += 1
+            inflight[fut] = (tuple(g), "deep")
+            cnt["deep"] += 1
             submitted += len(g)
 
-        # wide window: the leaf-first head is almost all tiny (DeepSeek lane); the Codex lane needs larger candidates
+        # wide window: the leaf-first head is almost all tiny (flash lane); the deep lane needs larger candidates
         for ea, ex in select(db, 4000, args.max_size, args.min_size, exclude=busy, modules=wave):
             if submitted >= args.total:
                 break
             lane, ladder = lane_of(ea, ex)
             if cnt[lane] >= caps[lane]:
                 continue
-            if lane == "main" and args.batch_fns > 1 and db.F[ea]["size"] <= args.batch_max:
+            if lane == "deep" and args.batch_fns > 1 and db.F[ea]["size"] <= args.batch_max:
                 gk = db.class_of(ea) or db.rows[ea]["module"]  # same class first: shared fields/role, same names
                 g = groups[gk]
                 g.append(ea)
@@ -1126,7 +1126,7 @@ def lanes(args):
             cnt[lane] += 1
             submitted += 1
         for g in groups.values():  # partial batches (the window ran out)
-            if g and cnt["main"] < caps["main"]:
+            if g and cnt["deep"] < caps["deep"]:
                 submit_batch(g)
         live(counts=dict(submitted=submitted))
 
@@ -1261,7 +1261,7 @@ AB = os.path.join(ROOT, "work", "ab")
 
 def ab_set(db, track, n, seed):
     """One A/B track's functions, chosen once into work/ab/<track>/set.json (arms added later run the same set).
-    a: not-yet-done functions of DeepSeek-lane shape (2/3 under 48 bytes, 1/3 of 48-150: can cheap models take more?).
+    a: not-yet-done functions of flash-lane shape (2/3 under 48 bytes, 1/3 of 48-150: can cheap models take more?).
     b: done functions Codex won as a single (non-batched) task, 70% Codex-only and 30% after DeepSeek failed twice;
     Codex's logged attempts and tokens are the baseline, its committed file the reference for code similarity."""
     p = os.path.join(AB, track, "set.json")
@@ -1476,8 +1476,8 @@ if __name__ == "__main__":
     l.add_argument("--total", type=int, default=200)
     l.add_argument("--module", help="module wave: comma list of module ids/names (tools/modules.py list)")
     l.add_argument("--batch", type=int, default=60, help="smoke + commit every N gate passes")
-    l.add_argument("--tiny-jobs", type=int, default=8)
-    l.add_argument("--main-jobs", type=int, default=6)
+    l.add_argument("--flash-jobs", "--tiny-jobs", type=int, default=8, help="flash lane workers (small/clone functions)")
+    l.add_argument("--deep-jobs", "--main-jobs", type=int, default=6, help="deep lane workers (the rest)")
     l.add_argument("--max-size", type=int, default=600)
     l.add_argument("--min-size", type=int, default=6)
     l.add_argument("--tiny", type=int, default=48)
@@ -1490,9 +1490,9 @@ if __name__ == "__main__":
     l.add_argument("--review-over", type=int, default=100)
     l.add_argument("--no-smoke", action="store_true")
     l.add_argument("--no-bisect", action="store_true", help="stop on a smoke failure instead of bisecting it")
-    l.add_argument("--batch-fns", type=int, default=4, help="Codex lane: functions per call (1: off)")
+    l.add_argument("--batch-fns", type=int, default=4, help="deep lane: functions per call (1: off)")
     l.add_argument("--batch-max", type=int, default=300, help="only functions up to N bytes are batched")
-    l.add_argument("--batch-bytes", type=int, default=0, help="Codex lane: close a batch at N bytes of original code (0: off)")
+    l.add_argument("--batch-bytes", type=int, default=0, help="deep lane: close a batch at N bytes of original code (0: off)")
     l.add_argument("--smoke-menu", action="store_true", help="short smokes run the menu tour (GUI module waves)")
     l.add_argument("--no-captain", action="store_true", help="module waves: skip the captain steps (class naming "
                    "before, placeholder function names after)")
@@ -1500,7 +1500,7 @@ if __name__ == "__main__":
     sub.add_parser("cost")
     b = sub.add_parser("ab", help="model A/B over OpenCode Go (work/ab/, nothing committed)")
     b.add_argument("--track", choices=["a", "b"], required=True,
-                   help="a: DeepSeek-lane alternatives on new functions; b: Codex alternatives on Codex-won functions")
+                   help="a: flash-lane alternatives on new functions; b: deep-lane alternatives on Codex-won functions")
     b.add_argument("--arms", required=True, help="comma list of Go models, optionally model@effort")
     b.add_argument("--n", type=int, default=25)
     b.add_argument("--seed", type=int, default=1)

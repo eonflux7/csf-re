@@ -127,7 +127,7 @@ class ABMonitor(App):
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
         with TabbedContent(initial="b"):
-            for t, title in (("a", "a · DeepSeek lane"), ("b", "b · Codex lane")):
+            for t, title in (("a", "a · flash lane"), ("b", "b · deep lane")):
                 with TabPane(title, id=t):
                     yield DataTable(id=f"sum{t}", classes="summary", cursor_type="none")
                     yield DataTable(id=f"grid{t}", classes="grid", cursor_type="row", zebra_stripes=True)

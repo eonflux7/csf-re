@@ -723,7 +723,7 @@ def grunt_header(g):
         out.append(f)
     if st.get("codex_paused") and alive:
         out.append(Text(f"        Codex paused by the quota guard (5h {st.get('codex_5h', 0):.0f}%): "
-                        "DeepSeek lane only", style="bold red"))
+                        "flash lane only", style="bold red"))
     return out
 
 
@@ -746,7 +746,7 @@ def result_rows(g, n=None):
     for r in g["recent"][::-1][:n]:
         ok = r.get("ok")
         what = r.get("meta", {}).get("name", "") if ok else (r.get("err", "").splitlines() or [""])[0]
-        by = (r.get("by") or "").split(":")[0] or {"deep": "deepseek", "main": "codex"}.get(r.get("lane"), "")
+        by = (r.get("by") or "").split(":")[0] or {"flash": "deepseek", "deep": "codex"}.get(r.get("lane"), "")
         tags = ([f"b{r['batch']}"] if r.get("batch") else []) + \
                ([f"try{r['attempts']}"] if ok and r.get("attempts", 1) > 1 else [])
         rows.append((Text(ago(r.get("ts", 0)), style="dim"),
