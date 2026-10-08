@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Make the play copy load our hook DLL under its own name (play copy only; never the original builds).
 
-Windows here resolves `DINPUT8.dll` to System32 before the game directory (seen 2026-10-09: the game ran without
-our DLL, so neither the hooks nor the windowed / off-screen / muted mode applied). The play copy's import is renamed
+Processes started from WSL inherit the "prefer System32 images" mitigation (GetProcessMitigationPolicy:
+PreferSystem32Images=1, also through powershell.exe Start-Process): any DLL name that exists in System32 is loaded
+from there and the game directory's copy is never checked. Our smokes start the game from WSL, so the game ran
+without our dinput8.dll proxy (2026-10-09): no hooks, so no windowed / off-screen / muted mode either. The play copy's import is renamed
 DINPUT8.dll -> CSFHOOK.dll (same length) and the DLL is deployed as CSFHOOK.dll; it still forwards
 DirectInput8Create to System32's dinput8.dll (hook/main.cpp). Idempotent; the unpatched exe is kept as
 CommXPC.exe.orig.
