@@ -130,6 +130,42 @@ def go_cost(model, u):
     return (fresh * pin + cached * cr + wrote * cw + (u.get("completion_tokens", 0) or 0) * out) / 1e6
 
 
+GO_IDLE = 240  # s without a streamed byte before a Go request counts as stalled
+
+
+def _go_stream(resp, anthropic):
+    """Read a server-sent-event answer into the non-streamed response shape (the parsing below stays one path)."""
+    text, usage = [], {}
+    for raw in resp:
+        line = raw.decode(errors="replace").strip()
+        if not line.startswith("data:"):
+            continue
+        data = line[5:].strip()
+        if data == "[DONE]":
+            break
+        try:
+            ev = json.loads(data)
+        except json.JSONDecodeError:
+            continue
+        if ev.get("type") == "error" or (ev.get("error") and not ev.get("choices")):
+            raise RuntimeError(f"go stream error: {str(ev.get('error'))[:300]}")
+        if anthropic:
+            if ev.get("type") == "message_start":
+                usage |= ev["message"].get("usage") or {}
+            elif ev.get("type") == "content_block_delta" and ev["delta"].get("type") == "text_delta":
+                text.append(ev["delta"]["text"])
+            elif ev.get("type") == "message_delta":
+                usage |= {k: v for k, v in (ev.get("usage") or {}).items() if v is not None}
+        else:
+            for ch in ev.get("choices") or []:
+                text.append((ch.get("delta") or {}).get("content") or "")
+            if ev.get("usage"):
+                usage = ev["usage"]
+    text = "".join(text)
+    return (dict(content=[dict(type="text", text=text)], usage=usage) if anthropic
+            else dict(choices=[dict(message=dict(content=text))], usage=usage))
+
+
 def chat_go(model, messages, effort="high"):
     """OpenCode Go. `model` may pin an effort for every attempt: "claude-haiku-5-5@low". Claude models speak the
     Anthropic /messages format (adaptive thinking + output_config.effort, prompt caching on), the rest OpenAI
@@ -152,11 +188,14 @@ def chat_go(model, messages, effort="high"):
                     reasoning_effort=effort if name.startswith("deepseek") or effort != "max" else "high")
         if name.startswith("deepseek"):
             body["thinking"] = {"type": "enabled"}
+    # Streamed: the socket timeout is then an idle timeout (no token for GO_IDLE s = stalled upstream, retry) instead
+    # of a cap on the whole answer — non-streamed, a long think and a hung request looked the same for 20 min.
+    body |= dict(stream=True) if name.startswith("claude-") else dict(stream=True, stream_options={"include_usage": True})
     req = urllib.request.Request(url, data=json.dumps(body).encode(), headers=hdr)
     for attempt in range(4):
         try:
-            with urllib.request.urlopen(req, timeout=1200) as r:
-                d = json.load(r)
+            with urllib.request.urlopen(req, timeout=GO_IDLE) as r:
+                d = _go_stream(r, name.startswith("claude-"))
             break
         except urllib.error.HTTPError as e:  # 429 / 5xx: back off; other 4xx are our fault
             msg = e.read().decode(errors="replace")[:300]
