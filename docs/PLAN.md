@@ -68,7 +68,7 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
    `tools/ida/sync.py`. Fields: `fields:` takes a plain name or "type name[N]" (legacy::string/wstring, arrays).
    Next: field names of the menu/AI bases (CMenuScreen, TCharTask, TAiState), the engine family 0x860178, the
    0x82E598 task subfamily.
-2. Phase 4 lanes runs (one lane, S/M/L tiers; mostly OpenCode Go now, so Codex windows matter only for L).
+2. Phase 4 lanes runs (one lane, S/M/L tiers; mostly Haiku on the grunts' own Claude account now; Codex kept for L past 50 % of its 5h window).
    First tier run: the menu wave (25 menu_* modules, ~500 eligible). Then tune --s-max/--m-max and the ladders on
    its per-tier stats (monitor Costs pane, `grunt.py cost`).
 3. Opus review sampling and diff tier 2 (catch bug classes before they crash in-game).
@@ -142,8 +142,10 @@ This file is the living plan. Update the **Phase checklist** as work completes, 
 - [x] One dynamic lane (2026-10-08, replaces the two lanes): size tiers S < 150 B (+ clone siblings) / M <= 400 B /
       L, each with a model ladder over OpenCode Go + Codex (S: Haiku 5.5 low x2 -> medium -> Codex high;
       M: Haiku 5.5 high x2 -> Codex high x2, Codex review at medium; L: Codex high x2; MiMo dropped and no xhigh
-      after the first menu batches), per-tier in-flight caps, Go allowance guard
-      (work/go_spend.jsonl), quota-blocked rungs defer instead of escalating. Chosen by `grunt.py ab` (work/ab/).
+      after the first menu batches), per-tier in-flight caps, quota-blocked rungs defer instead of escalating. Chosen by
+      an A/B over OpenCode Go (work/ab/). Go dropped the same day (allowance hit after ~2 batches): Haiku now runs
+      via `claude -p` on a second Claude account (~/.config/csf-re/claude-grunts, paused at --claude-cap 95 % of
+      its 5h/7d window); S/M Codex rungs run on Opus 5.5 medium there once Codex passes --codex-reserve 50 %.
 - [x] Collect CSF_GLOBAL names from src/auto into db/globals.yaml (`tools/globals.py`, run after each batch;
       names substituted into packet pseudocode; pin with src: opus)
 - [x] Lanes: auto-bisect on smoke failure (ini toggles, no rebuild), `work/grunt_stop`, Codex 5h quota guard

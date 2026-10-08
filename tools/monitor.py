@@ -19,7 +19,7 @@ from datetime import datetime, timezone
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from limits import codex_usage, deepseek_balance  # noqa: E402
-from grunt import GO_LIMIT, GO_SPEND, GO_WINDOWS  # noqa: E402
+from grunt import CLAUDE_GRUNTS, claude_usage  # noqa: E402
 
 from rich.console import Group
 from rich.panel import Panel
@@ -32,24 +32,22 @@ JOBS = os.path.expanduser("~/.claude/jobs")
 LIVE = os.path.join(ROOT, "work", "grunt_state.json")
 LOG = os.path.join(ROOT, "work", "grunt_log.jsonl")
 CAPTAIN = os.path.join(ROOT, "work", "captain_state.json")
-BACKEND_STYLE = {"codex": "magenta", "deepseek": "cyan", "claude": "yellow", "go": "bright_cyan"}
+BACKEND_STYLE = {"codex": "magenta", "deepseek": "cyan", "claude": "yellow"}
 MODEL_STYLE = {"haiku": "yellow", "mimo": "bright_cyan", "sol": "magenta", "ds": "cyan", "sonnet": "green", "opus": "bright_red"}
 
 
 def who(backend, model=""):
-    """Short model label: go:claude-haiku-5-5@low -> haiku·lo, codex:gpt-6.1-sol@xhigh -> sol·xh, mimo-v2.6-pro -> mimo."""
+    """Short model label: claude:claude-haiku-5-5@low -> haiku·lo, codex:gpt-6.1-sol@xhigh -> sol·xh."""
     base, _, eff = (model or "").partition("@")
     name = ("haiku" if "haiku" in base else "opus" if "opus" in base else "sonnet" if "sonnet" in base else "mimo" + ("-fl" if "flash" in base else "") if "mimo" in base else
             "sol" if "sol" in base else "ds" + ("-pro" if "pro" in base else "")
             if backend == "deepseek" or "deepseek" in base else base.split("-")[0] or backend)
-    if backend == "claude":  # the grunts' Claude account (vs the same model over Go)
-        name = "c-" + name
     return name + (f"·{eff[:2]}" if eff else "")
 
 
 def who_text(backend, model=""):
     w = who(backend, model)
-    return Text(w, style=MODEL_STYLE.get(w.split("·")[0].removeprefix("c-"), BACKEND_STYLE.get(backend, "dim")))
+    return Text(w, style=MODEL_STYLE.get(w.split("·")[0], BACKEND_STYLE.get(backend, "dim")))
 _cache = {}
 
 
@@ -156,40 +154,6 @@ def timeline(job, n=6):
     return out[-n:]
 
 
-USAGE_CACHE = os.path.join(ROOT, "work", "claude_usage.json")
-
-
-def claude_usage():
-    """5h / 7d windows of the Claude plan, from the endpoint Claude Code's /usage reads (own OAuth token).
-    Rate-limited (429) when polled often: asked at most once a minute (across monitor restarts: work/
-    claude_usage.json), after an error again after its Retry-After or 5 min; meanwhile the last good answer is
-    shown with its age."""
-    try:
-        c = json.load(open(USAGE_CACHE))
-    except (OSError, ValueError):
-        c = {}
-    wait = c.get("retry_after") or 300 if c.get("error") else 60
-    if time.time() - c.get("asked", 0) >= wait:
-        c["asked"] = time.time()
-        try:
-            tok = json.load(open(os.path.expanduser("~/.claude/.credentials.json")))["claudeAiOauth"]["accessToken"]
-            req = urllib.request.Request("https://api.anthropic.com/api/oauth/usage", headers={
-                "Authorization": f"Bearer {tok}", "anthropic-beta": "oauth-2025-04-20", "User-Agent": "csf-re-monitor"})
-            d = json.load(urllib.request.urlopen(req, timeout=8))
-            c.update(error=None, at=time.time(), u={k: (d[w]["utilization"], iso(d[w]["resets_at"])) for k, w in
-                                                     (("5h", "five_hour"), ("7d", "seven_day")) if d.get(w)})
-        except Exception as e:
-            c["error"] = str(e)[:60]
-            ra = getattr(e, "headers", None) and e.headers.get("retry-after")
-            c["retry_after"] = min(3600, max(60, int(ra))) if ra and str(ra).isdigit() else None
-        json.dump(c, open(USAGE_CACHE, "w"))
-    if not c.get("u"):
-        raise RuntimeError(c.get("error") or "no data yet")
-    out = {k: (pct, at - time.time()) for k, (pct, at) in c["u"].items()}
-    out["_age"] = time.time() - c.get("at", 0)
-    return out
-
-
 def usage_line(label, u, style):
     t = Text(f"{label} ", style=style)
     if not isinstance(u, dict):
@@ -218,8 +182,8 @@ def ctx_text(n):
 
 def accounts():
     """Login email, plan and next billing date of both subscriptions, from the local login files only (no calls).
-    Codex: the id_token claims (chatgpt_subscription_active_until = paid through). Claude: ~/.claude.json
-    oauthAccount; it has no renewal date, so the next monthly anniversary of subscriptionCreatedAt (estimate)."""
+    Codex: the id_token claims (chatgpt_subscription_active_until = paid through). Claude (captain's ~/.claude.json and
+    the grunts' CLAUDE_GRUNTS/.claude.json): oauthAccount; it has no renewal date, so the next monthly anniversary of subscriptionCreatedAt (estimate)."""
     import base64, datetime as dt
     out = {}
     try:
@@ -231,23 +195,25 @@ def accounts():
                         dt.datetime.fromisoformat(until).date() if until else None, False)
     except Exception:
         pass
-    try:
-        oa = json.load(open(os.path.expanduser("~/.claude.json")))["oauthAccount"]
-        nxt = None
-        if oa.get("subscriptionCreatedAt"):
-            start = dt.datetime.fromisoformat(oa["subscriptionCreatedAt"].replace("Z", "+00:00")).date()
-            today, y, m = dt.date.today(), start.year, start.month
-            while True:
-                last = (dt.date(y + m // 12, m % 12 + 1, 1) - dt.timedelta(days=1)).day
-                d = dt.date(y, m, min(start.day, last))
-                if d > today:
-                    nxt = d
-                    break
-                y, m = (y + 1, 1) if m == 12 else (y, m + 1)
-        plan = (oa.get("organizationType") or "?").replace("claude_", "")
-        out["claude"] = (oa.get("emailAddress", "?"), plan, nxt, True)
-    except Exception:
-        pass
+    for which, path in (("claude", os.path.expanduser("~/.claude.json")),
+                        ("claude-grunts", os.path.join(CLAUDE_GRUNTS, ".claude.json"))):
+        try:
+            oa = json.load(open(path))["oauthAccount"]
+            nxt = None
+            if oa.get("subscriptionCreatedAt"):
+                start = dt.datetime.fromisoformat(oa["subscriptionCreatedAt"].replace("Z", "+00:00")).date()
+                today, y, m = dt.date.today(), start.year, start.month
+                while True:
+                    last = (dt.date(y + m // 12, m % 12 + 1, 1) - dt.timedelta(days=1)).day
+                    d = dt.date(y, m, min(start.day, last))
+                    if d > today:
+                        nxt = d
+                        break
+                    y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+            plan = (oa.get("organizationType") or "?").replace("claude_", "")
+            out[which] = (oa.get("emailAddress", "?"), plan, nxt, True)
+        except Exception:
+            pass
     return out
 
 
@@ -605,11 +571,8 @@ def panel_costs(st=None, recent=()):
                          no_wrap=True, overflow="ellipsis"))
     body += [Text("Codex", style="bold magenta"), account_line("codex")]
     body += usage_rows(cached("codex_usage", 60, codex_usage))
-    body.append(Text("OpenCode Go", style="bold bright_cyan"))
-    body.append(Text(" service account key · $10/mo · per-model allowances (5h 20% · week 50% · month)", style="dim",
-                     no_wrap=True, overflow="ellipsis"))
-    gw = cached("go_windows", 15, go_windows)
-    body += gw if isinstance(gw, list) else [Text(f" spend n/a: {str(gw)[:40]}", style="dim")]
+    body += [Text("Claude · grunts", style="bold yellow"), account_line("claude-grunts")]
+    body += usage_rows(cached("claude_grunts_usage", 30, lambda: claude_usage("grunts")))
     db_ = cached("ds_balance", 300, deepseek_balance)
     if isinstance(db_, tuple):
         bal = "  ".join(f"{amt} {cur}" for cur, amt in db_[0]) or "?"
@@ -624,38 +587,6 @@ def panel_costs(st=None, recent=()):
     body += efficiency(list(recent))
     return Panel(Group(*body), title="Costs · usage · logins", border_style="cyan")
 
-
-def go_windows():
-    """One row per Go model used in the last 30 days: $ spent / allowance per window (from work/go_spend.jsonl)."""
-    now, sp = time.time(), collections.defaultdict(list)
-    if os.path.exists(GO_SPEND):
-        for line in open(GO_SPEND):
-            try:
-                d = json.loads(line)
-            except ValueError:
-                continue
-            if d.get("ts", 0) >= now - 30 * 86400:
-                sp[d["model"]].append((d["ts"], d.get("cost") or 0))
-    rows = []
-    week = [m for m in sp if any(ts >= now - 7 * 86400 for ts, _ in sp[m])]  # models in use lately
-    for m in sorted(week, key=lambda m: -sum(c for _, c in sp[m])):
-        lim = GO_LIMIT.get(m)
-        w = who("go", m)
-        t = Text(f" {w:<7}", style=MODEL_STYLE.get(w.split("-")[0], "bright_cyan"))
-        for name, secs, frac in GO_WINDOWS:
-            spent = sum(c for ts, c in sp[m] if ts >= now - secs)
-            pct = spent / (lim * frac) * 100 if lim else None
-            if name == "5h":
-                t.append_text(bar(pct or 0, 6))
-            if name == "month":
-                t.append(f" mo ${spent:.2f}" + (f"/{lim}" if lim else ""), style="dim")
-            elif pct is not None:
-                t.append(f" {name} {pct:.0f}%", style="bold red" if pct >= 90 else "yellow" if pct >= 60 else "dim")
-            else:
-                t.append(f" {name} ${spent:.2f}", style="dim")
-        t.no_wrap, t.overflow = True, "ellipsis"
-        rows.append(t)
-    return rows or [Text(" no Go calls in 30 days", style="dim")]
 
 
 def captain_lines():
@@ -727,14 +658,14 @@ def efficiency(recent):
                 continue
             ok = [r for r in ts if r.get("ok")]
             first = sum(r.get("attempts", 1) == 1 for r in ok)
-            go = sum(u.get("cost") or 0 for r in ts for u in r.get("usage", []) if u.get("backend") == "go")
+            cl = sum(u.get("completion_tokens") or 0 for r in ts for u in r.get("usage", []) if u.get("backend") == "claude")
             cx = sum(u.get("completion_tokens") or 0 for r in ts for u in r.get("usage", []) if u.get("backend") == "codex")
             wins = collections.Counter(who(*(r.get("by") or ":").split(":", 1)) for r in ok)
             t = Text(f" {tier} {len(ok)}/{len(ts)} ", style="bold")
             t.append(f"1st {first / max(1, len(ok)):.0%}", style="green" if first >= 0.75 * len(ok) else "yellow")
-            t.append(f"  go ${go / max(1, len(ok)):.4f}/fn  codex out {kfmt(cx // max(1, len(ts)))}/fn  ", style="dim")
+            t.append(f"  claude out {kfmt(cl // max(1, len(ts)))}/fn  codex out {kfmt(cx // max(1, len(ts)))}/fn  ", style="dim")
             for w, n in wins.most_common(4):
-                t.append(f"{w} {n} ", style=MODEL_STYLE.get(w.split("·")[0].removeprefix("c-"), "dim"))
+                t.append(f"{w} {n} ", style=MODEL_STYLE.get(w.split("·")[0], "dim"))
             t.no_wrap, t.overflow = True, "ellipsis"
             out.append(t)
         return out
@@ -795,11 +726,19 @@ def grunt_header(g):
         if tiers:
             f.append("  ".join(f"{t} {tiers.get(t, 0)}" for t in ("S", "M", "L")) + "  │  ", style="dim")
         for w, n in per.most_common():
-            f.append(f"{w} {n}  ", style=MODEL_STYLE.get(w.split("·")[0].removeprefix("c-"), "dim"))
+            f.append(f"{w} {n}  ", style=MODEL_STYLE.get(w.split("·")[0], "dim"))
         out.append(f)
+    sub = ((st.get("config") or {}).get("codex_sub") or "").split(":", 1)
+    sub = who(*sub) if len(sub) == 2 else None
     if st.get("codex_paused") and alive:
-        out.append(Text(f"        Codex paused by the quota guard (5h {st.get('codex_5h', 0):.0f}%): "
-                        "L tier waits, S/M without the Codex rung", style="bold red"))
+        out.append(Text(f"        Codex paused by the quota guard (5h {st.get('codex_5h', 0):.0f}%): L tier waits, "
+                        + (f"S/M Codex rungs on {sub}" if sub else "S/M without the Codex rung"), style="bold red"))
+    elif st.get("codex_reserved") and alive and sub:
+        out.append(Text(f"        Codex 5h {st.get('codex_5h', 0):.0f}% past the reserve: kept for L, S/M Codex rungs "
+                        f"on {sub}", style="yellow"))
+    if st.get("claude_paused") and alive:
+        out.append(Text(f"        grunts' Claude account paused by the quota guard ({st.get('claude_pct', 0):.0f}%): "
+                        "its rungs are skipped, functions deferred", style="bold red"))
     return out
 
 

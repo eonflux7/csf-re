@@ -109,189 +109,60 @@ def chat(model, messages, key, effort="high"):
             time.sleep(5 * (attempt + 1))
 
 
-GO_URL = "https://opencode.ai/zen/go/v1"
-GO_KEY = os.path.expanduser("~/.config/csf-re/opencode_go.key")
-# $/1M tokens (input, cached read, cache write, output) — Zen list prices; Go bills these against per-model allowances
-GO_PRICE = {"deepseek-flash": (0.30, 0.006, 0.30, 1.20), "deepseek-v4.1-flash": (0.30, 0.006, 0.30, 1.20),
-            "deepseek-v4-pro": (1.74, 0.145, 1.74, 3.48), "claude-haiku-5-5": (0.10, 0.01, 0.125, 0.50),
-            "glm-5.3-flash": (0.15, 0.03, 0.15, 0.50), "qwen3.8-flash": (0.15, 0.016, 0.20, 0.47),
-            "qwen3.7-plus": (0.40, 0.04, 0.50, 1.60), "kimi-k2.7-code": (0.95, 0.19, 0.95, 4.00),
-            "minimax-m3": (0.30, 0.06, 0.30, 1.20), "mimo-v2.6-flash": (0.14, 0.0028, 0.14, 0.28),
-            "mimo-v2.6-pro": (0.435, 0.003625, 0.435, 0.87)}  # mimo: models.dev opencode-go (no Zen docs price)
-
-
-GO_SPEND = os.path.join(ROOT, "work", "go_spend.jsonl")  # every Go call: {"ts", "model", "cost"} (all modes, A/B too)
-# Monthly $ allowance per model on the Go plan (opencode.ai/go); windows: 5h = 20 %, week = 50 %, month = 100 %
-GO_LIMIT = {"claude-haiku-5-5": 15, "mimo-v2.6-pro": 30,  # mimo pro: not published (Flash: 60) — conservative
-            "mimo-v2.6-flash": 60, "deepseek-flash": 60, "deepseek-v4.1-flash": 60, "glm-5.3-flash": 60,
-            "kimi-k2.7-code": 60, "minimax-m3": 60, "qwen3.7-plus": 60, "kimi-k3": 15}
-GO_WINDOWS = (("5h", 5 * 3600, 0.20), ("week", 7 * 86400, 0.50), ("month", 30 * 86400, 1.0))
-GO_GUARD = 0.95  # stop using a model at 95 % of any window; its rung is skipped (next model) or the function deferred
-_go_lock = threading.Lock()
-_go_spend = None  # [(ts, model, cost)], loaded once
-GO_BLOCKED = {}  # model -> until ts (Go answered 429 "limit"): skipped without asking
-
-
-def go_spend():
-    global _go_spend
-    with _go_lock:
-        if _go_spend is None:
-            _go_spend = []
-            if os.path.exists(GO_SPEND):
-                for line in open(GO_SPEND):
-                    try:
-                        d = json.loads(line)
-                        _go_spend.append((d["ts"], d["model"], d["cost"]))
-                    except (ValueError, KeyError):
-                        pass
-        return _go_spend
-
-
-def go_windows(model, now=None):
-    """{window: (spent $, cap $)} of one model; cap is None for a model with no known allowance."""
-    now = now or time.time()
-    lim = GO_LIMIT.get(model)
-    sp = [(t, c) for t, m, c in go_spend() if m == model]
-    return {w: (sum(c for t, c in sp if t >= now - secs), lim * frac if lim else None) for w, secs, frac in GO_WINDOWS}
-
-
-def go_guard(model):
-    if GO_BLOCKED.get(model, 0) > time.time():
-        raise RuntimeError(f"go allowance: {model} blocked by Go for {int(GO_BLOCKED[model] - time.time()) // 60} min")
-    for w, (spent, cap) in go_windows(model).items():
-        if cap and spent >= GO_GUARD * cap:
-            raise RuntimeError(f"go allowance: {model} {w} window at ${spent:.2f} of ${cap:.2f}")
-
-
-def go_record(model, cost):
-    go_spend()
-    with _go_lock:
-        _go_spend.append((time.time(), model, cost or 0))
-        with open(GO_SPEND, "a") as f:
-            f.write(json.dumps(dict(ts=time.time(), model=model, cost=round(cost or 0, 6))) + "\n")
-
-
-def go_cost(model, u):
-    p = GO_PRICE.get(model.split("@")[0])
-    if not p:
-        return None
-    pin, cr, cw, out = p
-    cached, wrote = u.get("cached_tokens", 0) or 0, u.get("cache_write_tokens", 0) or 0
-    fresh = max(0, (u.get("prompt_tokens", 0) or 0) - cached - wrote)
-    return (fresh * pin + cached * cr + wrote * cw + (u.get("completion_tokens", 0) or 0) * out) / 1e6
-
-
-GO_IDLE = 240  # s without a streamed byte before a Go request counts as stalled
-
-
-def _go_stream(resp, anthropic):
-    """Read a server-sent-event answer into the non-streamed response shape (the parsing below stays one path)."""
-    text, usage = [], {}
-    for raw in resp:
-        line = raw.decode(errors="replace").strip()
-        if not line.startswith("data:"):
-            continue
-        data = line[5:].strip()
-        if data == "[DONE]":
-            break
-        try:
-            ev = json.loads(data)
-        except json.JSONDecodeError:
-            continue
-        if ev.get("type") == "error" or (ev.get("error") and not ev.get("choices")):
-            raise RuntimeError(f"go stream error: {str(ev.get('error'))[:300]}")
-        if anthropic:
-            if ev.get("type") == "message_start":
-                usage |= ev["message"].get("usage") or {}
-            elif ev.get("type") == "content_block_delta" and ev["delta"].get("type") == "text_delta":
-                text.append(ev["delta"]["text"])
-            elif ev.get("type") == "message_delta":
-                usage |= {k: v for k, v in (ev.get("usage") or {}).items() if v is not None}
-        else:
-            for ch in ev.get("choices") or []:
-                text.append((ch.get("delta") or {}).get("content") or "")
-            if ev.get("usage"):
-                usage = ev["usage"]
-    text = "".join(text)
-    return (dict(content=[dict(type="text", text=text)], usage=usage) if anthropic
-            else dict(choices=[dict(message=dict(content=text))], usage=usage))
-
-
-def chat_go(model, messages, effort="high"):
-    """OpenCode Go. `model` may pin an effort for every attempt: "claude-haiku-5-5@low". Claude models speak the
-    Anthropic /messages format (adaptive thinking + output_config.effort, prompt caching on), the rest OpenAI
-    chat/completions. Go wants a coding-agent shaped client: its own User-Agent and a stable x-opencode-session (one
-    per function and model, like one agent session per task)."""
-    name, _, pinned = model.partition("@")
-    effort = pinned or effort
-    key = open(GO_KEY).read().strip()
-    hdr = {"Authorization": f"Bearer {key}", "Content-Type": "application/json", "User-Agent": "csf-re-grunt/1.0",
-           "x-opencode-session": f"csf-re-{getattr(_tl, 'ea', 0):08x}-{name}"}
-    if name.startswith("claude-"):
-        url = f"{GO_URL}/messages"
-        hdr |= {"x-api-key": key, "anthropic-version": "2023-06-01"}
-        body = dict(model=name, max_tokens=64000, system=messages[0]["content"], messages=messages[1:],
-                    thinking={"type": "adaptive"}, output_config={"effort": effort},
-                    cache_control={"type": "ephemeral"})
-    else:
-        url = f"{GO_URL}/chat/completions"
-        body = dict(model=name, messages=messages, max_tokens=64000,
-                    reasoning_effort=effort if name.startswith("deepseek") or effort != "max" else "high")
-        if name.startswith("deepseek"):
-            body["thinking"] = {"type": "enabled"}
-    # Streamed: the socket timeout is then an idle timeout (no token for GO_IDLE s = stalled upstream, retry) instead
-    # of a cap on the whole answer — non-streamed, a long think and a hung request looked the same for 20 min.
-    body |= dict(stream=True) if name.startswith("claude-") else dict(stream=True, stream_options={"include_usage": True})
-    req = urllib.request.Request(url, data=json.dumps(body).encode(), headers=hdr)
-    for attempt in range(4):
-        try:
-            with urllib.request.urlopen(req, timeout=GO_IDLE) as r:
-                d = _go_stream(r, name.startswith("claude-"))
-            break
-        except urllib.error.HTTPError as e:  # 429 / 5xx: back off; other 4xx are our fault
-            msg = e.read().decode(errors="replace")[:300]
-            if e.code == 429 and re.search(r"limit|quota|usage|exceed", msg, re.I):  # an allowance window is full
-                GO_BLOCKED[name] = time.time() + 1800
-                raise RuntimeError(f"go allowance: {name} limited by Go (HTTP 429): {msg[:150]}")
-            if attempt == 3 or (e.code < 500 and e.code != 429):
-                raise RuntimeError(f"go {name} HTTP {e.code}: {msg}")
-            time.sleep(10 * (attempt + 1))
-        except Exception:
-            if attempt == 3:
-                raise
-            time.sleep(10 * (attempt + 1))
-    if name.startswith("claude-"):
-        text = "".join(c.get("text", "") for c in d.get("content", []) if c.get("type") == "text")
-        u = d.get("usage", {})
-        cached, wrote = u.get("cache_read_input_tokens", 0) or 0, u.get("cache_creation_input_tokens", 0) or 0
-        usage = dict(prompt_tokens=(u.get("input_tokens", 0) or 0) + cached + wrote, cached_tokens=cached,
-                     cache_write_tokens=wrote, completion_tokens=u.get("output_tokens", 0) or 0,
-                     reasoning_tokens=(u.get("output_tokens_details") or {}).get("thinking_tokens", 0))
-    else:
-        text = d["choices"][0]["message"].get("content") or ""
-        u = d.get("usage", {})
-        usage = dict(prompt_tokens=u.get("prompt_tokens", 0) or 0,
-                     cached_tokens=(u.get("prompt_tokens_details") or {}).get("cached_tokens", 0) or 0,
-                     cache_write_tokens=(u.get("prompt_tokens_details") or {}).get("cache_write_tokens", 0) or 0,
-                     completion_tokens=u.get("completion_tokens", 0) or 0,
-                     reasoning_tokens=(u.get("completion_tokens_details") or {}).get("reasoning_tokens", 0))
-    usage |= dict(backend="go", model=model, cost=go_cost(model, usage))
-    go_record(name, usage["cost"])
-    return text, usage
-
-
 CLAUDE_CWD = os.path.expanduser("~/.cache/csf-re-claude")  # outside the repo: no CLAUDE.md / memory pulled in
 # The grunts' own Claude account (a second subscription, logged in once with
 # `CLAUDE_CONFIG_DIR=~/.config/csf-re/claude-grunts claude` -> /login); the captain keeps the main account.
 CLAUDE_GRUNTS = os.path.expanduser("~/.config/csf-re/claude-grunts")
 
 
+USAGE_CACHE = {"main": os.path.join(ROOT, "work", "claude_usage.json"),
+               "grunts": os.path.join(ROOT, "work", "claude_grunts_usage.json")}
+
+
+def claude_usage(which="main"):
+    """5h / 7d windows of a Claude plan (main = the captain's account, grunts = CLAUDE_GRUNTS), from the endpoint
+    Claude Code's /usage reads (the account's own OAuth token). Rate-limited (429) when polled often: asked at most
+    once a minute (shared by monitor and lanes through work/claude_*usage.json), after an error again after its
+    Retry-After or 5 min; meanwhile the last good answer is returned with its age (`_age`)."""
+    from datetime import datetime
+    cache = USAGE_CACHE[which]
+    try:
+        c = json.load(open(cache))
+    except (OSError, ValueError):
+        c = {}
+    wait = c.get("retry_after") or 300 if c.get("error") else 60
+    if time.time() - c.get("asked", 0) >= wait:
+        c["asked"] = time.time()
+        try:
+            cred = os.path.join(CLAUDE_GRUNTS if which == "grunts" else os.path.expanduser("~/.claude"),
+                                ".credentials.json")
+            tok = json.load(open(cred))["claudeAiOauth"]["accessToken"]
+            req = urllib.request.Request("https://api.anthropic.com/api/oauth/usage", headers={
+                "Authorization": f"Bearer {tok}", "anthropic-beta": "oauth-2025-04-20", "User-Agent": "csf-re-monitor"})
+            d = json.load(urllib.request.urlopen(req, timeout=8))
+            iso = lambda v: datetime.fromisoformat(v.replace("Z", "+00:00")).timestamp()  # noqa: E731
+            c.update(error=None, at=time.time(), u={k: (d[w]["utilization"], iso(d[w]["resets_at"])) for k, w in
+                                                     (("5h", "five_hour"), ("7d", "seven_day")) if d.get(w)})
+        except Exception as e:
+            c["error"] = str(e)[:60]
+            ra = getattr(e, "headers", None) and e.headers.get("retry-after")
+            c["retry_after"] = min(3600, max(60, int(ra))) if ra and str(ra).isdigit() else None
+        tmp = cache + ".tmp"
+        json.dump(c, open(tmp, "w"))
+        os.replace(tmp, cache)
+    if not c.get("u"):
+        raise RuntimeError(c.get("error") or "no data yet")
+    out = {k: (pct, at - time.time()) for k, (pct, at) in c["u"].items()}
+    out["_age"] = time.time() - c.get("at", 0)
+    return out
+
+
 def chat_claude(model, messages, effort=None):
-    """Claude via the Claude Code CLI in headless mode (the grunts' account if it is set up). No tools."""
+    """Claude via the Claude Code CLI in headless mode, on the grunts' own account (never the captain's). No tools."""
+    if not claude_grunts_ready():
+        raise RuntimeError(f"grunts' Claude account not logged in: CLAUDE_CONFIG_DIR={CLAUDE_GRUNTS} claude, /login")
     os.makedirs(CLAUDE_CWD, exist_ok=True)
-    env = dict(os.environ)
-    if os.path.isdir(CLAUDE_GRUNTS):
-        env["CLAUDE_CONFIG_DIR"] = CLAUDE_GRUNTS
+    env = dict(os.environ, CLAUDE_CONFIG_DIR=CLAUDE_GRUNTS)
     eff = ["--effort", effort] if effort in ("low", "medium", "high", "xhigh", "max") else []
     system = messages[0]["content"]
     convo = []
@@ -462,7 +333,7 @@ def live(**kw):
 
 CODEX_RESERVED = threading.Event()  # Codex 5h window past --codex-reserve: S/M Codex rungs go to CODEX_SUB
 CODEX_SUB = None  # (backend, model) standing in for Codex in S/M while reserved or paused, e.g. claude:...@medium
-CLAUDE_FOR_GO = False  # a Go Claude rung out of allowance runs on the grunts' Claude account instead
+CLAUDE_PAUSED = threading.Event()  # set by the lanes quota guard: the grunts' Claude account is near its limit
 CODEX_PAUSED = threading.Event()  # set by the lanes quota guard: no new Codex calls (writes, fallbacks, reviews)
 
 
@@ -501,8 +372,8 @@ def ask(backend, model, messages, key, effort="high"):
         model, effort = model.split("@", 1)
     if backend == "codex" and CODEX_PAUSED.is_set():
         raise RuntimeError("Codex paused by the quota guard")
-    if backend == "go":
-        go_guard(model)
+    if backend == "claude" and CLAUDE_PAUSED.is_set():
+        raise RuntimeError("Claude paused by the quota guard")
     t0 = time.time()
     shown = CODEX_EFFORT.get(effort, effort) if backend == "codex" else effort  # what the backend really gets
     try:
@@ -533,8 +404,6 @@ def _ask(backend, model, messages, key, effort="high"):
             text, usage = chat_claude(model, messages, effort)
         elif backend == "codex":
             text, usage = chat_codex(model, messages, effort)
-        elif backend == "go":
-            text, usage = chat_go(model, messages, effort)
         else:
             text, usage = chat(model, messages, key, effort)
         with _live_lock:
@@ -624,26 +493,15 @@ def example_section(db, ex):
             f"```cpp\n{open(path).read()}\n```")
 
 
-def go_out(model):
-    try:
-        go_guard(model.split("@")[0])
-        return False
-    except RuntimeError:
-        return True
-
-
 def claude_grunts_ready():
     """The grunts' Claude account is logged in (never fall back onto the main account the captain uses)."""
     return os.path.exists(os.path.join(CLAUDE_GRUNTS, ".credentials.json"))
 
 
 def substitute(backend, model, tier):
-    """The rung that really runs: Codex is kept for L once its 5h window is past the reserve; Go Claude models fall
-    back to the grunts' own Claude account when their Go allowance is spent."""
+    """The rung that really runs: Codex is kept for L once its 5h window is past the reserve."""
     if backend == "codex" and tier in ("S", "M") and CODEX_SUB and (CODEX_SUB[0] != "claude" or claude_grunts_ready()) and (CODEX_RESERVED.is_set() or CODEX_PAUSED.is_set()):
         return CODEX_SUB
-    if backend == "go" and CLAUDE_FOR_GO and model.startswith("claude-") and claude_grunts_ready() and go_out(model):
-        return "claude", model
     return backend, model
 
 
@@ -668,7 +526,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
     usage_all, err, meta, text = [], "", {}, ""
     steps = [(b, m) for b, m, n in ladder for _ in range(n)]
     dead, reviews = set(), []  # dead: rungs that errored (backend, or go:model); reviews: True = reviewer rejected
-    quota_hit = False  # a rung was skipped for quota (Codex paused / Go allowance): defer instead of escalating
+    quota_hit = False  # a rung was skipped for quota (Codex / Claude paused, limit hit): defer instead of escalating
     start = 0
     if prior:
         text, err, u = prior
@@ -682,7 +540,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
         # first attempt per rung at high effort, retries at max (a pinned model@effort ignores both)
         first = attempt == 0 or steps[attempt - 1] != (backend, model)
         backend, model = substitute(backend, model, tier)
-        dk = f"{backend}:{model.split('@')[0]}" if backend in ("go", "claude") else backend
+        dk = f"{backend}:{model.split('@')[0]}" if backend == "claude" else backend
         if dk in dead:
             continue
         try:
@@ -700,7 +558,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
                 code, meta = parse(text)
         except Exception as e:  # out of credit / quota / CLI failure: fall through to the next rung
             dead.add(dk)
-            quota_hit |= bool(re.search(r"paused by the quota guard|go allowance|usage limit|rate limit", str(e), re.I))
+            quota_hit |= bool(re.search(r"paused by the quota guard|usage limit|rate limit|hit your limit", str(e), re.I))
             err = f"{backend} error: {e}"
             continue
         if code:
@@ -710,7 +568,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
         else:
             open(tmp, "w").write(code)
             ok, err = gate(ea, tmp, db)
-        if ok and backend in ("deepseek", "go") and review_over is not None and review_over >= 0 \
+        if ok and backend in ("deepseek", "claude") and review_over is not None and review_over >= 0 \
                 and db.F[ea]["size"] > review_over:
             issues, u = review(ea, packet, code)
             if u:
@@ -1013,7 +871,7 @@ def run_config(args, lanes=False):
                 batch_fns=getattr(args, "batch_fns", 1), batch_bytes=getattr(args, "batch_bytes", 0),
                 batch_max=getattr(args, "batch_max", 300), tiny=getattr(args, "tiny", None),
                 review_over=args.review_over, codex_cap=getattr(args, "codex_cap", None),
-                codex_reserve=getattr(args, "codex_reserve", None), codex_sub=getattr(args, "codex_sub", None),
+                codex_reserve=getattr(args, "codex_reserve", None), claude_cap=getattr(args, "claude_cap", None), codex_sub=getattr(args, "codex_sub", None),
                 backend=getattr(args, "backend", "lanes"), wave=getattr(args, "module", None),
                 **(dict(tiers={t: dict(ladder=getattr(args, f"{t.lower()}_ladder"), jobs=getattr(args, f"{t.lower()}_jobs"))
                                for t in "SML"}, s_max=args.s_max, m_max=args.m_max, review_effort=args.review_effort) if lanes else {}))
@@ -1138,7 +996,7 @@ TIERS = ("S", "M", "L")
 
 
 def ladder_spec(spec):
-    """"go:claude-haiku-5-5@low:2,codex:gpt-6.1-sol:1" -> [("go", "claude-haiku-5-5@low", 2), ("codex", ...)]."""
+    """"claude:claude-haiku-5-5@low:2,codex:gpt-6.1-sol:1" -> [("claude", "claude-haiku-5-5@low", 2), ("codex", ...)]."""
     out = []
     for part in spec.split(","):
         backend, model, n = part.strip().split(":")
@@ -1151,14 +1009,13 @@ def lanes(args):
     in order, the conversation with the gate errors carried over): S = under --s-max bytes, or a clone sibling with a
     done example up to --m-max; M = up to --m-max; L = the rest. Each tier has its own in-flight cap, so slow L calls
     never hold up the S stream. Quota: Codex pauses at --codex-cap of its 5h window (L gets no new work, S/M lose their
-    Codex rung); a Go model stops at 95 % of any allowance window (its rung is skipped). A function whose only
+    Codex rung); the grunts' Claude account pauses at --claude-cap of its 5h or weekly window. A function whose only
     remaining rungs were out of quota is deferred, not escalated. Every --batch gate passes: build + smoke + commit."""
     if args.module and not args.no_captain:
         captain_prep(args.module)
-    global REVIEW_EFFORT, CODEX_SUB, CLAUDE_FOR_GO
+    global REVIEW_EFFORT, CODEX_SUB
     REVIEW_EFFORT = args.review_effort
     CODEX_SUB = tuple(args.codex_sub.split(":", 1)) if args.codex_sub else None
-    CLAUDE_FOR_GO = args.claude_for_go
     db = DB()
     wave = module_ids(args.module)
     if args.smoke_menu:
@@ -1190,11 +1047,26 @@ def lanes(args):
         return all(b == "codex" for b, _, _ in ladders[t])
 
     def quota():
-        """Pause/resume Codex on the 5h window (checked every 2 min)."""
+        """Pause/resume Codex on its 5h window and the grunts' Claude account on its 5h/7d windows (every 2 min)."""
         nonlocal quota_t
-        if args.codex_cap <= 0 or time.time() - quota_t < 120:
+        if time.time() - quota_t < 120:
             return
         quota_t = time.time()
+        if args.claude_cap > 0 and claude_grunts_ready():
+            try:
+                u = claude_usage("grunts")
+                pct = max(v[0] for k, v in u.items() if k != "_age")
+                if pct >= args.claude_cap and not CLAUDE_PAUSED.is_set():
+                    CLAUDE_PAUSED.set()
+                    print(f"grunts' Claude account at {pct:.0f}% (cap {args.claude_cap}): Claude paused", flush=True)
+                elif pct < args.claude_cap and CLAUDE_PAUSED.is_set():
+                    CLAUDE_PAUSED.clear()
+                    print(f"grunts' Claude account at {pct:.0f}%: Claude resumed", flush=True)
+                live(claude_paused=CLAUDE_PAUSED.is_set(), claude_pct=pct)
+            except Exception:
+                pass  # endpoint down: keep the current state
+        if args.codex_cap <= 0:
+            return
         try:
             pct, reset = codex_usage()["5h"]
         except Exception:
@@ -1213,7 +1085,7 @@ def lanes(args):
         elif pct < args.codex_cap and CODEX_PAUSED.is_set():
             CODEX_PAUSED.clear()
             print(f"Codex 5h window at {pct:.0f}%: Codex resumed", flush=True)
-        live(codex_paused=CODEX_PAUSED.is_set(), codex_5h=pct)
+        live(codex_paused=CODEX_PAUSED.is_set(), codex_reserved=CODEX_RESERVED.is_set(), codex_5h=pct)
 
     def refill():
         nonlocal submitted, stopping
@@ -1377,163 +1249,6 @@ def captain_after(wave):
     captain("functions", "--module", ",".join(sorted(wave)))
 
 
-AB = os.path.join(ROOT, "work", "ab")
-
-
-def ab_set(db, track, n, seed):
-    """One A/B track's functions, chosen once into work/ab/<track>/set.json (arms added later run the same set).
-    a: not-yet-done functions of flash-lane shape (2/3 under 48 bytes, 1/3 of 48-150: can cheap models take more?).
-    b: done functions Codex won as a single (non-batched) task, 70% Codex-only and 30% after DeepSeek failed twice;
-    Codex's logged attempts and tokens are the baseline, its committed file the reference for code similarity."""
-    p = os.path.join(AB, track, "set.json")
-    if os.path.exists(p):
-        return json.load(open(p))
-    import random
-    rnd = random.Random(seed)
-    if track == "a":
-        cands = select(db, 4000, 150, 6)
-        tiny = [c for c in cands if db.F[c[0]]["size"] < 48]
-        mid = [c for c in cands if db.F[c[0]]["size"] >= 48]
-        picks = rnd.sample(tiny, min(len(tiny), n - n // 3)) + rnd.sample(mid, min(len(mid), n // 3))
-        s = dict(fns=[dict(ea=ea, example=ex) for ea, ex in picks])
-    else:
-        pools = {"codex_only": [], "ds_first": []}
-        for line in open(LOG):
-            r = json.loads(line)
-            if not (r.get("ok") and str(r.get("by", "")).startswith("codex") and not r.get("batch")) or \
-                    not os.path.exists(os.path.join(ROOT, "src", "auto", f"{r['ea']:08x}.cpp")):
-                continue
-            us = r.get("usage", [])
-            ds = sum(u.get("backend") in (None, "deepseek") for u in us)
-            cx = [u for u in us if u.get("backend") == "codex"]
-            pools["ds_first" if ds else "codex_only"].append(dict(
-                ea=r["ea"], example=None, kind="ds_first" if ds else "codex_only",
-                codex_attempt=r["attempts"] - (2 if ds else 0),  # ladder: deepseek x2, then codex
-                codex_in=sum(u.get("prompt_tokens", 0) or 0 for u in cx),
-                codex_out=sum(u.get("completion_tokens", 0) or 0 for u in cx)))
-        k = round(n * 0.3)
-        s = dict(fns=rnd.sample(pools["codex_only"], min(len(pools["codex_only"]), n - k)) +
-                 rnd.sample(pools["ds_first"], min(len(pools["ds_first"]), k)))
-    os.makedirs(os.path.dirname(p), exist_ok=True)
-    json.dump(s, open(p, "w"), indent=1)
-    return s
-
-
-def code_sim(a, b):
-    """Similarity (0..1) of two files' compiled code, normalized as in verify.py (names and the HOOK stub left
-    out); 1.0 = the same machine code."""
-    import difflib, tempfile
-    from gate import compile_cmd
-    from verify import _normalize
-    outs = []
-    with tempfile.TemporaryDirectory() as td:
-        for i, src in enumerate((a, b)):
-            obj = os.path.join(td, f"{i}.obj")
-            r = subprocess.run(compile_cmd() + [f"/Fo{obj}", "-c", "--", os.path.abspath(src)], capture_output=True,
-                               text=True, cwd=os.path.join(ROOT, "build"))
-            if r.returncode:
-                return None
-            dis = subprocess.run(["llvm-objdump-21", "-d", "-r", "--x86-asm-syntax=intel", obj],
-                                 capture_output=True, text=True).stdout
-            outs.append(_normalize(dis).splitlines())
-    return round(difflib.SequenceMatcher(None, *outs, autojunk=False).ratio(), 3)
-
-
-def ab(args):
-    """Model A/B over OpenCode Go: every arm (a Go model, optionally @effort) writes every function of the track's set
-    with the production prompt, gate and attempt count, into work/ab/<track>/<arm>/ — nothing is committed or smoked.
-    Results append to work/ab/<track>/results.jsonl (finished arm/function pairs are skipped on a rerun)."""
-    global LIVE
-    LIVE = os.path.join(AB, "state.json")  # never clobber a lanes run's monitor state
-    db = DB()
-    fns = ab_set(db, args.track, args.n, args.seed)["fns"]
-    res = os.path.join(AB, args.track, "results.jsonl")
-    done = {(r["arm"], r["ea"]) for r in map(json.loads, open(res))} if os.path.exists(res) else set()
-    jobs = [(arm, f) for f in fns for arm in args.arms.split(",") if (arm, f["ea"]) not in done]
-    print(f"track {args.track}: {len(fns)} functions, {len(jobs)} arm runs to do", flush=True)
-    live(mode=f"ab {args.track}", phase="grunting", counts=dict(total=len(jobs), ok=0, esc=0))
-    lock = threading.Lock()
-
-    def one(arm, f):
-        ea = f["ea"]
-        t0 = time.time()
-        r = work(ea, db, None, [("go", arm, args.attempts)], os.path.join(AB, args.track, arm.replace("@", "_")),
-                 f.get("example"), None, ev_budget(args, db, ea))
-        r.update(arm=arm, size=db.F[ea]["size"], secs=round(time.time() - t0, 1),
-                 cost=round(sum(u.get("cost") or 0 for u in r["usage"]), 5))
-        if r["ok"] and args.track == "b":
-            r["sim"] = code_sim(os.path.join(AB, args.track, arm.replace("@", "_"), f"{ea:08x}.cpp"),
-                                os.path.join(ROOT, "src", "auto", f"{ea:08x}.cpp"))
-        return r
-
-    with cf.ThreadPoolExecutor(args.jobs) as ex:
-        futs = [ex.submit(one, arm, f) for arm, f in jobs]
-        for fu in cf.as_completed(futs):
-            try:
-                r = fu.result()
-            except Exception as e:
-                print(f"  error: {e}", flush=True)
-                continue
-            with lock:
-                with open(res, "a") as fh:
-                    fh.write(json.dumps(r) + "\n")
-                live(counts={"ok" if r["ok"] else "esc": _live["counts"].get("ok" if r["ok"] else "esc", 0) + 1})
-            print(f"  {r['arm']:<26} {r['ea']:08x} {r['size']:4d}B {'OK ' if r['ok'] else 'ESC'} "
-                  f"try {r['attempts']}  ${r['cost']:.4f}  {r['secs']:.0f}s"
-                  + (f"  sim {r['sim']}" if r.get("sim") is not None else ""), flush=True)
-    ab_report(args)
-
-
-def ab_cost(r):
-    """A result's $, recomputed from its usage at today's GO_PRICE (prices added later apply to old runs too)."""
-    cs = [go_cost(r["arm"], u) for u in r["usage"]]
-    return sum(c for c in cs if c is not None) if any(c is not None for c in cs) else (r.get("cost") or 0)
-
-
-def ab_report(_):
-    """work/ab/report.md: per track and arm — success, first-try rate, $ and tokens per solved function, time;
-    track b also code similarity to the committed Codex file, with Codex's logged run as the baseline row."""
-    import statistics
-    out = []
-    for track in ("a", "b"):
-        res = os.path.join(AB, track, "results.jsonl")
-        if not os.path.exists(res):
-            continue
-        rs = [json.loads(l) for l in open(res)]
-        fns = {f["ea"]: f for f in json.load(open(os.path.join(AB, track, "set.json")))["fns"]}
-        out += [f"## Track {track} ({len(fns)} functions)", "",
-                "| arm | ok | 1st try | ok <48B | ok ≥48B | $ total | $ / ok fn | in tok / fn | out tok / fn "
-                "| median s |" + (" sim | same code |" if track == "b" else ""),
-                "|---|---|---|---|---|---|---|---|---|---|" + ("---|---|" if track == "b" else "")]
-        if track == "b":
-            n = len(fns)
-            first = sum(f["codex_attempt"] == 1 for f in fns.values())
-            out.append(f"| codex gpt-6.1-sol (logged) | {n}/{n} | {first / n:.0%} | | | quota | quota "
-                       f"| {sum(f['codex_in'] for f in fns.values()) // n} "
-                       f"| {sum(f['codex_out'] for f in fns.values()) // n} | | 1.0 | |")
-        for arm in dict.fromkeys(r["arm"] for r in rs):
-            a = [r for r in rs if r["arm"] == arm]
-            ok = [r for r in a if r["ok"]]
-            small = [r for r in a if r["size"] < 48]
-            big = [r for r in a if r["size"] >= 48]
-            usage = [u for r in a for u in r["usage"]]
-            cost = sum(ab_cost(r) for r in a)
-            row = (f"| {arm} | {len(ok)}/{len(a)} | {sum(r['attempts'] == 1 for r in ok) / max(1, len(a)):.0%} "
-                   f"| {sum(r['ok'] for r in small)}/{len(small)} | {sum(r['ok'] for r in big)}/{len(big)} "
-                   f"| {cost:.3f} | {cost / max(1, len(ok)):.4f} "
-                   f"| {sum(u.get('prompt_tokens', 0) or 0 for u in usage) // max(1, len(a))} "
-                   f"| {sum(u.get('completion_tokens', 0) or 0 for u in usage) // max(1, len(a))} "
-                   f"| {statistics.median(r['secs'] for r in a):.0f} |")
-            if track == "b":
-                sims = [r["sim"] for r in ok if r.get("sim") is not None]
-                row += (f" {statistics.mean(sims):.2f} | {sum(s == 1.0 for s in sims)} |" if sims else " | |")
-            out.append(row)
-        out.append("")
-    os.makedirs(AB, exist_ok=True)
-    open(os.path.join(AB, "report.md"), "w").write("# Model A/B over OpenCode Go\n\n" + "\n".join(out))
-    print("\n".join(out))
-
-
 def cost(_):
     """Token totals per writing backend, and how often the Codex review of DeepSeek outputs rejected one (logged
     since the `reviews` field exists): if it almost never rejects, --review-over -1 saves Codex quota."""
@@ -1601,9 +1316,9 @@ if __name__ == "__main__":
                    "a done example up to --m-max)")
     l.add_argument("--m-max", type=int, default=400, help="M tier: functions up to N bytes; L: the rest")
     # 2026-10-08 after the first tiered menu batches: MiMo dropped (6-12 min thinks, 3 rescues in 140), no Codex xhigh
-    l.add_argument("--s-ladder", default="go:claude-haiku-5-5@low:2,go:claude-haiku-5-5@medium:1,codex:gpt-6.1-sol@high:1",
+    l.add_argument("--s-ladder", default="claude:claude-haiku-5-5@low:2,claude:claude-haiku-5-5@medium:1,codex:gpt-6.1-sol@high:1",
                    help="backend:model[@effort]:attempts,...")
-    l.add_argument("--m-ladder", default="go:claude-haiku-5-5@high:2,codex:gpt-6.1-sol@high:2")
+    l.add_argument("--m-ladder", default="claude:claude-haiku-5-5@high:2,codex:gpt-6.1-sol@high:2")
     l.add_argument("--l-ladder", default="codex:gpt-6.1-sol@high:2")
     l.add_argument("--review-effort", default="medium", help="Codex review effort")
     l.add_argument("--s-jobs", type=int, default=12, help="S tier: functions in flight")
@@ -1623,23 +1338,12 @@ if __name__ == "__main__":
     l.add_argument("--no-captain", action="store_true", help="module waves: skip the captain steps (class naming "
                    "before, placeholder function names after)")
     l.add_argument("--codex-cap", type=float, default=90, help="pause Codex at this 5h-window %% (0: off)")
+    l.add_argument("--claude-cap", type=float, default=95,
+                   help="pause the grunts' Claude account at this %% of its 5h or 7d window (0: off)")
     l.add_argument("--codex-reserve", type=float, default=50,
                    help="from this Codex 5h-window %%, S/M Codex rungs run on --codex-sub (Codex kept for L)")
     l.add_argument("--codex-sub", default="claude:claude-opus-5-5@medium",
                    help="backend:model[@effort] standing in for Codex in S/M (empty: off)")
-    l.add_argument("--claude-for-go", action=argparse.BooleanOptionalAction, default=True,
-                   help="Go Claude rungs out of allowance run on the grunts' Claude account")
     sub.add_parser("cost")
-    b = sub.add_parser("ab", help="model A/B over OpenCode Go (work/ab/, nothing committed)")
-    b.add_argument("--track", choices=["a", "b"], required=True,
-                   help="a: flash-lane alternatives on new functions; b: deep-lane alternatives on Codex-won functions")
-    b.add_argument("--arms", required=True, help="comma list of Go models, optionally model@effort")
-    b.add_argument("--n", type=int, default=25)
-    b.add_argument("--seed", type=int, default=1)
-    b.add_argument("--attempts", type=int, default=2, help="attempts per arm (production rungs use 2)")
-    b.add_argument("--jobs", type=int, default=8)
-    b.add_argument("--evidence", type=int, default=3)
-    b.add_argument("--evidence-over", type=int, default=150)
-    sub.add_parser("ab-report")
     a = ap.parse_args()
-    {"run": run, "lanes": lanes, "cost": cost, "ab": ab, "ab-report": ab_report}[a.cmd](a)
+    {"run": run, "lanes": lanes, "cost": cost}[a.cmd](a)
