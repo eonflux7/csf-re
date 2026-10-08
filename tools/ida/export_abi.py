@@ -10,6 +10,8 @@ the callee never reads, which its own prototype drops):
   calls     {callee ea: [argument count at each call site]}
   cleanup   {callee ea: [stack bytes removed right after each call: add esp, N / pop ecx; 0 = none there]}
   this_args {callee ea: [struct name the first argument points to, per call site]} (typed callers only)
+  arg0_src  {callee ea: [["p", i] = the caller's i-th parameter | ["f", struct, offset] = a struct member]}:
+            what the first argument is made of, so a callee's class types that parameter / member (this_class.py)
 
 Usage: export_abi.py [--only ea,ea,...]     (default: every function in db/functions.csv; ~2 min)
 """
@@ -71,9 +73,32 @@ def cleanups(ea):
 
 
 class Calls(ida_hexrays.ctree_visitor_t):
-    def __init__(self):
+    def __init__(self, cf):
         super().__init__(ida_hexrays.CV_FAST)
-        self.out, self.objs = {}, {}  # not self.this: SWIG keeps the C++ pointer there
+        self.out, self.objs, self.src = {}, {}, {}  # not self.this: SWIG keeps the C++ pointer there
+        self.args = list(cf.argidx)
+
+    def arg0_source(self, x):
+        """Where the first argument comes from, when that can type it: ["p", i] the caller's i-th parameter,
+        ["f", struct, offset] a member of a typed struct (x->m / x.m). Casts are looked through."""
+        while x.op == ida_hexrays.cot_cast:
+            x = x.x
+        if x.op == ida_hexrays.cot_var and x.v.idx in self.args:
+            return ["p", self.args.index(x.v.idx)]
+        if x.op == ida_hexrays.cot_memptr and x.x.type.is_ptr():
+            return self.member(x.x.type.get_pointed_object(), x.m)
+        if x.op == ida_hexrays.cot_memref:
+            return self.member(x.x.type, x.m)
+        return None
+
+    @staticmethod
+    def member(st, off):
+        """["f", struct, offset, member name] of the 4-byte member at `off` declared in `st` itself."""
+        udm = ida_typeinf.udm_t()
+        udm.offset = off * 8
+        if st.find_udm(udm, ida_typeinf.STRMEM_OFFSET) < 0 or udm.is_baseclass() or udm.size != 32:
+            return None
+        return ["f", st.get_type_name() or "", off, udm.name]
 
     def visit_expr(self, e):
         if e.op == ida_hexrays.cot_call and e.x.op == ida_hexrays.cot_obj:
@@ -83,6 +108,9 @@ class Calls(ida_hexrays.ctree_visitor_t):
                 t = e.a[0].type
                 if t.is_ptr() and t.get_pointed_object().is_struct():
                     self.objs.setdefault(k, []).append(t.get_pointed_object().get_type_name() or "")
+                src = self.arg0_source(e.a[0])
+                if src and (src[0] == "p" or src[1]):
+                    self.src.setdefault(k, []).append(src)
         return 0
 
 
@@ -104,11 +132,13 @@ for i, ea in enumerate(targets):
         fails += 1
         continue
     rec = proto(cf.type) or {}
-    v = Calls()
+    v = Calls(cf)
     v.apply_to(cf.body, None)
     rec["calls"] = v.out
     if v.objs:
         rec["this_args"] = v.objs
+    if v.src:
+        rec["arg0_src"] = v.src
     rec["cleanup"] = cleanups(ea)
     out[f"{ea:08x}"] = rec
     if i % 2000 == 0:

@@ -68,7 +68,8 @@ def decls(structs=None):
     A = api.load()
     vts = {v["addr"]: v for v in json.load(open(os.path.join(ROOT, "db", "vtables.json")))}
     cls = {c["vtable"] for c in json.load(open(os.path.join(ROOT, "db", "classes.json")))}
-    cname = lambda vt: names[vt]["name"] if vt in names else f"C_{vt}"  # noqa: E731
+    plain = {c["vtable"] for c in json.load(open(os.path.join(ROOT, "db", "classes.json"))) if c.get("plain")}
+    cname = lambda vt: names[vt]["name"] if vt in names else (f"S_{vt}" if vt in plain else f"C_{vt}")  # noqa: E731
     structs = structs if structs is not None else {cname(vt) for vt in cls}
     out, which = [], {}
     for vt in sorted(cls):

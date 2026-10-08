@@ -42,7 +42,8 @@ NAMES = load_names()
 
 
 def name(vt):
-    return NAMES[vt]["name"] if vt in NAMES else f"C_{vt}"
+    """C_<vtable>, or S_<first method> for a class without vtable (plain_classes.py), until classes.yaml names it."""
+    return NAMES[vt]["name"] if vt in NAMES else (f"S_{vt}" if C.get(vt, {}).get("plain") else f"C_{vt}")
 
 
 def field_names(vt):
@@ -210,20 +211,22 @@ def main():
         # embed base only if already declared (no cycles) and it fits inside our known size
         if not (b in emitted and (not c["size"] or extent[b] <= c["size"])):
             b = None
-        extent[vt] = c["size"] or max(field_end(c), extent[b] if b else 4)
+        root = 0 if c.get("plain") else 4  # a class without vtable starts with its first field
+        extent[vt] = c["size"] or max(field_end(c), extent[b] if b else root)
         emitted.add(vt)
-        start = extent[b] if b else 4
+        start = extent[b] if b else root
         lines = []
         if vt in NAMES:
             e = NAMES[vt]
-            lines.append(f"// {name(vt)} (vtable 0x{vt.upper()}): {e.get('why', '')}")
+            lines.append(f"// {name(vt)} ({'no vtable, methods from 0x' if c.get('plain') else 'vtable 0x'}"
+                         f"{vt.upper()}): {e.get('why', '')}")
             if e.get("note"):
                 lines.append(f"// {e['note']}")
         lines.append(f"struct {name(vt)}" + (f" : {name(b)}" if b else "") + " {")
         fn = field_names(vt)
         specs = field_specs(vt)
         typed = {o: (t, n, k) for o, (t, n, k) in specs.items() if t is not None}
-        if not b:
+        if not b and not c.get("plain"):
             lines.append("    void** vtbl;")
         cur = start
         end = extent[vt]

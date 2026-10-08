@@ -12,7 +12,7 @@
 
 Usage: .venv/bin/python tools/ida/sync.py [--dry] [--no-types]
 """
-import argparse, csv, json, os, re, sys
+import argparse, collections, csv, json, os, re, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from common import ROOT, open_db, close_db  # noqa: E402  (imports idapro first)
 import ida_funcs, ida_name, ida_typeinf, idc  # noqa: E402
@@ -64,6 +64,20 @@ def header_parts():
         name = m.group(1)
         return m.group(0) if name not in which else m.group(0).replace("void** vtbl;", f"{which[name]} *__vftable;", 1)
     body = re.sub(r"^struct (\w+) \{\n\s+void\*\* vtbl;", retype, body, flags=re.M)
+    import this_class
+    from gen_classes_h import load_names as _ln
+    nm = _ln()
+    plain = {c["vtable"] for c in json.load(open(os.path.join(ROOT, "db", "classes.json"))) if c.get("plain")}
+    cname = lambda vt: nm[vt]["name"] if vt in nm else (f"S_{vt}" if vt in plain else f"C_{vt}")  # noqa: E731
+    for st, mem in this_class.load_args()["fields"].items():
+        m = re.search(rf"^struct {re.escape(st)}\b[^{{;]*\{{.*?^\}};", body, re.M | re.S)
+        if not m:
+            continue
+        blk = m.group(0)
+        for name, cls_vt in mem.items():  # only 4-byte scalars: export_abi.py records members of that size
+            blk = re.sub(rf"^(\s+)(?:uint32_t|int32_t|int|unsigned int|void\s*\*) {re.escape(name)};",
+                         rf"\1{cname(cls_vt)} *{name};", blk, flags=re.M)
+        body = body.replace(m.group(0), blk)
     return pre + fwd + "\n" + body + "\n", pre + fwd + "\n" + vt + "\n"
 
 
@@ -112,25 +126,68 @@ def proven_protos():
 
 
 def this_protos():
-    """Methods with a known class (db/types/this_class.json) whose Hex-Rays prototype is __thiscall: the same
-    prototype with `this` typed as a pointer to the class struct (src/types/auto_classes.h, loaded by the types
-    stage). Hex-Rays then shows this->field and types the objects callers pass, which this_class.py propagates."""
+    """Prototypes with class pointers where we know them: `this` of methods with a known class
+    (db/types/this_class.json, __thiscall only) and parameters other functions pass as `this` to a classed method
+    (db/types/arg_types.json params). The rest of Hex-Rays' prototype is kept. Hex-Rays then shows x->field and
+    types what callers pass, which this_class.py propagates further."""
     sys.path.insert(0, os.path.join(ROOT, "tools"))
     import api, this_class
     from packet import DB
     db = DB()
     abi = api.ida_abi()
-    out = {}
+    want = collections.defaultdict(dict)  # ea -> {arg index: class struct name}
     for ea, c in this_class.load().items():
         a = abi.get(ea)
-        if not a or a.get("cc") != "thiscall" or not a.get("args"):
+        if a and a.get("cc") == "thiscall" and a.get("args"):
+            want[ea][0] = db.cls_name(c["vt"])
+    for ea, ps in this_class.load_args()["params"].items():
+        for i, vt in ps.items():
+            want[int(ea, 16)].setdefault(int(i), db.cls_name(vt))
+    out = {}
+    for ea, ps in want.items():
+        a = abi.get(ea)
+        if not a or not a.get("cc") or a["cc"] in ("usercall", "userpurge") or not a.get("args"):
             continue
-        name = db.cls_name(c["vt"])
-        args = [f"{name} *this"] + [f"{t} {n or f'a{i + 2}'}" for i, (t, n, _) in enumerate(a["args"][1:])]
-        if a["args"][0][0] == f"{name} *":
-            continue
-        out[ea] = f"{a['ret']} __thiscall f({', '.join(args)});"
+        args, changed = [], False
+        for i, (t, n, _) in enumerate(a["args"]):
+            n = n or f"a{i + 1}"
+            if i in ps and t != f"{ps[i]} *":
+                t, changed = f"{ps[i]} *", True
+            args.append(f"{t} {n}")
+        if a["cc"] == "ellipsis":
+            args.append("...")
+        if changed:
+            cc = {"ellipsis": "cdecl"}.get(a["cc"], a["cc"])
+            out[ea] = (f"{a['ret']} __{cc} f({', '.join(args)});", ps)
     return out
+
+
+def retype_args(ea, ps):
+    """Apply class-pointer argument types on IDA's own type object of the function (its stored type, else Hex-Rays'
+    guess): for prototypes a declaration string can't carry (function-pointer arguments or returns)."""
+    import ida_nalt, ida_hexrays
+    tif = ida_typeinf.tinfo_t()
+    if not ida_nalt.get_tinfo(tif, ea):
+        try:
+            cf = ida_hexrays.decompile(ea, flags=ida_hexrays.DECOMP_NO_WAIT)
+        except ida_hexrays.DecompilationFailure:
+            return False
+        if not cf:
+            return False
+        tif = cf.type
+    ftd = ida_typeinf.func_type_data_t()
+    if not tif.get_func_details(ftd):
+        return False
+    til = ida_typeinf.get_idati()
+    for i, name in ps.items():
+        st = ida_typeinf.tinfo_t()
+        if i >= ftd.size() or not st.get_named_type(til, name):
+            return False
+        ptr = ida_typeinf.tinfo_t()
+        ptr.create_ptr(st)
+        ftd[i].type = ptr
+    new = ida_typeinf.tinfo_t()
+    return new.create_func(ftd) and ida_typeinf.apply_tinfo(ea, new, ida_typeinf.TINFO_DEFINITE)
 
 
 def main():
@@ -148,9 +205,12 @@ def main():
             for ea, decl in protos.items():
                 if a.dry:
                     continue
-                if idc.SetType(ea, decl):
+                decl, ps = decl if isinstance(decl, tuple) else (decl, None)
+                if idc.SetType(ea, decl) or (ps and retype_args(ea, ps)):
                     n += 1
                 else:
+                    if bad < 6:
+                        print(f"  rejected 0x{ea:X}: {decl}")
                     bad += 1
         finally:
             close_db(save=not a.dry)

@@ -6,6 +6,4956 @@
 #include "legacy/string.h"
 
 #pragma pack(push, 1)
+struct S_004017a0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00401b50 {
+    uint8_t pad_0000[0x20];
+    uint32_t field_0020;
+};
+
+struct S_004022a0 {
+    uint32_t field_0000;
+    uint8_t field_0004;
+    uint8_t field_0005;
+    uint8_t pad_0006[0x2];
+};
+static_assert(sizeof(S_004022a0) == 0x8);
+
+struct S_00402350 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint8_t pad_0018[0x24];
+};
+static_assert(sizeof(S_00402350) == 0x3c);
+
+struct S_00403a70 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00405180 {
+    uint32_t field_0000;
+};
+
+struct S_004054a0 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint8_t pad_000c[0x2c];
+    uint8_t field_0038;
+    uint8_t field_0039;
+    uint8_t pad_003a[0x6];
+    uint32_t field_0040;
+};
+
+struct S_00405e60 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_004090c0 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_0040a7a0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint8_t pad_000c[0x4];
+    uint32_t field_0010;
+    uint8_t pad_0014[0xc];
+    uint32_t field_0020;
+};
+
+struct S_0040b040 {
+    uint8_t pad_0000[0x10];
+    uint32_t field_0010;
+    uint8_t pad_0014[0xc];
+    uint32_t field_0020;
+};
+
+struct S_0040b8e0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_0040c070 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_004109c0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint8_t pad_000c[0x4];
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint32_t field_003c;
+    uint32_t field_0040;
+    uint32_t field_0044;
+    uint32_t field_0048;
+    uint32_t field_004c;
+    uint32_t field_0050;
+    uint32_t field_0054;
+    uint32_t field_0058;
+    uint32_t field_005c;
+    uint32_t field_0060;
+    uint32_t field_0064;
+    uint32_t field_0068;
+    uint32_t field_006c;
+    uint32_t field_0070;
+    uint32_t field_0074;
+    uint32_t field_0078;
+    uint32_t field_007c;
+    uint32_t field_0080;
+    uint32_t field_0084;
+    uint32_t field_0088;
+    uint32_t field_008c;
+    uint32_t field_0090;
+    uint8_t pad_0094[0x10];
+    uint32_t field_00a4;
+    uint32_t field_00a8;
+    uint32_t field_00ac;
+    uint32_t field_00b0;
+    uint32_t field_00b4;
+    uint32_t field_00b8;
+    uint32_t field_00bc;
+    uint32_t field_00c0;
+    uint32_t field_00c4;
+    uint32_t field_00c8;
+    uint32_t field_00cc;
+    uint32_t field_00d0;
+    uint32_t field_00d4;
+    uint32_t field_00d8;
+    uint32_t field_00dc;
+    uint32_t field_00e0;
+    uint32_t field_00e4;
+    uint32_t field_00e8;
+    uint32_t field_00ec;
+    uint32_t field_00f0;
+    uint32_t field_00f4;
+    uint32_t field_00f8;
+    uint32_t field_00fc;
+    uint32_t field_0100;
+    uint32_t field_0104;
+    uint32_t field_0108;
+    uint32_t field_010c;
+    uint32_t field_0110;
+    uint8_t field_0114;
+    uint8_t field_0115;
+    uint8_t pad_0116[0x2];
+    uint32_t field_0118;
+    uint32_t field_011c;
+    uint8_t pad_0120[0x10];
+    uint8_t field_0130;
+    uint8_t field_0131;
+    uint8_t pad_0132[0x2];
+    uint32_t field_0134;
+    uint32_t field_0138;
+    uint32_t field_013c;
+    uint32_t field_0140;
+    uint32_t field_0144;
+    uint32_t field_0148;
+    uint32_t field_014c;
+    uint32_t field_0150;
+    uint32_t field_0154;
+    uint32_t field_0158;
+    uint32_t field_015c;
+    uint32_t field_0160;
+    uint32_t field_0164;
+    uint32_t field_0168;
+    uint32_t field_016c;
+    uint32_t field_0170;
+    uint32_t field_0174;
+    uint32_t field_0178;
+    uint32_t field_017c;
+    uint32_t field_0180;
+    uint32_t field_0184;
+    uint32_t field_0188;
+    uint32_t field_018c;
+    uint32_t field_0190;
+    uint32_t field_0194;
+    uint32_t field_0198;
+    uint32_t field_019c;
+    uint32_t field_01a0;
+    uint32_t field_01a4;
+    uint32_t field_01a8;
+    uint32_t field_01ac;
+    uint32_t field_01b0;
+    uint32_t field_01b4;
+    uint32_t field_01b8;
+    uint32_t field_01bc;
+    uint32_t field_01c0;
+    uint32_t field_01c4;
+    uint32_t field_01c8;
+    uint32_t field_01cc;
+    uint32_t field_01d0;
+    uint32_t field_01d4;
+    uint32_t field_01d8;
+    uint32_t field_01dc;
+    uint8_t field_01e0;
+    uint8_t field_01e1;
+    uint8_t pad_01e2[0x2];
+    uint32_t field_01e4;
+    uint32_t field_01e8;
+    uint32_t field_01ec;
+    uint32_t field_01f0;
+    uint32_t field_01f4;
+    uint32_t field_01f8;
+    uint32_t field_01fc;
+    uint32_t field_0200;
+    uint32_t field_0204;
+    uint32_t field_0208;
+    uint32_t field_020c;
+    uint32_t field_0210;
+    uint8_t field_0214;
+    uint8_t pad_0215[0x3];
+    uint32_t field_0218;
+    uint32_t field_021c;
+    uint32_t field_0220;
+    uint32_t field_0224;
+    uint32_t field_0228;
+};
+
+struct S_00413570 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0041e5f0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint8_t pad_0034[0xc];
+    uint32_t field_0040;
+    uint32_t field_0044;
+    uint32_t field_0048;
+    uint32_t field_004c;
+    uint32_t field_0050;
+    uint32_t field_0054;
+    uint32_t field_0058;
+    uint32_t field_005c;
+    uint8_t pad_0060[0x4];
+    uint32_t field_0064;
+    uint32_t field_0068;
+    uint32_t field_006c;
+    uint8_t pad_0070[0x4];
+    uint32_t field_0074;
+    uint32_t field_0078;
+    uint32_t field_007c;
+};
+static_assert(sizeof(S_0041e5f0) == 0x80);
+
+struct S_0041e750 {
+    uint8_t field_0000;
+    uint8_t field_0001;
+    uint8_t field_0002;
+    uint8_t pad_0003[0x1];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t pad_0010[0x4];
+    uint32_t field_0014;
+    float field_0018;
+};
+
+struct S_0041e820 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x3];
+    float field_0004;
+    float field_0008;
+    float field_000c;
+    float field_0010;
+    float field_0014;
+};
+
+struct S_0041e990 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t pad_0010[0x4];
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+};
+
+struct S_0041f0a0 {
+    uint8_t pad_0000[0xc];
+    uint32_t field_000c;
+    uint8_t pad_0010[0x30];
+    uint32_t field_0040;
+    uint8_t pad_0044[0x2cc];
+    uint8_t field_0310;
+};
+
+struct S_00421120 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+};
+
+struct S_00421750 {
+    uint8_t pad_0000[0x14];
+    uint32_t field_0014;
+    uint8_t pad_0018[0x1e8];
+    float field_0200;
+    uint8_t pad_0204[0x14];
+    float field_0218;
+    float field_021c;
+    float field_0220;
+    uint8_t pad_0224[0x14];
+    uint32_t field_0238;
+    float field_023c;
+    float field_0240;
+    uint8_t pad_0244[0x78];
+    uint32_t field_02bc;
+    uint32_t field_02c0;
+    uint32_t field_02c4;
+};
+
+struct S_004223f0 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint8_t pad_000c[0x4];
+    uint32_t field_0010;
+};
+
+struct S_00426550 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x4];
+    uint32_t field_000c;
+    uint8_t pad_0010[0x4];
+    uint32_t field_0014;
+    uint8_t pad_0018[0x4];
+    uint32_t field_001c;
+    uint8_t pad_0020[0x4];
+    uint32_t field_0024;
+};
+
+struct S_004276c0 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x4];
+    uint8_t field_0008;
+    uint8_t field_0009;
+    uint8_t pad_000a[0x16];
+    uint32_t field_0020;
+    uint8_t pad_0024[0xc];
+    float field_0030;
+    uint8_t pad_0034[0x8];
+    float field_003c;
+    float field_0040;
+    float field_0044;
+};
+
+struct S_00427bf0 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x4];
+    uint8_t field_0008;
+    uint8_t field_0009;
+    uint8_t pad_000a[0x2];
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint8_t pad_0030[0x4];
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint8_t pad_003c[0x8];
+    uint32_t field_0044;
+};
+
+struct S_0042cbd0 {
+    uint8_t pad_0000[0x10];
+    uint32_t field_0010;
+    uint8_t pad_0014[0x129];
+    uint8_t field_013d;
+    uint8_t pad_013e[0x6];
+    uint32_t field_0144;
+};
+
+struct S_0042cc30 {
+    uint8_t pad_0000[0x10];
+    uint32_t field_0010;
+    uint8_t pad_0014[0x129];
+    uint8_t field_013d;
+};
+
+struct S_0042cd20 {
+    uint8_t pad_0000[0x10];
+    uint32_t field_0010;
+    uint8_t pad_0014[0x129];
+    uint8_t field_013d;
+    uint8_t pad_013e[0x6];
+    uint32_t field_0144;
+};
+
+struct S_0042cfd0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+};
+
+struct S_0042eb60 {
+    uint8_t pad_0000[0x34];
+    uint32_t field_0034;
+    uint8_t pad_0038[0x4c];
+    uint32_t field_0084;
+    uint8_t pad_0088[0x4];
+    uint32_t field_008c;
+    uint8_t pad_0090[0x58];
+    uint32_t field_00e8;
+    uint32_t field_00ec;
+    uint8_t pad_00f0[0x2b];
+    uint8_t field_011b;
+    uint8_t pad_011c[0x4];
+    uint8_t field_0120;
+    uint8_t pad_0121[0x1];
+    uint8_t field_0122;
+    uint8_t field_0123;
+    uint8_t field_0124;
+    uint8_t field_0125;
+    uint8_t pad_0126[0x162];
+    uint32_t field_0288;
+    uint8_t pad_028c[0x4];
+    uint32_t field_0290;
+};
+
+struct S_0042ee00 {
+    uint8_t pad_0000[0x64];
+    uint32_t field_0064;
+    uint8_t pad_0068[0xb7];
+    uint8_t field_011f;
+    uint8_t pad_0120[0x10c];
+    uint32_t field_022c;
+    uint8_t pad_0230[0x4];
+    uint32_t field_0234;
+    uint8_t pad_0238[0x4];
+    uint8_t field_023c;
+};
+
+struct S_004337e0 {
+    uint8_t pad_0000[0x15c];
+    uint32_t field_015c;
+    uint32_t field_0160;
+};
+
+struct S_00434780 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_004382f0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    float field_0008;
+    float field_000c;
+    float field_0010;
+    uint8_t field_0014;
+    uint8_t pad_0015[0xf];
+    uint32_t field_0024;
+};
+
+struct S_004383c0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    float field_000c;
+    uint32_t field_0010;
+    uint8_t field_0014;
+    uint8_t pad_0015[0x3];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+};
+static_assert(sizeof(S_004383c0) == 0x28);
+
+struct S_00439ba0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint8_t pad_000c[0x4];
+    float field_0010;
+    uint8_t pad_0014[0x1c];
+    uint32_t field_0030;
+    uint8_t pad_0034[0x8];
+    uint32_t field_003c;
+    uint8_t pad_0040[0x8];
+    float field_0048;
+    uint8_t field_004c;
+    uint8_t field_004d;
+    uint8_t pad_004e[0x82];
+    uint32_t field_00d0;
+    uint32_t field_00d4;
+    uint32_t field_00d8;
+};
+
+struct S_00439f80 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+};
+
+struct S_0043e970 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+};
+
+struct S_00440480 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_00440e70 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00440ee0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00441520 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_00441ca0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint8_t pad_0008[0xc];
+    uint32_t field_0014;
+};
+
+struct S_004427c0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t pad_0010[0x10];
+};
+static_assert(sizeof(S_004427c0) == 0x20);
+
+struct S_00442f90 {
+    uint8_t pad_0000[0xc];
+    uint32_t field_000c;
+    uint8_t pad_0010[0x4];
+    uint32_t field_0014;
+};
+
+struct S_00443a00 {
+    uint8_t pad_0000[0xc];
+    uint32_t field_000c;
+    uint8_t pad_0010[0x4];
+    uint32_t field_0014;
+};
+
+struct S_00444180 {
+    uint8_t pad_0000[0xc];
+    uint32_t field_000c;
+    uint8_t pad_0010[0x4];
+    uint32_t field_0014;
+};
+
+struct S_00444fd0 {
+    uint8_t pad_0000[0x4];
+    uint8_t field_0004;
+    uint8_t pad_0005[0x3];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint32_t field_003c;
+    uint32_t field_0040;
+    uint32_t field_0044;
+    uint32_t field_0048;
+    uint32_t field_004c;
+    uint32_t field_0050;
+    uint32_t field_0054;
+    uint32_t field_0058;
+    uint32_t field_005c;
+};
+
+struct S_00445b40 {
+    uint8_t pad_0000[0x8];
+    float field_0008;
+    uint8_t pad_000c[0x8];
+    uint32_t field_0014;
+    uint8_t pad_0018[0x24];
+    float field_003c;
+    uint8_t pad_0040[0x8];
+    uint32_t field_0048;
+    uint8_t pad_004c[0xc];
+    uint32_t field_0058;
+    uint8_t pad_005c[0x64];
+    uint32_t field_00c0;
+    uint32_t field_00c4;
+    uint32_t field_00c8;
+    uint8_t pad_00cc[0x4];
+    uint32_t field_00d0;
+    uint8_t pad_00d4[0x40];
+    uint32_t field_0114;
+};
+
+struct S_00445eb0 {
+    uint8_t pad_0000[0x1c];
+    uint32_t field_001c;
+    uint8_t pad_0020[0x4];
+    uint32_t field_0024;
+};
+
+struct S_00446340 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00446450 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_004480f0 {
+    uint8_t pad_0000[0x24];
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint8_t pad_0030[0x4];
+    uint32_t field_0034;
+    uint8_t pad_0038[0x4];
+    uint32_t field_003c;
+    uint8_t pad_0040[0x4];
+    uint32_t field_0044;
+    uint8_t pad_0048[0x4];
+    float field_004c;
+    float field_0050;
+    float field_0054;
+    uint32_t field_0058;
+    float field_005c;
+    float field_0060;
+};
+
+struct S_004482c0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00448830 {
+    uint8_t pad_0000[0x18];
+    uint32_t field_0018;
+    uint32_t field_001c;
+};
+
+struct S_00448a80 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0044a1e0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0044b8c0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0044b930 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0044bb60 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0044bc20 {
+    uint8_t pad_0000[0x10];
+    uint32_t field_0010;
+    uint32_t field_0014;
+};
+
+struct S_0044cd10 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0044d360 {
+    uint8_t pad_0000[0x28];
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint8_t pad_0034[0x78];
+    uint8_t field_00ac;
+    uint8_t pad_00ad[0x23];
+    uint8_t field_00d0;
+};
+
+struct S_0044d940 {
+    uint8_t pad_0000[0x4];
+    float field_0004;
+    uint8_t pad_0008[0x4];
+    uint32_t field_000c;
+    uint8_t pad_0010[0x4];
+    uint32_t field_0014;
+    uint8_t pad_0018[0xc];
+    uint32_t field_0024;
+    uint32_t field_0028;
+};
+
+struct S_0044da20 {
+    uint8_t pad_0000[0x4];
+    float field_0004;
+    float field_0008;
+    uint32_t field_000c;
+    uint8_t pad_0010[0x4];
+    uint32_t field_0014;
+};
+
+struct S_0044f300 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint8_t field_000c;
+    uint8_t pad_000d[0x7];
+    uint32_t field_0014;
+    uint8_t pad_0018[0xc];
+    uint32_t field_0024;
+    uint8_t pad_0028[0xc];
+    uint32_t field_0034;
+    uint8_t pad_0038[0xc];
+    uint32_t field_0044;
+    uint8_t pad_0048[0xc];
+    uint32_t field_0054;
+    uint8_t pad_0058[0xc];
+    uint32_t field_0064;
+    uint8_t pad_0068[0x8];
+    uint32_t field_0070;
+    uint8_t pad_0074[0x10];
+    uint8_t field_0084;
+    uint8_t pad_0085[0x17];
+    uint32_t field_009c;
+    uint8_t pad_00a0[0xc];
+    uint32_t field_00ac;
+    uint32_t field_00b0;
+    uint32_t field_00b4;
+    uint32_t field_00b8;
+    uint32_t field_00bc;
+    uint32_t field_00c0;
+    uint32_t field_00c4;
+    uint8_t pad_00c8[0x30];
+    uint8_t field_00f8;
+    uint8_t pad_00f9[0x23];
+    uint32_t field_011c;
+    uint32_t field_0120;
+    uint32_t field_0124;
+    uint8_t field_0128;
+    uint8_t pad_0129[0x3];
+    uint32_t field_012c;
+    uint32_t field_0130;
+    uint8_t pad_0134[0x10];
+    uint8_t field_0144;
+    uint8_t pad_0145[0x13];
+    uint8_t field_0158;
+    uint8_t pad_0159[0x13];
+    uint8_t field_016c;
+    uint8_t pad_016d[0x13];
+    uint8_t field_0180;
+    uint8_t pad_0181[0x23];
+    uint32_t field_01a4;
+    uint8_t field_01a8;
+    uint8_t field_01a9;
+    uint8_t pad_01aa[0x2];
+    uint32_t field_01ac;
+    uint32_t field_01b0;
+};
+
+struct S_0044f8e0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_004503e0 {
+    uint8_t pad_0000[0x10];
+    uint32_t field_0010;
+    uint8_t pad_0014[0x4];
+    uint32_t field_0018;
+    uint8_t pad_001c[0x44];
+    uint32_t field_0060;
+    uint8_t pad_0064[0x4];
+    uint32_t field_0068;
+    uint8_t pad_006c[0x4];
+    uint32_t field_0070;
+    uint8_t pad_0074[0x8];
+    uint32_t field_007c;
+    uint8_t pad_0080[0x4];
+    uint8_t field_0084;
+};
+
+struct S_00452280 {
+    uint8_t pad_0000[0x8];
+    float field_0008;
+    uint8_t pad_000c[0x4];
+    uint32_t field_0010;
+    uint8_t pad_0014[0x4];
+    uint32_t field_0018;
+    uint8_t pad_001c[0x44];
+    uint32_t field_0060;
+    uint8_t pad_0064[0x4];
+    uint32_t field_0068;
+    uint8_t pad_006c[0x4];
+    uint32_t field_0070;
+    uint8_t pad_0074[0x10];
+    uint8_t field_0084;
+    uint8_t pad_0085[0x23];
+    uint32_t field_00a8;
+    uint8_t pad_00ac[0x4];
+    uint32_t field_00b0;
+    uint32_t field_00b4;
+    uint32_t field_00b8;
+    uint32_t field_00bc;
+    uint32_t field_00c0;
+    uint32_t field_00c4;
+    uint8_t pad_00c8[0x38];
+    uint32_t field_0100;
+    uint32_t field_0104;
+    uint8_t pad_0108[0x14];
+    float field_011c;
+    float field_0120;
+    float field_0124;
+    uint8_t field_0128;
+    uint8_t pad_0129[0x5b];
+    uint32_t field_0184;
+};
+
+struct S_00452980 {
+    uint8_t pad_0000[0xcc];
+    uint32_t field_00cc;
+    uint32_t field_00d0;
+};
+
+struct S_00454c10 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00454c80 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00455ed0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00456ec0 {
+    uint8_t pad_0000[0x18];
+    uint32_t field_0018;
+};
+
+struct S_00457af0 {
+    uint8_t pad_0000[0xc];
+    uint32_t field_000c;
+    uint8_t pad_0010[0x8];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    float field_0020;
+    float field_0024;
+    float field_0028;
+};
+
+struct S_00458840 {
+    uint8_t pad_0000[0x2c];
+    uint32_t field_002c;
+    uint32_t field_0030;
+};
+
+struct S_00458930 {
+    uint8_t pad_0000[0xc];
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint8_t pad_0014[0x18];
+    uint32_t field_002c;
+    uint32_t field_0030;
+};
+
+struct S_00458980 {
+    uint8_t pad_0000[0x1c];
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint8_t pad_0024[0x8];
+    uint32_t field_002c;
+    uint32_t field_0030;
+};
+
+struct S_00458f40 {
+    uint8_t pad_0000[0xc];
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint8_t pad_0014[0x8];
+    uint32_t field_001c;
+};
+
+struct S_00459e50 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00459ec0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00459f30 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0045bda0 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t pad_0010[0x8];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint8_t pad_0020[0x8];
+    uint32_t field_0028;
+    uint8_t pad_002c[0x4];
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint8_t pad_0038[0x4];
+    uint32_t field_003c;
+    uint32_t field_0040;
+    uint32_t field_0044;
+    uint32_t field_0048;
+    uint32_t field_004c;
+    uint32_t field_0050;
+    uint8_t field_0054;
+    uint8_t pad_0055[0x3];
+    float field_0058;
+    uint8_t pad_005c[0x10];
+    uint32_t field_006c;
+    uint8_t pad_0070[0x10];
+    uint8_t field_0080;
+};
+
+struct S_0045d610 {
+    uint8_t pad_0000[0x18];
+    uint32_t field_0018;
+    uint8_t pad_001c[0x4];
+    uint32_t field_0020;
+    uint8_t pad_0024[0x4];
+    uint32_t field_0028;
+    uint8_t pad_002c[0x4];
+    uint32_t field_0030;
+    uint8_t pad_0034[0x4];
+    uint32_t field_0038;
+    uint8_t pad_003c[0x2c];
+    uint32_t field_0068;
+    uint32_t field_006c;
+    uint8_t pad_0070[0x8];
+    uint32_t field_0078;
+    uint8_t pad_007c[0x6];
+    uint8_t field_0082;
+    uint8_t pad_0083[0x1];
+    uint32_t field_0084;
+    uint8_t pad_0088[0x4];
+    uint32_t field_008c;
+};
+
+struct S_00462c00 {
+    uint8_t pad_0000[0x20];
+    uint32_t field_0020;
+};
+
+struct S_00464000 {
+    uint8_t pad_0000[0x20];
+    uint32_t field_0020;
+};
+
+struct S_00467cc0 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint8_t pad_0014[0x4];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint8_t pad_0020[0x40];
+    uint32_t field_0060;
+    uint32_t field_0064;
+    uint8_t pad_0068[0x10];
+    uint32_t field_0078;
+    uint8_t pad_007c[0x4];
+    uint8_t field_0080;
+    uint8_t pad_0081[0x1];
+    uint8_t field_0082;
+};
+
+struct S_004686a0 {
+    uint8_t pad_0000[0x18];
+    uint32_t field_0018;
+    uint8_t pad_001c[0x4];
+    uint32_t field_0020;
+};
+
+struct S_00468750 {
+    uint8_t pad_0000[0x28];
+    uint32_t field_0028;
+    uint8_t pad_002c[0x4];
+    uint32_t field_0030;
+};
+
+struct S_0046b100 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0046b530 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_0046bea0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0046c260 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t pad_0010[0x8];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint8_t pad_0020[0x4];
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint8_t pad_0030[0x4];
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint32_t field_003c;
+    uint8_t pad_0040[0x4];
+    uint32_t field_0044;
+};
+
+struct S_0046c410 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0046c710 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_0046cba0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_0046e250 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0046e2c0 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint8_t pad_0014[0x4];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint32_t field_003c;
+    uint32_t field_0040;
+    uint32_t field_0044;
+    uint32_t field_0048;
+    uint32_t field_004c;
+};
+static_assert(sizeof(S_0046e2c0) == 0x50);
+
+struct S_0046f130 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint8_t pad_000c[0xc];
+    uint32_t field_0018;
+};
+
+struct S_0046f5e0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_0046f790 {
+    uint8_t pad_0000[0xc];
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint8_t pad_0014[0x8];
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint8_t pad_0024[0xc];
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint8_t pad_0038[0x8];
+    uint32_t field_0040;
+    uint32_t field_0044;
+};
+
+struct S_0046f900 {
+    uint8_t pad_0000[0xc];
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint8_t pad_0014[0x8];
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint8_t pad_0024[0xc];
+    uint32_t field_0030;
+    uint32_t field_0034;
+};
+
+struct S_00470340 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00470440 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x4];
+    uint32_t field_0008;
+};
+
+struct S_00470ab0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00470e10 {
+    uint8_t field_0000;
+    uint8_t field_0001;
+    uint8_t pad_0002[0x2];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x4];
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint8_t pad_0018[0x4];
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint8_t pad_002c[0x4];
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint8_t pad_003c[0x4];
+    uint32_t field_0040;
+    uint32_t field_0044;
+    uint32_t field_0048;
+    uint8_t pad_004c[0x4];
+    uint32_t field_0050;
+    uint32_t field_0054;
+    uint32_t field_0058;
+    uint8_t pad_005c[0x4];
+    uint32_t field_0060;
+    uint32_t field_0064;
+    uint32_t field_0068;
+    uint32_t field_006c;
+    uint8_t pad_0070[0x4];
+    uint32_t field_0074;
+    uint32_t field_0078;
+    uint32_t field_007c;
+};
+static_assert(sizeof(S_00470e10) == 0x80);
+
+struct S_00471340 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x27];
+    uint8_t field_0028;
+    uint8_t field_0029;
+    uint8_t pad_002a[0x2];
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint32_t field_003c;
+    uint8_t field_0040;
+    uint8_t field_0041;
+};
+
+struct S_004713e0 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x3];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x20];
+    uint8_t field_0028;
+    uint8_t pad_0029[0x3];
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+};
+
+struct S_00472350 {
+    uint8_t pad_0000[0x10];
+    uint32_t field_0010;
+    uint32_t field_0014;
+};
+
+struct S_004725f0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+};
+
+struct S_0047ae10 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x10];
+    uint32_t field_0014;
+    uint8_t pad_0018[0x4];
+    uint32_t field_001c;
+    uint8_t pad_0020[0x2cd];
+    uint8_t field_02ed;
+};
+
+struct S_0047ea40 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00482080 {
+    uint8_t pad_0000[0x14];
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+};
+
+struct S_00486c30 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x4];
+    uint32_t field_0008;
+};
+
+struct S_0048aa30 {
+    uint32_t field_0000;
+    uint8_t field_0004;
+    uint8_t pad_0005[0x3];
+};
+static_assert(sizeof(S_0048aa30) == 0x8);
+
+struct S_0048b280 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_0048c6c0 {
+    uint8_t pad_0000[0x8];
+    float field_0008;
+    uint8_t pad_000c[0x8];
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+};
+
+struct S_0048c9f0 {
+    uint8_t pad_0000[0xc];
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint8_t pad_0014[0xe];
+    uint16_t field_0022;
+    uint16_t field_0024;
+    uint8_t pad_0026[0x2];
+    uint32_t field_0028;
+    uint8_t pad_002c[0x4];
+    uint32_t field_0030;
+    uint8_t pad_0034[0x5];
+    uint8_t field_0039;
+    uint8_t pad_003a[0x2];
+    uint32_t field_003c;
+};
+
+struct S_0048cad0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint8_t pad_0008[0xc];
+    float field_0014;
+    float field_0018;
+    float field_001c;
+    uint8_t pad_0020[0x2];
+    uint16_t field_0022;
+};
+
+struct S_0048e570 {
+    uint8_t pad_0000[0x179];
+    uint8_t field_0179;
+    uint8_t pad_017a[0x6];
+    uint32_t field_0180;
+    uint32_t field_0184;
+    uint32_t field_0188;
+};
+
+struct S_0048f360 {
+    uint8_t pad_0000[0x20];
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint32_t field_003c;
+    uint32_t field_0040;
+    uint32_t field_0044;
+    uint8_t pad_0048[0x2c];
+    uint32_t field_0074;
+    uint8_t pad_0078[0x10];
+    uint32_t field_0088;
+    uint8_t pad_008c[0x14];
+    uint32_t field_00a0;
+    uint8_t pad_00a4[0x4];
+    uint32_t field_00a8;
+    uint8_t pad_00ac[0x4];
+    uint32_t field_00b0;
+    uint8_t pad_00b4[0xb0];
+    uint32_t field_0164;
+    uint8_t pad_0168[0x1];
+    uint8_t field_0169;
+    uint8_t pad_016a[0x2];
+    uint32_t field_016c;
+    uint32_t field_0170;
+    uint32_t field_0174;
+    uint8_t field_0178;
+    uint8_t pad_0179[0x3];
+    uint32_t field_017c;
+    uint32_t field_0180;
+    uint32_t field_0184;
+    uint32_t field_0188;
+    uint8_t field_018c;
+    uint8_t field_018d;
+    uint8_t pad_018e[0x12];
+    uint32_t field_01a0;
+    uint32_t field_01a4;
+    uint8_t pad_01a8[0x4];
+    uint32_t field_01ac;
+    uint32_t field_01b0;
+    uint32_t field_01b4;
+    uint32_t field_01b8;
+    uint8_t pad_01bc[0x14];
+    uint32_t field_01d0;
+    uint8_t pad_01d4[0x4];
+    uint8_t field_01d8;
+    uint8_t pad_01d9[0xb];
+    uint32_t field_01e4;
+    uint32_t field_01e8;
+    uint32_t field_01ec;
+    uint32_t field_01f0;
+    uint32_t field_01f4;
+    uint8_t pad_01f8[0x4];
+    uint16_t field_01fc;
+    uint8_t pad_01fe[0x2];
+    uint32_t field_0200;
+    uint32_t field_0204;
+    uint32_t field_0208;
+    uint32_t field_020c;
+    uint32_t field_0210;
+    uint32_t field_0214;
+    uint32_t field_0218;
+    uint8_t pad_021c[0x1];
+    uint8_t field_021d;
+    uint8_t pad_021e[0x1a];
+    uint32_t field_0238;
+    uint32_t field_023c;
+    uint8_t pad_0240[0x4];
+    uint32_t field_0244;
+    uint32_t field_0248;
+    uint32_t field_024c;
+    uint8_t pad_0250[0xc];
+    uint8_t field_025c;
+    uint8_t pad_025d[0x3];
+    uint32_t field_0260;
+    uint8_t pad_0264[0x4];
+    uint32_t field_0268;
+    uint32_t field_026c;
+    uint32_t field_0270;
+    uint8_t pad_0274[0x10];
+    uint32_t field_0284;
+    uint32_t field_0288;
+    uint8_t pad_028c[0x48];
+    uint32_t field_02d4;
+    uint32_t field_02d8;
+    uint32_t field_02dc;
+    uint32_t field_02e0;
+    uint32_t field_02e4;
+    uint32_t field_02e8;
+    uint32_t field_02ec;
+    uint8_t pad_02f0[0x4c];
+    uint32_t field_033c;
+    uint32_t field_0340;
+    uint8_t pad_0344[0x40];
+    uint32_t field_0384;
+    uint8_t pad_0388[0x4];
+    uint32_t field_038c;
+    uint32_t field_0390;
+    uint8_t pad_0394[0x5];
+    uint8_t field_0399;
+    uint8_t pad_039a[0x26];
+    uint32_t field_03c0;
+    uint8_t field_03c4;
+    uint8_t pad_03c5[0x3];
+    uint32_t field_03c8;
+    float field_03cc;
+    uint8_t pad_03d0[0x2];
+    uint8_t field_03d2;
+    uint8_t pad_03d3[0x1];
+    uint32_t field_03d4;
+    uint32_t field_03d8;
+    uint8_t pad_03dc[0x4];
+    uint32_t field_03e0;
+    uint8_t pad_03e4[0x10];
+    uint32_t field_03f4;
+    uint8_t field_03f8;
+    uint8_t pad_03f9[0x3];
+    uint32_t field_03fc;
+    uint32_t field_0400;
+};
+
+struct S_0048f590 {
+    uint8_t pad_0000[0xa8];
+    uint32_t field_00a8;
+    uint8_t pad_00ac[0xc5];
+    uint8_t field_0171;
+    uint8_t pad_0172[0x22];
+    uint32_t field_0194;
+    uint8_t pad_0198[0x4];
+    uint32_t field_019c;
+    uint8_t pad_01a0[0x13c];
+    uint32_t field_02dc;
+};
+
+struct S_0048f5b0 {
+    uint8_t pad_0000[0xa8];
+    uint32_t field_00a8;
+    uint8_t pad_00ac[0xc5];
+    uint8_t field_0171;
+};
+
+struct S_00492b20 {
+    uint8_t pad_0000[0x30];
+    uint32_t field_0030;
+    uint8_t pad_0034[0x2ac];
+    uint32_t field_02e0;
+};
+
+struct S_00493c70 {
+    uint8_t pad_0000[0x44];
+    uint32_t field_0044;
+    uint8_t pad_0048[0x294];
+    uint32_t field_02dc;
+    uint32_t field_02e0;
+    uint32_t field_02e4;
+    uint32_t field_02e8;
+    uint8_t pad_02ec[0x4];
+    float field_02f0;
+    uint8_t pad_02f4[0xdc];
+    uint8_t field_03d0;
+    uint8_t pad_03d1[0xd];
+    uint8_t field_03de;
+};
+
+struct S_0049cfa0 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x4c];
+    uint32_t field_0050;
+    uint8_t pad_0054[0x130];
+    uint8_t field_0184;
+    uint8_t pad_0185[0x27];
+    uint32_t field_01ac;
+    uint32_t field_01b0;
+};
+
+struct S_004a00e0 {
+    uint8_t pad_0000[0x5];
+    uint8_t field_0005;
+    uint8_t pad_0006[0x1a];
+    uint32_t field_0020;
+    uint8_t pad_0024[0x4];
+    uint32_t field_0028;
+};
+
+struct S_004a0490 {
+    uint8_t pad_0000[0x10];
+    uint32_t field_0010;
+    uint8_t pad_0014[0x4];
+    uint32_t field_0018;
+};
+
+struct S_004a1210 {
+    uint8_t pad_0000[0x4];
+    float field_0004;
+    float field_0008;
+    float field_000c;
+    float field_0010;
+    float field_0014;
+    float field_0018;
+    uint8_t field_001c;
+    uint8_t pad_001d[0x7];
+    uint32_t field_0024;
+    uint8_t pad_0028[0x4];
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+};
+
+struct S_004a1cd0 {
+    uint32_t field_0000;
+    uint8_t field_0004;
+    uint8_t pad_0005[0x3];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t field_0010;
+    uint8_t field_0011;
+    uint8_t pad_0012[0x2];
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+};
+
+struct S_004a31e0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_004a6d30 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_004a9e10 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_004aa310 {
+    uint8_t pad_0000[0x6ac];
+    uint32_t field_06ac;
+};
+
+struct S_004aa4d0 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_004aa5e0 {
+    uint8_t pad_0000[0x608];
+    uint32_t field_0608;
+    uint8_t pad_060c[0xc];
+    uint32_t field_0618;
+    uint8_t pad_061c[0x68];
+    uint8_t field_0684;
+};
+
+struct S_004abb90 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint8_t pad_000c[0x9];
+    uint8_t field_0015;
+    uint8_t pad_0016[0x2];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    float field_0020;
+    uint8_t field_0024;
+};
+
+struct S_004ad990 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x24];
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint8_t pad_0034[0x4];
+    uint32_t field_0038;
+    uint32_t field_003c;
+    float field_0040;
+    float field_0044;
+    float field_0048;
+    uint8_t pad_004c[0x4];
+    uint32_t field_0050;
+    uint32_t field_0054;
+    uint32_t field_0058;
+    uint32_t field_005c;
+    uint32_t field_0060;
+    uint8_t pad_0064[0x30];
+    float field_0094;
+    float field_0098;
+    float field_009c;
+    float field_00a0;
+    uint32_t field_00a4;
+    uint8_t field_00a8;
+    uint8_t field_00a9;
+};
+
+struct S_004adfc0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint8_t pad_0020[0x30];
+};
+static_assert(sizeof(S_004adfc0) == 0x50);
+
+struct S_004aef70 {
+    uint8_t pad_0000[0x2c];
+    uint32_t field_002c;
+    uint8_t pad_0030[0x65c];
+    uint32_t field_068c;
+};
+
+struct S_004af450 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_004af750 {
+    uint8_t pad_0000[0x2c];
+    uint32_t field_002c;
+    uint8_t pad_0030[0x690];
+    uint32_t field_06c0;
+    uint32_t field_06c4;
+    uint32_t field_06c8;
+};
+
+struct S_004b0200 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    float field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint8_t field_0014;
+    uint8_t field_0015;
+};
+
+struct S_004b1050 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint8_t pad_000c[0x8];
+    uint32_t field_0014;
+    float field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+};
+
+struct S_004bc930 {
+    uint8_t pad_0000[0x74];
+    uint32_t field_0074;
+    uint8_t pad_0078[0x54];
+    uint32_t field_00cc;
+    uint8_t pad_00d0[0x4];
+    uint32_t field_00d4;
+    uint8_t pad_00d8[0x4];
+    uint32_t field_00dc;
+    uint8_t pad_00e0[0x4];
+    uint32_t field_00e4;
+    uint8_t pad_00e8[0x4];
+    uint32_t field_00ec;
+    uint8_t pad_00f0[0x4];
+    uint32_t field_00f4;
+};
+
+struct S_004bd310 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x8];
+    uint32_t field_000c;
+    uint8_t pad_0010[0xc];
+    uint32_t field_001c;
+};
+
+struct S_004bdcd0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_004c2380 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_004c6f80 {
+    uint8_t pad_0000[0x4];
+    uint8_t field_0004;
+};
+
+struct S_004cb490 {
+    uint8_t pad_0000[0x2c];
+    uint32_t field_002c;
+    uint8_t pad_0030[0x678];
+    uint32_t field_06a8;
+};
+
+struct S_004d1d90 {
+    uint8_t pad_0000[0x14];
+    uint32_t field_0014;
+    uint8_t pad_0018[0x40];
+    uint32_t field_0058;
+    uint8_t pad_005c[0x4];
+    uint8_t field_0060;
+    uint8_t field_0061;
+    uint8_t field_0062;
+    uint8_t field_0063;
+    uint8_t pad_0064[0x38];
+    uint32_t field_009c;
+    uint32_t field_00a0;
+};
+
+struct S_004d1e30 {
+    uint8_t pad_0000[0x14];
+    uint32_t field_0014;
+    uint8_t pad_0018[0x2c];
+    float field_0044;
+    uint8_t field_0048;
+    uint8_t pad_0049[0x3f];
+    uint32_t field_0088;
+    uint8_t pad_008c[0x8];
+    uint8_t field_0094;
+    uint8_t pad_0095[0x3];
+    float field_0098;
+};
+
+struct S_004dc8f0 {
+    uint8_t pad_0000[0x68];
+    uint32_t field_0068;
+    uint32_t field_006c;
+};
+
+struct S_004dca10 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_004ddf20 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    float field_000c;
+    float field_0010;
+    float field_0014;
+    float field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+};
+
+struct S_004de550 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x3];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+};
+
+struct S_004de880 {
+    uint8_t pad_0000[0x5];
+    uint8_t field_0005;
+    uint8_t pad_0006[0x12];
+    uint32_t field_0018;
+    uint8_t pad_001c[0x4];
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint8_t pad_002c[0x4];
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+};
+
+struct S_004dfbc0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint8_t pad_000c[0x14];
+    uint32_t field_0020;
+};
+
+struct S_004e0130 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_004e03f0 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x7];
+    uint32_t field_0008;
+    uint8_t pad_000c[0xc];
+    uint32_t field_0018;
+    uint8_t pad_001c[0x4];
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint8_t field_002c;
+    uint8_t pad_002d[0x3];
+};
+static_assert(sizeof(S_004e03f0) == 0x30);
+
+struct S_004e0a70 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_004e0c20 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+};
+
+struct S_004e0de0 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_004e1380 {
+    uint8_t pad_0000[0x1c];
+    uint32_t field_001c;
+    uint8_t pad_0020[0x14];
+    uint32_t field_0034;
+};
+
+struct S_004e5640 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x4];
+    uint32_t field_0008;
+};
+
+struct S_004e6b70 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_004e8e00 {
+    uint8_t pad_0000[0x1fc0];
+    uint32_t field_1fc0;
+    uint32_t field_1fc4;
+    uint32_t field_1fc8;
+    uint8_t pad_1fcc[0x4];
+    uint32_t field_1fd0;
+    uint32_t field_1fd4;
+    uint8_t pad_1fd8[0x4];
+    uint32_t field_1fdc;
+};
+
+struct S_004e9090 {
+    uint8_t pad_0000[0x1fb8];
+    uint32_t field_1fb8;
+    uint8_t pad_1fbc[0xc];
+    uint32_t field_1fc8;
+};
+
+struct S_004ef780 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t pad_0010[0xc];
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+};
+
+struct S_004f0cd0 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x4];
+    uint32_t field_0008;
+    uint8_t pad_000c[0x30];
+    float field_003c;
+    uint8_t field_0040;
+};
+
+struct S_004f1210 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_004f1a60 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_004f1f00 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t pad_0010[0x20];
+    uint32_t field_0030;
+    uint32_t field_0034;
+};
+
+struct S_004f21d0 {
+    uint8_t pad_0000[0x4];
+    uint16_t field_0004;
+    uint8_t pad_0006[0xe];
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint32_t field_003c;
+    uint32_t field_0040;
+    uint32_t field_0044;
+    uint32_t field_0048;
+    uint32_t field_004c;
+    uint8_t pad_0050[0x4];
+    uint8_t field_0054;
+    uint8_t pad_0055[0xf];
+    uint32_t field_0064;
+    uint32_t field_0068;
+    uint8_t pad_006c[0x40];
+    uint32_t field_00ac;
+    uint32_t field_00b0;
+    uint32_t field_00b4;
+    uint32_t field_00b8;
+    uint32_t field_00bc;
+    uint8_t field_00c0;
+    uint8_t pad_00c1[0x3];
+    uint32_t field_00c4;
+};
+
+struct S_004f2610 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t pad_0010[0x14];
+    uint32_t field_0024;
+    uint8_t pad_0028[0x24];
+    uint32_t field_004c;
+    uint8_t pad_0050[0x4];
+    uint32_t field_0054;
+    uint8_t pad_0058[0x1];
+    uint8_t field_0059;
+};
+
+struct S_004f36f0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_004f41e0 {
+    uint8_t pad_0000[0x24];
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint8_t field_0034;
+    uint8_t field_0035;
+    uint8_t pad_0036[0x2];
+    uint32_t field_0038;
+    uint32_t field_003c;
+    uint32_t field_0040;
+    uint32_t field_0044;
+};
+
+struct S_004f5420 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint8_t field_0018;
+    uint8_t pad_0019[0x3];
+    uint32_t field_001c;
+    uint8_t field_0020;
+};
+
+struct S_004f6e90 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+};
+
+struct S_004f7d10 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_004fa900 {
+    uint8_t pad_0000[0x10];
+    uint8_t field_0010;
+    uint8_t pad_0011[0x147];
+    uint8_t field_0158;
+    uint8_t pad_0159[0x7];
+    uint32_t field_0160;
+    uint32_t field_0164;
+    uint8_t pad_0168[0x4];
+    uint32_t field_016c;
+    uint8_t pad_0170[0x4];
+    uint32_t field_0174;
+    uint8_t pad_0178[0x14];
+    uint32_t field_018c;
+    uint32_t field_0190;
+};
+
+struct S_004faea0 {
+    uint8_t pad_0000[0xc];
+    uint32_t field_000c;
+    uint8_t field_0010;
+    uint8_t pad_0011[0x7];
+    uint16_t field_0018;
+    uint8_t pad_001a[0x12a];
+    uint32_t field_0144;
+    uint32_t field_0148;
+    uint8_t pad_014c[0x28];
+    uint32_t field_0174;
+};
+
+struct S_004fb710 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x10];
+    uint32_t field_0018;
+    uint8_t pad_001c[0x1c];
+    uint8_t field_0038;
+    uint8_t field_0039;
+};
+
+struct S_004fb820 {
+    uint8_t pad_0000[0x4];
+    uint8_t field_0004;
+    uint8_t pad_0005[0xf];
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint8_t pad_001c[0x4];
+    uint8_t field_0020;
+    uint8_t pad_0021[0xf];
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint8_t field_0038;
+    uint8_t field_0039;
+    uint8_t pad_003a[0x2];
+};
+static_assert(sizeof(S_004fb820) == 0x3c);
+
+struct S_004fc1e0 {
+    uint8_t pad_0000[0x14];
+    uint32_t field_0014;
+    uint8_t pad_0018[0xc];
+    uint32_t field_0024;
+    uint8_t pad_0028[0x4];
+    uint32_t field_002c;
+};
+
+struct S_004fe580 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x1c];
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint8_t pad_002c[0x4];
+    uint32_t field_0030;
+    uint8_t pad_0034[0x8];
+    uint32_t field_003c;
+    uint8_t pad_0040[0x4];
+    uint32_t field_0044;
+    uint8_t pad_0048[0x10];
+    uint8_t field_0058;
+    uint8_t pad_0059[0x5c];
+    uint8_t field_00b5;
+    uint8_t pad_00b6[0x16];
+    uint32_t field_00cc;
+    uint8_t pad_00d0[0x1c];
+    uint32_t field_00ec;
+};
+
+struct S_004ff0f0 {
+    uint8_t pad_0000[0x5c];
+    uint32_t field_005c;
+    uint8_t pad_0060[0x4];
+    uint32_t field_0064;
+    uint8_t pad_0068[0x10];
+    uint32_t field_0078;
+};
+
+struct S_00500350 {
+    uint8_t pad_0000[0xc];
+    uint32_t field_000c;
+    uint8_t pad_0010[0x20];
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint8_t pad_0038[0x24];
+    uint32_t field_005c;
+};
+
+struct S_00503500 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00507790 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x1b];
+    uint32_t field_001c;
+    uint8_t pad_0020[0x34];
+    uint32_t field_0054;
+    uint8_t pad_0058[0x4];
+    uint32_t field_005c;
+};
+
+struct S_005080e0 {
+    uint8_t pad_0000[0x64];
+    uint32_t field_0064;
+};
+
+struct S_00508240 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00508360 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x2f];
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint32_t field_003c;
+    uint8_t pad_0040[0x4];
+    uint32_t field_0044;
+    uint32_t field_0048;
+    uint32_t field_004c;
+    uint8_t pad_0050[0x4];
+    uint32_t field_0054;
+    uint32_t field_0058;
+    uint32_t field_005c;
+};
+
+struct S_0050a2e0 {
+    uint8_t pad_0000[0x4];
+    uint8_t field_0004;
+    uint8_t field_0005;
+    uint8_t field_0006;
+    uint8_t field_0007;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t field_0010;
+    uint8_t pad_0011[0x3];
+    uint32_t field_0014;
+    uint8_t field_0018;
+};
+
+struct S_0050a360 {
+    uint8_t pad_0000[0x4];
+    uint8_t field_0004;
+    uint8_t field_0005;
+    uint8_t field_0006;
+};
+
+struct S_0050a440 {
+    uint8_t pad_0000[0x7];
+    uint8_t field_0007;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t field_0010;
+};
+
+struct S_0050a6c0 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_0050a7c0 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_0050aa20 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint8_t field_0014;
+    uint8_t field_0015;
+    uint8_t pad_0016[0x2];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+};
+
+struct S_0050aac0 {
+    uint8_t pad_0000[0x1c];
+    uint32_t field_001c;
+    uint8_t pad_0020[0x8];
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+};
+
+struct S_0050ab80 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    float field_0010;
+    uint8_t pad_0014[0x1];
+    uint8_t field_0015;
+    uint8_t pad_0016[0x2];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+};
+
+struct S_0050af90 {
+    uint32_t field_0000;
+};
+
+struct S_0050b220 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x280];
+};
+static_assert(sizeof(S_0050b220) == 0x284);
+
+struct S_0050c9f0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0050d0a0 {
+    uint8_t pad_0000[0x1];
+    uint8_t field_0001;
+    uint8_t pad_0002[0x2];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x4];
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint8_t field_0020;
+    uint8_t field_0021;
+    uint8_t pad_0022[0x2];
+    uint32_t field_0024;
+    uint8_t field_0028;
+    uint8_t field_0029;
+    uint8_t field_002a;
+    uint8_t pad_002b[0x1];
+};
+static_assert(sizeof(S_0050d0a0) == 0x2c);
+
+struct S_0050f230 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_0050f2f0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint8_t pad_0008[0xc];
+    uint32_t field_0014;
+    uint8_t pad_0018[0x50];
+    uint32_t field_0068;
+    uint8_t pad_006c[0x8];
+    uint32_t field_0074;
+    uint8_t pad_0078[0x4];
+    uint32_t field_007c;
+    uint32_t field_0080;
+    uint8_t pad_0084[0x28];
+    uint32_t field_00ac;
+    uint32_t field_00b0;
+    uint8_t pad_00b4[0x4];
+    uint32_t field_00b8;
+};
+
+struct S_005139c0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00514aa0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00515e60 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_005170e0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00517800 {
+    uint8_t pad_0000[0x1704];
+    uint32_t field_1704;
+    uint8_t field_1708;
+    uint8_t pad_1709[0x23];
+    uint32_t field_172c;
+    uint8_t pad_1730[0x10];
+    uint32_t field_1740;
+};
+
+struct S_00518780 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x3];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x32];
+    uint8_t field_003a;
+    uint8_t pad_003b[0x5];
+    uint8_t field_0040;
+    uint8_t pad_0041[0x3];
+    uint8_t field_0044;
+    uint8_t pad_0045[0x204];
+    uint8_t field_0249;
+    uint8_t field_024a;
+    uint8_t field_024b;
+};
+
+struct S_00518f00 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint8_t pad_000c[0x10];
+};
+static_assert(sizeof(S_00518f00) == 0x1c);
+
+struct S_00519c10 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_0051a730 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_0051aa70 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0051c1b0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0051f950 {
+    uint8_t pad_0000[0xc];
+    uint32_t field_000c;
+    uint8_t pad_0010[0x4];
+    uint32_t field_0014;
+    uint8_t pad_0018[0x4];
+    uint32_t field_001c;
+    uint8_t pad_0020[0x4];
+    uint32_t field_0024;
+    uint8_t pad_0028[0x4];
+    uint32_t field_002c;
+    uint8_t pad_0030[0x4];
+    uint32_t field_0034;
+    uint8_t pad_0038[0x14];
+    uint32_t field_004c;
+    uint8_t pad_0050[0x4];
+    uint32_t field_0054;
+    uint8_t pad_0058[0x4];
+    uint32_t field_005c;
+    uint8_t pad_0060[0x4];
+    uint32_t field_0064;
+    uint8_t pad_0068[0x4];
+    uint32_t field_006c;
+    uint8_t pad_0070[0x4];
+    uint32_t field_0074;
+    uint8_t pad_0078[0x4];
+    uint32_t field_007c;
+    uint8_t pad_0080[0x4];
+    uint32_t field_0084;
+    uint8_t pad_0088[0x4];
+    uint8_t field_008c;
+    uint8_t pad_008d[0x3];
+    uint32_t field_0090;
+};
+
+struct S_005206d0 {
+    uint8_t pad_0000[0x3c];
+    uint32_t field_003c;
+    uint32_t field_0040;
+    uint32_t field_0044;
+};
+
+struct S_00520ae0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00521df0 {
+    uint8_t pad_0000[0x30];
+    uint32_t field_0030;
+    uint8_t pad_0034[0x4];
+    uint32_t field_0038;
+    uint8_t pad_003c[0x4];
+    uint32_t field_0040;
+    uint8_t pad_0044[0x4];
+    uint32_t field_0048;
+    uint32_t field_004c;
+    uint8_t pad_0050[0x4];
+    uint32_t field_0054;
+    uint8_t pad_0058[0x8];
+    uint32_t field_0060;
+    uint32_t field_0064;
+};
+
+struct S_00522010 {
+    uint8_t pad_0000[0x10];
+    uint32_t field_0010;
+    uint8_t pad_0014[0x4];
+    uint32_t field_0018;
+    uint8_t pad_001c[0x4];
+    uint32_t field_0020;
+    uint8_t pad_0024[0x4];
+    uint32_t field_0028;
+    uint8_t pad_002c[0x4];
+    uint32_t field_0030;
+    uint8_t pad_0034[0x4];
+    uint32_t field_0038;
+    uint8_t pad_003c[0x4];
+    uint32_t field_0040;
+    uint8_t pad_0044[0x4];
+    uint32_t field_0048;
+    uint32_t field_004c;
+    uint8_t pad_0050[0x4];
+    uint32_t field_0054;
+    uint8_t pad_0058[0x10];
+    float field_0068;
+    float field_006c;
+    float field_0070;
+    float field_0074;
+    uint8_t pad_0078[0x1];
+    uint8_t field_0079;
+};
+
+struct S_00522ba0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+};
+
+struct S_00523660 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00523cf0 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_00525f70 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint8_t pad_0014[0x4];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+};
+
+struct S_00526d40 {
+    uint32_t field_0000;
+};
+
+struct S_005282b0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+};
+static_assert(sizeof(S_005282b0) == 0x18);
+
+struct S_00528840 {
+    uint8_t pad_0000[0x4];
+    uint8_t field_0004;
+    uint8_t field_0005;
+    uint8_t pad_0006[0x2];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    float field_0018;
+};
+
+struct S_00532bc0 {
+    uint8_t pad_0000[0x14];
+    uint32_t field_0014;
+    uint32_t field_0018;
+};
+
+struct S_00536500 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x130];
+    uint32_t field_0134;
+    uint32_t field_0138;
+    uint8_t pad_013c[0x5];
+    uint8_t field_0141;
+    uint8_t pad_0142[0x6];
+    uint32_t field_0148;
+    uint32_t field_014c;
+    uint8_t pad_0150[0x122];
+    uint8_t field_0272;
+};
+
+struct S_00536940 {
+    uint8_t pad_0000[0x144];
+    uint32_t field_0144;
+    uint8_t pad_0148[0x3e];
+    uint8_t field_0186;
+    uint8_t pad_0187[0xf1];
+    uint32_t field_0278;
+    uint8_t field_027c;
+};
+
+struct S_00537cd0 {
+    uint8_t pad_0000[0x18];
+    uint32_t field_0018;
+    uint8_t pad_001c[0x118];
+    uint32_t field_0134;
+    uint8_t pad_0138[0xa];
+    uint8_t field_0142;
+    uint8_t pad_0143[0x9];
+    uint32_t field_014c;
+};
+
+struct S_0053b970 {
+    uint8_t pad_0000[0x24];
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint8_t pad_0034[0x4];
+    uint32_t field_0038;
+    uint8_t pad_003c[0x4];
+    uint8_t field_0040;
+};
+
+struct S_00542640 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint8_t field_0008;
+    uint8_t field_0009;
+};
+
+struct S_00542700 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint8_t field_0008;
+    uint8_t field_0009;
+    uint8_t pad_000a[0x6];
+};
+static_assert(sizeof(S_00542700) == 0x10);
+
+struct S_00545430 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00547690 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00548430 {
+    uint8_t pad_0000[0x18];
+    uint32_t field_0018;
+    uint8_t pad_001c[0x28];
+    uint8_t field_0044;
+    uint8_t field_0045;
+    uint8_t field_0046;
+    uint8_t field_0047;
+    uint32_t field_0048;
+    uint8_t pad_004c[0x10];
+    uint32_t field_005c;
+};
+
+struct S_0054a590 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0054afb0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+};
+
+struct S_0054d8e0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_0054ecf0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x1084];
+    uint32_t field_108c;
+    uint32_t field_1090;
+    float field_1094;
+    uint8_t field_1098;
+    uint8_t field_1099;
+    uint8_t field_109a;
+    uint8_t field_109b;
+    float field_109c;
+};
+
+struct S_00551440 {
+    uint8_t pad_0000[0x1444];
+    uint32_t field_1444;
+    uint32_t field_1448;
+    float field_144c;
+    uint8_t pad_1450[0x10];
+    uint8_t field_1460;
+};
+
+struct S_00552b80 {
+    uint8_t pad_0000[0xc8c];
+    uint32_t field_0c8c;
+    uint32_t field_0c90;
+    uint8_t pad_0c94[0x4];
+    uint32_t field_0c98;
+    uint8_t pad_0c9c[0x730];
+    uint32_t field_13cc;
+    uint32_t field_13d0;
+    uint8_t pad_13d4[0x10];
+    uint32_t field_13e4;
+    uint32_t field_13e8;
+    uint32_t field_13ec;
+    uint8_t pad_13f0[0x11];
+    uint8_t field_1401;
+    uint8_t field_1402;
+    uint8_t pad_1403[0x81];
+    uint32_t field_1484;
+    uint8_t pad_1488[0x4];
+    uint8_t field_148c;
+};
+
+struct S_00553680 {
+    uint8_t pad_0000[0x1408];
+    uint32_t field_1408;
+    uint32_t field_140c;
+    uint8_t pad_1410[0x4];
+    uint32_t field_1414;
+    uint32_t field_1418;
+};
+
+struct S_00553fa0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00555390 {
+    uint8_t pad_0000[0xc8c];
+    uint32_t field_0c8c;
+    uint8_t pad_0c90[0xd];
+    uint8_t field_0c9d;
+    uint8_t pad_0c9e[0x805];
+    uint8_t field_14a3;
+};
+
+struct S_00555e40 {
+    uint8_t pad_0000[0xc88];
+    uint32_t field_0c88;
+    uint32_t field_0c8c;
+    uint8_t pad_0c90[0x7a4];
+    float field_1434;
+    uint8_t pad_1438[0x4c];
+    uint32_t field_1484;
+    uint8_t pad_1488[0x18];
+    uint8_t field_14a0;
+    uint8_t field_14a1;
+    uint8_t pad_14a2[0x6];
+    uint32_t field_14a8;
+};
+
+struct S_005587c0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_005594b0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00559d90 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0055af00 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint32_t field_003c;
+    uint32_t field_0040;
+    uint32_t field_0044;
+    uint32_t field_0048;
+    uint32_t field_004c;
+    uint32_t field_0050;
+    uint32_t field_0054;
+    uint32_t field_0058;
+    uint32_t field_005c;
+    uint32_t field_0060;
+    uint32_t field_0064;
+    uint32_t field_0068;
+    uint32_t field_006c;
+    uint32_t field_0070;
+    uint32_t field_0074;
+    uint32_t field_0078;
+    uint32_t field_007c;
+    uint32_t field_0080;
+    uint32_t field_0084;
+    uint32_t field_0088;
+    uint32_t field_008c;
+    uint32_t field_0090;
+    uint32_t field_0094;
+    uint32_t field_0098;
+    uint32_t field_009c;
+    uint32_t field_00a0;
+    uint32_t field_00a4;
+    uint32_t field_00a8;
+    uint32_t field_00ac;
+    uint32_t field_00b0;
+    uint32_t field_00b4;
+    uint32_t field_00b8;
+    uint32_t field_00bc;
+    uint32_t field_00c0;
+    uint32_t field_00c4;
+    uint32_t field_00c8;
+    uint32_t field_00cc;
+    uint32_t field_00d0;
+    uint32_t field_00d4;
+    uint32_t field_00d8;
+    uint32_t field_00dc;
+    uint32_t field_00e0;
+    uint32_t field_00e4;
+    uint32_t field_00e8;
+    uint32_t field_00ec;
+    uint32_t field_00f0;
+    uint32_t field_00f4;
+    uint32_t field_00f8;
+    uint32_t field_00fc;
+    uint32_t field_0100;
+    uint32_t field_0104;
+    uint32_t field_0108;
+    uint32_t field_010c;
+    uint32_t field_0110;
+    uint32_t field_0114;
+    uint32_t field_0118;
+    uint32_t field_011c;
+    uint32_t field_0120;
+    uint32_t field_0124;
+    uint32_t field_0128;
+    uint32_t field_012c;
+    uint32_t field_0130;
+    uint32_t field_0134;
+    uint32_t field_0138;
+    uint32_t field_013c;
+    uint32_t field_0140;
+    uint32_t field_0144;
+    uint32_t field_0148;
+    uint32_t field_014c;
+    uint32_t field_0150;
+    uint32_t field_0154;
+    uint32_t field_0158;
+    uint32_t field_015c;
+    uint32_t field_0160;
+    uint32_t field_0164;
+    uint32_t field_0168;
+    uint32_t field_016c;
+    uint32_t field_0170;
+    uint32_t field_0174;
+    uint32_t field_0178;
+    uint32_t field_017c;
+    uint32_t field_0180;
+    uint32_t field_0184;
+    uint32_t field_0188;
+    uint32_t field_018c;
+    uint32_t field_0190;
+    uint32_t field_0194;
+    uint32_t field_0198;
+    uint32_t field_019c;
+    uint32_t field_01a0;
+    uint32_t field_01a4;
+    uint32_t field_01a8;
+    uint32_t field_01ac;
+    uint32_t field_01b0;
+    uint32_t field_01b4;
+    uint32_t field_01b8;
+    uint32_t field_01bc;
+    uint32_t field_01c0;
+    uint32_t field_01c4;
+    uint32_t field_01c8;
+    uint32_t field_01cc;
+    uint32_t field_01d0;
+    uint32_t field_01d4;
+    uint32_t field_01d8;
+    uint32_t field_01dc;
+    uint8_t field_01e0;
+    uint8_t field_01e1;
+    uint8_t pad_01e2[0x2];
+    uint32_t field_01e4;
+    uint32_t field_01e8;
+    uint32_t field_01ec;
+    uint32_t field_01f0;
+    uint32_t field_01f4;
+    uint32_t field_01f8;
+    uint32_t field_01fc;
+    uint32_t field_0200;
+    uint32_t field_0204;
+    uint32_t field_0208;
+    uint32_t field_020c;
+    uint32_t field_0210;
+    uint8_t field_0214;
+    uint8_t pad_0215[0x3];
+    uint32_t field_0218;
+    uint32_t field_021c;
+    uint32_t field_0220;
+    uint32_t field_0224;
+    uint32_t field_0228;
+};
+
+struct S_0055c780 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x1c];
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint8_t pad_0030[0x4];
+    uint8_t field_0034;
+    uint8_t pad_0035[0x7];
+    uint8_t field_003c;
+    uint8_t pad_003d[0x31];
+    uint8_t field_006e;
+    uint8_t pad_006f[0x211];
+    uint32_t field_0280;
+};
+
+struct S_0055ef30 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x10];
+    uint32_t field_0014;
+    uint8_t pad_0018[0x1c];
+    uint8_t field_0034;
+    uint8_t pad_0035[0x7];
+    uint32_t field_003c;
+    uint8_t pad_0040[0xc];
+    uint32_t field_004c;
+};
+
+struct S_0055f720 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x38];
+    uint32_t field_003c;
+};
+
+struct S_0055f7e0 {
+    uint8_t pad_0000[0x18];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint8_t pad_002c[0x1c];
+    uint8_t field_0048;
+};
+
+struct S_005600a0 {
+    uint8_t pad_0000[0x24];
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint8_t pad_0038[0x8];
+    uint32_t field_0040;
+    uint8_t pad_0044[0x30];
+    uint32_t field_0074;
+    uint32_t field_0078;
+    uint32_t field_007c;
+    uint32_t field_0080;
+    uint32_t field_0084;
+    uint32_t field_0088;
+    uint32_t field_008c;
+    uint32_t field_0090;
+    uint32_t field_0094;
+    uint32_t field_0098;
+    uint32_t field_009c;
+    uint32_t field_00a0;
+    uint8_t pad_00a4[0x4];
+    uint32_t field_00a8;
+    uint32_t field_00ac;
+};
+
+struct S_00691860 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x4];
+    uint32_t field_000c;
+    uint8_t pad_0010[0x4];
+    uint32_t field_0014;
+};
+
+struct S_00692b10 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t pad_0010[0x4];
+    uint8_t field_0014;
+    uint8_t field_0015;
+    uint8_t pad_0016[0x2];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+};
+static_assert(sizeof(S_00692b10) == 0x3c);
+
+struct S_00692b80 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x7];
+    uint8_t field_000b;
+};
+
+struct S_00693740 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint8_t pad_0008[0x4];
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint8_t field_0014;
+    uint8_t field_0015;
+    uint8_t pad_0016[0x6];
+    uint32_t field_001c;
+    uint8_t pad_0020[0x4];
+    uint32_t field_0024;
+    uint8_t pad_0028[0x4];
+    uint32_t field_002c;
+    uint8_t pad_0030[0x4];
+    uint32_t field_0034;
+};
+
+struct S_00693ad0 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x7];
+    uint8_t field_000b;
+};
+static_assert(sizeof(S_00693ad0) == 0xc);
+
+struct S_00694180 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x10];
+    uint8_t field_0014;
+    uint8_t pad_0015[0xf];
+    uint32_t field_0024;
+    uint8_t pad_0028[0xc];
+    uint32_t field_0034;
+};
+
+struct S_00694cd0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+};
+
+struct S_006959b0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_00696af0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x10];
+    uint32_t field_0018;
+};
+
+struct S_00698270 {
+    uint8_t field_0000;
+    uint8_t field_0001;
+    uint8_t field_0002;
+    uint8_t pad_0003[0x5];
+    uint8_t field_0008;
+    uint8_t pad_0009[0xf];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint8_t pad_0030[0x4];
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint32_t field_003c;
+    uint8_t field_0040;
+    uint8_t field_0041;
+    uint8_t pad_0042[0x2];
+    uint32_t field_0044;
+    uint32_t field_0048;
+    uint32_t field_004c;
+    uint8_t pad_0050[0x4];
+    uint32_t field_0054;
+    uint32_t field_0058;
+    uint32_t field_005c;
+    uint32_t field_0060;
+    uint32_t field_0064;
+    uint8_t field_0068;
+    uint8_t pad_0069[0x3];
+};
+static_assert(sizeof(S_00698270) == 0x6c);
+
+struct S_00698c10 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x14];
+    uint32_t field_0018;
+    uint32_t field_001c;
+};
+
+struct S_00699250 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00699370 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0069a8a0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+};
+
+struct S_0069abf0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_0069ad30 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+static_assert(sizeof(S_0069ad30) == 0xc);
+
+struct S_0069ad60 {
+    uint8_t pad_0000[0x78];
+    uint32_t field_0078;
+    uint32_t field_007c;
+};
+
+struct S_0069afd0 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x27];
+    uint8_t field_0028;
+    uint8_t field_0029;
+    uint8_t pad_002a[0x2];
+};
+static_assert(sizeof(S_0069afd0) == 0x2c);
+
+struct S_0069afe0 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x3];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x8];
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint8_t pad_0020[0x4];
+    uint32_t field_0024;
+    uint8_t pad_0028[0x4];
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint8_t pad_0038[0x4];
+    uint32_t field_003c;
+    uint8_t field_0040;
+};
+
+struct S_0069b1c0 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x3];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint8_t pad_0014[0x4];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint8_t pad_0020[0xc];
+    uint32_t field_002c;
+    uint8_t pad_0030[0x4];
+    uint32_t field_0034;
+    uint8_t pad_0038[0x4];
+    uint32_t field_003c;
+};
+
+struct S_0069bd20 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_0069d0f0 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x3];
+    uint32_t field_0004;
+};
+
+struct S_0069e460 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t field_0010;
+    uint8_t pad_0011[0x3];
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint8_t field_001c;
+    uint8_t pad_001d[0xf];
+};
+static_assert(sizeof(S_0069e460) == 0x2c);
+
+struct S_0069e480 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t field_0010;
+    uint8_t pad_0011[0x3];
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint8_t field_001c;
+    uint8_t pad_001d[0x3];
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+};
+
+struct S_0069f1e0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0069f3b0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint8_t pad_000c[0x4];
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint8_t pad_001c[0x4];
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint8_t field_003c;
+    uint8_t pad_003d[0x3];
+    uint32_t field_0040;
+};
+static_assert(sizeof(S_0069f3b0) == 0x44);
+
+struct S_006a30a0 {
+    uint32_t field_0000;
+};
+static_assert(sizeof(S_006a30a0) == 0x4);
+
+struct S_006a7520 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t pad_0010[0x8];
+    uint32_t field_0018;
+    uint8_t pad_001c[0x1c];
+    uint32_t field_0038;
+    uint8_t pad_003c[0x54];
+    uint32_t field_0090;
+    uint8_t pad_0094[0x21c];
+    uint32_t field_02b0;
+    uint8_t pad_02b4[0x6c];
+    uint32_t field_0320;
+    uint32_t field_0324;
+    uint8_t pad_0328[0xc];
+    uint8_t field_0334;
+};
+
+struct S_006a7640 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x4];
+    uint32_t field_0008;
+    uint8_t pad_000c[0x14];
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint8_t pad_002c[0x8];
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint8_t pad_003c[0x54];
+    uint32_t field_0090;
+    uint8_t pad_0094[0x21c];
+    uint32_t field_02b0;
+    uint8_t pad_02b4[0x14];
+    uint8_t field_02c8;
+};
+
+struct S_006a8940 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x4];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint8_t pad_0018[0x14];
+    uint32_t field_002c;
+    uint8_t pad_0030[0x50];
+    uint32_t field_0080;
+    uint8_t pad_0084[0xc];
+    uint32_t field_0090;
+    uint8_t pad_0094[0x21c];
+    uint32_t field_02b0;
+    uint8_t pad_02b4[0x74];
+    uint32_t field_0328;
+    uint8_t pad_032c[0x8];
+    uint8_t field_0334;
+};
+
+struct S_006a9be0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x20];
+    uint32_t field_0028;
+    uint8_t pad_002c[0xc];
+    uint32_t field_0038;
+};
+
+struct S_006aaae0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x4];
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint8_t pad_0014[0x14];
+    uint32_t field_0028;
+    float field_002c;
+    uint32_t field_0030;
+};
+
+struct S_006abb80 {
+    float field_0000;
+    float field_0004;
+    float field_0008;
+    float field_000c;
+    float field_0010;
+    float field_0014;
+    float field_0018;
+    float field_001c;
+    float field_0020;
+    float field_0024;
+    float field_0028;
+    float field_002c;
+    float field_0030;
+    float field_0034;
+    float field_0038;
+};
+
+struct S_006ac7b0 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_006ada10 {
+    uint32_t field_0000;
+};
+
+struct S_006adb40 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x4];
+    float field_0008;
+};
+
+struct S_006add20 {
+    uint32_t field_0000;
+};
+
+struct S_006ae570 {
+    float field_0000;
+    float field_0004;
+};
+
+struct S_006aef40 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x4];
+    uint32_t field_000c;
+    uint8_t pad_0010[0x4];
+    uint32_t field_0014;
+    uint8_t pad_0018[0x1c];
+    uint32_t field_0034;
+    uint8_t pad_0038[0xc];
+    float field_0044;
+    float field_0048;
+    float field_004c;
+    uint32_t field_0050;
+    uint32_t field_0054;
+};
+
+struct S_006b0320 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint8_t pad_0020[0x48];
+    uint8_t field_0068;
+    uint8_t field_0069;
+};
+
+struct S_006b1450 {
+    uint8_t pad_0000[0x30];
+    uint32_t field_0030;
+    uint8_t pad_0034[0x18];
+    uint32_t field_004c;
+    uint8_t field_0050;
+    uint8_t pad_0051[0xb];
+    uint32_t field_005c;
+};
+
+struct S_006b30b0 {
+    uint8_t pad_0000[0xc];
+    uint32_t field_000c;
+    uint8_t pad_0010[0x8];
+    uint32_t field_0018;
+    uint16_t field_001c;
+    uint8_t pad_001e[0xa];
+    uint32_t field_0028;
+    uint8_t pad_002c[0x38];
+    uint32_t field_0064;
+    uint8_t pad_0068[0x8];
+    float field_0070;
+    float field_0074;
+    float field_0078;
+};
+
+struct S_006b4df0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_006b59f0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_006b6be0 {
+    uint8_t pad_0000[0x10];
+    uint32_t field_0010;
+    uint8_t pad_0014[0x13];
+    uint8_t field_0027;
+};
+
+struct S_006b6cf0 {
+    uint8_t pad_0000[0x10];
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint8_t pad_0020[0x4];
+    uint8_t field_0024;
+    uint8_t field_0025;
+};
+
+struct S_006b8020 {
+    uint8_t pad_0000[0x10];
+    uint32_t field_0010;
+};
+
+struct S_006b9130 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_006b9580 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_006bc310 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x84];
+    uint8_t field_008c;
+    uint8_t pad_008d[0x3];
+    uint8_t field_0090;
+    uint8_t field_0091;
+    uint8_t pad_0092[0x2];
+    uint32_t field_0094;
+    uint32_t field_0098;
+    uint32_t field_009c;
+    uint8_t pad_00a0[0x4];
+    uint8_t field_00a4;
+    uint8_t pad_00a5[0xb];
+    uint32_t field_00b0;
+    uint8_t pad_00b4[0xdc];
+    uint32_t field_0190;
+};
+
+struct S_006be440 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_006be550 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_006c2000 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x20];
+};
+static_assert(sizeof(S_006c2000) == 0x24);
+
+struct S_006c20f0 {
+    uint32_t field_0000;
+};
+
+struct S_006c3320 {
+    uint32_t field_0000;
+};
+
+struct S_006c3820 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x4];
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint8_t pad_0014[0x4];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint8_t pad_0020[0xc];
+    uint8_t field_002c;
+};
+
+struct S_006c5cd0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint8_t pad_000c[0x20];
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint8_t pad_0034[0x4];
+    uint32_t field_0038;
+    uint8_t pad_003c[0x4];
+    uint32_t field_0040;
+    uint8_t pad_0044[0x4];
+    uint32_t field_0048;
+    uint8_t pad_004c[0x4];
+    uint32_t field_0050;
+    uint8_t pad_0054[0x4];
+    uint32_t field_0058;
+    uint8_t pad_005c[0x4];
+    uint32_t field_0060;
+    uint8_t pad_0064[0x4];
+    uint32_t field_0068;
+    uint8_t pad_006c[0x4];
+    uint32_t field_0070;
+    uint8_t pad_0074[0x4];
+    uint32_t field_0078;
+    uint8_t pad_007c[0x4];
+    uint32_t field_0080;
+    uint8_t pad_0084[0x4];
+    uint32_t field_0088;
+    uint8_t pad_008c[0x4];
+    uint32_t field_0090;
+    uint8_t pad_0094[0x4];
+    uint32_t field_0098;
+    uint8_t pad_009c[0x4];
+    uint32_t field_00a0;
+    uint8_t pad_00a4[0x4];
+    uint32_t field_00a8;
+    uint8_t pad_00ac[0x4];
+    uint32_t field_00b0;
+    uint8_t pad_00b4[0x4];
+    uint32_t field_00b8;
+    uint8_t pad_00bc[0xc];
+    uint32_t field_00c8;
+    uint8_t pad_00cc[0xc];
+    uint32_t field_00d8;
+    uint8_t pad_00dc[0x4];
+    uint32_t field_00e0;
+    uint8_t pad_00e4[0x4];
+    uint32_t field_00e8;
+    uint8_t pad_00ec[0x4];
+    uint32_t field_00f0;
+    uint8_t pad_00f4[0x1];
+    uint8_t field_00f5;
+    uint8_t pad_00f6[0x1a];
+    uint32_t field_0110;
+    uint8_t pad_0114[0x4];
+    uint32_t field_0118;
+    uint32_t field_011c;
+    uint32_t field_0120;
+};
+
+struct S_006c6dc0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_006c8800 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t pad_0010[0x14];
+    float field_0024;
+    uint8_t pad_0028[0x4];
+    uint8_t field_002c;
+    uint8_t field_002d;
+    uint8_t pad_002e[0x2];
+    uint32_t field_0030;
+};
+
+struct S_006c9710 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_006ca6f0 {
+    uint8_t pad_0000[0x2c];
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint8_t pad_0034[0x78];
+    uint32_t field_00ac;
+};
+
+struct S_006cb160 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t pad_0010[0x5c];
+    uint32_t field_006c;
+    uint32_t field_0070;
+    uint32_t field_0074;
+    uint8_t pad_0078[0x24];
+    uint32_t field_009c;
+    uint32_t field_00a0;
+    uint32_t field_00a4;
+    uint32_t field_00a8;
+    uint32_t field_00ac;
+    uint32_t field_00b0;
+    uint32_t field_00b4;
+    uint32_t field_00b8;
+    uint32_t field_00bc;
+    uint8_t pad_00c0[0x30];
+};
+static_assert(sizeof(S_006cb160) == 0xf0);
+
+struct S_006cbc80 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t pad_0010[0x5b];
+    uint8_t field_006b;
+    uint8_t field_006c;
+    uint8_t pad_006d[0x7];
+    uint32_t field_0074;
+    uint8_t pad_0078[0x4];
+    uint32_t field_007c;
+    uint8_t pad_0080[0x14];
+    uint8_t field_0094;
+    uint8_t field_0095;
+    uint8_t pad_0096[0x2e];
+    uint32_t field_00c4;
+    uint8_t pad_00c8[0x2c];
+    uint32_t field_00f4;
+};
+
+struct S_006cc4f0 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint8_t pad_000c[0x58];
+    uint32_t field_0064;
+    uint8_t pad_0068[0x3];
+    uint8_t field_006b;
+    uint8_t pad_006c[0x4];
+    uint32_t field_0070;
+    uint32_t field_0074;
+    uint8_t pad_0078[0x4];
+    uint32_t field_007c;
+    uint8_t pad_0080[0x4];
+    uint32_t field_0084;
+    uint32_t field_0088;
+    uint32_t field_008c;
+    uint8_t pad_0090[0x4];
+    uint8_t field_0094;
+    uint8_t pad_0095[0xb];
+    uint32_t field_00a0;
+    uint8_t pad_00a4[0x4];
+    uint32_t field_00a8;
+    uint8_t pad_00ac[0x10];
+    uint32_t field_00bc;
+    uint8_t pad_00c0[0x10];
+    uint32_t field_00d0;
+    uint8_t pad_00d4[0x14];
+    uint32_t field_00e8;
+    uint8_t pad_00ec[0x8];
+    uint32_t field_00f4;
+};
+
+struct S_006cd2d0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_006cec60 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_006cee30 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+};
+
+struct S_006d10c0 {
+    uint8_t pad_0000[0x19];
+    uint8_t field_0019;
+    uint8_t field_001a;
+    uint8_t pad_001b[0x15];
+    uint32_t field_0030;
+};
+
+struct S_006d2390 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x7];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint8_t pad_0014[0x4];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint8_t pad_0024[0x4];
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint8_t field_003c;
+};
+
+struct S_006d24a0 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x3];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint8_t pad_0018[0x4];
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint8_t pad_0030[0x4];
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint8_t pad_003c[0x4];
+    uint32_t field_0040;
+    uint8_t field_0044;
+    uint8_t pad_0045[0x7f];
+    uint32_t field_00c4;
+    uint32_t field_00c8;
+    uint32_t field_00cc;
+    uint32_t field_00d0;
+    uint8_t pad_00d4[0x4];
+    uint32_t field_00d8;
+    uint32_t field_00dc;
+    uint32_t field_00e0;
+    uint8_t pad_00e4[0x4];
+    uint32_t field_00e8;
+    uint32_t field_00ec;
+    uint32_t field_00f0;
+    uint32_t field_00f4;
+    uint32_t field_00f8;
+    uint8_t pad_00fc[0x4];
+    uint32_t field_0100;
+    uint32_t field_0104;
+    uint32_t field_0108;
+    uint32_t field_010c;
+};
+
+struct S_006d4160 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_006d4450 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x4];
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_006d5390 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_006d5c90 {
+    uint8_t pad_0000[0x90];
+    uint32_t field_0090;
+    uint32_t field_0094;
+    uint32_t field_0098;
+};
+
+struct S_006d6800 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x38];
+    uint32_t field_003c;
+    uint8_t pad_0040[0x14];
+    uint32_t field_0054;
+    uint8_t pad_0058[0x4];
+    uint32_t field_005c;
+    uint8_t pad_0060[0x78];
+    uint8_t field_00d8;
+    uint8_t pad_00d9[0x1];
+    uint8_t field_00da;
+};
+
+struct S_006d69e0 {
+    uint8_t pad_0000[0x64];
+    uint32_t field_0064;
+    uint8_t pad_0068[0x4];
+    uint32_t field_006c;
+};
+
+struct S_006d7c80 {
+    uint8_t pad_0000[0xa4];
+    uint32_t field_00a4;
+    uint8_t pad_00a8[0x10];
+    uint32_t field_00b8;
+    uint8_t pad_00bc[0x4];
+    uint32_t field_00c0;
+    uint8_t pad_00c4[0x28];
+    uint32_t field_00ec;
+};
+
+struct S_006d8dc0 {
+    uint8_t pad_0000[0xa4];
+    uint32_t field_00a4;
+    uint32_t field_00a8;
+    uint8_t pad_00ac[0x4];
+    uint32_t field_00b0;
+    uint8_t pad_00b4[0x34];
+    uint32_t field_00e8;
+    uint8_t pad_00ec[0xc];
+    uint32_t field_00f8;
+    uint8_t pad_00fc[0x4];
+    uint32_t field_0100;
+    uint8_t pad_0104[0x8];
+    uint32_t field_010c;
+    uint32_t field_0110;
+    uint8_t pad_0114[0x4];
+    uint8_t field_0118;
+    uint8_t pad_0119[0x1f];
+    uint32_t field_0138;
+};
+
+struct S_006d8f80 {
+    uint8_t pad_0000[0xa4];
+    uint32_t field_00a4;
+    uint8_t pad_00a8[0x30];
+    uint32_t field_00d8;
+    uint8_t pad_00dc[0x4];
+    uint32_t field_00e0;
+    uint8_t pad_00e4[0x10];
+    uint32_t field_00f4;
+};
+
+struct S_006dc750 {
+    uint8_t pad_0000[0x5c];
+    uint32_t field_005c;
+};
+
+struct S_006dcf90 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint32_t field_003c;
+    uint32_t field_0040;
+    uint32_t field_0044;
+    uint32_t field_0048;
+    uint32_t field_004c;
+    uint32_t field_0050;
+    uint32_t field_0054;
+    uint32_t field_0058;
+    uint32_t field_005c;
+    uint32_t field_0060;
+    uint32_t field_0064;
+    uint32_t field_0068;
+    uint32_t field_006c;
+    uint8_t field_0070;
+    uint8_t pad_0071[0x3];
+    uint32_t field_0074;
+    uint32_t field_0078;
+    uint32_t field_007c;
+    uint32_t field_0080;
+    uint32_t field_0084;
+    uint32_t field_0088;
+    uint32_t field_008c;
+    uint32_t field_0090;
+    uint32_t field_0094;
+    uint32_t field_0098;
+    uint32_t field_009c;
+    uint32_t field_00a0;
+    uint32_t field_00a4;
+    uint32_t field_00a8;
+    uint32_t field_00ac;
+    uint32_t field_00b0;
+    uint32_t field_00b4;
+    uint32_t field_00b8;
+    uint8_t field_00bc;
+    uint8_t pad_00bd[0x3];
+    uint32_t field_00c0;
+    uint32_t field_00c4;
+    uint32_t field_00c8;
+    uint32_t field_00cc;
+    uint32_t field_00d0;
+    uint32_t field_00d4;
+    uint32_t field_00d8;
+    uint32_t field_00dc;
+    uint32_t field_00e0;
+    uint32_t field_00e4;
+    uint32_t field_00e8;
+    uint32_t field_00ec;
+    uint32_t field_00f0;
+    uint32_t field_00f4;
+    uint32_t field_00f8;
+    uint32_t field_00fc;
+    uint32_t field_0100;
+    uint8_t field_0104;
+    uint8_t pad_0105[0x3];
+    uint32_t field_0108;
+    uint32_t field_010c;
+    uint32_t field_0110;
+    uint32_t field_0114;
+    uint32_t field_0118;
+    uint32_t field_011c;
+    uint32_t field_0120;
+    uint32_t field_0124;
+    uint32_t field_0128;
+    uint32_t field_012c;
+    uint32_t field_0130;
+    uint32_t field_0134;
+    uint32_t field_0138;
+    uint32_t field_013c;
+    uint32_t field_0140;
+    uint32_t field_0144;
+    uint32_t field_0148;
+    uint32_t field_014c;
+    uint32_t field_0150;
+};
+static_assert(sizeof(S_006dcf90) == 0x154);
+
+struct S_006de5b0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_006deed0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_006dfeb0 {
+    uint8_t pad_0000[0x14];
+    uint32_t field_0014;
+    uint8_t pad_0018[0x4];
+    uint32_t field_001c;
+    uint8_t pad_0020[0x4];
+    uint32_t field_0024;
+    uint8_t pad_0028[0x4];
+    uint32_t field_002c;
+    uint8_t pad_0030[0x14];
+    uint32_t field_0044;
+    uint32_t field_0048;
+    uint8_t field_004c;
+    uint8_t pad_004d[0x7];
+    uint32_t field_0054;
+};
+
+struct S_006e20e0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_006e2150 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_006e2b30 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint8_t field_001c;
+    uint8_t field_001d;
+    uint8_t field_001e;
+    uint8_t field_001f;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint32_t field_003c;
+    uint32_t field_0040;
+};
+static_assert(sizeof(S_006e2b30) == 0x44);
+
+struct S_006e2d10 {
+    uint32_t field_0000;
+    uint8_t field_0004;
+    uint8_t pad_0005[0x37];
+    uint32_t field_003c;
+};
+static_assert(sizeof(S_006e2d10) == 0x40);
+
+struct S_006e3740 {
+    uint32_t field_0000;
+    uint8_t field_0004;
+    uint8_t field_0005;
+};
+
+struct S_006e48a0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    float field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    float field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint8_t field_003c;
+    uint8_t pad_003d[0x3];
+};
+static_assert(sizeof(S_006e48a0) == 0x40);
+
+struct S_006e6100 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x8];
+    uint32_t field_000c;
+    uint32_t field_0010;
+    uint8_t pad_0014[0x4];
+    uint8_t field_0018;
+    uint8_t field_0019;
+    uint8_t pad_001a[0x1a];
+    uint32_t field_0034;
+    uint32_t field_0038;
+    uint8_t pad_003c[0x4];
+    uint32_t field_0040;
+};
+
+struct S_006ebe90 {
+    uint8_t pad_0000[0x4];
+    uint8_t field_0004;
+};
+
+struct S_006f6330 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x4];
+    uint32_t field_0008;
+    uint8_t pad_000c[0x5d];
+    uint8_t field_0069;
+    uint8_t field_006a;
+};
+
+struct S_006f8ce0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_006fdbb0 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0xc4];
+    uint32_t field_00c8;
+    uint8_t pad_00cc[0x4];
+    uint32_t field_00d0;
+    uint8_t pad_00d4[0x4];
+    uint32_t field_00d8;
+    uint8_t pad_00dc[0x4];
+    uint32_t field_00e0;
+    uint8_t pad_00e4[0xc];
+    uint32_t field_00f0;
+    uint32_t field_00f4;
+    uint32_t field_00f8;
+};
+
+struct S_006fde00 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint8_t pad_000c[0xac];
+    uint32_t field_00b8;
+    uint8_t pad_00bc[0x4];
+    uint8_t field_00c0;
+    uint8_t pad_00c1[0x3];
+    uint32_t field_00c4;
+};
+
+struct S_006fdf70 {
+    uint32_t field_0000;
+    uint8_t field_0004;
+    uint8_t pad_0005[0x97];
+    uint8_t field_009c;
+    uint8_t pad_009d[0xf];
+    uint32_t field_00ac;
+    uint32_t field_00b0;
+    uint8_t pad_00b4[0x4];
+    uint32_t field_00b8;
+    uint8_t field_00bc;
+    uint8_t pad_00bd[0xb];
+};
+static_assert(sizeof(S_006fdf70) == 0xc8);
+
+struct S_006fdfe0 {
+    uint32_t field_0000;
+    uint8_t field_0004;
+    uint8_t pad_0005[0x3];
+    uint32_t field_0008;
+    uint8_t pad_000c[0x34];
+    uint32_t field_0040;
+    uint8_t pad_0044[0xc];
+    uint32_t field_0050;
+    uint32_t field_0054;
+    uint8_t pad_0058[0x44];
+    uint32_t field_009c;
+    uint8_t pad_00a0[0xc];
+    uint32_t field_00ac;
+    uint32_t field_00b0;
+    uint8_t pad_00b4[0x4];
+    uint32_t field_00b8;
+    uint8_t field_00bc;
+};
+
+struct S_006fe0c0 {
+    uint32_t field_0000;
+    uint8_t field_0004;
+    uint8_t pad_0005[0x3];
+    uint32_t field_0008;
+    uint8_t pad_000c[0xbc];
+    uint32_t field_00c8;
+    uint8_t field_00cc;
+    uint8_t pad_00cd[0x3];
+    uint32_t field_00d0;
+    uint8_t field_00d4;
+    uint8_t pad_00d5[0x3];
+    uint32_t field_00d8;
+    uint8_t pad_00dc[0x10];
+    uint32_t field_00ec;
+    uint32_t field_00f0;
+    uint32_t field_00f4;
+    uint32_t field_00f8;
+    uint32_t field_00fc;
+    uint32_t field_0100;
+    uint32_t field_0104;
+};
+
+struct S_006ff7e0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x9];
+    uint8_t field_0011;
+    uint8_t pad_0012[0x12];
+    uint32_t field_0024;
+};
+
+struct S_007010e0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint8_t pad_0010[0x18];
+    uint32_t field_0028;
+    uint8_t field_002c;
+};
+
+struct S_007013b0 {
+    uint8_t pad_0000[0x8];
+    uint32_t field_0008;
+    uint8_t pad_000c[0xc];
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint8_t pad_0020[0x14];
+    uint32_t field_0034;
+};
+
+struct S_00701d40 {
+    uint8_t pad_0000[0xc];
+    uint32_t field_000c;
+    uint8_t pad_0010[0x4];
+    uint32_t field_0014;
+};
+
+struct S_007030d0 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0xc];
+    uint32_t field_0010;
+};
+
+struct S_00703300 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0xc];
+    uint32_t field_0010;
+};
+
+struct S_00703360 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint8_t pad_000c[0x8];
+    uint32_t field_0014;
+};
+
+struct S_00705300 {
+    uint8_t pad_0000[0x10];
+    uint32_t field_0010;
+    float field_0014;
+    float field_0018;
+    float field_001c;
+    float field_0020;
+    float field_0024;
+    float field_0028;
+    float field_002c;
+    uint8_t field_0030;
+    uint8_t field_0031;
+    uint8_t field_0032;
+    uint8_t field_0033;
+    uint8_t field_0034;
+    uint8_t field_0035;
+    uint8_t field_0036;
+    uint8_t field_0037;
+    float field_0038;
+};
+
+struct S_0070cd40 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0xcc];
+    uint32_t field_00d0;
+};
+
+struct S_0070d0e0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_0070e170 {
+    uint32_t field_0000;
+    float field_0004;
+    float field_0008;
+    float field_000c;
+    uint32_t field_0010;
+    uint32_t field_0014;
+    uint32_t field_0018;
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint32_t field_0028;
+    uint32_t field_002c;
+    float field_0030;
+    uint32_t field_0034;
+    uint8_t field_0038;
+    uint8_t field_0039;
+    uint8_t field_003a;
+    uint8_t field_003b;
+    uint32_t field_003c;
+    uint8_t field_0040;
+    uint8_t field_0041;
+    uint8_t pad_0042[0x1];
+    uint8_t field_0043;
+    uint8_t field_0044;
+    uint8_t field_0045;
+    uint8_t field_0046;
+};
+
+struct S_00714d10 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_0071af10 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_007238e0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_007243b0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00727f90 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0072bad0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00730980 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_007309b0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_007337a0 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x4];
+    uint32_t field_0008;
+    uint8_t pad_000c[0x8];
+    uint32_t field_0014;
+    uint8_t pad_0018[0x40];
+    uint32_t field_0058;
+    uint8_t pad_005c[0x4];
+    uint32_t field_0060;
+    uint8_t pad_0064[0x4];
+    uint32_t field_0068;
+    uint8_t pad_006c[0x4];
+    uint32_t field_0070;
+    uint8_t pad_0074[0x28];
+    uint32_t field_009c;
+    uint8_t pad_00a0[0x4];
+    uint32_t field_00a4;
+    uint8_t pad_00a8[0x10];
+    uint32_t field_00b8;
+    uint32_t field_00bc;
+    uint8_t pad_00c0[0x10];
+    uint32_t field_00d0;
+    uint32_t field_00d4;
+};
+
+struct S_0073b580 {
+    uint8_t pad_0000[0x4];
+    uint8_t field_0004;
+    uint8_t pad_0005[0xb];
+    float field_0010;
+    float field_0014;
+    float field_0018;
+    float field_001c;
+    uint8_t pad_0020[0x4];
+    uint32_t field_0024;
+};
+
+struct S_0073c380 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint8_t pad_000c[0x4];
+    uint16_t field_0010;
+    uint8_t pad_0012[0xe];
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint8_t pad_0028[0x4];
+    uint16_t field_002c;
+    uint8_t pad_002e[0xe];
+    uint32_t field_003c;
+    uint32_t field_0040;
+    uint8_t pad_0044[0x4];
+    uint16_t field_0048;
+    uint8_t pad_004a[0xe];
+    uint32_t field_0058;
+    uint32_t field_005c;
+    uint8_t pad_0060[0x4];
+    uint16_t field_0064;
+    uint8_t pad_0066[0xe];
+    uint32_t field_0074;
+    uint32_t field_0078;
+    uint8_t pad_007c[0x4];
+    uint16_t field_0080;
+    uint8_t pad_0082[0xe];
+    uint32_t field_0090;
+    uint32_t field_0094;
+    uint32_t field_0098;
+    uint8_t pad_009c[0x24];
+    uint32_t field_00c0;
+    uint32_t field_00c4;
+    uint32_t field_00c8;
+    uint32_t field_00cc;
+    uint32_t field_00d0;
+    uint32_t field_00d4;
+    uint8_t pad_00d8[0xc];
+    uint8_t field_00e4;
+    uint8_t pad_00e5[0xf];
+    uint32_t field_00f4;
+    uint32_t field_00f8;
+    uint8_t field_00fc;
+    uint8_t pad_00fd[0x3];
+    uint32_t field_0100;
+    uint8_t field_0104;
+    uint8_t pad_0105[0x3];
+    uint32_t field_0108;
+    uint8_t field_010c;
+    uint8_t pad_010d[0x3];
+    uint32_t field_0110;
+    uint8_t field_0114;
+    uint8_t pad_0115[0x3a];
+    uint8_t field_014f;
+    uint32_t field_0150;
+    uint32_t field_0154;
+    uint32_t field_0158;
+    uint32_t field_015c;
+    uint8_t pad_0160[0x4];
+};
+static_assert(sizeof(S_0073c380) == 0x164);
+
+struct S_0073d4d0 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x5af];
+};
+static_assert(sizeof(S_0073d4d0) == 0x5b0);
+
+struct S_0073ecc0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint8_t pad_000c[0x4];
+    uint32_t field_0010;
+    uint8_t pad_0014[0xc];
+    uint32_t field_0020;
+    uint32_t field_0024;
+    uint8_t pad_0028[0x4];
+    uint32_t field_002c;
+    uint8_t pad_0030[0xc];
+    uint32_t field_003c;
+    uint32_t field_0040;
+    uint8_t pad_0044[0x4];
+    uint32_t field_0048;
+    uint8_t pad_004c[0xc];
+    uint32_t field_0058;
+    uint32_t field_005c;
+    uint8_t pad_0060[0x4];
+    uint32_t field_0064;
+    uint8_t pad_0068[0xc];
+    uint32_t field_0074;
+    uint32_t field_0078;
+    uint8_t pad_007c[0x4];
+    uint32_t field_0080;
+    uint8_t pad_0084[0xc];
+    uint32_t field_0090;
+    uint32_t field_0094;
+    uint8_t pad_0098[0x30];
+    uint32_t field_00c8;
+    uint32_t field_00cc;
+    uint32_t field_00d0;
+    uint8_t pad_00d4[0x10];
+    uint32_t field_00e4;
+    uint8_t pad_00e8[0xc];
+    uint32_t field_00f4;
+    uint32_t field_00f8;
+    uint8_t pad_00fc[0x53];
+    uint8_t field_014f;
+    uint8_t pad_0150[0x8];
+    uint32_t field_0158;
+    uint32_t field_015c;
+};
+
+struct S_00740e20 {
+    uint8_t pad_0000[0x68c];
+    uint16_t field_068c;
+};
+
+struct S_00740ff0 {
+    uint8_t pad_0000[0x44c];
+    uint8_t field_044c;
+    uint8_t pad_044d[0x2fb];
+    uint8_t field_0748;
+};
+
+struct S_00743570 {
+    uint8_t pad_0000[0xd4];
+    uint32_t field_00d4;
+};
+
+struct S_00747f20 {
+    uint8_t pad_0000[0x5c];
+    uint8_t field_005c;
+    uint8_t pad_005d[0xd];
+    uint8_t field_006a;
+    uint8_t pad_006b[0x181];
+    uint32_t field_01ec;
+    uint32_t field_01f0;
+    uint32_t field_01f4;
+    uint16_t field_01f8;
+    uint8_t pad_01fa[0x2];
+    uint16_t field_01fc;
+    uint8_t pad_01fe[0x2];
+    uint16_t field_0200;
+    uint8_t pad_0202[0xc2];
+    uint16_t field_02c4;
+    uint8_t pad_02c6[0x10];
+    uint16_t field_02d6;
+    uint8_t pad_02d8[0x4];
+    uint16_t field_02dc;
+    uint8_t pad_02de[0xa];
+    uint32_t field_02e8;
+    uint32_t field_02ec;
+    uint8_t pad_02f0[0x10];
+    uint8_t field_0300;
+    uint8_t pad_0301[0x2f];
+    uint8_t field_0330;
+};
+
+struct S_00749b70 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint8_t pad_0008[0x104];
+    uint32_t field_010c;
+};
+
+struct S_00749d70 {
+    uint8_t pad_0000[0x4];
+};
+
+struct S_0074a3e0 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x3];
+};
+
+struct S_00756260 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0075b5e0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0075d900 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0075e710 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0075f7c0 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint8_t pad_0008[0x10];
+    uint32_t field_0018;
+};
+
+struct S_00768bf0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00768e80 {
+    uint32_t field_0000;
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00769550 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0x4];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+};
+
+struct S_0076a140 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+static_assert(sizeof(S_0076a140) == 0x10);
+
+struct S_0076a4f0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_00770760 {
+    uint8_t pad_0000[0x48];
+    uint32_t field_0048;
+    uint8_t pad_004c[0x4];
+    float field_0050;
+    float field_0054;
+};
+
+struct S_007708f0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_00770ce0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00771690 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00771b80 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00772100 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_007721a0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_00772940 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_00773060 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00773d00 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_00776310 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00776380 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00776ce0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_00776ff0 {
+    uint8_t pad_0000[0xc];
+    uint8_t field_000c;
+    uint8_t pad_000d[0xf];
+    uint32_t field_001c;
+    uint32_t field_0020;
+    uint8_t pad_0024[0x8];
+    uint32_t field_002c;
+    uint32_t field_0030;
+    uint32_t field_0034;
+    uint8_t pad_0038[0xb0];
+};
+static_assert(sizeof(S_00776ff0) == 0xe8);
+
+struct S_00778050 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+};
+
+struct S_00778920 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0077d4b0 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_007822b0 {
+    uint8_t field_0000;
+    uint8_t pad_0001[0x7];
+    uint32_t field_0008;
+    uint32_t field_000c;
+    uint32_t field_0010;
+};
+
+struct S_00782f90 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0078bf70 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+};
+
+struct S_0078c870 {
+    uint8_t pad_0000[0x4];
+    uint32_t field_0004;
+    uint32_t field_0008;
+    uint32_t field_000c;
+};
+
+struct S_0078cea0 {
+    uint32_t field_0000;
+    uint8_t pad_0004[0xc];
+    uint8_t field_0010;
+};
+
 struct C_0082d410 {
     void** vtbl;
     uint32_t field_0004;

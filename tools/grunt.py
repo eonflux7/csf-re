@@ -1028,7 +1028,9 @@ def run(args):
     results = []
     with cf.ThreadPoolExecutor(args.jobs) as ex:
         out_dir = os.path.join(ROOT, "work", "ab", args.backend + (f"-{os.environ['CSF_CODEX_EFFORT']}"
-                               if os.environ.get("CSF_CODEX_EFFORT") else "")) if args.dry else None
+                               if os.environ.get("CSF_CODEX_EFFORT") else "")
+                               + (f"-{os.environ['CSF_AB_ARM']}" if os.environ.get("CSF_AB_ARM") else "")) \
+            if args.dry else None
         if args.batch_fns > 1 and args.backend in ("codex", "auto"):  # several functions per Codex call
             solo = [ea for ea in targets if args.backend == "auto" and db.F[ea]["size"] < args.tiny]
             chunks = pack(db, [ea for ea in targets if ea not in solo], args.batch_fns, args.batch_bytes,
@@ -1051,7 +1053,8 @@ def run(args):
             for r in (rs if isinstance(rs, list) else [rs]):
                 results.append(r)
                 with open(LOG, "a") as f:
-                    f.write(json.dumps(dict(r, ts=time.time())) + "\n")
+                    f.write(json.dumps(dict(r, ts=time.time(), **({"arm": os.environ["CSF_AB_ARM"]}
+                                                                   if os.environ.get("CSF_AB_ARM") else {}))) + "\n")
                 print(f"  {r['ea']:08x} {'OK ' if r['ok'] else 'ESC'} {r.get('meta', {}).get('name', '') if r['ok'] else r.get('err', '')[:100]}",
                       flush=True)
     good = [r for r in results if r["ok"]]

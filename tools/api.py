@@ -357,7 +357,8 @@ _api = None
 def load():
     global _api
     if _api is None:
-        _api = {int(k, 16): v for k, v in json.load(open(API)).items()} if os.path.exists(API) else {}
+        p = os.environ.get("CSF_API_JSON") or API  # A/B arm with another api (packet.LEGACY)
+        _api = {int(k, 16): v for k, v in json.load(open(p)).items()} if os.path.exists(p) else {}
     return _api
 
 

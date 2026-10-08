@@ -46,7 +46,7 @@ def owner(ea):
 
 
 def cname(vt):
-    return NAMES[vt]["name"] if vt in NAMES else f"C_{vt}"
+    return NAMES[vt]["name"] if vt in NAMES else (f"S_{vt}" if C.get(vt, {}).get("plain") else f"C_{vt}")
 
 
 def derived_or_self(vt):
