@@ -348,10 +348,10 @@ def carve():
                  cohesion=round(inner[i] / deg[i], 2) if deg[i] else 0.0, **desc[i])
         size = m["end"] - m["start"]
         for o in old:
-            if o.get("name_src") == "opus":
+            if o.get("name_src") in ("opus", "captain"):
                 ov = min(m["end"], o["end"]) - max(m["start"], o["start"])
                 if ov > 0.5 * size and ov > 0.5 * (o["end"] - o["start"]):
-                    m.update(name=o["name"], name_src="opus", note=o.get("note", ""))
+                    m.update(name=o["name"], name_src=o["name_src"], note=o.get("note", ""))
         mods.append(m)
     write_yaml(mods)
     # module column of functions.csv: carved functions get their module id (STL and libraries keep theirs)

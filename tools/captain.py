@@ -256,13 +256,13 @@ SCHEMA = {
 }
 
 
-def chat(model, effort, system, prompt):
+def chat(model, effort, system, prompt, schema=None):
     """One headless Claude Code call: our system prompt, no tools/settings/MCP/skills (~560 fixed tokens, cached
     across calls), structured output against SCHEMA."""
     os.makedirs(CLAUDE_CWD, exist_ok=True)
     cmd = ["claude", "-p", "--tools", "", "--model", model, "--effort", effort, "--no-session-persistence",
            "--strict-mcp-config", "--setting-sources", "", "--disable-slash-commands", "--output-format", "json",
-           "--system-prompt", system, "--json-schema", json.dumps(SCHEMA)]
+           "--system-prompt", system, "--json-schema", json.dumps(schema or SCHEMA)]
     t0 = time.time()
     r = subprocess.run(cmd, input=prompt, capture_output=True, text=True, cwd=CLAUDE_CWD, timeout=900)
     try:
@@ -421,6 +421,205 @@ def job_strings(args):
         commit(len(acc), "string-pointer globals")
 
 
+# ---------------------------------------------------------------- job: modules
+
+PLACEHOLDER = re.compile(r"^(C_[0-9a-fA-F]+_|sub_|nullsub|j_)|Field[0-9A-F]{3,4}|_[0-9A-F]{6}$|^(Get|Set|Return|Is)"
+                         r"(Const|Constant|Value|Field|Global|Flag)?\w{0,6}$")
+
+SYSTEM_MODULES = """You are a reverse engineer naming the source modules of a 2006 MSVC game (Commandos: Strike Force,
+PC; Pyro Studios, Spanish identifiers/strings). A module is an address-contiguous range that approximates one
+original .cpp/.obj file. Name each module from its evidence: classes, strings (often Spanish config keys or asset
+paths), named functions, library calls, which named modules call it / it calls, and its address neighbours (the
+link order keeps related files together, so neighbours' names are strong hints).
+
+- name: snake_case, 3-32 chars, subsystem first, like the existing names below (hud_objectives, ai_move_tasks,
+  menu_mp_sessions, gfx_matrix, net_session). Never encode the address; never generic (misc, utils, module, code).
+  Must differ from every existing name.
+- description: one short line of the evidence that decided it.
+- confidence: 0.9+ clear, 0.6-0.8 reasonable guess, <0.5 unclear (still give your best name).
+Function names from earlier automated passes can be wrong placeholders; trust strings, classes and library calls more.
+
+Existing module names (style reference, all taken):
+{names}
+
+Answer only with the JSON object."""
+
+SCHEMA_MODULES = {
+    "type": "object",
+    "properties": {"modules": {"type": "array", "items": {"type": "object", "properties": {
+        "id": {"type": "string"}, "name": {"type": "string"}, "description": {"type": "string"},
+        "confidence": {"type": "number"}}, "required": ["id", "name", "description", "confidence"]}}},
+    "required": ["modules"],
+}
+
+
+def module_packet(db, m, mods, by_ea, S):
+    eas = [e for e in db.F if m["start"] <= e < m["end"] and db.rows.get(e, {}).get("region") == "game"]
+    cls = collections.Counter(db.class_of(e) for e in eas if db.class_of(e))
+    strs = collections.Counter()
+    gnames = collections.Counter()
+    libs = collections.Counter()
+    callers, callees = collections.Counter(), collections.Counter()
+    for e in eas:
+        f = db.F[e]
+        for a in f.get("srefs", []):
+            if a in S:
+                strs[S[a][:60]] += 1
+        for d in f["drefs"]:
+            g = db.globals.get(d)
+            if g and g.get("src") in ("captain", "opus", "user") and not g["name"].startswith("g_pszKey_"):
+                gnames[re.sub(r"_[YZGBA]$", "", g["name"])] += 1  # vector/colour components -> the vector
+            elif g and g["name"].startswith("g_pszKey_"):
+                strs[read_cstr(read_u32(d)) or g["name"]] += 1
+        for c in f["callees"]:
+            r = db.rows.get(c)
+            if not r:
+                continue
+            if r["region"] != "game" and r["name"]:
+                libs[r["name"]] += 1
+            else:
+                mm = by_ea(c)
+                if mm and mm is not m:
+                    callees[mm["name"] or mm["id"]] += 1
+        for caller in f.get("callers", []):
+            mm = by_ea(caller)
+            if mm and mm is not m:
+                callers[mm["name"] or mm["id"]] += 1
+    named = [db.rows[e]["name"] for e in sorted(eas) if db.rows[e]["name"] and not PLACEHOLDER.search(db.rows[e]["name"])]
+    i = mods.index(m)
+    nb = [x for x in mods[max(0, i - 3):i + 4] if x is not m]
+    out = [f"### {m['id']}  0x{m['start']:X}-0x{m['end']:X}, {m['fns']} functions, {m['kb']} KB"]
+    out.append("neighbours by address: " + ", ".join(
+        f"{'<' if x['start'] < m['start'] else '>'}{x['name'] or x['id']}" for x in nb))
+    if cls:
+        out.append("classes: " + ", ".join(f"{db.cls_name(vt)}({n})" for vt, n in cls.most_common(8)))
+    if strs:
+        out.append("strings: " + " | ".join(s_ for s_, _ in strs.most_common(24)))
+    if gnames:
+        out.append("named globals used: " + ", ".join(g for g, _ in gnames.most_common(10)))
+    if named:
+        out.append("named functions: " + ", ".join(named[:16]))
+    if libs:
+        out.append("library calls: " + ", ".join(n for n, _ in libs.most_common(10)))
+    if callers:
+        out.append("called from: " + ", ".join(f"{n}({k})" for n, k in callers.most_common(6)))
+    if callees:
+        out.append("calls into: " + ", ".join(f"{n}({k})" for n, k in callees.most_common(6)))
+    return "\n".join(out)
+
+
+def job_modules(args):
+    import yaml
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import modules as mo
+    db = DB()
+    S = {int(a, 16): v for a, v in json.load(open(os.path.join(ROOT, "export", "strings.json"))).items()}
+    mods = mo.read_yaml()
+    starts = sorted((x["start"], i) for i, x in enumerate(mods))
+    import bisect
+
+    def by_ea(ea):
+        k = bisect.bisect_right(starts, (ea, 1 << 30)) - 1
+        if k < 0:
+            return None
+        x = mods[starts[k][1]]
+        return x if x["start"] <= ea < x["end"] else None
+    for e, f in db.F.items():  # reverse call graph (the export has callees only)
+        for c in f["callees"]:
+            if c in db.F:
+                db.F[c].setdefault("callers", []).append(e)
+    held_path = os.path.join(WORK, "held_modules.jsonl")
+    if args.retry_held and os.path.exists(held_path):
+        args.only = (args.only or set()) | {json.loads(l).get("id") for l in open(held_path)}
+    todo = [x for x in mods if not x.get("name") and (not args.only or x["id"] in args.only)]
+
+    def evidence(x):  # rich modules first: their names then show up in the harder ones' packets
+        pk = module_packet(db, x, mods, by_ea, S)
+        return (len(re.findall(r" \| ", pk)) + 3 * len(re.findall(r"\b(?!C_[0-9a-f])[A-Z]\w+\(\d+\)", pk.split("called from")[0]))
+                + len(re.findall(r"named functions: (.*)", pk)[0].split(", ") if "named functions" in pk else []))
+    todo.sort(key=evidence, reverse=True)
+    todo = todo[:args.limit]
+    batches = [todo[i:i + args.batch] for i in range(0, len(todo), args.batch)]
+    taken = {x["name"] for x in mods if x.get("name")}
+    system = SYSTEM_MODULES.format(names=", ".join(sorted(taken)))
+    live(job="modules", phase="running", model=args.model, effort=args.effort,
+         counts=dict(total=len(todo), batches=len(batches), done=0, applied=0, held=0, rejected=0, fn_proposals=0))
+    print(f"{len(todo)} modules in {len(batches)} calls", flush=True)
+    applied_total = 0
+    for bi, batch in enumerate(batches):
+        prompt = f"Name these {len(batch)} modules.\n\n" + "\n\n".join(module_packet(db, x, mods, by_ea, S) for x in batch)
+        if args.dry:
+            print(system[:400] + "...\n\n" + prompt)
+            return
+        live(current=dict(batch=bi + 1, addrs=[x["id"] for x in batch], since=time.time(), chars=len(prompt)))
+        try:
+            out, u = chat(args.model, args.effort, system, prompt, SCHEMA_MODULES)
+        except Exception as e:
+            print(f"batch {bi + 1}: {e}", flush=True)
+            bump(errors=1)
+            continue
+        account(u)
+        ids = {x["id"]: x for x in batch}
+        acc, held, rej = [], [], []
+        for p in out.get("modules", []):
+            n = p.get("name", "")
+            if p.get("id") not in ids:
+                rej.append(dict(p, reason="not in this batch"))
+            elif not re.fullmatch(r"[a-z][a-z0-9_]{2,31}", n) or re.search(r"(^|_)(misc|utils?|module|code|m[0-9a-f]{6})($|_)", n):
+                rej.append(dict(p, reason=f"name {n!r} breaks the convention"))
+            elif n in taken:
+                rej.append(dict(p, reason=f"name {n!r} already taken"))
+            else:
+                (acc if p["confidence"] >= args.min_conf else held).append(p)
+                taken.add(n)
+        if acc and not args.no_apply:
+            with Locked():
+                cur = mo.read_yaml()
+                for p in acc:
+                    for x in cur:
+                        if x["id"] == p["id"]:
+                            x.update(name=p["name"], name_src="captain", note=p["description"][:120])
+                for x in cur:
+                    x["classes"] = [(c, 0) for c in x["classes"]]
+                mo.write_yaml(cur)
+            for p in acc:
+                ids[p["id"]]["name"] = p["name"]  # later batches see it as a neighbour/caller name
+            applied_total += len(acc)
+        with open(os.path.join(WORK, "held_modules.jsonl"), "a") as f:
+            for e in held + rej:
+                f.write(json.dumps(dict(e, ts=time.time(), model=args.model)) + "\n")
+        rec = dict(ts=time.time(), job="modules", batch=list(ids), usage=u,
+                   accepted=[(p["id"], p["name"], "module", p["confidence"]) for p in acc],
+                   held=[(p["id"], p["name"], p["confidence"]) for p in held],
+                   rejected=[(p.get("id"), p.get("name"), p["reason"]) for p in rej],
+                   why={p["id"]: p["description"] for p in acc + held})
+        with open(LOG, "a") as f:
+            f.write(json.dumps(rec) + "\n")
+        bump(done=len(batch), applied=len(acc), held=len(held), rejected=len(rej))
+        _live["recent"] = (rec["accepted"] + [(a, n, "", c) for a, n, c in rec["held"]] + _live["recent"])[:12]
+        live(current=None)
+        print(f"batch {bi + 1}/{len(batches)}: {len(acc)} applied, {len(held)} held, {len(rej)} rejected, "
+              f"{u['secs']}s, in {u['input'] + u['cache_write'] + u['cache_read']} out {u['output']}", flush=True)
+    if applied_total and not args.no_apply:
+        with Locked():
+            for i in range(10):
+                r = subprocess.run(["git", "-C", ROOT, "commit", "-q", "-m",
+                                    f"captain: {applied_total} modules named\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+                                    "--", "db/modules.yaml"], capture_output=True, text=True)
+                if r.returncode == 0:
+                    break
+                time.sleep(3)
+    live(phase="finished", current=None)
+
+
+def account(u):
+    t = _live["tokens"]
+    for k in ("input", "cache_write", "cache_read", "output"):
+        t[k] = t.get(k, 0) + u[k]
+    t["cost_usd"] = round(t.get("cost_usd", 0) + (u["cost_usd"] or 0), 4)
+    t["calls"] = t.get("calls", 0) + 1
+
+
 # ---------------------------------------------------------------- job: globals
 
 def job_globals(args):
@@ -533,6 +732,16 @@ def main():
     g.add_argument("--dry", action="store_true", help="print the first prompt, no call")
     g.add_argument("--no-apply", action="store_true", help="log/hold only (A/B)")
     g.add_argument("--retry-held", action="store_true", help="re-ask the held/rejected globals of earlier runs")
+    mm = sub.add_parser("modules", help="name unnamed modules (db/modules.yaml)")
+    mm.add_argument("--limit", type=int, default=1000)
+    mm.add_argument("--batch", type=int, default=8)
+    mm.add_argument("--model", default="opus")
+    mm.add_argument("--effort", default="medium")
+    mm.add_argument("--min-conf", type=float, default=0.7)
+    mm.add_argument("--only", type=lambda s: set(s.split(",")))
+    mm.add_argument("--dry", action="store_true")
+    mm.add_argument("--no-apply", action="store_true")
+    mm.add_argument("--retry-held", action="store_true", help="re-ask held/rejected modules of earlier runs")
     st = sub.add_parser("strings", help="mechanical: pointer-to-string globals named after the string")
     st.add_argument("--dry", action="store_true")
     st.add_argument("--show", type=int, default=30)
@@ -550,7 +759,7 @@ def main():
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except BlockingIOError:
         sys.exit("captain is already running (work/captain.lock)")
-    {"globals": job_globals, "strings": job_strings}[a.cmd](a)
+    {"globals": job_globals, "strings": job_strings, "modules": job_modules}[a.cmd](a)
 
 
 if __name__ == "__main__":

@@ -29,8 +29,8 @@
    classes: ["C_008300c0", "C_00830578", "C_00830030", "CMenuScreen"], strings: ["truco"], note: "\"truco\"; CMenuScreen-derived classes"}
 - {id: m42CF50, start: 0x42CF50, end: 0x436770, fns: 150, kb: 35.2, done: 3, name: "hud", name_src: opus, label: "", cohesion: 0.45,
    classes: ["C_00830a04", "C_008305f8"], strings: [".COLOR_RELLENO", ".TEXTURA", ".SIZE", ".COLOR_FONDO", ".COORDS_TEXTURA"], note: ".SIZE/.COLOR_FONDO/.TEXTURA widgets + debug overlay (FPSMedios, MemUsed)"}
-- {id: m436770, start: 0x436770, end: 0x438280, fns: 48, kb: 6.4, done: 7, name: "", name_src: None, label: "CGuiControl", cohesion: 0.25,
-   classes: ["C_00830a48", "C_008432b0", "CGuiControl", "CGuiStatic", "CGuiEdit", "CGuiSwitch"], strings: []}
+- {id: m436770, start: 0x436770, end: 0x438280, fns: 48, kb: 6.4, done: 7, name: "hud_sprites_layout", name_src: captain, label: "CGuiControl", cohesion: 0.25,
+   classes: ["C_00830a48", "C_008432b0", "CGuiControl", "CGuiStatic", "CGuiEdit", "CGuiSwitch"], strings: [], note: "HUD sprite layout keys .TOP/.LEFT/.TEX_U0/.SPRITES_MINIMAPA/.MAPA_TACTICO/.SANITARIO; uses CGuiControl; calls into hud; "}
 - {id: m438280, start: 0x438280, end: 0x43A700, fns: 29, kb: 8.9, done: 0, name: "", name_src: None, label: "", cohesion: 0.49,
    classes: [], strings: []}
 - {id: m43A700, start: 0x43A700, end: 0x43E010, fns: 59, kb: 13.1, done: 2, name: "minimap", name_src: opus, label: "", cohesion: 0.52,
@@ -53,14 +53,14 @@
    classes: ["C_00831210", "C_0082d410", "C_008311e8", "C_00831230", "C_0083124c"], strings: []}
 - {id: m44EA10, start: 0x44EA10, end: 0x44F640, fns: 20, kb: 2.9, done: 3, name: "", name_src: None, label: "", cohesion: 0.0,
    classes: [], strings: []}
-- {id: m44F640, start: 0x44F640, end: 0x44FC80, fns: 22, kb: 1.4, done: 6, name: "", name_src: None, label: "", cohesion: 0.0,
-   classes: [], strings: []}
+- {id: m44F640, start: 0x44F640, end: 0x44FC80, fns: 22, kb: 1.4, done: 6, name: "game_scene_access", name_src: captain, label: "", cohesion: 0.0,
+   classes: [], strings: [], note: "g_pCurrentScene/g_CurrentSceneIndex/g_numScenes accessors called from many places (hud, minimap)"}
 - {id: m44FC80, start: 0x44FC80, end: 0x456C90, fns: 105, kb: 23.8, done: 0, name: "", name_src: None, label: "", cohesion: 0.28,
    classes: ["C_008312b0"], strings: []}
 - {id: m456C90, start: 0x456C90, end: 0x458210, fns: 34, kb: 5.0, done: 2, name: "hud_portraits", name_src: opus, label: "", cohesion: 0.37,
    classes: ["C_008312e0", "C_00831304", "C_0082d410"], strings: ["reTach.png", "menus\\textures\\retratos\\", ".FLI_NAME", ".IS_GENERIC", ".IMAGE"], note: "menus\\textures\\retratos\\%s, .FLI_NAME, .IS_GENERIC"}
-- {id: m458210, start: 0x458210, end: 0x45AAF0, fns: 59, kb: 6.9, done: 0, name: "", name_src: None, label: "", cohesion: 0.65,
-   classes: ["C_008313dc"], strings: []}
+- {id: m458210, start: 0x458210, end: 0x45AAF0, fns: 59, kb: 6.9, done: 0, name: "hud_status_icons", name_src: captain, label: "", cohesion: 0.65,
+   classes: ["C_008313dc"], strings: [], note: ".ICONOS_ESTADO string; calls hud, called from minimap/hud/object_class_defs"}
 - {id: m45AAF0, start: 0x45AAF0, end: 0x467AD0, fns: 351, kb: 47.6, done: 2, name: "", name_src: None, label: "", cohesion: 0.46,
    classes: ["C_00831414"], strings: []}
 - {id: m467AD0, start: 0x467AD0, end: 0x471550, fns: 204, kb: 26.3, done: 3, name: "object_class_defs", name_src: opus, label: "", cohesion: 0.45,
@@ -71,8 +71,8 @@
    classes: ["C_00831618", "C_00831638", "C_00831658", "C_00831678", "C_0082e0f4", "C_008310f8"], strings: []}
 - {id: m475480, start: 0x475480, end: 0x4759B0, fns: 12, kb: 1.2, done: 0, name: "", name_src: None, label: "", cohesion: 0.18,
    classes: ["C_00831698", "C_00840e68"], strings: []}
-- {id: m4759B0, start: 0x4759B0, end: 0x47AE10, fns: 147, kb: 19.7, done: 9, name: "", name_src: None, label: "", cohesion: 0.47,
-   classes: ["C_008318c8", "C_008317c8", "C_008316d8", "C_008319c0", "C_0082d410"], strings: []}
+- {id: m4759B0, start: 0x4759B0, end: 0x47AE10, fns: 147, kb: 19.7, done: 9, name: "weapon_firearms", name_src: captain, label: "", cohesion: 0.47,
+   classes: ["C_008318c8", "C_008317c8", "C_008316d8", "C_008319c0", "C_0082d410"], strings: [], note: "Uses PFX_CASQUILLOS (shell-casing effect) and matrices; called heavily by char_action_fsm and hud, so likely the weapon "}
 - {id: m47AE10, start: 0x47AE10, end: 0x47F930, fns: 135, kb: 16.8, done: 13, name: "ai_attack_tasks", name_src: opus, label: "TDisparar", cohesion: 0.33,
    classes: ["TDisparar", "TAtacarRafaga", "C_00831ac0", "TAtacar", "TFunctionRecargar", "C_00832bb0"], strings: ["TFunctionGirar", "TModoNinguno", "TModoAutomatico", "TApuntar", "TDisparando"], note: "TDisparar, TAtacarRafaga, TAtacar, TFunctionRecargar, TApuntar"}
 - {id: m47F930, start: 0x47F930, end: 0x489B70, fns: 285, kb: 32.9, done: 17, name: "char_action_fsm", name_src: opus, label: "CCharActionFsm", cohesion: 0.54,
@@ -121,8 +121,8 @@
    classes: [], strings: []}
 - {id: m4AE010, start: 0x4AE010, end: 0x4AEDD0, fns: 58, kb: 2.9, done: 27, name: "ai_fnc_tasks", name_src: opus, label: "TFncAtacarDesdeParapeto", cohesion: 0.1,
    classes: ["TFncAtacarDesdeParapeto", "TFncRastrear", "TFncAtacarDesdePosicion", "TFncIrAParapeto", "TFncVigilarDesdeParapeto", "TMovilAPunto"], strings: ["TEstatico", "TMovilAPuntoRastreo", "TEstaticoParapeto", "TMovilAPunto", "TMovilAParapeto"], note: "TFncAtacarDesdeParapeto, TFncRastrear, TFncIrAParapeto, TFncVigilarDesdeParapeto"}
-- {id: m4AEDD0, start: 0x4AEDD0, end: 0x4B1310, fns: 43, kb: 9.0, done: 1, name: "", name_src: None, label: "", cohesion: 0.14,
-   classes: [], strings: []}
+- {id: m4AEDD0, start: 0x4AEDD0, end: 0x4B1310, fns: 43, kb: 9.0, done: 1, name: "ai_fnc_static", name_src: captain, label: "", cohesion: 0.14,
+   classes: [], strings: [], note: "TEstatico class (static/guard AI behaviour) calling ai_char_task and ai_state; near ai_fnc_tasks"}
 - {id: m4B1310, start: 0x4B1310, end: 0x4B1F60, fns: 13, kb: 3.0, done: 0, name: "ai_fnc_macro_order", name_src: captain, label: "", cohesion: 0.08,
    classes: [], strings: [], note: "TFncMacroOrden class (macro-order AI function) calling ai_state and ai_attack_tasks"}
 - {id: m4B1F60, start: 0x4B1F60, end: 0x4B2960, fns: 25, kb: 2.3, done: 7, name: "ai_alert_states", name_src: opus, label: "TDistraido", cohesion: 0.09,
@@ -141,14 +141,14 @@
    classes: ["TDistraido", "TDudoso"], strings: [], note: "TDistraido, TDudoso"}
 - {id: m4BC2A0, start: 0x4BC2A0, end: 0x4C03E0, fns: 93, kb: 15.8, done: 0, name: "ai_core", name_src: opus, label: "", cohesion: 0.2,
    classes: ["C_0083aa80"], strings: ["-- Fin Debug IA --"], note: "\"-- Fin Debug IA --\"; called by all AI modules"}
-- {id: m4C03E0, start: 0x4C03E0, end: 0x4C40F0, fns: 45, kb: 14.8, done: 0, name: "", name_src: None, label: "", cohesion: 0.16,
-   classes: [], strings: []}
+- {id: m4C03E0, start: 0x4C03E0, end: 0x4C40F0, fns: 45, kb: 14.8, done: 0, name: "ai_state_factory", name_src: captain, label: "", cohesion: 0.16,
+   classes: [], strings: [], note: "Builds AI state objects (TDudoso, TDistraido, TAlerta, TCombate, TEstatico, TMovilAPunto); sits next to ai_combat/ai_cor"}
 - {id: m4C40F0, start: 0x4C40F0, end: 0x4C5150, fns: 17, kb: 3.9, done: 0, name: "ai_go_to_cover", name_src: captain, label: "", cohesion: 0.31,
    classes: [], strings: [], note: "TFncIrAParapeto (go to cover) used from TDistraido/TDudoso/TAlerta/TCombate states"}
-- {id: m4C5150, start: 0x4C5150, end: 0x4CB490, fns: 65, kb: 24.2, done: 0, name: "", name_src: None, label: "", cohesion: 0.27,
-   classes: [], strings: []}
-- {id: m4CB490, start: 0x4CB490, end: 0x4CDDB0, fns: 25, kb: 10.1, done: 0, name: "", name_src: None, label: "", cohesion: 0.26,
-   classes: ["C_0083ab58"], strings: []}
+- {id: m4C5150, start: 0x4C5150, end: 0x4CB490, fns: 65, kb: 24.2, done: 0, name: "ai_cover_attack_tasks", name_src: captain, label: "", cohesion: 0.27,
+   classes: [], strings: [], note: "TMovilAPuntoParapetandose and TFncAtacarDesdePosicion classes; calls heavily into ai_core/ai_char_task"}
+- {id: m4CB490, start: 0x4CB490, end: 0x4CDDB0, fns: 25, kb: 10.1, done: 0, name: "ai_search_orders", name_src: captain, label: "", cohesion: 0.26,
+   classes: ["C_0083ab58"], strings: [], note: "TFncRastrear (search sweep), TFncMacroOrden and TOrden order execution"}
 - {id: m4CDDB0, start: 0x4CDDB0, end: 0x4CE6F0, fns: 14, kb: 2.1, done: 0, name: "", name_src: None, label: "", cohesion: 0.36,
    classes: ["C_0083ac40", "C_0083c280"], strings: []}
 - {id: m4CE6F0, start: 0x4CE6F0, end: 0x4D1AE0, fns: 112, kb: 11.6, done: 5, name: "", name_src: None, label: "", cohesion: 0.36,
@@ -171,8 +171,8 @@
    classes: ["TCharTask"], strings: [], note: "TCharTask base"}
 - {id: m4DB5D0, start: 0x4DB5D0, end: 0x4DB650, fns: 4, kb: 0.1, done: 2, name: "", name_src: None, label: "", cohesion: 0.0,
    classes: [], strings: []}
-- {id: m4DB650, start: 0x4DB650, end: 0x4DBDB0, fns: 45, kb: 1.5, done: 1, name: "", name_src: None, label: "", cohesion: 0.54,
-   classes: ["C_0083dfa0", "C_00835398", "C_0083aa80", "TMovilAPunto", "TMovilAInteractivo_2", "TFncRastrear"], strings: []}
+- {id: m4DB650, start: 0x4DB650, end: 0x4DBDB0, fns: 45, kb: 1.5, done: 1, name: "ai_state_accessors", name_src: captain, label: "", cohesion: 0.54,
+   classes: ["C_0083dfa0", "C_00835398", "C_0083aa80", "TMovilAPunto", "TMovilAInteractivo_2", "TFncRastrear"], strings: [], note: "Many tiny TAiState methods called from ai_alert, ai_distracted, ai_fnc_tasks and ai_move_tasks; sits next to ai_state"}
 - {id: m4DBDB0, start: 0x4DBDB0, end: 0x4DC3E0, fns: 18, kb: 1.4, done: 1, name: "ai_state", name_src: opus, label: "", cohesion: 0.09,
    classes: ["C_0082d410", "TAiState", "C_0083dfa0", "TFncIrAParapeto", "TFncInteractivo"], strings: [], note: "TAiState ctor"}
 - {id: m4DC3E0, start: 0x4DC3E0, end: 0x4DDD90, fns: 35, kb: 4.6, done: 1, name: "", name_src: None, label: "", cohesion: 0.3,
@@ -183,14 +183,14 @@
    classes: ["C_0083e248", "C_0083e5e8", "C_0083e8c8", "C_0083e330", "C_0083e7d8", "C_0083e418"], strings: []}
 - {id: m4E51B0, start: 0x4E51B0, end: 0x4E8C60, fns: 96, kb: 13.6, done: 5, name: "", name_src: None, label: "", cohesion: 0.34,
    classes: ["C_0083eb70", "C_0083ec48", "C_0083e9d0"], strings: []}
-- {id: m4E8C60, start: 0x4E8C60, end: 0x4EEFB0, fns: 63, kb: 24.0, done: 2, name: "", name_src: None, label: "", cohesion: 0.28,
-   classes: ["C_0083ed40"], strings: []}
+- {id: m4E8C60, start: 0x4E8C60, end: 0x4EEFB0, fns: 63, kb: 24.0, done: 2, name: "scene_mission_setup", name_src: captain, label: "", cohesion: 0.28,
+   classes: ["C_0083ed40"], strings: [], note: ".MUNDOVIS/.INICIO_COMMANDO/.INICIO_SNIPER/.INICIO_SPY/.VIDEO_OPENING plus projectile object names, called from scene_loa"}
 - {id: m4EEFB0, start: 0x4EEFB0, end: 0x4F0470, fns: 38, kb: 4.8, done: 1, name: "text_database", name_src: opus, label: "CTextDatabase", cohesion: 0.41,
    classes: ["CTextDatabase", "C_0083eee4"], strings: ["Texts/Global.fli", "Texts/MultiPla.fli", "Texts/SysRed.fli"], note: "CTextDatabase: Texts/Global.fli, SysRed.fli, MultiPla.fli"}
 - {id: m4F0470, start: 0x4F0470, end: 0x4F1CC0, fns: 46, kb: 5.6, done: 2, name: "scene_lights_objects", name_src: captain, label: "", cohesion: 0.55,
    classes: ["C_0083ef30", "C_0083f040", "C_0083eef4", "C_0083ef04", "C_0083eeec", "C_0083eefc"], strings: [], note: ".LIGHTS/.POS/.COLOR/.RADIO/.MODULATE and .SCENEOBJS/.ANIMACION/.OFFSET parsing, called from scene_loader"}
-- {id: m4F1CC0, start: 0x4F1CC0, end: 0x4F4E10, fns: 74, kb: 10.6, done: 1, name: "", name_src: None, label: "", cohesion: 0.5,
-   classes: ["C_0083f0ec", "C_0082d410", "C_0083f130", "C_0083f160"], strings: []}
+- {id: m4F1CC0, start: 0x4F1CC0, end: 0x4F4E10, fns: 74, kb: 10.6, done: 1, name: "hud_string_show", name_src: captain, label: "", cohesion: 0.5,
+   classes: ["C_0083f0ec", "C_0082d410", "C_0083f130", "C_0083f160"], strings: [], note: ".TEXTURAS_STRINGSHOW/.CONTEXTO_GLOBAL/.MARCO/.CONTEXTO_EVENTOS with screen size; tied closely to hud"}
 - {id: m4F4E10, start: 0x4F4E10, end: 0x4F9190, fns: 51, kb: 16.4, done: 4, name: "character_model", name_src: opus, label: "", cohesion: 0.29,
    classes: ["C_0083f1a0"], strings: ["Models/Char/Cabeza.dff"], note: "Models/Char/Cabeza.dff, RW matrix/transform"}
 - {id: m4F9190, start: 0x4F9190, end: 0x4FBE10, fns: 64, kb: 10.4, done: 3, name: "dev_console", name_src: opus, label: "", cohesion: 0.26,
@@ -221,8 +221,8 @@
    classes: ["C_00840d54", "C_00840d64", "C_00830438"], strings: ["(B)uscador"]}
 - {id: m519A80, start: 0x519A80, end: 0x51C070, fns: 79, kb: 7.2, done: 1, name: "bdd_tables", name_src: opus, label: "", cohesion: 0.34,
    classes: ["C_00840e38", "C_00840de4", "C_00840704", "C_00840724", "C_00840d88", "C_00840dac"], strings: [".BDD_ANIMACIONES", ".BDD_ARMAS", ".BDD_EFECTOS", ".BDD_MATERIALES", ".BDD_OBJETOS"], note: ".BDD_ANIMACIONES/.BDD_ARMAS/.BDD_EFECTOS/.BDD_MATERIALES/.BDD_OBJETOS/.BDD_SONIDOS"}
-- {id: m51C070, start: 0x51C070, end: 0x521BB0, fns: 112, kb: 21.8, done: 7, name: "", name_src: None, label: "", cohesion: 0.5,
-   classes: ["C_00840f6c", "C_00840f48", "C_00840ee0", "C_00840ec0", "C_00840f00", "C_00840f28"], strings: []}
+- {id: m51C070, start: 0x51C070, end: 0x521BB0, fns: 112, kb: 21.8, done: 7, name: "fx_particle_manager", name_src: captain, label: "", cohesion: 0.5,
+   classes: ["C_00840f6c", "C_00840f48", "C_00840ee0", "C_00840ec0", "C_00840f00", "C_00840f28"], strings: [], note: "PFX_EXPLOSION_GRANADA, PFX_HUMO, PFX_IMPACTO_BALA and PFX_GAS names plus RtRandom, RwMatrix and qsort"}
 - {id: m521BB0, start: 0x521BB0, end: 0x521C10, fns: 4, kb: 0.1, done: 2, name: "", name_src: None, label: "", cohesion: 0.0,
    classes: [], strings: []}
 - {id: m521C10, start: 0x521C10, end: 0x5287F0, fns: 175, kb: 25.0, done: 8, name: "", name_src: None, label: "", cohesion: 0.46,
@@ -255,8 +255,8 @@
    classes: ["CMenuMissionInfo", "C_00843ed0"], strings: ["Foto%dTachada", "BotonPanelAnterior", "BotonPanelSiguiente", "BotonPestaniaObjetivos", "PanelObjetivos"], note: "CMenuMissionInfo"}
 - {id: m540790, start: 0x540790, end: 0x541E70, fns: 25, kb: 5.3, done: 1, name: "menu_mp_stats", name_src: opus, label: "CMenuMpScoreBar", cohesion: 0.26,
    classes: ["CMenuMpScoreBar", "CMenuMpStats", "CMenuScreen"], strings: ["TextoTeam2", "TextoTeam1", "EstaticoAliados", "EstaticoAlemanes", "LogoAliados"], note: "CMenuMpScoreBar, CMenuMpStats"}
-- {id: m541E70, start: 0x541E70, end: 0x542AA0, fns: 28, kb: 2.8, done: 0, name: "", name_src: None, label: "", cohesion: 0.14,
-   classes: ["C_008432b0"], strings: []}
+- {id: m541E70, start: 0x541E70, end: 0x542AA0, fns: 28, kb: 2.8, done: 0, name: "menu_mp_character_select", name_src: captain, label: "", cohesion: 0.14,
+   classes: ["C_008432b0"], strings: [], note: "Uses menu strings P_CharMP, P_EstaMP and P_LbLaWa; calls mp_game_modes and mp_spawn_points; renders a camera preview"}
 - {id: m542AA0, start: 0x542AA0, end: 0x543C40, fns: 41, kb: 4.0, done: 0, name: "menu_controls", name_src: opus, label: "", cohesion: 0.25,
    classes: ["C_00843550", "CMenuControls", "CMenuScreen", "CMenuLoadGame", "C_00842328", "C_008423d8"], strings: ["BotonMovement", "BotonSave", "BotonAttack", "BotonReset", "ListboxConfiguracion"], note: "CMenuControls"}
 - {id: m543C40, start: 0x543C40, end: 0x5442A0, fns: 18, kb: 1.4, done: 0, name: "menu_main_pc", name_src: opus, label: "CMenuMainPC", cohesion: 0.33,
@@ -327,8 +327,8 @@
    classes: ["C_0085ec74", "C_0085ee28", "C_0085edfc", "C_0085ec4c"], strings: ["invalid distance code", "invalid literal/length code", "incorrect data check", "unknown compression method", "need dictionary"], note: "zlib inflate copy (library: link zlib, don't reimplement) + DlgLog log window"}
 - {id: m6A6CE0, start: 0x6A6CE0, end: 0x6AB460, fns: 112, kb: 15.3, done: 12, name: "net_gathering_ddl", name_src: opus, label: "Commandos3DGameGatheringDDL", cohesion: 0.71,
    classes: ["C_0085ff6c", "C_0085ff4c", "C_0085fe28", "C_0085fd08"], strings: ["Commandos3DGameGathering", "LogFailedMonitorURLs%s.txt", "**CuentaCrearCSFv1**", ".\\Commandos3DGameGatheringDDL.cpp"], note: "Commandos3DGameGatheringDDL.cpp"}
-- {id: m6AB460, start: 0x6AB460, end: 0x6AB8D0, fns: 11, kb: 1.0, done: 0, name: "", name_src: None, label: "", cohesion: 0.0,
-   classes: [], strings: []}
+- {id: m6AB460, start: 0x6AB460, end: 0x6AB8D0, fns: 11, kb: 1.0, done: 0, name: "gfx_bbox_math", name_src: captain, label: "", cohesion: 0.0,
+   classes: [], strings: [], note: "Uses RwBBoxAddPoint and zero-vector globals; sits just before gfx_matrix; called by camera and water code"}
 - {id: m6AB8D0, start: 0x6AB8D0, end: 0x6AEA20, fns: 67, kb: 11.8, done: 0, name: "gfx_matrix", name_src: opus, label: "", cohesion: 0.13,
    classes: [], strings: [], note: "RW matrix/transform helpers"}
 - {id: m6AEA20, start: 0x6AEA20, end: 0x6B1380, fns: 42, kb: 10.0, done: 1, name: "", name_src: None, label: "", cohesion: 0.27,
@@ -341,8 +341,8 @@
    classes: [], strings: []}
 - {id: m6B6A40, start: 0x6B6A40, end: 0x6B8020, fns: 34, kb: 4.1, done: 2, name: "gfx_world", name_src: opus, label: "", cohesion: 0.27,
    classes: ["C_00860388", "C_00860378"], strings: [], note: "RpWorldCreate/Destroy"}
-- {id: m6B8020, start: 0x6B8020, end: 0x6B83A0, fns: 32, kb: 0.7, done: 13, name: "", name_src: None, label: "", cohesion: 0.01,
-   classes: [], strings: []}
+- {id: m6B8020, start: 0x6B8020, end: 0x6B83A0, fns: 32, kb: 0.7, done: 13, name: "gfx_object_accessors", name_src: captain, label: "", cohesion: 0.01,
+   classes: [], strings: [], note: "Small flag/field getters and setters called by gfx_environment, gfx_skin and gfx_collision"}
 - {id: m6B83A0, start: 0x6B83A0, end: 0x6BBF60, fns: 101, kb: 13.1, done: 4, name: "gfx_object_props", name_src: opus, label: "", cohesion: 0.56,
    classes: [], strings: ["flagLightmap", "tipoLuz", "flagDinamica", "tipoAlpha", "tipoObjeto"], note: "user-data properties: flagLightmap, tipoObjeto, strMaterial, planoAlpha"}
 - {id: m6BBF60, start: 0x6BBF60, end: 0x6BF0E0, fns: 73, kb: 11.1, done: 5, name: "gfx_environment", name_src: opus, label: "", cohesion: 0.42,
@@ -365,8 +365,8 @@
    classes: ["C_00860bb8", "C_00860af0"], strings: [], note: "world add/remove clumps, streaming"}
 - {id: m6CDE90, start: 0x6CDE90, end: 0x6D0490, fns: 57, kb: 8.1, done: 1, name: "gfx_collision_shapes", name_src: opus, label: "", cohesion: 0.55,
    classes: ["C_00860cbc", "C_00860c88", "C_00860d90", "C_00860c98", "C_00860da0"], strings: ["ELLIPSOID", "SPHERE"], note: "SPHERE/ELLIPSOID, vector<T>"}
-- {id: m6D0490, start: 0x6D0490, end: 0x6D0C70, fns: 13, kb: 1.5, done: 0, name: "", name_src: None, label: "", cohesion: 0.23,
-   classes: ["C_00860db0"], strings: []}
+- {id: m6D0490, start: 0x6D0490, end: 0x6D0C70, fns: 13, kb: 1.5, done: 0, name: "gfx_render_targets", name_src: captain, label: "", cohesion: 0.23,
+   classes: ["C_00860db0"], strings: [], note: "Creates and destroys rasters and textures (RwRasterCreate/RwTextureCreate) mostly for gfx_screen_effects"}
 - {id: m6D0C70, start: 0x6D0C70, end: 0x6D2910, fns: 64, kb: 6.7, done: 3, name: "gfx_lights", name_src: opus, label: "", cohesion: 0.48,
    classes: ["C_00860e68", "C_008631c8", "C_00860de0"], strings: [], note: "RpLight world add/remove"}
 - {id: m6D2910, start: 0x6D2910, end: 0x6D3FB0, fns: 36, kb: 5.3, done: 2, name: "gfx_camera", name_src: opus, label: "CCamera", cohesion: 0.38,
@@ -403,10 +403,10 @@
    classes: ["C_00862028", "C_00861f38", "C_0086200c", "C_00861f94", "C_00861fac", "C_00861fc8"], strings: [], note: "intersection queries"}
 - {id: m6EE500, start: 0x6EE500, end: 0x6EF3E0, fns: 39, kb: 3.4, done: 6, name: "gfx_ptank_create", name_src: opus, label: "", cohesion: 0.28,
    classes: ["C_00862110", "C_00862084", "C_008620c8"], strings: [], note: "PTank atomic create, texture callbacks"}
-- {id: m6EF3E0, start: 0x6EF3E0, end: 0x6EFC80, fns: 16, kb: 2.0, done: 1, name: "", name_src: None, label: "", cohesion: 0.23,
-   classes: ["C_008621c8"], strings: []}
-- {id: m6EFC80, start: 0x6EFC80, end: 0x6F0C60, fns: 31, kb: 3.6, done: 3, name: "", name_src: None, label: "", cohesion: 0.31,
-   classes: ["C_00862240", "C_008622e8"], strings: []}
+- {id: m6EF3E0, start: 0x6EF3E0, end: 0x6EFC80, fns: 16, kb: 2.0, done: 1, name: "gfx_uv_anim", name_src: captain, label: "", cohesion: 0.23,
+   classes: ["C_008621c8"], strings: [], note: "Sets MatFX UV transform matrices and reads atomic world bounding spheres"}
+- {id: m6EFC80, start: 0x6EFC80, end: 0x6F0C60, fns: 31, kb: 3.6, done: 3, name: "gfx_particle_ptank", name_src: captain, label: "", cohesion: 0.31,
+   classes: ["C_00862240", "C_008622e8"], strings: [], note: "Creates and destroys PTank atomics and sets material textures; called by gfx_ptank and the particle system"}
 - {id: m6F0C60, start: 0x6F0C60, end: 0x6F24F0, fns: 46, kb: 5.7, done: 3, name: "", name_src: None, label: "", cohesion: 0.35,
    classes: ["C_00862490", "C_00862390", "C_00862410"], strings: []}
 - {id: m6F24F0, start: 0x6F24F0, end: 0x6F35C0, fns: 48, kb: 3.7, done: 7, name: "", name_src: None, label: "", cohesion: 0.3,
@@ -429,14 +429,14 @@
    classes: ["C_008630e0", "C_00863678", "C_00863600", "C_00863588", "C_00863070"], strings: [], note: "RpTeam players"}
 - {id: m700F90, start: 0x700F90, end: 0x7027A0, fns: 20, kb: 5.9, done: 0, name: "gfx_particle_system_defs", name_src: captain, label: "", cohesion: 0.2,
    classes: ["C_0086315c"], strings: [], note: "Particle emitter params .MAX_PARTICULAS/.EMISSION_DURATION/.PART_LIFE plus world collision and bbox calls"}
-- {id: m7027A0, start: 0x7027A0, end: 0x7037F0, fns: 29, kb: 3.8, done: 0, name: "", name_src: None, label: "", cohesion: 0.3,
-   classes: ["C_00861a00", "C_00863180"], strings: []}
-- {id: m7037F0, start: 0x7037F0, end: 0x7060E0, fns: 41, kb: 9.8, done: 0, name: "", name_src: None, label: "", cohesion: 0.29,
-   classes: ["C_008631c8", "C_008631a8"], strings: []}
+- {id: m7027A0, start: 0x7027A0, end: 0x7037F0, fns: 29, kb: 3.8, done: 0, name: "gfx_particle_atomic", name_src: captain, label: "", cohesion: 0.3,
+   classes: ["C_00861a00", "C_00863180"], strings: [], note: "RpPrtStdAtomicGetEmitter, g_PTankPluginOffset, raster lock/clear/render; called by gfx_particle_emitters"}
+- {id: m7037F0, start: 0x7037F0, end: 0x7060E0, fns: 41, kb: 9.8, done: 0, name: "gfx_particle_render", name_src: captain, label: "", cohesion: 0.29,
+   classes: ["C_008631c8", "C_008631a8"], strings: [], note: "RpPTankAtomicLock/Unlock, PrtStd prop offsets, EmitterForAllParticleBatch, RtRandom, RwImageRead"}
 - {id: m7060E0, start: 0x7060E0, end: 0x707430, fns: 23, kb: 4.6, done: 0, name: "", name_src: None, label: "", cohesion: 0.28,
    classes: ["C_008632c0", "C_00863260"], strings: []}
-- {id: m707430, start: 0x707430, end: 0x708A60, fns: 60, kb: 5.0, done: 10, name: "", name_src: None, label: "", cohesion: 0.38,
-   classes: ["C_00863430", "C_008633a0", "C_008633e0", "C_00863360", "C_00861e08", "C_008634c0"], strings: []}
+- {id: m707430, start: 0x707430, end: 0x708A60, fns: 60, kb: 5.0, done: 10, name: "gfx_anim_interpolator", name_src: captain, label: "", cohesion: 0.38,
+   classes: ["C_00863430", "C_008633a0", "C_008633e0", "C_00863360", "C_00861e08", "C_008634c0"], strings: [], note: "RtAnimInterpolatorSetCurrentAnim/Time, RpHAnimHierarchyUpdateMatrices, RtQuatConvertFromMatrix; called by gfx_hanim"}
 - {id: m708A60, start: 0x708A60, end: 0x709720, fns: 25, kb: 3.0, done: 0, name: "", name_src: None, label: "", cohesion: 0.37,
    classes: ["C_00862b58", "C_00862cd4", "C_00862d48", "C_00862a80", "C_00862c74", "C_008629f8"], strings: []}
 - {id: m709720, start: 0x709720, end: 0x70DDE0, fns: 107, kb: 16.0, done: 1, name: "gfx_water", name_src: opus, label: "", cohesion: 0.39,
@@ -497,8 +497,8 @@
    classes: ["NetProyectil", "C_00867770"], strings: [".\\PCGenerados\\NetProyectilDDL.cpp", "Detona", "NetProyectil", "m_dsProyectilDescription", "ColisionConBicho"], note: "NetProyectilDDL.cpp"}
 - {id: m747F20, start: 0x747F20, end: 0x7496C0, fns: 47, kb: 4.8, done: 5, name: "", name_src: None, label: "", cohesion: 0.27,
    classes: ["C_00868010", "C_00867fc0", "C_00868050"], strings: []}
-- {id: m7496C0, start: 0x7496C0, end: 0x74B160, fns: 55, kb: 6.0, done: 3, name: "", name_src: None, label: "", cohesion: 0.35,
-   classes: [], strings: []}
+- {id: m7496C0, start: 0x7496C0, end: 0x74B160, fns: 55, kb: 6.0, done: 3, name: "net_ddl_object_manager", name_src: captain, label: "", cohesion: 0.35,
+   classes: [], strings: [], note: "Sits among the net_*_ddl modules and uses every DDL class ID (player, proyectil, ghost, game, control); called by mp_spa"}
 - {id: m74B160, start: 0x74B160, end: 0x74C4C0, fns: 41, kb: 4.5, done: 4, name: "net_ghost_ddl", name_src: opus, label: "NetGhostDDL", cohesion: 0.4,
    classes: ["NetGhost", "C_00867578"], strings: [".\\PCGenerados\\NetGhostDDL.cpp", "DejoDeManipularte", "QuieroManipularte", "SetBombaActivada", "NetGhost"], note: "NetGhostDDL.cpp"}
 - {id: m74C4C0, start: 0x74C4C0, end: 0x74E630, fns: 36, kb: 8.0, done: 1, name: "net_game_ddl", name_src: opus, label: "NetGameDDL", cohesion: 0.5,
