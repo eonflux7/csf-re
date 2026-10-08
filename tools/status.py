@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Project dashboard: phase checklist + function progress by region/module (count and bytes).
+"""Project dashboard: backlog by area + function progress by region/module (count and bytes).
 
 Usage: tools/status.py [--modules]
 """
@@ -10,7 +10,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def checklist():
     text = open(os.path.join(ROOT, "docs", "PLAN.md")).read()
-    sect = text.split("## Phase checklist", 1)[1].split("\n## ", 1)[0]
+    head = "## Backlog" if "## Backlog" in text else "## Phase checklist"  # areas with checkboxes (2026-10-08: loop)
+    sect = text.split(head, 1)[1].split("\n## ", 1)[0]
     phase, out, nxt = None, [], []
     for line in sect.splitlines():
         if line.startswith("### "):
@@ -52,7 +53,7 @@ def functions(by_module):
 def main():
     by_module = "--modules" in sys.argv
     phases, nxt = checklist()
-    print("== Phases")
+    print("== Backlog by area (docs/PLAN.md; the loop: tools/grunt.py wave <module>)")
     for name, done, total in phases:
         mark = "✅" if "✅" in name or (total and done == total) else f"{done}/{total}" if total else "—"
         print(f"  {mark:>6}  {name}")

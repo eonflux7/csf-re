@@ -538,3 +538,39 @@ state, so a missing `mute` (or `mute 0`) explicitly unmutes. Tested on a hardlin
   alwaysThinkingEnabled=false change nothing (adaptive thinking ignores them).
 - A one-line "keep thinking short" system note at effort low: median packet 7.1k -> 4.0k tokens (30 -> 17 s), a
   hard one 24k -> 17-20k; all 18 test answers passed the gate. On for claude calls at effort low (CLAUDE_BRIEF).
+
+## 2026-10-08 — Workflow review: the loop reorganized (cutover contract, produce/verify, types first)
+Fresh-eyes review of the RE flow (user request), then implemented end to end. Findings and what changed:
+- **The output only worked hooked.** Callers bound callees by per-file invented names (1,090 addresses, 276 with
+  more than one name, 39 with conflicting conv/argc), implementations were `static`, constructors stored original
+  .rdata vtable addresses, and the planned link test never existed: the standalone build could not have linked.
+  Now the standalone link is keyed by address (src/globals.h: csf::fn_slot<A> defined by HOOK, read by CSF_FUNC;
+  csf::gv / csf::vt for data). linktest.py compiles all 2337 files standalone: unresolved game 399, rw 33,
+  netz 34, crt 13; 346 globals + 81 vtables to generate; 14 asm thunks to rewrite. addrfix.py moved 238 raw
+  addresses (168 files) into CSF_VTBL / CSF_ADDR_*; api.py gives one name + signature per address (832 files
+  renamed, 276 -> 8 multi-name addresses; 411 grunt callee names harvested as votes) and an ABI check against the
+  binary (callee reads ecx before writing it => must be bound __fastcall): 6 real bugs, all of one shape — a
+  tail-jump forwarder or caller dropped `this` (4 NetZ forwarders; std::_Tree::_Erase 0x739B80 + 2 callers).
+  Harmless while hooked, a crash whenever bisect turns the hook off.
+- **Smokes gated production but covered one start.** Lanes stalled during smokes and bisects (11-33 smokes), and
+  `--smoke-menu` waves only ran the menu tour: master's tip crashed at the FR01 scene start. Production and
+  verification are now separate: lanes commit gated functions as *pending* (ledger `ok` = installed in a passing
+  smoke, from csf_hook.log); every deploy disables pending hooks; verifier.py builds HEAD in its own detached tree,
+  smokes the verified baseline first, then module groups, quarantines culprits. First run: 8 menu-wave functions
+  broke the baseline -> queue/, found in 8 smokes.
+- **Crash triage had never worked**: crash_suspects' regex wanted a lower-case DLL base (printed with %p) and LF
+  line ends (the log is CRLF), so every bisect was a blind binary search. Fixed: one smoke per culprit.
+- **Types**: 4,231 field_XXXX / 6,313 CSF_AT / 2,299 raw vtable casts. Grunt field-name proposals agree once
+  spelling is normalized (CGuiPanel +0x138 childrenBegin 29/31): fields.py pools them (17 names at >= 3 votes and
+  60%, merged under the curated classes.yaml names); gen_classes_h emits 942 typed virtual-call wrappers
+  (`obj->vName()`), no layout change. Field coverage gauge: 43.9% of self accesses are named.
+- **Fidelity drifted to bit-exact**: 0x53C6E0 emulated x87 80-bit division in 100 lines. Prompt rule: behavioral
+  equivalence, natural float expressions; the in-game diff tolerates last-bit differences where the original
+  stores floats (difftable records the offsets). 4 more emulating files in the backlog.
+- Diff tier 2: callees that are pure (no writes outside their frame, transitively) may run twice: 727 -> 750
+  diffable. review.py: Opus samples 5% per module against the packet (6 GUI + 2 hud reviewed, 0 rejected).
+- `grunt.py wave <module>` = prep -> lanes -> verifier -> review -> link test; `wave --next` ranks modules by
+  centrality; hubs (>= 25 outside callers) go to the strong ladder; S ladder lost its Haiku-medium rung
+  (9 rescues of 330); `grunt.py cost` shows p50/p95 latency and calls per verified function (1.10).
+- First wave on the new loop: hud, 12 functions, all Haiku-low first try, verified in game (20 s per group).
+- PLAN.md: phases replaced by the loop, current focus, backlog by area, foundations; status.py/monitor read it.

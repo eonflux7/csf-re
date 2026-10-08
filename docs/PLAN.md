@@ -1,199 +1,137 @@
 # CSF-RE plan
 
 Functional (not byte-matching) C++ reimplementation of *Commandos: Strike Force* PC (`CommXPC.exe`),
-built hook-first: reimplemented functions are swapped into the running original game in batches until
-nothing original remains, then the build flips to a standalone exe.
+built hook-first: reimplemented functions are swapped into the running original game until nothing original
+remains, then the same source builds a standalone exe (cutover).
 
-This file is the living plan. Update the **Phase checklist** as work completes, and log discoveries in
-`docs/JOURNAL.md`. Open decisions for the user live at the bottom.
+This file is the living plan: **the loop** (how work is done), **current focus**, the **backlog** (what is left,
+by area) and decisions. Progress per module is generated, not written here (`tools/status.py --modules`,
+`tools/grunt.py wave --next`). Findings go to `docs/JOURNAL.md`. Open decisions for the user are at the bottom.
 
 ## Facts about the target (see JOURNAL for evidence)
 
 - `CommXPC.exe`: MSVC 7.1 (VS2003), built 2006-02-23, imagebase 0x400000, not packed. d3d9, dinput8, dsound, winsock.
 - **No RTTI** (`/GR-`), **no symbols** on any disc (PS2 proto/retail, Xbox). Names come from strings/asserts/structure.
-- Developer: Pyro Studios. Identifiers and strings are **Spanish**.
-- Original source root: `c:\CommX\Src\Main\` (from Xbox XBE). PDB was `CommXPC.pdb`.
+- Developer: Pyro Studios. Identifiers and strings are **Spanish**. Original source root `c:\CommX\Src\Main\` (Xbox XBE).
 - Statically linked libraries (never reversed, only their boundary API is named):
-  RenderWare 3.x (core + D3D9 driver + toolkits), RenderWare Audio (DirectSound), D3DX9 (shader compiler 5.04.00.3900), Quazal NetZ,
+  RenderWare 3.x (core + D3D9 driver + toolkits), RenderWare Audio (DirectSound), D3DX9, Quazal NetZ,
   MSVC 7.1 CRT/STL, libpng 1.0.12, zlib. Dynamically: binkw32, vorbisfile.
-- `RwEngineInstance` = `0x8b68c0`.
-- Region map: `db/regions.yaml`.
+- `RwEngineInstance` = `0x8b68c0`. Region map: `db/regions.yaml`.
 
 ## Environment
 
 - Everything runs in WSL. IDA 9.3 Linux at `~/ida-pro-9.3`, driven headless via idalib from `.venv`.
 - IDB: `ida/CommXPC.exe.i64` (gitignored, derived). Exe copy: `work/pc/CommXPC.exe`.
-- Game builds (read-only originals): `/mnt/e/dev/csf-builds/` (pc-retail, ps2-prototype, ps2-retail, xbox-retail).
-  Extracted disc contents: `work/{ps2proto,ps2retail,xbox}`.
-- Toolchain: clang-cl 21 + lld-link, `i686-pc-windows-msvc`, MSVC SDK via `xwin` (~/.local/bin/xwin).
-- Third-party sources/tools pulled from the internet go in `work/tools/` (gitignored). Do **not** use leaked
-  RenderWare SDK source; use librw (MIT) for reference and for cutover.
+- Game builds (read-only originals): `/mnt/e/dev/csf-builds/`. Play copy for hook testing: `/mnt/e/dev/csf-play`.
+- Toolchain: clang-cl 21 + lld-link, `i686-pc-windows-msvc`, MSVC SDK via `xwin`. x64dbg under `E:\dev\tools`.
+- Third-party sources/tools go in `work/tools/` (gitignored). Never leaked RenderWare SDK source; librw (MIT) only.
+- Models: grunts on their own Claude account (`~/.config/csf-re/claude-grunts`, Haiku/Opus via `claude -p`) and
+  Codex; the captain (naming) on the main account. Quota guards in lanes (`--claude-cap`, `--codex-cap`).
 
-## Data model
+## The loop (per module)
 
-- **Git (knowledge):** `db/regions.yaml`, `db/functions.csv` (ea, size, region, module, name, name_src, status),
-  `db/globals.yaml`, `db/modules.yaml`, `db/types/*.h`, `src/`, `notes/`.
-- **Derived (gitignored):** `ida/`, `export/` (regenerated from the IDB by `tools/ida/export_*.py`).
-- **Runtime state (not in git):** claims/attempts in `work/state.sqlite` once the grunt driver exists.
-- The repo is the source of truth; the IDB is derived. Only `tools/ida/sync.py` writes to the IDB, in batches.
+One command runs it: **`tools/grunt.py wave <module>`** (`wave --next` ranks modules by centrality: undone
+bytes x how much other code calls into them). Each step also runs on its own.
 
-## Workflow (revised)
+1. **Types first** (wave prep, automatic): `captain.py family` names the module's unnamed classes (agentic Opus
+   session); `fields.py apply` pools the field names every grunt proposed (consensus per class+offset);
+   `rename_classes.py` + `fields.py fixbuild` rewrite src. Gauge: `fields.py coverage --module M`.
+2. **Produce** (`grunt.py lanes --module M`): leaf-first selection, clone-aware; size tiers S/M/L with model
+   ladders (S: Haiku low x2 -> strong; M: Haiku high x2 -> Codex x2; L and hubs (>= 25 outside callers): Codex).
+   Packet = pseudocode + disasm + class fields + typed virtual calls + the canonical `bind as` line per callee.
+   `normalize()` auto-fixes (address macros, canonical names, includes); the **gate** checks includes, compile,
+   references vs the original (semcheck), `ret N`, ABI of every binding against the binary, no raw addresses.
+   Batches are linked and committed **pending** (never installed in a passing smoke yet).
+3. **Verify** (`verifier.py`, async; lanes start one group per 300 commits as a canary): its own detached tree at
+   HEAD, the verified baseline smoked alone first, then module groups of pending functions enabled on top
+   (FR01; `--full` adds menu tour + savegame), crash report -> culprit (else bisect via ini toggles), diff
+   mismatches -> quarantine (`queue/`, status todo). Every deploy keeps pending hooks off.
+4. **Review** (`review.py sample --module M`): Opus reads ~5% of the module's functions against the original;
+   the rejection rate is the module's quality estimate; rejections go to `queue/`.
+5. **Consolidate**: `api.py build` (automatic per commit: one name + signature per address, grunt names as votes),
+   `linktest.py` (what is left before the standalone exe links; shown by `status.py`).
 
-- Grunts are **single LLM calls**, not agents: a Python driver builds a packet (pseudocode with current names,
-  callee signatures, referenced types, module note, strings), calls the model, runs the gate, commits serially.
-  No worktrees, no claim expiry. One retry with the gate error, then escalate to `queue/` for Opus.
-- One task = name + type + reimplement a function (or a batch of tiny ones). Naming-only tasks exist only
-  for library-boundary identification.
-- Gate: compiles; `static_assert` layouts pass; calling convention / stack purge matches the original (`ret N`).
-- Hooks are registered in source next to the function (`HOOK(0xADDR, Fn)`); runtime-togglable via an ini so
-  bisecting a batch needs a restart, not a rebuild.
-- Behavioral checks before playtests: in-DLL differential tests for pure functions; record/replay of args.
-- Allocator shim: in the hook phase, `new/delete/malloc/free` route to the game's CRT heap.
-- RW calls go through an `rw.h` shim: game addresses in hook phase, librw at cutover.
-- Periodic **link test**: build the standalone exe with the cutover flag; unresolved symbols = true remaining work.
-- Ordering: leaf-first over SCCs of the call graph; virtual calls count as satisfied once the class is typed.
+Between waves the orchestrator (Opus, interactive) works `queue/` and the backlog below.
+
+## Module board
+
+Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py wave --next` (what to wave next),
+`tools/fields.py coverage` (types), `tools/verify.py report` (evidence tiers), `tools/review.py report` (quality).
 
 ## Current focus (priority order)
 
-0. **Module waves** (2026-10-07, user): progress is measured in bytes per module, not function counts (841 done
-   functions were only 0.5% of the game's bytes: leaf-first picked the tiny ones everywhere). Per module: name its
-   classes / fields first (Phase 2 loop below), then `grunt.py lanes --module <name|id>`, then `sweep.sh`.
-   Modules: `tools/modules.py list|show`, `status.py --modules`. First wave: the GUI control family
-   (gui_control .. gui_texture_listbox, 0x7140B0-0x731800, ~70 KB), exercised by the menu tour. Fields done
-   (2026-10-07: CGuiControl + 9 controls, ~130 GUI functions named). Wave 1 lanes: 25% of the GUI bytes
-   (417 ok); resume with the same command when Codex has quota (347 eligible left), then the 23 functions > 600 B.
-1. **Phase 2 core classes, started early alongside the Phase 4 waves** (2026-10-07): every named class makes later
-   packets clearer (grunts get the class name, its role and named fields). Loop: `tools/classinfo.py <vtable>` for
-   evidence → `db/types/classes.yaml` → `tools/rename_classes.py` (src + functions.csv + header) → build/smoke →
-   `tools/ida/sync.py`. Fields: `fields:` takes a plain name or "type name[N]" (legacy::string/wstring, arrays).
-   Next: field names of the menu/AI bases (CMenuScreen, TCharTask, TAiState), the engine family 0x860178, the
-   0x82E598 task subfamily.
-2. Phase 4 lanes runs (one lane, S/M/L tiers; mostly Haiku on the grunts' own Claude account now; Codex kept for L past 50 % of its 5h window).
-   First tier run: the menu wave (25 menu_* modules, ~500 eligible). Then tune --s-max/--m-max and the ladders on
-   its per-tier stats (monitor Costs pane, `grunt.py cost`).
-3. Opus review sampling and diff tier 2 (catch bug classes before they crash in-game).
-4. Executed coverage: two thirds of the done functions have only passed static checks (`verify.py report`).
+1. **Waves by centrality** with the new loop (`wave --next`: m45AAF0, game_data_defs, hud, scene_loader,
+   char_action_fsm, ...). hud done as the loop's first test (12 functions, produce -> verified in game).
+2. **queue/** (55 items): the 8 menu functions the first verifier run quarantined (they broke the FR01 scene start;
+   the menu wave had only smoked the menu tour), 47 earlier escalations.
+3. **Types for the next waves**: field names of CMenuScreen, TCharTask, TAiState, CCharWeaponFsm; the engine family
+   0x860178 and the 0x82E598 task subfamily (captain family at wave prep covers unnamed classes).
+4. **Verification depth**: `verifier.py --full` over everything once (menu tour + savegame per group), then review
+   samples per module (`review.py sample`) to get a defect rate for the 1278 gate-only functions.
 
-## Phase checklist
+## Backlog
 
-### Phase 0 — symbol harvest  ✅ done (no symbols exist; see JOURNAL 2026-10-07)
-
-### Phase 1 — triage
-- [x] IDB created with full auto-analysis (22,915 functions, Hex-Rays OK)
-- [x] Metadata export (`export/functions.jsonl`, `export/strings.json`)
-- [x] RTTI scan (none for game classes)
-- [x] Draft region map (`db/regions.yaml`)
-- [x] `db/functions.csv` generated (`tools/triage.py`)
-- [x] Refine regions 0x646000–0x7ae440 and 0x7c4000–0x82c000 (NetZ vs game vs RW toolkits)
-- [x] Identify STL template instantiations inside game regions (`tools/stl.py` → db/stl.json, module=stl; 418 fns)
-- [x] Bulk Hex-Rays export (`export/funcs/<ea>.c`)
-- [x] Name the RW boundary API (`tools/rwname.py`, 2 Codex passes): 372/416 applied (unique, conf ≥0.7)
+### Loop & tooling
+- [ ] Monitor: verifier and review panes (work/verifier_state.json, verifier_log.jsonl, db/reviews.jsonl)
+- [ ] Redo under the fidelity rule the 4 files that emulate x87 rounding (0x72DE90, 0x729F60, 0x7292C0, 0x538A50)
+- [ ] Feed recurring review issue kinds into the grunt prompt (`review.py report`) once samples exist per module
+- [ ] Re-test Sonnet for bulk function renames (captain functions) after waves name the callers
 - [ ] Opus pass over the 44 held-back RW names (`rwname.py report`): neighbour pairs given the same name
       (Set/Get, Width/Height, Int32/Int16) and low-confidence toolkit internals (RpTeam, Rt2d, RtWorldImport)
-- [x] Re-examine 0x7C65C0–0x82C410: RW 3.7 toolkits + interleaved **RenderWare Audio** (DirectSound/COM, `.rws`;
-      581 fns / 92 KB, region `rwa` via `tools/rwa.py` → db/region_overrides.json; 40 boundary fns)
-- [x] Name the CRT boundary API (58 after FLIRT/region fixes; `tools/boundary.py` regenerates export/boundary_api.json)
-- [ ] NetZ boundary (320): name only if needed for stubbing — deferred, game net layer is stubbed at cutover
-- [x] Harvest Spanish strings/state names/config keys → subsystem anchors (per-module evidence in
-      `work/modules_evidence.txt`: strings, classes, library callees, callers; used to name the modules)
-- [x] Clone clusters (`tools/clones.py` → export/clones.json): one impl per cluster
-- [x] Vtable recovery + QI-chain hierarchy (`tools/vtables.py` → db/vtables.json)
-- [x] Ctor-based hierarchy (base vtable stored before derived) + class size from `operator new` call sites (`tools/classes.py` → db/classes.json, 662 classes)
-- [x] Draft `db/modules.yaml` (`tools/modules.py`): optimal contiguous partition under modularity over call /
-      class / shared-data / neighbouring-rdata affinity, calibrated on NetZ's __FILE__ names (85% of same-file
-      neighbours together, 80% of file boundaries found); known .cpp names are hard boundaries. 269 modules
-      (median 5.7 KB), 148 named by Opus; functions.csv module column = module id
-- [ ] Name the remaining 121 modules as their classes get named (`modules.py show`, `modules.py name FILE`)
-- [x] Find globals: data refs → `db/globals.yaml` (captain, 2026-10-08: 921 string-pointer globals named mechanically,
-      67 of the 87 cross-module globals by Opus; 19 held in work/captain/held.jsonl for review)
+- [ ] Name the remaining ~80 unnamed modules just before their wave (`modules.py show`, captain modules)
 - [ ] Locate Xbox XBE code, diff vs PC for structure confirmation (optional)
 
-### Phase 2 — types and module carving (Opus) — started early, see Current focus
-- [x] Class naming pass 1: 116 classes in `db/types/classes.yaml` (conf ≥ 0.7 applied): the 12 GUI control types
-      (from the .fbs keyword factory 0x71DBE0), ~45 menu screens (control names), 35 AI tasks/states (attested
-      T* names from their GetName virtuals), 13 NetZ DDL classes, managers (save games, profiles, options, input,
-      light, camera). Rename pass over src/auto (110 functions re-prefixed by owning class), IDB sync.
-- [x] `tools/ida/sync.py`: functions.csv names, summaries as comments, globals, vtable names, auto_classes.h types
-- [ ] Field names and layouts of the named bases: GUI done (CGuiControl 36 fields, sizeof 0x134, + Button,
-      Static, Switch, Edit, Slider, Panel, ListBoxBase, ListBox; traced .fbs keyword -> setter slot -> field);
-      left: CMenuScreen, TCharTask, TAiState, CCharWeaponFsm (grunt field_names proposals are too generic to use)
-- [x] Base-class field attribution in classes.py: the cause was derived dtors with the base dtor inlined
-      ([derived, base] stores) read as base ctors; now dtors of the first store (slot-0 rule + slot-count rule)
+### Types & structure
+- [ ] Field names of the menu/AI bases: CMenuScreen, TCharTask, TAiState, CCharWeaponFsm
 - [ ] Engine family 0x860178 (86 classes: clump objects, HAnim animation, lights, cameras, 2D scenes) and the
       unnamed 0x82E598 task subfamily (factory 0x41E240, type ids 0..6)
-- [ ] Core classes: layouts, vtables, sizeof with static_asserts
+- [ ] Core classes: layouts, vtables, sizeof with static_asserts (gen_classes_h already asserts known sizes)
 - [ ] STL layout replicas for VC7.1 (vector/list/map/set) + template hook impls covering db/stl.json
-      (element size per instance; nodes/buffers via game allocator sub_690DC0/sub_690E60)
-- [ ] Module boundaries finalized; first `notes/`
+      (element size per instance; nodes/buffers via game allocator sub_690DC0/sub_690E60) — excluded from waves
+- [ ] Typed returns for virtual wrappers that return class pointers (now void*: header order)
 
-### Phase 3 — hook DLL bring-up
-- [x] clang-cl + xwin toolchain builds `dinput8.dll` proxy (`cmake/clang-cl-x86.cmake`, `tools/deploy.sh`)
-- [x] Smoke test: game loads the DLL and runs (`tools/smoke.sh`; per-hook hit counts in csf_hook_hits.txt)
-- [x] Hook installer (jmp + vtable patch), ini toggles, logging (`hook/`)
-- [x] globals.h (address-bound `CSF_GLOBAL`), `legacy::string` (VC7.1 layout, 28 bytes)
-- [ ] Allocator shim (operator new/delete → game heap; delete = sub_691110), rw.h shim, globals.yaml → globals.h generator
-- [x] First hand-written hooked functions verified in-game (sub_697300 79 hits, sub_697450 1 hit)
+### Verification
+- [ ] Diff tier 3: functions whose callees have side effects (record the original's callee calls, replay them for
+      ours; callee writes into `this` and thread safety are the hard parts; needs live iteration)
+- [ ] AI combat coverage: the T* AI tasks and GUI input handlers only run in real play. Needs savegames taken in
+      combat (user playtest) -> `CSF_SWEEP_SAVES="1.sav 2.sav ..."`, then `verifier.py --full`
+- [ ] Executed coverage: 1278 done functions have only passed static checks (`verify.py report`)
 
-### Phase 4 — grunt waves
-- [x] Driver (packet → model → gate → commit), escalation queue (`tools/grunt.py`)
-- [x] Clone-cluster expansion: after one member passes, derive siblings (same shape, different callees/consts)
-      (select() is clone-aware: siblings get the done member as an example and go to the DeepSeek lane)
-- [x] Lanes mode (DeepSeek tiny/clone lane + Codex main lane, continuous smoke+commit) — trial: 45 functions
-- [x] One dynamic lane (2026-10-08, replaces the two lanes): size tiers S < 150 B (+ clone siblings) / M <= 400 B /
-      L, each with a model ladder over OpenCode Go + Codex (S: Haiku 5.5 low x2 -> medium -> Codex high;
-      M: Haiku 5.5 high x2 -> Codex high x2, Codex review at medium; L: Codex high x2; MiMo dropped and no xhigh
-      after the first menu batches), per-tier in-flight caps, quota-blocked rungs defer instead of escalating. Chosen by
-      an A/B over OpenCode Go (work/ab/). Go dropped the same day (allowance hit after ~2 batches): Haiku now runs
-      via `claude -p` on a second Claude account (~/.config/csf-re/claude-grunts, paused at --claude-cap 95 % of
-      its 5h/7d window); S/M Codex rungs run on Opus 5.5 medium there once Codex passes --codex-reserve 50 %.
-- [x] Collect CSF_GLOBAL names from src/auto into db/globals.yaml (`tools/globals.py`, run after each batch;
-      names substituted into packet pseudocode; pin with src: opus)
-- [x] Lanes: auto-bisect on smoke failure (ini toggles, no rebuild), `work/grunt_stop`, Codex 5h quota guard
-      (`--codex-cap 90`), Codex review verdicts logged (`grunt.py cost` shows the rejection rate)
-- [ ] Opus review pass: sample ~5% of each batch against asm; feed recurring mistakes into the prompt
-- [x] In-mission smoke test: `scene`/`loadsave` dev start + windowed (src/core/devcmd.cpp; smoke.sh default)
-- [x] Semantic gate check (tools/semcheck.py)
-- [x] Differential test harness (hook/diff.cpp, tools/difftable.py; leaf functions, on by default in smoke)
-- [ ] Diff tier 2: functions with callees (record callee calls / stub them during the double run)
-- [x] x64dbg + x64dbg-automate (E:\dev\tools\x64dbg, venv E:\dev\tools\x64dbg-venv): `tools/dbg.sh crash` = crash triage
-- [x] IDA code view export (`tools/ida/export_disasm.py` → export/disasm/<ea>.json: code heads, chunks, switch tables, xrefs; 9 s); packet.disasm() decodes exactly those heads (capstone fallback)
-- [ ] Waves per module, leaf-first (`grunt.py run|lanes --module`; selection support done)
-- [x] Negative controls (`tools/controls.py`, from the auto-re-agent review): 36 fixtures in tests/controls/ (33
-      historical tail-call bugs from git, embedded-object loads, BOOL width) must be rejected for the right reason;
-      generated mutants per operator (offset/callee/global/string/dropcall/convention); positive controls (`--all`:
-      every src/auto file passes today's gate); `--live`: const/BOOL mutants must show MISMATCH in game. Run after
-      any change to gate/semcheck/diff/smoke.
-- [x] Verification ledger `db/verify.json` (`tools/verify.py`): per function the compiled-code hash + smoke hits +
-      diff counts, filled by every SMOKE OK; tiers diffed > executed > gate, stale when the code changed since its
-      evidence (rename-insensitive); shown by status.py
-- [x] Coverage starts: `tools/sweep.sh` (FR01, devcmd `menutour` over 27 menu screens, loadsave 1.sav, 3 more
-      scenes; ~3 min); grunt's long smokes rotate FR01 / menu tour / 1.sav (a bisect repeats the failing start).
-      Gate-only 560 -> 488 of 841.
-- [ ] AI combat coverage: the T* AI tasks (cover, search, throw, reload, ...) and GUI input handlers only run in
-      real play. Needs savegames taken in combat (user playtest) -> `CSF_SWEEP_SAVES="1.sav 2.sav ..."`.
-- [x] Bounded evidence requests (`tools/evidence.py`: pseudo / asm / callers / class): offered above
-      `--evidence-over` 150 B, `--evidence` 3 per function, not counted as attempts; `grunt.py cost` shows usage
-- [x] Per-address gate waivers (`tools/waive.py` -> db/waivers.yaml): bound to the reviewed compiled-code hash,
-      post-compile findings only (semcheck, ret N)
-- [x] Full transcripts of every model call in work/calls/<ea>/ (system prompts stored once by hash)
+### Cutover
+- [ ] Allocator shim (operator new/delete -> game heap; delete = sub_691110), rw.h shim
+- [ ] Generated data for the standalone build: csf::gv<A> (346 globals: initial bytes from the exe) and
+      csf::vt<A> (81 vtables: tables of csf::fn_slot pointers), from `linktest.py` (`work/linktest.json`)
+- [ ] Rewrite the 14 naked asm thunks that embed original addresses (`linktest.py --list asm`)
+- [ ] Library boundaries the standalone link needs: rw 33 (librw), crt 13, netz 34 (stub), rwa (see decision)
+- [ ] NetZ boundary (320): name only if needed for stubbing — game net layer is stubbed at cutover
 
-### Phase 5 — batch verification (user playtests) and Phase 6 — cutover
+## Foundations (done)
+
+Phases 0-3 of the original plan are complete: no symbols exist on any disc; the IDB, metadata/pseudocode/disasm
+exports, region map, RW/CRT/RWA boundary names, STL instantiations, clone clusters, vtables + ctor hierarchy
+(662 classes), modules (269, 187 named), globals (1136); the clang-cl hook DLL (dinput8 proxy, JMP/vtable/tramp
+hooks, ini toggles, crash handler, dev starts, background/muted smokes), differential test harness, x64dbg
+triage, negative controls (`controls.py`), verification ledger, waivers, full call transcripts. Phase 4 built
+the grunt driver, tiers/ladders and quota guards. On 2026-10-08 the workflow was reorganized into the loop above
+(JOURNAL): address-keyed cutover contract + link test, canonical bindings + ABI check, produce/verify split,
+typed virtual calls, field consensus, fidelity rule, Opus review sampling, `wave`.
 
 ## Decisions made
 
 - 2026-10-07: **Single-player first; multiplayer stubbed.** NetZ boundary is not reimplemented; game net code
   (net DDL classes etc.) gets stubbed at cutover. Revisit LAN after SP cutover.
-- 2026-10-07: Grunt provider = **DeepSeek API** (key in `~/.config/csf-re/env`, never in git).
-- 2026-10-07 (superseded below): Model tiering: DeepSeek flash (thinking on, effort high→max) for the bulk; Claude Sonnet via the
-  Claude Code CLI (user's subscription, no API key) for functions > ~500 B and as escalation after DeepSeek fails
-  (`--escalate-claude`); Opus (interactive session) reviews samples and handles `queue/`.
-- 2026-10-07: **Grunt tiering v2 (user):** main grunt = GPT-6.1-Sol via Codex CLI (`codex exec`, user's
-  subscription, effort high → xhigh on retry); functions < 48 B → DeepSeek flash (falls through to Codex on API
-  error, e.g. out of credit). Codex quota is finite: a 456-call naming run exhausted it — keep runs batched; `--escalate-claude` adds Sonnet. `grunt.py run --backend auto` (default).
-- 2026-10-07: xwin x86 CRT/SDK installed at `~/.xwin` (license accepted by user).
-- 2026-10-07: x64dbg (2026.05.27) + x64dbg-automate 0.8.1 installed on Windows under E:\dev\tools (user OK).
-  Used for crash triage and targeted runtime RE, not in the normal smoke path.
+- 2026-10-07: xwin x86 CRT/SDK installed at `~/.xwin` (license accepted by user). x64dbg + x64dbg-automate on
+  Windows under E:\dev\tools (user OK), for crash triage and targeted runtime RE.
 - Play copy of the game for hook testing: `/mnt/e/dev/csf-play` (E:\dev\csf-play). Never deploy into csf-builds.
+- 2026-10-08: Grunts: Haiku 5.5 / Opus 5.5 on the grunts' own Claude account (never the main account) + Codex;
+  OpenCode Go and DeepSeek dropped (allowance / quality). Ladders chosen from the run logs (`grunt.py cost`).
+- 2026-10-08 (user): **progress is bytes per module**, waves per module, types first.
+- 2026-10-08 (user): **production never waits on the game**: lanes commit gated functions as pending; the verifier
+  checks them in game asynchronously; every deploy keeps pending hooks off.
+- 2026-10-08: **the standalone link is keyed by original address** (src/globals.h), never by names; one canonical
+  name + signature per address (db/api.json) for readability.
+- 2026-10-08: **fidelity is behavioral**: natural expressions, no emulation of x87 rounding or register/stack
+  artifacts; the in-game diff tolerates last-bit float differences where the original stores floats.
 
 ## Open decisions (for the user)
 
