@@ -25,6 +25,9 @@ class DB:
         for vt, c in self.classes.items():
             for m in c["methods"]:
                 self.owner.setdefault(int(m, 16), []).append(vt)
+        import yaml as _y
+        mp = os.path.join(ROOT, "db", "modules.yaml")
+        self.modules = {m["id"]: m for m in (_y.safe_load(open(mp)) or [])} if os.path.exists(mp) else {}
         self.globals = {}
         gp = os.path.join(ROOT, "db", "globals.yaml")
         if os.path.exists(gp):
@@ -202,6 +205,9 @@ def build(db, ea, with_asm_limit=400):
     out.append(f"## Target function 0x{ea:08X} (size {f['size']} bytes, region {row['region']})")
     out.append(f"Hex-Rays prototype: `{proto}`")
     out.append(f"Original `ret` immediate(s): {rets}  (stack bytes the callee pops; must match exactly)")
+    mod = db.modules.get(row["module"])
+    if mod and mod.get("name"):  # subsystem for Subsystem_Verb names of non-class functions
+        out.append(f"Module: {mod['name']}" + (f" ({mod['note']})" if mod.get("note") else ""))
     vt = db.class_of(ea)
     if vt:
         c = db.classes[vt]

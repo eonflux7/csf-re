@@ -68,7 +68,8 @@ File rules:
 - Give functions descriptive names in PascalCase (English) that say what it does or returns (e.g.
   GetCoverFireTaskName, IsInnerObjectType38, SetVisibleFlag) — never placeholders like GetConstant29, Sub_4206B0,
   ReturnValue, Nullsub. Prefix by the class id for methods, e.g.
-  C_0082d70c_Destroy. Name local variables meaningfully.
+  C_0082d70c_Destroy. Functions outside a class: prefix by the packet's Module in PascalCase when it fits
+  (module bdd_weapon_defs -> WeaponDefs_ParseMuzzleFlash). Name local variables meaningfully.
 
 JSON metadata: {"name": "<function name used>", "confidence": 0.0-1.0,
  "summary": "<one line: what it does>",

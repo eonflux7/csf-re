@@ -430,3 +430,14 @@ calls (`--bare` needs an API key). Monitor has a Captain panel (work/captain_sta
   qualified by module). globals.yaml: 1136 entries, 962 pinned by the captain.
 - globals.py: takes work/db.lock (captain writes concurrently), keeps src captain pinned, drops .text addresses
   (18 EH-stub "globals").
+
+### 2026-10-08 — Captain: module names; module line in packets
+
+- `captain.py modules`: per-module packet built live (named classes, strings incl. captain's string-pointer keys,
+  real function names, library calls, caller/callee modules by name, address neighbours); existing 148 names in the
+  (cached) system prompt as style reference; modules ordered evidence-richest first so their names appear in later
+  packets. 121 unnamed -> 16 Opus calls, $0.76: 17 applied at >= 0.7, 22 more held at >= 0.6 applied after review
+  (RW-API based gfx_* names, MP/HUD). 187/269 named.
+- The other ~60 are 0.2-0.5 guesses from call-graph position (unnamed classes, placeholder function names, no
+  strings; e.g. m45AAF0 47 KB). Left unnamed: name them just before their wave, once classes/fields are recovered.
+- Grunt packets now carry `Module: <name> (<note>)`; non-class functions are prefixed by the module subsystem.
