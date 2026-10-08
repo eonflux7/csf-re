@@ -367,10 +367,9 @@ def panel_claude():
         body.append(t)
         body.append(Text("  " + (j.get("detail") or "").replace("\n", " "), style="bold white",
                          no_wrap=True, overflow="ellipsis"))
-    body += [usage_line("plan", cached("claude_usage", 30, claude_usage), "bold green"), account_line("claude")]
-    ev = [(e, j) for j in jobs for e in timeline(j)[:-1]]
+    ev = [(e, j) for j in jobs for e in timeline(j)[:-1]]  # plan usage + login: Costs panel
     ev.sort(key=lambda x: x[0]["at"], reverse=True)
-    for e, j in ev[:3]:
+    for e, j in ev[:4]:
         t = Text(f"{ago(iso(e['at'])):>6} ", style="dim", no_wrap=True, overflow="ellipsis")
         if multi:
             t.append("● ", style=color[j["_dir"]])
@@ -403,43 +402,206 @@ def wave_progress(spec):
                 bytes=sum(int(r["size"]) for r in w), done_bytes=sum(int(r["size"]) for r in d))
 
 
-def panel_progress(width_hint=None):
-    """Right of Claude: whole-game progress, phases, current wave, recent commits."""
-    pg = cached("progress", 20, progress)
-    phases = cached("phases", 10, all_phases)
+PLACEHOLDER = re.compile(
+    r"^(?:C_[0-9a-f]{8}_|[A-Z]\w*?_)?(Return(MinusOne|Zero|One|True|False|\d+)|Get(Returned)?Const(ant)?\w*|"
+    r"Is\w*Field\w*Null|\w*Field_?0?[0-9A-Fa-f]{2,4}\w*|\w*At0x\w*|\w*Offset[0-9A-F]+\w*|\w*_[0-9A-F]{6}|"
+    r"\w*(Vtbl|Slot)\d+\w*|\w*Unk\w*|[Ss]ub_[0-9A-F]+|Nullsub\w*)$")  # = captain.FN_PLACEHOLDER
+
+
+def stats():
+    """Whole-game and per-module progress: functions (named / done / executed / diffed / escalated), modules
+    (named / classes prepped / started / complete), classes (named / held / with fields), globals."""
+    import yaml
+    rows = list(csv.DictReader(open(os.path.join(ROOT, "db", "functions.csv"))))
+    ver = json.load(open(os.path.join(ROOT, "db", "verify.json")))
+    queue = {os.path.basename(f)[:8] for f in glob.glob(os.path.join(ROOT, "queue", "*.md"))}
+    cls = json.load(open(os.path.join(ROOT, "db", "classes.json")))
+    cy = yaml.safe_load(open(os.path.join(ROOT, "db", "types", "classes.yaml"))) or {}
+    cy = {(f"{k:08x}" if isinstance(k, int) else str(k).lower()): v for k, v in cy.items() if isinstance(v, dict)}
+    named_c = {vt for vt, v in cy.items() if (v.get("conf") or 0) >= 0.7}
+    held_c = set()
+    for f in glob.glob(os.path.join(ROOT, "work", "captain", "held_*.jsonl")):
+        for l in open(f):
+            try:
+                vt = json.loads(l).get("vtable")
+            except ValueError:
+                continue
+            if vt:
+                held_c.add(str(vt).lower().replace("0x", "").zfill(8))
+    held_c |= {vt for vt in cy if vt not in named_c}
+    held_c -= named_c
+    mods = yaml.safe_load(open(os.path.join(ROOT, "db", "modules.yaml")))
+    gl = yaml.safe_load(open(os.path.join(ROOT, "db", "globals.yaml"))) or []
+    per = {m["id"]: dict(m=m, fns=0, bytes=0, named=0, ph=0, done=0, done_b=0, exe=0, diff=0, esc=0) for m in mods}
+    G = dict(fns=0, bytes=0, named=0, ph=0, done=0, done_b=0, exe=0, diff=0, esc=0)
+    for r in rows:
+        if r["region"] != "game":
+            continue
+        sz, ea = int(r["size"]), r["ea"]
+        d = r["status"] in ("done", "verified")
+        v = ver.get(ea, {})
+        inc = dict(fns=1, bytes=sz, named=bool(r["name"]), ph=bool(r["name"] and PLACEHOLDER.match(r["name"])),
+                   done=d, done_b=sz if d else 0, exe=d and bool(v.get("hits")), diff=d and bool(v.get("diffed")),
+                   esc=ea in queue)
+        for tgt in (G, per.get(r["module"])):
+            if tgt is not None:
+                for k, x in inc.items():
+                    tgt[k] += x
+    M_ = dict(n=0, named=0, prepped=0, started=0, complete=0)
+    for p_ in per.values():
+        m = p_["m"]
+        vts = [c[2:] for c in m.get("classes", []) if re.fullmatch(r"C_[0-9a-f]{8}", c)]
+        p_["classes"] = len(m.get("classes", []))
+        p_["cls_open"] = sum(vt not in named_c and vt not in held_c for vt in vts)
+        p_["cls_held"] = sum(vt in held_c for vt in vts)
+        p_["prepped"] = p_["cls_open"] == 0
+        if not p_["fns"]:
+            continue
+        M_["n"] += 1
+        M_["named"] += bool(m.get("name"))
+        M_["prepped"] += p_["prepped"] and bool(m.get("name"))
+        M_["started"] += p_["done"] > 0
+        M_["complete"] += p_["done_b"] >= 0.9 * p_["bytes"]
+    C = dict(n=len(cls), named=len(named_c & {c["vtable"] for c in cls}), held=len(held_c),
+             fields=sum(1 for vt in named_c if cy[vt].get("fields")))
+    gnamed = [g for g in gl if not re.match(r"g_(Dword|Word|Byte|Unk|Data|Ptr|Float|Value|GlobalValue|vtbl)_?[0-9A-F]{6}",
+                                            g.get("name", ""))]
+    GL = dict(n=len(gl), named=len(gnamed), pinned=sum(g.get("src") in ("opus", "user", "captain") for g in gl))
+    return dict(game=G, modules=M_, classes=C, globals=GL, per=per)
+
+
+def frac(a, b, style="green"):
+    t = Text(f"{a:,}", style="bold " + style)
+    t.append(f"/{b:,}", style="dim")
+    return t
+
+
+def panel_progress():
+    """Game / functions / modules / classes / globals in one grid, plus the current wave."""
+    S = cached("stats", 30, stats)
     body = []
-    if isinstance(pg, dict):
-        pct = pg["done_bytes"] / max(1, pg["bytes"]) * 100
-        t = Text("game  ", style="bold")
-        t.append_text(bar(pct, 14))
-        t.append(f" {pct:.2f}% bytes", style="bold green")
+    if isinstance(S, dict):
+        G, Mo, C, GL = S["game"], S["modules"], S["classes"], S["globals"]
+        pct = G["done_b"] / max(1, G["bytes"]) * 100
+        t = Text("game      ", style="bold")
+        t.append_text(bar(pct, 20))
+        t.append(f" {pct:.2f}% of {G['bytes'] / 1024:,.0f} KB", style="bold green")
         body.append(t)
-        body.append(Text(f"      {pg['done']:,}/{pg['game']:,} functions", style="green"))
-    if isinstance(phases, list):
-        t = Text()
-        for name, d, n in phases:
-            t.append(name.replace("Phase ", "P") + " ", style="bold")
-            t.append(f"{d}/{n}  ", style="green" if d == n else "yellow")
-        body.append(t)
+        tb = Table.grid(padding=(0, 2))
+        for _ in range(5):
+            tb.add_column(no_wrap=True)
+        lab = lambda s: Text(s, style="bold")  # noqa: E731
+        def kv(k, a, b=None, st="green"):
+            t = Text()
+            t.append(f"{k} ", style="dim")
+            t.append(f"{a:,}", style="bold " + st)
+            if b is not None:
+                t.append(f"/{b:,}", style="dim")
+            return t
+        tb.add_row(lab("functions"), kv("named", G["named"] - G["ph"], G["fns"]), kv("done", G["done"], G["fns"]),
+                   kv("executed", G["exe"], G["done"], "cyan"), kv("diffed", G["diff"], G["done"], "cyan"))
+        tb.add_row("", kv("placeholders", G["ph"], st="yellow"), kv("escalated", G["esc"], st="red"), "", "")
+        tb.add_row(lab("modules"), kv("named", Mo["named"], Mo["n"]), kv("prepped", Mo["prepped"], Mo["n"]),
+                   kv("started", Mo["started"], Mo["n"]), kv("≥90% done", Mo["complete"], Mo["n"]))
+        tb.add_row(lab("classes"), kv("named", C["named"], C["n"]), kv("held", C["held"], st="yellow"),
+                   kv("with fields", C["fields"], C["named"]), "")
+        tb.add_row(lab("globals"), kv("named", GL["named"], GL["n"]), kv("pinned", GL["pinned"], GL["n"]), "", "")
+        body.append(tb)
     st = cached("live", 1, lambda: json.load(open(LIVE)) if os.path.exists(LIVE) else None)
     wp = wave_progress(((st or {}).get("config") or {}).get("wave")) if isinstance(st, dict) else None
     if wp:
         pct = wp["done_bytes"] / max(1, wp["bytes"]) * 100
-        body.append(Text(f"wave  {wp['label']}", style="bold magenta", no_wrap=True, overflow="ellipsis"))
-        t = Text("      ")
-        t.append_text(bar(pct, 14))
-        t.append(f" {pct:.0f}%  {wp['done']}/{wp['n']} fns")
+        t = Text("wave      ", style="bold magenta")
+        t.append_text(bar(pct, 20))
+        t.append(f" {pct:.0f}%  {wp['done']}/{wp['n']} fns  {wp['label']}")
+        t.no_wrap, t.overflow = True, "ellipsis"
         body.append(t)
-    jobs = cached("jobs", 1, claude_jobs)
-    since = min(iso(j["createdAt"]) for j in jobs) if isinstance(jobs, list) and jobs else time.time() - 86400
-    cm = cached("commits", 10, lambda: commits(since))
-    if isinstance(cm, list):
-        body.append(Text(f"commits this session {len(cm)}", style="bold"))
-        for ct, h, sub in cm[:4]:
-            t = Text(f"{ago(int(ct)):>6} ", style="dim", no_wrap=True, overflow="ellipsis")
-            t.append(sub)
-            body.append(t)
     return Panel(Group(*body), title="Progress", border_style="yellow")
+
+
+def module_rows():
+    """Modules tab: one row per module with functions, its classes' prep state and done/verified progress."""
+    S = cached("stats", 30, stats)
+    if not isinstance(S, dict):
+        return []
+    out = []
+    for mid, p_ in S["per"].items():
+        if not p_["fns"]:
+            continue
+        m = p_["m"]
+        pct = p_["done_b"] / max(1, p_["bytes"]) * 100
+        out.append(dict(id=mid, name=m.get("name") or "", src=str(m.get("name_src") or ""), fns=p_["fns"],
+                        kb=p_["bytes"] / 1024, named=p_["named"] - p_["ph"], ph=p_["ph"], classes=p_["classes"],
+                        cls_open=p_["cls_open"], cls_held=p_["cls_held"], prepped=p_["prepped"],
+                        done=p_["done"], pct=pct, exe=p_["exe"], diff=p_["diff"], esc=p_["esc"]))
+    return out
+
+
+def captain_costs():
+    """Captain spend from work/captain_log.jsonl: today and all time, per model."""
+    tot, today, per = 0.0, 0.0, collections.Counter()
+    t0 = datetime.now().replace(hour=0, minute=0, second=0).timestamp()
+    if os.path.exists(os.path.join(ROOT, "work", "captain_log.jsonl")):
+        for l in open(os.path.join(ROOT, "work", "captain_log.jsonl")):
+            try:
+                r = json.loads(l)
+            except ValueError:
+                continue
+            u = r.get("usage") or {}
+            c = u.get("cost_usd") or 0
+            tot += c
+            per[u.get("model", "?")] += c
+            if r.get("ts", 0) >= t0:
+                today += c
+    return tot, today, per
+
+
+def panel_costs(st=None, recent=()):
+    """Every subscription / balance in one place: login, plan, billing date, usage windows, run spend."""
+    def usage_rows(u):
+        out = []
+        if not isinstance(u, dict):
+            return [Text(f" usage n/a: {str(u)[:44]}", style="dim")]
+        for k, v in u.items():
+            if k == "_age":
+                continue
+            pct, reset = v
+            t = Text(f" {k} ")
+            t.append_text(bar(pct, 12))
+            t.append(f" {pct:>3.0f}%  resets {dur(max(0, reset))}", style="dim" if pct < 70 else "bold")
+            out.append(t)
+        if u.get("_age", 0) > 900:
+            out[-1].append(f"  ({dur(u['_age'])} old)", style="dim")
+        return out
+
+    body = [Text("Claude", style="bold green"), account_line("claude")]
+    body += usage_rows(cached("claude_usage", 30, claude_usage))
+    cc = cached("captain_costs", 30, captain_costs)
+    if isinstance(cc, tuple):
+        tot, today, per = cc
+        body.append(Text(f" captain (claude -p) today ${today:.2f}  total ${tot:.2f}  "
+                         + " ".join(f"{m} ${c:.2f}" for m, c in per.most_common()), style="dim",
+                         no_wrap=True, overflow="ellipsis"))
+    body += [Text("Codex", style="bold magenta"), account_line("codex")]
+    body += usage_rows(cached("codex_usage", 60, codex_usage))
+    body.append(Text("DeepSeek", style="bold cyan"))
+    db_ = cached("ds_balance", 120, deepseek_balance)
+    if isinstance(db_, tuple):
+        bal = "  ".join(f"{amt} {cur}" for cur, amt in db_[0]) or "?"
+        empty = all(float(a or 0) <= 0.5 for _, a in db_[0]) if db_[0] else True
+        body.append(Text(f" balance {bal}" + ("  — top up" if empty else ""),
+                         style="bold red" if empty or not db_[1] else "green"))
+    else:
+        body.append(Text(f" balance n/a: {str(db_)[:30]}", style="dim"))
+    tot = (st or {}).get("tokens") or {}
+    if tot:
+        t = Text(" grunt run: ", style="dim")
+        t.append("  ".join(f"{b} {v['calls']} calls in {kfmt(v['prompt'])} out {kfmt(v['completion'])}"
+                           for b, v in sorted(tot.items())), style="dim")
+        t.no_wrap, t.overflow = True, "ellipsis"
+        body.append(t)
+    body += efficiency(list(recent))
+    return Panel(Group(*body), title="Costs · usage · logins", border_style="cyan")
 
 
 def captain_lines():
@@ -495,55 +657,6 @@ def tool_line():
         t.append(f"  codex exec ×{codex}", style="magenta")
     t.no_wrap, t.overflow = True, "ellipsis"
     return t
-
-
-def limits_grid(st, recent):
-    """Subscriptions/balances with account + billing, and this run's token use per backend."""
-    tot = (st or {}).get("tokens") or {}
-    if not tot:
-        agg = collections.defaultdict(lambda: dict(calls=0, prompt=0, cached=0, completion=0))
-        for r in recent:
-            for u in r.get("usage", []):
-                a = agg[u.get("backend", "deepseek")]
-                a["calls"] += 1
-                a["prompt"] += u.get("prompt_tokens", 0) or 0
-                a["cached"] += u.get("cached_tokens", 0) or 0
-                a["completion"] += u.get("completion_tokens", 0) or 0
-        tot = agg
-
-    def run(b):
-        t = tot.get(b)
-        if not t:
-            return Text(" run: no calls", style="dim")
-        return Text(f" run: {t['calls']} calls in {kfmt(t['prompt'])}"
-                    + (f" ({t['cached'] / max(1, t['prompt']):.0%}c)" if t["cached"] else "")
-                    + f" out {kfmt(t['completion'])}", style="dim", no_wrap=True, overflow="ellipsis")
-
-    cx = [Text("Codex", style="bold magenta"), account_line("codex")]
-    cu = cached("codex_usage", 60, codex_usage)
-    if isinstance(cu, dict):
-        for k, (pct, reset) in cu.items():
-            t = Text(f" {k} ")
-            t.append_text(bar(pct, 10))
-            t.append(f" {pct:>3.0f}% ↻{dur(reset)}", style="dim" if pct < 70 else "bold")
-            cx.append(t)
-    else:
-        cx.append(Text(f" n/a: {str(cu)[:40]}", style="dim"))
-    cx.append(run("codex"))
-    ds = [Text("DeepSeek", style="bold cyan")]
-    db_ = cached("ds_balance", 120, deepseek_balance)
-    if isinstance(db_, tuple):
-        ds.append(Text(" balance " + ("  ".join(f"{amt} {cur}" for cur, amt in db_[0]) or "?"),
-                       style="green" if db_[1] else "bold red"))
-    else:
-        ds.append(Text(f" n/a: {str(db_)[:30]}", style="dim"))
-    ds.append(run("deepseek"))
-    ds += efficiency(recent)
-    g = Table.grid(expand=True, padding=(0, 2))
-    g.add_column(ratio=1)
-    g.add_column(ratio=1)
-    g.add_row(Group(*cx), Group(*ds))
-    return g
 
 
 def efficiency(recent):
@@ -657,7 +770,7 @@ def panel_work(n_results=5):
     cap = captain_lines()
     if cap:
         body += [Rule(style="grey30")] + cap
-    body += [Rule(style="grey30"), tool_line(), limits_grid(g["st"], g["recent"])]
+    body += [Rule(style="grey30"), tool_line()]
     return Panel(Group(*body), title="Work · grunt · captain · limits", border_style="magenta")
 
 
@@ -704,32 +817,18 @@ def panel_plan():
             name, d, n, open_ = p
             body.append(Text(f"{name.split('—')[0].strip()} ({d}/{n}) next:", style="bold"))
             body += [Text("  ☐ " + re.sub(r"`", "", it), no_wrap=True, overflow="ellipsis") for it in open_[:3]]
-    hint = Text()
-    for k, (name, _) in list(KEYS.items()) + [("q", ("quit", ""))]:
-        hint.append(f" {k}", style="bold yellow")
-        hint.append(f" {name}" + (" ✓" if VIEW.get(name) else "") + " ", style="bold" if VIEW.get(name) else "dim")
-    return Panel(Group(*body), title="Plan", subtitle=hint, subtitle_align="right", border_style="yellow")
+    return Panel(Group(*body), title="Plan", border_style="yellow")
 
 
 def render(console=None):
-    """Everything sized to the terminal: the free rows go to the grunt results list."""
+    """Rich frame (--once): Claude | Costs, Progress, Work, Plan."""
     clock = Text(datetime.now().strftime("%H:%M:%S") + "  csf-re monitor", style="dim", justify="right")
+    g = grunt_snapshot()
     top = Table.grid(expand=True)
-    top.add_column(ratio=3)
-    top.add_column(ratio=2, min_width=36)
-    top.add_row(panel_claude(), panel_progress())
-    plan_p = panel_plan()
-    parts = [clock, top]
-    if VIEW["help"]:
-        parts.append(Panel(Group(*[Text(f"{k}  {v[1]}") for k, v in KEYS.items()], Text("q  quit")),
-                           title="Keys", border_style="dim"))
-    if console is None:
-        return Group(*parts, panel_work(), plan_p)
-    opts = console.options
-    used = sum(len(console.render_lines(x, opts, pad=False)) for x in parts + [plan_p, panel_work(0)])
-    free = console.size.height - used - 1
-    return Group(*parts, panel_work(max(3, free)), plan_p)
-
+    top.add_column(ratio=1)
+    top.add_column(ratio=1, min_width=44)
+    top.add_row(panel_claude(), panel_costs(g["st"], g["recent"]))
+    return Group(clock, top, panel_progress(), panel_work(12), panel_plan())
 
 def main():
     ap = argparse.ArgumentParser()
