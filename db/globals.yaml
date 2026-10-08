@@ -7,26 +7,28 @@
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
 - {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 3, src: auto}
-- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 4, src: auto}
+- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 6, src: auto}
 - {addr: 0x0082DC84, name: g_flt_0082DC84, type: float, uses: 1, src: auto}
 - {addr: 0x0082DDEC, name: g_Const200_0f, type: float, uses: 1, src: auto}
 - {addr: 0x0082DFCC, name: g_MessageBoxCollapsedScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082E030, name: g_fReturnedConstant_0082E030, type: float, uses: 1, src: auto}
 - {addr: 0x0082E05C, name: g_FloatConstant_82e05c, type: float, uses: 1, src: auto}
 - {addr: 0x0082E068, name: g_Const_0082E068, type: float, uses: 1, src: auto}
-- {addr: 0x0082E0F0, name: g_Const20, type: float, uses: 2, src: auto, alt: [g_LayoutInset]}
+- {addr: 0x0082E0F0, name: g_Const20, type: float, uses: 3, src: auto, alt: [g_LayoutInset, g_WidthReduction]}
 - {addr: 0x0082E958, name: g_TParadoString, type: char, uses: 1, src: auto}
 - {addr: 0x0082F318, name: g_TEndString, type: const char, uses: 1, src: auto}
 - {addr: 0x0082FAD0, name: g_TransitionHalfPi, type: float, uses: 1, src: auto}
 - {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 5, src: auto}
-- {addr: 0x0082FEBC, name: g_LayoutInset, type: float, uses: 2, src: auto}
+- {addr: 0x0082FEBC, name: g_LayoutInset, type: float, uses: 4, src: auto, alt: [g_VerticalInset]}
 - {addr: 0x00830A00, name: g_fInv255, type: float, uses: 2, src: opus}
 - {addr: 0x00831090, name: g_FloatMax, type: float, uses: 1, src: auto}
 - {addr: 0x00831304, name: g_C_00831304_Vtable, type: void*, uses: 1, src: auto}
 - {addr: 0x008322E8, name: g_TInterrupcion, type: char, uses: 1, src: auto}
+- {addr: 0x00833E44, name: g_LayoutWidthAdjustment, type: float, uses: 1, src: auto}
 - {addr: 0x00834A40, name: g_szIrAPuesto, type: char, uses: 1, src: auto}
 - {addr: 0x0083688C, name: g_szLanzarGranadaName, type: char, uses: 1, src: auto}
 - {addr: 0x00836D7C, name: g_TRodearString, type: char, uses: 1, src: auto}
+- {addr: 0x008412FC, name: g_HorizontalInset, type: float, uses: 1, src: auto}
 - {addr: 0x00843C14, name: g_RasterByteScale, type: float, uses: 3, src: auto}
 - {addr: 0x00845368, name: g_vtbl_00845368, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00846178, name: g_UnitFactorUpperBound, type: float, uses: 1, src: auto}
@@ -1110,6 +1112,7 @@
 - {addr: 0x008B0901, name: g_AccountMenuStateFlag, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008B09EC, name: g_PTankPluginOffset, type: 'std::int32_t', uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008B68C0, name: g_pRwEngineInstance, type: void*, uses: 2, src: captain, conf: 0.9, alt: [g_008B68C0, g_pDispatchTable]}
+- {addr: 0x008B9A90, name: g_MenuMpCharacterSelectLookup, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008BABC0, name: g_NetZFloatSink_8BABC0, type: uint8_t, uses: 3, src: opus}
 - {addr: 0x008BABFC, name: g_NetZFloatTripletSink_8BABFC, type: uint8_t, uses: 2, src: opus}
 - {addr: 0x008BAD60, name: g_Value8BAD60, type: int32_t, uses: 1, src: auto}
@@ -1149,6 +1152,7 @@
 - {addr: 0x008BBF8C, name: g_Block8BBF8C, type: void*, uses: 2, src: auto, alt: [g_QuadVertexBuffer]}
 - {addr: 0x008BBF90, name: g_Block8BBF90, type: void*, uses: 2, src: auto, alt: [g_QuadIndexBuffer]}
 - {addr: 0x008BC098, name: g_dword_8BC098, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008BC121, name: g_MenuMpCharacterSelectActive, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008BC15C, name: g_NetPlayerClassId, type: 'std::uint32_t', uses: 0, src: captain, conf: 0.8}
 - {addr: 0x008BC160, name: g_NetProyectilClassId, type: 'std::uint32_t', uses: 0, src: captain, conf: 0.8}
 - {addr: 0x008BC170, name: g_Value_8BC170, type: int, uses: 1, src: auto}
