@@ -167,6 +167,54 @@ def ctx_text(n):
     return Text(f"ctx {kfmt(n) if n is not None else '?':>6}", style=style)
 
 
+def accounts():
+    """Login email, plan and next billing date of both subscriptions, from the local login files only (no calls).
+    Codex: the id_token claims (chatgpt_subscription_active_until = paid through). Claude: ~/.claude.json
+    oauthAccount; it has no renewal date, so the next monthly anniversary of subscriptionCreatedAt (estimate)."""
+    import base64, datetime as dt
+    out = {}
+    try:
+        tok = json.load(open(os.path.expanduser("~/.codex/auth.json")))["tokens"]["id_token"].split(".")[1]
+        c = json.loads(base64.urlsafe_b64decode(tok + "=" * (-len(tok) % 4)))
+        a = c.get("https://api.openai.com/auth", {})
+        until = a.get("chatgpt_subscription_active_until")
+        out["codex"] = (c.get("email", "?"), a.get("chatgpt_plan_type", "?"),
+                        dt.datetime.fromisoformat(until).date() if until else None, False)
+    except Exception:
+        pass
+    try:
+        oa = json.load(open(os.path.expanduser("~/.claude.json")))["oauthAccount"]
+        nxt = None
+        if oa.get("subscriptionCreatedAt"):
+            start = dt.datetime.fromisoformat(oa["subscriptionCreatedAt"].replace("Z", "+00:00")).date()
+            today, y, m = dt.date.today(), start.year, start.month
+            while True:
+                last = (dt.date(y + m // 12, m % 12 + 1, 1) - dt.timedelta(days=1)).day
+                d = dt.date(y, m, min(start.day, last))
+                if d > today:
+                    nxt = d
+                    break
+                y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+        plan = (oa.get("organizationType") or "?").replace("claude_", "")
+        out["claude"] = (oa.get("emailAddress", "?"), plan, nxt, True)
+    except Exception:
+        pass
+    return out
+
+
+def account_line(which):
+    a = cached("accounts", 300, accounts)
+    if not isinstance(a, dict) or which not in a:
+        return Text(" account n/a", style="dim")
+    email, plan, nxt, est = a[which]
+    t = Text(f" {email}", style="white")
+    t.append(f"  {plan}", style="bold")
+    if nxt:
+        days = (nxt - __import__("datetime").date.today()).days
+        t.append(f"  bills {'~' if est else ''}{nxt:%b %d} ({days}d)", style="bold yellow" if days <= 3 else "dim")
+    return t
+
+
 def panel_claude():
     jobs = cached("jobs", 1, claude_jobs)
     if not jobs or isinstance(jobs, Exception):
@@ -176,6 +224,7 @@ def panel_claude():
     color = {j["_dir"]: AGENT_COLORS[i % len(AGENT_COLORS)]
              for i, j in enumerate(sorted(jobs, key=lambda d: d.get("createdAt", "")))}
     plan = usage_line("plan", cached("claude_usage", 60, claude_usage), "bold green")
+    acct = account_line("claude")
     if not multi:
         job = jobs[0]
         state = job.get("state", "?")
@@ -185,9 +234,9 @@ def panel_claude():
         head.append_text(ctx_text(job_ctx(job)))
         head.append(f"  tokens {kfmt(job.get('tokens') or 0)}  ", style="cyan")
         head.append(f"up {ago(iso(job['createdAt']))}  upd {ago(iso(job['updatedAt']))} ago", style="dim")
-        body = [head, plan, Text(job.get("detail") or "", style="bold white", overflow="ellipsis", no_wrap=True)]
+        body = [head, plan, acct, Text(job.get("detail") or "", style="bold white", overflow="ellipsis", no_wrap=True)]
     else:
-        body = [plan]
+        body = [plan, acct]
         for j in jobs:  # one Text per row: a grid collapses the short columns when the detail is long
             state, c = j.get("state", "?"), color[j["_dir"]]
             name = j.get("name", "")
@@ -431,6 +480,7 @@ def panel_tokens(st, recent):
     body.append(Text(""))
     cu = cached("codex_usage", 60, codex_usage)
     body.append(Text("Codex (ChatGPT plan)", style="bold magenta"))
+    body.append(account_line("codex"))
     if isinstance(cu, dict):
         for k, (pct, reset) in cu.items():
             t = Text(f" {k} ")
