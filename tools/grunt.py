@@ -333,7 +333,7 @@ def _ask(backend, model, messages, key, effort="high"):
     with _live_lock:
         sysmsg = messages[0]["content"]
         kind = ("review" if sysmsg is REVIEW_SYSTEM else "batch" if sysmsg is SYSTEM_BATCH
-                else "retry" if len(messages) > 2 else "write")
+                else "write" if len(messages) <= 2 else "retry" if effort == "max" else "evidence")
         _live["calls"][cid] = dict(ea=getattr(_tl, "ea", 0), backend=backend, model=model,
                                    effort=CODEX_EFFORT.get(effort, effort) if backend == "codex" else effort,
                                    kind=kind, n=len(getattr(_tl, "batch", ())) if kind == "batch" else 1,
@@ -527,10 +527,12 @@ exactly as if it came alone (same rules, one separate file each). Answer for eve
 a line `### 0xADDR` (the function's address), then its ```cpp block, then its ```json block. Nothing else."""
 
 
-def work_batch(eas, db, key, model, out_dir=None, review_over=None):
+def work_batch(eas, db, key, model, out_dir=None, review_over=None, ev=None):
     """Several small functions in one Codex call (the per-call harness + system prompt, ~5.8k tokens, is paid once).
     Each file is gated alone; a failed or missing one continues as a single-function conversation (work(prior=...))
-    from its own part of the answer. Returns a list of work() results; batch usage is split evenly."""
+    from its own part of the answer, with its evidence budget (ev: ea -> requests). Returns a list of work()
+    results; batch usage is split evenly."""
+    ev = ev or {}
     _tl.ea, _tl.batch = eas[0], eas
     packets = {ea: build(db, ea) for ea in eas}
     body = "\n\n".join(f"# FUNCTION 0x{ea:08X}\n\n{packets[ea]}" for ea in eas)
@@ -543,7 +545,7 @@ def work_batch(eas, db, key, model, out_dir=None, review_over=None):
         _tl.batch = ()
         if CODEX_PAUSED.is_set():
             return [dict(ea=ea, ok=False, deferred=True, attempts=0, err=f"codex error: {e}", usage=[]) for ea in eas]
-        return [work(ea, db, key, ladder, out_dir, None, review_over) for ea in eas]
+        return [work(ea, db, key, ladder, out_dir, None, review_over, ev.get(ea, 0)) for ea in eas]
     _tl.batch = ()
     share = {k: (v // len(eas) if isinstance(v, int) else v) for k, v in usage.items()}
     share["batch"] = len(eas)
@@ -575,7 +577,7 @@ def work_batch(eas, db, key, model, out_dir=None, review_over=None):
             out.append(dict(ea=ea, ok=True, attempts=1, meta=meta, usage=[share], by=f"codex:{model}", example=None,
                             reviews=[], evidence=0, batch=len(eas)))
         else:
-            r = work(ea, db, key, ladder, out_dir, None, review_over,
+            r = work(ea, db, key, ladder, out_dir, None, review_over, ev.get(ea, 0),
                      prior=(part.strip() or "(no answer for this function)", err, share))
             r["batch"] = len(eas)
             out.append(r)
@@ -829,7 +831,8 @@ def run(args):
             solo = [ea for ea in targets if args.backend == "auto" and db.F[ea]["size"] < args.tiny]
             chunks = pack(db, [ea for ea in targets if ea not in solo], args.batch_fns, args.batch_bytes,
                           args.batch_max)
-            futs = {ex.submit(work_batch, ch, db, key, args.codex_model, out_dir, args.review_over) if len(ch) > 1
+            futs = {ex.submit(work_batch, ch, db, key, args.codex_model, out_dir, args.review_over,
+                              {e: ev_budget(args, db, e) for e in ch}) if len(ch) > 1
                     else ex.submit(work, ch[0], db, key, codex + esc, out_dir, None, args.review_over,
                                    ev_budget(args, db, ch[0])): ch[0] for ch in chunks}
             futs.update({ex.submit(work, ea, db, key, ladder_of(ea), out_dir, example.get(ea), args.review_over,
@@ -961,7 +964,8 @@ def lanes(args):
                 fut = pools["main"].submit(work, g[0], db, key, codex + esc, None, None, args.review_over,
                                            ev_budget(args, db, g[0]))
             else:
-                fut = pools["main"].submit(work_batch, sorted(g), db, key, args.codex_model, None, args.review_over)
+                fut = pools["main"].submit(work_batch, sorted(g), db, key, args.codex_model, None, args.review_over,
+                                           {e: ev_budget(args, db, e) for e in g})
             inflight[fut] = (tuple(g), "main")
             cnt["main"] += 1
             submitted += len(g)
@@ -973,7 +977,7 @@ def lanes(args):
             lane, ladder = lane_of(ea, ex)
             if cnt[lane] >= caps[lane]:
                 continue
-            if lane == "main" and args.batch_fns > 1 and db.F[ea]["size"] <= args.batch_max and not ev_budget(args, db, ea):
+            if lane == "main" and args.batch_fns > 1 and db.F[ea]["size"] <= args.batch_max:
                 gk = db.class_of(ea) or db.rows[ea]["module"]  # same class first: shared fields/role, same names
                 g = groups[gk]
                 g.append(ea)
