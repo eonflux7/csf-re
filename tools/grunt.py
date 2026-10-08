@@ -14,6 +14,7 @@ import hashlib, argparse, collections, concurrent.futures as cf, glob, json, os,
 sys.path.insert(0, os.path.dirname(__file__))
 from packet import DB, build
 from gate import gate
+import gate as gate_mod
 from triage import load_csv, save_csv
 from limits import codex_usage
 import evidence
@@ -548,6 +549,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
         os.path.join(ROOT, "work", "grunt", ladder[0][0], f"{ea:08x}.cpp")  # A/B arms run the same ea in parallel
     os.makedirs(os.path.dirname(tmp), exist_ok=True)
     usage_all, err, meta, text = [], "", {}, ""
+    fails = []  # per failed attempt: the rung and what failed (gate.fail_kinds), for `grunt.py cost`
     steps = [(b, m) for b, m, n in ladder for _ in range(n)]
     dead, reviews = set(), []  # dead: rungs that errored (backend, or go:model); reviews: True = reviewer rejected
     quota_hit = False  # a rung was skipped for quota (Codex / Claude paused, limit hit): defer instead of escalating
@@ -555,6 +557,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
     if prior:
         text, err, u = prior
         usage_all.append(u)
+        fails.append(dict(by="batch", kinds=gate_mod.fail_kinds(err)))
         msgs += [{"role": "assistant", "content": text},
                  {"role": "user", "content": f"The gate rejected the file:\n{err}\nFix it and answer again in the same format."}]
         start = 1
@@ -584,6 +587,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
             dead.add(dk)
             quota_hit |= bool(re.search(r"paused by the quota guard|usage limit|rate limit|hit your limit", str(e), re.I))
             err = f"{backend} error: {e}"
+            fails.append(dict(by=f"{backend}:{model}", kinds=["backend"]))
             continue
         if code:
             code = autofix(code, ea)
@@ -604,18 +608,20 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
         if ok:
             os.replace(tmp, path)
             return dict(ea=ea, ok=True, attempts=attempt + 1, meta=meta, usage=usage_all, by=f"{backend}:{model}",
-                        example=example, reviews=reviews, evidence=n_ev)
+                        example=example, reviews=reviews, evidence=n_ev, fails=fails)
+        fails.append(dict(by=f"{backend}:{model}", kinds=gate_mod.fail_kinds(err)))
         msgs += [{"role": "assistant", "content": text},
                  {"role": "user", "content": f"The gate rejected the file:\n{err}\nFix it and answer again in the same format."}]
     if quota_hit:  # not a real failure: a rung was out of quota — retry in a later run
         return dict(ea=ea, ok=False, deferred=True, attempts=len(usage_all), err=err[:500], usage=usage_all,
-                    reviews=reviews)
+                    reviews=reviews, fails=fails)
     qdir = os.path.join(out_dir, "queue") if out_dir else os.path.join(ROOT, "queue")
     os.makedirs(qdir, exist_ok=True)
     with open(os.path.join(qdir, f"{ea:08x}.md"), "w") as f:
         f.write(f"# Escalation 0x{ea:08X}\n\n## Last gate error\n```\n{err}\n```\n\n## Last answer\n{text}\n\n"
                 f"## Packet\n{packet}\n")
-    return dict(ea=ea, ok=False, attempts=len(steps), err=err[:500], usage=usage_all, reviews=reviews, evidence=n_ev)
+    return dict(ea=ea, ok=False, attempts=len(steps), err=err[:500], usage=usage_all, reviews=reviews, evidence=n_ev,
+                fails=fails)
 
 
 # Batches get their own system prompt: as the real top-level instructions (direct transport) the single-file output
@@ -1414,6 +1420,7 @@ def cost(_):
     print(f"evidence requests: {ev['reqs']} in {ev['fns']} of {ev['offered']} logged tasks ({ev['ok']} of those passed)")
     # throughput: latency per model from the call transcripts (work/calls/<ea>/*.json), and what the calls bought
     lat = collections.defaultdict(list)
+    seen_err = set()
     for fp in glob.glob(os.path.join(ROOT, "work", "calls", "*", "*.json")):
         try:
             c = json.load(open(fp))
@@ -1421,11 +1428,38 @@ def cost(_):
             continue
         if c.get("secs") and not c.get("error"):
             lat[(c.get("kind") or "write", f"{c.get('backend')}:{c.get('model')}@{c.get('effort')}")].append(c["secs"])
+        for m in c.get("messages") or []:  # gate feedback carried in the conversation (each once per function)
+            t = m.get("content") if m.get("role") == "user" else None
+            if isinstance(t, str) and t.startswith("The gate rejected the file:\n"):
+                seen_err.add((c.get("ea"), t[28:].rsplit("\nFix it", 1)[0]))
     if lat:
         print("latency per call (s): kind / model           n     p50     p95")
         for (kind, mdl), xs in sorted(lat.items(), key=lambda x: -len(x[1])):
             xs.sort()
             print(f"  {kind:7} {mdl:42} {len(xs):5} {xs[len(xs) // 2]:7.1f} {xs[min(len(xs) - 1, int(len(xs) * .95))]:7.1f}")
+    # what retries are spent on: gate.fail_kinds of every rejection (logged `fails`; transcripts for older runs)
+    kinds, by_kind = collections.Counter(), collections.defaultdict(collections.Counter)
+    logged = set()
+    for l in open(LOG):
+        r = json.loads(l)
+        for f in r.get("fails") or []:
+            logged.add(r["ea"])
+            for k in f["kinds"]:
+                kinds[k] += 1
+                by_kind[k][re.sub(r"@.*", "", f["by"])] += 1
+    import gate as gate_mod
+    old = collections.Counter()
+    for ea, e in seen_err:
+        if (int(ea, 16) if isinstance(ea, str) else ea) not in logged:
+            for k in gate_mod.fail_kinds(e):
+                old[k] += 1
+    for title, kc in (("rejections by kind (logged runs)", kinds), ("rejections by kind (older runs, transcripts)", old)):
+        if kc:
+            tot = sum(kc.values())
+            print(f"{title}: {tot}")
+            for k, n in kc.most_common():
+                who = ", ".join(f"{w} {c}" for w, c in by_kind[k].most_common(3)) if kc is kinds else ""
+                print(f"  {k:16} {n:5} {n / tot:5.0%}  {who}")
     try:
         import verify
         led = verify.load()

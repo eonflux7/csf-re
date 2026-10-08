@@ -189,6 +189,42 @@ def gate(ea, path, db=None):
     return True, "ok" + (f" (waived: {'; '.join(waived)})" if waived else "")
 
 
+# Failure kinds of a gate (or reviewer) error, for the run log (grunt.py `fails`, `grunt.py cost`): what the
+# retries are spent on. First match per error line; an error carries every kind it shows.
+FAIL_KINDS = [
+    ("backend", r"^(codex|claude|go|deepseek|opencode) error: "),
+    ("abi", r"calling convention mismatch|declared __cdecl but|popping \d+ bytes but|reads ecx|reads edx|"
+            r"returns a full 32-bit value"),
+    ("binding", r"is not a function start|CSF_FUNC .*own address|referenced by its plain name"),
+    ("sem_missing_ref", r"the original references .*your code never does"),
+    ("sem_extra_ref", r"your code references 0x[0-9A-F]+.*which the original does not"),
+    ("sem_vslot", r"virtual call|\[vtbl \+ 0x"),
+    ("sem_field", r"field offsets the original never uses|computes the ADDRESS this\+"),
+    ("tail_jump", r"TAIL-JUMPS"),
+    ("compile", r"compile error|error:|could not find compiled function"),
+    ("raw_address", r"raw original address"),
+    ("string", r"bare string literal"),
+    ("hook", r"need exactly one HOOK"),
+    ("asm", r"inline asm"),
+    ("include", r"include not allowed|come from #include \"globals.h\""),
+    ("alloc", r"Mem_Alloc"),
+    ("review", r"reviewer compared your file"),
+    ("no_code", r"no ```cpp block"),
+]
+_FAIL_RE = [(k, re.compile(p, re.I)) for k, p in FAIL_KINDS]
+
+
+def fail_kinds(err):
+    """Sorted kinds of one gate error text (several checks can fail at once); 'other' when nothing matches."""
+    out = set()
+    for line in (err or "").splitlines() or [""]:
+        for k, rx in _FAIL_RE:
+            if rx.search(line):
+                out.add(k)
+                break
+    return sorted(out) or ["other"]
+
+
 WAIVERS = os.path.join(ROOT, "db", "waivers.yaml")
 
 

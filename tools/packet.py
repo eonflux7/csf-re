@@ -224,6 +224,38 @@ def stl_note(ea):
 CODEGEN_HELPER = re.compile(r"^__ftol2?(_sse)?$|^__a(u)?ll(mul|div|rem|shl|shr)$|^__alloca_probe|^_?_chkstk$")
 
 
+VT_STORE = re.compile(r"^dword ptr \[(\w+)(?: \+ (0x[0-9a-f]+|\d+))?\], (0x[0-9a-f]+)$")
+
+
+def vtable_refs(db, ea, size):
+    """Every instruction referencing a known vtable, with the line that reproduces it: a store
+    `mov [reg+off], vt` -> `CSF_AT(void*, obj, off) = CSF_VTBL(vt)` (off 0: `obj->vtbl` on a declared class)."""
+    out = []
+    for i in disasm(ea, size):
+        for v in re.findall(r"0x[0-9a-f]{6,8}", i.op_str):
+            vt = f"{int(v, 16):08x}"
+            if vt not in db.classes:
+                continue
+            nm = db.cls_name(vt)
+            m = VT_STORE.match(i.op_str) if i.mnemonic == "mov" else None
+            if m:
+                off = int(m.group(2), 0) if m.group(2) else 0
+                how = (f"`CSF_AT(void*, obj, 0x{off:X}) = CSF_VTBL(0x{vt.upper()});`" if off else
+                       f"`*(void***)obj = CSF_VTBL(0x{vt.upper()});` (or `obj->vtbl = ...` on a declared class)")
+                out.append(f"- 0x{i.address:08X} `{i.mnemonic} {i.op_str}`: stores {nm}'s vtable into "
+                           f"[{m.group(1)}+0x{off:X}] -> {how}")
+            elif i.mnemonic in ("mov", "lea") and i.op_str.split(",")[0] in ("eax", "ebx", "ecx", "edx", "esi", "edi", "ebp"):
+                out.append(f"- 0x{i.address:08X} `{i.mnemonic} {i.op_str}`: loads {nm}'s vtable (stored or compared "
+                           f"next) -> `CSF_VTBL(0x{vt.upper()})`")
+            elif i.mnemonic == "cmp":
+                out.append(f"- 0x{i.address:08X} `{i.mnemonic} {i.op_str}`: type test against {nm}'s vtable -> "
+                           f"compare with `CSF_VTBL(0x{vt.upper()})`")
+            else:
+                out.append(f"- 0x{i.address:08X} `{i.mnemonic} {i.op_str}`: references {nm}'s vtable -> "
+                           f"`CSF_VTBL(0x{vt.upper()})`")
+    return out
+
+
 def build(db, ea, with_asm_limit=400):
     f = db.F[ea]
     row = db.rows[ea]
@@ -240,6 +272,12 @@ def build(db, ea, with_asm_limit=400):
     if mod and mod.get("name"):  # subsystem for Subsystem_Verb names of non-class functions
         out.append(f"Module: {mod['name']}" + (f" ({mod['note']})" if mod.get("note") else ""))
     vt = db.class_of(ea)
+    if vt and "__thiscall" not in proto:
+        import api
+        if not api.reads_before_write(ea, db, "ecx"):  # a shared stub in a vtable (`ret 0x10`): no `this` at all
+            out.append(f"Listed in {db.cls_name(vt)}'s vtable but never reads ecx: write it as a plain function "
+                       "(no `this` parameter), keeping the original's `ret` immediate.")
+            vt = None
     if vt:
         c = db.classes[vt]
         out.append(f"\n## `this` class: {db.cls_name(vt)} (vtable 0x{vt.upper()}, size {c['size'] or 'unknown'}, "
@@ -299,6 +337,10 @@ def build(db, ea, with_asm_limit=400):
                        + (f"bind as: `{canon}`" if canon else f"proto: `{cproto}`")
                        + ("  NORETURN (throws/aborts): still call it on exactly the same "
                           "condition, even if the branch looks unreachable" if "__noreturn" in cproto else ""))
+    vs = vtable_refs(db, ea, f["size"])
+    if vs:  # constructor/destructor vtable stores were the most common semantic rejection (dropped as redundant)
+        out.append("\n## Vtables referenced (each one must appear in your code, even a store overwritten right after: "
+                   "base-class stores in a ctor/dtor chain are part of the behavior)\n" + "\n".join(vs))
     gl = [d for d in f["drefs"]]
     if gl:
         out.append("\n## Data referenced\n" + "\n".join(
