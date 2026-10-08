@@ -72,7 +72,7 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 ## Backlog
 
 ### Loop & tooling
-- [ ] Monitor: verifier and review panes (work/verifier_state.json, verifier_log.jsonl, db/reviews.jsonl)
+- [x] Monitor: verifier and review lines, per-area progress table (Live), area column (Modules tab)
 - [ ] Redo under the fidelity rule the 4 files that emulate x87 rounding (0x72DE90, 0x729F60, 0x7292C0, 0x538A50)
 - [ ] Feed recurring review issue kinds into the grunt prompt (`review.py report`) once samples exist per module
 - [ ] Re-test Sonnet for bulk function renames (captain functions) after waves name the callers

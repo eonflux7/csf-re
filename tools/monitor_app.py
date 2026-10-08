@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Textual dashboard (tools/monitor.py starts it; `monitor.py --once` prints one Rich frame instead).
 
-Tabs: 1 Live (Claude | Costs, Progress, grunt with scrollable in-flight/results tables, captain, game/tools),
-2 Modules (per-module prep/progress table, click a header to sort), 3 Plan (current focus + every phase as
+Tabs: 1 Live (Claude | Costs, Progress with verifier/review lines and the per-area table, grunt with scrollable
+in-flight/results tables, captain, game/tools), 2 Modules (per-module prep/progress table grouped by area, click a
+header to sort), 3 Plan (current focus + every phase as
 collapsible sections), 4 Commits (this session), 5 Queue (escalations in queue/, the selected one previewed). All data comes from the helpers in monitor.py, read in a worker thread every
 --interval seconds so slow sources (tasklist, usage endpoints) never block the UI.
 """
@@ -38,22 +39,27 @@ DataTable { scrollbar-size-vertical: 1; }
 """
 
 
-MOD_COLS = [("id", "module"), ("name", "name"), ("fns", "fns"), ("kb", "KB"), ("classes", "classes"),
-            ("cls_open", "unnamed"), ("cls_held", "held"), ("prepped", "prepped"), ("named", "fn named"),
-            ("ph", "placeh."), ("done", "done"), ("pct", "done %B"), ("exe", "executed"), ("diff", "diffed"),
-            ("esc", "esc")]
+MOD_COLS = [("area", "area"), ("id", "module"), ("name", "name"), ("fns", "fns"), ("kb", "KB"),
+            ("classes", "classes"), ("cls_open", "unnamed"), ("cls_held", "held"), ("prepped", "prepped"),
+            ("named", "fn named"), ("ph", "placeh."), ("done", "done"), ("pct", "done %B"), ("ok", "verified"),
+            ("exe", "executed"), ("diff", "diffed"), ("rev", "reviewed"), ("esc", "esc")]
 
 
 def mod_cells(r):
     """A Modules-tab row: prep = every class named (or held after a captain session); % = bytes done."""
     pct = r["pct"]
-    return (r["id"], Text(r["name"] or "—", style="" if r["name"] else "dim"), str(r["fns"]), f"{r['kb']:.1f}",
+    rv = Text(str(r["rev"]), style="cyan" if r["rev"] else "dim")
+    if r["rej"]:
+        rv.append(f" ✗{r['rej']}", style="bold red")
+    return (Text(r["area"], style="dim" if r["area"] in ("unnamed", "other") else "bold"),
+            r["id"], Text(r["name"] or "—", style="" if r["name"] else "dim"), str(r["fns"]), f"{r['kb']:.1f}",
             str(r["classes"]), Text(str(r["cls_open"]), style="yellow" if r["cls_open"] else "dim"),
             Text(str(r["cls_held"]), style="dim"), Text("✓" if r["prepped"] else "·",
                                                        style="green" if r["prepped"] else "dim"),
             str(r["named"]), Text(str(r["ph"]), style="yellow" if r["ph"] else "dim"), str(r["done"]),
             Text(f"{pct:5.1f}", style="bold green" if pct >= 90 else "green" if pct >= 25 else "" if pct else "dim"),
-            Text(str(r["exe"]), style="cyan"), Text(str(r["diff"]), style="cyan"),
+            Text(str(r["ok"]), style="green" if r["ok"] else "dim"),
+            Text(str(r["exe"]), style="cyan"), Text(str(r["diff"]), style="cyan"), rv,
             Text(str(r["esc"]), style="red" if r["esc"] else "dim"))
 
 
@@ -75,7 +81,7 @@ class Monitor(App):
         self.interval = interval
         self.plan_mtime = 0
         self.queue_files = []
-        self.mod_sort = ("pct", True)
+        self.mod_sort = ("area", False)
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
@@ -225,14 +231,19 @@ class Monitor(App):
 
     def fill_modules(self):
         key, rev = self.mod_sort
-        rows = sorted(getattr(self, "mod_data", []), key=lambda r: (r[key] if r[key] is not None else 0), reverse=rev)
+        rows = getattr(self, "mod_data", [])
+        if key == "area":  # areas in AREAS order (unnamed last), most done first inside an area
+            order = {a: i for i, (a, _) in enumerate(M.AREAS + [("other", ()), ("unnamed", ())])}
+            rows = sorted(rows, key=lambda r: (order.get(r["area"], 99), -r["pct"], r["id"]), reverse=rev)
+        else:
+            rows = sorted(rows, key=lambda r: (r[key] if r[key] is not None else 0), reverse=rev)
         self.fill(self.query_one("#modtable", DataTable), [mod_cells(r) for r in rows])
 
     def on_data_table_header_selected(self, ev):
         if ev.data_table.id != "modtable":
             return
         k = ev.column_key.value
-        self.mod_sort = (k, not self.mod_sort[1] if self.mod_sort[0] == k else k not in ("id", "name"))
+        self.mod_sort = (k, not self.mod_sort[1] if self.mod_sort[0] == k else k not in ("id", "name", "area"))
         self.fill_modules()
 
     def build_plan(self, mtime, focus, phases, current):

@@ -371,6 +371,47 @@ def module_table():
     return yaml.safe_load(open(os.path.join(ROOT, "db", "modules.yaml")))
 
 
+# Areas: modules grouped by meaning, from their reviewed names (first matching prefix wins; a module's own
+# `area:` in db/modules.yaml overrides). Unnamed modules stay "unnamed" until captain modules names them.
+AREAS = [
+    ("AI", ("ai_",)),
+    ("characters", ("char_", "character_", "commando_", "weapon_", "vehicle")),
+    ("world & scenes", ("scene_", "campaign", "dynamic_objects", "game_scene_", "cheats")),
+    ("game data", ("bdd_", "game_data_", "game_bdd_", "object_class_", "text_database", "type_registry")),
+    ("HUD", ("hud", "minimap", "interface")),
+    ("menus", ("menu_",)),
+    ("GUI widgets", ("gui_",)),
+    ("graphics", ("gfx_", "fx_")),
+    ("input & audio", ("input_", "audio")),
+    ("multiplayer", ("net_", "mp_")),
+    ("core & app", ("core_", "app_", "dev_console", "options_file", "profiles_", "game_config")),
+]
+
+
+def area_of(m):
+    if m.get("area"):
+        return m["area"]
+    name = m.get("name") or ""
+    if not name:
+        return "unnamed"
+    return next((a for a, pre in AREAS if name.startswith(pre)), "other")
+
+
+def area_rows(S):
+    """Per area: modules (started / with code), bytes, bytes done, functions done / verified in game / diffed."""
+    out = {a: dict(area=a, mods=0, started=0, bytes=0, done_b=0, done=0, ok=0, diff=0, rev=0, rej=0)
+           for a, _ in AREAS + [("other", ()), ("unnamed", ())]}
+    for p_ in S["per"].values():
+        if not p_["fns"]:
+            continue
+        r = out[area_of(p_["m"])]
+        r["mods"] += 1
+        r["started"] += p_["done"] > 0
+        for k in ("bytes", "done_b", "done", "ok", "diff", "rev", "rej"):
+            r[k] += p_[k]
+    return [r for r in out.values() if r["mods"]]
+
+
 def wave_progress(spec):
     """Bytes/functions done in the wave's modules (grunt --module: ids or names), from functions.csv."""
     mods = cached("modules", 60, module_table)
@@ -393,6 +434,104 @@ PLACEHOLDER = re.compile(
     r"^(?:C_[0-9a-f]{8}_|[A-Z]\w*?_)?(Return(MinusOne|Zero|One|True|False|\d+)|Get(Returned)?Const(ant)?\w*|"
     r"Is\w*Field\w*Null|\w*Field_?0?[0-9A-Fa-f]{2,4}\w*|\w*At0x\w*|\w*Offset[0-9A-F]+\w*|\w*_[0-9A-F]{6}|"
     r"\w*(Vtbl|Slot)\d+\w*|\w*Unk\w*|[Ss]ub_[0-9A-F]+|Nullsub\w*)$")  # = captain.FN_PLACEHOLDER
+
+
+def reviews():
+    """db/reviews.jsonl (tools/review.py): ea -> ok of its latest Opus review."""
+    out = {}
+    try:
+        for l in open(os.path.join(ROOT, "db", "reviews.jsonl")):
+            try:
+                r = json.loads(l)
+            except ValueError:
+                continue
+            out[r["ea"]] = bool(r.get("ok"))
+    except OSError:
+        pass
+    return out
+
+
+def verifier():
+    """tools/verifier.py: live state (work/verifier_state.json), its last runs (work/verifier_log.jsonl) and the
+    pending count (done functions never installed in a passing smoke: verify.pending)."""
+    try:
+        st = json.load(open(os.path.join(ROOT, "work", "verifier_state.json")))
+    except (OSError, ValueError):
+        st = {}
+    ev = []
+    try:
+        for l in open(os.path.join(ROOT, "work", "verifier_log.jsonl")):
+            try:
+                ev.append(json.loads(l))
+            except ValueError:
+                pass
+    except OSError:
+        pass
+    try:
+        import verify
+        pend = len(verify.pending())
+    except Exception:
+        pend = None
+    return dict(alive=pid_alive(st.get("pid")), phase=st.get("phase", ""), started=st.get("started"),
+                events=ev, pending=pend)
+
+
+def verifier_line(V):
+    t = Text("verifier  ", style="bold", no_wrap=True, overflow="ellipsis")
+    if V["alive"]:
+        t.append("RUNNING ", style="bold green")
+        t.append(V["phase"] or "-", style="bold yellow")
+        if V["started"]:
+            t.append(f"  up {ago(V['started'])}", style="dim")
+    else:
+        t.append("idle", style="dim")
+    if V["pending"] is not None:
+        t.append(f"  pending {V['pending']}", style="bold yellow" if V["pending"] else "green")
+    groups = [e for e in V["events"] if e.get("event") == "group"]
+    if groups:
+        last = groups[-1]["ts"]
+        run = [e for e in groups if last - e["ts"] < 6 * 3600]  # the latest run's groups
+        ver = sum(e.get("verified", 0) for e in run)
+        q = sum(len(e.get("quarantined") or []) for e in run)
+        t.append(f"  last run {ago(last)} ago: ", style="dim")
+        t.append(f"{ver} verified", style="green")
+        t.append(f", {q} quarantined", style="bold red" if q else "dim")
+        tot_q = sum(len(e.get("quarantined") or []) for e in groups)
+        t.append(f"  (all runs: {sum(e.get('verified', 0) for e in groups)} verified, {tot_q} quarantined)",
+                 style="dim")
+    return t
+
+
+def review_line(G):
+    t = Text("reviews   ", style="bold", no_wrap=True, overflow="ellipsis")
+    if not G["rev"]:
+        t.append("none yet (tools/review.py sample --module M)", style="dim")
+        return t
+    t.append(f"{G['rev']} sampled by Opus", style="cyan")
+    t.append(f"  {G['rej']} rejected", style="bold red" if G["rej"] else "green")
+    t.append(f"  defect rate {G['rej'] / G['rev'] * 100:.0f}%", style="bold")
+    t.append(f"  ({G['rev'] / max(1, G['done']) * 100:.1f}% of done functions reviewed)", style="dim")
+    return t
+
+
+def area_table(S):
+    """Areas: bytes done (bar), modules started, functions done / verified in game / diffed, review rejections."""
+    tb = Table(box=None, padding=(0, 1), show_edge=False, header_style="dim")
+    for c, j in (("area", "left"), ("bytes done", "left"), ("", "right"), ("KB", "right"), ("modules", "right"),
+                 ("done", "right"), ("verified", "right"), ("diffed", "right"), ("reviewed", "right")):
+        tb.add_column(c, justify=j, no_wrap=True)
+    for r in area_rows(S):
+        pct = r["done_b"] / max(1, r["bytes"]) * 100
+        rv = Text(f"{r['rev']}", style="cyan" if r["rev"] else "dim")
+        if r["rej"]:
+            rv.append(f" ✗{r['rej']}", style="bold red")
+        tb.add_row(Text(r["area"], style="dim italic" if r["area"] in ("unnamed", "other") else "bold"),
+                   bar(pct, 16), Text(f"{pct:5.1f}%", style="bold green" if pct >= 25 else "green" if pct else "dim"),
+                   Text(f"{r['done_b'] / 1024:.0f}/{r['bytes'] / 1024:.0f}", style="dim"),
+                   Text(f"{r['started']}/{r['mods']}"), Text(str(r["done"])),
+                   Text(str(r["ok"]), style="green" if r["ok"] else "dim"),
+                   Text(str(r["diff"]), style="cyan" if r["diff"] else "dim"), rv)
+    return tb
 
 
 def stats():
@@ -419,8 +558,10 @@ def stats():
     held_c -= named_c
     mods = yaml.safe_load(open(os.path.join(ROOT, "db", "modules.yaml")))
     gl = yaml.safe_load(open(os.path.join(ROOT, "db", "globals.yaml"))) or []
-    per = {m["id"]: dict(m=m, fns=0, bytes=0, named=0, ph=0, done=0, done_b=0, exe=0, diff=0, esc=0) for m in mods}
-    G = dict(fns=0, bytes=0, named=0, ph=0, done=0, done_b=0, exe=0, diff=0, esc=0)
+    rev = reviews()
+    zero = dict(fns=0, bytes=0, named=0, ph=0, done=0, done_b=0, exe=0, ok=0, diff=0, esc=0, rev=0, rej=0)
+    per = {m["id"]: dict(m=m, **zero) for m in mods}
+    G = dict(zero)
     for r in rows:
         if r["region"] != "game":
             continue
@@ -428,8 +569,9 @@ def stats():
         d = r["status"] in ("done", "verified")
         v = ver.get(ea, {})
         inc = dict(fns=1, bytes=sz, named=bool(r["name"]), ph=bool(r["name"] and PLACEHOLDER.match(r["name"])),
-                   done=d, done_b=sz if d else 0, exe=d and bool(v.get("hits")), diff=d and bool(v.get("diffed")),
-                   esc=ea in queue)
+                   done=d, done_b=sz if d else 0, exe=d and bool(v.get("hits")), ok=d and bool(v.get("ok")),
+                   diff=d and bool(v.get("diffed")), esc=ea in queue,
+                   rev=ea in rev, rej=ea in rev and not rev[ea])
         for tgt in (G, per.get(r["module"])):
             if tgt is not None:
                 for k, x in inc.items():
@@ -486,14 +628,21 @@ def panel_progress():
                 t.append(f"/{b:,}", style="dim")
             return t
         tb.add_row(lab("functions"), kv("named", G["named"] - G["ph"], G["fns"]), kv("done", G["done"], G["fns"]),
-                   kv("executed", G["exe"], G["done"], "cyan"), kv("diffed", G["diff"], G["done"], "cyan"))
-        tb.add_row("", kv("placeholders", G["ph"], st="yellow"), kv("escalated", G["esc"], st="red"), "", "")
+                   kv("verified", G["ok"], G["done"]), kv("diffed", G["diff"], G["done"], "cyan"))
+        tb.add_row("", kv("placeholders", G["ph"], st="yellow"), kv("escalated", G["esc"], st="red"),
+                   kv("executed", G["exe"], G["done"], "cyan"), "")
         tb.add_row(lab("modules"), kv("named", Mo["named"], Mo["n"]), kv("prepped", Mo["prepped"], Mo["n"]),
                    kv("started", Mo["started"], Mo["n"]), kv("≥90% done", Mo["complete"], Mo["n"]))
         tb.add_row(lab("classes"), kv("named", C["named"], C["n"]), kv("held", C["held"], st="yellow"),
                    kv("with fields", C["fields"], C["named"]), "")
         tb.add_row(lab("globals"), kv("named", GL["named"], GL["n"]), kv("pinned", GL["pinned"], GL["n"]), "", "")
         body.append(tb)
+        V = cached("verifier", 15, verifier)
+        if isinstance(V, dict):
+            body.append(verifier_line(V))
+        body.append(review_line(G))
+        body.append(Rule(style="dim"))
+        body.append(area_table(S))
     st = cached("live", 1, lambda: json.load(open(LIVE)) if os.path.exists(LIVE) else None)
     wp = wave_progress(((st or {}).get("config") or {}).get("wave")) if isinstance(st, dict) else None
     if wp:
@@ -517,7 +666,8 @@ def module_rows():
             continue
         m = p_["m"]
         pct = p_["done_b"] / max(1, p_["bytes"]) * 100
-        out.append(dict(id=mid, name=m.get("name") or "", src=str(m.get("name_src") or ""), fns=p_["fns"],
+        out.append(dict(id=mid, area=area_of(m), name=m.get("name") or "", src=str(m.get("name_src") or ""),
+                        fns=p_["fns"], ok=p_["ok"], rev=p_["rev"], rej=p_["rej"],
                         kb=p_["bytes"] / 1024, named=p_["named"] - p_["ph"], ph=p_["ph"], classes=p_["classes"],
                         cls_open=p_["cls_open"], cls_held=p_["cls_held"], prepped=p_["prepped"],
                         done=p_["done"], pct=pct, exe=p_["exe"], diff=p_["diff"], esc=p_["esc"]))
@@ -713,7 +863,7 @@ def grunt_header(g):
     if c.get("deferred"):
         t.append(f"  def {c['deferred']}", style="yellow")
     t.append(f"  committed {c.get('committed', 0)}", style="cyan")
-    t.append(f"  next smoke {c.get('pending', 0)}/{c.get('batch', '-')}", style="dim")
+    t.append(f"  next commit {c.get('pending', 0)}/{c.get('batch', '-')}", style="dim")
     t.append(f"  run {c.get('submitted', 0)}/{c.get('total', '-')}", style="dim")
     out = [h, t]
     if g["calls"]:
