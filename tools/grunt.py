@@ -116,7 +116,8 @@ GO_PRICE = {"deepseek-flash": (0.30, 0.006, 0.30, 1.20), "deepseek-v4.1-flash": 
             "deepseek-v4-pro": (1.74, 0.145, 1.74, 3.48), "claude-haiku-5-5": (0.10, 0.01, 0.125, 0.50),
             "glm-5.3-flash": (0.15, 0.03, 0.15, 0.50), "qwen3.8-flash": (0.15, 0.016, 0.20, 0.47),
             "qwen3.7-plus": (0.40, 0.04, 0.50, 1.60), "kimi-k2.7-code": (0.95, 0.19, 0.95, 4.00),
-            "minimax-m3": (0.30, 0.06, 0.30, 1.20), "mimo-v2.6-flash": (0, 0, 0, 0)}
+            "minimax-m3": (0.30, 0.06, 0.30, 1.20), "mimo-v2.6-flash": (0.14, 0.0028, 0.14, 0.28),
+            "mimo-v2.6-pro": (0.435, 0.003625, 0.435, 0.87)}  # mimo: models.dev opencode-go (no Zen docs price)
 
 
 def go_cost(model, u):
@@ -1323,6 +1324,12 @@ def ab(args):
     ab_report(args)
 
 
+def ab_cost(r):
+    """A result's $, recomputed from its usage at today's GO_PRICE (prices added later apply to old runs too)."""
+    cs = [go_cost(r["arm"], u) for u in r["usage"]]
+    return sum(c for c in cs if c is not None) if any(c is not None for c in cs) else (r.get("cost") or 0)
+
+
 def ab_report(_):
     """work/ab/report.md: per track and arm — success, first-try rate, $ and tokens per solved function, time;
     track b also code similarity to the committed Codex file, with Codex's logged run as the baseline row."""
@@ -1350,7 +1357,7 @@ def ab_report(_):
             small = [r for r in a if r["size"] < 48]
             big = [r for r in a if r["size"] >= 48]
             usage = [u for r in a for u in r["usage"]]
-            cost = sum(r["cost"] for r in a)
+            cost = sum(ab_cost(r) for r in a)
             row = (f"| {arm} | {len(ok)}/{len(a)} | {sum(r['attempts'] == 1 for r in ok) / max(1, len(a)):.0%} "
                    f"| {sum(r['ok'] for r in small)}/{len(small)} | {sum(r['ok'] for r in big)}/{len(big)} "
                    f"| {cost:.3f} | {cost / max(1, len(ok)):.4f} "

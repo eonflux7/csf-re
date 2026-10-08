@@ -7,7 +7,7 @@ identical code) and Codex's logged attempt as the baseline column.
 
 Usage: ab_monitor.py [--interval 3]      keys: a / b switch track, r refresh, q quit
 """
-import argparse, json, os, re, statistics, subprocess
+import argparse, json, os, re, statistics, subprocess, sys
 
 from rich.text import Text
 from textual.app import App, ComposeResult
@@ -16,6 +16,8 @@ from textual.coordinate import Coordinate
 from textual.widgets import DataTable, Footer, Header, Static, TabbedContent, TabPane
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from grunt import ab_cost  # $ from usage at current prices
 AB = os.path.join(ROOT, "work", "ab")
 
 CSS = """
@@ -62,7 +64,7 @@ def summary_rows(track, fns, rs, arms, live):
     for arm in arms:
         a = [r for r in rs if r["arm"] == arm]
         ok = [r for r in a if r["ok"]]
-        cost = sum(r.get("cost") or 0 for r in a)
+        cost = sum(ab_cost(r) for r in a)
         outt = sum(u.get("completion_tokens", 0) or 0 for r in a for u in r["usage"])
         sims = [r["sim"] for r in ok if r.get("sim") is not None]
         state = Text("running", style="bold green") if arm in live else Text("done" if len(a) >= len(fns) else
@@ -92,7 +94,7 @@ def grid_rows(track, fns, rs, arms, live):
             elif r["ok"]:
                 sim = r.get("sim")
                 t = Text(f"✓{r['attempts']}", style="green" if r["attempts"] == 1 else "yellow")
-                t.append(f" ${r.get('cost') or 0:.4f} {r['secs']:.0f}s", style="dim")
+                t.append(f" ${ab_cost(r):.4f} {r['secs']:.0f}s", style="dim")
                 if sim is not None:
                     t.append(" =" if sim == 1.0 else f" ~{sim:.2f}", style="cyan" if sim >= 0.8 else "magenta")
                 cells.append(t)
