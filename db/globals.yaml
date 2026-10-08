@@ -122,15 +122,24 @@
 - {addr: 0x0089A5F0, name: g_MpNetworkType, type: int, uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008A669C, name: g_FallbackContext, type: 'std::int32_t', uses: 2, src: auto}
 - {addr: 0x008A6788, name: g_off_008A6788, type: void*, uses: 1, src: auto}
-- {addr: 0x008A7D90, name: g_FadeRed, type: float, uses: 1, src: auto}
-- {addr: 0x008A7D94, name: g_FadeGreen, type: float, uses: 1, src: auto}
-- {addr: 0x008A7D98, name: g_FadeBlue, type: float, uses: 1, src: auto}
-- {addr: 0x008A7D9C, name: g_FadeAlpha, type: float, uses: 1, src: auto}
+- {addr: 0x008A7D6C, name: g_AxisX, type: float, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x008A7D70, name: g_AxisX_Y, type: float, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x008A7D74, name: g_AxisX_Z, type: float, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x008A7D78, name: g_AxisY, type: float, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x008A7D7C, name: g_AxisY_Y, type: float, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x008A7D80, name: g_AxisY_Z, type: float, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x008A7D84, name: g_AxisZ, type: float, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x008A7D88, name: g_AxisZ_Y, type: float, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x008A7D8C, name: g_AxisZ_Z, type: float, uses: 0, src: captain, conf: 0.85}
+- {addr: 0x008A7D90, name: g_ColorWhite, type: float, uses: 1, src: captain, conf: 0.8, alt: [g_FadeRed]}
+- {addr: 0x008A7D94, name: g_ColorWhite_G, type: float, uses: 1, src: captain, conf: 0.8, alt: [g_FadeGreen]}
+- {addr: 0x008A7D98, name: g_ColorWhite_B, type: float, uses: 1, src: captain, conf: 0.8, alt: [g_FadeBlue]}
+- {addr: 0x008A7D9C, name: g_ColorWhite_A, type: float, uses: 1, src: captain, conf: 0.8, alt: [g_FadeAlpha]}
 - {addr: 0x008A7DA0, name: g_CellTextColorSentinelRed, type: float, uses: 3, src: auto}
-- {addr: 0x008A7DA4, name: g_CellTextColorSentinelGreen, type: 'volatile std::uint32_t', uses: 2, src: auto}
-- {addr: 0x008A7DA8, name: g_CellTextColorSentinelBlue, type: 'volatile std::uint32_t', uses: 2, src: auto}
-- {addr: 0x008A7DAC, name: g_CellTextColorSentinelAlpha, type: 'volatile std::uint32_t', uses: 2, src: auto}
-- {addr: 0x008A7DB0, name: g_DefaultColorRed, type: float, uses: 2, src: auto}
+- {addr: 0x008A7DA4, name: g_ColorBlack_G, type: float, uses: 2, src: captain, conf: 0.8, alt: [g_CellTextColorSentinelGreen]}
+- {addr: 0x008A7DA8, name: g_ColorBlack_B, type: float, uses: 2, src: captain, conf: 0.8, alt: [g_CellTextColorSentinelBlue]}
+- {addr: 0x008A7DAC, name: g_ColorBlack_A, type: float, uses: 2, src: captain, conf: 0.8, alt: [g_CellTextColorSentinelAlpha]}
+- {addr: 0x008A7DB0, name: g_ColorRed, type: float, uses: 2, src: captain, conf: 0.75, alt: [g_DefaultColorRed]}
 - {addr: 0x008A7DB4, name: g_DefaultColorGreen, type: float, uses: 2, src: auto}
 - {addr: 0x008A7DB8, name: g_DefaultColorBlue, type: float, uses: 2, src: auto}
 - {addr: 0x008A7DBC, name: g_DefaultColorAlpha, type: float, uses: 2, src: auto}
