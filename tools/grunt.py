@@ -755,6 +755,19 @@ def bisect(batch, max_culprits=4):
         set_disabled([])
 
 
+def build_culprits(out, eas):
+    """Files of this batch named by a failed build: compile errors (src/auto/<ea>.cpp) and unresolved symbols
+    (the batch file that uses the symbol; a gate compile is per file, so link errors only show up here)."""
+    bad = {int(m.group(1), 16) for m in re.finditer(r"src[/\\]auto[/\\]([0-9a-f]{8})\.cpp[^\n]*?\berror\b", out)}
+    for sym in set(re.findall(r"undefined symbol: (\S+)", out)):
+        plain = re.sub(r"^[_@?]|@\d+$", "", sym)
+        for ea in eas:
+            p = os.path.join(ROOT, "src", "auto", f"{ea:08x}.cpp")
+            if os.path.exists(p) and re.search(rf"\b{re.escape(plain)}\b", open(p).read()):
+                bad.add(ea)
+    return sorted(bad & set(eas))
+
+
 def quarantine(ea, why, smoke_out=""):
     """Move an uncommitted src/auto file to queue/ (excluded from select() from now on)."""
     src = os.path.join(ROOT, "src", "auto", f"{ea:08x}.cpp")
@@ -1004,6 +1017,17 @@ def lanes(args):
         if not args.no_smoke:
             ok, out = smoke()
             print(out[-1500:], flush=True)
+            if not ok and out.startswith("build/deploy failed"):
+                culprits = build_culprits(out, [r["ea"] for r in good])
+                if culprits:  # compile/link error in this batch's own files (the gate compiles each one alone)
+                    print(f"build failed: culprits {' '.join(f'{c:x}' for c in culprits)}", flush=True)
+                    for c in culprits:
+                        quarantine(c, "build/link failure in the lanes batch build", out)
+                        db.rows[c]["status"] = "todo"
+                    good = [r for r in good if r["ea"] not in culprits]
+                    total_ok, total_esc = total_ok - len(culprits), total_esc + len(culprits)
+                    live(counts=dict(ok=total_ok, esc=total_esc, pending=len(good)))
+                    return flush()
             if not ok and not out.startswith("build/deploy failed") and not args.no_bisect:
                 print(f"smoke failed with {len(good)} new functions: bisecting", flush=True)
                 culprits, why = bisect([r["ea"] for r in good])

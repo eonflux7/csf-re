@@ -474,3 +474,13 @@ default output device (src/core/devcmd.cpp, from CDevCommandLine::Set, on a sepa
 whatever API the game plays through and leaves the saved sound options alone. Windows remembers per-app session
 state, so a missing `mute` (or `mute 0`) explicitly unmutes. Tested on a hardlinked private play copy
 (CSF_PLAY=/mnt/e/dev/csf-play-mute) because a grunt lane was using the shared one: SMOKE OK, SetMute hr=0.
+
+## 2026-10-08 — menu wave 1: link failure, crash, background smokes no longer take focus
+- Lanes stopped on a *link* error (gate compiles each file alone): 0x564B80's naked asm called a `__fastcall`
+  helper by its unmangled name. Lanes now maps build/link errors to the batch's files (`build_culprits`: compile
+  errors by path, `undefined symbol` by the file that uses it), quarantines them and carries on.
+- The remaining batch crashed the menu tour (EIP in .rdata 0x865B44); bisect (11 smokes): 0x540870 (menu_mp_stats).
+  58 committed; 45 in-flight files the stopped run never logged were dropped (regenerated next run).
+- Smokes stole focus and the mouse (an active game window acquires the DirectInput mouse exclusively). Background
+  mode now redirects the game's ShowWindow / SetFocus / SetForegroundWindow imports to no-activate versions for its
+  window, adds WS_EX_NOACTIVATE and answers WM_MOUSEACTIVATE with MA_NOACTIVATE. Smoke OK with menu tour.

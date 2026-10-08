@@ -7,6 +7,7 @@
 #include "globals.h"
 #include "hook.h"
 #include "legacy/string.h"
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 
@@ -202,7 +203,28 @@ WNDPROC g_gameWndProc;
 HWND g_prevForeground;
 constexpr UINT kMsgGiveBackFocus = WM_APP + 0x51;
 
+// It must also never take focus: an active game window acquires the DirectInput mouse exclusively (cursor hidden
+// and captured) and steals the keyboard. The game's own ShowWindow / SetFocus / SetForegroundWindow imports
+// (IAT 0x82D2D4 / 0x82D2CC / 0x82D28C) are redirected to no-activate versions for its window.
+HWND g_bgWnd;
+BOOL WINAPI Bg_ShowWindow(HWND wnd, int cmd) {
+    if (wnd == g_bgWnd && cmd != SW_HIDE && cmd != SW_MINIMIZE)
+        cmd = SW_SHOWNOACTIVATE;
+    return ShowWindow(wnd, cmd);
+}
+HWND WINAPI Bg_SetFocus(HWND wnd) { return wnd == g_bgWnd ? GetFocus() : SetFocus(wnd); }
+BOOL WINAPI Bg_SetForegroundWindow(HWND wnd) { return wnd == g_bgWnd ? TRUE : SetForegroundWindow(wnd); }
+
+void patch_iat(std::uintptr_t slot, void* fn) {
+    DWORD old;
+    VirtualProtect((void*)slot, 4, PAGE_READWRITE, &old);
+    *(void**)slot = fn;
+    VirtualProtect((void*)slot, 4, old, &old);
+}
+
 LRESULT CALLBACK Background_WndProc(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
+    if (msg == WM_MOUSEACTIVATE)
+        return MA_NOACTIVATE;
     if ((msg == WM_ACTIVATE && LOWORD(wp) == WA_INACTIVE) || (msg == WM_ACTIVATEAPP && !wp) || msg == WM_KILLFOCUS)
         return 0;
     if (msg == WM_ACTIVATE && g_prevForeground)
@@ -232,6 +254,11 @@ BOOL __cdecl Window_FitClientArea(HWND wnd, LONG w, LONG h) {
         if (!g_gameWndProc) {
             g_prevForeground = GetForegroundWindow();
             g_gameWndProc = (WNDPROC)SetWindowLongA(wnd, GWL_WNDPROC, (LONG)&Background_WndProc);
+            g_bgWnd = wnd;
+            SetWindowLongA(wnd, GWL_EXSTYLE, GetWindowLongA(wnd, GWL_EXSTYLE) | WS_EX_NOACTIVATE);
+            patch_iat(0x82D2D4, (void*)&Bg_ShowWindow);
+            patch_iat(0x82D2CC, (void*)&Bg_SetFocus);
+            patch_iat(0x82D28C, (void*)&Bg_SetForegroundWindow);
             hook::log("devcmd: background mode (off-screen, no pause on focus loss)");
         }
         // left of the virtual desktop, so no monitor shows it; D3D9 windowed rendering continues
