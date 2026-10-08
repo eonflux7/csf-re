@@ -69,51 +69,99 @@ def is_pure(db, ea, depth=0):
     return ok
 
 
+ALIAS_MOV = re.compile(r"mov (e[a-z]{2}), (e[a-z]{2})$")
+REG_WRITE = re.compile(r"(?:mov|lea|xchg|pop|xor|sub|add|and|or|inc|dec|shl|shr|sar|imul|movzx|movsx|neg|not|"
+                       r"cmov\w+|set\w+) (e[a-z]{2}|[a-d][lhx]|[sd]il?|bpl?)\b")
+SUBREG = {"al": "eax", "ah": "eax", "ax": "eax", "bl": "ebx", "bh": "ebx", "bx": "ebx", "cl": "ecx", "ch": "ecx",
+          "cx": "ecx", "dl": "edx", "dh": "edx", "dx": "edx", "si": "esi", "di": "edi", "bp": "ebp"}
+CLOBBERED = ("eax", "ecx", "edx")  # by any call
+
+
+def effects(db, ea, depth=0, _memo={}):
+    """What running `ea` once writes, when everything it writes can be snapshotted: (this_max, {global: size},
+    {this float offset: n}, {global float addr: n}) — `this` = ecx at entry and every register copied from it (MSVC's
+    `mov esi, ecx`); callees are pure, or contained themselves when called with ecx = this (their writes merge in).
+    None when it writes through any other pointer, calls anything else, or jumps out (running it twice in the
+    diff would then repeat side effects the snapshot can't undo)."""
+    if ea in _memo:
+        return _memo[ea]
+    f = db.F.get(ea)
+    if f is None or depth > 8 or f["size"] > 4000:
+        return None
+    _memo[ea] = None  # recursion guard
+    ins = list(disasm(ea, f["size"]))
+    alias = {"ecx"}
+    this_max, globs, fl_this, fl_glob = 0, {}, {}, {}
+    this_re = None
+
+    def this_off(inner):
+        mo = re.fullmatch(r"(e[a-z]{2})(?: \+ (0x[0-9a-f]+|\d+))?", inner)
+        return int(mo.group(2) or "0", 0) if mo and mo.group(1) in alias else None
+
+    for i in ins:
+        m, ops = i.mnemonic, i.op_str
+        if m.startswith(("rep", "stos", "movs", "lods", "scas", "cmps")) and "ptr" in ops or m.startswith("rep") \
+                or m in ("int3", "int", "into"):
+            return None
+        if m == "jmp" or m.startswith("j"):
+            if not ops.startswith("0x") or not (f["ea"] <= int(ops, 16) < f["end"]):
+                return None
+            continue
+        if m == "call":
+            if not ops.startswith("0x"):
+                return None
+            t = int(ops, 16)
+            if not is_pure(db, t):
+                sub = effects(db, t, depth + 1) if "ecx" in alias else None
+                if sub is None:
+                    return None
+                this_max = max(this_max, sub[0])
+                for a2, n in sub[1].items():
+                    globs[a2] = max(globs.get(a2, 0), n)
+                fl_this.update(sub[2])
+                fl_glob.update(sub[3])
+            alias -= set(CLOBBERED)
+            continue
+        for mm in re.finditer(r"(byte|word|dword|qword) ptr \[(e[a-z]{2})(?: \+ (0x[0-9a-f]+|\d+))?\]", ops):
+            if mm.group(2) in alias:  # reads count too: the snapshot must hold every byte the function looks at
+                this_max = max(this_max, int(mm.group(3) or "0", 0) + SIZE[mm.group(1)])
+        mw = re.match(r"(byte|word|dword|qword) ptr (?:\w+:)?\[(.*?)\]", ops.split(",")[0])
+        is_write = mw and ((m in WRITE_OPS and m not in ("movsx", "movzx")) or m in ("fstp", "fst", "fistp", "fist"))
+        if is_write:
+            inner = mw.group(2)
+            n = SIZE[mw.group(1)]
+            fpw = m in ("fstp", "fst", "movss", "movsd") and n in (4, 8)
+            if re.fullmatch(r"0x[0-9a-f]+", inner):
+                a2 = int(inner, 16)
+                globs[a2] = max(globs.get(a2, 0), n)
+                if fpw:
+                    fl_glob[a2] = n
+            elif this_off(inner) is not None:
+                if fpw:
+                    fl_this[this_off(inner)] = n
+            elif not re.match(r"(esp|ebp)\b", inner):
+                return None  # another pointer: not snapshot-able
+            continue
+        # register effects: copies of `this` stay `this`, anything else written to a register drops it
+        cp = ALIAS_MOV.match(f"{m} {ops}")
+        if cp:
+            (alias.add if cp.group(2) in alias else alias.discard)(cp.group(1))
+            continue
+        rw = REG_WRITE.match(f"{m} {ops}")
+        if rw:
+            alias.discard(SUBREG.get(rw.group(1), rw.group(1)))
+    _memo[ea] = (this_max, globs, fl_this, fl_glob)
+    return _memo[ea]
+
+
 def analyze(db, ea):
     f = db.F[ea]
-    ins = list(disasm(ea, f["size"]))
-    for i in ins:
-        if i.mnemonic == "call":  # tier 2: a direct call to a pure function (safe to run twice)
-            if i.op_str.startswith("0x") and is_pure(db, int(i.op_str, 16)):
-                continue
-            return None
-        if i.mnemonic.startswith("rep") or i.mnemonic in ("int3", "int"):
-            return None
-        if i.mnemonic == "jmp" or i.mnemonic.startswith("j"):
-            if not i.op_str.startswith("0x") or not (f["ea"] <= int(i.op_str, 16) < f["end"]):
-                return None
-    if any(re.match(r"(mov|lea|xchg|pop|xor|sub|add|and|or) ecx\b", f"{i.mnemonic} {i.op_str}") for i in ins):
-        uses_ecx_as_this = False
-    else:
-        uses_ecx_as_this = True
-    this_max, globs = 0, {}
-    fl_this, fl_glob = {}, {}  # FPU/SSE stores: offset -> 4 (float) / 8 (double); compared with a tolerance
-    for i in ins:
-        for m in re.finditer(r"(byte|word|dword|qword) ptr \[ecx(?: \+ (0x[0-9a-f]+|\d+))?\]", i.op_str):
-            this_max = max(this_max, int(m.group(2) or "0", 0) + SIZE[m.group(1)])
-        first = i.op_str.split(",")[0]
-        mw = re.match(r"(byte|word|dword|qword) ptr \[(.*?)\]", first)
-        is_write = i.mnemonic in WRITE_OPS and mw and (i.mnemonic not in ("movsx", "movzx"))
-        if i.mnemonic in ("fstp", "fst", "fistp", "fist") and mw:
-            is_write = True
-        if not is_write:
-            continue
-        inner = mw.group(2)
-        if i.mnemonic in ("fstp", "fst", "movss", "movsd") and mw.group(1) in ("dword", "qword"):
-            n = 4 if mw.group(1) == "dword" else 8
-            if re.fullmatch(r"0x[0-9a-f]+", inner):
-                fl_glob[int(inner, 16)] = n
-            else:
-                mo = re.fullmatch(r"ecx(?: \+ (0x[0-9a-f]+|\d+))?", inner)
-                if mo:
-                    fl_this[int(mo.group(1) or "0", 0)] = n
-        if re.fullmatch(r"0x[0-9a-f]+", inner):
-            a = int(inner, 16)
-            globs[a] = max(globs.get(a, 0), SIZE[mw.group(1)])
-        elif re.fullmatch(r"ecx(?: \+ (0x[0-9a-f]+|\d+))?", inner) and uses_ecx_as_this:
-            pass
-        else:
-            return None  # writes through another pointer / the stack args: not snapshot-able
+    eff = effects(db, ea)
+    if eff is None:
+        return None
+    this_max, globs, fl_this, fl_glob = eff
+    if len(globs) > 8 or this_max > 12288:  # hook/diff.cpp: Snap buf 16 KiB, globs[8]
+        return None
     src = pseudo(ea) or ""
     proto = src.splitlines()[0] if src else ""
     conv = next((v for k, v in CONV.items() if k in proto), 0)
@@ -135,7 +183,7 @@ def analyze(db, ea):
     if conv not in (2, 3):
         this_max = 0
         fl_this = {}
-    gl = sorted(globs.items())[:4]
+    gl = sorted(globs.items())
     # float positions in the snapshot (this bytes first, then the globals in table order); 8-byte = double (+0x8000)
     fl, pos = [], this_max
     fl += [o | (0x8000 if n == 8 else 0) for o, n in sorted(fl_this.items()) if o + n <= this_max]

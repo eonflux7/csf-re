@@ -12,6 +12,8 @@ the callee never reads, which its own prototype drops):
   this_args {callee ea: [struct name the first argument points to, per call site]} (typed callers only)
   arg0_src  {callee ea: [["p", i] = the caller's i-th parameter | ["f", struct, offset] = a struct member]}:
             what the first argument is made of, so a callee's class types that parameter / member (this_class.py)
+  order     per block, the direct callees of its call statements in order; consts: the numbers it computes with
+            (literals, case values, float literals / .rdata floats; not pointer offsets): semcheck.behaviour
 
 Usage: export_abi.py [--only ea,ea,...]     (default: every function in db/functions.csv; ~2 min)
 """
@@ -114,6 +116,92 @@ class Calls(ida_hexrays.ctree_visitor_t):
         return 0
 
 
+def callee_of(s):
+    """Direct callee of a statement that is a call (`f(...);`, `x = f(...);`), else None."""
+    if s.op != ida_hexrays.cit_expr:
+        return None
+    e = s.cexpr
+    if e.op == ida_hexrays.cot_asg:
+        e = e.y
+    while e.op == ida_hexrays.cot_cast:
+        e = e.x
+    if e.op == ida_hexrays.cot_call and e.x.op == ida_hexrays.cot_obj and ida_funcs.get_func(e.x.obj_ea):
+        return f"{e.x.obj_ea:08x}"
+    return None
+
+
+def s32(v, size):
+    v &= (1 << (8 * size)) - 1 if size in (1, 2, 4, 8) else 0xFFFFFFFF
+    return v - (1 << (8 * size)) if size in (1, 2, 4, 8) and v >> (8 * size - 1) else v
+
+
+class Sem(ida_hexrays.ctree_visitor_t):
+    """What the gate compares beyond references (semcheck.py):
+      order   per block, the direct callees of its call statements in order (only blocks with >= 2 distinct):
+              statements of one block run in that order, whatever branches surround them
+      consts  numbers the code computes with: literals (not pointer offsets / array indices / addresses), switch
+              case values, float literals and .rdata floats it loads"""
+
+    def __init__(self):
+        super().__init__(ida_hexrays.CV_PARENTS)
+        self.order, self.consts = [], set()
+
+    def visit_insn(self, i):
+        if i.op == ida_hexrays.cit_block:
+            seq = [c for c in map(callee_of, i.cblock) if c]
+            if len(set(seq)) >= 2:
+                self.order.append(seq)
+        elif i.op == ida_hexrays.cit_switch:
+            size = i.cswitch.expr.type.get_size()
+            for case in i.cswitch.cases:
+                for v in case.values:
+                    self.consts.add(s32(v, size if size in (1, 2, 4, 8) else 4))
+        return 0
+
+    def is_offset(self, e):
+        """Pointer arithmetic: `p + N` on a pointer, `(T *)(x + N)` on an untyped integer, or an array index."""
+        n = len(self.parents)
+        p = self.parents[n - 1].cexpr if n >= 1 and self.parents[n - 1].is_expr() else None
+        if p is None:
+            return False
+        if p.op == ida_hexrays.cot_idx:
+            return p.y == e
+        k = n - 1  # up a chain of additions (`this + i + 14`): pointer-typed anywhere, or cast to a pointer
+        while k >= 0 and self.parents[k].is_expr() and self.parents[k].cexpr.op in (ida_hexrays.cot_add,
+                                                                                     ida_hexrays.cot_sub):
+            if self.parents[k].cexpr.type.is_ptr():
+                return True
+            k -= 1
+        if k == n - 1:
+            return False
+        g = self.parents[k].cexpr if k >= 0 and self.parents[k].is_expr() else None
+        return g is not None and g.op == ida_hexrays.cot_cast and g.type.is_ptr()
+
+    def visit_expr(self, e):
+        if e.op == ida_hexrays.cot_num:
+            if self.is_offset(e):
+                return 0
+            size = e.type.get_size()
+            v = s32(e.numval(), size if size in (1, 2, 4, 8) else 4)
+            if not 0x401000 <= v < 0x900000:
+                self.consts.add(v)
+        elif e.op == ida_hexrays.cot_fnum:
+            import ida_lines
+            txt = ida_lines.tag_remove(e.fpc._print()).rstrip("fFlL")
+            try:
+                self.consts.add(float(txt))
+            except ValueError:
+                pass
+        elif e.op == ida_hexrays.cot_obj and e.type.is_floating() and idc.get_segm_name(e.obj_ea) == ".rdata":
+            import struct
+            n = e.type.get_size()
+            if n in (4, 8):
+                raw = idc.get_bytes(e.obj_ea, n)
+                if raw:
+                    self.consts.add(struct.unpack("<f" if n == 4 else "<d", raw)[0])
+        return 0
+
+
 args = sys.argv[1:]
 rows = list(csv.DictReader(open(os.path.join(ROOT, "db", "functions.csv"))))
 targets = ([int(x, 16) for x in args[args.index("--only") + 1].split(",")] if "--only" in args
@@ -139,6 +227,12 @@ for i, ea in enumerate(targets):
         rec["this_args"] = v.objs
     if v.src:
         rec["arg0_src"] = v.src
+    s = Sem()
+    s.apply_to(cf.body, None)
+    if s.order:
+        rec["order"] = s.order
+    if s.consts:
+        rec["consts"] = sorted(s.consts, key=lambda c: (isinstance(c, float), c))
     rec["cleanup"] = cleanups(ea)
     out[f"{ea:08x}"] = rec
     if i % 2000 == 0:

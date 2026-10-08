@@ -60,6 +60,8 @@ File rules:
   standalone build resolves these by address; a bare number would point into the old exe.
 - String constants of the original: ALWAYS CSF_STR(0xADDR, "text") with the address from the packet, never a
   bare string literal (callers may compare pointers). Same for other constant data: bind by address.
+- Numbers: write the original's literals as the pseudocode shows them (case 203, not case 3 after `x - 200`;
+  0x24C bytes, not 0x93 dwords); keep consecutive calls in the original's order. The gate checks both.
 - Fields: use the declared struct fields (types/auto_classes.h; never redefine those structs). For an offset
   that is not a declared field (inside a pad_ array, or no class given) use CSF_AT(type, ptr, 0xOFF).
   Pointer-sized fields declared uint32_t: cast as needed, e.g. reinterpret_cast<C_xxx*>(self->field_0010).
@@ -452,11 +454,48 @@ def normalize(code, ea=None):
         code = re.sub(r"\b_(DWORD|WORD|BYTE|QWORD)\b", lambda m: hr[m.group(0)], code)
         if "<cstdint>" not in code:
             code = "#include <cstdint>\n" + code
+    # reinterpret_cast can't take nullptr (std::nullptr_t): the commonest compile error left (21, 2026-10-08)
+    code = re.sub(r"\breinterpret_cast<([^<>()]*\*)\s*>\(\s*nullptr\s*\)", r"static_cast<\1>(nullptr)", code)
     if re.search(r"\bCSF_(GLOBAL|FUNC|AT|STR)\b", code) and not re.search(r'#\s*include\s*"globals.h"', code):
         incs = list(re.finditer(r'^\s*#\s*include[^\n]*\n', code, re.M))
         at = incs[-1].end() if incs else 0
         code = code[:at] + '#include "globals.h"\n' + code[at:]
     return code
+
+
+def compile_fix(code, err):
+    """Code with clang's own suggestion applied when the gate's compile error is an unknown type name it can name
+    (`unknown type name 'C_CMenuPause'; did you mean 'CMenuPause'?`: class names from an older packet), else None.
+    The caller re-gates the result: no model call spent on a rename."""
+    subs = dict(re.findall(r"error: unknown type name '(\w+)'; did you mean '([\w:]+)'\?", err or ""))
+    if not subs:
+        return None
+    fixed = re.sub(r"\b(" + "|".join(map(re.escape, subs)) + r")\b", lambda m: subs[m.group(1)], code)
+    return fixed if fixed != code else None
+
+
+COMPILE_HINTS = [  # appended to a compile error the model has to fix itself
+    (r"array type '[^']*' is not assignable", "C arrays can't be assigned as a whole: copy element by element "
+                                              "(the original copies each element / dword too)"),
+]
+
+
+def gate_fixed(ea, tmp, db, code):
+    """gate() plus the mechanical compile fixes; returns (ok, err, code as written)."""
+    ok, err = gate(ea, tmp, db)
+    fixed = None if ok else compile_fix(code, err)
+    if fixed:
+        open(tmp, "w").write(fixed)
+        ok2, err2 = gate(ea, tmp, db)
+        if ok2 or "compile error" not in err2:
+            with _live_lock:
+                _live["counts"]["autofix"] = _live["counts"].get("autofix", 0) + 1
+            ok, err, code = ok2, err2, fixed
+        else:
+            open(tmp, "w").write(code)
+    if not ok and "compile error" in (err or ""):
+        err += "".join(f"\nhint: {h}" for rx, h in COMPILE_HINTS if re.search(rx, err))
+    return ok, err, code
 
 
 def autofix(code, ea=None):
@@ -595,7 +634,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
             ok, err = False, "no ```cpp block found in your answer"
         else:
             open(tmp, "w").write(code)
-            ok, err = gate(ea, tmp, db)
+            ok, err, code = gate_fixed(ea, tmp, db, code)
         if ok and backend in ("deepseek", "claude") and review_over is not None and review_over >= 0 \
                 and db.F[ea]["size"] > review_over:
             issues, u = review(ea, packet, code)
@@ -679,7 +718,7 @@ def work_batch(eas, db, key, model, out_dir=None, review_over=None, ev=None):
             tmp = os.path.join(ROOT, "work", "grunt", "codex", f"{ea:08x}.cpp")
             os.makedirs(os.path.dirname(tmp), exist_ok=True)
             open(tmp, "w").write(code)
-            ok, err = gate(ea, tmp, db)
+            ok, err, code = gate_fixed(ea, tmp, db, code)
         else:
             ok, err = False, "no ```cpp block found in your answer"
         if ok:

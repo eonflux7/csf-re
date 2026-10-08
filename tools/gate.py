@@ -3,6 +3,7 @@
 
 Checks: allowed includes only, no inline asm, exactly one HOOK for the target address, compiles with the real
 build flags (static_asserts included), referenced addresses/field offsets match the original (semcheck.py),
+the original's constants appear and its consecutive calls keep their order (semcheck.behaviour, Hex-Rays' view),
 and the hooked function's `ret N` matches the original.
 
 Usage: gate.py <ea-hex> <file.cpp>      exit 0 = pass; errors on stdout
@@ -165,7 +166,8 @@ def gate(ea, path, db=None):
         orig = effective_rets(ea, db)
         if not found:
             return False, f"could not find compiled function `{fn}` in object file"
-        sem = semcheck.check(ea, obj, db) + semcheck.byte_return_of_bool(ea, obj, fn, db)
+        sem = (semcheck.check(ea, obj, db) + semcheck.byte_return_of_bool(ea, obj, fn, db)
+               + semcheck.behaviour(ea, obj, fn, src, db))
         if any(e.startswith(semcheck.VSLOT_ERR) for e in sem):
             # the build is /Od /Ob0: a helper taking the slot as an argument hides the constant. Optimized, a correct
             # helper folds back to [vtbl + N]; a wrong one (byte offset used as index) shows [vtbl + 4N] and fails
@@ -200,6 +202,8 @@ FAIL_KINDS = [
     ("sem_extra_ref", r"your code references 0x[0-9A-F]+.*which the original does not"),
     ("sem_vslot", r"virtual call|\[vtbl \+ 0x"),
     ("sem_field", r"field offsets the original never uses|computes the ADDRESS this\+"),
+    ("sem_const", r"computes with constants your code never uses"),
+    ("sem_order", r"the original calls in this order"),
     ("tail_jump", r"TAIL-JUMPS"),
     ("compile", r"compile error|error:|could not find compiled function"),
     ("raw_address", r"raw original address"),

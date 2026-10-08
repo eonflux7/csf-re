@@ -27,7 +27,7 @@ namespace {
 struct Glob { uint32_t addr, size; };
 // fl: snapshot offsets the original writes with FPU/SSE stores (+0x8000 = double): compared with a relative
 // tolerance (x87 80-bit intermediates vs clang's SSE math differ in the last bits; that is not a behavior change).
-struct DiffInfo { uint32_t addr, conv, argbytes, ret, this_size, nglobs; Glob globs[4]; uint32_t nfl, fl[8]; };
+struct DiffInfo { uint32_t addr, conv, argbytes, ret, this_size, nglobs; Glob globs[8]; uint32_t nfl, fl[8]; };
 const DiffInfo kTable[] = {
 #include "diff_table.inc"
 };
@@ -88,7 +88,7 @@ bool readable(uint32_t p, uint32_t n) {
 }
 
 struct Snap {
-    uint8_t buf[4096];
+    uint8_t buf[16384];
     uint32_t len = 0;
 };
 
@@ -97,7 +97,7 @@ bool capture(const Slot& s, const Regs* r, Snap& out) {
     out.len = 0;
     const DiffInfo& d = *s.info;
     if (d.this_size) {
-        if (!readable(r->ecx, d.this_size) || d.this_size > 2048)
+        if (!readable(r->ecx, d.this_size) || d.this_size > 12288)
             return false;
         memcpy(out.buf, (void*)r->ecx, d.this_size);
         out.len = d.this_size;

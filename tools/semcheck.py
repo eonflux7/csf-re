@@ -9,7 +9,8 @@ they appear as immediates/displacements) with the original's references:
   - .rdata constants (floats etc.) are soft: a literal in our code is fine
   - field displacements we use on non-stack bases must occur in the original (wrong field offset)
 
-Usage: semcheck.py --all         run over every src/auto file, report failures (false-positive survey)
+Usage: semcheck.py --all [--behaviour]   run over every src/auto file, report failures (false-positive survey);
+       --behaviour: only the constant / call-order checks
 """
 import concurrent.futures as cf, glob, json, os, re, subprocess, sys, tempfile
 sys.path.insert(0, os.path.dirname(__file__))
@@ -289,7 +290,192 @@ def byte_return_of_bool(ea, obj, fn, db):
     return []
 
 
-def survey():
+_abi = None
+
+
+def abi(ea):
+    """Hex-Rays' view of the original (export/abi.json, tools/ida/export_abi.py): `consts`, `order`, `calls`."""
+    global _abi
+    if _abi is None:
+        try:
+            _abi = json.load(open(os.path.join(ROOT, "export", "abi.json")))
+        except OSError:
+            _abi = {}
+    return _abi.get(f"{ea:08x}", {})
+
+
+def our_functions(obj):
+    """{symbol: [instruction text]} of the object's code, relocation targets inlined as `<reloc SYM>` lines."""
+    dis = subprocess.run(["llvm-objdump-21", "-dr", "--no-show-raw-insn", "--x86-asm-syntax=intel", obj],
+                         capture_output=True, text=True).stdout
+    out, cur = {}, None
+    for line in dis.splitlines():
+        m = re.match(r"^[0-9a-f]+ <(.+)>:$", line)
+        if m:
+            cur = out.setdefault(m.group(1), [])
+        elif cur is not None and "IMAGE_REL_I386" in line:
+            cur.append("<reloc " + line.split()[-1] + ">")
+        elif cur is not None and "\t" in line:
+            cur.append(line.split("\t", 1)[1].strip())
+    return out
+
+
+def call_seq(funcs, sym, seen=()):
+    """Original functions our `sym` calls, in code order (/Od keeps source order): `mov r, ADDR` .. `call r`, direct
+    `call ADDR`, and calls into the file's own helpers expanded in place."""
+    out, regs = [], {}
+    ins = funcs.get(sym, [])
+    for k, i in enumerate(ins):
+        m = re.match(r"mov\s+(e[a-z]{2}), (0x[0-9a-f]+)$", i)
+        if m:
+            regs[m.group(1)] = int(m.group(2), 16)
+            continue
+        m = re.match(r"mov\s+(e[a-z]{2}), dword ptr \[0x0\]$", i)
+        if m and k + 1 < len(ins) and ins[k + 1].startswith("<reloc "):
+            regs[m.group(1)] = None  # a pointer variable of the file's own: target unknown here
+            continue
+        m = re.match(r"call\s+(\S+)", i)
+        if not m:
+            continue
+        t = m.group(1)
+        if t in regs and regs[t] is None:
+            raise LookupError(t)
+        if t in regs:
+            out.append(regs[t])
+        elif t.startswith("0x") and IMG_LO <= int(t, 16) < IMG_HI:
+            out.append(int(t, 16))
+        elif k + 1 < len(ins) and ins[k + 1].startswith("<reloc "):
+            callee = ins[k + 1][7:-1]
+            if callee in funcs and callee not in seen and len(seen) < 6:
+                out += call_seq(funcs, callee, seen + (sym,))
+    return out
+
+
+REAL = re.compile(r"__real@([0-9a-f]{8}|[0-9a-f]{16})\b")
+NUM_LIT = re.compile(r"(?<![\w.])(0x[0-9a-fA-F]+|\d+\.\d*(?:[eE][-+]?\d+)?|\d*\.\d+(?:[eE][-+]?\d+)?|\d+[eE][-+]?\d+|\d+)"
+                     r"[uUlLfF]*")
+
+
+def our_consts(funcs, src):
+    """(ints as unsigned 32-bit, floats) our code computes with: immediates and displacements, float bit patterns,
+    the compiler's float pool (__real@...), and the source's own literals."""
+    import struct
+    ints, floats = set(), set()
+    for sym, ins in funcs.items():
+        if re.search(r"\?\?__E|@hook@@", sym):
+            continue
+        for i in ins:
+            for h in re.findall(r"(?<![\w@])(-?0x[0-9a-f]+|-?\d+)(?![\w@])", i):
+                ints.add(int(h, 16 if "0x" in h else 10) & 0xFFFFFFFF)
+            for r in REAL.findall(i):
+                floats.add(struct.unpack("<f" if len(r) == 8 else "<d", bytes.fromhex(r)[::-1])[0])
+    for v in list(ints):
+        floats.add(struct.unpack("<f", v.to_bytes(4, "little"))[0])
+    code = re.sub(r"//[^\n]*|/\*.*?\*/|\"(?:[^\"\\\n]|\\.)*\"", "", src, flags=re.S)
+    for lit in NUM_LIT.findall(code):
+        if re.fullmatch(r"0x[0-9a-fA-F]+|\d+", lit):
+            ints.add(int(lit, 16 if lit[:2] in ("0x", "0X") else 10) & 0xFFFFFFFF)
+        else:
+            floats.add(float(lit))
+    for g in list(floats):  # a float literal is also its bit pattern (the original may store 0x3F800000)
+        try:
+            ints.add(struct.unpack("<I", struct.pack("<f", g))[0])
+        except OverflowError:
+            pass
+    return ints, floats
+
+
+_pe = None
+
+
+def rdata_floats(addrs):
+    """Float/double values stored at the .rdata addresses given (the original's float constant pool)."""
+    import struct
+    global _pe
+    if _pe is None:
+        import pefile
+        _pe = pefile.PE(os.path.join(ROOT, "work", "pc", "CommXPC.exe"), fast_load=True)
+    out = set()
+    for a in addrs:
+        if section_of(a) != ".rdata":
+            continue
+        raw = _pe.get_data(a - 0x400000, 8)
+        if len(raw) == 8:
+            out.add(struct.unpack("<f", raw[:4])[0])
+            out.add(struct.unpack("<d", raw)[0])
+    return out
+
+
+TRIVIAL = {-1, 0, 1, 2, -0x80000000, 0x80000000, 0x7FFFFFFF}  # sign-bit tests are `< 0` in C
+
+
+def const_found(c, ints, floats):
+    if isinstance(c, float):
+        if c.is_integer() and int(c) & 0xFFFFFFFF in ints:
+            return True
+        if c and abs(1.0 / c - round(1.0 / c)) < 1e-4 and int(round(1.0 / c)) & 0xFFFFFFFF in ints:
+            return True  # x * (1/255) as x / 255
+        tol = 1e-6 * max(1.0, abs(c))
+        return any(abs(g - c) <= tol or abs(g + c) <= tol or (g and abs(1.0 / g - c) <= tol) for g in floats)
+    alts = {c, -c, ~c, c - 1, c + 1}
+    alts |= {c * k for k in (2, 4, 8)} | {c // k for k in (2, 4, 8) if c % k == 0}  # index scaled / count in dwords
+    if c > 0 and c & (c - 1) == 0:
+        alts.add(c.bit_length() - 1)  # x * 8 as x << 3
+    if 0 < c < 32:
+        alts |= {1 << c, (1 << c) - 1}  # x << 3 as x * 8; a mask of c bits
+    if c >= 0x100 and any(c < v <= c + 0x40 for v in ints):
+        return True  # an offset kept in an integer and folded into the next one (base + 0x21B8, then + 4)
+    return any(a & 0xFFFFFFFF in ints for a in alts) or float(c) in floats
+
+
+def behaviour(ea, obj, fn, src, db):
+    """Beyond references: the original's constants must appear in ours, and calls Hex-Rays shows as consecutive
+    statements of one block must come in the same order in ours (each callee called once in both, so branches and
+    loops can't reorder them)."""
+    a = abi(ea)
+    if not a:
+        return []
+    funcs = our_functions(obj)
+    errs = []
+    ints, floats = our_consts(funcs, src)
+    floats |= rdata_floats(our_refs(obj)[0])  # a .rdata float read by address (CSF_GLOBAL) is the literal itself
+    miss = [c for c in a.get("consts", []) if c not in TRIVIAL and not (isinstance(c, float) and c in (0.0, 1.0, -1.0))
+            and not const_found(c, ints, floats)]
+    bases = [b for b in a.get("consts", []) if isinstance(b, int) and b >= 16 and b & 0xFFFFFFFF in ints]
+    miss = [c for c in miss if not (isinstance(c, int) and any(c > b and c - b in ints for b in bases))]
+    if miss:
+        errs.append(CONST_ERR + ": " + ", ".join(f"{c:g}" if isinstance(c, float) else
+                                                 (f"0x{c & 0xFFFFFFFF:X}" if abs(c) >= 0x100 else str(c))
+                                                 for c in miss[:12]) +
+                    " — a wrong value, a dropped case/branch, or a value derived another way (write the original's "
+                    "literal so it can be checked)")
+    sym = next((s for s in funcs if s.startswith(f"?{fn}@") or s in (fn, f"_{fn}", f"@{fn}")
+                or re.match(rf"@{re.escape(fn)}@\d+$", s)), None)
+    try:
+        ours = call_seq(funcs, sym) if sym and a.get("order") else None
+    except LookupError:  # calls through a function-pointer variable: our order can't be read from the code
+        ours = None
+    if ours is not None:
+        once = {int(k, 16) for k, v in a.get("calls", {}).items() if len(v) == 1}
+        pos = {c: ours.index(c) for c in set(ours) if ours.count(c) == 1}
+        seen = set()
+        for blk in a["order"]:
+            seq = [int(c, 16) for c in blk]
+            seq = [c for c in seq if c in once and c in pos]
+            for x, y in zip(seq, seq[1:]):
+                if pos[x] > pos[y] and (x, y) not in seen:
+                    seen.add((x, y))
+                    errs.append(f"{ORDER_ERR}: 0x{x:X} ({db.name(x) or 'sub_%X' % x}) then 0x{y:X} "
+                                f"({db.name(y) or 'sub_%X' % y}) as consecutive statements; yours calls them the "
+                                "other way round (side effects reordered)")
+    return errs
+
+
+CONST_ERR = "the original computes with constants your code never uses"
+ORDER_ERR = "the original calls in this order"
+
+
+def survey(only_behaviour=False):
     from gate import compile_cmd
     db = DB()
     files = sorted(glob.glob(os.path.join(ROOT, "src", "auto", "*.cpp")))
@@ -304,7 +490,10 @@ def survey():
                 return ea, ["compile failed"]
             m = re.search(r"HOOK(?:_METHOD)?\(\s*0x[0-9A-Fa-f]+\s*,\s*&?([\w:]+)", open(p).read())
             fn = m.group(1).split("::")[-1] if m else ""
-            return ea, check(ea, obj, db) + (byte_return_of_bool(ea, obj, fn, db) if fn else [])
+            if only_behaviour:
+                return ea, behaviour(ea, obj, fn, open(p).read(), db) if fn else []
+            return ea, (check(ea, obj, db) + (byte_return_of_bool(ea, obj, fn, db) if fn else [])
+                        + (behaviour(ea, obj, fn, open(p).read(), db) if fn else []))
 
     bad = 0
     with cf.ThreadPoolExecutor(16) as ex:
@@ -317,4 +506,4 @@ def survey():
 
 if __name__ == "__main__":
     if "--all" in sys.argv:
-        survey()
+        survey("--behaviour" in sys.argv)
