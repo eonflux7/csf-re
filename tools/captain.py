@@ -864,11 +864,16 @@ def agent(model, effort, system, prompt, schema, budget):
     return out, usage
 
 
-def family_targets(db, modules):
-    """Unnamed classes listed by the modules whose name matches one of the globs, grouped by module."""
+def family_targets(db, modules, retry_held=False):
+    """Unnamed classes listed by the modules whose name matches one of the globs, grouped by module. Classes an
+    earlier session held (low confidence) are skipped unless retry_held: re-asking without new evidence costs
+    the same and answers the same."""
     import fnmatch, yaml
     raw = yaml.safe_load(open(CLASSES_YAML)) or {}
     have = {(f"{k:08x}" if isinstance(k, int) else str(k).lower()) for k in raw}
+    held = os.path.join(WORK, "held_family.jsonl")
+    if not retry_held and os.path.exists(held):
+        have |= {json.loads(l).get("vtable", "") for l in open(held)}
     groups, seen = [], set()
     for m in yaml.safe_load(open(os.path.join(ROOT, "db", "modules.yaml"))):
         if not any(fnmatch.fnmatch(m.get("name") or m["id"], g) or m["id"] == g for g in modules):
@@ -891,7 +896,7 @@ def job_family(args):
     import yaml
     raw = yaml.safe_load(open(CLASSES_YAML)) or {}
     allnames = {v["name"] for v in db.class_names.values()} | {v.get("name") for v in raw.values() if isinstance(v, dict)}
-    groups = family_targets(db, args.modules)
+    groups = family_targets(db, args.modules, args.retry_held)
     # sessions of up to --batch classes; neighbouring modules share one session (same family, shared reading)
     sessions, cur = [], []
     for m, vts in groups:
@@ -1064,7 +1069,7 @@ def job_functions(args):
                 db.F[c].setdefault("callers", []).append(e)
     taken = {r["name"] for r in db.rows.values() if r["name"]}
     todo = [ea for ea, r in db.rows.items() if r["region"] == "game" and r["name"] and FN_PLACEHOLDER.match(r["name"])
-            and (not args.only or ea in args.only)]
+            and (not args.only or ea in args.only) and (not args.module or r["module"] in args.module)]
     by_mod = sorted(todo, key=lambda e: (db.class_of(e) or "", db.rows[e]["module"], e))  # class/module together
     by_mod = by_mod[:args.limit]
     batches = [by_mod[i:i + args.batch] for i in range(0, len(by_mod), args.batch)]
@@ -1300,6 +1305,7 @@ def main():
     fn.add_argument("--effort", default="medium")
     fn.add_argument("--min-conf", type=float, default=0.75)
     fn.add_argument("--only", type=lambda s: {int(x, 16) for x in s.split(",")})
+    fn.add_argument("--module", type=lambda s: set(s.split(",")), help="only these module ids (comma list)")
     fn.add_argument("--dry", action="store_true")
     fn.add_argument("--no-apply", action="store_true")
     fa = sub.add_parser("family", help="agentic: one read-only Claude session per group of unnamed classes")
@@ -1311,6 +1317,7 @@ def main():
     fa.add_argument("--min-conf", type=float, default=0.7)
     fa.add_argument("--dry", action="store_true")
     fa.add_argument("--no-apply", action="store_true")
+    fa.add_argument("--retry-held", action="store_true", help="also re-ask classes earlier sessions held")
     st = sub.add_parser("strings", help="mechanical: pointer-to-string globals named after the string")
     st.add_argument("--dry", action="store_true")
     st.add_argument("--show", type=int, default=30)

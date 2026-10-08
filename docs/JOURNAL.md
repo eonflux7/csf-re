@@ -484,3 +484,7 @@ state, so a missing `mute` (or `mute 0`) explicitly unmutes. Tested on a hardlin
 - Smokes stole focus and the mouse (an active game window acquires the DirectInput mouse exclusively). Background
   mode now redirects the game's ShowWindow / SetFocus / SetForegroundWindow imports to no-activate versions for its
   window, adds WS_EX_NOACTIVATE and answers WM_MOUSEACTIVATE with MA_NOACTIVATE. Smoke OK with menu tour.
+- Module waves now include the captain steps (`grunt.py lanes --module ...`, `--no-captain` to skip): before
+  grunting, `captain.py family <modules>` names unnamed classes, then the rename pass + build + commit (reverted if
+  the build fails); after a run that committed functions, `captain.py functions --module <ids>` renames the
+  wave's placeholder functions. Held classes are not re-asked on later runs (`family --retry-held` does).

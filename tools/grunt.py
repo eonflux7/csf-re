@@ -912,6 +912,8 @@ def lanes(args):
     """Continuous grunting in two lanes: DeepSeek (tiny functions, and clone siblings that have an example; Codex as
     fallback) and Codex (the rest). Every --batch gate passes: build + in-mission smoke + commit. Stops on a smoke
     failure (files left uncommitted for bisecting) or after --total functions."""
+    if args.module and not args.no_captain:
+        captain_prep(args.module)
     db = DB()
     wave = module_ids(args.module)
     if args.smoke_menu:
@@ -1092,7 +1094,47 @@ def lanes(args):
         refill()
     if flush():
         live(phase="stopped" if stopping else "finished")
+        if wave and not args.no_captain and total_ok:
+            captain_after(wave)
     print(f"lanes done: {total_ok} ok, {total_esc} escalated", flush=True)
+
+
+def captain(*argv):
+    """tools/captain.py as a step of a module wave (it holds its own one-instance lock; busy = skipped)."""
+    r = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "captain.py"), *argv],
+                       capture_output=True, text=True)
+    out = (r.stdout + r.stderr).strip()
+    print("\n".join("  [captain] " + l for l in out.splitlines()[-20:]), flush=True)
+    return r.returncode == 0
+
+
+def captain_prep(module_arg):
+    """Wave prep: name the wave's unnamed classes (agentic captain session), then the rename pass so this wave's
+    packets and the files already done use the names. Runs only when classes.yaml changed."""
+    names = [m.strip() for m in module_arg.split(",") if m.strip()]
+    yml = os.path.join(ROOT, "db", "types", "classes.yaml")
+    before = open(yml).read()
+    live(mode="lanes", phase="captain: naming classes")
+    print(f"wave prep: captain family {module_arg}", flush=True)
+    captain("family", *names)
+    if open(yml).read() == before:
+        return
+    subprocess.run([sys.executable, os.path.join(ROOT, "tools", "rename_classes.py")], check=False)
+    if subprocess.run(["ninja", "-C", os.path.join(ROOT, "build")], capture_output=True).returncode:
+        print("wave prep: build failed after the class rename pass: reverting it", flush=True)
+        subprocess.run(["git", "-C", ROOT, "checkout", "--", "src", "db/functions.csv"], check=False)
+        return
+    subprocess.run(["git", "-C", ROOT, "add", "-A", "--", "src", "db/functions.csv"], check=False)
+    subprocess.run(["git", "-C", ROOT, "commit", "-q", "-m", "Class rename pass (wave prep: captain family)\n\n"
+                    "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>", "--", "src", "db/functions.csv"],
+                   check=False)
+
+
+def captain_after(wave):
+    """After the wave: placeholder function names (GetField0050, ...) of its modules, now that callers are named."""
+    print("wave end: captain functions", flush=True)
+    live(phase="captain: placeholder names")
+    captain("functions", "--module", ",".join(sorted(wave)))
 
 
 def cost(_):
@@ -1176,6 +1218,8 @@ if __name__ == "__main__":
     l.add_argument("--batch-max", type=int, default=300, help="only functions up to N bytes are batched")
     l.add_argument("--batch-bytes", type=int, default=0, help="Codex lane: close a batch at N bytes of original code (0: off)")
     l.add_argument("--smoke-menu", action="store_true", help="short smokes run the menu tour (GUI module waves)")
+    l.add_argument("--no-captain", action="store_true", help="module waves: skip the captain steps (class naming "
+                   "before, placeholder function names after)")
     l.add_argument("--codex-cap", type=float, default=90, help="pause Codex at this 5h-window %% (0: off)")
     sub.add_parser("cost")
     a = ap.parse_args()
