@@ -530,3 +530,11 @@ state, so a missing `mute` (or `mute 0`) explicitly unmutes. Tested on a hardlin
 - Quota: lanes polls the grunts' account usage (same oauth/usage endpoint as the monitor, shared cache file) and
   pauses it at 95 % of 5h/7d. Once Codex's 5h window passes 50 %, S/M Codex rungs run on Opus 5.5 medium, so
   Codex high stays for L. The Go backend, spend ledger and the A/B tooling are removed (results stay in work/ab/).
+
+## 2026-10-08 — Haiku thinking via claude -p
+- Same request settings as over Go (adaptive thinking, effort low), but ~2x the output via claude -p at equal size
+  (40-150 B: median 5.0-5.4k vs 2.5-3.0k tokens, 23 vs 12 s); ~90 % of it is thinking (modelUsage.thinkingTokens).
+- --effort does reach Haiku (one packet: low 6k, high 12k, max 60k thinking); MAX_THINKING_TOKENS and
+  alwaysThinkingEnabled=false change nothing (adaptive thinking ignores them).
+- A one-line "keep thinking short" system note at effort low: median packet 7.1k -> 4.0k tokens (30 -> 17 s), a
+  hard one 24k -> 17-20k; all 18 test answers passed the gate. On for claude calls at effort low (CLAUDE_BRIEF).

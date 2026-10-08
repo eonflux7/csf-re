@@ -157,6 +157,13 @@ def claude_usage(which="main"):
     return out
 
 
+# Haiku 5.5 at low effort thinks ~2x longer via claude -p than it did over the API (Go) for the same request
+# settings (adaptive thinking + effort low): ~5k vs ~2.6k output tokens on 40-150 B functions. Adaptive thinking
+# follows the prompt: this note halves it on a median packet (7.1k -> 4.0k tokens, 30 -> 17 s), gate still passes.
+CLAUDE_BRIEF = ("\n\nThinking: keep it short. Work from the packet directly; reason only about the parts that are "
+                "unclear, then write the answer.")
+
+
 def chat_claude(model, messages, effort=None):
     """Claude via the Claude Code CLI in headless mode, on the grunts' own account (never the captain's). No tools."""
     if not claude_grunts_ready():
@@ -164,7 +171,7 @@ def chat_claude(model, messages, effort=None):
     os.makedirs(CLAUDE_CWD, exist_ok=True)
     env = dict(os.environ, CLAUDE_CONFIG_DIR=CLAUDE_GRUNTS)
     eff = ["--effort", effort] if effort in ("low", "medium", "high", "xhigh", "max") else []
-    system = messages[0]["content"]
+    system = messages[0]["content"] + (CLAUDE_BRIEF if effort == "low" else "")
     convo = []
     for m in messages[1:]:
         tag = "PACKET / REQUEST" if m["role"] == "user" else "YOUR PREVIOUS ANSWER"
