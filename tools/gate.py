@@ -91,6 +91,18 @@ def check_bindings(src, db):
     return errs
 
 
+def self_refs(obj, src):
+    """Undefined symbols of the object that name a function this file defines itself: inline asm referring to a
+    decorated function by its plain name (links alone in no case; the lanes batch link failed on 0x564B80, 0x53CC70)."""
+    out = subprocess.run(["llvm-nm-21", "--undefined-only", obj], capture_output=True, text=True).stdout
+    bad = []
+    for sym in re.findall(r"^\s*U\s+(\S+)", out, re.M):
+        plain = re.sub(r"^[_@]|@\d+$", "", sym)
+        if re.fullmatch(r"\w+", plain) and re.search(rf"\b{re.escape(plain)}\s*\([^;]*\)\s*\{{", src, re.S):
+            bad.append(plain)
+    return sorted(set(bad))
+
+
 def gate(ea, path, db=None):
     path = os.path.abspath(path)
     src = open(path).read()
@@ -135,6 +147,12 @@ def gate(ea, path, db=None):
             out = (r.stdout + r.stderr).strip()
             out = "\n".join(l for l in out.splitlines() if "warning" not in l or "error" in l)
             return False, "compile error:\n" + out[:4000]
+        unres = self_refs(obj, src)
+        if unres:  # the gate compiles alone; the batch link would fail on these
+            return False, ("link error: " + ", ".join(unres) + " referenced by its plain name (inline asm `offset Fn` / "
+                           "`call Fn`), but the compiler decorates the symbol (@Fn@8 for __fastcall, ?Fn@@... for "
+                           "static/C++) so it never resolves. Take the address in C++ instead (e.g. a static function "
+                           "pointer variable loaded by the asm: `mov eax, [s_fn]`) or drop the asm.")
         fn = hooks[0][1].split("::")[-1]
         found, rets = our_rets(obj, fn)
         orig = effective_rets(ea, db)

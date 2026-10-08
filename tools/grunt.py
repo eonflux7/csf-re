@@ -1127,6 +1127,7 @@ def lanes(args):
     pool = cf.ThreadPoolExecutor(sum(caps.values()))
     inflight, good, submitted, total_ok, total_esc, total_def = {}, [], 0, 0, 0, 0
     stopping, quota_t = False, 0
+    quarantined = set()  # in-flight functions quarantined by a batch build (their result is then an escalation)
     if os.path.exists(STOP):
         os.remove(STOP)
     live(mode="lanes", phase="grunting", config=run_config(args, lanes=True),
@@ -1196,14 +1197,20 @@ def lanes(args):
         live(phase="smoke")
         if not args.no_smoke:
             ok, out = smoke()
-            print(out[-1500:], flush=True)
+            errs = [l for l in out.splitlines() if re.search(r"\berror\b|FAILED|undefined symbol", l)][:20]
+            print("\n".join(errs + [out[-1200:]]), flush=True)
             if not ok and out.startswith("build/deploy failed"):
-                culprits = build_culprits(out, [r["ea"] for r in good])
+                # the build sees every file in src/auto: also those of in-flight functions that passed the gate
+                # since the batch was cut (not logged yet) — a culprit can be one of them
+                pending = [ea for ea, _ in inflight.values()]
+                culprits = build_culprits(out, [r["ea"] for r in good] + pending)
                 if culprits:  # compile/link error in this batch's own files (the gate compiles each one alone)
                     print(f"build failed: culprits {' '.join(f'{c:x}' for c in culprits)}", flush=True)
                     for c in culprits:
                         quarantine(c, "build/link failure in the lanes batch build", out)
                         db.rows[c]["status"] = "todo"
+                    quarantined.update(c for c in culprits if c in pending)
+                    culprits = [c for c in culprits if c not in pending]
                     good = [r for r in good if r["ea"] not in culprits]
                     total_ok, total_esc = total_ok - len(culprits), total_esc + len(culprits)
                     live(counts=dict(ok=total_ok, esc=total_esc, pending=len(good)))
@@ -1237,6 +1244,8 @@ def lanes(args):
     def handle(r, tier):
         nonlocal total_ok, total_esc, total_def
         ea = r["ea"]
+        if r["ok"] and ea in quarantined:  # its file broke a batch build while it was in flight
+            r = dict(r, ok=False, err="quarantined: broke the batch build while in flight")
         with open(LOG, "a") as f:
             f.write(json.dumps(dict(r, ts=time.time(), tier=tier, size=db.F[ea]["size"])) + "\n")
         if r["ok"]:
