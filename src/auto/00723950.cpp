@@ -9,8 +9,8 @@ CSF_FUNC(int, __fastcall, GetRecordCount, 0x006D4160,
          (void* self, void* edx));
 CSF_FUNC(int, __cdecl, ResetWideStringsInRecordRange, 0x007233D0,
          (std::uint32_t* first, std::uint32_t* last));
-CSF_FUNC(int, __stdcall, ForwardArgumentsToProcessor_723560, 0x00723560,
-         (std::uint32_t* first, std::uint32_t* last));
+CSF_FUNC(int, __fastcall, ForwardArgumentsToProcessor_723560, 0x00723560,
+         (void* self, void* edx, std::uint32_t* first, std::uint32_t* last));
 CSF_FUNC(std::uint32_t*, __cdecl, CopyStringRecordsForward, 0x00723580,
          (std::uint32_t* first, std::uint32_t* last, std::uint32_t* destination));
 CSF_FUNC(std::uint32_t*, __cdecl, CopyConstructRecordRange_7236C0, 0x007236C0,
@@ -19,8 +19,8 @@ CSF_FUNC(int, __fastcall, ClearWideStringRecordStorage, 0x00723750,
          (void* self, void* edx));
 CSF_FUNC(std::uint32_t*, __cdecl, ForwardTo723580, 0x007237A0,
          (std::uint32_t* first, std::uint32_t* last, std::uint32_t* destination));
-CSF_FUNC(std::uint32_t*, __stdcall, ForwardTo7236C0, 0x00723930,
-         (std::uint32_t* first, std::uint32_t* last, std::uint32_t* destination));
+CSF_FUNC(std::uint32_t*, __fastcall, ForwardTo7236C0, 0x00723930,
+         (void* self, void* edx, std::uint32_t* first, std::uint32_t* last, std::uint32_t* destination));
 CSF_FUNC(char, __fastcall, AllocateRecordStorage_775690, 0x00775690,
          (void* self, void* edx, int count));
 
@@ -98,7 +98,7 @@ static int __fastcall AssignWideStringRecords(void* self, void* /*edx*/, void* s
 
     if (destinationBegin) {
         auto* destinationEnd = RecordPointer(CSF_AT(std::uint32_t, self, 0x08));
-        ForwardArgumentsToProcessor_723560(RecordPointer(destinationBegin), destinationEnd);
+        ForwardArgumentsToProcessor_723560(self, nullptr, RecordPointer(destinationBegin), destinationEnd);  // ecx = this
 
         const std::uint32_t storage = CSF_AT(std::uint32_t, self, 0x04);
         const std::uint32_t storageEnd = CSF_AT(std::uint32_t, self, 0x0C);
@@ -113,7 +113,7 @@ static int __fastcall AssignWideStringRecords(void* self, void* /*edx*/, void* s
         auto* sourceEnd = RecordPointer(CSF_AT(std::uint32_t, source, 0x08));
         auto* sourceFirst = RecordPointer(CSF_AT(std::uint32_t, source, 0x04));
         auto* constructedEnd =
-            ForwardTo7236C0(sourceFirst, sourceEnd, destination);
+            ForwardTo7236C0(self, nullptr, sourceFirst, sourceEnd, destination);  // ecx = this
         CSF_AT(std::uint32_t, self, 0x08) =
             static_cast<std::uint32_t>(reinterpret_cast<std::uintptr_t>(constructedEnd));
     }

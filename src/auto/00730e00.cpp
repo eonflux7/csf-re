@@ -6,8 +6,8 @@
 CSF_FUNC(char, __fastcall, AllocateVectorStorage, 0x730B40,
          (int* self, void* edx, int count));
 
-CSF_FUNC(std::uint32_t, __stdcall, ForwardTo730850, 0x7309B0,
-         (std::uint32_t first, std::uint32_t last, std::uint32_t destination));
+CSF_FUNC(std::uint32_t, __fastcall, ForwardTo730850, 0x7309B0,
+         (void* self, void* edx, std::uint32_t first, std::uint32_t last, std::uint32_t destination));
 
 CSF_FUNC(int, __fastcall, DestroyPointerStorage, 0x558790,
          (int* self, void* edx));
@@ -36,7 +36,7 @@ static int* __fastcall ConstructPointerVectorCopy(
             const std::uint32_t destination = CSF_AT(std::uint32_t, self, 0x04);
 
             CSF_AT(std::uint32_t, self, 0x08) =
-                ForwardTo730850(first, last, destination);
+                ForwardTo730850(self, nullptr, first, last, destination);  // ecx = this (mov ecx, esi)
         }
         catch (...)
         {

@@ -35,7 +35,13 @@ bytes x how much other code calls into them). Each step also runs on its own.
 
 1. **Types first** (wave prep, automatic): `captain.py family` names the module's unnamed classes (agentic Opus
    session); `fields.py apply` pools the field names every grunt proposed (consensus per class+offset);
-   `rename_classes.py` + `fields.py fixbuild` rewrite src. Gauge: `fields.py coverage --module M`.
+   `rename_classes.py` + `fields.py fixbuild` rewrite src; then the IDB gets it all (`ida/sync.py`: names,
+   class structs, typed vtables, member/global types) and the module is re-decompiled, so packets show
+   `this->m_field` / `this->vName()`. Gauge: `fields.py coverage --module M`.
+   Between waves (whole program, ~45 min, no tokens): `tools/ida/propagate.sh` pushes what the binary proves
+   (cdecl arg counts from callers' cleanup) and what we know (`this`, parameter and member class pointers) into
+   the IDB, re-decompiles everything and lets Hex-Rays carry the types further (`this_class.py`); after
+   `classes.py`, re-run `plain_classes.py` (classes without vtable). Then `api.py build`, `gen_classes_h.py`.
 2. **Produce** (`grunt.py lanes --module M`): leaf-first selection, clone-aware; size tiers S/M/L with model
    ladders (S: Haiku low x2 -> strong; M: Haiku high x2 -> Codex x2; L and hubs (>= 25 outside callers): Codex).
    Packet = pseudocode + disasm + class fields + typed virtual calls + the canonical `bind as` line per callee.
@@ -81,7 +87,20 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 - [ ] Name the remaining ~80 unnamed modules just before their wave (`modules.py show`, captain modules)
 - [ ] Locate Xbox XBE code, diff vs PC for structure confirmation (optional)
 
+- [x] Gate failure kinds logged per attempt (`fails`, `grunt.py cost`); packet: vtable references with the line
+      to write (dropped vtable stores were 23% of rejections), no this-class on vtable stubs that never read ecx
+- [x] IDA used fully: signatures for every function (api.json 2750 -> 21746 addresses; callee bind lines 40% ->
+      98%), Hex-Rays feedback loop, typed pseudocode (member accesses 0 -> 8630 on a 3000-function sample)
+- [x] The 4 ABI items the sharper ecx check found (bindings that dropped `this`): fixed, pending re-verification
+- [x] Classes through Hex-Rays (`ida/propagate.sh`): undone methods with a class 42% -> 71%; A/B: named members in
+      grunt output +43%, guesses -33%, pass rate and tokens flat (`CSF_AB_ARM`, `CSF_PACKET_LEGACY` for re-runs)
+
 ### Types & structure
+- [ ] Globals holding class instances: type them from the calls they receive (`this_args` on a global), like params
+- [ ] Unclassed methods left (29% of undone ones): callers that pass pointers from untyped places (locals from
+      lookups, return values): type return values from what callers do with them
+- [ ] Member pointer types into src/types/auto_classes.h too (IDB only now: 227 members): needs a build check per
+      member, code using them as uint32_t
 - [ ] Field names of the menu/AI bases: CMenuScreen, TCharTask, TAiState, CCharWeaponFsm
 - [ ] Engine family 0x860178 (86 classes: clump objects, HAnim animation, lights, cameras, 2D scenes) and the
       unnamed 0x82E598 task subfamily (factory 0x41E240, type ids 0..6)
@@ -130,6 +149,9 @@ typed virtual calls, field consensus, fidelity rule, Opus review sampling, `wave
   checks them in game asynchronously; every deploy keeps pending hooks off.
 - 2026-10-08: **the standalone link is keyed by original address** (src/globals.h), never by names; one canonical
   name + signature per address (db/api.json) for readability.
+- 2026-10-08 (user): **use IDA fully and treat it as solid**: what IDA computes from the binary (prototypes,
+  call-site arguments, stack deltas, xrefs) is the source of truth, refined only by exact binary facts (`ret N`,
+  callers' cleanup, an entry-block register read); our knowledge goes back into the IDB and Hex-Rays re-derives.
 - 2026-10-08: **fidelity is behavioral**: natural expressions, no emulation of x87 rounding or register/stack
   artifacts; the in-game diff tolerates last-bit float differences where the original stores floats.
 

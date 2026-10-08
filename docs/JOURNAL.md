@@ -574,3 +574,41 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   (9 rescues of 330); `grunt.py cost` shows p50/p95 latency and calls per verified function (1.10).
 - First wave on the new loop: hud, 12 functions, all Haiku-low first try, verified in game (20 s per group).
 - PLAN.md: phases replaced by the loop, current focus, backlog by area, foundations; status.py/monitor read it.
+
+## 2026-10-08 — Groundwork: IDA used fully (signatures, classes, typed pseudocode)
+
+- **What retries cost.** Gate failure kinds are now logged per attempt (`fails`; `grunt.py cost`, older runs
+  backfilled from transcripts): of 476 past rejections, 26% were the missing globals.h include (normalize fixes it
+  since the overhaul), 23% a dropped vtable store (packets now list every vtable reference with the line to
+  write), 14% disallowed inline asm, 14% compile errors (mostly type names that don't exist).
+- **We used a fraction of IDA.** Hex-Rays ran once (Oct 7) as text; none of our names/classes/types went back.
+  Now: `ida/export_abi.py` reads Hex-Rays' prototype objects, the argument count at each call site, the caller
+  cleanup after each call, and what each call's `this` is made of. Precedence: exact binary facts (`ret N`,
+  callers' `add esp`, an entry-block register read) > Hex-Rays data flow > heuristics. Findings on the way:
+  - Hex-Rays builds a prototype from the body alone (drops unused cdecl args) and **trusts callee prototypes when
+    decompiling callers**: 0x42E3B0 with 3 args instead of 5 made it drop the `this` 0x431CF0 passes on (stdcall).
+    `sync.py --protos` applies the 482 cleanup-proven prototypes; re-decompiled, 0x431CF0 became the thiscall it is.
+  - A jmp thunk gets its target's prototype from Hex-Rays (`mov ecx,[ecx+30h]; jmp` lost its `this`), and IDA may
+    type a thunk from a library signature (NetZ 0x7A3190 `thiscall` -> `xor al,al; ret 4`): thunks follow targets.
+  - `push ecx` reserves a slot only in the prologue; after it, it passes `this` on (0x431CF0, 0x544390). The gate's
+    ABI check had it wrong; with the fix it found 5 bindings that dropped `this` (4 files, fixed; one passed a
+    global helper object in ecx by luck: 0x73C6C0 -> 0x68F560).
+- **Signatures for every function**: api.json 2750 -> 21746 addresses (sig_src abi, name_src addr for unnamed:
+  never forced onto a file's own name); callee calls with a bind line 40% -> 98%. Against the 2170 gate-passed
+  implementations: 94% the same ABI; every sampled disagreement went to the binary-backed side.
+- **Classes through Hex-Rays** (`ida/propagate.sh`, ~6 min/round, no tokens): seeds (vtable slots, ctors, dtors)
+  typed in the IDB, Hex-Rays types what callers pass, `this_class.py` votes (nearest common ancestor); backwards,
+  a function passing its own `this` to a classed method is one of its methods, parameters and 4-byte members passed
+  as `this` point to the class (arg_types.json). `plain_classes.py`: classes without vtable from methods calling
+  each other on the same `this` (STL instances excluded: they glued unrelated classes): 422 classes, 1449 methods.
+  Converged: 9798 methods with a class; **undone methods with a class 42% -> 71%**; 1198 parameters and 227 members
+  typed as class pointers.
+- **Typed IDB**: 691 `<Class>_vtbl` structs (slots named like the C++ wrappers, signatures from api.json) +
+  `__vftable`, member pointer types, 1215 global types. Pseudocode on a 3000-function sample: `->member` 0 -> 8630,
+  raw `*(_DWORD *)(x + N)` -19%, `sub_` names -30%, `this->vIsShown(this)` instead of vtable arithmetic.
+  gen_classes_h: 942 -> 2703 virtual-call wrappers. Wave prep now syncs the IDB and re-decompiles the module.
+- **A/B** (40 functions whose packet changed — 61% of a 600-function sample —, Haiku low x2): old context, after
+  the signature/vtable stage, after all rounds. Pass rate flat (38/38 each; first try 34/35/32 = noise at n=40),
+  tokens flat (14.2k/13.6k/14.7k), notes admitting a guess 33 -> 24 -> 22, **named members in the output
+  87 -> 91 -> 124**; in classed methods raw offsets 106 -> 91 and named 95 -> 126. The stage-1 arm showed the raw
+  offsets sit on untyped objects; typing parameters, members and plain classes is what moved the output.

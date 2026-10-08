@@ -15,8 +15,8 @@ CSF_FUNC(void*, __stdcall, ReleaseVectorStorage, 0x006C8D30,
 CSF_FUNC(std::uint32_t, __cdecl, CopyConstructTwelveByteRange, 0x00714410,
          (std::uint32_t first, std::uint32_t last,
           std::uint32_t destination, void* constructionContext));
-CSF_FUNC(std::uint32_t*, __stdcall, ForwardTo714410, 0x00714A40,
-         (std::uint32_t* first, std::uint32_t* last, std::uint32_t* destination));
+CSF_FUNC(std::uint32_t*, __fastcall, ForwardTo714410, 0x00714A40,
+         (void* self, void* edx, std::uint32_t* first, std::uint32_t* last, std::uint32_t* destination));
 CSF_FUNC(char, __fastcall, AllocateTwelveByteVectorStorage, 0x00715920,
          (void* self, void* edx, int count));
 
@@ -122,7 +122,7 @@ static void* __fastcall AssignTwelveByteVector(
         const std::uint32_t sourceEnd = CSF_AT(std::uint32_t, source, 0x08);
         const std::uint32_t currentSourceBegin =
             CSF_AT(std::uint32_t, source, 0x04);
-        std::uint32_t* constructedEnd = ForwardTo714410(
+        std::uint32_t* constructedEnd = ForwardTo714410(self, nullptr,  // ecx = this (mov ecx, esi)
             reinterpret_cast<std::uint32_t*>(currentSourceBegin),
             reinterpret_cast<std::uint32_t*>(sourceEnd),
             reinterpret_cast<std::uint32_t*>(newDestinationBegin));

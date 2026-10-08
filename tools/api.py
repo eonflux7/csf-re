@@ -189,10 +189,24 @@ def ida_abi():
     return _abi
 
 
+def thunk_target(ea, db):
+    """A lone `jmp target` thunk has its target's ABI: follow the chain. IDA may type the thunk itself from a
+    library signature (NetZ 0x7A3190 `thiscall` -> 0x753410 `xor al, al; ret 4`, no `this`)."""
+    from packet import disasm
+    for _ in range(4):
+        ins = disasm(ea, db.F[ea]["size"]) if ea in db.F else []
+        if len(ins) == 1 and ins[0].mnemonic == "jmp" and ins[0].op_str.startswith("0x"):
+            ea = int(ins[0].op_str, 16)
+        else:
+            break
+    return ea
+
+
 def takes_reg(ea, db, reg):
     """Does the function take an argument in `reg` (ecx/edx)? Hex-Rays' data flow decides (export/abi.json);
     the straight-line scan only where Hex-Rays has nothing (it took `push ecx` for a slot reservation even when
     the value was a live `this` passed on)."""
+    ea = thunk_target(ea, db)
     a = ida_abi().get(ea)
     if a and a.get("cc") and any(loc == reg for _, _, loc in a.get("args", [])):
         return True
@@ -209,6 +223,7 @@ def abi_sig(ea, db):
     __thiscall becomes __fastcall (self, edx dummy, ...) as CSF_FUNC binds it. None when it can't be bound from C
     (other register arguments, by-value structs) or Hex-Rays disagrees with the binary."""
     from packet import ret_bytes
+    ea = thunk_target(ea, db)
     a = ida_abi().get(ea)
     if not a or not a.get("cc") or ea not in db.F:
         return None

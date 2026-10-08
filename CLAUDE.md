@@ -21,9 +21,13 @@ backlog), pending/verified counts and the link-test line, and any open decisions
 
 ## Layout
 - `tools/ida/` idalib scripts (`common.py` opens the IDB). Run with `.venv/bin/python`. IDB: `ida/CommXPC.exe.i64`.
-  Only scripts in `tools/ida/` touch the IDB; writes only via `sync.py` (batch).
+  Only scripts in `tools/ida/` touch the IDB; writes only via `sync.py` (batch). IDA is the source of truth for what
+  it computes from the binary: `export_abi.py` (Hex-Rays prototypes, call-site args, caller cleanup) feeds
+  `api.py`; `propagate.sh` is the feedback loop (push facts/types -> re-decompile -> this_class.py derives more);
+  `export_pseudo.py` writes the typed pseudocode packets show. Precedence: exact binary facts > Hex-Rays > heuristics.
 - `tools/` the loop: grunt.py (lanes, wave), verifier.py + verify.py (in-game verification, ledger), review.py
-  (Opus samples), captain.py + fields.py (types/names), api.py + addrfix.py + linktest.py (cutover contract),
+  (Opus samples), captain.py + fields.py (types/names), this_class.py + plain_classes.py + vtbl_types.py (classes,
+  `this`/parameter/member types, typed vtables), api.py + addrfix.py + linktest.py (cutover contract),
   gate.py + semcheck.py + controls.py (static checks), status.py, monitor.py. Setup-era: triage.py, regions.py, rtti.py.
 - `src/globals.h`: everything original is referenced by address (CSF_FUNC/GLOBAL/STR/VTBL/ADDR_*); the standalone
   build resolves by address, so never write an original address as a bare number.

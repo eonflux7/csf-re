@@ -1120,6 +1120,8 @@ def lanes(args):
     remaining rungs were out of quota is deferred, not escalated. Every --batch gate passes: build + smoke + commit."""
     if args.module and not args.no_captain:
         captain_prep(args.module)
+    if args.module:
+        ida_refresh(args.module)
     global REVIEW_EFFORT, CODEX_SUB
     REVIEW_EFFORT = args.review_effort
     CODEX_SUB = tuple(args.codex_sub.split(":", 1)) if args.codex_sub else None
@@ -1348,6 +1350,28 @@ def captain_prep(module_arg):
                 "field consensus)")
     print("wave prep: field coverage now " + tool("fields.py", "coverage", "--module", module_arg).splitlines()[-1],
           flush=True)
+
+
+def ida_refresh(module_arg):
+    """Wave prep, after the types: push the names, classes, typed vtables and member types into the IDB
+    (tools/ida/sync.py, ~1 min) and re-decompile the module's open functions (export_pseudo.py --only), so this
+    wave's packets show this->m_field and this->vName() as of now. The whole-program pass (classes and parameter
+    types propagated through Hex-Rays, ~45 min) is tools/ida/propagate.sh, run between waves."""
+    ids = module_ids(module_arg)
+    eas = [f"{ea:x}" for ea, r in load_csv().items() if r["module"] in ids
+           and r["status"] not in ("done", "verified", "lib")]
+    if not eas:
+        return
+    live(mode="lanes", phase="ida: sync + re-decompile")
+    run = lambda *a: subprocess.run([sys.executable, os.path.join(ROOT, "tools", "ida", a[0]), *a[1:]],  # noqa: E731
+                                    capture_output=True, text=True)
+    r = run("sync.py")
+    if r.returncode:
+        print(f"wave prep: IDB sync failed, packets keep the old pseudocode: {r.stderr.strip()[-300:]}", flush=True)
+        return
+    r = run("export_pseudo.py", "--only", ",".join(eas))
+    print(f"wave prep: IDB synced, {len(eas)} functions re-decompiled "
+          f"({(r.stdout.strip().splitlines() or ['?'])[-1]})", flush=True)
 
 
 def captain_after(wave):

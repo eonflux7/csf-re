@@ -30,19 +30,14 @@ CSF_GLOBAL(uint8_t, g_FloatHelper_008BABC0, 0x8BABC0);
 CSF_FUNC(void, __cdecl, Game_RaiseStatusNotice, 0x646D30,
          (int a, int b, int code, int c));
 
-// 0x0068F560 : __stdcall interpolation helper, 4 stack args (callee pops 16).
-CSF_FUNC(void, __stdcall, C_008BABFC_AddRangedFloat, 0x68F560,
-         (float from, float t, float zero, float to));
+// 0x0068F560 : interpolation helper, a method of the helper object (ecx), 4 stack args (callee pops 16).
+CSF_FUNC(void, __fastcall, C_008BABFC_AddRangedFloat, 0x68F560,
+         (void* self, void* edx, float from, float t, float zero, float to));
 
 static char __stdcall InterpolateRangeChecked(float start, float end, float step)
 {
-    // Original first instruction: `mov ecx, 0x8BABC0`. The helper object's
-    // address is pushed only as a scratch slot that is immediately overwritten
-    // by the `fstp` of the interpolation factor, so the value is dead, but the
-    // reference to the global must be preserved: the volatile touch keeps it
-    // alive in the generated code.
-    (void)*(volatile uint8_t*)&g_FloatHelper_008BABC0;
-
+    // Original first instruction: `mov ecx, 0x8BABC0`: the helper object stays in ecx (the later `push ecx` is
+    // only a scratch slot for the factor) and 0x68F560 runs as its method.
     // First test (test ah,41h / jnp): the original advances only when the
     // compare is neither "below" nor "equal", i.e. step > bound, and it also
     // advances on an unordered compare (NaN). `!(step <= bound)` reproduces
@@ -52,7 +47,7 @@ static char __stdcall InterpolateRangeChecked(float start, float end, float step
     if (!(step <= g_Value_0082D4CC) && !(end < start))
     {
         float factor = (end - start) / step;
-        C_008BABFC_AddRangedFloat(start, factor, 0.0f, end);
+        C_008BABFC_AddRangedFloat(&g_FloatHelper_008BABC0, nullptr, start, factor, 0.0f, end);
         return 1;
     }
 

@@ -121,8 +121,26 @@ def proven_protos():
             continue
         args = [f"{t} {nm or f'a{i + 1}'}" for i, (t, nm, _) in enumerate(a["args"])]
         args += [f"int a{i + 1}" for i in range(len(args), n)]
-        out[ea] = f"{a['ret']} __cdecl f({', '.join(args)});"
+        out[ea] = (f"{a['ret']} __cdecl f({', '.join(args)});", n)
     return out
+
+
+def extend_args(ea, n):
+    """Append int arguments up to n on IDA's own type object (prototypes a declaration string can't carry)."""
+    import ida_nalt
+    tif = ida_typeinf.tinfo_t()
+    if not ida_nalt.get_tinfo(tif, ea) and not ida_typeinf.guess_tinfo(tif, ea):
+        return False
+    ftd = ida_typeinf.func_type_data_t()
+    if not tif.get_func_details(ftd):
+        return False
+    while ftd.size() < n:
+        fa = ida_typeinf.funcarg_t()
+        fa.type = ida_typeinf.tinfo_t(ida_typeinf.BT_INT32)
+        fa.name = f"a{ftd.size() + 1}"
+        ftd.push_back(fa)
+    new = ida_typeinf.tinfo_t()
+    return new.create_func(ftd) and ida_typeinf.apply_tinfo(ea, new, ida_typeinf.TINFO_DEFINITE)
 
 
 def this_protos():
@@ -205,8 +223,9 @@ def main():
             for ea, decl in protos.items():
                 if a.dry:
                     continue
-                decl, ps = decl if isinstance(decl, tuple) else (decl, None)
-                if idc.SetType(ea, decl) or (ps and retype_args(ea, ps)):
+                decl, extra = decl if isinstance(decl, tuple) else (decl, None)
+                fallback = (lambda: extend_args(ea, extra)) if a.protos else (lambda: retype_args(ea, extra))
+                if idc.SetType(ea, decl) or (extra and fallback()):
                     n += 1
                 else:
                     if bad < 6:
