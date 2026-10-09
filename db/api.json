@@ -179,13 +179,15 @@
   "sig_src": "abi"
  },
  "00401870": {
-  "name": "sub_401870",
-  "name_src": "addr",
-  "votes": {},
+  "name": "StateRecord_Reset",
+  "name_src": "vote",
+  "votes": {
+   "StateRecord_Reset": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004018b0": {
   "name": "sub_4018B0",
@@ -4118,13 +4120,15 @@
   "sig_src": "abi"
  },
  "00413570": {
-  "name": "sub_413570",
-  "name_src": "addr",
-  "votes": {},
+  "name": "MissionScript_GrowEventRecords",
+  "name_src": "vote",
+  "votes": {
+   "MissionScript_GrowEventRecords": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00413650": {
   "name": "sub_413650",
@@ -5601,7 +5605,7 @@
   "name": "GrowButtonArray",
   "name_src": "vote",
   "votes": {
-   "GrowButtonArray": 39
+   "GrowButtonArray": 42
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -22202,7 +22206,9 @@
  "00468310": {
   "name": "S_0045bda0_HandleEventRecord",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MissionScript_DispatchToScript": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_0045bda0* self, void* , uint32_t* record",
@@ -22220,15 +22226,16 @@
   "file": "src/auto/00468450.cpp"
  },
  "00468470": {
-  "name": "MissionScript_CreateSlotEntry",
-  "name_src": "vote",
+  "name": "MissionScript_CopyRecordRange_468470",
+  "name_src": "agent",
   "votes": {
    "MissionScript_CreateSlotEntry": 1
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3",
-  "sig_src": "vote"
+  "params": "int srcBegin, int srcEnd, int dstCursor",
+  "sig_src": "impl",
+  "file": "src/auto/00468470.cpp"
  },
  "00468500": {
   "name": "MissionScript_ProcessValue",
@@ -22430,20 +22437,23 @@
   "file": "src/auto/00468970.cpp"
  },
  "00468a00": {
-  "name": "CollectLinkedObjectPointers",
-  "name_src": "vote",
+  "name": "MissionScript_CollectLinkedObjectPointers",
+  "name_src": "agent",
   "votes": {
    "CollectLinkedObjectPointers": 1
   },
-  "ret": "bool",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, void* a3",
-  "sig_src": "vote"
+  "params": "void* self, void* , int filterValue, S_0041e5f0* outList",
+  "sig_src": "impl",
+  "file": "src/auto/00468a00.cpp"
  },
  "00468a90": {
   "name": "CMissionScript_FindOrAppendValueIndex",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMissionScript_HandleEventSource": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* , int value",
@@ -22511,7 +22521,9 @@
  "00468d40": {
   "name": "CMissionScript_AppendActiveHandlesForClass",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMissionScript_CollectEventScripts": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "C_008314f8* self, void* , S_0041e5f0* output, int classIndex",
@@ -22563,18 +22575,21 @@
   "file": "src/auto/00468ec0.cpp"
  },
  "00468ee0": {
-  "name": "sub_468EE0",
-  "name_src": "addr",
+  "name": "MissionScript_ResetParserState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int*",
   "conv": "__stdcall",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/00468ee0.cpp"
  },
  "00468f50": {
   "name": "MissionScript_ParseEntryBlock",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MissionScript_FillStateFromObject": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
   "params": "int entryBase, S_00691860* reader",
@@ -22582,16 +22597,17 @@
   "file": "src/auto/00468f50.cpp"
  },
  "00468fd0": {
-  "name": "SceneSlotMgr_ResolveSlotEntry",
-  "name_src": "vote",
+  "name": "MissionScript_AllocAndRegisterEntry",
+  "name_src": "agent",
   "votes": {
    "SceneSlotMgr_ResolveSlotEntry": 1,
    "SceneLoader_ProcessSceneRegion": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "S_004686a0* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/00468fd0.cpp"
  },
  "00469040": {
   "name": "SceneSlotMgr_FindSlot",
@@ -22646,6 +22662,7 @@
   "name": "S_0045d610_PurgeMatchingChildren",
   "name_src": "agent",
   "votes": {
+   "CMissionScript_HandleEvent19": 1,
    "S_0045d610_ProcessEntry": 1
   },
   "ret": "uint32_t",
@@ -22722,13 +22739,14 @@
   "file": "src/auto/00469370.cpp"
  },
  "00469550": {
-  "name": "sub_469550",
-  "name_src": "addr",
+  "name": "CMissionScript_DispatchEvent",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "C_008314f8* self, void* , uint32_t* event",
+  "sig_src": "impl",
+  "file": "src/auto/00469550.cpp"
  },
  "00469630": {
   "name": "S_0045d610_ProcessEntriesAndReset",
@@ -22745,7 +22763,9 @@
  "00469670": {
   "name": "MissionScript_SetValueSlot",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MissionScript_TruncateEntriesFrom": 1
+  },
   "ret": "int*",
   "conv": "__fastcall",
   "params": "S_004427c0* self, void* , int* outputSlot, int currentValue, int previousValue",
@@ -22867,6 +22887,7 @@
   "name": "MissionScript_InsertElementCopies16_469D10",
   "name_src": "vote",
   "votes": {
+   "MissionScript_GrowEntryVector": 1,
    "MissionScript_InsertElementCopies16_469D10": 1
   },
   "ret": "int",
@@ -22931,13 +22952,14 @@
   "file": "src/auto/0046a100.cpp"
  },
  "0046a190": {
-  "name": "sub_46A190",
-  "name_src": "addr",
+  "name": "MissionScript_ResizeEntryVector",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int a2, int a3, int a4, int a5, int a6",
-  "sig_src": "abi"
+  "params": "S_004427c0* self, void* , unsigned int a2, int a3, int a4, int a5, int a6",
+  "sig_src": "impl",
+  "file": "src/auto/0046a190.cpp"
  },
  "0046a210": {
   "name": "MissionScript_CopyRecordRange_46A210",
@@ -23123,14 +23145,15 @@
  },
  "0046b170": {
   "name": "SceneLoader_PrepareSceneActors",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_PrepareSceneActors": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_0044d360* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0046b170.cpp"
  },
  "0046b1f0": {
   "name": "CMissionScript_Clear",
@@ -23416,8 +23439,8 @@
   "file": "src/auto/0046c440.cpp"
  },
  "0046c460": {
-  "name": "DestroyCopiedPair_46C460",
-  "name_src": "vote",
+  "name": "MissionScript_FreeNodeLink",
+  "name_src": "agent",
   "votes": {
    "DestroyCopiedPair_46C460": 1,
    "MissionScript_ReleaseRecord": 1
@@ -23493,8 +23516,8 @@
   "sig_src": "abi"
  },
  "0046c620": {
-  "name": "MissionScript_ParseEntryCore",
-  "name_src": "vote",
+  "name": "MissionScript_FreeEntryList",
+  "name_src": "agent",
   "votes": {
    "MissionScript_ParseEntryCore": 1,
    "MissionScript_FixupPairBlock": 1
@@ -23727,15 +23750,16 @@
   "file": "src/auto/0046d890.cpp"
  },
  "0046d930": {
-  "name": "MissionScript_ResizeEntries",
-  "name_src": "vote",
+  "name": "S_0046c710_ResizeTo",
+  "name_src": "agent",
   "votes": {
    "MissionScript_ResizeEntries": 1
   },
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "S_0046c710* self, void* edx, unsigned int count, std::int32_t entry, void* owner",
-  "sig_src": "vote"
+  "params": "S_0046c710* self, void* , unsigned int targetCount, char fillValue, void* completionObj",
+  "sig_src": "impl",
+  "file": "src/auto/0046d930.cpp"
  },
  "0046d9b0": {
   "name": "MissionScript_ForwardToHelper",
@@ -23893,13 +23917,14 @@
   "file": "src/auto/0046e310.cpp"
  },
  "0046e380": {
-  "name": "sub_46E380",
-  "name_src": "addr",
+  "name": "S_0046e250_EmplaceBack",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a3",
-  "sig_src": "abi"
+  "params": "S_0046e250* self, void* , void* a3",
+  "sig_src": "impl",
+  "file": "src/auto/0046e380.cpp"
  },
  "0046e410": {
   "name": "S_0046c260_SetNamedValue",
@@ -24088,7 +24113,9 @@
  "0046f010": {
   "name": "MissionScript_CopyBitRange",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_00470440_NormalizeBitCursor": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "uint32_t* cursorOut, uint32_t srcBit, uint32_t* srcWord, uint32_t srcEndBit, uint32_t* srcEndWord, uint32_t dstBit, uint32_t* dstWord",
@@ -24334,15 +24361,16 @@
   "file": "src/auto/0046f830.cpp"
  },
  "0046f900": {
-  "name": "S_0046f900_ProcessEntry",
-  "name_src": "vote",
+  "name": "MissionScript_VisitNodeRange",
+  "name_src": "agent",
   "votes": {
    "S_0046f900_ProcessEntry": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int16_t* a2",
-  "sig_src": "vote"
+  "params": "S_0046f900* self, void* , int16_t* a2",
+  "sig_src": "impl",
+  "file": "src/auto/0046f900.cpp"
  },
  "0046f970": {
   "name": "MissionScript_ResolveEntryIndexViaSelf",
@@ -24403,7 +24431,9 @@
  "0046fc50": {
   "name": "MissionScript_CopyConstructRecords",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Menu_ConstructPageEntry": 1
+  },
   "ret": "int*",
   "conv": "__cdecl",
   "params": "C_0082d410* first, std::uint32_t count, const void* source, void* , int",
@@ -24432,13 +24462,15 @@
   "sig_src": "vote"
  },
  "0046ff80": {
-  "name": "sub_46FF80",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_00470440_Advance",
+  "name_src": "vote",
+  "votes": {
+   "S_00470440_Advance": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00470010": {
   "name": "MissionScript_InsertValueCopies",
@@ -24496,15 +24528,17 @@
   "file": "src/auto/004703b0.cpp"
  },
  "00470440": {
-  "name": "MissionScript_ClearBitRange",
-  "name_src": "vote",
+  "name": "S_00470440_ResolveBitCursor",
+  "name_src": "agent",
   "votes": {
-   "MissionScript_ClearBitRange": 1
+   "MissionScript_ClearBitRange": 1,
+   "BitArrayShrinkRange": 1
   },
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int* a2, unsigned int a3, int* a4, unsigned int a5, uint32_t* a6",
-  "sig_src": "vote"
+  "params": "S_00470440* self, void* , int* a2, unsigned int a3, int* a4, unsigned int a5, uint32_t* a6",
+  "sig_src": "impl",
+  "file": "src/auto/00470440.cpp"
  },
  "004704e0": {
   "name": "S_0046f5e0_Resize",
@@ -24564,7 +24598,9 @@
  "00470a50": {
   "name": "MissionScript_SetBitRange",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "BitArrayGrowRange": 1
+  },
   "ret": "int*",
   "conv": "__fastcall",
   "params": "void* self, void* , int a2, int a3, int a4, char a5",
@@ -24574,7 +24610,9 @@
  "00470ab0": {
   "name": "S_00470ab0_StoreElementPointerForItem",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Menu_GrowAndAppend": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "S_00470ab0* self, void* , uint32_t* a2, void* a3, void* a4",
@@ -24628,26 +24666,28 @@
   "file": "src/auto/00470e80.cpp"
  },
  "00470f50": {
-  "name": "MissionScript_ReallocSecondaryTable",
-  "name_src": "vote",
+  "name": "MissionScript_BitArraySetCount",
+  "name_src": "agent",
   "votes": {
    "MissionScript_ReallocSecondaryTable": 1
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int a2, char a3",
-  "sig_src": "vote"
+  "params": "S_00470440* self, void* , unsigned int newCount, char fillValue",
+  "sig_src": "impl",
+  "file": "src/auto/00470f50.cpp"
  },
  "00470fd0": {
   "name": "MenuManager_AppendPageName",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MenuManager_AppendPageName": 4
   },
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* name",
-  "sig_src": "vote"
+  "params": "S_00470ab0* self, void* , void* a3",
+  "sig_src": "impl",
+  "file": "src/auto/00470fd0.cpp"
  },
  "00471060": {
   "name": "MissionScript_ExtendTableAndReturnCount",
@@ -24695,38 +24735,41 @@
   "file": "src/auto/00471310.cpp"
  },
  "00471340": {
-  "name": "sub_471340",
-  "name_src": "addr",
+  "name": "InitMissionScriptTables",
+  "name_src": "agent",
   "votes": {},
   "ret": "char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00471340.cpp"
  },
  "004713e0": {
-  "name": "sub_4713E0",
-  "name_src": "addr",
+  "name": "S_004713e0_InitAndReleaseSubObjects",
+  "name_src": "agent",
   "votes": {},
-  "ret": "int",
+  "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_004713e0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004713e0.cpp"
  },
  "00471450": {
-  "name": "MissionScript_AllocateScratchObject",
-  "name_src": "vote",
+  "name": "MissionScript_DispatchSectionTable",
+  "name_src": "agent",
   "votes": {
    "MissionScript_AllocateScratchObject": 1,
    "MissionScript_AllocRecord8": 1
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "uint32_t a1",
-  "sig_src": "vote"
+  "params": "std::size_t sectionKind",
+  "sig_src": "impl",
+  "file": "src/auto/00471450.cpp"
  },
  "004714e0": {
-  "name": "MissionScript_FreeEntry",
-  "name_src": "vote",
+  "name": "MissionScript_ReleaseBlock",
+  "name_src": "agent",
   "votes": {
    "MissionObjectFreeBlock": 1,
    "MissionScript_DestroyNode": 1,
@@ -25440,7 +25483,7 @@
   "name": "GetGlobalObjectField184",
   "name_src": "agent",
   "votes": {
-   "GetGlobalObjectField184": 9
+   "GetGlobalObjectField184": 10
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -123959,7 +124002,7 @@
   "name": "Mem_AllocDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_AllocDebug": 3
+   "Mem_AllocDebug": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -124060,7 +124103,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 64
+   "Mem_Alloc": 67
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -124071,7 +124114,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 148
+   "Mem_Free": 151
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -127130,13 +127173,15 @@
   "sig_src": "abi"
  },
  "0069b460": {
-  "name": "sub_69B460",
-  "name_src": "addr",
-  "votes": {},
+  "name": "MissionScript_ProcessSectionTable",
+  "name_src": "vote",
+  "votes": {
+   "MissionScript_ProcessSectionTable": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0069b590": {
   "name": "BlockList_TryHandle",
@@ -177542,7 +177587,7 @@
   "name": "GetGlobalValue_768E70",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_768E70": 5
+   "GetGlobalValue_768E70": 6
   },
   "ret": "int",
   "conv": "__cdecl",
