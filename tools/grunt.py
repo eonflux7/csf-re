@@ -224,6 +224,9 @@ _codex_rr = itertools.count()
 
 
 def codex_pick():
+    pin = getattr(_tl, "codex_home", None)  # a Claude stand-in pinned to its login (substitute)
+    if pin and pin not in CODEX_HOME_PAUSED:
+        return pin
     homes = [h for h in codex_homes() if h not in CODEX_HOME_PAUSED]
     if not homes:
         CODEX_PAUSED.set()
@@ -381,6 +384,8 @@ def live(**kw):
 
 CODEX_RESERVED = threading.Event()  # Codex 5h window past --codex-reserve: S/M Codex rungs go to CODEX_SUB
 CODEX_SUB = None  # (backend, model) standing in for Codex in S/M while reserved or paused, e.g. claude:...@medium
+CLAUDE_SUB = {}  # Claude rung model -> Codex model standing in while the grunts' Claude account is paused (--claude-sub)
+CLAUDE_SUB_LOGIN = None  # the Codex login those stand-ins run on (--claude-sub-login, e.g. codex-2)
 CLAUDE_PAUSED = threading.Event()  # set by the lanes quota guard: the grunts' Claude account is near its limit
 CODEX_PAUSED = threading.Event()  # set by the lanes quota guard: no new Codex calls (writes, fallbacks, reviews)
 
@@ -589,7 +594,12 @@ def claude_grunts_ready():
 
 
 def substitute(backend, model, tier):
-    """The rung that really runs: Codex is kept for L once its 5h window is past the reserve."""
+    """The rung that really runs: Codex is kept for L once its 5h window is past the reserve; while the grunts'
+    Claude account is paused, its Haiku rungs run on Codex (--claude-sub, pinned to --claude-sub-login)."""
+    _tl.codex_home = None
+    if backend == "claude" and CLAUDE_PAUSED.is_set() and model in CLAUDE_SUB:
+        _tl.codex_home = next((h for h in codex_homes() if codex_label(h) == CLAUDE_SUB_LOGIN), None)
+        return "codex", CLAUDE_SUB[model]
     if backend == "codex" and tier in ("S", "M") and CODEX_SUB and (CODEX_SUB[0] != "claude" or claude_grunts_ready()) and (CODEX_RESERVED.is_set() or CODEX_PAUSED.is_set()):
         return CODEX_SUB
     return backend, model
@@ -1193,9 +1203,11 @@ def lanes(args):
         captain_prep(args.module)
     if args.module:
         ida_refresh(args.module)
-    global REVIEW_EFFORT, CODEX_SUB
+    global REVIEW_EFFORT, CODEX_SUB, CLAUDE_SUB, CLAUDE_SUB_LOGIN
     REVIEW_EFFORT = args.review_effort
     CODEX_SUB = tuple(args.codex_sub.split(":", 1)) if args.codex_sub else None
+    CLAUDE_SUB = dict(x.split("=", 1) for x in args.claude_sub.split(",") if x) if args.claude_sub else {}
+    CLAUDE_SUB_LOGIN = args.claude_sub_login or None
     db = DB()
     wave = module_ids(args.module)
     key = None
@@ -1736,6 +1748,11 @@ def lane_args(l):
                    help="pause the grunts' Claude account at this %% of its 5h or 7d window (0: off)")
     l.add_argument("--codex-reserve", type=float, default=50,
                    help="from this Codex 5h-window %%, S/M Codex rungs run on --codex-sub (Codex kept for L)")
+    l.add_argument("--claude-sub", default="claude-haiku-5-5@low=gpt-6.1-sol@low,claude-haiku-5-5@high=gpt-6.1-sol@medium",
+                   help="while the grunts' Claude account is paused (--claude-cap): Claude rung model=Codex model "
+                   "standing in (empty: off; unlisted Claude rungs are skipped as before)")
+    l.add_argument("--claude-sub-login", default="codex-2", help="Codex login the --claude-sub stand-ins run on "
+                   "(falls back to the rotation when it is missing or paused)")
     l.add_argument("--codex-sub", default="claude:claude-opus-5-5@medium",
                    help="backend:model[@effort] standing in for Codex in S/M (empty: off)")
     l.add_argument("--hub-callers", type=int, default=25,
