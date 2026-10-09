@@ -164,6 +164,21 @@ def fix_vcalls(errs):
     return fixed
 
 
+def fix_null_args(errs):
+    """A wrapper's prototype got its real types (the target was implemented since): a caller passing nullptr where
+    the slot now takes a float/int. All-zero bits either way, so 0.0f / 0 at exactly the reported column."""
+    fixed = 0
+    for path, line, col, t in sorted(set(errs), key=lambda e: (e[0], int(e[1]), -int(e[2]))):
+        lines = open(path).read().split("\n")
+        l, c = lines[int(line) - 1], int(col) - 1
+        if l[c:c + 7] != "nullptr":
+            continue
+        lines[int(line) - 1] = l[:c] + ("0.0f" if t == "float" else "0.0" if t == "double" else "0") + l[c + 7:]
+        open(path, "w").write("\n".join(lines))
+        fixed += 1
+    return fixed
+
+
 def fixbuild():
     """After a rename pass: files that still say obj->field_XXXX for a field that now has a name (rename_classes
     only rewrites files with a single class type). Takes the compiler's own diagnosis (no member named 'field_XXXX'
@@ -183,6 +198,9 @@ def fixbuild():
         verrs = re.findall(r"^(\S+?\.cpp)\((\d+),\d+\): error: no member named '(v\w+)' in '(\w+)'",
                            r.stdout + r.stderr, re.M)
         n = fix_vcalls(verrs) if verrs else 0
+        n += fix_null_args(re.findall(r"^(\S+?\.cpp)\((\d+),(\d+)\): error: cannot initialize a parameter of type "
+                                      r"'(float|double|u?int\d*_t|int|unsigned int|char|bool)' with an rvalue of type "
+                                      r"'std::nullptr_t'", r.stdout + r.stderr, re.M))
         fixed += n
         if not errs and not n:
             break
