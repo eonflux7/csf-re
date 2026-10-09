@@ -1502,16 +1502,17 @@ def captain_prep(module_arg):
           flush=True)
 
 
-def name_modules(module_arg):
+def name_modules(module_arg, phase="captain: naming modules"):
     """Wave prep, after captain family: name the wave's unnamed modules (captain modules), now that their classes
-    have names to cite. Below --min-conf the module stays unnamed (work/captain/held_modules.jsonl)."""
+    have names to cite. Below --min-conf the module stays unnamed (work/captain/held_modules.jsonl); wave end asks
+    again, when the module's functions have names too."""
     import modules
     ids = module_ids(module_arg)
     todo = sorted(m["id"] for m in modules.read_yaml() if m["id"] in ids and not m.get("name"))
     if not todo:
         return
-    live(mode="lanes", phase="captain: naming modules")
-    print(f"wave prep: captain modules {','.join(todo)}", flush=True)
+    live(mode="lanes", phase=phase)
+    print(f"{'wave end' if 'placeholder' in phase else 'wave prep'}: captain modules {','.join(todo)}", flush=True)
     captain("modules", "--only", ",".join(todo))
     import repo
     repo.commit(["db/modules.yaml"], "Module names (wave prep: captain modules)")
@@ -1544,6 +1545,7 @@ def captain_after(wave):
     print("wave end: captain functions", flush=True)
     live(phase="captain: placeholder names")
     captain("functions", "--module", ",".join(sorted(wave)))
+    name_modules(",".join(sorted(wave)), phase="captain: placeholder names")  # held at prep: retry with names
 
 
 WAVES_LOG = os.path.join(ROOT, "work", "waves.jsonl")
