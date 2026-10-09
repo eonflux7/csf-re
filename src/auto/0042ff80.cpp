@@ -1,37 +1,3 @@
-# Escalation 0x0042FF80: in-game smoke failure (verifier bisect: 13 smokes (0 named by crash reports, k=8))
-
-## Smoke log tail
-```
-nohook=False pid=18360 ready=False after=2s alive=False exit=-1073740791 stillrunning=False stop=exited ran=0s fail_at=0s
----- hits
----- diff (0 functions compared)
----- csf_hook.log
-hook 0040ee70 auto     GetConstant15
-hook 0040da80 auto     IsField0050Null
-hook 0040d350 auto     Return18
-hook 0040c910 auto     IsField90Null
-hook 00409430 auto     StoreAbsoluteFloatAt0x18
-hook 00409290 auto     C_0082d58c_ResetField0008
-hook 00407f30 auto     C_0082d5e0_DispatchVirtual17
-hook 00407ed0 auto     C_0082d5e0_InvokeVtblSlot15
-hook 00406e90 auto     ResolveIndexedEntry
-hook 00406210 auto     SetValueAtOffset8
-hook 00405810 auto     C_0082d510_ResetState
-hook 004013e0 auto     ReturnMinusOne
-hook 00401090 auto     GetGlobalValue_401090
-hooks installed=2916 skipped=0 failed=0
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00B3114C wrapped
-devcmd: video mode 1280x960
-devcmd: dev start (scene Maps/FR01/Parachut.scn) instead of Menus/P_Intro.fbs -> state 1
-SMOKE FAIL (never ready: no 'devcmd: starting scene' in csf_hook.log within 120s)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include "globals.h"
 #include "hook.h"
@@ -191,23 +157,24 @@ static void __fastcall Hud_LoadIconAndFillWidgets(
                 const_cast<char*>(CSF_STR(0x00830950, ".COLOR_FONDO")),
                 reinterpret_cast<int>(backgroundColor));
 
-            std::uint8_t packedColor[4];
-            packedColor[3] = static_cast<std::uint8_t>(
-                static_cast<std::int64_t>(fillColor[3]));
-            packedColor[0] = static_cast<std::uint8_t>(
-                static_cast<std::int64_t>(fillColor[0]));
-            packedColor[1] = static_cast<std::uint8_t>(
-                static_cast<std::int64_t>(fillColor[1]));
-            packedColor[2] = static_cast<std::uint8_t>(
-                static_cast<std::int64_t>(fillColor[2]));
+            // Both colours packed to RGBA bytes (alpha converted first, as the original), then slot 0x1C takes
+            // both: (fill, background). It pops 8 bytes; passing only the fill colour left the stack 4 bytes off.
+            std::uint8_t packedFill[4];
+            packedFill[3] = static_cast<std::uint8_t>(static_cast<std::int64_t>(fillColor[3]));
+            packedFill[0] = static_cast<std::uint8_t>(static_cast<std::int64_t>(fillColor[0]));
+            packedFill[1] = static_cast<std::uint8_t>(static_cast<std::int64_t>(fillColor[1]));
+            packedFill[2] = static_cast<std::uint8_t>(static_cast<std::int64_t>(fillColor[2]));
+            std::uint8_t packedBackground[4];
+            packedBackground[3] = static_cast<std::uint8_t>(static_cast<std::int64_t>(backgroundColor[3]));
+            packedBackground[0] = static_cast<std::uint8_t>(static_cast<std::int64_t>(backgroundColor[0]));
+            packedBackground[1] = static_cast<std::uint8_t>(static_cast<std::int64_t>(backgroundColor[1]));
+            packedBackground[2] = static_cast<std::uint8_t>(static_cast<std::int64_t>(backgroundColor[2]));
             fill = CSF_AT(void*, self, 0x298);
-            ((void (__fastcall*)(void*, void*, std::uint8_t*))
-                CSF_AT(void**, fill, 0)[7])(fill, nullptr, packedColor);
+            ((void (__fastcall*)(void*, void*, std::uint8_t*, std::uint8_t*))
+                CSF_AT(void**, fill, 0)[7])(fill, nullptr, packedFill, packedBackground);
         }
     }
 }
 
 HOOK(0x0042FF80, Hud_LoadIconAndFillWidgets, "auto");
 
-
-```
