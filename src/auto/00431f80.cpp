@@ -312,7 +312,7 @@ static void __fastcall Hud_LoadDefinition(void* object, void* /*edx*/,
         {
             int* extent = Hud_GetWidgetExtent(Hud_GetArrayWidget(self + 0x04, 1));
             CSF_AT(int, self, 0x130) = extent[0];
-            int bounds[3];
+            int bounds[4];  // slot 0x58 fills a {left, top, right, bottom} rect (16 bytes)
             Hud_GetWidgetBounds(Hud_GetArrayWidget(self + 0x04, 1), bounds);
             CSF_AT(int, self, 0x134) = bounds[2] - bounds[0];
             int* position = Hud_GetWidgetPosition(Hud_GetArrayWidget(self + 0x04, 1));
@@ -341,7 +341,7 @@ static void __fastcall Hud_LoadDefinition(void* object, void* /*edx*/,
         {
             int* extent = Hud_GetWidgetExtent(Hud_GetArrayWidget(self + 0x14, 0));
             CSF_AT(int, self, 0x138) = extent[0];
-            int bounds[3];
+            int bounds[4];  // slot 0x58 fills a {left, top, right, bottom} rect (16 bytes)
             Hud_GetWidgetBounds(Hud_GetArrayWidget(self + 0x14, 0), bounds);
             CSF_AT(int, self, 0x13C) = bounds[2] - bounds[0];
             CSF_AT(std::uint8_t, self, 0x119) = 1;

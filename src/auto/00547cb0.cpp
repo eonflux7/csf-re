@@ -6,9 +6,6 @@
 
 // Vtable addresses referenced by the constructor, bound by address.
 // The stores below write these addresses into the object's vtable pointers.
-CSF_GLOBAL(void*, g_CMenuScreenSubBaseVtable, 0x0083042C);
-CSF_GLOBAL(void*, g_CMenuExtrasSecondaryBaseVtable, 0x00843C68);
-CSF_GLOBAL(void*, g_CMenuExtrasVtable, 0x00843CB8);
 
 // Callee: base-class initializer, __thiscall (ecx = this + 4, 0 stack args).
 CSF_FUNC(void*, __fastcall, CMenuExtras_InitSecondaryBase, 0x00712CC0, (void* self, void* edx));
@@ -17,12 +14,12 @@ CSF_FUNC(void*, __fastcall, CMenuExtras_InitSecondaryBase, 0x00712CC0, (void* se
 static CMenuExtras* __fastcall CMenuExtras_Construct(CMenuExtras* self, void* /*edx*/, int menuArg)
 {
     // Install the CMenuScreen sub-base vtable (0x0083042C), then initialize the embedded base at +4.
-    CSF_AT(uint32_t, self, 0x000) = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(g_CMenuScreenSubBaseVtable));
+    CSF_AT(uint32_t, self, 0x000) = static_cast<uint32_t>(CSF_ADDR_VT(0x0083042C));
     CMenuExtras_InitSecondaryBase(reinterpret_cast<uint8_t*>(self) + 4, nullptr);
 
     // Install the final CMenuExtras vtable (0x00843CB8) and the secondary base vtable (0x00843C68).
-    CSF_AT(uint32_t, self, 0x000) = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(g_CMenuExtrasVtable));
-    self->field_0004 = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(g_CMenuExtrasSecondaryBaseVtable));
+    CSF_AT(uint32_t, self, 0x000) = static_cast<uint32_t>(CSF_ADDR_VT(0x00843CB8));
+    self->field_0004 = static_cast<uint32_t>(CSF_ADDR_VT(0x00843C68));
 
     // Zero-initialized members.
     self->field_0038 = 0;

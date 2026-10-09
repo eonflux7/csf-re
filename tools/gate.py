@@ -123,6 +123,12 @@ def gate(ea, path, db=None):
         errs.append("volatile is not allowed: don't reproduce a load whose value the original never uses (skip it) or "
                     "an uninitialized value it passes (pass 0); for globals the game changes, a plain CSF_GLOBAL is read "
                     "fresh at every use already")
+    import semcheck as _sc  # a vtable bound as data: its value is the first slot, not the table (0x547CB0 crashed)
+    for m in re.finditer(r"CSF_GLOBAL\([^,]+,\s*(\w+),\s*(0x[0-9A-Fa-f]+)\)", src):
+        if int(m.group(2), 16) in _sc.vtables():
+            errs.append(f"{m.group(1)}: 0x{int(m.group(2), 16):X} is a vtable; never bind it with CSF_GLOBAL (its value is "
+                        "the first slot, not the table): use CSF_VTBL(0x..) to store / call it, CSF_ADDR_VT(0x..) for "
+                        "its address as a number")
     if re.search(r"\b__regcall\b", src):  # grunts' bridge for Hex-Rays' phantom @<edi>/@<esi> args (tools/regargs.py)
         errs.append("__regcall is not allowed: register parameters Hex-Rays shows in ebx/esi/edi are saved registers, "
                     "not arguments (see the packet's NOTE); bind and implement with a plain convention")

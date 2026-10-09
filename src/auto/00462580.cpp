@@ -33,6 +33,15 @@ struct RefHandleTriple {
     int32_t field_08;
 };
 
+struct OrderRecord {
+    int32_t index;            // ebp-0x3C
+    RefHandleTriple source;   // ebp-0x38
+    RefHandleTriple target;   // ebp-0x2C
+    float weight;             // ebp-0x20
+    uint32_t extra[4];        // ebp-0x1C .. ebp-0x10
+};
+static_assert(sizeof(OrderRecord) == 0x30);
+
 // __stdcall: the original pops 3 stack arguments (ret 12); only the third is used.
 static char __stdcall Scene_SyncEntityTransformAndIssueOrder(int /*a4*/, int /*a5*/, void* requestPointer)
 {
@@ -90,22 +99,23 @@ static char __stdcall Scene_SyncEntityTransformAndIssueOrder(int /*a4*/, int /*a
 
     ObjectProvider_CallWithDefaultOptions(cachedProvider, nullptr);
 
-    // Local handle objects and out-parameter, initialised as the original does.
-    uint32_t lookupOutput = 0xFFFFFFFFu;
-    RefHandleTriple sourceHandle;
-    sourceHandle.vtbl = CSF_VTBL(0x0082D448);
-    sourceHandle.field_04 = -1;
-    sourceHandle.field_08 = -1;
-    RefHandleTriple targetHandle;
-    targetHandle.vtbl = CSF_VTBL(0x0082D448);
-    targetHandle.field_04 = -1;
-    targetHandle.field_08 = -1;
-    float zeroWeight = 0.0f;
+    // One 0x30-byte record at ebp-0x3C that 0x4F6E90 fills (index, two handles, weight, 4 more dwords); the
+    // original then passes the handles inside it and the weight it wrote. A lone uint32 here let the callee
+    // overwrite the frame (saved ebp = 0.3f: the FR01 crash).
+    OrderRecord rec;
+    rec.index = -1;
+    rec.source.vtbl = CSF_VTBL(0x0082D448);
+    rec.source.field_04 = -1;
+    rec.source.field_08 = -1;
+    rec.target.vtbl = CSF_VTBL(0x0082D448);
+    rec.target.field_04 = -1;
+    rec.target.field_08 = -1;
+    rec.weight = 0.0f;
+    rec.extra[0] = rec.extra[1] = rec.extra[2] = rec.extra[3] = 0;
 
-    (void)CSF_VTBL(0x004F6E90);
-    if (ObjectProvider_TryFindIndexedEntry(cachedProvider, nullptr, handleIndex, &lookupOutput)) {
+    if (ObjectProvider_TryFindIndexedEntry(cachedProvider, nullptr, handleIndex, reinterpret_cast<uint32_t*>(&rec))) {
         return static_cast<char>(ObjectProvider_ConfigureOrderTarget(
-            cachedProvider, nullptr, &sourceHandle, &targetHandle, zeroWeight, nullptr, nullptr));
+            cachedProvider, nullptr, &rec.source, &rec.target, rec.weight, nullptr, nullptr));
     }
     return static_cast<char>(ObjectProvider_SetOrderState(cachedProvider, nullptr, 3));
 }
