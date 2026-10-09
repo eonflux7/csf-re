@@ -11,7 +11,7 @@ CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 
 CSF_FUNC(int, __fastcall, CHandleTable_Resolve, 0x0044FC30, (void* self, void* edx, int handle));
 CSF_FUNC(int, __fastcall, InitializeTransientState, 0x004619C0, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, CollectLinkedObjectPointers, 0x00468A00, (void* self, void* edx, int a2, void* a3));
+CSF_FUNC(bool, __fastcall, CollectLinkedObjectPointers, 0x00468A00, (void* self, void* edx, int a2, void* a3));
 CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
 
 // Resolves the handle stored in the node reached through *ownerRef, then collects the

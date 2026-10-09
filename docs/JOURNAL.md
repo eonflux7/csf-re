@@ -830,3 +830,20 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Controls: mutant catch rates identical to master's gate (offset 19/40, global 37/40, rest 100%), fixtures and
   positive controls pass: the three semcheck relaxations today (esp copies, vtable-slot calls, base+disp) cost nothing.
 - Left for a propagate run: push the corrected prototypes into the IDB (sync.py stage) so Hex-Rays stops showing them.
+
+## 2026-10-09 — Backlog crush (d): the queue, 81 -> 6
+
+- Codex (sol high, no Claude rungs) re-ran the 28 gate-exhausted items with the fixed gate / packets: 24 passed.
+- In-game failures, root causes found statically:
+  - 9 menu "release sub-object" clones (0x534B70 & co, 0x540870): `sub[0](sub, 1)` called the object's vptr instead
+    of vtbl[0] (EIP 0x865B44 = a vtable in .rdata). The gate can't see it: slot 0 has no displacement and both
+    versions end in `call [reg]`; only the load depth differs.
+  - 5 VCall clones (0x52F950 & co): a helper indexing the vtable with the byte offset (slot 0x30 -> 0xC0); 0x52F950
+    also called slot 0x160 twice. Offsets are template parameters now (constant displacements the vslot rule sees).
+  - 0x4350C0 (CHud_Render) passed the phantom "anchorIndex" as 0x42F4F0's first arg; 0x45BBA0 read its +0/+4/+8
+    fields as pointers (`CSF_AT(int*, self, 4)` then `*`): both fixed.
+  - 13 more (HUD/menu, bisected with 0 crash-report names, i.e. likely victims of the 0x42F4F0 callers or flaky
+    bisects) restored as pending for the verifier to judge on the fixed baseline.
+- Review rejections fixed: 0x45AD20 (getter result as `this`), 0x45DFE0 (signed float->int64), 0x4624E0 (bool callee).
+- Left in queue/ (6): 0x465310 and 0x52F8A0 take REAL register inputs (regargs.py: esi/edi read at entry, LTCG
+  usercalls) that plain C++ can't receive; 0x535900, 0x55F550, 0x564CF0, 0x725390 still fail semcheck.

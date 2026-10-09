@@ -20,8 +20,7 @@ static unsigned int __stdcall Subobj_StoreGlobalCounterAsFloat(int a1, int a2, i
     uint8_t* subObject = CSF_AT(uint8_t*, a1, 4);
     *reinterpret_cast<float*>(subObject + 4) = -1.0f;
 
-    GetGlobalValue_4FBDE0();
-    int result = QueryIndexedValue_4FC160(nullptr, nullptr, 1);
+    int result = QueryIndexedValue_4FC160(reinterpret_cast<void*>(GetGlobalValue_4FBDE0()), nullptr, 1);
     if (result != -1)
     {
         // Treat the returned value as signed; values with the top bit set get the unsigned bias added.

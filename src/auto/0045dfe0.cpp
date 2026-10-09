@@ -24,7 +24,7 @@ static C_0085e760* __stdcall Scene_ResolveAndInvokeSlotMethod(int /*unusedArg1*/
     void* sceneSubObject = reinterpret_cast<void*>(sceneObject + 0x94);
 
     int slotIndex = sub_468E20(sceneSubObject, nullptr,
-                               static_cast<int>(static_cast<uint64_t>(slotValue)));
+                               static_cast<int>(static_cast<int64_t>(slotValue)));
 
     C_0085e760* result = reinterpret_cast<C_0085e760*>(static_cast<intptr_t>(slotIndex));
     if (result != reinterpret_cast<C_0085e760*>(static_cast<intptr_t>(-1)))

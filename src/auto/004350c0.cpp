@@ -1,53 +1,3 @@
-# Escalation 0x004350C0: breaks the verified baseline (verifier bisect: 54 smokes (0 named by crash reports))
-
-## Smoke log tail
-```
-nohook=False pid=26972 ready=True after=1s alive=False exit=-1073741819 stillrunning=False
----- hits
-006c5760   21961758 auto GetGlobalValue
-0048e230    8810263 auto C_00833908_GetField016c
-006b1380    5595666 auto GetGlobalInt
-006c4620    5158561 auto C_008670f0_SetField0C
-006a2e00    1774915 auto C_0085ee28_SumFields
-0041e0c0    1647796 auto C_0082dd78_DispatchReturnedObject
-00495e70    1610656 auto IsField400NonZero
-006b29d0    1483956 auto C_00860288_TestFlag40
-006b8170    1431076 auto GetBit2OfField4
-006e6b30    1402261 auto C_00861d48_ClearByteFlags
----- diff (0 functions compared)
-CRASH code=c0000005 eip=0019ebae addr=00000000 (rw=1) eax=00000000 ebx=1be52f38 ecx=e5a794f0 edx=1c44de0c esi=e5be7f78 edi=00000002 ebp=00000002 esp=0019eb94
-  eip module 00000000 (ours 6D770000); stack:
-   1c0659c0 1c0659c0 00000002 008334f0 1c3c2ad0 1c3f57b0
-   0019ebdc 6d792bb2 1c3f57b0 1c3f57b0 1c3f57b0 00000000
-   0340a5f0 00000003 0340a590 0d1351f8 00000000 0337954c
-   0019ec00 6d792c9d 0137954c 0d1351f8 033bfd10 033d0f30
----- csf_hook.log
-hook 00407ed0 auto     C_0082d5e0_InvokeVtblSlot15
-hook 00406e90 auto     ResolveIndexedEntry
-hook 00406210 auto     SetValueAtOffset8
-hook 00405810 auto     C_0082d510_ResetState
-hook 004013e0 auto     ReturnMinusOne
-hook 00401090 auto     GetGlobalValue_401090
-hooks installed=2847 skipped=0 failed=0
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00B65C14 wrapped
-devcmd: video mode 1280x960
-devcmd: dev start (loadsave 1.sav) instead of Menus/P_Intro.fbs -> state 1
-devcmd: starting scene 'Maps/NR01/NR01A/Fiord.scn'
-CRASH code=c0000005 eip=0019ebae addr=00000000 (rw=1) eax=00000000 ebx=1be52f38 ecx=e5a794f0 edx=1c44de0c esi=e5be7f78 edi=00000002 ebp=00000002 esp=0019eb94
-  eip module 00000000 (ours 6D770000); stack:
-   1c0659c0 1c0659c0 00000002 008334f0 1c3c2ad0 1c3f57b0
-   0019ebdc 6d792bb2 1c3f57b0 1c3f57b0 1c3f57b0 00000000
-   0340a5f0 00000003 0340a590 0d1351f8 00000000 0337954c
-   0019ec00 6d792c9d 0137954c 0d1351f8 033bfd10 033d0f30
-SMOKE FAIL (exited/crashed early)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include <cstddef>
 #include "globals.h"
@@ -63,8 +13,7 @@ CSF_FUNC(int, __cdecl, GetGlobalValue_6C5760, 0x006C5760, ());
 CSF_FUNC(int, __stdcall, Hud_SetRenderState, 0x006C7B40, (int a1, int a2));
 
 // Uses the normalized signature of the supplied reimplementation.
-CSF_FUNC(void, __cdecl, Hud_RenderWidgetAtScaledRect, 0x0042F4F0,
-         (int anchorIndex, int* widget, int* rect));
+CSF_FUNC(void, __cdecl, Hud_RenderWidgetAtScaledRect, 0x0042F4F0, (void* widget, const int* rect));
 
 CSF_FUNC(int, __fastcall, CHud_UpdateMainWidgets, 0x00431840, (void* self, void* edx));
 CSF_FUNC(void, __fastcall, CHud_UpdateWidgetVisibility, 0x00430FE0, (void* self, void* edx));
@@ -98,8 +47,7 @@ static int __fastcall CHud_Render(CHud* self, void* /*edx*/)
     if (!static_cast<uint8_t>(result))
         return result;
 
-    const int anchorIndex = CSF_AT(
-        int, reinterpret_cast<void*>(GetGlobalValue_6C5760()), 0x004);
+    GetGlobalValue_6C5760();  // the original loads its +4 into a register no callee reads (0x6C7B40 is stdcall)
 
     Hud_SetRenderState(20, 1);
     Hud_SetRenderState(6, 0);
@@ -114,25 +62,17 @@ static int __fastcall CHud_Render(CHud* self, void* /*edx*/)
 
     if (self->field_0118)
     {
-        Hud_RenderWidgetAtScaledRect(
-            anchorIndex,
-            CSF_AT(int*, reinterpret_cast<void*>(self->field_0004), 0x000),
+        Hud_RenderWidgetAtScaledRect(CSF_AT(int*, reinterpret_cast<void*>(self->field_0004), 0x000),
             nullptr);
-        Hud_RenderWidgetAtScaledRect(
-            anchorIndex,
-            CSF_AT(int*, reinterpret_cast<void*>(self->field_0004), 0x008),
+        Hud_RenderWidgetAtScaledRect(CSF_AT(int*, reinterpret_cast<void*>(self->field_0004), 0x008),
             nullptr);
-        Hud_RenderWidgetAtScaledRect(
-            anchorIndex,
-            CSF_AT(int*, reinterpret_cast<void*>(self->field_0004), 0x004),
+        Hud_RenderWidgetAtScaledRect(CSF_AT(int*, reinterpret_cast<void*>(self->field_0004), 0x004),
             nullptr);
     }
 
     if (self->field_0119)
     {
-        Hud_RenderWidgetAtScaledRect(
-            anchorIndex,
-            CSF_AT(int*, reinterpret_cast<void*>(self->field_0014), 0x000),
+        Hud_RenderWidgetAtScaledRect(CSF_AT(int*, reinterpret_cast<void*>(self->field_0014), 0x000),
             nullptr);
     }
 
@@ -188,4 +128,3 @@ static int __fastcall CHud_Render(CHud* self, void* /*edx*/)
 
 HOOK(0x004350C0, CHud_Render, "auto");
 
-```
