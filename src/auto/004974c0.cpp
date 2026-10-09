@@ -33,7 +33,7 @@ struct HandleValue          // C_0082d448: { vtbl, index, serial }
 
 // Keeps the attached object (handle at +0x2D4) placed in front of this entity,
 // or clears the handle when the target is gone / no longer valid.
-static int __fastcall C_00833ee8_UpdateAttachedObjectPlacement(C_00833ee8* self, void* /*edx*/)
+static int __fastcall CPlayerCharacter_UpdateAttachedObjectPlacement(CPlayerCharacter* self, void* /*edx*/)
 {
     int handleIndex = (int)self->field_02dc;
     if (handleIndex < 0)
@@ -89,4 +89,4 @@ static int __fastcall C_00833ee8_UpdateAttachedObjectPlacement(C_00833ee8* self,
     return (int)C_008342e8_SetHandle(self, nullptr, (int)&invalidHandle);
 }
 
-HOOK(0x004974C0, C_00833ee8_UpdateAttachedObjectPlacement, "auto");
+HOOK(0x004974C0, CPlayerCharacter_UpdateAttachedObjectPlacement, "auto");

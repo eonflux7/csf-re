@@ -7968,7 +7968,8 @@ struct C_00833cf8 : C_00833908 {
 };
 static_assert(sizeof(C_00833cf8) == 0x194);
 
-struct C_00833ee8 : C_00833b88 {
+// CPlayerCharacter (vtable 0x00833EE8): character factory sub_4E8EA0 builds this 1052-byte class only for type code 0 (the player-controlled commando); captain held CCommando/CPlayerCharacter at 0.6, named by the user
+struct CPlayerCharacter : C_00833b88 {
     float field_020c;
     float field_0210;
     float field_0214;
@@ -8101,7 +8102,7 @@ struct C_00833ee8 : C_00833b88 {
     uint32_t field_0414;
     uint32_t field_0418;
 };
-static_assert(sizeof(C_00833ee8) == 0x41c);
+static_assert(sizeof(CPlayerCharacter) == 0x41c);
 
 struct C_00834050 : C_00833908 {
     uint8_t field_0184;
@@ -10065,10 +10066,11 @@ static_assert(offsetof(CMenuManager, m_pScreenIntro) == 0x54);
 static_assert(offsetof(CMenuManager, m_pScreenMsgBox) == 0x5c);
 static_assert(offsetof(CMenuManager, m_pFader) == 0x68);
 
-struct C_008728a0 {
+// CWeaponDefTable (vtable 0x008728A0): Slot 1 (0x78B4C0 -> 0x78B370) loads a versioned (VERSION 1..13) data file whose v13 parser 0x78A4F0 reads weapon keys (PUNTERIA, CARGADORES, BALAS, FOGONAZO_*, ALCANCE, CADENCIA, WAVE_DISPARO...) into an array of 552-byte records; slots 0x783540/0x783560 get a record by index / find an index by ID.
+struct CWeaponDefTable {
     void** vtbl;
-    uint32_t field_0004;
-    uint32_t field_0008;
+    uint32_t m_owner;
+    uint32_t m_pRecords;
     // virtual calls through this class's own vtable slots (tools/gen_classes_h.py vmethods)
     int* vSlot0(char a2) { return reinterpret_cast<int*(__fastcall*)(void*, void*, char)>(vtbl[0x0 / 4])(this, nullptr, a2); }  // slot +0x0 -> 0x007848D0
     char vSlot4(int a2) { return reinterpret_cast<char(__fastcall*)(void*, void*, int)>(vtbl[0x4 / 4])(this, nullptr, a2); }  // slot +0x4 -> 0x0078B4C0
@@ -10076,22 +10078,31 @@ struct C_008728a0 {
     int vSlotC(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0xc / 4])(this, nullptr, a2); }  // slot +0xC -> 0x00783560
     int vSlot10() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x10 / 4])(this, nullptr); }  // slot +0x10 -> 0x00511170
 };
+static_assert(offsetof(CWeaponDefTable, m_owner) == 0x4);
+static_assert(offsetof(CWeaponDefTable, m_pRecords) == 0x8);
 
-struct C_00840d88 : C_008728a0 {
+// CWeaponDatabase (vtable 0x00840D88): Game-side subclass of the weapon def table, created by the CMenuManager ctor 0x510860 (stored at +0xD4). It adds two heap arrays; the one at +0x10 holds per-weapon flag bytes that slot 5 (0x51AF10) ORs.
+struct CWeaponDatabase : CWeaponDefTable {
     uint8_t pad_000c[0x4];
-    uint32_t field_0010;
-    uint32_t field_0014;
-    uint32_t field_0018;
+    uint32_t m_pWeaponFlags;
+    uint32_t m_pWeaponFlagsEnd;
+    uint32_t m_pWeaponFlagsCap;
     uint8_t pad_001c[0x4];
-    uint32_t field_0020;
-    uint32_t field_0024;
-    uint32_t field_0028;
+    uint32_t m_pArray2;
+    uint32_t m_pArray2End;
+    uint32_t m_pArray2Cap;
     // virtual calls through this class's own vtable slots (tools/gen_classes_h.py vmethods)
     uint8_t* vSlot14(int a2, char a3) { return reinterpret_cast<uint8_t*(__fastcall*)(void*, void*, int, char)>(vtbl[0x14 / 4])(this, nullptr, a2, a3); }  // slot +0x14 -> 0x0051AF10
 };
-static_assert(sizeof(C_00840d88) == 0x2c);
+static_assert(sizeof(CWeaponDatabase) == 0x2c);
+static_assert(offsetof(CWeaponDatabase, m_pWeaponFlags) == 0x10);
+static_assert(offsetof(CWeaponDatabase, m_pWeaponFlagsEnd) == 0x14);
+static_assert(offsetof(CWeaponDatabase, m_pWeaponFlagsCap) == 0x18);
+static_assert(offsetof(CWeaponDatabase, m_pArray2) == 0x20);
+static_assert(offsetof(CWeaponDatabase, m_pArray2End) == 0x24);
+static_assert(offsetof(CWeaponDatabase, m_pArray2Cap) == 0x28);
 
-struct C_00840680 : C_00840d88 {
+struct C_00840680 : CWeaponDatabase {
     uint8_t pad_002c[0xc];
 };
 static_assert(sizeof(C_00840680) == 0x38);

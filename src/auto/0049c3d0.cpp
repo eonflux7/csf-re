@@ -14,8 +14,8 @@ CSF_GLOBAL(float, g_ZeroVectorX, 0x008BB420);
 CSF_GLOBAL(float, g_ZeroVectorY, 0x008BB424);
 CSF_GLOBAL(float, g_ZeroVectorZ, 0x008BB428);
 
-static uint32_t* __fastcall C_00833ee8_Construct(
-    C_00833ee8* self, void* /*edx*/, int a2, int a3)
+static uint32_t* __fastcall CPlayerCharacter_Construct(
+    CPlayerCharacter* self, void* /*edx*/, int a2, int a3)
 {
     C_00833b88_Construct(self, nullptr, a2, a3);
 
@@ -179,4 +179,4 @@ static uint32_t* __fastcall C_00833ee8_Construct(
     return reinterpret_cast<uint32_t*>(self);
 }
 
-HOOK(0x0049C3D0, C_00833ee8_Construct, "auto");
+HOOK(0x0049C3D0, CPlayerCharacter_Construct, "auto");

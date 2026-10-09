@@ -17,7 +17,7 @@ CSF_FUNC(int, __fastcall, SceneObj_IsInactive, 0x0048E100, (void* self, void* ed
 CSF_FUNC(int, __fastcall, SceneObject_PassesFirstCheck, 0x0048E120, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, SceneObject_IsSecondCheckTrue, 0x0048E140, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, DispatchSceneObjectWithPayload, 0x0048E4D0, (void* self, void* edx, int payload));
-CSF_FUNC(double, __fastcall, C_00833ee8_GetContextHeightOffset, 0x004954A0, (void* self, void* edx));
+CSF_FUNC(double, __fastcall, CPlayerCharacter_GetContextHeightOffset, 0x004954A0, (void* self, void* edx));
 CSF_FUNC(bool, __fastcall, C_008342e8_IsContextActionAvailable, 0x00495730, (void* self, void* edx));
 CSF_FUNC(int, __cdecl, GetContextTransform, 0x00495890, ());
 CSF_FUNC(void, __fastcall, C_008342e8_PrepareContextOffset, 0x004963E0, (void* self, void* edx));
@@ -81,7 +81,7 @@ static char __fastcall C_008342e8_SetMenuContextState(
             if (CSF_AT(std::uint32_t, self, 0x2E0) & 0x10000)
             {
                 const float offset =
-                    static_cast<float>(C_00833ee8_GetContextHeightOffset(self, nullptr));
+                    static_cast<float>(CPlayerCharacter_GetContextHeightOffset(self, nullptr));
                 if (CSF_AT(std::uint8_t, self, 0x3D0))
                 {
                     const int settings = GetGlobalValue_8BC1E0();

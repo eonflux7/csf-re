@@ -12,7 +12,7 @@ CSF_FUNC(int, __fastcall, PrepareRequestSlotState, 0x004993E0, (void* self, void
 
 // Builds a 0x2C-byte request object (vtable C_0082d448 + 0xFFFFFFFF fields)
 // on the stack, queries the slot's object for a value, then submits the request.
-static int __fastcall C_00833ee8_BuildAndQueryRequest(C_00833ee8* self, void* /*edx*/)
+static int __fastcall CPlayerCharacter_BuildAndQueryRequest(CPlayerCharacter* self, void* /*edx*/)
 {
     PrepareRequestSlotState(self, nullptr);
 
@@ -48,4 +48,4 @@ static int __fastcall C_00833ee8_BuildAndQueryRequest(C_00833ee8* self, void* /*
         CSF_AT(void**, submitObj, 0)[0x8C / 4])(submitObj, nullptr, request);
 }
 
-HOOK(0x00499A20, C_00833ee8_BuildAndQueryRequest, "auto");
+HOOK(0x00499A20, CPlayerCharacter_BuildAndQueryRequest, "auto");

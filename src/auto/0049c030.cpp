@@ -11,26 +11,26 @@ CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 CSF_FUNC(uint32_t, __fastcall, GetSceneMenuContext, 0x0044FC60, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, SceneObj_IsInactive, 0x0048E100, (void* self, void* edx));
 CSF_FUNC(float, __fastcall, C_00833b88_UpdateState, 0x00492C80, (void* self, void* edx, int a2));
-CSF_FUNC(void, __fastcall, C_00833ee8_UpdateTimedBehavior, 0x00493BE0, (void* self, void* edx, float a2));
-CSF_FUNC(void, __fastcall, C_00833ee8_RefreshState, 0x004947A0, (void* self, void* edx));
-CSF_FUNC(void, __fastcall, C_00833ee8_FinishTimedUpdate, 0x00495E80, (void* self, void* edx, float a2));
-CSF_FUNC(float, __fastcall, C_00833ee8_RefreshAuxiliaryState, 0x004961A0, (void* self, void* edx));
-CSF_FUNC(void, __fastcall, C_00833ee8_UpdateActiveBehavior, 0x00496290, (void* self, void* edx, float a2));
-CSF_FUNC(void, __fastcall, C_00833ee8_RefreshBehavior, 0x00497150, (void* self, void* edx));
-CSF_FUNC(uint32_t*, __fastcall, C_00833ee8_RefreshBehaviorData, 0x004974C0, (void* self, void* edx));
-CSF_FUNC(void, __fastcall, C_00833ee8_PrepareActiveUpdate, 0x004977E0, (void* self, void* edx));
-CSF_FUNC(void, __fastcall, C_00833ee8_UpdateWithGlobalTime, 0x00497930, (void* self, void* edx, float a3));
-CSF_FUNC(void, __fastcall, C_00833ee8_RefreshActiveState, 0x004980D0, (void* self, void* edx));
-CSF_FUNC(void, __fastcall, C_00833ee8_RefreshActiveBehavior, 0x00498310, (void* self, void* edx));
-CSF_FUNC(void, __fastcall, C_00833ee8_RefreshSecondaryBehavior, 0x00498880, (void* self, void* edx));
-CSF_FUNC(unsigned int*, __fastcall, C_00833ee8_RefreshUpdateData, 0x0049BDF0, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_UpdateTimedBehavior, 0x00493BE0, (void* self, void* edx, float a2));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_RefreshState, 0x004947A0, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_FinishTimedUpdate, 0x00495E80, (void* self, void* edx, float a2));
+CSF_FUNC(float, __fastcall, CPlayerCharacter_RefreshAuxiliaryState, 0x004961A0, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_UpdateActiveBehavior, 0x00496290, (void* self, void* edx, float a2));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_RefreshBehavior, 0x00497150, (void* self, void* edx));
+CSF_FUNC(uint32_t*, __fastcall, CPlayerCharacter_RefreshBehaviorData, 0x004974C0, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_PrepareActiveUpdate, 0x004977E0, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_UpdateWithGlobalTime, 0x00497930, (void* self, void* edx, float a3));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_RefreshActiveState, 0x004980D0, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_RefreshActiveBehavior, 0x00498310, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_RefreshSecondaryBehavior, 0x00498880, (void* self, void* edx));
+CSF_FUNC(unsigned int*, __fastcall, CPlayerCharacter_RefreshUpdateData, 0x0049BDF0, (void* self, void* edx));
 CSF_FUNC(void, __fastcall, UpdateEmbeddedTimedState, 0x004A1680, (void* self, void* edx, float a2));
 CSF_FUNC(int, __fastcall, UpdateAssociatedState, 0x004A19E0, (void* self, void* edx, int a2));
 CSF_FUNC(void, __fastcall, FinishAssociatedUpdate, 0x004A2490, (void* self, void* edx, float a2));
 CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 
-static int __fastcall C_00833ee8_Update(
-    C_00833ee8* self, void* /*edx*/, int elapsedBits)
+static int __fastcall CPlayerCharacter_Update(
+    CPlayerCharacter* self, void* /*edx*/, int elapsedBits)
 {
     if ((self->field_0170 & 0x10) != 0)
     {
@@ -62,8 +62,8 @@ static int __fastcall C_00833ee8_Update(
 
         if (static_cast<uint8_t>(SceneObj_IsInactive(self, nullptr)) == 0)
         {
-            C_00833ee8_PrepareActiveUpdate(self, nullptr);
-            C_00833ee8_UpdateTimedBehavior(self, nullptr, elapsed);
+            CPlayerCharacter_PrepareActiveUpdate(self, nullptr);
+            CPlayerCharacter_UpdateTimedBehavior(self, nullptr, elapsed);
 
             if (reinterpret_cast<uint32_t>(self) ==
                     GetSceneMenuContext(g_pCurrentScene, nullptr) &&
@@ -73,24 +73,24 @@ static int __fastcall C_00833ee8_Update(
                 self->field_03dc = 0;
             }
 
-            C_00833ee8_UpdateActiveBehavior(self, nullptr, elapsed);
-            C_00833ee8_RefreshUpdateData(self, nullptr);
+            CPlayerCharacter_UpdateActiveBehavior(self, nullptr, elapsed);
+            CPlayerCharacter_RefreshUpdateData(self, nullptr);
 
             void* globalState =
                 reinterpret_cast<void*>(GetGlobalState_50D190());
-            C_00833ee8_UpdateWithGlobalTime(
+            CPlayerCharacter_UpdateWithGlobalTime(
                 self, nullptr, CSF_AT(float, globalState, 0x9C));
 
-            C_00833ee8_RefreshActiveState(self, nullptr);
-            C_00833ee8_RefreshActiveBehavior(self, nullptr);
-            C_00833ee8_RefreshBehavior(self, nullptr);
-            C_00833ee8_RefreshSecondaryBehavior(self, nullptr);
-            C_00833ee8_RefreshBehaviorData(self, nullptr);
-            C_00833ee8_RefreshAuxiliaryState(self, nullptr);
+            CPlayerCharacter_RefreshActiveState(self, nullptr);
+            CPlayerCharacter_RefreshActiveBehavior(self, nullptr);
+            CPlayerCharacter_RefreshBehavior(self, nullptr);
+            CPlayerCharacter_RefreshSecondaryBehavior(self, nullptr);
+            CPlayerCharacter_RefreshBehaviorData(self, nullptr);
+            CPlayerCharacter_RefreshAuxiliaryState(self, nullptr);
             UpdateEmbeddedTimedState(
                 reinterpret_cast<uint8_t*>(self) + 0x344, nullptr, elapsed);
-            C_00833ee8_RefreshState(self, nullptr);
-            C_00833ee8_FinishTimedUpdate(self, nullptr, elapsed);
+            CPlayerCharacter_RefreshState(self, nullptr);
+            CPlayerCharacter_FinishTimedUpdate(self, nullptr, elapsed);
         }
 
         FinishAssociatedUpdate(
@@ -107,4 +107,4 @@ static int __fastcall C_00833ee8_Update(
     return static_cast<int>(remaining);
 }
 
-HOOK(0x0049C030, C_00833ee8_Update, "auto");
+HOOK(0x0049C030, CPlayerCharacter_Update, "auto");

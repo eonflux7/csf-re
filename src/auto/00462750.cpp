@@ -34,7 +34,7 @@ static int __stdcall GuiControl_ApplyToggleFromHandle(int /*a1*/, int /*a2*/, ui
     if (entryFlags >= 0) {
         const int controlHandle = static_cast<int>(entryWord + 4u);
         result = CHandleTable_Resolve(g_pCurrentScene, nullptr, controlHandle);
-        C_00833ee8* control = reinterpret_cast<C_00833ee8*>(result);
+        CPlayerCharacter* control = reinterpret_cast<CPlayerCharacter*>(result);
 
         if (result != 0) {
             const uint32_t firstRecord = argPack[1];

@@ -22,7 +22,7 @@ static int __fastcall CCharActionFsm_ResolveActionTarget(
         }
 
         const int fallbackTarget = self->vGetIndexedEntryOrZero();
-        auto* character = reinterpret_cast<C_00833ee8*>(self->field_0008);
+        auto* character = reinterpret_cast<CPlayerCharacter*>(self->field_0008);
         if (character->field_0228 && !character->field_0229)
         {
             if (C_004950e0_GetField398(character, nullptr))

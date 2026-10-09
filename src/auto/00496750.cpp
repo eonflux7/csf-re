@@ -21,7 +21,7 @@ CSF_FUNC(int, __cdecl, GetGlobalValue_8BC1E0, 0x00756A10, ());
 
 // If no hint/action is pending and the tracked target is valid, decides whether to
 // trigger message "G176" (target's definition flag set) or "G005" (target close enough).
-static void __fastcall C_00833ee8_UpdateTargetHintMessage(C_00833ee8* self, void* /*edx*/)
+static void __fastcall CPlayerCharacter_UpdateTargetHintMessage(CPlayerCharacter* self, void* /*edx*/)
 {
     if (self->field_0298 != 0)
         return;
@@ -85,4 +85,4 @@ static void __fastcall C_00833ee8_UpdateTargetHintMessage(C_00833ee8* self, void
     self->field_02ac = static_cast<uint32_t>(messageId);
 }
 
-HOOK(0x00496750, C_00833ee8_UpdateTargetHintMessage, "auto");
+HOOK(0x00496750, CPlayerCharacter_UpdateTargetHintMessage, "auto");

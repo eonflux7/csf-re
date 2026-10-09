@@ -21,8 +21,8 @@ CSF_GLOBAL(float, g_HalfDurationScale, 0x0082D444);
 CSF_GLOBAL(float, g_SearchBoundsPadding, 0x00833E20);
 CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 
-static C_008342e8* __fastcall C_00833ee8_FindNearestEligibleControl(
-    C_00833ee8* self, void* /*edx*/, unsigned int* controlIndex)
+static C_008342e8* __fastcall CPlayerCharacter_FindNearestEligibleControl(
+    CPlayerCharacter* self, void* /*edx*/, unsigned int* controlIndex)
 {
     if (static_cast<int32_t>(self->field_0248) < 0)
         return nullptr;
@@ -151,4 +151,4 @@ static C_008342e8* __fastcall C_00833ee8_FindNearestEligibleControl(
     return nearest;
 }
 
-HOOK(0x00496E00, C_00833ee8_FindNearestEligibleControl, "auto");
+HOOK(0x00496E00, CPlayerCharacter_FindNearestEligibleControl, "auto");

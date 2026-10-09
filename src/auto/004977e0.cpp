@@ -20,7 +20,7 @@ CSF_GLOBAL(float, g_fReturnedConstant_0082E030, 0x0082E030);
 
 // Periodically re-evaluates which water/scene volume the object is in and
 // updates the "submerged" state (flag 0x10000) accordingly.
-static void __fastcall C_00833ee8_UpdateVolumeImmersion(C_00833ee8* self, void* /*edx*/)
+static void __fastcall CPlayerCharacter_UpdateVolumeImmersion(CPlayerCharacter* self, void* /*edx*/)
 {
     if ((self->field_02e0 & 0x10000) != 0)
     {
@@ -87,4 +87,4 @@ static void __fastcall C_00833ee8_UpdateVolumeImmersion(C_00833ee8* self, void* 
     sub_497080(self, nullptr, deepFlag);
 }
 
-HOOK(0x004977E0, C_00833ee8_UpdateVolumeImmersion, "auto");
+HOOK(0x004977E0, CPlayerCharacter_UpdateVolumeImmersion, "auto");

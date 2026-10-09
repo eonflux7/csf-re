@@ -18,7 +18,7 @@ CSF_FUNC(C_00833908*, __fastcall, CCharActionFsm_SetActionMode, 0x00484420, (CCh
 
 CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 
-static C_00833ee8* __fastcall C_00833ee8_RefreshSceneMenuAndActivate(C_00833ee8* self, void* /*edx*/)
+static CPlayerCharacter* __fastcall CPlayerCharacter_RefreshSceneMenuAndActivate(CPlayerCharacter* self, void* /*edx*/)
 {
     ResetObjectState(self, nullptr, 0);
 
@@ -35,11 +35,11 @@ static C_00833ee8* __fastcall C_00833ee8_RefreshSceneMenuAndActivate(C_00833ee8*
             if (actionFsm != nullptr)
             {
                 C_00833908* activated = CCharActionFsm_SetActionMode(actionFsm, nullptr, 1);
-                return reinterpret_cast<C_00833ee8*>(activated);
+                return reinterpret_cast<CPlayerCharacter*>(activated);
             }
         }
     }
-    return reinterpret_cast<C_00833ee8*>(result);
+    return reinterpret_cast<CPlayerCharacter*>(result);
 }
 
-HOOK(0x0049AB10, C_00833ee8_RefreshSceneMenuAndActivate, "auto");
+HOOK(0x0049AB10, CPlayerCharacter_RefreshSceneMenuAndActivate, "auto");

@@ -3,13 +3,13 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(void, __fastcall, C_00833ee8_PrepareDispatch, 0x0049BAF0, (void* self, void* edx, int a2));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_PrepareDispatch, 0x0049BAF0, (void* self, void* edx, int a2));
 CSF_FUNC(int, __fastcall, CCharActionFsm_GetSlot28ItemIfUsable, 0x00487260, (CCharActionFsm* self, void* edx));
 CSF_FUNC(int, __fastcall, CharActionFsm_SetCharacterItem, 0x00494E90, (void* self, void* edx, int a4));
 
-static int __fastcall C_00833ee8_DispatchSceneObjectAction(C_00833ee8* self, void* /*edx*/, int a2)
+static int __fastcall CPlayerCharacter_DispatchSceneObjectAction(CPlayerCharacter* self, void* /*edx*/, int a2)
 {
-    C_00833ee8_PrepareDispatch(self, nullptr, a2);
+    CPlayerCharacter_PrepareDispatch(self, nullptr, a2);
 
     CCharActionFsm* fsm = reinterpret_cast<CCharActionFsm*>(self->field_0044);
     int result = CCharActionFsm_GetSlot28ItemIfUsable(fsm, nullptr);
@@ -22,4 +22,4 @@ static int __fastcall C_00833ee8_DispatchSceneObjectAction(C_00833ee8* self, voi
     return result;
 }
 
-HOOK(0x0049BF00, C_00833ee8_DispatchSceneObjectAction, "auto");
+HOOK(0x0049BF00, CPlayerCharacter_DispatchSceneObjectAction, "auto");

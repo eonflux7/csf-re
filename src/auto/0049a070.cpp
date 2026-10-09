@@ -6,7 +6,7 @@
 
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
-static int __fastcall C_00833ee8_ClearBuffers(C_00833ee8* self, void* /*edx*/)
+static int __fastcall CPlayerCharacter_ClearBuffers(CPlayerCharacter* self, void* /*edx*/)
 {
     self->field_02e4 &= 0xFFF1F804u;
 
@@ -26,4 +26,4 @@ static int __fastcall C_00833ee8_ClearBuffers(C_00833ee8* self, void* /*edx*/)
     return result;
 }
 
-HOOK(0x0049A070, C_00833ee8_ClearBuffers, "auto");
+HOOK(0x0049A070, CPlayerCharacter_ClearBuffers, "auto");

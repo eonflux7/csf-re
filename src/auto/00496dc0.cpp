@@ -9,7 +9,7 @@ CSF_FUNC(int, __fastcall, C_008319c0_GetSubObjectField74, 0x004760A0, (C_008319c
 // Vtable slot 0xD8 / 4 = 54 on the object held in field_0044; returns a C_008319c0*.
 using GetControlledObjectFn = C_008319c0* (__fastcall*)(void* self, void* edx);
 
-static int __fastcall CharActionFsm_GetCharacterToggleState(C_00833ee8* self, void* /*edx*/)
+static int __fastcall CharActionFsm_GetCharacterToggleState(CPlayerCharacter* self, void* /*edx*/)
 {
     if ((self->field_02e0 & 0x40) == 0)
         return 0;

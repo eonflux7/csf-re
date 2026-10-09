@@ -23,7 +23,7 @@ CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 //   field_02e0 = current (active) flags
 //   field_02e4 = requested flags
 //   field_02e8 = filtered / pending flags
-static unsigned int* __fastcall C_00833ee8_UpdateActionFlags(C_00833ee8* self, void* /*edx*/)
+static unsigned int* __fastcall CPlayerCharacter_UpdateActionFlags(CPlayerCharacter* self, void* /*edx*/)
 {
     uint32_t activeFlags = self->field_02e0;
     if ((activeFlags & 0x88000) != 0)
@@ -78,4 +78,4 @@ static unsigned int* __fastcall C_00833ee8_UpdateActionFlags(C_00833ee8* self, v
     return reinterpret_cast<unsigned int*>(activeFlags);
 }
 
-HOOK(0x0049BDF0, C_00833ee8_UpdateActionFlags, "auto");
+HOOK(0x0049BDF0, CPlayerCharacter_UpdateActionFlags, "auto");

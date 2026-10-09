@@ -26,8 +26,8 @@ CSF_GLOBAL(float, g_ZeroVectorX, 0x008BB420);
 CSF_GLOBAL(float, g_ZeroVectorY, 0x008BB424);
 CSF_GLOBAL(float, g_ZeroVectorZ, 0x008BB428);
 
-static std::uint32_t __fastcall C_00833ee8_InitializeFromFocusEntry(
-    C_00833ee8* self, void* /*edx*/)
+static std::uint32_t __fastcall CPlayerCharacter_InitializeFromFocusEntry(
+    CPlayerCharacter* self, void* /*edx*/)
 {
     auto* source = reinterpret_cast<C_008342e8*>(
         CHandleTable_Resolve(
@@ -225,4 +225,4 @@ static std::uint32_t __fastcall C_00833ee8_InitializeFromFocusEntry(
     return result;
 }
 
-HOOK(0x00499590, C_00833ee8_InitializeFromFocusEntry, "auto");
+HOOK(0x00499590, CPlayerCharacter_InitializeFromFocusEntry, "auto");

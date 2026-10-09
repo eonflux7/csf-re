@@ -7,7 +7,7 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-CSF_FUNC(void*, __fastcall, C_00833ee8_FindCandidateEntity, 0x00496E00, (void* self, void* edx, unsigned int* arg0));
+CSF_FUNC(void*, __fastcall, CPlayerCharacter_FindCandidateEntity, 0x00496E00, (void* self, void* edx, unsigned int* arg0));
 CSF_FUNC(int, __fastcall, C_00833908_QueryPartInfo, 0x0049ED80, (void* self, void* edx, int a2, uint32_t* a3));
 CSF_FUNC(int, __cdecl, MenuExtras_ParseDescriptionId, 0x00698D90, (const char* text));
 
@@ -15,14 +15,14 @@ CSF_FUNC(int, __cdecl, MenuExtras_ParseDescriptionId, 0x00698D90, (const char* t
 // arms the pending action (type 7) with the target's id pair, the part index and the "G006" id.
 // Returns whatever the last step left: the already pending action type, null when no candidate,
 // the filter's result when rejected, or the parsed description id on success.
-static uint32_t __fastcall C_00833ee8_TrySetPendingActionG006(C_00833ee8* self, void* /*edx*/)
+static uint32_t __fastcall CPlayerCharacter_TrySetPendingActionG006(CPlayerCharacter* self, void* /*edx*/)
 {
     uint32_t pendingType = self->field_0298;
     if (pendingType != 0)
         return pendingType;
 
     unsigned int partIndex = 0;
-    C_00833908* target = static_cast<C_00833908*>(C_00833ee8_FindCandidateEntity(self, nullptr, &partIndex));
+    C_00833908* target = static_cast<C_00833908*>(CPlayerCharacter_FindCandidateEntity(self, nullptr, &partIndex));
     if (!target)
         return 0;
 
@@ -58,4 +58,4 @@ static uint32_t __fastcall C_00833ee8_TrySetPendingActionG006(C_00833ee8* self, 
     return descriptionId;
 }
 
-HOOK(0x004973E0, C_00833ee8_TrySetPendingActionG006, "auto");
+HOOK(0x004973E0, CPlayerCharacter_TrySetPendingActionG006, "auto");

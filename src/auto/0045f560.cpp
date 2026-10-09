@@ -26,7 +26,7 @@ static char __stdcall SceneObject_SyncPositionFromHandleEvent(
     {
         const int resolvedValue = CHandleTable_Resolve(g_pCurrentScene, nullptr, handleAddress);
         returnValue = static_cast<char>(resolvedValue);
-        C_00833ee8* object = reinterpret_cast<C_00833ee8*>(resolvedValue);
+        CPlayerCharacter* object = reinterpret_cast<CPlayerCharacter*>(resolvedValue);
         if (resolvedValue != 0)
         {
             void* positionOwner = reinterpret_cast<void*>(eventPayload[1]);

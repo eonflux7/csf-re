@@ -32,7 +32,7 @@ struct S_OrientationScratch
 
 // Returns the position and view direction used for aiming: from the active camera
 // object when flag 0x2000 is set (and not overridden), otherwise from the entity itself.
-static char __fastcall C_00833ee8_GetViewPositionAndDirection(C_00833ee8* self, void* /*edx*/,
+static char __fastcall CPlayerCharacter_GetViewPositionAndDirection(CPlayerCharacter* self, void* /*edx*/,
                                                               std::uint32_t* outPosition,
                                                               std::uint32_t* outDirection)
 {
@@ -92,4 +92,4 @@ static char __fastcall C_00833ee8_GetViewPositionAndDirection(C_00833ee8* self, 
     return owned;
 }
 
-HOOK(0x00496490, C_00833ee8_GetViewPositionAndDirection, "auto");
+HOOK(0x00496490, CPlayerCharacter_GetViewPositionAndDirection, "auto");

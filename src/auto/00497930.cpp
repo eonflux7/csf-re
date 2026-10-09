@@ -20,8 +20,8 @@ CSF_GLOBAL(float, g_TransitionOne, 0x0082D4D4);
 CSF_GLOBAL(float, g_flt_0082DC84, 0x0082DC84);
 CSF_GLOBAL(float, g_ProgressScale, 0x0082E03C);
 
-static void __fastcall C_00833ee8_UpdateActionResource(
-    C_00833ee8* self, void* /*edx*/, float elapsedTime)
+static void __fastcall CPlayerCharacter_UpdateActionResource(
+    CPlayerCharacter* self, void* /*edx*/, float elapsedTime)
 {
     if (static_cast<uint8_t>(SceneObject_PassesFirstCheck(self, nullptr)))
         return;
@@ -201,4 +201,4 @@ ApplyChange:
     }
 }
 
-HOOK(0x00497930, C_00833ee8_UpdateActionResource, "auto");
+HOOK(0x00497930, CPlayerCharacter_UpdateActionResource, "auto");

@@ -16,8 +16,8 @@ CSF_FUNC(int, __cdecl, Scene_IsObjectRemovable, 0x007558C0, (int a1));
 CSF_FUNC(int, __cdecl, GetGlobalValue_8BC1E0, 0x00756A10, ());
 CSF_FUNC(uint8_t, __fastcall, GlobalFlag_IsSet, 0x007A7B50, (void* ecxArg, void* edx));
 
-static void __fastcall C_00833ee8_UpdateNearbySelection(
-    C_00833ee8* self, void* /*edx*/)
+static void __fastcall CPlayerCharacter_UpdateNearbySelection(
+    CPlayerCharacter* self, void* /*edx*/)
 {
     if (reinterpret_cast<uint32_t>(self) !=
         GetSceneMenuContext(g_pCurrentScene, nullptr))
@@ -63,7 +63,7 @@ static void __fastcall C_00833ee8_UpdateNearbySelection(
     queryArguments[1] = 0;
     if (results[2] > 0)
     {
-        C_00833ee8* currentSelf = self;
+        CPlayerCharacter* currentSelf = self;
         do
         {
             auto* object = reinterpret_cast<C_00833908*>(
@@ -110,7 +110,7 @@ static void __fastcall C_00833ee8_UpdateNearbySelection(
                     else if (status == 2)
                     {
                         auto* context =
-                            reinterpret_cast<C_00833ee8*>(queryArguments[2]);
+                            reinterpret_cast<CPlayerCharacter*>(queryArguments[2]);
                         context->field_02cc = object->field_0020;
                         context->field_02d0 = object->field_0024;
                     }
@@ -152,7 +152,7 @@ static void __fastcall C_00833ee8_UpdateNearbySelection(
             ++queryArguments[1];
             if (queryArguments[1] >= results[4])
                 break;
-            currentSelf = reinterpret_cast<C_00833ee8*>(queryArguments[2]);
+            currentSelf = reinterpret_cast<CPlayerCharacter*>(queryArguments[2]);
         } while (true);
     }
 
@@ -165,4 +165,4 @@ static void __fastcall C_00833ee8_UpdateNearbySelection(
         Mem_Free(reinterpret_cast<void*>(results[0]));
 }
 
-HOOK(0x00497150, C_00833ee8_UpdateNearbySelection, "auto");
+HOOK(0x00497150, CPlayerCharacter_UpdateNearbySelection, "auto");

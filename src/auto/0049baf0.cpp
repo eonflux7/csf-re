@@ -12,7 +12,7 @@ CSF_FUNC(int, __cdecl, GetValue8B0554, 0x004E8C50, ());
 CSF_FUNC(unsigned int, __fastcall, Character_AssignItemSlot, 0x0049B030, (void* self, void* edx, int a2));
 CSF_FUNC(void, __fastcall, CCharActionFsm_SetActionSlotValue, 0x00487290, (CCharActionFsm* self, void* edx, int value));
 
-static void __fastcall C_00833ee8_SwitchCharacterItem(C_00833ee8* self, void* /*edx*/, int a2)
+static void __fastcall CPlayerCharacter_SwitchCharacterItem(CPlayerCharacter* self, void* /*edx*/, int a2)
 {
     if (a2 == self->field_03a0)
         return;
@@ -49,4 +49,4 @@ static void __fastcall C_00833ee8_SwitchCharacterItem(C_00833ee8* self, void* /*
     }
 }
 
-HOOK(0x0049BAF0, C_00833ee8_SwitchCharacterItem, "auto");
+HOOK(0x0049BAF0, CPlayerCharacter_SwitchCharacterItem, "auto");

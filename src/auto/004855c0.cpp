@@ -12,7 +12,7 @@ CSF_FUNC(int, __fastcall, GuiControl_SetInteractionState, 0x0048EEC0, (void* sel
 
 static int __fastcall CCharActionFsm_DispatchInteraction(CCharActionFsm* self, void* /*edx*/)
 {
-    auto* target = reinterpret_cast<C_00833ee8*>(
+    auto* target = reinterpret_cast<CPlayerCharacter*>(
         CHandleTable_Resolve(
             g_pCurrentScene, nullptr,
             reinterpret_cast<int>(&self->field_0040)));

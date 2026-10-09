@@ -22,7 +22,7 @@ CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 // flagged as valid (flag >= 0) and the handle resolves, applies a state
 // action to the resolved object. Returns the resolved pointer, or the
 // action's result when it was applied.
-static C_00833ee8* __stdcall ResolveSceneEntryHandle(int a1, int a2, int a3)
+static CPlayerCharacter* __stdcall ResolveSceneEntryHandle(int a1, int a2, int a3)
 {
     (void)a1;
     (void)a2;
@@ -35,11 +35,11 @@ static C_00833ee8* __stdcall ResolveSceneEntryHandle(int a1, int a2, int a3)
     int32_t entryFlag = *reinterpret_cast<int32_t*>(entry + 12);
 
     uint32_t handleAddress = entry + 4;
-    C_00833ee8* result = reinterpret_cast<C_00833ee8*>(handleAddress);
+    CPlayerCharacter* result = reinterpret_cast<CPlayerCharacter*>(handleAddress);
 
     if (entryFlag >= 0)
     {
-        result = reinterpret_cast<C_00833ee8*>(
+        result = reinterpret_cast<CPlayerCharacter*>(
             CHandleTable_Resolve(g_pCurrentScene, nullptr, static_cast<int>(handleAddress)));
 
         if (result)
@@ -49,7 +49,7 @@ static C_00833ee8* __stdcall ResolveSceneEntryHandle(int a1, int a2, int a3)
             uint32_t* contextLevel2 = reinterpret_cast<uint32_t*>(contextLevel1[1]);
             int argValue = static_cast<int>(contextLevel2[1]);
 
-            return reinterpret_cast<C_00833ee8*>(
+            return reinterpret_cast<CPlayerCharacter*>(
                 SceneObject_ApplyStateAction(result, nullptr, argValue));
         }
     }

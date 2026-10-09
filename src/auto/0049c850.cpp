@@ -16,7 +16,7 @@ CSF_FUNC(int, __stdcall, Archive_SerializeInitialParameters, 0x004991E0, (int a1
 CSF_FUNC(int, __fastcall, Archive_SerializePrimaryParameters, 0x00499AA0, (void* self, void* edx, void* a2));
 CSF_FUNC(int, __fastcall, Archive_SerializeSecondaryParameters, 0x00499B80, (void* self, void* edx, void* a2));
 CSF_FUNC(int, __fastcall, Archive_SerializeAdditionalParameters, 0x00499C70, (void* self, void* edx, void* a2));
-CSF_FUNC(unsigned int, __fastcall, C_00833ee8_SetResolvedObject, 0x0049B030, (void* self, void* edx, int a2));
+CSF_FUNC(unsigned int, __fastcall, CPlayerCharacter_SetResolvedObject, 0x0049B030, (void* self, void* edx, int a2));
 CSF_FUNC(unsigned int, __stdcall, Archive_SerializeRecordParameters, 0x0049C240, (void* a1, int a2));
 CSF_FUNC(int, __cdecl, GetValue8B0554, 0x004E8C50, ());
 
@@ -111,7 +111,7 @@ static void Archive_SerializeIdentifier(void* archive, uint32_t* member)
     }
 }
 
-static int __fastcall C_00833ee8_Serialize(C_00833ee8* self, void* /*edx*/, int archiveAddress)
+static int __fastcall CPlayerCharacter_Serialize(CPlayerCharacter* self, void* /*edx*/, int archiveAddress)
 {
     void* archive = reinterpret_cast<void*>(archiveAddress);
     bool error = false;
@@ -234,7 +234,7 @@ static int __fastcall C_00833ee8_Serialize(C_00833ee8* self, void* /*edx*/, int 
                 reinterpret_cast<int(__fastcall*)(void*, void*, int)>(
                     CSF_AT(void**, manager, 0)[0x08 / 4])(
                         manager, nullptr, index);
-            C_00833ee8_SetResolvedObject(self, nullptr, object);
+            CPlayerCharacter_SetResolvedObject(self, nullptr, object);
         }
     }
 
@@ -262,4 +262,4 @@ static int __fastcall C_00833ee8_Serialize(C_00833ee8* self, void* /*edx*/, int 
     return 1;
 }
 
-HOOK(0x0049C850, C_00833ee8_Serialize, "auto");
+HOOK(0x0049C850, CPlayerCharacter_Serialize, "auto");

@@ -17,7 +17,7 @@ CSF_GLOBAL(float, g_MaxPercent, 0x0082E120);         // 100.0f
 
 // Refreshes the availability flags of the character's actions (field_02e4) and
 // the "above threshold" status bit (field_02e0 & 0x800).
-static char __fastcall C_00833ee8_UpdateAvailableActionFlags(C_00833ee8* self, void* /*edx*/)
+static char __fastcall CPlayerCharacter_UpdateAvailableActionFlags(CPlayerCharacter* self, void* /*edx*/)
 {
     CCharActionFsm* actionFsm = reinterpret_cast<CCharActionFsm*>(self->field_0044);
 
@@ -88,4 +88,4 @@ static char __fastcall C_00833ee8_UpdateAvailableActionFlags(C_00833ee8* self, v
     return (char)result;
 }
 
-HOOK(0x00499270, C_00833ee8_UpdateAvailableActionFlags, "auto");
+HOOK(0x00499270, CPlayerCharacter_UpdateAvailableActionFlags, "auto");

@@ -13,7 +13,7 @@ CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
 
-static int __fastcall C_00833ee8_Destructor(C_00833ee8* self, void* /*edx*/)
+static int __fastcall CPlayerCharacter_Destructor(CPlayerCharacter* self, void* /*edx*/)
 {
     const uint8_t hadAttachedObject = self->field_0228;
 
@@ -97,4 +97,4 @@ static int __fastcall C_00833ee8_Destructor(C_00833ee8* self, void* /*edx*/)
     return C_00833b88_Destructor(self, nullptr);
 }
 
-HOOK(0x00499D40, C_00833ee8_Destructor, "auto");
+HOOK(0x00499D40, CPlayerCharacter_Destructor, "auto");

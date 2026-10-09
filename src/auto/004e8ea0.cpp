@@ -9,7 +9,7 @@ CSF_FUNC(uint32_t*, __fastcall, C_00833908_Construct, 0x00490940, (void* self, v
 CSF_FUNC(uint32_t*, __fastcall, C_00833a48_Construct, 0x00491EC0, (void* self, void* edx, int a2, int a3));
 CSF_FUNC(int, __fastcall, C_00833b88_Construct, 0x00492F60, (void* self, void* edx, int a2, int a3));
 CSF_FUNC(uint32_t*, __fastcall, C_00833cf8_Construct, 0x00493740, (void* self, void* edx, int a2, int a3));
-CSF_FUNC(uint32_t*, __fastcall, C_00833ee8_Construct, 0x0049C3D0, (C_00833ee8* self, void* , int a2, int a3));
+CSF_FUNC(uint32_t*, __fastcall, CPlayerCharacter_Construct, 0x0049C3D0, (CPlayerCharacter* self, void* , int a2, int a3));
 CSF_FUNC(int, __fastcall, C_00834050_Construct, 0x0049D280, (void* self, void* edx, int a2, int a3));
 CSF_FUNC(uint32_t*, __fastcall, C_00834198_Construct, 0x0049E280, (void* self, void* edx, int a2, int a3));
 CSF_FUNC(uint32_t*, __fastcall, C_008342e8_Construct, 0x0049F410, (void* self, void* edx, int a2, int a3));
@@ -25,9 +25,9 @@ static uint32_t* __stdcall SceneMissionSetup_CreateObject(int context, int objec
 {
     if (!objectType)
     {
-        auto* storage = static_cast<C_00833ee8*>(Mem_Alloc(1052));
+        auto* storage = static_cast<CPlayerCharacter*>(Mem_Alloc(1052));
         uint32_t* object = storage
-            ? C_00833ee8_Construct(storage, nullptr, context, 0)
+            ? CPlayerCharacter_Construct(storage, nullptr, context, 0)
             : nullptr;
 
         void* attachment = Mem_Alloc(36);

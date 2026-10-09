@@ -20,8 +20,8 @@ CSF_FUNC(int, __cdecl, GetGlobalValue_8BC1E0, 0x00756A10, ());
 
 CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 
-static int __fastcall C_00833ee8_SelectNearbyActionTarget(
-    C_00833ee8* self, void* /*edx*/)
+static int __fastcall CPlayerCharacter_SelectNearbyActionTarget(
+    CPlayerCharacter* self, void* /*edx*/)
 {
     const int currentAction = static_cast<int>(self->field_0298);
     if (currentAction != 0)
@@ -61,8 +61,8 @@ static int __fastcall C_00833ee8_SelectNearbyActionTarget(
         reinterpret_cast<int>(&flags),
         CSF_AT(float, reinterpret_cast<void*>(settings), 0xB08));
 
-    C_00833ee8* candidate =
-        reinterpret_cast<C_00833ee8*>(candidates[0]);
+    CPlayerCharacter* candidate =
+        reinterpret_cast<CPlayerCharacter*>(candidates[0]);
     if (candidate && candidate->field_0050 == 1 &&
         static_cast<uint8_t>(
             Object_IsEligibleNearbyCandidate(candidate, nullptr)) != 0)
@@ -109,4 +109,4 @@ static int __fastcall C_00833ee8_SelectNearbyActionTarget(
     return 0;
 }
 
-HOOK(0x00496590, C_00833ee8_SelectNearbyActionTarget, "auto");
+HOOK(0x00496590, CPlayerCharacter_SelectNearbyActionTarget, "auto");

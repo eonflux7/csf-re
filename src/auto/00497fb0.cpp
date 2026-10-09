@@ -17,7 +17,7 @@ CSF_GLOBAL(float, g_ZeroVectorZ, 0x008BB428);
 // Lazily initialises the cached target/aim data: resets the target slots, asks the
 // search routine for a direction, and falls back to the object's own facing direction
 // when no direction was produced.
-static void __fastcall C_00833ee8_InitTargetDirection(C_00833ee8* self, void* /*edx*/)
+static void __fastcall CPlayerCharacter_InitTargetDirection(CPlayerCharacter* self, void* /*edx*/)
 {
     if (self->field_0268 != 0)
         return;
@@ -64,4 +64,4 @@ static void __fastcall C_00833ee8_InitTargetDirection(C_00833ee8* self, void* /*
     }
 }
 
-HOOK(0x00497FB0, C_00833ee8_InitTargetDirection, "auto");
+HOOK(0x00497FB0, CPlayerCharacter_InitTargetDirection, "auto");

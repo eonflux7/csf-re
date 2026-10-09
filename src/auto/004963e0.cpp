@@ -16,7 +16,7 @@ CSF_GLOBAL(float, g_fGroundProbeOffset, 0x00833E04); // 15.0f
 
 // When the flag at +0x184 is set, probes the world below the target height;
 // if nothing is hit (or the hit value is not negative) triggers the 1.0 action.
-static void __fastcall C_00833ee8_CheckGroundProbe(C_00833ee8* self, void* /*edx*/)
+static void __fastcall CPlayerCharacter_CheckGroundProbe(CPlayerCharacter* self, void* /*edx*/)
 {
     if (!CSF_AT(uint8_t, self, 0x184))
         return;
@@ -46,4 +46,4 @@ static void __fastcall C_00833ee8_CheckGroundProbe(C_00833ee8* self, void* /*edx
         sub_493D50(self, nullptr, 1.0f);
 }
 
-HOOK(0x004963E0, C_00833ee8_CheckGroundProbe, "auto");
+HOOK(0x004963E0, CPlayerCharacter_CheckGroundProbe, "auto");

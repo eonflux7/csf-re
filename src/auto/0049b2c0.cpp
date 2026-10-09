@@ -17,7 +17,7 @@ CSF_FUNC(int, __fastcall, CCharActionFsm_TryBeginTargetedAction, 0x00487610, (CC
 CSF_FUNC(char, __fastcall, CCharActionFsm_TryBeginActionState, 0x00487650, (CCharActionFsm* self, void*));
 CSF_FUNC(int, __fastcall, Character_SetSpecialMode, 0x00492760, (void* self, void* edx, int a2));
 CSF_FUNC(int, __fastcall, Character_DispatchPendingEffect, 0x00496B30, (void* self, void* edx));
-CSF_FUNC(uint32_t, __fastcall, C_00833ee8_BeginRequestedMode, 0x00499590, (C_00833ee8* self, void* edx));
+CSF_FUNC(uint32_t, __fastcall, CPlayerCharacter_BeginRequestedMode, 0x00499590, (CPlayerCharacter* self, void* edx));
 CSF_FUNC(int, __fastcall, C_00834050_BeginTransitionMode, 0x0049AE30, (C_00834050* self, void* edx));
 CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x00521BB0, ());
@@ -364,7 +364,7 @@ static int __fastcall C_00834050_DispatchRequestedFlags(
     CSF_AT(uint32_t, self, 0x2E8) = pending;
     if ((pending & 0x2000) != 0 &&
         (CSF_AT(uint32_t, self, 0x2E0) & 0x2000) == 0)
-        C_00833ee8_BeginRequestedMode(reinterpret_cast<C_00833ee8*>(self), nullptr);
+        CPlayerCharacter_BeginRequestedMode(reinterpret_cast<CPlayerCharacter*>(self), nullptr);
 
     pending = CSF_AT(uint32_t, self, 0x2E4) & CSF_AT(uint32_t, self, 0x2E8);
     CSF_AT(uint32_t, self, 0x2E8) = pending;

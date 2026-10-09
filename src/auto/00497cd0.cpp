@@ -40,8 +40,8 @@ struct NearbyInteractionQuery {
 static_assert(sizeof(NearbyInteractionQuery) == 0x38);
 static_assert(offsetof(NearbyInteractionQuery, exclusions) == 0x10);
 
-static uint32_t* __fastcall C_00833ee8_FindNearbyInteraction(
-    C_00833ee8* self, void* /*edx*/, int outputHandle,
+static uint32_t* __fastcall CPlayerCharacter_FindNearbyInteraction(
+    CPlayerCharacter* self, void* /*edx*/, int outputHandle,
     int* outputKind, float* outputPosition, C_00833b88* outputDirection,
     int queryFlags, int option1, int option2)
 {
@@ -195,4 +195,4 @@ static uint32_t* __fastcall C_00833ee8_FindNearbyInteraction(
     return query.exclusions;
 }
 
-HOOK(0x00497CD0, C_00833ee8_FindNearbyInteraction, "auto");
+HOOK(0x00497CD0, CPlayerCharacter_FindNearbyInteraction, "auto");

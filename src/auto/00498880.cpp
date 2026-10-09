@@ -14,18 +14,18 @@ CSF_FUNC(int, __fastcall, CHandleTable_Resolve, 0x0044FC30, (void* self, void* e
 CSF_FUNC(uint32_t, __fastcall, GetSceneMenuContext, 0x0044FC60, (void* self, void* edx));
 
 CSF_FUNC(int, __fastcall, SceneObject_GetSelectionIndex, 0x0048E780, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, C_00833ee8_SelectStoredTarget, 0x00493E70, (void* self, void* edx));
-CSF_FUNC(void, __fastcall, C_00833ee8_EvaluateInteractionTarget, 0x00493EB0, (void* self, void* edx));
-CSF_FUNC(char, __fastcall, C_00833ee8_EvaluatePrimaryTarget, 0x004940A0, (void* self, void* edx));
-CSF_FUNC(char, __fastcall, C_00833ee8_EvaluateFallbackTarget, 0x004941D0, (void* self, void* edx));
-CSF_FUNC(void, __fastcall, C_00833ee8_EvaluateTargetStageOne, 0x00494250, (void* self, void* edx));
-CSF_FUNC(void, __fastcall, C_00833ee8_EvaluateTargetStageTwo, 0x00494360, (void* self, void* edx));
-CSF_FUNC(void, __fastcall, C_00833ee8_EvaluateTargetStageThree, 0x004944E0, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, C_00833ee8_FinalizeTargetSelection, 0x004945A0, (void* self, void* edx));
-CSF_FUNC(char, __fastcall, C_00833ee8_EvaluateFinalTarget, 0x00494700, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, C_00833ee8_EvaluateTargetStageFour, 0x00496590, (void* self, void* edx));
-CSF_FUNC(void, __fastcall, C_00833ee8_EvaluateTargetStageFive, 0x00496750, (void* self, void* edx));
-CSF_FUNC(void*, __fastcall, C_00833ee8_EvaluateSpecialTarget, 0x004973E0, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, CPlayerCharacter_SelectStoredTarget, 0x00493E70, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_EvaluateInteractionTarget, 0x00493EB0, (void* self, void* edx));
+CSF_FUNC(char, __fastcall, CPlayerCharacter_EvaluatePrimaryTarget, 0x004940A0, (void* self, void* edx));
+CSF_FUNC(char, __fastcall, CPlayerCharacter_EvaluateFallbackTarget, 0x004941D0, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_EvaluateTargetStageOne, 0x00494250, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_EvaluateTargetStageTwo, 0x00494360, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_EvaluateTargetStageThree, 0x004944E0, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, CPlayerCharacter_FinalizeTargetSelection, 0x004945A0, (void* self, void* edx));
+CSF_FUNC(char, __fastcall, CPlayerCharacter_EvaluateFinalTarget, 0x00494700, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, CPlayerCharacter_EvaluateTargetStageFour, 0x00496590, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_EvaluateTargetStageFive, 0x00496750, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, CPlayerCharacter_EvaluateSpecialTarget, 0x004973E0, (void* self, void* edx));
 
 CSF_FUNC(void, __fastcall, SelectionController_EvaluateStageOne, 0x004A1A20, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, SelectionController_UpdateSelection, 0x004A1BB0, (void* self, void* edx));
@@ -38,8 +38,8 @@ CSF_FUNC(int, __cdecl, Get_008b0678, 0x00525130, ());
 CSF_FUNC(int, __stdcall, MenuMissionInfo_SetGlobalIndex, 0x00525DD0, (int a1));
 CSF_FUNC(int, __cdecl, SelectionData_BuildFromIndex, 0x00698DF0, (int a1, int a2));
 
-static void __fastcall C_00833ee8_RefreshTargetSelection(
-    C_00833ee8* self, void* /*edx*/)
+static void __fastcall CPlayerCharacter_RefreshTargetSelection(
+    CPlayerCharacter* self, void* /*edx*/)
 {
     if (reinterpret_cast<uint32_t>(self) !=
         GetSceneMenuContext(g_pCurrentScene, nullptr))
@@ -62,29 +62,29 @@ static void __fastcall C_00833ee8_RefreshTargetSelection(
 
     if ((self->field_02e0 & 0xFFFFF7FA) == 0)
     {
-        C_00833ee8_EvaluatePrimaryTarget(self, nullptr);
-        C_00833ee8_SelectStoredTarget(self, nullptr);
+        CPlayerCharacter_EvaluatePrimaryTarget(self, nullptr);
+        CPlayerCharacter_SelectStoredTarget(self, nullptr);
         // SelectStoredTarget leaves its receiver unchanged in ECX.
-        C_00833ee8_EvaluateInteractionTarget(self, nullptr);
-        C_00833ee8_EvaluateTargetStageOne(self, nullptr);
-        C_00833ee8_EvaluateTargetStageTwo(self, nullptr);
-        C_00833ee8_EvaluateTargetStageThree(self, nullptr);
-        C_00833ee8_EvaluateTargetStageFour(self, nullptr);
-        C_00833ee8_EvaluateTargetStageFive(self, nullptr);
-        C_00833ee8_EvaluateSpecialTarget(self, nullptr);
-        C_00833ee8_EvaluateFallbackTarget(self, nullptr);
+        CPlayerCharacter_EvaluateInteractionTarget(self, nullptr);
+        CPlayerCharacter_EvaluateTargetStageOne(self, nullptr);
+        CPlayerCharacter_EvaluateTargetStageTwo(self, nullptr);
+        CPlayerCharacter_EvaluateTargetStageThree(self, nullptr);
+        CPlayerCharacter_EvaluateTargetStageFour(self, nullptr);
+        CPlayerCharacter_EvaluateTargetStageFive(self, nullptr);
+        CPlayerCharacter_EvaluateSpecialTarget(self, nullptr);
+        CPlayerCharacter_EvaluateFallbackTarget(self, nullptr);
         SelectionController_EvaluateStageOne(
             reinterpret_cast<void*>(self->field_03e8), nullptr);
         SelectionController_EvaluateStageTwo(
             reinterpret_cast<void*>(self->field_03e8), nullptr);
         SelectionController_EvaluateStageThree(
             reinterpret_cast<void*>(self->field_03e8), nullptr);
-        C_00833ee8_EvaluateFinalTarget(self, nullptr);
-        C_00833ee8_FinalizeTargetSelection(self, nullptr);
+        CPlayerCharacter_EvaluateFinalTarget(self, nullptr);
+        CPlayerCharacter_FinalizeTargetSelection(self, nullptr);
     }
 
     if ((self->field_02e0 & 0x10000) != 0)
-        C_00833ee8_EvaluateSpecialTarget(self, nullptr);
+        CPlayerCharacter_EvaluateSpecialTarget(self, nullptr);
 
     SelectionController_UpdateSelection(
         reinterpret_cast<void*>(self->field_03e8), nullptr);
@@ -131,4 +131,4 @@ static void __fastcall C_00833ee8_RefreshTargetSelection(
     SelectionDisplay_SetSelectionData(display, nullptr, selectionData);
 }
 
-HOOK(0x00498880, C_00833ee8_RefreshTargetSelection, "auto");
+HOOK(0x00498880, CPlayerCharacter_RefreshTargetSelection, "auto");

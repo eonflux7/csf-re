@@ -23,7 +23,7 @@ struct TargetPointRequest
     float z;            // +0x10
 };
 
-static float __fastcall C_00833ee8_UpdateFarAimPoint(C_00833ee8* self, void* /*edx*/)
+static float __fastcall CPlayerCharacter_UpdateFarAimPoint(CPlayerCharacter* self, void* /*edx*/)
 {
     if ((self->field_02e0 & 0x1000) == 0)
         return 0.0f; // original leaves st0 untouched on this path
@@ -70,4 +70,4 @@ static float __fastcall C_00833ee8_UpdateFarAimPoint(C_00833ee8* self, void* /*e
     return ApplyTargetPointRequest(target, nullptr, &request);
 }
 
-HOOK(0x004961A0, C_00833ee8_UpdateFarAimPoint, "auto");
+HOOK(0x004961A0, CPlayerCharacter_UpdateFarAimPoint, "auto");

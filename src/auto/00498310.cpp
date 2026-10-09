@@ -7,7 +7,7 @@
 #include "types/auto_classes.h"
 
 CSF_FUNC(uint32_t, __fastcall, GetSceneMenuContext, 0x0044FC60, (void* self, void* edx));
-CSF_FUNC(void, __fastcall, C_00833ee8_FireRepeatAction, 0x00497FB0, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_FireRepeatAction, 0x00497FB0, (void* self, void* edx));
 CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 
 CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
@@ -20,7 +20,7 @@ CSF_GLOBAL(float, g_ZeroVectorZ, 0x008BB428);
 // Runs only while this object is the current scene's menu context: clears the "pressed" flag,
 // resets the selection state if no valid selection, and fires the repeat action once the
 // accumulated timer reaches the repeat delay (no delay when the global state's flag is set).
-static void __fastcall C_00833ee8_UpdateRepeatTimer(C_00833ee8* self, void* /*edx*/)
+static void __fastcall CPlayerCharacter_UpdateRepeatTimer(CPlayerCharacter* self, void* /*edx*/)
 {
     if (reinterpret_cast<uint32_t>(self) != GetSceneMenuContext(g_pCurrentScene, nullptr))
         return;
@@ -49,8 +49,8 @@ static void __fastcall C_00833ee8_UpdateRepeatTimer(C_00833ee8* self, void* /*ed
     if (!(threshold > self->field_0210))
     {
         self->field_0210 = 0.0f;
-        C_00833ee8_FireRepeatAction(self, nullptr);
+        CPlayerCharacter_FireRepeatAction(self, nullptr);
     }
 }
 
-HOOK(0x00498310, C_00833ee8_UpdateRepeatTimer, "auto");
+HOOK(0x00498310, CPlayerCharacter_UpdateRepeatTimer, "auto");

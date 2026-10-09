@@ -7,7 +7,7 @@
 // Returns the low byte of eax as a 0/1 flag: true when the object is not in the
 // "idle for slot a2" state (or its cached value differs from field_03ec). The
 // upper 24 bits of the result are the original field_01c4 value, left untouched.
-static int __fastcall C_00833ee8_QueryDirtyFlag(C_00833ee8* self, void* /*edx*/, int slotId)
+static int __fastcall CPlayerCharacter_QueryDirtyFlag(CPlayerCharacter* self, void* /*edx*/, int slotId)
 {
     bool stillPending = true;
 
@@ -34,4 +34,4 @@ static int __fastcall C_00833ee8_QueryDirtyFlag(C_00833ee8* self, void* /*edx*/,
     return static_cast<int>(packed);
 }
 
-HOOK_KEEP_ECX(0x4968D0, C_00833ee8_QueryDirtyFlag, 1, "auto");
+HOOK_KEEP_ECX(0x4968D0, CPlayerCharacter_QueryDirtyFlag, 1, "auto");

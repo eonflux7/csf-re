@@ -13,7 +13,7 @@ CSF_FUNC(char, __fastcall, CurrentScene_SetFocusEntry, 0x0044FCE0, (void* self, 
 CSF_FUNC(int, __fastcall, Entry_ActivateInteraction, 0x0048FE90, (void* self, void* edx));
 CSF_FUNC(char, __fastcall, C_GetByte023C, 0x00495490, (char* self, void*));
 
-static C_00833ee8* __stdcall SceneHandle_ResolveAndActivate(int /*unusedA1*/, int /*unusedA2*/, int a3)
+static CPlayerCharacter* __stdcall SceneHandle_ResolveAndActivate(int /*unusedA1*/, int /*unusedA2*/, int a3)
 {
     // a3 points to a record whose first dword is a pointer to a block; the block's +4 is the handle
     // sub-object, and its +12 dword is the signed handle value.
@@ -21,7 +21,7 @@ static C_00833ee8* __stdcall SceneHandle_ResolveAndActivate(int /*unusedA1*/, in
     uint8_t* handleBlock = CSF_AT(uint8_t*, recordPtr, 4);
     int handleValue = CSF_AT(int, handleBlock, 12);
 
-    C_00833ee8* result = reinterpret_cast<C_00833ee8*>(handleBlock + 4);
+    CPlayerCharacter* result = reinterpret_cast<CPlayerCharacter*>(handleBlock + 4);
 
     if (handleValue >= 0)
     {
@@ -29,15 +29,15 @@ static C_00833ee8* __stdcall SceneHandle_ResolveAndActivate(int /*unusedA1*/, in
             g_pCurrentScene,
             nullptr,
             static_cast<int>(reinterpret_cast<uintptr_t>(result)));
-        result = reinterpret_cast<C_00833ee8*>(static_cast<uintptr_t>(resolved));
+        result = reinterpret_cast<CPlayerCharacter*>(static_cast<uintptr_t>(resolved));
 
         if (result)
         {
-            C_00833ee8* entry = result;
+            CPlayerCharacter* entry = result;
 
             if (entry->field_0050)
             {
-                return reinterpret_cast<C_00833ee8*>(
+                return reinterpret_cast<CPlayerCharacter*>(
                     static_cast<uintptr_t>(Entry_ActivateInteraction(entry, nullptr)));
             }
 
@@ -46,11 +46,11 @@ static C_00833ee8* __stdcall SceneHandle_ResolveAndActivate(int /*unusedA1*/, in
                         g_pCurrentScene,
                         nullptr,
                         static_cast<int>(reinterpret_cast<uintptr_t>(entry))),
-                    result = reinterpret_cast<C_00833ee8*>(
+                    result = reinterpret_cast<CPlayerCharacter*>(
                         static_cast<uintptr_t>(GetSceneMenuContext(g_pCurrentScene, nullptr))),
                     result != entry))
             {
-                return reinterpret_cast<C_00833ee8*>(
+                return reinterpret_cast<CPlayerCharacter*>(
                     static_cast<uintptr_t>(Entry_ActivateInteraction(entry, nullptr)));
             }
         }

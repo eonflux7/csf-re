@@ -10,8 +10,8 @@ CSF_FUNC(int, __fastcall, SceneLoader_GetSceneController, 0x00652010, (void* sel
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
 
-static unsigned int __fastcall C_00833ee8_CreateSceneObject(
-    C_00833ee8* self, void* /*edx*/, int configuration)
+static unsigned int __fastcall CPlayerCharacter_CreateSceneObject(
+    CPlayerCharacter* self, void* /*edx*/, int configuration)
 {
     auto* source = reinterpret_cast<std::uint8_t*>(configuration);
 
@@ -113,4 +113,4 @@ static unsigned int __fastcall C_00833ee8_CreateSceneObject(
     return DestroySceneObjectOptionsStorage(options + 0x04, nullptr);
 }
 
-HOOK(0x0049B030, C_00833ee8_CreateSceneObject, "auto");
+HOOK(0x0049B030, CPlayerCharacter_CreateSceneObject, "auto");

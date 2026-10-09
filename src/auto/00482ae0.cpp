@@ -19,7 +19,7 @@ CSF_FUNC(void*, __fastcall, GetCachedObjectProvider, 0x00686C10, (void* self, vo
 CSF_FUNC(uint32_t*, __fastcall, Vector_ConvertDirection, 0x006ABA10, (void* self, void* edx, uint32_t* a2));
 
 static int __fastcall CharActionFsm_PositionCharacterRelativeToOwner(
-    void* self, void* /*edx*/, C_00833ee8* character, float distance)
+    void* self, void* /*edx*/, CPlayerCharacter* character, float distance)
 {
     const int request = reinterpret_cast<int>(
         reinterpret_cast<std::uint8_t*>(CSF_AT(void*, self, 0x8)) + 28);

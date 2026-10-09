@@ -11,7 +11,7 @@ CSF_FUNC(uint32_t, __fastcall, DispatchRecordToGlobalObject, 0x004758B0, (void* 
 CSF_FUNC(int, __stdcall, CharActionFsm_SelectMissionBriefing, 0x00482850, (int slot));
 CSF_FUNC(int, __fastcall, CCharActionFsm_FindSubObjectIndex, 0x00485A20, (CCharActionFsm* self, void* , int targetValue));
 CSF_FUNC(int, __fastcall, CCharActionFsm_GetSlot28ItemIfUsable, 0x00487260, (CCharActionFsm* self, void*));
-CSF_FUNC(void, __fastcall, C_00833ee8_SetSelectedEntry, 0x0049BAF0, (void* self, void* edx, int a2));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_SetSelectedEntry, 0x0049BAF0, (void* self, void* edx, int a2));
 CSF_FUNC(int, __cdecl, GetGlobalValue_8BC1E0, 0x00756A10, ());
 
 namespace {
@@ -37,7 +37,7 @@ struct S_SelectionEvent
 
 } // namespace
 
-static int __fastcall C_00833ee8_ApplyAlternateSelection(C_00833ee8* self, void* /*edx*/, void* target)
+static int __fastcall CPlayerCharacter_ApplyAlternateSelection(CPlayerCharacter* self, void* /*edx*/, void* target)
 {
     CCharActionFsm* fsm = reinterpret_cast<CCharActionFsm*>(self->field_0044);
 
@@ -45,7 +45,7 @@ static int __fastcall C_00833ee8_ApplyAlternateSelection(C_00833ee8* self, void*
     if (result == -1)
         return result;
 
-    C_00833ee8_SetSelectedEntry(self, nullptr, CSF_AT(int, CSF_AT(void*, target, 0x2C), 0));
+    CPlayerCharacter_SetSelectedEntry(self, nullptr, CSF_AT(int, CSF_AT(void*, target, 0x2C), 0));
 
     if (CCharActionFsm_GetSlot28ItemIfUsable(fsm, nullptr))
     {
@@ -80,4 +80,4 @@ static int __fastcall C_00833ee8_ApplyAlternateSelection(C_00833ee8* self, void*
     return (int)DispatchRecordToGlobalObject(dispatcher, nullptr, &event, 0);
 }
 
-HOOK(0x0049BF50, C_00833ee8_ApplyAlternateSelection, "auto");
+HOOK(0x0049BF50, CPlayerCharacter_ApplyAlternateSelection, "auto");

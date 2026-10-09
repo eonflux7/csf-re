@@ -20,7 +20,7 @@ CSF_GLOBAL(float, g_ScaleXZ_0_45, 0x00833E00);        // 0.45f
 
 // Advances the slide/interpolation of the control while it is the active scene menu context,
 // unless a shrunken-volume probe at the interpolated height hits something.
-static void __fastcall C_00833ee8_UpdateSlideProgress(C_00833ee8* self, void* /*edx*/, float deltaTime)
+static void __fastcall CPlayerCharacter_UpdateSlideProgress(CPlayerCharacter* self, void* /*edx*/, float deltaTime)
 {
     if (reinterpret_cast<uint32_t>(self) != GetSceneMenuContext(g_pCurrentScene, nullptr))
         return;
@@ -73,4 +73,4 @@ static void __fastcall C_00833ee8_UpdateSlideProgress(C_00833ee8* self, void* /*
     }
 }
 
-HOOK(0x00496290, C_00833ee8_UpdateSlideProgress, "auto");
+HOOK(0x00496290, CPlayerCharacter_UpdateSlideProgress, "auto");

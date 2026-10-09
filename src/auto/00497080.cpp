@@ -35,7 +35,7 @@ struct ToggleSoundRequest
 };
 }
 
-static int __fastcall C_00833ee8_SetToggleStateWithSound(C_00833ee8* self, void* /*edx*/, int newState)
+static int __fastcall CPlayerCharacter_SetToggleStateWithSound(CPlayerCharacter* self, void* /*edx*/, int newState)
 {
     int result = newState;
 
@@ -84,4 +84,4 @@ static int __fastcall C_00833ee8_SetToggleStateWithSound(C_00833ee8* self, void*
     return result;
 }
 
-HOOK(0x00497080, C_00833ee8_SetToggleStateWithSound, "auto");
+HOOK(0x00497080, CPlayerCharacter_SetToggleStateWithSound, "auto");
