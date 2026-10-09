@@ -7,7 +7,7 @@
 // Original callees, bound by address.
 CSF_FUNC(int, __fastcall, CHandleTable_Resolve, 0x0044FC30, (void* self, void* edx, int handle));
 CSF_FUNC(int, __fastcall, IsField1BCNonNegative, 0x00492B10, (void* self, void*));
-CSF_FUNC(char*, __fastcall, C_00492b20_GetPtr0x1B4, 0x00492B20, (void* self, void*));
+CSF_FUNC(char*, __fastcall, S_00492b20_GetPtr0x1B4, 0x00492B20, (void* self, void*));
 CSF_FUNC(int, __cdecl, IsStateCodeAllowed, 0x00755810, (unsigned int a1));
 
 CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
@@ -48,7 +48,7 @@ static int __stdcall DispatchHandleRequestFromRef([[maybe_unused]] int a1, [[may
     if (stateCodeAllowed &&
         (static_cast<uint8_t>(IsField1BCNonNegative(resolvedObject, nullptr)) != 0))
     {
-        char* const accessor1B4 = C_00492b20_GetPtr0x1B4(resolvedObject, nullptr);
+        char* const accessor1B4 = S_00492b20_GetPtr0x1B4(resolvedObject, nullptr);
         const int accessorHandle = CHandleTable_Resolve(
             g_pCurrentScene, nullptr, static_cast<int>(reinterpret_cast<uintptr_t>(accessor1B4)));
         if (accessorHandle != 0)
