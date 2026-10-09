@@ -66,13 +66,13 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 
 ## Current focus (priority order)
 
-1. **Backlog crush (user, 2026-10-09)** before more waves, in this order: (a) trustworthy numbers: diff-table
-   returns, mismatch noise, inconclusive counts [done 2026-10-09]; (b) the 41 gate-exhausted queue items: check the
-   semcheck "references must match" rule (27: field offsets / constants it calls unused) and the mechanical file rules
-   (14), fix the rule or normalize(), re-run the grunts; (c) spurious register args sweep (90 done functions + the edi
-   cluster 0x42F4F0 0x42F820 0x431780 0x431840 0x4337E0); (d) the 30 in-game queue items (15 baseline breaks, 15
-   smoke failures) in smoke-pool batches + 3 Opus review rejections + 2 vslot + 1 link; (e) the two gate gaps
-   (stack buffer size, forwarder args).
+1. **Backlog crush (user, 2026-10-09)** — done on branch crush-backlog: queue 81 -> 15, mismatched 5 -> 0, pending 0,
+   spurious register args settled, four semcheck false positives fixed (controls unchanged). Left:
+   - queue/ 15: 13 HUD/menu in-game failures (0x42FF80 0x431F80 0x435F80 0x462580 confirmed still breaking FR01 on
+     the fixed baseline; 9 more re-quarantined untested) need per-function crash work; 0x465310 / 0x52F8A0 take real
+     register inputs (need a usercall entry-thunk hook kind).
+   - `verifier.py --full` stops on a flaky `loadsave 1.sav` crash of the verified baseline (eip on the stack,
+     unattributable twice); the next one leaves work/baseline_fail_*.log to diagnose it.
 2. **Waves by centrality** with the new loop: `wave --waves -1` runs them in rank order with the stop rule and a
    full baseline regression smoke between waves (`wave --next`: m45AAF0 = script_commands, game_data_defs, hud, scene_loader,
    char_action_fsm, ...).

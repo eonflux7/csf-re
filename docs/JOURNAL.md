@@ -853,3 +853,8 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   pass as written). Chains of base adjustments fold (`lea eax, [esi + 0x14C]` + `add eax, 0x1C` twice: 0x725390).
   0x535900 rewritten from the disassembly (the Codex answer's control flow diverged). Controls identical to master's
   gate on the same sample. queue/ is down to the 2 real-usercall functions.
+- Verifier on the result: the 13 in-game items restored without a fix were wrong to restore (group bisect: more than 4
+  culprits, 0x42FF80 0x431F80 0x435F80 0x462580 named); re-quarantined. Everything else verified in game (pending 0).
+  `--full` is blocked by a flaky `loadsave 1.sav` crash of the verified baseline itself (eip=0x19EBAE, on the stack;
+  a return address near it points into 0x4360A0; 18 bisect smokes all passed): the verifier now keeps that smoke's
+  output (work/baseline_fail_*.log) for the next occurrence.
