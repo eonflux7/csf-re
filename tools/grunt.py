@@ -66,6 +66,16 @@ File rules:
   that is not a declared field (inside a pad_ array, or no class given) use CSF_AT(type, ptr, 0xOFF).
   CSF_AT(T, p, off) IS the T stored at p+off (an lvalue): `x = CSF_AT(int, p, 0x10)`, never `*CSF_AT(int*, ...)`.
   Pointer-sized fields declared uint32_t: cast as needed, e.g. reinterpret_cast<C_xxx*>(self->field_0010).
+- Mistakes that crashed the game or failed review (check yours against each):
+  * `mov eax, [obj]; call [eax+N]`: obj's first dword is the VTABLE pointer, the function is vtable[N / 4]. With
+    `void** obj`, `obj[0](...)` calls the vtable itself (crash: EIP inside .rdata); write CSF_AT(void**, obj, 0)[N / 4].
+    Never pass the byte offset N as an index, and never wrap virtual calls in a helper taking the slot at runtime.
+  * `call A; mov ecx, eax; call B`: A's result is B's `this`. Pass it; don't call A for nothing and give B nullptr.
+  * `push X` before a call to a no-argument getter / a forwarder: X belongs to the NEXT call that pops it (the ret N
+    in the packet decides who takes what), never to the getter.
+  * A field holding a value is CSF_AT(int, p, off); `*CSF_AT(int*, p, off)` dereferences the value as a pointer.
+  * A callee whose result the original tests with `test al, al` returns bool/char: bind it returning bool.
+  * __ftol2 / fistp are SIGNED conversions (float -> int / int64): never go through an unsigned type.
 - Fidelity is behavioral, not bit-for-bit code generation. Floating point: write the natural expression the
   source had (`(float)x / (float)g_ScreenWidth`, a plain float compare); never emulate x87 80-bit intermediates,
   rounding steps, or float bit patterns - last-bit differences are accepted by the in-game diff. Don't reproduce

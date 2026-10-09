@@ -105,7 +105,9 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
   loads went. New output: `volatile` is rejected by the gate and named in the prompt's fidelity rule
 - [ ] 57 older src/auto files still use `volatile` (dead loads, uninitialized args passed on, forced global loads):
   rewrite at their next touch (gate now rejects them on re-grunt)
-- [ ] Feed recurring review issue kinds into the grunt prompt (`review.py report`) once samples exist per module
+- [x] Review / in-game lessons in the grunt prompt (2026-10-09): a curated "mistakes that crashed or failed review"
+  block (vptr vs vtbl[N/4], getter result as `this`, early pushes belong to the next call, CSF_AT value vs pointer,
+  `test al, al` callees, signed __ftol2) instead of review.py's keyword buckets; extend it as reviews add kinds
 - [ ] Re-test Sonnet for bulk function renames (captain functions) after waves name the callers
 - [ ] Opus pass over the 44 held-back RW names (`rwname.py report`): neighbour pairs given the same name
       (Set/Get, Width/Height, Int32/Int16) and low-confidence toolkit internals (RpTeam, Rt2d, RtWorldImport)
