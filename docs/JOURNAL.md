@@ -902,3 +902,14 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
      A scan of all `->m_x ... // +0xNN` comments against the header's offsetof finds no other.
   4. rename_classes' "single class type" test ignored plain classes (S_<ea>): `buttonArray->field_000c` (an
      S_0041e5f0) became CGuiControl's m_pRenderer.
+- 2026-10-10, end of run: waves m4FDC70, m47F930, m44FC80, m467AD0, m521C10, m496080, m4E8C60, m783430, m7685A0:
+  ~1100 functions produced, per wave quarantine <= 2.6%, review rejects 3/56, 0 pending; game 21.9% by bytes.
+  - Rename pass case 5: a wrapper's target implemented since the last header takes its real prototype
+    (CSoundInstance +0x28: (int, uint32_t*) -> (int, float)); a caller's nullptr no longer compiles -> fixbuild
+    writes 0.0f/0 (same bits). int<->float flips with non-literal args would compile silently: backlog guard.
+  - Class 0x833EE8 = CPlayerCharacter (user): captain held CCommando / CPlayerCharacter at 0.6 before and after
+    the wave; a class retry at wave end is not worth it (same confidence, $0.15).
+  - One regression smoke crashed in RW (0x7FED10 null+0x68, callers original 0x70A6A0/0x6DFE00), passed 3 re-runs:
+    flake, first sighting. A failed regression check stops `--waves`; restarted by hand.
+  - Codex stand-in for S/M (when reserved/paused) is Sonnet medium now (user). Quota ran out at wave 10
+    (gfx_matrix: 60 deferred); the loop would have swept every module deferring everything: stopped by hand.

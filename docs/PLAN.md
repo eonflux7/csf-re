@@ -71,11 +71,13 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
    mismatched 0, pending 0, the flaky `loadsave 1.sav` baseline crash fixed (0x42DA20). Follow-ups in the backlog:
    virtual-call argument counts (gate gap), the 8 "ecx-out" functions, 83 CSF_GLOBAL vtable bindings (cutover).
 2. **Waves by centrality** with the new loop: `wave --waves -1` runs them in rank order with the stop rule and a
-   full baseline regression smoke between waves (`wave --next`: m45AAF0 = script_commands, game_data_defs, hud, scene_loader,
-   char_action_fsm, ...).
+   full baseline regression smoke between waves. 2026-10-10: 9 waves done (scene_loader ... input_bindings, game code
+   12% -> 22% by bytes, no stop rule hit); paused at gfx_matrix (all 60 deferred: grunts' Claude 95%, both Codex
+   logins >= 90%). Resume with `wave --waves -1` once the 5h windows reset (`wave --next`: gfx_matrix,
+   mp_spawn_points, bdd_character_defs, game_config, ...).
 3. **Diff tier 3 v3**: indirect/virtual calls (862 functions blocked on them). v2 is merged; `T3 ... inconclusive`
    runs never count as compared and are now counted in csf_diff_summary.txt and the ledger (`inconclusive`).
-4. **Manual playtest at ~25% of game code** (user): the monitor shows live coverage (Progress `game` line, Areas
+4. **Manual playtest at ~25% of game code** (user; at 22% on 2026-10-10, ~2 waves away): the monitor shows live coverage (Progress `game` line, Areas
    tab table: hit / never run before); afterwards `verify.py ingest` records the hits.
 5. **Types for the next waves**: field names of CMenuScreen, TCharTask, TAiState, CCharWeaponFsm; the engine family
    0x860178 and the 0x82E598 task subfamily (captain family at wave prep covers unnamed classes).
