@@ -100,6 +100,10 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 - [x] Fidelity redo of 0x72DE90, 0x729F60, 0x7292C0, 0x538A50 (2026-10-09): their double arithmetic stays (it stands
   in for x87's wider intermediate where an int is truncated from it: natural, not emulation); the volatile dead
   loads went. New output: `volatile` is rejected by the gate and named in the prompt's fidelity rule
+- [ ] Tail-forwarding thunks (sets state, then `jmp [obj->vtbl+N]` with the caller's stack args untouched, count
+  unknown): C++ can't forward them, grunts hand-write naked asm and name a C++ function in it (link error). 4/160
+  escalated in audio_sound_manager (0x521D60, 0x523760, 0x527510, 0x521E80). Give hook.h a helper (like
+  HOOK_KEEP_ECX) + packet NOTE, then re-grunt them
 - [ ] 57 older src/auto files still use `volatile` (dead loads, uninitialized args passed on, forced global loads):
   rewrite at their next touch (gate now rejects them on re-grunt)
 - [x] Review / in-game lessons in the grunt prompt (2026-10-09): a curated "mistakes that crashed or failed review"
