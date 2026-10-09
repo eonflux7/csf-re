@@ -127,10 +127,50 @@ def coverage(modules=None):
     return out
 
 
+HDR = os.path.join("src", "types", "auto_classes.h")
+VSLOT = r"\b(v\w+)\(.*?vtbl\[(0x[0-9a-f]+) / 4\]"
+
+
+def fix_vcalls(errs):
+    """obj->vOld(...) where the regenerated header renamed the wrapper of that slot: rename on exactly that line."""
+    import subprocess
+    old = subprocess.run(["git", "-C", ROOT, "show", f"HEAD:{HDR}"], capture_output=True, text=True).stdout
+    old_slot = {}  # wrapper name -> {slots}
+    for m in re.finditer(VSLOT, old):
+        old_slot.setdefault(m.group(1), set()).add(int(m.group(2), 16))
+    structs, base = {}, {}  # class -> {slot: wrapper}, class -> base
+    cur = None
+    for line in open(os.path.join(ROOT, HDR)):
+        m = re.match(r"struct (\w+)(?: : (\w+))? \{", line)
+        if m:
+            cur, base[m.group(1)] = m.group(1), m.group(2)
+            structs.setdefault(cur, {})
+        elif cur and (m := re.search(VSLOT, line)):
+            structs[cur].setdefault(int(m.group(2), 16), m.group(1))
+    fixed = 0
+    for path, line, vold, cls in set(errs):
+        slots = old_slot.get(vold) or set()
+        new = None
+        c = cls
+        while c and not new:
+            new = next((structs.get(c, {})[s] for s in slots if s in structs.get(c, {})), None)
+            c = base.get(c)
+        if not new or new == vold:
+            continue
+        lines = open(path).read().split("\n")
+        lines[int(line) - 1] = re.sub(rf"\b{vold}\b", new, lines[int(line) - 1])
+        open(path, "w").write("\n".join(lines))
+        fixed += 1
+    return fixed
+
+
 def fixbuild():
     """After a rename pass: files that still say obj->field_XXXX for a field that now has a name (rename_classes
     only rewrites files with a single class type). Takes the compiler's own diagnosis (no member named 'field_XXXX'
-    in 'Class') and substitutes Class's name for that offset on exactly that line. Repeats until the build is clean."""
+    in 'Class') and substitutes Class's name for that offset on exactly that line. Repeats until the build is clean.
+    Also virtual-call wrappers renamed by the regenerated header (vSetPosition_54 -> vScalePositionAndSize once the
+    slot's target got its name): the old wrapper's slot from the committed header, the new name for that slot on
+    Class or its bases."""
     import subprocess
     from gen_classes_h import load_names, C
     names = load_names()
@@ -140,7 +180,11 @@ def fixbuild():
         r = subprocess.run(["ninja", "-C", os.path.join(ROOT, "build"), "-k", "0"], capture_output=True, text=True)
         errs = re.findall(r"^(\S+?\.cpp)\((\d+),\d+\): error: no member named '(field_([0-9a-f]{4}))' in '(\w+)'",
                           r.stdout + r.stderr, re.M)
-        if not errs:
+        verrs = re.findall(r"^(\S+?\.cpp)\((\d+),\d+\): error: no member named '(v\w+)' in '(\w+)'",
+                           r.stdout + r.stderr, re.M)
+        n = fix_vcalls(verrs) if verrs else 0
+        fixed += n
+        if not errs and not n:
             break
         for path, line, fld, off, cls in set(errs):
             vt, o, name = by_cls.get(cls), int(off, 16), None
@@ -155,7 +199,7 @@ def fixbuild():
             lines[int(line) - 1] = re.sub(rf"\b{fld}\b", name, lines[int(line) - 1])
             open(path, "w").write("\n".join(lines))
             fixed += 1
-    print(f"{fixed} field references fixed after the rename pass")
+    print(f"{fixed} field/virtual-call references fixed after the rename pass")
     return fixed
 
 
