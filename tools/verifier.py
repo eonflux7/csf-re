@@ -31,7 +31,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TREE = os.path.join(ROOT, "work", "verify-tree")
 os.environ["CSF_TREE"] = TREE  # verify.py (and smoke.sh's ingest) hash the tree's build, not ROOT's
 sys.path.insert(0, os.path.dirname(__file__))
-import grunt, verify, repo  # noqa: E402
+import grunt, pool, verify, repo  # noqa: E402
 
 PLAY = grunt.PLAY
 INI = os.path.join(PLAY, "csf_hook.ini")
@@ -88,7 +88,19 @@ def deploy(group):
         shutil.copy(os.path.join(TREE, "hook", "csf_hook.ini"), INI)
     open(GROUP_FILE, "w").write("\n".join(group) + "\n")
     _ini_drop(QUARANTINE_TAG)  # this DLL is built from HEAD, where they are gone
-    return verify.write_pending_ini(INI, group)
+    r = verify.write_pending_ini(INI, group)
+    if pool.size() > 1:
+        pool.sync()
+    return r
+
+
+def first_round(starts):
+    """All starts at once on the smoke pool (FR01, menu tour, savegame side by side): [(ok, out)], or Nones when
+    the pool has one copy. The play copy's ini (quarantine/pending lines) is mirrored first."""
+    if pool.size() < 2 or len(starts) < 2:
+        return [None] * len(starts)
+    pool.sync()
+    return pool.run([(secs, env, lambda play: grunt.set_disabled([], play)) for secs, env in starts])
 
 
 QUARANTINE_TAG = "# quarantined"
@@ -145,10 +157,11 @@ def quarantine(eas, why, out):
                            fieldnames=list(allrows[0].keys()), lineterminator="\n")
         w.writeheader()
         w.writerows(allrows)
-    led = verify.load()
-    for ea in eas:
-        led.pop(ea, None)
-    verify.save(led)
+    with verify.ledger_lock():
+        led = verify.load()
+        for ea in eas:
+            led.pop(ea, None)
+        verify.save(led)
 
 
 def record(**kw):
@@ -165,11 +178,14 @@ def baseline(starts):
     pend = {int(e, 16) for e in verify.pending()}
     verified = [e for e in verified if e not in pend]
     bad = []
-    for secs, env in starts:
+    for (secs, env), first in zip(starts, first_round(starts)):
         for attempt in range(8):
             grunt._last_smoke = (secs, env)
             grunt.set_disabled([])
-            ok, out = grunt.smoke(deploy=False)
+            if attempt == 0 and first is not None and (first[0] or not bad):
+                ok, out = first  # a failure of the parallel round only stands while nothing was quarantined since
+            else:
+                ok, out = grunt.smoke(deploy=False)
             if ok:
                 break
             culprits, why = grunt.bisect([e for e in verified if f"{e:08x}" not in bad], max_culprits=8,
@@ -191,11 +207,14 @@ def baseline(starts):
 def verify_group(group, starts):
     """Returns (verified, quarantined, note)."""
     on, bad, note = list(group), [], ""
-    for secs, env in starts:
+    for (secs, env), first in zip(starts, first_round(starts)):
         for attempt in range(6):  # each failing run removes >= 1 culprit
             grunt._last_smoke = (secs, env)
             grunt.set_disabled([])
-            ok, out = grunt.smoke(deploy=False)
+            if attempt == 0 and first is not None and (first[0] or not bad):
+                ok, out = first
+            else:
+                ok, out = grunt.smoke(deploy=False)
             if ok:
                 mism = [ea for ea in on if re.search(rf"^MISMATCH {ea.upper()}\b", out, re.M)]
                 if mism:  # the ledger already took this run; the quarantine drops their entries
