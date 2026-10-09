@@ -108,7 +108,7 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 - [ ] Re-test Sonnet for bulk function renames (captain functions) after waves name the callers
 - [ ] Opus pass over the 44 held-back RW names (`rwname.py report`): neighbour pairs given the same name
       (Set/Get, Width/Height, Int32/Int16) and low-confidence toolkit internals (RpTeam, Rt2d, RtWorldImport)
-- [ ] Name the remaining ~80 unnamed modules just before their wave (`modules.py show`, captain modules)
+- [x] Name the remaining ~80 unnamed modules just before their wave: automatic in wave prep since 2026-10-09 (captain family, then `captain modules` on the wave's unnamed modules, then grunts; below 0.7 confidence they stay unnamed)
 - [ ] Locate Xbox XBE code, diff vs PC for structure confirmation (optional)
 
 - [x] Gate: the original's constants and call order checked against Hex-Rays (semcheck.behaviour; 2/2358 false

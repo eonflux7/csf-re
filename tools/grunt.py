@@ -1485,6 +1485,7 @@ def captain_prep(module_arg):
     print(f"wave prep: captain family {module_arg}", flush=True)
     captain("family", *names)
     print("wave prep: " + tool("fields.py", "apply"), flush=True)
+    name_modules(module_arg)
     if [open(f).read() if os.path.exists(f) else "" for f in watched] == before:
         return
     tool("rename_classes.py")
@@ -1498,6 +1499,21 @@ def captain_prep(module_arg):
                 "field consensus)")
     print("wave prep: field coverage now " + tool("fields.py", "coverage", "--module", module_arg).splitlines()[-1],
           flush=True)
+
+
+def name_modules(module_arg):
+    """Wave prep, after captain family: name the wave's unnamed modules (captain modules), now that their classes
+    have names to cite. Below --min-conf the module stays unnamed (work/captain/held_modules.jsonl)."""
+    import modules
+    ids = module_ids(module_arg)
+    todo = sorted(m["id"] for m in modules.read_yaml() if m["id"] in ids and not m.get("name"))
+    if not todo:
+        return
+    live(mode="lanes", phase="captain: naming modules")
+    print(f"wave prep: captain modules {','.join(todo)}", flush=True)
+    captain("modules", "--only", ",".join(todo))
+    import repo
+    repo.commit(["db/modules.yaml"], "Module names (wave prep: captain modules)")
 
 
 def ida_refresh(module_arg):
@@ -1535,7 +1551,7 @@ STOP_EXIT = 3  # wave's exit code when the stop rule fires
 
 def wave(args):
     """The RE loop for one module in one command:
-      1. types first (lanes' captain_prep): captain names the module's classes, field-name consensus, rename pass
+      1. types first (lanes' captain_prep): captain names the module's classes, then the module, field-name consensus, rename pass
       2. produce: lanes over the module (gate + link + commit as pending; --canary verifier groups meanwhile)
       3. verify: tools/verifier.py --module (baseline, then the module's pending functions, in game)
       4. review: tools/review.py sample --module (Opus reads a 5% sample against the original)
