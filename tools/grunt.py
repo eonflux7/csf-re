@@ -1679,8 +1679,9 @@ def lane_args(l):
                    help="backend:model[@effort]:attempts,...")
     l.add_argument("--m-ladder", default="claude:claude-haiku-5-5@high:2,codex:gpt-6.1-sol@high:2")
     l.add_argument("--l-ladder", default="codex:gpt-6.1-sol@high:2")
-    # 2026-10-09: functions over 600 B (646, ~700 KB) were outside every wave; Opus writes them, Codex xhigh backs up
-    l.add_argument("--x-ladder", default="claude:claude-opus-5-5@high:2,codex:gpt-6.1-sol@xhigh:1")
+    # 2026-10-09: functions over 600 B (646, ~700 KB) were outside every wave. Opus first took the grunts' 5h window
+    # from 21% to 78% in one wave of data loaders: Codex high writes them, Opus only as the escalation rung
+    l.add_argument("--x-ladder", default="codex:gpt-6.1-sol@high:2,claude:claude-opus-5-5@high:1")
     l.add_argument("--review-effort", default="medium", help="Codex review effort")
     l.add_argument("--s-jobs", type=int, default=12, help="S tier: functions in flight")
     l.add_argument("--m-jobs", type=int, default=6)

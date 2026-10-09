@@ -676,3 +676,6 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - script_commands result: 348 done, 0 pending; quarantined 0045bba0 00461a80 00462580 00465310 00463fa0; Opus
   review 3/37 rejected (8%: a missed __ftol2 truncation, a wrong `this` to a callee, an int return tested as a
   byte). The stop rule fired on the redo wave (2/2 quarantined, nothing verified yet in that wave): correct call.
+- **X tier ladder flipped**: Opus-first took the grunts' 5h window from ~21% to 78% (then HTTP 429) on the
+  game_data_defs wave, nearly all X-tier data loaders. Now Codex high x2, Opus high x1 only as escalation. The 3-wave
+  loop was stopped after that wave (its Opus review step skipped too: review.py runs on the same account).
