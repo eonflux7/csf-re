@@ -2,12 +2,12 @@
 - {addr: 0x0082D05C, name: g_pfnSleep, type: SleepFn, uses: 1, src: auto}
 - {addr: 0x0082D094, name: g_pfnGetFileSize, type: GetFileSizeFn, uses: 1, src: auto}
 - {addr: 0x0082D23C, name: g_ReleaseMutex, type: ReleaseMutexFunction, uses: 1, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 17, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 19, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 4, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 13, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 15, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 3, src: auto}
-- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 44, src: auto}
+- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 49, src: auto}
 - {addr: 0x0082D75C, name: g_HudNegativePi, type: float, uses: 2, src: auto, alt: [g_NegativeHalfTurnRadians]}
 - {addr: 0x0082D7C0, name: g_MessageBoxAnimationScale, type: float, uses: 2, src: auto, alt: [g_flt_0082D7C0]}
 - {addr: 0x0082DC70, name: g_SubtitlePanelScale, type: float, uses: 1, src: auto}
@@ -16,26 +16,28 @@
 - {addr: 0x0082DDEC, name: g_Const200_0f, type: float, uses: 1, src: auto}
 - {addr: 0x0082DFCC, name: g_MessageBoxCollapsedScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082E030, name: g_fReturnedConstant_0082E030, type: float, uses: 1, src: auto}
-- {addr: 0x0082E03C, name: g_ProgressScale, type: float, uses: 1, src: auto}
+- {addr: 0x0082E03C, name: g_ProgressScale, type: float, uses: 3, src: auto}
 - {addr: 0x0082E048, name: g_LevelScaleFactor, type: float, uses: 1, src: auto}
+- {addr: 0x0082E04C, name: g_fHudFadeStep, type: float, uses: 1, src: auto}
 - {addr: 0x0082E05C, name: g_FloatConstant_82e05c, type: float, uses: 1, src: auto}
 - {addr: 0x0082E068, name: g_Const_0082E068, type: float, uses: 1, src: auto}
 - {addr: 0x0082E0F0, name: g_Const20, type: float, uses: 4, src: auto, alt: [g_LayoutInset, g_WidthReduction]}
 - {addr: 0x0082E118, name: g_fIntroVideoDuration, type: float, uses: 2, src: auto}
 - {addr: 0x0082E1E4, name: g_fRotationWrapStep, type: float, uses: 1, src: auto}
 - {addr: 0x0082E25C, name: g_flt_0082E25C, type: float, uses: 2, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 22, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 24, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator]}
 - {addr: 0x0082E958, name: g_TParadoString, type: char, uses: 1, src: auto}
 - {addr: 0x0082F318, name: g_TEndString, type: const char, uses: 1, src: auto}
 - {addr: 0x0082FACC, name: g_HudNegativeHalfPi, type: float, uses: 1, src: auto}
 - {addr: 0x0082FAD0, name: g_TransitionHalfPi, type: float, uses: 2, src: auto}
-- {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 7, src: auto}
+- {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 8, src: auto}
 - {addr: 0x0082FEBC, name: g_LayoutInset, type: float, uses: 5, src: auto, alt: [g_VerticalInset]}
 - {addr: 0x0083042C, name: g_VtblCMenuScreenBase, type: uint8_t, uses: 9, src: auto}
 - {addr: 0x00830438, name: off_830438, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00830488, name: g_VtblCMenuScreenIntermediate, type: uint8_t, uses: 3, src: auto, alt: [g_VtblCMenuScreenSecondaryA, off_830488]}
 - {addr: 0x00830668, name: g_HalfTurnRadians, type: float, uses: 2, src: auto, alt: [g_HudPi]}
 - {addr: 0x0083066C, name: g_FullTurnRadians, type: float, uses: 2, src: auto, alt: [g_HudTwoPi]}
+- {addr: 0x00830670, name: g_DegreesToRadians, type: float, uses: 2, src: auto, alt: [g_HudDegreesToRadians]}
 - {addr: 0x00830674, name: g_fEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x00830A00, name: g_fInv255, type: float, uses: 2, src: opus}
 - {addr: 0x00831090, name: g_FloatMax, type: float, uses: 2, src: auto}

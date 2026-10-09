@@ -1,0 +1,176 @@
+#include <cstdint>
+#include "globals.h"
+#include "hook.h"
+#include "types/auto_classes.h"
+
+CSF_FUNC(uint64_t, __cdecl, Hud_ScaleCoordinates, 0x0042F3B0, (int* a1));
+CSF_FUNC(std::uint32_t, __fastcall, GetComponent, 0x00692BD0, (unsigned char* node, void* edx, unsigned int index));
+CSF_FUNC(double, __fastcall, ReadComponentFloat, 0x00692CC0, (std::uint32_t component));
+CSF_FUNC(std::uint8_t*, __fastcall, FindProperty, 0x006932B0, (std::uint8_t* self, void* edx, char* keyword));
+CSF_FUNC(char, __fastcall, MenuExtras_ReadText, 0x006939C0, (std::uint8_t* self, void* edx, char* keyword, char* buffer, int capacity));
+CSF_FUNC(void, __fastcall, Hud_ReadFloatPair, 0x00693A20, (void* self, void* edx, char* String1, int a3));
+CSF_FUNC(void, __fastcall, Hud_ReadColor, 0x00693A90, (void* self, void* edx, char* String1, int a3));
+CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
+CSF_FUNC(void*, __fastcall, MenuControls_ResolveObject, 0x006B1390, (void* self, void* edx));
+
+CSF_GLOBAL(const char*, g_pszKey_ICONO, 0x00899610);
+CSF_GLOBAL(const char*, g_pszKey_RELLENO, 0x00899614);
+
+static void __fastcall Hud_LoadIconAndFillWidgets(
+    void* self, void* /*edx*/, std::uint8_t* properties)
+{
+    if (!properties)
+        return;
+
+    char textureName[40];
+    auto* iconProperty = FindProperty(
+        properties, nullptr, const_cast<char*>(g_pszKey_ICONO));
+    if (iconProperty)
+    {
+        textureName[0] = 0;
+        MenuExtras_ReadText(iconProperty, nullptr,
+            const_cast<char*>(CSF_STR(0x00830980, ".TEXTURA")), textureName, 40);
+
+        void* controls = MenuControls_ResolveObject(
+            reinterpret_cast<void*>(GetGlobalInt()), nullptr);
+        void* icon = ((void* (__fastcall*)(void*, void*, char*))
+            CSF_AT(void**, controls, 0)[14])(controls, nullptr, textureName);
+        CSF_AT(void*, self, 0x29C) = icon;
+
+        if (icon)
+        {
+            ((void (__fastcall*)(void*, void*, int))
+                CSF_AT(void**, icon, 0)[17])(icon, nullptr, 4);
+
+            float position[2] = {0.0f, 0.0f};
+            Hud_ReadFloatPair(iconProperty, nullptr,
+                const_cast<char*>(CSF_STR(0x00830870, ".POS")),
+                reinterpret_cast<int>(position));
+            int scaledPosition[2] = {
+                static_cast<int>(static_cast<std::int64_t>(position[0])),
+                static_cast<int>(static_cast<std::int64_t>(position[1]))
+            };
+            Hud_ScaleCoordinates(scaledPosition);
+            icon = CSF_AT(void*, self, 0x29C);
+            ((void (__fastcall*)(void*, void*, int*))
+                CSF_AT(void**, icon, 0)[10])(icon, nullptr, scaledPosition);
+
+            float size[2] = {0.0f, 0.0f};
+            Hud_ReadFloatPair(iconProperty, nullptr,
+                const_cast<char*>(CSF_STR(0x00830868, ".SIZE")),
+                reinterpret_cast<int>(size));
+            int scaledSize[2] = {
+                static_cast<int>(static_cast<std::int64_t>(size[0])),
+                static_cast<int>(static_cast<std::int64_t>(size[1]))
+            };
+            Hud_ScaleCoordinates(scaledSize);
+            icon = CSF_AT(void*, self, 0x29C);
+            ((void (__fastcall*)(void*, void*, int*))
+                CSF_AT(void**, icon, 0)[14])(icon, nullptr, scaledSize);
+
+            auto* coordinatesProperty = FindProperty(iconProperty, nullptr,
+                const_cast<char*>(CSF_STR(0x00830970, ".COORDS_TEXTURA")));
+            if (coordinatesProperty)
+            {
+                float coordinates[4];
+                coordinates[3] = static_cast<float>(ReadComponentFloat(
+                    GetComponent(coordinatesProperty, nullptr, 3u)));
+                coordinates[2] = static_cast<float>(ReadComponentFloat(
+                    GetComponent(coordinatesProperty, nullptr, 2u)));
+                coordinates[1] = static_cast<float>(ReadComponentFloat(
+                    GetComponent(coordinatesProperty, nullptr, 1u)));
+                coordinates[0] = static_cast<float>(ReadComponentFloat(
+                    GetComponent(coordinatesProperty, nullptr, 0)));
+                icon = CSF_AT(void*, self, 0x29C);
+                ((void (__fastcall*)(void*, void*, float*))
+                    CSF_AT(void**, icon, 0)[19])(icon, nullptr, coordinates);
+            }
+        }
+    }
+
+    auto* fillProperty = FindProperty(
+        properties, nullptr, const_cast<char*>(g_pszKey_RELLENO));
+    if (fillProperty)
+    {
+        textureName[0] = 0;
+        MenuExtras_ReadText(fillProperty, nullptr,
+            const_cast<char*>(CSF_STR(0x00830980, ".TEXTURA")), textureName, 40);
+
+        void* controls = MenuControls_ResolveObject(
+            reinterpret_cast<void*>(GetGlobalInt()), nullptr);
+        void* fill = ((void* (__fastcall*)(void*, void*, char*))
+            CSF_AT(void**, controls, 0)[24])(controls, nullptr, textureName);
+        CSF_AT(void*, self, 0x298) = fill;
+
+        if (fill)
+        {
+            float position[2] = {0.0f, 0.0f};
+            Hud_ReadFloatPair(fillProperty, nullptr,
+                const_cast<char*>(CSF_STR(0x00830870, ".POS")),
+                reinterpret_cast<int>(position));
+            int scaledPosition[2] = {
+                static_cast<int>(static_cast<std::int64_t>(position[0])),
+                static_cast<int>(static_cast<std::int64_t>(position[1]))
+            };
+            Hud_ScaleCoordinates(scaledPosition);
+            fill = CSF_AT(void*, self, 0x298);
+            ((void (__fastcall*)(void*, void*, int*))
+                CSF_AT(void**, fill, 0)[10])(fill, nullptr, scaledPosition);
+
+            float size[2] = {0.0f, 0.0f};
+            Hud_ReadFloatPair(fillProperty, nullptr,
+                const_cast<char*>(CSF_STR(0x00830868, ".SIZE")),
+                reinterpret_cast<int>(size));
+            int scaledSize[2] = {
+                static_cast<int>(static_cast<std::int64_t>(size[0])),
+                static_cast<int>(static_cast<std::int64_t>(size[1]))
+            };
+            Hud_ScaleCoordinates(scaledSize);
+            fill = CSF_AT(void*, self, 0x298);
+            ((void (__fastcall*)(void*, void*, int*))
+                CSF_AT(void**, fill, 0)[12])(fill, nullptr, scaledSize);
+
+            auto* coordinatesProperty = FindProperty(fillProperty, nullptr,
+                const_cast<char*>(CSF_STR(0x00830970, ".COORDS_TEXTURA")));
+            if (coordinatesProperty)
+            {
+                float coordinates[4];
+                coordinates[3] = static_cast<float>(ReadComponentFloat(
+                    GetComponent(coordinatesProperty, nullptr, 3u)));
+                coordinates[2] = static_cast<float>(ReadComponentFloat(
+                    GetComponent(coordinatesProperty, nullptr, 2u)));
+                coordinates[1] = static_cast<float>(ReadComponentFloat(
+                    GetComponent(coordinatesProperty, nullptr, 1u)));
+                coordinates[0] = static_cast<float>(ReadComponentFloat(
+                    GetComponent(coordinatesProperty, nullptr, 0)));
+                fill = CSF_AT(void*, self, 0x298);
+                ((void (__fastcall*)(void*, void*, float*))
+                    CSF_AT(void**, fill, 0)[14])(fill, nullptr, coordinates);
+            }
+
+            float fillColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+            float backgroundColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+            Hud_ReadColor(fillProperty, nullptr,
+                const_cast<char*>(CSF_STR(0x00830960, ".COLOR_RELLENO")),
+                reinterpret_cast<int>(fillColor));
+            Hud_ReadColor(fillProperty, nullptr,
+                const_cast<char*>(CSF_STR(0x00830950, ".COLOR_FONDO")),
+                reinterpret_cast<int>(backgroundColor));
+
+            std::uint8_t packedColor[4];
+            packedColor[3] = static_cast<std::uint8_t>(
+                static_cast<std::int64_t>(fillColor[3]));
+            packedColor[0] = static_cast<std::uint8_t>(
+                static_cast<std::int64_t>(fillColor[0]));
+            packedColor[1] = static_cast<std::uint8_t>(
+                static_cast<std::int64_t>(fillColor[1]));
+            packedColor[2] = static_cast<std::uint8_t>(
+                static_cast<std::int64_t>(fillColor[2]));
+            fill = CSF_AT(void*, self, 0x298);
+            ((void (__fastcall*)(void*, void*, std::uint8_t*))
+                CSF_AT(void**, fill, 0)[7])(fill, nullptr, packedColor);
+        }
+    }
+}
+
+HOOK(0x0042FF80, Hud_LoadIconAndFillWidgets, "auto");
