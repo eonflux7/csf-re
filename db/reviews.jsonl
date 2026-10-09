@@ -9,3 +9,20 @@
 {"ea": "00460e20", "module": "m45AAF0", "code": "9dffd4036c8a6d50", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-08"}
 {"ea": "0045f9a0", "module": "m45AAF0", "code": "cf4744d3393c9485", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-08"}
 {"ea": "0045f100", "module": "m45AAF0", "code": "cb5578f350fa39a6", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-08"}
+{"ea": "00460ca0", "module": "m45AAF0", "code": "9f8eca971e1c8b36", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "0045fce0", "module": "m45AAF0", "code": "aac0d7727724b9d4", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "0045b630", "module": "m45AAF0", "code": "411dbae811b2d3bd", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "00463060", "module": "m45AAF0", "code": "5f370063da2d7810", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "0045ae70", "module": "m45AAF0", "code": "225aacc453a18f15", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "00463770", "module": "m45AAF0", "code": "cdec2b4e8d6121d6", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "00463f10", "module": "m45AAF0", "code": "2fe6fc39e9d41e12", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "0045fef0", "module": "m45AAF0", "code": "37af832045999f56", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "00460890", "module": "m45AAF0", "code": "611b2bd9b9c4680e", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "0045dfe0", "module": "m45AAF0", "code": "a977743a54c2e7e7", "ok": false, "issues": ["0x0045DFEC-0x0045DFEF: the original does fld dword [ecx+4] then __ftol2, a signed float->int64 truncation whose low 32 bits (eax) are pushed at 0x0045E000 as the argument to 0x468E20. The reimplementation uses static_cast<int>(static_cast<uint64_t>(slotValue)), an unsigned 64-bit conversion. For negative floats (e.g. -1.0f, which the original turns into 0xFFFFFFFF) this is undefined behaviour and on modern compilers gives a different value (0 or saturated), so the wrong index can reach SceneEntryIndexFromFloat. It should be a plain signed cast, static_cast<int>(slotValue)."], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "0045cc90", "module": "m45AAF0", "code": "46375daa1d56af01", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "00461cd0", "module": "m45AAF0", "code": "cdeb8b184dab5ff2", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "0045ac20", "module": "m45AAF0", "code": "89c120e64182c1a1", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "0045c130", "module": "m45AAF0", "code": "7763c344fd7d0d2b", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "00461d40", "module": "m45AAF0", "code": "7b01e964ba105fb4", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "00464c30", "module": "m45AAF0", "code": "0c776fbccf727bf1", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "0045ad20", "module": "m45AAF0", "code": "aa64a7791808b202", "ok": false, "issues": ["0x0045AD33-0x0045AD3A: the original passes the return value of GetGlobalValue_4FBDE0 as the `this` pointer for QueryIndexedValue_4FC160 (`call 0x4fbde0; mov ecx, eax; call 0x4fc160`). The reimplementation discards that return value and passes nullptr as self (ECX = 0), so the callee runs on a null object instead of the global one. It should be `QueryIndexedValue_4FC160((void*)GetGlobalValue_4FBDE0(), nullptr, 1)`."], "model": "claude-opus-5-5", "date": "2026-10-09"}
