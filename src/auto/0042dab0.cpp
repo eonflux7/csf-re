@@ -37,8 +37,7 @@ static void __stdcall HudWidget_RefreshFsmStateSlots(C_00833908* self)
 
             if (CharActionFsm_GetCurrentState(fsm, nullptr) == 10)
             {
-                HudWidget_PushStateEntry(reinterpret_cast<int>(self),
-                                         static_cast<int>(self->field_009c));
+                HudWidget_PushStateEntry(reinterpret_cast<int>(self), CSF_AT(int, fsm, 0x9C));  // the FSM's +0x9C
             }
         }
     }
