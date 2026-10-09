@@ -5,11 +5,11 @@
 // double __cdecl RpLightGetConeAngle(int light)
 CSF_FUNC(double, __cdecl, RpLightGetConeAngle, 0x59CC50, (int light));
 
-// void __thiscall sub_6FD180(CLightObject* this)
-// Reads the light pointer stored at this+0x0C and queries its cone angle.
-static void __fastcall CLightObject_GetLightConeAngle(CLightObject* self, void* /*edx*/)
+// Hex-Rays: void __thiscall sub_6FD180(CLightObject* this), but `call 0x59CC50; pop ecx; ret` returns its st0
+// Reads the light pointer stored at this+0x0C and returns its cone angle.
+static double __fastcall CLightObject_GetLightConeAngle(CLightObject* self, void* /*edx*/)
 {
-    RpLightGetConeAngle(static_cast<int>(self->m_pLight));
+    return RpLightGetConeAngle(static_cast<int>(self->m_pLight));
 }
 
 HOOK(0x6FD180, CLightObject_GetLightConeAngle, "auto");

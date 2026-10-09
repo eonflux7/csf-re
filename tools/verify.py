@@ -114,6 +114,19 @@ def _read(name):
 
 def ingest():
     hashes = code_hashes()
+    with ledger_lock():  # smoke pool: several smokes may end at once
+        _ingest(hashes)
+
+
+def ledger_lock():
+    """Exclusive lock around a load() .. save() of db/verify.json (released when the returned file closes)."""
+    import fcntl
+    lk = open(os.path.join(ROOT, "work", "ledger.lock"), "w")
+    fcntl.flock(lk, fcntl.LOCK_EX)
+    return lk
+
+
+def _ingest(hashes):
     led = load()
     today = datetime.date.today().isoformat()
     hits = {}

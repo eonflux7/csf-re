@@ -679,3 +679,63 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - **X tier ladder flipped**: Opus-first took the grunts' 5h window from ~21% to 78% (then HTTP 429) on the
   game_data_defs wave, nearly all X-tier data loaders. Now Codex high x2, Opus high x1 only as escalation. The 3-wave
   loop was stopped after that wave (its Opus review step skipped too: review.py runs on the same account).
+- **hud wave + loop stop**: hud 127 written / 124 verified / 3 quarantined, Opus review 0/7 rejected. The first full
+  regression smoke between waves (FR01 + menu tour + savegame, verified baseline) failed: blind bisect (no crash
+  names) quarantined 7 (0078ce30 00544920 004350c0 0042df60 0042db20 0078ce20 00544980), then "full batch passed
+  on re-run: flaky". With a flaky crash, blind-bisect culprits may be false: re-check them before trusting.
+  The loop stopped as designed (`waves: regression check failed`).
+- **Diff tier 3 v1** on branch `diff-tier3` (worktree work/t3, play copy /mnt/e/dev/csf-play-dev, not merged):
+  difftable.py picks 420 functions whose own writes stay in this/globals/stack but which make direct calls; 497
+  callees intercepted (251 over existing hooks, 246 MinHook). hook/replay.cpp records the original's calls (callee,
+  ecx/edx, args, return incl. st0, bytes changed in the snapshot regions and in stack buffers passed by pointer)
+  and answers ours from the record. First smoke (FR01 60 s): crash after 2 s in original code 0x739BC0 (not a
+  tier-3 function: harness side effect). Mismatches seen are mostly harness artifacts: edx compared for callees
+  whose Hex-Rays `edx` param is spurious (0x429B60), stack-address returns not treated as equal. Next: compare edx
+  only for real fastcall callees (callers' cleanup + edx actually set before the call), stack-pointer returns
+  equal, `diff_t3 0` A/B to confirm the crash is the harness, then bisect tier-3 entries with diff_limit.
+
+## 2026-10-09 — M ladder: Codex first
+- grunt_log (198 M results): Haiku 5.5 high wrote 3 of the 189 passes in 267 calls (~20k output tokens each, 5.3M
+  total; 0/102 on 10-08, 3/165 on 10-09), Codex high 186. The two Haiku rungs only delayed every M function and
+  spent the grunts' Claude window. `--m-ladder` default now `codex@high:2, opus@high:1` (as X). S stays Haiku low
+  (688/735 passes, 82% first try). 75% of the remaining game bytes are M/L/X, so Codex quota sets throughput now.
+
+## 2026-10-09 — Smoke pool: parallel instances, fail-fast, capped k-way bisect
+- Several game instances at once: WinMain 0x509250 exits when the mutex "CommXPC Pyro Studios 2005" is held; the hook
+  DLL gives it a per-process name (IAT 0x82D19C, src/core/devcmd.cpp). Play copies are cheap (tools/playcopy.py:
+  97 big files hard-linked, 13 s each): csf-play + p1..p7. 8 instances on this box (i5-12400F, 32 GB, RTX 2060):
+  ready in 5-9 s (3-4 s alone), a round of 8 x 30 s took 27 s wall. A fullscreen game of the user's blocks the
+  others' D3D9 device (they exit during video setup); the user's own copy csf-play-user is the unhooked original.
+- Interrupting a pool run left 3 orphaned games and ~2100 bisect `disable` lines in every ini, csf-play included
+  (killing smoke.sh never stops the game): pool.run now stops its instances on any exit, SIGTERM runs the cleanup.
+- smoke.sh fails on the first CRASH line (the game catches some faults and keeps running; those smokes used to run
+  out their full time) and reports stop= / ran= / fail_at=. The adaptive "no new hooks for 6 s" end reached the same
+  940 executed / 279 diffed functions in 10 s instead of 30 s, but real crashes came at 17 s and 44 s: opt-in only.
+  Default smoke 15 -> 30 s.
+- Bisect: runs capped at 2 x fail_at + 3 s; control and re-run side by side; k-way search on the pool. The verified
+  baseline crashed deterministically 17 s into FR01 (EIP in no module, ebp = a code address: no crash report);
+  8-way blind bisect over 2830 functions: 0x45B570 in 33 smokes / 215 s. Its ledger said ok=54 hits=0: installed in
+  54 passing 15 s smokes, never executed. Cause: the original pushes the angle for 0x4F5170 (forwarder to
+  provider->vtbl[8], ret 4) before calling getter 0x4FBDE0 (plain ret); Hex-Rays attached it to the getter, the
+  grunt followed, the virtual's ret 4 popped our frame. Fixed by hand; 4 x 60 s FR01 clean. The gate passed both.
+- The user's saves 2..24 load. In the first round: 9.sav crashes 44 s after load; 0x42D3C0 HudQueryWidgetValue
+  mismatches 200/200 in every start although verified (baseline() ignores MISMATCH). Both in the backlog.
+
+## 2026-10-09 — 9.sav crash and the 0x42D3C0 mismatch
+- **9.sav**: reproduced 3/3 on the verified baseline (crash 36-66 s after load), 2/2 clean with `disable_module auto`
+  (control: core dev-start hooks stay). Two of the three crashes had EIP in our DLL at the same offset: linker map ->
+  0x461750 BuildLookupFromThreeStrings (script_commands; ledger hits=0, never executed before). Its stack object
+  is three 0x4C-byte entries (0xE4 B = the whole frame), all initialized by 0x45BD10; Hex-Rays split it into
+  `v19[38]` + `v20`, the grunt sized the buffer at 39 dwords, the init ran 0x48 B past it. Fixed (57 dwords): 4/4 x
+  120 s clean. The gate can't see buffer sizes (backlog).
+- **0x42D3C0 mismatch**: callee 0x70DDF0 is `fld [0x82D4CC]; ret` (the COMDAT-folded `return 0.0f` in ~100 vtable
+  slots); Hex-Rays typed its call `int` inside 0x42D3C0 and 0x42D3C0 itself `int`, so ours returned eax and the
+  diff compared eax (both garbage). Now `api.returns_fpu` (Hex-Rays float/double for the callee itself, or a ret path
+  ending in an x87 result / a call or tail jump to such a function) feeds the gate: a binding or own definition
+  returning non-float for an st0 function fails. Sweep of all sources: one more, 0x6FD180 (void, but returns
+  RpLightGetConeAngle's st0). difftable.py compares st0 for both (only these 2 entries changed). 9.sav: 0x42D3C0
+  200 compared / 0 mismatched.
+- `verifier.baseline()` now quarantines MISMATCH lines of verified functions (it ignored them, so 0x42D3C0 stayed
+  verified while mismatching in every start).
+- The fixed functions are pending again (code hash changed); these were investigation runs (`CSF_NO_LEDGER=1`), the
+  verifier verifies them as usual.

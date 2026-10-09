@@ -384,6 +384,64 @@ def decl_line(ea):
     return f"CSF_FUNC({a['ret']}, {a['conv']}, {a['name']}, 0x{ea:08X}, ({a['params']}));"
 
 
+# x87 instructions that leave a result in st0 (a `ret` right after one returns it)
+X87_RESULT = re.compile(r"f(i?ld\w*|add|sub|subr|mul|div|divr|i?addp?|i?subr?p?|i?mulp?|i?divr?p?|chs|abs|sqrt|"
+                        r"st|xch|rndint|scale|sin|cos|patan|yl2x)$")
+FLOAT_RET = re.compile(r"^(float|double|long double)$")
+
+
+def returns_fpu(ea, db, depth=3):
+    """Does the function return its value in st0? Hex-Rays' own prototype of it (not a call site's view) says
+    float/double, or a `ret` path ends in an x87 result or in a call / tail jump to such a function (only stack
+    cleanup in between). 0x42D3C0 returns 0x70DDF0's `fld [0x82D4CC]; ret` (the shared `return 0.0f` stub): Hex-Rays
+    typed that call `int` there, the grunt returned eax, and the diff saw 200/200 mismatches on a verified function."""
+    from packet import disasm
+    ea = thunk_target(ea, db)
+    a = ida_abi().get(ea)
+    if a and FLOAT_RET.match(c_type(a.get("ret") or "") or ""):
+        return True
+    if depth == 0 or ea not in db.F:
+        return False
+    ins = disasm(ea, db.F[ea]["size"])
+    for k, i in enumerate(ins):
+        if i.mnemonic != "ret" and not (i.mnemonic == "jmp" and i.op_str.startswith("0x")
+                                        and not db.F[ea]["ea"] <= int(i.op_str, 16) < db.F[ea]["end"]):
+            continue
+        if i.mnemonic == "jmp":
+            if returns_fpu(int(i.op_str, 16), db, depth - 1):
+                return True
+            continue
+        j = k - 1
+        while j >= 0 and (ins[j].mnemonic in ("pop", "leave") or re.match(r"(add|sub) esp,|mov esp, ebp",
+                                                                            f"{ins[j].mnemonic} {ins[j].op_str}")):
+            j -= 1
+        if j < 0:
+            continue
+        p = ins[j]
+        if X87_RESULT.match(p.mnemonic):
+            return True
+        if p.mnemonic == "call" and p.op_str.startswith("0x") and returns_fpu(int(p.op_str, 16), db, depth - 1):
+            return True
+    return False
+
+
+def float_ret_errors(src, db):
+    """Gate: the file's own function and every CSF_FUNC binding must return float/double where the original returns
+    in st0. An int there reads eax (garbage) and leaves the caller's x87 stack one short."""
+    errs = []
+    code = strip_comments(src)
+    for m in DECL.finditer(code):
+        ret, ea, name = ws(m.group(1)), int(m.group(4), 16), m.group(3)
+        if ea in db.F and not FLOAT_RET.match(ret) and returns_fpu(ea, db):
+            errs.append(f"CSF_FUNC {name}: 0x{ea:X} returns its value in st0 (x87), so bind it returning float "
+                        f"(or double), not {ret}")
+    sig = impl_signature(src)
+    if sig and sig[0] in db.F and not FLOAT_RET.match(sig[1]) and returns_fpu(sig[0], db):
+        errs.append(f"{sig[3]} must return float (or double): the original 0x{sig[0]:X} returns its value in st0 "
+                    f"(x87), yours returns {sig[1]}")
+    return errs
+
+
 def canonicalize(src):
     """Rename each CSF_FUNC binding (and its uses) to the canonical name of its address. Signatures are left
     alone: a different parameter type may be the caller's legitimate view; ABI conflicts are check()'s job."""
@@ -413,7 +471,7 @@ def binding_errors(src, db):
         elif conv != "__fastcall" and takes_reg(ea, db, "ecx"):
             errs.append(f"CSF_FUNC {name}: 0x{ea:X} reads ecx (`this`) on entry, so bind it __fastcall "
                         f"(void* self, void* edx, ...stack args) and pass the right object, not {conv}")
-    return errs
+    return errs + float_ret_errors(src, db)
 
 
 def check():

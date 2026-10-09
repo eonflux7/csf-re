@@ -882,7 +882,9 @@ def select(db, n, max_size, min_size=6, exclude=(), modules=None):
     return out
 
 
-SMOKE_SECS, SMOKE_LONG_SECS, SMOKE_LONG_EVERY = 15, 60, 5  # seconds after ready (smoke.sh); every 5th smoke runs long
+SMOKE_SECS, SMOKE_LONG_SECS, SMOKE_LONG_EVERY = 30, 60, 5  # seconds after ready (smoke.sh); every 5th smoke runs long
+# 15 -> 30 s (2026-10-09): a verified script handler (0x45B570) first ran 17 s into FR01 and crashed there; 54 passing
+# 15 s smokes had installed it without ever executing it. Parallel smokes (tools/pool.py) make the longer run cheap.
 # Long smokes rotate the start (wider coverage for db/verify.json); short ones always use smoke.sh's FR01 scene.
 SMOKE_STARTS = [{}, {"CSF_START": "menu", "CSF_INI_EXTRA": "menutour 1500"}, {"CSF_START": "loadsave 1.sav"}]
 SMOKE_SHORT = (SMOKE_SECS, {})  # lanes --smoke-menu: short smokes run the menu tour instead (GUI waves)
@@ -928,9 +930,9 @@ PLAY = os.environ.get("CSF_PLAY", "/mnt/e/dev/csf-play")
 BISECT_TAG = "# grunt-bisect"
 
 
-def set_disabled(eas):
-    """Disable exactly these hooks in the play copy's ini (lines tagged BISECT_TAG; others are left alone)."""
-    ini = os.path.join(PLAY, "csf_hook.ini")
+def set_disabled(eas, play=None):
+    """Disable exactly these hooks in a play copy's ini (lines tagged BISECT_TAG; others are left alone)."""
+    ini = os.path.join(play or PLAY, "csf_hook.ini")
     lines = [l for l in open(ini).read().splitlines() if not l.endswith(BISECT_TAG)]
     lines += [f"disable 0x{ea:X} {BISECT_TAG}" for ea in sorted(eas)]
     open(ini, "w").write("\n".join(lines) + "\n")
@@ -974,22 +976,43 @@ def crash_suspects(out, batch):
     return out_eas
 
 
+def fail_cap(out):
+    """Seconds a bisect smoke needs when the failure it reproduces happened `fail_at` s after ready (smoke.sh): a run
+    that survives twice that (+3 s) passes. None when the failure has no time (a hang, never ready)."""
+    m = re.search(r"\bfail_at=(\d+)s", out or "")
+    return max(5, 2 * int(m.group(1)) + 3) if m else None
+
+
 def bisect(batch, max_culprits=4, first_out=""):
     """The deployed DLL holds `batch` (uncommitted) and its smoke failed (its output: first_out). Find the culprits
     by toggling hooks in the ini (no rebuild). Each failed run's crash report is read first (crash_suspects): the
     named function is taken and the rest re-run, ~1 smoke per culprit. When a crash names none of the batch: a
-    control run with the whole batch off (once), then binary search with the rest off (a half that passes clears
-    it; the other half is taken without its own smoke). A run of the rest that passes ends it.
+    control run with the whole batch off and a re-run of the rest (side by side on the smoke pool), then a search
+    with the rest off: with a pool of k copies each round runs k parts at once (k-way; plain binary search with one
+    copy, where a half that passes clears it and the other half is taken without its own smoke). A run of the rest
+    that passes ends it. Runs are capped at ~2x the failure's time after ready (fail_cap), not the full smoke.
     Returns (culprits, why): culprits=None when the batch is not to blame or the result is unreliable."""
+    import pool
     n, controlled = 0, False
+    cap = fail_cap(first_out)
+    secs0, env0 = _last_smoke[0] or SMOKE_SECS, _last_smoke[1]
+    k = pool.size()
+    if k > 1:
+        pool.sync()
+
+    def job(on):
+        secs = min(secs0, cap) if cap else secs0
+        env = {**env0, "CSF_SMOKE_ADAPTIVE": "0"} if cap else env0  # survive the whole cap, not a quiet end
+        return secs, env, lambda play: set_disabled(set(batch) - set(on), play)
+
+    def runs(ons):
+        nonlocal n
+        n += len(ons)
+        live(phase=f"bisect: smokes {n - len(ons) + 1}..{n} ({'/'.join(str(len(o)) for o in ons)} on)")
+        return [(not ok, out) for ok, out in pool.run([job(on) for on in ons])]
 
     def run(on):
-        nonlocal n
-        n += 1
-        set_disabled(set(batch) - set(on))
-        live(phase=f"bisect: smoke {n} ({len(on)} on)")
-        ok, out = smoke(deploy=False)
-        return not ok, out
+        return runs([on])[0]
 
     try:
         culprits, rest, out, named = [], list(batch), first_out, 0
@@ -1000,24 +1023,43 @@ def bisect(batch, max_culprits=4, first_out=""):
             else:
                 if not controlled:
                     controlled = True
-                    if run([])[0]:
+                    if k > 1 and not culprits:
+                        (ctl_fail, _), (rest_fail, out) = runs([[], rest])
+                    else:
+                        ctl_fail, _ = run([])
+                        rest_fail = True if culprits else run(rest)[0]
+                    if ctl_fail:
                         return None, "control run (whole batch disabled) also fails: crash is not from this batch"
-                    if not culprits and not run(rest)[0]:
+                    if not rest_fail:
                         return None, "the full batch passed on re-run: flaky crash, not bisectable"
-                cur = rest
-                while len(cur) > 1:
-                    a, b = cur[:len(cur) // 2], cur[len(cur) // 2:]
-                    cur = a if run(a)[0] else b
-                c = cur[0]
+                    sus = crash_suspects(out, rest)
+                    if sus:
+                        c, named = sus[0], named + 1
+                if not sus:
+                    cur = rest
+                    while len(cur) > 1:
+                        if k > 1:
+                            parts = [cur[i * len(cur) // k:(i + 1) * len(cur) // k] for i in range(k)]
+                            parts = [p for p in parts if p]
+                            failing = [p for p, (f, _) in zip(parts, runs(parts)) if f]
+                            if not failing:
+                                return None, (f"no single part of {len(cur)} fails alone ({n} smokes): an "
+                                              "interaction between parts or a flaky crash")
+                            cur = failing[0]
+                        else:
+                            a, b = cur[:len(cur) // 2], cur[len(cur) // 2:]
+                            cur = a if run(a)[0] else b
+                    c = cur[0]
             culprits.append(c)
             rest.remove(c)
             failed, out = run(rest)
             if not failed:
-                return culprits, f"{n} smokes ({named} named by crash reports)"
+                return culprits, f"{n} smokes ({named} named by crash reports{', k=' + str(k) if k > 1 else ''})"
             if len(culprits) >= max_culprits:
                 return None, f"more than {max_culprits} culprits: {' '.join(f'{c:x}' for c in culprits)} ..."
     finally:
-        set_disabled([])
+        for play in pool.copies():
+            set_disabled([], play)
 
 
 def build_culprits(out, eas):
@@ -1724,7 +1766,9 @@ def lane_args(l):
     # 2026-10-08 (473 tiered results): S ok 330 = Haiku low 289, strong rung 28, Haiku medium 9 -> medium dropped
     l.add_argument("--s-ladder", default="claude:claude-haiku-5-5@low:2,codex:gpt-6.1-sol@high:1",
                    help="backend:model[@effort]:attempts,...")
-    l.add_argument("--m-ladder", default="claude:claude-haiku-5-5@high:2,codex:gpt-6.1-sol@high:2")
+    # 2026-10-09 (198 M results): Haiku high wrote 3 of 189 passes in 267 calls (5.3M output tokens), Codex 186:
+    # Codex first, Opus only as the escalation rung (as X)
+    l.add_argument("--m-ladder", default="codex:gpt-6.1-sol@high:2,claude:claude-opus-5-5@high:1")
     l.add_argument("--l-ladder", default="codex:gpt-6.1-sol@high:2")
     # 2026-10-09: functions over 600 B (646, ~700 KB) were outside every wave. Opus first took the grunts' 5h window
     # from 21% to 78% in one wave of data loaders: Codex high writes them, Opus only as the escalation rung

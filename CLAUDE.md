@@ -28,7 +28,8 @@ backlog), pending/verified counts and the link-test line, and any open decisions
 - `tools/` the loop: grunt.py (lanes, wave), verifier.py + verify.py (in-game verification, ledger), review.py
   (Opus samples), captain.py + fields.py (types/names), this_class.py + plain_classes.py + vtbl_types.py (classes,
   `this`/parameter/member types, typed vtables), api.py + addrfix.py + linktest.py (cutover contract),
-  gate.py + semcheck.py + controls.py (static checks), status.py, monitor.py. Setup-era: triage.py, regions.py, rtti.py.
+  gate.py + semcheck.py + controls.py (static checks), pool.py + playcopy.py (parallel smoke instances),
+  status.py, monitor.py. Setup-era: triage.py, regions.py, rtti.py.
 - `src/globals.h`: everything original is referenced by address (CSF_FUNC/GLOBAL/STR/VTBL/ADDR_*); the standalone
   build resolves by address, so never write an original address as a bare number.
 - `db/` source-of-truth knowledge: regions.yaml, functions.csv, (globals.yaml, modules.yaml, types/).

@@ -43,7 +43,7 @@ bytes x how much other code calls into them). Each step also runs on its own.
    the IDB, re-decompiles everything and lets Hex-Rays carry the types further (`this_class.py`); after
    `classes.py`, re-run `plain_classes.py` (classes without vtable). Then `api.py build`, `gen_classes_h.py`.
 2. **Produce** (`grunt.py lanes --module M`): leaf-first selection, clone-aware; size tiers S/M/L with model
-   ladders (S: Haiku low x2 -> strong; M: Haiku high x2 -> Codex x2; L and hubs (>= 25 outside callers): Codex).
+   ladders (S: Haiku low x2 -> strong; M: Codex x2 -> Opus; L and hubs (>= 25 outside callers): Codex).
    Packet = pseudocode + disasm + class fields + typed virtual calls + the canonical `bind as` line per callee.
    `normalize()` auto-fixes (address macros, canonical names, includes); the **gate** checks includes, compile,
    references vs the original (semcheck), `ret N`, ABI of every binding against the binary, no raw addresses.
@@ -70,7 +70,7 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
    full baseline regression smoke between waves (`wave --next`: m45AAF0 = script_commands, game_data_defs, hud, scene_loader,
    char_action_fsm, ...). hud only had a 12-function test batch (the loop's first end-to-end run); the module
    itself is 15/150 functions (1.4%) and still needs its wave.
-2. **Diff tier 3** (record/replay) on the second play copy /mnt/e/dev/csf-play-dev (`CSF_PLAY=...`; big data files
+2. **Diff tier 3** (record/replay; v1 built on branch diff-tier3, first smoke crashes: see JOURNAL 2026-10-09) on the second play copy /mnt/e/dev/csf-play-dev (`CSF_PLAY=...`; big data files
    hard-linked to csf-play): the original runs with its callees recorded (callee, this, args, return), ours runs
    against the recording (CSF_FUNC slots -> replayer), compare call sequence + args + writes + return. Targets the
    847 executed-but-not-diffed functions (virtual calls 862 / side-effect callees 513 blocked tier 1-2). Callees
@@ -137,6 +137,19 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 - [ ] AI combat coverage: the T* AI tasks and GUI input handlers only run in real play. Needs savegames taken in
       combat (user playtest) -> `CSF_SWEEP_SAVES="1.sav 2.sav ..."`, then `verifier.py --full`
 - [ ] Executed coverage: 1278 done functions have only passed static checks (`verify.py report`)
+- [x] Smoke pool (2026-10-09): 8 play copies (`tools/pool.py`, `playcopy.py`), several instances at once (mutex
+      renamed in the DLL), fail-fast on CRASH, bisect runs capped at 2x the crash time + k-way across the pool,
+      verifier starts side by side; default smoke 15 -> 30 s (adaptive end opt-in)
+- [x] `9.sav` crashes ~40 s after load on the verified baseline: 0x461750 sized a 3-entry (0xE4 B) stack block from
+      Hex-Rays' split `v19[38]` + `v20` (39 dwords); the callee's init overran it. Fixed (2026-10-09)
+- [x] 0x42D3C0 HudQueryWidgetValue mismatches 200/200: returned eax where the original returns st0 (0x70DDF0 is the
+      shared `return 0.0f` stub). Fixed + gate rejects int for st0 returns (api.returns_fpu, found 0x6FD180 too);
+      the diff table compares st0 for them; `baseline()` quarantines MISMATCH lines too (2026-10-09)
+- [ ] Gate gap: a stack buffer passed to a callee that initializes more bytes than the buffer holds (0x461750:
+      Hex-Rays splits one local object into an array + scalars). Size the buffer from the original's frame layout
+- [ ] Gate gap: a call through an indirect forwarder (0x4F5170 `jmp [eax+0x20]`) must pass the stack args the
+      target pops; Hex-Rays attaches an early-pushed arg to the wrong call (0x45B570 crashed, gate passed both versions)
+- [ ] Use the user's saves 2..24 (2026-10-09) in `--full` (`CSF_VERIFY_SAVES`) once each is known to pass alone
 
 ### Cutover
 - [ ] Allocator shim (operator new/delete -> game heap; delete = sub_691110), rw.h shim
@@ -164,6 +177,8 @@ typed virtual calls, field consensus, fidelity rule, Opus review sampling, `wave
 - 2026-10-07: xwin x86 CRT/SDK installed at `~/.xwin` (license accepted by user). x64dbg + x64dbg-automate on
   Windows under E:\dev\tools (user OK), for crash triage and targeted runtime RE.
 - Play copy of the game for hook testing: `/mnt/e/dev/csf-play` (E:\dev\csf-play). Never deploy into csf-builds.
+  Smoke pool copies `/mnt/e/dev/csf-play-p1..p7` (verifier/bisect only); `/mnt/e/dev/csf-play-user` is the unhooked
+  original for the user's own play and savegames.
 - 2026-10-08: Grunts: Haiku 5.5 / Opus 5.5 on the grunts' own Claude account (never the main account) + Codex;
   OpenCode Go and DeepSeek dropped (allowance / quality). Ladders chosen from the run logs (`grunt.py cost`).
 - 2026-10-08 (user): **progress is bytes per module**, waves per module, types first.

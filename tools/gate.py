@@ -206,7 +206,7 @@ def gate(ea, path, db=None):
 FAIL_KINDS = [
     ("backend", r"^(codex|claude|go|deepseek|opencode) error: "),
     ("abi", r"calling convention mismatch|declared __cdecl but|popping \d+ bytes but|reads ecx|reads edx|"
-            r"returns a full 32-bit value"),
+            r"returns a full 32-bit value|returns its value in st0"),
     ("binding", r"is not a function start|CSF_FUNC .*own address|referenced by its plain name"),
     ("sem_missing_ref", r"the original references .*your code never does"),
     ("sem_extra_ref", r"your code references 0x[0-9A-F]+.*which the original does not"),

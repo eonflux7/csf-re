@@ -222,6 +222,22 @@ void patch_iat(std::uintptr_t slot, void* fn) {
     VirtualProtect((void*)slot, 4, old, &old);
 }
 
+// Several game instances at once (smoke pool, tools/pool.py; or a smoke beside the user's own unhooked game):
+// WinMain 0x509250 exits when the named mutex "CommXPC Pyro Studios 2005" is already held. Its CreateMutexA import
+// (IAT 0x82D19C) gives that mutex a per-process name. Patched at DLL load: the loader has bound the game's imports
+// before our initializers run, and WinMain runs after them.
+HANDLE WINAPI Multi_CreateMutexA(LPSECURITY_ATTRIBUTES sa, BOOL owner, LPCSTR name) {
+    char own[64];
+    if (name && !strcmp(name, "CommXPC Pyro Studios 2005")) {
+        snprintf(own, sizeof own, "%s #%lu", name, GetCurrentProcessId());
+        name = own;
+    }
+    return CreateMutexA(sa, owner, name);
+}
+struct MultiInstance {
+    MultiInstance() { patch_iat(0x82D19C, (void*)&Multi_CreateMutexA); }
+} g_multiInstance;
+
 LRESULT CALLBACK Background_WndProc(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
     if (msg == WM_MOUSEACTIVATE)
         return MA_NOACTIVATE;
