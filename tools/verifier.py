@@ -204,7 +204,11 @@ def baseline(starts):
             culprits, why = grunt.bisect([e for e in verified if f"{e:08x}" not in bad], max_culprits=8,
                                          first_out=out)
             if not culprits:
-                print(f"baseline smoke fails, not attributable ({why})", flush=True)
+                # keep the failing smoke's output (crash report, log tail): the bisect's smokes overwrite the play
+                # copies' logs, and a flaky crash is only diagnosable from this one
+                keep = os.path.join(ROOT, "work", f"baseline_fail_{int(time.time())}.log")
+                open(keep, "w").write(f"start: {secs}s {env}\n{out}")
+                print(f"baseline smoke fails, not attributable ({why}); its output: {keep}", flush=True)
                 return False, bad
             cs = [f"{c:08x}" for c in culprits]
             print(f"baseline: culprits {' '.join(cs)} ({why})", flush=True)
