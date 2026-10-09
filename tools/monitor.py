@@ -427,9 +427,10 @@ def wave_progress(spec):
         return None
     w = [r for r in rows if r["module"] in ids]
     d = [r for r in w if r["status"] in ("done", "verified")]
-    pre = os.path.commonprefix(keys)
-    label = (pre.rstrip("_") + "_*" if len(keys) > 2 and len(pre) >= 3 else ",".join(keys)[:40])
-    return dict(label=f"{label} ({len(ids)} modules)", n=len(w), done=len(d),
+    names = [m.get("name") or m["id"] for m in mods if m["id"] in ids]  # `wave --waves` passes ids: show names
+    pre = os.path.commonprefix(names)
+    label = (pre.rstrip("_") + "_*" if len(names) > 2 and len(pre) >= 3 else ",".join(names)[:40])
+    return dict(label=label + (f" ({len(ids)} modules)" if len(ids) > 1 else ""), n=len(w), done=len(d),
                 bytes=sum(int(r["size"]) for r in w), done_bytes=sum(int(r["size"]) for r in d))
 
 

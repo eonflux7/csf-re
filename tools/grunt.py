@@ -1598,14 +1598,14 @@ def waves(args):
     py, here = sys.executable, os.path.abspath(__file__)
     seen, n = set(), 0
     while args.waves < 0 or n < args.waves:
-        ranked = [m for _, m, *_ in rank_modules(DB(), 60) if m not in seen]
+        ranked = [(m, nm) for _, m, nm, *_ in rank_modules(DB(), 60) if m not in seen]
         if not ranked:
             print("waves: ranking exhausted", flush=True)
             return
-        m = ranked[0]
+        m, name = ranked[0]
         seen.add(m)
         n += 1
-        print(f"\n==== waves: {n}{'/' + str(args.waves) if args.waves > 0 else ''} {m}", flush=True)
+        print(f"\n==== waves: {n}{'/' + str(args.waves) if args.waves > 0 else ''} {name} ({m})", flush=True)
         rc = subprocess.run([py, here, "wave", m, *argv]).returncode
         if rc == STOP_EXIT:
             print(f"waves: stop rule fired after {m} (work/waves.jsonl); stopping", flush=True)
