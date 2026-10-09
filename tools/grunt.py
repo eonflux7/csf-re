@@ -1486,8 +1486,9 @@ def captain_prep(module_arg):
     captain("family", *names)
     print("wave prep: " + tool("fields.py", "apply"), flush=True)
     name_modules(module_arg)
-    if [open(f).read() if os.path.exists(f) else "" for f in watched] == before:
-        return
+    uncommitted = subprocess.run(["git", "-C", ROOT, "diff", "--quiet", "HEAD", "--", *watched]).returncode
+    if [open(f).read() if os.path.exists(f) else "" for f in watched] == before and not uncommitted:
+        return  # (uncommitted: names a failed rename pass left behind, e.g. last wave's build break)
     tool("rename_classes.py")
     tool("fields.py", "fixbuild")  # references rename_classes leaves (files with several class types)
     if subprocess.run(["ninja", "-C", os.path.join(ROOT, "build")], capture_output=True).returncode:
