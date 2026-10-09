@@ -88,6 +88,9 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 
 ### Loop & tooling
 - [x] Monitor: verifier and review lines, per-area progress table (Live), area column (Modules tab)
+- [x] Monitor tabs reworked: 1 Loop (stage pipeline from processes + grunt phase, NOW/NEXT/THEN, live stop rule,
+  past waves, side loops incl. diff tiers 1-3 and the smoke pool), 2 Game (evidence/diff tiers, linktest, pace, ETA),
+  3 Agents (orchestrator sessions, spend per model, forecast to finish; plan prices in ~/.config/csf-re/billing.yaml)
 - [x] Wave stop rule (quarantine > 3%, Opus rejects > 10%, > 25% of the module left unverified -> exit 3) and
   `wave --waves N` with `verifier.py --baseline-only --full` between waves; reports in work/waves.jsonl
 - [x] Functions over 600 B in the waves: tier X (Opus high x2, then Codex xhigh; 2 in flight), `--max-size`

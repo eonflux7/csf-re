@@ -155,7 +155,8 @@ def claude_usage(which="main"):
                 "Authorization": f"Bearer {tok}", "anthropic-beta": "oauth-2025-04-20", "User-Agent": "csf-re-monitor"})
             d = json.load(urllib.request.urlopen(req, timeout=8))
             iso = lambda v: datetime.fromisoformat(v.replace("Z", "+00:00")).timestamp()  # noqa: E731
-            c.update(error=None, at=time.time(), u={k: (d[w]["utilization"], iso(d[w]["resets_at"])) for k, w in
+            c.update(error=None, at=time.time(), u={k: (d[w]["utilization"] or 0, iso(d[w]["resets_at"]) if d[w].get("resets_at")
+                                                         else time.time()) for k, w in  # idle window: no reset time
                                                      (("5h", "five_hour"), ("7d", "seven_day")) if d.get(w)})
         except Exception as e:
             c["error"] = str(e)[:60]

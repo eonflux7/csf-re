@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """Textual dashboard (tools/monitor.py starts it; `monitor.py --once` prints one Rich frame instead).
 
-Tabs: 1 Live (Claude | Costs, Progress with the wave bar and verifier/review lines, grunt with scrollable
-in-flight/results tables, captain, game/tools; sized to fit the screen), 2 Areas (per-area progress table),
-3 Modules (per-module prep/progress table grouped by area, click a header to sort), 4 Plan (current focus + every
-phase as collapsible sections), 5 Commits (this session), 6 Queue (escalations in queue/, the selected one previewed). All data comes from the helpers in monitor.py, read in a worker thread every
---interval seconds so slow sources (tasklist, usage endpoints) never block the UI.
+Tabs: 1 Loop (the RE loop as a pipeline: the running stage highlighted, NOW / NEXT / THEN; the live stop rule and
+past waves | side loops: verifier, diff tiers 1-3, smoke pool, orchestrator, tools, captain; grunt with scrollable
+in-flight/results tables), 2 Game (progress grid, evidence and diff tiers, linktest, pace + ETA, per-area table,
+live coverage), 3 Agents (orchestrator sessions | logins, billing, usage windows; spend per agent and model;
+forecast to finish the game), 4 Modules (per-module prep/progress table grouped by area, click a header to sort),
+5 Plan (current focus + every phase as collapsible sections), 6 Commits (this session), 7 Queue (escalations in
+queue/, the selected one previewed). The header's subtitle is the loop's NOW line on every tab. Data comes from
+monitor.py / monitor_loop.py, read in a worker thread every --interval seconds so slow sources (tasklist, usage
+endpoints) never block the UI.
 """
 import glob, os, re, time
 
@@ -19,20 +23,25 @@ from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets import Collapsible, DataTable, Footer, Header, Markdown, Static, TabbedContent, TabPane
 
 import monitor as M
+import monitor_loop as ML
 
 CSS = """
 TabbedContent, ContentSwitcher, TabPane { height: 1fr; }
-#top { height: auto; max-height: 25%; }
-#claude { width: 1fr; height: auto; max-height: 100%; overflow-y: auto; border: round green; padding: 0 1; }
-#costs { width: 1fr; min-width: 44; height: auto; max-height: 100%; overflow-y: auto; border: round cyan; padding: 0 1; }
-#progress { height: auto; max-height: 50%; overflow-y: auto; border: round yellow; padding: 0 1; }
-#tools { height: 1; padding: 0 1; }
+#pipeline { height: auto; padding: 0 1; }
+#loopmid { height: auto; max-height: 40%; }
+#wavebox { width: 1fr; height: auto; max-height: 100%; overflow-y: auto; border: round yellow; padding: 0 1; }
+#side { width: 1fr; height: auto; max-height: 100%; overflow-y: auto; border: round cyan; padding: 0 1; }
+#gamebody { padding: 0 1; }
+#agtop { height: auto; }
+#orch { width: 3fr; height: auto; border: round green; padding: 0 1; }
+#costs { width: 2fr; min-width: 44; height: auto; border: round cyan; padding: 0 1; }
+#spend { height: auto; padding: 0 1; }
+#forecast { height: auto; border: round yellow; padding: 0 1; }
 #modtable { height: 1fr; }
 #grunt { height: 1fr; min-height: 10; border: round magenta; padding: 0 1; }
 #ghead { height: auto; }
 #inflight { height: auto; max-height: 9; }
 #results { height: 1fr; min-height: 3; border-top: solid $panel; }
-#captain { height: auto; border: round $primary; padding: 0 1; }
 DataTable { scrollbar-size-vertical: 1; }
 #plan Collapsible { padding: 0; }
 #queue { width: 2fr; }
@@ -68,12 +77,13 @@ class Monitor(App):
     TITLE = "csf-re monitor"
     CSS = CSS
     BINDINGS = [
-        Binding("1", "tab('live')", "Live"),
-        Binding("2", "tab('areas')", "Areas"),
-        Binding("3", "tab('modules')", "Modules"),
-        Binding("4", "tab('plan')", "Plan"),
-        Binding("5", "tab('commits')", "Commits"),
-        Binding("6", "tab('queue')", "Queue"),
+        Binding("1", "tab('loop')", "Loop"),
+        Binding("2", "tab('game')", "Game"),
+        Binding("3", "tab('agents')", "Agents"),
+        Binding("4", "tab('modules')", "Modules"),
+        Binding("5", "tab('plan')", "Plan"),
+        Binding("6", "tab('commits')", "Commits"),
+        Binding("7", "tab('queue')", "Queue"),
         Binding("r", "refresh_now", "Refresh"),
         Binding("q", "quit", "Quit"),
     ]
@@ -87,21 +97,26 @@ class Monitor(App):
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
-        with TabbedContent(initial="live"):
-            with TabPane("Live", id="live"):
-                with Horizontal(id="top"):
-                    yield Static(id="claude")
-                    yield Static(id="costs")
-                yield Static(id="progress")
+        with TabbedContent(initial="loop"):
+            with TabPane("Loop", id="loop"):
+                yield Static(id="pipeline")
+                with Horizontal(id="loopmid"):
+                    yield Static(id="wavebox")
+                    yield Static(id="side")
                 with Vertical(id="grunt"):
                     yield Static(id="ghead")
                     yield DataTable(id="inflight", cursor_type="none", zebra_stripes=False)
                     yield DataTable(id="results", cursor_type="row")
-                yield Static(id="captain")
-                yield Static(id="tools")
-            with TabPane("Areas", id="areas"):
+            with TabPane("Game", id="game"):
                 with VerticalScroll():
-                    yield Static(id="areatable")
+                    yield Static(id="gamebody")
+            with TabPane("Agents", id="agents"):
+                with VerticalScroll():
+                    with Horizontal(id="agtop"):
+                        yield Static(id="orch")
+                        yield Static(id="costs")
+                    yield Static(id="spend")
+                    yield Static(id="forecast")
             with TabPane("Modules", id="modules"):
                 yield DataTable(id="modtable", cursor_type="row", zebra_stripes=True)
             with TabPane("Plan", id="plan"):
@@ -120,9 +135,10 @@ class Monitor(App):
         self.query_one("#results", DataTable).add_columns("age", "", "by", "tags", "ea", "function / error")
         self.query_one("#commitlist", DataTable).add_columns("age", "commit", "subject")
         self.query_one("#queuelist", DataTable).add_columns("ea", "age", "reason")
-        self.query_one("#grunt").border_title = "Grunt"
-        self.query_one("#progress").border_title = "Progress"
-        self.query_one("#costs").border_title = "Costs · usage · logins"
+        for w, title in (("#grunt", "Produce · grunt lanes"), ("#wavebox", "Wave · stop rule · history"),
+                         ("#side", "Side loops · verifier · diff · pool · tools"), ("#orch", "Orchestrator · Claude jobs"),
+                         ("#costs", "Logins · billing · usage windows"), ("#forecast", "Forecast · to finish the game")):
+            self.query_one(w).border_title = title
         mt = self.query_one("#modtable", DataTable)
         for key, label in MOD_COLS:
             mt.add_column(label, key=key)
@@ -132,6 +148,9 @@ class Monitor(App):
     def action_tab(self, tab):
         self.query_one(TabbedContent).active = tab
 
+    def on_tabbed_content_tab_activated(self, _):
+        self.collect()  # Game / Agents views are only built while shown
+
     def action_refresh_now(self):
         M._cache.clear()
         self.collect()
@@ -140,26 +159,24 @@ class Monitor(App):
 
     @work(thread=True, exclusive=True)
     def collect(self):
-        g = M.grunt_snapshot()
-        costs = M.panel_costs(g["st"], g["recent"]).renderable
-        claude = M.panel_claude(len(costs.renderables))  # fill the Claude panel to the Costs panel's height
+        L = M.cached("loop", 1, ML.loop_state)
+        g = L["g"] if isinstance(L, dict) else M.grunt_snapshot()
+        pipe, now = ML.pipeline(L) if isinstance(L, dict) else (Text(f"loop n/a: {L}", style="dim"), "")
+        tab = self.query_one(TabbedContent).active  # the heavy views only while their tab is shown
         snap = dict(
-            claude=(claude.renderable, claude.title), progress=M.panel_progress(areas=False).renderable, areas=self.area_view(),
-            costs=costs, modules=M.module_rows(),
+            pipeline=pipe, now=now, wavebox=ML.wave_panel(L), side=ML.side_panel(L),
             ghead=Group(*M.grunt_header(g)), calls=M.call_rows(g), results=M.result_rows(g, 300),
-            captain=M.captain_lines(), tools=M.tool_line(),
-            commits=self.commit_rows(), queue=self.queue_rows())
+            modules=M.module_rows(), commits=self.commit_rows(), queue=self.queue_rows())
+        if tab == "game":
+            snap["gamebody"] = ML.game_view()
+        if tab == "agents":
+            snap.update(orch=ML.orchestrator_view(), costs=M.panel_costs(g["st"], g["recent"]).renderable,
+                        spend=ML.spend_table(), forecast=ML.forecast())
         p = os.path.join(M.ROOT, "docs", "PLAN.md")
         mt = os.path.getmtime(p)
         if mt != self.plan_mtime:
             snap["plan"] = (mt, M.focus(), M.open_items(), M.plan())
         self.call_from_thread(self.apply, snap)
-
-    def area_view(self):
-        S = M.cached("stats", 30, M.stats)
-        t = M.area_table(S) if isinstance(S, dict) else Text(f"stats n/a: {S}", style="dim")
-        L = M.cached("coverage", 3, M.live_coverage)
-        return Group(t, Text(""), M.coverage_table(L)) if isinstance(L, dict) else t
 
     def commit_rows(self):
         jobs = M.cached("jobs", 1, M.claude_jobs)
@@ -213,11 +230,10 @@ class Monitor(App):
         self.call_after_refresh(restore)
 
     def apply(self, s):
-        c = self.query_one("#claude", Static)
-        c.update(s["claude"][0])
-        c.border_title = s["claude"][1]
-        self.query_one("#progress", Static).update(s["progress"])
-        self.query_one("#areatable", Static).update(s["areas"])
+        self.sub_title = s["now"]
+        for k in ("pipeline", "wavebox", "side", "gamebody", "orch", "costs", "spend", "forecast"):
+            if k in s:
+                self.query_one("#" + k, Static).update(s[k])
         self.query_one("#ghead", Static).update(s["ghead"])
         inf = self.query_one("#inflight", DataTable)
         inf.display = bool(s["calls"])
@@ -225,13 +241,6 @@ class Monitor(App):
         res = self.query_one("#results", DataTable)
         self.fill(res, s["results"])
         res.border_title = f"results ({len(s['results'])})"
-        cap = self.query_one("#captain", Static)
-        cap.display = bool(s["captain"])
-        if s["captain"]:
-            cap.update(Group(*s["captain"]))
-            cap.border_title = "Captain"
-        self.query_one("#tools", Static).update(s["tools"])
-        self.query_one("#costs", Static).update(s["costs"])
         self.mod_data = s["modules"]
         self.fill_modules()
         self.fill(self.query_one("#commitlist", DataTable), s["commits"])

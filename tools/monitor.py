@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Live terminal dashboard for the RE workflow (Textual app in tools/monitor_app.py; this module holds the data
-readers and Rich renderables, and `--once` prints one Rich frame): Claude | Progress, grunt lanes, captain,
-game/tools, subscription limits with login + billing, plan, commits, escalation queue.
+"""Live terminal dashboard for the RE workflow (Textual app in tools/monitor_app.py; this module and
+tools/monitor_loop.py hold the data readers and Rich renderables, and `--once` prints one Rich frame): the RE loop
+(stage pipeline, now/next, stop rule, side loops, grunt lanes), game progress, agents (orchestrator, captain,
+grunts, logins + billing, spend, forecast), modules, plan, commits, escalation queue.
 
-  .venv/bin/python tools/monitor.py [--interval 2]
+  .venv/bin/python tools/monitor.py [--interval 2] [--once]
+  CSF_MONITOR_ROOT=<main checkout>   read another checkout's state (work/, db/, docs/), e.g. from a worktree
 
 Reads only files, never the IDB:
   Claude      ~/.claude/jobs/<id>/state.json (newest job for this repo): state, current activity, background
@@ -27,7 +29,7 @@ from rich.rule import Rule
 from rich.table import Table
 from rich.text import Text
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.environ.get("CSF_MONITOR_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # data root
 JOBS = os.path.expanduser("~/.claude/jobs")
 LIVE = os.path.join(ROOT, "work", "grunt_state.json")
 LOG = os.path.join(ROOT, "work", "grunt_log.jsonl")
@@ -87,8 +89,8 @@ def pid_alive(pid):
 # ---------------------------------------------------------------- Claude
 
 def repo_root(p):
-    """Main checkout path for a path inside it or inside one of its .claude/worktrees/."""
-    return (p or "").split("/.claude/worktrees/")[0].rstrip("/")
+    """Main checkout path for a path inside it or inside one of its worktrees (.claude/worktrees/*, work/*)."""
+    return re.split(r"/(?:\.claude/worktrees|work)/", (p or "") + "/")[0].rstrip("/")
 
 
 def claude_jobs():
@@ -265,6 +267,9 @@ def dur(s):
     s = int(s)
     return f"{s // 86400}d{s % 86400 // 3600}h" if s >= 86400 else f"{s // 3600}h{s % 3600 // 60:02d}m" if s >= 3600 \
         else f"{s // 60}m"
+
+
+PROC_PAT = re.compile(r"tools/|codex exec|smoke\.sh|CommXPC")
 
 
 def procs():
@@ -1093,14 +1098,24 @@ def panel_plan():
 
 
 def render(console=None):
-    """Rich frame (--once): Claude | Costs, Progress, Work, Plan."""
+    """Rich frame (--once): Loop (pipeline, wave | side loops, grunt), Game, Agents, Plan."""
+    import monitor_loop as ML
     clock = Text(datetime.now().strftime("%H:%M:%S") + "  csf-re monitor", style="dim", justify="right")
-    g = grunt_snapshot()
+    L = ML.loop_state()
+    g = L["g"]
+    mid = Table.grid(expand=True)
+    mid.add_column(ratio=1)
+    mid.add_column(ratio=1)
+    mid.add_row(Panel(ML.wave_panel(L), title="Wave · stop rule · history", border_style="yellow"),
+                Panel(ML.side_panel(L), title="Side loops", border_style="cyan"))
     top = Table.grid(expand=True)
-    top.add_column(ratio=1)
-    top.add_column(ratio=1, min_width=44)
-    top.add_row(panel_claude(), panel_costs(g["st"], g["recent"]))
-    return Group(clock, top, panel_progress(), panel_work(12), panel_plan())
+    top.add_column(ratio=3)
+    top.add_column(ratio=2, min_width=44)
+    top.add_row(Panel(ML.orchestrator_view(), title="Orchestrator", border_style="green"), panel_costs(g["st"], g["recent"]))
+    return Group(clock, Panel(ML.pipeline(L)[0], title="RE loop", border_style="bright_yellow"), mid, panel_work(12),
+                 Panel(ML.game_view(), title="Game", border_style="yellow"), top, ML.spend_table(),
+                 Panel(ML.forecast(), title="Forecast", border_style="yellow"), panel_plan())
+
 
 def main():
     ap = argparse.ArgumentParser()

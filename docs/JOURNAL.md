@@ -739,3 +739,18 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   verified while mismatching in every start).
 - The fixed functions are pending again (code hash changed); these were investigation runs (`CSF_NO_LEDGER=1`), the
   verifier verifies them as usual.
+
+## 2026-10-09 — Monitor: RE loop first, game, agents + forecast
+
+- `tools/monitor_loop.py` (new): the loop stage comes from the processes (`grunt.py wave` / `--waves` parent / lanes,
+  verifier.py, review.py, linktest.py) plus grunt's live phase; the verifier now writes its own phases (build tree,
+  baseline smoke, group i/n) to work/verifier_state.json, which before only had bisect phases.
+- Diff tiers on the Loop/Game tabs: functions in the generated diff_table.inc / replay_table.inc (verify tree's
+  build) vs ledger-diffed; tier-3 inconclusive count from the play copy's csf_hook.log.
+- Spend measured (7 days, 172 KB): the orchestrator's Claude jobs are the largest API-equivalent cost (~$0.85/KB
+  of game code, mostly cache reads of long contexts) against grunts' Claude ~$0.09/KB; at list prices finishing
+  costs ~$2k API-equivalent, Codex excluded (plan-only). The subscription forecast needs a few days of
+  work/usage_history.jsonl (sampled by the monitor every 10 min) before it shows weeks per account.
+- Fixed on the way: `monitor.procs()` used an undefined PROC_PAT (the tools line was always empty);
+  `grunt.claude_usage` crashed on a usage window with `resets_at: null`; jobs started from `work/*` worktrees
+  (work/t3) were not matched to the repo.

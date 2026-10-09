@@ -268,8 +268,10 @@ def main():
     except OSError:
         print("verifier already running")
         return
+    phase = lambda ph, **kw: grunt.live(mode="verifier", phase=ph, **kw)  # noqa: E731  (monitor: Verify stage)
     if a.baseline_only:
         while True:
+            phase("build tree")
             head = prepare_tree()
             ok, out = build_tree()
             if not ok:
@@ -277,7 +279,9 @@ def main():
                 record(event="build_failed", head=head)
                 return 1
             deploy([])
+            phase("regression: verified baseline smoke" + (" (full)" if a.full else ""))
             ok, bad = baseline(FULL if a.full else SHORT)
+            phase("finished")
             print(f"baseline{' (full)' if a.full else ''}: {'ok' if ok else 'FAILED'}, {len(bad)} quarantined", flush=True)
             record(event="baseline", ok=ok, quarantined=bad, head=head, full=a.full)
             if bad:
@@ -289,6 +293,7 @@ def main():
     mods = set(a.module.split(",")) if a.module else None
     done_groups, checked_baseline = 0, a.no_baseline
     while True:
+        phase("build tree")
         head = prepare_tree()
         ok, out = build_tree()
         if not ok:  # committed HEAD doesn't build: lanes' batch build check should have caught it
@@ -303,10 +308,12 @@ def main():
                 print(f"  {len(g)}: {' '.join(g[:12])}{' ...' if len(g) > 12 else ''}")
             return 0
         if not gs or (a.groups and done_groups >= a.groups):
+            phase("finished")
             verify.write_pending_ini(INI)  # leave the play copy on the verified baseline
             return 0
         if not checked_baseline:
             deploy([])
+            phase("baseline smoke (pending off)", counts=dict(pending=len(pend), groups=len(gs)))
             ok, bad = baseline(FULL if a.full else SHORT)
             if bad:
                 repo.commit(["db/verify.json", "db/functions.csv"] + [f"src/auto/{e}.cpp" for e in bad] +
@@ -319,6 +326,8 @@ def main():
             if bad:
                 continue  # rebuild the tree without them
         g = gs[0]
+        phase(f"group {done_groups + 1}/{done_groups + len(gs)}: smoke {len(g)} pending",
+              counts=dict(pending=len(pend), groups=len(gs)))
         deploy(g)
         t0 = time.time()
         good, bad, note = verify_group(g, FULL if a.full else SHORT)
