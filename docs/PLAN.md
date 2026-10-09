@@ -92,6 +92,10 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
   `wave --waves N` with `verifier.py --baseline-only --full` between waves; reports in work/waves.jsonl
 - [x] Functions over 600 B in the waves: tier X (Opus high x2, then Codex xhigh; 2 in flight), `--max-size`
   no longer caps; 639 functions / 697 KB were outside every wave
+- [ ] Spurious register args: 90 done functions are plain C++ although Hex-Rays gives them an @<ebx/esi/edi>
+  param whose only use is a `push reg` right before a call (save, or an LTCG pass-through to that call).
+  0x42F4F0 got 3 stack params where all 22 callers push 2. Check each against callers' cleanup + the next
+  call's ret immediate; a gate check that a cdecl impl's stack params match the callers' cleanup
 - [ ] Redo under the fidelity rule the 4 files that emulate x87 rounding (0x72DE90, 0x729F60, 0x7292C0, 0x538A50)
 - [ ] Feed recurring review issue kinds into the grunt prompt (`review.py report`) once samples exist per module
 - [ ] Re-test Sonnet for bulk function renames (captain functions) after waves name the callers
