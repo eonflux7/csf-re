@@ -24,9 +24,10 @@ static uint32_t GetStringDataFromObjectRef(uint32_t objectRef)
 
 static int __fastcall BuildLookupFromThreeStrings(void* self, void* /*edx*/, int /*a2*/, int /*a3*/, uint32_t* nameRefs)
 {
-    // 39 dwords: [0], [19] and [38] are filled below; [38] is the original v20, which sits directly
-    // after the 38-dword block v19 in the original frame.
-    uint32_t scratchBlock[39];
+    // Three 0x4C-byte entries (0xE4 bytes, the original's whole frame): InitScratchBlock (0x45BD10) initializes all
+    // three. [0], [19] and [38] are each entry's first dword; Hex-Rays split the block into v19[38] + v20, and a
+    // 39-dword buffer here let the init run 0x48 bytes past it (9.sav crashed ~40 s after load, 2026-10-09).
+    uint32_t scratchBlock[57];
     InitScratchBlock(scratchBlock, nullptr);
 
     scratchBlock[0] = GetStringDataFromObjectRef(nameRefs[0]);

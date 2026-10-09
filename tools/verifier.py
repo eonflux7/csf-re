@@ -190,6 +190,16 @@ def baseline(starts):
             else:
                 ok, out = grunt.smoke(deploy=False)
             if ok:
+                # a verified function that mismatches the original (0x42D3C0 returned eax for st0: 200/200 in every
+                # start, unnoticed while only verify_group read MISMATCH lines)
+                mism = [f"{e:08x}" for e in verified if f"{e:08x}" not in bad
+                        and re.search(rf"^MISMATCH {e:08X}\b", out, re.M)]
+                if mism:
+                    print(f"baseline: mismatches {' '.join(mism)}", flush=True)
+                    quarantine(mism, "differential test mismatch in game (verifier baseline)", out)
+                    bad += mism
+                    for c in mism:
+                        open(INI, "a").write(f"disable 0x{c.upper()} {verify.PENDING_TAG}\n")
                 break
             culprits, why = grunt.bisect([e for e in verified if f"{e:08x}" not in bad], max_culprits=8,
                                          first_out=out)

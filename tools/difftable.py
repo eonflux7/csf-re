@@ -180,6 +180,10 @@ def analyze(db, ea):
         4 if re.match(r"(unsigned )?__int64\b", proto) else \
         5 if re.match(r"(unsigned )?(char|bool|__int8|_BYTE)\b", proto) and "*" not in proto.split("(")[0] else \
         6 if re.match(r"(unsigned )?(__int16|short|_WORD|wchar_t)\b", proto) and "*" not in proto.split("(")[0] else 0
+    if ret not in (1, 2):
+        import api  # the binary says st0 where Hex-Rays' prototype says int/void (0x42D3C0, 0x6FD180): compare st0
+        if api.returns_fpu(ea, db):
+            ret = 2
     if conv not in (2, 3):
         this_max = 0
         fl_this = {}

@@ -140,9 +140,13 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 - [x] Smoke pool (2026-10-09): 8 play copies (`tools/pool.py`, `playcopy.py`), several instances at once (mutex
       renamed in the DLL), fail-fast on CRASH, bisect runs capped at 2x the crash time + k-way across the pool,
       verifier starts side by side; default smoke 15 -> 30 s (adaptive end opt-in)
-- [ ] `9.sav` crashes 44 s after load on the verified baseline: bisect it on the pool
-- [ ] 0x42D3C0 HudQueryWidgetValue mismatches 200/200 in every start, yet is verified: the baseline smoke ignores
-      MISMATCH lines (only verify_group quarantines them). Quarantine mismatches in `baseline()` too
+- [x] `9.sav` crashes ~40 s after load on the verified baseline: 0x461750 sized a 3-entry (0xE4 B) stack block from
+      Hex-Rays' split `v19[38]` + `v20` (39 dwords); the callee's init overran it. Fixed (2026-10-09)
+- [x] 0x42D3C0 HudQueryWidgetValue mismatches 200/200: returned eax where the original returns st0 (0x70DDF0 is the
+      shared `return 0.0f` stub). Fixed + gate rejects int for st0 returns (api.returns_fpu, found 0x6FD180 too);
+      the diff table compares st0 for them; `baseline()` quarantines MISMATCH lines too (2026-10-09)
+- [ ] Gate gap: a stack buffer passed to a callee that initializes more bytes than the buffer holds (0x461750:
+      Hex-Rays splits one local object into an array + scalars). Size the buffer from the original's frame layout
 - [ ] Gate gap: a call through an indirect forwarder (0x4F5170 `jmp [eax+0x20]`) must pass the stack args the
       target pops; Hex-Rays attaches an early-pushed arg to the wrong call (0x45B570 crashed, gate passed both versions)
 - [ ] Use the user's saves 2..24 (2026-10-09) in `--full` (`CSF_VERIFY_SAVES`) once each is known to pass alone

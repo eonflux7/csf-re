@@ -720,3 +720,22 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   grunt followed, the virtual's ret 4 popped our frame. Fixed by hand; 4 x 60 s FR01 clean. The gate passed both.
 - The user's saves 2..24 load. In the first round: 9.sav crashes 44 s after load; 0x42D3C0 HudQueryWidgetValue
   mismatches 200/200 in every start although verified (baseline() ignores MISMATCH). Both in the backlog.
+
+## 2026-10-09 — 9.sav crash and the 0x42D3C0 mismatch
+- **9.sav**: reproduced 3/3 on the verified baseline (crash 36-66 s after load), 2/2 clean with `disable_module auto`
+  (control: core dev-start hooks stay). Two of the three crashes had EIP in our DLL at the same offset: linker map ->
+  0x461750 BuildLookupFromThreeStrings (script_commands; ledger hits=0, never executed before). Its stack object
+  is three 0x4C-byte entries (0xE4 B = the whole frame), all initialized by 0x45BD10; Hex-Rays split it into
+  `v19[38]` + `v20`, the grunt sized the buffer at 39 dwords, the init ran 0x48 B past it. Fixed (57 dwords): 4/4 x
+  120 s clean. The gate can't see buffer sizes (backlog).
+- **0x42D3C0 mismatch**: callee 0x70DDF0 is `fld [0x82D4CC]; ret` (the COMDAT-folded `return 0.0f` in ~100 vtable
+  slots); Hex-Rays typed its call `int` inside 0x42D3C0 and 0x42D3C0 itself `int`, so ours returned eax and the
+  diff compared eax (both garbage). Now `api.returns_fpu` (Hex-Rays float/double for the callee itself, or a ret path
+  ending in an x87 result / a call or tail jump to such a function) feeds the gate: a binding or own definition
+  returning non-float for an st0 function fails. Sweep of all sources: one more, 0x6FD180 (void, but returns
+  RpLightGetConeAngle's st0). difftable.py compares st0 for both (only these 2 entries changed). 9.sav: 0x42D3C0
+  200 compared / 0 mismatched.
+- `verifier.baseline()` now quarantines MISMATCH lines of verified functions (it ignored them, so 0x42D3C0 stayed
+  verified while mismatching in every start).
+- The fixed functions are pending again (code hash changed); these were investigation runs (`CSF_NO_LEDGER=1`), the
+  verifier verifies them as usual.
