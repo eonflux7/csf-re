@@ -425,6 +425,164 @@ def returns_fpu(ea, db, depth=3):
     return False
 
 
+_callers = None
+EAX_RE = re.compile(r"\b(eax|ax|al|ah)\b")
+
+
+def callers_of(ea, db):
+    """Functions with a direct call to ea (export/functions.jsonl callees)."""
+    global _callers
+    if _callers is None:
+        _callers = collections.defaultdict(list)
+        for c, f in db.F.items():
+            for t in f.get("callees") or []:
+                _callers[t].append(c)
+    return _callers.get(ea, [])
+
+
+_image = None
+
+
+def address_taken(ea):
+    """The function's absolute address appears anywhere in the exe image (vtables, command / callback tables,
+    `push offset`, `mov [x], offset`): it has callers the direct-call list doesn't show."""
+    global _image
+    if _image is None:
+        import pefile
+        from packet import ROOT as _R
+        _image = pefile.PE(os.path.join(_R, "work", "pc", "CommXPC.exe"), fast_load=True).get_memory_mapped_image()
+    return _image.find(ea.to_bytes(4, "little")) != -1
+
+
+def _eax_dead_after(fn, ins, idx, start, db, depth, budget=200):
+    """Every path from instruction index `start` writes eax (or calls) before reading it. A `ret` hands eax to the
+    function's own callers (ret_unused of it, depth-limited); a jump out of the function is a tail call: unknown."""
+    seen, work = set(), [start]
+    while work:
+        k = work.pop()
+        while True:
+            if k in seen:
+                break
+            seen.add(k)
+            budget -= 1
+            if budget < 0 or k >= len(ins):
+                return False
+            i = ins[k]
+            m, ops = i.mnemonic, i.op_str
+            dst, _, srcop = (x.strip() for x in ops.partition(","))
+            if m == "call":
+                break
+            if m == "ret" or m == "jmp" and ops.startswith("0x") and int(ops, 16) not in idx:
+                if not _returns_nothing(fn, db, depth):
+                    return False  # (a tail jump: eax is the target's, or ours passed through a void target)
+                break
+            if m.startswith("j"):
+                if EAX_RE.search(ops) or not ops.startswith("0x"):
+                    return False  # jmp eax / jump table
+                t = int(ops, 16)
+                if t not in idx:
+                    return False  # conditional tail jump
+                work.append(idx[t])
+                if m == "jmp":
+                    break
+                k += 1
+                continue
+            if m in ("xor", "sub") and dst == srcop and EAX_RE.fullmatch(dst):
+                break
+            if m in ("mov", "lea", "movzx", "movsx", "pop", "setne", "sete") and EAX_RE.fullmatch(dst) \
+                    and not EAX_RE.search(srcop):
+                break  # (a write to al/ax: the caller only ever looks at that part)
+            if m.startswith("set") and EAX_RE.fullmatch(dst):
+                break
+            if EAX_RE.search(ops) or m in ("cdq", "cwde", "stosd", "stosb", "stosw", "cmpxchg"):
+                return False  # reads eax (implicitly for the string/convert ops)
+            k += 1
+    return True
+
+
+def eax_undefined_on_return(ea, db, budget=2000):
+    """Some path from the entry reaches a `ret` without writing eax (no eax/ax/al destination, no call): the
+    original's return value is then whatever the caller left in eax, so a diff can't compare it (MSVC void
+    std::string _Tidy 0x544310: `jb` past the free straight to `ret`, Hex-Rays still says int)."""
+    from packet import disasm
+    if ea not in db.F:
+        return False
+    ins = disasm(ea, db.F[ea]["size"])
+    if not ins:
+        return False
+    idx = {i.address: k for k, i in enumerate(ins)}
+    seen, work = set(), [0]
+    while work:
+        k = work.pop()
+        while k < len(ins) and k not in seen:
+            seen.add(k)
+            budget -= 1
+            if budget < 0:
+                return False
+            i = ins[k]
+            m, ops = i.mnemonic, i.op_str
+            dst = ops.partition(",")[0].strip()
+            if m == "call" or EAX_RE.fullmatch(dst) and m not in ("cmp", "test", "push") \
+                    or m in ("cdq", "cwde", "lodsd", "lodsb", "lodsw"):
+                break  # eax defined on this path
+            if m == "ret":
+                return True
+            if m.startswith("j"):
+                if not ops.startswith("0x") or int(ops, 16) not in idx:
+                    break  # tail jump: the target defines the result
+                work.append(idx[int(ops, 16)])
+                if m == "jmp":
+                    break
+            k += 1
+    return False
+
+
+def _returns_nothing(fn, db, depth):
+    """fn's eax is never looked at by its callers: Hex-Rays' own prototype of fn is void (virtual methods: callers
+    unknown), else ret_unused of fn (depth-limited)."""
+    a = ida_abi().get(fn)
+    if a and c_type(a.get("ret") or "") == "void":
+        return True
+    return depth > 0 and bool(ret_unused(fn, db, depth - 1))
+
+
+def ret_unused(ea, db, depth=2):
+    """True when no caller reads eax after calling ea: on every path from every direct call site eax is written (or
+    clobbered by another call) before any read; a caller returning right after passes the question to its own
+    callers. None when that can't be shown (no direct callers, address taken by a vtable, a tail jump, depth).
+    Hex-Rays types a void function int when its last call's result happens to sit in eax (MSVC std::string _Tidy
+    0x544310 / 0x727250: `return free(p)` on one path, leftover eax on the other) and the diff compares garbage."""
+    from packet import disasm
+    key = (ea, depth)
+    if key in _ret_unused_memo:
+        return _ret_unused_memo[key]
+    _ret_unused_memo[key] = None  # recursion guard
+    res = None
+    cs = callers_of(ea, db) if ea not in db.owner and not address_taken(ea) else []
+    if cs:
+        res = True
+        for c in cs:
+            ins = disasm(c, db.F[c]["size"])
+            idx = {i.address: k for k, i in enumerate(ins)}
+            sites = [k for k, i in enumerate(ins) if i.mnemonic in ("call", "jmp") and i.op_str == f"0x{ea:x}"]
+            for k in sites:
+                if ins[k].mnemonic == "jmp":
+                    ok = _returns_nothing(c, db, depth)
+                else:
+                    ok = _eax_dead_after(c, ins, idx, k + 1, db, depth)
+                if not ok:
+                    res = None
+                    break
+            if not sites or res is None:
+                res = None
+                break
+    _ret_unused_memo[key] = res
+    return res
+
+
+_ret_unused_memo = {}
+
+
 def float_ret_errors(src, db):
     """Gate: the file's own function and every CSF_FUNC binding must return float/double where the original returns
     in st0. An int there reads eax (garbage) and leaves the caller's x87 stack one short."""

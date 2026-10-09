@@ -14,7 +14,7 @@ CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x690E60, (void* block));
 // Then the string is reset to the empty state with the small-buffer capacity (15).
 static int __fastcall ResetStringStorage(void* self, void* /*edx*/)
 {
-    int result;
+    int result = 0;  // the original (a void _Tidy) leaves eax undefined when nothing is freed
 
     if (*(uint32_t*)((uint8_t*)self + 0x1C) >= 0x10)
     {

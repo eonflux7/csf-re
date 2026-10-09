@@ -782,3 +782,19 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Fixed on the way: `monitor.procs()` used an undefined PROC_PAT (the tools line was always empty);
   `grunt.claude_usage` crashed on a usage window with `resets_at: null`; jobs started from `work/*` worktrees
   (work/t3) were not matched to the repo.
+
+## 2026-10-09 — Backlog crush (a): diff numbers made trustworthy
+
+- Inconclusive tier-3 runs already never counted as `compared` (hook/diff.cpp), so they were no evidence; they were
+  just invisible. csf_diff_summary.txt now writes `K inconclusive` (also for functions with 0 compared) and the
+  ledger keeps `inconclusive` per function.
+- The 5 "mismatched" functions were diff noise, not code bugs: 0x45D4D0 / 0x6BF280 / 0x726C10 are the heap-read
+  artifact (mismatches recorded by v1, before v2 made them inconclusive; same code hash, so the ledger kept them);
+  0x544310 / 0x727250 are MSVC's void `std::string::_Tidy` (`jb` past the free straight to `ret`): Hex-Rays says int,
+  the original's eax is the caller's. New exact checks in api.py: `eax_undefined_on_return` (a path reaches `ret`
+  without writing eax) and `ret_unused` (every path after every direct call writes eax before reading it; a `ret`
+  defers to the caller's callers or its Hex-Rays void prototype; any function whose address appears in the image is
+  excluded: tables, vtables). difftable.py compares no return for either (~195 table entries, ~15 of them
+  undefined-eax). `verify.py reset` dropped the 5 functions' diff evidence; the two _Tidy impls now initialize
+  their result (was an uninitialized read).
+- Worktree cleanup (5 merged ones) was refused by the permission classifier in this background job: left to the user.

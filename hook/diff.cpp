@@ -319,9 +319,9 @@ DWORD WINAPI summary_thread(void*) {
         std::string path = std::string(hook::g_dir) + "csf_diff_summary.txt";
         if (FILE* f = fopen(path.c_str(), "w")) {
             for (int i = 0; i < g_nslots; ++i)
-                if (g_slots[i].compared)
-                    fprintf(f, "%08X %6u compared %4u mismatched  %s\n", g_slots[i].info->addr, g_slots[i].compared,
-                            g_slots[i].mismatches, g_slots[i].name);
+                if (g_slots[i].compared || g_slots[i].inconclusive)
+                    fprintf(f, "%08X %6u compared %4u mismatched %4u inconclusive  %s\n", g_slots[i].info->addr,
+                            g_slots[i].compared, g_slots[i].mismatches, g_slots[i].inconclusive, g_slots[i].name);
             fclose(f);
         }
     }

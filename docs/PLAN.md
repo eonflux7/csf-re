@@ -66,18 +66,20 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 
 ## Current focus (priority order)
 
-1. **Waves by centrality** with the new loop: `wave --waves -1` runs them in rank order with the stop rule and a
+1. **Backlog crush (user, 2026-10-09)** before more waves, in this order: (a) trustworthy numbers: diff-table
+   returns, mismatch noise, inconclusive counts [done 2026-10-09]; (b) the 41 gate-exhausted queue items: check the
+   semcheck "references must match" rule (27: field offsets / constants it calls unused) and the mechanical file rules
+   (14), fix the rule or normalize(), re-run the grunts; (c) spurious register args sweep (90 done functions + the edi
+   cluster 0x42F4F0 0x42F820 0x431780 0x431840 0x4337E0); (d) the 30 in-game queue items (15 baseline breaks, 15
+   smoke failures) in smoke-pool batches + 3 Opus review rejections + 2 vslot + 1 link; (e) the two gate gaps
+   (stack buffer size, forwarder args).
+2. **Waves by centrality** with the new loop: `wave --waves -1` runs them in rank order with the stop rule and a
    full baseline regression smoke between waves (`wave --next`: m45AAF0 = script_commands, game_data_defs, hud, scene_loader,
-   char_action_fsm, ...). hud only had a 12-function test batch (the loop's first end-to-end run); the module
-   itself is 15/150 functions (1.4%) and still needs its wave.
-2. **Diff tier 3: merge + feed the verifier** (branch diff-tier3-v2: v2 smokes clean, FR01 and 9.sav 60 s each,
-   ~90 of 413 tier-3 functions compared per start; see JOURNAL 2026-10-09 "Diff tier 3 v2"). Left: merge to
-   master (user's call), make verify.py treat `T3 ... inconclusive` as no evidence, count inconclusive in
-   csf_diff_summary.txt, then v2: indirect/virtual calls (862 functions blocked on them).
-3. **Manual playtest at ~25% of game code** (user): the monitor shows live coverage (Progress `game` line, Areas
+   char_action_fsm, ...).
+3. **Diff tier 3 v3**: indirect/virtual calls (862 functions blocked on them). v2 is merged; `T3 ... inconclusive`
+   runs never count as compared and are now counted in csf_diff_summary.txt and the ledger (`inconclusive`).
+4. **Manual playtest at ~25% of game code** (user): the monitor shows live coverage (Progress `game` line, Areas
    tab table: hit / never run before); afterwards `verify.py ingest` records the hits.
-4. **queue/** (55 items): the 8 menu functions the first verifier run quarantined (they broke the FR01 scene start;
-   the menu wave had only smoked the menu tour), 47 earlier escalations.
 5. **Types for the next waves**: field names of CMenuScreen, TCharTask, TAiState, CCharWeaponFsm; the engine family
    0x860178 and the 0x82E598 task subfamily (captain family at wave prep covers unnamed classes).
 6. **Verification depth**: `verifier.py --full` over everything once (menu tour + savegame per group), then review
@@ -151,6 +153,10 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
       Hex-Rays splits one local object into an array + scalars). Size the buffer from the original's frame layout
 - [ ] Gate gap: a call through an indirect forwarder (0x4F5170 `jmp [eax+0x20]`) must pass the stack args the
       target pops; Hex-Rays attaches an early-pushed arg to the wrong call (0x45B570 crashed, gate passed both versions)
+- [x] Diff noise (2026-10-09): the table no longer compares a return the original leaves undefined on some path
+      (`api.eax_undefined_on_return`: void std::string _Tidy 0x544310/0x727250, Hex-Rays says int) or no caller reads
+      (`api.ret_unused`: every path after every direct call writes eax first; address-taken functions excluded):
+      ~195 entries. `verify.py reset WHY EA...` drops diff evidence recorded under a harness bug (5 mismatched reset)
 - [ ] Use the user's saves 2..24 (2026-10-09) in `--full` (`CSF_VERIFY_SAVES`) once each is known to pass alone
 
 ### Cutover

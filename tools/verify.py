@@ -25,6 +25,7 @@ Usage:
   verify.py stale           rebuild, list functions whose code changed since their evidence (exit 1 if any)
   verify.py pending [--ini PATH] [--except FILE]   list pending functions / write them as `disable` lines tagged
                             `# pending` into the play copy's ini (except the addresses in FILE: a verify group)
+  verify.py reset WHY EA...  drop the diff evidence of unchanged code whose diff was wrong (harness / table fix)
   verify.py bootstrap OLD_BUILD_DIR   mark functions verified whose compiled code is identical in OLD_BUILD_DIR
                             (the build the last passing lanes smoke ran) - once, when the ok field was introduced
 
@@ -138,7 +139,9 @@ def _ingest(hashes):
     for line in _read("csf_diff_summary.txt").splitlines():
         f = line.split()
         if len(f) >= 4 and re.fullmatch(r"[0-9a-fA-F]{8}", f[0]):
-            diffs[f[0].lower()] = (int(f[1]), int(f[3]))
+            # "<ea> N compared M mismatched [K inconclusive] name": inconclusive tier-3 runs are no evidence
+            inc = int(f[5]) if len(f) > 6 and f[6] == "inconclusive" else 0
+            diffs[f[0].lower()] = (int(f[1]), int(f[3]), inc)
     # hooks installed in this (passing) smoke: "hook 00543e10 auto Name" / "diff 00543e10 auto Name"
     installed = {m.group(1).lower() for m in re.finditer(r"^(?:\S+ )?(?:hook|diff) ([0-9a-fA-F]{8}) ",
                                                          _read("csf_hook.log"), re.M)}
@@ -159,9 +162,33 @@ def _ingest(hashes):
         if ea in diffs:
             e["diffed"] += diffs[ea][0]
             e["mismatched"] += diffs[ea][1]
+            if diffs[ea][2]:
+                e["inconclusive"] = e.get("inconclusive", 0) + diffs[ea][2]
     save(led)
-    print(f"verify: {n_ok} hooks installed, {n_ev} functions executed in this smoke, {len(diffs)} diffed; "
+    print(f"verify: {n_ok} hooks installed, {n_ev} functions executed in this smoke, "
+          f"{sum(1 for d in diffs.values() if d[0])} diffed, {sum(1 for d in diffs.values() if d[2])} with "
+          f"inconclusive tier-3 runs; "
           f"{n_new} new code hashes")
+
+
+def reset(eas, why):
+    """Drop the diff evidence (diffed / mismatched / inconclusive) of functions whose code is unchanged but whose
+    diff was wrong: a harness or diff-table fix (e.g. a return the original leaves undefined). The next smokes
+    re-record it. Logged in the entry (`reset`)."""
+    today = datetime.date.today().isoformat()
+    with ledger_lock():
+        led = load()
+        for ea in eas:
+            ea = ea.lower().replace("0x", "").zfill(8)
+            e = led.get(ea)
+            if not e:
+                print(f"{ea}: not in the ledger")
+                continue
+            print(f"{ea}: diffed {e['diffed']} mismatched {e['mismatched']} -> 0")
+            e["diffed"] = e["mismatched"] = 0
+            e.pop("inconclusive", None)
+            e["reset"] = f"{today}: {why}"
+        save(led)
 
 
 def done_rows():
@@ -264,6 +291,9 @@ def main():
     p = sub.add_parser("pending")
     p.add_argument("--ini")
     p.add_argument("--except", dest="exc", help="file of addresses to keep enabled (a verify group)")
+    rs = sub.add_parser("reset")
+    rs.add_argument("why")
+    rs.add_argument("eas", nargs="+")
     b = sub.add_parser("bootstrap")
     b.add_argument("old_build")
     a = ap.parse_args()
@@ -274,6 +304,9 @@ def main():
             print(f"{len(pend)} pending functions disabled in {a.ini} ({len(keep)} kept on)")
         else:
             print("\n".join(pending()))
+        return
+    if a.cmd == "reset":
+        reset(a.eas, a.why)
         return
     if a.cmd == "bootstrap":
         bootstrap(a.old_build)
