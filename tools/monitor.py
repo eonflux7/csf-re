@@ -480,6 +480,70 @@ def verifier():
                 events=ev, pending=pend)
 
 
+def live_coverage(max_age=60):
+    """What the running game executes, from the hook's csf_hook_hits.txt in the play copy (rewritten every few
+    seconds): installed hooks hit, and how many of them had never run in any smoke before (ledger hits 0) — the
+    coverage a playtest adds. None when the file is older than 60 s (no game running)."""
+    from grunt import PLAY
+    p = os.path.join(PLAY, "csf_hook_hits.txt")
+    try:
+        age = time.time() - os.path.getmtime(p)
+    except OSError:
+        return None
+    if age > max_age:
+        return None
+    hits = {}
+    for l in open(p, errors="replace"):
+        f = l.split()
+        if len(f) >= 2 and re.fullmatch(r"[0-9a-fA-F]{8}", f[0]):
+            hits[f[0].lower()] = int(f[1])
+    try:
+        led = json.load(open(os.path.join(ROOT, "db", "verify.json")))
+    except (OSError, ValueError):
+        led = {}
+    rows = cached("rows", 20, lambda: list(csv.DictReader(open(os.path.join(ROOT, "db", "functions.csv")))))
+    rows = {r["ea"]: r for r in rows} if isinstance(rows, list) else {}
+    mt = cached("modules", 60, module_table)
+    mods = {m["id"]: m for m in mt} if isinstance(mt, list) else {}
+    size = lambda ea: int(rows.get(ea, {}).get("size") or 0)  # noqa: E731
+    auto = cached("auto_files", 30, lambda: {os.path.basename(f)[:8] for f in glob.glob(os.path.join(ROOT, "src", "auto", "*.cpp"))})
+    auto = auto if isinstance(auto, set) else set()
+    fresh = lambda ea: ea in auto and not (led.get(ea) or {}).get("hits")  # noqa: E731  (the ledger tracks src/auto)
+    hit = [ea for ea, c in hits.items() if c > 0]
+    new = [ea for ea in hit if fresh(ea)]
+    per = collections.defaultdict(lambda: [0, 0, 0])  # area -> installed, hit, new
+    for ea, c in hits.items():
+        m = mods.get(rows.get(ea, {}).get("module"))
+        a = area_of(m) if m else "other"
+        per[a][0] += 1
+        per[a][1] += c > 0
+        per[a][2] += c > 0 and fresh(ea)
+    newest = sorted(new, key=lambda ea: -hits[ea])[:4]
+    return dict(age=age, installed=len(hits), hit=len(hit), hit_kb=sum(map(size, hit)) / 1024,
+                new=len(new), new_kb=sum(map(size, new)) / 1024, per=dict(per),
+                sample=[rows.get(ea, {}).get("name") or ea for ea in newest])
+
+
+def coverage_line(L):
+    t = Text("game      ", style="bold bright_green")
+    t.append(f"hit {L['hit']:,}/{L['installed']:,} ({L['hit'] / max(1, L['installed']):.0%}, {L['hit_kb']:.0f} KB)  ")
+    t.append(f"never run before: {L['new']:,} ({L['new_kb']:.1f} KB)", style="bold yellow" if L["new"] else "dim")
+    if L["sample"]:
+        t.append("  " + ", ".join(L["sample"]), style="dim")
+    t.append(f"  {L['age']:.0f}s ago", style="dim")
+    t.no_wrap, t.overflow = True, "ellipsis"
+    return t
+
+
+def coverage_table(L):
+    tb = Table(box=None, padding=(0, 2), title="live game coverage (csf_hook_hits.txt)", title_justify="left")
+    for c in ("area", "installed", "hit", "never run before"):
+        tb.add_column(c, justify="left" if c == "area" else "right")
+    for a, (n, h, nw) in sorted(L["per"].items(), key=lambda x: -x[1][1]):
+        tb.add_row(a, f"{n:,}", f"{h:,}", Text(f"{nw:,}", style="bold yellow" if nw else "dim"))
+    return tb
+
+
 def verifier_line(V):
     t = Text("verifier  ", style="bold", no_wrap=True, overflow="ellipsis")
     if V["alive"]:
@@ -662,6 +726,9 @@ def panel_progress(areas=True):
         if isinstance(V, dict):
             body.append(verifier_line(V))
         body.append(review_line(G))
+        L = cached("coverage", 3, live_coverage)
+        if isinstance(L, dict):
+            body.append(coverage_line(L))
         if areas:
             body += [Rule(style="dim"), area_table(S)]
     return Panel(Group(*body), title="Progress", border_style="yellow")

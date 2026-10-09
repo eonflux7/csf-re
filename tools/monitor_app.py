@@ -157,7 +157,9 @@ class Monitor(App):
 
     def area_view(self):
         S = M.cached("stats", 30, M.stats)
-        return M.area_table(S) if isinstance(S, dict) else Text(f"stats n/a: {S}", style="dim")
+        t = M.area_table(S) if isinstance(S, dict) else Text(f"stats n/a: {S}", style="dim")
+        L = M.cached("coverage", 3, M.live_coverage)
+        return Group(t, Text(""), M.coverage_table(L)) if isinstance(L, dict) else t
 
     def commit_rows(self):
         jobs = M.cached("jobs", 1, M.claude_jobs)
