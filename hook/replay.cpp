@@ -12,6 +12,16 @@
 // pointers into the stack count as equal) and answered from it without executing (results returned, recorded
 // bytes re-applied): each callee's side effects happen once. Compared afterwards: return value and regions as in
 // tier 1, plus the call trace (here).
+//
+// When ours leaves the recording (another callee, one call too many, a recorded return it can't be given), its
+// remaining calls could only run for real, doing their side effects a second time (v1 did: the first smoke died in
+// a tree the callees had already changed). Instead ours is abandoned there: t3_pre longjmps back into diff.cpp's
+// run(), which puts the original's memory back and returns the original's result.
+//
+// Callees' writes outside the snapshot regions and the caller's stack (heap objects) stay done when ours runs: ours
+// may read them and take another path (0x6BF280 tests frame->parent, which the original's RwFrameRemoveChild had
+// just cleared). Undoing them is unsafe (a freeing callee's bytes are the allocator's), so they're only watched,
+// 256 bytes behind every heap pointer arg / ecx: a mismatch after such a write is inconclusive, not a DIFF.
 #include <windows.h>
 #include <intrin.h>
 #include <cstdarg>
@@ -40,29 +50,50 @@ constexpr int kMaxRecs = 64, kMaxDeltas = 128, kPeek = 64;  // kPeek: bytes watc
 struct Delta { uint32_t off; uint8_t where, val; };       // where: 0 F's regions, 1..8 stack arg k-1, 9 ecx
 struct Rec {
     uint32_t callee, ecx, edx, args[8], eax, edxr;
+    uint32_t pop;   // bytes the callee really popped: measured, a virtual reached by a tail jump pops its own
     double fp;
+    int8_t retarg;  // eax was arg k (0..7) / ecx (8): ours gets its own; -1 a value; -2 an unmatched stack address
     uint32_t nd;
     bool overflow;
+    bool heapw;     // changed bytes behind a heap pointer arg / ecx
     Delta d[kMaxDeltas];
 };
 
 Rec g_recs[kMaxRecs];
 int g_nrec, g_cursor;
-bool g_lost;  // a record didn't fit (calls or deltas): the comparison is inconclusive
+bool g_lost, g_heapw;  // a record didn't fit (calls or deltas): the comparison is inconclusive
 Mode g_mode;
 DWORD g_thread;
 int g_depth;
-uint32_t g_realret;
+uint32_t g_realret, g_retslot;  // the recorded call's return address and where it sat
 uint8_t g_pre[16384], g_spre[10][kPeek];
 uint32_t g_sptr[10];  // stack pointers watched during the current recorded call (0 = none)
+constexpr uint32_t kHeapPeek = 256;
+uint8_t g_hpre[10][kHeapPeek];
+uint32_t g_hptr[10];  // heap pointers watched (0 = none)
 char g_msg[256];
 bool g_mismatch;
+int g_abort;      // ours was abandoned: 1 it diverged, 2 the recording can't answer it
+void* g_jb[5];    // __builtin_setjmp buffer, armed by diff.cpp's run() around ours
 
 struct Region { uint32_t addr, size; };
 Region g_regions[9];
 int g_nregions;
 
 void* g_stubs;
+
+bool in_region(uint32_t p);
+
+// p .. p+n committed and readable (not a guard page)
+bool readable(uint32_t p, uint32_t n) {
+    if (p < 0x10000)
+        return false;
+    MEMORY_BASIC_INFORMATION mb;
+    if (!VirtualQuery((void*)p, &mb, sizeof mb) || mb.State != MEM_COMMIT ||
+        (mb.Protect & (PAGE_NOACCESS | PAGE_GUARD)) || !(mb.Protect & 0xEE))  // 0xEE: any readable protection
+        return false;
+    return p + n <= (uint32_t)mb.BaseAddress + mb.RegionSize;
+}
 
 bool on_stack(uint32_t p) {
     return p >= __readfsdword(8) && p < __readfsdword(4);  // TEB StackLimit .. StackBase
@@ -71,6 +102,13 @@ bool on_stack(uint32_t p) {
 uint32_t peek_len(uint32_t p) {
     uint32_t top = __readfsdword(4);
     return top - p < kPeek ? top - p : kPeek;
+}
+
+bool in_region(uint32_t p) {
+    for (int k = 0; k < g_nregions; ++k)
+        if (p - g_regions[k].addr < g_regions[k].size)
+            return true;
+    return false;
 }
 
 void region_copy(uint8_t* out) {
@@ -103,8 +141,20 @@ void mismatch(const char* fmt, ...) {
     va_end(ap);
 }
 
+// Stack args of a recorded call: the prototype's, or what the callee really popped if that's more
+uint32_t nargs(const Callee& c, const Rec& R) {
+    uint32_t n = c.nargs > R.pop / 4 ? c.nargs : R.pop / 4;
+    return n < 8 ? n : 8;
+}
+
 bool same_arg(uint32_t o, uint32_t u) {
     return o == u || (on_stack(o) && on_stack(u));  // locals live at other addresses in ours
+}
+
+[[noreturn]] void abandon(int why) {
+    g_mode = OFF;
+    g_abort = why;
+    __builtin_longjmp(g_jb, 1);
 }
 
 void add_delta(Rec& R, uint8_t where, uint32_t off, uint8_t val) {
@@ -132,6 +182,8 @@ int __cdecl t3_pre(Regs* r) {
     const Callee& c = kCallees[i];
     uint32_t* a = (uint32_t*)((uint8_t*)r + 40);
     if (g_mode == RECORD) {
+        if (g_lost)
+            return 0;  // ours won't run: nothing more to record
         if (g_nrec >= kMaxRecs) {
             g_lost = true;
             return 0;
@@ -141,40 +193,43 @@ int __cdecl t3_pre(Regs* r) {
         R.callee = i;
         R.ecx = r->ecx;
         R.edx = r->edx;
-        memcpy(R.args, a, 4 * c.nargs);
+        uint32_t room = __readfsdword(4) - (uint32_t)a;  // all 8: the measured pop may show more args
+        memcpy(R.args, a, room < sizeof R.args ? room : sizeof R.args);
         region_copy(g_pre);
         for (uint32_t k = 0; k < 10; ++k) {
             uint32_t p = k < 8 ? (k < c.nargs ? R.args[k] : 0) : k == 9 && (c.regs & 1) ? r->ecx : 0;
             g_sptr[k] = p && on_stack(p) && p > (uint32_t)a ? p : 0;  // a caller's local, not the callee's frame
             if (g_sptr[k])
                 memcpy(g_spre[k], (void*)p, peek_len(p));
+            g_hptr[k] = p && !on_stack(p) && !in_region(p) && readable(p, kHeapPeek) ? p : 0;
+            if (g_hptr[k])
+                memcpy(g_hpre[k], (void*)p, kHeapPeek);
         }
         g_t3_postfp = c.ret == 1;
-        g_realret = *(uint32_t*)((uint8_t*)r + 36);
+        g_retslot = (uint32_t)r + 36;
+        g_realret = *(uint32_t*)g_retslot;
         *(uint32_t*)((uint8_t*)r + 36) = (uint32_t)(void*)&t3_post_stub;  // the callee returns to us first
         g_depth = 1;
         return 0;
     }
-    // REPLAY
-    // Diverged: this call runs for real (ours is what the game executes anyway), and replay stops for the rest of
-    // the run, or the real callee's own nested calls would be answered from the recording.
+    // REPLAY. Diverged: running this call for real would repeat side effects the original's run already did.
     if (g_cursor >= g_nrec) {
         mismatch("call %d: ours calls %08X, the original made only %d calls", g_cursor + 1, c.addr, g_nrec);
-        g_mode = OFF;
-        return 0;
+        abandon(1);
     }
     Rec& R = g_recs[g_cursor];
     if (R.callee != i) {
         mismatch("call %d: ours calls %08X, the original %08X", g_cursor + 1, c.addr, kCallees[R.callee].addr);
-        g_mode = OFF;
-        return 0;
+        abandon(1);
     }
+    if (R.retarg == -2)
+        abandon(2);  // the original's stack address: dead in ours' frame layout
     ++g_cursor;
     if ((c.regs & 1) && !same_arg(R.ecx, r->ecx))
         mismatch("call %d to %08X: ecx orig %08X ours %08X", g_cursor, c.addr, R.ecx, r->ecx);
     if ((c.regs & 2) && !same_arg(R.edx, r->edx))
         mismatch("call %d to %08X: edx orig %08X ours %08X", g_cursor, c.addr, R.edx, r->edx);
-    for (uint32_t k = 0; k < c.nargs; ++k)
+    for (uint32_t k = 0, n = nargs(c, R); k < n; ++k)
         if (!same_arg(R.args[k], a[k])) {
             mismatch("call %d to %08X: arg %u orig %08X ours %08X", g_cursor, c.addr, k + 1, R.args[k], a[k]);
             break;
@@ -189,9 +244,9 @@ int __cdecl t3_pre(Regs* r) {
                 *((uint8_t*)p + d.off) = d.val;
         }
     }
-    r->eax = R.eax;
+    r->eax = R.retarg == 8 ? r->ecx : R.retarg >= 0 ? a[R.retarg] : R.eax;
     r->edx = R.edxr;
-    g_t3_pop = c.pop;
+    g_t3_pop = R.pop;
     if (c.ret == 1) {
         g_t3_fp = R.fp;
         return 2;
@@ -205,19 +260,58 @@ uint32_t __cdecl t3_post(Regs* r) {
     R.eax = r->eax;
     R.edxr = r->edx;
     R.fp = g_t3_postfp ? g_t3_fp : 0;
+    R.pop = (uint32_t)r + 36 - (g_retslot + 4);  // esp before t3_post_stub's pushes, minus esp right after the call
+    const Callee& c = kCallees[R.callee];
+    R.retarg = -1;
+    if (c.ret == 0 && R.eax) {  // returns one of its pointer args (vector ops return `out`, ctors `this`)
+        if ((c.regs & 1) && R.eax == R.ecx)
+            R.retarg = 8;
+        for (uint32_t k = 0, n = nargs(c, R); R.retarg < 0 && k < n; ++k)
+            if (R.eax == R.args[k])
+                R.retarg = (int8_t)k;
+        if (R.retarg < 0 && on_stack(R.eax))
+            R.retarg = -2;
+    }
     for (int k = 0, o = 0; k < g_nregions; o += g_regions[k++].size) {
         const uint8_t* now = (const uint8_t*)g_regions[k].addr;
         for (uint32_t j = 0; j < g_regions[k].size; ++j)
             if (now[j] != g_pre[o + j])
                 add_delta(R, 0, o + j, now[j]);
     }
+    // A stack buffer's bytes before the call are the caller's leftovers, different in ours: a byte the callee
+    // stored but that happened to hold that value already is still a write ours needs (0x739FA0 stores a heap
+    // pointer into an uninitialized local whose stale high bytes matched: ours got half a pointer). So the whole
+    // span from the first to the last changed byte, widened to dwords, is replayed.
+    // A window ends where the next watched pointer starts: a byte belongs to the closest buffer below it (frame
+    // layouts differ in ours, so a write into one buffer replayed relative to another lands on anything).
     for (uint32_t k = 0; k < 10; ++k)
         if (g_sptr[k]) {
             const uint8_t* now = (const uint8_t*)g_sptr[k];
-            for (uint32_t j = 0, m = peek_len(g_sptr[k]); j < m; ++j)
-                if (now[j] != g_spre[k][j])
-                    add_delta(R, (uint8_t)(k == 9 ? 9 : k + 1), j, now[j]);
+            uint32_t m = peek_len(g_sptr[k]), lo = m, hi = 0;
+            bool dup = false;
+            for (uint32_t q = 0; q < 10; ++q) {
+                if (q != k && g_sptr[q] > g_sptr[k] && g_sptr[q] - g_sptr[k] < m)
+                    m = g_sptr[q] - g_sptr[k];
+                dup |= q < k && g_sptr[q] == g_sptr[k];
+            }
+            if (dup)
+                continue;
+            for (uint32_t j = 0; j < m; ++j)
+                if (now[j] != g_spre[k][j]) {
+                    lo = lo < j ? lo : j;
+                    hi = j + 1;
+                }
+            if (lo < hi) {
+                lo &= ~3u;
+                hi = (hi + 3) & ~3u;
+                hi = hi < m ? hi : m;
+            }
+            for (uint32_t j = lo; j < hi; ++j)
+                add_delta(R, (uint8_t)(k == 9 ? 9 : k + 1), j, now[j]);
         }
+    for (uint32_t k = 0; k < 10 && !R.heapw; ++k)
+        if (g_hptr[k] && memcmp((void*)g_hptr[k], g_hpre[k], kHeapPeek))
+            R.heapw = g_heapw = true;
     g_depth = 0;
     return g_realret;
 }
@@ -280,20 +374,32 @@ namespace hook::t3 {
 
 bool busy() { return g_mode != OFF && GetCurrentThreadId() == g_thread; }
 
+bool elsewhere() { return g_mode != OFF && GetCurrentThreadId() != g_thread; }
+
 // F's snapshot regions: this (ecx at entry, this_size bytes) and the globals it writes.
 void begin_record(uint32_t self, uint32_t this_size, const uint32_t (*globs)[2], uint32_t nglobs) {
     g_nregions = 0;
+    uint32_t total = 0;
     if (this_size)
         g_regions[g_nregions++] = {self, this_size};
     for (uint32_t k = 0; k < nglobs && g_nregions < 9; ++k)
         g_regions[g_nregions++] = {globs[k][0], globs[k][1]};
+    for (int k = 0; k < g_nregions; ++k)
+        total += g_regions[k].size;
     g_nrec = g_cursor = 0;
-    g_lost = g_mismatch = false;
+    g_lost = total > sizeof g_pre;
+    g_heapw = false;  // regions too big to watch: record nothing, conclude nothing
+    g_mismatch = false;
+    g_abort = 0;
     g_msg[0] = 0;
     g_depth = 0;
     g_thread = GetCurrentThreadId();
     g_mode = RECORD;
 }
+
+bool lost() { return g_lost; }
+
+void** jmpbuf() { return g_jb; }
 
 void begin_replay() {
     g_cursor = 0;
@@ -301,14 +407,25 @@ void begin_replay() {
     g_mode = REPLAY;
 }
 
-// 0: the traces agree, 1: mismatch (msg), 2: inconclusive (a record was lost)
+// 0: the traces agree, 1: mismatch (msg), 2: inconclusive (a record was lost, or the recording couldn't answer
+// ours). After a 1 or 2 the caller keeps the original's results: its callees' side effects are the ones in effect.
 int end(char* msg, size_t n) {
     g_mode = OFF;
-    if (g_lost)
+    if (g_lost) {
+        snprintf(msg, n, "more calls, callee writes or snapshot bytes than recorded");
         return 2;
+    }
+    if (g_abort == 2) {
+        snprintf(msg, n, "a callee returned an address in the original's frame");
+        return 2;
+    }
     if (!g_mismatch && g_cursor < g_nrec)
         mismatch("ours made %d calls, the original %d (next: %08X)", g_cursor, g_nrec,
                  kCallees[g_recs[g_cursor].callee].addr);
+    if (g_mismatch && g_heapw) {
+        snprintf(msg, n, "a callee changed heap memory ours may read; %s", g_msg);
+        return 2;
+    }
     if (g_mismatch) {
         snprintf(msg, n, "%s", g_msg);
         return 1;

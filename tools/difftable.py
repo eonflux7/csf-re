@@ -189,7 +189,9 @@ def t3_effects(db, ea):
             t = int(ops, 16)
             if t == ea or t not in db.F or db.F[t]["size"] < 5:
                 return None  # recursion, or an entry too small to patch
-            if t not in callees:
+            # CRT helpers (__ftol2, memcpy, _chkstk) aren't intercepted: part of F, they run in both (ours inlines
+            # them or has its own copies), writing the same bytes twice at worst
+            if t not in callees and not db.F[t]["lib"]:
                 callees.append(t)
             alias -= set(CLOBBERED)
             continue
@@ -236,14 +238,46 @@ def callee_info(db, t):
         ABI = json.load(open(os.path.join(ROOT, "export", "abi.json")))
     a = ABI.get(f"{t:08x}") or {}
     args = a.get("args") or []
-    regs = (1 if any(x[2] == "ecx" for x in args) else 0) | (2 if any(x[2] == "edx" for x in args) else 0)
+    # a register is compared only if the callee's own code reads it before writing it: Hex-Rays invents `edx`
+    # parameters (0x429B60) whose value is whatever the caller last left there
+    regs = (1 if any(x[2] == "ecx" for x in args) and entry_reads(db, t, "ecx") is not False else 0) | \
+        (2 if any(x[2] == "edx" for x in args) and entry_reads(db, t, "edx") else 0)
     nst = sum(2 if re.search(r"\b(double|__int64)\b(?!\s*\*)", x[0]) else 1 for x in args if x[2] == "stack")
     rets = ret_bytes(t, db.F[t]["size"])
-    pop = rets[0] if rets else 0
+    # no ret (ends in a tail jump): the convention says who pops
+    pop = rets[0] if rets else 4 * nst if a.get("cc") in ("stdcall", "thiscall", "fastcall") else 0
     rt = (a.get("ret") or "int").strip()
     ret = 3 if rt == "void" else 1 if re.fullmatch(r"(float|double)", rt) else \
         4 if re.search(r"__int64", rt) and "*" not in rt else 0
+    if ret != 1:
+        import api  # the binary's st0 return wins over Hex-Rays' int/void (as for diffed functions)
+        if api.returns_fpu(t, db):
+            ret = 1
     return dict(pop=pop, nargs=min(max(nst, pop // 4), 8), regs=regs, ret=ret)
+
+
+REG_PARTS = {"ecx": ("ecx", "cx", "cl", "ch"), "edx": ("edx", "dx", "dl", "dh")}
+
+
+def entry_reads(db, t, reg):
+    """Does callee t read `reg` before writing it, on the straight-line path from its entry (conditional branches
+    fall through)? True / False, or None when a call, jump or ret comes first."""
+    names = "|".join(REG_PARTS[reg])
+    for i in disasm(t, min(db.F[t]["size"], 400)):
+        m, ops = i.mnemonic, i.op_str
+        if m in ("call", "ret", "jmp"):
+            return None
+        parts = [p.strip() for p in ops.split(",")] if ops else []
+        if not any(re.search(rf"\b({names})\b", p) for p in parts):
+            continue
+        dst = parts[0] if parts else ""
+        zero = m in ("xor", "sub") and len(parts) == 2 and parts[0] == parts[1]
+        pure_write = re.fullmatch(rf"({names})", dst) and (m in ("mov", "movzx", "movsx", "lea", "pop", "setcc")
+                                                          or m.startswith("set") or zero)
+        if pure_write and not any(re.search(rf"\b({names})\b", p) for p in parts[1:] if not zero):
+            return False
+        return True
+    return None
 
 
 def ours_callees(ea):
@@ -328,7 +362,8 @@ def main():
     # a callee's entry is wrapped whatever it holds (our hook, a diff stub, the original), and a running tier-3 diff
     # turns nested diffs on its thread off (hook/diff.cpp): a tier-3 function may itself be another one's callee
     for ea, d in t3.items():
-        d["callees"] = list(dict.fromkeys(d["callees"] + [c for c in ours_callees(ea) if c in db.F and c != ea]))
+        d["callees"] = list(dict.fromkeys(d["callees"] + [c for c in ours_callees(ea) if c in db.F and c != ea
+                                                                and not db.F[c]["lib"]]))
     cal = sorted({c for d in t3.values() for c in d["callees"]})
     rout = os.path.join(os.path.dirname(out), "replay_table.inc")
     with open(rout, "w") as f:

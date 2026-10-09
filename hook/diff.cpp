@@ -146,6 +146,13 @@ void report(Slot& s, const Regs* r, const char* what) {
     fflush(g_log);
 }
 
+void inconclusive(Slot& s, const char* why) {
+    if (s.inconclusive++ < 3 && g_log) {
+        fprintf(g_log, "T3 %08X %s: inconclusive (%s)\n", s.info->addr, s.name, why);
+        fflush(g_log);
+    }
+}
+
 bool fp_close(double a, double b, double rel) {
     if (a == b || (a != a && b != b))
         return true;
@@ -201,7 +208,12 @@ R run(int i, Regs* r, Invoke invoke) {
     const void* args = (const uint8_t*)r + 36;  // past pushad + return address
     if (s.calls++ >= g_maxCalls || hook::t3::busy())  // no nested diffs inside a tier-3 record/replay
         return invoke(s.ours, r->ecx, r->edx, args, argcopy(s, args));
-    EnterCriticalSection(&g_cs);
+    // A tier-3 diff holds the lock while the original's callees run: they may wait on this thread (the loader)
+    while (!TryEnterCriticalSection(&g_cs)) {
+        if (hook::t3::elsewhere())
+            return invoke(s.ours, r->ecx, r->edx, args, argcopy(s, args));
+        Sleep(0);
+    }
     // static, under the lock: game threads (e.g. the loader) have small stacks
     static Snap before, afterOrig, afterOurs;
     R ro{}, ru{};
@@ -216,25 +228,54 @@ R run(int i, Regs* r, Invoke invoke) {
     ro = invoke(s.orig, r->ecx, r->edx, args, argcopy(s, args));
     if (s.t3)
         hook::t3::pause();
+    char trace[256] = "";
+    if (s.t3 && hook::t3::lost()) {  // ours can't run against an incomplete recording: the original's run stands
+        hook::t3::end(trace, sizeof trace);
+        inconclusive(s, trace);
+        LeaveCriticalSection(&g_cs);
+        return ro;
+    }
     capture(s, r, afterOrig);
     restore(s, r, before);
-    if (s.t3)
+    if (!s.t3) {
+        ru = invoke(s.ours, r->ecx, r->edx, args, argcopy(s, args));
+    } else {
+        // The replayer abandons ours (longjmp here) where it leaves the recording: unwound without its epilogues,
+        // so the SEH chain head and the x87 stack are put back by hand.
+        uint32_t seh = __readfsdword(0);
         hook::t3::begin_replay();
-    ru = invoke(s.ours, r->ecx, r->edx, args, argcopy(s, args));
-    char trace[256] = "";
+        if (__builtin_setjmp(hook::t3::jmpbuf()) == 0) {
+            ru = invoke(s.ours, r->ecx, r->edx, args, argcopy(s, args));
+        } else {
+            __asm {
+                mov eax, seh
+                mov dword ptr fs:[0], eax
+                ffree st(0)
+                ffree st(1)
+                ffree st(2)
+                ffree st(3)
+                ffree st(4)
+                ffree st(5)
+                ffree st(6)
+                ffree st(7)
+            }
+        }
+    }
     int t3st = s.t3 ? hook::t3::end(trace, sizeof trace) : 0;
-    capture(s, r, afterOurs);
-    if (t3st == 2) {  // a record was lost: nothing to conclude
-        if (s.inconclusive++ == 0 && g_log) {
-            fprintf(g_log, "T3 %08X %s: inconclusive (more calls or callee writes than recorded)\n", d.addr, s.name);
-            fflush(g_log);
+    if (t3st) {
+        // The callees' side effects are the original's (made with its arguments, in its order): keep its results.
+        restore(s, r, afterOrig);
+        if (t3st == 2) {
+            inconclusive(s, trace);
+        } else {
+            ++s.compared;
+            report(s, r, trace);
         }
         LeaveCriticalSection(&g_cs);
-        return ru;
+        return ro;
     }
+    capture(s, r, afterOurs);
     ++s.compared;
-    if (t3st == 1)
-        report(s, r, trace);
     compare_mem(s, r, afterOrig, afterOurs);
     if constexpr (!std::is_floating_point_v<R>) {
         // only the bits the original defines: al for bytes/bools, ax for shorts, edx:eax for 64-bit
