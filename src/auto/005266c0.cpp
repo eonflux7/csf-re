@@ -27,7 +27,7 @@ static std::uint32_t __fastcall CSoundInstance_StartPlayback(
     self->m_state = 0;
     self->field_0068 = fadeDuration;
 
-    std::uint32_t result = self->vSlot3C();
+    std::uint32_t result = self->vShouldKeepAlive();
     if (!result)
     {
         if (self->field_0064 > g_fZero)

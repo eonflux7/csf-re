@@ -10,7 +10,7 @@ CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 
 CSF_FUNC(uint32_t, __fastcall, GetSceneMenuContext, 0x0044FC60, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, SceneObj_IsInactive, 0x0048E100, (void* self, void* edx));
-CSF_FUNC(float, __fastcall, C_00833ee8_UpdateState, 0x00492C80, (void* self, void* edx, int a2));
+CSF_FUNC(float, __fastcall, C_00833b88_UpdateState, 0x00492C80, (void* self, void* edx, int a2));
 CSF_FUNC(void, __fastcall, C_00833ee8_UpdateTimedBehavior, 0x00493BE0, (void* self, void* edx, float a2));
 CSF_FUNC(void, __fastcall, C_00833ee8_RefreshState, 0x004947A0, (void* self, void* edx));
 CSF_FUNC(void, __fastcall, C_00833ee8_FinishTimedUpdate, 0x00495E80, (void* self, void* edx, float a2));
@@ -56,7 +56,7 @@ static int __fastcall C_00833ee8_Update(
         self->field_0220 = elapsed + self->field_0220;
         self->field_0224 = elapsed + self->field_0224;
 
-        C_00833ee8_UpdateState(self, nullptr, elapsedBits);
+        C_00833b88_UpdateState(self, nullptr, elapsedBits);
         UpdateAssociatedState(
             reinterpret_cast<void*>(self->field_03e8), nullptr, elapsedBits);
 

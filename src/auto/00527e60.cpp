@@ -30,7 +30,7 @@ static int __fastcall CSoundInstance_SerializePlaybackState(
         if (self->m_playing)
         {
             self->field_005f =
-                (self->vSlot3C() && self->m_state != 2) || self->vSlot44();
+                (self->vShouldKeepAlive() && self->m_state != 2) || self->vSlot44();
             if (self->field_005f)
             {
                 void* voice = reinterpret_cast<void*>(self->m_voice);

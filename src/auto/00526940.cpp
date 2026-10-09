@@ -8,7 +8,7 @@
 static char __fastcall CSoundInstance_ApplyPendingVolumeToVoice(
     CSoundInstance* self, void* /*edx*/, int /*a2*/)
 {
-    self->vSlot20();
+    self->vPlay();
 
     if (self->field_005f == 0)
         return 0;
@@ -24,7 +24,7 @@ static char __fastcall CSoundInstance_ApplyPendingVolumeToVoice(
 
     uint32_t savedBits;
     std::memcpy(&savedBits, &self->field_0064, sizeof(savedBits));
-    self->vSlot28(position, nullptr);
+    self->vStartPlayback(position, 0.0f);
     std::memcpy(&self->field_0064, &savedBits, sizeof(savedBits));
 
     return static_cast<char>(savedBits & 0xFF);

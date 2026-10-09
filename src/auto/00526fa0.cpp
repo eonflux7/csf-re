@@ -27,7 +27,7 @@ static void __fastcall CSoundInstance_Update(CSoundInstance* self, void* /*edx*/
     {
         self->field_004c = self->field_004c - deltaTime;
         if (self->field_004c <= g_fZero)
-            self->vSlot2C();
+            self->vProcessPendingStop();
     }
 
     void* voice = reinterpret_cast<void*>(self->m_voice);

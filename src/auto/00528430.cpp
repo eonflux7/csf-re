@@ -8,7 +8,7 @@ CSF_FUNC(void*, __cdecl, Mem_Alloc, 0x006910F0, (std::size_t size));
 CSF_FUNC(uint32_t*, __fastcall, AudioSoundManager_ApplySoundDefinition, 0x00521FA0, (void* self, void* edx, int a2));
 CSF_FUNC(uint32_t*, __fastcall, C_00840ff0_Construct, 0x005237C0, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, AudioSoundManager_UpdateSpecialSound, 0x00527970, (void* self, void* edx, uint32_t* a2));
-CSF_FUNC(uint32_t*, __fastcall, C_008410b0_Construct, 0x00527DC0, (void* self, void* edx));
+CSF_FUNC(uint32_t*, __fastcall, CSoundInstance_Construct, 0x00527DC0, (void* self, void* edx));
 CSF_FUNC(uint32_t*, __fastcall, C_00841128_Construct, 0x00527FE0, (void* self, void* edx));
 
 static uint32_t* __fastcall AudioSoundManager_CreateSoundInstance(
@@ -60,7 +60,7 @@ static uint32_t* __fastcall AudioSoundManager_CreateSoundInstance(
             if (!storage)
                 return nullptr;
 
-            instance = C_008410b0_Construct(storage, nullptr);
+            instance = CSoundInstance_Construct(storage, nullptr);
             if (!instance)
                 return nullptr;
         }

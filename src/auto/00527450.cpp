@@ -44,7 +44,7 @@ static int __fastcall C_00840ff0_SubmitSoundRequest(
             CSF_AT(void**, soundService, 0)[0x4 / 4])(
                 soundService, nullptr, name, &parameters.value);
 
-        self->vSlot50(0);
+        self->vRefreshEmitterPosition(0);
         // The typed slot is void; its incidental EAX is not a defined result.
         return 0;
     }

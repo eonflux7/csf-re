@@ -11,7 +11,7 @@ CSF_FUNC(int, __fastcall, GetObjectPositionVector, 0x0048E430, (void* self, void
 CSF_FUNC(int, __fastcall, SceneLoader_ConfigureFocusEntry, 0x0048E460, (void* self, void* edx, int* a2));
 CSF_FUNC(int, __fastcall, DispatchSceneObjectWithPayload, 0x0048E4D0, (void* self, void* edx, int payload));
 CSF_FUNC(double, __fastcall, ComputeScalarForResolvedObject, 0x0048F220, (void* self, void* edx));
-CSF_FUNC(int, __fastcall, C_00833b88_PreparePlacement, 0x00493250, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, C_00833ee8_PreparePlacement, 0x00493250, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, C_008342e8_GetPlacementData, 0x0049ED80, (void* self, void* edx, int a2, uint32_t* a3));
 CSF_FUNC(int, __fastcall, C_008342e8_SelectPlacement, 0x0049F220, (void* self, void* edx, int a2));
 
@@ -33,7 +33,7 @@ static int __fastcall C_00833ee8_RepositionAndResetState(
 
     C_008342e8_SelectPlacement(
         source, nullptr, static_cast<int>(self->field_01c0));
-    C_00833b88_PreparePlacement(self, nullptr);
+    C_00833ee8_PreparePlacement(self, nullptr);
 
     uint32_t placementData[6] = {};
     C_008342e8_GetPlacementData(

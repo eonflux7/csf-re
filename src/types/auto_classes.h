@@ -7887,7 +7887,7 @@ struct C_00833908 {
     int vSlot54() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x54 / 4])(this, nullptr); }  // slot +0x54 -> 0x0048E650
     int vSlot58(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x58 / 4])(this, nullptr, a2); }  // slot +0x58 -> 0x0048FC70
     int vSlot5C(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x5c / 4])(this, nullptr, a2); }  // slot +0x5C -> 0x0048FD70
-    int vSlot60(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x60 / 4])(this, nullptr, a2); }  // slot +0x60 -> 0x0048FD00
+    int vDispatchToBaseHandler(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x60 / 4])(this, nullptr, a2); }  // slot +0x60 -> 0x0048FD00
     int vSlot64(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x64 / 4])(this, nullptr, a2); }  // slot +0x64 -> 0x0048EDB0
     unsigned int vSlot68(char a2) { return reinterpret_cast<unsigned int(__fastcall*)(void*, void*, char)>(vtbl[0x68 / 4])(this, nullptr, a2); }  // slot +0x68 -> 0x0048EE90
     void vSlot6C(int a2) { return reinterpret_cast<void(__fastcall*)(void*, void*, int)>(vtbl[0x6c / 4])(this, nullptr, a2); }  // slot +0x6C -> 0x0048FE00
@@ -9358,24 +9358,31 @@ static_assert(offsetof(CLevelData, m_entityClassTable) == 0x1fa8);
 static_assert(offsetof(CLevelData, m_effectClassTable) == 0x1fac);
 static_assert(offsetof(CLevelData, m_dstData) == 0x1fb8);
 
-struct C_0083ed40 : CLevelData {
-    uint32_t field_1fbc;
+// CGameLevelData (vtable 0x0083ED40): Concrete 0x2000-byte CLevelData subclass held in the lazily created global g_Value8B0554 (004ea0d0, freed by 004e8c60). Its load slot 004e99c0 first allocates the concrete nav, dummy, area, light and scene-object mesh objects into the base slots +0x1f8c..+0x1f9c, then calls CLevelData_Load and passe
+struct CGameLevelData : CLevelData {
+    uint32_t m_vtbl2;
     uint32_t field_1fc0;
     uint32_t field_1fc4;
     uint32_t field_1fc8;
     uint32_t field_1fcc;
     uint32_t field_1fd0;
     uint32_t field_1fd4;
-    uint32_t field_1fd8;
-    uint32_t field_1fdc;
-    uint32_t field_1fe0;
+    uint32_t m_ownedNavMesh;
+    uint32_t m_ownedAreaMesh;
+    uint32_t m_ownedSceneObjMesh;
     uint8_t pad_1fe4[0x4];
-    uint32_t field_1fe8;
+    uint32_t m_levelPath;
     uint8_t pad_1fec[0xc];
-    uint32_t field_1ff8;
+    uint32_t m_levelPathLength;
     uint32_t field_1ffc;
 };
-static_assert(sizeof(C_0083ed40) == 0x2000);
+static_assert(sizeof(CGameLevelData) == 0x2000);
+static_assert(offsetof(CGameLevelData, m_vtbl2) == 0x1fbc);
+static_assert(offsetof(CGameLevelData, m_ownedNavMesh) == 0x1fd8);
+static_assert(offsetof(CGameLevelData, m_ownedAreaMesh) == 0x1fdc);
+static_assert(offsetof(CGameLevelData, m_ownedSceneObjMesh) == 0x1fe0);
+static_assert(offsetof(CGameLevelData, m_levelPath) == 0x1fe8);
+static_assert(offsetof(CGameLevelData, m_levelPathLength) == 0x1ff8);
 
 struct C_0085e7d8 {
     void** vtbl;
@@ -10661,23 +10668,23 @@ struct C_00840ff0 : C_0082d410 {
     uint8_t field_005e;
     uint8_t pad_005f[0x1];
     // virtual calls through this class's own vtable slots (tools/gen_classes_h.py vmethods)
-    int vSlot8(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x8 / 4])(this, nullptr, a2); }  // slot +0x8 -> 0x00527CE0
-    int vSlotC(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0xc / 4])(this, nullptr, a2); }  // slot +0xC -> 0x00528780
+    int vArchiveSoundState(int archiveAddress) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x8 / 4])(this, nullptr, archiveAddress); }  // slot +0x8 -> 0x00527CE0
+    int vUpdateSoundInstanceState(void* a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, void*)>(vtbl[0xc / 4])(this, nullptr, a2); }  // slot +0xC -> 0x00528780
     void* vGetSelf() { return reinterpret_cast<void*(__fastcall*)(void*, void*)>(vtbl[0x14 / 4])(this, nullptr); }  // slot +0x14 -> 0x004B2980
-    char vSlot1C(int a2) { return reinterpret_cast<char(__fastcall*)(void*, void*, int)>(vtbl[0x1c / 4])(this, nullptr, a2); }  // slot +0x1C -> 0x005265B0
-    char vSlot20() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x20 / 4])(this, nullptr); }  // slot +0x20 -> 0x00528690
+    char vUpdateIfFlagged(int a1) { return reinterpret_cast<char(__fastcall*)(void*, void*, int)>(vtbl[0x1c / 4])(this, nullptr, a1); }  // slot +0x1C -> 0x005265B0
+    bool vLoadSoundEntryFromManager() { return reinterpret_cast<bool(__fastcall*)(void*, void*)>(vtbl[0x20 / 4])(this, nullptr); }  // slot +0x20 -> 0x00528690
     int vClearFlagAfterVirtualCall() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x24 / 4])(this, nullptr); }  // slot +0x24 -> 0x00523820
-    int vSlot28(int a2, int a3) { return reinterpret_cast<int(__fastcall*)(void*, void*, int, int)>(vtbl[0x28 / 4])(this, nullptr, a2, a3); }  // slot +0x28 -> 0x00527450
-    int vSlot2C() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x2c / 4])(this, nullptr); }  // slot +0x2C -> 0x00526480
-    double vSlot38() { return reinterpret_cast<double(__fastcall*)(void*, void*)>(vtbl[0x38 / 4])(this, nullptr); }  // slot +0x38 -> 0x00526460
-    bool vSlot3C() { return reinterpret_cast<bool(__fastcall*)(void*, void*)>(vtbl[0x3c / 4])(this, nullptr); }  // slot +0x3C -> 0x005264E0
+    int vSubmitSoundRequest(int a1, int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int, int)>(vtbl[0x28 / 4])(this, nullptr, a1, a2); }  // slot +0x28 -> 0x00527450
+    int vForwardStateToGlobal() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x2c / 4])(this, nullptr); }  // slot +0x2C -> 0x00526480
+    double vGetMaxValueIfFlagSet() { return reinterpret_cast<double(__fastcall*)(void*, void*)>(vtbl[0x38 / 4])(this, nullptr); }  // slot +0x38 -> 0x00526460
+    bool vIsAudioActiveForState() { return reinterpret_cast<bool(__fastcall*)(void*, void*)>(vtbl[0x3c / 4])(this, nullptr); }  // slot +0x3C -> 0x005264E0
     int vSlot4C() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x4c / 4])(this, nullptr); }  // slot +0x4C -> 0x00523760
-    void vSlot50(int a2) { return reinterpret_cast<void(__fastcall*)(void*, void*, int)>(vtbl[0x50 / 4])(this, nullptr, a2); }  // slot +0x50 -> 0x00526520
+    void vRefreshEmitterPosition(int a2) { return reinterpret_cast<void(__fastcall*)(void*, void*, int)>(vtbl[0x50 / 4])(this, nullptr, a2); }  // slot +0x50 -> 0x00526520
     int vResolveEntryLookupValue() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x58 / 4])(this, nullptr); }  // slot +0x58 -> 0x00471540
     char vSlot5C() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x5c / 4])(this, nullptr); }  // slot +0x5C -> 0x00523770
     void vSlot60() { return reinterpret_cast<void(__fastcall*)(void*, void*)>(vtbl[0x60 / 4])(this, nullptr); }  // slot +0x60 -> 0x00523780
     char vSlot64() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x64 / 4])(this, nullptr); }  // slot +0x64 -> 0x00523790
-    int vSlot68(int a2, float a3) { return reinterpret_cast<int(__fastcall*)(void*, void*, int, float)>(vtbl[0x68 / 4])(this, nullptr, a2, a3); }  // slot +0x68 -> 0x00526570
+    int vApplyScaledVolume(int a1, float a3) { return reinterpret_cast<int(__fastcall*)(void*, void*, int, float)>(vtbl[0x68 / 4])(this, nullptr, a1, a3); }  // slot +0x68 -> 0x00526570
     double vGetValue() { return reinterpret_cast<double(__fastcall*)(void*, void*)>(vtbl[0x70 / 4])(this, nullptr); }  // slot +0x70 -> 0x0070DDF0
 };
 static_assert(sizeof(C_00840ff0) == 0x60);
@@ -10719,7 +10726,7 @@ struct CSoundManager {
     uint8_t field_0079;
     uint8_t pad_007a[0x2];
     // virtual calls through this class's own vtable slots (tools/gen_classes_h.py vmethods)
-    uint32_t* vSlot0(uint32_t* a2) { return reinterpret_cast<uint32_t*(__fastcall*)(void*, void*, uint32_t*)>(vtbl[0x0 / 4])(this, nullptr, a2); }  // slot +0x0 -> 0x005243F0
+    uint32_t* vHandleSceneEvent(uint32_t* event) { return reinterpret_cast<uint32_t*(__fastcall*)(void*, void*, uint32_t*)>(vtbl[0x0 / 4])(this, nullptr, event); }  // slot +0x0 -> 0x005243F0
     unsigned int vSlot4(uint32_t* a2) { return reinterpret_cast<unsigned int(__fastcall*)(void*, void*, uint32_t*)>(vtbl[0x4 / 4])(this, nullptr, a2); }  // slot +0x4 -> 0x004F9630
 };
 static_assert(sizeof(CSoundManager) == 0x7c);
@@ -10769,7 +10776,7 @@ struct C_00841090 : C_0082d410 {
     uint32_t field_0094;
     uint32_t field_0098;
     // virtual calls through this class's own vtable slots (tools/gen_classes_h.py vmethods)
-    int vSlot8(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x8 / 4])(this, nullptr, a2); }  // slot +0x8 -> 0x00526330
+    int vSerialize(int archiveAddress) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x8 / 4])(this, nullptr, archiveAddress); }  // slot +0x8 -> 0x00526330
     void* vGetSelf() { return reinterpret_cast<void*(__fastcall*)(void*, void*)>(vtbl[0x14 / 4])(this, nullptr); }  // slot +0x14 -> 0x004B2980
 };
 static_assert(sizeof(C_00841090) == 0x9c);
@@ -10813,32 +10820,32 @@ struct CSoundInstance {
     float field_0068;
     uint32_t m_state;
     // virtual calls through this class's own vtable slots (tools/gen_classes_h.py vmethods)
-    uint32_t* vSlot0(char a2) { return reinterpret_cast<uint32_t*(__fastcall*)(void*, void*, char)>(vtbl[0x0 / 4])(this, nullptr, a2); }  // slot +0x0 -> 0x00527540
+    uint32_t* vDeletingDestructor(char flags) { return reinterpret_cast<uint32_t*(__fastcall*)(void*, void*, char)>(vtbl[0x0 / 4])(this, nullptr, flags); }  // slot +0x0 -> 0x00527540
     void* vGetSelf() { return reinterpret_cast<void*(__fastcall*)(void*, void*)>(vtbl[0x4 / 4])(this, nullptr); }  // slot +0x4 -> 0x004B2980
-    int vSlot8(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x8 / 4])(this, nullptr, a2); }  // slot +0x8 -> 0x00527E60
-    int vSlotC(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0xc / 4])(this, nullptr, a2); }  // slot +0xC -> 0x00528780
+    int vSerializePlaybackState(int archiveAddress) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x8 / 4])(this, nullptr, archiveAddress); }  // slot +0x8 -> 0x00527E60
+    int vUpdateSoundInstanceState(void* a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, void*)>(vtbl[0xc / 4])(this, nullptr, a2); }  // slot +0xC -> 0x00528780
     void* vGetSelf_5() { return reinterpret_cast<void*(__fastcall*)(void*, void*)>(vtbl[0x14 / 4])(this, nullptr); }  // slot +0x14 -> 0x004B2980
-    char vSlot1C(int a2) { return reinterpret_cast<char(__fastcall*)(void*, void*, int)>(vtbl[0x1c / 4])(this, nullptr, a2); }  // slot +0x1C -> 0x00526940
-    int vSlot20() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x20 / 4])(this, nullptr); }  // slot +0x20 -> 0x00527630
-    int vSlot24() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x24 / 4])(this, nullptr); }  // slot +0x24 -> 0x005275F0
-    unsigned int vSlot28(int a2, uint32_t* a3) { return reinterpret_cast<unsigned int(__fastcall*)(void*, void*, int, uint32_t*)>(vtbl[0x28 / 4])(this, nullptr, a2, a3); }  // slot +0x28 -> 0x005266C0
-    void vSlot2C() { return reinterpret_cast<void(__fastcall*)(void*, void*)>(vtbl[0x2c / 4])(this, nullptr); }  // slot +0x2C -> 0x00526780
-    int vSlot30(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x30 / 4])(this, nullptr, a2); }  // slot +0x30 -> 0x005267D0
+    char vApplyPendingVolumeToVoice(int a1) { return reinterpret_cast<char(__fastcall*)(void*, void*, int)>(vtbl[0x1c / 4])(this, nullptr, a1); }  // slot +0x1C -> 0x00526940
+    int vPlay() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x20 / 4])(this, nullptr); }  // slot +0x20 -> 0x00527630
+    int vResetPlaybackState() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x24 / 4])(this, nullptr); }  // slot +0x24 -> 0x005275F0
+    std::uint32_t vStartPlayback(int startPosition, float fadeDuration) { return reinterpret_cast<std::uint32_t(__fastcall*)(void*, void*, int, float)>(vtbl[0x28 / 4])(this, nullptr, startPosition, fadeDuration); }  // slot +0x28 -> 0x005266C0
+    void vProcessPendingStop() { return reinterpret_cast<void(__fastcall*)(void*, void*)>(vtbl[0x2c / 4])(this, nullptr); }  // slot +0x2C -> 0x00526780
+    int vSetLevelByte(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x30 / 4])(this, nullptr, a2); }  // slot +0x30 -> 0x005267D0
     int vInvokeSubobjectVirtual4() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x34 / 4])(this, nullptr); }  // slot +0x34 -> 0x00526850
-    double vSlot38() { return reinterpret_cast<double(__fastcall*)(void*, void*)>(vtbl[0x38 / 4])(this, nullptr); }  // slot +0x38 -> 0x00526860
-    bool vSlot3C() { return reinterpret_cast<bool(__fastcall*)(void*, void*)>(vtbl[0x3c / 4])(this, nullptr); }  // slot +0x3C -> 0x005267F0
+    double vGetFadeTimeOrMax() { return reinterpret_cast<double(__fastcall*)(void*, void*)>(vtbl[0x38 / 4])(this, nullptr); }  // slot +0x38 -> 0x00526860
+    bool vShouldKeepAlive() { return reinterpret_cast<bool(__fastcall*)(void*, void*)>(vtbl[0x3c / 4])(this, nullptr); }  // slot +0x3C -> 0x005267F0
     int vIsField006cEqual2() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x40 / 4])(this, nullptr); }  // slot +0x40 -> 0x005274F0
     char vSlot44() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x44 / 4])(this, nullptr); }  // slot +0x44 -> 0x00527500
-    bool vSlot48() { return reinterpret_cast<bool(__fastcall*)(void*, void*)>(vtbl[0x48 / 4])(this, nullptr); }  // slot +0x48 -> 0x00526880
+    int vIsVoiceFinished() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x48 / 4])(this, nullptr); }  // slot +0x48 -> 0x00526880
     int vSlot4C() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x4c / 4])(this, nullptr); }  // slot +0x4C -> 0x00527510
-    void vSlot50(float a2) { return reinterpret_cast<void(__fastcall*)(void*, void*, float)>(vtbl[0x50 / 4])(this, nullptr, a2); }  // slot +0x50 -> 0x00526FA0
-    int vSlot54(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x54 / 4])(this, nullptr, a2); }  // slot +0x54 -> 0x005265E0
+    void vUpdate(float deltaTime) { return reinterpret_cast<void(__fastcall*)(void*, void*, float)>(vtbl[0x50 / 4])(this, nullptr, deltaTime); }  // slot +0x50 -> 0x00526FA0
+    int vForwardToVoice(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x54 / 4])(this, nullptr, a2); }  // slot +0x54 -> 0x005265E0
     int vResolveEntryLookupValue() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x58 / 4])(this, nullptr); }  // slot +0x58 -> 0x00471540
     char vSlot5C() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x5c / 4])(this, nullptr); }  // slot +0x5C -> 0x00523770
     void vSlot60() { return reinterpret_cast<void(__fastcall*)(void*, void*)>(vtbl[0x60 / 4])(this, nullptr); }  // slot +0x60 -> 0x00523780
     char vSlot64() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x64 / 4])(this, nullptr); }  // slot +0x64 -> 0x00523790
-    char vSlot68(float a2, float a3) { return reinterpret_cast<char(__fastcall*)(void*, void*, float, float)>(vtbl[0x68 / 4])(this, nullptr, a2, a3); }  // slot +0x68 -> 0x00526600
-    int vSlot6C(float a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, float)>(vtbl[0x6c / 4])(this, nullptr, a2); }  // slot +0x6C -> 0x00526650
+    char vSetVoiceRateAndVolume(float rate, float attenuation) { return reinterpret_cast<char(__fastcall*)(void*, void*, float, float)>(vtbl[0x68 / 4])(this, nullptr, rate, attenuation); }  // slot +0x68 -> 0x00526600
+    int vComputeScaledVoicePosition(float a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, float)>(vtbl[0x6c / 4])(this, nullptr, a2); }  // slot +0x6C -> 0x00526650
     int vInvokeField0040VirtualMethod() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x70 / 4])(this, nullptr); }  // slot +0x70 -> 0x005266B0
 };
 static_assert(sizeof(CSoundInstance) == 0x70);
@@ -10895,28 +10902,28 @@ struct C_008411a0 {
     uint32_t field_005c;
     uint32_t field_0060;
     // virtual calls through this class's own vtable slots (tools/gen_classes_h.py vmethods)
-    uint32_t* vSlot0(char a2) { return reinterpret_cast<uint32_t*(__fastcall*)(void*, void*, char)>(vtbl[0x0 / 4])(this, nullptr, a2); }  // slot +0x0 -> 0x005280D0
+    void* vScalarDeletingDestructor(char deleteFlags) { return reinterpret_cast<void*(__fastcall*)(void*, void*, char)>(vtbl[0x0 / 4])(this, nullptr, deleteFlags); }  // slot +0x0 -> 0x005280D0
     void* vGetSelf() { return reinterpret_cast<void*(__fastcall*)(void*, void*)>(vtbl[0x4 / 4])(this, nullptr); }  // slot +0x4 -> 0x004B2980
-    int vSlot8(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x8 / 4])(this, nullptr, a2); }  // slot +0x8 -> 0x00528100
-    int vSlotC(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0xc / 4])(this, nullptr, a2); }  // slot +0xC -> 0x00528780
+    int vSerialize(int archiveAddress) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x8 / 4])(this, nullptr, archiveAddress); }  // slot +0x8 -> 0x00528100
+    int vUpdateSoundInstanceState(void* a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, void*)>(vtbl[0xc / 4])(this, nullptr, a2); }  // slot +0xC -> 0x00528780
     int vGetConstant22() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x10 / 4])(this, nullptr); }  // slot +0x10 -> 0x004A8B80
     void* vGetSelf_5() { return reinterpret_cast<void*(__fastcall*)(void*, void*)>(vtbl[0x14 / 4])(this, nullptr); }  // slot +0x14 -> 0x004B2980
-    char vSlot20() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x20 / 4])(this, nullptr); }  // slot +0x20 -> 0x005279C0
-    int vSlot24() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x24 / 4])(this, nullptr); }  // slot +0x24 -> 0x005280A0
-    int vSlot2C() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x2c / 4])(this, nullptr); }  // slot +0x2C -> 0x00526A60
-    int vSlot30(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x30 / 4])(this, nullptr, a2); }  // slot +0x30 -> 0x00526A80
+    char vInitializePlaybackState() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x20 / 4])(this, nullptr); }  // slot +0x20 -> 0x005279C0
+    int vResetPlaybackDefaults() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x24 / 4])(this, nullptr); }  // slot +0x24 -> 0x005280A0
+    int vResetState() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x2c / 4])(this, nullptr); }  // slot +0x2C -> 0x00526A60
+    int vForwardToChildSlot30(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x30 / 4])(this, nullptr, a2); }  // slot +0x30 -> 0x00526A80
     char vSlot34() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x34 / 4])(this, nullptr); }  // slot +0x34 -> 0x00528090
     double vSlot38() { return reinterpret_cast<double(__fastcall*)(void*, void*)>(vtbl[0x38 / 4])(this, nullptr); }  // slot +0x38 -> 0x00526A50
-    char vSlot3C() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x3c / 4])(this, nullptr); }  // slot +0x3C -> 0x00526B50
-    char vSlot44() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x44 / 4])(this, nullptr); }  // slot +0x44 -> 0x00526B80
-    char vSlot48() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x48 / 4])(this, nullptr); }  // slot +0x48 -> 0x00526BA0
+    char vForwardToChildOrReturnRangeCheck() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x3c / 4])(this, nullptr); }  // slot +0x3C -> 0x00526B50
+    char vForwardToAttachedObject() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x44 / 4])(this, nullptr); }  // slot +0x44 -> 0x00526B80
+    char vIsComplete() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x48 / 4])(this, nullptr); }  // slot +0x48 -> 0x00526BA0
     int vSlot4C() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x4c / 4])(this, nullptr); }  // slot +0x4C -> 0x00523760
-    void vSlot50(float a2) { return reinterpret_cast<void(__fastcall*)(void*, void*, float)>(vtbl[0x50 / 4])(this, nullptr, a2); }  // slot +0x50 -> 0x00526BE0
+    void vAdvanceLoopingTimer(float deltaTime) { return reinterpret_cast<void(__fastcall*)(void*, void*, float)>(vtbl[0x50 / 4])(this, nullptr, deltaTime); }  // slot +0x50 -> 0x00526BE0
     int vResolveEntryLookupValue() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x58 / 4])(this, nullptr); }  // slot +0x58 -> 0x00471540
     char vSlot5C() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x5c / 4])(this, nullptr); }  // slot +0x5C -> 0x00523770
-    int vSlot60() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x60 / 4])(this, nullptr); }  // slot +0x60 -> 0x00526990
+    int vMarkFlagAndForwardToChild() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x60 / 4])(this, nullptr); }  // slot +0x60 -> 0x00526990
     char vSlot64() { return reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x64 / 4])(this, nullptr); }  // slot +0x64 -> 0x00523790
-    int vSlot68(int a2, int a3) { return reinterpret_cast<int(__fastcall*)(void*, void*, int, int)>(vtbl[0x68 / 4])(this, nullptr, a2, a3); }  // slot +0x68 -> 0x00526C80
+    int vStoreArgsAndForwardToChild(int firstArgument, int secondArgument) { return reinterpret_cast<int(__fastcall*)(void*, void*, int, int)>(vtbl[0x68 / 4])(this, nullptr, firstArgument, secondArgument); }  // slot +0x68 -> 0x00526C80
     double vGetValue() { return reinterpret_cast<double(__fastcall*)(void*, void*)>(vtbl[0x70 / 4])(this, nullptr); }  // slot +0x70 -> 0x0070DDF0
 };
 static_assert(sizeof(C_008411a0) == 0x64);
@@ -15005,7 +15012,7 @@ struct C_00861120 : C_00860178 {
     void vSlot30(int a2) { return reinterpret_cast<void(__fastcall*)(void*, void*, int)>(vtbl[0x30 / 4])(this, nullptr, a2); }  // slot +0x30 -> 0x006D6610
     int vSlot34(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x34 / 4])(this, nullptr, a2); }  // slot +0x34 -> 0x00734A40
     unsigned int vSlot38() { return reinterpret_cast<unsigned int(__fastcall*)(void*, void*)>(vtbl[0x38 / 4])(this, nullptr); }  // slot +0x38 -> 0x006D6270
-    char* vSlot3C() { return reinterpret_cast<char*(__fastcall*)(void*, void*)>(vtbl[0x3c / 4])(this, nullptr); }  // slot +0x3C -> 0x004F4E90
+    char* vGetCurrentEntry() { return reinterpret_cast<char*(__fastcall*)(void*, void*)>(vtbl[0x3c / 4])(this, nullptr); }  // slot +0x3C -> 0x004F4E90
     void* vGetReferencedObject() { return reinterpret_cast<void*(__fastcall*)(void*, void*)>(vtbl[0x40 / 4])(this, nullptr); }  // slot +0x40 -> 0x006683F0
     int vResolveEntryLookupValue() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x44 / 4])(this, nullptr); }  // slot +0x44 -> 0x00471540
     void* vGetCachedObjectProvider() { return reinterpret_cast<void*(__fastcall*)(void*, void*)>(vtbl[0x48 / 4])(this, nullptr); }  // slot +0x48 -> 0x00686C10

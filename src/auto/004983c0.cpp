@@ -18,7 +18,7 @@ CSF_FUNC(void, __fastcall, SceneQueries_UpdateClosestObjectHits, 0x00451E40, (vo
 CSF_FUNC(char*, __fastcall, GetEmbeddedBlockAt74, 0x00452F10, (S_004503e0* self, void*));
 CSF_FUNC(int, __fastcall, Handle_GetValuePointer, 0x00476060, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, GetObjectPositionVector, 0x0048E430, (void* self, void* edx));
-CSF_FUNC(uint32_t*, __fastcall, C_00833908_QuerySelectionFallback, 0x00497CD0, (void* self, void* edx, int a2, int* a3, float* a4, void* a5, int a6, int a7, int a8));
+CSF_FUNC(uint32_t*, __fastcall, C_00833ee8_QuerySelectionFallback, 0x00497CD0, (void* self, void* edx, int a2, int* a3, float* a4, void* a5, int a6, int a7, int a8));
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B056C, 0x00506BD0, ());
 CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
 CSF_FUNC(int, __cdecl, GetGlobalValue_753A30, 0x00753A30, ());
@@ -271,7 +271,7 @@ static int __fastcall C_00833908_UpdateAngularSelection(
             origin[0] = 0.0;
             origin[1] = 0.0;
             origin[2] = 0.0;
-            C_00833908_QuerySelectionFallback(
+            C_00833ee8_QuerySelectionFallback(
                 self, nullptr,
                 reinterpret_cast<int>(reinterpret_cast<uint8_t*>(self) + 0x28C),
                 reinterpret_cast<int*>(&requestedAngle), origin, origin,
