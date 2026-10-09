@@ -1,0 +1,401 @@
+#include <cstdint>
+#include <cstddef>
+#include "globals.h"
+#include "hook.h"
+#include "core/memory.h"
+#include "types/auto_classes.h"
+
+CSF_FUNC(void*, __fastcall, AssignStringSubstring, 0x004109E0, (void* self, void* edx, const void* source, std::uint32_t position, std::uint32_t count));
+CSF_FUNC(int, __fastcall, CompareStringSubstring, 0x0042E200, (void* string, void* edx, unsigned int position, unsigned int count, const char* other, unsigned int otherCount));
+CSF_FUNC(int, __fastcall, SceneTable_ApplyEntry, 0x004E8E00, (void* self, void* edx, int a2));
+CSF_FUNC(unsigned int, __fastcall, SceneLoader_SetIndexedValue, 0x004EE630, (void* self, void* edx, int a2, int a3));
+CSF_FUNC(int, __fastcall, SceneLoader_GetSceneController, 0x00652010, (void* self, void* edx));
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
+CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
+CSF_FUNC(int, __fastcall, GlobalInt_ResolveAccessor, 0x006B13A0, (void* self, void* edx));
+CSF_FUNC(uint32_t*, __fastcall, SceneMissionSetup_InitializeWorldSetup, 0x006B2750, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, SceneLoader_GetWorldObjectCollection, 0x006B6AF0, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, SceneMissionSetup_ApplyWorldSetup, 0x006CEE30, (void* self, void* edx, char* a2));
+CSF_FUNC(int, __fastcall, SceneMissionSetup_FindNamedEntry, 0x006D03B0, (void* self, void* edx, void* arg0));
+CSF_FUNC(int, __cdecl, IsResolvedEntryActive, 0x00755880, (int a1));
+CSF_FUNC(int, __cdecl, SceneMissionSetup_IsIndexedState, 0x00755940, (int a1));
+CSF_FUNC(bool, __cdecl, SceneMissionSetup_GetObjectStateFlag, 0x007559A0, (int a1, int a2));
+CSF_FUNC(int, __fastcall, SceneLoader_GetResourceById, 0x007567C0, (void* self, void* edx, int a2));
+CSF_FUNC(int, __fastcall, ResolveSlotIndexForState, 0x00756810, (void* self, void* edx, int a2, int a3));
+CSF_FUNC(int, __cdecl, GetGlobalValue_8BC1E0, 0x00756A10, ());
+
+CSF_GLOBAL(std::uint8_t, g_byte_82E65C, 0x0082E65C);
+
+static void SceneMissionSetup_SetNamedGroupEnabled(
+    std::uint8_t* groupString, int enabled)
+{
+    if (CSF_AT(std::uint32_t, groupString, 0x14) == 0)
+        return;
+
+    void* global = reinterpret_cast<void*>(GetGlobalInt());
+    void* controller =
+        reinterpret_cast<void*>(SceneLoader_GetSceneController(global, nullptr));
+
+    void* name = CSF_AT(std::uint32_t, groupString, 0x18) < 0x10u
+        ? static_cast<void*>(groupString + 4)
+        : CSF_AT(void*, groupString, 4);
+
+    ((void(__fastcall*)(void*, void*, void*, int))
+        CSF_AT(void**, controller, 0)[4])(controller, nullptr, name, enabled);
+}
+
+static void S_004e8e00_AddResource(S_004e8e00* self, int resourceId)
+{
+    void* resources = reinterpret_cast<void*>(GetGlobalValue_8BC1E0());
+    void** methods =
+        CSF_AT(void**, reinterpret_cast<void*>(self->field_1fd0), 0);
+    int resource = SceneLoader_GetResourceById(resources, nullptr, resourceId);
+
+    ((void(__fastcall*)(void*, void*, int))methods[7])(
+        reinterpret_cast<void*>(self->field_1fd0), nullptr, resource);
+}
+
+static void S_004e8e00_AddStateResource(
+    S_004e8e00* self, void* sector, int slot)
+{
+    void* resources = reinterpret_cast<void*>(GetGlobalValue_8BC1E0());
+    void** methods =
+        CSF_AT(void**, reinterpret_cast<void*>(self->field_1fd0), 0);
+    int resource = ResolveSlotIndexForState(
+        resources, nullptr, slot, CSF_AT(int, sector, 0xB4));
+
+    ((void(__fastcall*)(void*, void*, int))methods[7])(
+        reinterpret_cast<void*>(self->field_1fd0), nullptr, resource);
+}
+
+static std::uint32_t __fastcall S_004e8e00_SetSectorEnabled(
+    S_004e8e00* self, void* /*edx*/, int sectorIndex, int enabled)
+{
+    // The packet labels these direct-call targets as vtable references.
+    (void)CSF_VTBL(0x004E8E00);
+    (void)CSF_VTBL(0x006CEE30);
+
+    void* sectors = reinterpret_cast<void*>(self->field_1fc8);
+    auto* sector = static_cast<std::uint8_t*>(
+        ((void*(__fastcall*)(void*, void*, int))
+            CSF_AT(void**, sectors, 0)[2])(sectors, nullptr, sectorIndex));
+
+    const std::uint8_t extraResources =
+        CSF_AT(std::uint8_t, reinterpret_cast<void*>(self->field_1fdc), 0x2C);
+
+    SceneMissionSetup_SetNamedGroupEnabled(sector + 0x3C, enabled);
+    SceneMissionSetup_SetNamedGroupEnabled(sector + 0x58, enabled);
+    SceneMissionSetup_SetNamedGroupEnabled(sector + 0x74, enabled);
+    SceneMissionSetup_SetNamedGroupEnabled(sector + 0x90, enabled);
+
+    if (CSF_AT(int, sector, 0xCC) == 1)
+    {
+        CompareStringSubstring(
+            sector + 0x16C, nullptr, 0,
+            CSF_AT(std::uint32_t, sector, 0x180),
+            reinterpret_cast<const char*>(&g_byte_82E65C), 0);
+
+        void* global = reinterpret_cast<void*>(GetGlobalInt());
+        void* accessor =
+            reinterpret_cast<void*>(GlobalInt_ResolveAccessor(global, nullptr));
+
+        void* name = CSF_AT(std::uint32_t, sector, 0x184) < 0x10u
+            ? static_cast<void*>(sector + 0x170)
+            : CSF_AT(void*, sector, 0x170);
+
+        void* collection =
+            ((void*(__fastcall*)(void*, void*))
+                CSF_AT(void**, accessor, 0)[6])(accessor, nullptr);
+        void* entry = reinterpret_cast<void*>(
+            SceneMissionSetup_FindNamedEntry(collection, nullptr, name));
+
+        if (entry && CSF_AT(std::uint32_t, entry, 0x44) != 0)
+        {
+            std::uint32_t index = 0;
+            std::uint32_t offset = 0;
+            do
+            {
+                void* entries = CSF_AT(void*, entry, 0x3C);
+                int id = CSF_AT(int, entries, offset + 0x34);
+                if (id != -1)
+                {
+                    void* table = reinterpret_cast<void*>(self->field_1fd4);
+                    int resolved =
+                        ((int(__fastcall*)(void*, void*, int))
+                            CSF_AT(void**, table, 0)[4])(table, nullptr, id);
+                    if (resolved != -1)
+                        SceneTable_ApplyEntry(self, nullptr, resolved);
+                }
+                ++index;
+                offset += 56;
+            }
+            while (index < CSF_AT(std::uint32_t, entry, 0x44));
+        }
+    }
+
+    // One contiguous object: its constructor also initializes both strings
+    // and the scalar data following them.
+    alignas(4) std::uint8_t worldSetup[0x64] = {};
+    SceneMissionSetup_InitializeWorldSetup(worldSetup, nullptr);
+    CSF_AT(std::uint32_t, worldSetup, 0) =
+        CSF_AT(std::uint32_t, sector, 0x1F0);
+
+    auto* setupName = reinterpret_cast<C_0082d410*>(worldSetup + 4);
+    auto* sectorName = reinterpret_cast<C_0082d410*>(worldSetup + 0x20);
+
+    AssignStringSubstring(setupName, nullptr, sector + 0x1F4, 0, -1);
+    AssignStringSubstring(sectorName, nullptr, sector + 0x3C, 0, -1);
+
+    CSF_AT(std::uint32_t, worldSetup, 0x3C) = CSF_AT(std::uint32_t, sector, 0x130);
+    CSF_AT(std::uint32_t, worldSetup, 0x40) = CSF_AT(std::uint32_t, sector, 0x134);
+    CSF_AT(std::uint32_t, worldSetup, 0x44) = CSF_AT(std::uint32_t, sector, 0x138);
+    CSF_AT(std::uint32_t, worldSetup, 0x48) = CSF_AT(std::uint32_t, sector, 0x13C);
+    CSF_AT(std::uint32_t, worldSetup, 0x4C) = CSF_AT(std::uint32_t, sector, 0x140);
+    CSF_AT(std::uint32_t, worldSetup, 0x50) = CSF_AT(std::uint32_t, sector, 0x144);
+    CSF_AT(std::uint32_t, worldSetup, 0x54) = CSF_AT(std::uint32_t, sector, 0x220);
+    CSF_AT(std::uint32_t, worldSetup, 0x58) = CSF_AT(std::uint32_t, sector, 0x224);
+    CSF_AT(std::uint32_t, worldSetup, 0x5C) = CSF_AT(std::uint32_t, sector, 0x228);
+
+    void* global = reinterpret_cast<void*>(GetGlobalInt());
+    void* accessor =
+        reinterpret_cast<void*>(GlobalInt_ResolveAccessor(global, nullptr));
+    void* worldObjects = reinterpret_cast<void*>(
+        SceneLoader_GetWorldObjectCollection(accessor, nullptr));
+    SceneMissionSetup_ApplyWorldSetup(
+        worldObjects, nullptr, reinterpret_cast<char*>(worldSetup));
+
+    int entryId = CSF_AT(int, sector, 0xD4);
+    if (entryId != -1)
+    {
+        void* table = reinterpret_cast<void*>(self->field_1fd4);
+        int resolved = ((int(__fastcall*)(void*, void*, int))
+            CSF_AT(void**, table, 0)[4])(table, nullptr, entryId);
+        if (resolved != -1)
+            SceneTable_ApplyEntry(self, nullptr, resolved);
+    }
+
+    if (CSF_AT(int, sector, 0xB4) == 28 &&
+        CSF_AT(std::uint32_t, sector, 0x1AC) != 0)
+    {
+        global = reinterpret_cast<void*>(GetGlobalInt());
+        accessor =
+            reinterpret_cast<void*>(GlobalInt_ResolveAccessor(global, nullptr));
+        void* manager =
+            ((void*(__fastcall*)(void*, void*))
+                CSF_AT(void**, accessor, 0)[4])(accessor, nullptr);
+
+        void* name = CSF_AT(std::uint32_t, sector, 0x1B0) < 0x10u
+            ? static_cast<void*>(sector + 0x19C)
+            : CSF_AT(void*, sector, 0x19C);
+        ((void(__fastcall*)(void*, void*, void*))
+            CSF_AT(void**, manager, 0)[7])(manager, nullptr, name);
+    }
+
+    char objectFlags[4] = {};
+    objectFlags[0] = SceneMissionSetup_GetObjectStateFlag(
+        CSF_AT(int, sector, 0xB4), CSF_AT(int, sector, 0xB8));
+    objectFlags[1] = CSF_AT(int, sector, 0xB4) == 0;
+
+    std::uint32_t objectOffset = 0;
+    for (std::uint32_t index = 0; ; ++index)
+    {
+        std::uint32_t begin = CSF_AT(std::uint32_t, sector, 0xF4);
+        if (!begin ||
+            index >= (CSF_AT(std::uint32_t, sector, 0xF8) - begin) / 12)
+            break;
+
+        void* objects = reinterpret_cast<void*>(self->field_1fc4);
+        int id = CSF_AT(int, CSF_AT(void*, sector, 0xF4), objectOffset + 8);
+        ((void(__fastcall*)(void*, void*, int, char*))
+            CSF_AT(void**, objects, 0)[7])(objects, nullptr, id, objectFlags);
+        objectOffset += 12;
+    }
+
+    std::uint32_t count = CSF_AT(std::uint32_t, sector, 0x108);
+    for (std::uint32_t index = 0; index < count; ++index)
+    {
+        void* table = reinterpret_cast<void*>(self->field_1fc0);
+        int id = CSF_AT(int, CSF_AT(void*, sector, 0x100), 4 * index);
+        int resolved = ((int(__fastcall*)(void*, void*, int))
+            CSF_AT(void**, table, 0)[3])(table, nullptr, id);
+        if (resolved != -1)
+            SceneLoader_SetIndexedValue(
+                self, nullptr, resolved, CSF_AT(int, sector, 0xB4));
+    }
+
+    count = CSF_AT(std::uint32_t, sector, 0x118);
+    for (std::uint32_t index = 0; index < count; ++index)
+    {
+        void* table = reinterpret_cast<void*>(self->field_1fc0);
+        int id = CSF_AT(int, CSF_AT(void*, sector, 0x110), 4 * index);
+        int resolved = ((int(__fastcall*)(void*, void*, int))
+            CSF_AT(void**, table, 0)[3])(table, nullptr, id);
+        if (resolved != -1)
+            SceneLoader_SetIndexedValue(
+                self, nullptr, resolved, CSF_AT(int, sector, 0xB4));
+    }
+
+    if (CSF_AT(int, sector, 0xC0) != -1)
+    {
+        if (static_cast<std::uint8_t>(
+                SceneMissionSetup_IsIndexedState(CSF_AT(int, sector, 0xB4))))
+        {
+            std::uint32_t state = CSF_AT(std::uint32_t, sector, 0xB4);
+            if (state >= 0x16 && state <= 0x17)
+            {
+                void* table = reinterpret_cast<void*>(self->field_1fc0);
+                int resolved = ((int(__fastcall*)(void*, void*, int))
+                    CSF_AT(void**, table, 0)[3])(
+                        table, nullptr, CSF_AT(int, sector, 0xC0));
+                if (resolved != -1)
+                    SceneLoader_SetIndexedValue(
+                        self, nullptr, resolved, CSF_AT(int, sector, 0xB4));
+            }
+        }
+        else
+        {
+            sectors = reinterpret_cast<void*>(self->field_1fc8);
+            int resolved = ((int(__fastcall*)(void*, void*, int))
+                CSF_AT(void**, sectors, 0)[4])(
+                    sectors, nullptr, CSF_AT(int, sector, 0xC0));
+            if (resolved != -1)
+                S_004e8e00_SetSectorEnabled(self, nullptr, resolved, 1);
+        }
+    }
+
+    if (CSF_AT(int, sector, 0xC4) != -1)
+    {
+        sectors = reinterpret_cast<void*>(self->field_1fc8);
+        int resolved = ((int(__fastcall*)(void*, void*, int))
+            CSF_AT(void**, sectors, 0)[4])(
+                sectors, nullptr, CSF_AT(int, sector, 0xC4));
+        if (resolved != -1)
+            S_004e8e00_SetSectorEnabled(self, nullptr, resolved, 1);
+    }
+
+    if (CSF_AT(int, sector, 0xC8) != -1)
+    {
+        void* resources = reinterpret_cast<void*>(self->field_1fd0);
+        ((void(__fastcall*)(void*, void*, int))
+            CSF_AT(void**, resources, 0)[7])(
+                resources, nullptr, CSF_AT(int, sector, 0xC8));
+    }
+
+    if (CSF_AT(std::uint8_t, sector, 0x15C))
+    {
+        S_004e8e00_AddResource(self, 5);
+        S_004e8e00_AddResource(self, 7);
+    }
+    else
+    {
+        S_004e8e00_AddResource(self, 6);
+        S_004e8e00_AddResource(self, 8);
+    }
+
+    if (CSF_AT(int, sector, 0xB4) == 0)
+    {
+        S_004e8e00_AddResource(self, 11);
+        S_004e8e00_AddResource(self, 29);
+        S_004e8e00_AddResource(self, 30);
+
+        void* resources = reinterpret_cast<void*>(self->field_1fd0);
+        ((void(__fastcall*)(void*, void*, int))
+            CSF_AT(void**, resources, 0)[7])(
+                resources, nullptr, CSF_AT(int, sector, 0x148));
+
+        S_004e8e00_AddResource(self, 9);
+        S_004e8e00_AddResource(self, 10);
+        S_004e8e00_AddResource(self, 59);
+        S_004e8e00_AddResource(self, 60);
+        S_004e8e00_AddResource(self, 61);
+
+        if (CSF_AT(int, sector, 0xB8) == 3)
+        {
+            S_004e8e00_AddResource(self, 56);
+            S_004e8e00_AddResource(self, 57);
+            S_004e8e00_AddResource(self, 58);
+        }
+
+        if (extraResources)
+        {
+            S_004e8e00_AddResource(self, 12);
+            S_004e8e00_AddResource(self, 13);
+            S_004e8e00_AddResource(self, 14);
+            S_004e8e00_AddResource(self, 15);
+            S_004e8e00_AddResource(self, 16);
+        }
+
+        switch (CSF_AT(int, sector, 0xB8))
+        {
+        case 1:
+            S_004e8e00_AddResource(self, 69);
+            S_004e8e00_AddResource(self, 70);
+            S_004e8e00_AddResource(self, 71);
+            S_004e8e00_AddResource(self, 72);
+            S_004e8e00_AddResource(self, 73);
+            S_004e8e00_AddResource(self, 74);
+            break;
+        case 2:
+            S_004e8e00_AddResource(self, 83);
+            S_004e8e00_AddResource(self, 84);
+            S_004e8e00_AddResource(self, 85);
+            S_004e8e00_AddResource(self, 86);
+            S_004e8e00_AddResource(self, 87);
+            S_004e8e00_AddResource(self, 88);
+            break;
+        case 3:
+            S_004e8e00_AddResource(self, 75);
+            S_004e8e00_AddResource(self, 76);
+            S_004e8e00_AddResource(self, 77);
+            S_004e8e00_AddResource(self, 78);
+            S_004e8e00_AddResource(self, 79);
+            S_004e8e00_AddResource(self, 80);
+            S_004e8e00_AddResource(self, 81);
+            S_004e8e00_AddResource(self, 82);
+            break;
+        }
+    }
+
+    if (static_cast<std::uint8_t>(
+            IsResolvedEntryActive(CSF_AT(int, sector, 0xB4))))
+    {
+        S_004e8e00_AddStateResource(self, sector, 2);
+        S_004e8e00_AddStateResource(self, sector, 3);
+        S_004e8e00_AddStateResource(self, sector, 0);
+        S_004e8e00_AddStateResource(self, sector, 1);
+
+        if (CSF_AT(int, sector, 0xB4) == 4)
+        {
+            S_004e8e00_AddResource(self, 45);
+            S_004e8e00_AddResource(self, 46);
+            S_004e8e00_AddResource(self, 47);
+        }
+    }
+
+    if (CSF_AT(int, sector, 0xB4) == 26)
+    {
+        S_004e8e00_AddResource(self, 32);
+        S_004e8e00_AddResource(self, 31);
+    }
+
+    if (CSF_AT(std::uint32_t, worldSetup, 0x38) >= 0x10 &&
+        sectorName->field_0004)
+    {
+        Mem_FreeDebug(reinterpret_cast<void*>(sectorName->field_0004));
+    }
+
+    std::uint32_t result = CSF_AT(std::uint32_t, worldSetup, 0x1C);
+    CSF_AT(std::uint32_t, worldSetup, 0x38) = 15;
+    CSF_AT(std::uint32_t, worldSetup, 0x34) = 0;
+    sectorName->field_0004 &= 0xFFFFFF00u;
+
+    if (result >= 0x10)
+    {
+        result = setupName->field_0004;
+        if (result)
+            return Mem_FreeDebug(reinterpret_cast<void*>(result));
+    }
+    return result;
+}
+
+HOOK(0x004ED1C0, S_004e8e00_SetSectorEnabled, "auto");

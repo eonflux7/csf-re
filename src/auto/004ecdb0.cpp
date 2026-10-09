@@ -1,0 +1,165 @@
+#include <cstdint>
+#include <cstddef>
+#include "globals.h"
+#include "hook.h"
+#include "core/memory.h"
+#include "types/auto_classes.h"
+
+CSF_FUNC(unsigned int, __fastcall, DestroySceneObjectOptionsStorage, 0x004018E0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, AssignStringSubstring, 0x004109E0, (void* self, void* edx, const void* source, std::uint32_t position, std::uint32_t count));
+CSF_FUNC(uint32_t*, __fastcall, InitializeSceneObjectOptions, 0x004777D0, (void* self, void* edx));
+CSF_FUNC(uint32_t*, __fastcall, SceneMissionSetup_AttachObjectBehavior, 0x0048E2B0, (void* self, void* edx, int a2, int a3));
+CSF_FUNC(int, __fastcall, HandleTargetUnavailable, 0x0048FE90, (void* self, void* edx));
+CSF_FUNC(unsigned int, __fastcall, C_00833908_SetDoorStateFlags, 0x00490D20, (C_00833908* self, void* edx, uint32_t a2, char a3));
+CSF_FUNC(uint32_t*, __fastcall, SceneMissionSetup_ConstructObjectContext, 0x004A4280, (void* self, void* edx, int a2));
+CSF_FUNC(void, __fastcall, SceneMissionSetup_PopulateObjectOptions, 0x004E9090, (void* self, void* edx, int a2, int a3));
+CSF_FUNC(int, __fastcall, SceneMissionSetup_GetSceneObject, 0x004E9B80, (void* self, void* edx, int a2, char a3));
+CSF_FUNC(void, __fastcall, SceneMissionSetup_SetObjectContext, 0x0055D860, (void* self, void* edx, void* a2));
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
+CSF_FUNC(void*, __cdecl, Mem_Alloc, 0x006910F0, (std::size_t size));
+
+static unsigned int __fastcall S_004e9090_ConfigureMissionObject(
+    S_004e9090* self, void* /*edx*/, C_00833908* object, int objectId)
+{
+    // Keep the options and their embedded strings contiguous: callees receive
+    // both the complete options object and its storage starting at +4.
+    struct ObjectOptions
+    {
+        uint32_t flags;
+        uint32_t selection;
+        alignas(4) uint8_t selectionString[0x1C];
+        alignas(4) uint8_t nameStorage[0x34];
+        uint32_t firstVector[3];
+        uint8_t optionA;
+        uint8_t optionB;
+        uint8_t hasSelection;
+        uint8_t padding;
+        uint32_t reserved;
+        uint32_t secondVector[3];
+        alignas(4) uint8_t auxiliaryString[0x1C];
+        uint32_t index;
+        uint32_t thirdVector[3];
+        uint32_t setting;
+        uint8_t trailingStorage[0x10];
+    };
+    static_assert(sizeof(ObjectOptions) == 0xB8);
+    ObjectOptions options{};
+
+    void* definitions = reinterpret_cast<void*>(self->field_1fc8);
+    auto* definition = reinterpret_cast<uint8_t*>(
+        reinterpret_cast<void* (__fastcall*)(void*, void*, int)>(
+            CSF_AT(void**, definitions, 0)[8 / 4])(
+                definitions, nullptr, objectId));
+
+    int sceneObjectAddress =
+        SceneMissionSetup_GetSceneObject(self, nullptr, objectId, 0);
+    C_00833908_SetDoorStateFlags(object, nullptr, sceneObjectAddress, 1);
+
+    InitializeSceneObjectOptions(&options, nullptr);
+    options.flags |= 1;
+    if (CSF_AT(uint8_t, definition, 0x159))
+        options.flags |= 0x400;
+    else
+        options.flags &= 0xFFFFFBFF;
+
+    if (CSF_AT(uint8_t, definition, 0x15A))
+        options.flags &= 0xFFFFFFDF;
+    else
+        options.flags |= 0x20;
+
+    if (CSF_AT(uint8_t, definition, 0x15B))
+        options.flags |= 0x4000;
+    else
+        options.flags &= 0xFFFFBFFF;
+
+    if (CSF_AT(uint32_t, definition, 0xCC))
+        HandleTargetUnavailable(object, nullptr);
+
+    options.reserved = 0;
+    options.secondVector[0] = CSF_AT(uint32_t, definition, 0x160);
+    options.secondVector[1] = CSF_AT(uint32_t, definition, 0x164);
+    options.secondVector[2] = CSF_AT(uint32_t, definition, 0x168);
+    AssignStringSubstring(
+        options.auxiliaryString, nullptr, definition + 0x16C, 0, -1);
+
+    options.index = CSF_AT(uint32_t, definition, 0x188) - 1;
+    options.thirdVector[0] = CSF_AT(uint32_t, definition, 0x18C);
+    options.thirdVector[1] = CSF_AT(uint32_t, definition, 0x190);
+    options.thirdVector[2] = CSF_AT(uint32_t, definition, 0x194);
+    options.setting = CSF_AT(uint32_t, definition, 0xD0);
+
+    options.selection = CSF_AT(uint32_t, definition, 0x1F0);
+    AssignStringSubstring(
+        options.selectionString, nullptr, definition + 0x1F4, 0, -1);
+    AssignStringSubstring(
+        options.nameStorage, nullptr, definition + 0x3C, 0, -1);
+
+    options.firstVector[0] = CSF_AT(uint32_t, definition, 0x220);
+    options.firstVector[1] = CSF_AT(uint32_t, definition, 0x224);
+    options.firstVector[2] = CSF_AT(uint32_t, definition, 0x228);
+    options.hasSelection = options.selection != 0;
+    options.optionA = CSF_AT(uint8_t, definition, 0x21C);
+    options.optionB = CSF_AT(uint8_t, definition, 0x21D);
+
+    SceneMissionSetup_PopulateObjectOptions(
+        self, nullptr, CSF_AT(int, definition, 0),
+        reinterpret_cast<int>(&options));
+
+    void* sceneObject = reinterpret_cast<void*>(sceneObjectAddress);
+    reinterpret_cast<void (__fastcall*)(void*, void*, void*)>(
+        CSF_AT(void**, sceneObject, 0)[0x10 / 4])(
+            sceneObject, nullptr, &options);
+
+    void** behaviorTable = CSF_VTBL(0x0083ED08);
+    void* contextStorage = Mem_Alloc(124);
+    void* context = nullptr;
+    if (contextStorage)
+        context = SceneMissionSetup_ConstructObjectContext(
+            contextStorage, nullptr, reinterpret_cast<int>(object));
+
+    SceneMissionSetup_SetObjectContext(object, nullptr, context);
+    SceneMissionSetup_AttachObjectBehavior(
+        object, nullptr, 13, reinterpret_cast<int>(&behaviorTable));
+
+    int relatedId = CSF_AT(int, definition, 0xC0);
+    if (relatedId != -1)
+    {
+        int objectType = static_cast<int32_t>(object->field_0050);
+        if (objectType >= 22 && objectType <= 23)
+        {
+            void* registry = CSF_AT(void*, self, 0x1FC0);
+            int relatedHandle =
+                reinterpret_cast<int (__fastcall*)(void*, void*, int)>(
+                    CSF_AT(void**, registry, 0)[0xC / 4])(
+                        registry, nullptr, relatedId);
+
+            registry = CSF_AT(void*, self, 0x1FC0);
+            void* relatedDefinition =
+                reinterpret_cast<void* (__fastcall*)(void*, void*, int)>(
+                    CSF_AT(void**, registry, 0)[8 / 4])(
+                        registry, nullptr, relatedHandle);
+
+            object[1].vtbl = reinterpret_cast<void**>(relatedHandle);
+            object[1].field_0004 =
+                CSF_AT(uint32_t, relatedDefinition, 0x104);
+            CSF_AT(uint32_t, &object[1], 0x8) =
+                CSF_AT(uint32_t, relatedDefinition, 0x108);
+            object[1].field_000c =
+                CSF_AT(uint32_t, relatedDefinition, 0x110);
+        }
+    }
+
+    if (CSF_AT(uint32_t, options.auxiliaryString, 0x18) >= 0x10 &&
+        CSF_AT(uint32_t, options.auxiliaryString, 0x4))
+    {
+        Mem_FreeDebug(reinterpret_cast<void*>(
+            CSF_AT(uint32_t, options.auxiliaryString, 0x4)));
+    }
+    CSF_AT(uint32_t, options.auxiliaryString, 0x18) = 15;
+    CSF_AT(uint32_t, options.auxiliaryString, 0x14) = 0;
+    CSF_AT(uint8_t, options.auxiliaryString, 0x4) = 0;
+
+    return DestroySceneObjectOptionsStorage(&options.selection, nullptr);
+}
+
+HOOK(0x004ECDB0, S_004e9090_ConfigureMissionObject, "auto");

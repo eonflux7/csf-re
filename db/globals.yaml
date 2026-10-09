@@ -6,7 +6,9 @@
 - {addr: 0x0082D208, name: g_SetThreadPriorityIat, type: void*, uses: 2, src: auto, alt: [g_pfnSetThreadPriority]}
 - {addr: 0x0082D20C, name: g_pfnWaitForSingleObject, type: WaitForSingleObjectFn, uses: 3, src: auto, alt: [g_pWaitForSingleObject]}
 - {addr: 0x0082D23C, name: g_ReleaseMutex, type: ReleaseMutexFunction, uses: 1, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 29, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 30, src: auto}
+- {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 1, src: auto}
+- {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 8, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
 - {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 20, src: auto}
@@ -28,15 +30,16 @@
 - {addr: 0x0082E048, name: g_LevelScaleFactor, type: float, uses: 1, src: auto}
 - {addr: 0x0082E04C, name: g_fHudFadeStep, type: float, uses: 1, src: auto}
 - {addr: 0x0082E05C, name: g_FloatConstant_82e05c, type: float, uses: 1, src: auto}
+- {addr: 0x0082E060, name: g_CharacterWidthScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082E068, name: g_Const_0082E068, type: float, uses: 1, src: auto}
 - {addr: 0x0082E0F0, name: g_Const20, type: float, uses: 4, src: auto, alt: [g_LayoutInset, g_WidthReduction]}
-- {addr: 0x0082E114, name: g_SoundActivityThreshold, type: float, uses: 1, src: auto}
+- {addr: 0x0082E114, name: g_SoundActivityThreshold, type: float, uses: 2, src: auto}
 - {addr: 0x0082E118, name: g_fIntroVideoDuration, type: float, uses: 2, src: auto}
 - {addr: 0x0082E11C, name: g_WeaponPlacementTraceDepth, type: float, uses: 1, src: auto}
 - {addr: 0x0082E120, name: g_MaxPercent, type: float, uses: 1, src: auto}
 - {addr: 0x0082E1E4, name: g_fRotationWrapStep, type: float, uses: 1, src: auto}
 - {addr: 0x0082E25C, name: g_flt_0082E25C, type: float, uses: 3, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 41, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 43, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E958, name: g_TParadoString, type: char, uses: 1, src: auto}
 - {addr: 0x0082F318, name: g_TEndString, type: const char, uses: 1, src: auto}
 - {addr: 0x0082FACC, name: g_HudNegativeHalfPi, type: float, uses: 1, src: auto}
@@ -60,6 +63,9 @@
 - {addr: 0x008313E4, name: g_RadToDegFactor, type: float, uses: 5, src: auto, alt: [g_DegreesPerRadian, g_RadToDeg, g_RegionScaleFactor]}
 - {addr: 0x008313E8, name: g_DegreesToRadians, type: float, uses: 2, src: auto, alt: [g_DegreesToRadiansFactor]}
 - {addr: 0x00831430, name: g_MessageBoxSizeScale, type: float, uses: 4, src: auto, alt: [g_flt_00831430]}
+- {addr: 0x0083169C, name: g_DefaultObjectOptionX, type: float, uses: 1, src: auto}
+- {addr: 0x008316A0, name: g_DefaultObjectOptionY, type: float, uses: 1, src: auto}
+- {addr: 0x008316A4, name: g_DefaultObjectOptionZ, type: float, uses: 1, src: auto}
 - {addr: 0x008322E8, name: g_TInterrupcion, type: char, uses: 1, src: auto}
 - {addr: 0x008330E4, name: g_ProjectilePositionScale, type: float, uses: 1, src: auto}
 - {addr: 0x00833164, name: g_ReloadProgressThreshold, type: float, uses: 1, src: auto}
@@ -1278,7 +1284,7 @@
 - {addr: 0x008AFD98, name: g_RayInitializationFlags, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008AFD9C, name: g_GlobalValue, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008B044C, name: g_AiSearchCostThisFrame, type: int, uses: 0, src: opus}
-- {addr: 0x008B0554, name: g_Value8B0554, type: int, uses: 1, src: auto}
+- {addr: 0x008B0554, name: g_Value8B0554, type: int, uses: 5, src: auto}
 - {addr: 0x008B0558, name: g_Value8B0558, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008B055C, name: g_Value8B055C, type: int, uses: 1, src: auto}
 - {addr: 0x008B0560, name: g_globalValue_8B0560, type: int, uses: 2, src: auto}
