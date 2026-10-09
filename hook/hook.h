@@ -28,6 +28,14 @@ struct Entry {
 };
 
 void add(Entry* e);
+namespace t3 {  // hook/replay.cpp: diff tier 3 (record/replay of callees)
+bool busy();
+void begin_record(uint32_t self, uint32_t this_size, const uint32_t (*globs)[2], uint32_t nglobs);
+void pause();
+void begin_replay();
+int end(char* msg, size_t n);
+void install();
+}  // namespace t3
 void install_all();
 void log(const char* fmt, ...);
 // Rest of the first csf_hook.ini line starting with `key ` (trimmed), or nullptr. Static storage.

@@ -6,7 +6,13 @@ pure functions (tier 2: no writes outside their own frame, transitively - runnin
 tail jumps out), and every memory write goes through `this` (ecx, never reassigned) or to an absolute global. The harness snapshots `this` (bytes the function can touch) and the written globals, runs the
 original, restores, runs ours, and compares return value + memory.
 
-Usage: difftable.py [--out build/diff_table.inc]
+Tier 3 (record/replay, build/replay_table.inc, hook/replay.cpp): the function's own writes still go only to `this`,
+absolute globals or its stack, but it may call anything directly. The original runs with its callees recorded
+(callee, ecx, stack args, return, the bytes they changed in the snapshot regions and in stack buffers passed by
+pointer); ours runs against the recording (callees not executed, results replayed), so every callee's side effects
+happen once. Compared: the call sequence and arguments, the return value and the snapshot regions.
+
+Usage: difftable.py [--out build/diff_table.inc]   (replay_table.inc is written next to it)
 """
 import glob, os, re, sys
 sys.path.insert(0, os.path.dirname(__file__))
@@ -154,11 +160,107 @@ def effects(db, ea, depth=0, _memo={}):
     return _memo[ea]
 
 
-def analyze(db, ea):
+def t3_effects(db, ea):
+    """Tier 3: like effects(), but any direct call is allowed (recorded and replayed instead of run twice); only the
+    function's own writes must stay in `this` / absolute globals / its stack. Indirect calls are out (v1).
+    Returns (this_max, globs, fl_this, fl_glob, callees) or None."""
+    f = db.F.get(ea)
+    if f is None or f["size"] > 4000:
+        return None
+    alias = {"ecx"}
+    this_max, globs, fl_this, fl_glob, callees = 0, {}, {}, {}, []
+
+    def this_off(inner):
+        mo = re.fullmatch(r"(e[a-z]{2})(?: \+ (0x[0-9a-f]+|\d+))?", inner)
+        return int(mo.group(2) or "0", 0) if mo and mo.group(1) in alias else None
+
+    for i in disasm(ea, f["size"]):
+        m, ops = i.mnemonic, i.op_str
+        if m.startswith(("rep", "stos", "movs", "lods", "scas", "cmps")) and "ptr" in ops or m.startswith("rep") \
+                or m in ("int3", "int", "into"):
+            return None
+        if m == "jmp" or m.startswith("j"):
+            if not ops.startswith("0x") or not (f["ea"] <= int(ops, 16) < f["end"]):
+                return None
+            continue
+        if m == "call":
+            if not ops.startswith("0x"):
+                return None  # virtual / indirect: v2
+            t = int(ops, 16)
+            if t == ea or t not in db.F or db.F[t]["size"] < 5:
+                return None  # recursion, or an entry too small to patch
+            if t not in callees:
+                callees.append(t)
+            alias -= set(CLOBBERED)
+            continue
+        for mm in re.finditer(r"(byte|word|dword|qword) ptr \[(e[a-z]{2})(?: \+ (0x[0-9a-f]+|\d+))?\]", ops):
+            if mm.group(2) in alias:
+                this_max = max(this_max, int(mm.group(3) or "0", 0) + SIZE[mm.group(1)])
+        mw = re.match(r"(byte|word|dword|qword) ptr (?:\w+:)?\[(.*?)\]", ops.split(",")[0])
+        is_write = mw and ((m in WRITE_OPS and m not in ("movsx", "movzx")) or m in ("fstp", "fst", "fistp", "fist"))
+        if is_write:
+            inner, n = mw.group(2), SIZE[mw.group(1)]
+            fpw = m in ("fstp", "fst", "movss", "movsd") and n in (4, 8)
+            if re.fullmatch(r"0x[0-9a-f]+", inner):
+                a2 = int(inner, 16)
+                globs[a2] = max(globs.get(a2, 0), n)
+                if fpw:
+                    fl_glob[a2] = n
+            elif this_off(inner) is not None:
+                if fpw:
+                    fl_this[this_off(inner)] = n
+            elif not re.match(r"(esp|ebp)\b", inner):
+                return None
+            continue
+        cp = ALIAS_MOV.match(f"{m} {ops}")
+        if cp:
+            (alias.add if cp.group(2) in alias else alias.discard)(cp.group(1))
+            continue
+        rw = REG_WRITE.match(f"{m} {ops}")
+        if rw:
+            alias.discard(SUBREG.get(rw.group(1), rw.group(1)))
+    if not callees:
+        return None  # nothing to record: tier 1/2 covers it (or not, for its own reasons)
+    return this_max, globs, fl_this, fl_glob, callees
+
+
+ABI = None
+
+
+def callee_info(db, t):
+    """{pop, nargs, regs (1 ecx, 2 edx), ret (0 int32, 1 fp in st0, 3 void, 4 int64)} of a callee, from Hex-Rays'
+    prototype (export/abi.json) and the callee's own `ret N`."""
+    global ABI
+    if ABI is None:
+        import json
+        ABI = json.load(open(os.path.join(ROOT, "export", "abi.json")))
+    a = ABI.get(f"{t:08x}") or {}
+    args = a.get("args") or []
+    regs = (1 if any(x[2] == "ecx" for x in args) else 0) | (2 if any(x[2] == "edx" for x in args) else 0)
+    nst = sum(2 if re.search(r"\b(double|__int64)\b(?!\s*\*)", x[0]) else 1 for x in args if x[2] == "stack")
+    rets = ret_bytes(t, db.F[t]["size"])
+    pop = rets[0] if rets else 0
+    rt = (a.get("ret") or "int").strip()
+    ret = 3 if rt == "void" else 1 if re.fullmatch(r"(float|double)", rt) else \
+        4 if re.search(r"__int64", rt) and "*" not in rt else 0
+    return dict(pop=pop, nargs=min(max(nst, pop // 4), 8), regs=regs, ret=ret)
+
+
+def ours_callees(ea):
+    """Original functions our version calls (CSF_FUNC addresses in src/auto/<ea>.cpp): intercepted too, so a call the
+    original doesn't make shows up as a trace mismatch instead of running for real during the replay."""
+    p = os.path.join(ROOT, "src", "auto", f"{ea:08x}.cpp")
+    src = open(p).read() if os.path.exists(p) else ""
+    return [int(x, 16) for x in re.findall(r"CSF_FUNC\(\s*[^,]+,\s*\w+,\s*\w+,\s*(0x[0-9A-Fa-f]+)", src)]
+
+
+def analyze(db, ea, tier3=False):
     f = db.F[ea]
-    eff = effects(db, ea)
+    eff = t3_effects(db, ea) if tier3 else effects(db, ea)
     if eff is None:
         return None
+    callees = eff[4] if tier3 else []
+    eff = eff[:4]
     this_max, globs, fl_this, fl_glob = eff
     if len(globs) > 8 or this_max > 12288:  # hook/diff.cpp: Snap buf 16 KiB, globs[8]
         return None
@@ -192,23 +294,50 @@ def analyze(db, ea):
             if a <= fa and fa + n <= a + size:
                 fl.append((pos + fa - a) | (0x8000 if n == 8 else 0))
         pos += size
-    return dict(conv=conv, argbytes=argbytes, ret=ret, this_size=this_max, globs=gl, fl=sorted(fl)[:8])
+    return dict(conv=conv, argbytes=argbytes, ret=ret, this_size=this_max, globs=gl, fl=sorted(fl)[:8], callees=callees)
+
+
+def row(ea, d):
+    g = ", ".join(f"{{0x{a:X}, {n}}}" for a, n in d["globs"])
+    fl = ", ".join(f"0x{x:X}" for x in d["fl"])
+    return (f"    {{0x{ea:08X}, {d['conv']}, {d['argbytes']}, {d['ret']}, {d['this_size']}, "
+            f"{len(d['globs'])}, {{{g}}}, {len(d['fl'])}, {{{fl}}}}},")
 
 
 def main():
     out = sys.argv[sys.argv.index("--out") + 1] if "--out" in sys.argv else os.path.join(ROOT, "build", "diff_table.inc")
     db = DB()
-    rows = []
-    for p in sorted(glob.glob(os.path.join(ROOT, "src", "auto", "*.cpp"))):
-        ea = int(os.path.basename(p)[:8], 16)
+    rows, t3, done = [], {}, set()
+    eas = [int(os.path.basename(p)[:8], 16) for p in sorted(glob.glob(os.path.join(ROOT, "src", "auto", "*.cpp")))]
+    for ea in eas:
         if ea not in db.F:
             continue
         d = analyze(db, ea)
         if d:
-            g = ", ".join(f"{{0x{a:X}, {n}}}" for a, n in d["globs"])
-            fl = ", ".join(f"0x{x:X}" for x in d["fl"])
-            rows.append(f"    {{0x{ea:08X}, {d['conv']}, {d['argbytes']}, {d['ret']}, {d['this_size']}, "
-                        f"{len(d['globs'])}, {{{g}}}, {len(d['fl'])}, {{{fl}}}}},")
+            rows.append(row(ea, d))
+            done.add(ea)
+    for ea in eas:  # tier 3: what tier 1/2 can't take
+        if ea in db.F and ea not in done:
+            d = analyze(db, ea, tier3=True)
+            if d and len(d["globs"]) <= 8 and d["this_size"] <= 12288:
+                t3[ea] = d
+    # a callee's entry is wrapped whatever it holds (our hook, a diff stub, the original), and a running tier-3 diff
+    # turns nested diffs on its thread off (hook/diff.cpp): a tier-3 function may itself be another one's callee
+    for ea, d in t3.items():
+        d["callees"] = list(dict.fromkeys(d["callees"] + [c for c in ours_callees(ea) if c in db.F and c != ea]))
+    cal = sorted({c for d in t3.values() for c in d["callees"]})
+    rout = os.path.join(os.path.dirname(out), "replay_table.inc")
+    with open(rout, "w") as f:
+        f.write("// generated by tools/difftable.py (tier 3, hook/replay.cpp)\n#ifdef CSF_T3_FUNCS\n"
+                "// same layout as diff_table.inc\n")
+        f.write("\n".join(row(ea, d) for ea, d in sorted(t3.items())) + "\n#endif\n#ifdef CSF_T3_CALLEES\n"
+                "// {addr, pop (bytes the callee pops), nargs (stack dwords recorded), regs (1 ecx 2 edx), "
+                "ret (0 int32 1 fp 3 void 4 int64)}\n")
+        for c in cal:
+            ci = callee_info(db, c)
+            f.write(f"    {{0x{c:08X}, {ci['pop']}, {ci['nargs']}, {ci['regs']}, {ci['ret']}}},\n")
+        f.write("#endif\n")
+    print(f"tier 3: {len(t3)} functions, {len(cal)} intercepted callees -> {os.path.relpath(rout, ROOT)}")
     os.makedirs(os.path.dirname(out), exist_ok=True)
     with open(out, "w") as f:
         f.write("// generated by tools/difftable.py: {addr, conv(0 cdecl 1 stdcall 2 thiscall 3 fastcall), argbytes,\n"

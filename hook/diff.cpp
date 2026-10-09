@@ -31,11 +31,19 @@ struct DiffInfo { uint32_t addr, conv, argbytes, ret, this_size, nglobs; Glob gl
 const DiffInfo kTable[] = {
 #include "diff_table.inc"
 };
+const DiffInfo kT3[] = {  // tier 3: callees recorded and replayed (hook/replay.cpp)
+#define CSF_T3_FUNCS
+#include "replay_table.inc"
+#undef CSF_T3_FUNCS
+    {0},
+};
 
 struct Regs { uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax; };  // pushad layout
 
 struct Slot {
     const DiffInfo* info;
+    bool t3;
+    uint32_t inconclusive;
     const char* name;
     void* orig;   // MinHook trampoline
     void* ours;
@@ -45,6 +53,7 @@ Slot* g_slots;
 int g_nslots;
 uint32_t g_maxCalls = 200;
 uint32_t g_limit = 0xFFFFFFFF;  // ini diff_limit N: only the first N table entries (bisecting)
+bool g_no_t3 = false;           // ini diff_t3 0: tier 3 off
 constexpr uint32_t kMinArgCopy = 64;  // the invoke thunk restores esp itself, so over-copying args is harmless
 CRITICAL_SECTION g_cs;
 FILE* g_log;
@@ -190,7 +199,7 @@ template <typename R, typename Invoke>
 R run(int i, Regs* r, Invoke invoke) {
     Slot& s = g_slots[i];
     const void* args = (const uint8_t*)r + 36;  // past pushad + return address
-    if (s.calls++ >= g_maxCalls)
+    if (s.calls++ >= g_maxCalls || hook::t3::busy())  // no nested diffs inside a tier-3 record/replay
         return invoke(s.ours, r->ecx, r->edx, args, argcopy(s, args));
     EnterCriticalSection(&g_cs);
     // static, under the lock: game threads (e.g. the loader) have small stacks
@@ -200,12 +209,32 @@ R run(int i, Regs* r, Invoke invoke) {
         LeaveCriticalSection(&g_cs);
         return invoke(s.ours, r->ecx, r->edx, args, argcopy(s, args));
     }
+    const DiffInfo& d = *s.info;
+    if (s.t3)
+        hook::t3::begin_record(r->ecx, d.conv == 2 || d.conv == 3 ? d.this_size : 0,
+                               (const uint32_t(*)[2])d.globs, d.nglobs);
     ro = invoke(s.orig, r->ecx, r->edx, args, argcopy(s, args));
+    if (s.t3)
+        hook::t3::pause();
     capture(s, r, afterOrig);
     restore(s, r, before);
+    if (s.t3)
+        hook::t3::begin_replay();
     ru = invoke(s.ours, r->ecx, r->edx, args, argcopy(s, args));
+    char trace[256] = "";
+    int t3st = s.t3 ? hook::t3::end(trace, sizeof trace) : 0;
     capture(s, r, afterOurs);
+    if (t3st == 2) {  // a record was lost: nothing to conclude
+        if (s.inconclusive++ == 0 && g_log) {
+            fprintf(g_log, "T3 %08X %s: inconclusive (more calls or callee writes than recorded)\n", d.addr, s.name);
+            fflush(g_log);
+        }
+        LeaveCriticalSection(&g_cs);
+        return ru;
+    }
     ++s.compared;
+    if (t3st == 1)
+        report(s, r, trace);
     compare_mem(s, r, afterOrig, afterOurs);
     if constexpr (!std::is_floating_point_v<R>) {
         // only the bits the original defines: al for bytes/bools, ax for shorts, edx:eax for 64-bit
@@ -274,17 +303,24 @@ bool diff_install(const Entry& e, uint8_t* stub, uint32_t* counter, int max_slot
             g_maxCalls = (uint32_t)strtoul(n, nullptr, 0);
         if (const char* n = ini_string("diff_limit"))
             g_limit = (uint32_t)strtoul(n, nullptr, 0);
+        if (const char* n = ini_string("diff_t3"))
+            g_no_t3 = atoi(n) == 0;
         CreateThread(nullptr, 0, summary_thread, nullptr, 0, nullptr);
     }
     const DiffInfo* d = nullptr;
+    bool t3 = false;
     for (uint32_t k = 0; k < sizeof kTable / sizeof kTable[0] && k < g_limit; ++k)
         if (kTable[k].addr == e.addr)
             d = &kTable[k];
+    for (uint32_t k = 0; !d && kT3[k].addr; ++k)
+        if (kT3[k].addr == e.addr && !g_no_t3)
+            d = &kT3[k], t3 = true;
     if (!d || g_nslots >= max_slots)
         return false;
     int i = g_nslots;
     Slot& s = g_slots[i];
     s.info = d;
+    s.t3 = t3;
     s.name = e.name;
     s.ours = e.fn;
     uint8_t* p = stub;

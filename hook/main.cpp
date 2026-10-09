@@ -180,6 +180,8 @@ void install_all() {
     if (MH_ApplyQueued() != MH_OK)
         log("FAILED MH_ApplyQueued");
     log("hooks installed=%d skipped=%d failed=%d", ok, skipped, failed);
+    if (cfg.diff)
+        t3::install();  // last: wraps callee entries whatever they hold now
     CreateThread(nullptr, 0, hits_thread, nullptr, 0, nullptr);
 }
 
