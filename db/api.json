@@ -6283,11 +6283,10 @@
   "name": "SetField0014ReturnArg",
   "name_src": "agent",
   "votes": {},
-  "ret": "int*",
+  "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* , int* value",
-  "sig_src": "impl",
-  "file": "src/auto/00420c80.cpp"
+  "params": "void* self, void* edx, uint32_t* a2",
+  "sig_src": "abi"
  },
  "00420c90": {
   "name": "sub_420C90",
@@ -12223,8 +12222,7 @@
   "name_src": "vote",
   "votes": {
    "SubmitEventRecord": 1,
-   "SubmitRecordToGlobalSubObject": 1,
-   "ProcessSubObjectRecord": 1,
+   "ProcessSubObjectRecord": 2,
    "ProcessGlobalSubObjectWithBlock": 1,
    "GlobalSubObjectProcess_443000": 1
   },
@@ -12839,8 +12837,7 @@
   "name": "SceneNodeQueryCore",
   "name_src": "vote",
   "votes": {
-   "SceneNodeQueryCore": 1,
-   "InitTimedRequest": 1
+   "SceneNodeQueryCore": 2
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -13138,8 +13135,7 @@
   "name": "ResolveSceneObjectRect",
   "name_src": "vote",
   "votes": {
-   "ResolveSceneObjectRect": 1,
-   "ResolveSceneRequest": 1
+   "ResolveSceneObjectRect": 2
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -15167,13 +15163,15 @@
   "sig_src": "abi"
  },
  "0044f8c0": {
-  "name": "sub_44F8C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SceneControl_ApplyRecordByte",
+  "name_src": "vote",
+  "votes": {
+   "SceneControl_ApplyRecordByte": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0044f8d0": {
   "name": "C_Unknown_GetByte1A8",
@@ -17208,7 +17206,7 @@
   },
   "ret": "void",
   "conv": "__stdcall",
-  "params": "int a1, int a2, int a3",
+  "params": "int a1, int , int",
   "sig_src": "impl",
   "file": "src/auto/0045abf0.cpp"
  },
@@ -17321,14 +17319,14 @@
   "file": "src/auto/0045ae70.cpp"
  },
  "0045aeb0": {
-  "name": "SetLookupMissFlag",
+  "name": "ScriptCommands_SetLookupMissFlag",
   "name_src": "agent",
   "votes": {
    "SetLookupMissFlag": 1
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1, int , int a3",
+  "params": "int a1, int a2, int a3",
   "sig_src": "impl",
   "file": "src/auto/0045aeb0.cpp"
  },
@@ -17638,7 +17636,7 @@
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1, int a2, uint32_t* a3",
+  "params": "int , int , uint32_t* a3",
   "sig_src": "impl",
   "file": "src/auto/0045b4e0.cpp"
  },
@@ -17811,14 +17809,14 @@
   "file": "src/auto/0045ba10.cpp"
  },
  "0045ba40": {
-  "name": "ForwardSceneRecordByteToControl",
+  "name": "ScriptCommands_ForwardSceneRecordByteToControl",
   "name_src": "agent",
   "votes": {
    "ForwardSceneRecordByteToControl": 1
   },
   "ret": "char",
   "conv": "__stdcall",
-  "params": "int , int , int a3",
+  "params": "int a1, int a2, int a3",
   "sig_src": "impl",
   "file": "src/auto/0045ba40.cpp"
  },
@@ -18058,14 +18056,14 @@
   "file": "src/auto/0045c0c0.cpp"
  },
  "0045c130": {
-  "name": "ComputeAngleBetweenEntitiesDegrees",
+  "name": "ScriptCommands_ComputeAngleBetweenEntitiesDegrees",
   "name_src": "agent",
   "votes": {
    "ComputeAngleBetweenEntitiesDegrees": 1
   },
   "ret": "void",
   "conv": "__stdcall",
-  "params": "void* angleHolder, int , uint32_t* entityRefPair",
+  "params": "uint32_t ctxAddr, int , uint32_t* entityArgs",
   "sig_src": "impl",
   "file": "src/auto/0045c130.cpp"
  },
@@ -18190,14 +18188,14 @@
   "file": "src/auto/0045c5e0.cpp"
  },
  "0045c6f0": {
-  "name": "CopyActiveValueToOutput",
+  "name": "ScriptCommands_CopyActiveValueToOutput",
   "name_src": "agent",
   "votes": {
    "CopyActiveValueToOutput": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* , void* outSlot, int , int",
+  "params": "void* self, void* , int a2, int a3, int a4",
   "sig_src": "impl",
   "file": "src/auto/0045c6f0.cpp"
  },
@@ -18209,7 +18207,7 @@
   },
   "ret": "void",
   "conv": "__stdcall",
-  "params": "void* a1, void* a2, void* a3",
+  "params": "int a1, int a2, int a3",
   "sig_src": "impl",
   "file": "src/auto/0045c720.cpp"
  },
@@ -18814,7 +18812,7 @@
   "file": "src/auto/0045db90.cpp"
  },
  "0045dbe0": {
-  "name": "DispatchSceneRequestFromArgs",
+  "name": "ScriptCommands_DispatchSceneRequestFromArgs",
   "name_src": "agent",
   "votes": {
    "DispatchSceneRequestFromArgs": 1
@@ -19786,7 +19784,7 @@
   "file": "src/auto/00460890.cpp"
  },
  "004608d0": {
-  "name": "DispatchResolvedHandleCommand",
+  "name": "ScriptCommands_DispatchResolvedHandleCommand",
   "name_src": "agent",
   "votes": {
    "DispatchResolvedHandleCommand": 1
@@ -19973,7 +19971,7 @@
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int , int , uint32_t* a3",
+  "params": "int a1, int a2, uint32_t* a3",
   "sig_src": "impl",
   "file": "src/auto/004610b0.cpp"
  },
@@ -19985,7 +19983,7 @@
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int , int , uint32_t* a3",
+  "params": "int a1, int a2, uint32_t* a3",
   "sig_src": "impl",
   "file": "src/auto/00461110.cpp"
  },
@@ -20105,7 +20103,7 @@
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int , int , uint32_t* refPointers",
+  "params": "int a1, int a2, uint32_t* a3",
   "sig_src": "impl",
   "file": "src/auto/004614e0.cpp"
  },
@@ -20122,7 +20120,7 @@
   "file": "src/auto/00461550.cpp"
  },
  "00461660": {
-  "name": "ProcessHandleActionMessage",
+  "name": "ScriptCommands_ProcessHandleActionMessage",
   "name_src": "agent",
   "votes": {
    "ProcessHandleActionMessage": 1
@@ -20146,14 +20144,14 @@
   "file": "src/auto/004616e0.cpp"
  },
  "00461720": {
-  "name": "StoreComputedFloatInSubobject",
+  "name": "ScriptCommands_StoreComputedFloat",
   "name_src": "agent",
   "votes": {
    "StoreComputedFloatInSubobject": 1
   },
   "ret": "void",
   "conv": "__stdcall",
-  "params": "int a1, int a2, int a3",
+  "params": "int ctx, int cmd, int args",
   "sig_src": "impl",
   "file": "src/auto/00461720.cpp"
  },
@@ -20219,7 +20217,7 @@
   "name": "InitializeTransientState",
   "name_src": "agent",
   "votes": {
-   "InitializeTransientState": 1
+   "InitializeTransientState": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -20228,7 +20226,7 @@
   "file": "src/auto/004619c0.cpp"
  },
  "00461a10": {
-  "name": "ReadEntryValuesIntoResult_461A10",
+  "name": "ScriptCommands_ReadEntryValuesIntoResult_461A10",
   "name_src": "agent",
   "votes": {
    "ReadEntryValuesIntoResult_461A10": 1
@@ -20240,7 +20238,7 @@
   "file": "src/auto/00461a10.cpp"
  },
  "00461a80": {
-  "name": "ReadEntryValuesIntoResult_461A80",
+  "name": "ScriptCommands_ReadEntryValuesIntoResult_461A80",
   "name_src": "agent",
   "votes": {
    "ReadEntryValuesIntoResult_461A80": 1
@@ -20427,7 +20425,7 @@
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int , int , uint32_t* a3",
+  "params": "int a1, int a2, uint32_t* a3",
   "sig_src": "impl",
   "file": "src/auto/00462370.cpp"
  },
@@ -20566,7 +20564,9 @@
  "00462c00": {
   "name": "GatherEntryRecordsIntoOutput",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GatherEntryRecordsIntoOutput": 3
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_00462c00* self, void* , int queryKey, char queryFlagA, char queryFlagB, S_0069b1c0* outputList",
@@ -20747,7 +20747,7 @@
   },
   "ret": "char",
   "conv": "__stdcall",
-  "params": "int a1, int a2, uint32_t* a3",
+  "params": "int a1, int , uint32_t* a3",
   "sig_src": "impl",
   "file": "src/auto/00463500.cpp"
  },
@@ -20783,7 +20783,7 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* , int a2, int a3, uint32_t a4",
+  "params": "void* self, void* , uint32_t a2, uint32_t a3, uint32_t a4",
   "sig_src": "impl",
   "file": "src/auto/00463600.cpp"
  },
@@ -20812,14 +20812,14 @@
   "file": "src/auto/00463670.cpp"
  },
  "004636a0": {
-  "name": "SubmitObjectRecordToGlobal",
+  "name": "ScriptCommands_SubmitObjectRecordToGlobal",
   "name_src": "agent",
   "votes": {
    "SubmitObjectRecordToGlobal": 1
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int , int , int* objectRef",
+  "params": "int , int , int* a3",
   "sig_src": "impl",
   "file": "src/auto/004636a0.cpp"
  },
@@ -21044,14 +21044,14 @@
   "file": "src/auto/00464580.cpp"
  },
  "004645c0": {
-  "name": "SelectFrameForClipTime",
+  "name": "ScriptCommands_SelectFrameForClipTime",
   "name_src": "agent",
   "votes": {
    "SelectFrameForClipTime": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* , C_008313f8* frameSet, int , uint32_t* requestArgs",
+  "params": "void* self, void* , C_008313f8* a2, int , uint32_t* a4",
   "sig_src": "impl",
   "file": "src/auto/004645c0.cpp"
  },
@@ -21195,7 +21195,7 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "S_00462c00* self, void* , int a2, int a3, uint32_t* a4",
+  "params": "S_00462c00* self, void* , int , int , uint32_t* a4",
   "sig_src": "impl",
   "file": "src/auto/00464b40.cpp"
  },
@@ -21207,7 +21207,7 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "S_00462c00* self, void* , int a2, int a3, uint32_t* a4",
+  "params": "S_00462c00* self, void* , int , int , uint32_t* a4",
   "sig_src": "impl",
   "file": "src/auto/00464b90.cpp"
  },
@@ -21219,7 +21219,7 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "S_00462c00* self, void* , int a2, int a3, uint32_t* a4",
+  "params": "S_00462c00* self, void* , int , int , uint32_t* a4",
   "sig_src": "impl",
   "file": "src/auto/00464be0.cpp"
  },
@@ -21507,7 +21507,7 @@
   "name": "SceneFallbackLookup",
   "name_src": "vote",
   "votes": {
-   "SceneFallbackLookup": 1
+   "SceneFallbackLookup": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -21518,7 +21518,7 @@
   "name": "SceneFindStateRecord",
   "name_src": "vote",
   "votes": {
-   "SceneFindStateRecord": 1,
+   "SceneFindStateRecord": 2,
    "SceneSlotMgr_IsRejected": 1
   },
   "ret": "int",
@@ -23029,7 +23029,7 @@
   "name": "LookupEntryIndex_46F390",
   "name_src": "vote",
   "votes": {
-   "LookupEntryIndex": 1,
+   "LookupEntryIndex_46F390": 1,
    "LookupTableIndexOfKey": 1
   },
   "ret": "int",
@@ -23790,9 +23790,8 @@
   "name": "ProcessEntryPair",
   "name_src": "vote",
   "votes": {
-   "LookupFrameByIndex": 1,
-   "DispatchWithSubEntry": 1,
-   "ProcessEntryPair": 1
+   "ProcessEntryPair": 2,
+   "DispatchWithSubEntry": 1
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -24443,9 +24442,8 @@
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void*",
-  "sig_src": "impl",
-  "file": "src/auto/00476070.cpp"
+  "params": "void* self, void* edx",
+  "sig_src": "abi"
  },
  "00476080": {
   "name": "C_unknown_GetLinkedDword",
@@ -30144,8 +30142,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 1,
-   "GetEntityPositionRef": 1,
+   "GetObjectPositionVector": 2,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -30931,7 +30928,7 @@
   "name": "HandleTargetUnavailable",
   "name_src": "vote",
   "votes": {
-   "HandleTargetUnavailable": 1,
+   "HandleTargetUnavailable": 3,
    "RejectCommandOnSceneObject": 1,
    "HandleUnavailableObjectFallback": 1,
    "RejectObjectOrder": 1,
@@ -30942,7 +30939,6 @@
    "SceneObj_ReleaseFromSlot": 1,
    "FallbackForNegativeFieldObject": 1,
    "Entry_ActivateInteraction": 1,
-   "C_00833908_Activate": 1,
    "GetObjectNameCString": 1
   },
   "ret": "int",
@@ -32981,6 +32977,17 @@
   "conv": "__fastcall",
   "params": "void* self, void* edx",
   "sig_src": "abi"
+ },
+ "0049bf00": {
+  "name": "DispatchSceneObjectAction",
+  "name_src": "vote",
+  "votes": {
+   "DispatchSceneObjectAction": 1
+  },
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* edx, int a3",
+  "sig_src": "vote"
  },
  "0049c030": {
   "name": "sub_49C030",
@@ -46908,8 +46915,7 @@
   "name": "LookupEntryIndex_4DC5F0",
   "name_src": "vote",
   "votes": {
-   "LookupEntryIndex": 1,
-   "FindEntryIndexByKey": 2,
+   "LookupEntryIndex_4DC5F0": 3,
    "LookupSlotIndexForHandle": 1
   },
   "ret": "int",
@@ -46931,8 +46937,7 @@
   "name_src": "vote",
   "votes": {
    "GetActiveEntryByIndex": 1,
-   "ResolveEntryStateRecord": 1,
-   "GetEntryByIndex": 2,
+   "ResolveEntryStateRecord": 3,
    "GetSlotRecordPointer": 1,
    "GetActiveEntryRecord": 1
   },
@@ -54236,7 +54241,7 @@
   "name": "GetGlobalValue_8B056C",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8B056C": 31
+   "GetGlobalValue_8B056C": 30
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -57830,9 +57835,9 @@
   "name": "GetScenarioCollection",
   "name_src": "vote",
   "votes": {
-   "GetScenarioCollection": 6
+   "GetScenarioCollection": 5
   },
-  "ret": "int*",
+  "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
   "sig_src": "vote"
@@ -60495,7 +60500,7 @@
   "name": "DispatchWithRecord_51F850",
   "name_src": "vote",
   "votes": {
-   "DispatchWithRecord": 1
+   "DispatchWithRecord_51F850": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -60506,7 +60511,7 @@
   "name": "DispatchWithRecord_51F890",
   "name_src": "vote",
   "votes": {
-   "DispatchWithRecord": 1
+   "DispatchWithRecord_51F890": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -68228,9 +68233,8 @@
   "votes": {},
   "ret": "int64_t",
   "conv": "__fastcall",
-  "params": "void* self, void* , void* source",
-  "sig_src": "impl",
-  "file": "src/auto/00542de0.cpp"
+  "params": "void* self, void* edx, int a2",
+  "sig_src": "abi"
  },
  "00542e20": {
   "name": "CMenuControls_ResetStateIfThree",
@@ -74729,9 +74733,8 @@
   "votes": {},
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void*",
-  "sig_src": "impl",
-  "file": "src/auto/00564f00.cpp"
+  "params": "void* self, void* edx",
+  "sig_src": "abi"
  },
  "00564f80": {
   "name": "CMenuAccounts_CallChildVtblMethod290",
@@ -74959,9 +74962,8 @@
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "char* self, void* , int a2, int a3",
-  "sig_src": "impl",
-  "file": "src/auto/00565e20.cpp"
+  "params": "void* self, void* edx, int a2, int a3",
+  "sig_src": "abi"
  },
  "00565e90": {
   "name": "MenuAccounts_HandleEventAndResetControl",
@@ -108542,7 +108544,7 @@
   "name": "GetReferencedObject",
   "name_src": "vote",
   "votes": {
-   "GetReferencedObject": 32
+   "GetReferencedObject": 31
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -111053,9 +111055,8 @@
   "name_src": "vote",
   "votes": {
    "Entry_ComputeLookupValue": 1,
-   "GetClipDurationTicks": 1,
+   "ResolveSceneEntryValue": 2,
    "GetObjectSlotCount": 1,
-   "ResolveSceneEntryValue": 1,
    "GetSlotCountLimit": 1,
    "ProbeEntryObjectState": 1
   },
@@ -151645,7 +151646,7 @@
   "name": "CGuiListBoxBase_AddSelectedItem",
   "name_src": "agent",
   "votes": {
-   "CGuiListBoxBase_AddSelectedItem": 8,
+   "CGuiListBoxBase_AddSelectedItem": 7,
    "GuiListBoxBase_AddSelectedItem": 1
   },
   "ret": "void",
@@ -168962,10 +168963,8 @@
    "IsObjectReadyForCommand": 1,
    "QueryObjectStateFlag": 2,
    "IsCategoryFlagSet": 1,
-   "IsStateCodeAllowed": 1,
-   "IsHandleStateSet": 1,
+   "IsStateCodeAllowed": 5,
    "IsSceneSlotActive": 1,
-   "Object_IsStateAllowed": 2,
    "Scene_IsObjectActiveType": 1,
    "IsObjectKindEnabled": 1,
    "IsObjectTypeEnabled": 1
