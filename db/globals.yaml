@@ -6,23 +6,24 @@
 - {addr: 0x0082D208, name: g_SetThreadPriorityIat, type: void*, uses: 2, src: auto, alt: [g_pfnSetThreadPriority]}
 - {addr: 0x0082D20C, name: g_pfnWaitForSingleObject, type: WaitForSingleObjectFn, uses: 3, src: auto, alt: [g_pWaitForSingleObject]}
 - {addr: 0x0082D23C, name: g_ReleaseMutex, type: ReleaseMutexFunction, uses: 1, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 25, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 28, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 8, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 19, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 20, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 3, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: double, uses: 1, src: auto}
 - {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 57, src: auto, alt: [g_MissionUnsignedIntegerBias]}
 - {addr: 0x0082D75C, name: g_HudNegativePi, type: float, uses: 2, src: auto, alt: [g_NegativeHalfTurnRadians]}
 - {addr: 0x0082D7C0, name: g_MessageBoxAnimationScale, type: float, uses: 2, src: auto, alt: [g_flt_0082D7C0]}
 - {addr: 0x0082DC70, name: g_SubtitlePanelScale, type: float, uses: 1, src: auto}
-- {addr: 0x0082DC84, name: g_flt_0082DC84, type: float, uses: 4, src: auto, alt: [g_MessageBoxAnimationDuration]}
+- {addr: 0x0082DC84, name: g_flt_0082DC84, type: float, uses: 6, src: auto, alt: [g_MessageBoxAnimationDuration]}
 - {addr: 0x0082DD68, name: g_PreviewTopScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082DD74, name: g_ContextualDistanceScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082DDEC, name: g_Const200_0f, type: float, uses: 3, src: auto}
 - {addr: 0x0082DFCC, name: g_MessageBoxCollapsedScale, type: float, uses: 3, src: auto}
-- {addr: 0x0082E030, name: g_fReturnedConstant_0082E030, type: float, uses: 2, src: auto}
-- {addr: 0x0082E03C, name: g_ProgressScale, type: float, uses: 5, src: auto}
+- {addr: 0x0082E030, name: g_fReturnedConstant_0082E030, type: float, uses: 3, src: auto}
+- {addr: 0x0082E038, name: g_ScaleY_0_6, type: float, uses: 1, src: auto}
+- {addr: 0x0082E03C, name: g_ProgressScale, type: float, uses: 7, src: auto}
 - {addr: 0x0082E044, name: g_FacingAngleOffset, type: float, uses: 1, src: auto}
 - {addr: 0x0082E048, name: g_LevelScaleFactor, type: float, uses: 1, src: auto}
 - {addr: 0x0082E04C, name: g_fHudFadeStep, type: float, uses: 1, src: auto}
@@ -32,14 +33,15 @@
 - {addr: 0x0082E114, name: g_SoundActivityThreshold, type: float, uses: 1, src: auto}
 - {addr: 0x0082E118, name: g_fIntroVideoDuration, type: float, uses: 2, src: auto}
 - {addr: 0x0082E11C, name: g_WeaponPlacementTraceDepth, type: float, uses: 1, src: auto}
+- {addr: 0x0082E120, name: g_MaxPercent, type: float, uses: 1, src: auto}
 - {addr: 0x0082E1E4, name: g_fRotationWrapStep, type: float, uses: 1, src: auto}
-- {addr: 0x0082E25C, name: g_flt_0082E25C, type: float, uses: 2, src: auto}
+- {addr: 0x0082E25C, name: g_flt_0082E25C, type: float, uses: 3, src: auto}
 - {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 41, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E958, name: g_TParadoString, type: char, uses: 1, src: auto}
 - {addr: 0x0082F318, name: g_TEndString, type: const char, uses: 1, src: auto}
 - {addr: 0x0082FACC, name: g_HudNegativeHalfPi, type: float, uses: 1, src: auto}
 - {addr: 0x0082FAD0, name: g_TransitionHalfPi, type: float, uses: 2, src: auto}
-- {addr: 0x0082FAD4, name: g_QuarterTurnConstant, type: float, uses: 1, src: auto}
+- {addr: 0x0082FAD4, name: g_QuarterTurnConstant, type: float, uses: 2, src: auto}
 - {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 9, src: auto}
 - {addr: 0x0082FEBC, name: g_LayoutInset, type: float, uses: 5, src: auto, alt: [g_VerticalInset]}
 - {addr: 0x0083042C, name: g_VtblCMenuScreenBase, type: uint8_t, uses: 9, src: auto}
@@ -65,7 +67,16 @@
 - {addr: 0x00833434, name: g_RadiansToDegrees, type: float, uses: 1, src: auto}
 - {addr: 0x00833438, name: g_DegToRad, type: float, uses: 2, src: auto, alt: [g_DegreesToRadians]}
 - {addr: 0x00833850, name: g_PreviewRightScale, type: float, uses: 1, src: auto}
-- {addr: 0x00833E44, name: g_LayoutWidthAdjustment, type: float, uses: 2, src: auto}
+- {addr: 0x00833D98, name: g_CarryOffsetDistance, type: float, uses: 1, src: auto}
+- {addr: 0x00833DA0, name: g_DegreesToRadians, type: float, uses: 2, src: auto}
+- {addr: 0x00833E00, name: g_ScaleXZ_0_45, type: float, uses: 1, src: auto}
+- {addr: 0x00833E04, name: g_fGroundProbeOffset, type: float, uses: 1, src: auto}
+- {addr: 0x00833E20, name: g_SearchBoundsPadding, type: float, uses: 1, src: auto}
+- {addr: 0x00833E2C, name: g_fRepeatDelay, type: float, uses: 1, src: auto}
+- {addr: 0x00833E38, name: g_MinWidePitch, type: float, uses: 1, src: auto}
+- {addr: 0x00833E3C, name: g_MaxWidePitch, type: float, uses: 1, src: auto}
+- {addr: 0x00833E40, name: g_MinNarrowPitch, type: float, uses: 1, src: auto}
+- {addr: 0x00833E44, name: g_LayoutWidthAdjustment, type: float, uses: 3, src: auto}
 - {addr: 0x00834A40, name: g_szIrAPuesto, type: char, uses: 1, src: auto}
 - {addr: 0x0083688C, name: g_szLanzarGranadaName, type: char, uses: 1, src: auto}
 - {addr: 0x00836D7C, name: g_TRodearString, type: char, uses: 1, src: auto}
@@ -180,6 +191,8 @@
 - {addr: 0x00889BD0, name: g_DwordCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00889D44, name: g_CharActionRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00889D94, name: g_DwordCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x00889F8C, name: g_CopyDwordPairRangeExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x00889FDC, name: g_TwoDwordRangeExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088A8B0, name: g_RecordRangeExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088A950, name: g_ElementRangeExceptionFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088AA74, name: g_RangeExceptionCatchInfo, type: 'std::uint8_t', uses: 1, src: auto}
