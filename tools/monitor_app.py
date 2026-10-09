@@ -137,10 +137,11 @@ class Monitor(App):
     @work(thread=True, exclusive=True)
     def collect(self):
         g = M.grunt_snapshot()
-        claude = M.panel_claude()
+        costs = M.panel_costs(g["st"], g["recent"]).renderable
+        claude = M.panel_claude(len(costs.renderables))  # fill the Claude panel to the Costs panel's height
         snap = dict(
             claude=(claude.renderable, claude.title), progress=M.panel_progress().renderable,
-            costs=M.panel_costs(g["st"], g["recent"]).renderable, modules=M.module_rows(),
+            costs=costs, modules=M.module_rows(),
             ghead=Group(*M.grunt_header(g)), calls=M.call_rows(g), results=M.result_rows(g, 300),
             captain=M.captain_lines(), tools=M.tool_line(),
             commits=self.commit_rows(), queue=self.queue_rows())

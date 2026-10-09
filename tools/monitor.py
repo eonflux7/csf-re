@@ -331,8 +331,9 @@ def commits(since):
 
 # ---------------------------------------------------------------- layout: Claude | Progress, then one Work panel
 
-def panel_claude():
-    """Compact: state, plan usage + account, what it is doing, the last few events."""
+def panel_claude(lines=6):
+    """Compact: state, plan usage + account, what it is doing, then recent events up to `lines` lines in all
+    (the app passes the Costs panel's height so the two panels line up)."""
     jobs = cached("jobs", 1, claude_jobs)
     if not jobs or isinstance(jobs, Exception):
         return Panel(Group(usage_line("plan", cached("claude_usage", 30, claude_usage), "bold green"),
@@ -356,7 +357,7 @@ def panel_claude():
                          no_wrap=True, overflow="ellipsis"))
     ev = [(e, j) for j in jobs for e in timeline(j)[:-1]]  # plan usage + login: Costs panel
     ev.sort(key=lambda x: x[0]["at"], reverse=True)
-    for e, j in ev[:4]:
+    for e, j in ev[:max(2, lines - len(body))]:
         t = Text(f"{ago(iso(e['at'])):>6} ", style="dim", no_wrap=True, overflow="ellipsis")
         if multi:
             t.append("● ", style=color[j["_dir"]])
