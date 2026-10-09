@@ -337,3 +337,6 @@
 
 # ---- captain family 2026-10-09 (opus, agentic): m44FC80
 "008312b0": {name: CScene, attested: false, conf: 0.7, src: captain, why: "Each scene entry in CSceneLoader creates one of these 436-byte objects via SceneLoader_AdvanceEntry (004565d0). The ctor 00455f40 adds it to the global scene array stru_899730, sets g_CurrentSceneIndex and g_pCurrentScene, and creates the per-scene subsystems (+0xb0..+0xc4, +0x12c, +0x130). It also ", fields: {0x000C: m_isMainScene, 0x0010: m_objects, 0x0018: m_objectCount, 0x00AC: m_subsys49ff90, 0x00B0: m_subsys4465b0, 0x00BC: m_subsys46ada0, 0x012C: m_optionalSubsys, 0x0130: m_subsys41ea30, 0x0184: m_subsys475720, 0x0188: m_ownedObject, 0x018C: m_scratchBuffer, 0x0190: m_scratchBufferSize}}
+
+# ---- captain family 2026-10-09 (opus, agentic): m467AD0
+"008314f8": {name: CMissionScript, attested: false, conf: 0.8, src: captain, why: "Its loader at 0046bc40 is called from 004fe010 on g_pCurrentScene+0x1bc with a '.gsc' path. It parses the .RECURSOS, .VARIABLES and .SCRIPTS sections, creates a script object (Mem_Alloc(128), 00470e10) for each script, and stores them in its array at +0x18. CScene_Construct (00455f40) creates it, an", fields: {0x0018: m_scripts, 0x001C: m_scriptsCapacity, 0x0020: m_scriptCount, 0x003C: m_variables, 0x00A8: m_subObject, 0x00D0: m_active}}
