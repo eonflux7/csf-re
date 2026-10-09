@@ -326,3 +326,6 @@
 
 # ---- captain family 2026-10-09 (opus, agentic): m776FF0
 "008723f8": {name: CLevelData, attested: false, conf: 0.75, src: captain, why: "The Load method at 00781e40 reads a versioned game-data file (VERSION up to 17, with one loader per version at 00778d50..00780b90). It reads PUNTUACION_MAXIMA/MINIMA, MAPA_SECTORES, the MALLA_NAVEGACION/DUMMIES/AREAS/LUCES/SCENE_OBJS meshes, a .dst file, and the sky, fog, camera, RWS and ambient key", fields: {0x1A7C: m_sectorMapName, 0x1F38: m_maxScore, 0x1F3C: m_minScore, 0x1F8C: m_navMesh, 0x1F90: m_dummyMesh, 0x1F94: m_areaMesh, 0x1F98: m_lightMesh, 0x1F9C: m_sceneObjMesh, 0x1FB8: m_dstData}}
+
+# ---- captain family 2026-10-09 (opus, agentic): m42CF50
+"00830a04": {name: CHud, attested: false, conf: 0.75, src: captain, why: "An 820-byte singleton in g_Value_8afc78, created lazily by sub_436030 and destroyed by sub_436070, in the 'hud' module. Its ctor 004355d0 sets up GUI controls through MenuControls_ResolveObject, two screen-wide letterbox bars sized from g_ScreenWidth/g_ScreenHeight, and a subtitle panel (ConstructSu", fields: {0x0228: m_renderHook, 0x0240: m_textLabel, 0x0260: m_letterboxTop, 0x0264: m_letterboxBottom, 0x0284: m_subtitlePanel, 0x02A4: m_colorNormal, 0x02B4: m_colorAlert}}
