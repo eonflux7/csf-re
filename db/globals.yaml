@@ -6,7 +6,7 @@
 - {addr: 0x0082D208, name: g_SetThreadPriorityIat, type: void*, uses: 2, src: auto, alt: [g_pfnSetThreadPriority]}
 - {addr: 0x0082D20C, name: g_pfnWaitForSingleObject, type: WaitForSingleObjectFn, uses: 3, src: auto, alt: [g_pWaitForSingleObject]}
 - {addr: 0x0082D23C, name: g_ReleaseMutex, type: ReleaseMutexFunction, uses: 1, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 28, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 29, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 8, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
 - {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 20, src: auto}
@@ -68,11 +68,14 @@
 - {addr: 0x00833438, name: g_DegToRad, type: float, uses: 2, src: auto, alt: [g_DegreesToRadians]}
 - {addr: 0x00833850, name: g_PreviewRightScale, type: float, uses: 1, src: auto}
 - {addr: 0x00833D98, name: g_CarryOffsetDistance, type: float, uses: 1, src: auto}
-- {addr: 0x00833DA0, name: g_DegreesToRadians, type: float, uses: 2, src: auto}
+- {addr: 0x00833D9C, name: g_RadiansToDegrees, type: float, uses: 1, src: auto}
+- {addr: 0x00833DA0, name: g_DegreesToRadians, type: float, uses: 3, src: auto, alt: [g_SelectionDegreesToRadians]}
 - {addr: 0x00833E00, name: g_ScaleXZ_0_45, type: float, uses: 1, src: auto}
 - {addr: 0x00833E04, name: g_fGroundProbeOffset, type: float, uses: 1, src: auto}
 - {addr: 0x00833E20, name: g_SearchBoundsPadding, type: float, uses: 1, src: auto}
 - {addr: 0x00833E2C, name: g_fRepeatDelay, type: float, uses: 1, src: auto}
+- {addr: 0x00833E30, name: g_SelectionRetryInterval, type: double, uses: 1, src: auto}
+- {addr: 0x00833E34, name: g_SelectionRefreshInterval, type: float, uses: 1, src: auto}
 - {addr: 0x00833E38, name: g_MinWidePitch, type: float, uses: 1, src: auto}
 - {addr: 0x00833E3C, name: g_MaxWidePitch, type: float, uses: 1, src: auto}
 - {addr: 0x00833E40, name: g_MinNarrowPitch, type: float, uses: 1, src: auto}
