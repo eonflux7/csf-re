@@ -378,6 +378,7 @@ AREAS = [
     ("AI", ("ai_",)),
     ("characters", ("char_", "character_", "commando_", "weapon_", "vehicle")),
     ("world & scenes", ("scene_", "campaign", "dynamic_objects", "game_scene_", "cheats")),
+    ("mission scripts", ("mission_script", "script_")),
     ("game data", ("bdd_", "game_data_", "game_bdd_", "object_class_", "text_database", "type_registry")),
     ("HUD", ("hud", "minimap", "interface")),
     ("menus", ("menu_",)),
