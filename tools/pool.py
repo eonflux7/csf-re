@@ -11,7 +11,7 @@ once because the hook DLL renames the game's single-instance mutex (src/core/dev
   pool.py make N           create copies p1..pN-1 next to the play copy (tools/playcopy.py: data hard-linked)
   pool.py list             the copies in use
 """
-import concurrent.futures as cf, os, shutil, subprocess, sys
+import concurrent.futures as cf, os, re, shutil, signal, subprocess, sys, threading
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(__file__))
@@ -49,9 +49,35 @@ def smoke(play, secs, env=None):
     return r.returncode == 0, r.stdout
 
 
+def kill(plays=None):
+    """Stop game instances running from these copies (default: the whole pool). Killing smoke.sh / its powershell
+    leaves the game itself running (2026-10-09: an interrupted bisect left 3 instances and its ini lines)."""
+    wins = [subprocess.run(["wslpath", "-w", d], capture_output=True, text=True).stdout.strip() + "\\CommXPC.exe"
+            for d in (plays or copies())]
+    pat = "|".join(re.escape(w) for w in wins)
+    subprocess.run(["powershell.exe", "-NoProfile", "-Command",
+                    "Get-Process CommXPC -ErrorAction SilentlyContinue | Where-Object { $_.Path -match '^(" + pat +
+                    ")$' } | Stop-Process -Force"], capture_output=True)
+
+
+def _sigterm(*_):
+    raise SystemExit(143)  # a plain `kill` still runs the finally blocks (bisect ini cleanup, kill())
+
+
 def run(jobs):
     """jobs: [(secs, env, prepare)] with prepare(play) called first (e.g. writing that copy's bisect lines), run
-    on distinct copies at once, at most size() at a time. Returns [(ok, out)] in job order."""
+    on distinct copies at once, at most size() at a time. Returns [(ok, out)] in job order. When interrupted
+    (Ctrl-C, SIGTERM, an exception) the game instances of the pool are stopped."""
+    if threading.current_thread() is threading.main_thread():
+        signal.signal(signal.SIGTERM, _sigterm)
+    try:
+        return _run(jobs)
+    except BaseException:
+        kill()
+        raise
+
+
+def _run(jobs):
     free = list(copies())
     res = [None] * len(jobs)
     with cf.ThreadPoolExecutor(len(free)) as ex:

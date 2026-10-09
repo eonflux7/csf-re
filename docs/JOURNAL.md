@@ -699,3 +699,24 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   total; 0/102 on 10-08, 3/165 on 10-09), Codex high 186. The two Haiku rungs only delayed every M function and
   spent the grunts' Claude window. `--m-ladder` default now `codex@high:2, opus@high:1` (as X). S stays Haiku low
   (688/735 passes, 82% first try). 75% of the remaining game bytes are M/L/X, so Codex quota sets throughput now.
+
+## 2026-10-09 — Smoke pool: parallel instances, fail-fast, capped k-way bisect
+- Several game instances at once: WinMain 0x509250 exits when the mutex "CommXPC Pyro Studios 2005" is held; the hook
+  DLL gives it a per-process name (IAT 0x82D19C, src/core/devcmd.cpp). Play copies are cheap (tools/playcopy.py:
+  97 big files hard-linked, 13 s each): csf-play + p1..p7. 8 instances on this box (i5-12400F, 32 GB, RTX 2060):
+  ready in 5-9 s (3-4 s alone), a round of 8 x 30 s took 27 s wall. A fullscreen game of the user's blocks the
+  others' D3D9 device (they exit during video setup); the user's own copy csf-play-user is the unhooked original.
+- Interrupting a pool run left 3 orphaned games and ~2100 bisect `disable` lines in every ini, csf-play included
+  (killing smoke.sh never stops the game): pool.run now stops its instances on any exit, SIGTERM runs the cleanup.
+- smoke.sh fails on the first CRASH line (the game catches some faults and keeps running; those smokes used to run
+  out their full time) and reports stop= / ran= / fail_at=. The adaptive "no new hooks for 6 s" end reached the same
+  940 executed / 279 diffed functions in 10 s instead of 30 s, but real crashes came at 17 s and 44 s: opt-in only.
+  Default smoke 15 -> 30 s.
+- Bisect: runs capped at 2 x fail_at + 3 s; control and re-run side by side; k-way search on the pool. The verified
+  baseline crashed deterministically 17 s into FR01 (EIP in no module, ebp = a code address: no crash report);
+  8-way blind bisect over 2830 functions: 0x45B570 in 33 smokes / 215 s. Its ledger said ok=54 hits=0: installed in
+  54 passing 15 s smokes, never executed. Cause: the original pushes the angle for 0x4F5170 (forwarder to
+  provider->vtbl[8], ret 4) before calling getter 0x4FBDE0 (plain ret); Hex-Rays attached it to the getter, the
+  grunt followed, the virtual's ret 4 popped our frame. Fixed by hand; 4 x 60 s FR01 clean. The gate passed both.
+- The user's saves 2..24 load. In the first round: 9.sav crashes 44 s after load; 0x42D3C0 HudQueryWidgetValue
+  mismatches 200/200 in every start although verified (baseline() ignores MISMATCH). Both in the backlog.

@@ -4,7 +4,7 @@
 # kill it and show the hook log. Exit 0 if the game was still running at the end (no crash), 1 otherwise —
 # including when it never became ready (startup hang/crash: a smoke that never reached the mission proves nothing).
 # After ready the run ends early on: a CRASH line in csf_hook.log (fail at once, also when the game catches the fault
-# and keeps running); adaptive end (CSF_SMOKE_ADAPTIVE=1, default): no newly executed hook in csf_hook_hits.txt for
+# and keeps running); adaptive end (opt-in, CSF_SMOKE_ADAPTIVE=1; off by default: real crashes came at 17 s and 44 s, 2026-10-09): no newly executed hook in csf_hook_hits.txt for
 # CSF_SMOKE_QUIET s (default 6) after at least CSF_SMOKE_MIN s (default 6) - the hooks have shown what this start
 # reaches; CSF_SMOKE_UNTIL="text": that line in csf_hook.log (the menu tour ends on "menutour: done"). Adaptive end
 # is off with autopilot steps (scripted input on a timeline). The result line has stop=<why> ran=<s after ready>,
@@ -29,7 +29,7 @@ echo "windowed 1280x960" >> "$INI"
 [ "$START" != menu ] && echo "$START" >> "$INI"
 # extra ini lines for this run only, e.g. autopilot steps: CSF_INI_EXTRA=$'autopilot 9000 key ESCAPE\n...'
 [ -n "${CSF_INI_EXTRA:-}" ] && printf '%s\n' "$CSF_INI_EXTRA" >> "$INI"
-ADAPTIVE=${CSF_SMOKE_ADAPTIVE:-1}
+ADAPTIVE=${CSF_SMOKE_ADAPTIVE:-0}
 UNTIL=${CSF_SMOKE_UNTIL:-}
 case "${CSF_INI_EXTRA:-}" in *menutour*) UNTIL=${UNTIL:-menutour: done}; ADAPTIVE=0;; esac
 case "${CSF_INI_EXTRA:-}" in *autopilot*) ADAPTIVE=0;; esac

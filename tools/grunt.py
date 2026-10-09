@@ -882,7 +882,9 @@ def select(db, n, max_size, min_size=6, exclude=(), modules=None):
     return out
 
 
-SMOKE_SECS, SMOKE_LONG_SECS, SMOKE_LONG_EVERY = 15, 60, 5  # seconds after ready (smoke.sh); every 5th smoke runs long
+SMOKE_SECS, SMOKE_LONG_SECS, SMOKE_LONG_EVERY = 30, 60, 5  # seconds after ready (smoke.sh); every 5th smoke runs long
+# 15 -> 30 s (2026-10-09): a verified script handler (0x45B570) first ran 17 s into FR01 and crashed there; 54 passing
+# 15 s smokes had installed it without ever executing it. Parallel smokes (tools/pool.py) make the longer run cheap.
 # Long smokes rotate the start (wider coverage for db/verify.json); short ones always use smoke.sh's FR01 scene.
 SMOKE_STARTS = [{}, {"CSF_START": "menu", "CSF_INI_EXTRA": "menutour 1500"}, {"CSF_START": "loadsave 1.sav"}]
 SMOKE_SHORT = (SMOKE_SECS, {})  # lanes --smoke-menu: short smokes run the menu tour instead (GUI waves)

@@ -137,6 +137,15 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 - [ ] AI combat coverage: the T* AI tasks and GUI input handlers only run in real play. Needs savegames taken in
       combat (user playtest) -> `CSF_SWEEP_SAVES="1.sav 2.sav ..."`, then `verifier.py --full`
 - [ ] Executed coverage: 1278 done functions have only passed static checks (`verify.py report`)
+- [x] Smoke pool (2026-10-09): 8 play copies (`tools/pool.py`, `playcopy.py`), several instances at once (mutex
+      renamed in the DLL), fail-fast on CRASH, bisect runs capped at 2x the crash time + k-way across the pool,
+      verifier starts side by side; default smoke 15 -> 30 s (adaptive end opt-in)
+- [ ] `9.sav` crashes 44 s after load on the verified baseline: bisect it on the pool
+- [ ] 0x42D3C0 HudQueryWidgetValue mismatches 200/200 in every start, yet is verified: the baseline smoke ignores
+      MISMATCH lines (only verify_group quarantines them). Quarantine mismatches in `baseline()` too
+- [ ] Gate gap: a call through an indirect forwarder (0x4F5170 `jmp [eax+0x20]`) must pass the stack args the
+      target pops; Hex-Rays attaches an early-pushed arg to the wrong call (0x45B570 crashed, gate passed both versions)
+- [ ] Use the user's saves 2..24 (2026-10-09) in `--full` (`CSF_VERIFY_SAVES`) once each is known to pass alone
 
 ### Cutover
 - [ ] Allocator shim (operator new/delete -> game heap; delete = sub_691110), rw.h shim
@@ -164,6 +173,8 @@ typed virtual calls, field consensus, fidelity rule, Opus review sampling, `wave
 - 2026-10-07: xwin x86 CRT/SDK installed at `~/.xwin` (license accepted by user). x64dbg + x64dbg-automate on
   Windows under E:\dev\tools (user OK), for crash triage and targeted runtime RE.
 - Play copy of the game for hook testing: `/mnt/e/dev/csf-play` (E:\dev\csf-play). Never deploy into csf-builds.
+  Smoke pool copies `/mnt/e/dev/csf-play-p1..p7` (verifier/bisect only); `/mnt/e/dev/csf-play-user` is the unhooked
+  original for the user's own play and savegames.
 - 2026-10-08: Grunts: Haiku 5.5 / Opus 5.5 on the grunts' own Claude account (never the main account) + Codex;
   OpenCode Go and DeepSeek dropped (allowance / quality). Ladders chosen from the run logs (`grunt.py cost`).
 - 2026-10-08 (user): **progress is bytes per module**, waves per module, types first.

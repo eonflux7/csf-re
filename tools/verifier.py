@@ -40,8 +40,11 @@ LOG = os.path.join(ROOT, "work", "verifier_log.jsonl")
 grunt.LIVE = os.path.join(ROOT, "work", "verifier_state.json")  # grunt.bisect() reports through live()
 grunt.DLL_MAP = os.path.join(TREE, "build", "dinput8.map")      # crash reports resolve against the deployed build
 SHORT = [(grunt.SMOKE_SECS, {})]
-FULL = SHORT + [(grunt.SMOKE_LONG_SECS, {"CSF_START": "menu", "CSF_INI_EXTRA": "menutour 1500"}),
-                (grunt.SMOKE_LONG_SECS, {"CSF_START": "loadsave 1.sav"})]
+# --full: FR01, the menu tour and each savegame of CSF_VERIFY_SAVES (Documents\CSF Data\Games; the user's saves
+# 2..24 of 2026-10-09 load). first_round() runs them side by side on the smoke pool, so more saves cost no wall time
+# up to the pool size.
+FULL = SHORT + [(grunt.SMOKE_LONG_SECS, {"CSF_START": "menu", "CSF_INI_EXTRA": "menutour 1500"})] + \
+    [(grunt.SMOKE_LONG_SECS, {"CSF_START": f"loadsave {s}"}) for s in os.environ.get("CSF_VERIFY_SAVES", "1.sav").split()]
 
 
 def sh(*cmd, cwd=None):
