@@ -28,14 +28,30 @@ def load_names():
     # field names by consensus of the grunts' proposals (tools/fields.py apply), under the curated ones
     cp = os.path.join(ROOT, "db", "types", "field_consensus.yaml")
     cons = (yaml.safe_load(open(cp)) or {}) if os.path.exists(cp) else {}
+    off = lambda o: int(o, 16) if isinstance(o, str) else int(o)  # noqa: E731  (yaml: hex strings or ints)
     for k, fs in cons.items():
         k = f"{k:08x}" if isinstance(k, int) else str(k).lower()
-        if k in out:
-            own = {int(str(o), 16) for o in (out[k].get("fields") or {})}
-            merged = dict(out[k].get("fields") or {})
-            merged.update({o: n for o, n in fs.items() if int(str(o), 16) not in own})
-            out[k] = dict(out[k], fields=merged)
+        for o, n in fs.items():
+            # an offset inside the embedded base belongs to the base: the derived struct never declares it, so
+            # a name filed under the derived class would be renamed into src but missing from the header
+            owner = k
+            while C.get(owner, {}).get("base") and off(o) < _extent(C[owner]["base"]):
+                owner = C[owner]["base"]
+            if owner not in out or off(o) in {off(x) for x in (out[owner].get("fields") or {})}:
+                continue
+            out[owner] = dict(out[owner], fields=dict(out[owner].get("fields") or {}, **{o: n}))
     return out
+
+
+def _extent(vt, _memo={}):
+    """A class's layout end as the header lays it out (size, else its fields' end or its base's)."""
+    if vt not in _memo:
+        c = C.get(vt) or {}
+        _memo[vt] = 0  # cycle guard
+        b = c.get("base")
+        fe = max([int(o, 16) + f["size"] for o, f in (c.get("fields") or {}).items()] + [4])
+        _memo[vt] = c.get("size") or max(fe, _extent(b) if b else 0)
+    return _memo[vt]
 
 
 NAMES = load_names()

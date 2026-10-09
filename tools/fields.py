@@ -189,7 +189,8 @@ def fixbuild():
         for path, line, fld, off, cls in set(errs):
             vt, o, name = by_cls.get(cls), int(off, 16), None
             while vt and not name:  # the field may be named on a base
-                f = {int(str(k), 16): v for k, v in (names.get(vt, {}).get("fields") or {}).items()}
+                f = {int(k, 16) if isinstance(k, str) else int(k): v  # classes.yaml has both 0x-less hex and ints
+                 for k, v in (names.get(vt, {}).get("fields") or {}).items()}
                 name = f.get(o)
                 vt = C.get(vt, {}).get("base")
             if not name:
