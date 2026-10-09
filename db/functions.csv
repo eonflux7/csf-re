@@ -7153,7 +7153,7 @@ ea,size,region,module,name,name_src,status
 0052f8a0,58,game,m52D720,,,todo
 0052f8e0,58,game,m52D720,MenuScenarioSelect_HandleEmbeddedControlEvent,agent,done
 0052f920,36,game,m52D720,CMenuScenarioSelect_NotifyOwnerIfTrue,agent,done
-0052f950,124,game,m52D720,,,todo
+0052f950,124,game,m52D720,CMenuPause_CenterOnTarget,agent,done
 0052f9e0,61,game,m52D720,CMenuCredits_Initialize,agent,done
 0052fa20,89,game,m52D720,CMenuCredits_DestroyAndMaybeFree,agent,done
 0052fa80,166,game,m52D720,,,todo
@@ -7236,7 +7236,7 @@ ea,size,region,module,name,name_src,status
 005348b0,301,game,m5339B0,,,todo
 005349e0,251,game,m5339B0,,,todo
 00534ae0,130,game,m5339B0,CMenuMpPause_OnActivate,agent,done
-00534b70,25,game,m5339B0,CMenuMpNetworkType_ReleaseSubObject,agent,todo
+00534b70,25,game,m5339B0,CMenuMpNetworkType_ReleaseSubObject,agent,done
 00534b90,686,game,m5339B0,,,todo
 00534e40,76,game,m5339B0,CMenuMpPause_InitPauseMenuPanels,agent,done
 00534e90,82,game,m5339B0,MenuMpPause_HandleMessage,agent,done
@@ -7250,7 +7250,7 @@ ea,size,region,module,name,name_src,status
 005353e0,117,game,m5339B0,MenuMpPause_OpenPauseDialog,agent,done
 00535460,288,game,m5339B0,CMenuMpPause_HandleButtonEvent,agent,done
 00535580,21,game,m5339B0,CMenuMpPause_HandleCommand,agent,done
-005355c0,25,game,m5339B0,CMenuMpGameMode_ReleaseSubObject,agent,todo
+005355c0,25,game,m5339B0,CMenuMpGameMode_ReleaseSubObject,agent,done
 005355e0,79,game,m5339B0,CMenuIntroVideo_AdvanceTimerAndFinish,agent,done
 00535630,122,game,m5339B0,CMenuIntroVideo_ClearIntroIfNameMismatch,agent,done
 00535790,110,game,m5339B0,CMenuIntroVideo_Construct,agent,done
@@ -7323,7 +7323,7 @@ ea,size,region,module,name,name_src,status
 00538430,105,game,m535C90,,,todo
 005384c0,12,game,m5384C0,CMenuLoading_ResetState,agent,done
 005384d0,67,game,m5384C0,CMenuLoading_ReleaseOwnedObjects,agent,done
-00538520,25,game,m5384C0,CMenuLoading_ReleaseSubObject,agent,todo
+00538520,25,game,m5384C0,CMenuLoading_ReleaseSubObject,agent,done
 00538540,139,game,m5384C0,CMenuLoading_ConfigureLoader,agent,done
 005385d0,368,game,m5384C0,CMenuLoading_LayoutCenteredFrameEdges,agent,done
 00538740,290,game,m5384C0,CMenuLoading_ApplyEntryTransformsAndDecrementIndex,agent,done
@@ -7397,7 +7397,7 @@ ea,size,region,module,name,name_src,status
 0053ac70,30,game,m53AB80,CMenuGameOptions_ApplyLabelToChild,agent,done
 0053ac90,131,game,m53AB80,CMenuOptions_RouteButtonClick,agent,done
 0053ad20,111,game,m53AB80,CMenuOptionsPC_HandleLinkedItemMenuChange,agent,done
-0053ad90,124,game,m53AB80,CMenuOptions_LayoutOptionButtons,vote,todo
+0053ad90,124,game,m53AB80,CMenuOptions_ApplyTargetOffset,agent,done
 0053ae10,58,game,m53AB80,CMenuOptions_Destruct,agent,done
 0053ae60,146,game,m53AB80,CMenuOptions_SetupScreen,agent,done
 0053af00,23,game,m53AB80,CMenuOptions_HandleMenuEvent,agent,done
@@ -7431,7 +7431,7 @@ ea,size,region,module,name,name_src,status
 0053b940,39,game,m53B910,CMenuProfiles_ResetProfileControls,agent,done
 0053b970,39,game,m53B910,CMenuProfiles_ResetCampaignControls,agent,done
 0053b9a0,212,game,m53B910,CMenuProfiles_ResolvePanelAndApplyScale,agent,done
-0053ba80,25,game,m53B910,CMenuProfiles_ReleaseSubObject,agent,todo
+0053ba80,25,game,m53B910,CMenuProfiles_ReleaseSubObject,agent,done
 0053baa0,56,game,m53B910,CMenuProfiles_CheckSchedulerProxyAndDisable,agent,done
 0053bae0,152,game,m53B910,CMenuProfiles_SetPendingValue,agent,done
 0053bb80,67,game,m53B910,MenuProfiles_CheckProfileCountAndSetState,agent,done
@@ -7536,7 +7536,7 @@ ea,size,region,module,name,name_src,status
 00540700,68,game,m53D260,CMenuMissionInfo_RefreshAndDispatchPanels,agent,done
 00540750,60,game,m53D260,CMenuMissionInfo_UpdateAndForward,agent,done
 00540790,212,game,m540790,CMenuMpScoreBar_ResolvePanelAndApplyScale,agent,done
-00540870,25,game,m540790,,,todo
+00540870,25,game,m540790,CMenuMpScoreBar_ReleaseSubObject,agent,done
 00540890,83,game,m540790,CMenuMpScoreBar_SetVisibleByState,agent,done
 005408f0,49,game,m540790,CMenuMpScoreBar_ApplyChildDisplayMode,agent,done
 00540940,247,game,m540790,CMenuMpScoreBar_RefreshChildVisibility,agent,done
@@ -7595,7 +7595,7 @@ ea,size,region,module,name,name_src,status
 00542b10,31,game,m542AA0,MenuControls_ResetStateIfThreeThenQueryState,agent,done
 00542b40,46,game,m542AA0,CMenuControlsInGame_Destroy,agent,done
 00542b70,46,game,m542AA0,CMenuControls_UpdateOptionText,agent,done
-00542ba0,25,game,m542AA0,CMenuDemoExit_ReleaseGui,agent,todo
+00542ba0,25,game,m542AA0,CMenuDemoExit_ReleaseGui,agent,done
 00542bc0,40,game,m542AA0,CMenuControls_HandleInputEvent,agent,done
 00542bf0,65,game,m542AA0,MenuControls_IsIdNotInTwoSlots,agent,done
 00542c40,66,game,m542AA0,MenuControls_DispatchTail,agent,done
@@ -7668,7 +7668,7 @@ ea,size,region,module,name,name_src,status
 00544900,29,game,m5442A0,CMenuSaveGame_RefreshSaveGameList,agent,done
 00544920,94,game,m5442A0,CMenuSaveGame_HandleCommand,agent,todo
 00544980,71,game,m5442A0,MenuSaveGame_ProcessPendingState,agent,todo
-005449d0,124,game,m5442A0,CMenuSaveGame_ResetSelectionState,vote,todo
+005449d0,124,game,m5442A0,CMenuSaveGame_ScrollToTrackedItem,agent,done
 00544a50,70,game,m5442A0,CMenuSaveGame_RefreshListboxIfProxyReady,agent,done
 00544aa0,226,game,m5442A0,,,todo
 00544b90,103,game,m5442A0,MenuSaveGame_RefreshLayoutForScheduler,agent,done
@@ -7755,7 +7755,7 @@ ea,size,region,module,name,name_src,status
 00548c10,46,game,m545CC0,CMenuExtras_Destroy,agent,done
 00548c40,212,game,m548C40,CMenuOptions_ResolvePanelAndApplyScale,agent,done
 00548d20,760,game,m548C40,CMenuVideoAdvanced_ResetOptionState,vote,todo
-00549020,25,game,m548C40,CMenuOptions_ReleaseSubObject,agent,todo
+00549020,25,game,m548C40,CMenuOptions_ReleaseSubObject,agent,done
 00549040,295,game,m548C40,CMenuVideoAdvanced_PushSettingsToWidgets,agent,done
 00549170,33,game,m548C40,CMenuVideoAdvanced_SetValueAndNotify,agent,done
 005491a0,324,game,m548C40,CMenuVideoAdvanced_ApplyChangedOption,agent,done
@@ -8136,10 +8136,10 @@ ea,size,region,module,name,name_src,status
 0055bf60,95,game,m55BCB0,C_008453a4_AddUniqueEntry,agent,done
 0055bfc0,53,game,m55BCB0,CMenuAccountEdit_ResetAndForward,agent,done
 0055c000,221,game,m55BCB0,CMenuAccountEdit_ResolvePanelAndApplyScale,agent,done
-0055c0e0,31,game,m55BCB0,CMenuAccountEdit_ReleaseSubObject,agent,todo
+0055c0e0,31,game,m55BCB0,CMenuAccountEdit_ReleaseSubObject,agent,done
 0055c100,108,game,m55BCB0,MenuMpAccounts_HandleAccountEvent,agent,done
 0055c170,52,game,m55BCB0,CMenuAccountEdit_HandleKeyEvent,agent,done
-0055c1b0,130,game,m55BCB0,CMenuAccountEdit_ApplyHeldPositionDelta,agent,todo
+0055c1b0,130,game,m55BCB0,CMenuAccountEdit_ApplyHeldPositionDelta,agent,done
 0055c240,100,game,m55BCB0,MenuMpAccounts_HasInvalidAccountNameCharacters,agent,done
 0055c2b0,102,game,m55BCB0,MenuMpAccounts_OnStateTransition,agent,done
 0055c320,50,game,m55BCB0,MenuAccounts_ProcessSchedulerProxyState,agent,done
@@ -8275,13 +8275,13 @@ ea,size,region,module,name,name_src,status
 00564340,2042,game,m560070,,,todo
 00564b80,54,game,m564B80,,,todo
 00564bc0,231,game,m564B80,CMenuAccounts_ResolveListaCuentasPanel,agent,done
-00564cb0,25,game,m564B80,CMenuAccounts_ReleaseSubObject,agent,todo
+00564cb0,25,game,m564B80,CMenuAccounts_ReleaseSubObject,agent,done
 00564cd0,21,game,m564B80,CMenuAccounts_UpdateField48FromGlobal,agent,done
 00564cf0,91,game,m564B80,,,todo
 00564d50,54,game,m564B80,MenuAccounts_DispatchByProxyKind,agent,done
 00564d90,91,game,m564B80,MenuAccounts_CommitAccountSelection,agent,done
 00564df0,130,game,m564B80,CMenuAccounts_HandleKeyEvent,agent,done
-00564e80,124,game,m564B80,CMenuAccounts_ScrollToTargetDelta,agent,todo
+00564e80,124,game,m564B80,CMenuAccounts_ScrollToTargetDelta,agent,done
 00564f00,128,game,m564B80,CMenuMpGameMode_PopulateModesForNetworkType,agent,todo
 00564f80,35,game,m564B80,CMenuAccounts_CallChildVtblMethod290,agent,done
 00564fc0,45,game,m564B80,MenuAccounts_ResetAndApplyLabel,agent,done

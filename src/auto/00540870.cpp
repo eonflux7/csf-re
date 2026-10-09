@@ -1,12 +1,3 @@
-# Escalation 0x00540870: in-game crash (menu tour): bisected, EIP in .rdata 0x865B44
-
-## Smoke log tail
-```
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include "hook.h"
 #include "types/auto_classes.h"
@@ -16,12 +7,12 @@
 // and clear the stored pointer. Returns the callee's result (undefined when no sub-object).
 static int __fastcall CMenuMpScoreBar_ReleaseSubObject(CMenuMpScoreBar* self, void* /*edx*/)
 {
-    int result;
+    int result = 0;  // the original leaves eax undefined when there is nothing to release
     void** sub = reinterpret_cast<void**>(static_cast<uintptr_t>(self->field_0030));
     if ( sub )
     {
-        // vtable slot 0, __thiscall with one stack argument (popped by the callee)
-        result = reinterpret_cast<int(__fastcall*)(void*, void*, int)>(sub[0])(sub, nullptr, 1);
+        // slot 0 of its vtable (the deleting destructor), __thiscall with one stack argument (popped by the callee)
+        result = reinterpret_cast<int(__fastcall*)(void*, void*, int)>((*reinterpret_cast<void***>(sub))[0])(sub, nullptr, 1);
         self->field_0030 = 0;
     }
     return result;
@@ -29,4 +20,3 @@ static int __fastcall CMenuMpScoreBar_ReleaseSubObject(CMenuMpScoreBar* self, vo
 
 HOOK(0x540870, CMenuMpScoreBar_ReleaseSubObject, "auto");
 
-```
