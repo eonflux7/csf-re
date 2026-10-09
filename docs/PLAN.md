@@ -100,6 +100,9 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 - [x] Fidelity redo of 0x72DE90, 0x729F60, 0x7292C0, 0x538A50 (2026-10-09): their double arithmetic stays (it stands
   in for x87's wider intermediate where an int is truncated from it: natural, not emulation); the volatile dead
   loads went. New output: `volatile` is rejected by the gate and named in the prompt's fidelity rule
+- [ ] Rename pass guard: a wrapper whose target got implemented takes its real prototype; an int<->float flip of a
+  parameter compiles silently in older callers (value conversion changes the bits). Diff old/new wrapper params
+  in captain_prep and revert/flag on a flip with a non-literal argument (first one: 0x5266C0 +0x28, nullptr->0.0f)
 - [ ] Tail-forwarding thunks (sets state, then `jmp [obj->vtbl+N]` with the caller's stack args untouched, count
   unknown): C++ can't forward them, grunts hand-write naked asm and name a C++ function in it (link error). 4/160
   escalated in audio_sound_manager (0x521D60, 0x523760, 0x527510, 0x521E80). Give hook.h a helper (like
