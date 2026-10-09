@@ -275,6 +275,34 @@ def vtable_refs(db, ea, size):
     return out
 
 
+def stack_objects(ea, size):
+    """[(X, room, [inner offsets])] for each ebp-X whose address (`lea r, [ebp - X]`) is pushed or put in ecx/edx
+    before a call: room = X minus the next such object's offset closer to ebp (or X: up to the frame end)."""
+    ins = disasm(ea, size)
+    taken = set()
+    for k, i in enumerate(ins):
+        m = re.fullmatch(r"(e[a-z]{2}), \[ebp - (0x[0-9a-f]+|\d+)\]", i.op_str) if i.mnemonic == "lea" else None
+        if not m:
+            continue
+        reg, x = m.group(1), int(m.group(2), 0)
+        for j in ins[k + 1:k + 8]:
+            if j.mnemonic == "push" and j.op_str == reg or reg in ("ecx", "edx") and j.mnemonic == "call":
+                taken.add(x)
+                break
+            if j.op_str.startswith(reg + ",") and j.mnemonic != "push" or j.mnemonic in ("call", "ret") \
+                    or j.mnemonic.startswith("j"):
+                break
+    if not taken:
+        return []
+    direct = {int(m.group(1), 0) for i in ins for m in re.finditer(r"\[ebp - (0x[0-9a-f]+|\d+)\]", i.op_str)}
+    xs = sorted(taken, reverse=True)
+    out = []
+    for n, x in enumerate(xs):
+        nxt = xs[n + 1] if n + 1 < len(xs) else 0
+        out.append((x, x - nxt, sorted((y for y in direct if nxt < y < x), reverse=True)))
+    return out
+
+
 def build(db, ea, with_asm_limit=400):
     f = db.F[ea]
     row = db.rows[ea]
@@ -350,6 +378,14 @@ def build(db, ea, with_asm_limit=400):
     if f["size"] <= with_asm_limit:
         out.append("\n## Disassembly (authoritative for signedness / exact semantics)\n```asm\n" +
                    "\n".join(f"{i.address:08x}  {i.mnemonic} {i.op_str}" for i in disasm(ea, f["size"])) + "\n```")
+    so = stack_objects(ea, f["size"])
+    if so:
+        out.append("\n## Stack objects whose address the original passes to a callee\n"
+                   "Callees may fill all of an object: size each buffer to the room shown (Hex-Rays often splits one "
+                   "object into an array plus scalars; 0x461750 overran a 39-dword buffer that is 0xE4 bytes).\n"
+                   + "\n".join(f"- [ebp-0x{x:X}]: room 0x{room:X} bytes up to the next such object / the frame end"
+                                + (f"; also accessed directly at {', '.join(f'ebp-0x{y:X}' for y in inner)}" if inner else "")
+                                for x, room, inner in so))
     if f["callees"]:
         out.append("\n## Callees")
         for c in f["callees"]:

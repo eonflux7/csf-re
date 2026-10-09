@@ -153,14 +153,12 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 - [x] 0x42D3C0 HudQueryWidgetValue mismatches 200/200: returned eax where the original returns st0 (0x70DDF0 is the
       shared `return 0.0f` stub). Fixed + gate rejects int for st0 returns (api.returns_fpu, found 0x6FD180 too);
       the diff table compares st0 for them; `baseline()` quarantines MISMATCH lines too (2026-10-09)
-- [ ] Gate gap: a stack buffer passed to a callee that initializes more bytes than the buffer holds (0x461750:
-      Hex-Rays splits one local object into an array + scalars). Size the buffer from the original's frame layout
-- [ ] Gate gap: a call through an indirect forwarder (0x4F5170 `jmp [eax+0x20]`) must pass the stack args the
-      target pops; Hex-Rays attaches an early-pushed arg to the wrong call (0x45B570 crashed, gate passed both versions)
-- [x] Diff noise (2026-10-09): the table no longer compares a return the original leaves undefined on some path
-      (`api.eax_undefined_on_return`: void std::string _Tidy 0x544310/0x727250, Hex-Rays says int) or no caller reads
-      (`api.ret_unused`: every path after every direct call writes eax first; address-taken functions excluded):
-      ~195 entries. `verify.py reset WHY EA...` drops diff evidence recorded under a harness bug (5 mismatched reset)
+- [x] Stack buffer sizes (0x461750): packets list every stack object whose address the original passes to a callee,
+      with its room (to the next such object / the frame end) and the offsets accessed directly inside it (2026-10-09)
+- [ ] Gate gap: a call through an indirect forwarder (0x4F5170 `mov ecx, [ecx+4]; jmp [eax+0x20]`) must pass the
+      stack args the target pops; Hex-Rays attaches an early-pushed arg to the wrong call (0x45B570, 0x42DF80). The pop
+      is exact from the ret N of the slot's implementations in the class of the member at +4: needs member pointer
+      types (Types backlog). Meanwhile diff tier 3 catches it (0x42DF80 was its first find)
 - [ ] Use the user's saves 2..24 (2026-10-09) in `--full` (`CSF_VERIFY_SAVES`) once each is known to pass alone
 
 ### Cutover
