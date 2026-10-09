@@ -21,13 +21,14 @@ from textual.widgets import Collapsible, DataTable, Footer, Header, Markdown, St
 import monitor as M
 
 CSS = """
-#top { height: auto; }
-#claude { width: 1fr; height: auto; border: round green; padding: 0 1; }
-#costs { width: 1fr; min-width: 44; height: auto; border: round cyan; padding: 0 1; }
-#progress { height: auto; border: round yellow; padding: 0 1; }
+TabbedContent, ContentSwitcher, TabPane { height: 1fr; }
+#top { height: auto; max-height: 25%; }
+#claude { width: 1fr; height: auto; max-height: 100%; overflow-y: auto; border: round green; padding: 0 1; }
+#costs { width: 1fr; min-width: 44; height: auto; max-height: 100%; overflow-y: auto; border: round cyan; padding: 0 1; }
+#progress { height: auto; max-height: 30%; overflow-y: auto; border: round yellow; padding: 0 1; }
 #tools { height: 1; padding: 0 1; }
 #modtable { height: 1fr; }
-#grunt { height: 1fr; border: round magenta; padding: 0 1; }
+#grunt { height: 1fr; min-height: 10; border: round magenta; padding: 0 1; }
 #ghead { height: auto; }
 #inflight { height: auto; max-height: 9; }
 #results { height: 1fr; min-height: 3; border-top: solid $panel; }
