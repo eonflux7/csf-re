@@ -12,8 +12,12 @@
 #include "legacy/string.h"
 
 CSF_FUNC(int, __cdecl, GetValue8B0554, 0x004E8C50, ());
-CSF_FUNC(int, __fastcall, InvokeMemberVirtualSlot8, 0x004F5170, (void* self, void* edx));
-CSF_FUNC(int, __cdecl, GetGlobalValue_4FBDE0, 0x004FBDE0, (float angleRadians));
+// 0x4F5170 forwards to provider->vtbl[8] (jmp [eax+0x20]), which pops one float (ret 4): the original pushes the
+// angle before the getter chain (MSVC scheduling), so Hex-Rays showed it as an argument of the getter 0x4FBDE0
+// (plain ret, no arguments). Passing it to the getter left the virtual's ret 4 popping our frame: crash ~17 s into
+// FR01 (smoke pool 8-way bisect, 2026-10-09).
+CSF_FUNC(int, __fastcall, InvokeMemberVirtualSlot8, 0x004F5170, (void* self, void* edx, float angleRadians));
+CSF_FUNC(int, __cdecl, GetGlobalValue_4FBDE0, 0x004FBDE0, ());
 CSF_FUNC(int, __fastcall, GetFirstElement, 0x004FC1D0, (void* self, void*));
 CSF_FUNC(void*, __fastcall, GetCachedObjectProvider, 0x00686C10, (void* self, void* edx));
 CSF_FUNC(int, __cdecl, GetGlobalValue_753A30, 0x00753A30, ());
@@ -51,10 +55,10 @@ static int __stdcall ComputeAngleAndInvokeProviderSlot8(int /*a1*/, int /*a2*/, 
 
     float angleRadians = angleDegrees * g_DegreesToRadiansFactor;
 
-    int angleSource = GetGlobalValue_4FBDE0(angleRadians);
-    int firstElement = GetFirstElement(reinterpret_cast<void*>(static_cast<uintptr_t>(angleSource)), nullptr);
+    int system = GetGlobalValue_4FBDE0();
+    int firstElement = GetFirstElement(reinterpret_cast<void*>(static_cast<uintptr_t>(system)), nullptr);
     void* provider = GetCachedObjectProvider(reinterpret_cast<void*>(static_cast<uintptr_t>(firstElement)), nullptr);
-    return InvokeMemberVirtualSlot8(provider, nullptr);
+    return InvokeMemberVirtualSlot8(provider, nullptr, angleRadians);
 }
 
 HOOK(0x0045B570, ComputeAngleAndInvokeProviderSlot8, "auto");
