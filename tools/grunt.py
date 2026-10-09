@@ -10,13 +10,13 @@ Stop a lanes run cleanly: `touch work/grunt_stop` (in-flight calls finish, the b
 
 After a batch: link, deploy, smoke test (unless --no-smoke); on success mark functions done and git commit.
 """
-import hashlib, argparse, collections, concurrent.futures as cf, glob, json, os, re, subprocess, sys, threading, time, urllib.error, urllib.request
+import hashlib, argparse, collections, concurrent.futures as cf, glob, itertools, json, os, re, subprocess, sys, threading, time, urllib.error, urllib.request
 sys.path.insert(0, os.path.dirname(__file__))
 from packet import DB, build
 from gate import gate
 import gate as gate_mod
 from triage import load_csv, save_csv
-from limits import codex_usage
+from limits import codex_usage, codex_homes, codex_label
 import evidence
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -216,20 +216,42 @@ CODEX_OFF = ["shell_tool", "unified_exec", "view_image", "multi_agent", "apps", 
 
 
 CODEX_URL = "https://chatgpt.com/backend-api/codex/responses"
-CODEX_AUTH = os.path.expanduser("~/.codex/auth.json")
+# Several ChatGPT subscriptions (limits.codex_homes): each call takes the next login that isn't paused; a login
+# whose 5h window is spent (429 usage_limit, or the quota guard's cap) pauses alone, and CODEX_PAUSED is set only
+# when every login is paused.
+CODEX_HOME_PAUSED = set()
+_codex_rr = itertools.count()
 
 
-def _codex_token():
-    """ChatGPT-subscription bearer token the Codex CLI keeps in ~/.codex/auth.json (valid ~10 days). Near expiry,
-    one trivial CLI call makes the CLI refresh it."""
+def codex_pick():
+    homes = [h for h in codex_homes() if h not in CODEX_HOME_PAUSED]
+    if not homes:
+        CODEX_PAUSED.set()
+        raise RuntimeError("codex backend HTTP 429: every Codex login is paused (usage_limit)")
+    return homes[next(_codex_rr) % len(homes)]
+
+
+def codex_pause(home, paused=True):
+    (CODEX_HOME_PAUSED.add if paused else CODEX_HOME_PAUSED.discard)(home)
+    if all(h in CODEX_HOME_PAUSED for h in codex_homes()):
+        CODEX_PAUSED.set()
+    else:
+        CODEX_PAUSED.clear()
+
+
+def _codex_token(home):
+    """ChatGPT-subscription bearer token the Codex CLI keeps in <home>/auth.json (valid ~10 days). Near expiry,
+    one trivial CLI call (with CODEX_HOME=home) makes the CLI refresh it."""
     import base64
-    t = json.load(open(CODEX_AUTH))["tokens"]
+    auth = os.path.join(home, "auth.json")
+    t = json.load(open(auth))["tokens"]
     p = t["access_token"].split(".")[1]
     exp = json.loads(base64.urlsafe_b64decode(p + "=" * (-len(p) % 4)))["exp"]
     if exp - time.time() < 3600:
         subprocess.run(["codex", "exec", "--ephemeral", "--skip-git-repo-check", "-s", "read-only", "-"],
-                       input="Reply OK.", capture_output=True, text=True, cwd=CODEX_CWD, timeout=300)
-        t = json.load(open(CODEX_AUTH))["tokens"]
+                       input="Reply OK.", capture_output=True, text=True, cwd=CODEX_CWD, timeout=300,
+                       env=dict(os.environ, CODEX_HOME=home))
+        t = json.load(open(auth))["tokens"]
     return t["access_token"], t["account_id"]
 
 
@@ -237,7 +259,8 @@ def chat_codex_direct(model, messages, effort="high"):
     """GPT via the ChatGPT Codex backend directly (same subscription and endpoint as the Codex CLI, no CLI harness:
     ~1.4k instead of ~5.7k fixed tokens per call). A fixed session id per system prompt makes the backend cache
     the shared prefix reliably (the CLI's per-run session id hit the cache about half the time)."""
-    token, account = _codex_token()
+    home = codex_pick()
+    token, account = _codex_token(home)
     sysp = messages[0]["content"]
     sid = "csf-grunt-" + hashlib.sha1(sysp.encode()).hexdigest()[:12]
     items = [{"type": "message", "role": m["role"],
@@ -255,7 +278,7 @@ def chat_codex_direct(model, messages, effort="high"):
     except urllib.error.HTTPError as e:
         msg = e.read()[:300]
         if e.code == 429 and b"usage_limit" in msg:
-            CODEX_PAUSED.set()  # the 5h/7d window is spent: defer (not escalate) until the quota guard resumes it
+            codex_pause(home)  # this login's window is spent: the others carry on; all spent -> defer, not escalate
         raise RuntimeError(f"codex backend HTTP {e.code}: {msg!r}")
     out, u = [], None
     for raw in r:
@@ -315,11 +338,13 @@ def chat_codex_cli(model, messages, effort="high"):
               "-c", "include_environment_context=false", "-c", "include_permissions_instructions=false"]  # ~180 tokens
     if os.environ.get("CSF_CODEX_SLIM") == "0":  # A/B: stock Codex harness, system prompt inlined
         feats, convo = [], [sysp, "Answer directly from the packet below. Do not run commands or use tools."] + convo
+    home = codex_pick()
     r = subprocess.run(["codex", "exec", "--ephemeral", "--skip-git-repo-check", "--ignore-user-config",
                         "-s", "read-only", "-m", model, "-c", f'model_reasoning_effort="{CODEX_EFFORT.get(effort, effort)}"',
                         *feats,
                         "-o", out, "--json", "-"],
-                       input="\n\n".join(convo), capture_output=True, text=True, cwd=CODEX_CWD, timeout=1800)
+                       input="\n\n".join(convo), capture_output=True, text=True, cwd=CODEX_CWD, timeout=1800,
+                       env=dict(os.environ, CODEX_HOME=home))
     if r.returncode or not os.path.exists(out):
         raise RuntimeError(f"codex exec failed rc={r.returncode}: {(r.stderr or r.stdout)[-300:]}")
     text = open(out).read()
@@ -1223,10 +1248,23 @@ def lanes(args):
                 pass  # endpoint down: keep the current state
         if args.codex_cap <= 0:
             return
-        try:
-            pct, reset = codex_usage()["5h"]
-        except Exception:
-            return  # endpoint down: keep the current state
+        per = {}
+        for h in codex_homes():
+            try:
+                per[h] = codex_usage(h)["5h"]
+            except Exception:
+                continue  # endpoint down: keep this login's current state
+            hp, hr = per[h]
+            if hp >= args.codex_cap and h not in CODEX_HOME_PAUSED:
+                print(f"{codex_label(h)} 5h window at {hp:.0f}% (cap {args.codex_cap}): paused, resets in "
+                      f"{hr // 60} min", flush=True)
+                codex_pause(h)
+            elif hp < args.codex_cap and h in CODEX_HOME_PAUSED:
+                print(f"{codex_label(h)} 5h window at {hp:.0f}%: resumed", flush=True)
+                codex_pause(h, False)
+        if not per:
+            return
+        pct, reset = min(per.values())  # the reserve follows the login with the most room
         if CODEX_SUB and pct >= args.codex_reserve and not CODEX_RESERVED.is_set():
             CODEX_RESERVED.set()
             print(f"Codex 5h window at {pct:.0f}% (reserve {args.codex_reserve}): S/M Codex rungs -> "
@@ -1234,14 +1272,8 @@ def lanes(args):
         elif pct < args.codex_reserve and CODEX_RESERVED.is_set():
             CODEX_RESERVED.clear()
             print(f"Codex 5h window at {pct:.0f}%: S/M Codex rungs back on Codex", flush=True)
-        if pct >= args.codex_cap and not CODEX_PAUSED.is_set():
-            CODEX_PAUSED.set()
-            print(f"Codex 5h window at {pct:.0f}% (cap {args.codex_cap}): Codex paused, resets in {reset // 60} min",
-                  flush=True)
-        elif pct < args.codex_cap and CODEX_PAUSED.is_set():
-            CODEX_PAUSED.clear()
-            print(f"Codex 5h window at {pct:.0f}%: Codex resumed", flush=True)
-        live(codex_paused=CODEX_PAUSED.is_set(), codex_reserved=CODEX_RESERVED.is_set(), codex_5h=pct)
+        live(codex_paused=CODEX_PAUSED.is_set(), codex_reserved=CODEX_RESERVED.is_set(), codex_5h=pct,
+             codex_logins={codex_label(h): p for h, (p, _) in per.items()})
 
     since_canary = 0
 

@@ -18,7 +18,7 @@ import argparse, collections, csv, glob, json, os, re, subprocess, time, urllib.
 from datetime import datetime, timezone
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from limits import codex_usage, deepseek_balance  # noqa: E402
+from limits import codex_usage, codex_homes, codex_label, deepseek_balance  # noqa: E402
 from grunt import CLAUDE_GRUNTS, claude_usage  # noqa: E402
 
 from rich.console import Group
@@ -186,15 +186,16 @@ def accounts():
     the grunts' CLAUDE_GRUNTS/.claude.json): oauthAccount; it has no renewal date, so the next monthly anniversary of subscriptionCreatedAt (estimate)."""
     import base64, datetime as dt
     out = {}
-    try:
-        tok = json.load(open(os.path.expanduser("~/.codex/auth.json")))["tokens"]["id_token"].split(".")[1]
-        c = json.loads(base64.urlsafe_b64decode(tok + "=" * (-len(tok) % 4)))
-        a = c.get("https://api.openai.com/auth", {})
-        until = a.get("chatgpt_subscription_active_until")
-        out["codex"] = (c.get("email", "?"), a.get("chatgpt_plan_type", "?"),
-                        dt.datetime.fromisoformat(until).date() if until else None, False)
-    except Exception:
-        pass
+    for home in codex_homes():  # every Codex login the grunts rotate over (limits.codex_homes)
+        try:
+            tok = json.load(open(os.path.join(home, "auth.json")))["tokens"]["id_token"].split(".")[1]
+            c = json.loads(base64.urlsafe_b64decode(tok + "=" * (-len(tok) % 4)))
+            a = c.get("https://api.openai.com/auth", {})
+            until = a.get("chatgpt_subscription_active_until")
+            out[codex_label(home)] = (c.get("email", "?"), a.get("chatgpt_plan_type", "?"),
+                                      dt.datetime.fromisoformat(until).date() if until else None, False)
+        except Exception:
+            pass
     for which, path in (("claude", os.path.expanduser("~/.claude.json")),
                         ("claude-grunts", os.path.join(CLAUDE_GRUNTS, ".claude.json"))):
         try:
@@ -736,7 +737,10 @@ def panel_costs(st=None, recent=()):
         body.append(Text(f" captain (claude -p) today ${today:.2f}  total ${tot:.2f}  "
                          + " ".join(f"{m} ${c:.2f}" for m, c in per.most_common()), style="dim",
                          no_wrap=True, overflow="ellipsis"))
-    body += account("Codex", "bold magenta", "codex", cached("codex_usage", 60, codex_usage))
+    for home in codex_homes():
+        lab = codex_label(home)
+        body += account("Codex" if lab == "codex" else lab, "bold magenta", lab,
+                        cached(f"usage_{lab}", 60, lambda h=home: codex_usage(h)))
     db_ = cached("ds_balance", 300, deepseek_balance)
     if isinstance(db_, tuple):
         bal = "  ".join(f"{amt} {cur}" for cur, amt in db_[0]) or "?"
