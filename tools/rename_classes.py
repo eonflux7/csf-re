@@ -85,11 +85,13 @@ def rewrite(text):
     out = TYPE.sub(lambda m: cname(m.group(1)), out)
     # named fields: only when the file uses exactly one class type
     used = types | {vt for vt, e in NAMES.items() if re.search(rf"\b{re.escape(e['name'])}\b", out)}
+    used |= set(re.findall(r"\bS_([0-9a-f]{8})\b", out))  # plain classes (S_<ea>) count as a second type too
     if len(used) == 1:
         (vt,) = used
         for base in ancestors(vt):
             for o, n in (NAMES.get(base, {}).get("fields") or {}).items():
-                out = re.sub(rf"\bfield_{int(str(o), 16):04x}\b", n, out)
+                o = int(o, 16) if isinstance(o, str) else int(o)  # classes.yaml: hex strings or ints
+                out = re.sub(rf"\bfield_{o:04x}\b", n.split()[-1], out)  # "T* m_x" -> m_x
     return out, renames
 
 
