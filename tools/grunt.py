@@ -1422,7 +1422,7 @@ def captain_after(wave):
 
 
 WAVES_LOG = os.path.join(ROOT, "work", "waves.jsonl")
-STOP = 3  # wave's exit code when the stop rule fires
+STOP_EXIT = 3  # wave's exit code when the stop rule fires
 
 
 def wave(args):
@@ -1460,7 +1460,7 @@ def wave(args):
     tool("linktest.py")
     rep = wave_report(args, module_ids(args.module), t0, rev0)
     if rep["stop"]:
-        sys.exit(STOP)
+        sys.exit(STOP_EXIT)
 
 
 REVIEWS = os.path.join(ROOT, "db", "reviews.jsonl")
@@ -1557,9 +1557,9 @@ def waves(args):
         n += 1
         print(f"\n==== waves: {n}{'/' + str(args.waves) if args.waves > 0 else ''} {m}", flush=True)
         rc = subprocess.run([py, here, "wave", m, *argv]).returncode
-        if rc == STOP:
+        if rc == STOP_EXIT:
             print(f"waves: stop rule fired after {m} (work/waves.jsonl); stopping", flush=True)
-            sys.exit(STOP)
+            sys.exit(STOP_EXIT)
         if rc:
             print(f"waves: wave {m} exited {rc}; stopping", flush=True)
             sys.exit(rc)
@@ -1568,7 +1568,7 @@ def waves(args):
             rc = subprocess.run([py, os.path.join(ROOT, "tools", "verifier.py"), "--baseline-only", "--full"]).returncode
             if rc:
                 print("waves: regression check failed (work/verifier.log); stopping", flush=True)
-                sys.exit(STOP)
+                sys.exit(STOP_EXIT)
 
 
 def cost(_):
