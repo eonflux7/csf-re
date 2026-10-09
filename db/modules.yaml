@@ -55,8 +55,8 @@
    classes: [], strings: []}
 - {id: m44F640, start: 0x44F640, end: 0x44FC80, fns: 22, kb: 1.4, done: 6, name: "game_scene_access", name_src: captain, label: "", cohesion: 0.0,
    classes: [], strings: [], note: "g_pCurrentScene/g_CurrentSceneIndex/g_numScenes accessors called from many places (hud, minimap)"}
-- {id: m44FC80, start: 0x44FC80, end: 0x456C90, fns: 105, kb: 23.8, done: 0, name: "", name_src: None, label: "", cohesion: 0.28,
-   classes: ["C_008312b0"], strings: []}
+- {id: m44FC80, start: 0x44FC80, end: 0x456C90, fns: 105, kb: 23.8, done: 0, name: "scene_manager", name_src: opus, label: "", cohesion: 0.28,
+   classes: ["C_008312b0"], strings: [], note: "CScene methods, current-scene globals, scene select/reset, sphere-triangle queries (captain 0.6 x2, applied by orchestrator)"}
 - {id: m456C90, start: 0x456C90, end: 0x458210, fns: 34, kb: 5.0, done: 2, name: "hud_portraits", name_src: opus, label: "", cohesion: 0.37,
    classes: ["C_008312e0", "C_00831304", "C_0082d410"], strings: ["reTach.png", "menus\\textures\\retratos\\", ".FLI_NAME", ".IS_GENERIC", ".IMAGE"], note: "menus\\textures\\retratos\\%s, .FLI_NAME, .IS_GENERIC"}
 - {id: m458210, start: 0x458210, end: 0x45AAF0, fns: 59, kb: 6.9, done: 0, name: "hud_status_icons", name_src: captain, label: "", cohesion: 0.65,
