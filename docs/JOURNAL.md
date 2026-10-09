@@ -882,3 +882,23 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
     virtual call): 19 done functions needed it, all switched; packet NOTE + gate error for new ones. 8 more done
     functions look like callers reading an ecx the callee *produced* (0x697330 & co): not handled yet.
 - semcheck follows esp/ebp copies through -O0 spill slots.
+
+## 2026-10-09 — waves by centrality restarted; the rename pass never got through
+
+- `wave --waves -1` from master: scene_loader (127 ok, 3 quarantined incl. 2 by the regression smoke),
+  char_action_fsm (265 verified, 0 quarantined, 1/14 review reject), m44FC80 = scene_manager (103/104).
+- Module naming is a wave step now: captain family -> `captain modules` on the wave's unnamed modules -> grunts; a
+  held name is retried at wave end (function names then exist; packet shows 40 named functions, was 16).
+  m44FC80 was held at 0.6 three times (mixed module, cohesion 0.28): named scene_manager by hand.
+- The wave-prep rename pass (rename_classes + fields.py fixbuild + build) failed every wave and was reverted silently;
+  the revert left field_consensus.yaml modified, and an unchanged consensus then skipped the pass for good. Four bugs:
+  1. virtual-call wrappers are named after their slot's target; a target named since the last header regen
+     renames the wrapper (vSetPosition_54 -> vScalePositionAndSize): fixbuild maps old wrapper -> slot -> new name.
+     ~400 such call sites had drifted; all checked slot-identical.
+  2. consensus names at an offset inside the embedded base (CCharActionFsm +0xC) were rewritten into src but never
+     declared (the derived struct starts after the base): load_names files them under the owning base.
+  3. classes.yaml field keys are hex strings *or* ints; fixbuild and rename_classes read ints as hex. Silent miscompile
+     found: 0x50D4C0 CMenuManager_ReleaseOwnedScreens released +0x1C twice, never +0x28 (int 28 read as 0x28).
+     A scan of all `->m_x ... // +0xNN` comments against the header's offsetof finds no other.
+  4. rename_classes' "single class type" test ignored plain classes (S_<ea>): `buttonArray->field_000c` (an
+     S_0041e5f0) became CGuiControl's m_pRenderer.
