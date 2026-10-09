@@ -640,3 +640,22 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   better, 10 slightly worse; members +0.4%. The propagate loop also stopped early (it counted only new methods).
   Named Win32 constants: 62 call sites in all game code, and grunts can't include windows.h: dropped.
   Conclusion: context from IDA is near its limit; checks (gate, diff tier 3) are where quality still grows.
+
+## 2026-10-09 — script_commands; Haiku spot check; wave stop rule
+
+- **m45AAF0 = script_commands**: the mission-script command set. sub_465310 switches on an int16 id (360 ids,
+  1000-5999, banded) and calls one stdcall (ctx, cmd, args) handler each (328 handlers); arguments are evaluated
+  through sub_467BC0, which recurses into the dispatcher (id -1 = literal/variable). m467AD0 (parser of .SCRIPTS
+  .VARIABLES .ACCIONES .CONDICIONES .EVENTOS .TRIGGER + evaluator) renamed object_class_defs -> mission_script.
+- **Haiku spot check** (4 S Haiku low, 3 M Haiku high, against pseudocode + disassembly): all 7 correct. Twice more
+  faithful than Hex-Rays: a NaN branch (`test ah,5; jp` sends NaN down the >= 0 path; Hex-Rays says `>= 0.0`) and
+  a callee's hidden ecx argument. Weak spots: cast-heavy, inverted names, one wrong comment. All grunt runs so far:
+  S 99% accepted (83% first try), M 95% (44%), L 92% (Codex only, n=38).
+- **Stop rule** (`wave_report`): after verify + review a wave counts quarantines since it started (canary groups
+  included), Opus rejects and the module's done functions still unverified; over threshold -> exit 3, and
+  `wave --waves` stops. A smoke failure the verifier can't attribute isn't a defect but leaves functions pending,
+  so it trips the pending threshold. Between waves `verifier.py --baseline-only --full` smokes the verified
+  baseline with menu tour + savegame (FR01's short start never reaches most code).
+- The script_commands canary group: 0045bba0 named by a crash report and quarantined, then the re-smoke and a
+  control run with the whole batch off also crashed, though the baseline had passed 30 s earlier: unexplained.
+- Waves only take functions up to 600 B: 646 functions over that (~700 KB) are untouched (backlog: L pass).

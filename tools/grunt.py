@@ -1420,6 +1420,10 @@ def captain_after(wave):
     captain("functions", "--module", ",".join(sorted(wave)))
 
 
+WAVES_LOG = os.path.join(ROOT, "work", "waves.jsonl")
+STOP = 3  # wave's exit code when the stop rule fires
+
+
 def wave(args):
     """The RE loop for one module in one command:
       1. types first (lanes' captain_prep): captain names the module's classes, field-name consensus, rename pass
@@ -1427,17 +1431,21 @@ def wave(args):
       3. verify: tools/verifier.py --module (baseline, then the module's pending functions, in game)
       4. review: tools/review.py sample --module (Opus reads a 5% sample against the original)
       5. tools/linktest.py summary (what is left before the standalone exe links)
-    `wave --next` ranks modules by centrality instead (rank_modules)."""
+      6. stop rule (wave_report): too many quarantines, review rejects or functions left unverified -> exit 3
+    `wave --next` ranks modules by centrality instead (rank_modules); `wave --waves N` runs N waves in rank order."""
+    if args.waves:
+        return waves(args)
     if args.next or not args.module_name:
         db = DB()
         print(f"{'score':>8}  {'module':10s} {'name':28s} {'todo KB':>8} {'done':>6}")
         for sc, m, n, todo, pct in rank_modules(db, 15):
             print(f"{sc:8d}  {m:10s} {n:28s} {todo / 1024:8.1f} {pct:5.1f}%")
-        print("\nrun: tools/grunt.py wave <module>")
+        print("\nrun: tools/grunt.py wave <module>   (or --waves N: N waves in this order, stop rule between)")
         return
     args.module = args.module_name
     if args.total == 200:  # lanes' default: a wave takes the whole module
         args.total = 100000
+    t0, rev0 = time.time(), _line_count(REVIEWS)
     lanes(args)
     py = sys.executable
     tool = lambda *a: subprocess.run([py, os.path.join(ROOT, "tools", a[0]), *a[1:]])
@@ -1449,6 +1457,117 @@ def wave(args):
         tool("review.py", "sample", "--module", args.module)
     print("wave: link test", flush=True)
     tool("linktest.py")
+    rep = wave_report(args, module_ids(args.module), t0, rev0)
+    if rep["stop"]:
+        sys.exit(STOP)
+
+
+REVIEWS = os.path.join(ROOT, "db", "reviews.jsonl")
+VERIFIER_LOG = os.path.join(ROOT, "work", "verifier_log.jsonl")
+
+
+def _line_count(p):
+    try:
+        with open(p) as f:
+            return sum(1 for _ in f)
+    except OSError:
+        return 0
+
+
+def _jsonl(p, skip=0):
+    try:
+        with open(p) as f:
+            lines = f.readlines()[skip:]
+    except OSError:
+        return []
+    out = []
+    for l in lines:
+        try:
+            out.append(json.loads(l))
+        except ValueError:
+            pass
+    return out
+
+
+def wave_report(args, mods, t0, rev0):
+    """What this wave's verification and review found, and whether the wave loop should stop. Counts the verifier
+    groups run since the wave started (canary groups during production + the verify step), the Opus reviews it added,
+    and the module's done functions still pending (never installed in a passing smoke). One smoke failure the
+    verifier can't attribute is reported, not counted as a defect; it shows up as functions left pending."""
+    v = q = 0
+    notes = []
+    for r in _jsonl(VERIFIER_LOG):
+        if r.get("ts", 0) >= t0 and r.get("event") in ("group", "baseline"):
+            v += r.get("verified", 0)
+            q += len(r.get("quarantined") or [])
+            if r.get("note"):
+                notes.append(r["note"][:160])
+    revs = [r for r in _jsonl(REVIEWS, rev0) if r.get("module") in mods]
+    rej = sum(not r.get("ok") for r in revs)
+    db = DB()
+    try:
+        led = json.load(open(os.path.join(ROOT, "db", "verify.json")))
+    except (OSError, ValueError):
+        led = {}
+    done = [f"{ea:08x}" for ea, r in db.rows.items() if r["module"] in mods and r["status"] in ("done", "verified")]
+    pend = [ea for ea in done if not led.get(ea, {}).get("ok")]
+    stop = []
+    if q >= 2 and q / max(1, v + q) > args.stop_quarantine:
+        stop.append(f"quarantined {q}/{v + q} in game (> {args.stop_quarantine:.0%})")
+    if rej >= 2 and rej / max(1, len(revs)) > args.stop_review:
+        stop.append(f"Opus review rejected {rej}/{len(revs)} (> {args.stop_review:.0%})")
+    if not args.no_verify and len(done) >= 10 and len(pend) / len(done) > args.stop_pending:
+        stop.append(f"{len(pend)}/{len(done)} done functions still unverified (> {args.stop_pending:.0%})")
+    rep = dict(ts=time.time(), modules=sorted(mods), secs=round(time.time() - t0), verified=v, quarantined=q,
+               reviewed=len(revs), rejected=rej, done=len(done), pending=len(pend), notes=notes, stop=stop)
+    with open(WAVES_LOG, "a") as f:
+        f.write(json.dumps(rep) + "\n")
+    print(f"wave report: verified {v}, quarantined {q}, reviewed {len(revs)} ({rej} rejected), "
+          f"{len(pend)}/{len(done)} still pending" + (f"\n  unattributed smoke failures: {len(notes)}" if notes else ""),
+          flush=True)
+    for x in stop:
+        print(f"  STOP: {x}", flush=True)
+    return rep
+
+
+def waves(args):
+    """Waves in rank order, one subprocess per module (fresh lane state each). Between waves the verified baseline
+    is smoked with the widest coverage (verifier --baseline-only --full, every --regress-every waves): verification
+    next to production, catching what FR01's short start never reaches. Stops when a wave's stop rule fires, the
+    regression check fails, the ranking runs out, or after --waves N (-1: no limit)."""
+    loop_only = {"--waves", "--regress-every"}  # the rest of the command line passes through to each wave
+    argv, it = [], iter(sys.argv[2:])
+    for x in it:
+        if x in loop_only:
+            next(it, None)
+        elif x.split("=")[0] in loop_only or x == "--next" or x == args.module_name:
+            continue
+        else:
+            argv.append(x)
+    py, here = sys.executable, os.path.abspath(__file__)
+    seen, n = set(), 0
+    while args.waves < 0 or n < args.waves:
+        ranked = [m for _, m, *_ in rank_modules(DB(), 60) if m not in seen]
+        if not ranked:
+            print("waves: ranking exhausted", flush=True)
+            return
+        m = ranked[0]
+        seen.add(m)
+        n += 1
+        print(f"\n==== waves: {n}{'/' + str(args.waves) if args.waves > 0 else ''} {m}", flush=True)
+        rc = subprocess.run([py, here, "wave", m, *argv]).returncode
+        if rc == STOP:
+            print(f"waves: stop rule fired after {m} (work/waves.jsonl); stopping", flush=True)
+            sys.exit(STOP)
+        if rc:
+            print(f"waves: wave {m} exited {rc}; stopping", flush=True)
+            sys.exit(rc)
+        if args.regress_every and n % args.regress_every == 0 and not args.no_verify:
+            print("waves: regression check (verified baseline, full coverage)", flush=True)
+            rc = subprocess.run([py, os.path.join(ROOT, "tools", "verifier.py"), "--baseline-only", "--full"]).returncode
+            if rc:
+                print("waves: regression check failed (work/verifier.log); stopping", flush=True)
+                sys.exit(STOP)
 
 
 def cost(_):
@@ -1611,6 +1730,13 @@ if __name__ == "__main__":
     w.add_argument("--next", action="store_true", help="rank modules by centrality (what to wave next) and exit")
     w.add_argument("--no-verify", action="store_true")
     w.add_argument("--no-review", action="store_true")
+    w.add_argument("--waves", type=int, default=0, help="run N waves in rank order (-1: until the stop rule or the "
+                   "ranking runs out); each wave's report -> work/waves.jsonl")
+    w.add_argument("--regress-every", type=int, default=1, help="with --waves: full regression smoke of the verified "
+                   "baseline every N waves (0: off)")
+    w.add_argument("--stop-quarantine", type=float, default=0.03, help="stop rule: quarantined / verified+quarantined")
+    w.add_argument("--stop-review", type=float, default=0.10, help="stop rule: Opus review rejects / reviewed")
+    w.add_argument("--stop-pending", type=float, default=0.25, help="stop rule: module's done functions left unverified")
     sub.add_parser("cost")
     a = ap.parse_args()
     {"run": run, "lanes": lanes, "wave": wave, "cost": cost}[a.cmd](a)

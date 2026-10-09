@@ -20,6 +20,8 @@ Usage:
   verifier.py --module m53A0F0,gui_listbox    only these modules' pending functions
   verifier.py --groups 1       one group and stop (the lanes canary runs this in the background)
   verifier.py --dry            show the groups, run nothing
+  verifier.py --baseline-only --full   regression check: the verified baseline alone (menu tour + savegame),
+                               culprits quarantined; `grunt.py wave --waves` runs it between waves
 First the verified baseline alone is smoked (--no-baseline skips it); its culprits are quarantined the same way.
 One instance at a time (work/verify.lock); the play copy is the verifier's alone while it runs.
 """
@@ -210,6 +212,8 @@ def main():
     ap.add_argument("--full", action="store_true", help="menu tour + savegame too, per group")
     ap.add_argument("--dry", action="store_true")
     ap.add_argument("--no-baseline", action="store_true", help="skip the baseline smoke (all pending off) first")
+    ap.add_argument("--baseline-only", action="store_true", help="smoke the verified baseline alone and stop "
+                    "(regression check of everything verified so far; with --full the widest coverage)")
     a = ap.parse_args()
     lk = open(os.path.join(ROOT, "work", "verify.lock"), "w")
     try:
@@ -217,6 +221,24 @@ def main():
     except OSError:
         print("verifier already running")
         return
+    if a.baseline_only:
+        while True:
+            head = prepare_tree()
+            ok, out = build_tree()
+            if not ok:
+                print("verify tree build FAILED at", head[:8], "\n", out[-2500:])
+                record(event="build_failed", head=head)
+                return 1
+            deploy([])
+            ok, bad = baseline(FULL if a.full else SHORT)
+            print(f"baseline{' (full)' if a.full else ''}: {'ok' if ok else 'FAILED'}, {len(bad)} quarantined", flush=True)
+            record(event="baseline", ok=ok, quarantined=bad, head=head, full=a.full)
+            if bad:
+                repo.commit(["db/verify.json", "db/functions.csv"] + [f"src/auto/{e}.cpp" for e in bad] +
+                            [f"queue/{e}.md" for e in bad],
+                            f"verifier: {len(bad)} functions quarantined (they broke the verified baseline)")
+            verify.write_pending_ini(INI)
+            return 0 if ok else 1
     mods = set(a.module.split(",")) if a.module else None
     done_groups, checked_baseline = 0, a.no_baseline
     while True:
