@@ -3709,7 +3709,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 84
+   "AssignStringSubstring": 85
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -17429,7 +17429,7 @@
   "file": "src/auto/00454c10.cpp"
  },
  "00454c80": {
-  "name": "InsertElement24",
+  "name": "InsertElement24_454C80",
   "name_src": "agent",
   "votes": {
    "GrowAndInsertElement24": 1
@@ -22858,7 +22858,7 @@
   "votes": {
    "MissionScript_ParseEntry": 1,
    "MissionScript_DestroyVariableRange": 1,
-   "MissionScript_ResetEntryRange": 1
+   "MissionScript_ResetEntryRange": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -23150,7 +23150,7 @@
   "name": "ScriptRecords_InsertIntoList",
   "name_src": "vote",
   "votes": {
-   "ScriptRecords_InsertIntoList": 1
+   "ScriptRecords_InsertIntoList": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -125008,7 +125008,7 @@
   "name_src": "opus",
   "votes": {
    "HudWidget_MemFreeDebug": 1,
-   "Mem_FreeDebug": 196,
+   "Mem_FreeDebug": 199,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
   },
@@ -125097,7 +125097,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 101
+   "Mem_Alloc": 109
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -125108,7 +125108,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 177
+   "Mem_Free": 181
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -125618,7 +125618,7 @@
   "name": "MenuExtras_GetChildCount",
   "name_src": "vote",
   "votes": {
-   "MenuExtras_GetChildCount": 40
+   "MenuExtras_GetChildCount": 42
   },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
@@ -125629,7 +125629,7 @@
   "name": "GetComponent",
   "name_src": "vote",
   "votes": {
-   "GetComponent": 48
+   "GetComponent": 50
   },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
@@ -125651,7 +125651,7 @@
   "name": "ReadComponentFloat",
   "name_src": "vote",
   "votes": {
-   "ReadComponentFloat": 8
+   "ReadComponentFloat": 9
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -125714,7 +125714,7 @@
   "name": "FindProperty",
   "name_src": "vote",
   "votes": {
-   "FindProperty": 62
+   "FindProperty": 63
   },
   "ret": "std::uint8_t*",
   "conv": "__fastcall",
@@ -125821,7 +125821,7 @@
   "name": "ReadIntegerAttribute",
   "name_src": "vote",
   "votes": {
-   "ReadIntegerAttribute": 27
+   "ReadIntegerAttribute": 28
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -125832,7 +125832,7 @@
   "name": "ReadFloatAttribute",
   "name_src": "vote",
   "votes": {
-   "ReadFloatAttribute": 24
+   "ReadFloatAttribute": 25
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -125843,7 +125843,7 @@
   "name": "MenuExtras_ReadText",
   "name_src": "vote",
   "votes": {
-   "MenuExtras_ReadText": 39
+   "MenuExtras_ReadText": 40
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -125874,7 +125874,7 @@
   "name": "DataNode_ReadVector3Property",
   "name_src": "vote",
   "votes": {
-   "DataNode_ReadVector3Property": 3,
+   "DataNode_ReadVector3Property": 4,
    "Node_ReadVector3Property": 1
   },
   "ret": "int",
@@ -166306,7 +166306,7 @@
   "name": "CopyDwordIfNotNull",
   "name_src": "agent",
   "votes": {
-   "CopyDwordIfNotNull": 22
+   "CopyDwordIfNotNull": 24
   },
   "ret": "uint32_t*",
   "conv": "__stdcall",
@@ -178485,46 +178485,54 @@
   "sig_src": "abi"
  },
  "007685a0": {
-  "name": "sub_7685A0",
-  "name_src": "addr",
+  "name": "InputBindings_GetEntryCount",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/007685a0.cpp"
  },
  "007685c0": {
-  "name": "CopyMenuElementIntoSlot",
-  "name_src": "vote",
+  "name": "InputBindings_CopyMenuElementIntoSlot",
+  "name_src": "agent",
   "votes": {
-   "CopyMenuElementIntoSlot": 2
+   "CopyMenuElementIntoSlot": 4
   },
-  "ret": "std::uint32_t*",
-  "conv": "__fastcall",
-  "params": "void* context, void* edx, std::uint32_t* destination, const std::uint32_t* source",
-  "sig_src": "vote"
+  "ret": "uint32_t*",
+  "conv": "__stdcall",
+  "params": "uint32_t* dst, uint32_t* src",
+  "sig_src": "impl",
+  "file": "src/auto/007685c0.cpp"
  },
  "00768600": {
-  "name": "sub_768600",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "InputBindings_CopyMenuElementRange",
+  "name_src": "agent",
+  "votes": {
+   "InputBindings_BuildActionEntry_768600": 1
+  },
+  "ret": "std::uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint32_t* source, std::uint32_t* sourceEnd, std::uint32_t* destination, void* copyContext, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00768600.cpp"
  },
  "00768670": {
-  "name": "sub_768670",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "CopyInputBindingElementsIntoSlots",
+  "name_src": "agent",
+  "votes": {
+   "S_00768bf0_ConstructElement24": 1
+  },
+  "ret": "std::uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, int a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint32_t* elements, std::uint32_t count, const std::uint32_t* source, void* context, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00768670.cpp"
  },
  "007686e0": {
-  "name": "LookupEntryByKey",
-  "name_src": "vote",
+  "name": "InputBindings_FindEntryIndexByKey",
+  "name_src": "agent",
   "votes": {
    "LookupEntryByKey": 3,
    "LookupSlotIndex": 1,
@@ -178539,12 +178547,13 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int key",
+  "sig_src": "impl",
+  "file": "src/auto/007686e0.cpp"
  },
  "00768740": {
-  "name": "GetSlotEntry",
-  "name_src": "vote",
+  "name": "C_0085e7b8_GetSlotEntry",
+  "name_src": "agent",
   "votes": {
    "GetSlotEntry": 1,
    "GetEntityRecordByIndex": 1,
@@ -178557,8 +178566,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_0085e7b8* self, void* , int slotIndex",
+  "sig_src": "impl",
+  "file": "src/auto/00768740.cpp"
  },
  "00768760": {
   "name": "sub_768760",
@@ -178570,96 +178580,114 @@
   "sig_src": "abi"
  },
  "00768790": {
-  "name": "sub_768790",
-  "name_src": "addr",
+  "name": "InputBindings_ForwardToBuildActionEntry",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a1, uint32_t* a2, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint32_t* a1, uint32_t* a2, uint32_t* a3",
+  "sig_src": "impl",
+  "file": "src/auto/00768790.cpp"
  },
  "007687b0": {
-  "name": "sub_7687B0",
-  "name_src": "addr",
+  "name": "CDummyMesh_Destroy",
+  "name_src": "agent",
   "votes": {},
   "ret": "void**",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "CDummyMesh* self, void* , char freeFlag",
+  "sig_src": "impl",
+  "file": "src/auto/007687b0.cpp"
  },
  "00768800": {
-  "name": "sub_768800",
-  "name_src": "addr",
-  "votes": {},
+  "name": "InsertRecord24At",
+  "name_src": "vote",
+  "votes": {
+   "InsertRecord24At": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char* a1, unsigned int a3, uint32_t* arg8",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00768ae0": {
-  "name": "sub_768AE0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "DummyList_Reserve",
+  "name_src": "vote",
+  "votes": {
+   "DummyList_Reserve": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, unsigned int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00768bf0": {
-  "name": "sub_768BF0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "InsertElement24_768BF0",
+  "name_src": "agent",
+  "votes": {
+   "S_00768bf0_InsertElement24": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, char* a3, uint32_t* a4",
-  "sig_src": "abi"
+  "params": "S_00768bf0* self, void* , uint32_t* result, char* position, uint32_t* value",
+  "sig_src": "impl",
+  "file": "src/auto/00768bf0.cpp"
  },
  "00768c60": {
-  "name": "sub_768C60",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "S_00768bf0_AppendElement24",
+  "name_src": "agent",
+  "votes": {
+   "DummyList_PushEntry": 1
+  },
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "S_00768bf0* self, void* , std::uint32_t* element",
+  "sig_src": "impl",
+  "file": "src/auto/00768c60.cpp"
  },
  "00768cf0": {
-  "name": "sub_768CF0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CDummyMesh_LoadDummies",
+  "name_src": "agent",
+  "votes": {
+   "CDummyMesh_ParseDummiesBlock": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "CDummyMesh* self, void* , std::uint8_t* levelNode",
+  "sig_src": "impl",
+  "file": "src/auto/00768cf0.cpp"
  },
  "00768e10": {
-  "name": "DummyMesh_Construct",
-  "name_src": "vote",
+  "name": "CDummyMesh_Construct",
+  "name_src": "agent",
   "votes": {
    "DummyMesh_Construct": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00768e10.cpp"
  },
  "00768e30": {
-  "name": "sub_768E30",
-  "name_src": "addr",
+  "name": "CDummyMesh_LoadDummiesIfNonZero",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint8_t* a2, int a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint8_t* a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/00768e30.cpp"
  },
  "00768e50": {
-  "name": "sub_768E50",
-  "name_src": "addr",
+  "name": "InputBindings_IsFirstKeyBelowSecond",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2",
-  "sig_src": "abi"
+  "params": "void* first, void* second",
+  "sig_src": "impl",
+  "file": "src/auto/00768e50.cpp"
  },
  "00768e70": {
   "name": "GetGlobalValue_768E70",
@@ -178674,64 +178702,126 @@
   "file": "src/auto/00768e70.cpp"
  },
  "00768e80": {
-  "name": "sub_768E80",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_00768e80_GrowImpl",
+  "name_src": "agent",
+  "votes": {
+   "GrowRecordBuffer": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_00768e80* self, void* , int extra",
+  "sig_src": "impl",
+  "file": "src/auto/00768e80.cpp"
  },
  "00768f30": {
-  "name": "sub_768F30",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "InputBindings_CopyDwordRangeIfNotNull",
+  "name_src": "agent",
+  "votes": {
+   "InputBindings_ActionHelper_768F30": 1,
+   "InputBindings_CreateActionEntry": 1
+  },
+  "ret": "std::uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint32_t* source, std::uint32_t* sourceEnd, std::uint32_t* destination, int , int",
+  "sig_src": "impl",
+  "file": "src/auto/00768f30.cpp"
  },
  "00768fa0": {
-  "name": "sub_768FA0",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "CopyDwordArrayWithContext_768FA0",
+  "name_src": "agent",
+  "votes": {
+   "CopyDwordIntoSlot_768FA0": 1
+  },
+  "ret": "std::uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, int a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint32_t* destination, std::uint32_t count, const std::uint32_t* source, [[maybe_unused]] int unusedArg4, [[maybe_unused]] void* context",
+  "sig_src": "impl",
+  "file": "src/auto/00768fa0.cpp"
+ },
+ "00769010": {
+  "name": "SortThreeByComparator",
+  "name_src": "agent",
+  "votes": {
+   "SortMedian3": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int* firstSlot, int* secondSlot, int* thirdSlot, SortComparatorFn compare",
+  "sig_src": "impl",
+  "file": "src/auto/00769010.cpp"
+ },
+ "00769070": {
+  "name": "InputBindings_HeapSiftUp",
+  "name_src": "agent",
+  "votes": {
+   "Heap_SiftUpToPosition": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int heapArray, int holeIndex, int topIndex, int value, bool (__cdecl* compare)(int, int)",
+  "sig_src": "impl",
+  "file": "src/auto/00769070.cpp"
  },
  "007690d0": {
-  "name": "sub_7690D0",
-  "name_src": "addr",
+  "name": "InputBindings_RotateDwords",
+  "name_src": "agent",
+  "votes": {
+   "InputBindings_RotateRange": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int* first, int* middle, int* last",
+  "sig_src": "impl",
+  "file": "src/auto/007690d0.cpp"
+ },
+ "00769180": {
+  "name": "S_00768e80_AppendRecord",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "uint32_t*",
+  "conv": "__fastcall",
+  "params": "S_00768e80* self, void* , uint32_t* source, int growCount",
+  "sig_src": "impl",
+  "file": "src/auto/00769180.cpp"
+ },
+ "007691d0": {
+  "name": "InputBindings_SortMedian",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "int* first, int* mid, int* last, SortPredicateFn pred",
+  "sig_src": "impl",
+  "file": "src/auto/007691d0.cpp"
  },
- "00769180": {
-  "name": "sub_769180",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, int a3",
-  "sig_src": "abi"
+ "00769280": {
+  "name": "Heap_SiftDownWithComparator",
+  "name_src": "agent",
+  "votes": {
+   "InputBindings_SiftDownHeap": 1,
+   "InputBindings_AdjustHeap": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int a1, int a2, int a3, int a4, HeapElementCompareFn a5",
+  "sig_src": "impl",
+  "file": "src/auto/00769280.cpp"
  },
  "007692f0": {
   "name": "MissionScript_FindExpressionDefinition",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MissionScript_FindExpressionDefinition": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* String1",
-  "sig_src": "vote"
+  "params": "uint32_t* self, void* , char* String1",
+  "sig_src": "impl",
+  "file": "src/auto/007692f0.cpp"
  },
  "00769360": {
   "name": "MissionScript_GetNodeDefinition",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MissionScript_GetCommandDefinition": 1,
    "GlobalTable_LookupRecord": 1,
@@ -178740,8 +178830,22 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , uint32_t keyToFind",
+  "sig_src": "impl",
+  "file": "src/auto/00769360.cpp"
+ },
+ "007693c0": {
+  "name": "InputBindings_Init",
+  "name_src": "agent",
+  "votes": {
+   "S_00768e80_Initialize": 1,
+   "ConstructActionBinding": 1
+  },
+  "ret": "S_00768e80*",
+  "conv": "__fastcall",
+  "params": "S_00768e80* self, void* , uint32_t arg0, uint32_t a3, uint32_t a4, uint32_t a5, int a6, int a7, uint32_t* a8, uint32_t* a9, uint32_t* a10, uint32_t* a2, uint32_t* a12",
+  "sig_src": "impl",
+  "file": "src/auto/007693c0.cpp"
  },
  "00769550": {
   "name": "sub_769550",
@@ -178753,71 +178857,91 @@
   "sig_src": "abi"
  },
  "00769700": {
-  "name": "sub_769700",
-  "name_src": "addr",
+  "name": "InputBindings_FindActionIndex",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int actionKey",
+  "sig_src": "impl",
+  "file": "src/auto/00769700.cpp"
  },
  "00769760": {
   "name": "MissionScript_LookupSymbolId",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MissionScript_LookupSymbolId": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* String1",
-  "sig_src": "vote"
+  "params": "void* self, void* , char* String1",
+  "sig_src": "impl",
+  "file": "src/auto/00769760.cpp"
  },
  "007697d0": {
   "name": "MissionScript_LookupMaskedEntry",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MissionScript_LookupMaskedEntry": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int index",
+  "sig_src": "impl",
+  "file": "src/auto/007697d0.cpp"
  },
  "007697f0": {
-  "name": "sub_7697F0",
-  "name_src": "addr",
+  "name": "InputBindings_ForwardToActionHelper",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a1, uint32_t* a2, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint32_t* a1, uint32_t* a2, uint32_t* a3",
+  "sig_src": "impl",
+  "file": "src/auto/007697f0.cpp"
  },
  "00769810": {
-  "name": "sub_769810",
-  "name_src": "addr",
+  "name": "InputBindings_ForwardToCreateActionEntry",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a1, uint32_t* a2, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint32_t* a1, uint32_t* a2, uint32_t* a3",
+  "sig_src": "impl",
+  "file": "src/auto/00769810.cpp"
+ },
+ "00769840": {
+  "name": "Sort_Partition",
+  "name_src": "vote",
+  "votes": {
+   "Sort_Partition": 1
+  },
+  "ret": "int**",
+  "conv": "__cdecl",
+  "params": "int** out, int* first, int* last, SortPredicate pred",
+  "sig_src": "vote"
  },
  "00769a20": {
-  "name": "sub_769A20",
-  "name_src": "addr",
+  "name": "InputBindings_MakeHeap",
+  "name_src": "agent",
+  "votes": {
+   "Sort_HeapSortBuild": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int first, int last, int comparer",
+  "sig_src": "impl",
+  "file": "src/auto/00769a20.cpp"
+ },
+ "00769a60": {
+  "name": "InputBindings_ClearBindingList",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3, int a4, int a5",
-  "sig_src": "abi"
- },
- "00769a60": {
-  "name": "sub_769A60",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "char",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00769a60.cpp"
  },
  "00769b10": {
   "name": "sub_769B10",
@@ -178828,23 +178952,60 @@
   "params": "void* self, void* edx, uint32_t* a1, int a2, uint32_t* a3",
   "sig_src": "abi"
  },
+ "00769b40": {
+  "name": "InputBindings_InsertionSort",
+  "name_src": "agent",
+  "votes": {
+   "Sort_InsertionSort": 1
+  },
+  "ret": "int*",
+  "conv": "__cdecl",
+  "params": "int a1, int* last, CompareFn less",
+  "sig_src": "impl",
+  "file": "src/auto/00769b40.cpp"
+ },
  "00769bf0": {
-  "name": "sub_769BF0",
-  "name_src": "addr",
+  "name": "ReleaseInputBindingsInstance",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/00769bf0.cpp"
+ },
+ "00769c20": {
+  "name": "InputBindings_SortHeap",
+  "name_src": "agent",
+  "votes": {
+   "Sort_HeapSortFinish": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "uint32_t* first, int last, InputBindingsComparator comp",
+  "sig_src": "impl",
+  "file": "src/auto/00769c20.cpp"
+ },
+ "00769c70": {
+  "name": "InputBindings_IntroSort",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int* first, int* last, int depth, SortPredicate pred",
+  "sig_src": "impl",
+  "file": "src/auto/00769c70.cpp"
  },
  "00769d60": {
-  "name": "sub_769D60",
-  "name_src": "addr",
-  "votes": {},
+  "name": "InsertDwordElementsAt_769D60",
+  "name_src": "vote",
+  "votes": {
+   "InsertDwordElementsAt_769D60": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, uint32_t* Src, unsigned int a3, uint32_t* a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00769fc0": {
   "name": "sub_769FC0",
@@ -178856,85 +179017,100 @@
   "sig_src": "abi"
  },
  "0076a0b0": {
-  "name": "sub_76A0B0",
-  "name_src": "addr",
+  "name": "InputBindings_CopyBindingRange",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3",
-  "sig_src": "abi"
+  "params": "int sourceBegin, int sourceEnd, int destinationBegin",
+  "sig_src": "impl",
+  "file": "src/auto/0076a0b0.cpp"
  },
  "0076a140": {
-  "name": "sub_76A140",
-  "name_src": "addr",
-  "votes": {},
+  "name": "AppendBufferedDword",
+  "name_src": "agent",
+  "votes": {
+   "CommitResultPointer": 1,
+   "WriteResultSlot": 1,
+   "S_0076a140_StoreResultPointer": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "S_0076a140* self, void* , uint32_t* sourceValue",
+  "sig_src": "impl",
+  "file": "src/auto/0076a140.cpp"
  },
  "0076a1b0": {
-  "name": "sub_76A1B0",
-  "name_src": "addr",
+  "name": "InputBindings_AllocAndStoreBinding",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4, int a5, int a6, int* a7",
-  "sig_src": "abi"
+  "params": "S_0076a140* self, void* , int a2, int a3, int a4, int a5, int a6, int* a7",
+  "sig_src": "impl",
+  "file": "src/auto/0076a1b0.cpp"
  },
  "0076a230": {
-  "name": "sub_76A230",
-  "name_src": "addr",
+  "name": "InputBindings_CreateAndCommitHandle",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4, int a5, int a6, int a7, int* a8",
-  "sig_src": "abi"
+  "params": "S_0076a140* self, void* , int a2, int a3, int a4, int a5, int a6, int a7, int* a8",
+  "sig_src": "impl",
+  "file": "src/auto/0076a230.cpp"
  },
  "0076a2c0": {
-  "name": "sub_76A2C0",
-  "name_src": "addr",
+  "name": "InputBindings_CreateBindingAndStore",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4, int a5, int a6, int a7, uint32_t* a8, int* a9",
-  "sig_src": "abi"
+  "params": "S_0076a140* self, void* , int a2, int a3, int a4, int a5, int a6, int a7, uint32_t* a8, int* a9",
+  "sig_src": "impl",
+  "file": "src/auto/0076a2c0.cpp"
  },
  "0076a350": {
-  "name": "sub_76A350",
-  "name_src": "addr",
+  "name": "S_0076a140_BuildActionBinding",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4, int a5, int a6, int a7, uint32_t* a8, uint32_t* a9, int* a10",
-  "sig_src": "abi"
+  "params": "S_0076a140* self, void* , int a2, int a3, int a4, int a5, int a6, int a7, uint32_t* a8, uint32_t* a9, int* a10",
+  "sig_src": "impl",
+  "file": "src/auto/0076a350.cpp"
  },
  "0076a3e0": {
-  "name": "sub_76A3E0",
-  "name_src": "addr",
+  "name": "S_0076a140_CreateAndStoreAction",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4, int a5, int a6, int a7, uint32_t* a8, uint32_t* a9, uint32_t* a10, int* a11",
-  "sig_src": "abi"
+  "params": "S_0076a140* self, void* , int a2, int a3, int a4, int a5, int a6, int a7, uint32_t* a8, uint32_t* a9, uint32_t* a10, void* a11",
+  "sig_src": "impl",
+  "file": "src/auto/0076a3e0.cpp"
  },
  "0076a470": {
-  "name": "sub_76A470",
-  "name_src": "addr",
+  "name": "S_0076a140_CreateBindingObject",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4, int a5, int a6, int a7, uint32_t* a8, uint32_t* a9, uint32_t* a10, uint32_t* a11, int* a12",
-  "sig_src": "abi"
+  "params": "S_0076a140* self, void* , int a2, int a3, int a4, int a5, int a6, int a7, uint32_t* a8, uint32_t* a9, uint32_t* a10, uint32_t* a11, void* a12",
+  "sig_src": "impl",
+  "file": "src/auto/0076a470.cpp"
  },
  "0076a4f0": {
-  "name": "sub_76A4F0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "InputBindings_SetActionIndex",
+  "name_src": "agent",
+  "votes": {
+   "ScriptRecords_EraseRange": 1
+  },
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int* a2, int a3, int a4",
-  "sig_src": "abi"
+  "params": "S_0076a4f0* self, void* , int* outputSlot, int newIndex, int currentIndex",
+  "sig_src": "impl",
+  "file": "src/auto/0076a4f0.cpp"
  },
  "0076a540": {
   "name": "sub_76A540",
@@ -178946,52 +179122,59 @@
   "sig_src": "abi"
  },
  "007702b0": {
-  "name": "sub_7702B0",
-  "name_src": "addr",
+  "name": "InputBindings_GetSingleton",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/007702b0.cpp"
  },
  "007702e0": {
-  "name": "sub_7702E0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "ScriptRecords_Resize",
+  "name_src": "agent",
+  "votes": {
+   "InputBindings_ApplyActionEntry": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int a2, char a3, int a4, int a5, int a6, int a7, int a8, int a9, void* Block, int a11, int a12, int a13, int a14, unsigned int a15, int a16, int a17, int a18, int a19",
-  "sig_src": "abi"
+  "params": "S_0076a4f0* self, void* , unsigned int newCount, char fillValue, int a4, int a5, int a6, int a7, int a8, int a9, void* block, int a11, int a12, int a13, int a14, unsigned int capacity, int a16, int a17, int a18, int a19",
+  "sig_src": "impl",
+  "file": "src/auto/007702e0.cpp"
  },
  "00770390": {
-  "name": "sub_770390",
-  "name_src": "addr",
+  "name": "InputBindings_BindActionWithDefaults",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int a2",
-  "sig_src": "abi"
+  "params": "S_0076a4f0* self, void* , unsigned int actionId",
+  "sig_src": "impl",
+  "file": "src/auto/00770390.cpp"
  },
  "007703e0": {
-  "name": "sub_7703E0",
-  "name_src": "addr",
+  "name": "InputBindings_LayoutChildComponents",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "S_00769550* self, void* , S_00692b80* a2",
+  "sig_src": "impl",
+  "file": "src/auto/007703e0.cpp"
  },
  "00770440": {
-  "name": "InitializeSceneVariables",
-  "name_src": "vote",
+  "name": "S_00769550_InitSceneVariables",
+  "name_src": "agent",
   "votes": {
    "InitializeSceneVariables": 1,
    "MissionScript_ConstructVariables": 1
   },
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, void* a3",
-  "sig_src": "vote"
+  "params": "S_00769550* self, void* , int a2, void* a3",
+  "sig_src": "impl",
+  "file": "src/auto/00770440.cpp"
  },
  "00770470": {
   "name": "sub_770470",
@@ -190456,7 +190639,7 @@
   "name": "___CxxFrameHandler",
   "name_src": "ida",
   "votes": {
-   "___CxxFrameHandler": 76,
+   "___CxxFrameHandler": 79,
    "OriginalCxxFrameHandler": 1
   },
   "ret": "int",
@@ -190540,7 +190723,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 93
+   "RethrowCppException": 97
   },
   "ret": "void",
   "conv": "__stdcall",
@@ -190984,7 +191167,7 @@
   "name": "__stricmp",
   "name_src": "ida",
   "votes": {
-   "__stricmp": 16
+   "__stricmp": 18
   },
   "ret": "int",
   "conv": "__cdecl",
