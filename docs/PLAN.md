@@ -70,11 +70,18 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
    full baseline regression smoke between waves (`wave --next`: m45AAF0 = script_commands, game_data_defs, hud, scene_loader,
    char_action_fsm, ...). hud only had a 12-function test batch (the loop's first end-to-end run); the module
    itself is 15/150 functions (1.4%) and still needs its wave.
-2. **queue/** (55 items): the 8 menu functions the first verifier run quarantined (they broke the FR01 scene start;
+2. **Diff tier 3** (record/replay) on the second play copy /mnt/e/dev/csf-play-dev (`CSF_PLAY=...`; big data files
+   hard-linked to csf-play): the original runs with its callees recorded (callee, this, args, return), ours runs
+   against the recording (CSF_FUNC slots -> replayer), compare call sequence + args + writes + return. Targets the
+   847 executed-but-not-diffed functions (virtual calls 862 / side-effect callees 513 blocked tier 1-2). Callees
+   writing memory the function then reads -> "inconclusive" in v1.
+3. **Manual playtest at ~25% of game code** (user): the monitor shows live coverage (Progress `game` line, Areas
+   tab table: hit / never run before); afterwards `verify.py ingest` records the hits.
+4. **queue/** (55 items): the 8 menu functions the first verifier run quarantined (they broke the FR01 scene start;
    the menu wave had only smoked the menu tour), 47 earlier escalations.
-3. **Types for the next waves**: field names of CMenuScreen, TCharTask, TAiState, CCharWeaponFsm; the engine family
+5. **Types for the next waves**: field names of CMenuScreen, TCharTask, TAiState, CCharWeaponFsm; the engine family
    0x860178 and the 0x82E598 task subfamily (captain family at wave prep covers unnamed classes).
-4. **Verification depth**: `verifier.py --full` over everything once (menu tour + savegame per group), then review
+6. **Verification depth**: `verifier.py --full` over everything once (menu tour + savegame per group), then review
    samples per module (`review.py sample`) to get a defect rate for the 1278 gate-only functions.
 
 ## Backlog
