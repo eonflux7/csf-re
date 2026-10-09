@@ -909,11 +909,16 @@ def crash_suspects(out, batch):
     Most likely first; [] when the crash is elsewhere (game code, no report)."""
     # the log is CRLF and the DLL base is printed with %p (upper case): both made this miss every crash until
     # 2026-10-08, so every bisect fell back to the blind binary search
-    m = re.search(r"CRASH code=\w+ eip=([0-9a-f]{8}).*?\n\s*eip module [0-9a-f]+ \(ours ([0-9a-f]{8})\); stack:\n"
+    m = re.search(r"CRASH code=\w+ eip=([0-9a-f]{8}).*?\n\s*eip module ([0-9a-f]+) \(ours ([0-9a-f]{8})\); stack:\n"
                   r"((?:[ \t]+[0-9a-f]{8}(?: [0-9a-f]{8})*\n)*)", out.replace("\r", ""), re.I)
     if not m or not os.path.exists(DLL_MAP):
         return []
-    base, pref, syms = int(m.group(2), 16), 0x10000000, []
+    if int(m.group(2), 16) == 0:
+        # EIP in no module: a smashed return address, so the stack is corrupt and the return addresses left on it
+        # are stale frames of functions that already returned fine (2026-10-09: four innocent script handlers
+        # named in a row, bisect gave up). The blind binary search is the reliable path here.
+        return []
+    base, pref, syms = int(m.group(3), 16), 0x10000000, []
     for l in open(DLL_MAP, errors="replace"):
         if l.strip().startswith("Preferred load address is"):
             pref = int(l.split()[-1], 16)
@@ -921,7 +926,7 @@ def crash_suspects(out, batch):
         if f:
             syms.append((int(f.group(1), 16), f.group(2)))
     syms.sort()
-    addrs = [int(m.group(1), 16)] + [int(w, 16) for w in m.group(3).split()]
+    addrs = [int(m.group(1), 16)] + [int(w, 16) for w in m.group(4).split()]
     out_eas, want = [], set(batch)
     for a in addrs:
         va = a - base + pref
