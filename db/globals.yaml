@@ -2,7 +2,7 @@
 - {addr: 0x0082D05C, name: g_pfnSleep, type: SleepFn, uses: 1, src: auto}
 - {addr: 0x0082D094, name: g_pfnGetFileSize, type: GetFileSizeFn, uses: 1, src: auto}
 - {addr: 0x0082D23C, name: g_ReleaseMutex, type: ReleaseMutexFunction, uses: 1, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 20, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 24, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 4, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
 - {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 16, src: auto}
@@ -25,12 +25,12 @@
 - {addr: 0x0082E118, name: g_fIntroVideoDuration, type: float, uses: 2, src: auto}
 - {addr: 0x0082E1E4, name: g_fRotationWrapStep, type: float, uses: 1, src: auto}
 - {addr: 0x0082E25C, name: g_flt_0082E25C, type: float, uses: 2, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 24, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 25, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E958, name: g_TParadoString, type: char, uses: 1, src: auto}
 - {addr: 0x0082F318, name: g_TEndString, type: const char, uses: 1, src: auto}
 - {addr: 0x0082FACC, name: g_HudNegativeHalfPi, type: float, uses: 1, src: auto}
 - {addr: 0x0082FAD0, name: g_TransitionHalfPi, type: float, uses: 2, src: auto}
-- {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 8, src: auto}
+- {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 9, src: auto}
 - {addr: 0x0082FEBC, name: g_LayoutInset, type: float, uses: 5, src: auto, alt: [g_VerticalInset]}
 - {addr: 0x0083042C, name: g_VtblCMenuScreenBase, type: uint8_t, uses: 9, src: auto}
 - {addr: 0x00830438, name: off_830438, type: uint8_t, uses: 1, src: auto}
@@ -69,6 +69,7 @@
 - {addr: 0x00841C80, name: g_VtblCMenuLanguageSecondary, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x00842220, name: g_VtblCMenuLoadGame, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00842280, name: g_VtblCMenuLoadGameSub, type: uint8_t, uses: 1, src: auto}
+- {addr: 0x00842678, name: g_ClearField0010Slot, type: void*, uses: 1, src: auto}
 - {addr: 0x00842DB8, name: g_VtblCMenuMissionInfoSecondary, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00843284, name: g_PreviewRotationScale, type: float, uses: 1, src: auto}
 - {addr: 0x00843288, name: g_PreviewAnimations, type: PreviewAnimationTable, uses: 2, src: auto}
@@ -81,10 +82,13 @@
 - {addr: 0x00843A90, name: g_VtableCMenuProfilesPC, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00843B30, name: g_VtblCMenuSaveGame, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00843B70, name: g_VtblCMenuSaveGameSubObject, type: uint8_t, uses: 1, src: auto}
-- {addr: 0x00843C14, name: g_RasterByteScale, type: float, uses: 3, src: auto}
+- {addr: 0x00843C14, name: g_RasterByteScale, type: float, uses: 4, src: auto}
 - {addr: 0x00845368, name: g_vtbl_00845368, type: uint8_t, uses: 2, src: auto}
 - {addr: 0x008453A4, name: g_vtbl_8453A4, type: uint8_t, uses: 2, src: auto}
+- {addr: 0x008455B0, name: g_PlayerInfoClearField0010Slot, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x00845780, name: g_ClearField0010Slot, type: void*, uses: 1, src: auto}
 - {addr: 0x00845B38, name: g_MenuAccountsPostInitialize, type: void*, uses: 1, src: auto}
+- {addr: 0x00845C30, name: g_ClearField0010Slot, type: ClearFieldMethod, uses: 1, src: auto}
 - {addr: 0x00846178, name: g_UnitFactorUpperBound, type: float, uses: 1, src: auto}
 - {addr: 0x0085E684, name: g_NumberFormattingMode, type: int, uses: 4, src: auto, alt: [g_MissionNumberFormattingMode]}
 - {addr: 0x0085FF6C, name: g_Commandos3DGameGatheringVtable, type: void*, uses: 1, src: auto}
@@ -1214,7 +1218,7 @@
 - {addr: 0x008BB738, name: g_Value_8BB738, type: int, uses: 1, src: auto}
 - {addr: 0x008BBB28, name: g_Value8BBB28, type: int, uses: 1, src: auto}
 - {addr: 0x008BBF2C, name: g_Value_8bbf2c, type: int32_t, uses: 1, src: auto}
-- {addr: 0x008BBF34, name: g_ObjectValueTotal, type: 'std::uint32_t', uses: 1, src: auto}
+- {addr: 0x008BBF34, name: g_ObjectValueTotal, type: 'std::uint32_t', uses: 2, src: auto}
 - {addr: 0x008BBF8C, name: g_Block8BBF8C, type: void*, uses: 2, src: auto, alt: [g_QuadVertexBuffer]}
 - {addr: 0x008BBF90, name: g_Block8BBF90, type: void*, uses: 2, src: auto, alt: [g_QuadIndexBuffer]}
 - {addr: 0x008BC098, name: g_dword_8BC098, type: uint32_t, uses: 1, src: auto}

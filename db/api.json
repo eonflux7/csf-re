@@ -9615,7 +9615,7 @@
   "name": "Hud_RenderWidgetAtScaledRect",
   "name_src": "agent",
   "votes": {
-   "Hud_RenderWidgetAtScaledRect": 9,
+   "Hud_RenderWidgetAtScaledRect": 10,
    "Hud_ProcessChild": 1,
    "Hud_DrawWidgetFromEdi": 1,
    "Hud_RenderWidgetNode": 1,
@@ -10122,6 +10122,7 @@
   "name": "CHud_LookupValueByKey",
   "name_src": "agent",
   "votes": {
+   "CHud_LookupValueByKey": 1,
    "Hud_GetOverlayIcon": 1
   },
   "ret": "int",
@@ -10155,12 +10156,13 @@
  },
  "00432ee0": {
   "name": "CHud_RenderAnchoredMessages",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "CHud* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00432ee0.cpp"
  },
  "00432f70": {
   "name": "S_0042eb60_UpdateSceneMenuHighlight",
@@ -10652,13 +10654,15 @@
   "sig_src": "abi"
  },
  "00436c50": {
-  "name": "sub_436C50",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SetPanelValue",
+  "name_src": "vote",
+  "votes": {
+   "SetPanelValue": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00436c90": {
   "name": "sub_436C90",
@@ -15977,7 +15981,7 @@
   "name": "Hud_GetSceneState",
   "name_src": "vote",
   "votes": {
-   "Hud_GetSceneState": 1
+   "Hud_GetSceneState": 2
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -21832,7 +21836,7 @@
   "votes": {
    "CollectLinkedObjectPointers": 1
   },
-  "ret": "int",
+  "ret": "bool",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2, void* a3",
   "sig_src": "vote"
@@ -55728,7 +55732,7 @@
   "name": "Nullsub_506AC0",
   "name_src": "agent",
   "votes": {
-   "Nullsub_506AC0": 25
+   "Nullsub_506AC0": 26
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -55767,7 +55771,7 @@
   "name": "GetGlobalValue_8B056C",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8B056C": 31
+   "GetGlobalValue_8B056C": 32
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -62439,7 +62443,7 @@
   "name": "GetGlobalValue_521BB0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_521BB0": 57
+   "GetGlobalValue_521BB0": 58
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -62858,7 +62862,7 @@
   "name": "GlobalSetValue_5231D0",
   "name_src": "vote",
   "votes": {
-   "GlobalSetValue_5231D0": 20
+   "GlobalSetValue_5231D0": 21
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -64156,7 +64160,7 @@
  },
  "00528980": {
   "name": "CMenuMessageBox_ResetControlsAndReleaseRaster",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -64974,7 +64978,7 @@
  },
  "0052cc70": {
   "name": "MenuProgressInput_UpdateBlinkColor",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
@@ -68997,7 +69001,7 @@
   "name": "MenuMissionInfo_IsDefaultDestinationFlagSet",
   "name_src": "agent",
   "votes": {
-   "MenuMissionInfo_IsDefaultDestinationFlagSet": 1
+   "MenuMissionInfo_IsDefaultDestinationFlagSet": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -69019,7 +69023,7 @@
   "name": "CMenuMissionInfo_EnterPanelState",
   "name_src": "agent",
   "votes": {
-   "CMenuMissionInfo_EnterPanelState": 7
+   "CMenuMissionInfo_EnterPanelState": 8
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -69077,13 +69081,15 @@
   "sig_src": "abi"
  },
  "0053d910": {
-  "name": "sub_53D910",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CMenuMissionInfo_UpdatePanels",
+  "name_src": "vote",
+  "votes": {
+   "CMenuMissionInfo_UpdatePanels": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0053daa0": {
   "name": "CMenuMissionInfo_ResetPanels",
@@ -69109,7 +69115,9 @@
  "0053dbf0": {
   "name": "CMenuMissionInfo_ClosePanelAndDeactivate",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuMissionInfo_ClosePanelAndDeactivate": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "CMenuMissionInfo* self, void*",
@@ -69137,13 +69145,14 @@
   "sig_src": "abi"
  },
  "0053dde0": {
-  "name": "sub_53DDE0",
-  "name_src": "addr",
+  "name": "CMenuMissionInfo_SetContextAndRefreshPanels",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2",
-  "sig_src": "abi"
+  "params": "CMenuMissionInfo* self, void* , char* context",
+  "sig_src": "impl",
+  "file": "src/auto/0053dde0.cpp"
  },
  "0053de30": {
   "name": "sub_53DE30",
@@ -69246,7 +69255,7 @@
   "name": "CMenuMissionInfo_ProcessPendingPageStep",
   "name_src": "agent",
   "votes": {
-   "CMenuMissionInfo_ProcessPendingPageStep": 1
+   "CMenuMissionInfo_ProcessPendingPageStep": 2
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -69258,7 +69267,7 @@
   "name": "CMenuMissionInfo_TryAdvanceToNextPage",
   "name_src": "agent",
   "votes": {
-   "CMenuMissionInfo_TryAdvanceToNextPage": 1
+   "CMenuMissionInfo_TryAdvanceToNextPage": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -69290,7 +69299,7 @@
  },
  "0053fdb0": {
   "name": "C_0085ec18_HandleMenuInput",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -69299,13 +69308,14 @@
   "file": "src/auto/0053fdb0.cpp"
  },
  "0053ff60": {
-  "name": "sub_53FF60",
-  "name_src": "addr",
+  "name": "CMenuMissionInfo_HandlePanelEvent",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a1, int a3",
-  "sig_src": "abi"
+  "params": "CMenuMissionInfo* self, void* , char* command, int",
+  "sig_src": "impl",
+  "file": "src/auto/0053ff60.cpp"
  },
  "00540030": {
   "name": "CMenuMissionInfo_DispatchCommand",
@@ -70547,7 +70557,7 @@
  },
  "00544130": {
   "name": "CMenuGameOptionsPC_RefreshMouseSlider",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -71795,13 +71805,14 @@
   "file": "src/auto/005493d0.cpp"
  },
  "00549450": {
-  "name": "sub_549450",
-  "name_src": "addr",
+  "name": "CMenuVideoAdvanced_Construct",
+  "name_src": "agent",
   "votes": {},
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "CMenuVideoAdvanced* self, void* , int argument",
+  "sig_src": "impl",
+  "file": "src/auto/00549450.cpp"
  },
  "005494d0": {
   "name": "CMenuVideoOptionsInGame_Construct",
@@ -76667,13 +76678,14 @@
   "sig_src": "abi"
  },
  "00564b80": {
-  "name": "sub_564B80",
-  "name_src": "addr",
+  "name": "MenuAccounts_ResetState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/00564b80.cpp"
  },
  "00564bc0": {
   "name": "CMenuAccounts_ResolveListaCuentasPanel",
@@ -121499,7 +121511,7 @@
   "name_src": "opus",
   "votes": {
    "HudWidget_MemFreeDebug": 1,
-   "Mem_FreeDebug": 122,
+   "Mem_FreeDebug": 123,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
   },
@@ -153160,7 +153172,7 @@
   "name": "C_00830438_Construct",
   "name_src": "vote",
   "votes": {
-   "C_00830438_Construct": 28,
+   "C_00830438_Construct": 29,
    "MenuScenarioSelect_InitializeEmbeddedSubobject": 1,
    "CMenuScreen_ConstructSubobject": 1,
    "InitEmbeddedSubobject": 1,
@@ -154139,7 +154151,9 @@
  "00714d30": {
   "name": "CGuiListBoxBase_ProcessHeaderAndColumnText",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CGuiListBoxBase_ProcessHeaderAndColumnText": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "CGuiListBoxBase* self, void*",
@@ -154739,7 +154753,7 @@
  },
  "00717d90": {
   "name": "CGuiListBoxBase_ScaleLayout",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "std::uint32_t",
   "conv": "__fastcall",
@@ -155390,7 +155404,7 @@
  },
  "00718c90": {
   "name": "GuiControl_RoundToNearestInteger",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "std::uint64_t",
   "conv": "__cdecl",
@@ -155411,7 +155425,7 @@
   "file": "src/auto/00718cc0.cpp"
  },
  "00718d60": {
-  "name": "CGuiControl_SetPosition_718D60",
+  "name": "CGuiControl_SetPosition",
   "name_src": "agent",
   "votes": {},
   "ret": "int",
@@ -155526,7 +155540,7 @@
   "name": "CGuiControl_HandleMouseMovement",
   "name_src": "agent",
   "votes": {
-   "CGuiControl_HandleMouseMovement": 5
+   "CGuiControl_HandleMouseMovement": 6
   },
   "ret": "std::uint8_t",
   "conv": "__fastcall",
@@ -155548,7 +155562,9 @@
  "00719810": {
   "name": "CGuiControl_UpdateAndRenderDebugRect",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CGuiControl_UpdateAndRenderDebugRect": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "CGuiControl* self, void*",
@@ -155556,8 +155572,8 @@
   "file": "src/auto/00719810.cpp"
  },
  "007198a0": {
-  "name": "CGuiControl_SetPosition_7198A0",
-  "name_src": "vote",
+  "name": "CGuiControl_ScalePositionAndSize",
+  "name_src": "agent",
   "votes": {
    "CGuiControl_SetPosition_7198A0": 6
   },
@@ -155580,15 +155596,16 @@
   "file": "src/auto/007199b0.cpp"
  },
  "00719a20": {
-  "name": "CGuiListBoxBase_PrepareListRendering",
-  "name_src": "vote",
+  "name": "CGuiControl_PrepareListRendering",
+  "name_src": "agent",
   "votes": {
    "CGuiListBoxBase_PrepareListRendering": 6
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "CGuiControl* self, void* edx",
-  "sig_src": "vote"
+  "params": "CGuiControl* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00719a20.cpp"
  },
  "00719a40": {
   "name": "CGuiControl_FireEvent",
@@ -157479,8 +157496,8 @@
   "file": "src/auto/007223b0.cpp"
  },
  "007223e0": {
-  "name": "DeleteAtTextPosition",
-  "name_src": "vote",
+  "name": "CGuiEdit_DeleteAtTextPosition",
+  "name_src": "agent",
   "votes": {
    "DeleteAtTextPosition": 1
   },
@@ -157583,8 +157600,8 @@
   "file": "src/auto/007227d0.cpp"
  },
  "00722880": {
-  "name": "IsEditKeyAllowed",
-  "name_src": "vote",
+  "name": "CGuiEdit_HandleEditKey",
+  "name_src": "agent",
   "votes": {
    "IsEditKeyAllowed": 2
   },
@@ -157647,13 +157664,14 @@
   "file": "src/auto/00722b80.cpp"
  },
  "00722c20": {
-  "name": "sub_722C20",
-  "name_src": "addr",
+  "name": "CGuiListBox_ProcessHeaderColumnsAndRowText",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "CGuiListBox* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00722c20.cpp"
  },
  "00722c40": {
   "name": "CGuiListBox_DrawRowText",
@@ -158223,8 +158241,8 @@
   "file": "src/auto/00724090.cpp"
  },
  "00724120": {
-  "name": "ConstructRowCells",
-  "name_src": "vote",
+  "name": "S_007238e0_ConstructRowCells",
+  "name_src": "agent",
   "votes": {
    "ConstructRowCells": 1
   },
@@ -159425,7 +159443,7 @@
  },
  "007271a0": {
   "name": "C_008655e8_UpdateTextureValueTotal",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -159487,15 +159505,16 @@
   "file": "src/auto/00727320.cpp"
  },
  "00727370": {
-  "name": "ForwardArgumentsToProcessor_727370",
-  "name_src": "vote",
+  "name": "GuiFontRender_ClearStringRange",
+  "name_src": "agent",
   "votes": {
    "ForwardArgumentsToProcessor_727370": 3
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int firstArgument, int secondArgument, std::uintptr_t context, int repeatedArgument",
-  "sig_src": "vote"
+  "params": "int begin, int end",
+  "sig_src": "impl",
+  "file": "src/auto/00727370.cpp"
  },
  "007273c0": {
   "name": "CopyStringRecordsBackward_7273C0",
@@ -160778,7 +160797,7 @@
  },
  "0072b930": {
   "name": "CGuiPanel_SetPosition",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -161313,7 +161332,7 @@
   "name": "CGuiSlider_UpdateConsoleArrowSelectability",
   "name_src": "agent",
   "votes": {
-   "CGuiSlider_UpdateConsoleArrowSelectability": 3
+   "CGuiSlider_UpdateConsoleArrowSelectability": 4
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -161323,7 +161342,7 @@
  },
  "0072cf80": {
   "name": "CGuiSlider_RefreshStandardState",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CGuiSlider_RefreshStandardState": 1
   },
@@ -161397,7 +161416,7 @@
  },
  "0072d2b0": {
   "name": "CGuiSlider_GetPositionFromCoordinate",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CGuiSlider_GetPositionFromCoordinate": 1
   },
@@ -161554,13 +161573,14 @@
   "file": "src/auto/0072db40.cpp"
  },
  "0072dca0": {
-  "name": "sub_72DCA0",
-  "name_src": "addr",
+  "name": "CGuiSlider_HandleMouseMovement",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "CGuiSlider* self, void* , void* mouseEvent",
+  "sig_src": "impl",
+  "file": "src/auto/0072dca0.cpp"
  },
  "0072de90": {
   "name": "CGuiSlider_UpdateDraggedThumb",
@@ -164810,7 +164830,7 @@
  },
  "00739560": {
   "name": "C_00867444_GetRoundedScaledValue",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "std::uint64_t",
   "conv": "__fastcall",
@@ -173635,7 +173655,7 @@
   "name": "GetGlobalValue_75FDF0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_75FDF0": 15
+   "GetGlobalValue_75FDF0": 16
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -185360,7 +185380,7 @@
   "name": "Sub_7A8ED0",
   "name_src": "vote",
   "votes": {
-   "Sub_7A8ED0": 16
+   "Sub_7A8ED0": 17
   },
   "ret": "int",
   "conv": "__cdecl",
