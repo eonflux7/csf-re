@@ -12,7 +12,7 @@ they appear as immediates/displacements) with the original's references:
 Usage: semcheck.py --all [--behaviour]   run over every src/auto file, report failures (false-positive survey);
        --behaviour: only the constant / call-order checks
 """
-import concurrent.futures as cf, glob, json, math, os, re, subprocess, sys, tempfile
+import collections, concurrent.futures as cf, glob, json, math, os, re, subprocess, sys, tempfile
 sys.path.insert(0, os.path.dirname(__file__))
 from packet import DB, disasm
 
@@ -33,6 +33,19 @@ def section_of(addr):
         if lo <= addr < hi:
             return n
     return None
+
+
+_img = None
+
+
+def image_dword(addr):
+    """The dword at an image address (None outside the image)."""
+    global _img
+    if _img is None:
+        import pefile
+        _img = pefile.PE(os.path.join(ROOT, "work", "pc", "CommXPC.exe"), fast_load=True).get_memory_mapped_image()
+    o = addr - 0x400000
+    return int.from_bytes(_img[o:o + 4], "little") if 0 <= o <= len(_img) - 4 else None
 
 
 def vtables():
@@ -228,8 +241,21 @@ def check(ea, obj, db):
         sec = section_of(d)
         if sec in (".data", "_rwdseg") or d in vtables():
             required[d] = f"{'vtable' if d in vtables() else 'global'} 0x{d:X}"
+    # `call dword ptr [A]` with A a fixed vtable slot (a constructor calling a virtual of the class it just set up):
+    # IDA lists the slot's target as a callee; ours reaches it through the slot (CSF_VTBL(vt)[n]), so the slot's
+    # address or its vtable stands in for the callee.
+    via_slot = collections.defaultdict(set)
+    for i in code_of(ea, db):
+        m = re.fullmatch(r"dword ptr \[(0x[0-9a-f]+)\]", i.op_str) if i.mnemonic in ("call", "jmp") else None
+        if m:
+            slot = int(m.group(1), 16)
+            t = image_dword(slot)
+            if t is not None:
+                via_slot[t] |= {slot} | {v for v in vtables() if v <= slot < v + 0x400}
+    # an address the compiler reaches as base + displacement (`mov eax, 0x841810; call [eax + 0x40]` for 0x841850)
+    reach = ours | {b + d for b in ours for d in our_disps if 0 < d < 0x1000}
     for a, what in sorted(required.items()):
-        if a not in ours:
+        if a not in reach and not (via_slot.get(a, set()) & reach):
             errs.append(f"the original references {what}, your code never does (dropped call/access, or wrong address)")
     known = set(f["callees"]) | set(f.get("srefs", [])) | set(f["drefs"]) | imms
     for a in sorted(ours - known - {ea}):  # own address: the HOOK registration
