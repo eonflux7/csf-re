@@ -104,6 +104,10 @@ def self_refs(obj, src):
     return sorted(set(bad))
 
 
+def strip_cpp_comments(src):
+    return re.sub(r"//[^\n]*|/\*.*?\*/", "", src, flags=re.S)
+
+
 def gate(ea, path, db=None):
     path = os.path.abspath(path)
     src = open(path).read()
@@ -115,6 +119,10 @@ def gate(ea, path, db=None):
         errs.append('CSF_GLOBAL/CSF_FUNC/CSF_AT/CSF_STR come from #include "globals.h" (add it)')
     if re.search(r"#\s*define\s+CSF_|#\s*undef\s+CSF_", src):
         errs.append('do not (re)define CSF_* macros: #include "globals.h" and use them as given')
+    if re.search(r"\bvolatile\b", strip_cpp_comments(src)):  # fidelity: dead loads / garbage args are not behavior
+        errs.append("volatile is not allowed: don't reproduce a load whose value the original never uses (skip it) or "
+                    "an uninitialized value it passes (pass 0); for globals the game changes, a plain CSF_GLOBAL is read "
+                    "fresh at every use already")
     if re.search(r"\b__regcall\b", src):  # grunts' bridge for Hex-Rays' phantom @<edi>/@<esi> args (tools/regargs.py)
         errs.append("__regcall is not allowed: register parameters Hex-Rays shows in ebx/esi/edi are saved registers, "
                     "not arguments (see the packet's NOTE); bind and implement with a plain convention")

@@ -100,10 +100,6 @@ static int __fastcall CMenuLoading_AdvanceLoadingProgress(CMenuLoading* self, vo
             void* pairSourceOwner = CallVirtualPtr(reinterpret_cast<void*>(self->field_0040), 55);
             const uint32_t* sourcePair = static_cast<const uint32_t*>(CallVirtualPtr(pairSourceOwner, 15));
 
-            // The original reads sourcePair[0] even though its value is overwritten; the volatile
-            // local keeps that read from being optimized away.
-            [[maybe_unused]] volatile uint32_t sourceLowDwordRead = sourcePair[0];
-
             // float * float is exact in double (and in x87 extended), so the product is the exact value.
             const double scaledWidth = static_cast<double>(fillRatio) * static_cast<double>(self->field_0044);
             const uint32_t sourceHighDword = sourcePair[1];

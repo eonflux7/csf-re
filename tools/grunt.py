@@ -69,7 +69,9 @@ File rules:
 - Fidelity is behavioral, not bit-for-bit code generation. Floating point: write the natural expression the
   source had (`(float)x / (float)g_ScreenWidth`, a plain float compare); never emulate x87 80-bit intermediates,
   rounding steps, or float bit patterns - last-bit differences are accepted by the in-game diff. Don't reproduce
-  register contents, stack layout or compiler idioms (MSVC helpers like __ftol2 are a plain cast).
+  register contents, stack layout or compiler idioms (MSVC helpers like __ftol2 are a plain cast). No
+  `volatile`: a load whose value the original never uses is not behavior (skip it), and an uninitialized
+  stack value it passes along is garbage (pass 0).
 - Preserve exact semantics: signed vs unsigned compares (check the disassembly when given: jl/jg = signed,
   jb/ja = unsigned), integer widths and truncation, float vs double, evaluation and call order, side effects.
   Do not "fix" bugs. Do not drop calls whose results are unused.

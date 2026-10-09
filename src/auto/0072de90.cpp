@@ -138,11 +138,7 @@ static int __fastcall CGuiSlider_UpdateDraggedThumb(
     {
         std::uint32_t* initialPosition =
             CGuiControl_GetPositionPair(GetControlPointer(self->m_pThumb));
-        const std::uint32_t initialX =
-            CSF_AT(volatile std::uint32_t, initialPosition, 0);
-        const std::uint32_t initialY =
-            CSF_AT(volatile std::uint32_t, initialPosition, 4);
-        (void)initialY;
+        const std::uint32_t initialX = CSF_AT(std::uint32_t, initialPosition, 0);
 
         if (self->m_bHorizontal == 0)
         {
@@ -160,10 +156,8 @@ static int __fastcall CGuiSlider_UpdateDraggedThumb(
                 CGuiControl_GetPositionPair(
                     GetControlPointer(self->m_pThumb));
             std::uint32_t position[2];
-            position[0] =
-                CSF_AT(volatile std::uint32_t, currentPosition, 0);
-            std::uint32_t thumbY =
-                CSF_AT(volatile std::uint32_t, currentPosition, 4);
+            position[0] = CSF_AT(std::uint32_t, currentPosition, 0);
+            std::uint32_t thumbY = CSF_AT(std::uint32_t, currentPosition, 4);
 
             result = static_cast<int>(self->m_bHorizontal);
             if (result == 0)

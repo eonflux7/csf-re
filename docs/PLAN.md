@@ -100,7 +100,11 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
   arg are right as plain C++ (590/604 program-wide are callee-save artifacts); two __regcall bridges rewritten; api,
   packet NOTE and a gate rule use db/regargs.json
 - [ ] IDB: apply the corrected prototypes (db/regargs.json spurious regs dropped) in a sync.py stage + propagate
-- [ ] Redo under the fidelity rule the 4 files that emulate x87 rounding (0x72DE90, 0x729F60, 0x7292C0, 0x538A50)
+- [x] Fidelity redo of 0x72DE90, 0x729F60, 0x7292C0, 0x538A50 (2026-10-09): their double arithmetic stays (it stands
+  in for x87's wider intermediate where an int is truncated from it: natural, not emulation); the volatile dead
+  loads went. New output: `volatile` is rejected by the gate and named in the prompt's fidelity rule
+- [ ] 57 older src/auto files still use `volatile` (dead loads, uninitialized args passed on, forced global loads):
+  rewrite at their next touch (gate now rejects them on re-grunt)
 - [ ] Feed recurring review issue kinds into the grunt prompt (`review.py report`) once samples exist per module
 - [ ] Re-test Sonnet for bulk function renames (captain functions) after waves name the callers
 - [ ] Opus pass over the 44 held-back RW names (`rwname.py report`): neighbour pairs given the same name
