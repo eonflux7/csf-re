@@ -165,7 +165,9 @@ def stop_gauges(L, Z):
     pend = Z["done"] - Z["ok"]
     return [("quarantined", q, v + q, th["--stop-quarantine"], q >= 2),
             ("review rejects", Z["rej"], Z["rev"], th["--stop-review"], Z["rej"] >= 2),
-            ("unverified", pend, Z["done"], th["--stop-pending"], Z["done"] >= 10)]
+            # judged at wave end (wave_report, after the verify step): mid-production nearly all are pending
+            ("unverified", pend, Z["done"], th["--stop-pending"], Z["done"] >= 10 and
+             L["stage"] in ("review", "report", "between"))]
 
 
 def gauge_text(name, a, b, lim, armed):
