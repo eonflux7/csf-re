@@ -14,20 +14,7 @@ CSF_FUNC(void, __fastcall, S_0042eb60_UpdateIndicator, 0x00431130, (void* self, 
 CSF_FUNC(int, __fastcall, Hud_QueryCurrentCount, 0x00681F40, (void* self, void* edx));
 CSF_FUNC(uint64_t, __fastcall, Hud_QueryCapacity, 0x00476A50, (void* self, void* edx));
 
-// Clang's x86 regcall uses EAX, ECX, EDX, EDI, ESI, then
-// caller-cleaned stack arguments. This supplies the original EDI input
-// and exactly its two stack arguments without assembly.
-static void (__regcall* const Hud_RenderWidgetRegisterCall)(
-    int unusedEax, int unusedEcx, int unusedEdx, int handle,
-    int unusedEsi, int* widget, int* rect) =
-    reinterpret_cast<void (__regcall*)(
-        int, int, int, int, int, int*, int*)>(CSF_ADDR_FN(0x0042F4F0));
-
-static void Hud_RenderWidgetAtScaledRect(void* handle, int* widget)
-{
-    Hud_RenderWidgetRegisterCall(
-        0, 0, 0, reinterpret_cast<int>(handle), 0, widget, nullptr);
-}
+CSF_FUNC(void, __cdecl, Hud_RenderWidgetAtScaledRect, 0x0042F4F0, (void* widget, const int* rect));
 
 static void __fastcall S_0042eb60_RefreshCurrentSceneHud(
     S_0042eb60* self, void* /*edx*/)
@@ -47,7 +34,7 @@ static void __fastcall S_0042eb60_RefreshCurrentSceneHud(
     int* value = reinterpret_cast<int*>(Handle_GetValuePointer(handle, nullptr));
     int* widget = reinterpret_cast<int*>(self->field_00ec);
     if (widget)
-        Hud_RenderWidgetAtScaledRect(handle, widget);
+        Hud_RenderWidgetAtScaledRect(widget, nullptr);
 
     if (value)
     {
@@ -55,7 +42,7 @@ static void __fastcall S_0042eb60_RefreshCurrentSceneHud(
             *value,
             reinterpret_cast<int>(reinterpret_cast<uint8_t*>(self) + 0x108)));
         if (entry)
-            Hud_RenderWidgetAtScaledRect(handle, entry);
+            Hud_RenderWidgetAtScaledRect(entry, nullptr);
     }
 
     if (self->field_011b && self->field_0124 && self->field_0125)

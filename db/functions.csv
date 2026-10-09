@@ -1046,10 +1046,10 @@ ea,size,region,module,name,name_src,status
 0042f3b0,67,game,m42CF50,ScaleHudSizePair,agent,done
 0042f400,55,game,m42CF50,MenuLoading_AdjustFloatPair,agent,done
 0042f440,161,game,m42CF50,Hud_ScaleRectPositionAndSize,agent,done
-0042f4f0,276,game,m42CF50,Hud_RenderWidgetAtScaledRect,agent,todo
+0042f4f0,276,game,m42CF50,Hud_RenderWidgetAtScaledRect,agent,done
 0042f610,233,game,m42CF50,Hud_DrawWidgetScaled,agent,done
 0042f700,275,game,m42CF50,Hud_RefreshObjectPanel,agent,done
-0042f820,96,game,m42CF50,CHud_RenderAnchoredOverlay,vote,todo
+0042f820,96,game,m42CF50,Hud_DrawWidgetTripletIfReady,agent,done
 0042f880,113,game,m42CF50,Hud_RefreshSceneOverlay,agent,done
 0042f900,107,game,m42CF50,Hud_RefreshDebugOverlay,agent,done
 0042f970,153,game,m42CF50,Hud_FormatAndPlaceOverlayText,agent,done
@@ -1078,12 +1078,12 @@ ea,size,region,module,name,name_src,status
 00431020,83,game,m42CF50,Hud_DrawSceneMenuWidget,agent,done
 00431080,167,game,m42CF50,Hud_PlaceAndDrawEntry,agent,done
 00431130,531,game,m42CF50,S_0042eb60_DrawNumber,agent,done
-00431350,468,game,m42CF50,CHud_RenderStatusWidgets,vote,todo
+00431350,468,game,m42CF50,S_0042eb60_RenderCurrentObjectHud,agent,done
 00431530,230,game,m42CF50,S_0042eb60_RefreshHudSlots,agent,done
 00431620,82,game,m42CF50,HudOverlay_DrawSceneMenuIfEnabled,agent,done
 00431680,242,game,m42CF50,S_0042eb60_RefreshCurrentSceneHud,agent,done
-00431780,187,game,m42CF50,,,todo
-00431840,231,game,m42CF50,CHud_UpdateMainWidgets,vote,todo
+00431780,187,game,m42CF50,Hud_RenderDebugOverlay,agent,done
+00431840,231,game,m42CF50,Hud_RefreshMenuSelection,agent,done
 00431950,31,game,m42CF50,CHud_DispatchToResolvedControl,agent,done
 00431970,180,game,m42CF50,CHud_AppendEntryForActiveRecord,agent,done
 00431a30,230,game,m42CF50,S_0042ee00_RefreshDebugOverlay,agent,done
@@ -1096,12 +1096,12 @@ ea,size,region,module,name,name_src,status
 00431f80,3362,game,m42CF50,Hud_LoadDefinition,agent,todo
 00432cb0,548,game,m42CF50,Hud_InitializeCrosshairWidgets,agent,done
 00432ee0,116,game,m42CF50,CHud_RenderAnchoredMessages,vote,todo
-00432f70,291,game,m42CF50,CHud_RenderMessages,vote,todo
+00432f70,291,game,m42CF50,S_0042eb60_UpdateSceneMenuHighlight,agent,done
 004330a0,96,game,m42CF50,CHud_DispatchSceneEvent,agent,done
 00433100,1297,game,m42CF50,CHud_BuildDebugOverlay,agent,done
 00433620,39,game,stl,,,todo
 00433650,387,game,m42CF50,C_00830a04_Update,agent,done
-004337e0,135,game,m42CF50,S_004337e0_SetMenuSelection,vote,todo
+004337e0,135,game,m42CF50,S_004337e0_ReleaseEntrySlots,agent,done
 00433870,136,game,m42CF50,S_004337e0_SyncMenuState,agent,done
 00433910,636,game,m42CF50,Hud_CreateCenteredBorder,agent,done
 00433b90,65,game,m42CF50,Hud_ResetWidgetPairRange,agent,done
@@ -1452,7 +1452,7 @@ ea,size,region,module,name,name_src,status
 00444a60,167,game,m443760,,,todo
 00444b10,6,game,m443760,C_444b10_IncrementCounter_0x50,agent,done
 00444b20,134,game,m443760,,,todo
-00444bb0,359,game,m443760,,,todo
+00444bb0,359,game,m443760,ComputeControlAnimationKey,vote,todo
 00444d30,39,game,m443760,,,todo
 00444d60,39,game,m443760,,,todo
 00444d90,39,game,m443760,,,todo
@@ -3524,7 +3524,7 @@ ea,size,region,module,name,name_src,status
 00494e30,21,game,m493940,,,todo
 00494e50,49,game,m493940,,,todo
 00494e90,531,game,m493940,,,todo
-004950b0,42,game,m493940,,,todo
+004950b0,42,game,m493940,Hud_GetAlternateSceneSelection,vote,todo
 004950e0,7,game,m493940,C_004950e0_GetField398,agent,done
 004950f0,66,game,m493940,,,todo
 00495140,15,game,m493940,C_00495140_ForwardInnerObjectVirtualCall,agent,done
@@ -7520,7 +7520,7 @@ ea,size,region,module,name,name_src,status
 0053e930,98,game,m53D260,CMenuMissionInfo_RefreshAllFiveFlag,agent,done
 0053e9a0,60,game,m53D260,CMenuMissionInfo_ProcessPendingPageStep,agent,done
 0053e9e0,76,game,m53D260,CMenuMissionInfo_TryAdvanceToNextPage,agent,done
-0053ea30,452,game,m53D260,,,todo
+0053ea30,452,game,m53D260,MenuMissionInfo_PopulateEntryScores,agent,done
 0053ec00,181,game,m53D260,CMenuMissionInfo_Destruct,agent,done
 0053ecd0,4307,game,m53D260,,,todo
 0053fdb0,246,game,m53D260,,,todo
@@ -7565,7 +7565,7 @@ ea,size,region,module,name,name_src,status
 00541ed0,143,game,m541E70,CGuiCharacterPreview_ReleaseResources,agent,done
 00541f60,258,game,m541E70,,,todo
 00542070,598,game,m541E70,MenuMpCharacterSelect_CreatePreview,agent,done
-005422d0,328,game,m541E70,,,todo
+005422d0,328,game,m541E70,MpCharacterSelect_SetPreviewCharacter,agent,done
 00542420,186,game,m541E70,MenuMpCharacterSelect_UpdatePreview,agent,done
 005424e0,46,game,m541E70,CGuiCharacterPreview_DestroyAndFreeIfFlag,agent,done
 00542510,65,game,m541E70,MenuMpCharacterSelect_RefreshCameraPreview,agent,done
@@ -14440,7 +14440,7 @@ ea,size,region,module,name,name_src,status
 006b2c40,66,game,m6B2870,,,todo
 006b2c90,126,game,m6B2870,,,todo
 006b2d10,51,game,m6B2870,,,todo
-006b2d50,4,game,m6B2870,,,todo
+006b2d50,4,game,m6B2870,RenderHandle_FromObject,vote,todo
 006b2d60,54,game,m6B2870,,,todo
 006b2da0,22,game,m6B2870,,,todo
 006b2dc0,93,game,m6B2870,,,todo
@@ -17866,7 +17866,7 @@ ea,size,region,module,name,name_src,status
 0072d0c0,62,game,m72A360,CGuiSlider_RefreshState,agent,done
 0072d100,16,game,m72A360,CGuiSlider_SetHorizontal,agent,done
 0072d110,7,game,m72A360,CGuiSlider_GetField0150,agent,done
-0072d120,375,game,m72A360,,,todo
+0072d120,375,game,m72A360,CGuiSlider_SetRange,agent,done
 0072d2a0,7,game,m72A360,CGuiSlider_GetField0138,agent,done
 0072d2b0,324,game,m72A360,CGuiSlider_GetPositionFromCoordinate,vote,todo
 0072d400,357,game,m72A360,CGuiSlider_GetThumbCoordinate,agent,done
@@ -19023,7 +19023,7 @@ ea,size,region,module,name,name_src,status
 007557c0,77,game,m7539E0,,,todo
 00755810,46,game,m7539E0,IsStateCodeAllowed,vote,todo
 00755840,32,game,m7539E0,,,todo
-00755860,31,game,m7539E0,,,todo
+00755860,31,game,m7539E0,IsAlternateControlKind,vote,todo
 00755880,57,game,m7539E0,IsResolvedEntryActive,vote,todo
 007558c0,67,game,m7539E0,Scene_IsObjectRemovable,vote,todo
 00755910,42,game,m7539E0,,,todo

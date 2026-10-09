@@ -13,21 +13,7 @@ CSF_FUNC(uint64_t, __fastcall, GetItemCapacity, 0x00476A50, (void* self, void* e
 CSF_FUNC(int, __fastcall, S_0042eb60_ResolveSlotIndex, 0x0042EB60, (void* self, void* edx, int a2, int a3));
 CSF_FUNC(void, __fastcall, S_0042eb60_UpdateSlotIndicator, 0x00431130, (void* self, void* edx, unsigned int a2, int a3, int a4, char a5));
 
-// The original has two caller-cleaned stack arguments and an additional
-// register input in EDI. Its ret instruction pops zero argument bytes.
-CSF_FUNC(void, __cdecl, Hud_RenderWidgetAtScaledRect, 0x0042F4F0, (int* widget, int* rect));
-
-static void __cdecl Hud_RenderWidgetWithAnchor(int anchorIndex, int* widget)
-{
-    // Clang's x86 regcall places these five integer arguments in
-    // EAX, ECX, EDX, EDI, ESI, respectively. The remaining two arguments
-    // occupy caller-cleaned stack slots. Only EDI and those slots are
-    // inputs to the original function.
-    using RegisterInputCall = void (__regcall*)(
-        int, int, int, int, int, int*, int*);
-    reinterpret_cast<RegisterInputCall>(Hud_RenderWidgetAtScaledRect)(
-        0, 0, 0, anchorIndex, 0, widget, nullptr);
-}
+CSF_FUNC(void, __cdecl, Hud_RenderWidgetAtScaledRect, 0x0042F4F0, (void* widget, const int* rect));
 
 static void __fastcall S_0042eb60_RefreshHudSlots(
     S_0042eb60* self, void* /*edx*/)
@@ -60,7 +46,7 @@ static void __fastcall S_0042eb60_RefreshHudSlots(
             do
             {
                 int* widget = reinterpret_cast<int**>(self->field_0084)[index];
-                Hud_RenderWidgetWithAnchor(static_cast<int>(index), widget);
+                Hud_RenderWidgetAtScaledRect(widget, nullptr);
                 ++index;
             } while (index < widgetCount);
         }

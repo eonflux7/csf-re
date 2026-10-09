@@ -53,23 +53,33 @@ def our_refs(obj):
                          capture_output=True, text=True).stdout
     addrs, disps = set(), set()
     skip = False
+    stack = {"esp", "ebp"}  # plus registers holding a copy of esp/ebp: clang builds outgoing args via `mov eax, esp`
     for line in dis.splitlines():
         m = re.match(r"^[0-9a-f]+ <(.+)>:$", line)
         if m:  # compiler-generated initializers / hook registrars: their field offsets aren't the function's
             skip = bool(re.search(r"\?\?__E|_GLOBAL__|__dyn_tls|_Init_thread|\?\$TSS|@hook@@", m.group(1)))
+            stack = {"esp", "ebp"}
             continue
         if "\t" not in line:
             continue
         ins = line.split("\t", 1)[1]
+        mn, ops = (ins.split(None, 1) + [""])[:2]
+        dst = ops.strip().partition(",")[0].strip()
+        for base, sign, off in ([] if skip else DISP.findall(ins)):  # addresses: all code (CSF_GLOBAL binds in init)
+            if base not in stack and sign == "+":
+                disps.add(int(off, 0))
+        if mn.startswith("call"):
+            stack -= {"eax", "ecx", "edx"}
+        elif re.fullmatch(r"e[a-z]{2}", dst) and dst not in ("esp", "ebp"):
+            src = ops.split(",", 1)[1].strip() if "," in ops else ""
+            alias = mn == "mov" and src in ("esp", "ebp") or mn == "lea" and re.match(r"\[(esp|ebp)\b", src)
+            (stack.add if alias else stack.discard)(dst)
         if ins.startswith(("call", "jmp")) and "<" in ins and "[" not in ins:  # relative: own helpers / imports
             continue
         for h in HEX.findall(ins):
             v = int(h, 16)
             if IMG_LO <= v < IMG_HI:
                 addrs.add(v)
-        for base, sign, off in ([] if skip else DISP.findall(ins)):  # addresses: all code (CSF_GLOBAL binds in init)
-            if base not in ("esp", "ebp") and sign == "+":
-                disps.add(int(off, 0))
     # Constant-initialized bindings (CSF_GLOBAL references) are 4-byte pointer variables in .rdata/.data sections.
     # Only whole 4-byte sections and .data are scanned: other .rdata holds strings, whose bytes look like addresses.
     raw = subprocess.run(["llvm-objdump-21", "-s", "-j", ".data", "-j", ".rdata", obj], capture_output=True,

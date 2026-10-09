@@ -798,3 +798,16 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   undefined-eax). `verify.py reset` dropped the 5 functions' diff evidence; the two _Tidy impls now initialize
   their result (was an uninitialized read).
 - Worktree cleanup (5 merged ones) was refused by the permission classifier in this background job: left to the user.
+
+## 2026-10-09 — Backlog crush (b/c): the edi cluster and a semcheck false positive
+
+- **0x42F4F0 is plain cdecl(widget, rect).** Hex-Rays' `a1@<edi>` is MSVC's shrink-wrapped save of edi: `push edi`
+  only after the null check (the early exit jumps past `pop edi` to `pop esi`); slot 0x30 takes no argument. The
+  grunts had invented "anchorIndex" for it and bridged it with `__regcall` placeholders / naked asm that put garbage
+  or `this` into edi. Rewritten from the disassembly; 0x431530 / 0x431680 / 0x431950 (done) called it with a shifted
+  argument list (0x431950 passed widget = 0, i.e. never drew) and are fixed; 0x42F820 0x431350 0x431780 0x431840
+  0x432F70 0x4337E0 from the queue resolved the same way.
+- **semcheck false positive: outgoing args via an esp copy.** clang at /O2 writes call arguments through
+  `mov eax, esp; mov [eax + 0xC], 0`, and `our_refs` counted [eax + 8] / [eax + 0xC] as field accesses ("field offsets
+  the original never uses"). Registers copied from esp/ebp (`mov r, esp`, `lea r, [esp/ebp ...]`) now count as stack
+  bases until overwritten or clobbered by a call. With it 0x53EA30, 0x5422D0, 0x72D120 passed as written.
