@@ -67,11 +67,12 @@ def our_refs(obj):
     addrs, disps = set(), set()
     skip = False
     stack = {"esp", "ebp"}  # plus registers holding a copy of esp/ebp: clang builds outgoing args via `mov eax, esp`
+    slots = set()  # frame slots holding such a copy (-O0 spills `lea eax, [ebp + 0xc]` and reloads it later)
     for line in dis.splitlines():
         m = re.match(r"^[0-9a-f]+ <(.+)>:$", line)
         if m:  # compiler-generated initializers / hook registrars: their field offsets aren't the function's
             skip = bool(re.search(r"\?\?__E|_GLOBAL__|__dyn_tls|_Init_thread|\?\$TSS|@hook@@", m.group(1)))
-            stack = {"esp", "ebp"}
+            stack, slots = {"esp", "ebp"}, set()
             continue
         if "\t" not in line:
             continue
@@ -85,8 +86,12 @@ def our_refs(obj):
             stack -= {"eax", "ecx", "edx"}
         elif re.fullmatch(r"e[a-z]{2}", dst) and dst not in ("esp", "ebp"):
             src = ops.split(",", 1)[1].strip() if "," in ops else ""
-            alias = mn == "mov" and src in ("esp", "ebp") or mn == "lea" and re.match(r"\[(esp|ebp)\b", src)
+            slot = re.fullmatch(r"dword ptr (\[(?:esp|ebp)[^\]]*\])", src)
+            alias = mn == "mov" and (src in ("esp", "ebp") or src in stack or bool(slot and slot.group(1) in slots)) \
+                or mn == "lea" and re.match(r"\[(esp|ebp)\b", src)
             (stack.add if alias else stack.discard)(dst)
+        elif mn == "mov" and (m2 := re.fullmatch(r"dword ptr (\[(?:esp|ebp)[^\]]*\]), (e[a-z]{2})", ops)):
+            (slots.add if m2.group(2) in stack and m2.group(2) not in ("esp", "ebp") else slots.discard)(m2.group(1))
         if ins.startswith(("call", "jmp")) and "<" in ins and "[" not in ins:  # relative: own helpers / imports
             continue
         for h in HEX.findall(ins):
@@ -570,7 +575,7 @@ def survey(only_behaviour=False):
                                cwd=os.path.join(ROOT, "build"))
             if r.returncode:
                 return ea, ["compile failed"]
-            m = re.search(r"HOOK(?:_METHOD)?\(\s*0x[0-9A-Fa-f]+\s*,\s*&?([\w:]+)", open(p).read())
+            m = re.search(r"HOOK(?:_METHOD|_KEEP_ECX)?\(\s*0x[0-9A-Fa-f]+\s*,\s*&?([\w:]+)", open(p).read())
             fn = m.group(1).split("::")[-1] if m else ""
             if only_behaviour:
                 return ea, behaviour(ea, obj, fn, open(p).read(), db) if fn else []

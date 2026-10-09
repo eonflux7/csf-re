@@ -129,6 +129,13 @@ def gate(ea, path, db=None):
             errs.append(f"{m.group(1)}: 0x{int(m.group(2), 16):X} is a vtable; never bind it with CSF_GLOBAL (its value is "
                         "the first slot, not the table): use CSF_VTBL(0x..) to store / call it, CSF_ADDR_VT(0x..) for "
                         "its address as a number")
+    if re.search(r"\bHOOK\(", src) and "HOOK_KEEP_ECX" not in src:
+        import regargs
+        from packet import DB as _DB
+        _db = db if db is not None else _DB()
+        if ea in _db.F and regargs.needs_keep_ecx(_db, ea):
+            errs.append(f"callers of 0x{ea:X} keep a value in ecx across the call and the original never writes ecx: "
+                        f"register with HOOK_KEEP_ECX(0x{ea:X}, Fn, <stack args>, \"module\") instead of HOOK")
     if re.search(r"\b__regcall\b", src):  # grunts' bridge for Hex-Rays' phantom @<edi>/@<esi> args (tools/regargs.py)
         errs.append("__regcall is not allowed: register parameters Hex-Rays shows in ebx/esi/edi are saved registers, "
                     "not arguments (see the packet's NOTE); bind and implement with a plain convention")
@@ -151,7 +158,7 @@ def gate(ea, path, db=None):
                         "CSF_AT(T, p, off). If the original really loads a pointer there and dereferences it, write "
                         "two steps: `T* q = CSF_AT(T*, p, off);` then `*q`")
             break
-    hooks = re.findall(r"HOOK(?:_METHOD)?\(\s*0x([0-9A-Fa-f]+)\s*,\s*&?([\w:]+)", src)
+    hooks = re.findall(r"HOOK(?:_METHOD|_KEEP_ECX)?\(\s*0x([0-9A-Fa-f]+)\s*,\s*&?([\w:]+)", src)
     if len(hooks) != 1 or int(hooks[0][0], 16) != ea:
         errs.append(f"need exactly one HOOK(0x{ea:X}, Fn, \"module\") line; found {hooks}")
     code_only = re.sub(r"//[^\n]*|/\*.*?\*/", "", src, flags=re.S)

@@ -34,4 +34,5 @@ static int __fastcall InitializeTransientState(void* self, void* /*edx*/)
     return 0;
 }
 
-HOOK(0x4619C0, InitializeTransientState, "auto");
+// LTCG callers (0x462370, 0x4624E0) keep a value in ecx across the call: the original never writes ecx.
+HOOK_KEEP_ECX(0x4619C0, InitializeTransientState, 0, "auto");

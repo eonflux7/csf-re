@@ -26,4 +26,5 @@ static int __fastcall C_008343a4_FindMatchingEntry(
     return result;
 }
 
-HOOK(0x004A0080, C_008343a4_FindMatchingEntry, "auto");
+// LTCG callers (0x4A07E0, 0x4A08F0, 0x4A0940) keep a value in ecx across the call: the original never writes ecx.
+HOOK_KEEP_ECX(0x004A0080, C_008343a4_FindMatchingEntry, 1, "auto");

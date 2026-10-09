@@ -12,4 +12,5 @@ static int __fastcall C_6B81C0_GetFirstItem(void* self, void* /*edx*/)
     return 0;
 }
 
-HOOK(0x6B81C0, C_6B81C0_GetFirstItem, "auto");
+// LTCG callers (0x6F75D0) keep a value in ecx across the call: the original never writes ecx.
+HOOK_KEEP_ECX(0x6B81C0, C_6B81C0_GetFirstItem, 0, "auto");

@@ -1,42 +1,9 @@
-# Escalation 0x00435F80: in-game smoke failure (verifier bisect: 15 smokes (0 named by crash reports, k=8))
-
-## Smoke log tail
-```
-nohook=False pid=12440 ready=False after=2s alive=False exit=-1073740791 stillrunning=False stop=exited ran=0s fail_at=0s
----- hits
----- diff (0 functions compared)
----- csf_hook.log
-hook 0040ee70 auto     GetConstant15
-hook 0040da80 auto     IsField0050Null
-hook 0040d350 auto     Return18
-hook 0040c910 auto     IsField90Null
-hook 00409430 auto     StoreAbsoluteFloatAt0x18
-hook 00409290 auto     C_0082d58c_ResetField0008
-hook 00407f30 auto     C_0082d5e0_DispatchVirtual17
-hook 00407ed0 auto     C_0082d5e0_InvokeVtblSlot15
-hook 00406e90 auto     ResolveIndexedEntry
-hook 00406210 auto     SetValueAtOffset8
-hook 00405810 auto     C_0082d510_ResetState
-hook 004013e0 auto     ReturnMinusOne
-hook 00401090 auto     GetGlobalValue_401090
-hooks installed=2916 skipped=0 failed=0
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00BB13CC wrapped
-devcmd: video mode 1280x960
-devcmd: dev start (scene Maps/FR01/Parachut.scn) instead of Menus/P_Intro.fbs -> state 1
-SMOKE FAIL (never ready: no 'devcmd: starting scene' in csf_hook.log within 120s)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 
 #include "globals.h"
 #include "hook.h"
 #include "types/auto_classes.h"
+#include "legacy/string.h"
 
 // Callees bound by address. Names for the two unnamed callees are chosen here.
 CSF_FUNC(void**, __fastcall, S_00434780_EraseTailRange, 0x00434780,
@@ -62,15 +29,10 @@ static C_0082d410 **AsResultPointer(std::uintptr_t raw)
 static C_0082d410 **__fastcall S_00434780_ResizeWithValue(
     S_00434780 *self, void * /*edx*/,
     unsigned int requestedCount,
-    C_0082d410 fillValue,
-    int /*a4*/, int /*a5*/, int /*a6*/,
-    unsigned int fillValueCapacity,
+    legacy::string fillValue,  // the whole 28-byte string by value: passed in place, so &fillValue is the caller's
+                               // copy (a 12-byte type was copied into a local, and 0x435290 read 28 bytes from it)
     int /*a8*/, int /*a9*/, int /*a10*/, int /*a11*/, int /*a12*/)
 {
-    // Packet-listed vtable reference. Address 0x43600C is a call to 0x434780,
-    // not a vtable store, so nothing is emitted here.
-    (void)CSF_VTBL(0x00434780);
-
     // Cached begin pointer. The original keeps it in a register across calls.
     const uint32_t firstElem = self->field_0004;
     C_0082d410 **result;
@@ -109,9 +71,9 @@ static C_0082d410 **__fastcall S_00434780_ResizeWithValue(
 
     // When the value's buffer is heap-allocated (capacity >= 16), free it.
     // Note: result is overwritten with fillValue.field_0004 here, as in the original.
-    if (fillValueCapacity >= 0x10u)
+    if (fillValue.res >= 0x10u)
     {
-        result = reinterpret_cast<C_0082d410 **>(fillValue.field_0004);
+        result = reinterpret_cast<C_0082d410 **>(fillValue.bx.ptr);
         if (result != nullptr)
             return reinterpret_cast<C_0082d410 **>(
                 Mem_FreeDebug(reinterpret_cast<void *>(result)));
@@ -122,5 +84,3 @@ static C_0082d410 **__fastcall S_00434780_ResizeWithValue(
 
 HOOK(0x00435F80, S_00434780_ResizeWithValue, "auto");
 
-
-```

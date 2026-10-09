@@ -858,3 +858,27 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   `--full` is blocked by a flaky `loadsave 1.sav` crash of the verified baseline itself (eip=0x19EBAE, on the stack;
   a return address near it points into 0x4360A0; 18 bisect smokes all passed): the verifier now keeps that smoke's
   output (work/baseline_fail_*.log) for the next occurrence.
+
+## 2026-10-09 — The 13 in-game failures
+
+- **The flaky `loadsave 1.sav` baseline crash** (eip on the stack, ebp = 2) was verified code: 0x42DA20 passed an
+  argument to vtable slot 0x18 that is really 0x6C8740's second (float) one (0x6C8740 pops 8: formatted + the record's
+  y), so ours left the stack 4 bytes off whenever the debug-stat path ran. Every "breaks the verified baseline"
+  quarantine with eip 0x0019EBAE (0x42DB20 0x42DF60 0x544920 0x544980 0x78CE20 0x78CE30) was a bystander of it.
+- Real culprits, found from fresh crash reports once the baseline held:
+  - 0x547CB0 bound its vtables with CSF_GLOBAL and stored the *value* (the first slot) as the vtable: eip 0xCCCCCC00
+    in the menu tour. Gate: CSF_GLOBAL on a vtable address is an error (83 files bind vtables that way but take the
+    address; correct at runtime, wrong for the standalone build: cutover churn).
+  - 0x462580 passed a lone uint32 where 0x4F6E90 fills a 0x30-byte record (index, two handles, weight, ...): the callee
+    overwrote the frame, saved ebp = 0.3f. Same class as 0x461750; the packets' stack-object list covers it now.
+  - 0x431F80: slot 0x58 fills a 4-int rect into `int bounds[3]`.
+  - 0x435F80 / 0x778860: a by-value string declared as the 12-byte C_0082d410: clang copies such a small struct into a
+    local, so &fillValue (passed on to 0x435290, which reads all 28 bytes) pointed at a local, not the caller's copy.
+    Declared legacy::string (28 bytes, passed in place). 0x778860 had never run (hits 0).
+  - 0x463FA0: correct code, but its LTCG caller 0x468310 keeps `this` in ecx across the call (no reload before
+    0x467CC0) and the original never writes ecx. New `HOOK_KEEP_ECX(addr, fn, nargs, module)` (hook/hook.h): a naked
+    stub saves ecx, copies the stack args, calls fn, restores ecx. regargs.callers_keep_ecx / needs_keep_ecx find
+    them exactly (direct callers reading ecx after the call before writing it, incl. through the next thiscall /
+    virtual call): 19 done functions needed it, all switched; packet NOTE + gate error for new ones. 8 more done
+    functions look like callers reading an ecx the callee *produced* (0x697330 & co): not handled yet.
+- semcheck follows esp/ebp copies through -O0 spill slots.

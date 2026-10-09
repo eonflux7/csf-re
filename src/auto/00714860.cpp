@@ -13,4 +13,5 @@ static int __fastcall CGuiListBox_GetItemCount(CGuiListBox* self, void* /*edx*/)
     return static_cast<int>(self->field_01b0 - pBegin) >> 2;
 }
 
-HOOK(0x714860, CGuiListBox_GetItemCount, "auto");
+// LTCG callers (0x716FE0) keep a value in ecx across the call: the original never writes ecx.
+HOOK_KEEP_ECX(0x714860, CGuiListBox_GetItemCount, 0, "auto");

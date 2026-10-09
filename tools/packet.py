@@ -315,6 +315,10 @@ def build(db, ea, with_asm_limit=400):
     out.append(f"## Target function 0x{ea:08X} (size {f['size']} bytes, region {row['region']})")
     out.append(f"Hex-Rays prototype: `{proto}`")
     import api as _api
+    import regargs as _ra
+    if _ra.needs_keep_ecx(db, ea):
+        out.append("NOTE: callers keep a value in ecx across this call (LTCG) and the original never writes ecx: register "
+                   "it with HOOK_KEEP_ECX(0xADDR, Fn, <number of stack args>, \"module\") instead of HOOK.")
     sp = _api.spurious_regs(ea)
     if sp:
         out.append(f"NOTE: its {', '.join('@<' + r + '>' for r in sp)} parameter is NOT an argument (exact: the register "

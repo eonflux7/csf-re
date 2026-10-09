@@ -86,3 +86,23 @@ struct Registrar {
 #define HOOK_VSLOT(vtbl, slot, mfn, module) \
     static ::hook::Registrar HOOK_CAT(hook_reg_, __LINE__)(vtbl, slot, ::hook::to_ptr(mfn), #mfn, module, ::hook::Kind::VSlot)
 #endif  // CSF_STANDALONE
+
+// A function whose LTCG callers keep a value in ecx across the call (0x468310: `mov ecx, edi; call 0x463FA0;
+// ... call 0x467CC0` with no reload): the original never writes ecx, compiled C++ does. The stub saves ecx, copies
+// the `nargs` stack dwords, calls fn (a __fastcall impl popping them, as the original's `ret 4*nargs`), restores ecx.
+// edx goes through untouched; eax / edx:eax / st0 results are fn's.
+#define HOOK_KEEP_ECX(addr, fn, nargs, module) \
+    static void* const HOOK_CAT(fn, _impl) = (void*)&fn; \
+    static __declspec(naked) void HOOK_CAT(fn, _keep_ecx)() { \
+        __asm push ecx __asm push esi __asm push edi \
+        __asm sub esp, (4 * (nargs)) \
+        __asm lea esi, [esp + (4 * (nargs)) + 16] \
+        __asm mov edi, esp \
+        __asm mov ecx, (nargs) \
+        __asm rep movsd \
+        __asm mov ecx, [esp + (4 * (nargs)) + 8] \
+        __asm call dword ptr [HOOK_CAT(fn, _impl)] \
+        __asm pop edi __asm pop esi __asm pop ecx \
+        __asm ret (4 * (nargs)) \
+    } \
+    HOOK(addr, HOOK_CAT(fn, _keep_ecx), module)

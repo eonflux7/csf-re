@@ -17,4 +17,5 @@ static int __cdecl ReturnZero()
     return 0;
 }
 
-HOOK(0x4B2A30, ReturnZero, "auto");
+// LTCG callers (0x6525A0, 0x653180, 0x669760) keep a value in ecx across the call: the original never writes ecx.
+HOOK_KEEP_ECX(0x4B2A30, ReturnZero, 0, "auto");

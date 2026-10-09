@@ -11,4 +11,5 @@ static int __fastcall C_00867358_ClearFields(C_00867358* self, void* /*edx*/)
     return 0;
 }
 
-HOOK(0x006C3620, C_00867358_ClearFields, "auto");
+// LTCG callers (0x700DA0) keep a value in ecx across the call: the original never writes ecx.
+HOOK_KEEP_ECX(0x006C3620, C_00867358_ClearFields, 0, "auto");

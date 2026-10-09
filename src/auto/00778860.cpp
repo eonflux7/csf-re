@@ -28,11 +28,8 @@ static void* AsAddress(uint32_t address) {
 static char __fastcall S_00778050_ResizeRecords(
         S_00778050* self, void* /*edx*/,
         unsigned int newCount,
-        C_0082d410 fillValue,
-        [[maybe_unused]] int unusedArg4,
-        [[maybe_unused]] int unusedArg5,
-        [[maybe_unused]] int unusedArg6,
-        unsigned int fillValueCapacity,
+        legacy::string fillValue,  // all 28 bytes by value: passed in place, so &fillValue is the caller's copy
+                                   // (a 12-byte type is copied to a local and the callee read 28 bytes from it)
         [[maybe_unused]] int unusedArg8,
         void* blockToFree,
         [[maybe_unused]] int unusedArg10,
@@ -68,8 +65,8 @@ static char __fastcall S_00778050_ResizeRecords(
     if (blockToFree)
         result = static_cast<char>(Mem_FreeDebug(blockToFree));
 
-    if (fillValueCapacity >= 0x10) {
-        uint32_t fillBuffer = fillValue.field_0004;
+    if (fillValue.res >= 0x10) {
+        uint32_t fillBuffer = reinterpret_cast<uint32_t>(fillValue.bx.ptr);
         result = static_cast<char>(fillBuffer);
         if (fillBuffer)
             return static_cast<char>(Mem_FreeDebug(AsAddress(fillBuffer)));

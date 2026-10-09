@@ -13,4 +13,5 @@ static int __fastcall GetLinkedObjectValue(void* self, void* /*edx*/)
     return 0;
 }
 
-HOOK(0x4DB5C0, GetLinkedObjectValue, "auto");
+// LTCG callers (0x4B0610, 0x4B3C10, 0x4B3D30) keep a value in ecx across the call: the original never writes ecx.
+HOOK_KEEP_ECX(0x4DB5C0, GetLinkedObjectValue, 0, "auto");

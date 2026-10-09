@@ -492,7 +492,7 @@ def normalize(code, ea=None):
     bindings renamed to the one canonical name per address (tools/api.py, db/api.json)."""
     import addrfix, api
     code = api.canonicalize(addrfix.fix(code, ea))
-    code = re.sub(r"^(\s*HOOK(?:_METHOD)?\(.*\))\s*$", r"\1;", code, flags=re.M)
+    code = re.sub(r"^(\s*HOOK(?:_METHOD|_KEEP_ECX)?\(.*\))\s*$", r"\1;", code, flags=re.M)
     hr = {"_DWORD": "std::uint32_t", "_WORD": "std::uint16_t", "_BYTE": "std::uint8_t", "_QWORD": "std::uint64_t"}
     if re.search(r"\b_(DWORD|WORD|BYTE|QWORD)\b", code):  # Hex-Rays types copied from the pseudocode
         code = re.sub(r"\b_(DWORD|WORD|BYTE|QWORD)\b", lambda m: hr[m.group(0)], code)
@@ -754,7 +754,7 @@ def work_batch(eas, db, key, model, out_dir=None, review_over=None, ev=None):
         parts[int(m.group(1), 16)] = m.group(2)
     # by the HOOK address inside each file (the model sometimes drops the ### markers): cpp block + following json
     for m in re.finditer(r"```(?:cpp|c\+\+)\s*\n.*?```(?:\s*```json\s*\n.*?```)?", text, re.S):
-        h = re.search(r"HOOK(?:_METHOD)?\(\s*0x([0-9A-Fa-f]+)", m.group(0))
+        h = re.search(r"HOOK(?:_METHOD|_KEEP_ECX)?\(\s*0x([0-9A-Fa-f]+)", m.group(0))
         if h and int(h.group(1), 16) in packets and int(h.group(1), 16) not in parts:
             parts[int(h.group(1), 16)] = m.group(0)
     out = []

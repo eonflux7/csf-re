@@ -12,4 +12,5 @@ static void* __fastcall C_008310b8_GetSelf(C_008310b8* self, void* /*edx*/)
     return self;
 }
 
-HOOK(0x4B2980, C_008310b8_GetSelf, "auto");
+// LTCG callers (0x747EB0) keep a value in ecx across the call: the original never writes ecx.
+HOOK_KEEP_ECX(0x4B2980, C_008310b8_GetSelf, 0, "auto");

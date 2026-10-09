@@ -12,4 +12,5 @@ static int __fastcall GetLinkedObjectField10(void* self, void* /*edx*/)
     return 0;
 }
 
-HOOK(0x4DB5D0, GetLinkedObjectField10, "auto");
+// LTCG callers (0x4B8240) keep a value in ecx across the call: the original never writes ecx.
+HOOK_KEEP_ECX(0x4DB5D0, GetLinkedObjectField10, 0, "auto");

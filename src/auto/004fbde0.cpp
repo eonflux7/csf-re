@@ -14,4 +14,5 @@ static int __cdecl GetGlobalValue_4FBDE0()
     return g_Value_8B0564;
 }
 
-HOOK(0x004FBDE0, GetGlobalValue_4FBDE0, "auto");
+// LTCG callers (0x442BB0) keep a value in ecx across the call: the original never writes ecx.
+HOOK_KEEP_ECX(0x004FBDE0, GetGlobalValue_4FBDE0, 0, "auto");

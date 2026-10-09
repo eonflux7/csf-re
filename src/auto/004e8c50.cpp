@@ -11,4 +11,5 @@ static int __cdecl GetValue8B0554()
     return g_Value8B0554;
 }
 
-HOOK(0x4E8C50, GetValue8B0554, "auto");
+// LTCG callers (0x462D00) keep a value in ecx across the call: the original never writes ecx.
+HOOK_KEEP_ECX(0x4E8C50, GetValue8B0554, 0, "auto");
