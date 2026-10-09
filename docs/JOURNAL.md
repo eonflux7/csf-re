@@ -662,3 +662,17 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - **Tier X**: instead of a separate L pass, waves now take every size; over `--l-max` 600 B the captain's model
   writes (Opus high x2, Codex xhigh x1, `--x-jobs 2`), on the grunts' account like every grunt rung. Codex isn't
   the bottleneck (11% of its 5h window after a 30 min run). Claude call timeout 900 -> 1800 s for big functions.
+- **Tier X works**: Opus wrote 004640d0 (676 B) and the 8 KB / 343-case dispatcher 00465310 first try (gate ok).
+  The dispatcher was later quarantined with 00463fa0 (same crash, read at address 1 inside our DLL): in queue/.
+- **Double dereference** (`*CSF_AT(T*, p, off)`: CSF_AT already IS the value): 38 files, 33 in script_commands,
+  spread through clone examples; 18 of them were "verified" (never executed, or read valid memory by luck). The
+  gate now rejects the form; all 38 back to todo, script_commands' 33 redone clean. Offset/reference/constant
+  checks can't see a dereference too many: only the game (or a diff) does.
+- **Verifier quarantine leak**: a quarantined function becomes todo, so write_pending_ini stopped disabling it,
+  but the deployed DLL still held it: every re-smoke crashed on it, control runs included, and the group was
+  declared "not attributable". This morning's canary and the redo wave's group both hit this. Now quarantined
+  functions get their own `# quarantined` disable lines until the next deploy.
+- **Bisect**: a crash at an EIP in no module names no suspects (stale frames on a smashed stack).
+- script_commands result: 348 done, 0 pending; quarantined 0045bba0 00461a80 00462580 00465310 00463fa0; Opus
+  review 3/37 rejected (8%: a missed __ftol2 truncation, a wrong `this` to a callee, an int return tested as a
+  byte). The stop rule fired on the redo wave (2/2 quarantined, nothing verified yet in that wave): correct call.
