@@ -30,7 +30,7 @@ import monitor as M
 # ---------------------------------------------------------------- processes -> loop stage
 
 STAGES = [
-    ("types", "Types", "captain names classes, field consensus, rename, IDB sync"),
+    ("types", "Types", "captain names classes, then the module; field consensus, rename, IDB sync"),
     ("produce", "Produce", "grunt lanes S/M/L/X, gate, link, commit pending"),
     ("verify", "Verify", "verifier in game: baseline + pending groups, diff"),
     ("review", "Review", "Opus reads ~5% against the original"),
@@ -191,6 +191,13 @@ def _stage_details(L, S, Z, rank):
         D["types"].append(Text(f"captain {cap.get('job', '')} {cc.get('done', 0)}/{cc.get('total', 0)}", style="cyan"))
     if L["phase"].startswith("ida:"):
         D["types"].append(Text("IDB sync + re-decompile", style="cyan"))
+    if L["mods"]:
+        nm = mod_names()
+        named = [nm[m] for m in sorted(L["mods"]) if nm.get(m, m) != m]
+        unnamed = len(L["mods"]) - len(named)
+        D["types"].append(Text(("module " + ",".join(named))[:30] if not unnamed else
+                               f"module unnamed ({unnamed})", style="green" if not unnamed else "yellow",
+                               no_wrap=True, overflow="ellipsis"))
     if Z["classes"]:
         D["types"].append(Text(f"classes {Z['classes'] - Z['cls_open']}/{Z['classes']} named"
                                + (f", {Z['cls_held']} held" if Z["cls_held"] else ""),
@@ -255,7 +262,9 @@ def _now_next(L, Z, rank):
                      if nxt_mod else "nothing ranked")
     total_left = max(0, Z["fns"] - Z["done"] - Z["esc"])
     if s == "types":
-        now = f"Types for {label}: " + ("captain names the module's classes (agentic Opus session)"
+        now = f"Types for {label}: " + ("captain names the module from its named classes"
+                                        if ph == "captain: naming modules" else
+                                        "captain names the module's classes (agentic Opus session)"
                                         if ph.startswith("captain") else "IDB sync + re-decompile of open functions")
         nxt = f"produce: grunt lanes over {total_left} open functions of {label}"
     elif s == "produce":
