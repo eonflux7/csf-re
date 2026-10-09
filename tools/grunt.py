@@ -64,6 +64,7 @@ File rules:
   0x24C bytes, not 0x93 dwords); keep consecutive calls in the original's order. The gate checks both.
 - Fields: use the declared struct fields (types/auto_classes.h; never redefine those structs). For an offset
   that is not a declared field (inside a pad_ array, or no class given) use CSF_AT(type, ptr, 0xOFF).
+  CSF_AT(T, p, off) IS the T stored at p+off (an lvalue): `x = CSF_AT(int, p, 0x10)`, never `*CSF_AT(int*, ...)`.
   Pointer-sized fields declared uint32_t: cast as needed, e.g. reinterpret_cast<C_xxx*>(self->field_0010).
 - Fidelity is behavioral, not bit-for-bit code generation. Floating point: write the natural expression the
   source had (`(float)x / (float)g_ScreenWidth`, a plain float compare); never emulate x87 80-bit intermediates,

@@ -124,6 +124,16 @@ def gate(ea, path, db=None):
                         "ret/call reg, ending in an indirect jmp); offending: " + "; ".join(bad[:3] or ins[:3]))
     if re.search(r"\b(__asm|asm)\b", re.sub(r"__asm\s*\{[^}]*\}", "", src)):
         errs.append("inline asm only as `__asm { ... }` blocks in a naked thunk")
+    # CSF_AT(T, p, off) already IS the T stored at p+off; a `*` in front dereferences that value again. 2026-10-09:
+    # 38 files did this (spread through clone examples) and crashed the game; the gate's offset checks can't see it
+    for m in re.finditer(r"\*\s*CSF_AT\s*\(", re.sub(r"//[^\n]*|/\*.*?\*/", "", src, flags=re.S)):
+        before = re.sub(r"//[^\n]*|/\*.*?\*/", "", src, flags=re.S)[:m.start()].rstrip()
+        if not re.search(r"[\w)\]]$", before) or re.search(r"\b(return|case|else|do)$", before):  # unary `*`
+            errs.append("double dereference: `*CSF_AT(T*, p, off)` reads the pointer at p+off and then dereferences "
+                        "it, because CSF_AT(T, p, off) already IS the T at p+off. For the value at p+off write "
+                        "CSF_AT(T, p, off). If the original really loads a pointer there and dereferences it, write "
+                        "two steps: `T* q = CSF_AT(T*, p, off);` then `*q`")
+            break
     hooks = re.findall(r"HOOK(?:_METHOD)?\(\s*0x([0-9A-Fa-f]+)\s*,\s*&?([\w:]+)", src)
     if len(hooks) != 1 or int(hooks[0][0], 16) != ea:
         errs.append(f"need exactly one HOOK(0x{ea:X}, Fn, \"module\") line; found {hooks}")
@@ -210,6 +220,7 @@ FAIL_KINDS = [
     ("string", r"bare string literal"),
     ("hook", r"need exactly one HOOK"),
     ("asm", r"inline asm"),
+    ("deref", r"double dereference"),
     ("include", r"include not allowed|come from #include \"globals.h\""),
     ("alloc", r"Mem_Alloc"),
     ("review", r"reviewer compared your file"),
