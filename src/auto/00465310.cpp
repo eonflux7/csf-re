@@ -1,0 +1,803 @@
+// Script command dispatcher (0x00465310): routes an int16 mission-script command id to its handler.
+#include <cstdint>
+#include <cstddef>
+#include <cstring>
+#include "globals.h"
+#include "hook.h"
+#include "core/memory.h"
+#include "types/auto_classes.h"
+
+namespace {
+// Every handler receives the same three machine words (context node, command, argument node),
+// each one declaring them with its own pointer/integer types. This forwards a word to any of them.
+struct HandlerArg {
+    uintptr_t word;
+    template <class T> operator T() const { return (T)word; }
+};
+}
+
+CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
+
+CSF_FUNC(int32_t, __cdecl, GetGlobal8afc78, 0x0042D6D0, ());
+CSF_FUNC(int, __fastcall, Scene_ClearCurrentIndexState, 0x0044F830, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, SetCurrentIndexInvalid, 0x0044F8A0, (void* self, void*));
+CSF_FUNC(int, __stdcall, ComputeDistanceToPoint, 0x0045AAF0, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(float*, __stdcall, ApplyArithmeticOpToResult, 0x0045AB40, (int a1, int a2, float* a3));
+CSF_FUNC(void, __stdcall, StoreColorAnimDerivedValue, 0x0045ABF0, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, SumActiveEntryWeights, 0x0045AC20, (int resultHolderArg, int a2, int a3));
+CSF_FUNC(void, __stdcall, UpdateTaskValueFromObjectLookup, 0x0045AC90, (int a1, int , int a3));
+CSF_FUNC(unsigned int, __stdcall, Subobj_StoreGlobalCounterAsFloat, 0x0045AD20, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, ResetVectorAndInvalidateIndices, 0x0045AD60, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, ResolveAndCacheObjectField, 0x0045ADA0, (int outputHolder, int , int keyRef));
+CSF_FUNC(int, __stdcall, StoreGlobalStateCcIntoTarget, 0x0045ADF0, (uint32_t targetRecord, int unusedArg2, int unusedArg3));
+CSF_FUNC(int, __stdcall, StoreGlobalStateField84IntoTarget, 0x0045AE10, (uint32_t targetRecord, int unusedArg2, int unusedArg3));
+CSF_FUNC(int, __stdcall, UpdateCombinedFlag, 0x0045AE30, (void* target, int , void** pair));
+CSF_FUNC(int, __stdcall, UpdateOwnerFlagFromPairFlags, 0x0045AE70, (int ownerObject, int , uint32_t* flagPair));
+CSF_FUNC(int, __stdcall, SetLookupMissFlag, 0x0045AEB0, (int a1, int , int a3));
+CSF_FUNC(char, __stdcall, UpdateSceneControlFlag, 0x0045AEF0, (void* a1, int , void* a3));
+CSF_FUNC(bool, __stdcall, EvaluateSceneQueryAndStoreFlag, 0x0045AF30, (int a1, int a2, int a3));
+CSF_FUNC(bool, __stdcall, EvaluateSubObjectQueryAndStoreFlag, 0x0045AF60, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, EvaluateSceneLinkAndStoreFlag, 0x0045AF90, (void* a1, int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, SetLookupValidFlagFromGlobal, 0x0045AFD0, (int a1, int a2, int a3));
+CSF_FUNC(bool, __stdcall, WriteCallbackResultFlag, 0x0045B000, (int a1, int a2, int a3));
+CSF_FUNC(int, __fastcall, ResolveNestedFlagRecord, 0x0045B030, (void* self, void* , int a2, int a3, uintptr_t a4));
+CSF_FUNC(int, __fastcall, InitSlotFromSourceRecord, 0x0045B060, (void* self, void* , int , int , void* a4));
+CSF_FUNC(void, __fastcall, Entity_RefreshScalarFromHandle, 0x0045B090, (void* self, void* , int , int , int));
+CSF_FUNC(int, __fastcall, ResolveSceneHandleAndDispatch, 0x0045B0C0, (int* self, void* , int , int , int));
+CSF_FUNC(int, __stdcall, ResolveGlobalChainResult, 0x0045B0F0, (int , int , int a3));
+CSF_FUNC(int, __stdcall, ResolveChainLookupResult, 0x0045B120, (int , int , int a3));
+CSF_FUNC(int, __stdcall, ResolveSlotLookupResult, 0x0045B150, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, ResolveEntryDispatchResult, 0x0045B190, (int a1, int a2, int a3));
+CSF_FUNC(char, __stdcall, ApplyEntryFloatIfEnabled, 0x0045B1D0, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, DispatchNestedKeyPair, 0x0045B210, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, DispatchNestedKeyPairWithGlobal, 0x0045B240, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, ResolveHandleFieldEntry, 0x0045B270, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, FindEntryMatchingFloatKeyAndSetFlag, 0x0045B290, (int a1, int , int a3));
+CSF_FUNC(int, __stdcall, DispatchFloatFieldToDefaultDestination, 0x0045B300, (int a1, int a2, int a3));
+CSF_FUNC(void*, __stdcall, PostFlaggedPositionOrder, 0x0045B330, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, ForwardToDefaultDestinationIfEnabled, 0x0045B390, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, ForwardFloatAndFlagToDefaultDestination, 0x0045B400, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, DispatchToDefaultDestination, 0x0045B440, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, QueryBoundsFromSceneNodes, 0x0045B470, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, SubmitTimedRequestAndResolve, 0x0045B4E0, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, ComputeAngleAndInvokeProviderSlot8, 0x0045B570, (int , int , int a3));
+CSF_FUNC(char, __fastcall, ProcessEntryWithCachedProvider, 0x0045B5F0, (void* self, void* , int a2, int a3, int a4));
+CSF_FUNC(int, __stdcall, SubmitTimedVectorRecord, 0x0045B630, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, BuildAndSubmitVec3Record, 0x0045B6E0, (int a1, int a2, int* a3));
+CSF_FUNC(int, __stdcall, DispatchGlobalSubObjectValue, 0x0045B760, (int , int , int* a3));
+CSF_FUNC(int, __stdcall, ApplyPairStateToGlobalSubObject, 0x0045B7B0, (int , int , int* pairPointers));
+CSF_FUNC(int, __stdcall, DispatchLinkedValuesToGlobalSubObject, 0x0045B810, (int , int , int* a3));
+CSF_FUNC(char, __stdcall, ApplySceneMenuModeFromRequest, 0x0045B870, (int , int , uint32_t requestHandle));
+CSF_FUNC(int, __stdcall, ResolvePairHandlesWithGlobal, 0x0045B940, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, StoreChainLookupResultByte, 0x0045B970, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, ResolveNestedFieldEntry, 0x0045B9A0, (int a1, int a2, int a3));
+CSF_FUNC(int, __fastcall, StoreSecondByteAndNotifyScene, 0x0045B9C0, (void* self, void* , int a2, int a3, uint32_t a4));
+CSF_FUNC(int, __stdcall, Scene_ForwardDescriptorToSceneHandler, 0x0045B9F0, (int , int , int descriptorRef));
+CSF_FUNC(int, __stdcall, SetSceneEditIntegerFromNestedFloat, 0x0045BA10, (int a1, int a2, int a3));
+CSF_FUNC(char, __stdcall, ForwardSceneRecordByteToControl, 0x0045BA40, (int , int , int a3));
+CSF_FUNC(int, __stdcall, UpdateGlobalStateFadeFromObjectFlag, 0x0045BA60, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, ForwardHandleFloatToGlobalState, 0x0045BAC0, (int a1, int a2, int a3));
+CSF_FUNC(int, __fastcall, SyncCoordsFromLookup, 0x0045BDF0, (void* self, void* , int a2, int a3, int a4));
+CSF_FUNC(int, __stdcall, CopyTableEntryFromHandleIndex, 0x0045BE80, (int a1, int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, CopySceneControlBounds, 0x0045BEF0, (int outputHolder, int unusedArg, int handleRef));
+CSF_FUNC(int, __stdcall, CountEntriesForKey, 0x0045BF30, (int a1, int , int a3));
+CSF_FUNC(unsigned int, __stdcall, UpdateFloatFromSceneHandle, 0x0045BFC0, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, ComputeHandlePairDistance, 0x0045C020, (int a1, int a2, int* a3));
+CSF_FUNC(void, __stdcall, WriteFacingAngleDegrees, 0x0045C0C0, (int a1, int a2, int arg8));
+CSF_FUNC(void, __stdcall, ComputeAngleBetweenEntitiesDegrees, 0x0045C130, (void* angleHolder, int , uint32_t* entityRefPair));
+CSF_FUNC(int, __stdcall, ComputeFacingAngleDegreesToTarget, 0x0045C1D0, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(unsigned int, __stdcall, RefreshHandleFieldFloat, 0x0045C260, (void* a1, void* , void* a3));
+CSF_FUNC(unsigned int, __stdcall, ResolveSceneObjectValueToFloat, 0x0045C2E0, (int a1, int , int a3));
+CSF_FUNC(int, __stdcall, RollValueInRangeFromEndpoints, 0x0045C350, (void* outObj, int , uint32_t* endpoints));
+CSF_FUNC(int, __stdcall, ComputeGlobalStateModulo, 0x0045C3E0, (uint32_t a1, uint32_t a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, UpdateHandleBoundFloatField, 0x0045C440, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, UpdateHandleBoundFloatFieldFromMetric, 0x0045C4A0, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, UpdateHandleRecordFloatValue_45C500, 0x0045C500, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, UpdateHandleRecordFloatValue_45C570, 0x0045C570, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, WriteEntityActionScalarToOutput, 0x0045C5E0, (void* outScalar, void* , uint32_t* actorRef));
+CSF_FUNC(int, __fastcall, CopyActiveValueToOutput, 0x0045C6F0, (void* self, void* , void* outSlot, int , int));
+CSF_FUNC(void, __stdcall, ResetAndRefreshScalar, 0x0045C720, (void* a1, void* a2, void* a3));
+CSF_FUNC(int, __stdcall, CopyResolvedHandleValueToSlot_45C760, 0x0045C760, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, CopyResolvedHandleField1F8ToSlot, 0x0045C7C0, (int a1, int a2, int a3));
+CSF_FUNC(int32_t*, __stdcall, ResetVectorAndLoadSlotPosition, 0x0045C820, (void* a1, void* , void* a3));
+CSF_FUNC(uint32_t*, __stdcall, StoreResolvedHandleValue_45C8C0, 0x0045C8C0, (uint32_t holderAddr, uint32_t , uint32_t handleRefAddr));
+CSF_FUNC(int, __stdcall, ResolveHandleTargetIntoState, 0x0045C910, (int stateHolder, int unusedArg, int requestRef));
+CSF_FUNC(int, __stdcall, ResolveHandleIntoOwnerSlot, 0x0045C970, (int ownerRef, int unusedArg, int entryRef));
+CSF_FUNC(C_00833ee8*, __stdcall, ResolveSceneObjectHandleAndCache, 0x0045C9C0, (void* outputHolder, int , void* handleHolder));
+CSF_FUNC(int, __stdcall, StoreResolvedHandleValue_45CA10, 0x0045CA10, (int holderArg, int , int handleRefArg));
+CSF_FUNC(int, __stdcall, CopyResolvedRecordValueToSlot, 0x0045CA60, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, CopyResolvedHandleValueToSlot_45CAC0, 0x0045CAC0, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, StoreResolvedHandleResult, 0x0045CB20, (int a1, int a2, int a3));
+CSF_FUNC(unsigned int, __stdcall, StoreSceneControlValueFromHandle, 0x0045CBA0, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, UpdateEntryStateFromHandle, 0x0045CC20, (int a1, int a2, int a3));
+CSF_FUNC(CCharActionFsm*, __stdcall, CharActionFsm_ResolveHandleAndStore, 0x0045CC90, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, LookupActiveEntryIntoRecord, 0x0045CCF0, (uint32_t resultHolder, int , uint32_t keySource));
+CSF_FUNC(int, __stdcall, SceneHandle_SetReadyFlagFromTask, 0x0045CD80, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, ResolveSceneHandleAndSetFlag, 0x0045CDE0, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, ResolveSceneHandleAndSetActiveFlag, 0x0045CE50, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, ResolveSceneHandleAndSetEntryStateFlag, 0x0045CEC0, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, Scene_SetResolvedHandleFlag, 0x0045CF30, (int a1, int , int a3));
+CSF_FUNC(int, __stdcall, EvaluateSceneHandleFlag, 0x0045CF90, (int a1, int a2, int a3));
+CSF_FUNC(char, __stdcall, UpdateSlotStatusByte, 0x0045D000, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(char, __stdcall, UpdateActiveStateFlag, 0x0045D060, (void* a1, void* , void* a3));
+CSF_FUNC(int, __stdcall, UpdateControlFlagFromHandle, 0x0045D0D0, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, Scene_ResolveHandleAndSetFlag, 0x0045D140, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, RefreshHandleEntryFlag, 0x0045D1C0, (int a1, int a2, int a3));
+CSF_FUNC(char, __stdcall, ResolveHandleAndStoreReadyState, 0x0045D220, (int stateHolder, int unusedArg, int messageRef));
+CSF_FUNC(int, __stdcall, HandleRecord_ResolveAndRefreshFlag, 0x0045D270, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, LookupSceneEntryAndCopyFlag, 0x0045D2C0, (int ownerRef, int unusedArg, int keyRef));
+CSF_FUNC(int, __stdcall, ResolveHandleStateByteOrFallback, 0x0045D300, (void* stateHolder, void* , void** requestRecord));
+CSF_FUNC(uint32_t*, __stdcall, UpdateFlagFromResolvedHandle, 0x0045D390, (int a1, int a2, int a3));
+CSF_FUNC(uint32_t*, __stdcall, UpdateFlagFromResolvedHandleBit2, 0x0045D3E0, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, EvaluateFlaggedPairMatch, 0x0045D430, (int ownerRecord, int , uint32_t* operands));
+CSF_FUNC(int, __stdcall, Scene_LookupAndMarkEntry, 0x0045D4A0, ([[maybe_unused]] int a1, [[maybe_unused]] int a2, int a3));
+CSF_FUNC(int, __fastcall, ResolveSceneEntryAndArm, 0x0045D4D0, (void* self, void* , int a2, int a3, void* a4));
+CSF_FUNC(char, __fastcall, CaptureEventTargetAndAdvance, 0x0045D530, (void* self, void* , void* , void* , void* a4));
+CSF_FUNC(int, __stdcall, DispatchRecordAction, 0x0045D570, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, DispatchFlaggedRecordAction, 0x0045D5C0, (int a1, int a2, uint32_t* a3));
+// Note: the packet lists 0x0045D610 as "S_0045d610's vtable" (CSF_VTBL(0x0045D610)); it is the call target below.
+CSF_FUNC(int, __fastcall, S_0045d610_SyncBoundIdFromRequest, 0x0045D610, (S_0045d610* self, void* , int , int , uint32_t* requestArgs));
+CSF_FUNC(char, __stdcall, ApplyEntityRectToOverlayIfEnabled, 0x0045D6F0, (int , int , uint32_t* eventArgs));
+CSF_FUNC(int, __stdcall, MissionMenu_SelectEntryFromArgs, 0x0045D790, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, MenuMission_ApplyRecordsAndDispatch, 0x0045D7E0, (int , int , uint32_t* a3));
+CSF_FUNC(uint32_t*, __stdcall, DispatchStringAndValueToSink, 0x0045D840, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, ForwardNestedRecordValueToSink, 0x0045D8A0, (int , int , uint32_t* recordRef));
+CSF_FUNC(uint32_t*, __stdcall, RecordTable_ResolveSlotPointer, 0x0045D8E0, (uint32_t a1, uint32_t a2, uint32_t a3));
+CSF_FUNC(void, __stdcall, ApplyIndexedRecordPoseToGameTarget, 0x0045D940, (int unusedFirstArg, int unusedSecondArg, uint32_t* argPack));
+CSF_FUNC(char, __stdcall, ScanEntriesSetFlagByKey, 0x0045DA10, (int a1, int , int a3));
+CSF_FUNC(char, __stdcall, SetFlagForMatchingDestinationEntry, 0x0045DA80, (int sourceRef, int , int valueRef));
+CSF_FUNC(int, __stdcall, SendIndexedMessageToDefaultDestination, 0x0045DAF0, (int , int , uint32_t* wrapperArgs));
+CSF_FUNC(C_0082d410*, __stdcall, DispatchStringPayloadWithFloatArg, 0x0045DB90, (int , int , uint32_t* a3));
+CSF_FUNC(unsigned int*, __stdcall, DispatchSceneRequestFromArgs, 0x0045DBE0, (int , int , uint32_t* a3));
+CSF_FUNC(int, __fastcall, ResolveHandleSlotIfValid, 0x0045DC80, (int* self, void* , int , int , int));
+CSF_FUNC(C_0085ec18*, __stdcall, FindOrCreateRegionForSceneId, 0x0045DCA0, (int , int , uint32_t* records));
+CSF_FUNC(void, __stdcall, ApplyFloatPairToSceneEntry, 0x0045DDF0, (int, int, uint32_t* slotArray));
+CSF_FUNC(C_0085e7b8*, __stdcall, Scene_LinkObjectPairAndRun, 0x0045DE60, (int , int , uint32_t* recordRefs));
+CSF_FUNC(C_0085e7b8*, __stdcall, ResolveSceneSlotObject, 0x0045DF80, (int , int , uint8_t* holder));
+CSF_FUNC(C_0085e760*, __stdcall, Scene_ResolveAndInvokeSlotMethod, 0x0045DFE0, (int , int , uint32_t* refArgs));
+CSF_FUNC(char, __stdcall, ApplySceneControlFromHandle, 0x0045E040, (int , int , int handle));
+CSF_FUNC(char, __stdcall, ApplySceneControlFromHandleCleared, 0x0045E070, (int , int , int handle));
+CSF_FUNC(int, __fastcall, ProcessHandleTargetCommand, 0x0045E0A0, (void* self, void* , [[maybe_unused]] int a2, [[maybe_unused]] int a3, uint32_t a4));
+CSF_FUNC(int, __fastcall, ApplyPositionRecordToSceneObject, 0x0045E190, (void* self, void* , int , int , int a4));
+CSF_FUNC(int, __fastcall, ApplyHandleStateUpdate, 0x0045E280, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __fastcall, IssueMoveOrderFromRequest, 0x0045E380, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __fastcall, ApplyStateEventToSceneControl, 0x0045E480, (void* self, void* , [[maybe_unused]] int a2, [[maybe_unused]] int a3, int a4));
+CSF_FUNC(int, __fastcall, ApplyHandleStateToSceneObject, 0x0045E570, (void* self, void* , int , int , int a4));
+CSF_FUNC(int, __fastcall, ApplyHandleRecordToTarget, 0x0045E670, (void* self, void* , int unusedArg2, int unusedArg3, uint32_t* updateArgs));
+CSF_FUNC(int, __stdcall, SceneHandle_ResolveAndDispatch_45E770, 0x0045E770, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __fastcall, RefreshRectFromHandleEntry, 0x0045E7C0, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __fastcall, IssueCommandForResolvedHandle, 0x0045E840, (void* self, void* , [[maybe_unused]] int a2, [[maybe_unused]] int a3, uint32_t* a4));
+CSF_FUNC(int, __stdcall, SceneHandle_ForwardParamsToChild, 0x0045E8D0, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, DispatchSceneEventToHandleComponent, 0x0045E9A0, (int , int , uint32_t* argPtrs));
+CSF_FUNC(int, __stdcall, SendStateEventToHandleObject, 0x0045EA70, (int , int , int a3));
+CSF_FUNC(C_00833ee8*, __stdcall, ResolveSceneEntryHandle, 0x0045EB40, (int a1, int a2, int a3));
+CSF_FUNC(int, __fastcall, ApplyFacingRecordToSceneObject, 0x0045EB80, (void* self, void* , int , int , std::uint32_t* a4));
+CSF_FUNC(uint32_t*, __stdcall, SceneHandle_ResolveAndDispatch_45EC50, 0x0045EC50, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, ForwardSceneHandleCommand, 0x0045ECA0, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, ActivateSceneEntityFromRef, 0x0045ECF0, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, DeactivateSceneEntityFromRef, 0x0045ED30, (int a1, int a2, int a3));
+CSF_FUNC(int, __fastcall, CommandHandler_ApplyResolvedTarget, 0x0045ED70, (void* self, void* , int , int , uint32_t* a4Ptr));
+CSF_FUNC(int, __fastcall, SceneCommand_CopyTargetPosition, 0x0045EDF0, (void* self, void* edx, int a2, int a3, int* a4));
+CSF_FUNC(int, __stdcall, Scene_ResolveHandleOrFallback, 0x0045EE70, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __fastcall, UpdateResolvedHandleTarget, 0x0045EEF0, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __fastcall, SendPlacementCommandForHandle, 0x0045EF70, (void* self, void* , int a2, int a3, uint32_t* a4));
+CSF_FUNC(int, __fastcall, ApplyRecordCommandToSceneEntity, 0x0045F050, (void* self, void* , int , int , std::uint32_t* argSlots));
+CSF_FUNC(int, __fastcall, SceneHandle_ResolveAndSendMoveCommand, 0x0045F100, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __fastcall, UpdateTargetFromResolvedHandle, 0x0045F1C0, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __stdcall, SceneHandle_ResolveAndDispatch_45F240, 0x0045F240, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, SceneHandle_ResolveAndDispatchCode21, 0x0045F2B0, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, DispatchSceneObjectEvent, 0x0045F320, (int , int , uint32_t* eventArgs));
+CSF_FUNC(int, __stdcall, DispatchSceneObjectEventCode22, 0x0045F380, (int , int , uint32_t* eventArgs));
+CSF_FUNC(int, __fastcall, ApplyHandleTargetAndClearFlag, 0x0045F3E0, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __fastcall, UpdateTargetFromHandleEntry, 0x0045F460, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __fastcall, SceneHandle_ApplyTargetRequest, 0x0045F4E0, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(char, __stdcall, SceneObject_SyncPositionFromHandleEvent, 0x0045F560, (int , int , uint32_t* eventPayload));
+CSF_FUNC(void, __stdcall, ApplySceneSlotUpdate, 0x0045F650, (int , int , uint32_t* message));
+CSF_FUNC(int, __fastcall, CopyNodeRangeIntoObject, 0x0045F710, (void* self, void* , int , int , void* a4));
+CSF_FUNC(int, __fastcall, CopyRangeRecordIntoObject, 0x0045F750, (void* self, void* , int , int , void* a4));
+CSF_FUNC(int, __fastcall, SceneTarget_ApplyFromMessage, 0x0045F790, (uint8_t* self, void* , [[maybe_unused]] int a2, [[maybe_unused]] int a3, uint32_t* a4));
+CSF_FUNC(int, __fastcall, SceneLink_ResolveAndSync, 0x0045F810, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __fastcall, IssueScaledHandleCommand, 0x0045F8A0, (void* self, void* , int , int , uint32_t* paramRefs));
+CSF_FUNC(int, __fastcall, SceneHandle_RequestAndCopyPair, 0x0045F9A0, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __stdcall, DispatchSceneMessageToHandleControl, 0x0045FA60, (int , int , uint32_t* messageArgs));
+CSF_FUNC(int, __stdcall, RouteSceneHandleMessage, 0x0045FAD0, (int , int , uint32_t* argsRef));
+CSF_FUNC(int, __stdcall, ApplyValueToHandleControl, 0x0045FB50, (int , int , int* a3));
+CSF_FUNC(int, __stdcall, ClampAndApplyValueFromArgs, 0x0045FBE0, (int , int , uint32_t* a3));
+CSF_FUNC(int, __fastcall, UpdateTargetPointFromHandle, 0x0045FC50, (void* self, void* , int a2, int a3, int ownerRef));
+CSF_FUNC(uint32_t*, __stdcall, SendMessage29ToResolvedHandle, 0x0045FCE0, (int a1, int a2, int a3));
+CSF_FUNC(int, __fastcall, DispatchPositionMessageToHandle, 0x0045FD30, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __fastcall, ProcessTrackedHandleUpdate, 0x0045FDE0, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __fastcall, Scene_ApplyHandleEntry, 0x0045FE70, (void* self, void* , int a2, int a3, uint32_t* a4));
+CSF_FUNC(int, __fastcall, Scene_ApplyHandleEntryWithFlags, 0x0045FEF0, (void* self, void* , int a2, int a3, uint32_t* a4));
+CSF_FUNC(int*, __stdcall, RefreshFlagFromHandleEntry, 0x0045FF70, (int a1, int , int a3));
+CSF_FUNC(int, __stdcall, UpdateTargetFlagFromHandle, 0x0045FFC0, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __fastcall, ApplyHandleRecordAndSendCommand41, 0x00460030, (void* self, void* , int , int , uint32_t* ownerRef));
+CSF_FUNC(int, __fastcall, ForwardMoveOrderToSceneEntity, 0x004600A0, (uint8_t* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __fastcall, NodeHandle_ApplyTargetAndClearFlag, 0x00460140, (void* self, void* , [[maybe_unused]] int a2, [[maybe_unused]] int a3, void* a4));
+CSF_FUNC(int, __stdcall, TransferResolvedObjectToContainer, 0x004601A0, (int , int , uint32_t* a4));
+CSF_FUNC(int, __stdcall, DispatchHandleRequestFromRef, 0x00460290, ([[maybe_unused]] int a1, [[maybe_unused]] int a2, int a3));
+CSF_FUNC(int, __stdcall, SceneEntry_ApplyTrackBinding, 0x00460340, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, DispatchHandleEventToEntity, 0x004603D0, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, SetSceneObjectFlagFromRef, 0x00460450, (int , int , uint32_t* refPtr));
+CSF_FUNC(int, __stdcall, SceneHandle_SyncFieldFromRecord, 0x00460490, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, SceneHandle_CopyAltFieldFromRecord, 0x004604F0, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, SceneHandle_SyncComponentFieldAt2FC, 0x00460550, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, SceneHandle_SyncComponentField300FromRecord, 0x004605B0, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, SceneHandle_SyncTrailingFieldFromRecord, 0x00460610, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, QueryProviderStateForRequest, 0x00460670, (int a1, int a2, int a3));
+CSF_FUNC(char, __stdcall, ApplyClampedFactorToSelectedProvider, 0x004606C0, (int , int , uint32_t* argRefs));
+CSF_FUNC(int, __stdcall, InterpolateBetweenTwoPositions, 0x00460780, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, DispatchTruncatedArgIfNonZero, 0x00460830, (int unusedArg1, int unusedArg2, int* argBlock));
+CSF_FUNC(int, __stdcall, DispatchSceneLookupFromArg, 0x00460890, (int , int , int a3));
+CSF_FUNC(int, __stdcall, DispatchResolvedHandleCommand, 0x004608D0, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(unsigned int, __stdcall, ApplyCharActionFromHandleRef, 0x00460940, (int , int , uint32_t* commandRefs));
+CSF_FUNC(int, __stdcall, DispatchSceneObjectCommand, 0x00460AA0, (int , int , int* a5));
+CSF_FUNC(int, __fastcall, ApplyHandleMessageToControl, 0x00460BB0, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __stdcall, DispatchHandleEntryCommand, 0x00460C30, (int , int , uint32_t* commandSource));
+CSF_FUNC(int, __stdcall, ResolveHandleAndDispatchUpdate, 0x00460CA0, (int a1, int a2, uint32_t* eventArgs));
+CSF_FUNC(int, __fastcall, ApplyHandleRecordToGuiControl, 0x00460D30, (void* self, void* , int a2, int a3, uint32_t* a4));
+CSF_FUNC(int, __stdcall, RouteHandleEventToSceneControl, 0x00460DC0, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, ResolveHandleAndStoreTableValue, 0x00460E20, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, DispatchResolvedHandleWithScaledFloat, 0x00460E60, (int , int , uint32_t* argsBlock));
+CSF_FUNC(uint32_t*, __stdcall, SendMessage38ToResolvedComponent, 0x00460EB0, (uint32_t a1, uint32_t a2, uint32_t a3));
+CSF_FUNC(int, __fastcall, CopyHandleRecordIntoState, 0x00460F00, (void* self, void* , int , int , int a4));
+CSF_FUNC(int, __stdcall, SetSceneObjectFlag200FromRecord, 0x00460F70, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, SceneHandle_DispatchAction, 0x00460FD0, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, SceneHandle_DispatchActionOnHandle, 0x00461040, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, SceneHandle_ApplyFlagBitFromRecord, 0x004610B0, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, SceneHandle_ApplyFlagBit80FromRecord, 0x00461110, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, DispatchByteValueToHandleObject, 0x00461170, (int , int , uint32_t* argBlock));
+CSF_FUNC(int, __stdcall, DispatchPayloadByteToHandleObject, 0x004611E0, (int , int , uint32_t* argBlock));
+CSF_FUNC(int, __stdcall, ResolveHandleAndForwardValue, 0x00461250, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, DispatchSceneObjectEventCode37, 0x004612B0, (int , int , uint32_t* eventArgs));
+CSF_FUNC(int, __stdcall, MenuExtras_ApplyDescriptionFromRecord, 0x00461310, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, ResolveHandleAndReleaseIfFound, 0x00461370, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, ApplySceneHandleFlag40, 0x004613B0, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(C_00833ee8*, __stdcall, SceneHandle_ResolveAndActivate, 0x00461410, (int , int , int a3));
+CSF_FUNC(C_008342e8*, __stdcall, ResolveHandleAndApplyString, 0x00461480, (int , int , uint32_t* handleRef));
+CSF_FUNC(int, __stdcall, SceneDispatch_ResolveHandleFromRef, 0x004614E0, (int , int , uint32_t* refPointers));
+CSF_FUNC(int, __stdcall, DispatchPositionToSceneEntity, 0x00461550, (int , int , uint32_t* argRefs));
+CSF_FUNC(int, __stdcall, ProcessHandleActionMessage, 0x00461660, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, DispatchDescriptorPayload, 0x004616E0, (int unusedFirst, int unusedSecond, int descriptorRef));
+CSF_FUNC(void, __stdcall, StoreComputedFloatInSubobject, 0x00461720, (int a1, int a2, int a3));
+CSF_FUNC(int, __fastcall, BuildLookupFromThreeStrings, 0x00461750, (void* self, void* , int , int , uint32_t* nameRefs));
+CSF_FUNC(int, __fastcall, DispatchNamedEntryToGlobal, 0x00461800, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(unsigned int, __stdcall, Scene_DispatchObjectsByState, 0x004618A0, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, ReadEntryValuesIntoResult_461A10, 0x00461A10, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, ReadEntryValuesIntoResult_461A80, 0x00461A80, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, LookupPairOutputBySlot, 0x00461AF0, (int outRecord, int unusedA2, int keySource));
+// The gate reports 0x461BA0 reads ecx on entry: bound as a method of the interpreter.
+CSF_FUNC(int, __fastcall, SceneMenu_ResetAndFillContextRange, 0x00461BA0, (void* self, void* edx, int a1, int a2, int a3));
+CSF_FUNC(int, __fastcall, ResetObjectStateAndReleaseChild, 0x00461BE0, (void* self, void* , int , int , int));
+CSF_FUNC(int, __stdcall, ResetFoundSceneEntry, 0x00461C60, ([[maybe_unused]] int a1, [[maybe_unused]] int a2, int a3));
+CSF_FUNC(int, __stdcall, DispatchCategoryEntryIfValid, 0x00461CD0, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __stdcall, DispatchEntryBlockIfResultNonNegative, 0x00461D40, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(int, __fastcall, RequestPathToTargetPosition, 0x00461DB0, (void* self, void* , int , int , int* requestArgs));
+// The gate reports 0x461EF0 reads ecx on entry: bound as a method of the interpreter.
+CSF_FUNC(char, __fastcall, TrySubmitUnitOrder, 0x00461EF0, (void* self, void* edx, int , int , int* orderSources));
+CSF_FUNC(char, __fastcall, TryStartGlobalObjectRequest, 0x00461FE0, (void* self, void* , int , int , int* a4));
+CSF_FUNC(char, __stdcall, DispatchGlobalValueRequest, 0x004620F0, (int , int , int* paramNodes));
+CSF_FUNC(char, __stdcall, NotifyGlobalValueUpdate, 0x004621C0, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(void, __stdcall, SubmitEntityPlacementToSubsystem, 0x00462220, (int , int , int32_t* a3));
+CSF_FUNC(int, __stdcall, SubmitPositionedDrawCommand, 0x004622B0, (int , int , uint32_t* argRefs));
+CSF_FUNC(int, __stdcall, Scene_DispatchHandleEvent, 0x00462370, (int , int , uint32_t* a3));
+CSF_FUNC(unsigned int, __stdcall, DispatchResolvedTargetRequest, 0x004623F0, (int a1, int unusedSecond, uint32_t* requestArgs));
+CSF_FUNC(int, __stdcall, ApplyColorAnimForHandleEvent, 0x00462460, (int unusedArg1, int unusedArg2, uint32_t* eventRef));
+CSF_FUNC(int, __fastcall, ResetLinkedSceneObjectsExceptSelf, 0x004624E0, (void* self, void* , int , int , void* ownerRef));
+CSF_FUNC(char, __stdcall, Scene_SyncEntityTransformAndIssueOrder, 0x00462580, (int , int , void* requestPointer));
+CSF_FUNC(int, __stdcall, SceneMenu_ResetSelectionAndRefresh, 0x004626D0, (int , int , int));
+CSF_FUNC(int, __stdcall, GuiControl_ApplyToggleFromHandle, 0x00462750, (int , int , uint32_t* argPack));
+CSF_FUNC(int, __stdcall, ApplyValueCommandToSceneHandle, 0x00462810, (int , int , void* commandRecord));
+CSF_FUNC(int, __fastcall, SyncTargetFromHandle, 0x00462900, (void* self, void* , [[maybe_unused]] int stackArgA, [[maybe_unused]] int stackArgB, uint32_t* args));
+CSF_FUNC(char, __stdcall, DispatchThroughChainedObject_462DA0, 0x00462DA0, (int a1, int a2, int a3));
+CSF_FUNC(char, __stdcall, DispatchThroughChainedTarget, 0x00462DC0, (int a1, int a2, int a3));
+CSF_FUNC(char, __stdcall, DispatchThroughChainedObject_462DE0, 0x00462DE0, (int a1, int a2, int a3));
+CSF_FUNC(int, __fastcall, ApplyCachedEntryValueToTarget, 0x00462E00, (void* self, void* edx, int a1, int a2, int a3));
+CSF_FUNC(int, __fastcall, ApplyCachedEntryValueToTargetFlagged, 0x00462E60, (void* self, void* edx, int a1, int a2, int a3));
+CSF_FUNC(int, __fastcall, ApplyCachedEntryValueToTargetFloat, 0x00462EC0, (void* self, void* edx, int a1, int a2, int a3));
+CSF_FUNC(int, __fastcall, ApplyCachedEntryValueWithFlagToTarget, 0x00462F20, (void* self, void* edx, int a1, int a2, int a3));
+CSF_FUNC(char, __stdcall, UpdateTargetCellFromEntityHandle, 0x00462F80, (void* ownerRecord, int , void** handleRecordRef));
+CSF_FUNC(int, __stdcall, ResolveEntryHitFromRequest, 0x00463060, (int a1, int , int a3));
+CSF_FUNC(int, __stdcall, ResolveVectorSampleFromTable, 0x00463160, (int outputHolderAddr, int , uint32_t* requestArgs));
+CSF_FUNC(unsigned int, __fastcall, LookupPositionForKeyIntoRecord, 0x00463230, (void* self, void* , uint32_t* outRecord, int , uint32_t* keySource));
+CSF_FUNC(int, __stdcall, SyncObjectSlotFromPosition, 0x00463310, (void* ownerObject, int , void* positionSource));
+CSF_FUNC(int, __stdcall, ResolveEntityHitPosition, 0x00463400, (int outputRecord, [[maybe_unused]] int unusedArg, uint32_t* entityRef));
+CSF_FUNC(char, __stdcall, PairLink_ResolveTargetAndRebind, 0x00463500, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(char, __fastcall, Cursor_AdvanceToNextEntry, 0x00463580, (void* self, void* , int a2, int a3, void* a4));
+CSF_FUNC(int, __fastcall, AdvanceIndexedTableValue, 0x004635D0, (void* self, void* , int , int , int));
+CSF_FUNC(char, __fastcall, RefreshActiveEntryIndex, 0x00463600, (void* self, void* , int a2, int a3, uint32_t a4));
+CSF_FUNC(int, __fastcall, AdvanceIndexedSlotValue, 0x00463640, (void* self, void* , int , int , int));
+CSF_FUNC(int, __fastcall, AdvanceIndexFromOwnerTable, 0x00463670, (void* self, void* , int a2, int a3, int a4));
+CSF_FUNC(int, __stdcall, SubmitObjectRecordToGlobal, 0x004636A0, (int , int , int* objectRef));
+CSF_FUNC(int, __stdcall, SubmitFlaggedNodeCommand, 0x00463770, (int , int , uint32_t* a3));
+CSF_FUNC(int, __stdcall, SceneControl_ForwardPointerEvent, 0x00463800, (int a1, int a2, uint32_t* a3));
+CSF_FUNC(char, __fastcall, DispatchLinkedMessageAndLatch, 0x00463870, (void* self, void* , int , int a3, uint32_t* a4));
+CSF_FUNC(char, __fastcall, TryDispatchTimedOrder, 0x00463930, (void* self, void* , int , int pairMode, uint32_t* argPack));
+CSF_FUNC(char, __fastcall, DispatchPairedHandleEvent, 0x00463A20, (void* self, void* , int , int ownerId, uint32_t* handlePairRefs));
+CSF_FUNC(void*, __stdcall, ResolveEntryAndDispatch, 0x00463AF0, (int , int , int* requestRecord));
+CSF_FUNC(char, __stdcall, SpawnObjectWithScaledOffset, 0x00463BB0, (int , int , std::uint32_t* a3));
+CSF_FUNC(int, __stdcall, DispatchMoveOrderByHandle, 0x00463D40, (int , int , uint32_t* commandRef));
+CSF_FUNC(int, __stdcall, SceneDispatchHandleCommand, 0x00463DF0, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, SceneDispatchTargetCommand, 0x00463E80, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, DispatchHandleRequestToScene, 0x00463F10, (int , int , uint32_t* a3));
+CSF_FUNC(unsigned int, __fastcall, SceneTable_DispatchIndexedEntry, 0x004644B0, (void* self, void* , int a2, int a3, uint32_t* a4));
+CSF_FUNC(unsigned int, __fastcall, C_00464510_ResolveTimeIndexedEntry, 0x00464510, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __fastcall, DispatchWithFlagTableEntry, 0x00464580, (void* self, void* , int a1, int a2, int a3));
+CSF_FUNC(int, __fastcall, SelectFrameForClipTime, 0x004645C0, (void* self, void* , C_008313f8* frameSet, int , uint32_t* requestArgs));
+CSF_FUNC(int, __fastcall, LookupTableEntryAndStoreFloat, 0x00464660, (void* self, void* , void* outputRecord, int , int* argRecord));
+CSF_FUNC(unsigned int, __fastcall, ClampIndexedEntryValue, 0x004646C0, (void* self, void* , int a2, int a3, uint32_t* a4));
+CSF_FUNC(int, __fastcall, DispatchEntryFromTable, 0x00464720, (void* self, void* , C_008313f8* a2, int a3, void* a4));
+CSF_FUNC(int, __fastcall, ResolveEntryAndStoreFloat_4647B0, 0x004647B0, (void* self, void* , void* a2, void* , void* a4));
+CSF_FUNC(unsigned int, __fastcall, ResolveEntryAndStoreFloat_464810, 0x00464810, (void* self, void* , void* a2, void* , void* a4));
+CSF_FUNC(int, __fastcall, DispatchEntryWithArg, 0x00464870, (void* self, void* , int a2, int a3, int a4));
+CSF_FUNC(void, __fastcall, ApplyMetricToSceneEntry, 0x004648B0, (void* self, void* , int , int , uint32_t* metricRecord));
+CSF_FUNC(int, __fastcall, AdvanceEntryCursor, 0x00464930, (void* self, void* , int , int , uint32_t a4));
+CSF_FUNC(int, __fastcall, ResolveEntryPairAndInvoke, 0x004649D0, (void* self, void* , int a2, int a3, uint32_t* a4));
+CSF_FUNC(int, __fastcall, AddYOffsetToBoundNode, 0x00464A40, (void* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __fastcall, ApplyFloatOpToIndexedEntry, 0x00464A90, (void* self, void* , int , int , uint32_t* operands));
+CSF_FUNC(char, __fastcall, S_00462c00_DispatchWithSceneOverride, 0x00464B40, (S_00462c00* self, void* , int a2, int a3, uint32_t* a4));
+CSF_FUNC(char, __fastcall, S_00462c00_DispatchEntryWithSceneOverride, 0x00464B90, (S_00462c00* self, void* , int a2, int a3, uint32_t* a4));
+CSF_FUNC(char, __fastcall, S_00462c00_DispatchEntryFromTable, 0x00464BE0, (S_00462c00* self, void* , int a2, int a3, uint32_t* a4));
+CSF_FUNC(char, __fastcall, StateRecord_SyncPathFromControl, 0x00464C30, (void* self, void* , [[maybe_unused]] int a2, [[maybe_unused]] int a3, C_0085e7b8* a4));
+CSF_FUNC(char*, __fastcall, S_00464000_CollectHandleEntries, 0x00464D20, (S_00464000* self, void* , int , int , uint32_t* a4));
+CSF_FUNC(int, __stdcall, SetCachedProviderNameFromArgString, 0x00464E00, (int a1, int a2, int a3));
+CSF_FUNC(char*, __fastcall, BuildFsmActionBufferForHandle, 0x00464E80, (void* self, void* , int , int , uint32_t* requestArgs));
+CSF_FUNC(int, __stdcall, AssignSourceStringFromObjectField, 0x00465000, (int a1, int a2, int a3));
+CSF_FUNC(int, __stdcall, AssignObjectFieldStringToValueSlot1A9C, 0x00465030, (int a1, int a2, int a3));
+// The gate reports 0x465060 and 0x4650C0 read ecx on entry: bound as methods of the interpreter.
+CSF_FUNC(int, __fastcall, CopyResolvedHandleTextToOwner, 0x00465060, (void* self, void* edx, int a1, int a2, int a3));
+CSF_FUNC(C_00833908*, __fastcall, AssignResolvedObjectNameToLabel, 0x004650C0, (void* self, void* edx, void* a1, void* , void* a3));
+CSF_FUNC(int, __fastcall, ReplaceTableEntriesFromRecordRange, 0x00465130, (uint8_t* self, void* , int , int , int* descriptor));
+CSF_FUNC(int, __stdcall, StoreElementCountOfEntity, 0x00465290, (int a1, int unusedArg1C, int* a3));
+CSF_FUNC(int, __fastcall, ScriptCommands_ExecuteHandleCommand5035, 0x00468250, (void* self, void* edx, int a2, int a3, uint32_t* a4));
+
+static char __fastcall ScriptCommands_DispatchCommand(void* interpreter, void* /*edx*/, int resultNode,
+                                                      int16_t* command, void* argNode)
+{
+    uint8_t* const selfBytes = static_cast<uint8_t*>(interpreter);
+    uint8_t* const resultBytes = reinterpret_cast<uint8_t*>(resultNode);
+    uint8_t* const argBytes = static_cast<uint8_t*>(argNode);
+
+    const HandlerArg self{reinterpret_cast<uintptr_t>(interpreter)};
+    const HandlerArg ctx{static_cast<uintptr_t>(static_cast<uint32_t>(resultNode))};
+    const HandlerArg cmd{reinterpret_cast<uintptr_t>(command)};
+    const HandlerArg args{reinterpret_cast<uintptr_t>(argNode)};
+
+    switch (*command) {
+    // ---- string results ----
+    case 500: CopyResolvedHandleTextToOwner(self, nullptr, ctx, cmd, args); return 1;
+    case 501: AssignResolvedObjectNameToLabel(self, nullptr, ctx, cmd, args); return 1;
+
+    // ---- pair results ----
+    case 1000: {
+        uint8_t* out = CSF_AT(uint8_t*, resultBytes, 4) + 4;
+        CSF_AT(uint32_t, out, 4) = CSF_AT(uint32_t, selfBytes, 8);
+        CSF_AT(uint32_t, out, 8) = CSF_AT(uint32_t, selfBytes, 12);
+        return 1;
+    }
+    case 1001: {
+        uint8_t* out = CSF_AT(uint8_t*, resultBytes, 4) + 4;
+        CSF_AT(uint32_t, out, 4) = CSF_AT(uint32_t, selfBytes, 48);
+        CSF_AT(uint32_t, out, 8) = CSF_AT(uint32_t, selfBytes, 52);
+        return 1;
+    }
+    case 1002: {
+        uint8_t* out = CSF_AT(uint8_t*, resultBytes, 4) + 4;
+        CSF_AT(uint32_t, out, 4) = CSF_AT(uint32_t, selfBytes, 60);
+        CSF_AT(uint32_t, out, 8) = CSF_AT(uint32_t, selfBytes, 64);
+        return 1;
+    }
+    case 1003: {
+        uint8_t* out = CSF_AT(uint8_t*, resultBytes, 4) + 4;
+        CSF_AT(int32_t, out, 4) = -1;
+        CSF_AT(int32_t, out, 8) = -1;
+        return 1;
+    }
+    case 1004: SyncCoordsFromLookup(self, nullptr, ctx, cmd, args); return 1;
+    case 1005: ReadEntryValuesIntoResult_461A10(ctx, cmd, args); return 1;
+    case 1006: ReadEntryValuesIntoResult_461A80(ctx, cmd, args); return 1;
+    case 1007: LookupPairOutputBySlot(ctx, cmd, args); return 1;
+    case 1008: SceneMenu_ResetAndFillContextRange(self, nullptr, ctx, cmd, args); return 1;
+    case 1009: DispatchThroughChainedObject_462DA0(ctx, cmd, args); return 1;
+    case 1010: DispatchThroughChainedTarget(ctx, cmd, args); return 1;
+    case 1011: DispatchThroughChainedObject_462DE0(ctx, cmd, args); return 1;
+    case 1012: CopyTableEntryFromHandleIndex(ctx, cmd, args); return 1;
+    case 1013: CopySceneControlBounds(ctx, cmd, args); return 1;
+
+    // ---- float results ----
+    case 1400: CountEntriesForKey(ctx, cmd, args); return 1;
+    case 1401: ApplyCachedEntryValueToTargetFlagged(self, nullptr, ctx, cmd, args); return 1;
+    case 1402: UpdateFloatFromSceneHandle(ctx, cmd, args); return 1;
+    case 1403: ComputeHandlePairDistance(ctx, cmd, args); return 1;
+    case 1404: WriteFacingAngleDegrees(ctx, cmd, args); return 1;
+    case 1405: ComputeAngleBetweenEntitiesDegrees(ctx, cmd, args); return 1;
+    case 1406: ComputeFacingAngleDegreesToTarget(ctx, cmd, args); return 1;
+    case 1407: ApplyCachedEntryValueToTargetFloat(self, nullptr, ctx, cmd, args); return 1;
+    case 1408: ApplyCachedEntryValueWithFlagToTarget(self, nullptr, ctx, cmd, args); return 1;
+    case 1409: StoreElementCountOfEntity(ctx, cmd, args); return 1;
+    case 1410: RefreshHandleFieldFloat(ctx, cmd, args); return 1;
+    case 1411: ResolveSceneObjectValueToFloat(ctx, cmd, args); return 1;
+    case 1412: RollValueInRangeFromEndpoints(ctx, cmd, args); return 1;
+    case 1413: ComputeGlobalStateModulo(ctx, cmd, args); return 1;
+    case 1414: ApplyArithmeticOpToResult(ctx, cmd, args); return 1;
+    case 1415: StoreColorAnimDerivedValue(ctx, cmd, args); return 1;
+    case 1416: SumActiveEntryWeights(ctx, cmd, args); return 1;
+    case 1417: UpdateHandleBoundFloatField(ctx, cmd, args); return 1;
+    case 1418: UpdateHandleBoundFloatFieldFromMetric(ctx, cmd, args); return 1;
+    case 1419: ApplyCachedEntryValueToTarget(self, nullptr, ctx, cmd, args); return 1;
+    case 1420: UpdateHandleRecordFloatValue_45C500(ctx, cmd, args); return 1;
+    case 1421: UpdateHandleRecordFloatValue_45C570(ctx, cmd, args); return 1;
+    case 1422: WriteEntityActionScalarToOutput(ctx, cmd, args); return 1;
+    case 1423: ComputeDistanceToPoint(ctx, cmd, args); return 1;
+    case 1424: CopyActiveValueToOutput(self, nullptr, ctx, cmd, args); return 1;
+    case 1425: ResetAndRefreshScalar(ctx, cmd, args); return 1;
+    case 1426: UpdateTaskValueFromObjectLookup(ctx, cmd, args); return 1;
+    case 1427: Subobj_StoreGlobalCounterAsFloat(ctx, cmd, args); return 1;
+    case 1450: CSF_AT(int32_t, CSF_AT(uint8_t*, resultBytes, 4), 32) = -1; return 1;
+    case 1451: CopyResolvedHandleValueToSlot_45C760(ctx, cmd, args); return 1;
+    case 1452: CopyResolvedHandleField1F8ToSlot(ctx, cmd, args); return 1;
+
+    // ---- position results ----
+    case 1500: UpdateTargetCellFromEntityHandle(ctx, cmd, args); return 1;
+    case 1501: ResolveVectorSampleFromTable(ctx, cmd, args); return 1;
+    case 1502: LookupPositionForKeyIntoRecord(self, nullptr, ctx, cmd, args); return 1;
+    case 1503: ResetVectorAndInvalidateIndices(ctx, cmd, args); return 1;
+    case 1504: ResolveEntryHitFromRequest(ctx, cmd, args); return 1;
+    case 1505: ResetVectorAndLoadSlotPosition(ctx, cmd, args); return 1;
+    case 1506: SyncObjectSlotFromPosition(ctx, cmd, args); return 1;
+    case 1507: ResolveEntityHitPosition(ctx, cmd, args); return 1;
+
+    // ---- handle / id results ----
+    case 1550: StoreResolvedHandleValue_45C8C0(ctx, cmd, args); return 1;
+    case 1551: ResolveHandleTargetIntoState(ctx, cmd, args); return 1;
+    case 1600: ResolveHandleIntoOwnerSlot(ctx, cmd, args); return 1;
+    case 1620: ResolveSceneObjectHandleAndCache(ctx, cmd, args); return 1;
+    case 1621: StoreResolvedHandleValue_45CA10(ctx, cmd, args); return 1;
+    case 1622: ResolveAndCacheObjectField(ctx, cmd, args); return 1;
+    case 1650: CopyResolvedRecordValueToSlot(ctx, cmd, args); return 1;
+    case 1651:
+    case 1750:
+        CSF_AT(uint32_t, CSF_AT(uint8_t*, resultBytes, 4), 4) = CSF_AT(uint32_t, selfBytes, 72);
+        return 1;
+    case 1660: CopyResolvedHandleValueToSlot_45CAC0(ctx, cmd, args); return 1;
+    case 1670: CSF_AT(int32_t, CSF_AT(uint8_t*, resultBytes, 4), 4) = -1; return 1;
+    case 1671: StoreResolvedHandleResult(ctx, cmd, args); return 1;
+    case 1672: StoreSceneControlValueFromHandle(ctx, cmd, args); return 1;
+    case 1673: UpdateEntryStateFromHandle(ctx, cmd, args); return 1;
+    case 1674: CharActionFsm_ResolveHandleAndStore(ctx, cmd, args); return 1;
+    case 1690: StoreGlobalStateField84IntoTarget(ctx, cmd, args); return 1;
+    case 1700: LookupActiveEntryIntoRecord(ctx, cmd, args); return 1;
+    case 1701: CSF_AT(int32_t, CSF_AT(uint8_t*, resultBytes, 4), 4) = -1; return 1;
+    case 1800: SceneTable_DispatchIndexedEntry(self, nullptr, ctx, cmd, args); return 1;
+    case 1801: C_00464510_ResolveTimeIndexedEntry(self, nullptr, ctx, cmd, args); return 1;
+    case 1802: SelectFrameForClipTime(self, nullptr, ctx, cmd, args); return 1;
+    case 1803: LookupTableEntryAndStoreFloat(self, nullptr, ctx, cmd, args); return 1;
+    case 1804: ResolveEntryAndStoreFloat_464810(self, nullptr, ctx, cmd, args); return 1;
+    case 1805: DispatchWithFlagTableEntry(self, nullptr, ctx, cmd, args); return 1;
+    case 1806: ClampIndexedEntryValue(self, nullptr, ctx, cmd, args); return 1;
+    case 1807: DispatchEntryFromTable(self, nullptr, ctx, cmd, args); return 1;
+    case 1808: ResolveEntryAndStoreFloat_4647B0(self, nullptr, ctx, cmd, args); return 1;
+    case 1809: DispatchEntryWithArg(self, nullptr, ctx, cmd, args); return 1;
+    case 1810: ApplyMetricToSceneEntry(self, nullptr, ctx, cmd, args); return 1;
+    case 1900: StoreGlobalStateCcIntoTarget(ctx, cmd, args); return 1;
+
+    // ---- boolean results ----
+    case 2000: CSF_AT(uint8_t, CSF_AT(uint8_t*, resultBytes, 4), 1) = 1; return 1;
+    case 2001: UpdateCombinedFlag(ctx, cmd, args); return 1;
+    case 2002: UpdateOwnerFlagFromPairFlags(ctx, cmd, args); return 1;
+    case 2003:
+        CSF_AT(uint8_t, CSF_AT(uint8_t*, resultBytes, 4), 1) = CSF_AT(uint8_t, CSF_AT(uint8_t*, argBytes, 4), 1) == 0;
+        return 1;
+    case 2004:
+        CSF_AT(uint8_t, CSF_AT(uint8_t*, resultBytes, 4), 1) = CSF_AT(uint8_t, selfBytes, 84);
+        return 1;
+    case 2005: SceneHandle_SetReadyFlagFromTask(ctx, cmd, args); return 1;
+    case 2006: ResolveSceneHandleAndSetFlag(ctx, cmd, args); return 1;
+    case 2007: ResolveSceneHandleAndSetActiveFlag(ctx, cmd, args); return 1;
+    case 2008: ResolveSceneHandleAndSetEntryStateFlag(ctx, cmd, args); return 1;
+    case 2009: SetLookupValidFlagFromGlobal(ctx, cmd, args); return 1;
+    case 2010: Scene_SetResolvedHandleFlag(ctx, cmd, args); return 1;
+    case 2011: UpdateSlotStatusByte(ctx, cmd, args); return 1;
+    case 2014: PairLink_ResolveTargetAndRebind(ctx, cmd, args); return 1;
+    case 2015: UpdateActiveStateFlag(ctx, cmd, args); return 1;
+    case 2016: SetLookupMissFlag(ctx, cmd, args); return 1;
+    case 2017: UpdateControlFlagFromHandle(ctx, cmd, args); return 1;
+    case 2018: EvaluateSceneHandleFlag(ctx, cmd, args); return 1;
+    case 2019: Scene_ResolveHandleAndSetFlag(ctx, cmd, args); return 1;
+    case 2020: RefreshHandleEntryFlag(ctx, cmd, args); return 1;
+    case 2021: RefreshFlagFromHandleEntry(ctx, cmd, args); return 1;
+    case 2022: ResolveHandleAndStoreReadyState(ctx, cmd, args); return 1;
+    case 2023: UpdateFlagFromResolvedHandle(ctx, cmd, args); return 1;
+    case 2024: UpdateFlagFromResolvedHandleBit2(ctx, cmd, args); return 1;
+    case 2025: HandleRecord_ResolveAndRefreshFlag(ctx, cmd, args); return 1;
+    case 2026: UpdateSceneControlFlag(ctx, cmd, args); return 1;
+    case 2027: FindEntryMatchingFloatKeyAndSetFlag(ctx, cmd, args); return 1;
+    case 2028: ScanEntriesSetFlagByKey(ctx, cmd, args); return 1;
+    case 2029: LookupSceneEntryAndCopyFlag(ctx, cmd, args); return 1;
+    case 2030: ResolveHandleStateByteOrFallback(ctx, cmd, args); return 1;
+    case 2031: UpdateTargetFlagFromHandle(ctx, cmd, args); return 1;
+    case 2032: EvaluateSceneQueryAndStoreFlag(ctx, cmd, args); return 1;
+    case 2033: SetFlagForMatchingDestinationEntry(ctx, cmd, args); return 1;
+    case 2034: EvaluateSubObjectQueryAndStoreFlag(ctx, cmd, args); return 1;
+    case 2035: EvaluateSceneLinkAndStoreFlag(ctx, cmd, args); return 1;
+
+    case 2500:
+    case 2501:
+    case 2502:
+    case 2504:
+    case 2505:
+    case 2506:
+    case 2507:
+    case 2508:
+    case 2509:
+    case 2510:
+    case 2511:
+    case 2512:
+    case 2513:
+    case 2514:
+        WriteCallbackResultFlag(ctx, cmd, args);
+        return 1;
+    case 2503: EvaluateFlaggedPairMatch(ctx, cmd, args); return 1;
+
+    // ---- interpreter state commands ----
+    case 3000: ResetObjectStateAndReleaseChild(self, nullptr, ctx, cmd, args); return 1;
+    case 3002:
+        CSF_AT(uint32_t, selfBytes, 28) =
+            CSF_AT(uint32_t*, CSF_AT(uint8_t*, selfBytes, 16), 64)[CSF_AT(int32_t, CSF_AT(uint8_t*, argBytes, 4), 4)];
+        return 1;
+    case 3003: Cursor_AdvanceToNextEntry(self, nullptr, ctx, cmd, args); return 1;
+    case 3004: AdvanceIndexedTableValue(self, nullptr, ctx, cmd, args); return 1;
+    case 3005:
+    case 3017:
+        return 1;
+    case 3006: RefreshActiveEntryIndex(self, nullptr, ctx, cmd, args); return 1;
+    case 3007: AdvanceIndexedSlotValue(self, nullptr, ctx, cmd, args); return 1;
+    case 3008:
+    case 3009:
+    case 3014:
+        AdvanceIndexFromOwnerTable(self, nullptr, ctx, cmd, args);
+        return 1;
+    case 3010: ResolveEntryPairAndInvoke(self, nullptr, ctx, cmd, args); return 1;
+    case 3011: AddYOffsetToBoundNode(self, nullptr, ctx, cmd, args); return 1;
+    case 3013: AdvanceEntryCursor(self, nullptr, ctx, cmd, args); return 1;
+    case 3015: ApplyFloatOpToIndexedEntry(self, nullptr, ctx, cmd, args); return 1;
+
+    // ---- scene / global commands ----
+    case 4000: Scene_LookupAndMarkEntry(ctx, cmd, args); return 1;
+    case 4001: ResetFoundSceneEntry(ctx, cmd, args); return 1;
+    case 4002: SubmitObjectRecordToGlobal(ctx, cmd, args); return 1;
+    case 4003: S_0045d610_SyncBoundIdFromRequest(self, nullptr, ctx, cmd, args); return 1;
+    case 4004: InitSlotFromSourceRecord(self, nullptr, ctx, cmd, args); return 1;
+    case 4006: SubmitFlaggedNodeCommand(ctx, cmd, args); return 1;
+    case 4007: DispatchCategoryEntryIfValid(ctx, cmd, args); return 1;
+    case 4008: DispatchEntryBlockIfResultNonNegative(ctx, cmd, args); return 1;
+    case 4009: DispatchRecordAction(ctx, cmd, args); return 1;
+    case 4010: DispatchFlaggedRecordAction(ctx, cmd, args); return 1;
+    case 4011: ResolveGlobalChainResult(ctx, cmd, args); return 1;
+    case 4012: ResolveChainLookupResult(ctx, cmd, args); return 1;
+    case 4013: ResolveSceneEntryAndArm(self, nullptr, ctx, cmd, args); return 1;
+    case 4014: ResolveSlotLookupResult(ctx, cmd, args); return 1;
+    case 4015: ResolveEntryDispatchResult(ctx, cmd, args); return 1;
+    case 4016: CaptureEventTargetAndAdvance(self, nullptr, ctx, cmd, args); return 1;
+    case 4017: ResolveNestedFlagRecord(self, nullptr, ctx, cmd, args); return 1;
+    case 4018:
+    case 4030:
+    case 4031:
+        return 1;
+    case 4019: ComputeAngleAndInvokeProviderSlot8(ctx, cmd, args); return 1;
+    case 4020: ProcessEntryWithCachedProvider(self, nullptr, ctx, cmd, args); return 1;
+    case 4021: ResolveEntryAndDispatch(ctx, cmd, args); return 1;
+    case 4022: ApplySceneMenuModeFromRequest(ctx, cmd, args); return 1;
+    case 4023: Scene_SyncEntityTransformAndIssueOrder(ctx, cmd, args); return 1;
+    case 4024: TrySubmitUnitOrder(self, nullptr, ctx, cmd, args); return 1;
+    case 4025: RequestPathToTargetPosition(self, nullptr, ctx, cmd, args); return 1;
+    case 4026: DispatchGlobalValueRequest(ctx, cmd, args); return 1;
+    case 4027: NotifyGlobalValueUpdate(ctx, cmd, args); return 1;
+    case 4028: ApplyEntityRectToOverlayIfEnabled(ctx, cmd, args); return 1;
+    case 4029: ApplyEntryFloatIfEnabled(ctx, cmd, args); return 1;
+    case 4032: ForwardFloatAndFlagToDefaultDestination(ctx, cmd, args); return 1;
+    case 4033: DispatchStringPayloadWithFloatArg(ctx, cmd, args); return 1;
+    case 4034: ReplaceTableEntriesFromRecordRange(self, nullptr, ctx, cmd, args); return 1;
+    case 4035: S_00462c00_DispatchWithSceneOverride(self, nullptr, ctx, cmd, args); return 1;
+    case 4036: S_00462c00_DispatchEntryWithSceneOverride(self, nullptr, ctx, cmd, args); return 1;
+    case 4037: S_00462c00_DispatchEntryFromTable(self, nullptr, ctx, cmd, args); return 1;
+    case 4038: DispatchToDefaultDestination(ctx, cmd, args); return 1;
+    case 4039: MissionMenu_SelectEntryFromArgs(ctx, cmd, args); return 1;
+    case 4040: DispatchNestedKeyPair(ctx, cmd, args); return 1;
+    case 4041: ResolveHandleSlotIfValid(self, nullptr, ctx, cmd, args); return 1;
+    case 4042: FindOrCreateRegionForSceneId(ctx, cmd, args); return 1;
+    case 4043: Scene_LinkObjectPairAndRun(ctx, cmd, args); return 1;
+    case 4044: ResolveSceneSlotObject(ctx, cmd, args); return 1;
+    case 4045: Scene_ResolveAndInvokeSlotMethod(ctx, cmd, args); return 1;
+    case 4046:
+    case 4087:
+    case 4088:
+    case 4105:
+        return 1;
+    case 4047: ResolvePairHandlesWithGlobal(ctx, cmd, args); return 1;
+    case 4048: StoreComputedFloatInSubobject(ctx, cmd, args); return 1;
+    case 4049: StoreChainLookupResultByte(ctx, cmd, args); return 1;
+    case 4050: DispatchDescriptorPayload(ctx, cmd, args); return 1;
+    case 4051: ResolveNestedFieldEntry(ctx, cmd, args); return 1;
+    case 4052: AssignSourceStringFromObjectField(ctx, cmd, args); return 1;
+    case 4053: AssignObjectFieldStringToValueSlot1A9C(ctx, cmd, args); return 1;
+    case 4054: RecordTable_ResolveSlotPointer(ctx, cmd, args); return 1;
+    case 4055: ResolveHandleFieldEntry(ctx, cmd, args); return 1;
+    case 4056: SubmitPositionedDrawCommand(ctx, cmd, args); return 1;
+    case 4057: DispatchSceneRequestFromArgs(ctx, cmd, args); return 1;
+    case 4058: QueryBoundsFromSceneNodes(ctx, cmd, args); return 1;
+    case 4059: SubmitTimedRequestAndResolve(ctx, cmd, args); return 1;
+    case 4060: DispatchNestedKeyPairWithGlobal(ctx, cmd, args); return 1;
+    case 4061: MenuMission_ApplyRecordsAndDispatch(ctx, cmd, args); return 1;
+    case 4062: ApplyFloatPairToSceneEntry(ctx, cmd, args); return 1;
+    case 4063: ApplyIndexedRecordPoseToGameTarget(ctx, cmd, args); return 1;
+    case 4064: SubmitEntityPlacementToSubsystem(ctx, cmd, args); return 1;
+    case 4065: PostFlaggedPositionOrder(ctx, cmd, args); return 1;
+    case 4066: SendIndexedMessageToDefaultDestination(ctx, cmd, args); return 1;
+    case 4067: ForwardToDefaultDestinationIfEnabled(ctx, cmd, args); return 1;
+    case 4068: SceneMenu_ResetSelectionAndRefresh(ctx, cmd, args); return 1;
+    case 4069: StateRecord_SyncPathFromControl(self, nullptr, ctx, cmd, args); return 1;
+    case 4070: TryStartGlobalObjectRequest(self, nullptr, ctx, cmd, args); return 1;
+    case 4071: DispatchStringAndValueToSink(ctx, cmd, args); return 1;
+    case 4072: StoreSecondByteAndNotifyScene(self, nullptr, ctx, cmd, args); return 1;
+    case 4073: DispatchSceneLookupFromArg(ctx, cmd, args); return 1;
+    case 4074: DispatchFloatFieldToDefaultDestination(ctx, cmd, args); return 1;
+    case 4075: ApplySceneControlFromHandle(ctx, cmd, args); return 1;
+    case 4076: ApplySceneControlFromHandleCleared(ctx, cmd, args); return 1;
+    case 4077: Scene_ForwardDescriptorToSceneHandler(ctx, cmd, args); return 1;
+    case 4078: Scene_ClearCurrentIndexState(g_pCurrentScene, nullptr); return 1;
+    case 4079: SetSceneEditIntegerFromNestedFloat(ctx, cmd, args); return 1;
+    case 4080: SetCurrentIndexInvalid(g_pCurrentScene, nullptr); return 1;
+    case 4081: QueryProviderStateForRequest(ctx, cmd, args); return 1;
+    case 4082: InterpolateBetweenTwoPositions(ctx, cmd, args); return 1;
+    case 4083: SubmitTimedVectorRecord(ctx, cmd, args); return 1;
+    case 4084: ApplyPairStateToGlobalSubObject(ctx, cmd, args); return 1;
+    case 4085: DispatchTruncatedArgIfNonZero(ctx, cmd, args); return 1;
+    case 4086: BuildAndSubmitVec3Record(ctx, cmd, args); return 1;
+    case 4089: DispatchGlobalSubObjectValue(ctx, cmd, args); return 1;
+    case 4090: ApplyClampedFactorToSelectedProvider(ctx, cmd, args); return 1;
+    case 4100: SetCachedProviderNameFromArgString(ctx, cmd, args); return 1;
+    case 4101: CSF_AT(uint8_t, reinterpret_cast<uint8_t*>(GetGlobal8afc78()), 672) = 1; return 1;
+    case 4102: CSF_AT(uint8_t, reinterpret_cast<uint8_t*>(GetGlobal8afc78()), 672) = 0; return 1;
+    case 4103: BuildLookupFromThreeStrings(self, nullptr, ctx, cmd, args); return 1;
+    case 4104: DispatchLinkedValuesToGlobalSubObject(ctx, cmd, args); return 1;
+    case 4106: DispatchNamedEntryToGlobal(self, nullptr, ctx, cmd, args); return 1;
+    case 4107: SpawnObjectWithScaledOffset(ctx, cmd, args); return 1;
+    case 4108: ForwardSceneRecordByteToControl(ctx, cmd, args); return 1;
+    case 4109: Scene_DispatchObjectsByState(ctx, cmd, args); return 1;
+    case 4110:
+        CSF_AT(uint8_t, static_cast<uint8_t*>(g_pCurrentScene), 425) = CSF_AT(uint8_t, CSF_AT(uint8_t*, argBytes, 4), 1);
+        return 1;
+    case 4111: ForwardNestedRecordValueToSink(ctx, cmd, args); return 1;
+
+    // ---- entity (handle) commands ----
+    case 5000: Scene_ResolveHandleOrFallback(ctx, cmd, args); return 1;
+    case 5001: Scene_DispatchHandleEvent(ctx, cmd, args); return 1;
+    case 5003: ProcessHandleTargetCommand(self, nullptr, ctx, cmd, args); return 1;
+    case 5004: SceneHandle_ResolveAndDispatch_45E770(ctx, cmd, args); return 1;
+    case 5005: RefreshRectFromHandleEntry(self, nullptr, ctx, cmd, args); return 1;
+    case 5006: IssueCommandForResolvedHandle(self, nullptr, ctx, cmd, args); return 1;
+    case 5008: SceneHandle_ResolveAndDispatch_45EC50(ctx, cmd, args); return 1;
+    case 5009: ForwardSceneHandleCommand(ctx, cmd, args); return 1;
+    case 5010: SceneCommand_CopyTargetPosition(self, nullptr, ctx, cmd, args); return 1;
+    case 5011: CommandHandler_ApplyResolvedTarget(self, nullptr, ctx, cmd, args); return 1;
+    case 5015: ActivateSceneEntityFromRef(ctx, cmd, args); return 1;
+    case 5016: DeactivateSceneEntityFromRef(ctx, cmd, args); return 1;
+    case 5017: UpdateResolvedHandleTarget(self, nullptr, ctx, cmd, args); return 1;
+    case 5018: SceneHandle_ForwardParamsToChild(ctx, cmd, args); return 1;
+    case 5019: SceneHandle_ResolveAndDispatch_45F240(ctx, cmd, args); return 1;
+    case 5020: DispatchSceneObjectEvent(ctx, cmd, args); return 1;
+    case 5021: ApplyHandleTargetAndClearFlag(self, nullptr, ctx, cmd, args); return 1;
+    case 5022: SceneControl_ForwardPointerEvent(ctx, cmd, args); return 1;
+    case 5023: UpdateTargetFromResolvedHandle(self, nullptr, ctx, cmd, args); return 1;
+    case 5024: Entity_RefreshScalarFromHandle(self, nullptr, ctx, cmd, args); return 1;
+    case 5026: ResolveSceneHandleAndDispatch(self, nullptr, ctx, cmd, args); return 1;
+    case 5027: ResolveSceneEntryHandle(ctx, cmd, args); return 1;
+    case 5028: SceneHandle_ResolveAndDispatchCode21(ctx, cmd, args); return 1;
+    case 5029: DispatchSceneObjectEventCode22(ctx, cmd, args); return 1;
+    case 5030: UpdateTargetFromHandleEntry(self, nullptr, ctx, cmd, args); return 1;
+    case 5031: SceneHandle_ApplyTargetRequest(self, nullptr, ctx, cmd, args); return 1;
+    case 5032: ResolveHandleAndStoreTableValue(ctx, cmd, args); return 1;
+    case 5033: SceneObject_SyncPositionFromHandleEvent(ctx, cmd, args); return 1;
+    case 5034: ApplySceneSlotUpdate(ctx, cmd, args); return 1;
+    case 5035: ScriptCommands_ExecuteHandleCommand5035(self, nullptr, ctx, cmd, args); return 1;
+    case 5036: ApplyStateEventToSceneControl(self, nullptr, ctx, cmd, args); return 1;
+    case 5037: S_00464000_CollectHandleEntries(self, nullptr, ctx, cmd, args); return 1;
+    case 5038: CopyNodeRangeIntoObject(self, nullptr, ctx, cmd, args); return 1;
+    case 5039: SceneTarget_ApplyFromMessage(self, nullptr, ctx, cmd, args); return 1;
+    case 5040: SceneLink_ResolveAndSync(self, nullptr, ctx, cmd, args); return 1;
+    case 5041: ApplyPositionRecordToSceneObject(self, nullptr, ctx, cmd, args); return 1;
+    case 5042: DispatchResolvedTargetRequest(ctx, cmd, args); return 1;
+    case 5043: DispatchSceneMessageToHandleControl(ctx, cmd, args); return 1;
+    case 5044: RouteSceneHandleMessage(ctx, cmd, args); return 1;
+    case 5045: SendPlacementCommandForHandle(self, nullptr, ctx, cmd, args); return 1;
+    case 5046: ApplyFacingRecordToSceneObject(self, nullptr, ctx, cmd, args); return 1;
+    case 5047: ApplyValueToHandleControl(ctx, cmd, args); return 1;
+    case 5048: ClampAndApplyValueFromArgs(ctx, cmd, args); return 1;
+    case 5049: ApplyRecordCommandToSceneEntity(self, nullptr, ctx, cmd, args); return 1;
+    case 5050: SceneHandle_ResolveAndSendMoveCommand(self, nullptr, ctx, cmd, args); return 1;
+    case 5051: DispatchLinkedMessageAndLatch(self, nullptr, ctx, cmd, args); return 1;
+    case 5052: UpdateTargetPointFromHandle(self, nullptr, ctx, cmd, args); return 1;
+    case 5053: SendMessage29ToResolvedHandle(ctx, cmd, args); return 1;
+    case 5054: ForwardMoveOrderToSceneEntity(self, nullptr, ctx, cmd, args); return 1;
+    case 5055: NodeHandle_ApplyTargetAndClearFlag(self, nullptr, ctx, cmd, args); return 1;
+    case 5056: DispatchPairedHandleEvent(self, nullptr, ctx, cmd, args); return 1;
+    case 5057: SceneEntry_ApplyTrackBinding(ctx, cmd, args); return 1;
+    case 5058: SetSceneObjectFlagFromRef(ctx, cmd, args); return 1;
+    case 5059: ResetLinkedSceneObjectsExceptSelf(self, nullptr, ctx, cmd, args); return 1;
+    case 5060: SceneHandle_CopyAltFieldFromRecord(ctx, cmd, args); return 1;
+    case 5061: SceneHandle_SyncComponentFieldAt2FC(ctx, cmd, args); return 1;
+    case 5062: SceneHandle_SyncComponentField300FromRecord(ctx, cmd, args); return 1;
+    case 5063: SceneHandle_SyncTrailingFieldFromRecord(ctx, cmd, args); return 1;
+    case 5064: GuiControl_ApplyToggleFromHandle(ctx, cmd, args); return 1;
+    case 5065: DispatchHandleEventToEntity(ctx, cmd, args); return 1;
+    case 5066: DispatchResolvedHandleCommand(ctx, cmd, args); return 1;
+    case 5067: ApplyCharActionFromHandleRef(ctx, cmd, args); return 1;
+    case 5068: DispatchSceneObjectCommand(ctx, cmd, args); return 1;
+    case 5069: DispatchHandleEntryCommand(ctx, cmd, args); return 1;
+    case 5070: ResolveHandleAndDispatchUpdate(ctx, cmd, args); return 1;
+    case 5071: ApplyHandleRecordToGuiControl(self, nullptr, ctx, cmd, args); return 1;
+    case 5072: RouteHandleEventToSceneControl(ctx, cmd, args); return 1;
+    case 5073: TryDispatchTimedOrder(self, nullptr, ctx, cmd, args); return 1;
+    case 5074: SyncTargetFromHandle(self, nullptr, ctx, cmd, args); return 1;
+    case 5075: CopyRangeRecordIntoObject(self, nullptr, ctx, cmd, args); return 1;
+    case 5076: SendMessage38ToResolvedComponent(ctx, cmd, args); return 1;
+    case 5077: CopyHandleRecordIntoState(self, nullptr, ctx, cmd, args); return 1;
+    case 5078: IssueScaledHandleCommand(self, nullptr, ctx, cmd, args); return 1;
+    case 5079: ApplyHandleMessageToControl(self, nullptr, ctx, cmd, args); return 1;
+    case 5080: DispatchPositionMessageToHandle(self, nullptr, ctx, cmd, args); return 1;
+    case 5081: Scene_ApplyHandleEntry(self, nullptr, ctx, cmd, args); return 1;
+    case 5082: Scene_ApplyHandleEntryWithFlags(self, nullptr, ctx, cmd, args); return 1;
+    case 5083: ApplyHandleRecordAndSendCommand41(self, nullptr, ctx, cmd, args); return 1;
+    case 5084: ProcessTrackedHandleUpdate(self, nullptr, ctx, cmd, args); return 1;
+    case 5085: TransferResolvedObjectToContainer(ctx, cmd, args); return 1;
+    case 5086: DispatchHandleRequestFromRef(ctx, cmd, args); return 1;
+    case 5087: SetSceneObjectFlag200FromRecord(ctx, cmd, args); return 1;
+    case 5088: ApplyHandleStateUpdate(self, nullptr, ctx, cmd, args); return 1;
+    case 5089: return 1;
+    case 5090: SceneHandle_DispatchAction(ctx, cmd, args); return 1;
+    case 5091: DispatchByteValueToHandleObject(ctx, cmd, args); return 1;
+    case 5092: SceneDispatchHandleCommand(ctx, cmd, args); return 1;
+    case 5093: DispatchHandleRequestToScene(ctx, cmd, args); return 1;
+    case 5094: ApplyHandleStateToSceneObject(self, nullptr, ctx, cmd, args); return 1;
+    case 5095: ResolveHandleAndForwardValue(ctx, cmd, args); return 1;
+    case 5096: MenuExtras_ApplyDescriptionFromRecord(ctx, cmd, args); return 1;
+    case 5097: DispatchResolvedHandleWithScaledFloat(ctx, cmd, args); return 1;
+    case 5098: SceneHandle_SyncFieldFromRecord(ctx, cmd, args); return 1;
+    case 5099: ResolveHandleAndReleaseIfFound(ctx, cmd, args); return 1;
+    case 5100: DispatchSceneObjectEventCode37(ctx, cmd, args); return 1;
+    case 5101: IssueMoveOrderFromRequest(self, nullptr, ctx, cmd, args); return 1;
+    case 5102: ApplyHandleRecordToTarget(self, nullptr, ctx, cmd, args); return 1;
+    case 5103: ApplyValueCommandToSceneHandle(ctx, cmd, args); return 1;
+    case 5104: ApplySceneHandleFlag40(ctx, cmd, args); return 1;
+    case 5105: BuildFsmActionBufferForHandle(self, nullptr, ctx, cmd, args); return 1;
+    case 5106: SceneHandle_ResolveAndActivate(ctx, cmd, args); return 1;
+    case 5107: SceneDispatch_ResolveHandleFromRef(ctx, cmd, args); return 1;
+    case 5108: ResolveHandleAndApplyString(ctx, cmd, args); return 1;
+    case 5109: DispatchMoveOrderByHandle(ctx, cmd, args); return 1;
+    case 5110: DispatchPositionToSceneEntity(ctx, cmd, args); return 1;
+    case 5111: ApplyColorAnimForHandleEvent(ctx, cmd, args); return 1;
+    case 5112: ProcessHandleActionMessage(ctx, cmd, args); return 1;
+    case 5113: SceneHandle_DispatchActionOnHandle(ctx, cmd, args); return 1;
+    case 5114: SceneHandle_ApplyFlagBitFromRecord(ctx, cmd, args); return 1;
+    case 5115: DispatchSceneEventToHandleComponent(ctx, cmd, args); return 1;
+    case 5116: DispatchPayloadByteToHandleObject(ctx, cmd, args); return 1;
+    case 5117: SceneHandle_RequestAndCopyPair(self, nullptr, ctx, cmd, args); return 1;
+    case 5118: SceneDispatchTargetCommand(ctx, cmd, args); return 1;
+    case 5119: SendStateEventToHandleObject(ctx, cmd, args); return 1;
+    case 5120: SceneHandle_ApplyFlagBit80FromRecord(ctx, cmd, args); return 1;
+
+    // ---- global state commands ----
+    case 6000: return 1;
+    case 6001: UpdateGlobalStateFadeFromObjectFlag(ctx, cmd, args); return 1;
+    case 6002: ForwardHandleFloatToGlobalState(ctx, cmd, args); return 1;
+
+    default:
+        // Unknown command: flag the interpreter as failed.
+        CSF_AT(uint8_t, selfBytes, 130) = 0;
+        CSF_AT(uint8_t, selfBytes, 128) = 0;
+        return 0;
+    }
+}
+
+HOOK(0x00465310, ScriptCommands_DispatchCommand, "auto");
