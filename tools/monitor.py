@@ -800,6 +800,22 @@ def efficiency(recent):
     fns = [r for r in recent if not r.get("deferred")]
     if not fns:
         return []
+    return efficiency_lines(fns) + fail_kinds_line(fns)
+
+
+def fail_kinds_line(fns):
+    """What this run's retries were spent on: gate.fail_kinds of every rejected attempt (grunt log `fails`)."""
+    kinds = collections.Counter(k for r in fns for f in r.get("fails") or [] for k in f.get("kinds") or ["other"])
+    if not kinds:
+        return []
+    t = Text(f" retries {sum(len(r.get('fails') or []) for r in fns)}: ", style="bold")
+    for k, n in kinds.most_common(5):
+        t.append(f"{k} {n}  ", style="yellow" if n >= 3 else "dim")
+    t.no_wrap, t.overflow = True, "ellipsis"
+    return [t]
+
+
+def efficiency_lines(fns):
     if any(r.get("tier") for r in fns):
         out = []
         for tier in ("S", "M", "L"):

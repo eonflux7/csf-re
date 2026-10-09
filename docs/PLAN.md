@@ -67,7 +67,8 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 ## Current focus (priority order)
 
 1. **Waves by centrality** with the new loop (`wave --next`: m45AAF0, game_data_defs, hud, scene_loader,
-   char_action_fsm, ...). hud done as the loop's first test (12 functions, produce -> verified in game).
+   char_action_fsm, ...). hud only had a 12-function test batch (the loop's first end-to-end run); the module
+   itself is 15/150 functions (1.4%) and still needs its wave.
 2. **queue/** (55 items): the 8 menu functions the first verifier run quarantined (they broke the FR01 scene start;
    the menu wave had only smoked the menu tour), 47 earlier escalations.
 3. **Types for the next waves**: field names of CMenuScreen, TCharTask, TAiState, CCharWeaponFsm; the engine family
