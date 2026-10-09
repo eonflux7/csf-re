@@ -1724,7 +1724,9 @@ def lane_args(l):
     # 2026-10-08 (473 tiered results): S ok 330 = Haiku low 289, strong rung 28, Haiku medium 9 -> medium dropped
     l.add_argument("--s-ladder", default="claude:claude-haiku-5-5@low:2,codex:gpt-6.1-sol@high:1",
                    help="backend:model[@effort]:attempts,...")
-    l.add_argument("--m-ladder", default="claude:claude-haiku-5-5@high:2,codex:gpt-6.1-sol@high:2")
+    # 2026-10-09 (198 M results): Haiku high wrote 3 of 189 passes in 267 calls (5.3M output tokens), Codex 186:
+    # Codex first, Opus only as the escalation rung (as X)
+    l.add_argument("--m-ladder", default="codex:gpt-6.1-sol@high:2,claude:claude-opus-5-5@high:1")
     l.add_argument("--l-ladder", default="codex:gpt-6.1-sol@high:2")
     # 2026-10-09: functions over 600 B (646, ~700 KB) were outside every wave. Opus first took the grunts' 5h window
     # from 21% to 78% in one wave of data loaders: Codex high writes them, Opus only as the escalation rung

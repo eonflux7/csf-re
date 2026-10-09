@@ -693,3 +693,9 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   whose Hex-Rays `edx` param is spurious (0x429B60), stack-address returns not treated as equal. Next: compare edx
   only for real fastcall callees (callers' cleanup + edx actually set before the call), stack-pointer returns
   equal, `diff_t3 0` A/B to confirm the crash is the harness, then bisect tier-3 entries with diff_limit.
+
+## 2026-10-09 — M ladder: Codex first
+- grunt_log (198 M results): Haiku 5.5 high wrote 3 of the 189 passes in 267 calls (~20k output tokens each, 5.3M
+  total; 0/102 on 10-08, 3/165 on 10-09), Codex high 186. The two Haiku rungs only delayed every M function and
+  spent the grunts' Claude window. `--m-ladder` default now `codex@high:2, opus@high:1` (as X). S stays Haiku low
+  (688/735 passes, 82% first try). 75% of the remaining game bytes are M/L/X, so Codex quota sets throughput now.

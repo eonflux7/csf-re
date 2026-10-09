@@ -43,7 +43,7 @@ bytes x how much other code calls into them). Each step also runs on its own.
    the IDB, re-decompiles everything and lets Hex-Rays carry the types further (`this_class.py`); after
    `classes.py`, re-run `plain_classes.py` (classes without vtable). Then `api.py build`, `gen_classes_h.py`.
 2. **Produce** (`grunt.py lanes --module M`): leaf-first selection, clone-aware; size tiers S/M/L with model
-   ladders (S: Haiku low x2 -> strong; M: Haiku high x2 -> Codex x2; L and hubs (>= 25 outside callers): Codex).
+   ladders (S: Haiku low x2 -> strong; M: Codex x2 -> Opus; L and hubs (>= 25 outside callers): Codex).
    Packet = pseudocode + disasm + class fields + typed virtual calls + the canonical `bind as` line per callee.
    `normalize()` auto-fixes (address macros, canonical names, includes); the **gate** checks includes, compile,
    references vs the original (semcheck), `ret N`, ABI of every binding against the binary, no raw addresses.
