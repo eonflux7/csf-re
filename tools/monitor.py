@@ -694,39 +694,43 @@ def captain_costs():
 
 
 def panel_costs(st=None, recent=()):
-    """Every subscription / balance in one place: login, plan, billing date, usage windows, run spend."""
-    def usage_rows(u):
-        out = []
+    """Every subscription / balance in one place, two lines per account (login, plan, billing date; 5h and 7d
+    windows on one row), the grunts' account first; then run spend."""
+    def usage_row(u):
         if not isinstance(u, dict):
-            return [Text(f" usage n/a: {str(u)[:44]}", style="dim")]
+            return Text(f" usage n/a: {str(u)[:44]}", style="dim")
+        t = Text()
         for k, v in u.items():
             if k == "_age":
                 continue
             pct, reset = v
-            t = Text(f" {k} ")
-            t.append_text(bar(pct, 12))
-            t.append(f" {pct:>3.0f}%  resets {dur(max(0, reset))}", style="dim" if pct < 70 else "bold")
-            out.append(t)
+            t.append(f" {k} ")
+            t.append_text(bar(pct, 8))
+            t.append(f" {pct:>3.0f}% {dur(max(0, reset))} ", style="dim" if pct < 70 else "bold")
         if u.get("_age", 0) > 900:
-            out[-1].append(f"  ({dur(u['_age'])} old)", style="dim")
-        return out
+            t.append(f"({dur(u['_age'])} old)", style="dim")
+        t.no_wrap, t.overflow = True, "ellipsis"
+        return t
 
-    body = [Text("Claude", style="bold green"), account_line("claude")]
-    body += usage_rows(cached("claude_usage", 30, claude_usage))
+    def account(label, style, which, usage):
+        t = Text(f"{label} ", style=style)
+        t.append_text(account_line(which))
+        t.no_wrap, t.overflow = True, "ellipsis"
+        return [t, usage_row(usage)]
+
+    body = account("grunts", "bold yellow", "claude-grunts", cached("claude_grunts_usage", 30, lambda: claude_usage("grunts")))
+    body += account("Claude", "bold green", "claude", cached("claude_usage", 30, claude_usage))
     cc = cached("captain_costs", 30, captain_costs)
     if isinstance(cc, tuple):
         tot, today, per = cc
         body.append(Text(f" captain (claude -p) today ${today:.2f}  total ${tot:.2f}  "
                          + " ".join(f"{m} ${c:.2f}" for m, c in per.most_common()), style="dim",
                          no_wrap=True, overflow="ellipsis"))
-    body += [Text("Codex", style="bold magenta"), account_line("codex")]
-    body += usage_rows(cached("codex_usage", 60, codex_usage))
-    body += [Text("Claude · grunts", style="bold yellow"), account_line("claude-grunts")]
-    body += usage_rows(cached("claude_grunts_usage", 30, lambda: claude_usage("grunts")))
+    body += account("Codex", "bold magenta", "codex", cached("codex_usage", 60, codex_usage))
     db_ = cached("ds_balance", 300, deepseek_balance)
     if isinstance(db_, tuple):
         bal = "  ".join(f"{amt} {cur}" for cur, amt in db_[0]) or "?"
-        body.append(Text(f"DeepSeek direct (grunt run only) balance {bal}", style="dim"))
+        body.append(Text(f"DeepSeek direct (grunt run only) balance {bal}", style="dim", no_wrap=True, overflow="ellipsis"))
     tot = (st or {}).get("tokens") or {}
     if tot:
         t = Text(" grunt run: ", style="dim")
