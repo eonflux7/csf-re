@@ -45,10 +45,8 @@ static void __stdcall Hud_DrawDebugStatValue(int a1, int a2)
     if (value_bits == -1)
         return;
 
-    float value_float;
-    std::memcpy(&value_float, &value_bits, sizeof(value_float));
 
-    // stat_provider->vtbl[140/4](value_bits): the original pushes the value as an argument
+    // stat_provider->vtbl[140/4](value_bits): the entry for that index
     void* target = reinterpret_cast<void* (__fastcall*)(void*, void*, int)>(
         CSF_AT(void**, stat_provider, 0)[35])(stat_provider, nullptr, value_bits);
 
@@ -58,11 +56,15 @@ static void __stdcall Hud_DrawDebugStatValue(int a1, int a2)
         CSF_AT(void**, hud, 0)[41])(hud, nullptr, record_buffer);
     int record_field = CSF_AT(int, record, 4);
 
-    // target->vtbl[24/4](record_field)
-    int formatted = reinterpret_cast<int (__fastcall*)(void*, void*, int)>(
-        CSF_AT(void**, target, 0)[6])(target, nullptr, record_field);
+    // target->vtbl[24/4](): no argument. The record's +4 the original pushes before it is 0x6C8740's float (it pops 8
+    // and scales it by 0.5 onto a y coordinate); passing it to the slot left the stack 4 bytes off (the flaky
+    // loadsave 1.sav crash: eip on the stack, ebp = 2)
+    int formatted = reinterpret_cast<int (__fastcall*)(void*, void*)>(
+        CSF_AT(void**, target, 0)[6])(target, nullptr);
 
-    sub_6C8740(sprite, nullptr, formatted, value_float);
+    float record_y;
+    std::memcpy(&record_y, &record_field, sizeof(record_y));
+    sub_6C8740(sprite, nullptr, formatted, record_y);
 }
 
 HOOK(0x0042DA20, Hud_DrawDebugStatValue, "auto");
