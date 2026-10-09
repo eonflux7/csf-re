@@ -66,13 +66,10 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 
 ## Current focus (priority order)
 
-1. **Backlog crush (user, 2026-10-09)** — done on branch crush-backlog: queue 81 -> 15, mismatched 5 -> 0, pending 0,
-   spurious register args settled, four semcheck false positives fixed (controls unchanged). Left:
-   - queue/ 15: 13 HUD/menu in-game failures (0x42FF80 0x431F80 0x435F80 0x462580 confirmed still breaking FR01 on
-     the fixed baseline; 9 more re-quarantined untested) need per-function crash work; 0x465310 / 0x52F8A0 take real
-     register inputs (need a usercall entry-thunk hook kind).
-   - `verifier.py --full` stops on a flaky `loadsave 1.sav` crash of the verified baseline (eip on the stack,
-     unattributable twice); the next one leaves work/baseline_fail_*.log to diagnose it.
+1. **Backlog crush (user, 2026-10-09)** — done (merged to master; the 13 in-game failures fixed on branch fix-13):
+   queue 81 -> 2 (0x465310 / 0x52F8A0: real register inputs, need a usercall entry stub like HOOK_KEEP_ECX),
+   mismatched 0, pending 0, the flaky `loadsave 1.sav` baseline crash fixed (0x42DA20). Follow-ups in the backlog:
+   virtual-call argument counts (gate gap), the 8 "ecx-out" functions, 83 CSF_GLOBAL vtable bindings (cutover).
 2. **Waves by centrality** with the new loop: `wave --waves -1` runs them in rank order with the stop rule and a
    full baseline regression smoke between waves (`wave --next`: m45AAF0 = script_commands, game_data_defs, hud, scene_loader,
    char_action_fsm, ...).
@@ -161,12 +158,21 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
       stack args the target pops; Hex-Rays attaches an early-pushed arg to the wrong call (0x45B570, 0x42DF80). The pop
       is exact from the ret N of the slot's implementations in the class of the member at +4: needs member pointer
       types (Types backlog). Meanwhile diff tier 3 catches it (0x42DF80 was its first find)
+- [ ] Gate gap: argument count of a virtual call. 0x42DA20 and 0x42FF80 passed one stack argument too many / too few
+      to a vtable slot (stack 4 bytes off -> eip on the stack, load hang); the gate checks bound functions' ABI, not
+      slots. The original's pushes between calls are exact; which call pops them is decided by the slot
+      implementations' ret N in the receiver's class (needs member / receiver types), or by diff tier 3 v3
+- [ ] 8 done functions whose callers seem to read an ecx the callee *produced* (0x697330, 0x6973C0, 0x6AF8A0,
+      0x71DF00, 0x722A40, 0x4F50D0, 0x542850, 0x6D2BE0; regargs.callers_keep_ecx with writes_ecx): check each,
+      extend HOOK_KEEP_ECX to an "ecx out" variant if real
 - [ ] Use the user's saves 2..24 (2026-10-09) in `--full` (`CSF_VERIFY_SAVES`) once each is known to pass alone
 
 ### Cutover
 - [ ] Allocator shim (operator new/delete -> game heap; delete = sub_691110), rw.h shim
 - [ ] Generated data for the standalone build: csf::gv<A> (346 globals: initial bytes from the exe) and
       csf::vt<A> (81 vtables: tables of csf::fn_slot pointers), from `linktest.py` (`work/linktest.json`)
+- [ ] 83 files bind vtables with CSF_GLOBAL and take `&g_X` (right at runtime, resolves as data in the standalone
+      build): rewrite to CSF_VTBL / CSF_ADDR_VT (the gate now rejects new ones)
 - [ ] Rewrite the 14 naked asm thunks that embed original addresses (`linktest.py --list asm`)
 - [ ] Library boundaries the standalone link needs: rw 33 (librw), crt 13, netz 34 (stub), rwa (see decision)
 - [ ] NetZ boundary (320): name only if needed for stubbing — game net layer is stubbed at cutover
