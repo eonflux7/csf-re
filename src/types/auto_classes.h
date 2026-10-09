@@ -10072,10 +10072,10 @@ struct CWeaponDefTable {
     uint32_t m_owner;
     uint32_t m_pRecords;
     // virtual calls through this class's own vtable slots (tools/gen_classes_h.py vmethods)
-    int* vSlot0(char a2) { return reinterpret_cast<int*(__fastcall*)(void*, void*, char)>(vtbl[0x0 / 4])(this, nullptr, a2); }  // slot +0x0 -> 0x007848D0
-    char vSlot4(int a2) { return reinterpret_cast<char(__fastcall*)(void*, void*, int)>(vtbl[0x4 / 4])(this, nullptr, a2); }  // slot +0x4 -> 0x0078B4C0
-    int vSlot8(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x8 / 4])(this, nullptr, a2); }  // slot +0x8 -> 0x00783540
-    int vSlotC(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0xc / 4])(this, nullptr, a2); }  // slot +0xC -> 0x00783560
+    int* vDestroy(char flags) { return reinterpret_cast<int*(__fastcall*)(void*, void*, char)>(vtbl[0x0 / 4])(this, nullptr, flags); }  // slot +0x0 -> 0x007848D0
+    char vLoadVersionedDataFile(int fileVersion) { return reinterpret_cast<char(__fastcall*)(void*, void*, int)>(vtbl[0x4 / 4])(this, nullptr, fileVersion); }  // slot +0x4 -> 0x0078B4C0
+    int vGetRecordByIndex(int index) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x8 / 4])(this, nullptr, index); }  // slot +0x8 -> 0x00783540
+    int vFindRecordIndexById(int recordId) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0xc / 4])(this, nullptr, recordId); }  // slot +0xC -> 0x00783560
     int vSlot10() { return reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x10 / 4])(this, nullptr); }  // slot +0x10 -> 0x00511170
 };
 static_assert(offsetof(CWeaponDefTable, m_owner) == 0x4);
@@ -18638,17 +18638,21 @@ struct C_0086c2b4 : C_008446cc {
 };
 static_assert(sizeof(C_0086c2b4) == 0x130);
 
-struct C_0086f15c {
+// CDummyMesh (vtable 0x0086F15C): CGameLevelData_Load (004e99c0) creates it and stores it in m_dummyMesh, next to the nav, area, light and scene-object meshes. Its load method 00768e30 calls 00768cf0, which reads the DUMMIES block of the level data. For each child it fills a 24-byte entry with ID, POS (vector3), ROT_X and ROT, and s
+struct CDummyMesh {
     void** vtbl;
     uint8_t pad_0004[0x4];
-    uint32_t field_0008;
-    uint32_t field_000c;
-    uint32_t field_0010;
+    uint32_t m_dummiesBegin;
+    uint32_t m_dummiesEnd;
+    uint32_t m_dummiesCapacity;
     // virtual calls through this class's own vtable slots (tools/gen_classes_h.py vmethods)
     void** vSlot0(char a2) { return reinterpret_cast<void**(__fastcall*)(void*, void*, char)>(vtbl[0x0 / 4])(this, nullptr, a2); }  // slot +0x0 -> 0x007687B0
     char vSlot4(uint8_t* a2, int a3) { return reinterpret_cast<char(__fastcall*)(void*, void*, uint8_t*, int)>(vtbl[0x4 / 4])(this, nullptr, a2, a3); }  // slot +0x4 -> 0x00768E30
 };
-static_assert(sizeof(C_0086f15c) == 0x14);
+static_assert(sizeof(CDummyMesh) == 0x14);
+static_assert(offsetof(CDummyMesh, m_dummiesBegin) == 0x8);
+static_assert(offsetof(CDummyMesh, m_dummiesEnd) == 0xc);
+static_assert(offsetof(CDummyMesh, m_dummiesCapacity) == 0x10);
 
 struct C_00873b14 {
     void** vtbl;
