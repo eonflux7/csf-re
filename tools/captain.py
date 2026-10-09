@@ -500,7 +500,7 @@ def module_packet(db, m, mods, by_ea, S):
     if gnames:
         out.append("named globals used: " + ", ".join(g for g, _ in gnames.most_common(10)))
     if named:
-        out.append("named functions: " + ", ".join(named[:16]))
+        out.append("named functions: " + ", ".join(named[:40]))  # 16 hid most of a waved module
     if libs:
         out.append("library calls: " + ", ".join(n for n, _ in libs.most_common(10)))
     if callers:
