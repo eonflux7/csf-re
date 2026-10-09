@@ -847,3 +847,9 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Review rejections fixed: 0x45AD20 (getter result as `this`), 0x45DFE0 (signed float->int64), 0x4624E0 (bool callee).
 - Left in queue/ (6): 0x465310 and 0x52F8A0 take REAL register inputs (regargs.py: esi/edi read at entry, LTCG
   usercalls) that plain C++ can't receive; 0x535900, 0x55F550, 0x564CF0, 0x725390 still fail semcheck.
+- Two more semcheck blind spots fixed on the last 4: CSF_GLOBAL references packed several to one .rdata section were
+  invisible to the reference scan (it only reads 4-byte .rdata sections, since strings look like addresses): the
+  object's COFF symbol table now gives the first dword of every named non-string data symbol (0x55F550, 0x564CF0
+  pass as written). Chains of base adjustments fold (`lea eax, [esi + 0x14C]` + `add eax, 0x1C` twice: 0x725390).
+  0x535900 rewritten from the disassembly (the Codex answer's control flow diverged). Controls identical to master's
+  gate on the same sample. queue/ is down to the 2 real-usercall functions.

@@ -113,7 +113,46 @@ def our_refs(obj):
             v = int.from_bytes(blob[i:i + 4], "little")
             if IMG_LO <= v < IMG_HI:
                 addrs.add(v)
+    addrs |= coff_data_symbol_values(obj)
     return addrs, disps
+
+
+def coff_data_symbol_values(obj):
+    """First dword of every named data symbol (not a string literal ??_C@) in the object's .data/.rdata: CSF_GLOBAL
+    references clang packs several to one .rdata section (0x55F550: four globals in 16 bytes), which the 4-byte-section
+    scan above skips."""
+    import struct
+    try:
+        b = open(obj, "rb").read()
+        _, nsec, _, symptr, nsym, opt, _ = struct.unpack_from("<HHIIIHH", b, 0)
+    except (OSError, struct.error):
+        return set()
+    secs = []
+    for k in range(nsec):
+        o = 20 + opt + 40 * k
+        name = b[o:o + 8].rstrip(b"\0").decode(errors="replace")
+        size, raw = struct.unpack_from("<II", b, o + 16)
+        secs.append((name, raw, size))
+    strtab = symptr + 18 * nsym
+    out, k = set(), 0
+    while k < nsym:
+        o = symptr + 18 * k
+        raw_name = b[o:o + 8]
+        if raw_name[:4] == b"\0\0\0\0":
+            so = strtab + struct.unpack_from("<I", raw_name, 4)[0]
+            name = b[so:b.index(b"\0", so)].decode(errors="replace")
+        else:
+            name = raw_name.rstrip(b"\0").decode(errors="replace")
+        value, secno = struct.unpack_from("<Ih", b, o + 8)
+        naux = b[o + 17]
+        if 0 < secno <= len(secs) and not name.startswith(("??_C@", ".", "$")):
+            sname, raw, size = secs[secno - 1]
+            if sname in (".data", ".rdata") and raw and value + 4 <= size:
+                v = struct.unpack_from("<I", b, raw + value)[0]
+                if IMG_LO <= v < IMG_HI:
+                    out.add(v)
+        k += 1 + naux
+    return out
 
 
 def code_of(ea, db):
@@ -298,7 +337,11 @@ def check(ea, obj, db):
     adds = {int(m.group(1), 0) for i in code_of(ea, db)
             for m in [re.match(r"(?:add (?!esp|ebp)\w+, |lea \w+, \[(?!esp|ebp)\w+ \+ )(0x[0-9a-f]+|\d+)\]?$",
                                f"{i.mnemonic} {i.op_str}")] if m}
-    folded = {k + d for k in adds for d in orig_disps | {0}}
+    # chains of adjustments too (0x725390: lea eax, [esi + 0x14C]; ... add eax, 0x1C; ... add eax, 0x1C)
+    sums = set(adds)
+    if len(adds) <= 40:
+        sums |= {a + b for a in adds for b in adds} | {a + b + c for a in adds for b in adds for c in adds}
+    folded = {k + d for k in sums for d in orig_disps | {0}}
     bad = sorted(d for d in our_disps if d >= 8 and d not in orig_disps and d not in imms and d not in folded)
     if bad:
         errs.append("your code accesses field offsets the original never uses: " + ", ".join(f"0x{d:X}" for d in bad))
