@@ -606,8 +606,22 @@ def frac(a, b, style="green"):
     return t
 
 
-def panel_progress():
-    """Game / functions / modules / classes / globals in one grid, plus the current wave."""
+def wave_line():
+    """The running wave's progress bar, or None."""
+    st = cached("live", 1, lambda: json.load(open(LIVE)) if os.path.exists(LIVE) else None)
+    wp = wave_progress(((st or {}).get("config") or {}).get("wave")) if isinstance(st, dict) else None
+    if wp:
+        pct = wp["done_bytes"] / max(1, wp["bytes"]) * 100
+        t = Text("wave      ", style="bold magenta")
+        t.append_text(bar(pct, 20))
+        t.append(f" {pct:.0f}%  {wp['done']}/{wp['n']} fns  {wp['label']}")
+        t.no_wrap, t.overflow = True, "ellipsis"
+        return t
+
+
+def panel_progress(areas=True):
+    """Game / functions / modules / classes / globals in one grid, plus the current wave; the per-area table
+    unless areas=False (the app shows it in its own tab)."""
     S = cached("stats", 30, stats)
     body = []
     if isinstance(S, dict):
@@ -617,6 +631,9 @@ def panel_progress():
         t.append_text(bar(pct, 20))
         t.append(f" {pct:.2f}% of {G['bytes'] / 1024:,.0f} KB", style="bold green")
         body.append(t)
+        w = wave_line()
+        if w:
+            body.append(w)
         tb = Table.grid(padding=(0, 2))
         for _ in range(5):
             tb.add_column(no_wrap=True)
@@ -642,17 +659,8 @@ def panel_progress():
         if isinstance(V, dict):
             body.append(verifier_line(V))
         body.append(review_line(G))
-        body.append(Rule(style="dim"))
-        body.append(area_table(S))
-    st = cached("live", 1, lambda: json.load(open(LIVE)) if os.path.exists(LIVE) else None)
-    wp = wave_progress(((st or {}).get("config") or {}).get("wave")) if isinstance(st, dict) else None
-    if wp:
-        pct = wp["done_bytes"] / max(1, wp["bytes"]) * 100
-        t = Text("wave      ", style="bold magenta")
-        t.append_text(bar(pct, 20))
-        t.append(f" {pct:.0f}%  {wp['done']}/{wp['n']} fns  {wp['label']}")
-        t.no_wrap, t.overflow = True, "ellipsis"
-        body.append(t)
+        if areas:
+            body += [Rule(style="dim"), area_table(S)]
     return Panel(Group(*body), title="Progress", border_style="yellow")
 
 

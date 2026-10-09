@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Textual dashboard (tools/monitor.py starts it; `monitor.py --once` prints one Rich frame instead).
 
-Tabs: 1 Live (Claude | Costs, Progress with verifier/review lines and the per-area table, grunt with scrollable
-in-flight/results tables, captain, game/tools), 2 Modules (per-module prep/progress table grouped by area, click a
-header to sort), 3 Plan (current focus + every phase as
-collapsible sections), 4 Commits (this session), 5 Queue (escalations in queue/, the selected one previewed). All data comes from the helpers in monitor.py, read in a worker thread every
+Tabs: 1 Live (Claude | Costs, Progress with the wave bar and verifier/review lines, grunt with scrollable
+in-flight/results tables, captain, game/tools; sized to fit the screen), 2 Areas (per-area progress table),
+3 Modules (per-module prep/progress table grouped by area, click a header to sort), 4 Plan (current focus + every
+phase as collapsible sections), 5 Commits (this session), 6 Queue (escalations in queue/, the selected one previewed). All data comes from the helpers in monitor.py, read in a worker thread every
 --interval seconds so slow sources (tasklist, usage endpoints) never block the UI.
 """
 import glob, os, re, time
@@ -25,7 +25,7 @@ TabbedContent, ContentSwitcher, TabPane { height: 1fr; }
 #top { height: auto; max-height: 25%; }
 #claude { width: 1fr; height: auto; max-height: 100%; overflow-y: auto; border: round green; padding: 0 1; }
 #costs { width: 1fr; min-width: 44; height: auto; max-height: 100%; overflow-y: auto; border: round cyan; padding: 0 1; }
-#progress { height: auto; max-height: 30%; overflow-y: auto; border: round yellow; padding: 0 1; }
+#progress { height: auto; max-height: 50%; overflow-y: auto; border: round yellow; padding: 0 1; }
 #tools { height: 1; padding: 0 1; }
 #modtable { height: 1fr; }
 #grunt { height: 1fr; min-height: 10; border: round magenta; padding: 0 1; }
@@ -69,10 +69,11 @@ class Monitor(App):
     CSS = CSS
     BINDINGS = [
         Binding("1", "tab('live')", "Live"),
-        Binding("2", "tab('modules')", "Modules"),
-        Binding("3", "tab('plan')", "Plan"),
-        Binding("4", "tab('commits')", "Commits"),
-        Binding("5", "tab('queue')", "Queue"),
+        Binding("2", "tab('areas')", "Areas"),
+        Binding("3", "tab('modules')", "Modules"),
+        Binding("4", "tab('plan')", "Plan"),
+        Binding("5", "tab('commits')", "Commits"),
+        Binding("6", "tab('queue')", "Queue"),
         Binding("r", "refresh_now", "Refresh"),
         Binding("q", "quit", "Quit"),
     ]
@@ -98,6 +99,9 @@ class Monitor(App):
                     yield DataTable(id="results", cursor_type="row")
                 yield Static(id="captain")
                 yield Static(id="tools")
+            with TabPane("Areas", id="areas"):
+                with VerticalScroll():
+                    yield Static(id="areatable")
             with TabPane("Modules", id="modules"):
                 yield DataTable(id="modtable", cursor_type="row", zebra_stripes=True)
             with TabPane("Plan", id="plan"):
@@ -140,7 +144,7 @@ class Monitor(App):
         costs = M.panel_costs(g["st"], g["recent"]).renderable
         claude = M.panel_claude(len(costs.renderables))  # fill the Claude panel to the Costs panel's height
         snap = dict(
-            claude=(claude.renderable, claude.title), progress=M.panel_progress().renderable,
+            claude=(claude.renderable, claude.title), progress=M.panel_progress(areas=False).renderable, areas=self.area_view(),
             costs=costs, modules=M.module_rows(),
             ghead=Group(*M.grunt_header(g)), calls=M.call_rows(g), results=M.result_rows(g, 300),
             captain=M.captain_lines(), tools=M.tool_line(),
@@ -150,6 +154,10 @@ class Monitor(App):
         if mt != self.plan_mtime:
             snap["plan"] = (mt, M.focus(), M.open_items(), M.plan())
         self.call_from_thread(self.apply, snap)
+
+    def area_view(self):
+        S = M.cached("stats", 30, M.stats)
+        return M.area_table(S) if isinstance(S, dict) else Text(f"stats n/a: {S}", style="dim")
 
     def commit_rows(self):
         jobs = M.cached("jobs", 1, M.claude_jobs)
@@ -207,6 +215,7 @@ class Monitor(App):
         c.update(s["claude"][0])
         c.border_title = s["claude"][1]
         self.query_one("#progress", Static).update(s["progress"])
+        self.query_one("#areatable", Static).update(s["areas"])
         self.query_one("#ghead", Static).update(s["ghead"])
         inf = self.query_one("#inflight", DataTable)
         inf.display = bool(s["calls"])
