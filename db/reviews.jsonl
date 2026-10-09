@@ -26,3 +26,20 @@
 {"ea": "00461d40", "module": "m45AAF0", "code": "7b01e964ba105fb4", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
 {"ea": "00464c30", "module": "m45AAF0", "code": "0c776fbccf727bf1", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
 {"ea": "0045ad20", "module": "m45AAF0", "code": "aa64a7791808b202", "ok": false, "issues": ["0x0045AD33-0x0045AD3A: the original passes the return value of GetGlobalValue_4FBDE0 as the `this` pointer for QueryIndexedValue_4FC160 (`call 0x4fbde0; mov ecx, eax; call 0x4fc160`). The reimplementation discards that return value and passes nullptr as self (ECX = 0), so the callee runs on a null object instead of the global one. It should be `QueryIndexedValue_4FC160((void*)GetGlobalValue_4FBDE0(), nullptr, 1)`."], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "0045e280", "module": "m45AAF0", "code": "0c0616159adb3676", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "0045c2e0", "module": "m45AAF0", "code": "87bc0995776c902c", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "0045e480", "module": "m45AAF0", "code": "ae2187da67003686", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "004624e0", "module": "m45AAF0", "code": "efddf65366ec9b4a", "ok": false, "issues": ["0x00462534: the original tests only the low byte of CollectLinkedObjectPointers' return (`test al, al`), i.e. it treats the result as a bool/uint8. The reimplementation binds the callee as returning `int` and tests all 32 bits of EAX. If the callee sets only AL (the upper 24 bits are then garbage), the reimplementation can enter the reset loop where the original skips it. The result should be truncated to 8 bits before the test, e.g. `(uint8_t)CollectLinkedObjectPointers(...) != 0`, or the callee bound as returning bool/uint8."], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "004610b0", "module": "m45AAF0", "code": "b915cb7f6b8da9a2", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "00464e80", "module": "m45AAF0", "code": "bde714c590130e73", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "00463400", "module": "m45AAF0", "code": "629ff293b4216283", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "00461ef0", "module": "m45AAF0", "code": "9f363174e02c8f3d", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "00463230", "module": "m45AAF0", "code": "9bd590af812245b5", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "0045f560", "module": "m45AAF0", "code": "d314eaab5f854191", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "0045f790", "module": "m45AAF0", "code": "b5f0885f705ed6f7", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "0045b240", "module": "m45AAF0", "code": "d8b63f64d39a0333", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "00460940", "module": "m45AAF0", "code": "0f24393fc2edd74b", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "00464a90", "module": "m45AAF0", "code": "bc134cbf9b49af95", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "00465310", "module": "m45AAF0", "code": "5e65fc7daf08d528", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "00462810", "module": "m45AAF0", "code": "7b60fe5b31c44dc9", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
+{"ea": "0045c440", "module": "m45AAF0", "code": "0f0e794f65a8419c", "ok": true, "issues": [], "model": "claude-opus-5-5", "date": "2026-10-09"}
