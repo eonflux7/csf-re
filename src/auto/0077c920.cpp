@@ -167,12 +167,12 @@ static char __fastcall CLevelData_LoadWorldEntitiesAndEffects(CLevelData* self, 
         uint8_t* entityNode = (uint8_t*)GetComponent(entityList, nullptr, entityIndex);
         int classId = ReadIntegerAttribute(entityNode, nullptr, g_pszKey_CLASSID);
 
-        void* classTable = (void*)self->field_1fa8;
+        void* classTable = (void*)self->m_entityClassTable;
         int classIndex = ((int(__fastcall*)(void*, void*, int))CSF_AT(void**, classTable, 0)[4])(classTable, nullptr, classId);
         if (classIndex == -1)
             continue;
 
-        classTable = (void*)self->field_1fa8;
+        classTable = (void*)self->m_entityClassTable;
         uint8_t* classDef = ((uint8_t*(__fastcall*)(void*, void*, int))CSF_AT(void**, classTable, 0)[2])(classTable, nullptr, classIndex);
 
         void* rawEntity = Mem_Alloc(232);
@@ -298,7 +298,7 @@ static char __fastcall CLevelData_LoadWorldEntitiesAndEffects(CLevelData* self, 
             else
                 effect.priority = -1;
 
-            void* effectTable = (void*)self->field_1fac;
+            void* effectTable = (void*)self->m_effectClassTable;
             if (((int(__fastcall*)(void*, void*, int))CSF_AT(void**, effectTable, 0)[4])(effectTable, nullptr, effect.classId) != -1)
                 EffectArray_PushBack((uint8_t*)self + 0x14, nullptr, (int)&effect);
 

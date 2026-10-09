@@ -6108,7 +6108,8 @@ struct C_008305f8 {
     void** vtbl;
 };
 
-struct C_00830a04 {
+// CHud (vtable 0x00830A04): An 820-byte singleton in g_Value_8afc78, created lazily by sub_436030 and destroyed by sub_436070, in the 'hud' module. Its ctor 004355d0 sets up GUI controls through MenuControls_ResolveObject, two screen-wide letterbox bars sized from g_ScreenWidth/g_ScreenHeight, and a subtitle panel (ConstructSu
+struct CHud {
     void** vtbl;
     uint32_t field_0004;
     uint32_t field_0008;
@@ -6226,7 +6227,7 @@ struct C_00830a04 {
     uint8_t pad_0210[0x10];
     uint32_t field_0220;
     uint32_t field_0224;
-    uint32_t field_0228;
+    uint32_t m_renderHook;
     uint32_t field_022c;
     uint32_t field_0230;
     uint32_t field_0234;
@@ -6234,7 +6235,7 @@ struct C_00830a04 {
     uint8_t field_023c;
     uint8_t field_023d;
     uint8_t pad_023e[0x2];
-    uint32_t field_0240;
+    uint32_t m_textLabel;
     uint32_t field_0244;
     uint32_t field_0248;
     uint32_t field_024c;
@@ -6243,8 +6244,8 @@ struct C_00830a04 {
     uint32_t field_0258;
     uint8_t field_025c;
     uint8_t pad_025d[0x3];
-    uint32_t field_0260;
-    uint32_t field_0264;
+    uint32_t m_letterboxTop;
+    uint32_t m_letterboxBottom;
     uint32_t field_0268;
     uint32_t field_026c;
     uint32_t field_0270;
@@ -6252,7 +6253,7 @@ struct C_00830a04 {
     uint32_t field_0278;
     uint32_t field_027c;
     uint32_t field_0280;
-    uint32_t field_0284;
+    uint32_t m_subtitlePanel;
     uint32_t field_0288;
     uint32_t field_028c;
     uint32_t field_0290;
@@ -6263,11 +6264,11 @@ struct C_00830a04 {
     uint8_t field_02a1;
     uint8_t field_02a2;
     uint8_t pad_02a3[0x1];
-    uint32_t field_02a4;
+    uint32_t m_colorNormal;
     uint32_t field_02a8;
     uint32_t field_02ac;
     uint32_t field_02b0;
-    uint32_t field_02b4;
+    uint32_t m_colorAlert;
     uint32_t field_02b8;
     uint32_t field_02bc;
     uint32_t field_02c0;
@@ -6283,7 +6284,14 @@ struct C_00830a04 {
     int vSlot0(int a2) { return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0x0 / 4])(this, nullptr, a2); }  // slot +0x0 -> 0x004330A0
     unsigned int vSlot4(uint32_t* a2) { return reinterpret_cast<unsigned int(__fastcall*)(void*, void*, uint32_t*)>(vtbl[0x4 / 4])(this, nullptr, a2); }  // slot +0x4 -> 0x004F9630
 };
-static_assert(sizeof(C_00830a04) == 0x334);
+static_assert(sizeof(CHud) == 0x334);
+static_assert(offsetof(CHud, m_renderHook) == 0x228);
+static_assert(offsetof(CHud, m_textLabel) == 0x240);
+static_assert(offsetof(CHud, m_letterboxTop) == 0x260);
+static_assert(offsetof(CHud, m_letterboxBottom) == 0x264);
+static_assert(offsetof(CHud, m_subtitlePanel) == 0x284);
+static_assert(offsetof(CHud, m_colorNormal) == 0x2a4);
+static_assert(offsetof(CHud, m_colorAlert) == 0x2b4);
 
 // CGuiControl (vtable 0x00864288): common base of all 12 control types; ctor 0x71A010, dtor 0x719B10, reset 0x718CC0
 // Setters traced from the .fbs reader 0x71EBD0 (keyword -> vtable slot -> field). Slot +0x138 = SendEvent(id) (-> +0x218 FireEvent: listeners, then parent). +0x0C creates quads/fonts (builder's +4); +0x10 = &builder+0xC. +0xFC is a VC7.1 std::vector<listener*> (allocator word, then begin/end/cap). Effects at +0x128 are a linked list (next = vslot +0x10) made by 0x713B20(type): 0 QUAD_VARIABLE, 1 QUAD_BACKGROUND, 3 QUAD_FOCUS, 4 QUAD_BLINKING_FOCUS, 5 QUAD_SELECTED. Anim pairs (elapsed float, interpolator*) fire events 9/10 (pos), 11/12 (size). sizeof 0x134 (first derived field at +0x134).
@@ -9292,20 +9300,22 @@ struct CLevelData {
     uint32_t m_sceneObjMesh;
     uint32_t field_1fa0;
     uint32_t field_1fa4;
-    uint32_t field_1fa8;
-    uint32_t field_1fac;
+    uint32_t m_entityClassTable;
+    uint32_t m_effectClassTable;
     uint32_t field_1fb0;
     uint32_t field_1fb4;
     uint32_t m_dstData;
     // virtual calls through this class's own vtable slots (tools/gen_classes_h.py vmethods)
-    void* vSlot0(char a2) { return reinterpret_cast<void*(__fastcall*)(void*, void*, char)>(vtbl[0x0 / 4])(this, nullptr, a2); }  // slot +0x0 -> 0x007821F0
-    char vSlot4(char* a2, int a3) { return reinterpret_cast<char(__fastcall*)(void*, void*, char*, int)>(vtbl[0x4 / 4])(this, nullptr, a2, a3); }  // slot +0x4 -> 0x00781E40
+    void* vDestroy(char flags) { return reinterpret_cast<void*(__fastcall*)(void*, void*, char)>(vtbl[0x0 / 4])(this, nullptr, flags); }  // slot +0x0 -> 0x007821F0
+    char vLoad(const char* path, int a2) { return reinterpret_cast<char(__fastcall*)(void*, void*, const char*, int)>(vtbl[0x4 / 4])(this, nullptr, path, a2); }  // slot +0x4 -> 0x00781E40
 };
 static_assert(offsetof(CLevelData, m_navMesh) == 0x1f8c);
 static_assert(offsetof(CLevelData, m_dummyMesh) == 0x1f90);
 static_assert(offsetof(CLevelData, m_areaMesh) == 0x1f94);
 static_assert(offsetof(CLevelData, m_lightMesh) == 0x1f98);
 static_assert(offsetof(CLevelData, m_sceneObjMesh) == 0x1f9c);
+static_assert(offsetof(CLevelData, m_entityClassTable) == 0x1fa8);
+static_assert(offsetof(CLevelData, m_effectClassTable) == 0x1fac);
 static_assert(offsetof(CLevelData, m_dstData) == 0x1fb8);
 
 struct C_0083ed40 : CLevelData {

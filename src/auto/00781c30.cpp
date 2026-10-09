@@ -41,8 +41,8 @@ static CLevelData* __fastcall CLevelData_Construct(CLevelData* self, int edxArg)
 
     self->field_1fa0 = 0;
     self->field_1fa4 = 0;
-    self->field_1fa8 = 0;
-    self->field_1fac = 0;
+    self->m_entityClassTable = 0;
+    self->m_effectClassTable = 0;
     self->field_1fb0 = 0;
     self->m_navMesh = 0;
     self->m_dummyMesh = 0;

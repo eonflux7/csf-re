@@ -141,11 +141,11 @@ static char __fastcall CLevelData_LoadVersionedWorldAndEntities(CLevelData* self
     {
         uint8_t* entityNode = reinterpret_cast<uint8_t*>(GetComponent(entitiesNode, nullptr, i));
         int classId = ReadIntegerAttribute(entityNode, nullptr, g_pszKey_CLASSID);
-        int classIndex = CallManagerInt(self->field_1fa8, 4, classId);
+        int classIndex = CallManagerInt(self->m_entityClassTable, 4, classId);
         if (classIndex == -1)
             continue;
 
-        uint8_t* classDef = reinterpret_cast<uint8_t*>(CallManagerInt(self->field_1fa8, 2, classIndex));
+        uint8_t* classDef = reinterpret_cast<uint8_t*>(CallManagerInt(self->m_entityClassTable, 2, classIndex));
 
         void* rawEntity = Mem_Alloc(232);
         uint8_t* entity = rawEntity ? reinterpret_cast<uint8_t*>(EntityDef_Construct(rawEntity, nullptr)) : nullptr;
@@ -292,7 +292,7 @@ static char __fastcall CLevelData_LoadVersionedWorldAndEntities(CLevelData* self
             effect.classId = ReadIntegerAttribute(effectNode, nullptr, g_pszKey_CLASSID);
             effect.dummy = ReadIntegerAttribute(effectNode, nullptr, g_pszKey_DUMMY);
 
-            if (CallManagerInt(self->field_1fac, 4, effect.classId) != -1)
+            if (CallManagerInt(self->m_effectClassTable, 4, effect.classId) != -1)
                 EffectList_Add((uint8_t*)self + 0x14, nullptr, (int)&effect);
 
             if (effect.nameCapacity >= 0x10 && effect.name.ptr)

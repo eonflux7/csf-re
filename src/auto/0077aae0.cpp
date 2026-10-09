@@ -150,12 +150,12 @@ static char __fastcall CLevelData_LoadWorldEntitiesAndEffects(CLevelData* self, 
         uint8_t* entityNode = reinterpret_cast<uint8_t*>(GetComponent(entitiesNode, nullptr, entityIndex));
         int classId = ReadIntegerAttribute(entityNode, nullptr, g_pszKey_CLASSID);
 
-        void* classTable = reinterpret_cast<void*>(self->field_1fa8);
+        void* classTable = reinterpret_cast<void*>(self->m_entityClassTable);
         int classIndex = ((int(__fastcall*)(void*, void*, int))CSF_AT(void**, classTable, 0)[4])(classTable, nullptr, classId);
         if (classIndex == -1)
             continue;
 
-        classTable = reinterpret_cast<void*>(self->field_1fa8);
+        classTable = reinterpret_cast<void*>(self->m_entityClassTable);
         uint8_t* classDef = ((uint8_t*(__fastcall*)(void*, void*, int))CSF_AT(void**, classTable, 0)[2])(classTable, nullptr, classIndex);
 
         uint8_t* entity = nullptr;
@@ -284,7 +284,7 @@ static char __fastcall CLevelData_LoadWorldEntitiesAndEffects(CLevelData* self, 
             effect.classId = ReadIntegerAttribute(effectNode, nullptr, g_pszKey_CLASSID);
             effect.dummy = ReadIntegerAttribute(effectNode, nullptr, g_pszKey_DUMMY);
 
-            void* effectClassTable = reinterpret_cast<void*>(self->field_1fac);
+            void* effectClassTable = reinterpret_cast<void*>(self->m_effectClassTable);
             if (((int(__fastcall*)(void*, void*, int))CSF_AT(void**, effectClassTable, 0)[4])(effectClassTable, nullptr, effect.classId) != -1)
                 EffectList_PushBack((uint8_t*)self + 0x14, nullptr, (int)&effect);
 

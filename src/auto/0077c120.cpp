@@ -164,12 +164,12 @@ static char __fastcall CLevelData_LoadWorldCreaturesAndEffects(CLevelData* self,
         std::uint8_t* creatureNode = (std::uint8_t*)GetComponent(creaturesNode, nullptr, creatureIndex);
         int classId = ReadIntegerAttribute(creatureNode, nullptr, g_pszKey_CLASSID);
 
-        void* classTable = reinterpret_cast<void*>(self->field_1fa8);
+        void* classTable = reinterpret_cast<void*>(self->m_entityClassTable);
         int classIndex = ((int(__fastcall*)(void*, void*, int))CSF_AT(void**, classTable, 0)[4])(classTable, nullptr, classId);
         if (classIndex == -1)
             continue;
 
-        classTable = reinterpret_cast<void*>(self->field_1fa8);
+        classTable = reinterpret_cast<void*>(self->m_entityClassTable);
         uint8_t* classDef = ((uint8_t*(__fastcall*)(void*, void*, int))CSF_AT(void**, classTable, 0)[2])(classTable, nullptr, classIndex);
 
         void* creatureMem = Mem_Alloc(232);
@@ -296,7 +296,7 @@ static char __fastcall CLevelData_LoadWorldCreaturesAndEffects(CLevelData* self,
             else
                 effect.priority = -1;
 
-            void* effectClassTable = reinterpret_cast<void*>(self->field_1fac);
+            void* effectClassTable = reinterpret_cast<void*>(self->m_effectClassTable);
             if (((int(__fastcall*)(void*, void*, int))CSF_AT(void**, effectClassTable, 0)[4])(effectClassTable, nullptr, effect.classId) != -1)
                 EffectDefVector_PushBack((uint8_t*)self + 0x14, nullptr, (int)&effect);
 

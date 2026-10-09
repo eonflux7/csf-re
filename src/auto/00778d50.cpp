@@ -143,12 +143,12 @@ static char __fastcall CLevelData_LoadVersion0(CLevelData* self, void* /*edx*/, 
             uint8_t* node = (uint8_t*)GetComponent(entities, nullptr, index);
             int classId = ReadIntegerAttribute(node, nullptr, g_pszKey_CLASSID);
 
-            void* classTable = (void*)self->field_1fa8;
+            void* classTable = (void*)self->m_entityClassTable;
             int classIndex = ((int(__fastcall*)(void*, void*, int))CSF_AT(void**, classTable, 0)[4])(classTable, nullptr, classId);
             if (classIndex == -1)
                 continue;
 
-            classTable = (void*)self->field_1fa8;
+            classTable = (void*)self->m_entityClassTable;
             uint8_t* classInfo = (uint8_t*)((int(__fastcall*)(void*, void*, int))CSF_AT(void**, classTable, 0)[2])(classTable, nullptr, classIndex);
 
             void* block = Mem_Alloc(232);
@@ -241,7 +241,7 @@ static char __fastcall CLevelData_LoadVersion0(CLevelData* self, void* /*edx*/, 
             effect.classId = ReadIntegerAttribute(node, nullptr, g_pszKey_CLASSID);
             effect.dummy = ReadIntegerAttribute(node, nullptr, g_pszKey_DUMMY);
 
-            void* effectTable = (void*)self->field_1fac;
+            void* effectTable = (void*)self->m_effectClassTable;
             if (((int(__fastcall*)(void*, void*, int))CSF_AT(void**, effectTable, 0)[4])(effectTable, nullptr, effect.classId) != -1)
                 EffectArray_PushBack((uint8_t*)self + 0x14, nullptr, (int)&effect);
 

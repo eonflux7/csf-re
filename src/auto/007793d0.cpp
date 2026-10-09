@@ -137,12 +137,12 @@ static char __fastcall CLevelData_LoadVersionedSceneData(CLevelData* self, void*
         uint8_t* entityNode = (uint8_t*)GetComponent(entitiesNode, nullptr, entityIdx);
         int classId = ReadIntegerAttribute(entityNode, nullptr, (char*)g_pszKey_CLASSID);
 
-        void* classTable = reinterpret_cast<void*>(self->field_1fa8);
+        void* classTable = reinterpret_cast<void*>(self->m_entityClassTable);
         int classIndex = ((int(__fastcall*)(void*, void*, int))CSF_AT(void**, classTable, 0)[4])(classTable, nullptr, classId);
         if (classIndex == -1)
             continue;
 
-        classTable = reinterpret_cast<void*>(self->field_1fa8);
+        classTable = reinterpret_cast<void*>(self->m_entityClassTable);
         uint8_t* classDef = (uint8_t*)((int(__fastcall*)(void*, void*, int))CSF_AT(void**, classTable, 0)[2])(classTable, nullptr, classIndex);
 
         void* entityMem = Mem_Alloc(232);
@@ -260,7 +260,7 @@ static char __fastcall CLevelData_LoadVersionedSceneData(CLevelData* self, void*
             effect.classId = ReadIntegerAttribute(effectNode, nullptr, (char*)g_pszKey_CLASSID);
             effect.dummy = ReadIntegerAttribute(effectNode, nullptr, (char*)g_pszKey_DUMMY);
 
-            void* effectTable = reinterpret_cast<void*>(self->field_1fac);
+            void* effectTable = reinterpret_cast<void*>(self->m_effectClassTable);
             if (((int(__fastcall*)(void*, void*, int))CSF_AT(void**, effectTable, 0)[4])(effectTable, nullptr, effect.classId) != -1)
                 EffectDefVector_PushBack((uint8_t*)self + 0x14, nullptr, (int)&effect);
 
