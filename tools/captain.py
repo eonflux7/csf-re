@@ -587,6 +587,7 @@ def job_modules(args):
             for p in acc:
                 ids[p["id"]]["name"] = p["name"]  # later batches see it as a neighbour/caller name
             applied_total += len(acc)
+        os.makedirs(WORK, exist_ok=True)
         with open(os.path.join(WORK, "held_modules.jsonl"), "a") as f:
             for e in held + rej:
                 f.write(json.dumps(dict(e, ts=time.time(), model=args.model)) + "\n")
