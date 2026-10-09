@@ -286,6 +286,12 @@ def build(db, ea, with_asm_limit=400):
     proto = proto_of(src)
     out.append(f"## Target function 0x{ea:08X} (size {f['size']} bytes, region {row['region']})")
     out.append(f"Hex-Rays prototype: `{proto}`")
+    import api as _api
+    sp = _api.spurious_regs(ea)
+    if sp:
+        out.append(f"NOTE: its {', '.join('@<' + r + '>' for r in sp)} parameter is NOT an argument (exact: the register "
+                   "is only saved and restored, e.g. `push edi` ... `pop edi`, or passed to a callee that does the same). "
+                   "Implement and bind it without that parameter, as a plain C++ convention; never __regcall or asm.")
     out.append(f"Original `ret` immediate(s): {rets}  (stack bytes the callee pops; must match exactly)")
     mod = db.modules.get(row["module"])
     if mod and mod.get("name"):  # subsystem for Subsystem_Verb names of non-class functions

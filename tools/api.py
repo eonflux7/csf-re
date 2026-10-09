@@ -215,16 +215,49 @@ def takes_reg(ea, db, reg):
     return reads_before_write(ea, db, reg)
 
 
+_spurious = None
+
+
+def spurious_regs(ea):
+    """Registers Hex-Rays makes arguments of ea that the binary proves are not (db/regargs.json, tools/regargs.py:
+    a callee-save `push edi` it took for a read, spread to callers)."""
+    global _spurious
+    if _spurious is None:
+        p = os.path.join(ROOT, "db", "regargs.json")
+        _spurious = {int(k, 16): v["spurious"] for k, v in json.load(open(p)).items()} if os.path.exists(p) else {}
+    return _spurious.get(ea, [])
+
+
+def without_spurious(ea, a):
+    """Hex-Rays' prototype record minus its proven-spurious register arguments; a usercall / userpurge left with
+    ecx only becomes thiscall, with none cdecl / stdcall (the `ret N` check in abi_sig decides which is right)."""
+    sp = spurious_regs(ea)
+    if not a or not sp:
+        return a
+    args = [x for x in a.get("args", []) if x[2] not in sp]
+    a = dict(a, args=args)
+    if a.get("cc") in ("usercall", "userpurge"):
+        regs = [loc for _, _, loc in args if loc != "stack"]
+        if not regs:
+            a["cc"] = "stdcall" if a["cc"] == "userpurge" and args else "cdecl"
+        elif regs == ["ecx"] and args[0][2] == "ecx":
+            a["cc"] = "thiscall"
+        elif regs == ["ecx", "edx"] and [x[2] for x in args[:2]] == ["ecx", "edx"]:
+            a["cc"] = "fastcall"
+    return a
+
+
 def abi_sig(ea, db):
     """Signature of an address from Hex-Rays' prototype (export/abi.json), refined by exact binary facts:
       - cdecl argument count: the callers' cleanup (`add esp, N` right after the call) when the call sites agree,
         else the most arguments Hex-Rays saw pushed at any call site (its own prototype drops unused ones);
       - callee-popped conventions: the argument bytes must equal the original's `ret N`.
     __thiscall becomes __fastcall (self, edx dummy, ...) as CSF_FUNC binds it. None when it can't be bound from C
-    (other register arguments, by-value structs) or Hex-Rays disagrees with the binary."""
+    (other register arguments, by-value structs) or Hex-Rays disagrees with the binary. Register arguments the binary
+    proves spurious (db/regargs.json) are dropped first."""
     from packet import ret_bytes
     ea = thunk_target(ea, db)
-    a = ida_abi().get(ea)
+    a = without_spurious(ea, ida_abi().get(ea))
     if not a or not a.get("cc") or ea not in db.F:
         return None
     cc = a["cc"]

@@ -115,6 +115,9 @@ def gate(ea, path, db=None):
         errs.append('CSF_GLOBAL/CSF_FUNC/CSF_AT/CSF_STR come from #include "globals.h" (add it)')
     if re.search(r"#\s*define\s+CSF_|#\s*undef\s+CSF_", src):
         errs.append('do not (re)define CSF_* macros: #include "globals.h" and use them as given')
+    if re.search(r"\b__regcall\b", src):  # grunts' bridge for Hex-Rays' phantom @<edi>/@<esi> args (tools/regargs.py)
+        errs.append("__regcall is not allowed: register parameters Hex-Rays shows in ebx/esi/edi are saved registers, "
+                    "not arguments (see the packet's NOTE); bind and implement with a plain convention")
     # the only allowed asm: a naked tail-jump thunk — at most 8 register moves/tests/branches around one indirect jmp
     for blk in re.findall(r"__asm\s*\{([^}]*)\}", src):
         ins = [l.strip() for l in re.split(r"[\n;]", blk) if l.strip() and not re.fullmatch(r"\w+:", l.strip())]

@@ -811,3 +811,22 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   `mov eax, esp; mov [eax + 0xC], 0`, and `our_refs` counted [eax + 8] / [eax + 0xC] as field accesses ("field offsets
   the original never uses"). Registers copied from esp/ebp (`mov r, esp`, `lea r, [esp/ebp ...]`) now count as stack
   bases until overwritten or clobbered by a call. With it 0x53EA30, 0x5422D0, 0x72D120 passed as written.
+
+## 2026-10-09 — Backlog crush (c): spurious register arguments settled (tools/regargs.py)
+
+- `regargs.py`: exact, path-sensitive "is ebx/esi/edi an input" over the call graph (push R with a pop R in the
+  function = callee-save; direct calls / tail jumps defer to the callee; indirect calls reach address-taken, hence
+  standard-convention, functions; switch tables followed from the image; library regions standard; `lea r, [r]`
+  padding, sub-register writes, `xor bl, bl` / `or r, -1` are writes; anything else unknown = real). Of 604 functions
+  with a Hex-Rays ebx/esi/edi argument, 590 are spurious, 14 real (LTCG usercalls reading esi/ebx/edi directly,
+  among them two queued smoke failures: 0x465310, 0x52F8A0).
+- **All 124 done functions with such an argument: spurious.** The backlog's "90 done functions plain C++ although
+  Hex-Rays gives @<reg>" are right as plain C++. The ones that bridged the phantom were wrong: 0x533D90 passed a 2nd
+  arg to vtable slot 0x38 (the `push esi` was the save); 0x539340 read its stack args via __builtin_frame_address and
+  fed 0x538F40 an edi it never reads. Both rewritten.
+- db/regargs.json feeds `api.abi_sig` (proven-spurious register args dropped, usercall -> thiscall/cdecl/stdcall by
+  what's left): 348 more addresses get a binary signature. Packets print a NOTE under a Hex-Rays prototype with a
+  phantom register; the gate rejects `__regcall` (the grunts' bridge for it).
+- Controls: mutant catch rates identical to master's gate (offset 19/40, global 37/40, rest 100%), fixtures and
+  positive controls pass: the three semcheck relaxations today (esp copies, vtable-slot calls, base+disp) cost nothing.
+- Left for a propagate run: push the corrected prototypes into the IDB (sync.py stage) so Hex-Rays stops showing them.

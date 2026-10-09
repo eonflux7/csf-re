@@ -9,15 +9,9 @@ CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
 CSF_FUNC(void*, __fastcall, MenuControls_ResolveObject, 0x006B1390,
          (void* self, void* edx));
 
-// x86 __regcall assigns integer arguments to EAX, ECX, EDX, EDI,
-// then ESI. The sixth argument is on the caller-cleaned stack.
-static void* __regcall MenuMpPause_LoadTexture(
-    std::uint32_t /*eax*/,
-    std::uint32_t /*ecx*/,
-    std::uint32_t /*edx*/,
-    std::uint32_t /*edi*/,
-    std::uint32_t textureOption,
-    const void* textureName)
+// Hex-Rays' a1@<esi> is the `push esi` callee-save around the slot 0x38 call (paired with the final pop esi): the
+// slot takes only the name, and this function only its one stack argument (callers clean 4 bytes).
+static void* __cdecl MenuMpPause_LoadTexture(const void* textureName)
 {
     RwImageSetPath(CSF_STR(0x00841C64, "Menus/Textures/"));
 
@@ -31,12 +25,11 @@ static void* __regcall MenuMpPause_LoadTexture(
     else
         name = CSF_AT(const char*, textureName, 0x04);
 
-    using LoadTexture = void* (__fastcall*)(
-        void*, void*, const char*, std::uint32_t);
+    using LoadTexture = void* (__fastcall*)(void*, void*, const char*);
 
     void* texture =
         reinterpret_cast<LoadTexture>(CSF_AT(void**, provider, 0)[0x38 / 4])(
-            provider, nullptr, name, textureOption);
+            provider, nullptr, name);
 
     if (texture)
     {

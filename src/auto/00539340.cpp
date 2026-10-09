@@ -19,32 +19,13 @@ CSF_FUNC(void, __cdecl, MenuLoading_CopyLocalizedText, 0x006956C0,
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60,
          (void* storage));
 
-// The additional input is EDI, not a stack argument.
 CSF_FUNC(void*, __cdecl, MenuLoading_GetMissionName, 0x00538F40,
          (void* destination));
 
-// Four x86 regcall arguments occupy EAX, ECX, EDX and EDI.
-// Keep this bridge unoptimized: it forwards the EAX destination on the
-// cdecl stack while leaving the incoming EDI selection in place.
-static __attribute__((noinline, optnone))
-void __regcall MenuLoading_ReadMissionName(
-    void* destination, uint32_t /*ecxInput*/, uint32_t /*edxInput*/,
-    int /*selection*/)
+// Hex-Rays' a1@<edi> (here and on 0x538F40) is the callee-save `push edi`: the function takes only its two
+// stack arguments.
+static uint16_t* __cdecl MenuLoading_GetLoadingText(uint16_t* destination, int capacity)
 {
-    MenuLoading_GetMissionName(destination);
-}
-
-// Only register arguments are declared, so this entry returns with RET 0.
-// The original two stack arguments are read through the entry frame.
-static __attribute__((no_caller_saved_registers))
-uint16_t* __regcall MenuLoading_GetLoadingText(
-    uint32_t /*eaxInput*/, uint32_t /*ecxInput*/, uint32_t /*edxInput*/,
-    int selection, uint32_t /*esiInput*/)
-{
-    void* frame = __builtin_frame_address(0);
-    uint16_t* destination = CSF_AT(uint16_t*, frame, 0x08);
-    const int capacity = CSF_AT(int, frame, 0x0C);
-
     *destination = 0;
 
     if (CSF_AT(uint8_t, GetGlobalState_50D190(), 0xD0) != 0)
@@ -80,7 +61,7 @@ uint16_t* __regcall MenuLoading_GetLoadingText(
     missionName[5] = 0;
     *reinterpret_cast<uint8_t*>(&missionName[1]) = 0;
 
-    MenuLoading_ReadMissionName(missionName, 0, 0, selection);
+    MenuLoading_GetMissionName(missionName);
 
     const char* missionKey =
         reinterpret_cast<const char*>(missionName[1]);
