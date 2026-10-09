@@ -1390,7 +1390,10 @@ def lanes(args):
             try:
                 r = fu.result()
             except Exception as e:
-                r = dict(ea=ea, ok=False, err=f"exception: {e}", usage=[])
+                import traceback
+                tb = "".join(traceback.format_exception(e))
+                print(f"  [{tier}] {ea:08x} tooling exception:\n{tb}", file=sys.stderr, flush=True)
+                r = dict(ea=ea, ok=False, err=f"exception: {e} | {tb.strip().splitlines()[-3].strip()}", usage=[])
             handle(r, tier)
         if len(good) >= args.batch and not flush():
             pool.shutdown(wait=True, cancel_futures=True)

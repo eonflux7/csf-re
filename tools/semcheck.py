@@ -12,7 +12,7 @@ they appear as immediates/displacements) with the original's references:
 Usage: semcheck.py --all [--behaviour]   run over every src/auto file, report failures (false-positive survey);
        --behaviour: only the constant / call-order checks
 """
-import concurrent.futures as cf, glob, json, os, re, subprocess, sys, tempfile
+import concurrent.futures as cf, glob, json, math, os, re, subprocess, sys, tempfile
 sys.path.insert(0, os.path.dirname(__file__))
 from packet import DB, disasm
 
@@ -411,9 +411,12 @@ TRIVIAL = {-1, 0, 1, 2, -0x80000000, 0x80000000, 0x7FFFFFFF}  # sign-bit tests a
 
 def const_found(c, ints, floats):
     if isinstance(c, float):
+        if math.isnan(c) or math.isinf(c):  # an .rdata NaN/inf: 1/c can't be rounded (crashed the gate 2026-10-09)
+            return any(math.isnan(g) if math.isnan(c) else g == c for g in floats)
         if c.is_integer() and int(c) & 0xFFFFFFFF in ints:
             return True
-        if c and abs(1.0 / c - round(1.0 / c)) < 1e-4 and int(round(1.0 / c)) & 0xFFFFFFFF in ints:
+        r = 1.0 / c if c else math.inf
+        if math.isfinite(r) and abs(r - round(r)) < 1e-4 and int(round(r)) & 0xFFFFFFFF in ints:
             return True  # x * (1/255) as x / 255
         tol = 1e-6 * max(1.0, abs(c))
         return any(abs(g - c) <= tol or abs(g + c) <= tol or (g and abs(1.0 / g - c) <= tol) for g in floats)
