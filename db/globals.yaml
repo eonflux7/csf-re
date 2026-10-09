@@ -11,6 +11,7 @@
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
 - {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 16, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 3, src: auto}
+- {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: double, uses: 1, src: auto}
 - {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 53, src: auto, alt: [g_MissionUnsignedIntegerBias]}
 - {addr: 0x0082D75C, name: g_HudNegativePi, type: float, uses: 2, src: auto, alt: [g_NegativeHalfTurnRadians]}
 - {addr: 0x0082D7C0, name: g_MessageBoxAnimationScale, type: float, uses: 2, src: auto, alt: [g_flt_0082D7C0]}
@@ -29,7 +30,7 @@
 - {addr: 0x0082E118, name: g_fIntroVideoDuration, type: float, uses: 2, src: auto}
 - {addr: 0x0082E1E4, name: g_fRotationWrapStep, type: float, uses: 1, src: auto}
 - {addr: 0x0082E25C, name: g_flt_0082E25C, type: float, uses: 2, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 35, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 39, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E958, name: g_TParadoString, type: char, uses: 1, src: auto}
 - {addr: 0x0082F318, name: g_TEndString, type: const char, uses: 1, src: auto}
 - {addr: 0x0082FACC, name: g_HudNegativeHalfPi, type: float, uses: 1, src: auto}
@@ -55,6 +56,7 @@
 - {addr: 0x00834A40, name: g_szIrAPuesto, type: char, uses: 1, src: auto}
 - {addr: 0x0083688C, name: g_szLanzarGranadaName, type: char, uses: 1, src: auto}
 - {addr: 0x00836D7C, name: g_TRodearString, type: char, uses: 1, src: auto}
+- {addr: 0x0083F4B4, name: g_SceneDegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x0084004C, name: g_CMenuScreenFaderVtbl, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008405DC, name: g_FrameInsetScale, type: float, uses: 1, src: auto}
 - {addr: 0x00840974, name: g_SceneResetValue, type: 'std::uint32_t', uses: 1, src: auto}
@@ -1152,6 +1154,7 @@
 - {addr: 0x008AFC7C, name: g_Value8afc7c, type: int, uses: 1, src: auto}
 - {addr: 0x008AFC80, name: g_Value_8afc80, type: int, uses: 1, src: auto}
 - {addr: 0x008AFC84, name: g_Value8AFC84, type: int, uses: 2, src: auto}
+- {addr: 0x008AFC8C, name: g_SceneLoaderMainScenePresent, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008AFC90, name: g_pCurrentScene, type: void*, uses: 2, src: captain, conf: 0.7, alt: [g_pGlobalObject_8AFC90]}
 - {addr: 0x008AFD9C, name: g_GlobalValue, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008B044C, name: g_AiSearchCostThisFrame, type: int, uses: 0, src: opus}
@@ -1203,7 +1206,7 @@
 - {addr: 0x008BAD98, name: g_unk_8BAD98, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008BAEB4, name: g_MemDebugMutex, type: void*, uses: 0, src: captain, conf: 0.75}
 - {addr: 0x008BAF8C, name: g_pOptions, type: COptions*, uses: 2, src: opus}
-- {addr: 0x008BAF90, name: g_ActiveSceneContext, type: void*, uses: 3, src: auto, alt: [g_ActiveSceneLoadContext]}
+- {addr: 0x008BAF90, name: g_ActiveSceneContext, type: void*, uses: 4, src: auto, alt: [g_ActiveSceneLoadContext, g_PendingSceneResource]}
 - {addr: 0x008BAF94, name: g_Value_8baf94, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008BAF98, name: g_Value_8BAF98, type: int, uses: 1, src: auto}
 - {addr: 0x008BAFA4, name: g_Value_8BAFA4, type: int, uses: 1, src: auto}
