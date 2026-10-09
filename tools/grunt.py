@@ -1832,7 +1832,7 @@ def lane_args(l):
                    "standing in (empty: off; unlisted Claude rungs are skipped as before)")
     l.add_argument("--claude-sub-login", default="codex-2", help="Codex login the --claude-sub stand-ins run on "
                    "(falls back to the rotation when it is missing or paused)")
-    l.add_argument("--codex-sub", default="claude:claude-opus-5-5@medium",
+    l.add_argument("--codex-sub", default="claude:claude-sonnet-5-5@medium",
                    help="backend:model[@effort] standing in for Codex in S/M (empty: off)")
     l.add_argument("--hub-callers", type=int, default=25,
                    help="functions called from >= N functions of other modules go to the L (strong) ladder (0: off)")
