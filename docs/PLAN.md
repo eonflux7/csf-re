@@ -70,11 +70,10 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
    full baseline regression smoke between waves (`wave --next`: m45AAF0 = script_commands, game_data_defs, hud, scene_loader,
    char_action_fsm, ...). hud only had a 12-function test batch (the loop's first end-to-end run); the module
    itself is 15/150 functions (1.4%) and still needs its wave.
-2. **Diff tier 3** (record/replay; v1 built on branch diff-tier3, first smoke crashes: see JOURNAL 2026-10-09) on the second play copy /mnt/e/dev/csf-play-dev (`CSF_PLAY=...`; big data files
-   hard-linked to csf-play): the original runs with its callees recorded (callee, this, args, return), ours runs
-   against the recording (CSF_FUNC slots -> replayer), compare call sequence + args + writes + return. Targets the
-   847 executed-but-not-diffed functions (virtual calls 862 / side-effect callees 513 blocked tier 1-2). Callees
-   writing memory the function then reads -> "inconclusive" in v1.
+2. **Diff tier 3: merge + feed the verifier** (branch diff-tier3-v2: v2 smokes clean, FR01 and 9.sav 60 s each,
+   ~90 of 413 tier-3 functions compared per start; see JOURNAL 2026-10-09 "Diff tier 3 v2"). Left: merge to
+   master (user's call), make verify.py treat `T3 ... inconclusive` as no evidence, count inconclusive in
+   csf_diff_summary.txt, then v2: indirect/virtual calls (862 functions blocked on them).
 3. **Manual playtest at ~25% of game code** (user): the monitor shows live coverage (Progress `game` line, Areas
    tab table: hit / never run before); afterwards `verify.py ingest` records the hits.
 4. **queue/** (55 items): the 8 menu functions the first verifier run quarantined (they broke the FR01 scene start;
@@ -132,8 +131,8 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 
 ### Verification
 - [x] Diff: copies of `this` and contained callees (750 -> 788 functions); snapshot 16 KiB, 8 globals
-- [ ] Diff tier 3: functions whose callees have side effects (record the original's callee calls, replay them for
-      ours; callee writes into `this` and thread safety are the hard parts; needs live iteration)
+- [x] Diff tier 3: functions whose callees have side effects (record the original's callee calls, replay them for
+      ours; callee writes into `this` and thread safety are the hard parts; needs live iteration) - v2 2026-10-09
 - [ ] AI combat coverage: the T* AI tasks and GUI input handlers only run in real play. Needs savegames taken in
       combat (user playtest) -> `CSF_SWEEP_SAVES="1.sav 2.sav ..."`, then `verifier.py --full`
 - [ ] Executed coverage: 1278 done functions have only passed static checks (`verify.py report`)

@@ -739,3 +739,31 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   verified while mismatching in every start).
 - The fixed functions are pending again (code hash changed); these were investigation runs (`CSF_NO_LEDGER=1`), the
   verifier verifies them as usual.
+
+## 2026-10-09 — Diff tier 3 v2: smokes clean (branch diff-tier3-v2)
+- v1 (diff-tier3) merged with master, then fixed until FR01 60 s and `loadsave 9.sav` 60 s run clean with tier 3 on
+  (378 / 373 functions diffed, ~90 of them tier 3). The harness bugs, in the order they crashed:
+  - Divergence ran ours' remaining callees for real (their side effects twice). Now the replayer abandons ours
+    (`__builtin_longjmp` back into run(), SEH head and x87 stack put back), the original's snapshot is restored
+    and its result returned. Same for any trace mismatch or inconclusive run: the callees' effects are the
+    original's, so the original's results stay.
+  - Stack-buffer deltas were "bytes that changed": 0x739FA0 stores a heap pointer into an uninitialized local whose
+    stale high bytes already matched, ours got half a pointer (0x73A060 returned 0x2820, crash in 0x7354D2). Now
+    the dword-widened span first..last changed byte is replayed, and a window ends at the next watched pointer
+    (bytes went to the wrong buffer in ours' frame).
+  - Callee pop from the table: 0x48E4D0 is thiscall with no stack args but tail-jumps to a virtual that pops the
+    caller's one (`ret 4`); the replay popped 0 and ours returned into garbage. The real pop is now measured per
+    recorded call (esp after the return vs at entry) and replayed; it also widens the compared args.
+  - A pointer return equal to an arg / ecx replays ours' own arg (vector ops return `out`); an unmatched stack
+    address is inconclusive (abandoned).
+  - difftable.py: CRT callees (FLIRT lib: __ftol2, memcpy, _chkstk) aren't intercepted (part of F); ecx/edx are
+    compared only when the callee reads them before writing at entry (0 edx callees left, 6 before); pop falls back
+    to the convention when a callee has no `ret`; st0 returns from api.returns_fpu. The diff lock is only tried while a
+    tier-3 diff runs elsewhere (its callees may wait on the loader thread).
+- Heap-read artifact (3 functions): the original's callee changes a heap object ours then reads (0x6BF280 tests
+  frame->parent after RwFrameRemoveChild cleared it; 0x726C10 tex+0x54, 0x45D4D0 entry+0x18). Undoing heap
+  writes is unsafe (freeing callees), so 256 bytes behind every heap pointer arg / ecx are watched; a mismatch after
+  such a change logs `T3 ... inconclusive (a callee changed heap memory ...; <the mismatch>)`, not a DIFF.
+- First real find: 0x42DF80 passed 0 instead of a1 to 0x50D7F0 (the 0x45B570 pattern again: arg pushed before a
+  no-arg getter, the tail-jumped 0x536AB0 pops it). Fixed. Gate and tier 1 had passed it.
+- Noise left: 0x544310 / 0x727250 return uninitialized eax in the original.

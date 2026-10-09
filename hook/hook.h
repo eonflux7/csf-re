@@ -29,9 +29,12 @@ struct Entry {
 
 void add(Entry* e);
 namespace t3 {  // hook/replay.cpp: diff tier 3 (record/replay of callees)
-bool busy();
+bool busy();       // a record/replay runs on this thread
+bool elsewhere();  // ... on another thread (it holds the diff lock while arbitrary callees run)
 void begin_record(uint32_t self, uint32_t this_size, const uint32_t (*globs)[2], uint32_t nglobs);
 void pause();
+bool lost();       // the recording is incomplete: don't run ours against it
+void** jmpbuf();   // __builtin_setjmp buffer: the replayer abandons ours by longjmp-ing to it
 void begin_replay();
 int end(char* msg, size_t n);
 void install();

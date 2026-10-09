@@ -14,10 +14,10 @@ CSF_FUNC(int, __fastcall, Menus_ForwardCallToChildAt18, 0x0050D7F0, (void* self,
 // ignores it; the original's epilogue discards the leftover stack slot, so it is not used here.
 static int __stdcall MenuManager_SetGameplayControllerState(int a1)
 {
-    (void)a1;
+    // a1 is 0x50D7F0's argument (pushed before the no-arg getter; 0x50D7F0 tail-jumps to 0x536AB0, which pops it)
     int globalState = GetGlobalState_50D190();
     return Menus_ForwardCallToChildAt18(reinterpret_cast<void*>(static_cast<std::uintptr_t>(globalState)),
-                                        nullptr, 0);
+                                        nullptr, static_cast<char>(a1));
 }
 
 HOOK(0x42DF80, MenuManager_SetGameplayControllerState, "auto");
