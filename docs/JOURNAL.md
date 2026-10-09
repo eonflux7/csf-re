@@ -679,3 +679,17 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - **X tier ladder flipped**: Opus-first took the grunts' 5h window from ~21% to 78% (then HTTP 429) on the
   game_data_defs wave, nearly all X-tier data loaders. Now Codex high x2, Opus high x1 only as escalation. The 3-wave
   loop was stopped after that wave (its Opus review step skipped too: review.py runs on the same account).
+- **hud wave + loop stop**: hud 127 written / 124 verified / 3 quarantined, Opus review 0/7 rejected. The first full
+  regression smoke between waves (FR01 + menu tour + savegame, verified baseline) failed: blind bisect (no crash
+  names) quarantined 7 (0078ce30 00544920 004350c0 0042df60 0042db20 0078ce20 00544980), then "full batch passed
+  on re-run: flaky". With a flaky crash, blind-bisect culprits may be false: re-check them before trusting.
+  The loop stopped as designed (`waves: regression check failed`).
+- **Diff tier 3 v1** on branch `diff-tier3` (worktree work/t3, play copy /mnt/e/dev/csf-play-dev, not merged):
+  difftable.py picks 420 functions whose own writes stay in this/globals/stack but which make direct calls; 497
+  callees intercepted (251 over existing hooks, 246 MinHook). hook/replay.cpp records the original's calls (callee,
+  ecx/edx, args, return incl. st0, bytes changed in the snapshot regions and in stack buffers passed by pointer)
+  and answers ours from the record. First smoke (FR01 60 s): crash after 2 s in original code 0x739BC0 (not a
+  tier-3 function: harness side effect). Mismatches seen are mostly harness artifacts: edx compared for callees
+  whose Hex-Rays `edx` param is spurious (0x429B60), stack-address returns not treated as equal. Next: compare edx
+  only for real fastcall callees (callers' cleanup + edx actually set before the call), stack-pointer returns
+  equal, `diff_t3 0` A/B to confirm the crash is the harness, then bisect tier-3 entries with diff_limit.

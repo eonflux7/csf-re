@@ -70,7 +70,7 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
    full baseline regression smoke between waves (`wave --next`: m45AAF0 = script_commands, game_data_defs, hud, scene_loader,
    char_action_fsm, ...). hud only had a 12-function test batch (the loop's first end-to-end run); the module
    itself is 15/150 functions (1.4%) and still needs its wave.
-2. **Diff tier 3** (record/replay) on the second play copy /mnt/e/dev/csf-play-dev (`CSF_PLAY=...`; big data files
+2. **Diff tier 3** (record/replay; v1 built on branch diff-tier3, first smoke crashes: see JOURNAL 2026-10-09) on the second play copy /mnt/e/dev/csf-play-dev (`CSF_PLAY=...`; big data files
    hard-linked to csf-play): the original runs with its callees recorded (callee, this, args, return), ours runs
    against the recording (CSF_FUNC slots -> replayer), compare call sequence + args + writes + return. Targets the
    847 executed-but-not-diffed functions (virtual calls 862 / side-effect callees 513 blocked tier 1-2). Callees
