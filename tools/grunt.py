@@ -3,7 +3,7 @@
 
 Usage:
   grunt.py run [--n 10] [--jobs 8] [--max-size 200] [--only ea,ea] [--model deepseek-flash] [--no-smoke]
-  grunt.py lanes [--total 200] [--batch 60] [--module m1,m2]   continuous, one lane with size tiers S/M/L (see lanes())
+  grunt.py lanes [--total 200] [--batch 60] [--module m1,m2]   continuous, one lane with size tiers S/M/L/X (see lanes())
   grunt.py cost                      token usage, review hit rate from work/grunt_log.jsonl
 
 Stop a lanes run cleanly: `touch work/grunt_stop` (in-flight calls finish, the batch is smoked and committed).
@@ -193,7 +193,7 @@ def chat_claude(model, messages, effort=None):
     r = subprocess.run(["claude", "-p", "--tools", "", "--model", model, "--no-session-persistence",
                         "--strict-mcp-config", "--setting-sources", "", "--disable-slash-commands",
                         "--output-format", "json", "--system-prompt", system, *eff],
-                       input="\n\n".join(convo), capture_output=True, text=True, cwd=CLAUDE_CWD, timeout=900, env=env)
+                       input="\n\n".join(convo), capture_output=True, text=True, cwd=CLAUDE_CWD, timeout=1800, env=env)
     d = json.loads(r.stdout)
     if d.get("is_error") or d.get("terminal_reason") not in (None, "completed", "end_turn"):
         raise RuntimeError(f"claude -p failed: {d.get('terminal_reason')} {str(d.get('result'))[:200]}")
@@ -1017,7 +1017,7 @@ def run_config(args, lanes=False):
                 codex_reserve=getattr(args, "codex_reserve", None), claude_cap=getattr(args, "claude_cap", None), codex_sub=getattr(args, "codex_sub", None),
                 backend=getattr(args, "backend", "lanes"), wave=getattr(args, "module", None),
                 **(dict(tiers={t: dict(ladder=getattr(args, f"{t.lower()}_ladder"), jobs=getattr(args, f"{t.lower()}_jobs"))
-                               for t in "SML"}, s_max=args.s_max, m_max=args.m_max, review_effort=args.review_effort) if lanes else {}))
+                               for t in TIERS}, s_max=args.s_max, m_max=args.m_max, l_max=args.l_max, review_effort=args.review_effort) if lanes else {}))
 
 
 def pack(db, eas, fns, budget=0, max_size=300):
@@ -1138,7 +1138,7 @@ def commit(good, title):
     print("committed", flush=True)
 
 
-TIERS = ("S", "M", "L")
+TIERS = ("S", "M", "L", "X")
 
 
 def ladder_spec(spec):
@@ -1153,7 +1153,8 @@ def ladder_spec(spec):
 def lanes(args):
     """Continuous grunting in one lane. Each function's size picks its tier and the tier its ladder of models (tried
     in order, the conversation with the gate errors carried over): S = under --s-max bytes, or a clone sibling with a
-    done example up to --m-max; M = up to --m-max; L = the rest. Each tier has its own in-flight cap, so slow L calls
+    done example up to --m-max; M = up to --m-max; L = up to --l-max; X = the rest (Opus: the captain's model writes
+    the big ones). Each tier has its own in-flight cap, so slow L/X calls
     never hold up the S stream. Quota: Codex pauses at --codex-cap of its 5h window (L gets no new work, S/M lose their
     Codex rung); the grunts' Claude account pauses at --claude-cap of its 5h or weekly window. A function whose only
     remaining rungs were out of quota is deferred, not escalated. Every --batch gate passes: build + smoke + commit."""
@@ -1169,10 +1170,10 @@ def lanes(args):
     key = None
     esc = [("claude", args.claude_model, 2)] if args.escalate_claude else []
     ladders = {"S": ladder_spec(args.s_ladder) + esc, "M": ladder_spec(args.m_ladder) + esc,
-               "L": ladder_spec(args.l_ladder) + esc}
+               "L": ladder_spec(args.l_ladder) + esc, "X": ladder_spec(args.x_ladder) + esc}
     if any(b == "deepseek" for lad in ladders.values() for b, _, _ in lad):
         key = load_key()
-    caps = {"S": args.s_jobs, "M": args.m_jobs, "L": args.l_jobs}
+    caps = {"S": args.s_jobs, "M": args.m_jobs, "L": args.l_jobs, "X": args.x_jobs}
     pool = cf.ThreadPoolExecutor(sum(caps.values()))
     inflight, good, submitted, total_ok, total_esc, total_def = {}, [], 0, 0, 0, 0
     stopping, quota_t = False, 0
@@ -1190,7 +1191,7 @@ def lanes(args):
             return "L"  # a hub: many functions elsewhere depend on it, so the strong ladder writes it
         if size < args.s_max or (ex is not None and size <= args.m_max):
             return "S"
-        return "M" if size <= args.m_max else "L"
+        return "M" if size <= args.m_max else "L" if size <= args.l_max else "X"
 
     def codex_only(t):
         return all(b == "codex" for b, _, _ in ladders[t])
@@ -1664,18 +1665,22 @@ def lane_args(l):
     l.add_argument("--batch", type=int, default=60, help="link + commit every N gate passes")
     l.add_argument("--s-max", type=int, default=150, help="S tier: functions under N bytes (and clone siblings with "
                    "a done example up to --m-max)")
-    l.add_argument("--m-max", type=int, default=400, help="M tier: functions up to N bytes; L: the rest")
+    l.add_argument("--m-max", type=int, default=400, help="M tier: functions up to N bytes")
+    l.add_argument("--l-max", type=int, default=600, help="L tier: functions up to N bytes; X: the rest")
     # 2026-10-08 after the first tiered menu batches: MiMo dropped (6-12 min thinks, 3 rescues in 140), no Codex xhigh
     # 2026-10-08 (473 tiered results): S ok 330 = Haiku low 289, strong rung 28, Haiku medium 9 -> medium dropped
     l.add_argument("--s-ladder", default="claude:claude-haiku-5-5@low:2,codex:gpt-6.1-sol@high:1",
                    help="backend:model[@effort]:attempts,...")
     l.add_argument("--m-ladder", default="claude:claude-haiku-5-5@high:2,codex:gpt-6.1-sol@high:2")
     l.add_argument("--l-ladder", default="codex:gpt-6.1-sol@high:2")
+    # 2026-10-09: functions over 600 B (646, ~700 KB) were outside every wave; Opus writes them, Codex xhigh backs up
+    l.add_argument("--x-ladder", default="claude:claude-opus-5-5@high:2,codex:gpt-6.1-sol@xhigh:1")
     l.add_argument("--review-effort", default="medium", help="Codex review effort")
     l.add_argument("--s-jobs", type=int, default=12, help="S tier: functions in flight")
     l.add_argument("--m-jobs", type=int, default=6)
     l.add_argument("--l-jobs", type=int, default=3)
-    l.add_argument("--max-size", type=int, default=600)
+    l.add_argument("--x-jobs", type=int, default=2)
+    l.add_argument("--max-size", type=int, default=100000, help="skip functions over N bytes (default: none)")
     l.add_argument("--min-size", type=int, default=6)
     l.add_argument("--claude-model", default="sonnet")
     l.add_argument("--escalate-claude", action="store_true", help="append Claude x2 to every ladder")
@@ -1722,7 +1727,7 @@ if __name__ == "__main__":
     r.add_argument("--evidence", type=int, default=3, help="evidence requests per function (tools/evidence.py)")
     r.add_argument("--evidence-over", type=int, default=150, help="offer evidence requests above N bytes")
     r.add_argument("--review-over", type=int, default=100, help="Codex-review DeepSeek outputs above N bytes (-1: off)")
-    l = sub.add_parser("lanes", help="continuous grunting: one lane, size tiers S/M/L each with its own model ladder")
+    l = sub.add_parser("lanes", help="continuous grunting: one lane, size tiers S/M/L/X each with its own model ladder")
     lane_args(l)
     w = sub.add_parser("wave", help="one module, the whole loop: types first, produce, verify, review, link test")
     lane_args(w)

@@ -659,3 +659,6 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - The script_commands canary group: 0045bba0 named by a crash report and quarantined, then the re-smoke and a
   control run with the whole batch off also crashed, though the baseline had passed 30 s earlier: unexplained.
 - Waves only take functions up to 600 B: 646 functions over that (~700 KB) are untouched (backlog: L pass).
+- **Tier X**: instead of a separate L pass, waves now take every size; over `--l-max` 600 B the captain's model
+  writes (Opus high x2, Codex xhigh x1, `--x-jobs 2`), on the grunts' account like every grunt rung. Codex isn't
+  the bottleneck (11% of its 5h window after a 30 min run). Claude call timeout 900 -> 1800 s for big functions.

@@ -83,9 +83,8 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 - [x] Monitor: verifier and review lines, per-area progress table (Live), area column (Modules tab)
 - [x] Wave stop rule (quarantine > 3%, Opus rejects > 10%, > 25% of the module left unverified -> exit 3) and
   `wave --waves N` with `verifier.py --baseline-only --full` between waves; reports in work/waves.jsonl
-- [ ] L pass: waves only take functions up to 600 B (`--max-size`); 646 functions over 600 B (~700 KB, 52 over
-  2 KB) need their own pass paced to Codex quota, > 2 KB to Opus or split. Done callees already show by name
-  and checked signature in their packets, so running it after the waves costs nothing
+- [x] Functions over 600 B in the waves: tier X (Opus high x2, then Codex xhigh; 2 in flight), `--max-size`
+  no longer caps; 639 functions / 697 KB were outside every wave
 - [ ] Redo under the fidelity rule the 4 files that emulate x87 rounding (0x72DE90, 0x729F60, 0x7292C0, 0x538A50)
 - [ ] Feed recurring review issue kinds into the grunt prompt (`review.py report`) once samples exist per module
 - [ ] Re-test Sonnet for bulk function renames (captain functions) after waves name the callers

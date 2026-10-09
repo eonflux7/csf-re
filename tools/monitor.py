@@ -832,7 +832,7 @@ def fail_kinds_line(fns):
 def efficiency_lines(fns):
     if any(r.get("tier") for r in fns):
         out = []
-        for tier in ("S", "M", "L"):
+        for tier in ("S", "M", "L", "X"):
             ts = [r for r in fns if r.get("tier") == tier]
             if not ts:
                 continue
@@ -904,7 +904,7 @@ def grunt_header(g):
         f = Text("        in flight ", style="bold")
         tiers = st.get("inflight_tiers") or {}
         if tiers:
-            f.append("  ".join(f"{t} {tiers.get(t, 0)}" for t in ("S", "M", "L")) + "  │  ", style="dim")
+            f.append("  ".join(f"{t} {tiers.get(t, 0)}" for t in ("S", "M", "L", "X")) + "  │  ", style="dim")
         for w, n in per.most_common():
             f.append(f"{w} {n}  ", style=MODEL_STYLE.get(w.split("·")[0], "dim"))
         out.append(f)
