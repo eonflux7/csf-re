@@ -2,12 +2,13 @@
 - {addr: 0x0082D05C, name: g_pfnSleep, type: SleepFn, uses: 1, src: auto}
 - {addr: 0x0082D094, name: g_pfnGetFileSize, type: GetFileSizeFn, uses: 1, src: auto}
 - {addr: 0x0082D23C, name: g_ReleaseMutex, type: ReleaseMutexFunction, uses: 1, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 16, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 17, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 4, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
 - {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 13, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 3, src: auto}
-- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 43, src: auto}
+- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 44, src: auto}
+- {addr: 0x0082D75C, name: g_HudNegativePi, type: float, uses: 2, src: auto, alt: [g_NegativeHalfTurnRadians]}
 - {addr: 0x0082D7C0, name: g_MessageBoxAnimationScale, type: float, uses: 2, src: auto, alt: [g_flt_0082D7C0]}
 - {addr: 0x0082DC70, name: g_SubtitlePanelScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC84, name: g_flt_0082DC84, type: float, uses: 4, src: auto, alt: [g_MessageBoxAnimationDuration]}
@@ -26,12 +27,16 @@
 - {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 22, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator]}
 - {addr: 0x0082E958, name: g_TParadoString, type: char, uses: 1, src: auto}
 - {addr: 0x0082F318, name: g_TEndString, type: const char, uses: 1, src: auto}
-- {addr: 0x0082FAD0, name: g_TransitionHalfPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 6, src: auto}
+- {addr: 0x0082FACC, name: g_HudNegativeHalfPi, type: float, uses: 1, src: auto}
+- {addr: 0x0082FAD0, name: g_TransitionHalfPi, type: float, uses: 2, src: auto}
+- {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 7, src: auto}
 - {addr: 0x0082FEBC, name: g_LayoutInset, type: float, uses: 5, src: auto, alt: [g_VerticalInset]}
 - {addr: 0x0083042C, name: g_VtblCMenuScreenBase, type: uint8_t, uses: 9, src: auto}
 - {addr: 0x00830438, name: off_830438, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00830488, name: g_VtblCMenuScreenIntermediate, type: uint8_t, uses: 3, src: auto, alt: [g_VtblCMenuScreenSecondaryA, off_830488]}
+- {addr: 0x00830668, name: g_HalfTurnRadians, type: float, uses: 2, src: auto, alt: [g_HudPi]}
+- {addr: 0x0083066C, name: g_FullTurnRadians, type: float, uses: 2, src: auto, alt: [g_HudTwoPi]}
+- {addr: 0x00830674, name: g_fEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x00830A00, name: g_fInv255, type: float, uses: 2, src: opus}
 - {addr: 0x00831090, name: g_FloatMax, type: float, uses: 2, src: auto}
 - {addr: 0x00831304, name: g_C_00831304_Vtable, type: void*, uses: 1, src: auto}
@@ -124,6 +129,7 @@
 - {addr: 0x00872CA4, name: g_vtbl_872CA4, type: void*, uses: 2, src: auto}
 - {addr: 0x00886C90, name: g_DwordPairRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00886CE0, name: g_TwoDwordCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x00886D30, name: g_ForwardRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088AA74, name: g_RangeExceptionCatchInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088AB14, name: g_CopyDwordRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088AB64, name: g_DwordCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
@@ -442,9 +448,9 @@
 - {addr: 0x008A7DA8, name: g_ColorBlack_B, type: float, uses: 2, src: captain, conf: 0.8, alt: [g_CellTextColorSentinelBlue]}
 - {addr: 0x008A7DAC, name: g_ColorBlack_A, type: float, uses: 2, src: captain, conf: 0.8, alt: [g_CellTextColorSentinelAlpha]}
 - {addr: 0x008A7DB0, name: g_ColorRed, type: float, uses: 2, src: captain, conf: 0.75, alt: [g_DefaultColorRed]}
-- {addr: 0x008A7DB4, name: g_DefaultColorGreen, type: float, uses: 2, src: auto}
-- {addr: 0x008A7DB8, name: g_DefaultColorBlue, type: float, uses: 2, src: auto}
-- {addr: 0x008A7DBC, name: g_DefaultColorAlpha, type: float, uses: 2, src: auto}
+- {addr: 0x008A7DB4, name: g_DefaultColorGreen, type: float, uses: 3, src: auto}
+- {addr: 0x008A7DB8, name: g_DefaultColorBlue, type: float, uses: 3, src: auto}
+- {addr: 0x008A7DBC, name: g_DefaultColorAlpha, type: float, uses: 3, src: auto}
 - {addr: 0x008A7E40, name: g_Float_8A7E40, type: float, uses: 1, src: auto}
 - {addr: 0x008A7F18, name: g_pszKey_VERSION_gfx_collision_shapes, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A7F1C, name: g_pszKey_SHAPE_TYPE, type: const char*, uses: 0, src: captain, conf: 1.0}
@@ -1127,7 +1133,7 @@
 - {addr: 0x008A9E60, name: g_pszKey_QUALITY_CFG, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A9E68, name: g_psz_NONE, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008AFC60, name: g_Value_8afc60, type: int, uses: 1, src: auto}
-- {addr: 0x008AFC78, name: g_Value_8afc78, type: int32_t, uses: 2, src: auto}
+- {addr: 0x008AFC78, name: g_Value_8afc78, type: int32_t, uses: 4, src: auto}
 - {addr: 0x008AFC7C, name: g_Value8afc7c, type: int, uses: 1, src: auto}
 - {addr: 0x008AFC80, name: g_Value_8afc80, type: int, uses: 1, src: auto}
 - {addr: 0x008AFC84, name: g_Value8AFC84, type: int, uses: 2, src: auto}
