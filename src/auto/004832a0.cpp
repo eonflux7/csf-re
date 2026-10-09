@@ -20,7 +20,7 @@ static bool __fastcall CCharActionFsm_TryRequestStateOne(CCharActionFsm* self, v
         return false;
     }
 
-    self->vSlot134(1, 0);
+    self->vBeginWeaponStateChange(1, 0);
     return true;
 }
 

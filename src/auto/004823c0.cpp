@@ -12,8 +12,8 @@ static int __fastcall CCharActionFsm_ResolveWeaponState(CCharActionFsm* self, vo
 {
     if (C_004950e0_GetField398(reinterpret_cast<void*>(self->field_0008), nullptr))
     {
-        self->vSlot1E8();
-        return self->vSlot134(0, 0);
+        self->vConsumePendingSlot();
+        return self->vBeginWeaponStateChange(0, 0);
     }
 
     sub_498F50(reinterpret_cast<void*>(self->field_0008), nullptr, 512, 1);

@@ -8,11 +8,11 @@
 static int __fastcall CCharWeaponFsm_TryForwardWhenLinked(CCharWeaponFsm* self, void* /*edx*/, uint32_t* a2) {
     int result = 0;
 
-    if (self->field_000c != 9) {
+    if (self->m_stateCode != 9) {
         result = static_cast<int>(reinterpret_cast<uintptr_t>(a2));
         if (reinterpret_cast<CCharWeaponFsm*>(a2[1]) == self &&
             reinterpret_cast<CCharWeaponFsm*>(a2[0]) != self) {
-            return self->vSlot134(0, 0);
+            return self->vBeginWeaponStateChange(0, 0);
         }
     }
     return result;

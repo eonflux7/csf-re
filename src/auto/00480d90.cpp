@@ -18,7 +18,7 @@ static unsigned int __fastcall CCharWeaponFsm_ResolveIndexedSlot(CCharWeaponFsm*
         result = static_cast<unsigned int>(byteSpan >> 2);
 
         if (slotIndex < result)
-            return static_cast<unsigned int>(self->vSlotF8(static_cast<int>(slotIndex)));
+            return static_cast<unsigned int>(self->vSetCurrentWeaponAction(static_cast<int>(slotIndex)));
     }
 
     return result;

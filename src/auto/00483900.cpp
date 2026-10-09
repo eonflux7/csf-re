@@ -19,14 +19,14 @@ static int __fastcall CCharActionFsm_UpdateWeaponHandleState(CCharActionFsm* sel
     {
         // Handle values at offsets +444 (int) and +448 (float) of the handle's value block.
         void* handleValueA = reinterpret_cast<void*>(Handle_GetValuePointer(
-            reinterpret_cast<void*>(self->vSlotD8()), nullptr));
+            reinterpret_cast<void*>(self->vGetIndexedEntryOrZero()), nullptr));
         int handleInt = CSF_AT(int, handleValueA, 444);
 
         void* handleValueB = reinterpret_cast<void*>(Handle_GetValuePointer(
-            reinterpret_cast<void*>(self->vSlotD8()), nullptr));
+            reinterpret_cast<void*>(self->vGetIndexedEntryOrZero()), nullptr));
         float handleFloat = CSF_AT(float, handleValueB, 448);
 
-        C_008319c0* subObject = reinterpret_cast<C_008319c0*>(self->vSlotD8());
+        C_008319c0* subObject = reinterpret_cast<C_008319c0*>(self->vGetIndexedEntryOrZero());
         int subObjectField74 = C_008319c0_GetSubObjectField74(subObject, nullptr);
 
         sub_482DC0(self, nullptr, handleInt, handleFloat, static_cast<char>(subObjectField74 == 2));
@@ -36,7 +36,7 @@ static int __fastcall CCharActionFsm_UpdateWeaponHandleState(CCharActionFsm* sel
     void* ownerTarget = reinterpret_cast<void*>(Get_008b0678());
     sub_525B30(ownerTarget, nullptr, ownerHandle, 107);
 
-    return self->vSlot11C(7);
+    return self->vUpdateWeaponSelection(7);
 }
 
 HOOK(0x00483900, CCharActionFsm_UpdateWeaponHandleState, "auto");

@@ -15,7 +15,7 @@ CSF_FUNC(int, __cdecl, GetGlobalValue_8BC1E0, 0x00756A10, ());
 
 static char __fastcall CCharActionFsm_UpdateAimState(CCharActionFsm* self, void* /*edx*/)
 {
-    int actorHandle = self->vSlotD8();
+    int actorHandle = self->vGetIndexedEntryOrZero();
     if (GetMemberValueD4(reinterpret_cast<void*>(static_cast<uintptr_t>(actorHandle)), nullptr) == 1)
     {
         if (Hud_IsSuspended(reinterpret_cast<void*>(static_cast<uintptr_t>(self->field_0008)), nullptr))
@@ -27,13 +27,13 @@ static char __fastcall CCharActionFsm_UpdateAimState(CCharActionFsm* self, void*
         {
             self->field_00ac = 0x3F000000u;
         }
-        return static_cast<char>(self->vSlot134(16, 15));
+        return static_cast<char>(self->vBeginWeaponStateChange(16, 15));
     }
 
-    char result = static_cast<char>(self->field_002c);
+    char result = static_cast<char>(self->m_pendingActionFlag);
     if (result)
     {
-        return static_cast<char>(self->vSlot134(5, 0));
+        return static_cast<char>(self->vBeginWeaponStateChange(5, 0));
     }
     return result;
 }

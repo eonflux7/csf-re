@@ -25,15 +25,15 @@ static char __fastcall CCharActionFsm_CommitPendingAction(CCharActionFsm* self, 
 
         if (self->field_0024 != 0xFFFFFFFFu)
         {
-            int slotObject = self->vSlotD8();
+            int slotObject = self->vGetIndexedEntryOrZero();
             void* slotPtr = reinterpret_cast<void*>(static_cast<uintptr_t>(slotObject));
             ((void(__fastcall*)(void*, void*, int))CSF_AT(void**, slotPtr, 0)[12])(slotPtr, nullptr, 1);
         }
     }
 
-    if (self->vSlotD8())
+    if (self->vGetIndexedEntryOrZero())
     {
-        int slotObject = self->vSlotD8();
+        int slotObject = self->vGetIndexedEntryOrZero();
         void* slotPtr = reinterpret_cast<void*>(static_cast<uintptr_t>(slotObject));
         ((void(__fastcall*)(void*, void*, int))CSF_AT(void**, slotPtr, 0)[12])(slotPtr, nullptr, 1);
     }

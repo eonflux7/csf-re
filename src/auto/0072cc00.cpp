@@ -10,7 +10,7 @@ static int __fastcall CGuiSlider_ResetInput(CGuiSlider* self, void* /*edx*/)
 {
     void* arrowUp = reinterpret_cast<void*>(self->m_pArrowUp);
     self->m_pos = 0;
-    self->field_0138 = 0.0f;
+    self->m_fractionalPosition = 0.0f;
 
     if (arrowUp)
         reinterpret_cast<void(__fastcall*)(void*, void*)>(

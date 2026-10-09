@@ -12,18 +12,18 @@ CSF_FUNC(int, __fastcall, GetCurrentItemCount, 0x00681F40, (void* self, void* ed
 static int __fastcall CCharActionFsm_CheckItemsOrCancelAction(CCharActionFsm* self, void* /*edx*/)
 {
     bool hasNoWeaponFlagSet = self->vIsField000cNull();
-    uint32_t weaponStateKind = self->field_000c;
+    uint32_t weaponStateKind = self->m_stateCode;
 
     if (weaponStateKind == 3)
-        return self->vSlot134(14, 0);
+        return self->vBeginWeaponStateChange(14, 0);
     if (weaponStateKind == 16)
-        return self->vSlot134(14, 0);
+        return self->vBeginWeaponStateChange(14, 0);
 
-    C_0086754c* itemContainer = (C_0086754c*)self->vSlotD8();
+    C_0086754c* itemContainer = (C_0086754c*)self->vGetIndexedEntryOrZero();
     int currentItemCount = GetCurrentItemCount(itemContainer, nullptr);
 
     if (!currentItemCount || hasNoWeaponFlagSet)
-        return self->vSlot134(14, 0);
+        return self->vBeginWeaponStateChange(14, 0);
 
     return currentItemCount;
 }

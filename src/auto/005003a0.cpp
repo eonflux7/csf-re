@@ -10,7 +10,7 @@
 //   2 -> current entry, bytes +0x34/+0x38
 //   3 -> current entry, bytes +0x40/+0x44
 // Any other kind writes nothing and returns the kind value itself.
-static uint32_t* __fastcall CSceneLoader_ApplySlotRecord(C_0083f5d8* self, void* /*edx*/, int a2, uint32_t* a3) {
+static uint32_t* __fastcall CSceneLoader_ApplySlotRecord(CSceneLoader* self, void* /*edx*/, int a2, uint32_t* a3) {
     uint32_t* result = reinterpret_cast<uint32_t*>(static_cast<uintptr_t>(CSF_AT(uint32_t, a3, 0x54)));
 
     if (result == reinterpret_cast<uint32_t*>(1)) {

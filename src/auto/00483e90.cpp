@@ -23,7 +23,7 @@ static char __fastcall CCharActionFsm_UpdateActionStateWhenEnabled(CCharActionFs
     char result = static_cast<char>(self->field_0069);
     if (result)
     {
-        C_008319c0* subObject = reinterpret_cast<C_008319c0*>(self->vSlotD8());
+        C_008319c0* subObject = reinterpret_cast<C_008319c0*>(self->vGetIndexedEntryOrZero());
         if (C_008319c0_GetSubObjectField74(subObject, nullptr) == 8)
         {
             goto ResetAndRequestState;
@@ -47,9 +47,9 @@ static char __fastcall CCharActionFsm_UpdateActionStateWhenEnabled(CCharActionFs
 
 ResetAndRequestState:
     {
-        int targetHandle = self->vSlotD8();
+        int targetHandle = self->vGetIndexedEntryOrZero();
         ActionFsm_ResetSubObjectTarget(reinterpret_cast<void*>(targetHandle), nullptr);
-        return static_cast<char>(self->vSlot138(27));
+        return static_cast<char>(self->vSetStateAndDispatch(27));
     }
 }
 

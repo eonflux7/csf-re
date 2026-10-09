@@ -15,7 +15,7 @@ CSF_GLOBAL(void*, g_pCurrentScene, 0x8AFC90);
 // closes every object of the current scene whose type is 26 or 27 and that
 // reports itself as matching through its secondary object.
 // Returns g_pCurrentScene.
-static CGuiControl* __fastcall CSceneLoader_ResetSlotAndCloseOpenDoors(C_0083f5d8* self, void* /*edx*/, int sceneIdx)
+static CGuiControl* __fastcall CSceneLoader_ResetSlotAndCloseOpenDoors(CSceneLoader* self, void* /*edx*/, int sceneIdx)
 {
     // Reset the flag of entry sceneIdx in the table at this->field_0030.
     uint8_t* entryTableBase = reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(CSF_AT(uint32_t, self, 0x30)));

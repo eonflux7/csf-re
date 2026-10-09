@@ -16,7 +16,7 @@ static void __fastcall CCharActionFsm_EnsureUsableItemSelected(
         (static_cast<int32_t>(self->field_007c - itemsBegin) >> 2) == 0)
         return;
 
-    auto* character = reinterpret_cast<C_008319c0*>(self->vSlotD8());
+    auto* character = reinterpret_cast<C_008319c0*>(self->vGetIndexedEntryOrZero());
     const uint32_t selectedIndex = self->field_0090;
     C_0085e7b8* selectedItem = nullptr;
 

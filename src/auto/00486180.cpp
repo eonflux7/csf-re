@@ -24,7 +24,7 @@ static int __fastcall CCharWeaponFsm_StartWeaponInteraction(
     int weaponType = 0;
     if (self->field_0024 != static_cast<uint32_t>(-1))
     {
-        void* weapon = reinterpret_cast<void*>(self->vSlotDC());
+        void* weapon = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero_37());
         weaponType =
             reinterpret_cast<int (__fastcall*)(void*, void*)>(
                 CSF_AT(void**, weapon, 0)[0x50 / 4])(weapon, nullptr);
@@ -62,7 +62,7 @@ static int __fastcall CCharWeaponFsm_StartWeaponInteraction(
             reinterpret_cast<int>(&self->field_0040)));
 
     if (action == -1 || !target)
-        return self->vSlot134(0, 0);
+        return self->vBeginWeaponStateChange(0, 0);
 
     CCharWeaponFsm_PrepareTargetAction(
         self, nullptr, target, CSF_AT(float, record, 0x38));
@@ -102,7 +102,7 @@ static int __fastcall CCharWeaponFsm_StartWeaponInteraction(
     void* dispatcher = reinterpret_cast<void*>(GetGlobalObjectField184());
     DispatchRecordToGlobalObject(dispatcher, nullptr, record, 0);
 
-    const int actionParameter = self->vSlot11C(action);
+    const int actionParameter = self->vUpdateWeaponSelection(action);
     return reinterpret_cast<int (__fastcall*)(void*, void*, int, int, int, int)>(
         CSF_AT(void**, target, 0)[0x8C / 4])(
             target, nullptr, CSF_AT(int, record, 0x34),

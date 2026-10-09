@@ -14,7 +14,7 @@ using CreateThreadImportFn = void* (__stdcall*)(
 
 CSF_GLOBAL(CreateThreadImportFn, g_CreateThreadImport, 0x0082D1A0);
 
-static void* __fastcall CSceneLoader_StartBackgroundThread(C_0083f5d8* self, void* /*edx*/)
+static void* __fastcall CSceneLoader_StartBackgroundThread(CSceneLoader* self, void* /*edx*/)
 {
     void* threadHandle = g_CreateThreadImport(
         nullptr,

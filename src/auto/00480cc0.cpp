@@ -10,7 +10,7 @@ static int __fastcall CCharWeaponFsm_ConsumePendingSlot(CCharWeaponFsm* self, vo
     int result = static_cast<int>(self->field_0028);
     if (result != -1)
     {
-        result = self->vSlotF8(result);
+        result = self->vSetCurrentWeaponAction(result);
         self->field_0028 = 0xFFFFFFFFu;
     }
     return result;

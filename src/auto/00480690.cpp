@@ -12,7 +12,7 @@
 static int __fastcall CCharWeaponFsm_DispatchWhenCheckPasses(CCharWeaponFsm* self, void* /*edx*/)
 {
     // First virtual call: vSlotD8 gives the sub-object whose vtable we query.
-    int checkedObjectValue = self->vSlotD8();
+    int checkedObjectValue = self->vGetIndexedEntryOrZero();
     void* checkedObject = reinterpret_cast<void*>(static_cast<intptr_t>(checkedObjectValue));
 
     // Second virtual call: slot 0x2C -> index 11, no arguments.
@@ -21,7 +21,7 @@ static int __fastcall CCharWeaponFsm_DispatchWhenCheckPasses(CCharWeaponFsm* sel
     // Original tests only the low byte (test al, al).
     if (static_cast<uint8_t>(checkResult) != 0)
     {
-        return self->vSlot11C(20);
+        return self->vUpdateWeaponSelection(20);
     }
     return checkResult;
 }

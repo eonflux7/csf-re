@@ -10,11 +10,11 @@ CSF_FUNC(int, __fastcall, sub_498F50, 0x00498F50, (void* self, void* edx, int a2
 
 static int __fastcall CCharActionFsm_RefreshWeaponState(CCharActionFsm* self, void* /*edx*/)
 {
-    if (self->vSlotD8())
+    if (self->vGetIndexedEntryOrZero())
     {
-        C_008319c0* linkedObj = reinterpret_cast<C_008319c0*>(self->vSlotD8());
+        C_008319c0* linkedObj = reinterpret_cast<C_008319c0*>(self->vGetIndexedEntryOrZero());
         if (C_unknown_GetLinkedDword(linkedObj, nullptr) == 2)
-            CSF_AT(uint8_t, reinterpret_cast<void*>(self->vSlotD8()), 0x16) = 1;
+            CSF_AT(uint8_t, reinterpret_cast<void*>(self->vGetIndexedEntryOrZero()), 0x16) = 1;
     }
 
     if (!sub_4950F0(reinterpret_cast<void*>(self->field_0008), nullptr))
@@ -23,7 +23,7 @@ static int __fastcall CCharActionFsm_RefreshWeaponState(CCharActionFsm* self, vo
         ((void(__fastcall*)(void*, void*, int))CSF_AT(void**, weaponObj, 0)[27])(weaponObj, nullptr, 0);
     }
 
-    void* actionObj = reinterpret_cast<void*>(self->vSlotD8());
+    void* actionObj = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
     int stateCode = ((int(__fastcall*)(void*, void*))CSF_AT(void**, actionObj, 0)[18])(actionObj, nullptr);
     if (stateCode > 0 && stateCode <= 3)
         sub_498F50(reinterpret_cast<void*>(self->field_0008), nullptr, 16, 1);

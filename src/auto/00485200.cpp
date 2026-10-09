@@ -35,7 +35,7 @@ static int __fastcall CCharWeaponFsm_ClearHandleAndNotifyOwner(
         reinterpret_cast<void*>(self->field_0008), nullptr,
         reinterpret_cast<int>(&emptyHandle));
 
-    self->vSlot11C(35);
+    self->vUpdateWeaponSelection(35);
 
     if (!resolved)
         return 0;

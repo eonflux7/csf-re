@@ -10,7 +10,7 @@
 // (extended precision, as Hex-Rays reports a `double` return type).
 static double __fastcall CGuiSlider_GetField0138(CGuiSlider* self, void* /*edx*/)
 {
-    return static_cast<double>(self->field_0138);
+    return static_cast<double>(self->m_fractionalPosition);
 }
 
 HOOK(0x0072D2A0, CGuiSlider_GetField0138, "auto");

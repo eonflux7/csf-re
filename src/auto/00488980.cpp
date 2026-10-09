@@ -31,7 +31,7 @@ static __declspec(naked) void CCharActionFsm_TailVSlot144()
 static int __fastcall CCharActionFsm_DispatchActionState(CCharActionFsm* self, void* /*edx*/)
 {
     int result = 0;
-    uint32_t stateMode = self->field_000c;
+    uint32_t stateMode = self->m_stateCode;
 
     switch (stateMode)
     {
@@ -54,7 +54,7 @@ static int __fastcall CCharActionFsm_DispatchActionState(CCharActionFsm* self, v
             void* pendingObj = reinterpret_cast<void*>(pendingSubState);
             result = (CSF_AT(VirtualNoArgFn*, pendingObj, 0))[0x4C / 4](pendingObj, nullptr);
             if (result >= 10 && result <= 12)
-                result = self->vSlot11C(12);
+                result = self->vUpdateWeaponSelection(12);
         }
         break;
     }
@@ -88,23 +88,23 @@ static int __fastcall CCharActionFsm_DispatchActionState(CCharActionFsm* self, v
         case 10:
         case 11:
             if (self->field_009c != 0)
-                return self->vSlot138(13);
-            return self->vSlot138(12);
+                return self->vSetStateAndDispatch(13);
+            return self->vSetStateAndDispatch(12);
 
         case 12:
             if ((CSF_AT(uint8_t, reinterpret_cast<void*>(self->field_0008), 0x1F0) & 2) != 0)
                 self->field_009c = self->field_00a4;
-            return self->vSlot138(12);
+            return self->vSetStateAndDispatch(12);
 
         case 13:
         case 14:
             if (self->field_009c == 0)
-                return self->vSlot138(12);
+                return self->vSetStateAndDispatch(12);
             {
                 int currentState = CharActionFsm_GetCurrentState(self, nullptr);
                 if (currentState < 10 || currentState > 11)
-                    return self->vSlot138(13);
-                return self->vSlot138(15);
+                    return self->vSetStateAndDispatch(13);
+                return self->vSetStateAndDispatch(15);
             }
 
         case 15:
@@ -113,16 +113,16 @@ static int __fastcall CCharActionFsm_DispatchActionState(CCharActionFsm* self, v
             if (activeSubState != 0 && CSF_AT(int, reinterpret_cast<void*>(activeSubState), 0x80) != 0)
             {
                 if (C_004950e0_GetField398(reinterpret_cast<void*>(self->field_0008), nullptr))
-                    return self->vSlot138(22);
-                return self->vSlot138(20);
+                    return self->vSetStateAndDispatch(22);
+                return self->vSetStateAndDispatch(20);
             }
             CCharActionFsm_ClearSubState(self, nullptr);
-            return self->vSlot134(0, 0);
+            return self->vBeginWeaponStateChange(0, 0);
         }
 
         default:
             CCharActionFsm_ClearSubState(self, nullptr);
-            return self->vSlot134(0, 0);
+            return self->vBeginWeaponStateChange(0, 0);
         }
     }
 
@@ -132,7 +132,7 @@ static int __fastcall CCharActionFsm_DispatchActionState(CCharActionFsm* self, v
         Hud_SetDisplayFlags(hud, nullptr, 64, 1);
         if (Hud_IsSuspended(reinterpret_cast<void*>(self->field_0008), nullptr))
             Hud_SetSuspended(reinterpret_cast<void*>(self->field_0008), nullptr, 1);
-        result = self->vSlot138(23);
+        result = self->vSetStateAndDispatch(23);
         break;
     }
 
@@ -143,15 +143,15 @@ static int __fastcall CCharActionFsm_DispatchActionState(CCharActionFsm* self, v
         void* hud = reinterpret_cast<void*>(self->field_0008);
         if ((CSF_AT(uint8_t, hud, 0x2E0) & 1) != 0)
             CSF_AT(uint32_t, hud, 0x2E4) &= 0xFFFFFFBFu;
-        result = self->vSlot138(24);
+        result = self->vSetStateAndDispatch(24);
         break;
     }
 
     case 15:
         if ((CSF_AT(uint8_t, reinterpret_cast<void*>(self->field_0008), 0x2E0) & 0x40) != 0)
-            result = self->vSlot138(25);
+            result = self->vSetStateAndDispatch(25);
         else
-            result = self->vSlot138(26);
+            result = self->vSetStateAndDispatch(26);
         break;
 
     case 16:
@@ -159,11 +159,11 @@ static int __fastcall CCharActionFsm_DispatchActionState(CCharActionFsm* self, v
         break;
 
     case 17:
-        result = self->vSlot138(28);
+        result = self->vSetStateAndDispatch(28);
         break;
 
     case 18:
-        result = self->vSlot138(30);
+        result = self->vSetStateAndDispatch(30);
         break;
 
     default:

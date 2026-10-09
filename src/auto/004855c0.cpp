@@ -24,7 +24,7 @@ static int __fastcall CCharActionFsm_DispatchInteraction(CCharActionFsm* self, v
     int actionType = 0;
     if (self->field_0024 != static_cast<uint32_t>(-1))
     {
-        void* action = reinterpret_cast<void*>(self->vSlotDC());
+        void* action = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero_37());
         actionType = reinterpret_cast<int(__fastcall*)(void*, void*)>(
             CSF_AT(void**, action, 0)[0x50 / 4])(action, nullptr);
     }

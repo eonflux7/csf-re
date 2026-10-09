@@ -7,10 +7,10 @@
 // For any other state, the virtual slot 0x134 is called with (8, 0) and its result is returned.
 static int __fastcall CCharWeaponFsm_GetResolvedState(CCharWeaponFsm* self, void* /*edx*/)
 {
-    int result = static_cast<int>(self->field_000c);
+    int result = static_cast<int>(self->m_stateCode);
     if (result != 9 && result != 8)
     {
-        return self->vSlot134(8, 0);
+        return self->vBeginWeaponStateChange(8, 0);
     }
     return result;
 }

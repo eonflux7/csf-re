@@ -39,7 +39,7 @@ static void SceneLoader_InitializeNotification(void* record, int kind)
 }
 
 static int __fastcall CSceneLoader_LoadSceneEntries(
-    C_0083f5d8* self, void* /*edx*/, int sceneIndex,
+    CSceneLoader* self, void* /*edx*/, int sceneIndex,
     C_00834050* focusEntry, int secondaryEntry, int tertiaryEntry,
     int* focusSettings, int focusMode)
 {
@@ -53,7 +53,7 @@ static int __fastcall CSceneLoader_LoadSceneEntries(
 
     const int recordOffset = 88 * sceneIndex;
     auto* sceneRecord =
-        reinterpret_cast<uint8_t*>(self->field_0030) + recordOffset;
+        reinterpret_cast<uint8_t*>(self->m_scenesBegin) + recordOffset;
     void* sceneName;
     if (CSF_AT(uint32_t, sceneRecord, 0x18) < 0x10u)
         sceneName = sceneRecord + 4;
@@ -131,7 +131,7 @@ static int __fastcall CSceneLoader_LoadSceneEntries(
 
     SceneLoader_FinalizeLoadedEntries(self, nullptr);
     CSF_AT(uint8_t,
-        reinterpret_cast<uint8_t*>(self->field_0030) + recordOffset, 0x1D) = 1;
+        reinterpret_cast<uint8_t*>(self->m_scenesBegin) + recordOffset, 0x1D) = 1;
     SceneLoader_UpdateLoadState(self, nullptr);
 
     alignas(4) uint8_t notification[0x38] = {};

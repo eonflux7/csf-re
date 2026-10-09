@@ -20,7 +20,7 @@ static int __fastcall CCharActionFsm_QueryCurrentAction(
         return 0;
 
     return CCharActionFsm_ForwardResolvedObjectQuery(
-        reinterpret_cast<void*>(self->vSlotDC()), nullptr);
+        reinterpret_cast<void*>(self->vGetIndexedEntryOrZero_37()), nullptr);
 }
 
 HOOK(0x00483510, CCharActionFsm_QueryCurrentAction, "auto");

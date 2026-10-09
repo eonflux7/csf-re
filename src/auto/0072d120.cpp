@@ -119,14 +119,14 @@ static char __fastcall CGuiSlider_SetRange(
     {
         const std::uint32_t lastPosition = currentCount - 1u;
         self->m_pos = lastPosition;
-        self->field_0138 =
+        self->m_fractionalPosition =
             static_cast<float>(static_cast<std::int32_t>(lastPosition));
     }
 
     if (static_cast<std::int32_t>(self->m_pos) < 0)
     {
         self->m_pos = 0;
-        self->field_0138 = 0.0f;
+        self->m_fractionalPosition = 0.0f;
     }
 
     return CGuiSlider_UpdateConsoleArrowSelectability(self, nullptr);

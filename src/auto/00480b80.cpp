@@ -12,7 +12,7 @@ static bool __fastcall CCharWeaponFsm_CanUseEquippedWeapon(CCharWeaponFsm* self,
 
     if (static_cast<uint8_t>(self->vIsField000cNull()) != 0)
     {
-        void* weapon = reinterpret_cast<void*>(static_cast<uintptr_t>(self->vSlotDC()));
+        void* weapon = reinterpret_cast<void*>(static_cast<uintptr_t>(self->vGetIndexedEntryOrZero_37()));
         auto weaponSlot68 = reinterpret_cast<uint8_t(__fastcall*)(void*, void*)>(
             CSF_AT(void**, weapon, 0)[0x68 / 4]);
 

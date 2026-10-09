@@ -14,7 +14,7 @@ CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
 
 // Forwards a notification (a2) to the handler object stored at GlobalState+0x1C,
 // via its vtable slot 0x44 (17). Runs the forward only while this->b6 stays set.
-static char __fastcall CSceneLoaderBase_ForwardToGlobalHandler(C_0083f578* self, void* /*edx*/, int a2)
+static char __fastcall CSceneLoaderBase_ForwardToGlobalHandler(CSceneLoaderBase* self, void* /*edx*/, int a2)
 {
     char result = CSF_AT(char, self, 0xB6);
     if (result)

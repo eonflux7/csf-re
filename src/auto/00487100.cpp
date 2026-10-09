@@ -29,7 +29,7 @@ static char __fastcall CCharActionFsm_SelectItemFromHandle(
             CSF_AT(void**, itemDatabase, 0)[0x8 / 4])(
                 itemDatabase, nullptr, CSF_AT(int, sceneObject, 0x184));
 
-    int itemIndex = self->vSlotD4(CSF_AT(int, itemDefinition, 0xDC), 8);
+    int itemIndex = self->vFindFirstMatchingHandleIndex(CSF_AT(int, itemDefinition, 0xDC), 8);
     if (itemIndex == -1)
         return static_cast<char>(itemIndex);
 
@@ -79,7 +79,7 @@ static char __fastcall CCharActionFsm_SelectItemFromHandle(
     if (CSF_AT(uint8_t, transform, 0x4))
         RwMatrixDestroy(reinterpret_cast<std::uint32_t*>(transform[0]));
 
-    self->vSlotB4(itemIndex);
+    self->vRemoveSlotAndShift(itemIndex);
 
     void* controller = CSF_AT(void*, sceneObject, 0x34);
     int sceneItemId = CSF_AT(int, sceneObject, 0x184);
@@ -90,11 +90,11 @@ static char __fastcall CCharActionFsm_SelectItemFromHandle(
     if (!wasSelected)
         return 0;
 
-    int actionIndex = self->vSlotC0(CSF_AT(int, sceneObject, 0x184));
+    int actionIndex = self->vFindProviderIndex(CSF_AT(int, sceneObject, 0x184));
     if (actionIndex == -1)
         return static_cast<char>(actionIndex);
 
-    return static_cast<char>(self->vSlotF8(actionIndex));
+    return static_cast<char>(self->vSetCurrentWeaponAction(actionIndex));
 }
 
 HOOK(0x00487100, CCharActionFsm_SelectItemFromHandle, "auto");

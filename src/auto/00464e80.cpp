@@ -36,7 +36,7 @@ static char* __fastcall BuildFsmActionBufferForHandle(void* self, void* /*edx*/,
     }
 
     CCharActionFsm* fsm = CSF_AT(CCharActionFsm*, ownerObject, 0x44);
-    uint32_t actionCount = fsm->vSlotA0();
+    uint32_t actionCount = fsm->vGetPointerRangeElementCount();
     uint32_t vectorEntryCount = 0;
     if (CSF_AT(uint32_t, ownerObject, 0x50) == 0) {
         uint32_t vectorBegin = fsm->field_0078;
@@ -67,7 +67,7 @@ static char* __fastcall BuildFsmActionBufferForHandle(void* self, void* /*edx*/,
     if (actionCount != 0) {
         uint32_t actionIndex = 0;
         do {
-            C_00862490* actionEntry = reinterpret_cast<C_00862490*>(fsm->vSlotCC(actionIndex));
+            C_00862490* actionEntry = reinterpret_cast<C_00862490*>(fsm->vGetIndexedEntry_33(actionIndex));
             uint32_t bufferHandle = builder.field_0004;
             uint32_t payloadWord = *reinterpret_cast<uint32_t*>(Entry_GetPayloadPointer(actionEntry, nullptr));
             *reinterpret_cast<uint32_t*>(bufferHandle + 4) = payloadWord;

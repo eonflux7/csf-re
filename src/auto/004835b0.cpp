@@ -19,7 +19,7 @@ static void __fastcall CCharActionFsm_UpdateWhileTargetValid(CCharActionFsm* sel
     if (self->field_0024 == 0xFFFFFFFFu)
         return;
 
-    if (self->field_000c == 4)
+    if (self->m_stateCode == 4)
         CSF_AT(uint32_t, reinterpret_cast<void*>(self->field_0008), 0x2E4) &= ~0x10u;
 
     if (C_004950e0_GetField398(reinterpret_cast<void*>(self->field_0008), nullptr))
@@ -27,7 +27,7 @@ static void __fastcall CCharActionFsm_UpdateWhileTargetValid(CCharActionFsm* sel
         if (C_004950e0_GetField398(reinterpret_cast<void*>(self->field_0008), nullptr))
         {
             sub_494E90(reinterpret_cast<void*>(self->field_0008), nullptr, 0);
-            self->vSlot134(2, 0);
+            self->vBeginWeaponStateChange(2, 0);
         }
         CSF_AT(uint32_t, reinterpret_cast<void*>(self->field_0008), 0x2E4) &= ~0x10u;
     }

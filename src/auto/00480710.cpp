@@ -10,7 +10,7 @@
 static int __fastcall CCharWeaponFsm_SetSubobjectFlagThenQueryState15(CCharWeaponFsm* self, void* /*edx*/)
 {
     // Slot 0xD8 returns the subobject pointer (Hex-Rays types it as int).
-    void* subobject = reinterpret_cast<void*>(self->vSlotD8());
+    void* subobject = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
 
     // Virtual slot 0x30 on the subobject (index 12), __thiscall with one argument of 1.
     using SubobjectSetFlagFn = void(__fastcall*)(void* self, void* edx, int flag);
@@ -18,7 +18,7 @@ static int __fastcall CCharWeaponFsm_SetSubobjectFlagThenQueryState15(CCharWeapo
     setFlag(subobject, nullptr, 1);
 
     // Return the result of the self virtual slot 0x11C with argument 15.
-    return self->vSlot11C(15);
+    return self->vUpdateWeaponSelection(15);
 }
 
 HOOK(0x00480710, CCharWeaponFsm_SetSubobjectFlagThenQueryState15, "auto");

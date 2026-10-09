@@ -18,7 +18,7 @@ CSF_FUNC(int, __cdecl, IsSubStateEnabled, 0x00760F90, (int a1));
 static void __fastcall CCharActionFsm_ActivateAction(
     CCharActionFsm* self, void* /*edx*/, int actionId, void* context)
 {
-    const int index = self->vSlotC0(actionId);
+    const int index = self->vFindProviderIndex(actionId);
     if (index != -1)
     {
         void* action = CSF_AT(
@@ -62,12 +62,12 @@ static void __fastcall CCharActionFsm_ActivateAction(
             const uint32_t begin = self->field_0018;
             if (begin)
             {
-                self->vSlotF8(
+                self->vSetCurrentWeaponAction(
                     (static_cast<int32_t>(self->field_001c - begin) >> 2) - 1);
             }
             else
             {
-                self->vSlotF8(-1);
+                self->vSetCurrentWeaponAction(-1);
             }
         }
     }

@@ -53,7 +53,7 @@ static void __fastcall CCharActionFsm_ProcessPendingItemAction(
         CharActionFsm_SetCharacterFlag(
             reinterpret_cast<void*>(self->field_0008), nullptr, 64, 0);
 
-        void* controller = reinterpret_cast<void*>(self->vSlotD8());
+        void* controller = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
         reinterpret_cast<void(__fastcall*)(void*, void*)>(
             CSF_AT(void**, controller, 0)[0x94 / 4])(controller, nullptr);
 
@@ -76,11 +76,11 @@ static void __fastcall CCharActionFsm_ProcessPendingItemAction(
         self->field_009c = reinterpret_cast<uint32_t>(item);
         const int itemParameter =
             CharActionFsm_GetItemActionParameter(item, nullptr);
-        const int actionParameter = self->vSlotEC(itemParameter);
+        const int actionParameter = self->vLookupEntryByIndexOrZero(itemParameter);
         C_00862490* activeItem =
             reinterpret_cast<C_00862490*>(self->field_009c);
         C_008317c8* controller =
-            reinterpret_cast<C_008317c8*>(self->vSlotD8());
+            reinterpret_cast<C_008317c8*>(self->vGetIndexedEntryOrZero());
         CharActionFsm_StartItemAction(
             controller, nullptr, activeItem,
             static_cast<uint32_t>(actionParameter));
@@ -99,7 +99,7 @@ static void __fastcall CCharActionFsm_ProcessPendingItemAction(
 
         if (self->field_0024 != static_cast<uint32_t>(-1))
         {
-            void* controller = reinterpret_cast<void*>(self->vSlotD8());
+            void* controller = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
             reinterpret_cast<void(__fastcall*)(void*, void*, int)>(
                 CSF_AT(void**, controller, 0)[0x30 / 4])(
                     controller, nullptr, 0);

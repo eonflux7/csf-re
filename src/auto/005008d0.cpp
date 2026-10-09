@@ -11,7 +11,7 @@ CSF_FUNC(char, __fastcall, SceneLoader_ProcessSceneObject, 0x004DE7C0, (void* se
 CSF_FUNC(int, __fastcall, CSceneLoaderBase_ProcessCurrentScene, 0x00500800, (void* self, void* edx));
 
 static int __fastcall CSceneLoaderBase_ProcessLoadedScenes(
-    C_0083f578* self, void* /*edx*/, int /*unused*/)
+    CSceneLoaderBase* self, void* /*edx*/, int /*unused*/)
 {
     uint32_t sceneIndex = 0;
     uint32_t entryOffset = 0;

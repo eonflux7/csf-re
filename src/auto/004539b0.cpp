@@ -14,7 +14,7 @@ CSF_FUNC(uint32_t, __fastcall, DispatchRecordToGlobalObject, 0x004758B0,
          (void* self, void* edx, void* record, char flag));
 
 static uint32_t __fastcall CScene_ClearObjectReferences(
-    C_008312b0* self, void* /*edx*/)
+    CScene* self, void* /*edx*/)
 {
     uint32_t result = CSF_AT(uint32_t, self, 0x48);
 

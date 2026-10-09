@@ -18,7 +18,7 @@ CSF_FUNC(int, __fastcall, GetCurrentItemCount, 0x00681F40, (void* self, void* ed
 static int __fastcall CCharWeaponFsm_EvaluateReloadOrAttack(CCharWeaponFsm* self, void* /*edx*/)
 {
     // First virtual: resolve the weapon object for this state machine.
-    void* weaponObject = reinterpret_cast<void*>(self->vSlotD8());
+    void* weaponObject = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
 
     if (GetCurrentItemCount(weaponObject, nullptr) == 0) {
         // Ask the weapon object (vtbl slot 0x68 / 4 = 26) whether it can act.
@@ -36,13 +36,13 @@ static int __fastcall CCharWeaponFsm_EvaluateReloadOrAttack(CCharWeaponFsm* self
             owner = reinterpret_cast<void*>(self->field_0008);
             Owner_SetStatusFlag(owner, nullptr, 0x80, 1);
 
-            return self->vSlot134(4, 0);
+            return self->vBeginWeaponStateChange(4, 0);
         }
     }
 
     void* owner = reinterpret_cast<void*>(self->field_0008);
     Owner_SetStatusFlag(owner, nullptr, 0x4000, 1);
-    return self->vSlot11C(45);
+    return self->vUpdateWeaponSelection(45);
 }
 
 HOOK(0x00483A20, CCharWeaponFsm_EvaluateReloadOrAttack, "auto");

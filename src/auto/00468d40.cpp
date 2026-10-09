@@ -11,7 +11,7 @@ CSF_FUNC(char, __fastcall, IsTrackedHandleActive, 0x0045BDA0, (S_0045bda0* self,
 [[maybe_unused]] static const auto kButtonArrayVtable = CSF_VTBL(0x0041E5F0);
 
 static unsigned int __fastcall CMissionScript_AppendActiveHandlesForClass(
-    C_008314f8* self, void* /*edx*/, S_0041e5f0* output, int classIndex)
+    CMissionScript* self, void* /*edx*/, S_0041e5f0* output, int classIndex)
 {
     const uint32_t offset = static_cast<uint32_t>(classIndex) * 16;
     auto* primaryList =

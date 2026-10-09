@@ -20,7 +20,7 @@ CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
     CSF_VTBL(0x00413570);
 
 static int __fastcall CMissionScript_DispatchEvent(
-    C_008314f8* self, void* /*edx*/, uint32_t* event)
+    CMissionScript* self, void* /*edx*/, uint32_t* event)
 {
     if (CSF_AT(uint8_t, self, 0xAC) && event[1] == 1)
         CMissionScript_HandleEventSource(self, nullptr,
@@ -41,7 +41,7 @@ static int __fastcall CMissionScript_DispatchEvent(
             auto entries = reinterpret_cast<void**>(scripts[0]);
             MissionScript_DispatchToScript(entries[index], nullptr, event);
         }
-        self = reinterpret_cast<C_008314f8*>(scripts[4]);
+        self = reinterpret_cast<CMissionScript*>(scripts[4]);
     }
 
     if (event[1] == 8)
@@ -57,7 +57,7 @@ static int __fastcall CMissionScript_DispatchEvent(
         const uint32_t index = CSF_AT(uint32_t, records, 0x08);
         auto data = CSF_AT(uint8_t*, records, 0x00);
         CSF_AT(uint32_t, records, 0x08) = index + 1;
-        self = reinterpret_cast<C_008314f8*>(scripts[4]);
+        self = reinterpret_cast<CMissionScript*>(scripts[4]);
 
         auto entry = data + 12 * index;
         CSF_AT(uint32_t, entry, 0x04) = event[3];

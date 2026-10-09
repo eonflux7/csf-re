@@ -15,7 +15,7 @@ CSF_FUNC(unsigned int, __fastcall, SceneLoader_AssignObjectResource, 0x00490D20,
          (C_00833908* self, void* edx, uint32_t resource, char mode));
 
 static int __fastcall CSceneLoader_InitializeRegionResources(
-    C_0083f5d8* self, void* /*edx*/, int sceneIndex)
+    CSceneLoader* self, void* /*edx*/, int sceneIndex)
 {
     const uint32_t objectCount = CSF_AT(uint32_t, g_pCurrentScene, 0x18);
 

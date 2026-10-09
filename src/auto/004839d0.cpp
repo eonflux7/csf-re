@@ -24,7 +24,7 @@ static int __fastcall CCharActionFsm_ResetHandleAndApplyValue(CCharActionFsm* se
     sub_498F50(reinterpret_cast<void*>(static_cast<uintptr_t>(self->field_0008)), nullptr, 0x4000, 1);
     sub_498F50(reinterpret_cast<void*>(static_cast<uintptr_t>(self->field_0008)), nullptr, 64, 0);
 
-    C_00862490* handleObject = reinterpret_cast<C_00862490*>(self->vSlotD8());
+    C_00862490* handleObject = reinterpret_cast<C_00862490*>(self->vGetIndexedEntryOrZero());
     int valuePointer = Handle_GetValuePointer(handleObject, nullptr);
     float value = CSF_AT(float, reinterpret_cast<void*>(static_cast<uintptr_t>(valuePointer)), 448);
     return sub_483540(self, nullptr, value);

@@ -32,10 +32,10 @@ static std::uint32_t* __fastcall CCharWeaponFsm_Construct(
     self->field_0034 = -1;
     self->field_0038 = -1;
     self->field_0008 = reinterpret_cast<std::uint32_t>(owner);
-    self->field_000c = 0;
+    self->m_stateCode = 0;
     self->field_0010 = 0;
     self->field_0064 = 0;
-    self->field_002c = 0;
+    self->m_pendingActionFlag = 0;
 
     const std::uint32_t statesBegin = self->field_0018;
     const std::int32_t stateCount = statesBegin

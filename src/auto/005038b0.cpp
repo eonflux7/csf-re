@@ -36,7 +36,7 @@ CSF_GLOBAL(unsigned int, g_numScenes, 0x00899738);
 CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 
 static int __fastcall CSceneLoaderBase_UnloadScene(
-    C_0083f578* self, void* /*edx*/, char preserveSceneEntries)
+    CSceneLoaderBase* self, void* /*edx*/, char preserveSceneEntries)
 {
     if (!preserveSceneEntries)
     {

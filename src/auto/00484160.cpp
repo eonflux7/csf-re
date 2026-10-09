@@ -18,7 +18,7 @@ static char __fastcall CCharActionFsm_ProcessStateTwentySeven(CCharActionFsm* se
 
     char result = (char)self->field_0069;
     if (result)
-        return (char)self->vSlot134(0, 0);
+        return (char)self->vBeginWeaponStateChange(0, 0);
     return result;
 }
 

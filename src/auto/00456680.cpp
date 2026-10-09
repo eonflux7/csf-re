@@ -81,7 +81,7 @@ static void Scene_SerializeIndexField(void* archive, void* field)
     }
 }
 
-static int __fastcall C_008312b0_Serialize(void* self, void* /*edx*/, void* archive)
+static int __fastcall CScene_Serialize(void* self, void* /*edx*/, void* archive)
 {
     auto* scene = static_cast<uint8_t*>(self);
     struct
@@ -274,4 +274,4 @@ static int __fastcall C_008312b0_Serialize(void* self, void* /*edx*/, void* arch
     return 1;
 }
 
-HOOK(0x00456680, C_008312b0_Serialize, "auto");
+HOOK(0x00456680, CScene_Serialize, "auto");

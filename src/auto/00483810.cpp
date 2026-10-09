@@ -27,14 +27,14 @@ static int __fastcall CCharWeaponFsm_CommitPendingWeaponState(CCharWeaponFsm* se
 
         if (self->field_0024 != static_cast<uint32_t>(-1))
         {
-            void* weaponObject = reinterpret_cast<void*>(static_cast<uintptr_t>(self->vSlotD8()));
+            void* weaponObject = reinterpret_cast<void*>(static_cast<uintptr_t>(self->vGetIndexedEntryOrZero()));
 
             // weaponObject->vtbl[0x30 / 4](1)
             ((void (__fastcall*)(void*, void*, int))CSF_AT(void**, weaponObject, 0)[0x30 / 4])(weaponObject, nullptr, 1);
         }
     }
 
-    return self->vSlot11C(0x0D);
+    return self->vUpdateWeaponSelection(0x0D);
 }
 
 HOOK(0x00483810, CCharWeaponFsm_CommitPendingWeaponState, "auto");

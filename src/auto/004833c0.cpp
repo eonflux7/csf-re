@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 
 static int __fastcall CCharActionFsm_UpdateSelectedWeaponSlot(CCharActionFsm* self, void* /*edx*/) {
-    int result = self->vSlotBC(32);
+    int result = self->vFindSubObjectIndex(32);
     if (result == -1) {
         return result;
     }
@@ -18,7 +18,7 @@ static int __fastcall CCharActionFsm_UpdateSelectedWeaponSlot(CCharActionFsm* se
             self->field_0098 = pendingSlot;
         }
         self->field_0028 = 0xFFFFFFFFu;
-        return self->vSlot134(0, 0);
+        return self->vBeginWeaponStateChange(0, 0);
     }
 
     uint32_t heldObject = self->field_009c;
@@ -34,7 +34,7 @@ static int __fastcall CCharActionFsm_UpdateSelectedWeaponSlot(CCharActionFsm* se
 
     self->field_0098 = self->field_0024;
     self->field_0028 = requestedSlot;
-    return self->vSlot134(1, 0);
+    return self->vBeginWeaponStateChange(1, 0);
 }
 
 HOOK(0x4833C0, CCharActionFsm_UpdateSelectedWeaponSlot, "auto");

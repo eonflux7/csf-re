@@ -27,7 +27,7 @@ static int __fastcall CCharActionFsm_RequestStateChange(
         (actionType == 10 || actionType == 11))
     {
         self->field_0028 = requestedState;
-        result = self->vSlot1E8();
+        result = self->vConsumePendingSlot();
     }
     else
     {
@@ -36,7 +36,7 @@ static int __fastcall CCharActionFsm_RequestStateChange(
 
     if (self->field_0024 != static_cast<uint32_t>(-1))
     {
-        void* handle = reinterpret_cast<void*>(self->vSlotD8());
+        void* handle = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
         void* value = reinterpret_cast<void*>(
             Handle_GetValuePointer(handle, nullptr));
 
@@ -55,7 +55,7 @@ static int __fastcall CCharActionFsm_RequestStateChange(
         result = C_004950e0_GetField398(
             reinterpret_cast<void*>(self->field_0008), nullptr);
         if (result)
-            return self->vSlot94(0);
+            return self->vForwardToDelegateOrReturnZero(0);
     }
 
     return result;

@@ -24,14 +24,14 @@ static char __fastcall CCharActionFsm_HandleEmptyItems(
 
     if (self->field_0024 != static_cast<uint32_t>(-1))
     {
-        void* item = reinterpret_cast<void*>(self->vSlotD8());
+        void* item = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
         if (((char (__fastcall*)(void*, void*))
                  CSF_AT(void**, item, 0)[0x9C / 4])(item, nullptr))
         {
-            item = reinterpret_cast<void*>(self->vSlotD8());
+            item = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
             if (GetCurrentItemCount(item, nullptr) == 0)
             {
-                if (self->vSlot108())
+                if (self->vCanUseEquippedWeapon())
                 {
                     void* controller =
                         reinterpret_cast<uint8_t*>(self->field_0008) + 4;
@@ -42,7 +42,7 @@ static char __fastcall CCharActionFsm_HandleEmptyItems(
                 else if (self->field_0028 == static_cast<uint32_t>(-1))
                 {
                     auto* currentItem =
-                        reinterpret_cast<C_008319c0*>(self->vSlotD8());
+                        reinterpret_cast<C_008319c0*>(self->vGetIndexedEntryOrZero());
                     int subObjectField =
                         C_008319c0_GetSubObjectField74(currentItem, nullptr);
                     if (static_cast<uint8_t>(

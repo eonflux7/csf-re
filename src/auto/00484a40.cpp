@@ -15,7 +15,7 @@ static char __fastcall CCharActionFsm_CommitPendingActionAndForward(CCharActionF
     if (self->field_0024 != 0xFFFFFFFFu)
     {
         // vSlotD8 yields the object pointer as a raw int (eax), used as `this` below.
-        int activeValue = self->vSlotD8();
+        int activeValue = self->vGetIndexedEntryOrZero();
         void* activeObj = reinterpret_cast<void*>(static_cast<uintptr_t>(activeValue));
         ((void(__fastcall*)(void*, void*, int))CSF_AT(void**, activeObj, 0)[12])(activeObj, nullptr, 0);
     }
@@ -33,7 +33,7 @@ static char __fastcall CCharActionFsm_CommitPendingActionAndForward(CCharActionF
     self->field_00a4 = self->field_0088;
     CharWeaponFsm_ClearTransientState(self, nullptr);
 
-    int slotResult = self->vSlot11C(46);
+    int slotResult = self->vUpdateWeaponSelection(46);
     char result = static_cast<char>(slotResult);
     if (slotResult != -1)
     {

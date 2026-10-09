@@ -20,7 +20,7 @@ CSF_FUNC(unsigned int, __fastcall, CharWeaponFsm_LookupSlotTable, 0x00481C90, (v
 // through the virtual vSlotF8 wrapper.
 static unsigned int __fastcall CCharWeaponFsm_DispatchOrResolveSlot(CCharWeaponFsm* self, void* /*edx*/, int requestedSlot, int /*unusedArg*/)
 {
-    int selectedIndex = self->vSlotC0(requestedSlot);
+    int selectedIndex = self->vFindProviderIndex(requestedSlot);
     if (selectedIndex != -1)
     {
         uint32_t* slotEntry = reinterpret_cast<uint32_t*>(self->field_0018 + 4u * static_cast<uint32_t>(selectedIndex));
@@ -42,9 +42,9 @@ static unsigned int __fastcall CCharWeaponFsm_DispatchOrResolveSlot(CCharWeaponF
             uint32_t slotEnd = CSF_AT(uint32_t, self, 0x1C);
             int32_t slotSpan = static_cast<int32_t>(slotEnd - slotBegin);
             int lastIndex = (slotSpan >> 2) - 1;
-            return static_cast<unsigned int>(self->vSlotF8(lastIndex));
+            return static_cast<unsigned int>(self->vSetCurrentWeaponAction(lastIndex));
         }
-        return static_cast<unsigned int>(self->vSlotF8(-1));
+        return static_cast<unsigned int>(self->vSetCurrentWeaponAction(-1));
     }
 
     return lookupResult;

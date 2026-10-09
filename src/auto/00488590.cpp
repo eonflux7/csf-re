@@ -74,11 +74,11 @@ static char __fastcall CCharActionFsm_EnterState(
     case 18:
         return static_cast<char>(CCharActionFsm_EnterActionState18(self, nullptr));
     case 19:
-        return static_cast<char>(self->vSlot11C(8));
+        return static_cast<char>(self->vUpdateWeaponSelection(8));
     case 20:
     case 30:
     case 33:
-        return static_cast<char>(self->vSlot11C(12));
+        return static_cast<char>(self->vUpdateWeaponSelection(12));
     case 21:
         return static_cast<char>(CCharActionFsm_EnterActionState21(self, nullptr));
     case 22:
@@ -92,7 +92,7 @@ static char __fastcall CCharActionFsm_EnterState(
     case 26:
         return static_cast<char>(CCharActionFsm_EnterActionState26(self, nullptr));
     case 27:
-        return static_cast<char>(self->vSlot11C(16));
+        return static_cast<char>(self->vUpdateWeaponSelection(16));
     case 28:
         return static_cast<char>(CCharActionFsm_EnterActionState28(self, nullptr));
     case 29:
@@ -104,7 +104,7 @@ static char __fastcall CCharActionFsm_EnterState(
     case 34:
         return CCharActionFsm_EnterActionState34(self, nullptr);
     case 35:
-        return static_cast<char>(self->vSlot11C(13));
+        return static_cast<char>(self->vUpdateWeaponSelection(13));
     case 36:
         return static_cast<char>(CCharActionFsm_EnterActionState36(self, nullptr));
     case 37:

@@ -14,7 +14,7 @@ static __declspec(naked) int __fastcall CCharWeaponFsm_TailDispatchAction(
 static int __fastcall CCharWeaponFsm_ForwardToActiveWeaponAction(
     CCharWeaponFsm* self, void* /*edx*/, int argument)
 {
-    const int action = self->vSlotD8();
+    const int action = self->vGetIndexedEntryOrZero();
     if (!action)
         return 0;
 

@@ -14,7 +14,7 @@ CSF_FUNC(unsigned int, __fastcall, CharActionFsm_AppendEntry, 0x00481C90,
 static int __fastcall CCharWeaponFsm_GetOrCreateEntryAndDispatch(
     CCharWeaponFsm* self, void* /*edx*/, int entryKey, int command)
 {
-    const int index = self->vSlotC0(entryKey);
+    const int index = self->vFindProviderIndex(entryKey);
     if (index != -1)
     {
         void* entry = reinterpret_cast<void*>(
@@ -42,7 +42,7 @@ static int __fastcall CCharWeaponFsm_GetOrCreateEntryAndDispatch(
             count = static_cast<int32_t>(
                 CSF_AT(uint32_t, self, 0x1C) - begin) >> 2;
         }
-        self->vSlotF8(count - 1);
+        self->vSetCurrentWeaponAction(count - 1);
     }
 
     return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(

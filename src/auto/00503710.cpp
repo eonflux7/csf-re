@@ -9,7 +9,7 @@ CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
 // Clears the per-scene flag at +0x50 of every 88-byte scene entry, then releases the
 // entry buffer (header at this+0x2C: +4 begin, +8 end, +0xC capacity end) and resets it.
-static int __fastcall CSceneLoaderBase_ClearSceneEntriesAndReleaseList(C_0083f578* self, void* /*edx*/) {
+static int __fastcall CSceneLoaderBase_ClearSceneEntriesAndReleaseList(CSceneLoaderBase* self, void* /*edx*/) {
     uint8_t* bufferHeader = reinterpret_cast<uint8_t*>(self) + 0x2C;
 
     uint32_t entryIndex = 0;

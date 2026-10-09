@@ -9,7 +9,7 @@ CSF_GLOBAL(void*, g_SetThreadPriorityIat, 0x82D208);
 
 // Raises the priority of the scene loader's worker thread when the flag at +0xB5 is set.
 // Returns the flag value when it is clear, otherwise the SetThreadPriority result.
-static char __fastcall CSceneLoader_BoostWorkerThreadPriorityIfFlagged(C_0083f5d8* self, void* /*edx*/) {
+static char __fastcall CSceneLoader_BoostWorkerThreadPriorityIfFlagged(CSceneLoader* self, void* /*edx*/) {
     char flagValue = CSF_AT(char, self, 0xB5);
     if (flagValue) {
         void* workerThreadHandle = CSF_AT(void*, self, 0x110);

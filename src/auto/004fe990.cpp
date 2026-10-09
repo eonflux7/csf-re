@@ -13,7 +13,7 @@ CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
 CSF_FUNC(int, __cdecl, GetGlobalValue_8BC1E0, 0x00756A10, ());
 
 static char __fastcall CSceneLoader_LoadWorldArchive(
-    C_0083f5d8* self, void* /*edx*/, const char* name, int mode)
+    CSceneLoader* self, void* /*edx*/, const char* name, int mode)
 {
     char path[256];
     char result = 1;

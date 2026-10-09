@@ -9,7 +9,7 @@
 CSF_FUNC(int, __fastcall, SceneLoader_RunLoadWorker, 0x00505E00, (void* self, void* edx));
 
 // Thread-entry wrapper: forwards the thread parameter to the load worker and returns its result.
-static int __stdcall SceneLoader_LoadThreadEntry(C_0083f5d8* lpThreadParameter)
+static int __stdcall SceneLoader_LoadThreadEntry(CSceneLoader* lpThreadParameter)
 {
     return SceneLoader_RunLoadWorker(lpThreadParameter, nullptr);
 }

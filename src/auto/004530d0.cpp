@@ -7,7 +7,7 @@ CSF_FUNC(void*, __fastcall, sub_49AB10, 0x0049AB10, (void* self, void* edx));
 CSF_FUNC(char, __fastcall, SetMenuContextState, 0x0049A0E0, (void* self, void* edx, int a4, char a5));
 CSF_FUNC(int, __fastcall, sub_4528D0, 0x004528D0, (void* self, void* edx, int a2, int a3));
 
-static void __fastcall CScene_DetachSceneEntry(C_008312b0* self, void* /*edx*/, C_00833ee8* a2)
+static void __fastcall CScene_DetachSceneEntry(CScene* self, void* /*edx*/, C_00833ee8* a2)
 {
     C_00833ee8* entry = nullptr;
     if (a2) {

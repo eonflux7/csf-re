@@ -13,7 +13,7 @@ CSF_FUNC(int, __fastcall, sub_4FE520, 0x004FE520, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, sub_501AB0, 0x00501AB0, (void* a1, int a2, char a3));
 
 // Resets the scene-loader state: clears the scene-list flags and the current scene index.
-static int __fastcall CSceneLoaderBase_ResetSceneState(C_0083f578* self, void* /*edx*/)
+static int __fastcall CSceneLoaderBase_ResetSceneState(CSceneLoaderBase* self, void* /*edx*/)
 {
     sub_4FE7F0(self, nullptr, 0);
     sub_503710(self, nullptr);

@@ -11,9 +11,9 @@ static char __fastcall CCharWeaponFsm_TriggerActionIfFlagged(CCharWeaponFsm* sel
     if (result)
     {
         if (self->field_0060)
-            return static_cast<char>(self->vSlot134(5, 7));
+            return static_cast<char>(self->vBeginWeaponStateChange(5, 7));
         else
-            return static_cast<char>(self->vSlot134(5, 0));
+            return static_cast<char>(self->vBeginWeaponStateChange(5, 0));
     }
     return result;
 }

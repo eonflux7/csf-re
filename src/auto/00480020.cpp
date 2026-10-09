@@ -13,14 +13,14 @@ static void __fastcall CCharWeaponFsm_TryAdvanceWhenReady(CCharWeaponFsm* self, 
 {
     if (self->field_0069 || self->field_006c > g_ReloadProgressThreshold)
     {
-        int helperRaw = self->vSlotD8();
+        int helperRaw = self->vGetIndexedEntryOrZero();
         void* helper = reinterpret_cast<void*>(static_cast<uintptr_t>(helperRaw));
 
         bool helperReady = ((bool(__fastcall*)(void*, void*))CSF_AT(void**, helper, 0)[0x2C / 4])(helper, nullptr);
         if (helperReady)
         {
-            self->vSlot1E4();
-            self->vSlot1F0();
+            self->vNotifyWeaponTargetIfBound();
+            self->vDispatchIfFlagged();
         }
     }
 }

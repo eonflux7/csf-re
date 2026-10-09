@@ -8,7 +8,7 @@ CSF_FUNC(unsigned int, __stdcall, CScene_AddObjectToList, 0x00450F50,
          (int a1, void* a2));
 
 static int __fastcall CScene_AddObjectFlags(
-    C_008312b0* self, void* /*edx*/, int handleAddress, int flags)
+    CScene* self, void* /*edx*/, int handleAddress, int flags)
 {
     const void* handle = reinterpret_cast<const void*>(handleAddress);
     const int index = CSF_AT(int, handle, 0x08);

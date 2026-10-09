@@ -13,7 +13,7 @@ static int __fastcall CCharActionFsm_ResolveActionState(CCharActionFsm* self, vo
     int result = C_004950e0_GetField398(reinterpret_cast<void*>(self->field_0008), nullptr);
     if (result == 0)
     {
-        return self->vSlot11C(12);
+        return self->vUpdateWeaponSelection(12);
     }
     return result;
 }

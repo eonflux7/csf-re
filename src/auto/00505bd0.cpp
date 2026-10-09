@@ -6,7 +6,7 @@
 
 CSF_FUNC(uint32_t*, __fastcall, sub_503AA0, 0x00503AA0, (void* self, void* edx));
 
-static C_0083f5d8* __fastcall CSceneLoader_Construct(C_0083f5d8* self, void* /*edx*/)
+static CSceneLoader* __fastcall CSceneLoader_Construct(CSceneLoader* self, void* /*edx*/)
 {
     sub_503AA0(self, nullptr);
 

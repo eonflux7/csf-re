@@ -13,15 +13,15 @@ CSF_FUNC(int, __cdecl, IsSubObjectFieldFlagSet, 0x00760FF0, (int a1));
 // Returns the value of the last check, or the result of the dispatch call on the sub-object.
 static int __fastcall CCharActionFsm_TryStartPendingAction(CCharActionFsm* self, void* /*edx*/)
 {
-    int result = self->vSlotD8();
+    int result = self->vGetIndexedEntryOrZero();
     void* firstObject = reinterpret_cast<void*>(result);
     if (CSF_AT(uint32_t, firstObject, 0x70) != 0)
         return result;
 
-    void* itemOwner = reinterpret_cast<void*>(self->vSlotD8());
+    void* itemOwner = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
     result = GetCurrentItemCount(itemOwner, nullptr);
     if (result == 0 && self->field_0028 == 0xFFFFFFFFu) {
-        C_008319c0* subObject = reinterpret_cast<C_008319c0*>(self->vSlotD8());
+        C_008319c0* subObject = reinterpret_cast<C_008319c0*>(self->vGetIndexedEntryOrZero());
         int field74Value = C_008319c0_GetSubObjectField74(subObject, nullptr);
         result = IsSubObjectFieldFlagSet(field74Value);
         if (static_cast<uint8_t>(result) != 0) {

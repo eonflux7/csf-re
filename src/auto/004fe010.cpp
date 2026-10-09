@@ -15,7 +15,7 @@ CSF_FUNC(char, __cdecl, Path_ReplaceExtension, 0x006947D0,
          (char* Str, int a2, char* a3));
 
 static char __fastcall CSceneLoader_LoadSceneScripts(
-    C_0083f5d8* self, void* /*edx*/, char* filename)
+    CSceneLoader* self, void* /*edx*/, char* filename)
 {
     char path[256] = {};
 

@@ -52,7 +52,7 @@ static int SceneLoader_FloatBits(float value)
     return bits;
 }
 
-static int __fastcall CSceneLoader_ApplySceneSettings(C_0083f5d8* self, void* /*edx*/)
+static int __fastcall CSceneLoader_ApplySceneSettings(CSceneLoader* self, void* /*edx*/)
 {
     auto* settings = reinterpret_cast<uint8_t*>(GetValue8B0554()) + 84;
     void* clumpManager = reinterpret_cast<void*>(ResolveClumpManager(GetGlobalInt(), nullptr));

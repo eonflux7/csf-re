@@ -9,12 +9,12 @@ CSF_FUNC(uint32_t, __fastcall, CGuiControl_GetField012C, 0x0044F630, (CGuiContro
 CSF_FUNC(char, __fastcall, ApplySceneResourceName, 0x004DED90, (void* self, void* edx, int a2));
 CSF_FUNC(int, __cdecl, GetValue8B0554, 0x004E8C50, ());
 CSF_FUNC(int, __fastcall, CSceneLoader_RefreshSceneResources, 0x00501F90,
-         (C_0083f578* self, void* edx));
+         (CSceneLoaderBase* self, void* edx));
 
 CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 
 static int __fastcall CSceneLoader_UpdateSceneResources(
-    C_0083f578* self, void* /*edx*/, int /*unused*/)
+    CSceneLoaderBase* self, void* /*edx*/, int /*unused*/)
 {
     GetValue8B0554();
     auto* settings = reinterpret_cast<uint8_t*>(GetValue8B0554());

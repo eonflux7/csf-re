@@ -15,11 +15,11 @@ CSF_FUNC(int, __fastcall, GetCurrentItemCount, 0x00681F40, (void* self, void* ed
 static char __fastcall CCharActionFsm_PrepareStateChange(
     CCharActionFsm* self, void* /*edx*/, int nextState)
 {
-    if (self->vSlotD8())
+    if (self->vGetIndexedEntryOrZero())
     {
-        void* linkedObject = reinterpret_cast<void*>(self->vSlotD8());
+        void* linkedObject = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
         if (C_unknown_GetLinkedDword(linkedObject, nullptr) == 2)
-            CSF_AT(uint8_t, reinterpret_cast<void*>(self->vSlotD8()), 0x16) = 0;
+            CSF_AT(uint8_t, reinterpret_cast<void*>(self->vGetIndexedEntryOrZero()), 0x16) = 0;
     }
 
     if (self->field_0010 == 8)
@@ -38,7 +38,7 @@ static char __fastcall CCharActionFsm_PrepareStateChange(
             {
                 int identifier = CharacterItem_GetIdentifier(
                     reinterpret_cast<void*>(self->field_009c), nullptr);
-                void* currentItem = reinterpret_cast<void*>(self->vSlotEC(identifier));
+                void* currentItem = reinterpret_cast<void*>(self->vLookupEntryByIndexOrZero(identifier));
                 if (currentItem)
                 {
                     if (!GetCurrentItemCount(currentItem, nullptr))

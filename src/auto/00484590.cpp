@@ -21,7 +21,7 @@ static bool __fastcall CCharWeaponFsm_ProcessChildStateTen(CCharWeaponFsm* self,
         return false;
     }
 
-    self->vSlot11C(12);
+    self->vUpdateWeaponSelection(12);
     return true;
 }
 

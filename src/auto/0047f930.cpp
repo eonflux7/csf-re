@@ -11,10 +11,10 @@ static int __fastcall CCharWeaponFsm_ResetWeaponState(CCharWeaponFsm* self, void
 {
     const uint32_t activeWeaponIndex = self->field_0024;
 
-    self->field_000c = 0;
+    self->m_stateCode = 0;
     self->field_0010 = 0;
     self->field_0064 = 0;
-    self->field_002c = 0;
+    self->m_pendingActionFlag = 0;
     self->field_0028 = 0xFFFFFFFFu;
     self->field_0069 = 1;
     self->field_006c = 0.0f;
@@ -26,11 +26,11 @@ static int __fastcall CCharWeaponFsm_ResetWeaponState(CCharWeaponFsm* self, void
         return -1;
 
     // First notification: vtable slot 9 (+0x24) on the object returned by vSlotD8.
-    void* firstWeapon = reinterpret_cast<void*>(static_cast<uintptr_t>(self->vSlotD8()));
+    void* firstWeapon = reinterpret_cast<void*>(static_cast<uintptr_t>(self->vGetIndexedEntryOrZero()));
     ((void(__fastcall*)(void*, void*))(CSF_AT(void**, firstWeapon, 0)[9]))(firstWeapon, nullptr);
 
     // Second notification: vtable slot 14 (+0x38) with argument 0; its result is returned.
-    void* secondWeapon = reinterpret_cast<void*>(static_cast<uintptr_t>(self->vSlotD8()));
+    void* secondWeapon = reinterpret_cast<void*>(static_cast<uintptr_t>(self->vGetIndexedEntryOrZero()));
     return ((int(__fastcall*)(void*, void*, int))(CSF_AT(void**, secondWeapon, 0)[14]))(secondWeapon, nullptr, 0);
 }
 

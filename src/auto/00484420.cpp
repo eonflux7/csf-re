@@ -10,9 +10,9 @@ CSF_FUNC(int, __fastcall, sub_483540, 0x00483540, (void* self, void* edx, float 
 static C_00833908* __fastcall CCharActionFsm_SetActionMode(CCharActionFsm* self, void* /*edx*/, char a2)
 {
     if (a2)
-        self->vSlot1F4(0);
+        self->vHandleAttackFinish(0);
 
-    C_00833908* result = reinterpret_cast<C_00833908*>(self->vSlotD8());
+    C_00833908* result = reinterpret_cast<C_00833908*>(self->vGetIndexedEntryOrZero());
     uint32_t savedActionObj = self->field_009c;
     if (result)
     {

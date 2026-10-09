@@ -12,7 +12,7 @@ using ThiscallNoArgFn = void(__fastcall*)(void* self, void* edx);
 // Runs the attack-finish sequence for the weapon FSM when it is in state 4.
 static void __fastcall CCharWeaponFsm_HandleAttackFinish(CCharWeaponFsm* self, void* /*edx*/, char a2)
 {
-    if (self->field_000c != 4)
+    if (self->m_stateCode != 4)
         return;
 
     if (!a2)
@@ -24,15 +24,15 @@ static void __fastcall CCharWeaponFsm_HandleAttackFinish(CCharWeaponFsm* self, v
         notifyFn(ownerSub, nullptr);
     }
 
-    self->vSlot11C(0);
+    self->vUpdateWeaponSelection(0);
 
     // The returned object's type is not declared; dispatch through its vtable slot 0xA4.
-    uint32_t target = static_cast<uint32_t>(self->vSlotD8());
+    uint32_t target = static_cast<uint32_t>(self->vGetIndexedEntryOrZero());
     void* targetObj = reinterpret_cast<void*>(target);
     ThiscallNoArgFn targetFn = reinterpret_cast<ThiscallNoArgFn>(CSF_AT(void**, targetObj, 0)[0xA4 / 4]);
     targetFn(targetObj, nullptr);
 
-    self->vSlot134(0, 0);
+    self->vBeginWeaponStateChange(0, 0);
 }
 
 HOOK(0x480C60, CCharWeaponFsm_HandleAttackFinish, "auto");

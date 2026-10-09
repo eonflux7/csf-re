@@ -11,7 +11,7 @@ CSF_FUNC(unsigned int, __fastcall, ApplySceneEntryValue, 0x006B1840, (void* self
 // Releases the scene entry array of a CSceneLoaderBase. For every 68-byte entry whose
 // dword at +0x40 is nonzero, the value is passed to ApplySceneEntryValue, with the
 // GetGlobalInt() result as `this`. Then the entry count is cleared and the array is freed.
-static int __fastcall CSceneLoaderBase_ReleaseSceneEntries(C_0083f578* self, void* /*edx*/)
+static int __fastcall CSceneLoaderBase_ReleaseSceneEntries(CSceneLoaderBase* self, void* /*edx*/)
 {
     uint32_t entryIndex = 0;
     if (CSF_AT(uint32_t, self, 0x44) != 0)

@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-struct C_008312b0;
+struct CScene;
 
 CSF_FUNC(int, __cdecl, GetGlobalValue_401090, 0x00401090, ());
 CSF_FUNC(char, __fastcall, RemoveGlobalObjectReference, 0x00401230,
@@ -19,7 +19,7 @@ CSF_FUNC(char, __fastcall, SceneSubsystem_RemoveObject, 0x004DE7D0,
 CSF_FUNC(int, __stdcall, DestroyObject, 0x00750C00, (void* object));
 
 static int __fastcall CScene_RemoveObjectReference(
-    C_008312b0* self, void* /*edx*/, int referenceAddress)
+    CScene* self, void* /*edx*/, int referenceAddress)
 {
     void* reference = reinterpret_cast<void*>(referenceAddress);
     const int index = CSF_AT(int, reference, 0x8);

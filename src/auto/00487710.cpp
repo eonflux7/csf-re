@@ -43,8 +43,8 @@ static char __fastcall CCharActionFsm_RequestItemAction(
     if (!result)
         return result;
 
-    if (self->field_000c == 4)
-        self->vSlot1F4(0);
+    if (self->m_stateCode == 4)
+        self->vHandleAttackFinish(0);
 
     if (C_004950e0_GetField398(
             reinterpret_cast<void*>(self->field_0008), nullptr) &&
@@ -61,7 +61,7 @@ static char __fastcall CCharActionFsm_RequestItemAction(
         self->field_00a8 = *actionParameter;
     }
 
-    return static_cast<char>(self->vSlot134(12, 0));
+    return static_cast<char>(self->vBeginWeaponStateChange(12, 0));
 }
 
 HOOK(0x00487710, CCharActionFsm_RequestItemAction, "auto");

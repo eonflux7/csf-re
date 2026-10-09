@@ -21,7 +21,7 @@ static int __fastcall CCharWeaponFsm_RemoveSlotAndShift(CCharWeaponFsm* self, vo
     if (count <= index)
     {
         if (count == index)
-            self->vSlotF8(-1);
+            self->vSetCurrentWeaponAction(-1);
     }
     else
     {

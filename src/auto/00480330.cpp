@@ -55,27 +55,27 @@ static char __fastcall CCharWeaponFsm_LaunchProjectile(CCharWeaponFsm* self, voi
     }
     self->field_0071 = useRequestedWeapon;
 
-    void* weaponHandle = reinterpret_cast<void*>(self->vSlotD8());
+    void* weaponHandle = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
     if (!weaponHandle)
-        return static_cast<char>(self->vSlot134(9, 0));
+        return static_cast<char>(self->vBeginWeaponStateChange(9, 0));
 
     void* weapon = ((void*(__fastcall*)(void*, void*))
         CSF_AT(void**, weaponHandle, 0)[0xA8 / 4])(weaponHandle, nullptr);
     if (!weapon)
-        return static_cast<char>(self->vSlot134(9, 0));
+        return static_cast<char>(self->vBeginWeaponStateChange(9, 0));
 
     if (static_cast<std::uint8_t>(IsField1BCNonNegative(
             reinterpret_cast<void*>(self->field_0008), nullptr)))
-        return static_cast<char>(self->vSlot134(9, 0));
+        return static_cast<char>(self->vBeginWeaponStateChange(9, 0));
 
     void* projectile = ((void*(__fastcall*)(void*, void*))
         CSF_AT(void**, weapon, 0)[0x78 / 4])(weapon, nullptr);
     if (!projectile)
-        return static_cast<char>(self->vSlot134(9, 0));
+        return static_cast<char>(self->vBeginWeaponStateChange(9, 0));
 
     if (!((bool(__fastcall*)(void*, void*))
             CSF_AT(void**, projectile, 0)[0x2C / 4])(projectile, nullptr))
-        return static_cast<char>(self->vSlot134(9, 0));
+        return static_cast<char>(self->vBeginWeaponStateChange(9, 0));
 
     ((void(__fastcall*)(void*, void*))
         CSF_AT(void**, weapon, 0)[0xA4 / 4])(weapon, nullptr);
@@ -124,7 +124,7 @@ static char __fastcall CCharWeaponFsm_LaunchProjectile(CCharWeaponFsm* self, voi
                 CSF_AT(void**, weaponRegistry, 0)[0x8 / 4])(
                     weaponRegistry, nullptr, weaponIndex);
 
-            weaponHandle = reinterpret_cast<void*>(self->vSlotD8());
+            weaponHandle = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
             void* currentWeapon = reinterpret_cast<void*>(
                 Handle_GetValuePointer(weaponHandle, nullptr));
             setDefaultParameter =

@@ -16,7 +16,7 @@ CSF_GLOBAL(void*, g_pfnCloseHandle, 0x0082D0E0);
 
 // __thiscall CSceneLoader::<method>(): returns the armed flag; when it was set,
 // clears it, waits on the handle at +0x110 and closes that handle.
-static char __fastcall CSceneLoader_WaitAndCloseHandle(C_0083f5d8* self, void* /*edx*/)
+static char __fastcall CSceneLoader_WaitAndCloseHandle(CSceneLoader* self, void* /*edx*/)
 {
     char result = static_cast<char>(CSF_AT(uint8_t, self, 0xB5));
     if (result)

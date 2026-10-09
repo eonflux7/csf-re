@@ -8,7 +8,7 @@
 static int __fastcall CCharWeaponFsm_EnsureWeaponReadyOrRequestState(CCharWeaponFsm* self, void* /*edx*/, int /*a2*/)
 {
     // Weapon handle comes from vSlotD8; its vtbl[42] (slot 0xA8) yields the owner object.
-    void* weaponHandle = reinterpret_cast<void*>(static_cast<uintptr_t>(self->vSlotD8()));
+    void* weaponHandle = reinterpret_cast<void*>(static_cast<uintptr_t>(self->vGetIndexedEntryOrZero()));
     void* owner = ((void* (__fastcall*)(void*, void*))CSF_AT(void**, weaponHandle, 0)[42])(weaponHandle, nullptr);
 
     int result = 0;
@@ -27,7 +27,7 @@ static int __fastcall CCharWeaponFsm_EnsureWeaponReadyOrRequestState(CCharWeapon
         bool alternateOk = ((bool (__fastcall*)(void*, void*))CSF_AT(void**, alternateState, 0)[13])(alternateState, nullptr);
         result = alternateOk ? 1 : 0;
         if (!alternateOk) {
-            return self->vSlot134(9, 0);
+            return self->vBeginWeaponStateChange(9, 0);
         }
     }
 

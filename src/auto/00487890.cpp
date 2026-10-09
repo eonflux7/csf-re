@@ -30,7 +30,7 @@ static int __fastcall CCharActionFsm_ProcessPendingItem(
                 CSF_AT(void**, manager, 0)[8 / 4])(
                     manager, nullptr, itemId);
 
-        int action = self->vSlotD4(CSF_AT(int, definition, 0xDC), 8);
+        int action = self->vFindFirstMatchingHandleIndex(CSF_AT(int, definition, 0xDC), 8);
         if (action != -1 && static_cast<uint32_t>(action) == self->field_0024)
         {
             void* character = reinterpret_cast<void*>(self->field_0008);
@@ -38,7 +38,7 @@ static int __fastcall CCharActionFsm_ProcessPendingItem(
 
             CharAction_SetFlag(
                 reinterpret_cast<void*>(self->field_0008), nullptr, 512, 1);
-            return self->vSlot11C(12);
+            return self->vUpdateWeaponSelection(12);
         }
 
         CCharActionFsm_ReleaseItemHandle(
@@ -47,7 +47,7 @@ static int __fastcall CCharActionFsm_ProcessPendingItem(
         CSF_AT(int, self, 0xB8) = -1;
     }
 
-    return self->vSlot134(0, 0);
+    return self->vBeginWeaponStateChange(0, 0);
 }
 
 HOOK(0x00487890, CCharActionFsm_ProcessPendingItem, "auto");

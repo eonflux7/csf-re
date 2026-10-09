@@ -8,14 +8,14 @@ CSF_FUNC(int, __fastcall, IsWeaponSubObjectReady, 0x00478280, (void* self, void*
 static CCharWeaponFsm* __fastcall CCharWeaponFsm_PrepareWeaponForAction(
     CCharWeaponFsm* self, void* /*edx*/)
 {
-    void* weapon = reinterpret_cast<void*>(self->vSlotD8());
+    void* weapon = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
     if (!IsWeaponSubObjectReady(weapon, nullptr)) {
-        void* subObject = reinterpret_cast<void*>(self->vSlotD8());
+        void* subObject = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
         ((void(__fastcall*)(void*, void*, int))
             CSF_AT(void**, subObject, 0)[0xDC / 4])(subObject, nullptr, 0);
     }
 
-    self->vSlot11C(22);
+    self->vUpdateWeaponSelection(22);
     return self;
 }
 

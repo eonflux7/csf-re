@@ -18,9 +18,9 @@ static int __fastcall CCharWeaponFsm_BeginWeaponActionFromParams(CCharWeaponFsm*
 
     int result = self->vIsField000cNull();
     if (static_cast<uint8_t>(result)) {
-        result = self->vSlot10C();
+        result = self->vHasUsableWeapon();
         if (static_cast<uint8_t>(result)) {
-            self->field_002c = 1;
+            self->m_pendingActionFlag = 1;
             self->field_003c = CSF_AT(uint32_t, params, 0x4);
             self->field_0044 = CSF_AT(uint32_t, params, 0xC);
             self->field_0048 = CSF_AT(uint32_t, params, 0x10);
@@ -31,7 +31,7 @@ static int __fastcall CCharWeaponFsm_BeginWeaponActionFromParams(CCharWeaponFsm*
             self->field_005f = CSF_AT(uint8_t, params, 0x21);
             self->field_0060 = CSF_AT(uint8_t, params, 0x22);
             self->field_0068 = 0;
-            return self->vSlot134(6, 3);
+            return self->vBeginWeaponStateChange(6, 3);
         }
     }
     return result;

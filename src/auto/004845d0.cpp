@@ -36,7 +36,7 @@ static char __fastcall CCharWeaponFsm_TryFinishReloadTransition(CCharWeaponFsm* 
     }
 
     // Virtual slot 0xD8: obtain the weapon-side object used for the reload finish.
-    int weaponObjectValue = self->vSlotD8();
+    int weaponObjectValue = self->vGetIndexedEntryOrZero();
     void* weaponObject = reinterpret_cast<void*>(static_cast<uintptr_t>(weaponObjectValue));
 
     // Virtual slot 0x8C on that object, passing the stored 8-bit mode value.
@@ -45,7 +45,7 @@ static char __fastcall CCharWeaponFsm_TryFinishReloadTransition(CCharWeaponFsm* 
     ((void(__fastcall*)(void*, void*, int))weaponVtbl[0x8C / 4])(weaponObject, nullptr, storedMode);
 
     // Virtual slot 0x11C on self: transition to state 13.
-    self->vSlot11C(13);
+    self->vUpdateWeaponSelection(13);
     return 1;
 }
 

@@ -64,9 +64,9 @@ static void CCharActionFsm_HandleStateB(CCharActionFsm* self)
     }
 
     if (useAltMode)
-        self->vSlot134(2, 0);
+        self->vBeginWeaponStateChange(2, 0);
     else
-        self->vSlot134(0, 0);
+        self->vBeginWeaponStateChange(0, 0);
 }
 
 // State 0x0D (dispatcher already checked field_0010 == 0x17).
@@ -78,12 +78,12 @@ static void CCharActionFsm_HandleStateD(CCharActionFsm* self)
 
     if (static_cast<unsigned char>(Hud_IsSuspended(reinterpret_cast<void*>(self->field_0008), nullptr)) != 0)
     {
-        void* obj = reinterpret_cast<void*>(self->vSlotD8());
+        void* obj = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
         ((void(__fastcall*)(void*, void*, int))CSF_AT(void**, obj, 0)[12])(obj, nullptr, 0);
         int globalValue = GetGlobalValue_4FBDE0();
         sub_4FC3B0(reinterpret_cast<void*>(globalValue), nullptr, 0);
     }
-    self->vSlot134(0, 0);
+    self->vBeginWeaponStateChange(0, 0);
 }
 
 // State 0x0E (checks field_0010 == 0x18 itself).
@@ -97,7 +97,7 @@ static void CCharActionFsm_HandleStateE(CCharActionFsm* self)
         return;
     if (CCharActionFsm_ProviderSaysBusy(provider))
         return;
-    self->vSlot134(0, 0);
+    self->vBeginWeaponStateChange(0, 0);
 }
 
 // State 0x0F (checks field_0010 == 0x19 / 0x1A itself).
@@ -108,7 +108,7 @@ static void CCharActionFsm_HandleStateF(CCharActionFsm* self)
     {
         void* provider = CCharActionFsm_ResolveObjectProvider();
         if (!CCharActionFsm_ProviderSaysBusy(provider))
-            self->vSlot138(0x1A);
+            self->vSetStateAndDispatch(0x1A);
         return;
     }
     if (state != 0x1A)
@@ -116,11 +116,11 @@ static void CCharActionFsm_HandleStateF(CCharActionFsm* self)
     if (!self->field_0069)
         return;
 
-    void* obj = reinterpret_cast<void*>(self->vSlotD8());
+    void* obj = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
     char canContinue = ((char(__fastcall*)(void*, void*))CSF_AT(void**, obj, 0)[11])(obj, nullptr);
     if (!canContinue)
         return;
-    self->vSlot134(static_cast<int>(self->field_0064), 0);
+    self->vBeginWeaponStateChange(static_cast<int>(self->field_0064), 0);
 }
 
 // State 0x11 (checks field_0010 == 0x1C / 0x1D itself).
@@ -130,7 +130,7 @@ static void CCharActionFsm_HandleState11(CCharActionFsm* self)
     if (state == 0x1C)
     {
         if (self->field_0069)
-            self->vSlot138(0x1D);
+            self->vSetStateAndDispatch(0x1D);
         return;
     }
     if (state != 0x1D)
@@ -142,7 +142,7 @@ static void CCharActionFsm_HandleState11(CCharActionFsm* self)
     CSF_AT(int, self, 0xB4) = -1;
     CSF_AT(int, self, 0xB8) = -1;
     sub_486FC0(self, nullptr);
-    self->vSlot134(2, 0);
+    self->vBeginWeaponStateChange(2, 0);
 }
 
 // State 0x12 (checks field_0010 == 0x1E / 0x1F / 0x20 itself).
@@ -153,23 +153,23 @@ static void CCharActionFsm_HandleState12(CCharActionFsm* self)
     {
         if (!self->field_0069)
             return;
-        int value = self->vSlotFC();
+        int value = self->vGetSecondaryCount();
         self->field_0028 = static_cast<uint32_t>(value);
-        self->vSlotF8(-1);
-        self->vSlot138(0x1F);
+        self->vSetCurrentWeaponAction(-1);
+        self->vSetStateAndDispatch(0x1F);
         return;
     }
     if (state == 0x1F)
     {
         if (self->field_0069)
-            self->vSlot138(0x20);
+            self->vSetStateAndDispatch(0x20);
         return;
     }
     if (state != 0x20)
         return;
     if (!self->field_0069)
         return;
-    self->vSlot134(0, 0);
+    self->vBeginWeaponStateChange(0, 0);
 }
 
 static void __fastcall CCharActionFsm_DispatchByState(CCharActionFsm* self, void* /*edx*/, float dt)
@@ -177,7 +177,7 @@ static void __fastcall CCharActionFsm_DispatchByState(CCharActionFsm* self, void
     if (self->field_00cc > g_fZero)
         self->field_00cc = self->field_00cc - dt;
 
-    switch (self->field_000c)
+    switch (self->m_stateCode)
     {
     case 0xA:
         CCharActionFsm_TickStateA(self, nullptr, dt);

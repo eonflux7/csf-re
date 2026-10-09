@@ -7,7 +7,7 @@
 CSF_FUNC(int, __fastcall, C_008319c0_GetSubObjectField74, 0x004760A0, (C_008319c0* self, void* edx));
 
 // Returns true when the object is non-null and its sub-object field 74 is 31, 27 or 23.
-static bool __stdcall C_008319c0_IsField74InReloadOrAttackSet(C_008319c0* a1)
+static bool __stdcall CCharActionFsm_IsField74InReloadOrAttackSet(C_008319c0* a1)
 {
     if (a1 == nullptr)
         return false;
@@ -21,4 +21,4 @@ static bool __stdcall C_008319c0_IsField74InReloadOrAttackSet(C_008319c0* a1)
     return false;
 }
 
-HOOK(0x004831C0, C_008319c0_IsField74InReloadOrAttackSet, "auto");
+HOOK(0x004831C0, CCharActionFsm_IsField74InReloadOrAttackSet, "auto");

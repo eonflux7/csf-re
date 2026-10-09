@@ -15,7 +15,7 @@ static __declspec(naked) int __fastcall CCharWeaponFsm_ForwardWeaponAction(
 static int __fastcall CCharWeaponFsm_DispatchWeaponAction(
     CCharWeaponFsm* self, void* /*edx*/, int action)
 {
-    const uint32_t state = self->field_000c;
+    const uint32_t state = self->m_stateCode;
     if (state == 1)
         return self->vCallVirtualMethod1E8(action);
     if (state == 8)

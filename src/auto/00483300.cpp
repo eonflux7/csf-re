@@ -19,9 +19,9 @@ static char __fastcall CCharActionFsm_TrySelectWeaponStance(CCharActionFsm* self
     }
 
     if (self->field_009c)
-        self->vSlot134(12, 0);
+        self->vBeginWeaponStateChange(12, 0);
     else
-        self->vSlot134(11, 0);
+        self->vBeginWeaponStateChange(11, 0);
 
     return 1;
 }

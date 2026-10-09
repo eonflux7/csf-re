@@ -35,7 +35,7 @@ static void __fastcall CCharActionFsm_ClearCurrentAction(
     {
     case 10:
     {
-        void* target = reinterpret_cast<void*>(self->vSlotD8());
+        void* target = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
         reinterpret_cast<void(__fastcall*)(void*, void*)>(
             CSF_AT(void**, target, 0)[0x90 / 4])(target, nullptr);
         break;
@@ -43,7 +43,7 @@ static void __fastcall CCharActionFsm_ClearCurrentAction(
 
     case 11:
     {
-        auto* target = reinterpret_cast<C_008317c8*>(self->vSlotD8());
+        auto* target = reinterpret_cast<C_008317c8*>(self->vGetIndexedEntryOrZero());
         C_008317c8_SetActionTarget(target, nullptr, nullptr, 0);
         break;
     }

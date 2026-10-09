@@ -5,9 +5,9 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-// Returns the address of scene entry `index` inside the entry table at this->field_0030
+// Returns the address of scene entry `index` inside the entry table at this->m_scenesBegin
 // (entries are 88 bytes each) and sets the byte at entry offset 0x1C to 1.
-static int __fastcall CSceneLoader_GetSceneEntryAndMarkActive(C_0083f5d8* self, void* /*edx*/, int entryIndex)
+static int __fastcall CSceneLoader_GetSceneEntryAndMarkActive(CSceneLoader* self, void* /*edx*/, int entryIndex)
 {
     uint32_t entryTableBase = CSF_AT(uint32_t, self, 0x30);
     int entryAddress = (int)(entryTableBase + (uint32_t)entryIndex * 0x58u);

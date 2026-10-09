@@ -14,7 +14,7 @@ CSF_FUNC(int, __fastcall, sub_494E90, 0x00494E90, (void* self, void* edx, int a4
 // Returns sub_494E90's result.
 static int __fastcall CCharWeaponFsm_NotifyStateThirteenThenQuery(CCharWeaponFsm* self, void* /*edx*/)
 {
-    self->vSlot11C(13);
+    self->vUpdateWeaponSelection(13);
     return sub_494E90(reinterpret_cast<void*>(self->field_0008), nullptr, 0);
 }
 

@@ -225,7 +225,7 @@ static int __fastcall CGuiSlider_UpdateDraggedThumb(
                 if (trackLength ==
                     CSF_AT(std::uint32_t, thumbSize, 4))
                 {
-                    self->field_0138 = 0.0f;
+                    self->m_fractionalPosition = 0.0f;
                     self->m_pos = 0;
                 }
                 else
@@ -236,7 +236,7 @@ static int __fastcall CGuiSlider_UpdateDraggedThumb(
                     const std::int32_t denominator =
                         static_cast<std::int32_t>(trackLength);
 
-                    self->field_0138 =
+                    self->m_fractionalPosition =
                         RoundSignedRatioToFloat(numerator, denominator);
                     self->m_pos =
                         TruncateSignedRatioToLowWord(numerator, denominator);
@@ -248,7 +248,7 @@ static int __fastcall CGuiSlider_UpdateDraggedThumb(
                 {
                     const std::uint32_t lastPosition = count - 1u;
                     self->m_pos = lastPosition;
-                    self->field_0138 = static_cast<float>(
+                    self->m_fractionalPosition = static_cast<float>(
                         static_cast<std::int32_t>(lastPosition));
                 }
 

@@ -20,10 +20,10 @@ static int __fastcall CCharActionFsm_DispatchActionOrFallback(CCharActionFsm* se
 
     if (self->field_0010 == 8)
     {
-        return self->vSlot134(5, 7);
+        return self->vBeginWeaponStateChange(5, 7);
     }
 
-    return self->vSlot134(5, 0);
+    return self->vBeginWeaponStateChange(5, 0);
 }
 
 HOOK(0x482570, CCharActionFsm_DispatchActionOrFallback, "auto");

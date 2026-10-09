@@ -9,7 +9,7 @@ CSF_FUNC(void, __fastcall, CScene_RemoveObjectFromGroup, 0x00450EE0,
          (void* self, void* edx, int a2));
 
 static int __fastcall CScene_RemoveObjectFromCategories(
-    C_008312b0* self, void* /*edx*/, int handleAddress, int categoryMask)
+    CScene* self, void* /*edx*/, int handleAddress, int categoryMask)
 {
     const void* handle = reinterpret_cast<const void*>(handleAddress);
     const int index = CSF_AT(int, handle, 0x8);

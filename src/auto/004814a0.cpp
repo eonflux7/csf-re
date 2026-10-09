@@ -24,7 +24,7 @@ static int __fastcall CCharWeaponFsm_AccumulateTimeAndTick(CCharWeaponFsm* self,
 
     int elapsedBits;
     std::memcpy(&elapsedBits, &elapsedDelta, sizeof(elapsedBits));
-    return self->vSlot118(elapsedBits);
+    return self->vDispatchStateHandler(elapsedBits);
 }
 
 HOOK(0x4814A0, CCharWeaponFsm_AccumulateTimeAndTick, "auto");

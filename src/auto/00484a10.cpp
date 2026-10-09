@@ -17,7 +17,7 @@ static int __fastcall CCharActionFsm_CheckInnerObjectAndDispatch(CCharActionFsm*
         C_00495140_ForwardInnerObjectVirtualCall(reinterpret_cast<void*>(self->field_0008), nullptr);
     }
     sub_4847C0(self, nullptr);
-    return self->vSlot11C(13);
+    return self->vUpdateWeaponSelection(13);
 }
 
 HOOK(0x484A10, CCharActionFsm_CheckInnerObjectAndDispatch, "auto");

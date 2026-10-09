@@ -17,13 +17,13 @@ static int __fastcall CCharActionFsm_UpdateFromHandleValueAndFinish(CCharActionF
 {
     if (self->field_0024 != -1)
     {
-        int handleValue = self->vSlotD8();
+        int handleValue = self->vGetIndexedEntryOrZero();
         int valuePointer = Handle_GetValuePointer(
             reinterpret_cast<void*>(static_cast<uintptr_t>(handleValue)), nullptr);
         float paramValue = CSF_AT(float, reinterpret_cast<void*>(static_cast<uintptr_t>(valuePointer)), 0x1C0);
         sub_483540(self, nullptr, paramValue);
     }
-    return self->vSlot11C(0);
+    return self->vUpdateWeaponSelection(0);
 }
 
 HOOK(0x00483990, CCharActionFsm_UpdateFromHandleValueAndFinish, "auto");

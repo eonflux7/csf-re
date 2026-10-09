@@ -38,7 +38,7 @@ static char __fastcall CCharWeaponFsm_ProcessPendingWeaponAction(CCharWeaponFsm*
     if (self->field_0028 != 0xFFFFFFFFu)
     {
         self->field_0068 = 1;
-        result = (char)self->vSlot134(6, 1);
+        result = (char)self->vBeginWeaponStateChange(6, 1);
     }
 
     return result;

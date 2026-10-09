@@ -15,10 +15,10 @@ static char __fastcall CCharWeaponFsm_HasUsableWeapon(CCharWeaponFsm* self, void
 {
     const bool hasWeaponSlot = self->field_0024 != 0xFFFFFFFFu;
 
-    if (!self->vSlotDC())
+    if (!self->vGetIndexedEntryOrZero_37())
         return static_cast<char>(hasWeaponSlot);
 
-    int weaponHandle = self->vSlotDC();
+    int weaponHandle = self->vGetIndexedEntryOrZero_37();
     void* weapon = reinterpret_cast<void*>(weaponHandle);
 
     // Virtual slot +0x9C (index 39), thiscall with no stack arguments.
@@ -28,7 +28,7 @@ static char __fastcall CCharWeaponFsm_HasUsableWeapon(CCharWeaponFsm* self, void
         return static_cast<char>(hasWeaponSlot);
 
     if (hasWeaponSlot) {
-        int itemCountOwner = self->vSlotDC();
+        int itemCountOwner = self->vGetIndexedEntryOrZero_37();
         void* itemOwner = reinterpret_cast<void*>(itemCountOwner);
         if (GetCurrentItemCount(itemOwner, nullptr) > 0)
             return 1;

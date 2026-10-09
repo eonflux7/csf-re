@@ -29,7 +29,7 @@ CSF_FUNC(int, __fastcall, Hud_UpdateSubtitlePanel, 0x004F3370, (void* self, void
 CSF_FUNC(void, __fastcall, Hud_UpdateAuxiliaryWidget, 0x00428300, (void* self, void* edx, float a2));
 CSF_FUNC(void, __fastcall, Hud_UpdateNotificationWidget, 0x00438690, (void* self, void* edx, float a2));
 
-static void __fastcall C_00830a04_Update(CHud* self, void* /*edx*/, float elapsed)
+static void __fastcall CHud_Update_433650(CHud* self, void* /*edx*/, float elapsed)
 {
     if (!GetSceneMenuContext(g_pCurrentScene, nullptr))
         return;
@@ -86,4 +86,4 @@ static void __fastcall C_00830a04_Update(CHud* self, void* /*edx*/, float elapse
     }
 }
 
-HOOK(0x00433650, C_00830a04_Update, "auto");
+HOOK(0x00433650, CHud_Update_433650, "auto");

@@ -40,7 +40,7 @@ static char __fastcall CCharActionFsm_ResolveActionDispatch(
         return sub_480B80(self, nullptr);
 
     CCharActionFsm* dispatchObject =
-        reinterpret_cast<CCharActionFsm*>(self->vSlotDC());
+        reinterpret_cast<CCharActionFsm*>(self->vGetIndexedEntryOrZero_37());
 
     [[clang::musttail]] return CCharActionFsm_TailDispatchAction(
         dispatchObject, nullptr);

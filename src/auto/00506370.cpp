@@ -38,14 +38,14 @@ struct SceneLoaderReferenceContext
     int limit;
     int progress;
     int field_0020;
-    C_0083f5d8* loader;
+    CSceneLoader* loader;
     C_008443c4* referenceBuffer;
 };
 
 static_assert(sizeof(SceneLoaderReferenceContext) == 0x2C);
 
 static int __fastcall CSceneLoader_LoadObjectReferences(
-    C_0083f5d8* self, void* /*edx*/,
+    CSceneLoader* self, void* /*edx*/,
     uint32_t* firstReference, uint32_t* secondReference, uint32_t* thirdReference)
 {
     SceneLoaderReferenceContext context{};
@@ -188,7 +188,7 @@ static int __fastcall CSceneLoader_LoadObjectReferences(
         context.registry = nullptr;
     }
 
-    C_0083f5d8* loader = context.loader;
+    CSceneLoader* loader = context.loader;
     stream = reinterpret_cast<void*>(CSF_AT(uint32_t, loader, 0x10C));
     if (stream)
     {

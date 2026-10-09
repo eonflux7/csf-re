@@ -23,7 +23,7 @@ CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
 // CSceneLoader::~CSceneLoader-style teardown: releases the load-done event handle when
 // it is owned, resets the object's vtable/base-vtable slots, and frees the block when
 // the low bit of the flag argument is set. Returns the object pointer.
-static void* __fastcall CSceneLoader_Destroy(C_0083f5d8* self, void* /*edx*/, char flags)
+static void* __fastcall CSceneLoader_Destroy(CSceneLoader* self, void* /*edx*/, char flags)
 {
     // Read the ownership flag before the vtable is rewritten (original order).
     uint8_t handleOwned = CSF_AT(uint8_t, self, 0xB5);

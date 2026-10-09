@@ -17,7 +17,7 @@ static char __fastcall CCharActionFsm_UpdateItemAction(
     if (!result)
         return result;
 
-    if (self->vSlot10C())
+    if (self->vHasUsableWeapon())
     {
         void* hud = reinterpret_cast<void*>(self->field_0008);
         self->field_00bd = 0;
@@ -25,9 +25,9 @@ static char __fastcall CCharActionFsm_UpdateItemAction(
         self->field_005e = Hud_IsSuspended(hud, nullptr);
         CCharActionFsm_UpdateAction(self, nullptr, action);
 
-        void* linkedObject = reinterpret_cast<void*>(self->vSlotD8());
+        void* linkedObject = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
         result = C_unknown_GetLinkedDword(linkedObject, nullptr) != 2;
-        self->field_002c = result;
+        self->m_pendingActionFlag = result;
         return result;
     }
 
@@ -35,20 +35,20 @@ static char __fastcall CCharActionFsm_UpdateItemAction(
     if (result)
         return result;
 
-    int item = self->vSlotD8();
+    int item = self->vGetIndexedEntryOrZero();
     if (!item)
         return static_cast<char>(item);
 
-    void* currentItem = reinterpret_cast<void*>(self->vSlotD8());
+    void* currentItem = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
     int count = GetCurrentItemCount(currentItem, nullptr);
     if (count)
         return static_cast<char>(count);
 
     self->field_00c4 = 1;
-    void* recipient = reinterpret_cast<void*>(self->vSlotD8());
+    void* recipient = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
     void** recipientVtable = CSF_AT(void**, recipient, 0);
 
-    void* handle = reinterpret_cast<void*>(self->vSlotD8());
+    void* handle = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
     void* value = reinterpret_cast<void*>(Handle_GetValuePointer(handle, nullptr));
 
     return reinterpret_cast<char(__fastcall*)(

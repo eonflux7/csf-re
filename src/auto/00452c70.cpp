@@ -23,7 +23,7 @@ CSF_FUNC(int, __fastcall, SceneLoader_RemoveObjectReference, 0x005201D0, (void* 
 CSF_FUNC(int, __stdcall, SceneLoader_ReleaseManagedObject, 0x00750C00, (void* object));
 
 static int __fastcall CScene_ReplaceObject(
-    C_008312b0* self, void* /*edx*/, int objectReference, int objectDefinition)
+    CScene* self, void* /*edx*/, int objectReference, int objectDefinition)
 {
     void* reference = reinterpret_cast<void*>(objectReference);
     int result = CSF_AT(int, reference, 0x08);

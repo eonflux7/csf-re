@@ -29,7 +29,7 @@ static int __fastcall CCharActionFsm_UpdateAndNotifyScene(
     if (static_cast<uint32_t>(result) != self->field_0008)
         return result;
 
-    auto* subObject = reinterpret_cast<C_008319c0*>(self->vSlotD8());
+    auto* subObject = reinterpret_cast<C_008319c0*>(self->vGetIndexedEntryOrZero());
     int subObjectState = C_008319c0_GetSubObjectField74(subObject, nullptr);
     result = CharActionFsm_CheckSubObjectState(subObjectState);
     if (static_cast<uint8_t>(result) == 0)
@@ -42,11 +42,11 @@ static int __fastcall CCharActionFsm_UpdateAndNotifyScene(
 
     float notificationData[4] = {};
 
-    void* handle = reinterpret_cast<void*>(self->vSlotD8());
+    void* handle = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
     void* value = reinterpret_cast<void*>(Handle_GetValuePointer(handle, nullptr));
     notificationData[3] = static_cast<float>(CSF_AT(int, value, 0x118));
 
-    void* linkedObject = reinterpret_cast<void*>(self->vSlotD8());
+    void* linkedObject = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
     int linkedType = C_unknown_GetLinkedDword(linkedObject, nullptr);
 
     if (linkedType == 2)

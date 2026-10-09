@@ -25,10 +25,10 @@ static int __fastcall CCharActionFsm_GetActionAvailability(
 
     if (mode == 1)
     {
-        const int index = self->vSlotC0(actionId);
+        const int index = self->vFindProviderIndex(actionId);
         if (index != -1)
         {
-            record = reinterpret_cast<void*>(self->vSlotCC(index));
+            record = reinterpret_cast<void*>(self->vGetIndexedEntry_33(index));
             const int type = ((int(__fastcall*)(void*, void*))
                 CSF_AT(void**, record, 0)[0x4C / 4])(record, nullptr);
 
@@ -52,7 +52,7 @@ static int __fastcall CCharActionFsm_GetActionAvailability(
     }
     else if (mode > 1 && mode <= 3)
     {
-        record = reinterpret_cast<void*>(self->vSlotE4(actionId));
+        record = reinterpret_cast<void*>(self->vLookupEntryOrZero(actionId));
     }
 
     if (record)
@@ -70,7 +70,7 @@ static int __fastcall CCharActionFsm_GetActionAvailability(
         return 1;
 
     void* handle = reinterpret_cast<void*>(
-        self->vSlotF0(CSF_AT(int, definition, 0xDC), 8));
+        self->vFindMatchingHandle(CSF_AT(int, definition, 0xDC), 8));
 
     if (!CSF_AT(int, definition, 0xDC) || !handle)
         return 1;

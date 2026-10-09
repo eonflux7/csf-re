@@ -12,7 +12,7 @@ static char __fastcall CCharWeaponFsm_UpdateWhenFlagSet(CCharWeaponFsm* self, vo
         return flag;
 
     self->vCallVirtualMethod1E8(2);
-    return static_cast<char>(self->vSlot134(2, 0));
+    return static_cast<char>(self->vBeginWeaponStateChange(2, 0));
 }
 
 HOOK(0x0047FBF0, CCharWeaponFsm_UpdateWhenFlagSet, "auto");

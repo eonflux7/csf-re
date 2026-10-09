@@ -59,9 +59,9 @@ static void CCharActionFsm_ResolveAimTarget(CCharActionFsm* self) {
 
 // Leaves the current action state; returns the low byte the original returns in al.
 static char __fastcall CCharActionFsm_ExitCurrentState(CCharActionFsm* self, void* /*edx*/, int contextArg) {
-    int result = static_cast<int>(self->field_000c);
+    int result = static_cast<int>(self->m_stateCode);
 
-    switch (self->field_000c) {
+    switch (self->m_stateCode) {
     case 2u:
         result = CCharActionFsm_ClearActionFlag(self, 0x200u);
         break;
@@ -129,7 +129,7 @@ static char __fastcall CCharActionFsm_ExitCurrentState(CCharActionFsm* self, voi
                 result = static_cast<int>(self->field_001c - elementStart) >> 2;
                 if (result != 0) {
                     self->field_0024 = 0;
-                    int childValue = self->vSlotD8();
+                    int childValue = self->vGetIndexedEntryOrZero();
                     void* childObj = reinterpret_cast<void*>(static_cast<uintptr_t>(childValue));
                     result = ((int(__fastcall*)(void*, void*, int))(CSF_AT(void**, childObj, 0)[14]))(
                         childObj, nullptr, 0);
@@ -140,7 +140,7 @@ static char __fastcall CCharActionFsm_ExitCurrentState(CCharActionFsm* self, voi
     }
     case 0x12u:
         if (self->field_0028 != 0xFFFFFFFFu) {
-            self->vSlotF8(static_cast<int>(self->field_0028));
+            self->vSetCurrentWeaponAction(static_cast<int>(self->field_0028));
             self->field_0028 = 0xFFFFFFFFu;
         }
         result = CCharActionFsm_ClearActionFlag(self, 0x20u);

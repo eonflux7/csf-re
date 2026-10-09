@@ -106,7 +106,7 @@ static int __fastcall CGuiSlider_HandleMouseMovement(
 
                 if (trackLength == CSF_AT(std::int32_t, thumbSize, 0))
                 {
-                    self->field_0138 = 0.0f;
+                    self->m_fractionalPosition = 0.0f;
                     self->m_pos = 0;
                 }
                 else
@@ -119,7 +119,7 @@ static int __fastcall CGuiSlider_HandleMouseMovement(
                         static_cast<double>(scaledOffset) /
                         static_cast<double>(trackLength);
 
-                    self->field_0138 = static_cast<float>(fractionalPosition);
+                    self->m_fractionalPosition = static_cast<float>(fractionalPosition);
                     self->m_pos = static_cast<std::uint32_t>(
                         static_cast<std::int64_t>(fractionalPosition));
                 }
@@ -131,7 +131,7 @@ static int __fastcall CGuiSlider_HandleMouseMovement(
                     const std::uint32_t lastPosition =
                         static_cast<std::uint32_t>(count) - 1;
                     self->m_pos = lastPosition;
-                    self->field_0138 =
+                    self->m_fractionalPosition =
                         static_cast<float>(static_cast<std::int32_t>(lastPosition));
                 }
 

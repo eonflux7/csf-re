@@ -17,7 +17,7 @@ CSF_FUNC(int, __fastcall, C_006cabc0_GetField0098, 0x006CABC0, (void* self, void
 
 // Drains the pending-unload flag: waits on the scene handle, resolves the
 // current scene object and releases its Field0098 child until the flag clears.
-static char __fastcall CSceneLoader_DrainPendingUnloads(C_0083f5d8* self, void* /*edx*/)
+static char __fastcall CSceneLoader_DrainPendingUnloads(CSceneLoader* self, void* /*edx*/)
 {
     // Virtual slot 0x24 (index 9), no typed wrapper: called first, result unused.
     ((void(__fastcall*)(void*, void*))CSF_AT(void**, self, 0)[0x24 / 4])(self, nullptr);

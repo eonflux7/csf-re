@@ -21,7 +21,7 @@ static char __fastcall CCharActionFsm_CanUseItem(
         return 0;
 
     if (!static_cast<uint8_t>(self->vIsField000cNull()) &&
-        self->field_000c != 4)
+        self->m_stateCode != 4)
         return 0;
 
     if (!reinterpret_cast<bool(__fastcall*)(void*, void*)>(
@@ -58,7 +58,7 @@ static char __fastcall CCharActionFsm_CanUseItem(
             return 0;
     }
 
-    void* currentItem = reinterpret_cast<void*>(self->vSlotDC());
+    void* currentItem = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero_37());
     const int category = reinterpret_cast<int(__fastcall*)(void*, void*)>(
         CSF_AT(void**, item, 0)[0x4C / 4])(item, nullptr);
 
@@ -88,7 +88,7 @@ static char __fastcall CCharActionFsm_CanUseItem(
     case 11:
     {
         const int itemId = sub_479310(item, nullptr);
-        void* matchingItem = reinterpret_cast<void*>(self->vSlotEC(itemId));
+        void* matchingItem = reinterpret_cast<void*>(self->vLookupEntryByIndexOrZero(itemId));
         if (!matchingItem)
             return 0;
         return GetCurrentItemCount(matchingItem, nullptr) > 0;

@@ -16,13 +16,13 @@ static char __fastcall CCharWeaponFsm_ApplyWeaponStateIfActive(CCharWeaponFsm* s
         return isActive;
     }
 
-    void* weaponObject = reinterpret_cast<void*>(self->vSlotD8());
+    void* weaponObject = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
     uint8_t stateByte = self->field_0070;
     // Slot 0x70 / 4 = 28 on the weapon object's vtable.
     ((void(__fastcall*)(void*, void*, int))CSF_AT(void**, weaponObject, 0)[0x70 / 4])(
         weaponObject, nullptr, static_cast<int>(stateByte));
 
-    return static_cast<char>(self->vSlot134(static_cast<int>(self->field_0064), 0));
+    return static_cast<char>(self->vBeginWeaponStateChange(static_cast<int>(self->field_0064), 0));
 }
 
 HOOK(0x0047FE80, CCharWeaponFsm_ApplyWeaponStateIfActive, "auto");

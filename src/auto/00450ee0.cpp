@@ -10,7 +10,7 @@ CSF_FUNC(char, __fastcall, CurrentScene_SetFocusEntry, 0x0044FCE0, (void* self, 
 // Reads the currently focused entry, lets sub_44FC80 process the entry list,
 // then re-finds that entry's index in the (possibly changed) list. If the entry
 // is gone, the focus index becomes -1 and the scene's focus entry is cleared.
-static void __fastcall CScene_RefreshFocusEntryIndex(C_008312b0* self, void* /*edx*/, int a2)
+static void __fastcall CScene_RefreshFocusEntryIndex(CScene* self, void* /*edx*/, int a2)
 {
     uint32_t focusIndex = CSF_AT(uint32_t, self, 0x70);
     uint32_t focusedEntry = 0;

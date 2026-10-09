@@ -8,7 +8,7 @@ CSF_FUNC(int, __cdecl, sub_500D60, 0x00500D60, (int a1, int a2, int a3, int a4))
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
 
-static int __fastcall CSceneLoaderBase_Destroy(C_0083f578* self, void* /*edx*/)
+static int __fastcall CSceneLoaderBase_Destroy(CSceneLoaderBase* self, void* /*edx*/)
 {
     self->vtbl = CSF_VTBL(0x0083F578);
     self->field_0004 = reinterpret_cast<uint32_t>(CSF_ADDR_DATA(0x0083F574));

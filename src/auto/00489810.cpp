@@ -22,7 +22,7 @@ static void __fastcall CCharActionFsm_AddOrUpdateItem(
     CCharActionFsm* self, void* /*edx*/, int itemId, int recordAddress)
 {
     bool mergeCounts = false;
-    const int itemIndex = self->vSlotC0(itemId);
+    const int itemIndex = self->vFindProviderIndex(itemId);
     void* item;
 
     if (itemIndex == -1)
@@ -58,7 +58,7 @@ static void __fastcall CCharActionFsm_AddOrUpdateItem(
                 const int count = begin
                     ? (static_cast<int>(self->field_001c - begin) >> 2)
                     : 0;
-                self->vSlotF8(count - 1);
+                self->vSetCurrentWeaponAction(count - 1);
             }
         }
     }

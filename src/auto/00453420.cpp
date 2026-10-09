@@ -14,7 +14,7 @@ CSF_FUNC(int, __cdecl, GetGlobalValue_8B0568, 0x004FDBB0, ());
 CSF_FUNC(int, __fastcall, CGuiControl_GetColorAnim, 0x004FE4B0, (CGuiControl* self, void*));
 
 static int __fastcall CScene_AddObject(
-    C_008312b0* self, void* /*edx*/, C_00867260* object)
+    CScene* self, void* /*edx*/, C_00867260* object)
 {
     const uint32_t count = CSF_AT(uint32_t, self, 0x18);
     uint32_t index = object->field_0050 != 0 ? 3 : 0;
@@ -76,7 +76,7 @@ static int __fastcall CScene_AddObject(
         object->vSlot44(1);
 
     if (CSF_AT(uint8_t, self, 0x180) != 0 &&
-        static_cast<uint8_t>(object->vSlot48()) != 0)
+        static_cast<uint8_t>(object->vGetObjectRegistry()) != 0)
     {
         float color[4] = {0.4f, 0.4f, 0.4f, 1.0f};
         C_00867260_SetColor(object, nullptr, reinterpret_cast<int>(color));

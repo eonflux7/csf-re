@@ -15,13 +15,13 @@ static int __fastcall CCharWeaponFsm_SetStateAndDispatch(CCharWeaponFsm* self, v
     switch (a2)
     {
     case 1:
-        result = self->vSlot19C();
+        result = self->vRefreshWeaponStateAndSetMode15();
         break;
     case 2:
         result = self->vInvokeVtblSlot71With14();
         break;
     case 3:
-        result = self->vSlot1A4();
+        result = self->vRefreshWeaponStateAndSetMode15_69();
         break;
     case 4:
         result = self->vInvokeVtblSlot71With16();
@@ -34,13 +34,13 @@ static int __fastcall CCharWeaponFsm_SetStateAndDispatch(CCharWeaponFsm* self, v
         result = self->vArg9();
         break;
     case 7:
-        result = self->vSlot1B4();
+        result = self->vDispatchWhenCheckPasses();
         break;
     case 8:
-        result = self->vSlot1B8();
+        result = self->vPrepareAndTailDispatch();
         break;
     case 9:
-        result = self->vSlot1BC();
+        result = self->vSetSubobjectFlagThenQueryState15();
         break;
     default:
         return result;

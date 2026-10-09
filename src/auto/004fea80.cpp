@@ -14,7 +14,7 @@ CSF_FUNC(int, __fastcall, GlobalInt_ResolveAccessor, 0x006B13A0, (void* self, vo
 CSF_FUNC(int, __cdecl, GetGlobalValue_8BC1E0, 0x00756A10, ());
 
 static char __fastcall CSceneLoader_LoadNavigationData(
-    C_0083f5d8* self, void* /*edx*/, const char* sceneName, char completeLoad)
+    CSceneLoader* self, void* /*edx*/, const char* sceneName, char completeLoad)
 {
     char success = 1;
     char path[256];

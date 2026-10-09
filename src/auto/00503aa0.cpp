@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 
 static uint32_t* __fastcall CSceneLoaderBase_Construct(
-    C_0083f578* self, void* /*edx*/)
+    CSceneLoaderBase* self, void* /*edx*/)
 {
     self->field_0004 = reinterpret_cast<uint32_t>(CSF_VTBL(0x0083F4BC));
     self->vtbl = reinterpret_cast<decltype(self->vtbl)>(CSF_VTBL(0x0083F578));

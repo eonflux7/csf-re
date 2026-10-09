@@ -35,12 +35,12 @@ static int __fastcall CMenuMessageBox_Close(
         CSF_AT(void**, control, 0)[0x158 / 4])(
             control, nullptr, 0);
 
-    int result = static_cast<int>(self->field_09b0);
+    int result = static_cast<int>(self->m_raster);
     if (result != 0)
     {
         result = RwRasterDestroy(
-            reinterpret_cast<void*>(self->field_09b0));
-        self->field_09b0 = 0;
+            reinterpret_cast<void*>(self->m_raster));
+        self->m_raster = 0;
     }
     return result;
 }

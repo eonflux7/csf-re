@@ -10,7 +10,7 @@ CSF_FUNC(int, __fastcall, ApplyGlobalValueRequest, 0x00523940, (void* self, void
 static int __fastcall CCharWeaponFsm_RequestWeaponAction(
     CCharWeaponFsm* self, void* /*edx*/)
 {
-    self->vSlot11C(46);
+    self->vUpdateWeaponSelection(46);
 
     auto* owner = reinterpret_cast<C_00833908*>(self->field_0008);
     auto* weapon = reinterpret_cast<void*>(owner->field_002c);

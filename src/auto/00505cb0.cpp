@@ -15,7 +15,7 @@ CSF_GLOBAL(void*, g_pfnSetThreadPriority, 0x82D208);
 
 using SetThreadPriorityFn = int(__stdcall*)(void* hThread, int nPriority);
 
-static char __fastcall CSceneLoader_SetLoadThreadIdlePriority(C_0083f5d8* self, void* /*edx*/)
+static char __fastcall CSceneLoader_SetLoadThreadIdlePriority(CSceneLoader* self, void* /*edx*/)
 {
     // Flag byte at +0xB5: when clear, the function returns 0 without touching the thread.
     uint8_t priorityEnabled = CSF_AT(uint8_t, self, 0xB5);

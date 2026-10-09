@@ -9,14 +9,14 @@
 // parameter (or 0 when the id is unchanged). Then returns the result of the slot-0x140 step.
 static int __fastcall CCharWeaponFsm_BeginWeaponStateChange(CCharWeaponFsm* self, void* /*edx*/, int newWeaponId, int stateParam)
 {
-    self->vSlot13C(newWeaponId);
+    self->vDispatchWeaponAction(newWeaponId);
     self->field_006c = 0.0f;
     self->field_0010 = 0;
     const bool sameAsCurrent = (newWeaponId == (int)self->field_0064);
     self->field_0069 = 1;
-    self->field_000c = (uint32_t)newWeaponId;
+    self->m_stateCode = (uint32_t)newWeaponId;
     self->field_0064 = sameAsCurrent ? 0u : (uint32_t)stateParam;
-    return self->vSlot140();
+    return self->vDispatchStateVirtual();
 }
 
 HOOK(0x4800C0, CCharWeaponFsm_BeginWeaponStateChange, "auto");

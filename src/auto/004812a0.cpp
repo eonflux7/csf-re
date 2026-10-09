@@ -7,7 +7,7 @@
 // Returns the callee's result.
 static int __fastcall CCharWeaponFsm_ActivateWeaponSlot(CCharWeaponFsm* self, void* /*edx*/, int a2)
 {
-    int slotIndex = self->vSlotC0(a2);
+    int slotIndex = self->vFindProviderIndex(a2);
     if (slotIndex == -1)
         return slotIndex;
 

@@ -11,7 +11,7 @@ static char __fastcall CCharWeaponFsm_ReturnFlagOrDispatchSlot8(CCharWeaponFsm* 
     char flagValue = static_cast<char>(self->field_0069);
     if (flagValue)
     {
-        return static_cast<char>(self->vSlot138(8));
+        return static_cast<char>(self->vSetStateAndDispatch(8));
     }
     return flagValue;
 }

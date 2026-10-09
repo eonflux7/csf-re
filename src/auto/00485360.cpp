@@ -10,13 +10,13 @@ CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 static int __fastcall CCharWeaponFsm_ResetWeaponAction(
     CCharWeaponFsm* self, void* /*edx*/)
 {
-    self->vSlotF8(static_cast<int>(self->field_0028));
+    self->vSetCurrentWeaponAction(static_cast<int>(self->field_0028));
     self->field_0028 = 0xFFFFFFFF;
-    self->vSlot11C(13);
+    self->vUpdateWeaponSelection(13);
 
     auto* owner = reinterpret_cast<std::uint8_t*>(self->field_0008);
     if (CSF_AT(int, owner, 0x2BC) < 0)
-        return self->vSlot134(0, 0);
+        return self->vBeginWeaponStateChange(0, 0);
 
     const int resolved = CHandleTable_Resolve(
         g_pCurrentScene, nullptr,
@@ -42,7 +42,7 @@ static int __fastcall CCharWeaponFsm_ResetWeaponAction(
     reinterpret_cast<void (__fastcall*)(void*, void*, void*)>(
         receiverVtable[0x3C / 4])(receiver, nullptr, notification);
 
-    return self->vSlot134(0, 0);
+    return self->vBeginWeaponStateChange(0, 0);
 }
 
 HOOK(0x00485360, CCharWeaponFsm_ResetWeaponAction, "auto");

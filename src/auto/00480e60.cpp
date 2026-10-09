@@ -78,7 +78,7 @@ static char __fastcall CCharWeaponFsm_UpdateWeaponObjectTransform(
 
             if (static_cast<uint8_t>(useRelatedObject))
             {
-                void* handle = reinterpret_cast<void*>(self->vSlotD8());
+                void* handle = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
                 void* value = reinterpret_cast<void*>(
                     Handle_GetValuePointer(handle, nullptr));
                 copyRelatedTransform =
@@ -90,7 +90,7 @@ static char __fastcall CCharWeaponFsm_UpdateWeaponObjectTransform(
 
     if (copyRelatedTransform)
     {
-        void* handle = reinterpret_cast<void*>(self->vSlotD8());
+        void* handle = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
         void* sourceObject =
             reinterpret_cast<void*(__fastcall*)(void*, void*)>(
                 CSF_AT(void**, handle, 0)[0xA8 / 4])(handle, nullptr);

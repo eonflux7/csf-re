@@ -10,7 +10,7 @@ CSF_FUNC(int, __fastcall, GuiControl_SetInteractionState, 0x0048EEC0, (void* sel
 CSF_FUNC(int, __fastcall, CScene_UnlinkSlot, 0x00452800, (void* self, void* edx, int a2, int a3));
 CSF_FUNC(int, __fastcall, CScene_ReleaseSlotMasked, 0x004528D0, (void* self, void* edx, int a2, int a3));
 
-static int __fastcall CScene_RemoveObjectSlot(C_008312b0* self, void* /*edx*/, int a2)
+static int __fastcall CScene_RemoveObjectSlot(CScene* self, void* /*edx*/, int a2)
 {
     void* request = reinterpret_cast<void*>(a2);
     int result = CSF_AT(int, request, 0x8);

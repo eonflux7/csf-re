@@ -9,7 +9,7 @@
 static int __fastcall CCharActionFsm_ReturnFallbackActionIfIdle(CCharActionFsm* self, void* /*edx*/)
 {
     // Objeto de accion devuelto por el slot 0xD8 (primera llamada virtual).
-    void* actionObj = reinterpret_cast<void*>(static_cast<uintptr_t>(self->vSlotD8()));
+    void* actionObj = reinterpret_cast<void*>(static_cast<uintptr_t>(self->vGetIndexedEntryOrZero()));
 
     // Llamada virtual slot 0x2C (44 / 4 = 11) sobre el objeto de accion; devuelve bool en al.
     int result = ((int (__fastcall*)(void*, void*))CSF_AT(void**, actionObj, 0)[11])(actionObj, nullptr);
@@ -18,13 +18,13 @@ static int __fastcall CCharActionFsm_ReturnFallbackActionIfIdle(CCharActionFsm* 
     {
         uint32_t stateObjField = self->field_009c;
         if (stateObjField == 0)
-            return self->vSlot11C(8);
+            return self->vUpdateWeaponSelection(8);
 
         // Llamada virtual slot 0x4C (76 / 4 = 19) sobre el objeto de estado.
         void* stateObj = reinterpret_cast<void*>(static_cast<uintptr_t>(self->field_009c));
         result = ((int (__fastcall*)(void*, void*))CSF_AT(void**, stateObj, 0)[19])(stateObj, nullptr);
         if (result != 11)
-            return self->vSlot11C(8);
+            return self->vUpdateWeaponSelection(8);
     }
     return result;
 }

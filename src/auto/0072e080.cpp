@@ -39,7 +39,7 @@ static char __fastcall CGuiSlider_SetPosition(
 
     void* thumb = reinterpret_cast<void*>(self->m_pThumb);
     self->m_pos = static_cast<uint32_t>(newPosition);
-    self->field_0138 = static_cast<float>(newPosition);
+    self->m_fractionalPosition = static_cast<float>(newPosition);
 
     if (thumb)
     {

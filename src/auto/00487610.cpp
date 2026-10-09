@@ -17,7 +17,7 @@ static int __fastcall CCharActionFsm_TryBeginTargetedAction(CCharActionFsm* self
 
     CSF_AT(uint32_t, reinterpret_cast<void*>(self->field_0008), 0x2E4) |= 0x100u;
     self->field_00a4 = self->field_0088;
-    return self->vSlot134(12, 0);
+    return self->vBeginWeaponStateChange(12, 0);
 }
 
 HOOK(0x487610, CCharActionFsm_TryBeginTargetedAction, "auto");

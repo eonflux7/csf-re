@@ -11,7 +11,7 @@ CSF_FUNC(int, __fastcall, sub_482DC0, 0x00482DC0, (void* self, void* edx, int a2
 static C_00833908* __fastcall CCharActionFsm_ProcessCurrentItem(
     CCharActionFsm* self, void* /*edx*/)
 {
-    std::uintptr_t result = self->vSlotD8();
+    std::uintptr_t result = self->vGetIndexedEntryOrZero();
     void* item = reinterpret_cast<void*>(self->field_009c);
 
     if (result)

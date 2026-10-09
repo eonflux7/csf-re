@@ -10,7 +10,7 @@ CSF_FUNC(int, __fastcall, SceneObj_IsInactive, 0x0048E100, (void* self, void* ed
 static int __fastcall CCharWeaponFsm_ProcessIfSceneActive(CCharWeaponFsm* self, void* /*edx*/) {
     int result = SceneObj_IsInactive(reinterpret_cast<C_00833b88*>(self->field_0008), nullptr);
     if (!static_cast<uint8_t>(result)) {
-        return self->vSlot134(0, 0);
+        return self->vBeginWeaponStateChange(0, 0);
     }
     return result;
 }

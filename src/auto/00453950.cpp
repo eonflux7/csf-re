@@ -5,7 +5,7 @@
 
 CSF_FUNC(int, __fastcall, SceneLoader_RemoveObjectReference, 0x00453560, (void* self, void* edx, int a2));
 
-static int __fastcall CScene_ReleaseAllObjectReferences(C_008312b0* self, void* /*edx*/)
+static int __fastcall CScene_ReleaseAllObjectReferences(CScene* self, void* /*edx*/)
 {
     uint32_t objectCount = CSF_AT(uint32_t, self, 0x38);
     if (objectCount)

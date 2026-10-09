@@ -27,9 +27,9 @@ static int __fastcall CCharActionFsm_UpdateWeaponActionState(CCharActionFsm* sel
     {
         void* weaponObj = reinterpret_cast<void*>(self->field_009c);
         int itemKey = GetWeaponItemKey(weaponObj, nullptr);
-        void* item = reinterpret_cast<void*>(self->vSlotEC(itemKey));
+        void* item = reinterpret_cast<void*>(self->vLookupEntryByIndexOrZero(itemKey));
         if (!item)
-            return self->vSlot134(0, 0);
+            return self->vBeginWeaponStateChange(0, 0);
         if (GetCurrentItemCount(item, nullptr) == 0)
             CCharActionFsm_HandleNoWeaponItem(self, nullptr);
     }
@@ -38,7 +38,7 @@ static int __fastcall CCharActionFsm_UpdateWeaponActionState(CCharActionFsm* sel
         CCharActionFsm_HandleNoWeaponItem(self, nullptr);
     }
 
-    return self->vSlot134(0, 0);
+    return self->vBeginWeaponStateChange(0, 0);
 }
 
 HOOK(0x004849A0, CCharActionFsm_UpdateWeaponActionState, "auto");

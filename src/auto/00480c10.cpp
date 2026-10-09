@@ -6,10 +6,10 @@
 // a delegate exists, the second supplies the delegate itself.
 static int __fastcall CCharWeaponFsm_GetDelegateOrZero(CCharWeaponFsm* self, void* /*edx*/)
 {
-    int firstResult = self->vSlotD8();
+    int firstResult = self->vGetIndexedEntryOrZero();
     if (firstResult == 0)
         return 0;
-    return self->vSlotD8();
+    return self->vGetIndexedEntryOrZero();
 }
 
 // Whole-function naked thunk. The tail jmp must run with the original caller's

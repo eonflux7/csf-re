@@ -11,13 +11,13 @@ static int __fastcall CCharWeaponFsm_CopyWeaponDataAndSetState(CCharWeaponFsm* s
     int result = self->vIsField000cNull();
     if (static_cast<uint8_t>(result))
     {
-        char ready = self->vSlot10C();
+        char ready = self->vHasUsableWeapon();
         result = ready;
         if (static_cast<uint8_t>(ready))
         {
             uint8_t* src = reinterpret_cast<uint8_t*>(a2);
 
-            self->field_002c = 0;
+            self->m_pendingActionFlag = 0;
             self->field_003c = CSF_AT(uint32_t, src, 0x04);
             self->field_0044 = CSF_AT(uint32_t, src, 0x0C);
             self->field_0048 = CSF_AT(uint32_t, src, 0x10);
@@ -29,7 +29,7 @@ static int __fastcall CCharWeaponFsm_CopyWeaponDataAndSetState(CCharWeaponFsm* s
             uint8_t flagByte = CSF_AT(uint8_t, src, 0x22);
             self->field_0068 = 0;
             self->field_0060 = flagByte;
-            return self->vSlot134(6, 3);
+            return self->vBeginWeaponStateChange(6, 3);
         }
     }
     return result;

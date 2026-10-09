@@ -60,7 +60,7 @@ static int __fastcall CCharActionFsm_ActivateItemAction(
     CharActionFsm_NotifyCharacterAction(
         reinterpret_cast<void*>(actionManager), nullptr, character, 108);
 
-    return self->vSlot11C(51);
+    return self->vUpdateWeaponSelection(51);
 }
 
 HOOK(0x004877D0, CCharActionFsm_ActivateItemAction, "auto");

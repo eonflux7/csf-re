@@ -32,7 +32,7 @@ static char __fastcall CCharActionFsm_IsActionAvailable(CCharActionFsm* self, vo
     }
 
     int itemSlot = sub_479310(reinterpret_cast<void*>(self->field_009c), nullptr);
-    C_0086754c* item = reinterpret_cast<C_0086754c*>(self->vSlotEC(itemSlot));
+    C_0086754c* item = reinterpret_cast<C_0086754c*>(self->vLookupEntryByIndexOrZero(itemSlot));
     if (!item || !GetCurrentItemCount(item, nullptr))
         return 0;
 

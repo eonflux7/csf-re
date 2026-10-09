@@ -21,15 +21,15 @@ static int __fastcall CCharActionFsm_ResolveActionTarget(
             return 0;
         }
 
-        const int fallbackTarget = self->vSlotD8();
+        const int fallbackTarget = self->vGetIndexedEntryOrZero();
         auto* character = reinterpret_cast<C_00833ee8*>(self->field_0008);
         if (character->field_0228 && !character->field_0229)
         {
             if (C_004950e0_GetField398(character, nullptr))
             {
-                const int slot = self->vSlotBC(32);
+                const int slot = self->vFindSubObjectIndex(32);
                 if (slot != -1)
-                    return self->vSlotC8(slot);
+                    return self->vGetIndexedEntry(slot);
             }
         }
         return fallbackTarget;
@@ -41,14 +41,14 @@ static int __fastcall CCharActionFsm_ResolveActionTarget(
             CSF_AT(void**, target, 0)[0x4C / 4])(target, nullptr);
 
     if (targetType == 11)
-        return self->vSlotD8();
+        return self->vGetIndexedEntryOrZero();
 
     if (targetType != 12)
         return static_cast<int>(self->field_009c);
 
     const int state = static_cast<int>(self->field_0010);
     if (state < 13 || state > 14)
-        return self->vSlotD8();
+        return self->vGetIndexedEntryOrZero();
 
     return ActionTarget_ResolveFromSlot(self, nullptr);
 }

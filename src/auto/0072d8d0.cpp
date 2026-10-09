@@ -28,7 +28,7 @@ static CGuiSlider* __fastcall CGuiSlider_Construct(
     self->m_pos = 0;
     self->m_pageSize = 0;
     self->m_pSelectedPart = 0;
-    self->field_0138 = 0.0f;
+    self->m_fractionalPosition = 0.0f;
     self->field_0168 = 0;
     self->m_bConsole = 0;
     self->m_bWrap = 0;

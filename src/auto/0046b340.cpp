@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-struct C_008314f8;
+struct CMissionScript;
 
 CSF_FUNC(int, __cdecl, sub_468AF0, 0x00468AF0, (int* a1, int* a2, int a3, int a4));
 CSF_FUNC(int, __cdecl, sub_469710, 0x00469710, (int a1, int a2));
@@ -13,7 +13,7 @@ CSF_FUNC(int, __fastcall, sub_46B1F0, 0x0046B1F0, (void* self, void* edx));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
 
-static int __fastcall CMissionScript_Destroy(C_008314f8* self, void* /*edx*/)
+static int __fastcall CMissionScript_Destroy(CMissionScript* self, void* /*edx*/)
 {
     CSF_AT(void**, self, 0x00) = CSF_VTBL(0x008314F8);
     CSF_AT(void**, self, 0x04) = CSF_VTBL(0x008314DC);

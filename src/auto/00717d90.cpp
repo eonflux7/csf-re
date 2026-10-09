@@ -75,7 +75,7 @@ static std::uint32_t __fastcall CGuiListBoxBase_ScaleLayout(
     auto* slider = reinterpret_cast<CGuiControl*>(self->m_pSlider);
     self->field_01c4 = width;
     if (slider)
-        slider->vSetPosition_54(scaleX, scaleY);
+        slider->vScalePositionAndSize(scaleX, scaleY);
 
     auto* header = reinterpret_cast<CGuiControl*>(self->m_pHeaderText);
     if (header)

@@ -14,7 +14,7 @@ CSF_FUNC(int, __fastcall, sub_485A20, 0x00485A20, (void* self, void* edx, int a2
 
 static int __fastcall CCharActionFsm_GetResolvedSlotValue(CCharActionFsm* self, void* /*edx*/, int a2)
 {
-    int primarySlot = self->vSlotBC(a2);
+    int primarySlot = self->vFindSubObjectIndex(a2);
     if (primarySlot != -1)
     {
         uint32_t* primaryTable = reinterpret_cast<uint32_t*>(self->field_0018);

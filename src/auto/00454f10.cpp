@@ -13,7 +13,7 @@ CSF_FUNC(int, __fastcall, C_008343a4_Destroy, 0x004A05F0, (void* self, void* edx
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
 
-static int __fastcall CScene_Destroy(C_008312b0* self, void* /*edx*/)
+static int __fastcall CScene_Destroy(CScene* self, void* /*edx*/)
 {
     self->vtbl = CSF_VTBL(0x008312B0);
     CSF_AT(void**, self, 0x0004) = CSF_VTBL(0x00831294);

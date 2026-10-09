@@ -21,13 +21,13 @@ CSF_FUNC(int, __fastcall, CCharWeaponFsm_IsField000cNull, 0x0047F9B0, (CCharWeap
 // the generic weapon-FSM check passes. Returns false when there is no sub-object.
 static bool __fastcall CCharActionFsm_IsActionStateReady(CCharActionFsm* self, void* /*edx*/)
 {
-    bool hasSubObject = self->vSlotDC() != 0;
+    bool hasSubObject = self->vGetIndexedEntryOrZero_37() != 0;
     if (!hasSubObject)
         return false;
 
-    if (self->field_000c == 7)
+    if (self->m_stateCode == 7)
     {
-        C_008319c0* subObject = reinterpret_cast<C_008319c0*>(self->vSlotDC());
+        C_008319c0* subObject = reinterpret_cast<C_008319c0*>(self->vGetIndexedEntryOrZero_37());
         if (C_008319c0_GetSubObjectField74(subObject, nullptr) == 10)
             return true;
     }

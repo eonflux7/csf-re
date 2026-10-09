@@ -31,7 +31,7 @@ static int __fastcall CCharActionFsm_ResetItemAndEnterState12(
 
         if (self->field_0024 != static_cast<uint32_t>(-1))
         {
-            void* weapon = reinterpret_cast<void*>(self->vSlotD8());
+            void* weapon = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
             reinterpret_cast<void (__fastcall*)(void*, void*, int)>(
                 CSF_AT(void**, weapon, 0)[0x30 / 4])(weapon, nullptr, 0);
         }
@@ -63,7 +63,7 @@ static int __fastcall CCharActionFsm_ResetItemAndEnterState12(
     void* value = reinterpret_cast<void*>(
         Handle_GetValuePointer(reinterpret_cast<void*>(self->field_009c), nullptr));
     sub_483540(self, nullptr, CSF_AT(float, value, 0x1C0));
-    return self->vSlot11C(12);
+    return self->vUpdateWeaponSelection(12);
 }
 
 HOOK(0x004836D0, CCharActionFsm_ResetItemAndEnterState12, "auto");

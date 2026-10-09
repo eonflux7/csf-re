@@ -23,7 +23,7 @@ static void __fastcall CCharActionFsm_SelectItem(
     if (mode == 0)
     {
         selectedIndex = static_cast<uint32_t>(
-            self->vSlotBC(static_cast<int32_t>(request[1])));
+            self->vFindSubObjectIndex(static_cast<int32_t>(request[1])));
         if (selectedIndex == UINT32_MAX)
             return;
 
@@ -34,7 +34,7 @@ static void __fastcall CCharActionFsm_SelectItem(
 
         void** itemSlot =
             reinterpret_cast<void**>(self->field_0078) + selectedIndex;
-        void* context = reinterpret_cast<void*>(self->vSlotD8());
+        void* context = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
         if (!CharActionFsm_CanSelectItem(*itemSlot, nullptr, context))
             return;
     }
@@ -63,7 +63,7 @@ static void __fastcall CCharActionFsm_SelectItem(
         {
             void** itemSlot =
                 reinterpret_cast<void**>(self->field_0078) + selectedIndex;
-            void* context = reinterpret_cast<void*>(self->vSlotD8());
+            void* context = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
             accepted =
                 CharActionFsm_CanSelectItem(*itemSlot, nullptr, context) != 0;
         }
@@ -85,7 +85,7 @@ static void __fastcall CCharActionFsm_SelectItem(
                 {
                     void** itemSlot =
                         reinterpret_cast<void**>(self->field_0078) + candidate;
-                    void* context = reinterpret_cast<void*>(self->vSlotD8());
+                    void* context = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
                     if (CharActionFsm_CanSelectItem(*itemSlot, nullptr, context))
                         break;
                 }

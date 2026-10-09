@@ -33,7 +33,7 @@ static int __fastcall CCharActionFsm_CountMatchingSlots(CCharActionFsm* self, vo
         {
             uint32_t slotAddress = self->field_0078 + byteOffset;
             void* dcValue = reinterpret_cast<void*>(
-                static_cast<uintptr_t>(self->vSlotDC()));
+                static_cast<uintptr_t>(self->vGetIndexedEntryOrZero_37()));
             void* slotObject = reinterpret_cast<void*>(
                 CSF_AT(uint32_t, reinterpret_cast<void*>(slotAddress), 0));
 

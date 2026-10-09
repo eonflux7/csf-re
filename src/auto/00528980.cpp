@@ -18,7 +18,7 @@ static __declspec(naked) int __fastcall CMenuMessageBox_TailResetState(
 static int __fastcall CMenuMessageBox_ResetControlsAndReleaseRaster(
     CMenuMessageBox* self, void* /*edx*/)
 {
-    const uint32_t raster = self->field_09b0;
+    const uint32_t raster = self->m_raster;
 
     self->field_002c = 0;
     self->field_0030 = 0;
@@ -37,7 +37,7 @@ static int __fastcall CMenuMessageBox_ResetControlsAndReleaseRaster(
     if (raster)
     {
         RwRasterDestroy(raster);
-        self->field_09b0 = 0;
+        self->m_raster = 0;
     }
 
     [[clang::musttail]] return CMenuMessageBox_TailResetState(self, nullptr);

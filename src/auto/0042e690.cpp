@@ -7,7 +7,7 @@ CSF_FUNC(int, __fastcall, CHandleTable_Resolve, 0x0044FC30, (void* self, void* e
 CSF_FUNC(uint32_t, __fastcall, GetSceneMenuContext, 0x0044FC60, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, C_unknown_GetLinkedDword, 0x00476080, (void* self, void*));
 CSF_FUNC(int, __fastcall, C_008319c0_GetSubObjectField74, 0x004760A0, (C_008319c0* self, void*));
-CSF_FUNC(double, __fastcall, C_008319c0_GetTransitionScale, 0x00476B80, (C_008319c0* self, void*));
+CSF_FUNC(double, __fastcall, C_008316d8_GetTransitionScale, 0x00476B80, (C_008319c0* self, void*));
 CSF_FUNC(int, __fastcall, Hud_GetMenuObjectState, 0x00484380, (void* self, void* edx));
 CSF_FUNC(char*, __fastcall, S_00492b20_GetPtr0x1B4, 0x00492B20, (void* self, void*));
 CSF_FUNC(int, __fastcall, C_004950e0_GetField398, 0x004950E0, (void* self, void*));
@@ -119,7 +119,7 @@ static char __fastcall Hud_UpdateActiveWidget(void* self, void* /*edx*/)
         if (remaining > g_fZero && remaining <= g_TransitionOne)
         {
             double scale =
-                C_008319c0_GetTransitionScale(selectedObject, nullptr) *
+                C_008316d8_GetTransitionScale(selectedObject, nullptr) *
                 remaining + baseline;
             if (scale > g_TransitionOne)
                 scale = g_TransitionOne;

@@ -21,7 +21,7 @@ static int __fastcall CCharActionFsm_CancelActiveAction(CCharActionFsm* self, vo
     if (result)
     {
         sub_494E90(reinterpret_cast<C_00833ee8*>(self->field_0008), nullptr, 0);
-        return self->vSlot134(2, 0);
+        return self->vBeginWeaponStateChange(2, 0);
     }
     return result;
 }

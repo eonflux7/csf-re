@@ -16,7 +16,7 @@ CSF_FUNC(int, __fastcall, CCharActionFsm_ResolveFallbackValue, 0x00483210, (void
 // falls back to the secondary resolver.
 static int __fastcall CCharActionFsm_LookupActionValue(CCharActionFsm* self, void* /*edx*/, int a2)
 {
-    int slotIndex = self->vSlotC0(a2);
+    int slotIndex = self->vFindProviderIndex(a2);
     if (slotIndex != -1) {
         return *reinterpret_cast<int*>(self->field_0018 + 4 * slotIndex);
     }

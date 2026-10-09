@@ -17,11 +17,11 @@ static int __fastcall CCharWeaponFsm_DispatchWithReloadCheck(CCharWeaponFsm* sel
         auto checkFn = reinterpret_cast<bool(__fastcall*)(void*, void*, CCharWeaponFsm*, bool, int)>(
             CSF_AT(void**, handlerObj, 0)[0x1c / 4]);
         if (checkFn(handlerObj, nullptr, self, isFlagClear, 1)) {
-            return self->vSlot134(self->field_0064, 0);
+            return self->vBeginWeaponStateChange(self->field_0064, 0);
         }
     }
 
-    return self->vSlot134(0, 0);
+    return self->vBeginWeaponStateChange(0, 0);
 }
 
 HOOK(0x0047FD10, CCharWeaponFsm_DispatchWithReloadCheck, "auto");

@@ -45,7 +45,7 @@ static void Scene_ClearOwnedArray(void*& storage, uint32_t& capacity, uint32_t& 
 }
 
 static char __fastcall CScene_ClearCurrentScene(
-    C_008312b0* self, void* /*edx*/, char releasePending)
+    CScene* self, void* /*edx*/, char releasePending)
 {
     char result = releasePending;
     if (releasePending)

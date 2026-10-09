@@ -37,15 +37,15 @@ static int __fastcall CCharActionFsm_DispatchPhaseAction(CCharActionFsm* self, v
         result = self->field_0069;
         if (result)
         {
-            self->vSlot11C(0);
-            result = self->vSlot134(0, 0);
+            self->vUpdateWeaponSelection(0);
+            result = self->vBeginWeaponStateChange(0, 0);
         }
         break;
 
     case 0x21u:
         result = self->field_0069;
         if (result)
-            result = self->vSlot138(0x22);
+            result = self->vSetStateAndDispatch(0x22);
         break;
 
     case 0x22u:
@@ -74,9 +74,9 @@ static int __fastcall CCharActionFsm_DispatchPhaseAction(CCharActionFsm* self, v
                 CCharActionFsm_UnlinkItemHandle(self, nullptr);
             }
 
-            if (self->vSlotD8())
+            if (self->vGetIndexedEntryOrZero())
             {
-                int chainedValue = self->vSlotD8();
+                int chainedValue = self->vGetIndexedEntryOrZero();
                 void* chained = reinterpret_cast<void*>(static_cast<uintptr_t>(chainedValue));
                 // vtbl slot 0x30 / 4 = 12, argument 1
                 ((void(__fastcall*)(void*, void*, int))CSF_AT(void**, chained, 0)[0x30 / 4])(
@@ -91,14 +91,14 @@ static int __fastcall CCharActionFsm_DispatchPhaseAction(CCharActionFsm* self, v
                     weaponObj, nullptr, 0);
             }
 
-            result = self->vSlot138(0x23);
+            result = self->vSetStateAndDispatch(0x23);
         }
         break;
 
     case 0x23u:
         result = self->field_0069;
         if (result)
-            result = self->vSlot134(0, 0);
+            result = self->vBeginWeaponStateChange(0, 0);
         break;
 
     case 0x24u:
@@ -126,7 +126,7 @@ static int __fastcall CCharActionFsm_DispatchPhaseAction(CCharActionFsm* self, v
         if (useEntry)
             result = entryData;
         else
-            result = self->vSlot134(0, 0);
+            result = self->vBeginWeaponStateChange(0, 0);
         break;
     }
 
@@ -134,7 +134,7 @@ static int __fastcall CCharActionFsm_DispatchPhaseAction(CCharActionFsm* self, v
     case 0x26u:
         result = self->field_00bc;
         if (!result)
-            result = self->vSlot134(0, 0);
+            result = self->vBeginWeaponStateChange(0, 0);
         break;
 
     case 0x27u:

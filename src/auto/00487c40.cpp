@@ -32,13 +32,13 @@ static int __fastcall CCharActionFsm_ExecuteContextualAction(
     self->field_00bc = 1;
 
     if (CSF_AT(int32_t, action, 0xC) < 0)
-        return self->vSlot134(0, 0);
+        return self->vBeginWeaponStateChange(0, 0);
 
     auto* target = reinterpret_cast<uint8_t*>(
         CHandleTable_Resolve(g_pCurrentScene, nullptr,
                             reinterpret_cast<int>(action + 4)));
     if (!target)
-        return self->vSlot134(0, 0);
+        return self->vBeginWeaponStateChange(0, 0);
 
     SceneObject_SetActionFlag(
         reinterpret_cast<void*>(self->field_0008), nullptr, 32, 1);
@@ -46,13 +46,13 @@ static int __fastcall CCharActionFsm_ExecuteContextualAction(
     switch (CSF_AT(uint32_t, action, 0))
     {
     case 1:
-        self->vSlot138(11);
+        self->vSetStateAndDispatch(11);
         break;
 
     case 2:
         self->field_0044 = CSF_AT(uint32_t, target, 0x20);
         self->field_0048 = CSF_AT(uint32_t, target, 0x24);
-        self->vSlot138(10);
+        self->vSetStateAndDispatch(10);
         break;
 
     case 3:
@@ -84,11 +84,11 @@ static int __fastcall CCharActionFsm_ExecuteContextualAction(
             ((void (__fastcall*)(void*, void*, void*))
                 CSF_AT(void**, receiver, 0)[0x3C / 4])(
                     receiver, nullptr, handle);
-            self->vSlot134(0, 0);
+            self->vBeginWeaponStateChange(0, 0);
         }
         else
         {
-            self->vSlot134(18, 0);
+            self->vBeginWeaponStateChange(18, 0);
         }
         break;
     }
@@ -101,7 +101,7 @@ static int __fastcall CCharActionFsm_ExecuteContextualAction(
             self, nullptr, &available, &requiresStateChange);
         if (!available)
         {
-            self->vSlot134(0, 0);
+            self->vBeginWeaponStateChange(0, 0);
             break;
         }
 
@@ -111,11 +111,11 @@ static int __fastcall CCharActionFsm_ExecuteContextualAction(
         if (requiresStateChange)
         {
             self->field_0070 = 1;
-            self->vSlot134(4, 0);
+            self->vBeginWeaponStateChange(4, 0);
         }
         else
         {
-            self->vSlot134(0, 0);
+            self->vBeginWeaponStateChange(0, 0);
         }
         break;
     }
@@ -129,7 +129,7 @@ static int __fastcall CCharActionFsm_ExecuteContextualAction(
         if (alternateSelection)
             CCharActionFsm_FinishAlternateSelection(self, nullptr);
         else
-            self->vSlot134(0, 0);
+            self->vBeginWeaponStateChange(0, 0);
         break;
     }
 
@@ -148,7 +148,7 @@ static int __fastcall CCharActionFsm_ExecuteContextualAction(
         ((void (__fastcall*)(void*, void*, void*))
             CSF_AT(void**, receiver, 0)[0x40 / 4])(
                 receiver, nullptr, handle);
-        self->vSlot134(0, 0);
+        self->vBeginWeaponStateChange(0, 0);
         break;
     }
 
@@ -160,28 +160,28 @@ static int __fastcall CCharActionFsm_ExecuteContextualAction(
             ((void (__fastcall*)(void*, void*, uint32_t*))
                 CSF_AT(void**, target, 0)[0x68 / 4])(
                     target, nullptr, nullptr);
-            self->vSlot134(17, 0);
+            self->vBeginWeaponStateChange(17, 0);
         }
         else
         {
-            self->vSlot134(0, 0);
+            self->vBeginWeaponStateChange(0, 0);
         }
         break;
 
     case 9:
         if (static_cast<uint8_t>(SceneObject_PassesFirstCheck(target, nullptr)) &&
             static_cast<uint8_t>(SceneObject_PassesSecondCheck(target, nullptr)))
-            self->vSlot138(33);
+            self->vSetStateAndDispatch(33);
         else
-            self->vSlot134(0, 0);
+            self->vBeginWeaponStateChange(0, 0);
         break;
 
     case 0xA:
-        self->vSlot138(37);
+        self->vSetStateAndDispatch(37);
         break;
 
     case 0xB:
-        self->vSlot138(36);
+        self->vSetStateAndDispatch(36);
         break;
 
     case 0xC:
@@ -191,22 +191,22 @@ static int __fastcall CCharActionFsm_ExecuteContextualAction(
             if (static_cast<uint8_t>(IsField48LessThanField44(
                     reinterpret_cast<void*>(CSF_AT(uint32_t, target, 0x34)),
                     nullptr)))
-                self->vSlot138(38);
+                self->vSetStateAndDispatch(38);
             else
-                self->vSlot134(0, 0);
+                self->vBeginWeaponStateChange(0, 0);
         }
         break;
 
     case 0xD:
-        self->vSlot138(39);
+        self->vSetStateAndDispatch(39);
         break;
 
     case 0xE:
-        self->vSlot138(40);
+        self->vSetStateAndDispatch(40);
         break;
 
     case 0xF:
-        self->vSlot138(41);
+        self->vSetStateAndDispatch(41);
         break;
 
     case 0x10:
@@ -220,12 +220,12 @@ static int __fastcall CCharActionFsm_ExecuteContextualAction(
         ((void (__fastcall*)(void*, void*, void*))
             CSF_AT(void**, receiver, 0)[0x48 / 4])(
                 receiver, nullptr, request);
-        self->vSlot134(0, 0);
+        self->vBeginWeaponStateChange(0, 0);
         break;
     }
 
     default:
-        self->vSlot134(0, 0);
+        self->vBeginWeaponStateChange(0, 0);
         break;
     }
 

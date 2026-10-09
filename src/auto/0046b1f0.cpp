@@ -10,7 +10,7 @@ CSF_FUNC(uint32_t*, __fastcall, MissionScript_DestroyScript, 0x00471130, (void* 
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
 
-static int __fastcall CMissionScript_Clear(C_008314f8* self, void* /*edx*/)
+static int __fastcall CMissionScript_Clear(CMissionScript* self, void* /*edx*/)
 {
     for (uint32_t index = 0; index < CSF_AT(uint32_t, self, 0x20); ++index)
     {

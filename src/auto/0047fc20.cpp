@@ -10,7 +10,7 @@ static char __fastcall CCharWeaponFsm_ReturnFlagOrCallSlot134(CCharWeaponFsm* se
 {
     char flag = static_cast<char>(self->field_0069);
     if (flag)
-        return static_cast<char>(self->vSlot134(0, 0));
+        return static_cast<char>(self->vBeginWeaponStateChange(0, 0));
     return flag;
 }
 

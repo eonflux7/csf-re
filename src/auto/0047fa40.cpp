@@ -15,7 +15,7 @@
 // class's slot 0xE4 accessor; its own slot 0x58 is queried for completion.
 static int __fastcall CCharWeaponFsm_IsCurrentSubtaskDone(CCharWeaponFsm* self, void* /*edx*/, int a2)
 {
-    int childValue = self->vSlotE4(a2);
+    int childValue = self->vLookupEntryOrZero(a2);
     if (childValue == 0) {
         return 1;
     }

@@ -5,9 +5,9 @@
 // Returns the byte at +0x2C unchanged when it is zero. Otherwise it forwards
 // to the virtual slot 0x134 with (5, 0) and returns that result.
 static char __fastcall CCharWeaponFsm_DispatchIfFlagged(CCharWeaponFsm* self, void* /*edx*/) {
-    char flagValue = self->field_002c;
+    char flagValue = self->m_pendingActionFlag;
     if (flagValue) {
-        return static_cast<char>(self->vSlot134(5, 0));
+        return static_cast<char>(self->vBeginWeaponStateChange(5, 0));
     }
     return flagValue;
 }

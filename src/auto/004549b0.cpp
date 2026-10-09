@@ -10,7 +10,7 @@ CSF_FUNC(int, __fastcall, SceneLoader_CleanupCurrentScene, 0x0044FB50, (void* se
 
 // Tears down the current scene: updates it with flag 0, runs cleanup, then
 // releases the object held at +0x188 through its virtual slot 0 (deleting dtor, flag 1).
-static int __fastcall CScene_TearDown(C_008312b0* self, void* /*edx*/) {
+static int __fastcall CScene_TearDown(CScene* self, void* /*edx*/) {
     int result;
 
     SceneLoader_UpdateCurrentScene(self, nullptr, 0);

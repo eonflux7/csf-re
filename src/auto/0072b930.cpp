@@ -16,7 +16,7 @@ static int __fastcall CGuiPanel_SetPosition(CGuiPanel* self, void* /*edx*/, floa
     for (uint32_t i = 0; i < childCount; ++i)
     {
         auto* child = reinterpret_cast<CGuiControl**>(self->m_childrenBegin)[i];
-        child->vSetPosition_54(x, y);
+        child->vScalePositionAndSize(x, y);
     }
 
     void* pointerQuad = reinterpret_cast<void*>(self->m_pPointerQuad);

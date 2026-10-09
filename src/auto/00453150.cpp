@@ -15,7 +15,7 @@ CSF_GLOBAL(uint8_t, g_SceneLoaderMainScenePresent, 0x008AFC8C);
     CSF_VTBL(0x0041E5F0);
 
 static int __fastcall CScene_AddSceneEntry(
-    C_008312b0* self, void* /*edx*/, int entryAddress)
+    CScene* self, void* /*edx*/, int entryAddress)
 {
     auto* entry = reinterpret_cast<uint8_t*>(entryAddress);
     const int previousIndex = CSF_AT(int, entry, 0x24);

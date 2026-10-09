@@ -15,7 +15,7 @@
 // Returns 0 when slot 0xE4 yields nothing.
 static int __fastcall CCharWeaponFsm_ActivateWeaponFromSlotE4(CCharWeaponFsm* self, void* /*edx*/, int a2)
 {
-    int resolved = self->vSlotE4(a2);
+    int resolved = self->vLookupEntryOrZero(a2);
     if (resolved != 0)
     {
         // Slot 0x58 takes only `this` here: the original pushes no argument before this call.

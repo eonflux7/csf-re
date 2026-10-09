@@ -29,7 +29,7 @@ CSF_FUNC(int, __fastcall, SceneLoader_FinalizeObjectProvider, 0x006D4450, (void*
 
 CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 
-static void SceneLoader_AdvanceLoadingProgress(C_0083f578* self)
+static void SceneLoader_AdvanceLoadingProgress(CSceneLoaderBase* self)
 {
     if (CSF_AT(uint8_t, self, 0xB6) &&
         CSF_AT(void*, reinterpret_cast<void*>(GetGlobalState_50D190()), 0x1C))
@@ -42,7 +42,7 @@ static void SceneLoader_AdvanceLoadingProgress(C_0083f578* self)
 }
 
 static int __fastcall CSceneLoaderBase_FinalizeSceneLoading(
-    C_0083f578* self, void* /*edx*/)
+    CSceneLoaderBase* self, void* /*edx*/)
 {
     // Preserve the ECX receiver shown by the assembly, while retaining the
     // supplied bindings for these addresses.

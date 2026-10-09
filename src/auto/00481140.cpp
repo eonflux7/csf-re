@@ -5,7 +5,7 @@
 // Returns the entry at index vSlotC0(a2) of the table at field_0018, or 0 when the lookup yields -1.
 static int __fastcall CCharWeaponFsm_LookupEntryOrZero(CCharWeaponFsm* self, void* /*edx*/, int a2)
 {
-    int entryIndex = self->vSlotC0(a2);
+    int entryIndex = self->vFindProviderIndex(a2);
     if (entryIndex == -1)
         return 0;
 

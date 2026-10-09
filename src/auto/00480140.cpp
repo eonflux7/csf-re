@@ -14,12 +14,12 @@
 // for a method that takes only `this`. Out-of-range states return the stored value.
 static int __fastcall CCharWeaponFsm_DispatchStateVirtual(CCharWeaponFsm* self, void* /*edx*/)
 {
-    const uint32_t state = self->field_000c;
+    const uint32_t state = self->m_stateCode;
     int result = (int)state;
 
     switch (state) {
     case 0:
-        return self->vSlot144();
+        return self->vUpdateChildIfReady();
     case 1:
         // Slot 0x148 is the void wrapper vResetField0028; read eax through an int-returning
         // pointer so the callee's eax is preserved as the original does.
@@ -27,11 +27,11 @@ static int __fastcall CCharWeaponFsm_DispatchStateVirtual(CCharWeaponFsm* self, 
     case 2:
         return self->vInvokeVirtualSlot71With12();
     case 3:
-        return self->vSlot150();
+        return self->vEnableSubobjectThenQuery();
     case 4:
-        return self->vSlot154();
+        return self->vDispatchWeaponKindAction();
     case 5:
-        return self->vSlot158();
+        return self->vDispatchWeaponState();
     case 6:
         return ((int(__fastcall*)(void*, void*))CSF_AT(void**, self, 0)[0x15C / 4])(self, nullptr);
     case 7:

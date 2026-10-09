@@ -29,7 +29,7 @@ static int __fastcall CCharWeaponFsm_RequestWeaponAction(CCharWeaponFsm* self, v
         stateMachine, nullptr, callbackBuf);
 
     // Flag is re-read after the call: 55 when set, 22 otherwise.
-    return self->vSlot11C(CSF_AT(uint8_t, self, 0xA8) != 0 ? 55 : 22);
+    return self->vUpdateWeaponSelection(CSF_AT(uint8_t, self, 0xA8) != 0 ? 55 : 22);
 }
 
 HOOK(0x00485190, CCharWeaponFsm_RequestWeaponAction, "auto");

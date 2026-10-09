@@ -6,7 +6,7 @@
 // Dispatches on the kind code returned by the object from vSlotD8 (slot 0x48 on that object).
 // Kind 0 -> slot 0x134(field_0064, 0); kinds 1..3 -> slot 0x138(5/6/7); otherwise returns the kind.
 static int __fastcall CCharWeaponFsm_DispatchWeaponKindAction(CCharWeaponFsm* self, void* /*edx*/) {
-    int weaponObjectValue = self->vSlotD8();
+    int weaponObjectValue = self->vGetIndexedEntryOrZero();
     void* weaponObject = reinterpret_cast<void*>(static_cast<uintptr_t>(weaponObjectValue));
 
     // vtable slot 0x48 => index 18 on the returned object (its type is not declared here).
@@ -15,16 +15,16 @@ static int __fastcall CCharWeaponFsm_DispatchWeaponKindAction(CCharWeaponFsm* se
     int result = weaponKind;
     switch (weaponKind) {
     case 0:
-        result = self->vSlot134(static_cast<int>(self->field_0064), 0);
+        result = self->vBeginWeaponStateChange(static_cast<int>(self->field_0064), 0);
         break;
     case 1:
-        result = self->vSlot138(5);
+        result = self->vSetStateAndDispatch(5);
         break;
     case 2:
-        result = self->vSlot138(6);
+        result = self->vSetStateAndDispatch(6);
         break;
     case 3:
-        result = self->vSlot138(7);
+        result = self->vSetStateAndDispatch(7);
         break;
     default:
         return result;

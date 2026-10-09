@@ -14,7 +14,7 @@ static void __fastcall CCharWeaponFsm_NotifyWeaponTargetIfBound(CCharWeaponFsm* 
         return;
 
     // Virtual getter at slot 0xD8 (= 54) returns the bound target object.
-    void* target = reinterpret_cast<void*>(self->vSlotD8());
+    void* target = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
 
     // Address of the embedded sub-object at +0x3C (not a loaded pointer).
     uint32_t* subObject = reinterpret_cast<uint32_t*>(reinterpret_cast<uint8_t*>(self) + 0x3C);

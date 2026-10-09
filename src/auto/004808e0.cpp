@@ -9,7 +9,7 @@
 // on the first chain, then 0x28, 0x18, 0x54 on the second).
 static void __fastcall CCharWeaponFsm_ForwardTargetToCurrentAction(CCharWeaponFsm* self, void* /*edx*/, int* sourceArgs)
 {
-    if (self->field_000c == 9 || self->field_0024 == 0xFFFFFFFFu)
+    if (self->m_stateCode == 9 || self->field_0024 == 0xFFFFFFFFu)
         return;
 
     int argBuffer[3];

@@ -11,7 +11,7 @@ static char __fastcall CCharWeaponFsm_DispatchStateIfFlagged(CCharWeaponFsm* sel
     char flagValue = static_cast<char>(self->field_0069);
     if (flagValue)
     {
-        return static_cast<char>(self->vSlot138(3));
+        return static_cast<char>(self->vSetStateAndDispatch(3));
     }
     return flagValue;
 }

@@ -25,10 +25,10 @@ static void __fastcall CCharActionFsm_ConsumeCurrentItem(
 
     if (actionType == 11)
     {
-        void* currentItem = reinterpret_cast<void*>(self->vSlotD8());
+        void* currentItem = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
         const int identifier =
             CharActionFsm_GetItemIdentifier(currentItem, nullptr);
-        void* item = reinterpret_cast<void*>(self->vSlotEC(identifier));
+        void* item = reinterpret_cast<void*>(self->vLookupEntryByIndexOrZero(identifier));
 
         if (item && GetCurrentItemCount(item, nullptr) > 0)
         {
@@ -52,13 +52,13 @@ static void __fastcall CCharActionFsm_ConsumeCurrentItem(
             CSF_AT(void**, action, 0)[0x40 / 4])(
                 action, nullptr, parameters);
 
-        void* currentItem = reinterpret_cast<void*>(self->vSlotD8());
+        void* currentItem = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
         if (GetCurrentItemCount(currentItem, nullptr) > 1)
         {
-            currentItem = reinterpret_cast<void*>(self->vSlotD8());
+            currentItem = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
             const int remaining =
                 GetCurrentItemCount(currentItem, nullptr) - 1;
-            currentItem = reinterpret_cast<void*>(self->vSlotD8());
+            currentItem = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
             CharActionFsm_SetCurrentItemCount(
                 currentItem, nullptr, reinterpret_cast<void*>(remaining));
         }

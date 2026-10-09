@@ -14,7 +14,7 @@ CSF_FUNC(int, __fastcall, Inner_RunActionWithFlag, 0x00498F50, (void* self, void
 // inner object is ready, runs the action and dispatches with (512, 1); otherwise forwards.
 static int __fastcall CCharActionFsm_ProcessStateAndDispatch(CCharActionFsm* self, void* /*edx*/)
 {
-    self->vSlot1E8();
+    self->vConsumePendingSlot();
 
     void* innerObject = reinterpret_cast<void*>(self->field_0008);
     if (!IsInnerObjectReadyForDispatch(innerObject, nullptr))

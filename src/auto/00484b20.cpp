@@ -46,7 +46,7 @@ static std::uint8_t __fastcall CCharActionFsm_CompleteItemAction(
             CSF_AT(void**, item, 0)[0x3C / 4])(item, nullptr);
 
         self->field_009c = 0;
-        return static_cast<std::uint8_t>(self->vSlot134(2, 0));
+        return static_cast<std::uint8_t>(self->vBeginWeaponStateChange(2, 0));
     }
 
     case 13:
@@ -76,14 +76,14 @@ static std::uint8_t __fastcall CCharActionFsm_CompleteItemAction(
         void* manager = reinterpret_cast<void*>(GetGlobalValue_4FBDE0());
         CharActionFsm_SetGlobalActionMode(manager, nullptr, 1);
 
-        return static_cast<std::uint8_t>(self->vSlot134(0, 0));
+        return static_cast<std::uint8_t>(self->vBeginWeaponStateChange(0, 0));
     }
 
     case 14:
-        return static_cast<std::uint8_t>(self->vSlot138(19));
+        return static_cast<std::uint8_t>(self->vSetStateAndDispatch(19));
 
     default:
-        return static_cast<std::uint8_t>(self->vSlot134(0, 0));
+        return static_cast<std::uint8_t>(self->vBeginWeaponStateChange(0, 0));
     }
 }
 

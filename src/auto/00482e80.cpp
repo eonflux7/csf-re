@@ -16,7 +16,7 @@ static char __fastcall CCharActionFsm_BeginActionOrRequestItem(
     if (!result)
         return result;
 
-    if (self->vSlot10C()) {
+    if (self->vHasUsableWeapon()) {
         void* owner = reinterpret_cast<void*>(self->field_0008);
         self->field_00bd = 0;
         self->field_00c0 = 0;
@@ -29,20 +29,20 @@ static char __fastcall CCharActionFsm_BeginActionOrRequestItem(
     if (result)
         return result;
 
-    int item = self->vSlotD8();
+    int item = self->vGetIndexedEntryOrZero();
     if (!item)
         return static_cast<char>(item);
 
     int count = GetCurrentItemCount(
-        reinterpret_cast<void*>(self->vSlotD8()), nullptr);
+        reinterpret_cast<void*>(self->vGetIndexedEntryOrZero()), nullptr);
     if (count)
         return static_cast<char>(count);
 
     self->field_00c4 = 1;
-    void* recipient = reinterpret_cast<void*>(self->vSlotD8());
+    void* recipient = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
     void** recipientVtable = CSF_AT(void**, recipient, 0);
 
-    void* handle = reinterpret_cast<void*>(self->vSlotD8());
+    void* handle = reinterpret_cast<void*>(self->vGetIndexedEntryOrZero());
     void* value = reinterpret_cast<void*>(
         Handle_GetValuePointer(handle, nullptr));
 

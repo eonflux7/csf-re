@@ -13,7 +13,7 @@ CSF_FUNC(uint8_t*, __fastcall, C_008310b8_Construct, 0x004449D0, (void* self, vo
 CSF_FUNC(uint32_t*, __fastcall, C_00831120_Construct, 0x004465B0, (void* self, void* edx));
 CSF_FUNC(float*, __fastcall, C_0083114c_Construct, 0x0044A420, (void* self, void* edx));
 CSF_FUNC(uint32_t*, __fastcall, C_008311e8_Construct, 0x0044D3B0, (void* self, void* edx));
-CSF_FUNC(uint32_t*, __fastcall, C_008314f8_Construct, 0x0046ADA0, (void* self, void* edx));
+CSF_FUNC(uint32_t*, __fastcall, CMissionScript_Construct, 0x0046ADA0, (void* self, void* edx));
 CSF_FUNC(uint32_t*, __fastcall, C_00831698_Construct, 0x00475720, (void* self, void* edx));
 CSF_FUNC(uint8_t*, __fastcall, InitZeroedObject, 0x0048AA30, (uint8_t* self, void*));
 CSF_FUNC(uint32_t*, __fastcall, C_008343a4_Construct, 0x0049FF90, (void* self, void* edx));
@@ -25,12 +25,12 @@ CSF_GLOBAL(void*, g_SceneEntries, 0x00899730);
 CSF_GLOBAL(unsigned int, g_SceneCapacity, 0x00899734);
 CSF_GLOBAL(unsigned int, g_numScenes, 0x00899738);
 CSF_GLOBAL(int, g_SceneArrayGrowth, 0x0089973C);
-CSF_GLOBAL(C_008312b0*, g_AuxiliaryScene, 0x008AFC88);
+CSF_GLOBAL(CScene*, g_AuxiliaryScene, 0x008AFC88);
 CSF_GLOBAL(uint8_t, g_SceneLoaderMainScenePresent, 0x008AFC8C);
 CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 
 static uint32_t* __fastcall CScene_Construct(
-    C_008312b0* self, void* /*edx*/, char auxiliary)
+    CScene* self, void* /*edx*/, char auxiliary)
 {
     CSF_AT(void*, self, 0x0004) = CSF_VTBL(0x0082D428);
     CSF_AT(void**, self, 0x0000) = CSF_VTBL(0x008312B0);
@@ -120,7 +120,7 @@ static uint32_t* __fastcall CScene_Construct(
         if (g_numScenes >= g_SceneCapacity)
             GrowButtonArray(&g_SceneEntries, nullptr, g_SceneArrayGrowth);
 
-        CSF_AT(C_008312b0*, g_SceneEntries, 4 * g_numScenes++) = self;
+        CSF_AT(CScene*, g_SceneEntries, 4 * g_numScenes++) = self;
         g_CurrentSceneIndex = g_numScenes - 1;
         if (g_numScenes == 1)
             g_AuxiliaryScene = nullptr;
@@ -134,7 +134,7 @@ static uint32_t* __fastcall CScene_Construct(
 
     storage = Mem_Alloc(212);
     CSF_AT(uint32_t*, self, 0x00BC) =
-        storage ? C_008314f8_Construct(storage, nullptr) : nullptr;
+        storage ? CMissionScript_Construct(storage, nullptr) : nullptr;
 
     storage = Mem_Alloc(12);
     CSF_AT(uint8_t*, self, 0x00C0) =
@@ -190,10 +190,10 @@ static uint32_t* __fastcall CScene_Construct(
             CSF_AT(void*, CSF_AT(void*, g_SceneEntries, 0), 396) = storage;
             CSF_AT(uint32_t, CSF_AT(void*, g_SceneEntries, 0), 400) = 204800;
 
-            auto* auxiliaryScene = static_cast<C_008312b0*>(Mem_Alloc(436));
+            auto* auxiliaryScene = static_cast<CScene*>(Mem_Alloc(436));
             if (auxiliaryScene)
             {
-                g_AuxiliaryScene = reinterpret_cast<C_008312b0*>(
+                g_AuxiliaryScene = reinterpret_cast<CScene*>(
                     CScene_Construct(auxiliaryScene, nullptr, 1));
                 return reinterpret_cast<uint32_t*>(self);
             }

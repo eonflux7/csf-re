@@ -8,7 +8,7 @@
 // Its result gates a second virtual call on `self`.
 static void __fastcall CCharWeaponFsm_UpdateTargetAndNotify(CCharWeaponFsm* self, void* /*edx*/, int a2)
 {
-    if (self->field_000c == 9)
+    if (self->m_stateCode == 9)
         return;
 
     void* argObj = reinterpret_cast<void*>(a2);
@@ -26,7 +26,7 @@ static void __fastcall CCharWeaponFsm_UpdateTargetAndNotify(CCharWeaponFsm* self
         CSF_AT(void**, target, 0)[0x10 / 4]);
     if (checkFn(target, nullptr, self))
     {
-        self->vSlot134(0, 0);
+        self->vBeginWeaponStateChange(0, 0);
     }
 }
 

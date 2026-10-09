@@ -16,7 +16,7 @@
 
 CSF_FUNC(char, __fastcall, SetMenuContextState, 0x0049A0E0, (void* self, void* edx, int a4, char a5));
 
-static char __fastcall CScene_SetFocusEntry(C_008312b0* self, void* /*edx*/, int requestedEntry)
+static char __fastcall CScene_SetFocusEntry(CScene* self, void* /*edx*/, int requestedEntry)
 {
     const uint32_t entryCount = CSF_AT(uint32_t, self, 0x68);
     int focusIndex = -1;

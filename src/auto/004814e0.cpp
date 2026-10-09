@@ -15,7 +15,7 @@ static bool WeaponObject_IsSelectable(void* object)
 static void __fastcall CCharWeaponFsm_SelectWeapon(
     CCharWeaponFsm* self, void* /*edx*/, std::uint32_t* request)
 {
-    if (self->field_000c == 9)
+    if (self->m_stateCode == 9)
         return;
 
     const std::uint32_t currentIndex = self->field_0024;
@@ -26,7 +26,7 @@ static void __fastcall CCharWeaponFsm_SelectWeapon(
     switch (request[0])
     {
     case 0:
-        selectedIndex = self->vSlotBC(static_cast<int>(request[1]));
+        selectedIndex = self->vFindSubObjectIndex(static_cast<int>(request[1]));
         if (selectedIndex != -1)
         {
             void* object =
@@ -66,7 +66,7 @@ static void __fastcall CCharWeaponFsm_SelectWeapon(
             reinterpret_cast<void**>(self->field_0018)[selectedIndex],
             nullptr);
 
-        bool acceptable = self->vSlotC0(
+        bool acceptable = self->vFindProviderIndex(
             static_cast<int>(reinterpret_cast<std::intptr_t>(provider)))
             >= selectedIndex;
         if (acceptable)
@@ -91,7 +91,7 @@ static void __fastcall CCharWeaponFsm_SelectWeapon(
                     nullptr);
 
                 const std::uint32_t availableIndex =
-                    static_cast<std::uint32_t>(self->vSlotC0(
+                    static_cast<std::uint32_t>(self->vFindProviderIndex(
                         static_cast<int>(
                             reinterpret_cast<std::intptr_t>(provider))));
 
@@ -112,7 +112,7 @@ static void __fastcall CCharWeaponFsm_SelectWeapon(
     }
     }
 
-    self->vSlot100(selectedIndex);
+    self->vSetWeaponStateIfChanged(selectedIndex);
 }
 
 HOOK(0x004814E0, CCharWeaponFsm_SelectWeapon, "auto");

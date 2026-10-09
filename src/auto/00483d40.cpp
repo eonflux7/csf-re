@@ -30,7 +30,7 @@ static char __fastcall CCharActionFsm_DispatchActionIfEnabled(CCharActionFsm* se
             ActionStateGetter getState = reinterpret_cast<ActionStateGetter>(CSF_AT(void**, actionObj, 0)[0x4C / 4]);
             if (getState(actionObj, nullptr) == 10)
             {
-                return static_cast<char>(self->vSlot138(4));
+                return static_cast<char>(self->vSetStateAndDispatch(4));
             }
         }
         return sub_47FE80(self, nullptr, a2);

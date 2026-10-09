@@ -26,8 +26,8 @@ static int __fastcall CCharActionFsm_TryStartSlotAction(CCharActionFsm* self, vo
                 {
                     self->field_00a4 = entryObject;
                     self->field_009c = entryObject;
-                    self->vSlot134(12, 0);
-                    result = self->vSlot138(21);
+                    self->vBeginWeaponStateChange(12, 0);
+                    result = self->vSetStateAndDispatch(21);
                     self->field_009c = 0;
                 }
             }

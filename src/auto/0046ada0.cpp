@@ -8,7 +8,7 @@
 CSF_FUNC(void*, __cdecl, Mem_Alloc, 0x006910F0, (std::size_t size));
 CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x00712CC0, (void* self, void* edx));
 
-static C_008314f8* __fastcall CMissionScript_Construct(C_008314f8* self, void* /*edx*/)
+static CMissionScript* __fastcall CMissionScript_Construct(CMissionScript* self, void* /*edx*/)
 {
     CSF_AT(void*, self, 0x04) = CSF_VTBL(0x0082D428);
     CSF_AT(void*, self, 0x00) = CSF_VTBL(0x008314F8);

@@ -9,7 +9,7 @@ CSF_FUNC(void, __fastcall, SceneLoader_RemoveObjectEntry, 0x00475480, (void* sel
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
 
-static int __fastcall CMissionScript_Reset(C_008314f8* self, void* /*edx*/)
+static int __fastcall CMissionScript_Reset(CMissionScript* self, void* /*edx*/)
 {
     CSF_AT(uint8_t, self, 0xD0) = 0;
     void* buffer = CSF_AT(void*, self, 0xC0);
