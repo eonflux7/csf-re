@@ -87,7 +87,17 @@ def deploy(group):
     if not os.path.exists(INI):
         shutil.copy(os.path.join(TREE, "hook", "csf_hook.ini"), INI)
     open(GROUP_FILE, "w").write("\n".join(group) + "\n")
+    _ini_drop(QUARANTINE_TAG)  # this DLL is built from HEAD, where they are gone
     return verify.write_pending_ini(INI, group)
+
+
+QUARANTINE_TAG = "# quarantined"
+
+
+def _ini_drop(tag):
+    if os.path.exists(INI):
+        keep = [l for l in open(INI).read().splitlines() if not l.endswith(tag)]  # read before "w" truncates
+        open(INI, "w").write("\n".join(keep) + "\n")
 
 
 def rows():
@@ -117,9 +127,14 @@ def groups(pending, size, modules=None):
 
 
 def quarantine(eas, why, out):
-    """Committed functions that broke a smoke / mismatched: file -> queue/, status todo, ledger entry dropped."""
+    """Committed functions that broke a smoke / mismatched: file -> queue/, status todo, ledger entry dropped.
+    The deployed DLL still holds their code, and once they are todo write_pending_ini no longer disables them: they
+    get their own disable lines until the next deploy, or every later smoke in this group (the bisect's control run
+    included) still crashes on them. 2026-10-09: that made two groups look "not attributable to the group"."""
     for ea in eas:
         grunt.quarantine(int(ea, 16), why, out)
+    with open(INI, "a") as f:
+        f.writelines(f"disable 0x{ea.upper()} {QUARANTINE_TAG}\n" for ea in eas)
     with open(os.path.join(ROOT, "work", "db.lock"), "w") as lk:  # the captain/api.py write functions.csv too
         fcntl.flock(lk, fcntl.LOCK_EX)
         allrows = list(csv.DictReader(open(os.path.join(ROOT, "db", "functions.csv"))))
