@@ -336,13 +336,13 @@ def main():
         t0 = time.time()
         good, bad, note = verify_group(g, FULL if a.full else SHORT)
         dt = time.time() - t0
-        print(f"group of {len(g)}: {len(good)} verified, {len(bad)} quarantined{', ' + note if note else ''} "
+        print(f"group of {len(g)}: {len(good)} installed (smoke passed with them on), {len(bad)} quarantined{', ' + note if note else ''} "
               f"({dt:.0f} s)", flush=True)
         record(event="group", n=len(g), verified=len(good), quarantined=bad, note=note, secs=round(dt), head=head)
         files = ["db/verify.json", "db/functions.csv"] + [f"src/auto/{ea}.cpp" for ea in bad] + \
                 [f"queue/{ea}.md" for ea in bad]
         if good or bad:
-            repo.commit(files, f"verifier: {len(good)} functions verified in game, {len(bad)} quarantined", note)
+            repo.commit(files, f"verifier: {len(good)} functions installed in a passing smoke, {len(bad)} quarantined", note)
         done_groups += 1
         if note:  # not attributable: don't spin on the same group
             return 1

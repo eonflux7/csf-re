@@ -1254,8 +1254,6 @@ def lanes(args):
     never hold up the S stream. Quota: Codex pauses at --codex-cap of its 5h window (L gets no new work, S/M lose their
     Codex rung); the grunts' Claude account pauses at --claude-cap of its 5h or weekly window. A function whose only
     remaining rungs were out of quota is deferred, not escalated. Every --batch gate passes: build + smoke + commit."""
-    if args.module and not args.no_captain:
-        captain_prep(args.module)
     if args.module:
         ida_refresh(args.module)
     global REVIEW_EFFORT, CODEX_SUB, CLAUDE_SUB, CLAUDE_SUB_LOGIN
@@ -1456,73 +1454,14 @@ def lanes(args):
         refill()
     if flush():
         live(phase="stopped" if stopping else "finished")
-        if wave and not args.no_captain and total_ok:
-            captain_after(wave)
     print(f"lanes done: {total_ok} ok, {total_esc} escalated, {total_def} deferred", flush=True)
 
 
-def captain(*argv):
-    """tools/captain.py as a step of a module wave (it holds its own one-instance lock; busy = skipped)."""
-    r = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "captain.py"), *argv],
-                       capture_output=True, text=True)
-    out = (r.stdout + r.stderr).strip()
-    print("\n".join("  [captain] " + l for l in out.splitlines()[-20:]), flush=True)
-    return r.returncode == 0
-
-
-def captain_prep(module_arg):
-    """Wave prep (types first): name the wave's unnamed classes (agentic captain session), pool the field names all
-    grunts proposed so far (tools/fields.py apply: consensus per class+offset), then the rename pass so this wave's
-    packets and the files already done use the names. Prints the wave's field coverage before and after."""
-    names = [m.strip() for m in module_arg.split(",") if m.strip()]
-    tool = lambda *a: subprocess.run([sys.executable, os.path.join(ROOT, "tools", a[0]), *a[1:]],
-                                     capture_output=True, text=True).stdout.strip()
-    print("wave prep: field coverage " + tool("fields.py", "coverage", "--module", module_arg).splitlines()[-1],
-          flush=True)
-    watched = [os.path.join(ROOT, "db", "types", f) for f in ("classes.yaml", "field_consensus.yaml")]
-    before = [open(f).read() if os.path.exists(f) else "" for f in watched]
-    live(mode="lanes", phase="captain: naming classes")
-    print(f"wave prep: captain family {module_arg}", flush=True)
-    captain("family", *names)
-    print("wave prep: " + tool("fields.py", "apply"), flush=True)
-    name_modules(module_arg)
-    uncommitted = subprocess.run(["git", "-C", ROOT, "diff", "--quiet", "HEAD", "--", *watched]).returncode
-    if [open(f).read() if os.path.exists(f) else "" for f in watched] == before and not uncommitted:
-        return  # (uncommitted: names a failed rename pass left behind, e.g. last wave's build break)
-    tool("rename_classes.py")
-    tool("fields.py", "fixbuild")  # references rename_classes leaves (files with several class types)
-    if subprocess.run(["ninja", "-C", os.path.join(ROOT, "build")], capture_output=True).returncode:
-        print("wave prep: build failed after the class rename pass: reverting it", flush=True)
-        subprocess.run(["git", "-C", ROOT, "checkout", "--", "src", "db/functions.csv"], check=False)
-        return
-    import repo
-    repo.commit(["src", "db/functions.csv", "db/types"], "Class/field rename pass (wave prep: captain family + "
-                "field consensus)")
-    print("wave prep: field coverage now " + tool("fields.py", "coverage", "--module", module_arg).splitlines()[-1],
-          flush=True)
-
-
-def name_modules(module_arg, phase="captain: naming modules"):
-    """Wave prep, after captain family: name the wave's unnamed modules (captain modules), now that their classes
-    have names to cite. Below --min-conf the module stays unnamed (work/captain/held_modules.jsonl); wave end asks
-    again, when the module's functions have names too."""
-    import modules
-    ids = module_ids(module_arg)
-    todo = sorted(m["id"] for m in modules.read_yaml() if m["id"] in ids and not m.get("name"))
-    if not todo:
-        return
-    live(mode="lanes", phase=phase)
-    print(f"{'wave end' if 'placeholder' in phase else 'wave prep'}: captain modules {','.join(todo)}", flush=True)
-    captain("modules", "--only", ",".join(todo))
-    import repo
-    repo.commit(["db/modules.yaml"], "Module names (wave prep: captain modules)")
-
-
 def ida_refresh(module_arg):
-    """Wave prep, after the types: push the names, classes, typed vtables and member types into the IDB
-    (tools/ida/sync.py, ~1 min) and re-decompile the module's open functions (export_pseudo.py --only), so this
-    wave's packets show this->m_field and this->vName() as of now. The whole-program pass (classes and parameter
-    types propagated through Hex-Rays, ~45 min) is tools/ida/propagate.sh, run between waves."""
+    """Wave prep: push db/ into the IDB (tools/ida/sync.py, ~1 min: function names the earlier waves produced,
+    classes, typed vtables, member types) and re-decompile the module's open functions (export_pseudo.py --only).
+    Names of classes, fields and modules only change in tools/naming.py (milestones, never inside a wave); the
+    whole-program type pass (~45 min) is tools/ida/propagate.sh, run between waves."""
     ids = module_ids(module_arg)
     eas = [f"{ea:x}" for ea, r in load_csv().items() if r["module"] in ids
            and r["status"] not in ("done", "verified", "lib")]
@@ -1540,26 +1479,18 @@ def ida_refresh(module_arg):
           f"({(r.stdout.strip().splitlines() or ['?'])[-1]})", flush=True)
 
 
-def captain_after(wave):
-    """After the wave: placeholder function names (GetField0050, ...) of its modules, now that callers are named."""
-    print("wave end: captain functions", flush=True)
-    live(phase="captain: placeholder names")
-    captain("functions", "--module", ",".join(sorted(wave)))
-    name_modules(",".join(sorted(wave)), phase="captain: placeholder names")  # held at prep: retry with names
-
-
 WAVES_LOG = os.path.join(ROOT, "work", "waves.jsonl")
 STOP_EXIT = 3  # wave's exit code when the stop rule fires
 
 
 def wave(args):
     """The RE loop for one module in one command:
-      1. types first (lanes' captain_prep): captain names the module's classes, then the module, field-name consensus, rename pass
+      1. prep (lanes' ida_refresh): the IDB gets what db/ holds, the module is re-decompiled
       2. produce: lanes over the module (gate + link + commit as pending; --canary verifier groups meanwhile)
       3. verify: tools/verifier.py --module (baseline, then the module's pending functions, in game)
-      4. review: tools/review.py sample --module (Opus reads a 5% sample against the original)
-      5. tools/linktest.py summary (what is left before the standalone exe links)
-      6. stop rule (wave_report): too many quarantines, review rejects or functions left unverified -> exit 3
+      4. tools/linktest.py summary (what is left before the standalone exe links)
+      5. stop rule (wave_report): too many quarantines or functions never installed in a passing smoke -> exit 3
+    The Opus review is not a wave step: tools/review.py sample is one rolling sample over all done code.
     `wave --next` ranks modules by centrality instead (rank_modules); `wave --waves N` runs N waves in rank order."""
     if args.waves:
         return waves(args)
@@ -1573,33 +1504,21 @@ def wave(args):
     args.module = args.module_name
     if args.total == 200:  # lanes' default: a wave takes the whole module
         args.total = 100000
-    t0, rev0 = time.time(), _line_count(REVIEWS)
+    t0 = time.time()
     lanes(args)
     py = sys.executable
     tool = lambda *a: subprocess.run([py, os.path.join(ROOT, "tools", a[0]), *a[1:]])
     if not args.no_verify:
         print("wave: verify", flush=True)
         tool("verifier.py", "--module", args.module)
-    if not args.no_review:
-        print("wave: review sample", flush=True)
-        tool("review.py", "sample", "--module", args.module)
     print("wave: link test", flush=True)
     tool("linktest.py")
-    rep = wave_report(args, module_ids(args.module), t0, rev0)
+    rep = wave_report(args, module_ids(args.module), t0)
     if rep["stop"]:
         sys.exit(STOP_EXIT)
 
 
-REVIEWS = os.path.join(ROOT, "db", "reviews.jsonl")
 VERIFIER_LOG = os.path.join(ROOT, "work", "verifier_log.jsonl")
-
-
-def _line_count(p):
-    try:
-        with open(p) as f:
-            return sum(1 for _ in f)
-    except OSError:
-        return 0
 
 
 def _jsonl(p, skip=0):
@@ -1617,11 +1536,12 @@ def _jsonl(p, skip=0):
     return out
 
 
-def wave_report(args, mods, t0, rev0):
-    """What this wave's verification and review found, and whether the wave loop should stop. Counts the verifier
-    groups run since the wave started (canary groups during production + the verify step), the Opus reviews it added,
-    and the module's done functions still pending (never installed in a passing smoke). One smoke failure the
-    verifier can't attribute is reported, not counted as a defect; it shows up as functions left pending."""
+def wave_report(args, mods, t0):
+    """What this wave's in-game check found, and whether the wave loop should stop. Counts the verifier groups run
+    since the wave started (canary groups during production + the verify step) and the module's done functions
+    still pending (never installed in a passing smoke). `installed` is exactly that: the hook was on in a smoke
+    that passed; whether the function ran or was compared is the ledger's tier (verify.py report). One smoke
+    failure the verifier can't attribute is reported, not counted as a defect; it leaves functions pending."""
     v = q = 0
     notes = []
     for r in _jsonl(VERIFIER_LOG):
@@ -1630,8 +1550,6 @@ def wave_report(args, mods, t0, rev0):
             q += len(r.get("quarantined") or [])
             if r.get("note"):
                 notes.append(r["note"][:160])
-    revs = [r for r in _jsonl(REVIEWS, rev0) if r.get("module") in mods]
-    rej = sum(not r.get("ok") for r in revs)
     db = DB()
     try:
         led = json.load(open(os.path.join(ROOT, "db", "verify.json")))
@@ -1642,16 +1560,18 @@ def wave_report(args, mods, t0, rev0):
     stop = []
     if q >= 2 and q / max(1, v + q) > args.stop_quarantine:
         stop.append(f"quarantined {q}/{v + q} in game (> {args.stop_quarantine:.0%})")
-    if rej >= 2 and rej / max(1, len(revs)) > args.stop_review:
-        stop.append(f"Opus review rejected {rej}/{len(revs)} (> {args.stop_review:.0%})")
     if not args.no_verify and len(done) >= 10 and len(pend) / len(done) > args.stop_pending:
-        stop.append(f"{len(pend)}/{len(done)} done functions still unverified (> {args.stop_pending:.0%})")
-    rep = dict(ts=time.time(), modules=sorted(mods), secs=round(time.time() - t0), verified=v, quarantined=q,
-               reviewed=len(revs), rejected=rej, done=len(done), pending=len(pend), notes=notes, stop=stop)
+        stop.append(f"{len(pend)}/{len(done)} done functions never installed in a passing smoke (> {args.stop_pending:.0%})")
+    eas = set(done)
+    import verify
+    depth = collections.Counter(t for ea, t in verify.tiers().items() if ea in eas)
+    rep = dict(ts=time.time(), modules=sorted(mods), secs=round(time.time() - t0), installed=v, quarantined=q,
+               diffed=depth["diffed"], executed=depth["executed"], never_ran=depth["gate"],
+               done=len(done), pending=len(pend), notes=notes, stop=stop)
     with open(WAVES_LOG, "a") as f:
         f.write(json.dumps(rep) + "\n")
-    print(f"wave report: verified {v}, quarantined {q}, reviewed {len(revs)} ({rej} rejected), "
-          f"{len(pend)}/{len(done)} still pending" + (f"\n  unattributed smoke failures: {len(notes)}" if notes else ""),
+    print(f"wave report: installed {v}, quarantined {q}, {len(pend)}/{len(done)} still pending; of the module's "
+          f"done functions: diffed {depth['diffed']}, executed {depth['executed']}, never ran {depth['gate']}" + (f"\n  unattributed smoke failures: {len(notes)}" if notes else ""),
           flush=True)
     for x in stop:
         print(f"  STOP: {x}", flush=True)
@@ -1779,10 +1699,10 @@ def cost(_):
         ok = sum(1 for e in led.values() if e.get("ok"))
         diffed = sum(1 for e in led.values() if e.get("diffed") and not e.get("mismatched"))
         calls = sum(len(v) for v in lat.values())
-        print(f"verified in game: {ok} functions installed in a passing smoke, {diffed} diffed clean; "
-              f"{calls / max(ok, 1):.2f} logged model calls per verified function")
+        print(f"in game: {ok} functions installed in a passing smoke, {diffed} diffed clean; "
+              f"{calls / max(ok, 1):.2f} logged model calls per installed function")
     except Exception as e:
-        print(f"verified: unavailable ({e})")
+        print(f"in game: unavailable ({e})")
 
 
 def lane_args(l):
@@ -1820,8 +1740,6 @@ def lane_args(l):
                    "(-1: off)")
     l.add_argument("--canary", type=int, default=300,
                    help="start one background verifier group every N committed functions (0 = never)")
-    l.add_argument("--no-captain", action="store_true", help="module waves: skip the captain steps (class naming "
-                   "before, placeholder function names after)")
     l.add_argument("--codex-cap", type=float, default=90, help="pause Codex at this 5h-window %% (0: off)")
     l.add_argument("--claude-cap", type=float, default=95,
                    help="pause the grunts' Claude account at this %% of its 5h or 7d window (0: off)")
@@ -1869,14 +1787,13 @@ if __name__ == "__main__":
     w.add_argument("module_name", nargs="?", help="module id/name; omitted: --next shows the ranking")
     w.add_argument("--next", action="store_true", help="rank modules by centrality (what to wave next) and exit")
     w.add_argument("--no-verify", action="store_true")
-    w.add_argument("--no-review", action="store_true")
     w.add_argument("--waves", type=int, default=0, help="run N waves in rank order (-1: until the stop rule or the "
                    "ranking runs out); each wave's report -> work/waves.jsonl")
     w.add_argument("--regress-every", type=int, default=1, help="with --waves: full regression smoke of the verified "
                    "baseline every N waves (0: off)")
     w.add_argument("--stop-quarantine", type=float, default=0.03, help="stop rule: quarantined / verified+quarantined")
-    w.add_argument("--stop-review", type=float, default=0.10, help="stop rule: Opus review rejects / reviewed")
-    w.add_argument("--stop-pending", type=float, default=0.25, help="stop rule: module's done functions left unverified")
+    w.add_argument("--stop-pending", type=float, default=0.25, help="stop rule: module's done functions never installed "
+                   "in a passing smoke")
     sub.add_parser("cost")
     a = ap.parse_args()
     {"run": run, "lanes": lanes, "wave": wave, "cost": cost}[a.cmd](a)

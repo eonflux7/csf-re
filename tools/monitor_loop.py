@@ -360,13 +360,13 @@ def wave_panel(L=None):
     if W:
         tb = Table(box=None, padding=(0, 1), header_style="dim", show_edge=False, title="past waves",
                    title_justify="left", title_style="bold")
-        for c in ("ended", "module", "time", "done", "verif.", "quar.", "rev/rej", "pend.", "stop"):
+        for c in ("ended", "module", "time", "done", "inst.", "quar.", "never ran", "pend.", "stop"):
             tb.add_column(c, no_wrap=True, justify="left" if c in ("module", "stop") else "right")
         for w in W:
             tb.add_row(M.ago(w["ts"]), ",".join(names.get(m, m) for m in w["modules"])[:24], M.dur(w.get("secs", 0)),
-                       str(w.get("done", 0)), Text(str(w.get("verified", 0)), style="green"),
+                       str(w.get("done", 0)), Text(str(w.get("installed", w.get("verified", 0))), style="green"),
                        Text(str(w.get("quarantined", 0)), style="red" if w.get("quarantined") else "dim"),
-                       f"{w.get('reviewed', 0)}/{w.get('rejected', 0)}",
+                       str(w.get("never_ran", "")),
                        Text(str(w.get("pending", 0)), style="yellow" if w.get("pending") else "dim"),
                        Text("; ".join(w.get("stop") or []) or "—", style="bold red" if w.get("stop") else "dim"))
         body.append(tb)

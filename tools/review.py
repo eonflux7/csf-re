@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
-"""Opus review sampling: an independent read of committed functions against the original, per module.
+"""Opus review sampling: an independent read of committed functions against the original.
 
 The gate checks references and the ABI, the verifier checks that the game survives and (for leaf/pure-callee
-functions) that results match. Neither reads the logic of a large function with calls. This samples a share of
-each module's done functions (default 5%, weighted to big ones without diff evidence), has a strong model review
-each against its packet (disassembly + pseudocode + callees, the same packet a grunt gets) with grunt's
-REVIEW_SYSTEM, and records the verdicts:
+functions) that results match. Neither reads the logic of a large function with calls. This is one rolling sample
+over all done functions, aimed where there is no other evidence: functions that never ran in a smoke (tier
+`gate`) weigh 5x, executed ones 1x, diffed ones 0.2x, each times its size. A strong model reviews each against
+its packet (disassembly + pseudocode + callees, the same packet a grunt gets) with grunt's REVIEW_SYSTEM:
 
   db/reviews.jsonl   {ea, module, code (compiled-code hash), ok, issues, model, date}
   queue/<ea>.md      for a rejected function (the file stays: it may be verified in game; this is a fix request)
 
-The per-module rejection rate is the quality estimate for the module's unreviewed code; recurring issue kinds
-are what the grunt prompt should learn (`report`).
+The rejection rate per evidence tier (`report`) is the quality estimate for unreviewed code of that tier; a
+module's handful of reviews says nothing about the module. Recurring issue kinds are what the grunt prompt
+should learn.
 
 Usage:
-  review.py sample [--module M,..] [--pct 5] [--min 3] [--max 20] [--model claude-opus-5-5] [--effort high] [--dry]
+  review.py sample [--n 20] [--module M,..] [--model claude-opus-5-5] [--effort high] [--dry]
   review.py report [--module M]
 Runs on the grunts' Claude account (grunt.ask backend claude; never the main account).
 """
@@ -37,42 +38,37 @@ def module_names():
     return {m["id"]: m.get("name") or m["id"] for m in (yaml.safe_load(open(p)) or [])} if os.path.exists(p) else {}
 
 
-def pick(mods, pct, lo, hi, seed=None):
-    """{module: [ea...]} sample: done src/auto functions not reviewed with their current code, >= 40 bytes,
-    weighted by size, diffed ones last (they already have the strongest evidence)."""
+TIER_WEIGHT = {"gate": 5.0, "executed": 1.0, "stale": 1.0, "diffed": 0.2}
+
+
+def pick(mods, n, seed=None):
+    """[(module, ea, tier)]: n done src/auto functions not reviewed with their current code, >= 40 bytes, drawn
+    without replacement with weight size x TIER_WEIGHT (the least in-game evidence first)."""
     import verify
     rows = list(csv.DictReader(open(os.path.join(ROOT, "db", "functions.csv"))))
     names = module_names()
     hashes = verify.code_hashes()
     tiers = verify.tiers(hashes)
     reviewed = {(r["ea"], r.get("code")) for r in load()}
-    by = collections.defaultdict(list)
+    pool = []
     for r in rows:
-        ea = r["ea"]
-        if r["status"] != "done" or not os.path.exists(os.path.join(ROOT, "src", "auto", f"{ea}.cpp")):
+        ea, m = r["ea"], r["module"] or "?"
+        if r["status"] != "done" or ea not in hashes or int(r["size"]) < 40 or (ea, hashes[ea]) in reviewed:
             continue
-        m = r["module"] or "?"
         if mods and m not in mods and names.get(m) not in mods:
             continue
-        by[m].append(r)
+        w = int(r["size"]) * TIER_WEIGHT.get(tiers.get(ea), 1.0)
+        pool.append((w, m, ea, tiers.get(ea, "gate")))
     rnd = random.Random(seed)
-    out = {}
-    for m, rs in by.items():
-        n = max(lo, min(hi, round(len(rs) * pct / 100)))
-        pool = [r for r in rs if int(r["size"]) >= 40 and (r["ea"], hashes.get(r["ea"])) not in reviewed]
-        weight = lambda r: int(r["size"]) * (0.2 if tiers.get(r["ea"]) == "diffed" else 1.0)
-        chosen = []
-        while pool and len(chosen) < n:
-            tot = sum(weight(r) for r in pool)
-            x, acc = rnd.uniform(0, tot), 0
-            for r in pool:
-                acc += weight(r)
-                if acc >= x:
-                    chosen.append(r["ea"])
-                    pool.remove(r)
-                    break
-        if chosen:
-            out[m] = chosen
+    out = []
+    while pool and len(out) < n:
+        x, acc = rnd.uniform(0, sum(p[0] for p in pool)), 0
+        for p in pool:
+            acc += p[0]
+            if acc >= x:
+                out.append(p[1:])
+                pool.remove(p)
+                break
     return out, hashes
 
 
@@ -97,17 +93,20 @@ def review_one(db, ea, model, effort):
 def sample(a):
     from packet import DB
     mods = set(a.module.split(",")) if a.module else None
-    chosen, hashes = pick(mods, a.pct, a.min, a.max, a.seed)
-    total = sum(len(v) for v in chosen.values())
+    chosen, hashes = pick(mods, a.n, a.seed)
+    total = len(chosen)
     names = module_names()
-    print(f"review sample: {total} functions in {len(chosen)} modules ({a.model} @ {a.effort})", flush=True)
+    by_tier = collections.Counter(t for _, _, t in chosen)
+    print(f"review sample: {total} functions ({', '.join(f'{k} {v}' for k, v in by_tier.most_common())}; "
+          f"{a.model} @ {a.effort})", flush=True)
     if a.dry:
-        for m, eas in sorted(chosen.items()):
-            print(f"  {names.get(m, m)}: {' '.join(eas)}")
+        for m, ea, tier in sorted(chosen):
+            print(f"  {ea} {tier:8s} {names.get(m, m)}")
         return
     db = DB()
     import concurrent.futures as cf
-    jobs = [(m, ea) for m, eas in chosen.items() for ea in eas]
+    tier_of = {ea: tier for _, ea, tier in chosen}
+    jobs = [(m, ea) for m, ea, _ in chosen]
     today = datetime.date.today().isoformat()
     bad = []
     with cf.ThreadPoolExecutor(a.jobs) as ex:
@@ -124,7 +123,8 @@ def sample(a):
                 continue
             issues = [str(i) for i in d.get("issues") or []]
             ok = bool(d.get("ok", True)) or not issues
-            rec = dict(ea=ea, module=m, code=hashes.get(ea), ok=ok, issues=issues, model=a.model, date=today)
+            rec = dict(ea=ea, module=m, code=hashes.get(ea), tier=tier_of[ea], ok=ok, issues=issues, model=a.model,
+                       date=today)
             with open(REVIEWS, "a") as fh:
                 fh.write(json.dumps(rec) + "\n")
             print(f"  {ea} {names.get(m, m)}: {'ok' if ok else 'ISSUES: ' + ' | '.join(issues)[:200]}", flush=True)
@@ -149,14 +149,15 @@ def report(mods=None):
         m = r.get("module") or "?"
         if mods and m not in mods and names.get(m) not in mods:
             continue
-        by[m][0] += 1
+        t = r.get("tier") or "(tier not recorded)"
+        by[t][0] += 1
         if not r["ok"]:
-            by[m][1] += 1
+            by[t][1] += 1
             issues += [(r["ea"], i) for i in r["issues"]]
     n, b = sum(x[0] for x in by.values()), sum(x[1] for x in by.values())
     print(f"reviewed {n}, rejected {b} ({100 * b / max(n, 1):.0f}%): estimated defect rate of unreviewed code")
-    for m, (k, bad) in sorted(by.items(), key=lambda x: -x[1][1]):
-        print(f"  {names.get(m, m):32s} {bad}/{k} rejected")
+    for t, (k, bad) in sorted(by.items(), key=lambda x: -x[1][0]):
+        print(f"  {t:20s} {bad}/{k} rejected")
     # recurring kinds: crude keyword buckets, for the prompt
     kinds = collections.Counter()
     for _, i in issues:
@@ -175,9 +176,7 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("sample")
     s.add_argument("--module")
-    s.add_argument("--pct", type=float, default=5)
-    s.add_argument("--min", type=int, default=3)
-    s.add_argument("--max", type=int, default=20)
+    s.add_argument("--n", type=int, default=20, help="functions to review")
     s.add_argument("--model", default="claude-opus-5-5")
     s.add_argument("--effort", default="high")
     s.add_argument("--jobs", type=int, default=4)

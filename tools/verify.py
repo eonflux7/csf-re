@@ -271,10 +271,13 @@ def summary_lines(hashes=None):
     rows = done_rows()
     size = {ea: int(r["size"]) for ea, r in rows.items()}
     lines = []
+    what = {"diffed": "results compared with the original's in game", "executed": "ran in a smoke without crashing",
+            "gate": "never ran: static checks only (installed or not)", "stale": "code changed since its evidence",
+            "mismatched": "differs from the original"}
     for name in TIERS:
         eas = [ea for ea, v in t.items() if v == name]
         if eas or name in ("diffed", "executed", "gate"):
-            lines.append(f"  {name:11} {len(eas):6} fns {sum(size.get(e, 0) for e in eas) / 1024:7.1f} KB")
+            lines.append(f"  {name:11} {len(eas):6} fns {sum(size.get(e, 0) for e in eas) / 1024:7.1f} KB   {what[name]}")
     pend = pending(hashes)
     lines.append(f"  {'pending':11} {len(pend):6} fns {sum(size.get(e, 0) for e in pend) / 1024:7.1f} KB"
                  "   (never installed in a passing smoke; disabled in deploys until tools/verifier.py)")
