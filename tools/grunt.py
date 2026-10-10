@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Grunt driver: packet -> DeepSeek -> gate (1 retry) -> src/auto/<ea>.cpp, or escalate to queue/.
+"""Grunt driver: packet -> model ladder -> gate -> src/auto/<ea>.cpp, or escalate to queue/.
 
 Usage:
-  grunt.py run [--n 10] [--jobs 8] [--max-size 200] [--only ea,ea] [--model deepseek-flash] [--no-smoke]
-  grunt.py lanes [--total 200] [--batch 60] [--module m1,m2]   continuous, one lane with size tiers S/M/L/X (see lanes())
+  grunt.py wave <module> | --next | --waves N    the loop for one module (see wave()); lanes + verifier + link test
+  grunt.py lanes [--total 200] [--batch 60] [--module m1,m2]   continuous, size tiers S/M/L/X (db/lanes.yaml)
+  grunt.py run --only ea,ea [--backend codex|claude] [--dry] [--no-smoke]   single functions (redo, A/B)
   grunt.py cost                      token usage, review hit rate from work/grunt_log.jsonl
 
 Stop a lanes run cleanly: `touch work/grunt_stop` (in-flight calls finish, the batch is smoked and committed).
@@ -109,30 +110,6 @@ JSON metadata: {"name": "<function name used>", "confidence": 0.0-1.0,
   int/BOOL return; declare it `int`, never `bool` (bool leaves eax's upper bytes undefined; callers test eax).
   Only a bare `mov al, ...` / `setcc al` without zeroing eax is a genuine byte/bool return.
 """
-
-
-def load_key():
-    for line in open(os.path.expanduser("~/.config/csf-re/env")):
-        if line.startswith("DEEPSEEK_API_KEY="):
-            return line.split("=", 1)[1].strip()
-    raise SystemExit("no DEEPSEEK_API_KEY in ~/.config/csf-re/env")
-
-
-def chat(model, messages, key, effort="high"):
-    # Thinking on, explicit effort; output cap large enough that reasoning can't starve the answer.
-    body = json.dumps(dict(model=model, messages=messages, max_tokens=64000, thinking={"type": "enabled"},
-                           reasoning_effort=effort)).encode()
-    req = urllib.request.Request("https://api.deepseek.com/chat/completions", data=body,
-                                 headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"})
-    for attempt in range(4):
-        try:
-            with urllib.request.urlopen(req, timeout=1200) as r:
-                d = json.load(r)
-            return d["choices"][0]["message"]["content"], d.get("usage", {})
-        except Exception as e:  # network / rate limit: back off
-            if attempt == 3:
-                raise
-            time.sleep(5 * (attempt + 1))
 
 
 CLAUDE_CWD = os.path.expanduser("~/.cache/csf-re-claude")  # outside the repo: no CLAUDE.md / memory pulled in
@@ -457,11 +434,11 @@ def _ask(backend, model, messages, key, effort="high"):
         sysmsg = messages[0]["content"]
         # write = first attempt; then work() says what the call is: retry (same rung, gate errors attached),
         # escalate (first call of a later rung) or evidence (answering the model's own evidence requests)
-        kind = ("review" if sysmsg is REVIEW_SYSTEM else "batch" if sysmsg is SYSTEM_BATCH
+        kind = ("review" if sysmsg is REVIEW_SYSTEM
                 else "write" if len(messages) <= 2 else getattr(_tl, "step", "retry"))
         _live["calls"][cid] = dict(ea=getattr(_tl, "ea", 0), backend=backend, model=model,
                                    effort=CODEX_EFFORT.get(effort, effort) if backend == "codex" else effort,
-                                   kind=kind, n=len(getattr(_tl, "batch", ())) if kind == "batch" else 1,
+                                   kind=kind, n=1,
                                    transport=os.environ.get("CSF_CODEX_TRANSPORT", "direct")
                                    if backend == "codex" else "api", since=time.time())
     live()
@@ -471,7 +448,7 @@ def _ask(backend, model, messages, key, effort="high"):
         elif backend == "codex":
             text, usage = chat_codex(model, messages, effort)
         else:
-            text, usage = chat(model, messages, key, effort)
+            raise ValueError(f"unknown backend {backend!r}")
         with _live_lock:
             t = _live["tokens"].setdefault(backend, dict(calls=0, prompt=0, cached=0, completion=0))
             t["calls"] += 1
@@ -564,9 +541,14 @@ def parse(text):
 
 REVIEW_SYSTEM = """You review a C++ reimplementation of one x86 function from a 2006 MSVC game against the original's
 disassembly and pseudocode. Look only for real behavioral differences: wrong offsets, signedness, widths, float vs
-double, missing/extra/reordered calls or memory accesses, wrong loop bounds, wrong constants, values cached across
-calls where the original reloads. Ignore naming and style, last-bit floating-point rounding (x87 extended
-precision vs SSE), and register/stack-layout artifacts: those are not behavior. Output exactly one ```json block:
+double, missing/extra calls or call arguments, calls in another order, wrong virtual slots, wrong loop bounds, wrong
+constants, stack objects smaller than the block the original passes to a callee, values cached across calls where
+the original reloads.
+Not behavior, never report: naming and style; last-bit floating-point rounding (x87 extended precision vs SSE) and
+NaN ordering; float-to-int results outside the int32 range; integer overflow corner cases (INT_MIN); the order of
+loads and stores with no call between them, unless a store can change what a later load reads; register and
+stack-layout artifacts. A register the packet's NOTE calls a callee-save artifact is not an argument.
+Output exactly one ```json block:
 {"ok": true|false, "issues": ["<concrete difference, with the asm address>", ...]}"""
 
 
@@ -618,13 +600,10 @@ def substitute(backend, model, tier):
     return backend, model
 
 
-def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evidence_budget=0, prior=None,
-         tier=None):
+def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evidence_budget=0, tier=None):
     """ladder: [(backend, model, attempts), ...] tried in order; the conversation (with gate errors) carries over.
-    example: ea of a done clone sibling (its file is shown). review_over: Codex-review DeepSeek outputs above N bytes.
-    evidence_budget: read-only evidence requests the model may make (tools/evidence.py); they aren't attempts.
-    prior: (answer text, gate error, usage) of this function's first attempt inside a batch (work_batch): the
-    conversation continues from it and that attempt counts as the ladder's first step."""
+    example: ea of a done clone sibling (its file is shown). review_over: Codex reviews Claude answers above N bytes.
+    evidence_budget: read-only evidence requests the model may make (tools/evidence.py); they aren't attempts."""
     _tl.ea = ea
     packet = build(db, ea) + (example_section(db, example) if example else "")
     ev_left, n_ev = evidence_budget, 0
@@ -641,17 +620,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
     steps = [(b, m) for b, m, n in ladder for _ in range(n)]
     dead, reviews = set(), []  # dead: rungs that errored (backend, or go:model); reviews: True = reviewer rejected
     quota_hit = False  # a rung was skipped for quota (Codex / Claude paused, limit hit): defer instead of escalating
-    start = 0
-    if prior:
-        text, err, u = prior
-        usage_all.append(u)
-        fails.append(dict(by="batch", kinds=gate_mod.fail_kinds(err)))
-        msgs += [{"role": "assistant", "content": text},
-                 {"role": "user", "content": f"The gate rejected the file:\n{err}\nFix it and answer again in the same format."}]
-        start = 1
     for attempt, (backend, model) in enumerate(steps):
-        if attempt < start:
-            continue
         # first attempt per rung at high effort, retries at max (a pinned model@effort ignores both)
         first = attempt == 0 or steps[attempt - 1] != (backend, model)
         backend, model = substitute(backend, model, tier)
@@ -684,7 +653,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
         else:
             open(tmp, "w").write(code)
             ok, err, code = gate_fixed(ea, tmp, db, code)
-        if ok and backend in ("deepseek", "claude") and review_over is not None and review_over >= 0 \
+        if ok and backend == "claude" and review_over is not None and review_over >= 0 \
                 and db.F[ea]["size"] > review_over:
             issues, u = review(ea, packet, code)
             if u:
@@ -710,78 +679,6 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
                 f"## Packet\n{packet}\n")
     return dict(ea=ea, ok=False, attempts=len(steps), err=err[:500], usage=usage_all, reviews=reviews, evidence=n_ev,
                 fails=fails)
-
-
-# Batches get their own system prompt: as the real top-level instructions (direct transport) the single-file output
-# rule overrides a batch note in the user message (the model answered only the first function).
-SYSTEM_BATCH = SYSTEM.replace(
-    "Output exactly two fenced blocks: first ```cpp (the whole file), then ```json (metadata). Nothing else.",
-    "A request holds one or more functions. For EACH function, in the order given, output a line `### 0xADDR`, then\n"
-    "its own ```cpp block (one whole, separate file), then its own ```json block (metadata). Nothing else. Answer\n"
-    "every function; the file rules below apply to each file on its own.").replace(
-    "Exactly one HOOK line, for the target:", "Exactly one HOOK line per file, for that file's target:")
-assert SYSTEM_BATCH != SYSTEM
-
-BATCH_NOTE = """This request holds {n} functions, each under its own "# FUNCTION 0x..." heading. Treat each one
-exactly as if it came alone (same rules, one separate file each). Answer for every function, in the order given:
-a line `### 0xADDR` (the function's address), then its ```cpp block, then its ```json block. Nothing else."""
-
-
-def work_batch(eas, db, key, model, out_dir=None, review_over=None, ev=None):
-    """Several small functions in one Codex call (the per-call harness + system prompt, ~5.8k tokens, is paid once).
-    Each file is gated alone; a failed or missing one continues as a single-function conversation (work(prior=...))
-    from its own part of the answer, with its evidence budget (ev: ea -> requests). Returns a list of work()
-    results; batch usage is split evenly."""
-    ev = ev or {}
-    _tl.ea, _tl.batch = eas[0], eas
-    packets = {ea: build(db, ea) for ea in eas}
-    body = "\n\n".join(f"# FUNCTION 0x{ea:08X}\n\n{packets[ea]}" for ea in eas)
-    msgs = [{"role": "system", "content": SYSTEM_BATCH},
-            {"role": "user", "content": BATCH_NOTE.format(n=len(eas)) + "\n\n" + body}]
-    ladder = [("codex", model, 2)]
-    try:
-        text, usage = ask("codex", model, msgs, key, "high")
-    except Exception as e:
-        _tl.batch = ()
-        if CODEX_PAUSED.is_set():
-            return [dict(ea=ea, ok=False, deferred=True, attempts=0, err=f"codex error: {e}", usage=[]) for ea in eas]
-        return [work(ea, db, key, ladder, out_dir, None, review_over, ev.get(ea, 0)) for ea in eas]
-    _tl.batch = ()
-    share = {k: (v // len(eas) if isinstance(v, int) else v) for k, v in usage.items()}
-    share["batch"] = len(eas)
-    parts = {}
-    for m in re.finditer(r"^###\s*0x([0-9A-Fa-f]+)\s*$(.*?)(?=^###\s*0x|\Z)", text, re.M | re.S):
-        parts[int(m.group(1), 16)] = m.group(2)
-    # by the HOOK address inside each file (the model sometimes drops the ### markers): cpp block + following json
-    for m in re.finditer(r"```(?:cpp|c\+\+)\s*\n.*?```(?:\s*```json\s*\n.*?```)?", text, re.S):
-        h = re.search(r"HOOK(?:_METHOD|_KEEP_ECX)?\(\s*0x([0-9A-Fa-f]+)", m.group(0))
-        if h and int(h.group(1), 16) in packets and int(h.group(1), 16) not in parts:
-            parts[int(h.group(1), 16)] = m.group(0)
-    out = []
-    for ea in eas:
-        _tl.ea = ea
-        part = parts.get(ea, "")
-        code, meta = parse(part)
-        if code:
-            code = autofix(code, ea)
-            tmp = os.path.join(ROOT, "work", "grunt", "codex", f"{ea:08x}.cpp")
-            os.makedirs(os.path.dirname(tmp), exist_ok=True)
-            open(tmp, "w").write(code)
-            ok, err, code = gate_fixed(ea, tmp, db, code)
-        else:
-            ok, err = False, "no ```cpp block found in your answer"
-        if ok:
-            path = os.path.join(out_dir or os.path.join(ROOT, "src", "auto"), f"{ea:08x}.cpp")
-            os.makedirs(os.path.dirname(path), exist_ok=True)
-            os.replace(tmp, path)
-            out.append(dict(ea=ea, ok=True, attempts=1, meta=meta, usage=[share], by=f"codex:{model}", example=None,
-                            reviews=[], evidence=0, batch=len(eas)))
-        else:
-            r = work(ea, db, key, ladder, out_dir, None, review_over, ev.get(ea, 0),
-                     prior=(part.strip() or "(no answer for this function)", err, share))
-            r["batch"] = len(eas)
-            out.append(r)
-    return out
 
 
 _clusters = None
@@ -1107,8 +1004,6 @@ def run_config(args, lanes=False):
     """The cost/speed settings of this run, for the monitor."""
     return dict(transport=os.environ.get("CSF_CODEX_TRANSPORT", "direct"), effort=CODEX_EFFORT["high"],
                 retry_effort=CODEX_EFFORT["max"], class_view=os.environ.get("CSF_CLASS_VIEW", "compact"),
-                batch_fns=getattr(args, "batch_fns", 1), batch_bytes=getattr(args, "batch_bytes", 0),
-                batch_max=getattr(args, "batch_max", 300), tiny=getattr(args, "tiny", None),
                 review_over=args.review_over, codex_cap=getattr(args, "codex_cap", None),
                 codex_reserve=getattr(args, "codex_reserve", None), claude_cap=getattr(args, "claude_cap", None), codex_sub=getattr(args, "codex_sub", None),
                 backend=getattr(args, "backend", "lanes"), wave=getattr(args, "module", None),
@@ -1116,49 +1011,15 @@ def run_config(args, lanes=False):
                                for t in TIERS}, s_max=args.s_max, m_max=args.m_max, l_max=args.l_max, review_effort=args.review_effort) if lanes else {}))
 
 
-def pack(db, eas, fns, budget=0, max_size=300):
-    """Codex batches: same class (else module) together, at most `fns` functions and, with a byte budget, at most
-    `budget` bytes of original code per call (many tiny functions share a call, mid-size ones get 2-3). Functions over
-    `max_size` go alone."""
-    groups = collections.defaultdict(list)
-    for ea in sorted(eas):
-        groups[db.class_of(ea) or db.rows[ea]["module"]].append(ea)
-    out = []
-    for g in groups.values():
-        cur, nb = [], 0
-        for ea in g:
-            sz = db.F[ea]["size"]
-            if sz > max_size:
-                out.append([ea])
-                continue
-            if cur and (len(cur) >= fns or (budget and nb + sz > budget)):
-                out.append(cur)
-                cur, nb = [], 0
-            cur.append(ea)
-            nb += sz
-        if cur:
-            out.append(cur)
-    return out
-
-
 def run(args):
+    """Single functions outside the lanes: redo a queue item (--only), or an A/B arm (--dry writes to work/ab/)."""
     db = DB()
-    key = load_key()
     picks = [(int(x, 16), None) for x in args.only.split(",")] if args.only else select(db, args.n, args.max_size, args.min_size, modules=module_ids(args.module))
     targets = [ea for ea, _ in picks]
     example = dict(picks)
     live(mode="run" + (" (dry)" if args.dry else ""), phase="grunting", config=run_config(args),
          counts=dict(total=len(targets), submitted=len(targets)))
-    esc = [("claude", args.claude_model, 2)] if args.escalate_claude else []
-    codex = [("codex", args.codex_model, 2)]
-    if args.backend == "claude":
-        ladder_of = lambda ea: [("claude", args.claude_model, 2)]
-    elif args.backend == "deepseek":
-        ladder_of = lambda ea: [("deepseek", args.model, 2)] + esc
-    elif args.backend == "codex":
-        ladder_of = lambda ea: codex + esc
-    else:  # auto: tiny functions to DeepSeek flash (codex as fallback), the rest to Codex
-        ladder_of = lambda ea: ([("deepseek", args.model, 2)] if db.F[ea]["size"] < args.tiny else []) + codex + esc
+    ladder = [("claude", args.claude_model, 2)] if args.backend == "claude" else [("codex", args.codex_model, 2)]
     print(f"batch of {len(targets)}: {' '.join(f'{t:x}' for t in targets)}", flush=True)
     results = []
     with cf.ThreadPoolExecutor(args.jobs) as ex:
@@ -1166,20 +1027,9 @@ def run(args):
                                if os.environ.get("CSF_CODEX_EFFORT") else "")
                                + (f"-{os.environ['CSF_AB_ARM']}" if os.environ.get("CSF_AB_ARM") else "")) \
             if args.dry else None
-        if args.batch_fns > 1 and args.backend in ("codex", "auto"):  # several functions per Codex call
-            solo = [ea for ea in targets if args.backend == "auto" and db.F[ea]["size"] < args.tiny]
-            chunks = pack(db, [ea for ea in targets if ea not in solo], args.batch_fns, args.batch_bytes,
-                          args.batch_max)
-            futs = {ex.submit(work_batch, ch, db, key, args.codex_model, out_dir, args.review_over,
-                              {e: ev_budget(args, db, e) for e in ch}) if len(ch) > 1
-                    else ex.submit(work, ch[0], db, key, codex + esc, out_dir, None, args.review_over,
-                                   ev_budget(args, db, ch[0])): ch[0] for ch in chunks}
-            futs.update({ex.submit(work, ea, db, key, ladder_of(ea), out_dir, example.get(ea), args.review_over,
-                                   ev_budget(args, db, ea)): ea for ea in solo})
-        else:
-            futs = {ex.submit(work, ea, db, key, ladder_of(ea), out_dir, example.get(ea), args.review_over,
-                              ev_budget(args, db, ea)): ea
-                    for ea in targets}
+        futs = {ex.submit(work, ea, db, None, ladder, out_dir, example.get(ea), args.review_over,
+                          ev_budget(args, db, ea)): ea
+                for ea in targets}
         for fu in cf.as_completed(futs):
             try:
                 rs = fu.result()
@@ -1254,6 +1104,7 @@ def lanes(args):
     never hold up the S stream. Quota: Codex pauses at --codex-cap of its 5h window (L gets no new work, S/M lose their
     Codex rung); the grunts' Claude account pauses at --claude-cap of its 5h or weekly window. A function whose only
     remaining rungs were out of quota is deferred, not escalated. Every --batch gate passes: build + smoke + commit."""
+    lane_config(args)
     if args.module:
         ida_refresh(args.module)
     global REVIEW_EFFORT, CODEX_SUB, CLAUDE_SUB, CLAUDE_SUB_LOGIN
@@ -1264,11 +1115,8 @@ def lanes(args):
     db = DB()
     wave = module_ids(args.module)
     key = None
-    esc = [("claude", args.claude_model, 2)] if args.escalate_claude else []
-    ladders = {"S": ladder_spec(args.s_ladder) + esc, "M": ladder_spec(args.m_ladder) + esc,
-               "L": ladder_spec(args.l_ladder) + esc, "X": ladder_spec(args.x_ladder) + esc}
-    if any(b == "deepseek" for lad in ladders.values() for b, _, _ in lad):
-        key = load_key()
+    ladders = {"S": ladder_spec(args.s_ladder), "M": ladder_spec(args.m_ladder),
+               "L": ladder_spec(args.l_ladder), "X": ladder_spec(args.x_ladder)}
     caps = {"S": args.s_jobs, "M": args.m_jobs, "L": args.l_jobs, "X": args.x_jobs}
     pool = cf.ThreadPoolExecutor(sum(caps.values()))
     inflight, good, submitted, total_ok, total_esc, total_def = {}, [], 0, 0, 0, 0
@@ -1705,81 +1553,55 @@ def cost(_):
         print(f"in game: unavailable ({e})")
 
 
+LANES_YAML = os.path.join(ROOT, "db", "lanes.yaml")
+
+
 def lane_args(l):
-    """Arguments of `lanes` (and `wave`, which runs lanes for one module)."""
+    """Arguments of `lanes` (and `wave`, which runs lanes for one module). The model policy (tiers, ladders, jobs,
+    quota guards, stand-ins, in-lane review) is db/lanes.yaml, read into the same namespace by lane_config()."""
     l.add_argument("--total", type=int, default=200)
     l.add_argument("--module", help="module wave: comma list of module ids/names (tools/modules.py list)")
     l.add_argument("--batch", type=int, default=60, help="link + commit every N gate passes")
-    l.add_argument("--s-max", type=int, default=150, help="S tier: functions under N bytes (and clone siblings with "
-                   "a done example up to --m-max)")
-    l.add_argument("--m-max", type=int, default=400, help="M tier: functions up to N bytes")
-    l.add_argument("--l-max", type=int, default=600, help="L tier: functions up to N bytes; X: the rest")
-    # 2026-10-08 after the first tiered menu batches: MiMo dropped (6-12 min thinks, 3 rescues in 140), no Codex xhigh
-    # 2026-10-08 (473 tiered results): S ok 330 = Haiku low 289, strong rung 28, Haiku medium 9 -> medium dropped
-    l.add_argument("--s-ladder", default="claude:claude-haiku-5-5@low:2,codex:gpt-6.1-sol@high:1",
-                   help="backend:model[@effort]:attempts,...")
-    # 2026-10-09 (198 M results): Haiku high wrote 3 of 189 passes in 267 calls (5.3M output tokens), Codex 186:
-    # Codex first, Opus only as the escalation rung (as X)
-    l.add_argument("--m-ladder", default="codex:gpt-6.1-sol@high:2,claude:claude-opus-5-5@high:1")
-    l.add_argument("--l-ladder", default="codex:gpt-6.1-sol@high:2")
-    # 2026-10-09: functions over 600 B (646, ~700 KB) were outside every wave. Opus first took the grunts' 5h window
-    # from 21% to 78% in one wave of data loaders: Codex high writes them, Opus only as the escalation rung
-    l.add_argument("--x-ladder", default="codex:gpt-6.1-sol@high:2,claude:claude-opus-5-5@high:1")
-    l.add_argument("--review-effort", default="medium", help="Codex review effort")
-    l.add_argument("--s-jobs", type=int, default=12, help="S tier: functions in flight")
-    l.add_argument("--m-jobs", type=int, default=6)
-    l.add_argument("--l-jobs", type=int, default=3)
-    l.add_argument("--x-jobs", type=int, default=2)
+    l.add_argument("--config", default=LANES_YAML, help="model policy file (default db/lanes.yaml)")
     l.add_argument("--max-size", type=int, default=100000, help="skip functions over N bytes (default: none)")
     l.add_argument("--min-size", type=int, default=6)
-    l.add_argument("--claude-model", default="sonnet")
-    l.add_argument("--escalate-claude", action="store_true", help="append Claude x2 to every ladder")
     l.add_argument("--evidence", type=int, default=3, help="evidence requests per function (tools/evidence.py)")
     l.add_argument("--evidence-over", type=int, default=150, help="offer evidence requests above N bytes")
-    l.add_argument("--review-over", type=int, default=150, help="Codex reviews non-Codex answers above N bytes "
-                   "(-1: off)")
     l.add_argument("--canary", type=int, default=300,
                    help="start one background verifier group every N committed functions (0 = never)")
-    l.add_argument("--codex-cap", type=float, default=90, help="pause Codex at this 5h-window %% (0: off)")
-    l.add_argument("--claude-cap", type=float, default=95,
-                   help="pause the grunts' Claude account at this %% of its 5h or 7d window (0: off)")
-    l.add_argument("--codex-reserve", type=float, default=50,
-                   help="from this Codex 5h-window %%, S/M Codex rungs run on --codex-sub (Codex kept for L)")
-    l.add_argument("--claude-sub", default="claude-haiku-5-5@low=gpt-6.1-sol@low,claude-haiku-5-5@high=gpt-6.1-sol@medium",
-                   help="while the grunts' Claude account is paused (--claude-cap): Claude rung model=Codex model "
-                   "standing in (empty: off; unlisted Claude rungs are skipped as before)")
-    l.add_argument("--claude-sub-login", default="codex-2", help="Codex login the --claude-sub stand-ins run on "
-                   "(falls back to the rotation when it is missing or paused)")
-    l.add_argument("--codex-sub", default="claude:claude-sonnet-5-5@medium",
-                   help="backend:model[@effort] standing in for Codex in S/M (empty: off)")
-    l.add_argument("--hub-callers", type=int, default=25,
-                   help="functions called from >= N functions of other modules go to the L (strong) ladder (0: off)")
+
+
+LANE_KEYS = ("s_max m_max l_max s_ladder m_ladder l_ladder x_ladder hub_callers s_jobs m_jobs l_jobs x_jobs "
+             "review_over review_effort codex_cap claude_cap codex_reserve codex_sub claude_sub claude_sub_login").split()
+
+
+def lane_config(args):
+    import yaml
+    cfg = yaml.safe_load(open(args.config)) or {}
+    if set(cfg) != set(LANE_KEYS):
+        sys.exit(f"{args.config}: missing {sorted(set(LANE_KEYS) - set(cfg))}, unknown {sorted(set(cfg) - set(LANE_KEYS))}")
+    for k, v in cfg.items():
+        setattr(args, k, v)
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
-    r = sub.add_parser("run")
+    r = sub.add_parser("run", help="single functions: redo (--only) or an A/B arm (--dry)")
     r.add_argument("--n", type=int, default=10)
     r.add_argument("--jobs", type=int, default=8)
     r.add_argument("--max-size", type=int, default=200)
-    r.add_argument("--only")
-    r.add_argument("--module", help="module wave: comma list of module ids/names (tools/modules.py list)")
-    r.add_argument("--model", default="deepseek-flash")
-    r.add_argument("--backend", choices=["auto", "deepseek", "codex", "claude"], default="auto")
-    r.add_argument("--codex-model", default="gpt-6.1-sol")
-    r.add_argument("--tiny", type=int, default=48, help="auto: functions smaller than this go to DeepSeek flash")
-    r.add_argument("--claude-model", default="sonnet")
-    r.add_argument("--escalate-claude", action="store_true", help="after 2 DeepSeek failures, try Claude twice")
     r.add_argument("--min-size", type=int, default=6)
-    r.add_argument("--batch-fns", type=int, default=1, help="Codex: max functions per call")
-    r.add_argument("--batch-bytes", type=int, default=0, help="Codex: max bytes of original code per call (0: off)")
-    r.add_argument("--batch-max", type=int, default=300, help="only functions up to N bytes are batched")
+    r.add_argument("--only")
+    r.add_argument("--module", help="comma list of module ids/names (tools/modules.py list)")
+    r.add_argument("--backend", choices=["codex", "claude"], default="codex")
+    r.add_argument("--codex-model", default="gpt-6.1-sol")
+    r.add_argument("--claude-model", default="sonnet")
     r.add_argument("--dry", action="store_true", help="write to work/ab/<backend>/, no smoke/commit/status")
     r.add_argument("--no-smoke", action="store_true")
     r.add_argument("--evidence", type=int, default=3, help="evidence requests per function (tools/evidence.py)")
     r.add_argument("--evidence-over", type=int, default=150, help="offer evidence requests above N bytes")
-    r.add_argument("--review-over", type=int, default=100, help="Codex-review DeepSeek outputs above N bytes (-1: off)")
+    r.add_argument("--review-over", type=int, default=150, help="Codex reviews Claude answers above N bytes (-1: off)")
     l = sub.add_parser("lanes", help="continuous grunting: one lane, size tiers S/M/L/X each with its own model ladder")
     lane_args(l)
     w = sub.add_parser("wave", help="one module, the whole loop: types first, produce, verify, review, link test")

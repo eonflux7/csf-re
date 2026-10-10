@@ -6,7 +6,7 @@ Writes db/rtti.json. Pure PE parsing, no IDA needed.
 import json, os, struct, subprocess, sys
 import pefile
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 EXE = os.path.join(ROOT, "work", "pc", "CommXPC.exe")
 OUT = os.path.join(ROOT, "db", "rtti.json")
 

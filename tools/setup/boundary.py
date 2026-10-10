@@ -2,10 +2,10 @@
 """Library boundary API: lib functions called directly from game code -> export/boundary_api.json
 ({lib: [ea hex, ...]}, plus export/boundary_callers.json {ea: [game caller eas]})."""
 import collections, json, os, sys
-sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from triage import load_csv
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 def main():

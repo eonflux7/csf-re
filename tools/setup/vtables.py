@@ -11,7 +11,7 @@ Writes db/vtables.json (derived, but committed: it is the anchor list for type w
 import json, os, re, struct, collections
 import pefile
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 pe = pefile.PE(os.path.join(ROOT, "work", "pc", "CommXPC.exe"), fast_load=True)
 base = pe.OPTIONAL_HEADER.ImageBase
 img = pe.get_memory_mapped_image()

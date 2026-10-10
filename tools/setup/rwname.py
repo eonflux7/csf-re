@@ -2,7 +2,7 @@
 """Name the RenderWare boundary API (RW functions called by game code) with an LLM, bottom-up.
 
 Usage:
-  rwname.py run [--n N] [--jobs 8] [--only ea,ea] [--redo] [--backend codex|deepseek|claude] [--model M]
+  rwname.py run [--n N] [--jobs 8] [--only ea,ea] [--redo] [--backend codex|claude] [--model M]
   rwname.py dedupe                 re-ask name collisions jointly (one prompt per group)
   rwname.py report                 conflicts / low confidence
   rwname.py apply [--min 0.6]      write accepted names into db/functions.csv (name_src=rwname)
@@ -12,11 +12,11 @@ Packet: own pseudocode (RwEngineInstance substituted), callee names/snippets, ad
 (RW compiles one source file's functions contiguously), strings, and game-side call sites.
 """
 import argparse, collections, concurrent.futures as cf, json, os, re, sys
-sys.path.insert(0, os.path.dirname(__file__))
-from grunt import load_key, ask
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from grunt import ask
 from triage import load_csv, save_csv
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(ROOT, "db", "rw_names.jsonl")
 
 SYSTEM = """You identify functions of a statically linked RenderWare Graphics 3.7 (Criterion, 2004-2005; D3D9
@@ -154,7 +154,7 @@ def run(a):
     targets = order(targets, F)[: a.n]
     eas_sorted = sorted(F)
     idx = {e: i for i, e in enumerate(eas_sorted)}
-    key = load_key() if a.backend == "deepseek" else None
+    key = None
     # dependency queue (no waves): a function starts once its callees within the target set have answers
     tset, done, inflight = set(targets), set(), {}
     pending = list(targets)
@@ -204,7 +204,7 @@ def dedupe(a):
     print(f"{len(groups)} collision groups")
     eas_sorted = sorted(F)
     idx = {e: i for i, e in enumerate(eas_sorted)}
-    key = load_key() if a.backend == "deepseek" else None
+    key = None
     names = {e: d["name"] for e, d in res.items() if d.get("name")}
 
     def ask_group(g):
@@ -271,11 +271,11 @@ def main():
     r.add_argument("--jobs", type=int, default=8)
     r.add_argument("--only")
     r.add_argument("--redo", action="store_true")
-    r.add_argument("--backend", choices=["codex", "deepseek", "claude"], default="codex")
+    r.add_argument("--backend", choices=["codex", "claude"], default="codex")
     r.add_argument("--model", default="gpt-6.1-sol")
     d = sp.add_parser("dedupe")
     d.add_argument("--jobs", type=int, default=8)
-    d.add_argument("--backend", choices=["codex", "deepseek", "claude"], default="codex")
+    d.add_argument("--backend", choices=["codex", "claude"], default="codex")
     d.add_argument("--model", default="gpt-6.1-sol")
     d.set_defaults(fn=dedupe)
     for name, fn in (("report", report), ("apply", apply)):

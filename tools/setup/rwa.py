@@ -4,7 +4,7 @@ component (calls within that range, undirected) containing the DirectSound/COM/w
 db/region_overrides.json as region `rwa` (lib; no librw counterpart -> needs its own replacement at cutover)."""
 import collections, json, os
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 LO, HI = 0x7C4FA0, 0x818000
 SEEDS = {0x7F0120, 0x7F0670, 0x7F2420, 0x7F2EA0, 0x7E0D10, 0x7E25E0, 0x7F78E0}  # DSOUND/ole32/winmm/GetForegroundWindow users
 

@@ -12,7 +12,7 @@ Usage: regions.py [min_run]   -> prints suggested runs; edit db/regions.yaml by 
 import collections, json, os, re, sys
 import yaml
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 F = sorted((json.loads(l) for l in open(os.path.join(ROOT, "export", "functions.jsonl"))), key=lambda f: f["ea"])
 by = {f["ea"]: f for f in F}
 RWI = 0x8b68c0

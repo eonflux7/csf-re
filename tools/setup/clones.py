@@ -9,7 +9,7 @@ import pefile
 from capstone import Cs, CS_ARCH_X86, CS_MODE_32
 from capstone.x86 import X86_OP_REG, X86_OP_MEM, X86_OP_IMM
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 pe = pefile.PE(os.path.join(ROOT, "work", "pc", "CommXPC.exe"), fast_load=True)
 base = pe.OPTIONAL_HEADER.ImageBase
 img = pe.get_memory_mapped_image()

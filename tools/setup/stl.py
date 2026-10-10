@@ -12,10 +12,10 @@ Writes db/stl.json ([{ea, kind, evidence, cluster}]) and sets module=stl in db/f
 (only where module is empty).
 """
 import collections, json, os, re, sys
-sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from triage import load_csv, save_csv
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 STRINGS = {  # string -> container kind of the function referencing it
     "vector<T> too long": "vector", "vector<bool> too long": "vector<bool>",
