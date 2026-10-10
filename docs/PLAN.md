@@ -23,41 +23,42 @@ by area) and decisions. Progress per module is generated, not written here (`too
 - Everything runs in WSL. IDA 9.3 Linux at `~/ida-pro-9.3`, driven headless via idalib from `.venv`.
 - IDB: `ida/CommXPC.exe.i64` (gitignored, derived). Exe copy: `work/pc/CommXPC.exe`.
 - Game builds (read-only originals): `/mnt/e/dev/csf-builds/`. Play copy for hook testing: `/mnt/e/dev/csf-play`.
+- Python deps in `.venv` beyond idalib: pefile, capstone, pyyaml, unicorn (tools/emudiff.py).
 - Toolchain: clang-cl 21 + lld-link, `i686-pc-windows-msvc`, MSVC SDK via `xwin`. x64dbg under `E:\dev\tools`.
 - Third-party sources/tools go in `work/tools/` (gitignored). Never leaked RenderWare SDK source; librw (MIT) only.
 - Models: grunts on their own Claude account (`~/.config/csf-re/claude-grunts`, Haiku/Opus via `claude -p`) and
-  Codex; the captain (naming) on the main account. Quota guards in lanes (`--claude-cap`, `--codex-cap`).
+  Codex; the captain (naming) on the main account. Quota guards and ladders: `db/lanes.yaml`.
 
 ## The loop (per module)
 
 One command runs it: **`tools/grunt.py wave <module>`** (`wave --next` ranks modules by centrality: undone
-bytes x how much other code calls into them). Each step also runs on its own.
+bytes x how much other code calls into them; `wave --waves -1` runs them in rank order). Each step also runs alone.
 
-1. **Types first** (wave prep, automatic): `captain.py family` names the module's unnamed classes (agentic Opus
-   session); `fields.py apply` pools the field names every grunt proposed (consensus per class+offset);
-   `rename_classes.py` + `fields.py fixbuild` rewrite src; then the IDB gets it all (`ida/sync.py`: names,
-   class structs, typed vtables, member/global types) and the module is re-decompiled, so packets show
-   `this->m_field` / `this->vName()`. Gauge: `fields.py coverage --module M`.
-   Between waves (whole program, ~45 min, no tokens): `tools/ida/propagate.sh` pushes what the binary proves
-   (cdecl arg counts from callers' cleanup) and what we know (`this`, parameter and member class pointers) into
-   the IDB, re-decompiles everything and lets Hex-Rays carry the types further (`this_class.py`); after
-   `classes.py`, re-run `plain_classes.py` (classes without vtable). Then `api.py build`, `gen_classes_h.py`.
-2. **Produce** (`grunt.py lanes --module M`): leaf-first selection, clone-aware; size tiers S/M/L with model
-   ladders (S: Haiku low x2 -> strong; M: Codex x2 -> Opus; L and hubs (>= 25 outside callers): Codex).
-   Packet = pseudocode + disasm + class fields + typed virtual calls + the canonical `bind as` line per callee.
-   `normalize()` auto-fixes (address macros, canonical names, includes); the **gate** checks includes, compile,
-   references vs the original (semcheck), `ret N`, ABI of every binding against the binary, no raw addresses.
-   Batches are linked and committed **pending** (never installed in a passing smoke yet).
-3. **Verify** (`verifier.py`, async; lanes start one group per 300 commits as a canary): its own detached tree at
-   HEAD, the verified baseline smoked alone first, then module groups of pending functions enabled on top
-   (FR01; `--full` adds menu tour + savegame), crash report -> culprit (else bisect via ini toggles), diff
-   mismatches -> quarantine (`queue/`, status todo). Every deploy keeps pending hooks off.
-4. **Review** (`review.py sample --module M`): Opus reads ~5% of the module's functions against the original;
-   the rejection rate is the module's quality estimate; rejections go to `queue/`.
-5. **Consolidate**: `api.py build` (automatic per commit: one name + signature per address, grunt names as votes),
-   `linktest.py` (what is left before the standalone exe links; shown by `status.py`).
+1. **Prep** (automatic, ~1 min): `ida/sync.py` pushes what db/ holds into the IDB and the module is re-decompiled.
+2. **Produce** (`grunt.py lanes --module M`): leaf-first selection, clone-aware; size tiers S/M/L/X with model
+   ladders, quota guards and stand-ins, all in **`db/lanes.yaml`**. Packet = pseudocode + disasm + class fields +
+   typed virtual calls + the canonical `bind as` line per callee. `normalize()` auto-fixes; the **gate** checks
+   includes, compile, references vs the original (semcheck), `ret N`, ABI of every binding, no raw addresses; Codex
+   reviews gate-passed Claude answers. Batches are linked and committed **pending**.
+3. **Install** (`verifier.py`, async; lanes start a canary group per 300 commits): its own detached tree, the
+   installed baseline smoked alone first, then the module's pending functions enabled on top; crash report ->
+   culprit (else bisect), diff mismatches -> quarantine (`queue/`). Every deploy keeps pending hooks off.
+4. **Consolidate**: `api.py build` (per commit), `linktest.py`; stop rule = quarantine rate or functions left pending.
 
-Between waves the orchestrator (Opus, interactive) works `queue/` and the backlog below.
+Evidence per done function, weakest to strongest, always reported by these words (`verify.py report`, status):
+**never ran** (static checks only, even if installed in a passing smoke) < **executed** (ran in a smoke) <
+**diffed** (results compared with the original's in game). "Installed" only means the hook was on in a passing smoke.
+
+Between wave runs (milestones, e.g. while quota resets):
+- **`tools/naming.py`**: the only place names change. Captain names classes, modules and placeholder functions;
+  field-name consensus; `rename_classes.py` + `fields.py fixbuild` rewrite src. Invariant: a rename changes no
+  code - every object's code hash is compared before/after; a build break or a changed hash puts everything back.
+- **`tools/ida/propagate.sh`** (~45 min, no tokens): types through Hex-Rays (`this`, parameters, members), then
+  `api.py build`, `gen_classes_h.py`.
+- **`tools/review.py sample`**: one rolling Opus sample over all done code, weighted to functions that never ran.
+- **`tools/emudiff.py`** (spike, see backlog): original bytes vs our object in an emulator, no game needed.
+
+The orchestrator (Opus, interactive) works `queue/` and the backlog below.
 
 ## Module board
 
@@ -81,27 +82,13 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
    tab table: hit / never run before); afterwards `verify.py ingest` records the hits.
 5. **Types for the next waves**: field names of CMenuScreen, TCharTask, TAiState, CCharWeaponFsm; the engine family
    0x860178 and the 0x82E598 task subfamily (captain family at wave prep covers unnamed classes).
-6. **Verification depth**: `verifier.py --full` over everything once (menu tour + savegame per group), then review
-   samples per module (`review.py sample`) to get a defect rate for the 1278 gate-only functions.
+6. **Evidence for the functions that never ran** (1917 of 3976, `status.py`): `emudiff.py` triage and hardening
+   (backlog, Verification), `review.py sample` (weighted to them), `verifier.py --full` over everything once.
 
 ## Backlog
 
 ### Loop & tooling
-- [x] Monitor: verifier and review lines, per-area progress table (Live), area column (Modules tab)
-- [x] Monitor tabs reworked: 1 Loop (stage pipeline from processes + grunt phase, NOW/NEXT/THEN, live stop rule,
-  past waves, side loops incl. diff tiers 1-3 and the smoke pool), 2 Game (evidence/diff tiers, linktest, pace, ETA),
-  3 Agents (orchestrator sessions, spend per model, forecast to finish; plan prices in ~/.config/csf-re/billing.yaml)
-- [x] Wave stop rule (quarantine > 3%, Opus rejects > 10%, > 25% of the module left unverified -> exit 3) and
-  `wave --waves N` with `verifier.py --baseline-only --full` between waves; reports in work/waves.jsonl
-- [x] Functions over 600 B in the waves: tier X (Opus high x2, then Codex xhigh; 2 in flight), `--max-size`
-  no longer caps; 639 functions / 697 KB were outside every wave
-- [x] Spurious register args (2026-10-09, tools/regargs.py): all 124 done functions with a Hex-Rays ebx/esi/edi
-  arg are right as plain C++ (590/604 program-wide are callee-save artifacts); two __regcall bridges rewritten; api,
-  packet NOTE and a gate rule use db/regargs.json
 - [ ] IDB: apply the corrected prototypes (db/regargs.json spurious regs dropped) in a sync.py stage + propagate
-- [x] Fidelity redo of 0x72DE90, 0x729F60, 0x7292C0, 0x538A50 (2026-10-09): their double arithmetic stays (it stands
-  in for x87's wider intermediate where an int is truncated from it: natural, not emulation); the volatile dead
-  loads went. New output: `volatile` is rejected by the gate and named in the prompt's fidelity rule
 - [ ] Rename pass guard: a wrapper whose target got implemented takes its real prototype; an int<->float flip of a
   parameter compiles silently in older callers (value conversion changes the bits). Diff old/new wrapper params
   in captain_prep and revert/flag on a flip with a non-literal argument (first one: 0x5266C0 +0x28, nullptr->0.0f)
@@ -111,29 +98,17 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
   HOOK_KEEP_ECX) + packet NOTE, then re-grunt them
 - [ ] 57 older src/auto files still use `volatile` (dead loads, uninitialized args passed on, forced global loads):
   rewrite at their next touch (gate now rejects them on re-grunt)
-- [x] Review / in-game lessons in the grunt prompt (2026-10-09): a curated "mistakes that crashed or failed review"
-  block (vptr vs vtbl[N/4], getter result as `this`, early pushes belong to the next call, CSF_AT value vs pointer,
-  `test al, al` callees, signed __ftol2) instead of review.py's keyword buckets; extend it as reviews add kinds
 - [ ] Re-test Sonnet for bulk function renames (captain functions) after waves name the callers
-- [ ] Opus pass over the 44 held-back RW names (`rwname.py report`): neighbour pairs given the same name
+- [ ] Opus pass over the 44 held-back RW names (`tools/setup/rwname.py report`): neighbour pairs given the same name
       (Set/Get, Width/Height, Int32/Int16) and low-confidence toolkit internals (RpTeam, Rt2d, RtWorldImport)
-- [x] Name the remaining ~80 unnamed modules just before their wave: automatic in wave prep since 2026-10-09 (captain family, then `captain modules` on the wave's unnamed modules, then grunts; below 0.7 confidence they stay unnamed)
 - [ ] Locate Xbox XBE code, diff vs PC for structure confirmation (optional)
 
-- [x] Gate: the original's constants and call order checked against Hex-Rays (semcheck.behaviour; 2/2358 false
-      flags); compile fix-its without a model call; named Win32 constants measured and dropped (62 call sites)
-- [x] Gate failure kinds logged per attempt (`fails`, `grunt.py cost`); packet: vtable references with the line
-      to write (dropped vtable stores were 23% of rejections), no this-class on vtable stubs that never read ecx
-- [x] IDA used fully: signatures for every function (api.json 2750 -> 21746 addresses; callee bind lines 40% ->
-      98%), Hex-Rays feedback loop, typed pseudocode (member accesses 0 -> 8630 on a 3000-function sample)
-- [x] The 4 ABI items the sharper ecx check found (bindings that dropped `this`): fixed, pending re-verification
-- [x] Classes through Hex-Rays (`ida/propagate.sh`): undone methods with a class 42% -> 71%; A/B: named members in
-      grunt output +43%, guesses -33%, pass rate and tokens flat (`CSF_AB_ARM`, `CSF_PACKET_LEGACY` for re-runs)
+
+- [ ] Run `tools/naming.py` at the next milestone (first full run with the captain steps; then propagate.sh)
+- [ ] The in-lane Codex review after the sharper prompt (2026-10-10): re-read 15 rejections; 10 of 14 were not
+  behavior before (load order, INT_MIN, x87, phantom edi)
 
 ### Types & structure
-- [x] Globals holding class instances / pointers, return values and stack objects passed as `this` typed through
-      Hex-Rays (export_abi `arg0_src` g/r/l, arg_types.json, sync.py): 39 globals, 23 return values, 231 stack
-      objects. Small effect (members +0.4%); returns need >= 2 agreeing callers (an allocator got typed from one)
 - [ ] Unclassed methods left (29% of undone ones): what remains comes from lookups through containers / tables
       (untyped element pointers); needs element types of STL instances (db/stl.json) or table globals
 - [ ] Member pointer types into src/types/auto_classes.h too (IDB only now: 227 members): needs a build check per
@@ -147,22 +122,9 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
 - [ ] Typed returns for virtual wrappers that return class pointers (now void*: header order)
 
 ### Verification
-- [x] Diff: copies of `this` and contained callees (750 -> 788 functions); snapshot 16 KiB, 8 globals
-- [x] Diff tier 3: functions whose callees have side effects (record the original's callee calls, replay them for
-      ours; callee writes into `this` and thread safety are the hard parts; needs live iteration) - v2 2026-10-09
 - [ ] AI combat coverage: the T* AI tasks and GUI input handlers only run in real play. Needs savegames taken in
       combat (user playtest) -> `CSF_SWEEP_SAVES="1.sav 2.sav ..."`, then `verifier.py --full`
 - [ ] Executed coverage: 1278 done functions have only passed static checks (`verify.py report`)
-- [x] Smoke pool (2026-10-09): 8 play copies (`tools/pool.py`, `playcopy.py`), several instances at once (mutex
-      renamed in the DLL), fail-fast on CRASH, bisect runs capped at 2x the crash time + k-way across the pool,
-      verifier starts side by side; default smoke 15 -> 30 s (adaptive end opt-in)
-- [x] `9.sav` crashes ~40 s after load on the verified baseline: 0x461750 sized a 3-entry (0xE4 B) stack block from
-      Hex-Rays' split `v19[38]` + `v20` (39 dwords); the callee's init overran it. Fixed (2026-10-09)
-- [x] 0x42D3C0 HudQueryWidgetValue mismatches 200/200: returned eax where the original returns st0 (0x70DDF0 is the
-      shared `return 0.0f` stub). Fixed + gate rejects int for st0 returns (api.returns_fpu, found 0x6FD180 too);
-      the diff table compares st0 for them; `baseline()` quarantines MISMATCH lines too (2026-10-09)
-- [x] Stack buffer sizes (0x461750): packets list every stack object whose address the original passes to a callee,
-      with its room (to the next such object / the frame end) and the offsets accessed directly inside it (2026-10-09)
 - [ ] Gate gap: a call through an indirect forwarder (0x4F5170 `mov ecx, [ecx+4]; jmp [eax+0x20]`) must pass the
       stack args the target pops; Hex-Rays attaches an early-pushed arg to the wrong call (0x45B570, 0x42DF80). The pop
       is exact from the ret N of the slot's implementations in the class of the member at +4: needs member pointer
@@ -175,6 +137,16 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
       0x71DF00, 0x722A40, 0x4F50D0, 0x542850, 0x6D2BE0; regargs.callers_keep_ecx with writes_ecx): check each,
       extend HOOK_KEEP_ECX to an "ecx out" variant if real
 - [ ] Use the user's saves 2..24 (2026-10-09) in `--full` (`CSF_VERIFY_SAVES`) once each is known to pass alone
+
+- [ ] **emudiff triage**: fix 0x544C60 (passes src+0x1C to the string assign; the original passes src, then adds)
+      and 0x42DA20 (binds 0x6C8620 as int, the original tests `al`); read the other ~45 DIFFs of the 600-function
+      sample (`emudiff.py --tier gate --n 300`, `--tier executed --n 300`), 0x728160, 0x53D8B0 (harness suspect)
+- [ ] **emudiff to gate grade**, in this order (each is a measured false-alarm or blind spot of the spike):
+      eax of functions whose callers ignore it (difftable knows them); ecx only for callees that read it
+      (regargs); what a virtual call pops (IDA's guess is wrong at 0x533D90: needs receiver types);
+      inconclusive runs (10% of small, half of large functions: int-typed values that are pointers; type inputs
+      from class layouts). Then: an `emulated` evidence tier in the ledger, a gate step for new functions, and
+      only after that retire parts of semcheck and skip diff tier 3 v3
 
 ### Cutover
 - [ ] Allocator shim (operator new/delete -> game heap; delete = sub_691110), rw.h shim
@@ -216,6 +188,9 @@ typed virtual calls, field consensus, fidelity rule, Opus review sampling, `wave
 - 2026-10-08 (user): **use IDA fully and treat it as solid**: what IDA computes from the binary (prototypes,
   call-site arguments, stack deltas, xrefs) is the source of truth, refined only by exact binary facts (`ret N`,
   callers' cleanup, an entry-block register read); our knowledge goes back into the IDB and Hex-Rays re-derives.
+- 2026-10-10 (user): **simpler loop**: names never change inside a wave (tools/naming.py at milestones, code-hash
+  invariant); "types first" now means structure from the binary (propagate.sh), not names. Review is one rolling
+  sample, not a wave stage. Model policy is db/lanes.yaml. One word per evidence level.
 - 2026-10-08: **fidelity is behavioral**: natural expressions, no emulation of x87 rounding or register/stack
   artifacts; the in-game diff tolerates last-bit float differences where the original stores floats.
 

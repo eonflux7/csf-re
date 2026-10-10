@@ -913,3 +913,40 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
     flake, first sighting. A failed regression check stops `--waves`; restarted by hand.
   - Codex stand-in for S/M (when reserved/paused) is Sonnet medium now (user). Quota ran out at wave 10
     (gfx_matrix: 60 deferred); the loop would have swept every module deferring everything: stopped by hand.
+
+## 2026-10-10 — Loop simplified (user); emulated diff spike
+
+- **Names out of the wave.** The wave-prep rename pass had failed every wave, needed five fixes in two days and
+  miscompiled once (0x50D4C0); the A/B showed names don't move the pass rate. `tools/naming.py` now does all naming
+  at milestones under one invariant: every object's code hash (verify.code_hash) is the same before and after, or
+  src/ and the names are put back. Negative control: a pure rename keeps the hash, a vtable slot change is caught.
+  First run (no captain): header regenerated (2 wrapper names had drifted), 3995 objects identical.
+- **Review**: one rolling sample weighted to functions that never ran (gate 5x, diffed 0.2x), report per evidence
+  tier; out of the wave and the stop rule (3-14 reviews per module said nothing about the module).
+- **In-lane Codex review, 14 rejections read**: 4 real (dropped argument 0x45F560, wrong virtual slot 0x71CBF0,
+  undersized stack block 0x4ED030, ecx argument 0x71A510), 10 not behavior by our own fidelity rule (load/store
+  order without a call between, INT_MIN, x87 precision, NaN order, and 3x the phantom edi of 0x42F4F0, which pushes
+  grunts to the __regcall bridge that crashed). Kept; REVIEW_SYSTEM now excludes those kinds.
+- **Wording**: "installed in a passing smoke" is not "verified". 1917 of 3976 done functions never ran.
+- **grunt.py** 1882 -> 1621 lines: DeepSeek client, batching, `run` reduced to redo/A-B; 21 policy flags ->
+  db/lanes.yaml. Setup-era scripts -> tools/setup/.
+- **tools/emudiff.py (spike)**: Unicorn runs the original's bytes and our COFF object from the same state (exe
+  image mapped, everything else filled deterministically on first touch, 8 input profiles); outside calls are
+  mocked events; compared: call sequence + arguments + ecx, final non-stack memory, eax/st0, esp, callee-saves.
+  `tools/ida/export_calls.py` exports what each call site pops (export/calls.json, 76145 sites, 2 s).
+  - Speed: 426 functions in ~35 s, no game.
+  - Against the in-game diff (426 diffed functions): 410 same, 15 inconclusive, 1 DIFF (0x728160: 4th cdecl
+    argument uninitialized where the original pushes ecx; not judged).
+  - Known bugs, every historical revision compiled (20 functions): buggy revision flagged and fixed one clean for 6
+    (0x547CB0 vtable value, 0x435F80 by-value string, 0x534B70 vptr vs vtbl[0], 0x45AD20 getter result as this,
+    0x431950 shifted arguments, 0x539340 callee-saves); 6 inconclusive in every profile (0x462580, 0x431F80,
+    0x45DFE0, 0x4624E0, 0x461750, 0x45BBA0); 7 current revisions still flagged, of which looked at: 0x42DA20 real
+    (binds 0x6C8620 as int, the original tests `al`), 0x42D3C0 false (ecx passed to the shared `return 0.0f` stub),
+    0x533D90 false (IDA's pop count at a virtual call is the old wrong belief); 0x50D4C0, 0x42DF80, 0x4350C0,
+    0x42FF80 not judged.
+  - Samples of 300: never-ran tier 247 same / 30 inconclusive / 23 DIFF; executed tier 238 / 38 / 24. Of 3 looked
+    at: 0x544C60 real (MenuSaveGame_CopySaveEntry passes src+0x1C to the string assign; the original passes src and
+    adds 0x1C afterwards; gate-passed, never ran), 0x52C6A0 false (undefined eax in both), 0x53D8B0 unclear
+    (naked asm helper; possibly the loader).
+  - Verdict: a cheap new evidence source that already found defects nothing else did; not a replacement for
+    semcheck or the in-game diff yet (false-alarm kinds and the inconclusive share are listed in the backlog).

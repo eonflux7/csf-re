@@ -13,7 +13,7 @@ backlog), pending/verified counts and the link-test line, and any open decisions
    of `docs/JOURNAL.md`.
 2. Take the first current-focus item (or a better one if findings justify it — the plan is allowed to change;
    update PLAN.md when it does). Module work is one command: `tools/grunt.py wave <module>` (`wave --next`
-   ranks modules). Production never waits on the game: `tools/verifier.py` verifies pending functions apart.
+   ranks modules); waves never rename (names: `tools/naming.py` between wave runs). Production never waits on the game: `tools/verifier.py` verifies pending functions apart.
 3. Work in steps; give the user a brief one-line update before each major step.
 4. After each completed item: tick it in the PLAN.md backlog (or update current focus), add a short dated JOURNAL entry for anything learned,
    commit (`git add -A && git commit`). Commit messages end with the Co-Authored-By trailer.
@@ -25,11 +25,13 @@ backlog), pending/verified counts and the link-test line, and any open decisions
   it computes from the binary: `export_abi.py` (Hex-Rays prototypes, call-site args, caller cleanup) feeds
   `api.py`; `propagate.sh` is the feedback loop (push facts/types -> re-decompile -> this_class.py derives more);
   `export_pseudo.py` writes the typed pseudocode packets show. Precedence: exact binary facts > Hex-Rays > heuristics.
-- `tools/` the loop: grunt.py (lanes, wave), verifier.py + verify.py (in-game verification, ledger), review.py
-  (Opus samples), captain.py + fields.py (types/names), this_class.py + plain_classes.py + vtbl_types.py (classes,
-  `this`/parameter/member types, typed vtables), api.py + addrfix.py + linktest.py (cutover contract),
-  gate.py + semcheck.py + controls.py (static checks), pool.py + playcopy.py (parallel smoke instances),
-  status.py, monitor.py. Setup-era: triage.py, regions.py, rtti.py.
+- `tools/` the loop: grunt.py (lanes, wave; model policy in `db/lanes.yaml`), verifier.py + verify.py (in-game
+  install/diff, evidence ledger), gate.py + semcheck.py + controls.py (static checks), emudiff.py (emulated diff
+  vs the original, spike), api.py + addrfix.py + linktest.py (cutover contract), pool.py + playcopy.py (parallel
+  smoke instances), status.py, monitor.py. Between wave runs: naming.py (the only place names change: captain.py +
+  fields.py + rename_classes.py under a code-hash invariant), ida/propagate.sh, review.py (rolling Opus sample);
+  this_class.py + plain_classes.py + vtbl_types.py (classes, `this`/parameter/member types, typed vtables).
+  `tools/setup/`: one-shot scripts of the setup phase (regions, rtti, rwname, stl, clones, ...).
 - `src/globals.h`: everything original is referenced by address (CSF_FUNC/GLOBAL/STR/VTBL/ADDR_*); the standalone
   build resolves by address, so never write an original address as a bare number.
 - `db/` source-of-truth knowledge: regions.yaml, functions.csv, (globals.yaml, modules.yaml, types/).
