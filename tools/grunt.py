@@ -1456,7 +1456,7 @@ def waves(args):
 
 
 def cost(_):
-    """Token totals per writing backend, and how often the Codex review of DeepSeek outputs rejected one (logged
+    """Token totals per writing backend, and how often the in-lane Codex review rejected an answer (logged
     since the `reviews` field exists): if it almost never rejects, --review-over -1 saves Codex quota."""
     by = collections.defaultdict(lambda: dict(n=0, ok=0, prompt=0, cached=0, completion=0))
     reviewed = rejected = rev_fns = rev_fns_rej = 0

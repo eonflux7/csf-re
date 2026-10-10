@@ -10,8 +10,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def checklist():
     text = open(os.path.join(ROOT, "docs", "PLAN.md")).read()
-    head = "## Backlog" if "## Backlog" in text else "## Phase checklist"  # areas with checkboxes (2026-10-08: loop)
-    sect = text.split(head, 1)[1].split("\n## ", 1)[0]
+    sect = text.split("## Backlog", 1)[1].split("\n## ", 1)[0]  # areas (###) with checkboxes
     phase, out, nxt = None, [], []
     for line in sect.splitlines():
         if line.startswith("### "):
@@ -91,7 +90,7 @@ def main():
         print("\n== Recent commits\n" + "".join("  " + l + "\n" for l in log.splitlines()))
     open_dec = open(os.path.join(ROOT, "docs", "PLAN.md")).read().split("## Open decisions", 1)
     if len(open_dec) > 1:
-        n = len(re.findall(r"^\d+\. ", open_dec[1], re.M))
+        n = len(re.findall(r"^(?:\d+\.|-) ", open_dec[1], re.M))
         print(f"== Open decisions for the user: {n} (docs/PLAN.md)")
 
 

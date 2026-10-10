@@ -955,3 +955,18 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   CSF_PSEUDO_DIR, CSF_CLASS_VIEW, CSF_CODEX_SLIM); the csv statuses `verified` / `escalated` never existed in data.
   Kept on purpose: the Codex CLI transport (fallback if the direct endpoint changes) and captain's batch `classes`
   job (not in the loop, but not shown dead). 10 merged branches and 8 worktrees removed; .xwin-cache untracked.
+
+## 2026-10-11 — Docs and leftovers audit
+
+- PLAN.md checked against status.py, tools/, queue/ and db/: the finished "backlog crush" focus removed (its
+  queue 2 / pending 0 were long wrong: 25 / 3), the escalation queue is a focus item, the tier 3 decision moved to
+  Decisions; backlog: the three "what a call pops" items merged, the two savegame items merged, tier 3 removal is
+  its own item with its footprint, counts that status.py prints dropped (they had drifted: globals 346 -> 757,
+  vtables 81 -> 140). "Module board" folded into the intro, Foundations shortened, decisions in date order.
+- status.py counted numbered open decisions only (the one decision is a bullet: it printed 0).
+- Removed: tools/setup/rtti.py + db/rtti.json (the game has no RTTI; nothing read the file), tools/sweep.sh (no
+  callers; `verifier.py --full` with CSF_VERIFY_SAVES does it), the DeepSeek balance panel (limits.py, monitor.py),
+  canary wording (verifier.py, monitor_loop.py). Kept: the deepseek / flash / deep mappings in the monitor and the
+  gate's failure kinds (work/grunt_log.jsonl still has 1364 such rows), tools/classinfo.py (the captain uses it),
+  the manual IDA helpers (decomp.py, decomp_err.py, check_types.py, init_db.py: only tools/ida/ touches the IDB).
+- Found, not fixed: the monitor's Loop tab still shows captain naming as wave stages (backlog).

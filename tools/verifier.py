@@ -18,7 +18,7 @@ Usage:
   verifier.py                  all pending, groups of --group (default 150), FR01 smoke per group
   verifier.py --full           + menu tour + savegame per group (~3 min per group)
   verifier.py --module m53A0F0,gui_listbox    only these modules' pending functions
-  verifier.py --groups 1       one group and stop (the lanes canary runs this in the background)
+  verifier.py --groups 1       one group and stop
   verifier.py --dry            show the groups, run nothing
   verifier.py --baseline-only --full   regression check: the verified baseline alone (menu tour + savegame),
                                culprits quarantined; `grunt.py wave --waves` runs it between waves

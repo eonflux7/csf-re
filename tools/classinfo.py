@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Evidence sheet for naming a class (Phase 2): hierarchy, size, ctors/dtors and who calls them (with the strings
+"""Evidence sheet for naming a class (tools/captain.py): hierarchy, size, ctors/dtors and who calls them (with the strings
 those callers reference, two levels up), named library/boundary callees of its own methods (RW, CRT, ...), strings
 of its own methods, vtable slot map from db/vtables.json (inherited/overridden/new, done/named), field names proposed by grunts, and data tables that point at
 its methods.

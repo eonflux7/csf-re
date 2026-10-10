@@ -123,11 +123,10 @@ def loop_state():
         mode, stage = "verifier", "verify"
     elif rev:
         mode, stage = "review", "review"
-    canary = bool(ver and stage == "produce")
     thresholds = {k: float(_opt((wave or parent or {"argv": []})["argv"], k, v)) for k, v in STOP_DEFAULTS.items()}
     n_waves = int(_opt(parent["argv"], "--waves", "0")) if parent else 0
     return dict(P=P, find=find, parent=parent, wave=wave, lanes=lanes, ver=ver, rev=rev, g=g, phase=phase,
-                stage=stage, mode=mode, mods=mods, spec=spec, canary=canary, thresholds=thresholds,
+                stage=stage, mode=mode, mods=mods, spec=spec, thresholds=thresholds,
                 n_waves=n_waves, t0=time.time() - (wave or parent or lanes or {"et": 0})["et"])
 
 
@@ -222,8 +221,7 @@ def _stage_details(L, S, Z, rank):
     if Z["done"]:
         D["verify"].append(Text(f"verified {Z['ok']}/{Z['done']}", style="green" if Z["ok"] == Z["done"] else "yellow"))
     if isinstance(V, dict) and V["alive"]:
-        D["verify"].append(Text(("canary: " if L["canary"] else "") + (V["phase"] or "smoking"), style="bold cyan",
-                                no_wrap=True, overflow="ellipsis"))
+        D["verify"].append(Text(V["phase"] or "smoking", style="bold cyan", no_wrap=True, overflow="ellipsis"))
     if isinstance(V, dict) and V["pending"] is not None:
         D["verify"].append(Text(f"pending (all) {V['pending']}", style="yellow" if V["pending"] else "dim"))
     if Z["done"]:
@@ -270,8 +268,7 @@ def _now_next(L, Z, rank):
                                         if ph.startswith("captain") else "IDB sync + re-decompile of open functions")
         nxt = f"produce: grunt lanes over {total_left} open functions of {label}"
     elif s == "produce":
-        now = f"Producing {label}: grunt lanes ({ph or 'starting'}), {Z['done']}/{Z['fns']} functions done" + \
-              ("; verifier canary group runs alongside" if L["canary"] else "")
+        now = f"Producing {label}: grunt lanes ({ph or 'starting'}), {Z['done']}/{Z['fns']} functions done"
         nxt = (f"verify: verifier.py --module {L['spec']} (baseline, then the module's pending functions in game)"
                if L["mode"] in ("wave", "waves") else "lanes end at --total; then run verifier.py")
     elif s == "verify":

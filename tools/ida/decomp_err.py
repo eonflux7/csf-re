@@ -1,4 +1,4 @@
-"""Why Hex-Rays can't decompile some functions: export_abi.py decomp_err.py ea [ea...] (read-only)."""
+"""Why Hex-Rays can't decompile some functions: decomp_err.py ea [ea...] (read-only)."""
 import os, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from common import open_db, close_db

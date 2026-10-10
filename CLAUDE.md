@@ -27,14 +27,15 @@ backlog), pending/verified counts and the link-test line, and any open decisions
   `export_pseudo.py` writes the typed pseudocode packets show. Precedence: exact binary facts > Hex-Rays > heuristics.
 - `tools/` the loop: grunt.py (lanes, wave; model policy in `db/lanes.yaml`), verifier.py + verify.py (in-game
   install/diff, evidence ledger), gate.py + semcheck.py + controls.py (static checks), emudiff.py (emulated diff
-  vs the original, spike), api.py + addrfix.py + linktest.py (cutover contract), pool.py + playcopy.py (parallel
+  vs the original, offline), api.py + addrfix.py + linktest.py (cutover contract), pool.py + playcopy.py (parallel
   smoke instances), status.py, monitor.py. Between wave runs: naming.py (the only place names change: captain.py +
   fields.py + rename_classes.py under a code-hash invariant), ida/propagate.sh, review.py (rolling Opus sample);
   this_class.py + plain_classes.py + vtbl_types.py (classes, `this`/parameter/member types, typed vtables).
-  `tools/setup/`: one-shot scripts of the setup phase (regions, rtti, rwname, stl, clones, ...).
+  `tools/setup/`: one-shot scripts of the setup phase (regions, rwname, stl, clones, ...).
 - `src/globals.h`: everything original is referenced by address (CSF_FUNC/GLOBAL/STR/VTBL/ADDR_*); the standalone
   build resolves by address, so never write an original address as a bare number.
-- `db/` source-of-truth knowledge: regions.yaml, functions.csv, (globals.yaml, modules.yaml, types/).
+- `db/` source-of-truth knowledge: regions.yaml, functions.csv, globals.yaml, modules.yaml, types/, lanes.yaml.
+- `queue/` escalations for the orchestrator (one file per function: gate, smoke or review failure).
 - `export/` derived from IDB (gitignored); regenerate with `tools/ida/export_meta.py`.
 - `work/` gitignored scratch: exe copy, extracted discs, third-party tools (`work/tools/`).
 - Original game builds (read-only): `/mnt/e/dev/csf-builds/`.

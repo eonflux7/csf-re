@@ -20,7 +20,7 @@ import argparse, collections, csv, glob, json, os, re, subprocess, time, urllib.
 from datetime import datetime, timezone
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from limits import codex_usage, codex_homes, codex_label, deepseek_balance  # noqa: E402
+from limits import codex_usage, codex_homes, codex_label  # noqa: E402
 from grunt import CLAUDE_GRUNTS, claude_usage  # noqa: E402
 
 from rich.console import Group
@@ -814,10 +814,6 @@ def panel_costs(st=None, recent=()):
         lab = codex_label(home)
         body += account("Codex" if lab == "codex" else lab, "bold magenta", lab,
                         cached(f"usage_{lab}", 60, lambda h=home: codex_usage(h)))
-    db_ = cached("ds_balance", 300, deepseek_balance)
-    if isinstance(db_, tuple):
-        bal = "  ".join(f"{amt} {cur}" for cur, amt in db_[0]) or "?"
-        body.append(Text(f"DeepSeek direct (grunt run only) balance {bal}", style="dim", no_wrap=True, overflow="ellipsis"))
     tot = (st or {}).get("tokens") or {}
     if tot:
         t = Text(" grunt run: ", style="dim")
