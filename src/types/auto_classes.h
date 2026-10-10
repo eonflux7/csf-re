@@ -18646,8 +18646,8 @@ struct CDummyMesh {
     uint32_t m_dummiesEnd;
     uint32_t m_dummiesCapacity;
     // virtual calls through this class's own vtable slots (tools/gen_classes_h.py vmethods)
-    void** vSlot0(char a2) { return reinterpret_cast<void**(__fastcall*)(void*, void*, char)>(vtbl[0x0 / 4])(this, nullptr, a2); }  // slot +0x0 -> 0x007687B0
-    char vSlot4(uint8_t* a2, int a3) { return reinterpret_cast<char(__fastcall*)(void*, void*, uint8_t*, int)>(vtbl[0x4 / 4])(this, nullptr, a2, a3); }  // slot +0x4 -> 0x00768E30
+    void** vDestroy(char freeFlag) { return reinterpret_cast<void**(__fastcall*)(void*, void*, char)>(vtbl[0x0 / 4])(this, nullptr, freeFlag); }  // slot +0x0 -> 0x007687B0
+    char vLoadDummiesIfNonZero(uint8_t* a2, int a3) { return reinterpret_cast<char(__fastcall*)(void*, void*, uint8_t*, int)>(vtbl[0x4 / 4])(this, nullptr, a2, a3); }  // slot +0x4 -> 0x00768E30
 };
 static_assert(sizeof(CDummyMesh) == 0x14);
 static_assert(offsetof(CDummyMesh, m_dummiesBegin) == 0x8);
