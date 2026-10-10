@@ -193,8 +193,7 @@ def reset(eas, why):
 
 def done_rows():
     with open(os.path.join(ROOT, "db", "functions.csv")) as f:
-        return {r["ea"].lower().replace("0x", "").zfill(8): r for r in csv.DictReader(f) if r["status"] in
-                ("done", "verified")}
+        return {r["ea"].lower().replace("0x", "").zfill(8): r for r in csv.DictReader(f) if r["status"] == "done"}
 
 
 def tiers(hashes=None):

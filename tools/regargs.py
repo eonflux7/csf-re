@@ -172,7 +172,7 @@ def main():
     if cmd == "write":
         json.dump({f"{ea:08x}": v for ea, v in sorted(res.items())}, open(OUT, "w"), indent=0)
         print(f"{OUT}: {len(res)} functions with Hex-Rays ebx/esi/edi args")
-    done = {ea for ea, r in db.rows.items() if r["status"] in ("done", "verified")}
+    done = {ea for ea, r in db.rows.items() if r["status"] == "done"}
     rows = [(ea, v) for ea, v in res.items() if "--done" not in sys.argv or ea in done]
     n_sp = sum(1 for _, v in rows if v["spurious"] and not v["real"])
     n_real = sum(1 for _, v in rows if v["real"])

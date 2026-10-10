@@ -40,7 +40,7 @@ bytes x how much other code calls into them; `wave --waves -1` runs them in rank
    typed virtual calls + the canonical `bind as` line per callee. `normalize()` auto-fixes; the **gate** checks
    includes, compile, references vs the original (semcheck), `ret N`, ABI of every binding, no raw addresses; Codex
    reviews gate-passed Claude answers. Batches are linked and committed **pending**.
-3. **Install** (`verifier.py`, async; lanes start a canary group per 300 commits): its own detached tree, the
+3. **Install** (`verifier.py`, the wave's verify step; also runs alone next to lanes): its own detached tree, the
    installed baseline smoked alone first, then the module's pending functions enabled on top; crash report ->
    culprit (else bisect), diff mismatches -> quarantine (`queue/`). Every deploy keeps pending hooks off.
 4. **Consolidate**: `api.py build` (per commit), `linktest.py`; stop rule = quarantine rate or functions left pending.
@@ -76,8 +76,10 @@ Generated: `tools/status.py --modules` (bytes done per module), `tools/grunt.py 
    12% -> 22% by bytes, no stop rule hit); paused at gfx_matrix (all 60 deferred: grunts' Claude 95%, both Codex
    logins >= 90%). Resume with `wave --waves -1` once the 5h windows reset (`wave --next`: gfx_matrix,
    mp_spawn_points, bdd_character_defs, game_config, ...).
-3. **Diff tier 3 v3**: indirect/virtual calls (862 functions blocked on them). v2 is merged; `T3 ... inconclusive`
-   runs never count as compared and are now counted in csf_diff_summary.txt and the ledger (`inconclusive`).
+3. **emudiff instead of diff tier 3 v3** (2026-10-10, user): no v3. Tier 3 (record/replay in game) cost
+   hook/replay.cpp + half of difftable.py and a row of harness crashes for ~90 functions; tools/emudiff.py makes the
+   same comparison offline. Tiers 1/2 stay (the only ground truth from the real game); replay.cpp is removed once
+   emudiff's false alarms are fixed (backlog, Verification).
 4. **Manual playtest at ~25% of game code** (user; at 22% on 2026-10-10, ~2 waves away): the monitor shows live coverage (Progress `game` line, Areas
    tab table: hit / never run before); afterwards `verify.py ingest` records the hits.
 5. **Types for the next waves**: field names of CMenuScreen, TCharTask, TAiState, CCharWeaponFsm; the engine family

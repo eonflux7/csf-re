@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Set name/status/module of functions in db/functions.csv.
 
-Usage: fn.py <ea> [name=X] [status=todo|done|verified|escalated|lib] [module=M] [src=opus|agent|user|...]
+Usage: fn.py <ea> [name=X] [status=todo|done|lib] [module=M] [src=opus|agent|user|...]
 """
 import os, sys
 sys.path.insert(0, os.path.dirname(__file__))

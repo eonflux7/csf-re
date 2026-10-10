@@ -9,9 +9,6 @@ from capstone import Cs, CS_ARCH_X86, CS_MODE_32
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _pe = None
-# A/B of the packet context (grunt.py run --dry, CSF_AB_ARM): the packet as it was before the 2026-10-08 groundwork
-# (no vtable section, no this-class fallback, untyped pseudocode via CSF_PSEUDO_DIR, old api via CSF_API_JSON)
-LEGACY = bool(os.environ.get("CSF_PACKET_LEGACY"))
 
 
 class DB:
@@ -49,8 +46,6 @@ class DB:
         call sites: tools/this_class.py)."""
         owners = self.owner.get(ea, [])
         if not owners:
-            if self._this is None and LEGACY:
-                self._this = {}
             if self._this is None:
                 import this_class
                 self._this = this_class.load()
@@ -111,7 +106,7 @@ def ret_bytes(ea, size):
 
 
 def pseudo(ea):
-    p = os.path.join(os.environ.get("CSF_PSEUDO_DIR") or os.path.join(ROOT, "export", "funcs"), f"{ea:08x}.c")
+    p = os.path.join(ROOT, "export", "funcs", f"{ea:08x}.c")
     return open(p).read() if os.path.exists(p) else None
 
 
@@ -329,7 +324,7 @@ def build(db, ea, with_asm_limit=400):
     if mod and mod.get("name"):  # subsystem for Subsystem_Verb names of non-class functions
         out.append(f"Module: {mod['name']}" + (f" ({mod['note']})" if mod.get("note") else ""))
     vt = db.class_of(ea)
-    if vt and "__thiscall" not in proto and not LEGACY:
+    if vt and "__thiscall" not in proto:
         import api
         if not api.takes_reg(ea, db, "ecx"):  # a shared stub in a vtable (`ret 0x10`): no `this` at all
             out.append(f"Listed in {db.cls_name(vt)}'s vtable but never reads ecx: write it as a plain function "
@@ -342,20 +337,13 @@ def build(db, ea, with_asm_limit=400):
                    + f", size {c['size'] or 'unknown'}, base {db.cls_name(c['base']) if c['base'] else 'none'})")
         if vt in db.class_names:
             out.append(f"Role: {db.class_names[vt].get('why', '')}. Name your function {db.cls_name(vt)}_<Verb...>.")
-        if os.environ.get("CSF_CLASS_VIEW", "compact") == "compact":
-            chain, x = [], c["base"]
-            while x:
-                chain.append(db.cls_name(x))
-                x = db.classes.get(x, {}).get("base")
-            if chain:
-                out.append("Bases: " + " : ".join(chain))
-            out.append(compact_class(db, vt, ea, f["size"]))
-        else:
-            st = struct_text(db, vt)
-            if st:
-                out.append("Declared in types/auto_classes.h (DO NOT redefine; use as-is):\n```cpp\n" + st + "```")
-            if c["base"] and struct_text(db, c["base"]):
-                out.append("Base:\n```cpp\n" + struct_text(db, c["base"]) + "```")
+        chain, x = [], c["base"]
+        while x:
+            chain.append(db.cls_name(x))
+            x = db.classes.get(x, {}).get("base")
+        if chain:
+            out.append("Bases: " + " : ".join(chain))
+        out.append(compact_class(db, vt, ea, f["size"]))
     note = stl_note(ea)
     if note:
         out.append(note)
@@ -376,7 +364,7 @@ def build(db, ea, with_asm_limit=400):
     out.append("\n## Hex-Rays pseudocode (names substituted where known)\n"
                + ("Typed from our headers: `x->m_name` / `x->field_XXXX` are the members of types/auto_classes.h; "
                   "`x->vName(x, args)` is a virtual call: write `x->vName(args)` (the class's wrapper); "
-                  "`__vftable` is our `vtbl`.\n" if not LEGACY and re.search(r"->(v[A-Z]\w*|__vftable|m_\w+|field_[0-9a-fA-F]+)\b", src)
+                  "`__vftable` is our `vtbl`.\n" if re.search(r"->(v[A-Z]\w*|__vftable|m_\w+|field_[0-9a-fA-F]+)\b", src)
                   else "")
                + "```c\n" + substitute_names(db, src) + "\n```")
     if f["size"] <= with_asm_limit:
@@ -410,7 +398,7 @@ def build(db, ea, with_asm_limit=400):
                           if canon else f"proto: `{cproto}`")
                        + ("  NORETURN (throws/aborts): still call it on exactly the same "
                           "condition, even if the branch looks unreachable" if "__noreturn" in cproto else ""))
-    vs = vtable_refs(db, ea, f["size"]) if not LEGACY else []
+    vs = vtable_refs(db, ea, f["size"])
     if vs:  # constructor/destructor vtable stores were the most common semantic rejection (dropped as redundant)
         out.append("\n## Vtables referenced (each one must appear in your code, even a store overwritten right after: "
                    "base-class stores in a ctor/dtor chain are part of the behavior)\n" + "\n".join(vs))

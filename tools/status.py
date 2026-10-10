@@ -66,7 +66,7 @@ def main():
         print(f"  {'':32s} {'funcs':>6s} {'KB':>6s} {'named':>6s} {'done':>6s}  done%bytes")
         order = (lambda x: x[0].split()[0]) if by_module else (lambda x: -x[1]["bytes"])
         for k, a in sorted(agg.items(), key=order):
-            done_b = a["b_done"] + a["b_verified"]
+            done_b = a["b_done"]
             pct = f"{100 * done_b / a['bytes']:.1f}%" if k == "game" or by_module else "-"
             print(f"  {k:32s} {a['n']:6d} {a['bytes'] // 1024:6d} {a['named']:6d} {a['n_done']:6d}  {pct}")
     try:  # verification depth of src/auto (db/verify.json, filled by every SMOKE OK)

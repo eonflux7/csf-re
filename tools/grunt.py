@@ -329,8 +329,6 @@ def chat_codex_cli(model, messages, effort="high"):
     feats = [a for f in CODEX_OFF for a in ("-c", f"features.{f}=false")]
     feats += ["-c", f'model_instructions_file="{instr}"', "-c", "web_search=disabled",
               "-c", "include_environment_context=false", "-c", "include_permissions_instructions=false"]  # ~180 tokens
-    if os.environ.get("CSF_CODEX_SLIM") == "0":  # A/B: stock Codex harness, system prompt inlined
-        feats, convo = [], [sysp, "Answer directly from the packet below. Do not run commands or use tools."] + convo
     home = codex_pick()
     r = subprocess.run(["codex", "exec", "--ephemeral", "--skip-git-repo-check", "--ignore-user-config",
                         "-s", "read-only", "-m", model, "-c", f'model_reasoning_effort="{CODEX_EFFORT.get(effort, effort)}"',
@@ -755,7 +753,7 @@ def select(db, n, max_size, min_size=6, exclude=(), modules=None):
     done_in = {}
     busy = set()
     for ea, i in cluster.items():
-        if rows.get(ea, {}).get("status") in ("done", "verified"):
+        if rows.get(ea, {}).get("status") == "done":
             done_in.setdefault(i, ea)
         if ea in exclude:
             busy.add(i)
@@ -1003,7 +1001,7 @@ STOP = os.path.join(ROOT, "work", "grunt_stop")
 def run_config(args, lanes=False):
     """The cost/speed settings of this run, for the monitor."""
     return dict(transport=os.environ.get("CSF_CODEX_TRANSPORT", "direct"), effort=CODEX_EFFORT["high"],
-                retry_effort=CODEX_EFFORT["max"], class_view=os.environ.get("CSF_CLASS_VIEW", "compact"),
+                retry_effort=CODEX_EFFORT["max"],
                 review_over=args.review_over, codex_cap=getattr(args, "codex_cap", None),
                 codex_reserve=getattr(args, "codex_reserve", None), claude_cap=getattr(args, "claude_cap", None), codex_sub=getattr(args, "codex_sub", None),
                 backend=getattr(args, "backend", "lanes"), wave=getattr(args, "module", None),
@@ -1188,7 +1186,6 @@ def lanes(args):
         live(codex_paused=CODEX_PAUSED.is_set(), codex_reserved=CODEX_RESERVED.is_set(), codex_5h=pct,
              codex_logins={codex_label(h): p for h, (p, _) in per.items()})
 
-    since_canary = 0
 
     def refill():
         nonlocal submitted, stopping
@@ -1222,9 +1219,9 @@ def lanes(args):
 
     def flush():
         """Produce side only: link the batch (the gate compiles each file alone; link errors show up here), commit
-        it as pending. The game-side checks (smoke, bisect, diff) are tools/verifier.py's, run apart: every
-        --canary committed functions one verifier group is started in the background, so nothing waits on it."""
-        nonlocal good, total_ok, total_esc, since_canary
+        it as pending. The game-side checks (smoke, bisect, diff) are tools/verifier.py's, run apart (the wave's
+        verify step, or by hand next to a long lanes run): production never waits on the game."""
+        nonlocal good, total_ok, total_esc
         if not good:
             return True
         live(phase="link")
@@ -1249,16 +1246,8 @@ def lanes(args):
             live(counts=dict(ok=total_ok, esc=total_esc, pending=len(good)))
             return flush()
         commit(good, f"grunt lanes: {len(good)} functions reimplemented (pending verification)")
-        since_canary += len(good)
         live(phase="grunting", counts=dict(committed=_live["counts"].get("committed", 0) + len(good), pending=0))
         good = []
-        if args.canary and since_canary >= args.canary:
-            since_canary = 0
-            # one group of the pending functions, in the background (one instance; busy = skipped)
-            subprocess.Popen([sys.executable, os.path.join(ROOT, "tools", "verifier.py"), "--groups", "1"],
-                             stdout=open(os.path.join(ROOT, "work", "verifier.log"), "a"), stderr=subprocess.STDOUT,
-                             start_new_session=True)
-            print("canary: verifier started (work/verifier.log)", flush=True)
         return True
 
     def handle(r, tier):
@@ -1312,7 +1301,7 @@ def ida_refresh(module_arg):
     whole-program type pass (~45 min) is tools/ida/propagate.sh, run between waves."""
     ids = module_ids(module_arg)
     eas = [f"{ea:x}" for ea, r in load_csv().items() if r["module"] in ids
-           and r["status"] not in ("done", "verified", "lib")]
+           and r["status"] not in ("done", "lib")]
     if not eas:
         return
     live(mode="lanes", phase="ida: sync + re-decompile")
@@ -1334,7 +1323,7 @@ STOP_EXIT = 3  # wave's exit code when the stop rule fires
 def wave(args):
     """The RE loop for one module in one command:
       1. prep (lanes' ida_refresh): the IDB gets what db/ holds, the module is re-decompiled
-      2. produce: lanes over the module (gate + link + commit as pending; --canary verifier groups meanwhile)
+      2. produce: lanes over the module (gate + link + commit as pending)
       3. verify: tools/verifier.py --module (baseline, then the module's pending functions, in game)
       4. tools/linktest.py summary (what is left before the standalone exe links)
       5. stop rule (wave_report): too many quarantines or functions never installed in a passing smoke -> exit 3
@@ -1386,7 +1375,7 @@ def _jsonl(p, skip=0):
 
 def wave_report(args, mods, t0):
     """What this wave's in-game check found, and whether the wave loop should stop. Counts the verifier groups run
-    since the wave started (canary groups during production + the verify step) and the module's done functions
+    since the wave started (the verify step) and the module's done functions
     still pending (never installed in a passing smoke). `installed` is exactly that: the hook was on in a smoke
     that passed; whether the function ran or was compared is the ledger's tier (verify.py report). One smoke
     failure the verifier can't attribute is reported, not counted as a defect; it leaves functions pending."""
@@ -1403,7 +1392,7 @@ def wave_report(args, mods, t0):
         led = json.load(open(os.path.join(ROOT, "db", "verify.json")))
     except (OSError, ValueError):
         led = {}
-    done = [f"{ea:08x}" for ea, r in db.rows.items() if r["module"] in mods and r["status"] in ("done", "verified")]
+    done = [f"{ea:08x}" for ea, r in db.rows.items() if r["module"] in mods and r["status"] == "done"]
     pend = [ea for ea in done if not led.get(ea, {}).get("ok")]
     stop = []
     if q >= 2 and q / max(1, v + q) > args.stop_quarantine:
@@ -1567,8 +1556,6 @@ def lane_args(l):
     l.add_argument("--min-size", type=int, default=6)
     l.add_argument("--evidence", type=int, default=3, help="evidence requests per function (tools/evidence.py)")
     l.add_argument("--evidence-over", type=int, default=150, help="offer evidence requests above N bytes")
-    l.add_argument("--canary", type=int, default=300,
-                   help="start one background verifier group every N committed functions (0 = never)")
 
 
 LANE_KEYS = ("s_max m_max l_max s_ladder m_ladder l_ladder x_ladder hub_callers s_jobs m_jobs l_jobs x_jobs "

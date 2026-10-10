@@ -177,7 +177,7 @@ def report():
     import api
     db = DB()
     tc = load()
-    todo = [ea for ea, r in db.rows.items() if r["region"] == "game" and r["status"] not in ("done", "verified", "lib")
+    todo = [ea for ea, r in db.rows.items() if r["region"] == "game" and r["status"] not in ("done", "lib")
             and ea in db.F]
     meth = [ea for ea in todo if api.takes_reg(ea, db, "ecx")]
     print(f"undone methods (take ecx): {len(meth)}; with a class: {sum(ea in tc for ea in meth)} "

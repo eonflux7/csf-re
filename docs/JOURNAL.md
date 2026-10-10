@@ -950,3 +950,8 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
     (naked asm helper; possibly the loader).
   - Verdict: a cheap new evidence source that already found defects nothing else did; not a replacement for
     semcheck or the in-game diff yet (false-alarm kinds and the inconclusive share are listed in the backlog).
+- Second pass (user): diff tier 3 v3 dropped in favour of emudiff; canary verifier groups removed (a wave ends with
+  its verify step and a full baseline smoke anyway); concluded A/B switches removed (CSF_PACKET_LEGACY, CSF_API_JSON,
+  CSF_PSEUDO_DIR, CSF_CLASS_VIEW, CSF_CODEX_SLIM); the csv statuses `verified` / `escalated` never existed in data.
+  Kept on purpose: the Codex CLI transport (fallback if the direct endpoint changes) and captain's batch `classes`
+  job (not in the loop, but not shown dead). 10 merged branches and 8 worktrees removed; .xwin-cache untracked.

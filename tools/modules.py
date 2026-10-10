@@ -344,7 +344,7 @@ def carve():
         nxt = F[last]["end"] if i in seq_end else segs[i + 1][0]
         m = dict(id=f"m{start:06X}", start=start, end=nxt, fns=len(seg),
                  kb=round(sum(F[e]["size"] for e in seg) / 1024, 1),
-                 done=sum(rows[e]["status"] in ("done", "verified") for e in seg),
+                 done=sum(rows[e]["status"] == "done" for e in seg),
                  cohesion=round(inner[i] / deg[i], 2) if deg[i] else 0.0, **desc[i])
         size = m["end"] - m["start"]
         for o in old:
