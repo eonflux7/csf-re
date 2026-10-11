@@ -6,7 +6,7 @@ import sys, os, re, json, time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools")); os.chdir(ROOT)
 import pool, grunt
-START = (60, {"CSF_START": "loadsave 1.sav"})
+START = (60, {"CSF_START": "loadsave 1.sav", "CSF_NO_LEDGER": "1"})  # never ingest: the deployed DLL need not be build/
 def trial(disabled, n, tag=""):
     pool.sync()
     res = pool.run([(START[0], START[1], (lambda play, d=disabled: grunt.set_disabled(d, play))) for _ in range(n)])
