@@ -4210,7 +4210,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 102
+   "AssignStringSubstring": 104
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -9651,7 +9651,7 @@
   "name": "AssignStringRange_429B60",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_429B60": 81,
+   "AssignStringRange_429B60": 83,
    "MenuSceneSelect_InitializeString": 1
   },
   "ret": "void*",
@@ -10631,7 +10631,7 @@
   "name": "CompareStringSubstring",
   "name_src": "vote",
   "votes": {
-   "CompareStringSubstring": 18
+   "CompareStringSubstring": 19
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -26767,7 +26767,7 @@
   "name": "ResolveEntryLookupValue",
   "name_src": "vote",
   "votes": {
-   "ResolveEntryLookupValue": 15,
+   "ResolveEntryLookupValue": 16,
    "GetEntityComponent": 1,
    "GetProviderStatusCode": 1,
    "ObjectProvider_IsActive": 1,
@@ -33442,7 +33442,7 @@
   "name": "AssignStringRange_488830",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_488830": 29
+   "AssignStringRange_488830": 30
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -59831,7 +59831,7 @@
   "name": "GetSceneRegionAt",
   "name_src": "vote",
   "votes": {
-   "GetSceneRegionAt": 15
+   "GetSceneRegionAt": 16
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -60177,7 +60177,7 @@
   "name": "GetGlobalValue_8B0568",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8B0568": 45,
+   "GetGlobalValue_8B0568": 46,
    "GetMissionManager": 1
   },
   "ret": "int",
@@ -61158,7 +61158,7 @@
   "name": "S_004ff0f0_SetRecordNameAndLoad",
   "name_src": "agent",
   "votes": {
-   "S_004ff0f0_SetRecordNameAndLoad": 1
+   "S_004ff0f0_SetRecordNameAndLoad": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -61731,7 +61731,7 @@
   "name": "SceneLoader_NoOp",
   "name_src": "captain",
   "votes": {
-   "SceneLoader_NoOp": 10,
+   "SceneLoader_NoOp": 11,
    "Nullsub_506AC0": 34
   },
   "ret": "void",
@@ -64897,13 +64897,14 @@
   "file": "src/auto/00512aa0.cpp"
  },
  "00512b40": {
-  "name": "sub_512B40",
-  "name_src": "addr",
+  "name": "CSaveGameManager_LoadSelectedSaveGame",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "CSaveGameManager* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00512b40.cpp"
  },
  "00512c60": {
   "name": "CSaveGameManager_BuildGamesPath",
@@ -64968,6 +64969,7 @@
   "name": "CSaveGameManager_SetQuickSaveFileName",
   "name_src": "agent",
   "votes": {
+   "CSaveGameManager_PrepareSaveName": 1,
    "CSaveGameManager_BuildSaveFileName": 1,
    "CSaveGameManager_GetExcludedSaveName": 1
   },
@@ -64978,13 +64980,14 @@
   "file": "src/auto/00512f60.cpp"
  },
  "00512fc0": {
-  "name": "sub_512FC0",
-  "name_src": "addr",
+  "name": "CSaveGameManager_ValidateSaveName",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "CSaveGameManager* self, void* , C_0082d410* saveName",
+  "sig_src": "impl",
+  "file": "src/auto/00512fc0.cpp"
  },
  "005130d0": {
   "name": "CSaveGameManager_SaveCurrentGame",
@@ -65406,15 +65409,16 @@
   "file": "src/auto/00514f30.cpp"
  },
  "00514f80": {
-  "name": "CProfileManager_InitSlotTable",
-  "name_src": "vote",
+  "name": "CProfileManager_InitializeUserDataPaths",
+  "name_src": "agent",
   "votes": {
    "CProfileManager_InitSlotTable": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "CProfileManager* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00514f80.cpp"
  },
  "00515080": {
   "name": "ProfilesSavegames_ResetEntryRange",
@@ -65576,7 +65580,8 @@
   "name": "CopySixteenByteArrayWithContext",
   "name_src": "agent",
   "votes": {
-   "MissionInfoPanel_InitRecordRange_515970": 1
+   "MissionInfoPanel_InitRecordRange_515970": 1,
+   "ProfilesSavegames_CopyScenarioRecords": 1
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -65738,8 +65743,8 @@
   "file": "src/auto/00515e60.cpp"
  },
  "00515e80": {
-  "name": "CProfileManager_PrepareLoadState",
-  "name_src": "vote",
+  "name": "ProfilesSavegames_WriteProfiles",
+  "name_src": "agent",
   "votes": {
    "CProfileManager_PrepareLoadState": 1,
    "PrepareRecordForCall": 1
@@ -65787,7 +65792,8 @@
   "name_src": "vote",
   "votes": {
    "S_00514aa0_GrowAndFill": 1,
-   "MissionInfoPanel_InsertRecordCopies_5160B0": 1
+   "MissionInfoPanel_InsertRecordCopies_5160B0": 1,
+   "ProfilesSavegames_InsertScenarioRecords": 1
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
@@ -65840,21 +65846,23 @@
   "file": "src/auto/00516530.cpp"
  },
  "005165a0": {
-  "name": "ProfilesSavegames_ReadCampaignData",
-  "name_src": "vote",
+  "name": "ProfilesSavegames_LoadScenarioResults",
+  "name_src": "agent",
   "votes": {
    "ProfilesSavegames_ReadCampaignData": 1
   },
   "ret": "char",
   "conv": "__stdcall",
-  "params": "void* a5, int a2",
-  "sig_src": "vote"
+  "params": "S_00692b80* root, int profileAddress",
+  "sig_src": "impl",
+  "file": "src/auto/005165a0.cpp"
  },
  "005166e0": {
   "name": "S_004f21d0_ResetSaveData",
   "name_src": "agent",
   "votes": {
-   "ProfilesSavegames_InitializeEntry": 1
+   "ProfilesSavegames_InitializeEntry": 1,
+   "ProfilesSavegames_InitializeProfile": 1
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
@@ -65956,7 +65964,9 @@
  "00516aa0": {
   "name": "ProfilesSavegames_ReadProfileEntry",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ProfilesSavegames_ReadVersion12Profile": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
   "params": "S_00692b80* properties, S_004f21d0* entry, int version",
@@ -65966,7 +65976,9 @@
  "00516b90": {
   "name": "ProfilesSavegames_ReadCampaignEntry",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ProfilesSavegames_ReadVersion13Profile": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
   "params": "S_00692b80* properties, int destinationAddress, int version",
@@ -66073,7 +66085,8 @@
   "name": "S_005170e0_AppendElement80",
   "name_src": "agent",
   "votes": {
-   "ProfilesSavegames_AppendEntry": 1
+   "ProfilesSavegames_AppendEntry": 1,
+   "ProfilesSavegames_AddProfile": 1
   },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
@@ -66117,16 +66130,17 @@
   "file": "src/auto/005173c0.cpp"
  },
  "00517480": {
-  "name": "C_00840af8_ReadFileData",
-  "name_src": "vote",
+  "name": "C_00840af8_LoadProfiles",
+  "name_src": "agent",
   "votes": {
    "C_00840af8_ReadFileData": 1,
    "C_00840af8_ApplyLoadedSaveFile": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void** a2, void* a4",
-  "sig_src": "vote"
+  "params": "C_00840af8* self, void* , S_00692b80** root, S_005170e0* destination",
+  "sig_src": "impl",
+  "file": "src/auto/00517480.cpp"
  },
  "005175e0": {
   "name": "C_00840af8_ReloadEntryFromKey",
@@ -103281,7 +103295,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 62
+   "RwMatrixDestroy": 63
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -112018,7 +112032,7 @@
   "name": "ResolveClumpManager",
   "name_src": "vote",
   "votes": {
-   "ResolveClumpManager": 8
+   "ResolveClumpManager": 9
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -124895,7 +124909,7 @@
   "name": "GetCurrentItemCount",
   "name_src": "vote",
   "votes": {
-   "GetCurrentItemCount": 22,
+   "GetCurrentItemCount": 23,
    "Hud_QueryCurrentCount": 1
   },
   "ret": "int",
@@ -126136,7 +126150,7 @@
   "name": "GetCachedObjectProvider",
   "name_src": "vote",
   "votes": {
-   "GetCachedObjectProvider": 83
+   "GetCachedObjectProvider": 84
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -128747,7 +128761,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 273,
+   "Mem_FreeDebug": 277,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -129359,7 +129373,7 @@
   "name": "MenuExtras_GetChildCount",
   "name_src": "vote",
   "votes": {
-   "MenuExtras_GetChildCount": 53
+   "MenuExtras_GetChildCount": 55
   },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
@@ -129370,7 +129384,7 @@
   "name": "GetComponent",
   "name_src": "vote",
   "votes": {
-   "GetComponent": 62
+   "GetComponent": 64
   },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
@@ -129381,7 +129395,7 @@
   "name": "ParseIntegerComponent",
   "name_src": "vote",
   "votes": {
-   "ParseIntegerComponent": 33
+   "ParseIntegerComponent": 34
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -129461,7 +129475,7 @@
   "name": "FindProperty",
   "name_src": "vote",
   "votes": {
-   "FindProperty": 78
+   "FindProperty": 80
   },
   "ret": "std::uint8_t*",
   "conv": "__fastcall",
@@ -129546,7 +129560,7 @@
   "name": "ReadIntegerProperty",
   "name_src": "vote",
   "votes": {
-   "ReadIntegerProperty": 36
+   "ReadIntegerProperty": 37
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -129568,7 +129582,7 @@
   "name": "ReadIntegerAttribute",
   "name_src": "vote",
   "votes": {
-   "ReadIntegerAttribute": 39
+   "ReadIntegerAttribute": 40
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -130431,7 +130445,7 @@
   "name": "MenuProgressInput_AssignText",
   "name_src": "vote",
   "votes": {
-   "MenuProgressInput_AssignText": 7
+   "MenuProgressInput_AssignText": 8
   },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
@@ -130443,6 +130457,7 @@
   "name_src": "vote",
   "votes": {
    "ProfilesSavegames_AppendWideCharacter": 1,
+   "ProfilesSavegames_AppendCharacter": 1,
    "SaveSlots_ApplyIndex": 1
   },
   "ret": "uint32_t*",
@@ -130486,7 +130501,7 @@
   "name": "AppendNarrowToWideString",
   "name_src": "vote",
   "votes": {
-   "ProfilesSavegames_AppendNarrowText": 1,
+   "ProfilesSavegames_AppendNarrowText": 2,
    "AppendNarrowToWideString": 1
   },
   "ret": "void*",
@@ -130507,7 +130522,7 @@
   "name": "GetOptionsByteAt2",
   "name_src": "agent",
   "votes": {
-   "GetOptionsByteAt2": 13
+   "GetOptionsByteAt2": 15
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -130608,7 +130623,7 @@
   "name": "StoreOptionsByte104",
   "name_src": "agent",
   "votes": {
-   "StoreOptionsByte104": 9
+   "StoreOptionsByte104": 10
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -130620,7 +130635,7 @@
   "name": "GetOptionsByte104",
   "name_src": "agent",
   "votes": {
-   "GetOptionsByte104": 9
+   "GetOptionsByte104": 10
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -130924,7 +130939,7 @@
   "name": "SceneLoader_SetFileOption",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_SetFileOption": 12,
+   "SceneLoader_SetFileOption": 14,
    "SceneLoader_SetLogState": 1,
    "SceneLoader_SetOptionsByte": 2,
    "SceneLoader_SetPackageLoadingEnabled": 1
@@ -130980,7 +130995,7 @@
   "name": "MenuManager_CheckPageAvailability",
   "name_src": "vote",
   "votes": {
-   "MenuManager_CheckPageAvailability": 6
+   "MenuManager_CheckPageAvailability": 7
   },
   "ret": "bool",
   "conv": "__cdecl",
@@ -132555,7 +132570,8 @@
   "name": "ProfilesSavegames_GetBaseDirectory",
   "name_src": "vote",
   "votes": {
-   "ProfilesSavegames_GetBaseDirectory": 1
+   "ProfilesSavegames_GetBaseDirectory": 1,
+   "ProfilesSavegames_GetUserDataPath": 1
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -136548,7 +136564,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 148,
+   "GetGlobalInt": 149,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -137894,13 +137910,15 @@
   "sig_src": "abi"
  },
  "006b4f70": {
-  "name": "sub_6B4F70",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SkinListInsertRange",
+  "name_src": "vote",
+  "votes": {
+   "SkinListInsertRange": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void** a1, unsigned int a3, void** arg8",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006b5220": {
   "name": "DestroyElementThroughContext",
@@ -140480,13 +140498,15 @@
   "sig_src": "abi"
  },
  "006bf210": {
-  "name": "sub_6BF210",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GetObjectFlagsPointer",
+  "name_src": "vote",
+  "votes": {
+   "GetObjectFlagsPointer": 1
+  },
   "ret": "char*",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006bf220": {
   "name": "sub_6BF220",
@@ -141879,7 +141899,7 @@
   "name": "C_008670f0_SetField0C",
   "name_src": "agent",
   "votes": {
-   "C_008670f0_SetField0C": 7
+   "C_008670f0_SetField0C": 9
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -141908,13 +141928,15 @@
   "file": "src/auto/006c46b0.cpp"
  },
  "006c4740": {
-  "name": "sub_6C4740",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxSkin_FinalizeObjectEntry",
+  "name_src": "vote",
+  "votes": {
+   "GfxSkin_FinalizeObjectEntry": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006c47f0": {
   "name": "GfxSkin_FlushWidgetParamTable",
@@ -142182,13 +142204,14 @@
   "file": "src/auto/006c5110.cpp"
  },
  "006c5310": {
-  "name": "sub_6C5310",
-  "name_src": "addr",
+  "name": "GfxSkin_ComputeDistanceFade",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
   "conv": "__cdecl",
-  "params": "float* a1, float* a2, float* a3, float a4, float a5, float a6, float a7",
-  "sig_src": "abi"
+  "params": "float* fade, float* position, float* referencePosition, float distanceScale, float maximumDistance, float minimumDistance, float fadeWidth",
+  "sig_src": "impl",
+  "file": "src/auto/006c5310.cpp"
  },
  "006c5430": {
   "name": "sub_6C5430",
@@ -142283,13 +142306,14 @@
   "file": "src/auto/006c5780.cpp"
  },
  "006c57a0": {
-  "name": "sub_6C57A0",
-  "name_src": "addr",
+  "name": "C_0085e7b8_ApplySkinRegionSelection",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "C_0085e7b8** self, void* , C_0086754c* a2",
+  "sig_src": "impl",
+  "file": "src/auto/006c57a0.cpp"
  },
  "006c5820": {
   "name": "GfxSkin_ApplyRegionFieldsByFlag",
@@ -142323,7 +142347,7 @@
  },
  "006c5900": {
   "name": "GfxSkin_SetHandleSceneRegion",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -142374,13 +142398,14 @@
   "file": "src/auto/006c5a30.cpp"
  },
  "006c5a40": {
-  "name": "sub_6C5A40",
-  "name_src": "addr",
+  "name": "SkinGeom_InitFromSource",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, char a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , int sourceHandle, char flagByte",
+  "sig_src": "impl",
+  "file": "src/auto/006c5a40.cpp"
  },
  "006c5ac0": {
   "name": "GfxSkin_CompareSkinKeys",
@@ -142499,15 +142524,16 @@
   "file": "src/auto/006c5f70.cpp"
  },
  "006c6190": {
-  "name": "SkinState_ApplyFlag20",
-  "name_src": "vote",
+  "name": "GfxSkin_UpdateAndCommitSkins",
+  "name_src": "agent",
   "votes": {
    "SkinState_ApplyFlag20": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_006c5cd0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006c6190.cpp"
  },
  "006c61f0": {
   "name": "GfxSkin_ForwardFieldFourQuery",
@@ -142706,8 +142732,8 @@
   "sig_src": "abi"
  },
  "006c6d40": {
-  "name": "GfxSkin_ProcessSkinWithGlobalContext",
-  "name_src": "vote",
+  "name": "C_00860288_AddEntryAndRegister",
+  "name_src": "agent",
   "votes": {
    "GfxSkin_ProcessSkinWithGlobalContext": 1
   },
@@ -142720,7 +142746,9 @@
  "006c6dc0": {
   "name": "GfxSkin_CopyMatrixBlocksToList",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "SkinListTruncateTail": 1
+  },
   "ret": "void***",
   "conv": "__fastcall",
   "params": "S_006c6dc0* self, void* , void*** result, void** destination, const void** source",
@@ -142781,15 +142809,16 @@
   "file": "src/auto/006c7080.cpp"
  },
  "006c7220": {
-  "name": "GfxSkin_InitializeMatrixBackups",
-  "name_src": "vote",
+  "name": "S_006c6dc0_ResizeListAndMaybeDestroyMatrix",
+  "name_src": "agent",
   "votes": {
    "GfxSkin_InitializeMatrixBackups": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int a2, int a3, char a4",
-  "sig_src": "vote"
+  "params": "S_006c6dc0* self, void* , unsigned int a2, std::uintptr_t a3, char a4",
+  "sig_src": "impl",
+  "file": "src/auto/006c7220.cpp"
  },
  "006c72a0": {
   "name": "C_008608e8_Destroy_6C72A0",
@@ -142932,7 +142961,7 @@
   "name": "GlobalHud_Commit_6C7C30",
   "name_src": "agent",
   "votes": {
-   "GlobalHud_Commit_6C7C30": 4
+   "GlobalHud_Commit_6C7C30": 5
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -142955,7 +142984,8 @@
   "name": "GfxSkin_GrowAuxiliaryCapacity",
   "name_src": "vote",
   "votes": {
-   "GfxSkin_GrowAuxiliaryCapacity": 1
+   "GfxSkin_GrowAuxiliaryCapacity": 1,
+   "GfxSkin_GrowRecordList": 1
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -142995,17 +143025,20 @@
   "file": "src/auto/006c8370.cpp"
  },
  "006c8390": {
-  "name": "GfxSkin_SetRenderMode",
-  "name_src": "vote",
+  "name": "GfxSkin_AppendObjectRecord",
+  "name_src": "agent",
   "votes": {
+   "SkinBindSubobject": 1,
    "GfxSkin_SetRenderMode": 1,
    "GfxSkin_SetRenderPhase": 1,
+   "GfxSkin_BeginBatch12": 1,
    "GfxSkin_SetRenderStage": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int objIndex",
+  "sig_src": "impl",
+  "file": "src/auto/006c8390.cpp"
  },
  "006c8420": {
   "name": "GlobalHud_AttachWidget_6C8420",
@@ -146056,13 +146089,15 @@
   "sig_src": "abi"
  },
  "006d2a80": {
-  "name": "sub_6D2A80",
-  "name_src": "addr",
-  "votes": {},
+  "name": "ComputeSkinFloatMetric",
+  "name_src": "vote",
+  "votes": {
+   "ComputeSkinFloatMetric": 1
+  },
   "ret": "double",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006d2aa0": {
   "name": "sub_6D2AA0",
@@ -182207,7 +182242,7 @@
   "name": "GetGlobalValue_75FDF0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_75FDF0": 25
+   "GetGlobalValue_75FDF0": 26
   },
   "ret": "int",
   "conv": "__cdecl",
