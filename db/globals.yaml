@@ -16,7 +16,7 @@
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: double, uses: 1, src: auto}
 - {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 57, src: auto, alt: [g_MissionUnsignedIntegerBias]}
 - {addr: 0x0082D75C, name: g_HudNegativePi, type: float, uses: 2, src: auto, alt: [g_NegativeHalfTurnRadians]}
-- {addr: 0x0082D7C0, name: g_MessageBoxAnimationScale, type: float, uses: 2, src: auto, alt: [g_flt_0082D7C0]}
+- {addr: 0x0082D7C0, name: g_MessageBoxAnimationScale, type: float, uses: 3, src: auto, alt: [g_flt_0082D7C0]}
 - {addr: 0x0082DC70, name: g_SubtitlePanelScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC84, name: g_flt_0082DC84, type: float, uses: 6, src: auto, alt: [g_MessageBoxAnimationDuration]}
 - {addr: 0x0082DD68, name: g_PreviewTopScale, type: float, uses: 1, src: auto}
@@ -39,7 +39,7 @@
 - {addr: 0x0082E120, name: g_MaxPercent, type: float, uses: 1, src: auto}
 - {addr: 0x0082E1E4, name: g_fRotationWrapStep, type: float, uses: 1, src: auto}
 - {addr: 0x0082E25C, name: g_flt_0082E25C, type: float, uses: 3, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 45, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 46, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E958, name: g_TParadoString, type: char, uses: 1, src: auto}
 - {addr: 0x0082F318, name: g_TEndString, type: const char, uses: 1, src: auto}
 - {addr: 0x0082FACC, name: g_HudNegativeHalfPi, type: float, uses: 1, src: auto}
@@ -227,6 +227,8 @@
 - {addr: 0x0088B968, name: g_ArrayConstructionExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088BA3C, name: g_CopyRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088BA8C, name: g_TwentyFourByteCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088C028, name: g_DwordRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088C208, name: g_CopyDwordExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00891868, name: g_TwelveByteRangeCopyExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008918B8, name: g_TwelveByteCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00891908, name: g_PointerRangeCopyExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
@@ -1321,10 +1323,10 @@
 - {addr: 0x008B067C, name: g_FriendsMode, type: uint8_t, uses: 2, src: auto, alt: [g_bUseLbFrInLabel]}
 - {addr: 0x008B0680, name: g_Global_8B0680, type: int, uses: 1, src: auto}
 - {addr: 0x008B0684, name: g_MpCharacterSelect, type: void*, uses: 2, src: auto, alt: [g_GlobalValue]}
-- {addr: 0x008B0688, name: g_Int8B0688, type: int, uses: 1, src: auto}
+- {addr: 0x008B0688, name: g_Int8B0688, type: int, uses: 2, src: auto}
 - {addr: 0x008B068C, name: g_OnlineMatchFlag, type: 'std::uint8_t', uses: 12, src: auto, alt: [g_AccountMenuSecondaryFlag]}
 - {addr: 0x008B0690, name: g_MpSessionState, type: int, uses: 0, src: opus}
-- {addr: 0x008B0694, name: g_CharacterSelectState8B0694, type: uint32_t, uses: 2, src: auto}
+- {addr: 0x008B0694, name: g_CharacterSelectState8B0694, type: uint32_t, uses: 20, src: auto}
 - {addr: 0x008B0698, name: g_MenuMPCharacterSelect_LastState, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008B08F4, name: g_Value_8B08F4, type: int, uses: 1, src: auto}
 - {addr: 0x008B08F8, name: g_Value_8B08F8, type: int32_t, uses: 1, src: auto}
