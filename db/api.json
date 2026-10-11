@@ -4042,6 +4042,7 @@
   "votes": {
    "SpatialQuery_BuildContext": 2,
    "InitializeActionBounds": 1,
+   "BuildSearchSegment": 1,
    "SceneQueries_ConstructRay": 1
   },
   "ret": "C_00833b88*",
@@ -6540,7 +6541,7 @@
   "name": "S_0041e5f0_GrowArrayCapacity",
   "name_src": "agent",
   "votes": {
-   "GrowButtonArray": 89,
+   "GrowButtonArray": 90,
    "S_0041e5f0_GrowArrayCapacity": 8
   },
   "ret": "void*",
@@ -17533,6 +17534,7 @@
    "InitializeActionResult": 1,
    "SpatialQuery_InitializeCandidates": 1,
    "InitializeNearbyCandidateResult": 1,
+   "InitializeCandidateResult": 1,
    "SceneQueries_InitializeHits": 1
   },
   "ret": "uint32_t*",
@@ -17591,7 +17593,7 @@
   "name": "GetSceneMenuContext",
   "name_src": "vote",
   "votes": {
-   "GetSceneMenuContext": 61
+   "GetSceneMenuContext": 62
   },
   "ret": "uint32_t",
   "conv": "__fastcall",
@@ -17996,7 +17998,7 @@
   "name_src": "agent",
   "votes": {
    "ProcessSelectionAction": 1,
-   "CGuiControl_QueryNearbyCandidates": 2
+   "CGuiControl_QueryNearbyCandidates": 3
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -37055,14 +37057,15 @@
  },
  "004980d0": {
   "name": "CPlayerCharacter_RefreshActiveState",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CPlayerCharacter_RefreshActiveState": 1
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "CPlayerCharacter* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004980d0.cpp"
  },
  "00498310": {
   "name": "C_00833ee8_UpdateRepeatTimer",
@@ -127875,7 +127878,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 298
+   "Mem_Free": 299
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -135144,7 +135147,7 @@
   "name_src": "agent",
   "votes": {
    "GfxMatrix_EulerAnglesToDirection": 3,
-   "EulerAnglesToDirection": 4,
+   "EulerAnglesToDirection": 5,
    "GetActionExtent": 1
   },
   "ret": "float*",
