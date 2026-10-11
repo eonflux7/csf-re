@@ -129,7 +129,7 @@
 - {addr: 0x00843B30, name: g_VtblCMenuSaveGame, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00843B70, name: g_VtblCMenuSaveGameSubObject, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00843C14, name: g_RasterByteScale, type: float, uses: 4, src: auto}
-- {addr: 0x00844628, name: g_SpawnRadiansToDegrees, type: float, uses: 1, src: auto}
+- {addr: 0x00844628, name: g_SpawnAngleScale, type: float, uses: 2, src: auto, alt: [g_SpawnRadiansToDegrees]}
 - {addr: 0x0084462C, name: g_SpawnRegionDistanceSquared, type: float, uses: 1, src: auto}
 - {addr: 0x008446C8, name: g_SpawnTimerThreshold, type: float, uses: 1, src: auto}
 - {addr: 0x00845368, name: g_vtbl_00845368, type: uint8_t, uses: 2, src: auto}
@@ -261,6 +261,8 @@
 - {addr: 0x008928E8, name: g_ElementCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00892A0C, name: g_ForwardRangeExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00892A5C, name: g_ArrayConstructionExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x00892FC4, name: g_CopyRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x00893014, name: g_ProcessElementsExceptionFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008937C4, name: g_CharacterEntryRangeExceptionFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008938E8, name: g_InputBindingCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00893A5C, name: g_DwordRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
@@ -1331,8 +1333,8 @@
 - {addr: 0x008B0688, name: g_Int8B0688, type: int, uses: 3, src: auto}
 - {addr: 0x008B068C, name: g_OnlineMatchFlag, type: 'std::uint8_t', uses: 13, src: auto, alt: [g_AccountMenuSecondaryFlag]}
 - {addr: 0x008B0690, name: g_MpSessionState, type: int, uses: 0, src: opus}
-- {addr: 0x008B0694, name: g_CharacterSelectState8B0694, type: uint32_t, uses: 35, src: auto}
-- {addr: 0x008B0698, name: g_MenuMPCharacterSelect_LastState, type: uint32_t, uses: 2, src: auto}
+- {addr: 0x008B0694, name: g_CharacterSelectState8B0694, type: uint32_t, uses: 37, src: auto}
+- {addr: 0x008B0698, name: g_MenuMPCharacterSelect_LastState, type: uint32_t, uses: 3, src: auto}
 - {addr: 0x008B08F4, name: g_Value_8B08F4, type: int, uses: 1, src: auto}
 - {addr: 0x008B08F8, name: g_Value_8B08F8, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008B0901, name: g_AccountMenuStateFlag, type: 'std::uint8_t', uses: 3, src: auto}
@@ -1367,6 +1369,7 @@
 - {addr: 0x008BB420, name: g_ZeroVectorX, type: float, uses: 2, src: opus, alt: [g_Dword_8BB420]}
 - {addr: 0x008BB424, name: g_ZeroVectorY, type: float, uses: 0, src: captain, conf: 0.8}
 - {addr: 0x008BB428, name: g_ZeroVectorZ, type: float, uses: 0, src: captain, conf: 0.8}
+- {addr: 0x008BB42C, name: g_DefaultParamA_8BB42C, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008BB430, name: g_BlackClearColor, type: 'std::uint32_t', uses: 1, src: captain, conf: 0.7, alt: [g_CameraClearColor]}
 - {addr: 0x008BB448, name: g_ZeroVector2X, type: float, uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008BB44C, name: g_ZeroVector2Y, type: float, uses: 0, src: captain, conf: 0.7}
@@ -1389,8 +1392,8 @@
 - {addr: 0x008BC174, name: g_NetGhostClassId, type: 'std::uint32_t', uses: 0, src: captain, conf: 0.8}
 - {addr: 0x008BC178, name: g_NetGameClassId, type: 'std::uint32_t', uses: 0, src: captain, conf: 0.8}
 - {addr: 0x008BC17C, name: g_NetControlClassId, type: 'std::uint32_t', uses: 0, src: captain, conf: 0.8}
-- {addr: 0x008BC1DC, name: g_GlobalValue, type: int, uses: 1, src: auto}
-- {addr: 0x008BC1E0, name: g_Value_8BC1E0, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008BC1DC, name: g_GlobalValue, type: int, uses: 2, src: auto}
+- {addr: 0x008BC1E0, name: g_Value_8BC1E0, type: uint32_t, uses: 2, src: auto}
 - {addr: 0x008BC1E4, name: g_Value_8BC1E4, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008BC1E8, name: g_Value_8BC1E8, type: uint32_t, uses: 3, src: auto}
 - {addr: 0x008BC1EC, name: g_Value8BC1EC, type: int, uses: 1, src: auto}
