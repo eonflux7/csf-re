@@ -3,6 +3,7 @@
 
 Usage:
   grunt.py wave <module> | --next | --waves N    the loop for one module (see wave()); lanes + verifier + link test
+                                                 --waves: rolling, --overlap modules open at once (see lanes())
   grunt.py lanes [--total 200] [--batch 60] [--module m1,m2]   continuous, size tiers S/M/L/X (db/lanes.yaml)
   grunt.py run --only ea,ea [--backend codex|claude] [--dry] [--no-smoke]   single functions (redo, A/B)
   grunt.py cost                      token usage, review hit rate from work/grunt_log.jsonl
@@ -1101,9 +1102,18 @@ def lanes(args):
     the big ones). Each tier has its own in-flight cap, so slow L/X calls
     never hold up the S stream. Quota: Codex pauses at --codex-cap of its 5h window (L gets no new work, S/M lose their
     Codex rung); the grunts' Claude account pauses at --claude-cap of its 5h or weekly window. A function whose only
-    remaining rungs were out of quota is deferred, not escalated. Every --batch gate passes: build + smoke + commit."""
+    remaining rungs were out of quota is deferred, not escalated. Every --batch gate passes: build + smoke + commit.
+
+    Rolling waves (args.roll, from `wave --waves N`): modules are taken in rank order and up to --overlap are open at
+    once. The next one is admitted (IDB prep, then its functions join the candidates behind the older modules') as
+    soon as the open ones have handed out all their S/M work and an S/M slot is free, so those slots don't idle
+    through a module's L/X tail. A module with
+    nothing in flight and nothing left to submit is closed: its last results are committed and its end-of-wave steps
+    (verifier --module, link test, report, stop rule: wave_close) run on one background worker, one module at a
+    time, while production goes on. A stop rule that fires ends the run like the stop file does (exit 3)."""
     lane_config(args)
-    if args.module:
+    rolling = getattr(args, "roll", 0)
+    if args.module and not rolling:
         ida_refresh(args.module)
     global REVIEW_EFFORT, CODEX_SUB, CLAUDE_SUB, CLAUDE_SUB_LOGIN
     REVIEW_EFFORT = args.review_effort
@@ -1120,6 +1130,9 @@ def lanes(args):
     inflight, good, submitted, total_ok, total_esc, total_def = {}, [], 0, 0, 0, 0
     stopping, quota_t = False, 0
     quarantined = set()  # in-flight functions quarantined by a batch build (their result is then an escalation)
+    open_mods, seen, closings, stops = [], set(), [], []  # rolling waves: open modules in admission order
+    admitted, closed, broken = 0, 0, False
+    closer = cf.ThreadPoolExecutor(1) if rolling else None
     if os.path.exists(STOP):
         os.remove(STOP)
     live(mode="lanes", phase="grunting", config=run_config(args, lanes=True),
@@ -1193,29 +1206,96 @@ def lanes(args):
             stopping = True
             print("stop file found: finishing in-flight tasks, then smoke + commit", flush=True)
             live(phase="stopping")
+        for fu in [f for f in closings if f.done()]:  # a closed module's stop rule (or a failed regression check)
+            closings.remove(fu)
+            stops.extend(fu.result())
+        if stops and not stopping:
+            stopping = True
+            print("stop rule fired: finishing in-flight tasks", flush=True)
+            live(phase="stopping")
         if stopping:
             return
         quota()
-        busy = {ea for ea, _ in inflight.values()}
-        cnt = collections.Counter(t for _, t in inflight.values())
-        for t in TIERS:  # a tier that can only use Codex waits while Codex is paused
-            if CODEX_PAUSED.is_set() and codex_only(t):
+        while True:
+            busy = {ea for ea, _ in inflight.values()}
+            cnt = collections.Counter(t for _, t in inflight.values())
+            blocked = {t for t in TIERS if CODEX_PAUSED.is_set() and codex_only(t)}
+            for t in blocked:  # a tier that can only use Codex waits while Codex is paused
                 cnt[t] = caps[t]
-        if submitted >= args.total or all(cnt[t] >= caps[t] for t in TIERS):
-            return
-        # wide window: the leaf-first head is almost all small (S); M and L need larger candidates
-        for ea, ex in select(db, 4000, args.max_size, args.min_size, exclude=busy, modules=wave):
             if submitted >= args.total or all(cnt[t] >= caps[t] for t in TIERS):
                 break
-            t = tier_of(ea, ex)
-            if cnt[t] >= caps[t]:
-                continue
-            fut = pool.submit(work, ea, db, key, ladders[t], None, ex, args.review_over, ev_budget(args, db, ea),
-                              tier=t)
-            inflight[fut] = (ea, t)
-            cnt[t] += 1
-            submitted += 1
-        live(counts=dict(submitted=submitted), inflight_tiers=dict(cnt))
+            # wide window: the leaf-first head is almost all small (S); M and L need larger candidates
+            sel = [] if rolling and not open_mods else select(
+                db, 4000, args.max_size, args.min_size, exclude=busy,
+                modules={o["id"] for o in open_mods} if rolling else wave)
+            if rolling:  # the older module first: its tail is what its verification waits for
+                order = {o["id"]: i for i, o in enumerate(open_mods)}
+                sel.sort(key=lambda c: order[db.rows[c[0]]["module"]])
+            left = collections.Counter()  # per module: candidates that could run but found their tier full
+            small = 0  # S/M candidates among them
+            for ea, ex in sel:
+                t = tier_of(ea, ex)
+                if cnt[t] >= caps[t]:
+                    left[db.rows[ea]["module"]] += t not in blocked
+                    small += t in "SM"
+                    continue
+                if submitted >= args.total:
+                    break
+                fut = pool.submit(work, ea, db, key, ladders[t], None, ex, args.review_over, ev_budget(args, db, ea),
+                                  tier=t)
+                inflight[fut] = (ea, t)
+                cnt[t] += 1
+                submitted += 1
+            if not rolling:
+                break
+            flying = collections.Counter(db.rows[ea]["module"] for ea, _ in inflight.values())
+            for o in [o for o in open_mods if not flying[o["id"]] and not left[o["id"]]]:
+                close(o)
+            # the next module starts once the open ones have handed out all their S/M work and a small slot idles:
+            # what is left of them is the L/X tail (it keeps its slots; a later module's functions queue behind)
+            if broken or submitted >= args.total or small or all(cnt[t] >= caps[t] for t in "SM") or not admit():
+                break
+        live(counts=dict(submitted=submitted), inflight_tiers=dict(cnt),
+             **(dict(open=[o["name"] for o in open_mods]) if rolling else {}))
+
+    def admit():
+        """Rolling waves: open the next module of the ranking. False: the limits (--waves, --overlap) or the ranking
+        say no."""
+        nonlocal admitted, broken
+        if (rolling > 0 and admitted >= rolling) or len(open_mods) >= args.overlap:
+            return False
+        ranked = [(m, nm) for _, m, nm, *_ in rank_modules(db, 60) if m not in seen]
+        if not ranked:
+            if not open_mods and not inflight:
+                print("waves: ranking exhausted", flush=True)
+            return False
+        if not flush():  # names of what is done reach functions.csv before the IDB sync reads it
+            broken = True
+            return False
+        m, name = ranked[0]
+        seen.add(m)
+        admitted += 1
+        print(f"\n==== waves: {admitted}{'/' + str(rolling) if rolling > 0 else ''} {name} ({m})"
+              + (f"  [still open: {', '.join(o['name'] for o in open_mods)}]" if open_mods else ""), flush=True)
+        ida_refresh(m)
+        live(phase="grunting")
+        open_mods.append(dict(id=m, name=name, t0=time.time()))
+        args.module = ",".join(o["id"] for o in open_mods)
+        live(config=run_config(args, lanes=True))
+        return True
+
+    def close(o):
+        """Rolling waves: the module has nothing in flight and nothing left to submit. Commit, then its end-of-wave
+        steps in the background."""
+        nonlocal closed, broken
+        open_mods.remove(o)
+        if not flush():
+            broken = True
+            return
+        closed += 1
+        print(f"wave {o['name']} ({o['id']}): production done in {time.time() - o['t0']:.0f}s; verify + link test "
+              f"in the background", flush=True)
+        closings.append(closer.submit(wave_close, args, o, closed))
 
     def flush():
         """Produce side only: link the batch (the gate compiles each file alone; link errors show up here), commit
@@ -1286,12 +1366,27 @@ def lanes(args):
                 r = dict(ea=ea, ok=False, err=f"exception: {e} | {tb.strip().splitlines()[-3].strip()}", usage=[])
             handle(r, tier)
         if len(good) >= args.batch and not flush():
+            broken = True
+        if broken:
             pool.shutdown(wait=True, cancel_futures=True)
-            return
+            break
         refill()
-    if flush():
+    for o in list(open_mods):  # stopped with modules open: what they have is still verified
+        if not broken:
+            close(o)
+    if not broken and flush():
         live(phase="stopped" if stopping else "finished")
     print(f"lanes done: {total_ok} ok, {total_esc} escalated, {total_def} deferred", flush=True)
+    if rolling:
+        closer.shutdown(wait=True)
+        for fu in closings:
+            stops.extend(fu.result())
+        for x in stops:
+            print(f"waves: stopped: {x}", flush=True)
+        if stops:
+            sys.exit(STOP_EXIT)
+        if broken:
+            sys.exit(1)
 
 
 def ida_refresh(module_arg):
@@ -1373,16 +1468,17 @@ def _jsonl(p, skip=0):
     return out
 
 
-def wave_report(args, mods, t0):
+def wave_report(args, mods, t0, since=None):
     """What this wave's in-game check found, and whether the wave loop should stop. Counts the verifier groups run
-    since the wave started (the verify step) and the module's done functions
+    since the wave's verify step started (`since`; default: since the wave started, t0. Rolling waves overlap, so
+    an earlier module's groups may fall after t0) and the module's done functions
     still pending (never installed in a passing smoke). `installed` is exactly that: the hook was on in a smoke
     that passed; whether the function ran or was compared is the ledger's tier (verify.py report). One smoke
     failure the verifier can't attribute is reported, not counted as a defect; it leaves functions pending."""
     v = q = 0
     notes = []
     for r in _jsonl(VERIFIER_LOG):
-        if r.get("ts", 0) >= t0 and r.get("event") in ("group", "baseline"):
+        if r.get("ts", 0) >= (since or t0) and r.get("event") in ("group", "baseline"):
             v += r.get("verified", 0)
             q += len(r.get("quarantined") or [])
             if r.get("note"):
@@ -1415,44 +1511,51 @@ def wave_report(args, mods, t0):
     return rep
 
 
+def wave_close(args, o, n):
+    """End-of-wave steps of one module of a rolling run (lanes' background worker, one module at a time): verify its
+    pending functions in game, link test, report; every --regress-every modules the verified baseline is smoked
+    with the widest coverage (verifier --baseline-only --full: what FR01's short start never reaches). Returns the
+    reasons to stop the run ([] = go on)."""
+    py = sys.executable
+    tool = lambda *a: subprocess.run([py, os.path.join(ROOT, "tools", a[0]), *a[1:]]).returncode  # noqa: E731
+    try:
+        since = time.time()
+        try:
+            led = json.load(open(os.path.join(ROOT, "db", "verify.json")))
+        except (OSError, ValueError):
+            led = {}
+        if not any(r["module"] == o["id"] and r["status"] == "done" and not led.get(f"{ea:08x}", {}).get("ok")
+                   for ea, r in load_csv().items()):
+            # nothing written and nothing left over from an earlier run (e.g. every open function is in queue/)
+            print(f"wave {o['name']}: nothing pending, no verify", flush=True)
+            wave_report(args, {o["id"]}, o["t0"], since)
+            return []
+        if not args.no_verify:
+            print(f"wave {o['name']}: verify", flush=True)
+            tool("verifier.py", "--module", o["id"])
+        print(f"wave {o['name']}: link test", flush=True)
+        tool("linktest.py")
+        stop = [f"{o['name']}: {x}" for x in wave_report(args, {o["id"]}, o["t0"], since)["stop"]]
+        if not stop and args.regress_every and n % args.regress_every == 0 and not args.no_verify:
+            print(f"wave {o['name']}: regression check (verified baseline, full coverage)", flush=True)
+            if tool("verifier.py", "--baseline-only", "--full"):
+                stop.append("regression check failed (work/verifier.log)")
+        return stop
+    except Exception as e:  # a tooling error here must not pass for a clean wave
+        import traceback
+        traceback.print_exc()
+        return [f"{o['name']}: end-of-wave steps raised {e!r}"]
+
+
 def waves(args):
-    """Waves in rank order, one subprocess per module (fresh lane state each). Between waves the verified baseline
-    is smoked with the widest coverage (verifier --baseline-only --full, every --regress-every waves): verification
-    next to production, catching what FR01's short start never reaches. Stops when a wave's stop rule fires, the
-    regression check fails, the ranking runs out, or after --waves N (-1: no limit)."""
-    loop_only = {"--waves", "--regress-every"}  # the rest of the command line passes through to each wave
-    argv, it = [], iter(sys.argv[2:])
-    for x in it:
-        if x in loop_only:
-            next(it, None)
-        elif x.split("=")[0] in loop_only or x == "--next" or x == args.module_name:
-            continue
-        else:
-            argv.append(x)
-    py, here = sys.executable, os.path.abspath(__file__)
-    seen, n = set(), 0
-    while args.waves < 0 or n < args.waves:
-        ranked = [(m, nm) for _, m, nm, *_ in rank_modules(DB(), 60) if m not in seen]
-        if not ranked:
-            print("waves: ranking exhausted", flush=True)
-            return
-        m, name = ranked[0]
-        seen.add(m)
-        n += 1
-        print(f"\n==== waves: {n}{'/' + str(args.waves) if args.waves > 0 else ''} {name} ({m})", flush=True)
-        rc = subprocess.run([py, here, "wave", m, *argv]).returncode
-        if rc == STOP_EXIT:
-            print(f"waves: stop rule fired after {m} (work/waves.jsonl); stopping", flush=True)
-            sys.exit(STOP_EXIT)
-        if rc:
-            print(f"waves: wave {m} exited {rc}; stopping", flush=True)
-            sys.exit(rc)
-        if args.regress_every and n % args.regress_every == 0 and not args.no_verify:
-            print("waves: regression check (verified baseline, full coverage)", flush=True)
-            rc = subprocess.run([py, os.path.join(ROOT, "tools", "verifier.py"), "--baseline-only", "--full"]).returncode
-            if rc:
-                print("waves: regression check failed (work/verifier.log); stopping", flush=True)
-                sys.exit(STOP_EXIT)
+    """Waves in rank order as one rolling lanes run (see lanes): the next module starts while the previous one's
+    slow tail finishes, and each module's verify + link test + report run in the background when it closes. Stops
+    when a module's stop rule fires, the regression check fails, the ranking runs out, the stop file appears, or
+    after --waves N modules (-1: no limit)."""
+    args.roll, args.module = args.waves, None
+    if args.total == 200:
+        args.total = 100000
+    lanes(args)
 
 
 def cost(_):
@@ -1598,6 +1701,8 @@ if __name__ == "__main__":
     w.add_argument("--no-verify", action="store_true")
     w.add_argument("--waves", type=int, default=0, help="run N waves in rank order (-1: until the stop rule or the "
                    "ranking runs out); each wave's report -> work/waves.jsonl")
+    w.add_argument("--overlap", type=int, default=3, help="with --waves: modules open at once (the next one starts "
+                   "while the earlier ones' slow tails finish; 1: one after another)")
     w.add_argument("--regress-every", type=int, default=1, help="with --waves: full regression smoke of the verified "
                    "baseline every N waves (0: off)")
     w.add_argument("--stop-quarantine", type=float, default=0.03, help="stop rule: quarantined / verified+quarantined")

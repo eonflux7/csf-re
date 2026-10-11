@@ -36,7 +36,9 @@ module, evidence, link test), `tools/grunt.py wave --next` (what to wave next), 
 ## The loop (per module)
 
 One command runs it: **`tools/grunt.py wave <module>`** (`wave --next` ranks modules by centrality: undone
-bytes x how much other code calls into them; `wave --waves -1` runs them in rank order). Each step also runs alone.
+bytes x how much other code calls into them; `wave --waves -1` runs them in rank order as one rolling run: up to
+`--overlap` 3 modules open, the next one starts while the earlier ones' L/X tails finish, and a closed module's
+verify + link test + report run in the background). Each step also runs alone.
 
 1. **Prep** (automatic, ~1 min): `ida/sync.py` pushes what db/ holds into the IDB and the module is re-decompiled.
 2. **Produce** (`grunt.py lanes --module M`): leaf-first selection, clone-aware; size tiers S/M/L/X with model
@@ -67,9 +69,8 @@ The orchestrator (Opus, interactive) works `queue/` and the backlog below.
 
 ## Current focus (priority order)
 
-1. **Waves by centrality**: `wave --waves -1` runs them in rank order with the stop rule and a full baseline
-   regression smoke between waves. Paused on quota at gfx_matrix (2026-10-10, game code 22% by bytes); resume once
-   the 5h windows reset.
+1. **Waves by centrality**: `wave --waves -1` runs them in rank order (rolling, see the loop) with the stop rule
+   and a full baseline regression smoke after each module.
 2. **Escalation queue** (`queue/`, count in `status.py`): crash bisects, review findings and gate failures of the
    waves; the audio tail-forwarding thunks and the two usercall functions wait on hook.h helpers (backlog, Loop &
    tooling).

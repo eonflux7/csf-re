@@ -993,3 +993,16 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
     same content (ties in the counted lists come out in another order).
   - a change to a shared header (hook.h, globals.h, auto_classes.h) recompiles all ~4,060 files in each of three
     trees: build ~100 s, verify tree 98 s, standalone 134 s. The per-wave rename pass did that every wave.
+
+## 2026-10-11 — Rolling waves
+
+- `wave --waves N` is one lanes run now, not a subprocess per module. Up to `--overlap` (3) modules are open; the
+  next one is admitted when the open ones have handed out all their S/M work and an S/M slot idles; the older
+  module's candidates keep priority. A module with nothing in flight and nothing submittable is closed: commit,
+  then verifier --module + link test + report + regression check on one background worker (one module at a time:
+  the verifier's lock is non-blocking), while production goes on. A stop rule ends the run like the stop file.
+- Why: 78-97% of a wave's tail had X at its cap of 2 with ~20 slots idle, and verify + link test (2-4 min) held the
+  next module back. Dry run with fake calls (6 modules, real tier mix): overlap alone -13% (X stays the limit),
+  so `x_jobs` 2 -> 4 as well. Not measured: Codex at 4+ concurrent high-effort calls a login.
+- Changes of behaviour: a module can close while a clone sibling of another module is in flight (its remaining
+  clones stay todo for this run); wave_report counts verifier events since the module's verify step started.
