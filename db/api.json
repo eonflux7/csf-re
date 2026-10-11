@@ -14280,7 +14280,7 @@
   "name": "GetValue_8afc80",
   "name_src": "agent",
   "votes": {
-   "GetValue_8afc80": 9
+   "GetValue_8afc80": 10
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -14412,7 +14412,8 @@
   "name": "SceneLoader_CreateObject",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_CreateObject": 1
+   "SceneLoader_CreateObject": 1,
+   "CreateReplacementObject": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -15571,7 +15572,8 @@
   "name": "C_008310f8_Initialize",
   "name_src": "agent",
   "votes": {
-   "InitializeAreaEffectRecord": 1
+   "InitializeAreaEffectRecord": 1,
+   "C_008310f8_Initialize": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -18752,7 +18754,7 @@
   "votes": {
    "Scene_RemoveObjectSlot": 1,
    "SceneReleaseHandle": 1,
-   "CScene_RemoveObjectSlot": 7
+   "CScene_RemoveObjectSlot": 8
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -18764,7 +18766,7 @@
   "name": "CScene_AddObject",
   "name_src": "agent",
   "votes": {
-   "CScene_AddObject": 5
+   "CScene_AddObject": 6
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -19236,7 +19238,7 @@
   "name": "Game_SetMappedValue",
   "name_src": "agent",
   "votes": {
-   "Game_SetMappedValue": 1
+   "Game_SetMappedValue": 2
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -27880,7 +27882,7 @@
   "name": "GetGlobalObjectField184",
   "name_src": "agent",
   "votes": {
-   "GetGlobalObjectField184": 22
+   "GetGlobalObjectField184": 23
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -27988,7 +27990,7 @@
   "name": "DispatchRecordToGlobalObject",
   "name_src": "vote",
   "votes": {
-   "DispatchRecordToGlobalObject": 20,
+   "DispatchRecordToGlobalObject": 21,
    "QueueTaskRecord": 1
   },
   "ret": "uint32_t",
@@ -35359,7 +35361,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 110,
+   "GetObjectPositionVector": 111,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -35381,7 +35383,7 @@
   "name": "SceneLoader_ConfigureFocusEntry",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_ConfigureFocusEntry": 23,
+   "SceneLoader_ConfigureFocusEntry": 24,
    "SceneLoader_SetObjectPosition": 2
   },
   "ret": "int",
@@ -35554,7 +35556,7 @@
   "name": "GetRelatedObjectAndClearFlag",
   "name_src": "agent",
   "votes": {
-   "GetRelatedObjectAndClearFlag": 2
+   "GetRelatedObjectAndClearFlag": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -57375,13 +57377,14 @@
   "file": "src/auto/004e46f0.cpp"
  },
  "004e4750": {
-  "name": "sub_4E4750",
-  "name_src": "addr",
+  "name": "C_0083e7d8_UpdateReplacementTimer",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "C_0083e7d8* self, void* , float elapsed",
+  "sig_src": "impl",
+  "file": "src/auto/004e4750.cpp"
  },
  "004e4910": {
   "name": "C_0083e7d8_StartEffect",
@@ -58564,7 +58567,7 @@
   "name": "GetValue8B0554",
   "name_src": "agent",
   "votes": {
-   "GetValue8B0554": 218
+   "GetValue8B0554": 219
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -87494,7 +87497,7 @@
   "name": "RpHAnimHierarchyGetMatrixArray",
   "name_src": "rwname",
   "votes": {
-   "RpHAnimHierarchyGetMatrixArray": 3
+   "RpHAnimHierarchyGetMatrixArray": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -87536,7 +87539,7 @@
   "name": "RpHAnimHierarchyUpdateMatrices",
   "name_src": "rwname",
   "votes": {
-   "RpHAnimHierarchyUpdateMatrices": 4
+   "RpHAnimHierarchyUpdateMatrices": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -105455,7 +105458,7 @@
   "name": "RtAnimInterpolatorSetCurrentAnim",
   "name_src": "rwname",
   "votes": {
-   "RtAnimInterpolatorSetCurrentAnim": 4
+   "RtAnimInterpolatorSetCurrentAnim": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -105466,7 +105469,7 @@
   "name": "RtAnimInterpolatorCopy",
   "name_src": "rwname",
   "votes": {
-   "RtAnimInterpolatorCopy": 3
+   "RtAnimInterpolatorCopy": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -105743,7 +105746,7 @@
   "name": "RwV3dTransformVectors",
   "name_src": "rwname",
   "votes": {
-   "RwV3dTransformVectors": 14
+   "RwV3dTransformVectors": 15
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -106202,7 +106205,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 89
+   "RwMatrixDestroy": 90
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -106213,7 +106216,7 @@
   "name": "RwMatrixCreate",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixCreate": 57
+   "RwMatrixCreate": 58
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -111165,7 +111168,7 @@
   "name": "NetSession_GetNodeAllocator",
   "name_src": "vote",
   "votes": {
-   "NetSession_GetNodeAllocator": 6,
+   "NetSession_GetNodeAllocator": 7,
    "NetSession_GetAllocator": 1
   },
   "ret": "uint32_t*",
@@ -111188,7 +111191,7 @@
   "name": "NetSession_FreeListNode",
   "name_src": "vote",
   "votes": {
-   "NetSession_FreeListNode": 5,
+   "NetSession_FreeListNode": 6,
    "NetSession_ReleaseAllocation": 1
   },
   "ret": "void",
@@ -111200,7 +111203,7 @@
   "name": "NetZ_OperatorNew",
   "name_src": "vote",
   "votes": {
-   "NetZ_OperatorNew": 12
+   "NetZ_OperatorNew": 13
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -111240,7 +111243,7 @@
   "name": "NetSession_ReleaseTransportStorage",
   "name_src": "vote",
   "votes": {
-   "NetSession_ReleaseTransportStorage": 13
+   "NetSession_ReleaseTransportStorage": 14
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -112690,7 +112693,7 @@
   "name": "InitializeTemporaryString",
   "name_src": "vote",
   "votes": {
-   "InitializeTemporaryString": 18
+   "InitializeTemporaryString": 19
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -112710,7 +112713,7 @@
   "name": "DestroyTemporaryString",
   "name_src": "vote",
   "votes": {
-   "DestroyTemporaryString": 8
+   "DestroyTemporaryString": 9
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -114666,7 +114669,7 @@
   "name": "NetSession_SetConnectionState",
   "name_src": "vote",
   "votes": {
-   "NetSession_SetConnectionState": 5,
+   "NetSession_SetConnectionState": 7,
    "NetSession_SetTransportState": 1
   },
   "ret": "char",
@@ -114675,13 +114678,15 @@
   "sig_src": "vote"
  },
  "00651160": {
-  "name": "sub_651160",
-  "name_src": "addr",
-  "votes": {},
+  "name": "ApplyPendingChangeFlag",
+  "name_src": "vote",
+  "votes": {
+   "ApplyPendingChangeFlag": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, unsigned int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006511f0": {
   "name": "sub_6511F0",
@@ -115321,13 +115326,15 @@
   "sig_src": "abi"
  },
  "006524b0": {
-  "name": "sub_6524B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CreateListNodeFromEntry",
+  "name_src": "vote",
+  "votes": {
+   "CreateListNodeFromEntry": 1
+  },
   "ret": "char*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2, int a3, void** a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00652550": {
   "name": "sub_652550",
@@ -122127,7 +122134,7 @@
   "name": "ConstructResource",
   "name_src": "vote",
   "votes": {
-   "ConstructResource": 8
+   "ConstructResource": 9
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -123424,13 +123431,15 @@
   "sig_src": "abi"
  },
  "0066fc30": {
-  "name": "sub_66FC30",
-  "name_src": "addr",
-  "votes": {},
+  "name": "ListNodeGetOwnerTag",
+  "name_src": "vote",
+  "votes": {
+   "ListNodeGetOwnerTag": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0066fc40": {
   "name": "sub_66FC40",
@@ -132190,7 +132199,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 494
+   "Mem_Free": 496
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -138003,7 +138012,7 @@
  },
  "006a7770": {
   "name": "S_006a7640_ResetConnection_6A7770",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -138024,7 +138033,9 @@
  "006a78d0": {
   "name": "NetGatheringDdl_RebindResource",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "NetGathering_ResetSessionSlot": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_006a7640* self, void*",
@@ -138072,13 +138083,14 @@
   "file": "src/auto/006a7a70.cpp"
  },
  "006a7ab0": {
-  "name": "sub_6A7AB0",
-  "name_src": "addr",
+  "name": "NetGathering_TearDownSessionIfConnected",
+  "name_src": "impl",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_006a7640* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a7ab0.cpp"
  },
  "006a7b50": {
   "name": "S_006a7640_SetGatheringStatusCode",
@@ -138199,13 +138211,14 @@
   "file": "src/auto/006a8580.cpp"
  },
  "006a8660": {
-  "name": "sub_6A8660",
-  "name_src": "addr",
+  "name": "NetGathering_HandleStateFiveTeardown",
+  "name_src": "impl",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_006a7640* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a8660.cpp"
  },
  "006a8730": {
   "name": "NetGatheringDdl_ResetSessionState",
@@ -138256,13 +138269,15 @@
   "file": "src/auto/006a8940.cpp"
  },
  "006a8a10": {
-  "name": "sub_6A8A10",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_006a8940_ResetGathering",
+  "name_src": "vote",
+  "votes": {
+   "S_006a8940_ResetGathering": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006a8b10": {
   "name": "sub_6A8B10",
@@ -138296,7 +138311,9 @@
  "006a8e00": {
   "name": "ReleaseAndReplaceHeldPointer",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "NetGatheringDdl_CopyGatheringInfo": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "uint32_t* self, void* , int newPointer",
@@ -138332,17 +138349,18 @@
   "sig_src": "abi"
  },
  "006a9270": {
-  "name": "sub_6A9270",
-  "name_src": "addr",
+  "name": "S_006a8940_AdvanceGatheringSetup",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_006a8940* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a9270.cpp"
  },
  "006a95d0": {
   "name": "C_0085839c_BeginGathering",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -138360,13 +138378,14 @@
   "sig_src": "abi"
  },
  "006a97f0": {
-  "name": "sub_6A97F0",
-  "name_src": "addr",
+  "name": "S_006a7640_DispatchByState",
+  "name_src": "agent",
   "votes": {},
-  "ret": "void",
+  "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_006a7640* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/006a97f0.cpp"
  },
  "006a9820": {
   "name": "sub_6A9820",
@@ -138389,7 +138408,7 @@
  },
  "006a9890": {
   "name": "NetGatheringDdl_WaitForGathering",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__cdecl",
@@ -138398,15 +138417,16 @@
   "file": "src/auto/006a9890.cpp"
  },
  "006a9a60": {
-  "name": "FinalizeGatheringState",
-  "name_src": "vote",
+  "name": "C_0085fe28_ReleaseAllListNodes",
+  "name_src": "agent",
   "votes": {
    "FinalizeGatheringState": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0085fe28* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a9a60.cpp"
  },
  "006a9be0": {
   "name": "NetGatheringDdl_ReleaseConnectionAndTransport",
@@ -138430,7 +138450,7 @@
  },
  "006a9ef0": {
   "name": "C_0085fe28_ResetEmbeddedAndFinalize",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -138451,7 +138471,9 @@
  "006a9f80": {
   "name": "S_006a9be0_ReleaseNodes",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ReleaseSlotObject": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "S_006a9be0* self, void*",
@@ -138515,13 +138537,14 @@
   "sig_src": "abi"
  },
  "006aa6f0": {
-  "name": "sub_6AA6F0",
-  "name_src": "addr",
+  "name": "C_0085fe28_FreeSlotTable",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0085fe28* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006aa6f0.cpp"
  },
  "006aa760": {
   "name": "ReleaseGatheringResources",
@@ -138554,13 +138577,14 @@
   "sig_src": "abi"
  },
  "006aa900": {
-  "name": "sub_6AA900",
-  "name_src": "addr",
+  "name": "NetGatheringDDL_ReplaceMatchingEntries",
+  "name_src": "agent",
   "votes": {},
   "ret": "void**",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void** a2, void* a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , uintptr_t a2, void* a3",
+  "sig_src": "impl",
+  "file": "src/auto/006aa900.cpp"
  },
  "006aa970": {
   "name": "sub_6AA970",
@@ -138590,13 +138614,14 @@
   "sig_src": "abi"
  },
  "006aaf50": {
-  "name": "sub_6AAF50",
-  "name_src": "addr",
+  "name": "S_006aaae0_TickAndRelease",
+  "name_src": "impl",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "S_006aaae0* self, void* , float elapsed",
+  "sig_src": "impl",
+  "file": "src/auto/006aaf50.cpp"
  },
  "006aafe0": {
   "name": "sub_6AAFE0",
@@ -139235,7 +139260,7 @@
   "name": "Matrix_InvertWithStoredTarget",
   "name_src": "agent",
   "votes": {
-   "Matrix_InvertWithStoredTarget": 10,
+   "Matrix_InvertWithStoredTarget": 11,
    "S006adb40_ComputeMatrix": 1
   },
   "ret": "float*",
@@ -139447,7 +139472,7 @@
   "name": "GfxMatrix_GetEulerAngles",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_GetEulerAngles": 2,
+   "GfxMatrix_GetEulerAngles": 3,
    "GetMatrixEulerAngles": 2
   },
   "ret": "float*",
@@ -155269,10 +155294,11 @@
   "votes": {
    "C_00861e98_PrepareBlendRootMotion": 1
   },
-  "ret": "uint8_t",
+  "ret": "std::uint8_t",
   "conv": "__fastcall",
-  "params": "C_00861e98* self, void* edx, uint32_t* track, int animation",
-  "sig_src": "vote"
+  "params": "void* self, void* , std::uint32_t* hierarchies, std::uint32_t* animation",
+  "sig_src": "impl",
+  "file": "src/auto/006e9080.cpp"
  },
  "006e92a0": {
   "name": "C_00861e98_ComposeTransformsAndExtractPose",
@@ -195335,13 +195361,15 @@
   "sig_src": "vote"
  },
  "00798fc0": {
-  "name": "sub_798FC0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetGatheringDdl_RequestGatheringDetails",
+  "name_src": "vote",
+  "votes": {
+   "NetGatheringDdl_RequestGatheringDetails": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00798ff0": {
   "name": "NetGatheringDdl_InitializeGatheringResource",
@@ -195376,13 +195404,15 @@
   "sig_src": "vote"
  },
  "007990a0": {
-  "name": "sub_7990A0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetGatheringDdl_RequestGatheringUpdate",
+  "name_src": "vote",
+  "votes": {
+   "NetGatheringDdl_RequestGatheringUpdate": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* arg0, char* a3, int a4, char* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00799100": {
   "name": "sub_799100",
@@ -195394,13 +195424,26 @@
   "sig_src": "abi"
  },
  "00799130": {
-  "name": "sub_799130",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetGatheringDdl_RequestGatheringMode",
+  "name_src": "vote",
+  "votes": {
+   "NetGatheringDdl_RequestGatheringMode": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2, int a3, int a4, char a5",
-  "sig_src": "abi"
+  "sig_src": "vote"
+ },
+ "00799190": {
+  "name": "NetGatheringDdl_RequestGatheringCreation",
+  "name_src": "vote",
+  "votes": {
+   "NetGatheringDdl_RequestGatheringCreation": 1
+  },
+  "ret": "bool",
+  "conv": "__fastcall",
+  "params": "void* self, void* edx, void* resource, void* gatheringInfo",
+  "sig_src": "vote"
  },
  "00799220": {
   "name": "StartRequest",
@@ -197119,13 +197162,15 @@
   "sig_src": "abi"
  },
  "0079fef0": {
-  "name": "sub_79FEF0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetGatheringDdl_ConstructGatheringMonitor",
+  "name_src": "vote",
+  "votes": {
+   "NetGatheringDdl_ConstructGatheringMonitor": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0079ff30": {
   "name": "sub_79FF30",
@@ -197137,13 +197182,15 @@
   "sig_src": "abi"
  },
  "0079fff0": {
-  "name": "sub_79FFF0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetGatheringDdl_StartGatheringMonitor",
+  "name_src": "vote",
+  "votes": {
+   "NetGatheringDdl_StartGatheringMonitor": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007a00c0": {
   "name": "sub_7A00C0",
@@ -205583,7 +205630,7 @@
   "name": "RtQuatRotate",
   "name_src": "rwname",
   "votes": {
-   "RtQuatRotate": 4
+   "RtQuatRotate": 5
   },
   "ret": "float*",
   "conv": "__cdecl",
