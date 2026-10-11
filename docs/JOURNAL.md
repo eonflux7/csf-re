@@ -1041,3 +1041,32 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - emudiff gaps seen while triaging the queue: HOOK_KEEP_ECX / HOOK_TAIL wrappers read as runaway calls (their
   `call [impl]` goes through an unrelocated pointer); a CRT helper the original calls and ours inlines reads as
   a different call target (0x624D10).
+
+## 2026-10-11 — Queue 42 -> 18: what the items were
+
+- Triage: every queued file compiled and run through emudiff first. It named the defect outright for most of
+  the real ones; "N calls vs 2000" on a HOOK_TAIL / HOOK_KEEP_ECX function is a real runaway (stack imbalance),
+  not a wrapper artifact as first assumed.
+- Fixed and installed again (26): wrong/missing `this` (0x406020 forwarder dropped ecx, 0x41E380 and 0x4686F0
+  passed the wrong object, 0x4FE130 missed `lea ecx, [eax+0x22A4]`, 0x5011E0 passed a field for the object),
+  swapped stack arguments of a virtual call (0x407450), a dword argument typed char (0x521CF0), frame smashes by
+  undersized struct locals (0x4223F0, 0x470B20), tail thunks (0x521D90/DA0/DB0 called through the address of a
+  function-pointer variable; 0x48E5D0, 0x475B60, 0x476300 needed `ret N`), a callee bound without `this`
+  (0x46E590 -> 0x46BE40), x87 precision (0x6AB8D0), and the bystanders of those crashes.
+- Tooling the queue asked for:
+  - hook.h: hook::tail_ret(eax, N) for `ret N` paths (a third parameter made fn pop the target's argument; also
+    in 0x48E5F0 and 0x48E710, accepted today); HOOK_KEEP_ECX_CDECL (the wrapper assumed fn pops its copy of the
+    arguments; 0x4068E0 is __cdecl).
+  - gate: by-value struct locals; tail functions pop nothing and name the original's pops; keep-ecx wrapper vs
+    the original's ret; a catch handler's `mov eax, <label>; ret` is not a return of the function (0x410130 and
+    0x486550 were rejected for it); the ecx/edx read scan follows branches.
+- Two of my own slips, both caught by the verifier: the mechanical local rewrite also hit members of hand-laid-out
+  local structs (0x4344A0 crashed at startup, 0x41C960; both restored), and 5 of 9 functions resubmitted as
+  bystanders were culprits after all (0x4068E0, 0x46BE40's caller, 0x490790, ...).
+- Left in queue/ (18): 0x490790 (fails in game, cause not found), 0x410290, 0x419B50, 0x4ED1C0, 0x6A2510,
+  0x6A2910 (crash bisects, not looked at), 0x454070 and 0x465310 (don't compile: unknown class type / usercall),
+  the four zlib register-argument functions, three review findings, four gate failures.
+- OPEN: the full regression is flaky since ~13:10 (failed 13:13 and 14:21, passed in between): crashes in the
+  savegame start at different places (a jump into heap data; a null read in library code with NaNs on the stack).
+  Not attributable by bisect. emudiff over the 474 functions installed 12:40-13:14: 32 DIFF, most of those looked
+  at are noise (last-bit float rounding, garbage upper bytes of a pushed byte); not narrowed down further.
