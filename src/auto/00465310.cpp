@@ -1,53 +1,3 @@
-# Escalation 0x00465310: in-game smoke failure (verifier bisect: 9 smokes (1 named by crash reports))
-
-## Smoke log tail
-```
-nohook=False pid=28048 ready=True after=3s alive=False exit=-1073741819 stillrunning=False
----- hits
-006a2e00    1576038 auto C_0085ee28_SumFields
-0069e3d0     550362 auto C_0085eb30_ReleaseMutexIfSet
-00739440      69583 auto C_00867444_GetScaledValue
-00730830      64983 auto CopyDwordIfNotNull
-00768e70      56120 auto GetGlobalValue_768E70
-0044f630      51962 auto CGuiControl_GetField012C
-006b1380      36177 auto GetGlobalInt
-006b2820      29880 auto C_00860178_Construct
-00718ee0      22919 auto CGuiControl_GetAbsolutePosition
-0071a2e0      22633 auto CopyTwoDwordsIfDestNonNull
----- diff (0 functions compared)
-CRASH code=c0000005 eip=6d719c84 addr=00000001 (rw=0) eax=00000000 ebx=19af4218 ecx=19af4218 edx=00000000 esi=00000001 edi=032bc564 ebp=0019e9a0 esp=0019e21c
-  eip module 6D6E0000 (ours 6D6E0000); stack:
-   773cf929 00140008 749c4286 00000000 00000008 00000040
-   0019e224 1b12e6e8 0019e288 77412580 03cf45a2 fffffffe
-   0019e298 0000007f 00b5cd00 0019e2e8 00000080 000007d0
-   7655e970 0019e284 651ac5ba 00000007 0000007f 651b3ee0
----- csf_hook.log
-hook 00407ed0 auto     C_0082d5e0_InvokeVtblSlot15
-hook 00406e90 auto     ResolveIndexedEntry
-hook 00406210 auto     SetValueAtOffset8
-hook 00405810 auto     C_0082d510_ResetState
-hook 004013e0 auto     ReturnMinusOne
-hook 00401090 auto     GetGlobalValue_401090
-hooks installed=2689 skipped=0 failed=0
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00BC0914 wrapped
-devcmd: video mode 1280x960
-devcmd: dev start (scene Maps/FR01/Parachut.scn) instead of Menus/P_Intro.fbs -> state 1
-devcmd: starting scene 'Maps/FR01/Parachut.scn'
-CRASH code=c0000005 eip=6d719c84 addr=00000001 (rw=0) eax=00000000 ebx=19af4218 ecx=19af4218 edx=00000000 esi=00000001 edi=032bc564 ebp=0019e9a0 esp=0019e21c
-  eip module 6D6E0000 (ours 6D6E0000); stack:
-   773cf929 00140008 749c4286 00000000 00000008 00000040
-   0019e224 1b12e6e8 0019e288 77412580 03cf45a2 fffffffe
-   0019e298 0000007f 00b5cd00 0019e2e8 00000080 000007d0
-   7655e970 0019e284 651ac5ba 00000007 0000007f 651b3ee0
-SMOKE FAIL (exited/crashed early)
-
-```
-
-## Rejected file
-```cpp
 // Script command dispatcher (0x00465310): routes an int16 mission-script command id to its handler.
 #include <cstdint>
 #include <cstddef>
@@ -153,7 +103,7 @@ CSF_FUNC(int32_t*, __stdcall, ResetVectorAndLoadSlotPosition, 0x0045C820, (void*
 CSF_FUNC(uint32_t*, __stdcall, StoreResolvedHandleValue_45C8C0, 0x0045C8C0, (uint32_t holderAddr, uint32_t , uint32_t handleRefAddr));
 CSF_FUNC(int, __stdcall, ResolveHandleTargetIntoState, 0x0045C910, (int stateHolder, int unusedArg, int requestRef));
 CSF_FUNC(int, __stdcall, ResolveHandleIntoOwnerSlot, 0x0045C970, (int ownerRef, int unusedArg, int entryRef));
-CSF_FUNC(C_00833ee8*, __stdcall, ResolveSceneObjectHandleAndCache, 0x0045C9C0, (void* outputHolder, int , void* handleHolder));
+CSF_FUNC(CPlayerCharacter*, __stdcall, ResolveSceneObjectHandleAndCache, 0x0045C9C0, (void* outputHolder, int , void* handleHolder));
 CSF_FUNC(int, __stdcall, StoreResolvedHandleValue_45CA10, 0x0045CA10, (int holderArg, int , int handleRefArg));
 CSF_FUNC(int, __stdcall, CopyResolvedRecordValueToSlot, 0x0045CA60, (int a1, int a2, int a3));
 CSF_FUNC(int, __stdcall, CopyResolvedHandleValueToSlot_45CAC0, 0x0045CAC0, (int a1, int a2, int a3));
@@ -220,7 +170,7 @@ CSF_FUNC(int, __fastcall, IssueCommandForResolvedHandle, 0x0045E840, (void* self
 CSF_FUNC(int, __stdcall, SceneHandle_ForwardParamsToChild, 0x0045E8D0, (int , int , uint32_t* a3));
 CSF_FUNC(int, __stdcall, DispatchSceneEventToHandleComponent, 0x0045E9A0, (int , int , uint32_t* argPtrs));
 CSF_FUNC(int, __stdcall, SendStateEventToHandleObject, 0x0045EA70, (int , int , int a3));
-CSF_FUNC(C_00833ee8*, __stdcall, ResolveSceneEntryHandle, 0x0045EB40, (int a1, int a2, int a3));
+CSF_FUNC(CPlayerCharacter*, __stdcall, ResolveSceneEntryHandle, 0x0045EB40, (int a1, int a2, int a3));
 CSF_FUNC(int, __fastcall, ApplyFacingRecordToSceneObject, 0x0045EB80, (void* self, void* , int , int , std::uint32_t* a4));
 CSF_FUNC(uint32_t*, __stdcall, SceneHandle_ResolveAndDispatch_45EC50, 0x0045EC50, (int a1, int a2, int a3));
 CSF_FUNC(int, __stdcall, ForwardSceneHandleCommand, 0x0045ECA0, (int a1, int a2, int a3));
@@ -303,7 +253,7 @@ CSF_FUNC(int, __stdcall, DispatchSceneObjectEventCode37, 0x004612B0, (int , int 
 CSF_FUNC(int, __stdcall, MenuExtras_ApplyDescriptionFromRecord, 0x00461310, (int a1, int a2, uint32_t* a3));
 CSF_FUNC(int, __stdcall, ResolveHandleAndReleaseIfFound, 0x00461370, (int a1, int a2, int a3));
 CSF_FUNC(int, __stdcall, ApplySceneHandleFlag40, 0x004613B0, (int a1, int a2, uint32_t* a3));
-CSF_FUNC(C_00833ee8*, __stdcall, SceneHandle_ResolveAndActivate, 0x00461410, (int , int , int a3));
+CSF_FUNC(CPlayerCharacter*, __stdcall, SceneHandle_ResolveAndActivate, 0x00461410, (int , int , int a3));
 CSF_FUNC(C_008342e8*, __stdcall, ResolveHandleAndApplyString, 0x00461480, (int , int , uint32_t* handleRef));
 CSF_FUNC(int, __stdcall, SceneDispatch_ResolveHandleFromRef, 0x004614E0, (int , int , uint32_t* refPointers));
 CSF_FUNC(int, __stdcall, DispatchPositionToSceneEntity, 0x00461550, (int , int , uint32_t* argRefs));
@@ -536,7 +486,7 @@ static char __fastcall ScriptCommands_DispatchCommand(void* interpreter, void* /
     case 2001: UpdateCombinedFlag(ctx, cmd, args); return 1;
     case 2002: UpdateOwnerFlagFromPairFlags(ctx, cmd, args); return 1;
     case 2003:
-        CSF_AT(uint8_t, CSF_AT(uint8_t*, resultBytes, 4), 1) = CSF_AT(uint8_t, CSF_AT(uint8_t*, argBytes, 4), 1) == 0;
+        CSF_AT(uint8_t, CSF_AT(uint8_t*, resultBytes, 4), 1) = CSF_AT(uint8_t, CSF_AT(uint8_t*, CSF_AT(uint8_t*, argBytes, 0), 4), 1) == 0;
         return 1;
     case 2004:
         CSF_AT(uint8_t, CSF_AT(uint8_t*, resultBytes, 4), 1) = CSF_AT(uint8_t, selfBytes, 84);
@@ -593,7 +543,7 @@ static char __fastcall ScriptCommands_DispatchCommand(void* interpreter, void* /
     case 3000: ResetObjectStateAndReleaseChild(self, nullptr, ctx, cmd, args); return 1;
     case 3002:
         CSF_AT(uint32_t, selfBytes, 28) =
-            CSF_AT(uint32_t*, CSF_AT(uint8_t*, selfBytes, 16), 64)[CSF_AT(int32_t, CSF_AT(uint8_t*, argBytes, 4), 4)];
+            CSF_AT(uint32_t*, CSF_AT(uint8_t*, selfBytes, 16), 64)[CSF_AT(int32_t, CSF_AT(uint8_t*, CSF_AT(uint8_t*, argBytes, 0), 4), 4)];
         return 1;
     case 3003: Cursor_AdvanceToNextEntry(self, nullptr, ctx, cmd, args); return 1;
     case 3004: AdvanceIndexedTableValue(self, nullptr, ctx, cmd, args); return 1;
@@ -716,7 +666,7 @@ static char __fastcall ScriptCommands_DispatchCommand(void* interpreter, void* /
     case 4108: ForwardSceneRecordByteToControl(ctx, cmd, args); return 1;
     case 4109: Scene_DispatchObjectsByState(ctx, cmd, args); return 1;
     case 4110:
-        CSF_AT(uint8_t, static_cast<uint8_t*>(g_pCurrentScene), 425) = CSF_AT(uint8_t, CSF_AT(uint8_t*, argBytes, 4), 1);
+        CSF_AT(uint8_t, static_cast<uint8_t*>(g_pCurrentScene), 425) = CSF_AT(uint8_t, CSF_AT(uint8_t*, CSF_AT(uint8_t*, argBytes, 0), 4), 1);
         return 1;
     case 4111: ForwardNestedRecordValueToSink(ctx, cmd, args); return 1;
 
@@ -852,7 +802,3 @@ static char __fastcall ScriptCommands_DispatchCommand(void* interpreter, void* /
 
 HOOK(0x00465310, ScriptCommands_DispatchCommand, "auto");
 
-```
-
-## Note (2026-10-09)
-tools/regargs.py: this function reads a REAL register input (edi,esi) before writing it (LTCG usercall). A plain C++ hook cannot receive it; needs a naked entry thunk that moves the register into a stack/ecx argument (tooling not there yet). Do not re-grunt as is.
