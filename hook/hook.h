@@ -91,7 +91,7 @@ struct Registrar {
 // ... call 0x467CC0` with no reload): the original never writes ecx, compiled C++ does. The stub saves ecx, copies
 // the `nargs` stack dwords, calls fn (a __fastcall impl popping them, as the original's `ret 4*nargs`), restores ecx.
 // edx goes through untouched; eax / edx:eax / st0 results are fn's.
-#define HOOK_KEEP_ECX(addr, fn, nargs, module) \
+#define HOOK_KEEP_ECX_(addr, fn, nargs, retbytes, module) \
     static void* const HOOK_CAT(fn, _impl) = (void*)&fn; \
     static __declspec(naked) void HOOK_CAT(fn, _keep_ecx)() { \
         __asm push ecx __asm push esi __asm push edi \
@@ -103,9 +103,13 @@ struct Registrar {
         __asm mov ecx, [esp + (4 * (nargs)) + 8] \
         __asm call dword ptr [HOOK_CAT(fn, _impl)] \
         __asm pop edi __asm pop esi __asm pop ecx \
-        __asm ret (4 * (nargs)) \
+        __asm ret (retbytes) \
     } \
     HOOK(addr, HOOK_CAT(fn, _keep_ecx), module)
+// fn pops its arguments itself (__stdcall / __thiscall-as-__fastcall): the wrapper pops the caller's copy too
+#define HOOK_KEEP_ECX(addr, fn, nargs, module) HOOK_KEEP_ECX_(addr, fn, nargs, 4 * (nargs), module)
+// fn is __cdecl: the caller pops, the wrapper must not (0x4068E0 returned with `ret 8` and broke its callers)
+#define HOOK_KEEP_ECX_CDECL(addr, fn, nargs, module) HOOK_KEEP_ECX_(addr, fn, nargs, 0, module)
 
 // A function that ends in an indirect tail jump (`mov ecx, obj; jmp [vtbl + N]`): the target's signature is unknown
 // and it gets the caller's stack arguments and return address untouched, which C++ can't write. fn is everything

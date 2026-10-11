@@ -234,9 +234,9 @@ class Obj:
 
 def hook_name(ea, src=None):
     src = src or os.path.join(ROOT, "src", "auto", f"{ea:08x}.cpp")
-    for m in re.finditer(r"\b(HOOK(?:_METHOD|_KEEP_ECX|_TRAMP|_TAIL)?)\(\s*0x([0-9A-Fa-f]+)\s*,\s*&?([\w:]+)", open(src).read()):
+    for m in re.finditer(r"\b(HOOK(?:_METHOD|_KEEP_ECX_CDECL|_KEEP_ECX|_TRAMP|_TAIL)?)\(\s*0x([0-9A-Fa-f]+)\s*,\s*&?([\w:]+)", open(src).read()):
         if int(m.group(2), 16) == ea:
-            return m.group(3) + {"HOOK_KEEP_ECX": "_keep_ecx", "HOOK_TAIL": "_tail"}.get(m.group(1), "")
+            return m.group(3) + {"HOOK_KEEP_ECX": "_keep_ecx", "HOOK_KEEP_ECX_CDECL": "_keep_ecx", "HOOK_TAIL": "_tail"}.get(m.group(1), "")
     raise ValueError("no HOOK line")
 
 

@@ -182,7 +182,8 @@ def gate(ea, path, db=None):
         _db = db if db is not None else _DB()
         if ea in _db.F and regargs.needs_keep_ecx(_db, ea):
             errs.append(f"callers of 0x{ea:X} keep a value in ecx across the call and the original never writes ecx: "
-                        f"register with HOOK_KEEP_ECX(0x{ea:X}, Fn, <stack args>, \"module\") instead of HOOK")
+                        f"register with HOOK_KEEP_ECX(0x{ea:X}, Fn, <stack args>, \"module\") instead of HOOK "
+                        f"(HOOK_KEEP_ECX_CDECL(...) when the original is __cdecl: a plain `ret`, the caller pops)")
     if re.search(r"\b__regcall\b", src):  # grunts' bridge for Hex-Rays' phantom @<edi>/@<esi> args (tools/regargs.py)
         errs.append("__regcall is not allowed: register parameters Hex-Rays shows in ebx/esi/edi are saved registers, "
                     "not arguments (see the packet's NOTE); bind and implement with a plain convention")
@@ -205,9 +206,7 @@ def gate(ea, path, db=None):
                         "CSF_AT(T, p, off). If the original really loads a pointer there and dereferences it, write "
                         "two steps: `T* q = CSF_AT(T*, p, off);` then `*q`")
             break
-    hooks = re.findall(r"HOOK(?:_METHOD|_KEEP_ECX|_TAIL)?\(\s*0x([0-9A-Fa-f]+)\s*,\s*&?([\w:]+)", src)
-    if len(hooks) != 1 or int(hooks[0][0], 16) != ea:
-        errs.append(f"need exactly one HOOK(0x{ea:X}, Fn, \"module\") line; found {hooks}")
+    hooks = re.findall(r"HOOK(?:_METHOD|_KEEP_ECX_CDECL|_KEEP_ECX|_TAIL)?\(\s*0x([0-9A-Fa-f]+)\s*,\s*&?([\w:]+)", src)
     code_only = re.sub(r"//[^\n]*|/\*.*?\*/", "", src, flags=re.S)
     bare = re.sub(r'"(?:[^"\\\n]|\\.)*"', '""', code_only)  # comments ("the new block") and strings don't count
     if re.search(r"\b(malloc|free|calloc|realloc)\s*\(|\bnew\s+[A-Za-z_]|\bdelete\s", bare):
@@ -228,6 +227,15 @@ def gate(ea, path, db=None):
                     f"`sub esp, N`): `alignas(8) uint8_t {m.group(2)}Bytes[N];` (add `= {{}}` only if the original zeroes "
                     f"it) and `{m.group(1)}& {m.group(2)} = *reinterpret_cast<{m.group(1)}*>({m.group(2)}Bytes);`")
     db = db or DB()
+    keep = re.search(r"HOOK_KEEP_ECX(_CDECL)?\(\s*0x[0-9A-Fa-f]+\s*,\s*&?[\w:]+\s*,\s*(\d+)", src)
+    if keep and ea in db.F:  # the wrapper's own ret must match the original's
+        own = ret_bytes(ea, db.F[ea]["size"])
+        if own == [0] and not keep.group(1) and int(keep.group(2)):
+            errs.append(f"HOOK_KEEP_ECX pops its {keep.group(2)} stack argument(s) on return, but the original is __cdecl "
+                        "(plain `ret`, the caller pops): register with HOOK_KEEP_ECX_CDECL(addr, Fn, <stack args>, "
+                        "\"module\")")
+        elif own and own != [0] and keep.group(1):
+            errs.append(f"HOOK_KEEP_ECX_CDECL does not pop, but the original returns with ret {own}: use HOOK_KEEP_ECX")
     errs += check_bindings(src, db)
     import addrfix, api
     errs += api.binding_errors(src, db)

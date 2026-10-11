@@ -324,7 +324,8 @@ def build(db, ea, with_asm_limit=400):
     import regargs as _ra
     if _ra.needs_keep_ecx(db, ea):
         out.append("NOTE: callers keep a value in ecx across this call (LTCG) and the original never writes ecx: register "
-                   "it with HOOK_KEEP_ECX(0xADDR, Fn, <number of stack args>, \"module\") instead of HOOK.")
+                   "it with HOOK_KEEP_ECX(0xADDR, Fn, <number of stack args>, \"module\") instead of HOOK "
+                   "(HOOK_KEEP_ECX_CDECL when the original is __cdecl: it returns with a plain `ret`).")
     sp = _api.spurious_regs(ea)
     if sp:
         out.append(f"NOTE: its {', '.join('@<' + r + '>' for r in sp)} parameter is NOT an argument (exact: the register "
