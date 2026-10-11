@@ -128,6 +128,33 @@ def struct_locals(code):
     return out
 
 
+def tail_ret_pops(code):
+    """Pop counts the file's hook::tail_ret calls name: 0 for tail_ret(eax), N for tail_ret(eax, N); -1 when the
+    second argument is not a number."""
+    out = set()
+    for m in re.finditer(r"\btail_ret\s*\(", code):
+        depth, args, cur = 1, [], ""
+        for ch in code[m.end():]:
+            if ch == "(":
+                depth += 1
+            elif ch == ")":
+                depth -= 1
+                if not depth:
+                    break
+            if ch == "," and depth == 1:
+                args.append(cur)
+                cur = ""
+            else:
+                cur += ch
+        args.append(cur)
+        if len(args) < 2:
+            out.add(0)
+        else:
+            a = args[1].strip().rstrip("uU")
+            out.add(int(a, 0) if re.fullmatch(r"0[xX][0-9a-fA-F]+|\d+", a) else -1)
+    return out
+
+
 def gate(ea, path, db=None):
     path = os.path.abspath(path)
     src = open(path).read()
@@ -241,7 +268,21 @@ def gate(ea, path, db=None):
                                 cwd=os.path.join(ROOT, "build"))
             if r2.returncode == 0 and not semcheck.vslot_missing(ea, db, semcheck.our_refs(opt)[1]):
                 sem = [e for e in sem if not e.startswith(semcheck.VSLOT_ERR)]
-        if rets and orig and set(rets) != set(orig):
+        if "HOOK_TAIL" in src:
+            # fn runs before the jump: it must leave the caller's stack arguments where they are (two register
+            # parameters, plain ret); what the original pops on its own return paths is tail_ret's second argument
+            own = set(ret_bytes(ea, db.F[ea]["size"]))
+            said = tail_ret_pops(code_only)
+            if set(rets) != {0}:
+                sem.append(f"calling convention mismatch: a HOOK_TAIL function takes exactly (void* self, const uint32_t* "
+                           f"args) and pops nothing (yours pops {rets}): its stack arguments still belong to the jump "
+                           "target. For a path where the original returns with `ret N` write `return "
+                           "hook::tail_ret(eax_value, N);`")
+            elif said - own or (own - said and "tail_ret" in code_only):
+                sem.append(f"calling convention mismatch: the original's own return paths pop {sorted(own)} bytes "
+                           f"(ret N); your hook::tail_ret calls say {sorted(said)}. Write `hook::tail_ret(eax_value, N)` "
+                           "for `ret N`, `hook::tail_ret(eax_value)` for a plain `ret`")
+        elif rets and orig and set(rets) != set(orig):
             sem.append(f"calling convention mismatch: original pops {orig} bytes (ret N), yours pops {rets}. "
                        "Fix the calling convention / parameter list (__thiscall → __fastcall with dummy edx; "
                        "__stdcall pops args; __cdecl pops 0).")

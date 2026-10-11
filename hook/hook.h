@@ -110,15 +110,28 @@ struct Registrar {
 // A function that ends in an indirect tail jump (`mov ecx, obj; jmp [vtbl + N]`): the target's signature is unknown
 // and it gets the caller's stack arguments and return address untouched, which C++ can't write. fn is everything
 // before the jump: `hook::Tail __fastcall fn(void* self, const uint32_t* args)` (args: the caller's stack arguments,
-// read only). It returns hook::tail_jump(ecx for the target, target) or, on a path where the original returns with a
-// plain `ret` instead, hook::tail_ret(eax).
+// read only). It returns hook::tail_jump(ecx for the target, target) or, on a path where the original returns
+// itself, hook::tail_ret(eax) for a plain `ret` and hook::tail_ret(eax, N) for `ret N` (N = 4..32, the caller's
+// stack arguments the original pops there). fn never takes more than those two parameters: a third one makes fn
+// pop stack arguments the jump target still needs.
 namespace hook {
 using Tail = uint64_t;  // edx:eax = target : ecx for the target
 __declspec(naked) inline void tail_ret_stub() { __asm { mov eax, ecx } __asm { ret } }
+#define CSF_TAIL_RET_STUB(n) \
+    __declspec(naked) inline void tail_ret_stub_##n() { __asm { mov eax, ecx } __asm { ret n } }
+CSF_TAIL_RET_STUB(4) CSF_TAIL_RET_STUB(8) CSF_TAIL_RET_STUB(12) CSF_TAIL_RET_STUB(16)
+CSF_TAIL_RET_STUB(20) CSF_TAIL_RET_STUB(24) CSF_TAIL_RET_STUB(28) CSF_TAIL_RET_STUB(32)
+#undef CSF_TAIL_RET_STUB
 inline Tail tail_jump(void* self, void* target) {
     return (uint64_t)(uintptr_t)self | ((uint64_t)(uintptr_t)target << 32);
 }
 inline Tail tail_ret(uint32_t eax = 0) { return eax | ((uint64_t)(uintptr_t)&tail_ret_stub << 32); }
+inline Tail tail_ret(uint32_t eax, unsigned pop) {
+    static void (*const stubs[9])() = {&tail_ret_stub, &tail_ret_stub_4, &tail_ret_stub_8, &tail_ret_stub_12,
+                                       &tail_ret_stub_16, &tail_ret_stub_20, &tail_ret_stub_24, &tail_ret_stub_28,
+                                       &tail_ret_stub_32};
+    return eax | ((uint64_t)(uintptr_t)stubs[pop / 4] << 32);
+}
 }  // namespace hook
 #define HOOK_TAIL(addr, fn, module) \
     static void* const HOOK_CAT(fn, _impl) = (void*)&fn; \
