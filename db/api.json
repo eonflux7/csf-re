@@ -31552,7 +31552,9 @@
  "00482310": {
   "name": "CharActionFsm_IsFlag10000SetAndByteNonZero",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CharActionFsm_IsFlag10000SetAndByteNonZero": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -37160,7 +37162,9 @@
  "004954e0": {
   "name": "GetFloat3D4",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GetFloat3D4": 1
+  },
   "ret": "double",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -37330,7 +37334,7 @@
   "name": "C_00495880_GetField3A5",
   "name_src": "agent",
   "votes": {
-   "C_00495880_GetField3A5": 1
+   "C_00495880_GetField3A5": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -37350,13 +37354,15 @@
   "sig_src": "vote"
  },
  "004958c0": {
-  "name": "sub_4958C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CharacterModel_UpdateSpecialCharacter",
+  "name_src": "vote",
+  "votes": {
+   "CharacterModel_UpdateSpecialCharacter": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004959a0": {
   "name": "Vehicle_SceneObjectUpdate",
@@ -58941,7 +58947,7 @@
   "name": "MpSpawnPoints_GetProviderPosition",
   "name_src": "agent",
   "votes": {
-   "MpSpawnPoints_GetProviderPosition": 4
+   "MpSpawnPoints_GetProviderPosition": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -59254,6 +59260,7 @@
   "name_src": "agent",
   "votes": {
    "CharacterModel_UpdateModel": 1,
+   "CharacterModel_UpdateHeadMotion": 1,
    "CharacterModel_UpdateSpawnTransition": 1
   },
   "ret": "void",
@@ -59265,7 +59272,9 @@
  "004f6af0": {
   "name": "CharacterModel_UpdateHeadTransform",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CharacterModel_UpdateHeadTransform": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "float* self, void* , std::uint8_t* model, float* angles, float timeStep",
@@ -59312,7 +59321,9 @@
  "004f7400": {
   "name": "CharacterModel_UpdateViewTransform",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CharacterModel_UpdateModeEight": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , int character, int",
@@ -59361,7 +59372,9 @@
  "004f7940": {
   "name": "S_004f5420_UpdateFromSceneObject",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CharacterModel_PrepareCharacterUpdate": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_004f5420* self, void* , C_00833b88* sceneObject, int",
@@ -59415,15 +59428,16 @@
   "file": "src/auto/004f8120.cpp"
  },
  "004f8150": {
-  "name": "CharacterModel_UpdateFromOwner",
-  "name_src": "vote",
+  "name": "C_0085ec18_UpdateCharacterTransform",
+  "name_src": "agent",
   "votes": {
    "CharacterModel_UpdateFromOwner": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2, int a3",
-  "sig_src": "vote"
+  "params": "C_0085ec18* self, void* , CPlayerCharacter* character, int timeBits",
+  "sig_src": "impl",
+  "file": "src/auto/004f8150.cpp"
  },
  "004f8320": {
   "name": "CharacterModel_Serialize",
