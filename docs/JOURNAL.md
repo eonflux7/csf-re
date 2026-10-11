@@ -1138,3 +1138,29 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Also from this run's queue: 0x513BA0 (address of a member vs the pointer stored there), 0x516980 (arguments
   swapped), 0x6C58D0 (push emitted one call early, again), 0x4F8150 (missing wrappers). 0x76A540 (binding
   catalog, 7300 lines of asm, the answer covers 11 of its calls) stays in queue/.
+
+## 2026-10-11 (evening) — Waves stopped 17:20-21:xx: four culprits by load bisect, one quarantined, diffing found off
+
+- The 16:52-17:15 waves (cheats, ai_attack_tasks, game_bdd_loader) broke the savegame start for real; the stop
+  rule ended the run. Found with tools/flaky.py + a "disable half, is it cured?" search on the 8 smoke copies:
+  0x47D990 (a virtual of the path object called without `this`: Hex-Rays' `__stdcall **` cast copied),
+  0x47B950 (`push edi` before four pushes is the callee-save, not a fifth argument: stack imbalance),
+  0x47E350 (Hermite constants swapped: 3.0 scales t^2, -2.0 scales t^3), plus 0x4BFDD0 / 0x4BE970 before.
+- 0x47E350 (spline position) is QUARANTINED, not fixed: with its hook on, the NaN crash (eip 0x7FED32) is
+  55-80% under 8x load, with it off 1/16; after the constant fix it reads identical to the asm. Notes in
+  queue/0047e350.md. With it quarantined: 6/24 under load, all the same NaN crash, so a second, weaker
+  contributor exists (the 14:21 flake, ~1/16 before today's waves). OPEN.
+- Lessons for the search itself: a test needs enough runs for the failure rate (4-6 runs at 50% sent two
+  searches down the wrong half; 16 runs with a threshold worked); several crashes at once need the signature in
+  the pass criterion; `tools/deploy.sh` + smoke ingest from the main build dir rewrote db/verify.json (reverted;
+  flaky.py now sets CSF_NO_LEDGER).
+- FOUND, NOT FIXED: in-game differential testing has been off in every verifier smoke. work/verify-tree's
+  export / ida / .venv links (made 2026-10-08) point into a worktree that no longer exists, tools/difftable.py
+  fails there, verifier.build_tree ignores it and the build gets an empty diff table ("diff (0 functions
+  compared)" in every smoke log today). And with the tables present (main build dir, 1078 diffable + 1077 tier-3
+  functions) the game dies at startup with 0xC0000409 even in a single smoke. So the "diffed" tier has had no new
+  evidence for days, and switching it back on needs the harness (or a diffed function) fixed first.
+- 0x76A540 is generated (tools/gen_script_catalog.py: symbolic walk of the straight-line asm, 423 registration
+  calls, emudiff same 8/8) and installed; module m7685A0 renamed mission_script_catalog (it is the script
+  language's type/command catalog; function prefixes follow at the next naming pass). 0x50F060: one 0x28-byte
+  object split in two buffers (startup hang) fixed.
