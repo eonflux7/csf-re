@@ -321,7 +321,8 @@ def real_regs(ea, db=None):
         p = os.path.join(ROOT, "db", "regargs.json")
         _real = {int(k, 16): v.get("real", []) for k, v in json.load(open(p)).items()} if os.path.exists(p) else {}
     regs = set(_real.get(ea, []))
-    if db is not None and "eax" in reg_args(ea, db):
+    # game code only: CRT / library entry points are asm with their own rules (___CxxFrameHandler takes eax)
+    if db is not None and db.rows.get(ea, {}).get("region") == "game" and "eax" in reg_args(ea, db):
         regs.add("eax")
     return sorted(regs)
 
