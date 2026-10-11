@@ -24,7 +24,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 API = os.path.join(ROOT, "db", "api.json")
 FUNCS = os.path.join(ROOT, "db", "functions.csv")
 DECL = re.compile(r"CSF_FUNC\(\s*([^;]+?)\s*,\s*(__\w+)\s*,\s*(\w+)\s*,\s*0[xX]([0-9A-Fa-f]+)\s*,\s*\((.*?)\)\s*\)\s*;", re.S)
-HOOK = re.compile(r"HOOK(?:_KEEP_ECX)?\(\s*0[xX]([0-9A-Fa-f]+)\s*,\s*&?(\w+)")
+HOOK = re.compile(r"HOOK(?:_KEEP_ECX|_TAIL)?\(\s*0[xX]([0-9A-Fa-f]+)\s*,\s*&?(\w+)")
 CONVS = ("__cdecl", "__stdcall", "__fastcall", "__thiscall")
 
 
@@ -50,7 +50,7 @@ def strip_comments(s):
 def impl_signature(src):
     """(ea, ret, conv, name, params) of the hooked function's definition, or None."""
     h = HOOK.search(src)
-    if not h:
+    if not h or h.group(0).startswith("HOOK_TAIL"):  # a tail thunk's impl has the helper's signature, not its own
         return None
     ea, fn = int(h.group(1), 16), h.group(2)
     code = strip_comments(src)

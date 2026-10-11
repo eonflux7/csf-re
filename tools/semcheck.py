@@ -326,9 +326,9 @@ def check(ea, obj, db):
         if not re.search(r"\tjmp\s+(?:dword ptr (?:ds:)?\[[^\]]+\]|e[a-z]{2})\s*$", dis, re.M):
             t = tails[0].op_str
             errs.append(f"the original TAIL-JUMPS indirectly (`jmp {t}`), forwarding the caller's stack args and "
-                        "registers untouched to a target whose signature is unknown; a call drops/shifts them. Write a "
-                        "naked thunk: `static __declspec(naked) void F() { __asm { mov ecx, [ecx+4] ... jmp dword ptr "
-                        "[eax+0x20] } }` (only mov/lea/add/sub, ending in the jmp)")
+                        "registers untouched to a target whose signature is unknown; a call drops/shifts them. Use "
+                        "HOOK_TAIL: `static hook::Tail __fastcall Fn(void* self, const uint32_t* args)` ending in "
+                        "`return hook::tail_jump(obj, (*reinterpret_cast<void***>(obj))[0xNN / 4]);`")
     # virtual calls: every vtable slot the original calls (`call [reg + N]`) must be a constant displacement in ours.
     # A generic helper taking the slot as a runtime argument hides it from every check here — three clones did that
     # with byte offsets as indices (slot 0x30 -> 0xC0) and crashed the menu tour (2026-10-08, 0x52F950 & co).
@@ -575,7 +575,7 @@ def survey(only_behaviour=False):
                                cwd=os.path.join(ROOT, "build"))
             if r.returncode:
                 return ea, ["compile failed"]
-            m = re.search(r"HOOK(?:_METHOD|_KEEP_ECX)?\(\s*0x[0-9A-Fa-f]+\s*,\s*&?([\w:]+)", open(p).read())
+            m = re.search(r"HOOK(?:_METHOD|_KEEP_ECX|_TAIL)?\(\s*0x[0-9A-Fa-f]+\s*,\s*&?([\w:]+)", open(p).read())
             fn = m.group(1).split("::")[-1] if m else ""
             if only_behaviour:
                 return ea, behaviour(ea, obj, fn, open(p).read(), db) if fn else []

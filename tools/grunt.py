@@ -104,8 +104,8 @@ JSON metadata: {"name": "<function name used>", "confidence": 0.0-1.0,
  "class_guess": {"C_xxx": "CSuggestedName"},                     // optional
  "notes": "<anything uncertain>"}- A tail jump (`jmp` to another function / `jmp dword ptr [addr]` without a matching `call`) forwards the caller's
   stack arguments and registers unchanged. Reproduce it with the callee's exact signature, or, when that is unknown
-  (indirect jmp through a pointer / vtable slot), as a naked thunk: `static __declspec(naked) void F() { __asm { jmp dword ptr ds:[0xADDR] } }`
-  — at most 8 of mov/lea/add/sub/test/cmp/je/jne/ret/call reg plus labels, around the indirect jmp, copied from the original.
+  (indirect jmp through a pointer / vtable slot), with HOOK_TAIL as the packet's "Indirect tail jump" section says
+  (`hook::Tail __fastcall Fn(void* self, const uint32_t* args)` returning hook::tail_jump(obj, target)); no asm.
 - Return width: `xor eax, eax` / `movzx eax, ...` before `setcc al` (or any full-eax result) means a 32-bit
   int/BOOL return; declare it `int`, never `bool` (bool leaves eax's upper bytes undefined; callers test eax).
   Only a bare `mov al, ...` / `setcc al` without zeroing eax is a genuine byte/bool return.
@@ -467,7 +467,7 @@ def normalize(code, ea=None):
     bindings renamed to the one canonical name per address (tools/api.py, db/api.json)."""
     import addrfix, api
     code = api.canonicalize(addrfix.fix(code, ea))
-    code = re.sub(r"^(\s*HOOK(?:_METHOD|_KEEP_ECX)?\(.*\))\s*$", r"\1;", code, flags=re.M)
+    code = re.sub(r"^(\s*HOOK(?:_METHOD|_KEEP_ECX|_TAIL)?\(.*\))\s*$", r"\1;", code, flags=re.M)
     hr = {"_DWORD": "std::uint32_t", "_WORD": "std::uint16_t", "_BYTE": "std::uint8_t", "_QWORD": "std::uint64_t"}
     if re.search(r"\b_(DWORD|WORD|BYTE|QWORD)\b", code):  # Hex-Rays types copied from the pseudocode
         code = re.sub(r"\b_(DWORD|WORD|BYTE|QWORD)\b", lambda m: hr[m.group(0)], code)

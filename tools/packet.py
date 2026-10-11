@@ -357,10 +357,14 @@ def build(db, ea, with_asm_limit=400):
                    "reference the pushed handler address (not a function); just write the C++ with those locals.")
     if tails:  # the gate rejects a call here: say so up front (was the most common real retry)
         out.append(f"\n## Indirect tail jump\nThe original ends in `jmp {tails[0].op_str}` at 0x{tails[0].address:08X}: it "
-                   "forwards the caller's stack args and registers untouched to a target of unknown signature. Do NOT "
-                   "turn it into a call. Write that path as a naked thunk: `static __declspec(naked) void F() { __asm "
-                   "{ ... jmp dword ptr [eax+0xNN] } }`, copying the original's register setup (only mov/lea/add/sub/"
-                   "test/cmp/je/jne, at most 8, ending in the jmp).")
+                   "forwards the caller's stack args and return address untouched to a target of unknown signature. Do "
+                   "NOT turn it into a call and write no asm. Write everything before the jump as\n"
+                   "`static hook::Tail __fastcall Fn(void* self, const uint32_t* args)` (self: ecx on entry; args: the "
+                   "caller's stack arguments, read only, args[0] is the first) and end it with\n"
+                   "`return hook::tail_jump(obj, (*reinterpret_cast<void***>(obj))[0xNN / 4]);` (obj: what the "
+                   "original puts in ecx for the target; then the jump target, with the slot's byte offset as a "
+                   "constant). A path where the original returns with a plain `ret` instead: `return "
+                   "hook::tail_ret(eax_value);`. Register with HOOK_TAIL(0xADDR, Fn, \"module\") instead of HOOK.")
     out.append("\n## Hex-Rays pseudocode (names substituted where known)\n"
                + ("Typed from our headers: `x->m_name` / `x->field_XXXX` are the members of types/auto_classes.h; "
                   "`x->vName(x, args)` is a virtual call: write `x->vName(args)` (the class's wrapper); "

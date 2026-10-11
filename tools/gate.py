@@ -158,7 +158,7 @@ def gate(ea, path, db=None):
                         "CSF_AT(T, p, off). If the original really loads a pointer there and dereferences it, write "
                         "two steps: `T* q = CSF_AT(T*, p, off);` then `*q`")
             break
-    hooks = re.findall(r"HOOK(?:_METHOD|_KEEP_ECX)?\(\s*0x([0-9A-Fa-f]+)\s*,\s*&?([\w:]+)", src)
+    hooks = re.findall(r"HOOK(?:_METHOD|_KEEP_ECX|_TAIL)?\(\s*0x([0-9A-Fa-f]+)\s*,\s*&?([\w:]+)", src)
     if len(hooks) != 1 or int(hooks[0][0], 16) != ea:
         errs.append(f"need exactly one HOOK(0x{ea:X}, Fn, \"module\") line; found {hooks}")
     code_only = re.sub(r"//[^\n]*|/\*.*?\*/", "", src, flags=re.S)

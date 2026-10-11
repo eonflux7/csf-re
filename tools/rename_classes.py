@@ -53,7 +53,7 @@ def derived_or_self(vt):
     return {v for v in C if vt in ancestors(v)}
 
 
-BIND = re.compile(r"\bHOOK(?:_METHOD|_KEEP_ECX)?\(\s*(0x[0-9A-Fa-f]+)\s*,\s*(\w+)|"
+BIND = re.compile(r"\bHOOK(?:_METHOD|_KEEP_ECX|_TAIL)?\(\s*(0x[0-9A-Fa-f]+)\s*,\s*(\w+)|"
                   r"\bCSF_FUNC\(\s*[^,]+,\s*\w+\s*,\s*(\w+)\s*,\s*(0x[0-9A-Fa-f]+)")
 METHOD = re.compile(r"\bC_([0-9a-f]{8})_(\w+)")
 TYPE = re.compile(r"\bC_([0-9a-f]{8})\b")

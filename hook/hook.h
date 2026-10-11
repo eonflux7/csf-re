@@ -106,3 +106,26 @@ struct Registrar {
         __asm ret (4 * (nargs)) \
     } \
     HOOK(addr, HOOK_CAT(fn, _keep_ecx), module)
+
+// A function that ends in an indirect tail jump (`mov ecx, obj; jmp [vtbl + N]`): the target's signature is unknown
+// and it gets the caller's stack arguments and return address untouched, which C++ can't write. fn is everything
+// before the jump: `hook::Tail __fastcall fn(void* self, const uint32_t* args)` (args: the caller's stack arguments,
+// read only). It returns hook::tail_jump(ecx for the target, target) or, on a path where the original returns with a
+// plain `ret` instead, hook::tail_ret(eax).
+namespace hook {
+using Tail = uint64_t;  // edx:eax = target : ecx for the target
+__declspec(naked) inline void tail_ret_stub() { __asm { mov eax, ecx } __asm { ret } }
+inline Tail tail_jump(void* self, void* target) {
+    return (uint64_t)(uintptr_t)self | ((uint64_t)(uintptr_t)target << 32);
+}
+inline Tail tail_ret(uint32_t eax = 0) { return eax | ((uint64_t)(uintptr_t)&tail_ret_stub << 32); }
+}  // namespace hook
+#define HOOK_TAIL(addr, fn, module) \
+    static void* const HOOK_CAT(fn, _impl) = (void*)&fn; \
+    static __declspec(naked) void HOOK_CAT(fn, _tail)() { \
+        __asm lea edx, [esp + 4] \
+        __asm call dword ptr [HOOK_CAT(fn, _impl)] \
+        __asm mov ecx, eax \
+        __asm jmp edx \
+    } \
+    HOOK(addr, HOOK_CAT(fn, _tail), module)
