@@ -14767,7 +14767,9 @@
  "00444b10": {
   "name": "C_444b10_IncrementCounter_0x50",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_444b10_IncrementCounter_0x50": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* , int",
@@ -17523,7 +17525,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 227
+   "CHandleTable_Resolve": 229
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -18075,7 +18077,7 @@
    "CScene_UnlinkSlot": 1,
    "CScene_RegisterObjectLink": 1,
    "CScene_RemoveObjectWithFlags": 1,
-   "CScene_AddObjectFlags": 4
+   "CScene_AddObjectFlags": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -26865,7 +26867,9 @@
  "00475b30": {
   "name": "C_008316d8_ResetStateFromSource",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_008316d8_ResetStateFromSource": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_008316d8* self, void*",
@@ -26920,13 +26924,14 @@
   "file": "src/auto/00475cb0.cpp"
  },
  "00475cf0": {
-  "name": "sub_475CF0",
-  "name_src": "addr",
+  "name": "C_008316d8_SetFiringCount",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_008316d8* self, void* , char doubled",
+  "sig_src": "impl",
+  "file": "src/auto/00475cf0.cpp"
  },
  "00475d50": {
   "name": "C_008316d8_FireWithConfiguredParameter",
@@ -26950,7 +26955,7 @@
  },
  "00475d90": {
   "name": "C_008316d8_DispatchFireAction",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -26959,22 +26964,24 @@
   "file": "src/auto/00475d90.cpp"
  },
  "00475dd0": {
-  "name": "sub_475DD0",
-  "name_src": "addr",
+  "name": "C_008316d8_CopyEntryMatrix",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, void** a3",
-  "sig_src": "abi"
+  "params": "C_008316d8* self, void* , int entryId, void** output",
+  "sig_src": "impl",
+  "file": "src/auto/00475dd0.cpp"
  },
  "00475fa0": {
-  "name": "sub_475FA0",
-  "name_src": "addr",
+  "name": "C_008316d8_ProcessAction",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_008316d8* self, void* , int handle",
+  "sig_src": "impl",
+  "file": "src/auto/00475fa0.cpp"
  },
  "00476060": {
   "name": "Handle_GetValuePointer",
@@ -27030,7 +27037,7 @@
   "name": "C_008319c0_GetSubObjectField74",
   "name_src": "agent",
   "votes": {
-   "C_008319c0_GetSubObjectField74": 29
+   "C_008319c0_GetSubObjectField74": 33
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -27039,8 +27046,8 @@
   "file": "src/auto/004760a0.cpp"
  },
  "004760b0": {
-  "name": "SceneHandle_GetPosition",
-  "name_src": "vote",
+  "name": "C_00862490_GetPosition",
+  "name_src": "agent",
   "votes": {
    "SceneHandle_GetPosition": 1
   },
@@ -27236,7 +27243,7 @@
  },
  "004766a0": {
   "name": "C_008316d8_IsReadyForFireMode",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
@@ -27246,7 +27253,7 @@
  },
  "004766f0": {
   "name": "C_008316d8_CanReload",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
@@ -27287,7 +27294,9 @@
  "004767b0": {
   "name": "C_008316d8_IsNonExcludedWeaponType",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "WeaponFirearms_IsFireReady": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "C_008316d8* self, void*",
@@ -27317,7 +27326,7 @@
   "name": "CharActionFsm_GetPrimaryCapacity",
   "name_src": "vote",
   "votes": {
-   "CharActionFsm_GetPrimaryCapacity": 1
+   "CharActionFsm_GetPrimaryCapacity": 3
   },
   "ret": "uint64_t",
   "conv": "__fastcall",
@@ -27328,7 +27337,7 @@
   "name": "GetItemCapacity",
   "name_src": "vote",
   "votes": {
-   "GetItemCapacity": 2,
+   "GetItemCapacity": 4,
    "Hud_QueryCapacity": 1
   },
   "ret": "uint64_t",
@@ -27353,8 +27362,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_008319c0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00476b20.cpp"
  },
  "00476b80": {
   "name": "C_008316d8_GetTransitionScale",
@@ -27369,13 +27379,14 @@
   "file": "src/auto/00476b80.cpp"
  },
  "00476c60": {
-  "name": "sub_476C60",
-  "name_src": "addr",
+  "name": "C_008316d8_SetAmmunition",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_008316d8* self, void* , int primaryAmmo, int secondaryAmmo",
+  "sig_src": "impl",
+  "file": "src/auto/00476c60.cpp"
  },
  "00476d20": {
   "name": "C_008316d8_ResetFireTimer",
@@ -27415,13 +27426,14 @@
   "sig_src": "abi"
  },
  "00476ee0": {
-  "name": "sub_476EE0",
-  "name_src": "addr",
+  "name": "C_008316d8_AddAmmunition",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "C_008316d8* self, void* , uint32_t* source",
+  "sig_src": "impl",
+  "file": "src/auto/00476ee0.cpp"
  },
  "00476fa0": {
   "name": "sub_476FA0",
@@ -27677,13 +27689,16 @@
   "sig_src": "abi"
  },
  "00478480": {
-  "name": "sub_478480",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_008317c8_ResetLinkedWeapon",
+  "name_src": "agent",
+  "votes": {
+   "WeaponFirearms_UpdateSourceState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_008317c8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00478480.cpp"
  },
  "004784d0": {
   "name": "sub_4784D0",
@@ -27732,13 +27747,14 @@
   "sig_src": "abi"
  },
  "00478a20": {
-  "name": "sub_478A20",
-  "name_src": "addr",
+  "name": "C_008317c8_IsStateBlocked",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_008317c8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00478a20.cpp"
  },
  "00478a80": {
   "name": "sub_478A80",
@@ -27851,13 +27867,14 @@
   "sig_src": "abi"
  },
  "004793d0": {
-  "name": "sub_4793D0",
-  "name_src": "addr",
+  "name": "C_008317c8_ResetAndClearSource",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_008317c8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004793d0.cpp"
  },
  "00479420": {
   "name": "sub_479420",
@@ -28036,13 +28053,14 @@
   "sig_src": "abi"
  },
  "00479e40": {
-  "name": "sub_479E40",
-  "name_src": "addr",
+  "name": "C_008318c8_IsFireReadyWithStateRestriction",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_008318c8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00479e40.cpp"
  },
  "00479e70": {
   "name": "sub_479E70",
@@ -28055,7 +28073,7 @@
  },
  "00479ed0": {
   "name": "C_008318c8_GetState",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -28103,13 +28121,14 @@
   "file": "src/auto/0047a0e0.cpp"
  },
  "0047a100": {
-  "name": "sub_47A100",
-  "name_src": "addr",
+  "name": "C_008318c8_GetFireActionCode",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_008318c8* self, void* , char alternate",
+  "sig_src": "impl",
+  "file": "src/auto/0047a100.cpp"
  },
  "0047a160": {
   "name": "sub_47A160",
@@ -28138,8 +28157,9 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "vote"
+  "params": "C_0085e7b8* self, void* , C_008319c0* item",
+  "sig_src": "impl",
+  "file": "src/auto/0047a1e0.cpp"
  },
  "0047a240": {
   "name": "C_008318c8_UpdateState",
@@ -28217,13 +28237,14 @@
   "file": "src/auto/0047a6b0.cpp"
  },
  "0047a6e0": {
-  "name": "sub_47A6E0",
-  "name_src": "addr",
+  "name": "C_008316d8_GetResolvedSubObjectValue",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_008316d8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0047a6e0.cpp"
  },
  "0047a710": {
   "name": "sub_47A710",
@@ -33503,7 +33524,7 @@
   "name": "SceneObj_IsInactive",
   "name_src": "vote",
   "votes": {
-   "SceneObj_IsInactive": 17
+   "SceneObj_IsInactive": 18
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -34481,13 +34502,14 @@
   "file": "src/auto/0048f960.cpp"
  },
  "0048f9b0": {
-  "name": "sub_48F9B0",
-  "name_src": "addr",
+  "name": "ForwardArgumentToChildren",
+  "name_src": "agent",
   "votes": {},
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int argument",
+  "sig_src": "impl",
+  "file": "src/auto/0048f9b0.cpp"
  },
  "0048fa00": {
   "name": "C_00833908_UpdateTransitionFlag",
@@ -58761,7 +58783,7 @@
   "name": "GetGlobalValue_4FBDE0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_4FBDE0": 74
+   "GetGlobalValue_4FBDE0": 75
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -58912,7 +58934,7 @@
   "name": "GetFirstElement",
   "name_src": "agent",
   "votes": {
-   "GetFirstElement": 43
+   "GetFirstElement": 44
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -59222,7 +59244,7 @@
   "name": "GetGlobalValue_8B0568",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8B0568": 39,
+   "GetGlobalValue_8B0568": 40,
    "GetMissionManager": 1
   },
   "ret": "int",
@@ -59362,7 +59384,7 @@
   "name": "CGuiControl_GetColorAnim",
   "name_src": "opus",
   "votes": {
-   "CGuiControl_GetColorAnim": 6
+   "CGuiControl_GetColorAnim": 7
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -102017,7 +102039,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 52
+   "RwMatrixDestroy": 53
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -102028,7 +102050,7 @@
   "name": "RwMatrixCreate",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixCreate": 38
+   "RwMatrixCreate": 39
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -117160,7 +117182,7 @@
   "name": "GetReferencedObject",
   "name_src": "vote",
   "votes": {
-   "GetReferencedObject": 47,
+   "GetReferencedObject": 48,
    "MenuPause_ResolveHeldObject_6683F0": 1,
    "Options_ResolveHeldObject_6683F0": 1,
    "MenuSaveGame_ResolveHeldObject_6683F0": 1,
@@ -123496,13 +123518,15 @@
   "sig_src": "abi"
  },
  "00681d60": {
-  "name": "sub_681D60",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WeaponFirearms_CheckState",
+  "name_src": "vote",
+  "votes": {
+   "WeaponFirearms_CheckState": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00681d70": {
   "name": "sub_681D70",
@@ -124863,7 +124887,7 @@
   "name": "GetCachedObjectProvider",
   "name_src": "vote",
   "votes": {
-   "GetCachedObjectProvider": 79
+   "GetCachedObjectProvider": 81
   },
   "ret": "void*",
   "conv": "__fastcall",
