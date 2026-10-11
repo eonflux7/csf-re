@@ -539,6 +539,15 @@
   "params": "void* self, void* edx, unsigned int pos, unsigned int count",
   "sig_src": "vote"
  },
+ "00403900": {
+  "name": "sub_403900",
+  "name_src": "addr",
+  "votes": {},
+  "ret": "void*",
+  "conv": "__fastcall",
+  "params": "void* self, void* edx, int a2, unsigned int a3",
+  "sig_src": "abi"
+ },
  "00403a50": {
   "name": "sub_403A50",
   "name_src": "addr",
@@ -4110,6 +4119,16 @@
   "params": "std::uint32_t source, std::uint32_t sourceEnd, std::uint32_t destination, std::uint32_t",
   "sig_src": "impl",
   "file": "src/auto/004100c0.cpp"
+ },
+ "00410130": {
+  "name": "C_0082d410_ReallocateBuffer",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "void*",
+  "conv": "__fastcall",
+  "params": "C_0082d410* self, void* , int requestedCapacity, unsigned int preservedLength",
+  "sig_src": "impl",
+  "file": "src/auto/00410130.cpp"
  },
  "00410290": {
   "name": "C_0082deb8_UpdateGroundQuery",
@@ -32254,6 +32273,16 @@
   "params": "CCharActionFsm* self, void*",
   "sig_src": "impl",
   "file": "src/auto/004864d0.cpp"
+ },
+ "00486550": {
+  "name": "S_004f21d0_GrowBuffer",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "void*",
+  "conv": "__fastcall",
+  "params": "S_004f21d0* self, void* , int requestedCapacity, int preservedLength",
+  "sig_src": "impl",
+  "file": "src/auto/00486550.cpp"
  },
  "004866b0": {
   "name": "ForwardToCharActionDispatch",
@@ -127692,7 +127721,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 242,
+   "Mem_FreeDebug": 244,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -134381,15 +134410,16 @@
  },
  "006ab8d0": {
   "name": "NormalizeVector3",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "NormalizeVector3": 27,
    "NormalizeVector": 1
   },
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00833b88* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006ab8d0.cpp"
  },
  "006ab930": {
   "name": "S_00526d40_GetVectorAngleRadians",
@@ -194358,7 +194388,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 107
+   "RethrowCppException": 109
   },
   "ret": "void",
   "conv": "__stdcall",
