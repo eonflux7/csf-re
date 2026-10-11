@@ -92,43 +92,61 @@ def nparams(params):
 
 
 def reads_before_write(ea, db, reg):
-    """Does the function read `reg` (ecx/edx) before writing it? (straight-line scan from the entry; stops at the
-    first branch/call). True = it takes an argument there."""
+    """Does the function read `reg` (ecx/edx) before writing it? True = it takes an argument there. Scans from the
+    entry; a call or ret ends a path without a read. Branches are followed (a few levels, inside the function) and
+    every path must read the register first: 0x46BE40 tests a stack argument, branches, and reads ecx on both
+    sides; its caller bound it __stdcall and passed garbage (2026-10-11)."""
     from packet import disasm
     if ea not in db.F:
         return False
-    prologue = True  # MSVC frame/SEH setup and register saves: a `push ecx` there reserves a stack slot
-    for i in disasm(ea, min(db.F[ea]["size"], 400)):
-        ops = i.op_str
-        m = i.mnemonic
-        if m.startswith("j") or m in ("call", "ret"):
-            return False
-        parts = [x.strip() for x in ops.split(",")]
-        if not parts or not parts[0]:
-            continue
-        dst, srcs = parts[0], parts[1:]
-        written = dst == reg and m in ("mov", "lea", "pop", "movzx", "movsx") or \
-            (m == "xor" and len(parts) == 2 and parts[0] == parts[1] == reg)
-        if m == "push" and prologue and (dst in ("ebp", "ebx", "esi", "edi", "eax", "ecx") or dst.startswith(("0x", "-"))):
-            continue  # `push ecx` in the prologue = `sub esp, 4`; after it (0x431CF0, 0x544390) it passes `this` on
-        if prologue and (m == "mov" and ops in ("ebp, esp", "eax, dword ptr fs:[0]", "dword ptr fs:[0], esp")
-                         or m == "sub" and dst == "esp"):
-            continue
-        prologue = False
-        if m == "push":
-            if re.search(rf"\b{reg}\b", dst):
+    ins = disasm(ea, min(db.F[ea]["size"], 400))
+    at = {i.address: k for k, i in enumerate(ins)}
+
+    def walk(k, prologue, depth):
+        # prologue: MSVC frame/SEH setup and register saves: a `push ecx` there reserves a stack slot
+        while k < len(ins):
+            i = ins[k]
+            k += 1
+            ops = i.op_str
+            m = i.mnemonic
+            if m in ("call", "ret"):
+                return False
+            if m.startswith("j"):
+                t = int(ops, 16) if re.fullmatch(r"0x[0-9a-f]+", ops) else None
+                if t not in at or depth <= 0:
+                    return False
+                if m == "jmp":
+                    k, depth, prologue = at[t], depth - 1, False
+                    continue
+                return walk(k, False, depth - 1) and walk(at[t], False, depth - 1)
+            parts = [x.strip() for x in ops.split(",")]
+            if not parts or not parts[0]:
+                continue
+            dst, srcs = parts[0], parts[1:]
+            written = dst == reg and m in ("mov", "lea", "pop", "movzx", "movsx") or \
+                (m == "xor" and len(parts) == 2 and parts[0] == parts[1] == reg)
+            if m == "push" and prologue and (dst in ("ebp", "ebx", "esi", "edi", "eax", "ecx") or dst.startswith(("0x", "-"))):
+                continue  # `push ecx` in the prologue = `sub esp, 4`; after it (0x431CF0, 0x544390) it passes `this` on
+            if prologue and (m == "mov" and ops in ("ebp, esp", "eax, dword ptr fs:[0]", "dword ptr fs:[0], esp")
+                             or m == "sub" and dst == "esp"):
+                continue
+            prologue = False
+            if m == "push":
+                if re.search(rf"\b{reg}\b", dst):
+                    return True
+                continue
+            if m == "lea" and srcs and srcs[0] == f"[{dst}]":  # `lea ecx, [ecx]`: alignment padding
+                continue
+            if m in ("xor", "sub") and len(parts) == 2 and parts[0] == parts[1] == reg:  # zeroing: a write
+                return False
+            read = any(re.search(rf"\b{reg}\b", s) for s in srcs) or (re.search(rf"\b{reg}\b", dst) and not written)
+            if read:
                 return True
-            continue
-        if m == "lea" and srcs and srcs[0] == f"[{dst}]":  # `lea ecx, [ecx]`: alignment padding
-            continue
-        if m in ("xor", "sub") and len(parts) == 2 and parts[0] == parts[1] == reg:  # zeroing: a write
-            return False
-        read = any(re.search(rf"\b{reg}\b", s) for s in srcs) or (re.search(rf"\b{reg}\b", dst) and not written)
-        if read:
-            return True
-        if written:
-            return False
-    return False
+            if written:
+                return False
+        return False
+
+    return walk(0, True, 3)
 
 
 def norm_name(n):
