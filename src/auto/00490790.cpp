@@ -1,43 +1,3 @@
-# Escalation 0x00490790: in-game smoke failure (verifier bisect: 3 smokes (3 named by crash reports, k=8))
-
-## Smoke log tail
-```
-nohook=False pid=21264 ready=False after=3s alive=False exit=-1073741819 stillrunning=False stop=exited ran=0s fail_at=0s
----- hits
----- diff (0 functions compared)
-CRASH code=c0000005 eip=72c7f2de addr=000000ab (rw=0) eax=00000067 ebx=0e9f93a4 ecx=00000067 edx=00000ce1 esi=01556e90 edi=0333d684 ebp=0019deb8 esp=0019de94
-  eip module 72BE0000 (ours 72BE0000); stack:
-   00000000 00000000 00000000 00000000 0047193a 00000067
-   00000ce1 0333d684 01556e90 0019e034 72c8383f 00000067
-   00000000 00000100 00000000 00000016 72c83ae7 0e9f9344
-   0333d3e4 01556e80 00000067 01556e68 0e9f93bc 00000001
----- csf_hook.log
-hook 004054a0 auto     S_004054a0_ResolveChildAndDispatch
-hook 00405450 auto     AudioSoundManager_ProcessArchiveContext
-hook 00405420 auto     C_0082d510_Destroy
-hook 00405400 auto     C_0082d510_ForwardFloatToTarget
-hook 004053e0 auto     C_0082d510_ForwardSlotCall
-hook 004013e0 auto     ReturnMinusOne
-hook 00401090 auto     GetGlobalValue_401090
-hooks installed=5216 skipped=0 failed=0
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00D1ADEC wrapped
-devcmd: video mode 1280x960
-devcmd: dev start (scene Maps/FR01/Parachut.scn) instead of Menus/P_Intro.fbs -> state 1
-CRASH code=c0000005 eip=72c7f2de addr=000000ab (rw=0) eax=00000067 ebx=0e9f93a4 ecx=00000067 edx=00000ce1 esi=01556e90 edi=0333d684 ebp=0019deb8 esp=0019de94
-  eip module 72BE0000 (ours 72BE0000); stack:
-   00000000 00000000 00000000 00000000 0047193a 00000067
-   00000ce1 0333d684 01556e90 0019e034 72c8383f 00000067
-   00000000 00000100 00000000 00000016 72c83ae7 0e9f9344
-   0333d3e4 01556e80 00000067 01556e68 0e9f93bc 00000001
-SMOKE FAIL (never ready: no 'devcmd: starting scene' in csf_hook.log within 120s)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include <cstring>
 #include "globals.h"
@@ -131,4 +91,3 @@ static char __fastcall C_008342e8_SetObjectTransform(
 HOOK(0x00490790, C_008342e8_SetObjectTransform, "auto");
 
 
-```

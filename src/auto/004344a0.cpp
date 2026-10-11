@@ -1,53 +1,3 @@
-# Escalation 0x004344A0: in-game smoke failure (verifier bisect: 30 smokes (0 named by crash reports, k=8))
-
-## Smoke log tail
-```
-nohook=False pid=20704 ready=False after=5s alive=False exit=-1073741819 stillrunning=False stop=exited ran=0s fail_at=0s
----- hits
-006a2c60    1441120 auto C_0085ee28_ReadBufferedBytes
-006a2e00    1428287 auto C_0085ee28_SumFields
-006a3200     326216 auto CoreZlibLog_ComputeAdler32
-006a2f90     225071 auto CoreZlibLog_AllocateReusableBlock
-006a2eb0     225067 auto ZlibLog_MarkTrackedBlock
-006a6810     211108 auto CoreZlibLog_FlushInflateWindow
-0069e3d0     193199 auto C_0085eb30_ReleaseMutexIfSet
-006a0370     191703 auto C_0085ec74_ReadBytesFromFile
-006a6130     102606 auto CoreZlibLog_BuildInflateHuffmanTable
-006a4df0      85933 auto ZlibStream_ResetState
----- diff (0 functions compared)
-CRASH code=c0000005 eip=007aef8c addr=00000000 (rw=1) eax=5f535452 ebx=0019e244 ecx=00000002 edx=00000000 esi=0019e474 edi=00000000 ebp=0019e18c esp=0019e184
-  eip module 00400000 (ours 72BF0000); stack:
-   0019e240 0019e474 0019e1ac 004038d8 00000000 0019e474
-   00000008 0019e240 0019e240 0019e47c 0019e1c8 00410a2e
-   00000000 0019e474 0019e474 773e3519 0019e240 0019e1e8
-   00429bac 00000008 0019e474 00000008 0019e474 00000008
----- csf_hook.log
-hook 004054a0 auto     S_004054a0_ResolveChildAndDispatch
-hook 00405450 auto     AudioSoundManager_ProcessArchiveContext
-hook 00405420 auto     C_0082d510_Destroy
-hook 00405400 auto     C_0082d510_ForwardFloatToTarget
-hook 004053e0 auto     C_0082d510_ForwardSlotCall
-hook 004013e0 auto     ReturnMinusOne
-hook 00401090 auto     GetGlobalValue_401090
-hooks installed=5210 skipped=0 failed=0
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00AEF914 wrapped
-devcmd: video mode 1280x960
-devcmd: dev start (scene Maps/FR01/Parachut.scn) instead of Menus/P_Intro.fbs -> state 1
-CRASH code=c0000005 eip=007aef8c addr=00000000 (rw=1) eax=5f535452 ebx=0019e244 ecx=00000002 edx=00000000 esi=0019e474 edi=00000000 ebp=0019e18c esp=0019e184
-  eip module 00400000 (ours 72BF0000); stack:
-   0019e240 0019e474 0019e1ac 004038d8 00000000 0019e474
-   00000008 0019e240 0019e240 0019e47c 0019e1c8 00410a2e
-   00000000 0019e474 0019e474 773e3519 0019e240 0019e1e8
-   00429bac 00000008 0019e474 00000008 0019e474 00000008
-SMOKE FAIL (never ready: no 'devcmd: starting scene' in csf_hook.log within 120s)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include <cstring>
 #include "globals.h"
@@ -107,9 +57,7 @@ static uint32_t __fastcall Hud_UpdateResourceWidget(void* self, void* /*edx*/)
 
     struct TemporaryString
     {
-        // sized by the original's frame (0x21C bytes): struct sizes in auto_classes.h are lower bounds
-        alignas(8) uint8_t headerBytes[0x21C];
-        C_0082d410& header = *reinterpret_cast<C_0082d410*>(headerBytes);
+        C_0082d410 header;
         uint32_t remainingInlineStorage[2];
         uint32_t length;
         uint32_t capacity;
@@ -136,5 +84,3 @@ static uint32_t __fastcall Hud_UpdateResourceWidget(void* self, void* /*edx*/)
 }
 
 HOOK(0x004344A0, Hud_UpdateResourceWidget, "auto");
-
-```
