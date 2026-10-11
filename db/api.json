@@ -3643,7 +3643,7 @@
   "name": "MpSpawnPoints_FinishEventDescriptor",
   "name_src": "vote",
   "votes": {
-   "MpSpawnPoints_FinishEventDescriptor": 3,
+   "MpSpawnPoints_FinishEventDescriptor": 4,
    "DestroyObjectStateTemporary": 1,
    "SpawnDescriptor_Finish": 1,
    "MpSpawnPoints_FinishSpawnDescriptor": 1
@@ -45374,7 +45374,7 @@
   "name": "C_008310b8_GetSelf",
   "name_src": "agent",
   "votes": {
-   "C_008310b8_GetSelf": 3
+   "C_008310b8_GetSelf": 4
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -62949,7 +62949,7 @@
   "name": "SceneLoader_NoOp",
   "name_src": "captain",
   "votes": {
-   "SceneLoader_NoOp": 18,
+   "SceneLoader_NoOp": 20,
    "Nullsub_506AC0": 34
   },
   "ret": "void",
@@ -109768,7 +109768,7 @@
   "name": "AllocateGatheringStorage",
   "name_src": "vote",
   "votes": {
-   "AllocateGatheringStorage": 9
+   "AllocateGatheringStorage": 10
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -109797,7 +109797,7 @@
   "name": "NetSession_ReleaseTransportStorage",
   "name_src": "vote",
   "votes": {
-   "NetSession_ReleaseTransportStorage": 6
+   "NetSession_ReleaseTransportStorage": 7
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -109862,7 +109862,7 @@
   "name": "MpSpawn_CommitSpawnRecord",
   "name_src": "vote",
   "votes": {
-   "MpSpawn_CommitSpawnRecord": 2
+   "MpSpawn_CommitSpawnRecord": 4
   },
   "ret": "int64_t",
   "conv": "__fastcall",
@@ -110267,7 +110267,7 @@
   "name": "MpSpawn_FetchSpawnRecord",
   "name_src": "vote",
   "votes": {
-   "MpSpawn_FetchSpawnRecord": 2
+   "MpSpawn_FetchSpawnRecord": 4
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -111247,7 +111247,7 @@
   "name": "InitializeTemporaryString",
   "name_src": "vote",
   "votes": {
-   "InitializeTemporaryString": 4
+   "InitializeTemporaryString": 13
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -111267,7 +111267,7 @@
   "name": "DestroyTemporaryString",
   "name_src": "vote",
   "votes": {
-   "DestroyTemporaryString": 1
+   "DestroyTemporaryString": 2
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -111338,22 +111338,26 @@
   "sig_src": "abi"
  },
  "0064a960": {
-  "name": "sub_64A960",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NameMatchesCString",
+  "name_src": "vote",
+  "votes": {
+   "NameMatchesCString": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char* a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0064a9b0": {
-  "name": "sub_64A9B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NameMatchesString",
+  "name_src": "vote",
+  "votes": {
+   "NameMatchesString": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void** a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0064ab60": {
   "name": "sub_64AB60",
@@ -111693,7 +111697,7 @@
   "name": "Sub_64B250",
   "name_src": "vote",
   "votes": {
-   "Sub_64B250": 20
+   "Sub_64B250": 31
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -112034,13 +112038,15 @@
   "sig_src": "abi"
  },
  "0064c980": {
-  "name": "sub_64C980",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetCogibleDDL_UpdateAuthoritativeState",
+  "name_src": "vote",
+  "votes": {
+   "NetCogibleDDL_UpdateAuthoritativeState": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0064c9d0": {
   "name": "sub_64C9D0",
@@ -112052,13 +112058,15 @@
   "sig_src": "abi"
  },
  "0064ca10": {
-  "name": "sub_64CA10",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetCogibleDDL_UpdateReplicaState",
+  "name_src": "vote",
+  "votes": {
+   "NetCogibleDDL_UpdateReplicaState": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0064ca60": {
   "name": "sub_64CA60",
@@ -112434,13 +112442,15 @@
   "sig_src": "abi"
  },
  "0064eba0": {
-  "name": "sub_64EBA0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "ObjectBase_Initialize",
+  "name_src": "vote",
+  "votes": {
+   "ObjectBase_Initialize": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0064ebc0": {
   "name": "sub_64EBC0",
@@ -114770,7 +114780,8 @@
   "name": "NetCogibleDdl_ReadIntoSlot",
   "name_src": "vote",
   "votes": {
-   "NetCogibleDdl_ReadIntoSlot": 1
+   "NetCogibleDdl_ReadIntoSlot": 1,
+   "NetZ_ReadIntoOutParam": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -114904,7 +114915,7 @@
   "name": "GameConfig_WriteWordField",
   "name_src": "vote",
   "votes": {
-   "GameConfig_WriteWordField": 1
+   "GameConfig_WriteWordField": 5
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -114915,7 +114926,7 @@
   "name": "GameConfig_WriteDwordField",
   "name_src": "vote",
   "votes": {
-   "GameConfig_WriteDwordField": 2
+   "GameConfig_WriteDwordField": 8
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -117208,13 +117219,15 @@
   "sig_src": "abi"
  },
  "0065e310": {
-  "name": "sub_65E310",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Registry_Attach",
+  "name_src": "vote",
+  "votes": {
+   "Registry_Attach": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0065e330": {
   "name": "sub_65E330",
@@ -117401,13 +117414,15 @@
   "sig_src": "vote"
  },
  "0065e6f0": {
-  "name": "sub_65E6F0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetCogible_BaseDispatchField",
+  "name_src": "vote",
+  "votes": {
+   "NetCogible_BaseDispatchField": 1
+  },
   "ret": "char",
   "conv": "__stdcall",
   "params": "int a1, int a2, int a3, int a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0065e700": {
   "name": "Sub_65E700",
@@ -117509,7 +117524,7 @@
   "name": "SharedDispatch_65E950",
   "name_src": "vote",
   "votes": {
-   "SharedDispatch_65E950": 1
+   "SharedDispatch_65E950": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -120962,11 +120977,13 @@
   "name": "HashTemporaryString",
   "name_src": "vote",
   "votes": {
-   "HashTemporaryString": 1
+   "TempStringHashValue": 1,
+   "HashTemporaryString": 1,
+   "Sub_66B590": 4
   },
-  "ret": "void*",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx",
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "std::uint32_t tempObjectWord",
   "sig_src": "vote"
  },
  "0066b630": {
@@ -130619,7 +130636,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 306,
+   "Mem_FreeDebug": 308,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -130722,7 +130739,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 372
+   "Mem_Free": 376
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -175754,7 +175771,7 @@
   "name": "GetGlobalDword_73C020",
   "name_src": "agent",
   "votes": {
-   "GetGlobalDword_73C020": 50
+   "GetGlobalDword_73C020": 52
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -176278,7 +176295,7 @@
   "name": "MpSpawnPoints_GetPlayerEntryId",
   "name_src": "agent",
   "votes": {
-   "MpSpawnPoints_GetPlayerEntryId": 1
+   "MpSpawnPoints_GetPlayerEntryId": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -176837,7 +176854,7 @@
   "name": "ClearDwordField4",
   "name_src": "agent",
   "votes": {
-   "ClearDwordField4": 1
+   "ClearDwordField4": 2
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -176846,13 +176863,14 @@
   "file": "src/auto/0073f760.cpp"
  },
  "0073f770": {
-  "name": "sub_73F770",
-  "name_src": "addr",
+  "name": "C_00867768_DestructWithOptionalFree",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00867768* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/0073f770.cpp"
  },
  "0073f7a0": {
   "name": "C_00867770_Destroy",
@@ -176874,13 +176892,16 @@
   "sig_src": "abi"
  },
  "0073f870": {
-  "name": "sub_73F870",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "bool",
+  "name": "C_00858180_SetSettings",
+  "name_src": "agent",
+  "votes": {
+   "C_00858180_DispatchSpawnPayload": 1
+  },
+  "ret": "uint8_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2, int arg4, int a4, int a5, int a6, int a7, int a8, int a9, int a10, int a11, int a12, int a13, int a14, int a15, int a16, int a17, char a18, int a19, int a3",
-  "sig_src": "abi"
+  "params": "C_00858180* self, void* , char a2, int arg4, int a4, int a5, int a6, int a7, int a8, int a9, int a10, int a11, int a12, int a13, int a14, int a15, int a16, int a17, char a18, int a19, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/0073f870.cpp"
  },
  "0073fa00": {
   "name": "CMenuMpStats_StoreStatsAndActivate",
@@ -176903,13 +176924,14 @@
   "file": "src/auto/0073fa40.cpp"
  },
  "0073fa90": {
-  "name": "sub_73FA90",
-  "name_src": "addr",
+  "name": "C_00858180_CommitSpawnAndForward",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9, int a10, int a11, int a12, int a13, int a14, int a15, int a16, int a17, char a18, unsigned int a19",
-  "sig_src": "abi"
+  "params": "C_00858180* self, void* , char a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9, int a10, int a11, int a12, int a13, int a14, int a15, int a16, int a17, char a18, unsigned int a19",
+  "sig_src": "impl",
+  "file": "src/auto/0073fa90.cpp"
  },
  "0073fb10": {
   "name": "sub_73FB10",
@@ -176977,7 +176999,7 @@
  },
  "0073fd30": {
   "name": "NetCogibleDDL_UpdateAndFlushList",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -177013,35 +177035,40 @@
   "sig_src": "abi"
  },
  "0073ffc0": {
-  "name": "sub_73FFC0",
-  "name_src": "addr",
+  "name": "CMenuMpStats_ApplyEntryUpdate",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint16_t a2, int a3",
-  "sig_src": "abi"
+  "params": "CMenuMpStats* self, void* , uint16_t a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/0073ffc0.cpp"
  },
  "00740020": {
-  "name": "sub_740020",
-  "name_src": "addr",
+  "name": "CMenuMpStats_HandlePlayerSpawnEvent",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint16_t a2, int a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint16_t playerSlot, int playerEntryId",
+  "sig_src": "impl",
+  "file": "src/auto/00740020.cpp"
  },
  "00740080": {
-  "name": "sub_740080",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CMenuMpStats_RefreshIfReadyAndSetFlag",
+  "name_src": "agent",
+  "votes": {
+   "NetCogible_HandleMsg740080": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00740080.cpp"
  },
  "007400a0": {
   "name": "NetCogibleDDL_SetSignFlagAndStoreValue",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -177050,13 +177077,16 @@
   "file": "src/auto/007400a0.cpp"
  },
  "007400f0": {
-  "name": "sub_7400F0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CMenuMpStats_SetScoreFieldAndRefresh",
+  "name_src": "agent",
+  "votes": {
+   "NetCogible_HandleMsg7400F0": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "CMenuMpStats* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/007400f0.cpp"
  },
  "00740130": {
   "name": "NetCogibleDDL_GetLazyLatchedByte",
@@ -177081,13 +177111,14 @@
   "file": "src/auto/00740150.cpp"
  },
  "00740190": {
-  "name": "sub_740190",
-  "name_src": "addr",
+  "name": "C_00858180_ApplyDdlSettings",
+  "name_src": "agent",
   "votes": {},
-  "ret": "bool",
+  "ret": "uint8_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2, int arg4, int a4, int a5, int a6, int a7, int a8, int a9, int a10, int a11, int a12, int a13, int a14, int a15, int a16, int a17, char a18, int a19, int a3",
-  "sig_src": "abi"
+  "params": "C_00858180* self, void* , char a2, int arg4, int a4, int a5, int a6, int a7, int a8, int a9, int a10, int a11, int a12, int a13, int a14, int a15, int a16, int a17, char a18, int a19, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/00740190.cpp"
  },
  "00740320": {
   "name": "CMenuMpStats_StoreStatsAndSetFlag",
@@ -177129,13 +177160,14 @@
   "sig_src": "abi"
  },
  "00740490": {
-  "name": "sub_740490",
-  "name_src": "addr",
+  "name": "C_00867800_Destruct",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00867800* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/00740490.cpp"
  },
  "007404e0": {
   "name": "C_00867850_BaseCleanup",
@@ -177169,22 +177201,25 @@
   "file": "src/auto/00740570.cpp"
  },
  "007405a0": {
-  "name": "sub_7405A0",
-  "name_src": "addr",
+  "name": "NetCogibleDDL_UpdateSpawnState",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , float deltaTime",
+  "sig_src": "impl",
+  "file": "src/auto/007405a0.cpp"
  },
  "00740790": {
-  "name": "sub_740790",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CMenuMpStats_SubmitStatsRecord",
+  "name_src": "vote",
+  "votes": {
+   "CMenuMpStats_SubmitStatsRecord": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2, int a3, uint8_t* a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00740810": {
   "name": "C_00867890_InitDefaults",
@@ -177212,7 +177247,7 @@
  },
  "00740860": {
   "name": "NetCogibleDDL_AdvanceStateMachine",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -177233,22 +177268,26 @@
   "file": "src/auto/007408c0.cpp"
  },
  "007408d0": {
-  "name": "sub_7408D0",
-  "name_src": "addr",
+  "name": "C_00867890_DestroyAndMaybeFree",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "C_00867890*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00867890* self, void* , char freeFlags",
+  "sig_src": "impl",
+  "file": "src/auto/007408d0.cpp"
  },
  "00740900": {
-  "name": "sub_740900",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetCogibleDdl_CopyRecord",
+  "name_src": "agent",
+  "votes": {
+   "DdlSubobject_ForwardCall": 1
+  },
   "ret": "uint16_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2",
-  "sig_src": "abi"
+  "params": "uint8_t* self, void* , const uint8_t* source",
+  "sig_src": "impl",
+  "file": "src/auto/00740900.cpp"
  },
  "00740970": {
   "name": "CMenuMpStats_SetFlagByte1088IfReady",
@@ -177269,6 +177308,16 @@
   "params": "CMenuMpStats* self, void* , char newValue",
   "sig_src": "impl",
   "file": "src/auto/007409a0.cpp"
+ },
+ "007409d0": {
+  "name": "NetCogibleDDL_ApplyRotationSnapshot",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "char",
+  "conv": "__fastcall",
+  "params": "void* self, void* , float a3, float a4, float a5",
+  "sig_src": "impl",
+  "file": "src/auto/007409d0.cpp"
  },
  "00740a60": {
   "name": "CMenuMpStats_ProcessStatsUpdate",
@@ -177291,27 +177340,29 @@
   "file": "src/auto/00740a80.cpp"
  },
  "00740b90": {
-  "name": "MpSpawnPoints_RestorePlayerState",
-  "name_src": "vote",
+  "name": "CMenuMpStats_RestorePlayerState",
+  "name_src": "agent",
   "votes": {
    "MpSpawnPoints_RestorePlayerState": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2, int a3",
-  "sig_src": "vote"
+  "params": "CMenuMpStats* self, void* , char a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/00740b90.cpp"
  },
  "00740c10": {
   "name": "MpSpawnPoints_NotifyRelatedOwner",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MpSpawnPoints_NotifyRelatedOwner": 1,
    "MpSpawnPoints_ResetStats": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00740c10.cpp"
  },
  "00740cb0": {
   "name": "MpSpawnPoints_GetLoadoutThreshold",
@@ -177328,19 +177379,22 @@
  },
  "00740d20": {
   "name": "MpSpawnPoints_SetVictimOutcome",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MpSpawnPoints_SetVictimOutcome": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_00858180* self, void* , int outcome",
+  "sig_src": "impl",
+  "file": "src/auto/00740d20.cpp"
  },
  "00740d50": {
   "name": "CMenuMpStats_IncrementStatCounter",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuMpStats_ApplyOutcome": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "CMenuMpStats* self, void* , char selection",
@@ -177380,13 +177434,14 @@
   "file": "src/auto/00740e20.cpp"
  },
  "00740f10": {
-  "name": "sub_740F10",
-  "name_src": "addr",
+  "name": "NetCogibleDdl_ProcessSourceAndSetFlag",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* Source",
-  "sig_src": "abi"
+  "params": "void* self, void* , char* Source",
+  "sig_src": "impl",
+  "file": "src/auto/00740f10.cpp"
  },
  "00740f40": {
   "name": "MpSpawnPoints_UpdatePlayerState",
@@ -177446,26 +177501,28 @@
   "file": "src/auto/00741010.cpp"
  },
  "007410f0": {
-  "name": "ApplySpawnFlag",
-  "name_src": "vote",
+  "name": "C_00858180_ApplySpawnFlag",
+  "name_src": "agent",
   "votes": {
    "ApplySpawnFlag": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_00858180* self, void* , int spawnValue",
+  "sig_src": "impl",
+  "file": "src/auto/007410f0.cpp"
  },
  "00741150": {
   "name": "SpawnPoints_UpdateCharacter",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SpawnPoints_UpdateCharacter": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_00858180* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/00741150.cpp"
  },
  "007411a0": {
   "name": "CMenuMpStats_GetPlayerExclusionFlag",
@@ -177480,13 +177537,14 @@
   "file": "src/auto/007411a0.cpp"
  },
  "007411b0": {
-  "name": "sub_7411B0",
-  "name_src": "addr",
+  "name": "NetCogibleDDL_ForwardToInnerSubobject",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint16_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2",
-  "sig_src": "abi"
+  "params": "char* self, void* , char* a2",
+  "sig_src": "impl",
+  "file": "src/auto/007411b0.cpp"
  },
  "007411c0": {
   "name": "MpSpawnPoints_SetAttackerOutcome",
@@ -177496,8 +177554,9 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_00858180* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/007411c0.cpp"
  },
  "00741240": {
   "name": "NetCogibleDdl_AllocListSentinelNode_741240",
@@ -177554,7 +177613,7 @@
  },
  "007415c0": {
   "name": "MpSpawnPoints_GetPendingSpawn",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MpSpawnPoints_GetPendingSpawn": 1
   },
@@ -177588,8 +177647,8 @@
   "sig_src": "vote"
  },
  "007416f0": {
-  "name": "NetCogibleDdl_CleanupBase",
-  "name_src": "vote",
+  "name": "C_00867900_Destroy",
+  "name_src": "agent",
   "votes": {
    "NetCogibleDdl_CleanupBase": 1
   },
@@ -177610,13 +177669,14 @@
   "file": "src/auto/007417c0.cpp"
  },
  "007417e0": {
-  "name": "sub_7417E0",
-  "name_src": "addr",
+  "name": "NetCogibleDDL_UpdateAndTrackChanges",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "uint8_t* self, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/007417e0.cpp"
  },
  "00741af0": {
   "name": "C_00867900_CleanupAndMaybeRelease",
@@ -177675,13 +177735,14 @@
   "sig_src": "abi"
  },
  "00741fc0": {
-  "name": "sub_741FC0",
-  "name_src": "addr",
+  "name": "NetCogibleDDL_AllocateAndInit",
+  "name_src": "agent",
   "votes": {},
   "ret": "char*",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/00741fc0.cpp"
  },
  "00741ff0": {
   "name": "NetCogible_GetName",
@@ -177725,7 +177786,7 @@
  },
  "00742060": {
   "name": "NetCogibleDdl_CallWithContext",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
@@ -177739,10 +177800,11 @@
   "votes": {
    "NetCogibleDdl_ProcessField": 1
   },
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, void* a3",
-  "sig_src": "vote"
+  "params": "void* self, void* , char* a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/00742080.cpp"
  },
  "00742100": {
   "name": "CMenuMpStats_SendBeginRespawnCommand",
@@ -177755,56 +177817,63 @@
   "file": "src/auto/00742100.cpp"
  },
  "00742140": {
-  "name": "sub_742140",
-  "name_src": "addr",
+  "name": "C_00858180_SendHasBeenCaughtCommand",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00858180* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00742140.cpp"
  },
  "00742180": {
-  "name": "sub_742180",
-  "name_src": "addr",
+  "name": "C_00858180_SendTeHeCogidoCommand",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00858180* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00742180.cpp"
  },
  "007421c0": {
-  "name": "sub_7421C0",
-  "name_src": "addr",
+  "name": "NetCogible_DispatchFieldByName",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a1, int a2, int a3, int a4",
-  "sig_src": "abi"
+  "params": "void* self, void* , char* obj, int nameHolder, int arg3, int arg4",
+  "sig_src": "impl",
+  "file": "src/auto/007421c0.cpp"
  },
  "007422e0": {
-  "name": "sub_7422E0",
-  "name_src": "addr",
+  "name": "C_00867800_SetStates1To4AndCallBase",
+  "name_src": "agent",
   "votes": {},
-  "ret": "void",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, int a1, int a2",
-  "sig_src": "abi"
+  "ret": "int",
+  "conv": "__stdcall",
+  "params": "int a1, int a2",
+  "sig_src": "impl",
+  "file": "src/auto/007422e0.cpp"
  },
  "00742360": {
   "name": "SpawnPoints_ActivateSpawn",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SpawnPoints_ActivateSpawn": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2, char a3, char a4, char a5",
-  "sig_src": "vote"
+  "params": "C_00858180* self, void* , char a2, char a3, char a4, char a5",
+  "sig_src": "impl",
+  "file": "src/auto/00742360.cpp"
  },
  "007423d0": {
   "name": "CMenuMpStats_ReadStatsRowAndApply",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "NetCogible_HandleMsg7423D0": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "CMenuMpStats* self, void* , C_008622e8* arg0",
@@ -177814,7 +177883,9 @@
  "00742430": {
   "name": "NetCogibleDDL_WriteContacto",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "DdlApplySettingsA": 2
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "C_00858180* self, void* , char byteField, char d0, char d1, char d2, char d3, char d4, char d5, char d6, char d7, char d8, char d9, char d10, char d11, char d12, char d13, char d14, char flag, char pairA, int pairB",
@@ -177824,7 +177895,9 @@
  "00742540": {
   "name": "NetCogibleDDL_ReadMessageAndDispatch",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "NetCogible_HandleMsg742540": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "C_00858180* self, void* , C_008622e8* stream",
@@ -177832,76 +177905,90 @@
   "file": "src/auto/00742540.cpp"
  },
  "00742670": {
-  "name": "sub_742670",
-  "name_src": "addr",
+  "name": "C_00858180_WriteConfigTriplet",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2, char a3, char a4",
-  "sig_src": "abi"
+  "params": "C_00858180* self, void* , char a2, char a3, char a4",
+  "sig_src": "impl",
+  "file": "src/auto/00742670.cpp"
  },
  "007426d0": {
-  "name": "sub_7426D0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CMenuMpStats_SubmitStatsFromArgument",
+  "name_src": "agent",
+  "votes": {
+   "NetCogible_HandleMsg7426D0": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* arg0",
-  "sig_src": "abi"
+  "params": "CMenuMpStats* self, void* , C_008622e8* arg0",
+  "sig_src": "impl",
+  "file": "src/auto/007426d0.cpp"
  },
  "00742720": {
-  "name": "sub_742720",
-  "name_src": "addr",
+  "name": "C_00858180_WriteRecogerArmaFields",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2, char a3",
-  "sig_src": "abi"
+  "params": "C_00858180* self, void* , char a2, char a3",
+  "sig_src": "impl",
+  "file": "src/auto/00742720.cpp"
  },
  "00742780": {
-  "name": "sub_742780",
-  "name_src": "addr",
+  "name": "C_00858180_WriteRecogerArmaEntry",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2, char a3",
-  "sig_src": "abi"
+  "params": "C_00858180* self, void* , char a2, char a3",
+  "sig_src": "impl",
+  "file": "src/auto/00742780.cpp"
  },
  "007427e0": {
-  "name": "sub_7427E0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CMenuMpStats_HandleListboxSelection",
+  "name_src": "agent",
+  "votes": {
+   "NetCogible_HandleMsg7427E0": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* arg0",
-  "sig_src": "abi"
+  "params": "CMenuMpStats* self, void* , C_008622e8* arg0",
+  "sig_src": "impl",
+  "file": "src/auto/007427e0.cpp"
  },
  "00742820": {
-  "name": "sub_742820",
-  "name_src": "addr",
+  "name": "C_00858180_WriteRecogerMunicionFields_742820",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2, char a3",
-  "sig_src": "abi"
+  "params": "C_00858180* self, void* , char a2, char a3",
+  "sig_src": "impl",
+  "file": "src/auto/00742820.cpp"
  },
  "00742880": {
-  "name": "sub_742880",
-  "name_src": "addr",
+  "name": "C_00858180_WriteRecogerMunicionFields_742880",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2, char a3",
-  "sig_src": "abi"
+  "params": "C_00858180* self, void* , char a2, char a3",
+  "sig_src": "impl",
+  "file": "src/auto/00742880.cpp"
  },
  "007428e0": {
-  "name": "sub_7428E0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CMenuMpStats_ForwardListboxSelection",
+  "name_src": "agent",
+  "votes": {
+   "NetCogible_HandleMsg7428E0": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* arg0",
-  "sig_src": "abi"
+  "params": "CMenuMpStats* self, void* , C_008622e8* arg0",
+  "sig_src": "impl",
+  "file": "src/auto/007428e0.cpp"
  },
  "00742920": {
   "name": "NetCogibleDdl_ForwardToProcessField",
@@ -177924,13 +178011,14 @@
   "file": "src/auto/00742940.cpp"
  },
  "00742950": {
-  "name": "sub_742950",
-  "name_src": "addr",
+  "name": "NetCogibleDDL_ForwardWithSelf",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1, void* arg4, int _10, int a3, int a4, void* a2, int a5",
-  "sig_src": "abi"
+  "params": "int a1, C_008622e8* arg4, int unused10, int a3, int a4, C_008622e8* a2, int a5",
+  "sig_src": "impl",
+  "file": "src/auto/00742950.cpp"
  },
  "00742970": {
   "name": "NetCogibleDdl_ForwardToSecondArg",
@@ -177943,13 +178031,14 @@
   "file": "src/auto/00742970.cpp"
  },
  "00742990": {
-  "name": "sub_742990",
-  "name_src": "addr",
+  "name": "C_008622e8_SerializeFields",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "C_008622e8* self, void* , C_008622e8* sink",
+  "sig_src": "impl",
+  "file": "src/auto/00742990.cpp"
  },
  "00742a10": {
   "name": "GetByteFieldAtOffset24",
@@ -177962,22 +178051,24 @@
   "file": "src/auto/00742a10.cpp"
  },
  "00742a20": {
-  "name": "sub_742A20",
-  "name_src": "addr",
+  "name": "NetCogibleDdl_ForwardSecondArg",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1, int a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/00742a20.cpp"
  },
  "00742a30": {
-  "name": "sub_742A30",
-  "name_src": "addr",
+  "name": "NetCogibleDDL_ForwardToEncoderWithSelf",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__stdcall",
-  "params": "int a1, void* arg4, int _10, int a3, int a4, void* a2, int a5",
-  "sig_src": "abi"
+  "params": "int a1, C_008622e8* arg4, int unused10, int a3, int a4, C_008622e8* a2, int a5",
+  "sig_src": "impl",
+  "file": "src/auto/00742a30.cpp"
  },
  "00742a50": {
   "name": "NetCogibleDdl_ForwardNameToTarget",
@@ -178000,13 +178091,14 @@
   "file": "src/auto/00742a70.cpp"
  },
  "00742a80": {
-  "name": "sub_742A80",
-  "name_src": "addr",
+  "name": "NetCogibleDdl_ForwardSecondArgToDispatcher",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1, int a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "int , int a2, int , int , int",
+  "sig_src": "impl",
+  "file": "src/auto/00742a80.cpp"
  },
  "00742a90": {
   "name": "NetCogible_Construct",
@@ -178021,22 +178113,24 @@
   "file": "src/auto/00742a90.cpp"
  },
  "00742b50": {
-  "name": "sub_742B50",
-  "name_src": "addr",
+  "name": "NetCogible_DispatchMessage",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2, int a3, uint32_t* a4",
-  "sig_src": "abi"
+  "params": "NetCogible* self, void* , void* stats, int msgId, void* data",
+  "sig_src": "impl",
+  "file": "src/auto/00742b50.cpp"
  },
  "00742c10": {
-  "name": "sub_742C10",
-  "name_src": "addr",
+  "name": "C_00867800_InitObjectState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00867800* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00742c10.cpp"
  },
  "00742c80": {
   "name": "CreateGatheredNetCogibleDdl",
@@ -178556,13 +178650,15 @@
   "sig_src": "abi"
  },
  "00744870": {
-  "name": "sub_744870",
-  "name_src": "addr",
-  "votes": {},
+  "name": "MpSpawnPointsBase_RefreshState",
+  "name_src": "vote",
+  "votes": {
+   "MpSpawnPointsBase_RefreshState": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007448b0": {
   "name": "sub_7448B0",
@@ -178686,13 +178782,15 @@
   "sig_src": "abi"
  },
  "007452d0": {
-  "name": "sub_7452D0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SpawnPoints_ApplyOutcome",
+  "name_src": "vote",
+  "votes": {
+   "SpawnPoints_ApplyOutcome": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00745320": {
   "name": "sub_745320",
@@ -178704,13 +178802,15 @@
   "sig_src": "abi"
  },
  "00745350": {
-  "name": "sub_745350",
-  "name_src": "addr",
-  "votes": {},
+  "name": "DdlSpawn_ApplyFallbackFlag",
+  "name_src": "vote",
+  "votes": {
+   "DdlSpawn_ApplyFallbackFlag": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007453a0": {
   "name": "sub_7453A0",
@@ -178731,13 +178831,15 @@
   "sig_src": "abi"
  },
  "00745430": {
-  "name": "sub_745430",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CMenuScreen_ApplyPlayerStateRestore",
+  "name_src": "vote",
+  "votes": {
+   "CMenuScreen_ApplyPlayerStateRestore": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char a2, char a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00745490": {
   "name": "sub_745490",
@@ -179078,13 +179180,15 @@
   "sig_src": "abi"
  },
  "007475f0": {
-  "name": "sub_7475F0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "DdlApplySettingsB",
+  "name_src": "vote",
+  "votes": {
+   "DdlApplySettingsB": 2
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char a2, char arg4, char a4, char a5, char a6, char a7, char a8, char a9, char a10, char a11, char a12, char a13, char a14, char a15, char a16, char a17, char a18, char a19, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00747700": {
   "name": "sub_747700",
@@ -179295,7 +179399,7 @@
   "name": "Network_InitializeObjectState",
   "name_src": "vote",
   "votes": {
-   "Network_InitializeObjectState": 1
+   "Network_InitializeObjectState": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -179923,13 +180027,15 @@
   "sig_src": "vote"
  },
  "00749aa0": {
-  "name": "sub_749AA0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetCogibleDdl_ProcessSource",
+  "name_src": "vote",
+  "votes": {
+   "NetCogibleDdl_ProcessSource": 1
+  },
   "ret": "char*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char* Source",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00749ac0": {
   "name": "MpSpawnPoints_InitializeDescriptor",
@@ -180369,7 +180475,7 @@
   "name": "C_74B200_SetFlagAndReturnTrue",
   "name_src": "agent",
   "votes": {
-   "C_74B200_SetFlagAndReturnTrue": 1
+   "C_74B200_SetFlagAndReturnTrue": 4
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -180378,22 +180484,26 @@
   "file": "src/auto/0074b200.cpp"
  },
  "0074b210": {
-  "name": "sub_74B210",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetCogibleDdl_DispatchSelf",
+  "name_src": "vote",
+  "votes": {
+   "NetCogibleDdl_DispatchSelf": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0074b220": {
-  "name": "sub_74B220",
-  "name_src": "addr",
-  "votes": {},
+  "name": "ReadRespawnMember",
+  "name_src": "vote",
+  "votes": {
+   "ReadRespawnMember": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2, void** a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0074b280": {
   "name": "sub_74B280",
@@ -180407,7 +180517,9 @@
  "0074b2a0": {
   "name": "C_0074b2a0_SetFlag",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0074b2a0_SetFlag": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -182156,13 +182268,26 @@
   "file": "src/auto/00751560.cpp"
  },
  "00751570": {
-  "name": "sub_751570",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetCogibleDdl_ProcessDdlObject",
+  "name_src": "vote",
+  "votes": {
+   "NetCogibleDdl_ProcessDdlObject": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
+ },
+ "00751580": {
+  "name": "ReadCogibleDescription",
+  "name_src": "vote",
+  "votes": {
+   "ReadCogibleDescription": 1
+  },
+  "ret": "char",
+  "conv": "__fastcall",
+  "params": "void* self, void* edx, int a3, int a4",
+  "sig_src": "vote"
  },
  "00751780": {
   "name": "sub_751780",
@@ -182176,7 +182301,9 @@
  "00751810": {
   "name": "SetFlag20C",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "SetFlag20C": 2
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -182205,7 +182332,9 @@
  "00751990": {
   "name": "C_751990_SetFlagAndReturnTrue",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_751990_SetFlagAndReturnTrue": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void*",
