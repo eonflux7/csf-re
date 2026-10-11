@@ -14456,11 +14456,13 @@
  "00443760": {
   "name": "UpdateAuxiliaryController",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "UpdateAuxiliaryController": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00443770": {
   "name": "sub_443770",
@@ -14760,11 +14762,13 @@
  "00444930": {
   "name": "UpdateSecondaryController",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "UpdateSecondaryController": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00444940": {
   "name": "NotifySceneByteChanged",
@@ -15414,11 +15418,13 @@
  "00447940": {
   "name": "UpdatePrimaryController",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "UpdatePrimaryController": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00447990": {
   "name": "sub_447990",
@@ -15688,11 +15694,13 @@
  "00448da0": {
   "name": "UpdateFinalController",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "UpdateFinalController": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00448dd0": {
   "name": "AiTaskStates_AdjustPositionForRegion",
@@ -18015,7 +18023,9 @@
  "00452280": {
   "name": "S_00452280_UpdateTimedEvent",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_00452280_UpdateTimers": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "S_00452280* self, void* , float deltaTime",
@@ -18038,11 +18048,13 @@
  "004523c0": {
   "name": "S_00452280_UpdateControls",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "S_00452280_UpdateControls": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int _AC",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004525a0": {
   "name": "CGuiControl_ResetLayoutDefaults",
@@ -18447,7 +18459,9 @@
  "004539b0": {
   "name": "CScene_ClearObjectReferences",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_00452280_RefreshState": 1
+  },
   "ret": "uint32_t",
   "conv": "__fastcall",
   "params": "CScene* self, void*",
@@ -18457,7 +18471,9 @@
  "00453a80": {
   "name": "S_00452280_UpdateTimedEntries",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_00452280_UpdateSceneState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_00452280* self, void* , int elapsedBits",
@@ -18539,8 +18555,9 @@
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "S_00452280* self, void* , float deltaTime",
+  "sig_src": "impl",
+  "file": "src/auto/00454070.cpp"
  },
  "004542c0": {
   "name": "InsertRecord20At",
@@ -19101,7 +19118,7 @@
   "name": "GetGlobalValue_457A80",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_457A80": 4
+   "GetGlobalValue_457A80": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -19206,11 +19223,13 @@
  "004580c0": {
   "name": "UpdateGlobalController",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "UpdateGlobalController": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004580f0": {
   "name": "sub_4580F0",
@@ -24113,7 +24132,9 @@
  "00469800": {
   "name": "S_0045d610_UpdateFrameController",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "UpdateFrameController": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "S_0045d610* self, void* , float a2",
@@ -26832,11 +26853,13 @@
  "00475630": {
   "name": "RefreshEventDispatcher",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "RefreshEventDispatcher": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00475720": {
   "name": "C_00831698_Construct",
@@ -26882,7 +26905,7 @@
   "name": "DispatchRecordToGlobalObject",
   "name_src": "vote",
   "votes": {
-   "DispatchRecordToGlobalObject": 16,
+   "DispatchRecordToGlobalObject": 17,
    "QueueTaskRecord": 1
   },
   "ret": "uint32_t",
@@ -33250,11 +33273,13 @@
  "0048aa40": {
   "name": "UpdateTimeController",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "UpdateTimeController": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0048aa60": {
   "name": "GetGlobal8B0578Thunk",
@@ -44059,7 +44084,7 @@
   "name": "C_0085ec18_NullSub",
   "name_src": "agent",
   "votes": {
-   "C_0085ec18_NullSub": 1
+   "C_0085ec18_NullSub": 2
   },
   "ret": "void",
   "conv": "__stdcall",
@@ -55608,7 +55633,7 @@
   "name": "GetValue8B0554",
   "name_src": "agent",
   "votes": {
-   "GetValue8B0554": 167
+   "GetValue8B0554": 168
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -56611,11 +56636,13 @@
  "004ef780": {
   "name": "UpdateManagedController",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "UpdateManagedController": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004ef9e0": {
   "name": "sub_4EF9E0",
@@ -57947,7 +57974,7 @@
   "name": "GetProviderFrameState",
   "name_src": "vote",
   "votes": {
-   "GetProviderFrameState": 1
+   "GetProviderFrameState": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -59009,7 +59036,7 @@
   "name": "GetGlobalValue_4FBDE0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_4FBDE0": 75
+   "GetGlobalValue_4FBDE0": 76
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -59160,7 +59187,7 @@
   "name": "GetFirstElement",
   "name_src": "agent",
   "votes": {
-   "GetFirstElement": 44
+   "GetFirstElement": 45
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -67934,7 +67961,7 @@
   "name": "GetGlobalValue_521BB0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_521BB0": 85
+   "GetGlobalValue_521BB0": 86
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -68033,20 +68060,24 @@
  "00521da0": {
   "name": "AudioSound_ForwardToGlobalObjectSlot16",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "RefreshGlobalFrameState": 1
+  },
   "ret": "int",
-  "conv": "__cdecl",
-  "params": "",
-  "sig_src": "abi"
+  "conv": "__fastcall",
+  "params": "void* self, void* edx, int a2",
+  "sig_src": "vote"
  },
  "00521db0": {
   "name": "AudioSound_ForwardToGlobalObjectSlot18",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "RefreshGlobalTransformState": 1
+  },
   "ret": "int",
-  "conv": "__cdecl",
-  "params": "",
-  "sig_src": "abi"
+  "conv": "__fastcall",
+  "params": "void* self, void* edx, int a2",
+  "sig_src": "vote"
  },
  "00521dc0": {
   "name": "SceneLoader_CheckLoadResult",
@@ -102275,7 +102306,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 58
+   "RwMatrixDestroy": 59
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -117418,7 +117449,7 @@
   "name": "GetReferencedObject",
   "name_src": "vote",
   "votes": {
-   "GetReferencedObject": 48,
+   "GetReferencedObject": 49,
    "MenuPause_ResolveHeldObject_6683F0": 1,
    "Options_ResolveHeldObject_6683F0": 1,
    "MenuSaveGame_ResolveHeldObject_6683F0": 1,
@@ -125123,7 +125154,7 @@
   "name": "GetCachedObjectProvider",
   "name_src": "vote",
   "votes": {
-   "GetCachedObjectProvider": 81
+   "GetCachedObjectProvider": 82
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -179319,7 +179350,7 @@
   "name": "GameConfig_IsSceneObjectRemovable",
   "name_src": "agent",
   "votes": {
-   "Scene_IsObjectRemovable": 10
+   "Scene_IsObjectRemovable": 11
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -179705,7 +179736,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 102,
+   "GetGlobalValue_8BC1E0": 103,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",

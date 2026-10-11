@@ -1,53 +1,3 @@
-# Escalation 0x00454070: in-game smoke failure (verifier bisect: 1 smokes (1 named by crash reports, k=8))
-
-## Smoke log tail
-```
-nohook=False pid=15724 ready=True after=3s alive=True exit=killed stillrunning=False stop=crash ran=0s fail_at=0s
----- hits
-006a2e00    1576038 auto C_0085ee28_SumFields
-0069e3d0     551974 auto C_0085eb30_ReleaseMutexIfSet
-00739440      69583 auto C_00867444_GetScaledValue
-00730830      64983 auto CopyDwordIfNotNull
-00768e70      56120 auto GetGlobalValue_768E70
-0044f630      51753 auto CGuiControl_GetField012C
-006b1380      33479 auto GetGlobalInt
-006b2820      29843 auto C_00860178_Construct
-00718ee0      22919 auto CGuiControl_GetAbsolutePosition
-0071a2e0      22633 auto CopyTwoDwordsIfDestNonNull
----- diff (0 functions compared)
-CRASH code=c0000005 eip=72dfbdc2 addr=3b031777 (rw=0) eax=3b031777 ebx=00000001 ecx=033ea010 edx=00863ac0 esi=3b031777 edi=0d086778 ebp=0019ea28 esp=0019ea0c
-  eip module 72D10000 (ours 72D10000); stack:
-   00448329 033ffb10 0019ea28 0019eac4 033e1478 033ea010
-   00863ac0 0019eac4 72d44011 3b031777 00000000 00000010
-   0042c0a8 3b031777 3b031777 0d086778 00000000 ff7fffff
-   0019ea98 72da53ed 3b031777 0019ea98 19a21748 19a22a8c
----- csf_hook.log
-hook 00407ed0 auto     C_0082d5e0_InvokeVtblSlot15
-hook 00406e90 auto     ResolveIndexedEntry
-hook 00406210 auto     SetValueAtOffset8
-hook 00405810 auto     C_0082d510_ResetState
-hook 004013e0 auto     ReturnMinusOne
-hook 00401090 auto     GetGlobalValue_401090
-hooks installed=3409 skipped=0 failed=0
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00B08044 wrapped
-devcmd: video mode 1280x960
-devcmd: dev start (scene Maps/FR01/Parachut.scn) instead of Menus/P_Intro.fbs -> state 1
-devcmd: starting scene 'Maps/FR01/Parachut.scn'
-CRASH code=c0000005 eip=72dfbdc2 addr=3b031777 (rw=0) eax=3b031777 ebx=00000001 ecx=033ea010 edx=00863ac0 esi=3b031777 edi=0d086778 ebp=0019ea28 esp=0019ea0c
-  eip module 72D10000 (ours 72D10000); stack:
-   00448329 033ffb10 0019ea28 0019eac4 033e1478 033ea010
-   00863ac0 0019eac4 72d44011 3b031777 00000000 00000010
-   0042c0a8 3b031777 3b031777 0d086778 00000000 ff7fffff
-   0019ea98 72da53ed 3b031777 0019ea98 19a21748 19a22a8c
-SMOKE FAIL (alive, but 1 CRASH logged: the game caught it)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include <cstring>
 #include "globals.h"
@@ -63,7 +13,7 @@ CSF_FUNC(int, __fastcall, UpdatePrimaryController, 0x00447940, (void* self, void
 CSF_FUNC(void, __fastcall, UpdateFinalController, 0x00448DA0, (void* self, void* edx, float a2));
 CSF_FUNC(void, __fastcall, S_00452280_UpdateTimers, 0x00452280, (void* self, void* edx, float a2));
 CSF_FUNC(void, __fastcall, S_00452280_UpdateControls, 0x004523C0, (void* self, void* edx, int _AC));
-CSF_FUNC(uint32_t, __fastcall, S_00452280_RefreshState, 0x004539B0, (C_008312b0* self, void* edx));
+CSF_FUNC(uint32_t, __fastcall, S_00452280_RefreshState, 0x004539B0, (CScene* self, void* edx));
 CSF_FUNC(int, __fastcall, S_00452280_UpdateSceneState, 0x00453A80, (void* self, void* edx, int a4));
 CSF_FUNC(int, __cdecl, GetGlobalValue_457A80, 0x00457A80, ());
 CSF_FUNC(char, __fastcall, UpdateGlobalController, 0x004580C0, (void* self, void* edx, float a2));
@@ -78,8 +28,8 @@ CSF_FUNC(int, __fastcall, GetProviderFrameState, 0x004F4EA0, (void* self, void* 
 CSF_FUNC(int, __cdecl, GetGlobalValue_4FBDE0, 0x004FBDE0, ());
 CSF_FUNC(int, __fastcall, GetFirstElement, 0x004FC1D0, (void* self, void*));
 CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x00521BB0, ());
-CSF_FUNC(int, __cdecl, RefreshGlobalFrameState, 0x00521DA0, ());
-CSF_FUNC(int, __cdecl, RefreshGlobalTransformState, 0x00521DB0, ());
+CSF_FUNC(int, __fastcall, RefreshGlobalFrameState, 0x00521DA0, (void* self, void* edx, int a2));
+CSF_FUNC(int, __fastcall, RefreshGlobalTransformState, 0x00521DB0, (void* self, void* edx, int a2));
 CSF_FUNC(int, __cdecl, RwMatrixDestroy, 0x00624D10, (std::uint32_t* matrix));
 CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x006683F0, (void* self, void* edx));
 CSF_FUNC(void*, __fastcall, GetCachedObjectProvider, 0x00686C10, (void* self, void* edx));
@@ -157,20 +107,21 @@ static void __fastcall S_00452280_Update(
     void* first = reinterpret_cast<void*>(GetFirstElement(
         reinterpret_cast<void*>(GetGlobalValue_4FBDE0()), nullptr));
     void* provider = GetCachedObjectProvider(first, nullptr);
-    GetProviderFrameState(provider, nullptr);
-    GetGlobalValue_521BB0();
-    RefreshGlobalFrameState();
+    // Both forwarders tail-jump to a virtual of the global object: this in ecx, one argument.
+    const int frameState = GetProviderFrameState(provider, nullptr);
+    RefreshGlobalFrameState(
+        reinterpret_cast<void*>(GetGlobalValue_521BB0()), nullptr, frameState);
 
     void* referenced = GetReferencedObject(provider, nullptr);
     void* transformSource =
         ((void*(__fastcall*)(void*, void*))
              CSF_AT(void**, referenced, 0)[0x10 / 4])(referenced, nullptr);
-    ((int(__fastcall*)(void*, void*, void*))
+    const int transform = ((int(__fastcall*)(void*, void*, void*))
          CSF_AT(void**, transformSource, 0)[0x8C / 4])(
              transformSource, nullptr, transformResult);
 
-    GetGlobalValue_521BB0();
-    RefreshGlobalTransformState();
+    RefreshGlobalTransformState(
+        reinterpret_cast<void*>(GetGlobalValue_521BB0()), nullptr, transform);
     if (static_cast<std::uint8_t>(transformResult[1]))
         RwMatrixDestroy(reinterpret_cast<std::uint32_t*>(transformResult[0]));
 
@@ -210,7 +161,7 @@ static void __fastcall S_00452280_Update(
                  object, nullptr, objectDelta);
     }
 
-    S_00452280_RefreshState(reinterpret_cast<C_008312b0*>(self), nullptr);
+    S_00452280_RefreshState(reinterpret_cast<CScene*>(self), nullptr);
     S_00452280_UpdateSceneState(self, nullptr, static_cast<int>(deltaBits));
     S_00452280_UpdateTimers(self, nullptr, deltaTime);
     S_00452280_UpdateControls(self, nullptr, static_cast<int>(deltaBits));
@@ -218,4 +169,3 @@ static void __fastcall S_00452280_Update(
 
 HOOK(0x00454070, S_00452280_Update, "auto");
 
-```
