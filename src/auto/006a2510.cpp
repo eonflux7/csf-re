@@ -1,43 +1,3 @@
-# Escalation 0x006A2510: in-game smoke failure (verifier bisect: 36 smokes (0 named by crash reports, k=8))
-
-## Smoke log tail
-```
-nohook=False pid=14844 ready=False after=1s alive=False exit=-1073741819 stillrunning=False stop=exited ran=0s fail_at=0s
----- hits
----- diff (0 functions compared)
-CRASH code=c0000005 eip=72dde75e addr=f11f35e8 (rw=0) eax=f11f35e8 ebx=00000000 ecx=00000000 edx=00000000 esi=007503b2 edi=0339d3f8 ebp=0019ecb4 esp=0019ec9c
-  eip module 72BE0000 (ours 72BE0000); stack:
-   00000254 00000254 008baeb4 f11f35e8 00000000 06cb9585
-   0019ecc8 72ddea6d 007503b2 03300358 00000000 001afe4c
-   0050d1d5 005098c1 7655d600 00000000 0021a000 00000000
-   00000000 00000000 00000000 00000000 00000000 00000000
----- csf_hook.log
-hook 004054f0 auto     C_0082d58c_CacheResources
-hook 004054a0 auto     S_004054a0_ResolveChildAndDispatch
-hook 00405450 auto     AudioSoundManager_ProcessArchiveContext
-hook 00405420 auto     C_0082d510_Destroy
-hook 00405400 auto     C_0082d510_ForwardFloatToTarget
-hook 004053e0 auto     C_0082d510_ForwardSlotCall
-hook 004013e0 auto     ReturnMinusOne
-hook 00401090 auto     GetGlobalValue_401090
-hooks installed=4505 skipped=338 failed=0
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00D0068C wrapped
-devcmd: video mode 1280x960
-CRASH code=c0000005 eip=72dde75e addr=f11f35e8 (rw=0) eax=f11f35e8 ebx=00000000 ecx=00000000 edx=00000000 esi=007503b2 edi=0339d3f8 ebp=0019ecb4 esp=0019ec9c
-  eip module 72BE0000 (ours 72BE0000); stack:
-   00000254 00000254 008baeb4 f11f35e8 00000000 06cb9585
-   0019ecc8 72ddea6d 007503b2 03300358 00000000 001afe4c
-   0050d1d5 005098c1 7655d600 00000000 0021a000 00000000
-   00000000 00000000 00000000 00000000 00000000 00000000
-SMOKE FAIL (never ready: no 'devcmd: starting scene' in csf_hook.log within 120s)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include <cstddef>
 #include <cstring>
@@ -143,19 +103,17 @@ static char __stdcall CoreZlibLog_ReadPropertyIntoDescriptor(
     {
         CopyAttributeText(property, nullptr, buffer, 256);
 
-        // These are distinct objects in the original, despite the assignment
-        // targeting the smaller one and the subsequent calls using the larger.
-        alignas(4) std::uint8_t settings[0x41C] = {};
-        alignas(4) std::uint8_t textStorage[0x20] = {};
-        auto* text = reinterpret_cast<C_0082d410*>(textStorage);
+        // One object: the settings block with its text member at +0x41C.
+        alignas(4) std::uint8_t settings[0x43C] = {};
+        auto* text = reinterpret_cast<C_0082d410*>(settings + 0x41C);
 
         CSF_AT(int, settings, 0x18) = 15;
-        CSF_AT(int, textStorage, 0x18) = 15;
+        CSF_AT(int, settings, 0x434) = 15;
         CSF_AT(int, settings, 0x14) = 0;
         CSF_AT(char, settings, 0x4) = 0;
-        CSF_AT(int, textStorage, 0x14) = 0;
-        reinterpret_cast<std::uint8_t*>(&text->field_0004)[0] = 0;
-        CSF_AT(char, textStorage, 0x1C) = 0;
+        CSF_AT(int, settings, 0x430) = 0;
+        CSF_AT(char, settings, 0x420) = 0;
+        CSF_AT(char, settings, 0x438) = 0;
 
         AssignStringRange_429B60(
             text, nullptr, buffer,
@@ -225,4 +183,3 @@ static char __stdcall CoreZlibLog_ReadPropertyIntoDescriptor(
 
 HOOK(0x006A2510, CoreZlibLog_ReadPropertyIntoDescriptor, "auto");
 
-```

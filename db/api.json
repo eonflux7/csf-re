@@ -4293,7 +4293,9 @@
  "00410d50": {
   "name": "MissionScript_ResetElementStorage",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreZlibLog_ResetElementStorage": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "int* self, void*",
@@ -9479,7 +9481,7 @@
   "name": "SaveGame_DestroyLocalizedString",
   "name_src": "vote",
   "votes": {
-   "SaveGame_DestroyLocalizedString": 1
+   "SaveGame_DestroyLocalizedString": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -9646,7 +9648,7 @@
   "name": "AssignStringRange_429B60",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_429B60": 76,
+   "AssignStringRange_429B60": 77,
    "MenuSceneSelect_InitializeString": 1
   },
   "ret": "void*",
@@ -11673,7 +11675,7 @@
   "name_src": "agent",
   "votes": {
    "ConstructStringFromText": 3,
-   "C_0082d410_ConstructFromText": 1
+   "C_0082d410_ConstructFromText": 2
   },
   "ret": "C_0082d410*",
   "conv": "__fastcall",
@@ -76435,7 +76437,7 @@
   "name": "CMenuSaveGame_ResetStringStorage",
   "name_src": "agent",
   "votes": {
-   "CMenuSaveGame_ResetStringStorage": 5
+   "CMenuSaveGame_ResetStringStorage": 6
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -128366,7 +128368,7 @@
   "name": "ParseIntegerComponent",
   "name_src": "vote",
   "votes": {
-   "ParseIntegerComponent": 31
+   "ParseIntegerComponent": 32
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -128377,7 +128379,7 @@
   "name": "ReadComponentFloat",
   "name_src": "vote",
   "votes": {
-   "ReadComponentFloat": 15
+   "ReadComponentFloat": 16
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -128388,7 +128390,7 @@
   "name": "CopyAttributeText",
   "name_src": "vote",
   "votes": {
-   "CopyAttributeText": 13
+   "CopyAttributeText": 14
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -128398,26 +128400,30 @@
  "00692e40": {
   "name": "CoreZlibLog_ReadWideAttributeText",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "CoreZlibLog_ReadWideAttributeText": 1
+  },
   "ret": "uint8_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int64_t a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00692f60": {
   "name": "CoreZlibLog_ReadVector2",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "CoreZlibLog_ReadVector2": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00693020": {
   "name": "DataNode_ReadVector3",
   "name_src": "vote",
   "votes": {
-   "DataNode_ReadVector3": 6,
+   "DataNode_ReadVector3": 7,
    "Node_ReadVector3": 2,
    "ReadVectorComponents": 1,
    "DataNode_ParseVector3": 1
@@ -128430,17 +128436,19 @@
  "00693140": {
   "name": "CoreZlibLog_ReadVector4",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "CoreZlibLog_ReadVector4": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006932b0": {
   "name": "FindProperty",
   "name_src": "vote",
   "votes": {
-   "FindProperty": 73
+   "FindProperty": 74
   },
   "ret": "std::uint8_t*",
   "conv": "__fastcall",
@@ -129383,7 +129391,7 @@
   "name": "ConstructWideString",
   "name_src": "vote",
   "votes": {
-   "ConstructWideString": 2
+   "ConstructWideString": 3
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -131649,11 +131657,13 @@
  "0069d930": {
   "name": "CoreZlibLog_AssignPropertyValue",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "CoreZlibLog_AssignPropertyValue": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void** a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0069db30": {
   "name": "sub_69DB30",
@@ -132776,6 +132786,7 @@
   "name": "GameConfig_DestroyEmbeddedSettings",
   "name_src": "agent",
   "votes": {
+   "CoreZlibLog_DestroyEmbeddedSettings": 1,
    "GameConfig_DestroyEmbeddedSettings": 1
   },
   "ret": "unsigned int",
@@ -132787,11 +132798,14 @@
  "006a2510": {
   "name": "CoreZlibLog_ReadPropertyIntoDescriptor",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreZlibLog_ReadPropertyIntoDescriptor": 1
+  },
   "ret": "char",
   "conv": "__stdcall",
-  "params": "void* a1, float ComponentFloat",
-  "sig_src": "abi"
+  "params": "S_00692b80* node, std::uint8_t* descriptor",
+  "sig_src": "impl",
+  "file": "src/auto/006a2510.cpp"
  },
  "006a2910": {
   "name": "S_00692b80_ApplyComponentCallback",
@@ -132799,8 +132813,9 @@
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a1, int a3",
-  "sig_src": "abi"
+  "params": "S_00692b80* self, void* , S_00692b80* a1, void* componentList",
+  "sig_src": "impl",
+  "file": "src/auto/006a2910.cpp"
  },
  "006a29a0": {
   "name": "C_0085edfc_Init",
