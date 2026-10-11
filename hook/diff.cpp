@@ -55,6 +55,7 @@ uint32_t g_maxCalls = 200;
 uint32_t g_limit = 0xFFFFFFFF;  // ini diff_limit N: only the first N table entries (bisecting)
 bool g_no_t3 = false;           // ini diff_t3 0: tier 3 off
 uint32_t g_t3limit = 0xFFFFFFFF;  // ini diff_t3_limit N: only the first N tier-3 entries (bisecting)
+uint32_t g_skip[64]; int g_nskip;  // ini diff_skip A,B,...: addresses never diffed (hex, no 0x needed)
 bool g_trace = false;           // ini diff_trace 1: log every diffed call before the original runs (who was last)
 constexpr uint32_t kMinArgCopy = 64;  // the invoke thunk restores esp itself, so over-copying args is harmless
 CRITICAL_SECTION g_cs;
@@ -364,6 +365,12 @@ bool diff_install(const Entry& e, uint8_t* stub, uint32_t* counter, int max_slot
             g_no_t3 = atoi(n) == 0;
         if (const char* n = ini_string("diff_t3_limit"))
             g_t3limit = (uint32_t)strtoul(n, nullptr, 0);
+        if (const char* n = ini_string("diff_skip"))
+            for (char* e; g_nskip < 64 && *n; n = *e ? e + 1 : e) {
+                g_skip[g_nskip++] = (uint32_t)strtoul(n, &e, 16);
+                if (e == n)
+                    break;
+            }
         if (const char* n = ini_string("diff_trace"))
             g_trace = atoi(n) != 0;
         CreateThread(nullptr, 0, summary_thread, nullptr, 0, nullptr);
@@ -376,6 +383,9 @@ bool diff_install(const Entry& e, uint8_t* stub, uint32_t* counter, int max_slot
     for (uint32_t k = 0; !d && kT3[k].addr && k < g_t3limit; ++k)
         if (kT3[k].addr == e.addr && !g_no_t3)
             d = &kT3[k], t3 = true;
+    for (int k = 0; k < g_nskip; ++k)
+        if (g_skip[k] == e.addr)
+            d = nullptr;
     if (!d || g_nslots >= max_slots)
         return false;
     int i = g_nslots;

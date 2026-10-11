@@ -25,6 +25,12 @@ SIZE = {"byte": 1, "word": 2, "dword": 4, "qword": 8}
 CONV = {"__cdecl": 0, "__stdcall": 1, "__thiscall": 2, "__fastcall": 3}
 
 
+# Functions the harness must not run twice / replay, found in game (bisected with ini diff_limit / diff_t3_limit):
+NO_DIFF = {
+    0x7557C0: "one-time singleton init (allocates and loads the game config): its replay kills the game at startup",
+}
+
+
 PURE_CACHE = os.path.join(ROOT, "work", "pure_cache.json")  # the binary never changes: purity is computed once
 _pure = None
 
@@ -357,7 +363,7 @@ def main():
             rows.append(row(ea, d))
             done.add(ea)
     for ea in eas:  # tier 3: what tier 1/2 can't take
-        if ea in db.F and ea not in done:
+        if ea in db.F and ea not in done and ea not in NO_DIFF:
             d = analyze(db, ea, tier3=True)
             if d and len(d["globs"]) <= 8 and d["this_size"] <= 12288:
                 t3[ea] = d

@@ -19,7 +19,7 @@ PLAY=${CSF_PLAY:-/mnt/e/dev/csf-play}
 SECS=${1:-15}
 START=${CSF_START:-scene Maps/FR01/Parachut.scn}
 INI="$PLAY/csf_hook.ini"
-sed -i '/^\(scene\|loadsave\|windowed\|background\|cmdline\|autopilot\|probe\|diff\|diff_limit\|diff_calls\|diff_t3\|diff_t3_limit\|diff_trace\|menutour\|mute\) /d' "$INI"
+sed -i '/^\(scene\|loadsave\|windowed\|background\|cmdline\|autopilot\|probe\|diff\|diff_limit\|diff_calls\|diff_t3\|diff_t3_limit\|diff_skip\|diff_trace\|menutour\|mute\) /d' "$INI"
 [ "${CSF_DIFF:-1}" = 1 ] && echo "diff 1" >> "$INI"  # differential testing of eligible hooks (hook/diff.cpp)
 # tier 3 (record/replay of functions with callees) kills the game at startup since its table grew (2026-10-11):
 # off until that is found; CSF_DIFF_T3=1 turns it on for debugging
