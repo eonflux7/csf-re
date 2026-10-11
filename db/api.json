@@ -4207,7 +4207,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 94
+   "AssignStringSubstring": 95
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -10626,7 +10626,7 @@
   "name": "CompareStringSubstring",
   "name_src": "vote",
   "votes": {
-   "CompareStringSubstring": 15
+   "CompareStringSubstring": 16
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -55685,7 +55685,7 @@
   "name": "SceneTable_ApplyEntry",
   "name_src": "agent",
   "votes": {
-   "SceneTable_ApplyEntry": 1,
+   "SceneTable_ApplyEntry": 2,
    "SceneLoader_MarkSectorUsed": 1,
    "SceneLoader_SelectModel": 2,
    "SceneLoader_RegisterResource": 1
@@ -56282,10 +56282,11 @@
    "SceneLoader_ApplyRegionEntry": 1,
    "SceneLoader_SetIndexedState": 1
   },
-  "ret": "uint32_t",
+  "ret": "std::uint32_t",
   "conv": "__fastcall",
-  "params": "S_004e8e00* self, void* edx, int a2, int a3",
-  "sig_src": "vote"
+  "params": "S_004e8e00* self, void* , int sectorIndex, int enabled",
+  "sig_src": "impl",
+  "file": "src/auto/004ed1c0.cpp"
  },
  "004eddb0": {
   "name": "SceneMissionSetup_RegisterProjectile",
@@ -56337,7 +56338,7 @@
   "name": "S_004e8e00_SetIndexedValue",
   "name_src": "agent",
   "votes": {
-   "SceneLoader_SetIndexedValue": 1
+   "SceneLoader_SetIndexedValue": 2
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
@@ -110980,7 +110981,7 @@
   "name": "SceneLoader_GetSceneController",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetSceneController": 25,
+   "SceneLoader_GetSceneController": 26,
    "SceneLoader_GetSceneObject": 1,
    "SceneLoader_GetSubsystem": 1,
    "SceneLoader_GetSceneResources": 1,
@@ -127731,7 +127732,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 244,
+   "Mem_FreeDebug": 245,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -135579,7 +135580,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 144,
+   "GetGlobalInt": 145,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -135603,7 +135604,7 @@
   "name": "GlobalInt_ResolveAccessor",
   "name_src": "vote",
   "votes": {
-   "GlobalInt_ResolveAccessor": 16
+   "GlobalInt_ResolveAccessor": 17
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -135957,7 +135958,8 @@
   "name": "SceneMissionSetup_InitializeObjectOptions",
   "name_src": "vote",
   "votes": {
-   "SceneMissionSetup_InitializeObjectOptions": 3
+   "SceneMissionSetup_InitializeObjectOptions": 3,
+   "SceneMissionSetup_InitializeWorldSetup": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -137193,7 +137195,7 @@
   "name": "SceneLoader_GetWorldObjectCollection",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetWorldObjectCollection": 3,
+   "SceneLoader_GetWorldObjectCollection": 4,
    "SceneLoader_GetRenderWorld": 2,
    "SceneLoader_GetContextObject": 1
   },
@@ -143896,6 +143898,7 @@
   "name": "SceneMissionSetup_ApplyWorldSetup",
   "name_src": "vote",
   "votes": {
+   "SceneMissionSetup_ApplyWorldSetup": 1,
    "SceneMissionSetup_RegisterObjectOptions": 1,
    "SceneMissionSetup_ApplyObjectOptions": 1
   },
@@ -144151,11 +144154,13 @@
  "006d03b0": {
   "name": "SceneMissionSetup_FindNamedEntry",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "SceneMissionSetup_FindNamedEntry": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* arg0",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006d0490": {
   "name": "sub_6D0490",
@@ -179280,7 +179285,7 @@
   "name": "GameConfig_IsResolvedEntryActive",
   "name_src": "agent",
   "votes": {
-   "IsResolvedEntryActive": 13,
+   "IsResolvedEntryActive": 14,
    "IsControlReadyFlagSet": 1,
    "IsObjectKindFlagSet": 1,
    "Object_IsEnabled": 1,
@@ -179322,6 +179327,7 @@
   "name_src": "agent",
   "votes": {
    "SceneMissionSetup_IsSpecialObjectType": 1,
+   "SceneMissionSetup_IsIndexedState": 1,
    "Scene_IsDefinedCategoryType": 1,
    "SceneMissionSetup_IsSpecialStateCode": 1
   },
@@ -179357,7 +179363,9 @@
  "007559a0": {
   "name": "SceneMissionSetup_GetObjectStateFlag",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "SceneMissionSetup_GetObjectStateFlag": 1
+  },
   "ret": "bool",
   "conv": "__cdecl",
   "params": "int objectType, int stateValue",
@@ -179613,7 +179621,7 @@
   "name": "SceneLoader_GetResourceById",
   "name_src": "agent",
   "votes": {
-   "SceneLoader_GetResourceById": 15,
+   "SceneLoader_GetResourceById": 16,
    "SceneLoader_GetResourceByIndex": 1
   },
   "ret": "int",
@@ -179638,7 +179646,7 @@
   "name": "ResolveSlotIndexForState",
   "name_src": "agent",
   "votes": {
-   "ResolveSlotIndexForState": 3
+   "ResolveSlotIndexForState": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -179682,7 +179690,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 101,
+   "GetGlobalValue_8BC1E0": 102,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
