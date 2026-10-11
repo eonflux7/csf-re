@@ -1070,3 +1070,32 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   savegame start at different places (a jump into heap data; a null read in library code with NaNs on the stack).
   Not attributable by bisect. emudiff over the 474 functions installed 12:40-13:14: 32 DIFF, most of those looked
   at are noise (last-bit float rounding, garbage upper bytes of a pushed byte); not narrowed down further.
+
+## 2026-10-11 — Queue 18 -> 0; register arguments; the deflate half of zlib reopened
+
+- All 18 remaining escalations resolved and installed in passing smokes. What they were:
+  - Hex-Rays attributes a pushed argument to the wrong call when a push for call B is emitted before call A
+    (`push x; call A; ...; call B`): 0x410290 (the `3` belongs to the collection's +0x34 query, not the hit's +0xC),
+    0x490790 (the stored index is the +0x8C virtual's argument; the invert call gets the matrix holder: ours
+    dereferenced an index, the failure nobody could place earlier). Two review findings (0x480E60, 0x4ECDB0) were
+    the same artifact read the other way round and were dropped. The asm's pushes and each callee's `ret N` decide.
+  - wrong object: 0x419B50 (`this` of the lookup is the member at +0x30), 0x4ED1C0 (subobject at +0x22A4).
+  - one stack object written as two buffers (0x6A2510), a 16-byte descriptor passed as a lone float (0x6A2910).
+  - forwarders that tail-jump to a virtual are bound `int __cdecl ()` by the ABI export; 0x454070 called two of
+    them without `this` and the argument. The packet now says to bind such a callee by what the call site passes.
+  - 0x465310 (script command dispatcher, 369 cases): commands 2003, 3002, 4110 read the argument one dereference
+    short. Found by emulating every command id through both versions (scratch dispemu.py: pre-map the page the
+    command pointer lands on and write the id), after checking all 344 call sites against their bindings.
+  - gate noise: Hex-Rays' `memset(p, 255, n)` for a run of -1 dwords counted as a missing constant (semcheck);
+    an aggregate initializer hides a vtable address in .rdata (0x4EA140: store it by an instruction); a pointer
+    into a stack array shows its indexes as field offsets (0x4523C0, 0x468EE0: index the array itself).
+- Register arguments (LTCG): hook.h has HOOK_REGS(addr, fn, retN, module) with
+  `uint32_t __cdecl fn(hook::Regs* regs, const uint32_t* args)` and hook::call_regs(addr, &regs, stack, n) for
+  calling such a function. api.real_regs = regargs.json "real" (ebx/esi/edi, exact) + a read-before-write scan
+  for eax; the gate requires HOOK_REGS (or regparm when it is eax alone) and rejects a CSF_FUNC of such a callee;
+  the packet says both. Only 22 game functions are affected, 17 of them zlib's deflate half.
+- zlib deflate never runs in a smoke (hits 0 in ~200 passing smokes), so 10 functions there were accepted with
+  register arguments on plain conventions (0x6A33A0 takes eax+edi+1 stack dword and was `__cdecl (3 args)`).
+  They are todo again (the game runs the original); 0x6A4610, 0x6A46A0, 0x6A48A0 are written with HOOK_REGS.
+  Lesson: "installed in a passing smoke" is no evidence for code that never executes; `hits == 0` functions rest
+  on the gate alone. Worth a look before the 50% playtest: how much accepted code has never run.
