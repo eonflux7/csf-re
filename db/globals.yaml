@@ -29,6 +29,12 @@
 - {addr: 0x0082D284, name: g_FindWindowAImportSlot, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D288, name: g_IsWindowImportSlot, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D294, name: g_VkKeyScanA, type: VkKeyScanAFunction, uses: 1, src: auto}
+- {addr: 0x0082D29C, name: g_TranslateMessageFn, type: TranslateMessageFn, uses: 1, src: auto}
+- {addr: 0x0082D2A0, name: g_PeekMessageAFn, type: PeekMessageAFn, uses: 1, src: auto}
+- {addr: 0x0082D2A4, name: g_DispatchMessageAFn, type: DispatchMessageAFn, uses: 1, src: auto}
+- {addr: 0x0082D2B8, name: g_MoveWindow, type: MoveWindowFn, uses: 1, src: auto}
+- {addr: 0x0082D2BC, name: g_GetSystemMetrics, type: GetSystemMetricsFn, uses: 1, src: auto}
+- {addr: 0x0082D2C0, name: g_AdjustWindowRect, type: AdjustWindowRectFn, uses: 1, src: auto}
 - {addr: 0x0082D2E8, name: g_GetDoubleClickTimeImport, type: GetDoubleClickTimeFn, uses: 1, src: auto}
 - {addr: 0x0082D2EC, name: g_SendMessageAImportSlot, type: void*, uses: 2, src: auto}
 - {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 69, src: auto}
@@ -126,7 +132,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 79, src: auto, alt: [g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringByte, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 80, src: auto, alt: [g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringByte, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C0, name: g_fBackAngleLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
@@ -214,6 +220,7 @@
 - {addr: 0x0083A9DC, name: g_CoverAttackNearDistanceSquared, type: float, uses: 1, src: auto}
 - {addr: 0x0083AB1C, name: g_FirstWrapPattern, type: const char, uses: 1, src: auto}
 - {addr: 0x0083B2BC, name: g_ProximityRadiusSquared, type: float, uses: 1, src: auto}
+- {addr: 0x0083B644, name: g_AngleScale, type: float, uses: 1, src: auto}
 - {addr: 0x0083BB14, name: g_ListenerOffsetScale_83BB14, type: float, uses: 2, src: auto}
 - {addr: 0x0083C548, name: g_DegToRad, type: float, uses: 2, src: auto, alt: [g_DegreesToRadians]}
 - {addr: 0x0083DD38, name: g_RadToDeg, type: float, uses: 1, src: auto}
