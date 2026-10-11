@@ -967,7 +967,7 @@
   "name": "C_0082d448_Initialize",
   "name_src": "agent",
   "votes": {
-   "SoundMessage_Initialize": 1
+   "SoundMessage_Initialize": 2
   },
   "ret": "C_0082d448*",
   "conv": "__fastcall",
@@ -1562,9 +1562,8 @@
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "void* self, int a2, int a3, char a4, char a5",
-  "sig_src": "impl",
-  "file": "src/auto/00407450.cpp"
+  "params": "int a1, int a2, int a3, char a4, char a5",
+  "sig_src": "abi"
  },
  "00407490": {
   "name": "C_0082d77c_UpdateEntryRotation",
@@ -1697,7 +1696,10 @@
  "00407f40": {
   "name": "IsRecordSlotActive",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Vehicle_IsRecordSlotActive": 1,
+   "IsRecordSlotActive": 2
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "void* self, void* , int index",
@@ -1867,7 +1869,10 @@
   "name": "GetTableEntryDwordByIndex",
   "name_src": "agent",
   "votes": {
-   "GetTableEntryDwordByIndex": 1
+   "Vehicle_GetTableEntryByIndex": 1,
+   "GetTableEntryDwordByIndex": 3,
+   "Vehicle_GetIndexedChild": 2,
+   "IndexedChild_Get": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -1879,7 +1884,10 @@
   "name": "IndexedChildForwardValue",
   "name_src": "agent",
   "votes": {
-   "IndexedChildForwardValue": 1
+   "IndexedChildForwardValue": 4,
+   "Vehicle_GetIndexedChildPosition": 1,
+   "Vehicle_GetIndexedChildValue": 1,
+   "IndexedChild_GetForwardValue": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -1960,9 +1968,14 @@
   "name": "C_0082daf4_FindOrCreateByKey",
   "name_src": "agent",
   "votes": {
+   "VehicleWheel_FindOrCreateByKey": 3,
    "Daf4_FindOrCreateByKey": 2,
    "C_0082daf4_FindOrCreateByKey": 4,
-   "Daf_FindOrCreateByKey": 1
+   "Daf_FindOrCreateByKey": 1,
+   "Vehicle_FindOrCreateByKey": 1,
+   "Vehicle_FindOrCreateChildByKey": 1,
+   "Vehicle_FindOrCreateChild": 1,
+   "FindOrCreateByKey": 1
   },
   "ret": "C_0082daf4*",
   "conv": "__fastcall",
@@ -2495,7 +2508,8 @@
   "name": "AllocateSubobjectHandle",
   "name_src": "agent",
   "votes": {
-   "AllocateSubobjectHandle": 1
+   "AllocateSubobjectHandle": 3,
+   "Vehicle_AllocateSubobjectHandle": 1
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -2507,8 +2521,9 @@
   "name": "InitRatioVec4",
   "name_src": "agent",
   "votes": {
+   "VehicleWheel_InitRatioVec4": 3,
    "RatioVec4_Init": 2,
-   "Vehicle_InitRatioVec4": 1,
+   "Vehicle_InitRatioVec4": 2,
    "InitRatioVec4": 3
   },
   "ret": "int",
@@ -2520,7 +2535,9 @@
  "0040a600": {
   "name": "StoreValuePairAndClearTail",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Vehicle_SetValuePairAndClearTail": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , int a2, int a3",
@@ -2742,7 +2759,9 @@
    "Vehicle_SetVectorProperty": 1,
    "Wheel_ApplySetting": 1,
    "C_0082daf4_ApplyKeyVector": 2,
-   "C_0082daf4_ApplyVec4": 1
+   "Vehicle_SetChildParameter": 1,
+   "C_0082daf4_ApplyVec4": 1,
+   "ApplyWheelParams": 1
   },
   "ret": "float*",
   "conv": "__fastcall",
@@ -2750,22 +2769,27 @@
   "sig_src": "vote"
  },
  "0040b570": {
-  "name": "sub_40B570",
-  "name_src": "addr",
-  "votes": {},
+  "name": "VehicleWheel_ApplyVec4",
+  "name_src": "vote",
+  "votes": {
+   "VehicleWheel_ApplyVec4": 3,
+   "Vehicle_ApplyTransform": 1
+  },
   "ret": "float*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2, float* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0040b590": {
-  "name": "sub_40B590",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Vehicle_SetChildParameter",
+  "name_src": "vote",
+  "votes": {
+   "Vehicle_SetChildParameter": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2, float a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0040b5b0": {
   "name": "sub_40B5B0",
@@ -3066,7 +3090,7 @@
   "name": "CalculateArcCosine",
   "name_src": "vote",
   "votes": {
-   "CalculateArcCosine": 2
+   "CalculateArcCosine": 3
   },
   "ret": "double",
   "conv": "__cdecl",
@@ -3101,13 +3125,18 @@
   "sig_src": "abi"
  },
  "0040cdb0": {
-  "name": "sub_40CDB0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "VehicleWheel_GrowArray",
+  "name_src": "vote",
+  "votes": {
+   "VehicleWheel_GrowArray": 2,
+   "Vehicle_GrowActionList": 1,
+   "Vehicle_GrowPrimaryRecords": 1,
+   "Vehicle_GrowTable10": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0040ce60": {
   "name": "sub_40CE60",
@@ -4658,7 +4687,7 @@
   "name": "S_00413570_GrowEventRecords",
   "name_src": "agent",
   "votes": {
-   "MissionScript_GrowEventRecords": 6
+   "MissionScript_GrowEventRecords": 7
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
@@ -4697,8 +4726,8 @@
   "file": "src/auto/00413c60.cpp"
  },
  "00413de0": {
-  "name": "ApplyTargetVectorAndSpeed",
-  "name_src": "vote",
+  "name": "C_0082dfd0_MoveWithCollisions",
+  "name_src": "agent",
   "votes": {
    "C_0082dfd0_ApplyMovement": 1,
    "C_0082dfd0_ApplyMovementVector": 1,
@@ -4706,8 +4735,9 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2, float a3",
-  "sig_src": "vote"
+  "params": "C_0082dfd0* self, void* , float* displacement, float elapsed",
+  "sig_src": "impl",
+  "file": "src/auto/00413de0.cpp"
  },
  "00415220": {
   "name": "C_0082dfd0_UpdateMovement_415220",
@@ -5172,18 +5202,21 @@
   "file": "src/auto/00418440.cpp"
  },
  "00418480": {
-  "name": "sub_418480",
-  "name_src": "addr",
+  "name": "C_0082e1e8_ApplyImpulse",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2, float* a3",
-  "sig_src": "abi"
+  "params": "C_0082e1e8* self, void* , float* position, float* impulse",
+  "sig_src": "impl",
+  "file": "src/auto/00418480.cpp"
  },
  "00418660": {
   "name": "C_0082e1e8_UpdateWheelTravel",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0082e1e8_ProcessWheelEntry": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "C_0082e1e8* self, void* , int entryAddress",
@@ -5191,19 +5224,25 @@
   "file": "src/auto/00418660.cpp"
  },
  "00418830": {
-  "name": "sub_418830",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Vehicle_ComputeWheelTorque",
+  "name_src": "agent",
+  "votes": {
+   "Vehicle_CalculateContactResponse": 1,
+   "WheelContactFactor": 1,
+   "Vehicle_ComputeMotionResponse": 1
+  },
   "ret": "double",
   "conv": "__stdcall",
-  "params": "float* a1, float* arg4, float* a3, float a4",
-  "sig_src": "abi"
+  "params": "float* origin, float* pointB, float* pointC, float duration",
+  "sig_src": "impl",
+  "file": "src/auto/00418830.cpp"
  },
  "00418950": {
   "name": "Vehicle_ReserveWheelSlots",
   "name_src": "agent",
   "votes": {
-   "GrowRecordBuffer": 2
+   "GrowRecordBuffer": 2,
+   "Vehicle_GrowRecordArray": 1
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -5214,7 +5253,12 @@
  "004189d0": {
   "name": "Vehicle_ExtendWheelArray",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Vehicle_GrowRecordArray": 1,
+   "Vehicle_GrowConfigurationList": 1,
+   "Vehicle_GrowSecondaryRecords": 1,
+   "Vehicle_GrowTable54": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* , int extraCount",
@@ -5224,7 +5268,12 @@
  "00418a50": {
   "name": "C_0082e1e8_Construct",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "VehicleWheel_BaseInit": 1,
+   "VehicleBase_Construct": 1,
+   "Vehicle_InitializeBase": 2,
+   "Vehicle_InitBase": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_0082e1e8* self, void* , char a2",
@@ -5245,22 +5294,27 @@
   "file": "src/auto/00418ae0.cpp"
  },
  "00418b40": {
-  "name": "sub_418B40",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Vehicle_BaseInit",
+  "name_src": "vote",
+  "votes": {
+   "Vehicle_BaseInit": 1,
+   "VehicleBase_Finish": 1,
+   "InitializeBase": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00418e50": {
-  "name": "sub_418E50",
-  "name_src": "addr",
+  "name": "C_0082e1e8_UpdateFocus",
+  "name_src": "agent",
   "votes": {},
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0082e1e8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00418e50.cpp"
  },
  "00418f40": {
   "name": "C_0082e1e8_ComputeWheelStatistics",
@@ -5304,7 +5358,10 @@
  "00419650": {
   "name": "C_0082e1e8_UpdateWheelTransforms",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "VehicleWheel_BaseUpdate": 3,
+   "Vehicle_UpdateSteeringInputs": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_0082e1e8* self, void*",
@@ -5312,22 +5369,28 @@
   "file": "src/auto/00419650.cpp"
  },
  "00419810": {
-  "name": "sub_419810",
-  "name_src": "addr",
+  "name": "C_0082e1e8_ProcessWheelEntries",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0082e1e8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00419810.cpp"
  },
  "00419920": {
-  "name": "sub_419920",
-  "name_src": "addr",
-  "votes": {},
+  "name": "VehicleArray_Grow",
+  "name_src": "agent",
+  "votes": {
+   "Vehicle_GrowContactRecords": 1,
+   "PointBuffer_Grow": 1,
+   "Vehicle_GrowConstraintArray": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int extra",
+  "sig_src": "impl",
+  "file": "src/auto/00419920.cpp"
  },
  "004199d0": {
   "name": "C_0082e1e8_Destroy_4199D0",
@@ -5342,7 +5405,13 @@
  "00419a00": {
   "name": "C_0082e280_AppendWheelRecord",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Vehicle_SetupSlotA": 1,
+   "VehicleWheel_SetupA": 1,
+   "VehicleWheel_SetupLeft": 1,
+   "Vehicle_AddFirstConfiguration": 1,
+   "Vehicle_AddLeftEntry": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_0082e280* self, void* , int a2, int a3, float a4",
@@ -5352,7 +5421,13 @@
  "00419a80": {
   "name": "C_0082e280_AppendWheelRecordFromSubobject",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Vehicle_SetupSlotB": 1,
+   "VehicleWheel_SetupB": 1,
+   "VehicleWheel_SetupRight": 1,
+   "Vehicle_AddSecondConfiguration": 1,
+   "Vehicle_AddRightEntry": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_0082e280* self, void* , int a2, int a3, float a4",
@@ -5379,31 +5454,34 @@
   "sig_src": "abi"
  },
  "00419fc0": {
-  "name": "sub_419FC0",
-  "name_src": "addr",
+  "name": "C_0082e1e8_AccumulateContactResponse",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0082e1e8* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/00419fc0.cpp"
  },
  "0041a160": {
-  "name": "sub_41A160",
-  "name_src": "addr",
+  "name": "C_0082e1e8_UpdateWheelForce",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0082e1e8* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/0041a160.cpp"
  },
  "0041a2f0": {
-  "name": "sub_41A2F0",
-  "name_src": "addr",
+  "name": "C_0082e1e8_UpdateMotionAndAppendConstraint",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0082e1e8* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/0041a2f0.cpp"
  },
  "0041a530": {
   "name": "sub_41A530",
@@ -5417,7 +5495,9 @@
  "0041a950": {
   "name": "Vehicle_ProcessRecordFields",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Vehicle_SerializeRecord": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , void* context",
@@ -5427,7 +5507,9 @@
  "0041aac0": {
   "name": "Vehicle_SerializeWheelData",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Vehicle_SerializeRecord": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , void* context",
@@ -5458,28 +5540,31 @@
   "file": "src/auto/0041aec0.cpp"
  },
  "0041af40": {
-  "name": "sub_41AF40",
-  "name_src": "addr",
+  "name": "Vehicle_SerializeRecordArray_41AF40",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "uint32_t* a1, int a2",
-  "sig_src": "abi"
+  "params": "std::uint32_t* records, int contextAddress",
+  "sig_src": "impl",
+  "file": "src/auto/0041af40.cpp"
  },
  "0041b160": {
-  "name": "sub_41B160",
-  "name_src": "addr",
+  "name": "Vehicle_SerializeRecordArray_41B160",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "uint32_t* a1, int a2",
-  "sig_src": "abi"
+  "params": "void* records, int contextAddress",
+  "sig_src": "impl",
+  "file": "src/auto/0041b160.cpp"
  },
  "0041b360": {
   "name": "C_0082e280_PrepareWheelQuery",
   "name_src": "vote",
   "votes": {
    "C_0082e280_PrepareWheelQuery": 1,
+   "VehicleWheel_BaseSerialize": 1,
    "Vehicle_SerializeBase": 1
   },
   "ret": "int",
@@ -5508,13 +5593,14 @@
   "file": "src/auto/0041b5d0.cpp"
  },
  "0041b5f0": {
-  "name": "sub_41B5F0",
-  "name_src": "addr",
+  "name": "C_0082e280_UpdateWheelSteering",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0082e280* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0041b5f0.cpp"
  },
  "0041b6e0": {
   "name": "C_0082e280_ResetWheelStateAndMarkReady",
@@ -5527,13 +5613,14 @@
   "file": "src/auto/0041b6e0.cpp"
  },
  "0041b710": {
-  "name": "sub_41B710",
-  "name_src": "addr",
+  "name": "C_0082e280_Initialize",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_0082e280* self, void* , int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/0041b710.cpp"
  },
  "0041b880": {
   "name": "C_0082e280_InitDefaultWheelRatio",
@@ -5566,13 +5653,14 @@
   "file": "src/auto/0041b960.cpp"
  },
  "0041b9b0": {
-  "name": "sub_41B9B0",
-  "name_src": "addr",
+  "name": "C_0082e280_Construct",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0082e280* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/0041b9b0.cpp"
  },
  "0041bae0": {
   "name": "C_0082e280_ReleaseWheelObjectThenCleanup",
@@ -5585,22 +5673,24 @@
   "file": "src/auto/0041bae0.cpp"
  },
  "0041bb00": {
-  "name": "sub_41BB00",
-  "name_src": "addr",
+  "name": "C_0082e2e8_UpdateWheelSteering",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0082e2e8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0041bb00.cpp"
  },
  "0041bbf0": {
-  "name": "sub_41BBF0",
-  "name_src": "addr",
+  "name": "C_0082e2e8_InitWheelRecords",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_0082e2e8* self, void* , int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/0041bbf0.cpp"
  },
  "0041bd20": {
   "name": "C_0082e2e8_InitializeWheelConfiguration",
@@ -5633,31 +5723,34 @@
   "file": "src/auto/0041be50.cpp"
  },
  "0041bea0": {
-  "name": "sub_41BEA0",
-  "name_src": "addr",
+  "name": "C_0082e2e8_Construct",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0082e2e8* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/0041bea0.cpp"
  },
  "0041bfd0": {
-  "name": "sub_41BFD0",
-  "name_src": "addr",
+  "name": "C_0082e350_UpdateSteeringAngle",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0082e350* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0041bfd0.cpp"
  },
  "0041c0a0": {
-  "name": "sub_41C0A0",
-  "name_src": "addr",
+  "name": "C_0082e350_InitRecords",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_0082e350* self, void* , int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/0041c0a0.cpp"
  },
  "0041c220": {
   "name": "C_0082e350_Destroy",
@@ -5670,13 +5763,14 @@
   "file": "src/auto/0041c220.cpp"
  },
  "0041c270": {
-  "name": "sub_41C270",
-  "name_src": "addr",
+  "name": "C_0082e350_Initialize",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0082e350* self, void* , char initializationFlag",
+  "sig_src": "impl",
+  "file": "src/auto/0041c270.cpp"
  },
  "0041c440": {
   "name": "C_0082e280_UpdateWheelSideState",
@@ -5719,13 +5813,14 @@
   "file": "src/auto/0041c550.cpp"
  },
  "0041c560": {
-  "name": "sub_41C560",
-  "name_src": "addr",
+  "name": "C_0082e3b8_UpdateWheelSteering",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0082e3b8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0041c560.cpp"
  },
  "0041c650": {
   "name": "Wheels_ProcessEntryWhenState1",
@@ -5738,13 +5833,14 @@
   "file": "src/auto/0041c650.cpp"
  },
  "0041c670": {
-  "name": "sub_41C670",
-  "name_src": "addr",
+  "name": "C_0082e3b8_InitializeWheelRecords",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_0082e3b8* self, void* , int target, int options",
+  "sig_src": "impl",
+  "file": "src/auto/0041c670.cpp"
  },
  "0041c840": {
   "name": "C_0082e3b8_ConfigureWheelRotations_41C840",
@@ -5786,22 +5882,24 @@
   "file": "src/auto/0041cc90.cpp"
  },
  "0041cce0": {
-  "name": "sub_41CCE0",
-  "name_src": "addr",
+  "name": "C_0082e3b8_Initialize",
+  "name_src": "agent",
   "votes": {},
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0082e3b8* self, void* , char initializationMode",
+  "sig_src": "impl",
+  "file": "src/auto/0041cce0.cpp"
  },
  "0041cec0": {
-  "name": "sub_41CEC0",
-  "name_src": "addr",
+  "name": "C_0082e3b8_Process",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0082e3b8* self, void* , uint8_t* ctx",
+  "sig_src": "impl",
+  "file": "src/auto/0041cec0.cpp"
  },
  "0041cff0": {
   "name": "C_0082e428_ClearWheelFields",
@@ -5833,6 +5931,16 @@
   "sig_src": "impl",
   "file": "src/auto/0041d030.cpp"
  },
+ "0041d040": {
+  "name": "Vehicle_SetWheelSteeringTowardPoint",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "std::uint8_t",
+  "conv": "__fastcall",
+  "params": "void* self, void* , float* target",
+  "sig_src": "impl",
+  "file": "src/auto/0041d040.cpp"
+ },
  "0041d160": {
   "name": "Vehicle_IsSlotEmptyAndNotLocked",
   "name_src": "agent",
@@ -5844,13 +5952,14 @@
   "file": "src/auto/0041d160.cpp"
  },
  "0041d180": {
-  "name": "sub_41D180",
-  "name_src": "addr",
+  "name": "C_0082dd78_ConfigureChildAndPosition",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0082dd78* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0041d180.cpp"
  },
  "0041d260": {
   "name": "C_0082e428_ClearStateBit0AndSetBit2",
@@ -5904,7 +6013,9 @@
  "0041d640": {
   "name": "C_0082e428_PlayWheelSound",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "UpdateWheelState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_0082e428* self, void* , char alternate",
@@ -5912,31 +6023,34 @@
   "file": "src/auto/0041d640.cpp"
  },
  "0041d710": {
-  "name": "sub_41D710",
-  "name_src": "addr",
+  "name": "C_0082e428_Construct",
+  "name_src": "agent",
   "votes": {},
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0082e428* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/0041d710.cpp"
  },
  "0041d830": {
-  "name": "sub_41D830",
-  "name_src": "addr",
+  "name": "C_0082e428_SetTargetPosition",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "params": "C_0082e428* self, void* , float* pos",
+  "sig_src": "impl",
+  "file": "src/auto/0041d830.cpp"
  },
  "0041d970": {
-  "name": "sub_41D970",
-  "name_src": "addr",
+  "name": "C_0082e428_AlignWheelSteering",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0082e428* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0041d970.cpp"
  },
  "0041daa0": {
   "name": "C_0082e428_InitializeSteeringAlignment",
@@ -5949,17 +6063,18 @@
   "file": "src/auto/0041daa0.cpp"
  },
  "0041db40": {
-  "name": "sub_41DB40",
-  "name_src": "addr",
+  "name": "C_0082e428_UpdateState",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0082e428* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/0041db40.cpp"
  },
  "0041dc60": {
   "name": "C_0082e428_Serialize",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -6024,7 +6139,7 @@
   "name": "C_0082dd78_DispatchReturnedObject",
   "name_src": "agent",
   "votes": {
-   "C_0082dd78_DispatchReturnedObject": 22
+   "C_0082dd78_DispatchReturnedObject": 27
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -14756,7 +14871,7 @@
   "name": "SceneRequest_Submit",
   "name_src": "vote",
   "votes": {
-   "SceneRequest_Submit": 2
+   "SceneRequest_Submit": 3
   },
   "ret": "unsigned int*",
   "conv": "__fastcall",
@@ -15585,7 +15700,7 @@
   "name": "ReleaseEmbeddedMember",
   "name_src": "vote",
   "votes": {
-   "ReleaseEmbeddedMember": 2,
+   "ReleaseEmbeddedMember": 1,
    "DestroyElementRangeBuffer": 1
   },
   "ret": "int",
@@ -16976,7 +17091,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 219
+   "CHandleTable_Resolve": 220
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -25091,13 +25206,11 @@
  "0046fb30": {
   "name": "MissionScript_ReserveStringEntries",
   "name_src": "vote",
-  "votes": {
-   "MissionScript_ReserveStringEntries": 1
-  },
+  "votes": {},
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, unsigned int a2",
-  "sig_src": "vote"
+  "sig_src": "abi"
  },
  "0046fc50": {
   "name": "MissionScript_CopyConstructRecords",
@@ -25257,9 +25370,7 @@
  "004709d0": {
   "name": "S_00470340_AppendElement12",
   "name_src": "agent",
-  "votes": {
-   "MissionScript_AppendStringEntry": 1
-  },
+  "votes": {},
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
   "params": "S_00470340* self, void* , int element",
@@ -25296,9 +25407,8 @@
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "S_00470340* entries, int archiveAddress",
-  "sig_src": "impl",
-  "file": "src/auto/00470b20.cpp"
+  "params": "void* a1, int a2",
+  "sig_src": "vote"
  },
  "00470d10": {
   "name": "MissionScript_ClearOwnedEntries",
@@ -25809,7 +25919,7 @@
   "name": "Object_PrepareForDestruction",
   "name_src": "vote",
   "votes": {
-   "Object_PrepareForDestruction": 8
+   "Object_PrepareForDestruction": 7
   },
   "ret": "char*",
   "conv": "__fastcall",
@@ -33071,7 +33181,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 50,
+   "GetObjectPositionVector": 52,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -33093,7 +33203,7 @@
   "name": "SceneLoader_ConfigureFocusEntry",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_ConfigureFocusEntry": 17,
+   "SceneLoader_ConfigureFocusEntry": 19,
    "SceneLoader_SetObjectPosition": 2
   },
   "ret": "int",
@@ -33887,7 +33997,7 @@
   "name": "HandleTargetUnavailable",
   "name_src": "vote",
   "votes": {
-   "HandleTargetUnavailable": 8,
+   "HandleTargetUnavailable": 12,
    "RejectCommandOnSceneObject": 1,
    "HandleUnavailableObjectFallback": 1,
    "RejectObjectOrder": 1,
@@ -34523,7 +34633,7 @@
   "name": "IsField1BCNonNegative",
   "name_src": "agent",
   "votes": {
-   "IsField1BCNonNegative": 8
+   "IsField1BCNonNegative": 9
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -35603,13 +35713,15 @@
   "sig_src": "abi"
  },
  "004959a0": {
-  "name": "sub_4959A0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Vehicle_SceneObjectUpdate",
+  "name_src": "vote",
+  "votes": {
+   "Vehicle_SceneObjectUpdate": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00495ae0": {
   "name": "Character_RequestAuxiliaryAction",
@@ -35700,13 +35812,12 @@
   "name": "Archive_SerializeString",
   "name_src": "agent",
   "votes": {
-   "Archive_SerializeString": 16
+   "Archive_SerializeString": 15
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int archiveAddress, S_00691860* string",
-  "sig_src": "impl",
-  "file": "src/auto/00496080.cpp"
+  "params": "int a1, void* a2",
+  "sig_src": "vote"
  },
  "00496130": {
   "name": "CopyDwordPairRange",
@@ -61217,7 +61328,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 183
+   "GetGlobalState_50D190": 184
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -66272,7 +66383,7 @@
   "name": "GetGlobalValue_521BB0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_521BB0": 83
+   "GetGlobalValue_521BB0": 84
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -66552,7 +66663,7 @@
   "name": "AudioSoundManager_DispatchGlobalValueMessage",
   "name_src": "agent",
   "votes": {
-   "AudioSoundManager_DispatchGlobalValueMessage": 1,
+   "AudioSoundManager_DispatchGlobalValueMessage": 2,
    "DispatchGlobalValueMessage": 3
   },
   "ret": "int",
@@ -100170,7 +100281,7 @@
   "name": "RwV3dTransformVectors",
   "name_src": "rwname",
   "votes": {
-   "RwV3dTransformVectors": 6
+   "RwV3dTransformVectors": 8
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -100610,7 +100721,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 37
+   "RwMatrixDestroy": 43
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -100621,7 +100732,7 @@
   "name": "RwMatrixCreate",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixCreate": 33
+   "RwMatrixCreate": 35
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -109318,7 +109429,7 @@
   "name": "SceneLoader_GetSceneController",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetSceneController": 18,
+   "SceneLoader_GetSceneController": 19,
    "SceneLoader_GetSceneObject": 1,
    "SceneLoader_GetSubsystem": 1,
    "SceneLoader_GetSceneResources": 1,
@@ -126155,7 +126266,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 136
+   "Mem_Alloc": 137
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -126166,7 +126277,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 249
+   "Mem_Free": 250
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -127248,13 +127359,15 @@
   "sig_src": "abi"
  },
  "00694f10": {
-  "name": "sub_694F10",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CoreZlibLog_WriteWideString",
+  "name_src": "vote",
+  "votes": {
+   "CoreZlibLog_WriteWideString": 1
+  },
   "ret": "uint16_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2, char* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00694fb0": {
   "name": "sub_694FB0",
@@ -127293,58 +127406,70 @@
   "sig_src": "abi"
  },
  "00695260": {
-  "name": "sub_695260",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CoreZlibLog_EndGroup",
+  "name_src": "vote",
+  "votes": {
+   "CoreZlibLog_EndGroup": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006952f0": {
-  "name": "sub_6952F0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CoreZlibLog_WriteInteger",
+  "name_src": "vote",
+  "votes": {
+   "CoreZlibLog_WriteInteger": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2, char* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00695330": {
-  "name": "sub_695330",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CoreZlibLog_WriteFloat",
+  "name_src": "vote",
+  "votes": {
+   "CoreZlibLog_WriteFloat": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float a2, char* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00695370": {
-  "name": "sub_695370",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CoreZlibLog_WriteBoolean",
+  "name_src": "vote",
+  "votes": {
+   "CoreZlibLog_WriteBoolean": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, uint8_t a2, char* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006953b0": {
-  "name": "sub_6953B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CoreZlibLog_WriteString",
+  "name_src": "vote",
+  "votes": {
+   "CoreZlibLog_WriteString": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char* Source, char* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00695470": {
-  "name": "sub_695470",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CoreZlibLog_BeginGroup",
+  "name_src": "vote",
+  "votes": {
+   "CoreZlibLog_BeginGroup": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char* a2, int a3, char a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00695500": {
   "name": "MenuMessageBox_TestEntryAgainstFlag",
@@ -131037,13 +131162,14 @@
   "file": "src/auto/006a1a10.cpp"
  },
  "006a1a30": {
-  "name": "sub_6A1A30",
-  "name_src": "addr",
+  "name": "CoreZlibLog_Inflate",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "void** a1, int a2",
-  "sig_src": "abi"
+  "params": "uint8_t** stream, int flush",
+  "sig_src": "impl",
+  "file": "src/auto/006a1a30.cpp"
  },
  "006a1e30": {
   "name": "CoreZlibLog_SendLogLine",
@@ -131075,8 +131201,9 @@
   },
   "ret": "uint16_t*",
   "conv": "__stdcall",
-  "params": "void* a1, int a2",
-  "sig_src": "vote"
+  "params": "S_00694cd0* writer, void* descriptor",
+  "sig_src": "impl",
+  "file": "src/auto/006a20e0.cpp"
  },
  "006a2460": {
   "name": "ProcessRecordRange_6A2460",
@@ -131347,7 +131474,8 @@
   "name": "Inflate_ClearLengthTables",
   "name_src": "agent",
   "votes": {
-   "LogWindow_InitSubobjects": 1
+   "LogWindow_InitSubobjects": 1,
+   "CoreZlibLog_ResetBlock": 1
   },
   "ret": "uint16_t*",
   "conv": "__fastcall",
@@ -131388,7 +131516,9 @@
  "006a4390": {
   "name": "UpdateBufferPressureFlag",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreZlibLog_DetectDataType": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -131437,10 +131567,23 @@
   "sig_src": "impl",
   "file": "src/auto/006a45a0.cpp"
  },
+ "006a46a0": {
+  "name": "CoreZlibLog_BuildTree",
+  "name_src": "vote",
+  "votes": {
+   "CoreZlibLog_BuildTree": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "uint32_t* state, int* treeDescription",
+  "sig_src": "vote"
+ },
  "006a4910": {
-  "name": "CoreZlibLog_EmitStoredBlock_6A4910",
+  "name": "CoreZlibLog_EmitStoredBlock",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreZlibLog_WriteStoredBlock": 1
+  },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
   "params": "void* state, std::uint8_t* source, int length, int blockFlags",
@@ -131458,15 +131601,16 @@
   "file": "src/auto/006a49c0.cpp"
  },
  "006a4bc0": {
-  "name": "CoreZlibLog_EmitStoredBlock_6A4BC0",
-  "name_src": "vote",
+  "name": "CoreZlibLog_FlushBlock",
+  "name_src": "agent",
   "votes": {
    "CoreZlibLog_EmitStoredBlock": 1
   },
   "ret": "uint16_t*",
   "conv": "__cdecl",
-  "params": "int a1, uint8_t* a2, int a3, int a4",
-  "sig_src": "vote"
+  "params": "int stateAddress, uint8_t* storedData, int storedLength, int finalBlock",
+  "sig_src": "impl",
+  "file": "src/auto/006a4bc0.cpp"
  },
  "006a4db0": {
   "name": "ZlibLog_AllocZeroed",
@@ -131493,6 +131637,7 @@
   "name_src": "agent",
   "votes": {
    "ZlibLog_ApplyStreamState": 1,
+   "ZlibStream_ResetState": 1,
    "CoreZlibLog_ResetInflateBlocks": 1
   },
   "ret": "int",
@@ -131514,13 +131659,14 @@
   "file": "src/auto/006a4e70.cpp"
  },
  "006a4f10": {
-  "name": "sub_6A4F10",
-  "name_src": "addr",
+  "name": "CoreZlibLog_InflateBlocks",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int* a1, void** a2, int a3",
-  "sig_src": "abi"
+  "params": "uint32_t* state, uint32_t* stream, int status",
+  "sig_src": "impl",
+  "file": "src/auto/006a4f10.cpp"
  },
  "006a5980": {
   "name": "LogSink_ResetAndNotify",
@@ -132721,7 +132867,7 @@
   "name": "NormalizeVector3",
   "name_src": "vote",
   "votes": {
-   "NormalizeVector3": 16,
+   "NormalizeVector3": 20,
    "NormalizeVector": 1
   },
   "ret": "float*",
@@ -132733,7 +132879,7 @@
   "name": "S_00526d40_GetVectorAngleRadians",
   "name_src": "agent",
   "votes": {
-   "S_00526d40_GetVectorAngleRadians": 3,
+   "S_00526d40_GetVectorAngleRadians": 5,
    "GetVectorAngleRadians": 2
   },
   "ret": "double",
@@ -132758,7 +132904,7 @@
   "name": "S_00526d40_ConvertDirection",
   "name_src": "agent",
   "votes": {
-   "S_00526d40_ConvertDirection": 3,
+   "S_00526d40_ConvertDirection": 5,
    "Vector_ConvertDirection": 4
   },
   "ret": "uint32_t*",
@@ -133016,7 +133162,7 @@
   "name": "S_00526d40_ProjectPointToPlane",
   "name_src": "agent",
   "votes": {
-   "S_00526d40_ProjectPointToPlane": 3
+   "S_00526d40_ProjectPointToPlane": 4
   },
   "ret": "float*",
   "conv": "__fastcall",
@@ -133116,7 +133262,7 @@
   "name": "Matrix_InvertWithStoredTarget",
   "name_src": "agent",
   "votes": {
-   "Matrix_InvertWithStoredTarget": 3,
+   "Matrix_InvertWithStoredTarget": 5,
    "S006adb40_ComputeMatrix": 1
   },
   "ret": "float*",
@@ -133379,6 +133525,7 @@
   "name": "GfxMatrix_EulerAnglesToDirection",
   "name_src": "agent",
   "votes": {
+   "GfxMatrix_EulerAnglesToDirection": 1,
    "EulerAnglesToDirection": 4
   },
   "ret": "float*",
@@ -133862,7 +134009,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 127,
+   "GetGlobalInt": 128,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -177947,7 +178094,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 91,
+   "GetGlobalValue_8BC1E0": 92,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
@@ -192533,7 +192680,7 @@
   "name": "_memcpy",
   "name_src": "ida",
   "votes": {
-   "_memcpy": 33,
+   "_memcpy": 34,
    "Memcpy": 1
   },
   "ret": "void*",
