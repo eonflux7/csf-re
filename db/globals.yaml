@@ -125,7 +125,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 62, src: auto, alt: [g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 61, src: auto, alt: [g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C0, name: g_fBackAngleLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
@@ -1424,6 +1424,8 @@
 - {addr: 0x008A9E5C, name: g_pszKey_FRACTAL_SMOOTHNESS, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A9E60, name: g_pszKey_QUALITY_CFG, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A9E68, name: g_psz_NONE, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A9EC0, name: g_AccountFlagA, type: uint8_t, uses: 1, src: auto}
+- {addr: 0x008A9EC1, name: g_AccountFlagB, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008AA0E8, name: g_SecurityCookie, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008AFC60, name: g_Value_8afc60, type: int, uses: 1, src: auto}
 - {addr: 0x008AFC78, name: g_Value_8afc78, type: int32_t, uses: 4, src: auto}
@@ -1535,9 +1537,9 @@
 - {addr: 0x008B0903, name: byte_8B0903, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008B09EC, name: g_PTankPluginOffset, type: 'std::int32_t', uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008B68C0, name: g_pRwEngineInstance, type: void*, uses: 2, src: captain, conf: 0.9, alt: [g_008B68C0, g_pDispatchTable]}
-- {addr: 0x008B99B0, name: g_NetSessionOwner, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008B99B0, name: g_AccountService, type: void*, uses: 2, src: auto, alt: [g_NetSessionOwner]}
 - {addr: 0x008B99B4, name: g_TransportFlag, type: uint8_t, uses: 1, src: auto}
-- {addr: 0x008B9A90, name: g_MenuMpCharacterSelectLookup, type: uint8_t, uses: 4, src: auto}
+- {addr: 0x008B9A90, name: g_MenuMpCharacterSelectLookup, type: uint8_t, uses: 5, src: auto}
 - {addr: 0x008B9B40, name: g_MenuCharacterRecords, type: uint8_t*, uses: 2, src: auto, alt: [g_NetSessionEntries]}
 - {addr: 0x008B9B48, name: g_DefaultMenuCharacterRecord, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008BABC0, name: g_NetZFloatSink_8BABC0, type: uint8_t, uses: 3, src: opus}
@@ -1585,7 +1587,7 @@
 - {addr: 0x008BBF34, name: g_ObjectValueTotal, type: 'std::uint32_t', uses: 2, src: auto}
 - {addr: 0x008BBF8C, name: g_Block8BBF8C, type: void*, uses: 2, src: auto, alt: [g_QuadVertexBuffer]}
 - {addr: 0x008BBF90, name: g_Block8BBF90, type: void*, uses: 2, src: auto, alt: [g_QuadIndexBuffer]}
-- {addr: 0x008BBF98, name: g_ConnectionRequestFlag, type: uint8_t, uses: 6, src: auto, alt: [g_NetSessionConnectionFlag, g_NetSessionFlag, g_OnlineMenuActive, g_SessionWaitFailedFlag, g_StationDumpPendingFlag]}
+- {addr: 0x008BBF98, name: g_AccountConnectionFlag, type: uint8_t, uses: 7, src: auto, alt: [g_ConnectionRequestFlag, g_NetSessionConnectionFlag, g_NetSessionFlag, g_OnlineMenuActive, g_SessionWaitFailedFlag, g_StationDumpPendingFlag]}
 - {addr: 0x008BC098, name: g_Session, type: uint32_t, uses: 4, src: auto, alt: [g_dword_8BC098]}
 - {addr: 0x008BC120, name: byte_8BC120, type: uint8_t, uses: 3, src: auto, alt: [g_NetSessionWaitingFlag]}
 - {addr: 0x008BC121, name: g_MenuMpCharacterSelectActive, type: uint8_t, uses: 3, src: auto}
