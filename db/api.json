@@ -1360,6 +1360,7 @@
   "name": "Vector3ExactEquals",
   "name_src": "agent",
   "votes": {
+   "SpatialQuery_PositionsMatch": 1,
    "Vector3ExactEquals": 1
   },
   "ret": "int",
@@ -2581,6 +2582,7 @@
   "name": "SelectMovementRateBound",
   "name_src": "agent",
   "votes": {
+   "SpatialQuery_SelectHeight": 1,
    "SelectMovementRateBound": 2
   },
   "ret": "float*",
@@ -3462,7 +3464,9 @@
  "0040e070": {
   "name": "SpatialQuery_InitializeQueryInfo",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "SpatialQuery_InitializeQueryInfo": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
@@ -3662,7 +3666,7 @@
   "name": "CharActionFsm_InitializeHitInfo",
   "name_src": "vote",
   "votes": {
-   "CharActionFsm_InitializeHitInfo": 2
+   "CharActionFsm_InitializeHitInfo": 3
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -4035,7 +4039,7 @@
   "name": "SpatialQuery_BuildContext",
   "name_src": "agent",
   "votes": {
-   "SpatialQuery_BuildContext": 1,
+   "SpatialQuery_BuildContext": 2,
    "SceneQueries_ConstructRay": 1
   },
   "ret": "C_00833b88*",
@@ -4101,7 +4105,9 @@
  "0040ff70": {
   "name": "C_0082dd78_FindNearestScenePosition",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "SpatialQuery_FindHeight": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "C_0082dd78* self, void* , int query, uint32_t* output",
@@ -4139,8 +4145,9 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0082deb8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00410290.cpp"
  },
  "00410600": {
   "name": "C_0082deb8_SetFocusPosition",
@@ -6248,7 +6255,7 @@
   "name": "C_0082dd78_DispatchReturnedObject",
   "name_src": "agent",
   "votes": {
-   "C_0082dd78_DispatchReturnedObject": 35
+   "C_0082dd78_DispatchReturnedObject": 36
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -33728,7 +33735,7 @@
   "name": "SceneObj_IsInactive",
   "name_src": "vote",
   "votes": {
-   "SceneObj_IsInactive": 18
+   "SceneObj_IsInactive": 19
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -33907,7 +33914,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 68,
+   "GetObjectPositionVector": 69,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -33929,7 +33936,7 @@
   "name": "SceneLoader_ConfigureFocusEntry",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_ConfigureFocusEntry": 20,
+   "SceneLoader_ConfigureFocusEntry": 21,
    "SceneLoader_SetObjectPosition": 2
   },
   "ret": "int",
@@ -33953,11 +33960,13 @@
  "0048e4f0": {
   "name": "SceneObj_GetQueryRate",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "SceneObj_GetQueryRate": 1
+  },
   "ret": "double",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0048e510": {
   "name": "AiTaskStates_ComputeStateValue",
@@ -62733,7 +62742,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 216
+   "GetGlobalState_50D190": 217
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -110969,7 +110978,7 @@
   "name": "SceneLoader_GetSceneController",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetSceneController": 24,
+   "SceneLoader_GetSceneController": 25,
    "SceneLoader_GetSceneObject": 1,
    "SceneLoader_GetSubsystem": 1,
    "SceneLoader_GetSceneResources": 1,
@@ -135568,7 +135577,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 143,
+   "GetGlobalInt": 144,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",

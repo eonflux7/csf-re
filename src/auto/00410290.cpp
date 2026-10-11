@@ -1,53 +1,3 @@
-# Escalation 0x00410290: in-game smoke failure (verifier bisect: 1 smokes (1 named by crash reports, k=8))
-
-## Smoke log tail
-```
-nohook=False pid=23228 ready=True after=4s alive=True exit=killed stillrunning=False stop=crash ran=1s fail_at=1s
----- hits
-006a2e00    1432352 auto C_0085ee28_SumFields
-0069e3d0     305810 auto C_0085eb30_ReleaseMutexIfSet
-00730830      64674 auto CopyDwordIfNotNull
-00768e70      33534 auto GetGlobalValue_768E70
-00471450      30823 auto MissionScript_DispatchSectionTable
-004714e0      23793 auto MissionScript_ReleaseBlock
-00718ee0      22910 auto CGuiControl_GetAbsolutePosition
-007692f0      19627 auto MissionScript_FindExpressionDefinition
-0046f2b0      19208 auto MissionScript_ResetScratchEntries
-0071a2e0      15687 auto CopyTwoDwordsIfDestNonNull
----- diff (0 functions compared)
-CRASH code=c0000005 eip=72c1264a addr=00000034 (rw=1) eax=00000000 ebx=19a711f4 ecx=03597d50 edx=00860bb8 esi=19a711e0 edi=0019e8e8 ebp=0019e9ac esp=0019e82c
-  eip module 72BF0000 (ours 72BF0000); stack:
-   0019e8e8 19a711e0 19a23d18 00000000 ffffffff 00000000
-   194bc284 194bc214 19a81160 446bd90e 19906b68 80000000
-   80000000 80000000 6fb83732 00000000 0019e90c 0041880b
-   00000004 00000000 00000000 00000000 40690000 ffc00000
----- csf_hook.log
-hook 00405450 auto     AudioSoundManager_ProcessArchiveContext
-hook 00405420 auto     C_0082d510_Destroy
-hook 00405400 auto     C_0082d510_ForwardFloatToTarget
-hook 004053e0 auto     C_0082d510_ForwardSlotCall
-hook 004013e0 auto     ReturnMinusOne
-hook 00401090 auto     GetGlobalValue_401090
-hooks installed=4425 skipped=301 failed=0
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00BBDB34 wrapped
-devcmd: video mode 1280x960
-devcmd: dev start (scene Maps/FR01/Parachut.scn) instead of Menus/P_Intro.fbs -> state 1
-devcmd: starting scene 'Maps/FR01/Parachut.scn'
-CRASH code=c0000005 eip=72c1264a addr=00000034 (rw=1) eax=00000000 ebx=19a711f4 ecx=03597d50 edx=00860bb8 esi=19a711e0 edi=0019e8e8 ebp=0019e9ac esp=0019e82c
-  eip module 72BF0000 (ours 72BF0000); stack:
-   0019e8e8 19a711e0 19a23d18 00000000 ffffffff 00000000
-   194bc284 194bc214 19a81160 446bd90e 19906b68 80000000
-   80000000 80000000 6fb83732 00000000 0019e90c 0041880b
-   00000004 00000000 00000000 00000000 40690000 ffc00000
-SMOKE FAIL (alive, but 1 CRASH logged: the game caught it)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include <cstring>
 #include <cmath>
@@ -209,16 +159,16 @@ static char __fastcall C_0082deb8_UpdateGroundQuery(
         }
 
         void* hit = reinterpret_cast<void*(__fastcall*)(
-            void*, void*, uint8_t*, float*, uint32_t*)>(
+            void*, void*, uint8_t*, float*, uint32_t*, int)>(
                 CSF_AT(void**, collection, 0)[0x34 / 4])(
                     collection, nullptr, &self->field_0044,
-                    segment, &self->field_0030);
+                    segment, &self->field_0030, 3);
 
         if (hit) {
             CharActionFsm_InitializeHitInfo(&scratch.hitInfo, nullptr);
-            reinterpret_cast<void(__fastcall*)(void*, void*, void*, int)>(
+            reinterpret_cast<void(__fastcall*)(void*, void*, void*)>(
                 CSF_AT(void**, hit, 0)[0x0C / 4])(
-                    hit, nullptr, &scratch.hitInfo, 3);
+                    hit, nullptr, &scratch.hitInfo);
 
             std::memcpy(&self->field_0044,
                         reinterpret_cast<uint8_t*>(scratch.result) + 0x20,
@@ -281,4 +231,3 @@ static char __fastcall C_0082deb8_UpdateGroundQuery(
 
 HOOK(0x00410290, C_0082deb8_UpdateGroundQuery, "auto");
 
-```
