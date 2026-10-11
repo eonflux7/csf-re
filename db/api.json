@@ -821,7 +821,7 @@
   "name": "AudioSoundManager_ProcessArchiveContext",
   "name_src": "agent",
   "votes": {
-   "AudioSoundManager_ProcessArchiveContext": 10,
+   "AudioSoundManager_ProcessArchiveContext": 14,
    "AudioSoundManager_PrepareArchive": 2
   },
   "ret": "int",
@@ -44538,7 +44538,7 @@
   "name": "Archive_SerializeObjectRef",
   "name_src": "vote",
   "votes": {
-   "Archive_SerializeObjectRef": 42
+   "Archive_SerializeObjectRef": 45
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -48447,13 +48447,14 @@
   "sig_src": "vote"
  },
  "004c05b0": {
-  "name": "sub_4C05B0",
-  "name_src": "addr",
+  "name": "TDudoso_SerializeArchive",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "TDudoso* self, void* , void* context",
+  "sig_src": "impl",
+  "file": "src/auto/004c05b0.cpp"
  },
  "004c06f0": {
   "name": "sub_4C06F0",
@@ -48504,7 +48505,7 @@
  },
  "004c10d0": {
   "name": "TMovilAInteractivo_SerializeReferences",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -48513,13 +48514,14 @@
   "file": "src/auto/004c10d0.cpp"
  },
  "004c1330": {
-  "name": "sub_4C1330",
-  "name_src": "addr",
+  "name": "TCombate_SerializeStateReferences",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "TCombate* self, void* , void* context",
+  "sig_src": "impl",
+  "file": "src/auto/004c1330.cpp"
  },
  "004c15f0": {
   "name": "sub_4C15F0",
@@ -48541,13 +48543,14 @@
   "file": "src/auto/004c17f0.cpp"
  },
  "004c1890": {
-  "name": "sub_4C1890",
-  "name_src": "addr",
+  "name": "AiStateFactory_SerializeState",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , void* context",
+  "sig_src": "impl",
+  "file": "src/auto/004c1890.cpp"
  },
  "004c19f0": {
   "name": "sub_4C19F0",
@@ -48606,17 +48609,18 @@
   "sig_src": "abi"
  },
  "004c2380": {
-  "name": "CoverAttack_ProcessRecord",
-  "name_src": "vote",
+  "name": "AiStateFactory_ProcessCoverAttackFields",
+  "name_src": "agent",
   "votes": {
-   "CoverAttack_ProcessRecord": 4,
+   "CoverAttack_ProcessRecord": 6,
    "TaskCheck_4C2380": 1,
    "CoverAttack_Sub4C2380": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , void* context",
+  "sig_src": "impl",
+  "file": "src/auto/004c2380.cpp"
  },
  "004c2480": {
   "name": "S_004c2380_CheckTaskConditions",
@@ -48641,22 +48645,24 @@
   "file": "src/auto/004c2590.cpp"
  },
  "004c2620": {
-  "name": "sub_4C2620",
-  "name_src": "addr",
+  "name": "S_004c2380_ProcessAttackFallbacks",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_004c2380* self, void* , int recordAddress",
+  "sig_src": "impl",
+  "file": "src/auto/004c2620.cpp"
  },
  "004c26d0": {
-  "name": "sub_4C26D0",
-  "name_src": "addr",
+  "name": "AiStateFactory_ProcessStateTransitionContext",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , void* context",
+  "sig_src": "impl",
+  "file": "src/auto/004c26d0.cpp"
  },
  "004c27d0": {
   "name": "S_004c2380_SerializeCoverAttackRecord",
@@ -54273,8 +54279,11 @@
   "name": "AiStateFactory_HasObjectReference",
   "name_src": "vote",
   "votes": {
+   "AiStateFactory_IsObjectRegistered": 1,
    "AiStateFactory_HasObjectReference": 2,
    "AiStateFactory_IsObjectReferenceRegistered": 1,
+   "TAiState_IsInParentChain": 1,
+   "AiStateFactory_QueryObjectReference": 1,
    "AiStateFactory_FindObjectReference": 1
   },
   "ret": "int",
