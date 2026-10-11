@@ -319,6 +319,10 @@ def gate(ea, path, db=None):
             sem.append(f"calling convention mismatch: original pops {orig} bytes (ret N), yours pops {rets}. "
                        "Fix the calling convention / parameter list (__thiscall → __fastcall with dummy edx; "
                        "__stdcall pops args; __cdecl pops 0).")
+        if re.search(r"catch\s*\(\s*\.\.\.\s*\)", code_only) and re.search(r"0x0*7AF666\b", code_only, re.I):
+            # a rethrow in a catch (...) around code that cannot throw: the compiler drops the handler and the call
+            # with it (0x47EBA0: a dword copy loop). The original's handler is as dead; the source has it.
+            sem = [e for e in sem if not ("0x7AF666" in e and "your code never does" in e and e.count("\n") == 0)]
         sem, waived = apply_waivers(ea, obj, sem)
         if sem:
             conv = [e for e in sem if e.startswith("calling convention mismatch")]
