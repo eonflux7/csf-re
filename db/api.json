@@ -4220,7 +4220,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 105
+   "AssignStringSubstring": 106
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -10841,7 +10841,7 @@
   "name": "CompareStringSubstring",
   "name_src": "vote",
   "votes": {
-   "CompareStringSubstring": 20
+   "CompareStringSubstring": 21
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -11071,7 +11071,8 @@
    "Hud_ScaleCoordinates": 2,
    "Hud_ConvertPosition": 1,
    "Hud_ConvertCoordinates": 1,
-   "Layout_ApplyIntPair": 2
+   "Layout_ApplyIntPair": 2,
+   "ScaleHudSizePair": 1
   },
   "ret": "uint64_t",
   "conv": "__cdecl",
@@ -65127,8 +65128,9 @@
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1",
-  "sig_src": "vote"
+  "params": "",
+  "sig_src": "impl",
+  "file": "src/auto/0050f060.cpp"
  },
  "0050f160": {
   "name": "GameBddLoader_AssignMessageBoxConfiguration",
@@ -78609,7 +78611,7 @@
   "name": "CMenuSaveGame_ResetStringStorage",
   "name_src": "agent",
   "votes": {
-   "CMenuSaveGame_ResetStringStorage": 11
+   "CMenuSaveGame_ResetStringStorage": 12
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -137848,20 +137850,24 @@
  "006af940": {
   "name": "MenuControls_SetDisplayString",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "MenuControls_SetDisplayString": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006afb10": {
   "name": "MenuControls_SetDisplayValue",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "MenuControls_SetDisplayValue": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, unsigned int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006afb80": {
   "name": "InitializeOwnerHelper",
@@ -138057,7 +138063,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 171,
+   "GetGlobalInt": 172,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -138070,7 +138076,7 @@
   "name": "MenuControls_ResolveObject",
   "name_src": "vote",
   "votes": {
-   "MenuControls_ResolveObject": 29
+   "MenuControls_ResolveObject": 30
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -182814,7 +182820,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 129,
+   "GetGlobalValue_8BC1E0": 130,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
