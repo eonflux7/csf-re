@@ -251,6 +251,16 @@ def gate(ea, path, db=None):
                         "convention passes. Drop the CSF_FUNC and call it with `hook::Regs r{}; r.<reg> = ...; uint32_t "
                         f"stack[] = {{...}}; hook::call_regs(CSF_ADDR_FN({m.group(3)}), &r, stack, <count>);` (nullptr, 0 "
                         "without stack arguments)")
+    # a literal null `this` for a callee that reads ecx: Hex-Rays shows such calls without the object when the
+    # original simply leaves ecx as it is (the caller's own this, or a value loaded for something else); writers
+    # then pass nullptr. 0x49BAF0, 0x4053E0, 0x4E72C0 (2026-10-11) crashed or sat unexecuted that way
+    for m in re.finditer(r"CSF_FUNC\([^;]*?,\s*__fastcall\s*,\s*(\w+)\s*,\s*(0x[0-9A-Fa-f]+)\s*,", code_only):
+        if re.search(rf"\b{m.group(1)}\s*\(\s*(?:nullptr|NULL|0)\s*,\s*(?:nullptr|NULL|0)\s*[,)]", code_only) \
+                and api.takes_reg(int(m.group(2), 16), db, "ecx"):
+            errs.append(f"{m.group(1)}(nullptr, ...): {m.group(2)} reads ecx (`this`), so null crashes it. The original "
+                        "passes whatever ecx holds at that call: find the last instruction that wrote ecx before "
+                        "the `call` (often none since entry: then it is this function's own `this`; or a `mov ecx, "
+                        "[ebp+N]` that loaded an argument) and pass that")
     errs += check_bindings(src, db)
     errs += api.binding_errors(src, db)
     raw = sorted({v for _, _, v, _ in addrfix.raw_hits(src)})
