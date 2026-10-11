@@ -532,6 +532,11 @@ def behaviour(ea, obj, fn, src, db):
             and not const_found(c, ints, floats)]
     bases = [b for b in a.get("consts", []) if isinstance(b, int) and b >= 16 and b & 0xFFFFFFFF in ints]
     miss = [c for c in miss if not (isinstance(c, int) and any(c > b and c - b in ints for b in bases))]
+    # x87 status masks of a comparison Hex-Rays could not fold (`__SETP__(HIBYTE(_AX) & 0x41, 0)`, 0x4D0410): the
+    # `test ah, N` after fnstsw is the comparison itself, not a constant of the function
+    masks = {int(i.op_str.split(",")[1], 0) for i in code_of(ea, db)
+             if i.mnemonic == "test" and i.op_str.startswith("ah, ")}
+    miss = [c for c in miss if c not in masks]
     # Hex-Rays writes a run of -1 dwords as memset(p, 255, n): the byte fill is the -1 we store (0x4980D0)
     if -1 in a.get("consts", []) and 0xFFFFFFFF in ints:
         miss = [c for c in miss if c != 255]
