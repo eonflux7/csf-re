@@ -1164,3 +1164,31 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   calls, emudiff same 8/8) and installed; module m7685A0 renamed mission_script_catalog (it is the script
   language's type/command catalog; function prefixes follow at the next naming pass). 0x50F060: one 0x28-byte
   object split in two buffers (startup hang) fixed.
+
+## 2026-10-11 night — in-game diff repaired (tiers 2 and 3), 51.5% game code, playtest dropped
+
+- **The diff harness had been off in every verifier build**: `work/verify-tree` had dangling `export`/`ida`/`.venv`
+  links, `difftable.py` failed silently and the table was empty. `prepare_tree` repairs the links, a failing
+  table generator now fails the build. Tier 2: nested diffs overwrote the static snapshot (nested calls now run
+  ours). Tier 3 startup crash (0xC0000409): a 1-byte out flag at `[ebp-1]` replayed as a dword into ours' frame;
+  watched stack windows are capped at the recorded function's frame pointer.
+- **Tier 3 false alarms, all in the table generator / replayer** (17 functions quarantined by the first full
+  baselines, 12 of them unchanged code): `this` used after a call on another branch was outside the snapshot
+  (0x716490); thiscall decided by Hex-Rays' prototype instead of the code (0x52B770: no snapshot, timer advanced
+  twice); CRT `memcpy` on the heap ran for both (0x4BFE70 family: such functions are out of tier 3); a frame dword
+  read before it is written = stack garbage as an argument (0x47EE50, 0x488FF0, 0x4696C0: out of tier 3); stack
+  window was 64 bytes (0x415AE0 copies a 0x200-byte settings block: now 1024, deltas 1024).
+- **Real bugs tier 3 found**: 0x6AB9E0 (value read before the normalize, original reloads it after), 0x41EA70
+  (stored its own sum instead of the callee's st0), 0x7123E0 / 0x447940 (wrong call's eax returned), 0x70F3B0
+  (two arguments are the previous call's, still on the stack), 0x6AB930 (x87 keeps the quotient unrounded).
+  Lesson again: `test ah,5; jp/jnp` reads as "not below" / "below"; I misread it once and emudiff caught it.
+- Queue notes now carry the function's own DIFF lines (smoke prints up to 3 per function; the log tail never held
+  them). emudiff: `long double` returns are st0 too.
+- 0x508F50: a wave reimplemented the address devcmd hooks by hand (`Window_FitClientArea`) -> visible fullscreen
+  smokes. Lanes and gate now refuse addresses hooked by non-auto `src/` code. WinMain (0x509250) parked.
+- **Naming pass**: with the captain it spent ~$1.35 of Opus on 12 classes, all held below the confidence bar:
+  stopped; class naming is skipped until more of each class is implemented (user). `--no-captain` failed and put
+  everything back: after applying 29 consensus field names `fields.py fixbuild` left `field_0008` uses in
+  0x4D9170 and 0x421B30 (classes C_0083dbb0, C_0082f9f8). Open: fix fixbuild, then prefix the ~150 unprefixed
+  functions whose class is known from the binary (`db/types/this_class.json`).
+- User: no playtest milestone any more, run the waves to 100%. 27 functions pending (the fixes above), waves stopped.
