@@ -314,6 +314,7 @@
 - {addr: 0x008600B0, name: g_DegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x008600D8, name: g_BindingCount, type: uint32_t, uses: 2, src: auto}
 - {addr: 0x00860178, name: g_C_00860178_vtable, type: void*, uses: 1, src: auto}
+- {addr: 0x008603A0, name: g_NearZeroEpsilon, type: float, uses: 3, src: auto, alt: [g_ObjectPropertyTolerance, g_ZeroEpsilon]}
 - {addr: 0x008608A8, name: g_Value1e8, type: float, uses: 1, src: auto}
 - {addr: 0x00860DA4, name: g_WaterCameraNearClip, type: float, uses: 2, src: auto, alt: [g_WaterCameraNearClipBits]}
 - {addr: 0x00860DA8, name: g_WaterCameraFarClip, type: float, uses: 2, src: auto, alt: [g_WaterCameraFarClipBits]}
@@ -435,6 +436,8 @@
 - {addr: 0x0088BA8C, name: g_TwentyFourByteCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088C028, name: g_DwordRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088C208, name: g_CopyDwordExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088FD38, name: g_DwordPairRangeUnwindData, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088FE28, name: g_GfxObjectPropsExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00891744, name: g_WaterCopyPairFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00891868, name: g_TwelveByteRangeCopyExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008918B8, name: g_TwelveByteCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
@@ -774,6 +777,11 @@
 - {addr: 0x008A7DB4, name: g_DefaultColorGreen, type: float, uses: 3, src: auto}
 - {addr: 0x008A7DB8, name: g_DefaultColorBlue, type: float, uses: 3, src: auto}
 - {addr: 0x008A7DBC, name: g_DefaultColorAlpha, type: float, uses: 3, src: auto}
+- {addr: 0x008A7E18, name: g_ObjectPropertyVersion, type: int32_t, uses: 1, src: auto}
+- {addr: 0x008A7E20, name: g_EntryFormatVersion, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008A7E24, name: g_ObjectPropsMaxVersion, type: uint32_t, uses: 2, src: auto, alt: [g_RecordTag]}
+- {addr: 0x008A7E28, name: g_StreamRecordTag, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008A7E38, name: g_ObjectPropsMinVersion, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008A7E40, name: g_Float_8A7E40, type: float, uses: 1, src: auto}
 - {addr: 0x008A7F18, name: g_pszKey_VERSION_gfx_collision_shapes, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A7F1C, name: g_pszKey_SHAPE_TYPE, type: const char*, uses: 0, src: captain, conf: 1.0}
@@ -1620,8 +1628,8 @@
 - {addr: 0x008BB410, name: g_LogWindowRefCount, type: int, uses: 2, src: auto, alt: [g_SharedLogWindowRefCount]}
 - {addr: 0x008BB414, name: g_LogWindowBuffer, type: uint32_t, uses: 2, src: auto, alt: [g_SharedLogWindowInstance]}
 - {addr: 0x008BB418, name: g_GlobalState, type: int, uses: 3, src: auto}
-- {addr: 0x008BB41C, name: g_GatheringCancelled, type: uint8_t, uses: 2, src: auto, alt: [g_SpinRequestFlag]}
-- {addr: 0x008BB41D, name: g_GatheringWaitFinished, type: uint8_t, uses: 2, src: auto, alt: [g_SpinReleaseFlag]}
+- {addr: 0x008BB41C, name: g_GatheringCancelled, type: uint8_t, uses: 3, src: auto, alt: [g_GatheringThreadFlag, g_SpinRequestFlag]}
+- {addr: 0x008BB41D, name: g_GatheringThreadExitFlag, type: uint8_t, uses: 3, src: auto, alt: [g_GatheringWaitFinished, g_SpinReleaseFlag]}
 - {addr: 0x008BB420, name: g_ZeroVectorX, type: float, uses: 2, src: opus, alt: [g_Dword_8BB420]}
 - {addr: 0x008BB424, name: g_ZeroVectorY, type: float, uses: 0, src: captain, conf: 0.8}
 - {addr: 0x008BB428, name: g_ZeroVectorZ, type: float, uses: 0, src: captain, conf: 0.8}
@@ -1630,9 +1638,13 @@
 - {addr: 0x008BB448, name: g_ZeroVector2X, type: float, uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008BB44C, name: g_ZeroVector2Y, type: float, uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008BB450, name: g_Value_8BB450, type: int, uses: 2, src: auto}
-- {addr: 0x008BB478, name: g_DistanceOverrideBase, type: uint32_t, uses: 1, src: auto}
-- {addr: 0x008BB47C, name: g_EntryTable, type: void*, uses: 1, src: auto}
-- {addr: 0x008BB480, name: g_EntryTable, type: void*, uses: 1, src: auto}
+- {addr: 0x008BB470, name: g_LastUserDataEntry, type: int, uses: 1, src: auto}
+- {addr: 0x008BB474, name: g_ObjectPropertiesPluginOffset, type: int, uses: 3, src: auto, alt: [g_RwEngineObjectOffset, g_UserDataEntryOffset]}
+- {addr: 0x008BB478, name: g_DistanceOverrideBase, type: uint32_t, uses: 6, src: auto, alt: [g_ObjectAttachmentTable, g_ObjectPropertyTable, g_PropsSlotBase, g_WaterSourceStateBase, g_8BB478]}
+- {addr: 0x008BB47C, name: g_EntryTable, type: void*, uses: 4, src: auto}
+- {addr: 0x008BB480, name: g_EntryTable, type: void*, uses: 8, src: auto, alt: [g_EntryTable_8BB480]}
+- {addr: 0x008BB484, name: dword_8BB484, type: uint32_t, uses: 8, src: auto, alt: [g_ObjectPropertyTable, g_ObjectPropsBase, g_ObjectPropsData, g_PropertySlotTableBase, g_PropertyTableBase, g_PropertyValueBase, g_PropsTableBase]}
+- {addr: 0x008BB488, name: g_ObjectPropsTableBase, type: uint32_t, uses: 6, src: auto, alt: [g_EntryTableBase, g_ObjPropsBaseOffset, g_ObjectPropsSlotBase]}
 - {addr: 0x008BB4B4, name: g_DefaultAtomicCallback, type: uint32_t, uses: 2, src: auto, alt: [g_PassthroughTarget_8BB4B4]}
 - {addr: 0x008BB4B8, name: g_Value_8BB4B8, type: int, uses: 7, src: auto, alt: [g_Value8BB4B8]}
 - {addr: 0x008BB4CC, name: g_Value_8BB4CC, type: int32_t, uses: 1, src: auto}
@@ -1648,7 +1660,7 @@
 - {addr: 0x008BBF90, name: g_Block8BBF90, type: void*, uses: 2, src: auto, alt: [g_QuadIndexBuffer]}
 - {addr: 0x008BBF98, name: g_AccountConnectionFlag, type: uint8_t, uses: 7, src: auto, alt: [g_ConnectionRequestFlag, g_NetSessionConnectionFlag, g_NetSessionFlag, g_OnlineMenuActive, g_SessionWaitFailedFlag, g_StationDumpPendingFlag]}
 - {addr: 0x008BC098, name: g_Session, type: uint32_t, uses: 4, src: auto, alt: [g_dword_8BC098]}
-- {addr: 0x008BC0A0, name: g_MonitorLogSuffix, type: char, uses: 1, src: auto}
+- {addr: 0x008BC0A0, name: g_MonitorLogSuffix, type: char, uses: 2, src: auto}
 - {addr: 0x008BC120, name: byte_8BC120, type: uint8_t, uses: 3, src: auto, alt: [g_NetSessionWaitingFlag]}
 - {addr: 0x008BC121, name: g_MenuMpCharacterSelectActive, type: uint8_t, uses: 3, src: auto}
 - {addr: 0x008BC124, name: g_IdlePollCallback, type: void*, uses: 1, src: auto}
