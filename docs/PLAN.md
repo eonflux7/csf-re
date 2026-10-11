@@ -74,7 +74,7 @@ The orchestrator (Opus, interactive) works `queue/` and the backlog below.
 2. **Escalation queue** (`queue/`, count in `status.py`): crash bisects, review findings and gate failures of the
    waves; the audio tail-forwarding thunks and the two usercall functions wait on hook.h helpers (backlog, Loop &
    tooling).
-3. **Manual playtest at ~25% of game code** (user; ~2 waves away): the monitor shows live coverage (Progress `game`
+3. **Manual playtest at ~50% of game code** (user; moved from 25% on 2026-10-11): the monitor shows live coverage (Progress `game`
    line, Areas tab table: hit / never run before); afterwards `verify.py ingest` records the hits.
 4. **Evidence for the functions that never ran** (about half of the done ones, `status.py`): `emudiff.py` triage
    and hardening (backlog, Verification), `review.py sample` (weighted to them), `verifier.py --full` over
