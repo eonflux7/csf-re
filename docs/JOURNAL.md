@@ -1117,3 +1117,24 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   Noise among the ecx diffs: ecx left over at a call of a function that ignores it.
 - OPEN: the other ~175 DIFFs are untriaged. A playtest reaches code no smoke does, so this list is where its
   crashes will come from; cheapest next step is the 24 call-count and 21 call-target differences.
+
+## 2026-10-11 — The flaky regression: reproduced under load, two culprits fixed, one rare crash left
+
+- The waves stopped again at 16:05 on the full regression (savegame start, passed on re-run). Running that start
+  on all 8 smoke copies at once makes it fail 13 of 16 times; with every src/auto function disabled 0 of 16. So
+  it is ours, and load turns a rare failure into a frequent one: bisectable by repetition (tools/flaky.py).
+- Bisect with 4 runs per half (16 rounds, 20 min, no tokens) -> 0x4BFDD0 fails 8/8 alone: a 12-byte result
+  written through `&a3` of three separate dword locals (Hex-Rays splits the object), stack cookie failure
+  (exit 0xC0000409). Then the crash report's stack named 0x4BE970: `mov ecx, esi; call` keeps the linked object
+  as `this`, ours passed the resolved base (crash at 0x4DBFF9). Both were accepted at 15:54 (ai_core), so they are
+  NOT the 13:13 / 14:21 failures. After both fixes: 2 of 24 under 8x load.
+- Left (OPEN): eip 0x7FED32 (RenderWare) reading index 0xFFFF with NaN vectors on the stack, called from the
+  original 0x70A6A0 (skinned model update: RpHAnim matrices). Something of ours leaves NaNs in animation /
+  matrix data now and then. ~8% under 8x load, far less alone; too rare for the halving bisect (a test would
+  need ~36 runs). This is the 14:21 failure; the 13:13 one (jump into heap data from the 0x4DB686 recursion) did
+  not show up in 64 loaded runs.
+- The ai_core wave report said "executed 3, never ran 87" for functions that crash the savegame start under
+  load: per-function hit counts come from single smokes and understate what a longer or slower run reaches.
+- Also from this run's queue: 0x513BA0 (address of a member vs the pointer stored there), 0x516980 (arguments
+  swapped), 0x6C58D0 (push emitted one call early, again), 0x4F8150 (missing wrappers). 0x76A540 (binding
+  catalog, 7300 lines of asm, the answer covers 11 of its calls) stays in queue/.
