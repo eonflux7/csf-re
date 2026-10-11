@@ -112,8 +112,8 @@
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C8, name: g_AngleScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082E88C, name: g_PiFloat, type: float, uses: 1, src: auto}
-- {addr: 0x0082E894, name: g_AdvanceScale, type: float, uses: 3, src: auto, alt: [g_PayloadScale, g_RotationPayloadScale]}
-- {addr: 0x0082E898, name: g_DegToRad, type: float, uses: 3, src: auto, alt: [g_DegToRadFactor, g_DegreesToRadians]}
+- {addr: 0x0082E894, name: g_AdvanceScale, type: float, uses: 4, src: auto, alt: [g_DegreesPerRadian, g_PayloadScale, g_RotationPayloadScale]}
+- {addr: 0x0082E898, name: g_DegToRad, type: float, uses: 4, src: auto, alt: [g_DegToRadFactor, g_DegreesToRadians, g_NavigationDegreesToRadians]}
 - {addr: 0x0082E89C, name: g_ArrivalEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x0082E958, name: g_TParadoString, type: char, uses: 1, src: auto}
 - {addr: 0x0082F318, name: g_TEndString, type: const char, uses: 1, src: auto}
@@ -367,10 +367,10 @@
 - {addr: 0x00894BE8, name: g_GameDataRangeExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00894C38, name: g_RecordRangeExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00899058, name: g_RotationResetThreshold, type: const float, uses: 1, src: auto}
-- {addr: 0x00899504, name: g_SceneCachedBlock, type: void*, uses: 1, src: auto}
+- {addr: 0x00899504, name: g_PathBuffer, type: uint32_t, uses: 2, src: auto, alt: [g_SceneCachedBlock]}
 - {addr: 0x00899508, name: g_SceneCounterA, type: int, uses: 1, src: auto}
-- {addr: 0x0089950C, name: g_SceneCounterB, type: int, uses: 1, src: auto}
-- {addr: 0x00899514, name: g_SceneFloatDefault, type: float, uses: 1, src: auto}
+- {addr: 0x0089950C, name: g_PathCount, type: uint32_t, uses: 2, src: auto, alt: [g_SceneCounterB]}
+- {addr: 0x00899514, name: g_PathParam, type: uint32_t, uses: 2, src: auto, alt: [g_SceneFloatDefault]}
 - {addr: 0x00899520, name: g_pszConfig_Control, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x00899524, name: g_pszKey_CONTROL, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x00899528, name: g_pszKey_DEVICE, type: const char*, uses: 0, src: captain, conf: 1.0}
