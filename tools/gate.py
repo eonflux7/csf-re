@@ -329,10 +329,22 @@ def gate(ea, path, db=None):
             sem.append(f"calling convention mismatch: original pops {orig} bytes (ret N), yours pops {rets}. "
                        "Fix the calling convention / parameter list (__thiscall → __fastcall with dummy edx; "
                        "__stdcall pops args; __cdecl pops 0).")
-        if re.search(r"catch\s*\(\s*\.\.\.\s*\)", code_only) and re.search(r"0x0*7AF666\b", code_only, re.I):
-            # a rethrow in a catch (...) around code that cannot throw: the compiler drops the handler and the call
-            # with it (0x47EBA0: a dword copy loop). The original's handler is as dead; the source has it.
-            sem = [e for e in sem if not ("0x7AF666" in e and "your code never does" in e and e.count("\n") == 0)]
+        if re.search(r"catch\s*\(\s*\.\.\.\s*\)", code_only):
+            # a handler around code that cannot throw: the compiler drops it and the calls in it (0x47EBA0: a rethrow
+            # after a dword copy loop; 0x6A6DD0: the node release after two stores). The original's handler is as
+            # dead; the source has it. Callees named inside a catch (...) block are not required in the object.
+            dead = set()
+            for m in re.finditer(r"catch\s*\(\s*\.\.\.\s*\)\s*\{", code_only):
+                k, depth = m.end(), 1
+                while k < len(code_only) and depth:
+                    depth += {"{": 1, "}": -1}.get(code_only[k], 0)
+                    k += 1
+                body = code_only[m.end():k]
+                for d in re.finditer(r"CSF_FUNC\([^;]*?,\s*(\w+)\s*,\s*(0x[0-9A-Fa-f]+)\s*,", code_only):
+                    if re.search(rf"\b{d.group(1)}\s*\(", body):
+                        dead.add(int(d.group(2), 16))
+            sem = [e for e in sem if not ("your code never does" in e and e.count("\n") == 0 and
+                                          any(f"call to 0x{a:X} " in e for a in dead))]
         sem, waived = apply_waivers(ea, obj, sem)
         if sem:
             conv = [e for e in sem if e.startswith("calling convention mismatch")]
