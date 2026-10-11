@@ -37,7 +37,7 @@
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 3, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 27, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 84, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 85, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 8, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 11, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
@@ -319,8 +319,9 @@
 - {addr: 0x00860DA8, name: g_WaterCameraFarClip, type: float, uses: 2, src: auto, alt: [g_WaterCameraFarClipBits]}
 - {addr: 0x00860DAC, name: g_PreviewCameraAngleBits, type: 'std::uint32_t', uses: 4, src: auto}
 - {addr: 0x00861DF8, name: g_RadiansToDegrees, type: float, uses: 3, src: auto}
+- {addr: 0x00861DFC, name: g_HAnimDegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x00861E00, name: g_AnimationEndEpsilon, type: float, uses: 2, src: auto}
-- {addr: 0x00861F28, name: g_NegativeRadiansToDegrees, type: float, uses: 1, src: auto}
+- {addr: 0x00861F28, name: g_HAnimNegativeRadiansToDegrees, type: float, uses: 2, src: auto, alt: [g_NegativeRadiansToDegrees]}
 - {addr: 0x00861F2C, name: g_HAnimUpdateBaseInterval, type: float, uses: 1, src: auto}
 - {addr: 0x00861F30, name: g_HAnimUpdateIntervalScale, type: float, uses: 1, src: auto}
 - {addr: 0x008634C0, name: g_vtbl_C_008634c0, type: void*, uses: 1, src: auto}
@@ -1618,7 +1619,7 @@
 - {addr: 0x008BB408, name: g_8BB408, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008BB410, name: g_LogWindowRefCount, type: int, uses: 2, src: auto, alt: [g_SharedLogWindowRefCount]}
 - {addr: 0x008BB414, name: g_LogWindowBuffer, type: uint32_t, uses: 2, src: auto, alt: [g_SharedLogWindowInstance]}
-- {addr: 0x008BB418, name: g_GlobalState, type: int, uses: 2, src: auto}
+- {addr: 0x008BB418, name: g_GlobalState, type: int, uses: 3, src: auto}
 - {addr: 0x008BB41C, name: g_GatheringCancelled, type: uint8_t, uses: 2, src: auto, alt: [g_SpinRequestFlag]}
 - {addr: 0x008BB41D, name: g_GatheringWaitFinished, type: uint8_t, uses: 2, src: auto, alt: [g_SpinReleaseFlag]}
 - {addr: 0x008BB420, name: g_ZeroVectorX, type: float, uses: 2, src: opus, alt: [g_Dword_8BB420]}
@@ -1629,16 +1630,17 @@
 - {addr: 0x008BB448, name: g_ZeroVector2X, type: float, uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008BB44C, name: g_ZeroVector2Y, type: float, uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008BB450, name: g_Value_8BB450, type: int, uses: 2, src: auto}
+- {addr: 0x008BB478, name: g_DistanceOverrideBase, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008BB47C, name: g_EntryTable, type: void*, uses: 1, src: auto}
 - {addr: 0x008BB480, name: g_EntryTable, type: void*, uses: 1, src: auto}
 - {addr: 0x008BB4B4, name: g_DefaultAtomicCallback, type: uint32_t, uses: 2, src: auto, alt: [g_PassthroughTarget_8BB4B4]}
 - {addr: 0x008BB4B8, name: g_Value_8BB4B8, type: int, uses: 7, src: auto, alt: [g_Value8BB4B8]}
 - {addr: 0x008BB4CC, name: g_Value_8BB4CC, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008BB738, name: g_Value_8BB738, type: int, uses: 1, src: auto}
-- {addr: 0x008BBABC, name: g_DefaultMatrix, type: uint32_t*, uses: 6, src: auto, alt: [g_DefaultMatrixTarget, g_FirstTransformMatrix, g_HAnimSharedMatrixA, g_QuaternionMatrix, g_QuaternionMatrixA]}
-- {addr: 0x008BBAC0, name: g_HAnimSharedMatrixB, type: uint32_t*, uses: 3, src: auto, alt: [g_QuaternionMatrixB, g_SecondTransformMatrix]}
-- {addr: 0x008BBAC4, name: g_ComposedMatrix, type: uint32_t*, uses: 4, src: auto, alt: [g_ComposedTransformMatrix, g_HAnimSharedMatrixC]}
-- {addr: 0x008BBAC8, name: g_HAnimInstanceCount, type: 'std::uint32_t', uses: 1, src: auto}
+- {addr: 0x008BBABC, name: g_HAnimSharedMatrixA, type: uint32_t*, uses: 7, src: auto, alt: [g_DefaultMatrix, g_DefaultMatrixTarget, g_FirstTransformMatrix, g_QuaternionMatrix, g_QuaternionMatrixA]}
+- {addr: 0x008BBAC0, name: g_HAnimSharedMatrixB, type: 'std::uint32_t*', uses: 4, src: auto, alt: [g_QuaternionMatrixB, g_SecondTransformMatrix]}
+- {addr: 0x008BBAC4, name: g_ComposedMatrix, type: uint32_t*, uses: 5, src: auto, alt: [g_HAnimSharedMatrixC, g_ComposedTransformMatrix]}
+- {addr: 0x008BBAC8, name: g_HAnimInstanceCount, type: 'std::uint32_t', uses: 2, src: auto, alt: [g_HAnimSharedMatrixUsers]}
 - {addr: 0x008BBB28, name: g_Value8BBB28, type: int, uses: 1, src: auto}
 - {addr: 0x008BBF2C, name: g_Value_8bbf2c, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008BBF34, name: g_ObjectValueTotal, type: 'std::uint32_t', uses: 2, src: auto}
