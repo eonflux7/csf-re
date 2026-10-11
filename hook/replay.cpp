@@ -46,7 +46,7 @@ struct Regs { uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax; };  // pushad lay
 
 enum Mode { OFF, RECORD, REPLAY };
 
-constexpr int kMaxRecs = 64, kMaxDeltas = 128, kPeek = 64;  // kPeek: bytes watched behind a stack pointer arg
+constexpr int kMaxRecs = 64, kMaxDeltas = 1024, kPeek = 1024;  // kPeek: bytes watched behind a stack pointer arg
 struct Delta { uint32_t off; uint8_t where, val; };       // where: 0 F's regions, 1..8 stack arg k-1, 9 ecx
 struct Rec {
     uint32_t callee, ecx, edx, args[8], eax, edxr;

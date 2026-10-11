@@ -82,7 +82,9 @@ echo "$result"
 echo "---- hits"; { tr -d "\r" < "$PLAY/csf_hook_hits.txt"; } 2>/dev/null | sort -k2 -n -r | head -10
 echo "---- diff ($(cat "$PLAY/csf_diff_summary.txt" 2>/dev/null | wc -l) functions compared)"
 { tr -d '\r' < "$PLAY/csf_diff_summary.txt"; } 2>/dev/null | awk '$4 > 0 {print "MISMATCH " $0}'
-{ tr -d '\r' < "$PLAY/csf_diff.log"; } 2>/dev/null | head -20
+# up to 3 DIFF lines of every mismatching function (a queue note needs its own, not the first 20 of the log)
+{ tr -d '\r' < "$PLAY/csf_diff.log"; } 2>/dev/null | awk '$1 == "DIFF" && c[$2]++ < 3' | head -300
+{ tr -d '\r' < "$PLAY/csf_diff.log"; } 2>/dev/null | grep -v '^DIFF' | head -20
 grep -A5 CRASH "$PLAY/csf_hook.log" 2>/dev/null
 echo "---- csf_hook.log"; tr -d '\r' < "$PLAY/csf_hook.log" 2>/dev/null | tail -20
 crashes=$(grep -c CRASH "$PLAY/csf_hook.log" 2>/dev/null)

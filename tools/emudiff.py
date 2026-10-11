@@ -405,7 +405,7 @@ class Run:
         self.events.append((name or target, pop, nargs, use_ecx, rt, tuple(self.norm(a) for a in argv),
                             self.norm(uc.reg_read(X.UC_X86_REG_ECX)) if use_ecx else None))
         h = h32(0xE000 + i * 977 + self.prof * 131)
-        if self.prof >= 6 and rt not in ("float", "double", "void"):
+        if self.prof >= 6 and rt not in ("float", "double", "long double", "void"):
             val = ZONES + 0x0C000000 + i * 0x10000 + 0x100
         elif "*" in rt or rt == "?":
             val = ZONES + 0x0C000000 + i * 0x10000 + 0x100 if (rt != "?" or self.prof % 2 == 0) else h % 3
@@ -414,7 +414,7 @@ class Run:
         else:
             val = h % 4
         uc.reg_write(X.UC_X86_REG_EAX, val)
-        if rt in ("float", "double"):
+        if rt in ("float", "double", "long double"):
             uc.mem_write(FVAL, struct.pack("<f", FLOATS[h % len(FLOATS)]))
             uc.mem_write(esp + pop, struct.pack("<I", ret))
             uc.reg_write(X.UC_X86_REG_ESP, esp + pop)
@@ -473,7 +473,7 @@ def compare(ea, o, m):
         out.append("ours changes ebx/esi/edi/ebp")
     p = proto(ea)
     rt = p[2] if p else "int"
-    if rt in ("float", "double"):
+    if rt in ("float", "double", "long double"):
         if not close(st0_float(o.st0), st0_float(m.st0)):
             out.append(f"st0 {st0_float(o.st0)} vs {st0_float(m.st0)}")
     elif rt != "void" and not (o.tail or m.tail):
