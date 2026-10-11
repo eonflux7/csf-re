@@ -34,18 +34,16 @@ static int* __stdcall MissionScript_ResetParserState(int a1)
             static_cast<int>(reinterpret_cast<uintptr_t>(stateBuffer)), object);
     }
 
-    // Stamp the C_0082d410 vtable pointer into the 12 slots below the parameter.
-    const int vtableValue =
-        static_cast<int>(reinterpret_cast<uintptr_t>(CSF_VTBL(0x0082D410)));
-    int* result = &a1;
-    for (int remaining = 12; remaining != 0; --remaining)
+    // Teardown of the 12 records, last to first: each has three C_0082d410 subobjects (+0x14, +0x08, +0x00).
+    void** const vtableValue = CSF_VTBL(0x0082D410);
+    for (int index = 11; index >= 0; --index)
     {
-        result -= 13;
-        result[3] = vtableValue;
-        result[0] = vtableValue;
-        result[-2] = vtableValue;
+        CSF_AT(void**, stateBuffer, index * 52 + 0x14) = vtableValue;
+        CSF_AT(void**, stateBuffer, index * 52 + 0x08) = vtableValue;
+        CSF_AT(void**, stateBuffer, index * 52 + 0x00) = vtableValue;
     }
-    return result;
+    // The original leaves the address of the first record's second subobject in eax.
+    return reinterpret_cast<int*>(stateBuffer + 8);
 }
 
 HOOK(0x00468EE0, MissionScript_ResetParserState, "auto");
