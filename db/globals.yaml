@@ -129,6 +129,7 @@
 - {addr: 0x00843B30, name: g_VtblCMenuSaveGame, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00843B70, name: g_VtblCMenuSaveGameSubObject, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00843C14, name: g_RasterByteScale, type: float, uses: 4, src: auto}
+- {addr: 0x00844628, name: g_SpawnRadiansToDegrees, type: float, uses: 1, src: auto}
 - {addr: 0x0084462C, name: g_SpawnRegionDistanceSquared, type: float, uses: 1, src: auto}
 - {addr: 0x008446C8, name: g_SpawnTimerThreshold, type: float, uses: 1, src: auto}
 - {addr: 0x00845368, name: g_vtbl_00845368, type: uint8_t, uses: 2, src: auto}
@@ -260,6 +261,7 @@
 - {addr: 0x008928E8, name: g_ElementCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00892A0C, name: g_ForwardRangeExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00892A5C, name: g_ArrayConstructionExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x008937C4, name: g_CharacterEntryRangeExceptionFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008938E8, name: g_InputBindingCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00893A5C, name: g_DwordRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00893AFC, name: g_DwordArrayCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
@@ -1327,9 +1329,9 @@
 - {addr: 0x008B0680, name: g_Global_8B0680, type: int, uses: 1, src: auto}
 - {addr: 0x008B0684, name: g_MpCharacterSelect, type: void*, uses: 2, src: auto, alt: [g_GlobalValue]}
 - {addr: 0x008B0688, name: g_Int8B0688, type: int, uses: 3, src: auto}
-- {addr: 0x008B068C, name: g_OnlineMatchFlag, type: 'std::uint8_t', uses: 12, src: auto, alt: [g_AccountMenuSecondaryFlag]}
+- {addr: 0x008B068C, name: g_OnlineMatchFlag, type: 'std::uint8_t', uses: 13, src: auto, alt: [g_AccountMenuSecondaryFlag]}
 - {addr: 0x008B0690, name: g_MpSessionState, type: int, uses: 0, src: opus}
-- {addr: 0x008B0694, name: g_CharacterSelectState8B0694, type: uint32_t, uses: 32, src: auto}
+- {addr: 0x008B0694, name: g_CharacterSelectState8B0694, type: uint32_t, uses: 35, src: auto}
 - {addr: 0x008B0698, name: g_MenuMPCharacterSelect_LastState, type: uint32_t, uses: 2, src: auto}
 - {addr: 0x008B08F4, name: g_Value_8B08F4, type: int, uses: 1, src: auto}
 - {addr: 0x008B08F8, name: g_Value_8B08F8, type: int32_t, uses: 1, src: auto}
