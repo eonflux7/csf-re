@@ -1,43 +1,3 @@
-# Escalation 0x00516980: in-game smoke failure (verifier bisect: 21 smokes (1 named by crash reports, k=8))
-
-## Smoke log tail
-```
-nohook=False pid=1928 ready=False after=1s alive=False exit=-1073741819 stillrunning=False stop=exited ran=0s fail_at=0s
----- hits
----- diff (0 functions compared)
-CRASH code=c0000005 eip=00488893 addr=0d010024 (rw=0) eax=ffffffff ebx=0d01000c ecx=00000000 edx=00000016 esi=0000000b edi=0019ebe4 ebp=0019ebc4 esp=0019ebb8
-  eip module 00400000 (ours 72B50000); stack:
-   0d01000c 033b3672 00000001 0019ec04 00692780 0000000b
-   00000000 ffffffff 008e03c2 03461dc0 00000001 0000025c
-   0333cd64 008baeb4 00000000 00000001 0000000b 0000000f
-   00000000 0019ec24 72c86ce6 0d01000c 00840914 00000001
----- csf_hook.log
-hook 004055e0 auto     C_0082d58c_ApplyRotationDeltas
-hook 004054f0 auto     C_0082d58c_CacheResources
-hook 004054a0 auto     S_004054a0_ResolveChildAndDispatch
-hook 00405450 auto     AudioSoundManager_ProcessArchiveContext
-hook 00405420 auto     C_0082d510_Destroy
-hook 00405400 auto     C_0082d510_ForwardFloatToTarget
-hook 004053e0 auto     C_0082d510_ForwardSlotCall
-hook 004013e0 auto     ReturnMinusOne
-hook 00401090 auto     GetGlobalValue_401090
-hooks installed=5342 skipped=86 failed=0
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00AD5F34 wrapped
-CRASH code=c0000005 eip=00488893 addr=0d010024 (rw=0) eax=ffffffff ebx=0d01000c ecx=00000000 edx=00000016 esi=0000000b edi=0019ebe4 ebp=0019ebc4 esp=0019ebb8
-  eip module 00400000 (ours 72B50000); stack:
-   0d01000c 033b3672 00000001 0019ec04 00692780 0000000b
-   00000000 ffffffff 008e03c2 03461dc0 00000001 0000025c
-   0333cd64 008baeb4 00000000 00000001 0000000b 0000000f
-   00000000 0019ec24 72c86ce6 0d01000c 00840914 00000001
-SMOKE FAIL (never ready: no 'devcmd: starting scene' in csf_hook.log within 120s)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include <cstddef>
 #include "globals.h"
@@ -75,7 +35,7 @@ static int __cdecl CopyConstructElementRange(
     {
         while (sourceBegin != sourceEnd)
         {
-            CopyConstructElement_516960(sourceBegin, destination);
+            CopyConstructElement_516960(destination, sourceBegin);  // push source; push destination
             destination = static_cast<std::uint8_t*>(destination) + 0x50;
             sourceBegin = static_cast<std::uint8_t*>(sourceBegin) + 0x50;
         }
@@ -100,4 +60,3 @@ static int __cdecl CopyConstructElementRange(
 
 HOOK(0x00516980, CopyConstructElementRange, "auto");
 
-```
