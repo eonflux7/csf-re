@@ -1,53 +1,3 @@
-# Escalation 0x004DA030: breaks the verified baseline (verifier bisect: 40 smokes (4 named by crash reports, k=8))
-
-## Smoke log tail
-```
-nohook=False pid=25236 ready=True after=1s alive=True exit=killed stillrunning=False stop=crash ran=5s fail_at=5s
----- hits
-006a2c60    1454768 auto C_0085ee28_ReadBufferedBytes
-006a2e00    1453536 auto C_0085ee28_SumFields
-006a3200     247637 auto CoreZlibLog_ComputeAdler32
-0069e3d0     179431 auto C_0085eb30_ReleaseMutexIfSet
-006a6810     171696 auto CoreZlibLog_FlushInflateWindow
-006a2f90     147948 auto CoreZlibLog_AllocateReusableBlock
-006a2eb0     147943 auto ZlibLog_MarkTrackedBlock
-006a0370     140594 auto C_0085ec74_ReadBytesFromFile
-006a6130      73529 auto CoreZlibLog_BuildInflateHuffmanTable
-006a6950      58185 auto CoreZlibLog_InflateFast
----- diff (0 functions compared)
-CRASH code=c0000005 eip=72bcc06b addr=00000090 (rw=0) eax=00000000 ebx=00000001 ecx=13e69320 edx=00834598 esi=1c088ab0 edi=3aa85cac ebp=0019e9ac esp=0019e994
-  eip module 72AD0000 (ours 72AD0000); stack:
-   3aa85cac 13cb6ca8 01a85cac 1c088ab0 00000000 3aa85cac
-   0019e9c0 00492c90 3aa85cac 0b101b98 3aa85cac 0019ea64
-   72b4af67 3aa85cac 00000000 00000010 4bbebc20 3aa85cac
-   3aa85cac 1c088ab0 00000013 000000f5 00000001 1c42d890
----- csf_hook.log
-hook 00405450 auto     AudioSoundManager_ProcessArchiveContext
-hook 00405420 auto     C_0082d510_Destroy
-hook 00405400 auto     C_0082d510_ForwardFloatToTarget
-hook 004053e0 auto     C_0082d510_ForwardSlotCall
-hook 004013e0 auto     ReturnMinusOne
-hook 00401090 auto     GetGlobalValue_401090
-hooks installed=6206 skipped=60 failed=0
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00BA58EC wrapped
-devcmd: video mode 1280x960
-devcmd: dev start (loadsave 1.sav) instead of Menus/P_Intro.fbs -> state 1
-devcmd: starting scene 'Maps/NR01/NR01A/Fiord.scn'
-CRASH code=c0000005 eip=72bcc06b addr=00000090 (rw=0) eax=00000000 ebx=00000001 ecx=13e69320 edx=00834598 esi=1c088ab0 edi=3aa85cac ebp=0019e9ac esp=0019e994
-  eip module 72AD0000 (ours 72AD0000); stack:
-   3aa85cac 13cb6ca8 01a85cac 1c088ab0 00000000 3aa85cac
-   0019e9c0 00492c90 3aa85cac 0b101b98 3aa85cac 0019ea64
-   72b4af67 3aa85cac 00000000 00000010 4bbebc20 3aa85cac
-   3aa85cac 1c088ab0 00000013 000000f5 00000001 1c42d890
-SMOKE FAIL (alive, but 1 CRASH logged: the game caught it)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include "globals.h"
 #include "hook.h"
@@ -209,7 +159,7 @@ static int __fastcall S_0041f0a0_SerializeAutonomousState(
         CSF_AT(uint8_t, state, 0x15) = 0;
         CSF_AT(uint8_t, state, 0x16) = 0;
         AiAutonomous_SerializeByteAndPair(
-            reinterpret_cast<uint8_t*>(self) + 0x33C,
+            reinterpret_cast<uint8_t*>(self) + 0x32C,  // lea ecx, [edi + 0x32C]
             nullptr, reinterpret_cast<int>(state));
     }
 
@@ -236,4 +186,3 @@ static int __fastcall S_0041f0a0_SerializeAutonomousState(
 
 HOOK(0x004DA030, S_0041f0a0_SerializeAutonomousState, "auto");
 
-```
