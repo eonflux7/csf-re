@@ -102,7 +102,17 @@ def disasm(ea, size, linear=False):
 
 
 def ret_bytes(ea, size):
-    rets = {int(i.op_str, 16) if i.op_str else 0 for i in disasm(ea, size) if i.mnemonic == "ret"}
+    """`ret N` bytes of the function's own returns. `mov eax, <address inside the function>; ret` is the end of a
+    catch handler (it returns where execution continues to the EH runtime), not a return of the function."""
+    ins, rets = disasm(ea, size), set()
+    for k, i in enumerate(ins):
+        if i.mnemonic != "ret":
+            continue
+        p = ins[k - 1] if k else None
+        if p is not None and p.mnemonic == "mov" and re.fullmatch(r"eax, 0x[0-9a-f]+", p.op_str) \
+                and ea <= int(p.op_str[5:], 16) < ea + size:
+            continue
+        rets.add(int(i.op_str, 16) if i.op_str else 0)
     return sorted(rets)
 
 
