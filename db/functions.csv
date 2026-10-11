@@ -3739,7 +3739,7 @@ ea,size,region,module,name,name_src,status
 004a0940,93,game,m49FA50,,,todo
 004a09a0,180,game,m49FA50,,,todo
 004a0a60,138,game,m49FA50,,,todo
-004a0b10,993,game,m49FA50,,,todo
+004a0b10,993,game,m49FA50,GameBddLoader_PrepareMenuResources,vote,todo
 004a0f00,43,game,m49FA50,GuiControl_GetChildByIndex,vote,todo
 004a0f30,19,game,m49FA50,GuiControl_GetPathPointRecord,vote,todo
 004a0f50,103,game,m49FA50,,,todo
@@ -5958,7 +5958,7 @@ ea,size,region,module,name,name_src,status
 004fd7a0,665,game,m4FBE10,,,todo
 004fda40,93,game,m4FDA40,,,todo
 004fdaa0,34,game,m4FDA40,,,todo
-004fdad0,221,game,m4FDA40,,,todo
+004fdad0,221,game,m4FDA40,GameBddLoader_PrepareScenarioSelection,vote,todo
 004fdbb0,6,game,m4FDA40,GetGlobalValue_8B0568,agent,done
 004fdbc0,173,game,m4FDA40,,,todo
 004fdc70,41,game,m4FDC70,CSceneLoaderBase_RequestSceneLoad,agent,done
@@ -6263,8 +6263,8 @@ ea,size,region,module,name,name_src,status
 0050c350,32,game,m50BF70,ForwardTo50C120,agent,done
 0050c370,147,game,m50BF70,CMenuScreenFader_ReleaseResources,agent,done
 0050c410,55,game,m50BF70,CMenuScreenFader_ResetState,agent,done
-0050c450,295,game,stl,,,todo
-0050c580,162,game,m50BF70,,,todo
+0050c450,295,game,stl,GameBddLoader_ConfigureDisplayState,vote,todo
+0050c580,162,game,m50BF70,GameBddLoader_ConstructFader,vote,todo
 0050c630,33,game,m50BF70,CMenuScreenFader_Destroy,agent,done
 0050c660,499,game,m50BF70,CMenuScreenFader_RequestScreen,agent,done
 0050c860,27,game,m50BF70,MenuManager_InitEntry,agent,done
@@ -6280,7 +6280,7 @@ ea,size,region,module,name,name_src,status
 0050cd00,229,game,stl,ReserveObjectPointers,vote,todo
 0050cdf0,108,game,m50BF70,AppendFourByteElement,agent,done
 0050ce60,571,game,m50BF70,MenuManager_TransitionToGameOrIntro,agent,done
-0050d0a0,234,game,m50BF70,,,todo
+0050d0a0,234,game,m50BF70,GameBddLoader_ConstructFadeController,vote,todo
 0050d190,6,game,m50BF70,GetGlobalState,agent,done
 0050d1a0,143,game,m50D1A0,,,todo
 0050d230,51,game,m50D1A0,MenuSystem_ResetStateFields,agent,done
@@ -6303,7 +6303,7 @@ ea,size,region,module,name,name_src,status
 0050da40,78,game,m50D1A0,MenuSystem_GetTermTransitionScale,agent,done
 0050da90,80,game,m50D1A0,MenuSystem_GetIndexedGlobalFloat,agent,done
 0050daf0,114,game,m50D1A0,MenuSystem_UpdateFrame,agent,done
-0050db70,156,game,m50DB70,,,todo
+0050db70,156,game,m50DB70,SceneLoader_ResetSceneEntries,vote,todo
 0050dc10,20,game,m50DB70,,,todo
 0050dc30,65,game,m50DB70,ApplyFloatToGlobalState,vote,todo
 0050dc80,107,game,m50DB70,MenuManager_SetMenuState,vote,todo
@@ -6336,7 +6336,7 @@ ea,size,region,module,name,name_src,status
 0050e530,90,game,stl,,,todo
 0050e590,29,game,stl,,,todo
 0050e5b0,94,game,stl,,,todo
-0050e610,428,game,m50DDE0,CMenuManager_RefreshBaseText,vote,todo
+0050e610,428,game,m50DDE0,CMenuManager_RegisterScreens,agent,done
 0050e7c0,368,game,m50DDE0,GameBddLoader_PrepareMenuForScene,agent,done
 0050e930,92,game,m50DDE0,MenuManager_SetInnerState,agent,done
 0050e990,49,game,m50DDE0,BddLoader_IsRecordListEmpty,agent,done
@@ -6358,13 +6358,13 @@ ea,size,region,module,name,name_src,status
 0050f6e0,163,game,m50DDE0,,,todo
 0050f790,194,game,m50DDE0,GameBddLoader_DispatchMenuRequest,agent,done
 0050f860,190,game,m50DDE0,GameBddLoader_ShowSaveGameMessage,agent,done
-0050f980,358,game,m50DDE0,,,todo
+0050f980,358,game,m50DDE0,GameBddLoader_InitializeDisplayResources,agent,done
 0050faf0,33,game,m50DDE0,CMenuManager_Destroy,agent,done
 0050fb20,142,game,m50DDE0,BddLoader_RefreshMenuFrame,agent,done
 0050fbb0,28,game,m50DDE0,BddLoader_DestroyRecordRange,agent,done
 0050fbd0,852,game,m50DDE0,,,todo
-0050ff30,122,game,m50DDE0,SceneLoader_PrepareGlobalState,vote,todo
-005101c0,24,game,m50DDE0,,,todo
+0050ff30,122,game,m50DDE0,SceneLoader_PrepareGlobalState,agent,done
+005101c0,24,game,m50DDE0,CMenuManager_TickTransitionState,agent,done
 005101e0,168,game,m50DDE0,CMenuManager_ReleaseMenus,agent,done
 00510290,56,game,m50DDE0,S_0050f230_ReleaseBlockAndClear,agent,done
 005102d0,71,game,m50DDE0,C_00840680_Construct,agent,done
@@ -6387,7 +6387,7 @@ ea,size,region,module,name,name_src,status
 00510760,89,game,stl,InitializeSlotBlock,vote,todo
 005107c0,67,game,m50DDE0,ResetRecordList,agent,done
 00510810,75,game,m50DDE0,BddLoader_ResetStringStorage,agent,done
-00510860,903,game,m50DDE0,CMenuManager_InitBase,vote,todo
+00510860,903,game,m50DDE0,CMenuManager_Construct,agent,done
 00510bf0,842,game,m50DDE0,,,todo
 00510f40,73,game,m50DDE0,C_0086f128_ResetAndAllocateOwnedSubobject,agent,done
 00510f90,89,game,stl,InitOwnedSubobject,vote,todo
@@ -6680,15 +6680,15 @@ ea,size,region,module,name,name_src,status
 0051b2f0,63,game,m519A80,,,todo
 0051b330,114,game,m519A80,,,todo
 0051b3b0,196,game,m519A80,WeatherResources_Refresh,vote,todo
-0051b480,48,game,m519A80,,,todo
+0051b480,48,game,m519A80,GameBddLoader_ConstructMenuController,vote,todo
 0051b4b0,9,game,m519A80,,,todo
-0051b4c0,18,game,m519A80,,,todo
+0051b4c0,18,game,m519A80,GameBddLoader_ConstructMenuState,vote,todo
 0051b4e0,11,game,m519A80,C_00840dac_Cleanup,vote,todo
 0051b4f0,39,game,m519A80,,,todo
 0051b520,141,game,m519A80,,,todo
 0051b5b0,56,game,m519A80,,,todo
 0051b5f0,9,game,m519A80,,,todo
-0051b600,18,game,m519A80,,,todo
+0051b600,18,game,m519A80,GameBddLoader_ConstructMenuEffects,vote,todo
 0051b620,11,game,m519A80,C_008406d0_CleanupBase,vote,todo
 0051b630,39,game,m519A80,,,todo
 0051b660,141,game,m519A80,SceneTable_ClearSlotState,vote,todo
@@ -6696,7 +6696,7 @@ ea,size,region,module,name,name_src,status
 0051b780,283,game,m519A80,,,todo
 0051b8a0,56,game,m519A80,,,todo
 0051b8e0,9,game,m519A80,,,todo
-0051b8f0,28,game,m519A80,,,todo
+0051b8f0,28,game,m519A80,GameBddLoader_ConstructMenuListener,vote,todo
 0051b910,11,game,m519A80,C_00840E0C_Cleanup,vote,todo
 0051b920,39,game,m519A80,,,todo
 0051b950,141,game,m519A80,,,todo
@@ -6710,7 +6710,7 @@ ea,size,region,module,name,name_src,status
 0051bc90,478,game,m519A80,,,todo
 0051be70,50,game,m519A80,,,todo
 0051beb0,106,game,m519A80,,,todo
-0051bf20,29,game,m519A80,,,todo
+0051bf20,29,game,m519A80,GameBddLoader_ConstructMenuTransition,vote,todo
 0051bf40,36,game,stl,,,todo
 0051bf70,64,game,m519A80,,,todo
 0051bfb0,72,game,m519A80,,,todo
@@ -17087,7 +17087,7 @@ ea,size,region,module,name,name_src,status
 00712d30,33,game,m712CC0,,,todo
 00712d60,42,game,m712CC0,,,todo
 00712d90,85,game,m712CC0,MenuControls_ApplyChildIndex,vote,todo
-00712df0,88,game,m712CC0,,,todo
+00712df0,88,game,m712CC0,MenuSystem_ApplyStateFlag,vote,todo
 00712e50,40,game,m712CC0,,,todo
 00712e80,48,game,m712CC0,MenuSystem_AssignDialogPanel,vote,todo
 00712eb0,71,game,m712CC0,,,todo
@@ -19454,7 +19454,7 @@ ea,size,region,module,name,name_src,status
 00773d00,88,game,m771FF0,,,todo
 00773d60,772,game,stl,,,todo
 00774070,172,game,m771FF0,,,todo
-00774120,50,game,m771FF0,,,todo
+00774120,50,game,m771FF0,GameBddLoader_ConstructMenuEventSource,vote,todo
 00774160,96,game,m771FF0,,,todo
 007741c0,43,game,m771FF0,C_00871a18_Teardown_7741C0,vote,todo
 007741f0,555,game,m771FF0,,,todo

@@ -9768,7 +9768,7 @@
   "name": "AssignStringRange_429B60",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_429B60": 85,
+   "AssignStringRange_429B60": 86,
    "MenuSceneSelect_InitializeString": 1
   },
   "ret": "void*",
@@ -10841,7 +10841,7 @@
   "name": "CompareStringSubstring",
   "name_src": "vote",
   "votes": {
-   "CompareStringSubstring": 19
+   "CompareStringSubstring": 20
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -39735,13 +39735,15 @@
   "sig_src": "abi"
  },
  "004a0b10": {
-  "name": "sub_4A0B10",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_PrepareMenuResources",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_PrepareMenuResources": 1
+  },
   "ret": "char",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004a0f00": {
   "name": "GuiControl_GetChildByIndex",
@@ -61038,19 +61040,21 @@
   "sig_src": "abi"
  },
  "004fdad0": {
-  "name": "sub_4FDAD0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_PrepareScenarioSelection",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_PrepareScenarioSelection": 1
+  },
   "ret": "char",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004fdbb0": {
   "name": "GetGlobalValue_8B0568",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8B0568": 53,
+   "GetGlobalValue_8B0568": 55,
    "GetMissionManager": 1
   },
   "ret": "int",
@@ -62021,7 +62025,7 @@
   "name": "GlobalMenu_SetSelectedScenarioName",
   "name_src": "agent",
   "votes": {
-   "GlobalMenu_SetSelectedScenarioName": 2
+   "GlobalMenu_SetSelectedScenarioName": 3
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -64141,22 +64145,26 @@
   "file": "src/auto/0050c410.cpp"
  },
  "0050c450": {
-  "name": "sub_50C450",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_ConfigureDisplayState",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_ConfigureDisplayState": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, unsigned int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0050c580": {
-  "name": "sub_50C580",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_ConstructFader",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_ConstructFader": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0050c630": {
   "name": "CMenuScreenFader_Destroy",
@@ -64315,7 +64323,7 @@
   "name": "MenuManager_TransitionToGameOrIntro",
   "name_src": "agent",
   "votes": {
-   "MenuManager_TransitionToGameOrIntro": 1
+   "MenuManager_TransitionToGameOrIntro": 2
   },
   "ret": "std::uintptr_t",
   "conv": "__fastcall",
@@ -64324,13 +64332,15 @@
   "file": "src/auto/0050ce60.cpp"
  },
  "0050d0a0": {
-  "name": "sub_50D0A0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_ConstructFadeController",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_ConstructFadeController": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0050d190": {
   "name": "GetGlobalState_50D190",
@@ -64555,7 +64565,9 @@
  "0050daf0": {
   "name": "MenuSystem_UpdateFrame",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuSystem_UpdateFrame": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -64563,13 +64575,15 @@
   "file": "src/auto/0050daf0.cpp"
  },
  "0050db70": {
-  "name": "sub_50DB70",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SceneLoader_ResetSceneEntries",
+  "name_src": "vote",
+  "votes": {
+   "SceneLoader_ResetSceneEntries": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0050dc10": {
   "name": "sub_50DC10",
@@ -64913,8 +64927,8 @@
   "sig_src": "abi"
  },
  "0050e610": {
-  "name": "CMenuManager_RefreshBaseText",
-  "name_src": "vote",
+  "name": "CMenuManager_RegisterScreens",
+  "name_src": "agent",
   "votes": {
    "CMenuManager_RefreshBaseText": 1
   },
@@ -64984,7 +64998,9 @@
  "0050eac0": {
   "name": "BddLoader_ApplyLoadedNameAndTransition",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuSystem_ResetTransitionState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -65013,7 +65029,9 @@
  "0050ed40": {
   "name": "GameBddLoader_UpdateFrameTime",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuSystem_HideActivePanels": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -65149,13 +65167,14 @@
   "file": "src/auto/0050f860.cpp"
  },
  "0050f980": {
-  "name": "sub_50F980",
-  "name_src": "addr",
+  "name": "GameBddLoader_InitializeDisplayResources",
+  "name_src": "agent",
   "votes": {},
-  "ret": "unsigned int",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0050f980.cpp"
  },
  "0050faf0": {
   "name": "CMenuManager_Destroy",
@@ -65170,11 +65189,13 @@
  "0050fb20": {
   "name": "BddLoader_RefreshMenuFrame",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "SceneLoader_RefreshPendingState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0050fbb0": {
   "name": "BddLoader_DestroyRecordRange",
@@ -65190,24 +65211,27 @@
  },
  "0050ff30": {
   "name": "SceneLoader_PrepareGlobalState_50FF30",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_PrepareGlobalState": 2,
-   "SceneLoader_PrepareCompletion": 1
+   "SceneLoader_PrepareCompletion": 1,
+   "SceneLoader_PrepareGlobalState_50FF30": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_0050f2f0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0050ff30.cpp"
  },
  "005101c0": {
-  "name": "sub_5101C0",
-  "name_src": "addr",
+  "name": "CMenuManager_TickTransitionState",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "CMenuManager* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/005101c0.cpp"
  },
  "005101e0": {
   "name": "CMenuManager_ReleaseMenus",
@@ -65437,15 +65461,16 @@
   "file": "src/auto/00510810.cpp"
  },
  "00510860": {
-  "name": "CMenuManager_InitBase",
-  "name_src": "vote",
+  "name": "CMenuManager_Construct",
+  "name_src": "agent",
   "votes": {
    "CMenuManager_InitBase": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, char* String1",
-  "sig_src": "vote"
+  "params": "CMenuManager* self, void* , int guiRoot, int , char* scenarioName",
+  "sig_src": "impl",
+  "file": "src/auto/00510860.cpp"
  },
  "00510bf0": {
   "name": "sub_510BF0",
@@ -65501,8 +65526,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00511040.cpp"
  },
  "00511170": {
   "name": "CWeaponDefTable_ResetAndAllocateRecords",
@@ -67382,7 +67408,7 @@
   "name": "GetValue_8B0574",
   "name_src": "agent",
   "votes": {
-   "GetValue_8B0574": 4
+   "GetValue_8B0574": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -68441,13 +68467,15 @@
   "sig_src": "vote"
  },
  "0051b480": {
-  "name": "sub_51B480",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_ConstructMenuController",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_ConstructMenuController": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0051b4b0": {
   "name": "sub_51B4B0",
@@ -68459,13 +68487,15 @@
   "sig_src": "abi"
  },
  "0051b4c0": {
-  "name": "sub_51B4C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_ConstructMenuState",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_ConstructMenuState": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0051b4e0": {
   "name": "C_00840dac_Cleanup",
@@ -68515,13 +68545,15 @@
   "sig_src": "abi"
  },
  "0051b600": {
-  "name": "sub_51B600",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_ConstructMenuEffects",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_ConstructMenuEffects": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0051b620": {
   "name": "C_008406d0_CleanupBase",
@@ -68591,13 +68623,15 @@
   "sig_src": "abi"
  },
  "0051b8f0": {
-  "name": "sub_51B8F0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_ConstructMenuListener",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_ConstructMenuListener": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0051b910": {
   "name": "C_00840E0C_Cleanup",
@@ -68725,13 +68759,15 @@
   "sig_src": "abi"
  },
  "0051bf20": {
-  "name": "sub_51BF20",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_ConstructMenuTransition",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_ConstructMenuTransition": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0051bf40": {
   "name": "sub_51BF40",
@@ -78476,7 +78512,7 @@
   "name": "CMenuSaveGame_ResetStringStorage",
   "name_src": "agent",
   "votes": {
-   "CMenuSaveGame_ResetStringStorage": 10
+   "CMenuSaveGame_ResetStringStorage": 11
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -82660,7 +82696,7 @@
   "name": "DestroyPointerStorage",
   "name_src": "vote",
   "votes": {
-   "DestroyPointerStorage": 14
+   "DestroyPointerStorage": 15
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -88886,11 +88922,13 @@
  "00586860": {
   "name": "RtRandomSeed",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RtRandomSeed": 1
+  },
   "ret": "unsigned int",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00586970": {
   "name": "sub_586970",
@@ -113143,7 +113181,7 @@
   "name": "LookupObjectById",
   "name_src": "vote",
   "votes": {
-   "LookupObjectById": 49
+   "LookupObjectById": 52
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -129827,7 +129865,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 297,
+   "Mem_FreeDebug": 299,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -129917,7 +129955,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 174
+   "Mem_Alloc": 175
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -129928,7 +129966,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 350
+   "Mem_Free": 351
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -133517,7 +133555,7 @@
   "name": "SceneLoader_CreateLoadTimer",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_CreateLoadTimer": 2,
+   "SceneLoader_CreateLoadTimer": 3,
    "SceneLoader_CreateLoadScope": 1
   },
   "ret": "uint8_t*",
@@ -137648,7 +137686,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 163,
+   "GetGlobalInt": 166,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -137661,7 +137699,7 @@
   "name": "MenuControls_ResolveObject",
   "name_src": "vote",
   "votes": {
-   "MenuControls_ResolveObject": 26
+   "MenuControls_ResolveObject": 28
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -143392,7 +143430,7 @@
   "name": "GetGlobalValue_6C5760",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_6C5760": 11
+   "GetGlobalValue_6C5760": 12
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -143494,7 +143532,9 @@
  "006c59e0": {
   "name": "GfxSkin_ResetSkinState",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxSkin_ResetSkinState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -143504,7 +143544,9 @@
  "006c5a30": {
   "name": "ClearFlagF4",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ClearFlagF4": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "uint8_t* self, void*",
@@ -160977,7 +161019,7 @@
   "name": "GetGlobalValue_70DDE0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_70DDE0": 37
+   "GetGlobalValue_70DDE0": 38
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -162572,13 +162614,15 @@
   "sig_src": "vote"
  },
  "00712df0": {
-  "name": "sub_712DF0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "MenuSystem_ApplyStateFlag",
+  "name_src": "vote",
+  "votes": {
+   "MenuSystem_ApplyStateFlag": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00712e50": {
   "name": "sub_712E50",
@@ -165278,7 +165322,9 @@
  "0071aa00": {
   "name": "UpdateEntriesFromMatchingId",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "UpdateEntriesFromMatchingId": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -165288,7 +165334,9 @@
  "0071aa80": {
   "name": "InvokeTrailingEntryCallbacks_71AA80",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "InvokeTrailingEntryCallbacks_71AA80": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -165298,7 +165346,9 @@
  "0071aac0": {
   "name": "InvokeTrailingEntryCallbacks_71AAC0",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "InvokeTrailingEntryCallbacks_71AAC0": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -182043,7 +182093,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 123,
+   "GetGlobalValue_8BC1E0": 125,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
@@ -186008,13 +186058,15 @@
   "sig_src": "abi"
  },
  "00774120": {
-  "name": "sub_774120",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "GameBddLoader_ConstructMenuEventSource",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_ConstructMenuEventSource": 1
+  },
+  "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00774160": {
   "name": "sub_774160",
