@@ -6,12 +6,12 @@
 - {addr: 0x0082D208, name: g_SetThreadPriorityIat, type: void*, uses: 2, src: auto, alt: [g_pfnSetThreadPriority]}
 - {addr: 0x0082D20C, name: g_pfnWaitForSingleObject, type: WaitForSingleObjectFn, uses: 3, src: auto, alt: [g_pWaitForSingleObject]}
 - {addr: 0x0082D23C, name: g_ReleaseMutex, type: ReleaseMutexFunction, uses: 1, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 30, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 35, src: auto}
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 1, src: auto}
-- {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 8, src: auto, alt: [g_flt_82D4C4]}
+- {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 9, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 20, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 27, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 3, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: double, uses: 1, src: auto}
 - {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 57, src: auto, alt: [g_MissionUnsignedIntegerBias]}
@@ -22,7 +22,7 @@
 - {addr: 0x0082DD68, name: g_PreviewTopScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082DD74, name: g_ContextualDistanceScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082DDEC, name: g_Const200_0f, type: float, uses: 3, src: auto}
-- {addr: 0x0082DFCC, name: g_MessageBoxCollapsedScale, type: float, uses: 3, src: auto}
+- {addr: 0x0082DFCC, name: g_MessageBoxCollapsedScale, type: float, uses: 4, src: auto, alt: [g_PlaneSideUpperThreshold]}
 - {addr: 0x0082E030, name: g_fReturnedConstant_0082E030, type: float, uses: 3, src: auto}
 - {addr: 0x0082E038, name: g_ScaleY_0_6, type: float, uses: 1, src: auto}
 - {addr: 0x0082E03C, name: g_ProgressScale, type: float, uses: 7, src: auto}
@@ -55,6 +55,8 @@
 - {addr: 0x00830670, name: g_DegreesToRadians, type: float, uses: 2, src: auto, alt: [g_HudDegreesToRadians]}
 - {addr: 0x00830674, name: g_fEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x00830A00, name: g_fInv255, type: float, uses: 2, src: opus}
+- {addr: 0x00830D04, name: g_FullRotationDegrees, type: float, uses: 1, src: auto}
+- {addr: 0x00830D08, name: g_PositiveHalfRotationDegrees, type: float, uses: 1, src: auto}
 - {addr: 0x00831090, name: g_FloatMax, type: float, uses: 8, src: auto}
 - {addr: 0x0083126C, name: g_RadiansToDegrees, type: float, uses: 1, src: auto}
 - {addr: 0x00831270, name: g_MinimumSquaredDistance, type: float, uses: 1, src: auto}
@@ -90,6 +92,7 @@
 - {addr: 0x0083688C, name: g_szLanzarGranadaName, type: char, uses: 1, src: auto}
 - {addr: 0x00836D7C, name: g_TRodearString, type: char, uses: 1, src: auto}
 - {addr: 0x0083BB14, name: g_ListenerOffsetScale_83BB14, type: float, uses: 1, src: auto}
+- {addr: 0x0083F18C, name: g_NegativeHalfRotationDegrees, type: float, uses: 1, src: auto}
 - {addr: 0x0083F4B4, name: g_SceneDegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x0084004C, name: g_CMenuScreenFaderVtbl, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008405DC, name: g_FrameInsetScale, type: float, uses: 1, src: auto}
@@ -131,10 +134,16 @@
 - {addr: 0x00845780, name: g_ClearField0010Slot, type: void*, uses: 1, src: auto}
 - {addr: 0x00845B38, name: g_MenuAccountsPostInitialize, type: void*, uses: 1, src: auto}
 - {addr: 0x00845C30, name: g_ClearField0010Slot, type: ClearFieldMethod, uses: 1, src: auto}
+- {addr: 0x00846170, name: g_PlaneSideLowerThreshold, type: float, uses: 1, src: auto}
 - {addr: 0x00846178, name: g_UnitFactorUpperBound, type: float, uses: 1, src: auto}
 - {addr: 0x0085E684, name: g_NumberFormattingMode, type: int, uses: 5, src: auto, alt: [g_MissionNumberFormattingMode]}
 - {addr: 0x0085FF6C, name: g_Commandos3DGameGatheringVtable, type: void*, uses: 1, src: auto}
 - {addr: 0x0085FF90, name: g_ResourceDescriptorVtable, type: 'std::uint32_t', uses: 1, src: auto}
+- {addr: 0x00860070, name: g_BoxIntersectionEpsilon, type: float, uses: 1, src: auto}
+- {addr: 0x0086008C, name: g_RadiansToDegreesFactor, type: const float, uses: 1, src: auto}
+- {addr: 0x00860090, name: g_BasisDegeneracyThreshold, type: float, uses: 3, src: auto, alt: [g_EulerSingularityThreshold, g_MinimumAxisCrossLength]}
+- {addr: 0x0086009C, name: g_MatrixNearZeroEpsilon, type: float, uses: 1, src: auto}
+- {addr: 0x008600B0, name: g_DegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x00860178, name: g_C_00860178_vtable, type: void*, uses: 1, src: auto}
 - {addr: 0x008608A8, name: g_Value1e8, type: float, uses: 1, src: auto}
 - {addr: 0x00860DAC, name: g_PreviewCameraAngleBits, type: 'std::uint32_t', uses: 1, src: auto}

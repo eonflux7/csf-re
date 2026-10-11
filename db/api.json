@@ -405,7 +405,7 @@
   "name": "InitS00402350Object",
   "name_src": "vote",
   "votes": {
-   "InitS00402350Object": 1
+   "InitS00402350Object": 2
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -3479,13 +3479,15 @@
   "sig_src": "abi"
  },
  "0040fb20": {
-  "name": "sub_40FB20",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxMatrix_AreVectorsDifferent",
+  "name_src": "vote",
+  "votes": {
+   "GfxMatrix_AreVectorsDifferent": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0040fb60": {
   "name": "BuildQuerySegment",
@@ -4000,13 +4002,15 @@
   "sig_src": "abi"
  },
  "00411fb0": {
-  "name": "sub_411FB0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxMatrix_ComputeInverseSine",
+  "name_src": "vote",
+  "votes": {
+   "GfxMatrix_ComputeInverseSine": 1
+  },
   "ret": "double",
   "conv": "__cdecl",
   "params": "float a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00412000": {
   "name": "sub_412000",
@@ -65631,8 +65635,8 @@
   "sig_src": "abi"
  },
  "00521d60": {
-  "name": "sub_521D60",
-  "name_src": "addr",
+  "name": "AudioSoundManager_SetPositiveFlagAndForward",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
@@ -65714,8 +65718,8 @@
   "file": "src/auto/00521e30.cpp"
  },
  "00521e80": {
-  "name": "GlobalMenu_BeginSelectionUpdate",
-  "name_src": "vote",
+  "name": "AudioSoundManager_ForwardToCurrentIfQuerySucceeds",
+  "name_src": "agent",
   "votes": {
    "GlobalMenu_BeginSelectionUpdate": 2
   },
@@ -66116,8 +66120,8 @@
   "file": "src/auto/00523660.cpp"
  },
  "00523760": {
-  "name": "sub_523760",
-  "name_src": "addr",
+  "name": "C_00840ff0_CallSlot2CAndForwardSlot60",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -67214,8 +67218,8 @@
   "sig_src": "abi"
  },
  "00527510": {
-  "name": "sub_527510",
-  "name_src": "addr",
+  "name": "CSoundInstance_ResetField64AndForwardSlot60",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -99117,11 +99121,13 @@
  "00623040": {
   "name": "RwV3dTransformPoints",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwV3dTransformPoints": 5
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2, int a3, int a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00623070": {
   "name": "RwV3dTransformVector",
@@ -99136,7 +99142,7 @@
   "name": "RwV3dTransformVectors",
   "name_src": "rwname",
   "votes": {
-   "RwV3dTransformVectors": 1
+   "RwV3dTransformVectors": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -99480,20 +99486,24 @@
  "00624620": {
   "name": "RwMatrixUpdate",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwMatrixUpdate": 6
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00624630": {
   "name": "RwMatrixMultiply",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwMatrixMultiply": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006246a0": {
   "name": "RwMatrixOrthoNormalize",
@@ -99507,47 +99517,57 @@
  "006246c0": {
   "name": "RwMatrixRotateOneMinusCosineSine",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwMatrixRotateOneMinusCosineSine": 3
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "uint32_t* a1, float* a2, float a3, float a4, int a5",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006248b0": {
   "name": "RwMatrixRotate",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwMatrixRotate": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "uint32_t* a1, float* a2, float a3, int a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00624950": {
   "name": "RwMatrixInvert",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwMatrixInvert": 2
+  },
   "ret": "float*",
   "conv": "__cdecl",
   "params": "float* a1, float* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006249a0": {
   "name": "RwMatrixScale",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwMatrixScale": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, float* a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00624b30": {
   "name": "RwMatrixTranslate",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwMatrixTranslate": 3
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, float* a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00624c70": {
   "name": "RwMatrixTransform",
@@ -99562,7 +99582,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 19
+   "RwMatrixDestroy": 24
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -99573,7 +99593,7 @@
   "name": "RwMatrixCreate",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixCreate": 10
+   "RwMatrixCreate": 15
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -131399,7 +131419,7 @@
   "name": "NormalizeVector3",
   "name_src": "vote",
   "votes": {
-   "NormalizeVector3": 3,
+   "NormalizeVector3": 7,
    "NormalizeVector": 1
   },
   "ret": "float*",
@@ -131419,624 +131439,714 @@
   "sig_src": "vote"
  },
  "006ab9e0": {
-  "name": "sub_6AB9E0",
-  "name_src": "addr",
+  "name": "S_00526d40_NormalizeCopyAndReportY",
+  "name_src": "agent",
   "votes": {},
-  "ret": "void",
+  "ret": "double",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_00526d40* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006ab9e0.cpp"
  },
  "006aba10": {
   "name": "Vector_ConvertDirection",
   "name_src": "vote",
   "votes": {
-   "Vector_ConvertDirection": 1
+   "Vector_ConvertDirection": 4
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "vote"
+  "params": "S_00526d40* self, void* , uint32_t* output",
+  "sig_src": "impl",
+  "file": "src/auto/006aba10.cpp"
  },
  "006abaa0": {
-  "name": "sub_6ABAA0",
-  "name_src": "addr",
+  "name": "GfxMatrix_SetBoundsAndDefaultAxes",
+  "name_src": "agent",
   "votes": {},
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2, float a3, float a4, float a5, float a6, float a7",
-  "sig_src": "abi"
+  "params": "char* self, void* , float maxX, float minX, float maxY, float minY, float maxZ, float minZ",
+  "sig_src": "impl",
+  "file": "src/auto/006abaa0.cpp"
  },
  "006abb80": {
-  "name": "sub_6ABB80",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_006abb80_InitializeBounds",
+  "name_src": "agent",
+  "votes": {
+   "S_006abb80_SetBounds": 1,
+   "S_006abb80_SetAxisBounds": 1
+  },
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2, float a3, float a4, float a5, float a6, float a7",
-  "sig_src": "abi"
+  "params": "S_006abb80* self, void* , float xFirst, float xSecond, float yFirst, float ySecond, float zFirst, float zSecond",
+  "sig_src": "impl",
+  "file": "src/auto/006abb80.cpp"
  },
  "006abc40": {
-  "name": "sub_6ABC40",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_006abb80_WriteBoxCorners",
+  "name_src": "agent",
+  "votes": {
+   "S_006abb80_GetCornerPoints": 1
+  },
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "params": "S_006abb80* self, void* , float* corners",
+  "sig_src": "impl",
+  "file": "src/auto/006abc40.cpp"
  },
  "006abf10": {
-  "name": "sub_6ABF10",
-  "name_src": "addr",
+  "name": "GfxMatrix_TransformBasisAndPosition",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int* a2",
-  "sig_src": "abi"
+  "params": "std::uint32_t* self, void* , std::uint32_t* matrix",
+  "sig_src": "impl",
+  "file": "src/auto/006abf10.cpp"
  },
  "006ac000": {
-  "name": "sub_6AC000",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_006abb80_ComputeAxisAlignedBounds",
+  "name_src": "agent",
+  "votes": {
+   "S_006abb80_GetBounds": 1,
+   "S_006abb80_GetAxisBounds": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2, float* a3, float* a4, float* a5, float* a6, float* a7",
-  "sig_src": "abi"
+  "params": "S_006abb80* self, void* , float* maxX, float* minX, float* maxY, float* minY, float* maxZ, float* minZ",
+  "sig_src": "impl",
+  "file": "src/auto/006ac000.cpp"
  },
  "006ac400": {
-  "name": "sub_6AC400",
-  "name_src": "addr",
+  "name": "GfxMatrix_TransformFrame",
+  "name_src": "agent",
   "votes": {},
-  "ret": "void*",
+  "ret": "S_00402350*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2, int* a3",
-  "sig_src": "abi"
+  "params": "uint32_t* self, void* , S_00402350* output, int* matrix",
+  "sig_src": "impl",
+  "file": "src/auto/006ac400.cpp"
  },
  "006ac530": {
-  "name": "sub_6AC530",
-  "name_src": "addr",
+  "name": "GfxMatrix_GetBoundingSphere",
+  "name_src": "agent",
   "votes": {},
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "params": "float* self, void* , float* output",
+  "sig_src": "impl",
+  "file": "src/auto/006ac530.cpp"
  },
  "006ac5e0": {
-  "name": "sub_6AC5E0",
-  "name_src": "addr",
+  "name": "S_006abb80_ExpandBounds",
+  "name_src": "agent",
   "votes": {},
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "S_006abb80* self, void* , S_006abb80* other",
+  "sig_src": "impl",
+  "file": "src/auto/006ac5e0.cpp"
  },
  "006ac6d0": {
-  "name": "sub_6AC6D0",
-  "name_src": "addr",
+  "name": "S_006abb80_IncludePointInBounds",
+  "name_src": "agent",
   "votes": {},
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "params": "S_006abb80* self, void* , float* point",
+  "sig_src": "impl",
+  "file": "src/auto/006ac6d0.cpp"
  },
  "006ac7b0": {
-  "name": "sub_6AC7B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxMatrix_ProcessValueAndPointer",
+  "name_src": "vote",
+  "votes": {
+   "GfxMatrix_ProcessValueAndPointer": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, float* a3",
-  "sig_src": "abi"
+  "params": "S_006ac7b0* self, void* , int sphere, float* squaredDistance",
+  "sig_src": "impl",
+  "file": "src/auto/006ac7b0.cpp"
  },
  "006ac9a0": {
   "name": "Bounds_ContainsPoint",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "Bounds_ContainsPoint": 1
   },
-  "ret": "char",
+  "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "vote"
+  "params": "uint8_t* self, void* , float* point",
+  "sig_src": "impl",
+  "file": "src/auto/006ac9a0.cpp"
  },
  "006aca20": {
-  "name": "sub_6ACA20",
-  "name_src": "addr",
+  "name": "GfxMatrix_ForwardValueWithAddress",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/006aca20.cpp"
  },
  "006aca40": {
-  "name": "sub_6ACA40",
-  "name_src": "addr",
+  "name": "GfxMatrix_RayIntersectsSphere",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "params": "float* self, void* , float* sphere",
+  "sig_src": "impl",
+  "file": "src/auto/006aca40.cpp"
  },
  "006acb20": {
-  "name": "sub_6ACB20",
-  "name_src": "addr",
+  "name": "S_00402350_IntersectOrientedBox",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, float* a3, float* a4",
-  "sig_src": "abi"
+  "params": "S_00402350* self, void* , const void* box, float* firstDistance, float* secondDistance",
+  "sig_src": "impl",
+  "file": "src/auto/006acb20.cpp"
  },
  "006accd0": {
-  "name": "sub_6ACCD0",
-  "name_src": "addr",
+  "name": "S_00526d40_IntersectPlane",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, float* a3",
-  "sig_src": "abi"
+  "params": "S_00526d40* self, void* , int planeAddress, float* intersection",
+  "sig_src": "impl",
+  "file": "src/auto/006accd0.cpp"
  },
  "006acdf0": {
-  "name": "Geometry_IntersectRaySphere",
-  "name_src": "vote",
+  "name": "GfxMatrix_IntersectRaySphere_6ACDF0",
+  "name_src": "agent",
   "votes": {
    "Geometry_IntersectRaySphere": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2, float* a3, float* a4",
-  "sig_src": "vote"
+  "params": "float* self, void* , float* sphere, float* nearDistance, float* farDistance",
+  "sig_src": "impl",
+  "file": "src/auto/006acdf0.cpp"
  },
  "006acf20": {
-  "name": "sub_6ACF20",
-  "name_src": "addr",
+  "name": "GfxMatrix_IntersectRaySphere_6ACF20",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2, float* a3, float* a4",
-  "sig_src": "abi"
+  "params": "float* self, void* , float* sphere, float* firstHit, float* secondHit",
+  "sig_src": "impl",
+  "file": "src/auto/006acf20.cpp"
  },
  "006ad120": {
-  "name": "sub_6AD120",
-  "name_src": "addr",
+  "name": "GfxMatrix_IsPointInsideTriangle_6AD120",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__cdecl",
-  "params": "float* a1, float* a2, float* a3, float* a4",
-  "sig_src": "abi"
+  "params": "float* point, float* vertexB, float* vertexC, float* vertexD",
+  "sig_src": "impl",
+  "file": "src/auto/006ad120.cpp"
  },
  "006ad1d0": {
-  "name": "sub_6AD1D0",
-  "name_src": "addr",
+  "name": "GfxMatrix_IsPointInsideTriangle_6AD1D0",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__cdecl",
-  "params": "float* a1, float* a2, float* a3, float* a4",
-  "sig_src": "abi"
+  "params": "float* point, float* vertexB, float* vertexC, float* vertexD",
+  "sig_src": "impl",
+  "file": "src/auto/006ad1d0.cpp"
  },
  "006ad320": {
-  "name": "sub_6AD320",
-  "name_src": "addr",
+  "name": "GfxMatrix_FindClosestPointOnTriangleEdges",
+  "name_src": "impl",
   "votes": {},
   "ret": "float*",
   "conv": "__cdecl",
-  "params": "float* a1, float* a2, int* a3, float* a4",
-  "sig_src": "abi"
+  "params": "float* result, float* point, float* vertexA, float* vertexB, float* vertexC",
+  "sig_src": "impl",
+  "file": "src/auto/006ad320.cpp"
  },
  "006ad4a0": {
-  "name": "sub_6AD4A0",
-  "name_src": "addr",
+  "name": "GfxMatrix_CalculateTriangleArea",
+  "name_src": "agent",
   "votes": {},
-  "ret": "double",
+  "ret": "long double",
   "conv": "__cdecl",
-  "params": "float* a1, float* a2, float* a3",
-  "sig_src": "abi"
+  "params": "float* a, float* b, float* c",
+  "sig_src": "impl",
+  "file": "src/auto/006ad4a0.cpp"
  },
  "006ad550": {
-  "name": "sub_6AD550",
-  "name_src": "addr",
+  "name": "GfxMatrix_ClosestPointOnOrientedBox",
+  "name_src": "agent",
   "votes": {},
   "ret": "float*",
   "conv": "__cdecl",
-  "params": "float* a1, int arg4, float* a5",
-  "sig_src": "abi"
+  "params": "float* result, int point, float* box",
+  "sig_src": "impl",
+  "file": "src/auto/006ad550.cpp"
  },
  "006ad7b0": {
-  "name": "sub_6AD7B0",
-  "name_src": "addr",
+  "name": "GfxMatrix_ClassifyPointAgainstPlane",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "params": "float* self, void* , float* point",
+  "sig_src": "impl",
+  "file": "src/auto/006ad7b0.cpp"
  },
  "006ad830": {
-  "name": "sub_6AD830",
-  "name_src": "addr",
+  "name": "S_00526d40_ProjectPointToPlane",
+  "name_src": "agent",
   "votes": {},
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2, float* a3",
-  "sig_src": "abi"
+  "params": "S_00526d40* self, void* , float* a2, float* a3",
+  "sig_src": "impl",
+  "file": "src/auto/006ad830.cpp"
  },
  "006ad8c0": {
-  "name": "sub_6AD8C0",
-  "name_src": "addr",
+  "name": "GfxPlane_RayIntersectionT",
+  "name_src": "agent",
   "votes": {},
   "ret": "double",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2, float* a3",
-  "sig_src": "abi"
+  "params": "float* self, void* , float* rayOrigin, float* rayDirection",
+  "sig_src": "impl",
+  "file": "src/auto/006ad8c0.cpp"
  },
  "006ad950": {
-  "name": "sub_6AD950",
-  "name_src": "addr",
+  "name": "GfxMatrix_CopyVec3AndUpdate",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "uint32_t* self, void* , uint32_t* src",
+  "sig_src": "impl",
+  "file": "src/auto/006ad950.cpp"
  },
  "006ad980": {
-  "name": "sub_6AD980",
-  "name_src": "addr",
+  "name": "GfxMatrix_SetTranslationAndUpdate",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , const uint32_t* src",
+  "sig_src": "impl",
+  "file": "src/auto/006ad980.cpp"
  },
  "006ad9b0": {
-  "name": "sub_6AD9B0",
-  "name_src": "addr",
+  "name": "GfxMatrix_SetScaleAndUpdate",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , const uint32_t* src",
+  "sig_src": "impl",
+  "file": "src/auto/006ad9b0.cpp"
  },
  "006ad9e0": {
-  "name": "SceneLoader_SetMatrixTranslation",
-  "name_src": "vote",
+  "name": "GfxMatrix_CopyTranslationAndUpdate",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_SetMatrixTranslation": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , const uint32_t* src",
+  "sig_src": "impl",
+  "file": "src/auto/006ad9e0.cpp"
  },
  "006ada10": {
-  "name": "sub_6ADA10",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxMatrix_SetFourRowsAndUpdate",
+  "name_src": "agent",
+  "votes": {
+   "GfxMatrix_SetFourRowsAndUpdate": 1,
+   "GfxMatrix_SetBasisAndPosition": 1,
+   "GfxMatrix_ApplyAxisTransform": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, uint32_t* a3, uint32_t* a4, uint32_t* a5",
-  "sig_src": "abi"
+  "params": "S_006ada10* self, void* , uint32_t* a2, uint32_t* a3, uint32_t* a4, uint32_t* a5",
+  "sig_src": "impl",
+  "file": "src/auto/006ada10.cpp"
  },
  "006ada90": {
-  "name": "sub_6ADA90",
-  "name_src": "addr",
+  "name": "GfxMatrix_ForwardSplitBlocks",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "S_006ada10* self, void* , uint32_t* a2",
+  "sig_src": "impl",
+  "file": "src/auto/006ada90.cpp"
  },
  "006adb10": {
-  "name": "sub_6ADB10",
-  "name_src": "addr",
+  "name": "GfxMatrix_InvertInPlace",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void** self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006adb10.cpp"
  },
  "006adb40": {
-  "name": "sub_6ADB40",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Matrix_InvertWithStoredTarget",
+  "name_src": "agent",
+  "votes": {
+   "Matrix_InvertWithStoredTarget": 1,
+   "S006adb40_ComputeMatrix": 1
+  },
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void** a2",
-  "sig_src": "abi"
+  "params": "S_006adb40* self, void* , float** a2",
+  "sig_src": "impl",
+  "file": "src/auto/006adb40.cpp"
  },
  "006adb60": {
-  "name": "ScaleMatrix",
-  "name_src": "vote",
+  "name": "GfxMatrix_Scale",
+  "name_src": "agent",
   "votes": {
    "ScaleMatrix": 2
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t x, uint32_t y, uint32_t z",
-  "sig_src": "vote"
+  "params": "void* self, void* , int a2, int a3, int a4",
+  "sig_src": "impl",
+  "file": "src/auto/006adb60.cpp"
  },
  "006adb90": {
-  "name": "sub_6ADB90",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxMatrix_TranslateFrameByOffset",
+  "name_src": "agent",
+  "votes": {
+   "GfxMatrix_TranslateFrameByOffset": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "params": "uint32_t* self, void* , int offset",
+  "sig_src": "impl",
+  "file": "src/auto/006adb90.cpp"
  },
  "006adbb0": {
-  "name": "TranslateMatrixHandle",
-  "name_src": "vote",
+  "name": "GfxMatrix_Translate",
+  "name_src": "agent",
   "votes": {
    "TranslateMatrixHandle": 4
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float x, float y, float z",
-  "sig_src": "vote"
+  "params": "void* self, void* , int a2, int a3, int a4",
+  "sig_src": "impl",
+  "file": "src/auto/006adbb0.cpp"
  },
  "006adbe0": {
-  "name": "sub_6ADBE0",
-  "name_src": "addr",
+  "name": "GfxMatrix_RotateZAxisRadians",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2, float a3",
-  "sig_src": "abi"
+  "params": "int* self, void* , int a2, float a3",
+  "sig_src": "impl",
+  "file": "src/auto/006adbe0.cpp"
  },
  "006adc10": {
-  "name": "sub_6ADC10",
-  "name_src": "addr",
+  "name": "GfxMatrix_ResetAndTranslate",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/006adc10.cpp"
  },
  "006adc80": {
-  "name": "sub_6ADC80",
-  "name_src": "addr",
+  "name": "GfxMatrix_AreTransformsDifferent",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void** a2",
-  "sig_src": "abi"
+  "params": "float** self, void* , float** other",
+  "sig_src": "impl",
+  "file": "src/auto/006adc80.cpp"
  },
  "006add20": {
-  "name": "sub_6ADD20",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_006add20_SetMatrixSlot",
+  "name_src": "agent",
+  "votes": {
+   "S_006add20_SetAxis": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "S_006add20* self, void* , int mode, uint32_t* values",
+  "sig_src": "impl",
+  "file": "src/auto/006add20.cpp"
  },
  "006add90": {
-  "name": "sub_6ADD90",
-  "name_src": "addr",
+  "name": "GfxMatrix_BuildDirectionBasis",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "void* a1, float* a2, float* a3, int a4",
-  "sig_src": "abi"
+  "params": "S_00526d40* source, float* direction, float* perpendicular, int outputAddress",
+  "sig_src": "impl",
+  "file": "src/auto/006add90.cpp"
  },
  "006adf00": {
-  "name": "sub_6ADF00",
-  "name_src": "addr",
+  "name": "GfxMatrix_ExtractAndApplyTransform",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "S_006ada10* self, void* , void* sourceData",
+  "sig_src": "impl",
+  "file": "src/auto/006adf00.cpp"
  },
  "006adfa0": {
-  "name": "OrientMatrixAlongVector",
-  "name_src": "vote",
+  "name": "GfxMatrix_OrientAlongVector",
+  "name_src": "agent",
   "votes": {
    "OrientMatrixAlongVector": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "vote"
+  "params": "S_006ada10* self, void* , void* sourceData",
+  "sig_src": "impl",
+  "file": "src/auto/006adfa0.cpp"
  },
  "006ae040": {
-  "name": "sub_6AE040",
-  "name_src": "addr",
+  "name": "S_006add20_AlignAxesToDirection",
+  "name_src": "impl",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, float* a4, float* a5",
-  "sig_src": "abi"
+  "params": "S_006add20* self, void* , int fixedAxis, int alignedAxis, float* point, float* origin",
+  "sig_src": "impl",
+  "file": "src/auto/006ae040.cpp"
  },
  "006ae190": {
-  "name": "sub_6AE190",
-  "name_src": "addr",
+  "name": "GfxMatrix_RotateAroundAxisX",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "int* self, void* , float angle",
+  "sig_src": "impl",
+  "file": "src/auto/006ae190.cpp"
  },
  "006ae1d0": {
-  "name": "RotateMatrixAroundY",
-  "name_src": "vote",
+  "name": "GfxMatrix_RotateAroundAxisY",
+  "name_src": "agent",
   "votes": {
    "RotateMatrixAroundY": 1
   },
-  "ret": "uint32_t*",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "vote"
+  "params": "int* self, void* , float angle",
+  "sig_src": "impl",
+  "file": "src/auto/006ae1d0.cpp"
  },
  "006ae210": {
-  "name": "RotateMatrixHandle",
-  "name_src": "vote",
+  "name": "GfxMatrix_RotateAroundAxisZ",
+  "name_src": "agent",
   "votes": {
    "RotateMatrixHandle": 4
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float radians",
-  "sig_src": "vote"
+  "params": "int* self, void* , float angle",
+  "sig_src": "impl",
+  "file": "src/auto/006ae210.cpp"
  },
  "006ae250": {
-  "name": "sub_6AE250",
-  "name_src": "addr",
+  "name": "GfxMatrix_SetRotationAroundX",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "S_006ada10* self, void* , float angle",
+  "sig_src": "impl",
+  "file": "src/auto/006ae250.cpp"
  },
  "006ae2a0": {
-  "name": "sub_6AE2A0",
-  "name_src": "addr",
+  "name": "GfxMatrix_SetYRotation",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "S_006ada10* self, void* , float angle",
+  "sig_src": "impl",
+  "file": "src/auto/006ae2a0.cpp"
  },
  "006ae2f0": {
-  "name": "SceneLoader_SetMatrixRotation",
-  "name_src": "vote",
+  "name": "S_006ada10_SetRotation",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_SetMatrixRotation": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2, float a3, float a4",
-  "sig_src": "vote"
+  "params": "S_006ada10* self, void* , float angleX, float angleY, float angleZ",
+  "sig_src": "impl",
+  "file": "src/auto/006ae2f0.cpp"
  },
  "006ae3a0": {
-  "name": "GetMatrixEulerAngles",
-  "name_src": "vote",
+  "name": "GfxMatrix_GetEulerAngles",
+  "name_src": "agent",
   "votes": {
    "GetMatrixEulerAngles": 2
   },
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "vote"
+  "params": "float** self, void* , float* angles",
+  "sig_src": "impl",
+  "file": "src/auto/006ae3a0.cpp"
  },
  "006ae460": {
-  "name": "sub_6AE460",
-  "name_src": "addr",
+  "name": "GfxMatrix_ForwardVec3AtOffset30",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, float* a4",
-  "sig_src": "abi"
+  "params": "S_006add20* self, void* , int a2, int a3, float* a4",
+  "sig_src": "impl",
+  "file": "src/auto/006ae460.cpp"
  },
  "006ae4a0": {
-  "name": "sub_6AE4A0",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "double",
+  "name": "ComputeTransformedRadialDistance",
+  "name_src": "agent",
+  "votes": {
+   "ComputeMatrixScalarValue": 1
+  },
+  "ret": "float",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_006adb40* self, void* , int pointAddr",
+  "sig_src": "impl",
+  "file": "src/auto/006ae4a0.cpp"
  },
  "006ae540": {
-  "name": "sub_6AE540",
-  "name_src": "addr",
+  "name": "IsMatrixScalarNearZero",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_006adb40* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/006ae540.cpp"
  },
  "006ae570": {
-  "name": "sub_6AE570",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_006ae570_NormalizeAngles",
+  "name_src": "agent",
+  "votes": {
+   "Rotation_RebuildMatrix": 2
+  },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_006ae570* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006ae570.cpp"
  },
  "006ae640": {
-  "name": "EulerAnglesToDirection",
-  "name_src": "vote",
+  "name": "GfxMatrix_EulerAnglesToDirection",
+  "name_src": "agent",
   "votes": {
    "EulerAnglesToDirection": 4
   },
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "vote"
+  "params": "float* self, void* , float* out",
+  "sig_src": "impl",
+  "file": "src/auto/006ae640.cpp"
  },
  "006ae690": {
-  "name": "AddPitchAngle",
-  "name_src": "vote",
+  "name": "Matrix_AddPitchAngle",
+  "name_src": "agent",
   "votes": {
    "AddPitchAngle": 1,
    "Rotation_ApplyPitchDelta": 1
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "vote"
+  "params": "S_006ae570* self, void* , float pitchDelta",
+  "sig_src": "impl",
+  "file": "src/auto/006ae690.cpp"
  },
  "006ae6b0": {
   "name": "Rotation_ApplyYawDelta",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "Rotation_ApplyYawDelta": 1
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "vote"
+  "params": "S_006ae570* self, void* , float yawDelta",
+  "sig_src": "impl",
+  "file": "src/auto/006ae6b0.cpp"
  },
  "006ae6d0": {
-  "name": "InitializeQuaternion",
-  "name_src": "vote",
+  "name": "GfxMatrix_InitializeQuaternion",
+  "name_src": "agent",
   "votes": {
    "InitializeQuaternion": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "uint32_t* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006ae6d0.cpp"
  },
  "006ae6f0": {
-  "name": "CreateQuaternionMatrix",
-  "name_src": "vote",
+  "name": "GfxMatrix_CreateQuaternionMatrix",
+  "name_src": "agent",
   "votes": {
    "CreateQuaternionMatrix": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int arg0",
-  "sig_src": "vote"
+  "params": "float* self, void* , int outputAddress",
+  "sig_src": "impl",
+  "file": "src/auto/006ae6f0.cpp"
  },
  "006ae830": {
-  "name": "sub_6AE830",
-  "name_src": "addr",
+  "name": "GfxMatrix_MultiplyQuaternionInPlace",
+  "name_src": "agent",
   "votes": {},
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "params": "float* self, void* , float* a2",
+  "sig_src": "impl",
+  "file": "src/auto/006ae830.cpp"
  },
  "006ae8c0": {
-  "name": "sub_6AE8C0",
-  "name_src": "addr",
+  "name": "GfxMatrix_SetQuaternionFromAxisAngle",
+  "name_src": "agent",
   "votes": {},
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2, float a3",
-  "sig_src": "abi"
+  "params": "float* self, void* , S_00526d40* axis, float angle",
+  "sig_src": "impl",
+  "file": "src/auto/006ae8c0.cpp"
  },
  "006ae970": {
-  "name": "SetQuaternionAxisAngle",
-  "name_src": "vote",
+  "name": "GfxMatrix_SetQuaternionAxisAngle",
+  "name_src": "agent",
   "votes": {
    "SetQuaternionAxisAngle": 1
   },
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2, float a3",
-  "sig_src": "vote"
+  "params": "float* self, void* , S_00526d40* axis, float angle",
+  "sig_src": "impl",
+  "file": "src/auto/006ae970.cpp"
  },
  "006aea20": {
   "name": "sub_6AEA20",
@@ -132409,7 +132519,7 @@
   "name": "ProjectPointOntoSegment",
   "name_src": "vote",
   "votes": {
-   "ProjectPointOntoSegment": 1
+   "ProjectPointOntoSegment": 2
   },
   "ret": "float*",
   "conv": "__fastcall",
@@ -155436,7 +155546,7 @@
   "name": "GetGlobalValue_70DDE0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_70DDE0": 31
+   "GetGlobalValue_70DDE0": 33
   },
   "ret": "int",
   "conv": "__cdecl",
