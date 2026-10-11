@@ -594,7 +594,10 @@ def substitute(backend, model, tier):
     if backend == "claude" and CLAUDE_PAUSED.is_set() and model in CLAUDE_SUB:
         _tl.codex_home = next((h for h in codex_homes() if codex_label(h) == CLAUDE_SUB_LOGIN), None)
         return "codex", CLAUDE_SUB[model]
-    if backend == "codex" and tier in ("S", "M") and CODEX_SUB and (CODEX_SUB[0] != "claude" or claude_grunts_ready()) and (CODEX_RESERVED.is_set() or CODEX_PAUSED.is_set()):
+    # a Claude stand-in only while that account has room: paused, the rung stays on Codex (2026-10-11: with Codex
+    # past its reserve and Claude at its cap every M function was deferred while Codex stood at 70%)
+    if backend == "codex" and tier in ("S", "M") and CODEX_SUB and (CODEX_RESERVED.is_set() or CODEX_PAUSED.is_set()) \
+            and (CODEX_SUB[0] != "claude" or (claude_grunts_ready() and not CLAUDE_PAUSED.is_set())):
         return CODEX_SUB
     return backend, model
 
@@ -1110,7 +1113,10 @@ def lanes(args):
     through a module's L/X tail. A module with
     nothing in flight and nothing left to submit is closed: its last results are committed and its end-of-wave steps
     (verifier --module, link test, report, stop rule: wave_close) run on one background worker, one module at a
-    time, while production goes on. A stop rule that fires ends the run like the stop file does (exit 3)."""
+    time, while production goes on. A stop rule that fires ends the run like the stop file does (exit 3). A module
+    with work that waits for quota (L/X while Codex is paused, functions deferred) stays open, so no new module
+    comes in past --overlap; once nothing can run the loop waits, and deferred functions are offered again when
+    both accounts are back."""
     lane_config(args)
     rolling = getattr(args, "roll", 0)
     if args.module and not rolling:
@@ -1216,6 +1222,10 @@ def lanes(args):
         if stopping:
             return
         quota()
+        if rolling and not CODEX_PAUSED.is_set() and not CLAUDE_PAUSED.is_set():
+            for r in db.rows.values():  # deferred on quota earlier in this run: the windows are open again
+                if r["status"] == "deferred":
+                    r["status"] = "todo"
         while True:
             busy = {ea for ea, _ in inflight.values()}
             cnt = collections.Counter(t for _, t in inflight.values())
@@ -1231,12 +1241,15 @@ def lanes(args):
             if rolling:  # the older module first: its tail is what its verification waits for
                 order = {o["id"]: i for i, o in enumerate(open_mods)}
                 sel.sort(key=lambda c: order[db.rows[c[0]]["module"]])
-            left = collections.Counter()  # per module: candidates that could run but found their tier full
+            # per module: what it still has to hand out (candidates whose tier is full or waits for Codex, and
+            # functions deferred on quota): it stays open
+            left = collections.Counter(r["module"] for r in db.rows.values() if r["status"] == "deferred") \
+                if rolling else collections.Counter()
             small = 0  # S/M candidates among them
             for ea, ex in sel:
                 t = tier_of(ea, ex)
                 if cnt[t] >= caps[t]:
-                    left[db.rows[ea]["module"]] += t not in blocked
+                    left[db.rows[ea]["module"]] += 1  # also of a tier waiting for Codex: the module stays open
                     small += t in "SM"
                     continue
                 if submitted >= args.total:
@@ -1353,7 +1366,21 @@ def lanes(args):
               f"{'  (example %08x)' % r['example'] if r.get('example') else ''}", flush=True)
 
     refill()
-    while inflight:
+    waiting = False
+    while inflight or (rolling and open_mods and not stopping and not broken
+                       and (CODEX_PAUSED.is_set() or CLAUDE_PAUSED.is_set())):
+        if not inflight:  # rolling waves: every open module waits for an account; the quota guard resumes it
+            if not waiting:
+                print("waves: nothing can run until a quota window reopens; waiting", flush=True)
+                live(phase="waiting for quota")
+            waiting = True
+            flush()
+            time.sleep(60)
+            refill()
+            continue
+        if waiting:
+            waiting = False
+            live(phase="grunting")
         done, _ = cf.wait(list(inflight), timeout=60, return_when=cf.FIRST_COMPLETED)
         for fu in done:
             ea, tier = inflight.pop(fu)

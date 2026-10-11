@@ -1006,3 +1006,16 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   so `x_jobs` 2 -> 4 as well. Not measured: Codex at 4+ concurrent high-effort calls a login.
 - Changes of behaviour: a module can close while a clone sibling of another module is in flight (its remaining
   clones stay todo for this run); wave_report counts verifier events since the module's verify step started.
+- First rolling run (10-11, 47 min until stopped by hand): 910 functions through the gate (19-27 a minute, against
+  5-10 before), 5 escalated, 9 modules admitted; modules closed out of order and verified in the background
+  without touching production. First module: 561 s from admission to report. The loop is no longer the limit:
+  the run took Codex from 9% to ~70% and the grunts' Claude account from 4% to 95% of their 5h windows.
+- Found in that run, fixed for the next start:
+  - Codex past its reserve sent S/M rungs to the Claude stand-in also while that account was paused: every M
+    function came back deferred with Codex at 70%. The stand-in is used only while Claude has room.
+  - A module whose remaining work waits for quota (deferred functions, L/X while Codex is paused) stays open, and
+    when nothing can run the loop waits for the window and offers the deferred functions again. Before, it would
+    have gone through the whole ranking closing module after module with holes.
+- The full regression smoke after m4053E0 crashed 3 s into the savegame start (null read at 0x473F09, original
+  code); the bisect quarantined 0x407450 (new) with 0x496080 and 0x470B20 (older, verified; both passed the same
+  regression twice earlier in the run). Open: which of the three is wrong (queue).
