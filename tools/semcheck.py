@@ -530,6 +530,9 @@ def behaviour(ea, obj, fn, src, db):
             and not const_found(c, ints, floats)]
     bases = [b for b in a.get("consts", []) if isinstance(b, int) and b >= 16 and b & 0xFFFFFFFF in ints]
     miss = [c for c in miss if not (isinstance(c, int) and any(c > b and c - b in ints for b in bases))]
+    # Hex-Rays writes a run of -1 dwords as memset(p, 255, n): the byte fill is the -1 we store (0x4980D0)
+    if -1 in a.get("consts", []) and 0xFFFFFFFF in ints:
+        miss = [c for c in miss if c != 255]
     if miss:
         errs.append(CONST_ERR + ": " + ", ".join(f"{c:g}" if isinstance(c, float) else
                                                  (f"0x{c & 0xFFFFFFFF:X}" if abs(c) >= 0x100 else str(c))
