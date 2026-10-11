@@ -1,0 +1,44 @@
+#include <cstdint>
+#include "globals.h"
+#include "hook.h"
+#include "core/memory.h"
+
+CSF_FUNC(uint32_t*, __cdecl, NetSession_GetNodeAllocator, 0x00646FF0, ());
+CSF_FUNC(char*, __cdecl, NetGatheringDdl_AllocateNodeMemory, 0x00647070, (int a1, int a2, int a3, int a4, int a5));
+CSF_FUNC(void, __stdcall, NetGatheringDdl_DeallocateListNode, 0x006A6D80, (int a2, int _C));
+CSF_FUNC(void, __stdcall, RethrowCppException, 0x007AF666, (void* exceptionObject, void* throwInformation));
+
+// std::list<...>::_Buynode(): allocates the list head node and links it to itself.
+// On failure the node is handed back to the allocator and the exception is re-raised.
+static char* __fastcall NetGatheringDdl_BuyListHeadNode(void* /*self*/, void* /*edx*/)
+{
+    char* node = nullptr;
+
+    // the allocation is outside the guarded region: cleanup is armed only once it has returned
+    node = NetGatheringDdl_AllocateNodeMemory(
+        reinterpret_cast<int>(NetSession_GetNodeAllocator()),
+        16,
+        reinterpret_cast<int>(CSF_STR(0x0085802C, "Unknown")),
+        0,
+        7);
+    
+    try
+    {
+        // construct(&node->next, node)
+        if (node)
+            CSF_AT(char*, node, 0x0) = node;
+
+        // construct(&node->prev, node)
+        if (reinterpret_cast<uintptr_t>(node) + 4 != 0)
+            CSF_AT(char*, node, 0x4) = node;
+    }
+    catch (...)
+    {
+        NetGatheringDdl_DeallocateListNode(reinterpret_cast<int>(node), 1);
+        RethrowCppException(nullptr, nullptr);
+    }
+
+    return node;
+}
+
+HOOK(0x006A6DD0, NetGatheringDdl_BuyListHeadNode, "auto");

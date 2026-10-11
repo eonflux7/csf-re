@@ -111433,7 +111433,7 @@
   "name": "NetSession_GetNodeAllocator",
   "name_src": "vote",
   "votes": {
-   "NetSession_GetNodeAllocator": 11,
+   "NetSession_GetNodeAllocator": 13,
    "NetSession_GetAllocator": 1
   },
   "ret": "uint32_t*",
@@ -111445,6 +111445,8 @@
   "name": "NodeAllocator_AllocBlock",
   "name_src": "vote",
   "votes": {
+   "NetGatheringDdl_AllocateNodeMemory": 1,
+   "NetSession_AllocateNode": 1,
    "NodeAllocator_AllocBlock": 1
   },
   "ret": "char*",
@@ -137989,6 +137991,7 @@
   "name": "GatheringDdl_ReleaseSessionNode",
   "name_src": "agent",
   "votes": {
+   "NetGatheringDdl_DeallocateListNode": 2,
    "NetGatheringDdl_CleanupPartialRecord": 1
   },
   "ret": "void",
@@ -138015,8 +138018,9 @@
   },
   "ret": "char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* , void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a6dd0.cpp"
  },
  "006a6e70": {
   "name": "NetGatheringDdl_BuyListHeadNode_6A6E70",
@@ -138026,8 +138030,9 @@
   },
   "ret": "char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* , void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a6e70.cpp"
  },
  "006a6f10": {
   "name": "NetGatheringDdl_InitializeSecondaryString",
@@ -201779,7 +201784,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 136
+   "RethrowCppException": 138
   },
   "ret": "void",
   "conv": "__stdcall",
