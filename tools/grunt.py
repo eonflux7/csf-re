@@ -1003,8 +1003,12 @@ def quarantine(ea, why, smoke_out=""):
     src = os.path.join(ROOT, "src", "auto", f"{ea:08x}.cpp")
     code = open(src).read() if os.path.exists(src) else ""
     os.makedirs(os.path.join(ROOT, "queue"), exist_ok=True)
+    # the function's own lines first (DIFF / MISMATCH / T3): the tail alone rarely holds them
+    own = [l for l in smoke_out.splitlines() if f"{ea:08X}" in l.upper()]
+    own = "\n".join(sorted(set(own), key=own.index)[:40])
     with open(os.path.join(ROOT, "queue", f"{ea:08x}.md"), "w") as f:
-        f.write(f"# Escalation 0x{ea:08X}: {why}\n\n## Smoke log tail\n```\n{smoke_out[-2500:]}\n```\n\n"
+        f.write(f"# Escalation 0x{ea:08X}: {why}\n\n## Its lines in the smoke log\n```\n{own}\n```\n\n"
+                f"## Smoke log tail\n```\n{smoke_out[-2500:]}\n```\n\n"
                 f"## Rejected file\n```cpp\n{code}\n```\n")
     if os.path.exists(src):
         os.remove(src)

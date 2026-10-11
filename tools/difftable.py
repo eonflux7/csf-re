@@ -87,6 +87,13 @@ REG_WRITE = re.compile(r"(?:mov|lea|xchg|pop|xor|sub|add|and|or|inc|dec|shl|shr|
 SUBREG = {"al": "eax", "ah": "eax", "ax": "eax", "bl": "ebx", "bh": "ebx", "bx": "ebx", "cl": "ecx", "ch": "ecx",
           "cx": "ecx", "dl": "edx", "dh": "edx", "dx": "edx", "si": "esi", "di": "edi", "bp": "ebp"}
 CLOBBERED = ("eax", "ecx", "edx")  # by any call
+LIB_WRITER = re.compile(r"mem(cpy|move|set)|str(n?cpy|n?cat|cats)|s[nw]?printf")
+
+
+class _All(set):
+    """Every frame slot counts as written (its address was taken)."""
+    def __contains__(self, x):
+        return True
 
 
 def effects(db, ea, depth=0, _memo={}):
@@ -174,7 +181,12 @@ def t3_effects(db, ea):
     if f is None or f["size"] > 4000:
         return None
     alias = {"ecx"}
+    # for the snapshot size only: aliases that a call doesn't end. The scan is linear, the code is not: after
+    # `call; ret` the next block still has `this` in ecx (0x716490 read +0x19C there: outside the snapshot, the
+    # original's append stayed and ours made no call). Too large a snapshot costs nothing.
+    wide = {"ecx"}
     this_max, globs, fl_this, fl_glob, callees = 0, {}, {}, {}, []
+    slots = set()  # frame dwords written in full so far
 
     def this_off(inner):
         mo = re.fullmatch(r"(e[a-z]{2})(?: \+ (0x[0-9a-f]+|\d+))?", inner)
@@ -182,6 +194,18 @@ def t3_effects(db, ea):
 
     for i in disasm(ea, f["size"]):
         m, ops = i.mnemonic, i.op_str
+        # a frame dword read before the function wrote all of it (`push ecx` as the local, `mov byte ptr [ebp-4], 0;
+        # mov eax, [ebp-4]; push eax`: 0x47EE50, 0x488FF0, 0x4696C0): stack garbage as an argument, which ours can't
+        # reproduce and the callee doesn't read. Not comparable call by call.
+        ms = re.search(r"dword ptr \[ebp - (0x[0-9a-f]+|\d+)\]", ops)
+        if ms:
+            if ops.split(",")[0].strip() == ms.group(0) and m in ("mov", "fstp", "fistp", "and", "or") \
+                    and (m not in ("and", "or") or ops.endswith((", 0", ", 0xffffffff"))):
+                slots.add(ms.group(1))
+            elif ms.group(1) not in slots and m in ("mov", "push"):
+                return None
+        if m == "lea" and re.search(r"\[ebp - ", ops):
+            slots = _All()  # an address taken: whoever got it may have written any of them
         if m.startswith(("rep", "stos", "movs", "lods", "scas", "cmps")) and "ptr" in ops or m.startswith("rep") \
                 or m in ("int3", "int", "into"):
             return None
@@ -197,6 +221,8 @@ def t3_effects(db, ea):
                 return None  # recursion, or an entry too small to patch
             # CRT helpers (__ftol2, memcpy, _chkstk) aren't intercepted: part of F, they run in both (ours inlines
             # them or has its own copies), writing the same bytes twice at worst
+            if db.F[t]["lib"] and LIB_WRITER.search(db.F[t]["name"]):
+                return None  # runs for the original and for ours: `memcpy(q, q + 4, n)` shifted the queue twice (0x4BFE70)
             if t not in callees and not db.F[t]["lib"]:
                 callees.append(t)
             alias -= set(CLOBBERED)
@@ -205,10 +231,10 @@ def t3_effects(db, ea):
         # sub-object there. Without it in the snapshot the original's write stays for ours' run (0x46E4E0 counted
         # the vector one longer: 52/188 false mismatches). Its size is unknown: 64 bytes past the pointer.
         ml = re.fullmatch(r"e[a-z]{2}, \[(e[a-z]{2}) \+ (0x[0-9a-f]+|\d+)\]", ops) if m == "lea" else None
-        if ml and ml.group(1) in alias:
+        if ml and ml.group(1) in wide:
             this_max = max(this_max, int(ml.group(2), 0) + 64)
         for mm in re.finditer(r"(byte|word|dword|qword) ptr \[(e[a-z]{2})(?: \+ (0x[0-9a-f]+|\d+))?\]", ops):
-            if mm.group(2) in alias:
+            if mm.group(2) in wide:
                 this_max = max(this_max, int(mm.group(3) or "0", 0) + SIZE[mm.group(1)])
         mw = re.match(r"(byte|word|dword|qword) ptr (?:\w+:)?\[(.*?)\]", ops.split(",")[0])
         is_write = mw and ((m in WRITE_OPS and m not in ("movsx", "movzx")) or m in ("fstp", "fst", "fistp", "fist"))
@@ -229,10 +255,12 @@ def t3_effects(db, ea):
         cp = ALIAS_MOV.match(f"{m} {ops}")
         if cp:
             (alias.add if cp.group(2) in alias else alias.discard)(cp.group(1))
+            (wide.add if cp.group(2) in wide else wide.discard)(cp.group(1))
             continue
         rw = REG_WRITE.match(f"{m} {ops}")
         if rw:
             alias.discard(SUBREG.get(rw.group(1), rw.group(1)))
+            wide.discard(SUBREG.get(rw.group(1), rw.group(1)))
     if not callees:
         return None  # nothing to record: tier 1/2 covers it (or not, for its own reasons)
     return this_max, globs, fl_this, fl_glob, callees
@@ -335,6 +363,10 @@ def analyze(db, ea, tier3=False):
             ret = 2
     if ret not in (1, 2, 3) and (api.eax_undefined_on_return(ea, db) or api.ret_unused(ea, db)):
         ret = 3  # the original leaves eax undefined on some path, or no caller reads it: nothing to compare
+    if conv not in (2, 3) and this_max and tier3:
+        # the code reads ecx as a pointer before writing it: thiscall whatever the prototype says (0x52B770 had
+        # no snapshot at all, its timer advanced twice)
+        conv, argbytes = 2, rets[0] if rets else 0
     if conv not in (2, 3):
         this_max = 0
         fl_this = {}
