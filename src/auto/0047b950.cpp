@@ -26,10 +26,10 @@ static int __fastcall AiAttackTasks_UpdateFiringAndAim(int* self, void* /*edx*/)
 
     if (CSF_AT(uint8_t, owner, 0x2EC) != 0)
     {
-        // Start firing on the host (slot 35). The fifth stack argument is an uninitialized value in
-        // the original (the caller's edi), so it is passed as 0.
-        ((void(__fastcall*)(void*, void*, int, int, int, int, int))CSF_AT(void**, ownerHost, 0)[35])(
-            ownerHost, nullptr, 0, 0, -1, 0, 0);
+        // Start firing on the host (slot 35): four stack arguments. The `push edi` before them is the
+        // callee-save of edi (popped at the end), not a fifth argument.
+        ((void(__fastcall*)(void*, void*, int, int, int, int))CSF_AT(void**, ownerHost, 0)[35])(
+            ownerHost, nullptr, 0, 0, -1, 0);
 
         // self[3] is the aim-side object.
         uint8_t* aimBase = reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(CSF_AT(uint32_t, self, 0xC)));
