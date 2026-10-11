@@ -25,9 +25,9 @@ SIZE = {"byte": 1, "word": 2, "dword": 4, "qword": 8}
 CONV = {"__cdecl": 0, "__stdcall": 1, "__thiscall": 2, "__fastcall": 3}
 
 
-# Functions the harness must not run twice / replay, found in game (bisected with ini diff_limit / diff_t3_limit):
+# Functions the harness must not run twice / replay, found in game (bisect with ini diff_limit / diff_t3_limit /
+# diff_skip). Empty: the two singleton initializers first blamed (0x7557C0, 0x759FC0) were a replayer bug.
 NO_DIFF = {
-    0x7557C0: "one-time singleton init (allocates and loads the game config): its replay kills the game at startup",
 }
 
 

@@ -68,6 +68,7 @@ int g_depth;
 uint32_t g_realret, g_retslot;  // the recorded call's return address and where it sat
 uint8_t g_pre[16384], g_spre[10][kPeek];
 uint32_t g_sptr[10];  // stack pointers watched during the current recorded call (0 = none)
+uint32_t g_slen[10];  // how far each may reach: up to the recorded function's saved ebp (see t3_pre)
 constexpr uint32_t kHeapPeek = 256;
 uint8_t g_hpre[10][kHeapPeek];
 uint32_t g_hptr[10];  // heap pointers watched (0 = none)
@@ -190,6 +191,9 @@ int __cdecl t3_pre(Regs* r) {
         }
         Rec& R = g_recs[g_nrec++];
         R = Rec{};
+        static const bool trace = hook::ini_string("diff_trace") && atoi(hook::ini_string("diff_trace"));
+        if (trace)
+            hook::log("T3REC call %d -> %08X ecx=%08X arg0=%08X", g_nrec, c.addr, r->ecx, a[0]);
         R.callee = i;
         R.ecx = r->ecx;
         R.edx = r->edx;
@@ -199,8 +203,15 @@ int __cdecl t3_pre(Regs* r) {
         for (uint32_t k = 0; k < 10; ++k) {
             uint32_t p = k < 8 ? (k < c.nargs ? R.args[k] : 0) : k == 9 && (c.regs & 1) ? r->ecx : 0;
             g_sptr[k] = p && on_stack(p) && p > (uint32_t)a ? p : 0;  // a caller's local, not the callee's frame
+            // A local of the recorded function ends below its frame pointer: [ebp] is the saved ebp, [ebp+4] the
+            // return address. Without this cap a 1-byte out flag at [ebp-1] (0x759FC0, 0x7557C0) was replayed
+            // widened to a dword, i.e. with 3 bytes of the original's saved ebp, into ours' frame: the /RTC stack
+            // check then killed the game at startup (0xC0000409) once those initializers were in the table.
+            g_slen[k] = g_sptr[k] ? peek_len(p) : 0;
+            if (g_sptr[k] && r->ebp > p && r->ebp - p < g_slen[k])
+                g_slen[k] = r->ebp - p;
             if (g_sptr[k])
-                memcpy(g_spre[k], (void*)p, peek_len(p));
+                memcpy(g_spre[k], (void*)p, g_slen[k]);
             g_hptr[k] = p && !on_stack(p) && !in_region(p) && readable(p, kHeapPeek) ? p : 0;
             if (g_hptr[k])
                 memcpy(g_hpre[k], (void*)p, kHeapPeek);
@@ -258,6 +269,8 @@ int __cdecl t3_pre(Regs* r) {
 uint32_t __cdecl t3_post(Regs* r) {
     Rec& R = g_recs[g_nrec - 1];
     R.eax = r->eax;
+    if (hook::ini_string("diff_trace") && atoi(hook::ini_string("diff_trace")))
+        hook::log("T3REC ret from %08X eax=%08X", kCallees[R.callee].addr, r->eax);
     R.edxr = r->edx;
     R.fp = g_t3_postfp ? g_t3_fp : 0;
     R.pop = (uint32_t)r + 36 - (g_retslot + 4);  // esp before t3_post_stub's pushes, minus esp right after the call
@@ -287,7 +300,7 @@ uint32_t __cdecl t3_post(Regs* r) {
     for (uint32_t k = 0; k < 10; ++k)
         if (g_sptr[k]) {
             const uint8_t* now = (const uint8_t*)g_sptr[k];
-            uint32_t m = peek_len(g_sptr[k]), lo = m, hi = 0;
+            uint32_t m = g_slen[k], lo = m, hi = 0;
             bool dup = false;
             for (uint32_t q = 0; q < 10; ++q) {
                 if (q != k && g_sptr[q] > g_sptr[k] && g_sptr[q] - g_sptr[k] < m)
