@@ -15647,14 +15647,15 @@
  },
  "00446dc0": {
   "name": "GatherSceneCandidates",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GatherSceneCandidates": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, void* a3",
-  "sig_src": "vote"
+  "params": "void* self, void* , int handle, S_00446340* candidates",
+  "sig_src": "impl",
+  "file": "src/auto/00446dc0.cpp"
  },
  "00446f10": {
   "name": "S_00445eb0_SubmitSceneRequest",
@@ -15704,7 +15705,7 @@
  },
  "00447260": {
   "name": "SceneRequest_ProcessObjectRecord",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "unsigned int*",
   "conv": "__fastcall",
@@ -15814,7 +15815,7 @@
  },
  "00447f70": {
   "name": "C_00831120_Serialize",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -17963,7 +17964,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 299
+   "CHandleTable_Resolve": 300
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -35321,7 +35322,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 98,
+   "GetObjectPositionVector": 99,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -138787,7 +138788,7 @@
   "name": "GfxMatrix_EulerAnglesToDirection",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_EulerAnglesToDirection": 6,
+   "GfxMatrix_EulerAnglesToDirection": 7,
    "EulerAnglesToDirection": 5,
    "GetActionExtent": 1
   },
@@ -138922,7 +138923,7 @@
   "name": "NormalizeVector2",
   "name_src": "vote",
   "votes": {
-   "NormalizeVector2": 4
+   "NormalizeVector2": 5
   },
   "ret": "float*",
   "conv": "__fastcall",
