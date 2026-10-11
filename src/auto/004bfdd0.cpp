@@ -19,19 +19,18 @@ CSF_FUNC(int, __fastcall, sub_4BC870, 0x004BC870, (void* self, void* edx, int a2
 // Original: __thiscall with one stack argument (ret 4), returns 1 via `mov al, 1`.
 static char __fastcall S_004bc930_QueryAndDispatchAction(S_004bc930* self, void* /*edx*/, int /*a2*/)
 {
-    uint32_t a3 = 0;
-    uint32_t a4 = 0;
-    uint32_t a5 = 0;
+    // One 12-byte object: the callee fills all three dwords through the pointer.
+    uint32_t result[3] = {0, 0, 0};
 
     // ecx = this + 0xCC: the sub-object is at +0xCC, its address is passed as `this`.
-    sub_4B1310(reinterpret_cast<void*>(&self->field_00cc), nullptr, &a3);
+    sub_4B1310(reinterpret_cast<void*>(&self->field_00cc), nullptr, result);
 
-    // ecx = this + 0x6C: sub-object address, pushed args: 2, a3, a4, a5 (pushed in reverse).
+    // ecx = this + 0x6C: sub-object address, pushed args: 2 and the three dwords.
     sub_4BC870(reinterpret_cast<uint8_t*>(self) + 0x6C, nullptr,
                2,
-               static_cast<int>(a3),
-               static_cast<int>(a4),
-               static_cast<int>(a5));
+               static_cast<int>(result[0]),
+               static_cast<int>(result[1]),
+               static_cast<int>(result[2]));
 
     return 1;
 }
