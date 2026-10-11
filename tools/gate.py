@@ -206,7 +206,7 @@ def gate(ea, path, db=None):
                         "CSF_AT(T, p, off). If the original really loads a pointer there and dereferences it, write "
                         "two steps: `T* q = CSF_AT(T*, p, off);` then `*q`")
             break
-    hooks = re.findall(r"HOOK(?:_METHOD|_KEEP_ECX_CDECL|_KEEP_ECX|_TAIL)?\(\s*0x([0-9A-Fa-f]+)\s*,\s*&?([\w:]+)", src)
+    hooks = re.findall(r"HOOK(?:_METHOD|_KEEP_ECX_CDECL|_KEEP_ECX|_REGS|_TAIL)?\(\s*0x([0-9A-Fa-f]+)\s*,\s*&?([\w:]+)", src)
     code_only = re.sub(r"//[^\n]*|/\*.*?\*/", "", src, flags=re.S)
     bare = re.sub(r'"(?:[^"\\\n]|\\.)*"', '""', code_only)  # comments ("the new block") and strings don't count
     if re.search(r"\b(malloc|free|calloc|realloc)\s*\(|\bnew\s+[A-Za-z_]|\bdelete\s", bare):
@@ -236,8 +236,22 @@ def gate(ea, path, db=None):
                         "\"module\")")
         elif own and own != [0] and keep.group(1):
             errs.append(f"HOOK_KEEP_ECX_CDECL does not pop, but the original returns with ret {own}: use HOOK_KEEP_ECX")
-    errs += check_bindings(src, db)
     import addrfix, api
+    regs = api.real_regs(ea, db) if ea in db.F else []
+    if regs and "HOOK_REGS" not in src and not (regs == ["eax"] and "regparm" in src):
+        errs.append(f"the original takes an argument in {', '.join(regs)} (it reads the register before writing it): no "
+                    "plain calling convention delivers that. Write `static uint32_t __cdecl Fn(hook::Regs* regs, const "
+                    "uint32_t* args)` (regs->eax / ebx / ecx / edx / esi / edi: the registers at entry; args[0] the "
+                    "first stack argument; the result is eax) and register it with HOOK_REGS(0xADDR, Fn, N, "
+                    "\"module\") where N is the original's `ret N` (0 for a plain `ret`)")
+    for m in re.finditer(r"CSF_FUNC\(([^;]*?),\s*(\w+)\s*,\s*(0x[0-9A-Fa-f]+)\s*,", code_only):
+        cregs = api.real_regs(int(m.group(3), 16), db)
+        if cregs and not (cregs == ["eax"] and "regparm" in m.group(1)):
+            errs.append(f"CSF_FUNC {m.group(2)}: {m.group(3)} takes arguments in {', '.join(cregs)}, which no declared "
+                        "convention passes. Drop the CSF_FUNC and call it with `hook::Regs r{}; r.<reg> = ...; uint32_t "
+                        f"stack[] = {{...}}; hook::call_regs(CSF_ADDR_FN({m.group(3)}), &r, stack, <count>);` (nullptr, 0 "
+                        "without stack arguments)")
+    errs += check_bindings(src, db)
     errs += api.binding_errors(src, db)
     raw = sorted({v for _, _, v, _ in addrfix.raw_hits(src)})
     if raw:  # the hook build would work, the standalone build can't link them (src/globals.h)
@@ -290,6 +304,17 @@ def gate(ea, path, db=None):
                 sem.append(f"calling convention mismatch: the original's own return paths pop {sorted(own)} bytes "
                            f"(ret N); your hook::tail_ret calls say {sorted(said)}. Write `hook::tail_ret(eax_value, N)` "
                            "for `ret N`, `hook::tail_ret(eax_value)` for a plain `ret`")
+        elif "HOOK_REGS" in src:
+            # fn is the helper's __cdecl (regs, args); what the original pops is the macro's third argument
+            own = set(ret_bytes(ea, db.F[ea]["size"]))
+            said = re.search(r"HOOK_REGS\(\s*0x[0-9A-Fa-f]+\s*,\s*&?[\w:]+\s*,\s*(\w+)", src)
+            said = int(said.group(1), 0) if said and re.fullmatch(r"0[xX][0-9A-Fa-f]+|\d+", said.group(1)) else None
+            if set(rets) != {0}:
+                sem.append("calling convention mismatch: a HOOK_REGS function is `uint32_t __cdecl Fn(hook::Regs* regs, "
+                           f"const uint32_t* args)` and pops nothing (yours pops {rets})")
+            elif own and own != {said}:
+                sem.append(f"calling convention mismatch: the original returns with ret {sorted(own)}; HOOK_REGS's third "
+                           f"argument says {said} (write the N of `ret N`, 0 for a plain `ret`)")
         elif rets and orig and set(rets) != set(orig):
             sem.append(f"calling convention mismatch: original pops {orig} bytes (ret N), yours pops {rets}. "
                        "Fix the calling convention / parameter list (__thiscall → __fastcall with dummy edx; "

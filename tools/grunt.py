@@ -472,7 +472,7 @@ def normalize(code, ea=None):
     bindings renamed to the one canonical name per address (tools/api.py, db/api.json)."""
     import addrfix, api
     code = api.canonicalize(addrfix.fix(code, ea))
-    code = re.sub(r"^(\s*HOOK(?:_METHOD|_KEEP_ECX_CDECL|_KEEP_ECX|_TAIL)?\(.*\))\s*$", r"\1;", code, flags=re.M)
+    code = re.sub(r"^(\s*HOOK(?:_METHOD|_KEEP_ECX_CDECL|_KEEP_ECX|_REGS|_TAIL)?\(.*\))\s*$", r"\1;", code, flags=re.M)
     hr = {"_DWORD": "std::uint32_t", "_WORD": "std::uint16_t", "_BYTE": "std::uint8_t", "_QWORD": "std::uint64_t"}
     if re.search(r"\b_(DWORD|WORD|BYTE|QWORD)\b", code):  # Hex-Rays types copied from the pseudocode
         code = re.sub(r"\b_(DWORD|WORD|BYTE|QWORD)\b", lambda m: hr[m.group(0)], code)

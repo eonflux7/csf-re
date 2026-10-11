@@ -113,6 +113,63 @@ struct Registrar {
 // pops its own (the wrapper must not). 0x4068E0 under HOOK_KEEP_ECX popped the copy as its saved registers.
 #define HOOK_KEEP_ECX_CDECL(addr, fn, nargs, module) HOOK_KEEP_ECX_(addr, fn, nargs, 4 * (nargs), 0, module)
 
+// A function with arguments in registers that no calling convention names (LTCG: eax / edi / esi / ebx; 0x6A4610
+// takes edx, edi and one stack dword). fn is `uint32_t __cdecl fn(hook::Regs* regs, const uint32_t* args)`: regs
+// holds every register as it was at entry, args the caller's stack arguments (read only). fn's result is the
+// original's eax; every other register goes back to the caller as regs holds it when fn returns (so unchanged
+// unless fn writes regs: LTCG callers rely on registers the original never touches). retbytes is the N of the
+// original's `ret N` (0 for a plain `ret`).
+namespace hook {
+struct Regs { uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax; };  // pushad order
+// Call a function that takes register arguments: loads eax, ecx, edx, ebx, esi, edi from `in`, pushes the `nstack`
+// dwords of `stack` (stack[0] is the first argument) and calls fn; works whether fn pops them or its caller does.
+__declspec(naked) inline uint32_t __cdecl call_regs(uintptr_t /*fn*/, const Regs* /*in*/, const uint32_t* /*stack*/,
+                                                    unsigned /*nstack*/) {
+    __asm {
+        push ebp
+        mov ebp, esp
+        push ebx
+        push esi
+        push edi
+        mov ecx, [ebp + 20]
+        mov esi, [ebp + 16]
+        lea eax, [ecx * 4]
+        sub esp, eax
+        mov edi, esp
+        rep movsd
+        mov eax, [ebp + 12]
+        mov edi, [eax]
+        mov esi, [eax + 4]
+        mov ebx, [eax + 16]
+        mov edx, [eax + 20]
+        mov ecx, [eax + 24]
+        mov eax, [eax + 28]
+        call dword ptr [ebp + 8]
+        lea esp, [ebp - 12]
+        pop edi
+        pop esi
+        pop ebx
+        pop ebp
+        ret
+    }
+}
+}  // namespace hook
+#define HOOK_REGS(addr, fn, retbytes, module) \
+    static void* const HOOK_CAT(fn, _impl) = (void*)&fn; \
+    static __declspec(naked) void HOOK_CAT(fn, _regs)() { \
+        __asm pushad \
+        __asm lea eax, [esp + 36] \
+        __asm push eax \
+        __asm lea eax, [esp + 4] \
+        __asm push eax \
+        __asm call dword ptr [HOOK_CAT(fn, _impl)] \
+        __asm add esp, 8 \
+        __asm mov [esp + 28], eax \
+        __asm popad \
+        __asm ret (retbytes) \
+    } \
+    HOOK(addr, HOOK_CAT(fn, _regs), module)
+
 // A function that ends in an indirect tail jump (`mov ecx, obj; jmp [vtbl + N]`): the target's signature is unknown
 // and it gets the caller's stack arguments and return address untouched, which C++ can't write. fn is everything
 // before the jump: `hook::Tail __fastcall fn(void* self, const uint32_t* args)` (args: the caller's stack arguments,

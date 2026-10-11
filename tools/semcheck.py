@@ -578,7 +578,7 @@ def survey(only_behaviour=False):
                                cwd=os.path.join(ROOT, "build"))
             if r.returncode:
                 return ea, ["compile failed"]
-            m = re.search(r"HOOK(?:_METHOD|_KEEP_ECX_CDECL|_KEEP_ECX|_TAIL)?\(\s*0x[0-9A-Fa-f]+\s*,\s*&?([\w:]+)", open(p).read())
+            m = re.search(r"HOOK(?:_METHOD|_KEEP_ECX_CDECL|_KEEP_ECX|_REGS|_TAIL)?\(\s*0x[0-9A-Fa-f]+\s*,\s*&?([\w:]+)", open(p).read())
             fn = m.group(1).split("::")[-1] if m else ""
             if only_behaviour:
                 return ea, behaviour(ea, obj, fn, open(p).read(), db) if fn else []

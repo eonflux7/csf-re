@@ -24,7 +24,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 API = os.path.join(ROOT, "db", "api.json")
 FUNCS = os.path.join(ROOT, "db", "functions.csv")
 DECL = re.compile(r"CSF_FUNC\(\s*([^;]+?)\s*,\s*(__\w+)\s*,\s*(\w+)\s*,\s*0[xX]([0-9A-Fa-f]+)\s*,\s*\((.*?)\)\s*\)\s*;", re.S)
-HOOK = re.compile(r"HOOK(?:_KEEP_ECX_CDECL|_KEEP_ECX|_TAIL)?\(\s*0[xX]([0-9A-Fa-f]+)\s*,\s*&?(\w+)")
+HOOK = re.compile(r"HOOK(?:_KEEP_ECX_CDECL|_KEEP_ECX|_REGS|_TAIL)?\(\s*0[xX]([0-9A-Fa-f]+)\s*,\s*&?(\w+)")
 CONVS = ("__cdecl", "__stdcall", "__fastcall", "__thiscall")
 
 
@@ -50,7 +50,7 @@ def strip_comments(s):
 def impl_signature(src):
     """(ea, ret, conv, name, params) of the hooked function's definition, or None."""
     h = HOOK.search(src)
-    if not h or h.group(0).startswith("HOOK_TAIL"):  # a tail thunk's impl has the helper's signature, not its own
+    if not h or h.group(0).startswith(("HOOK_TAIL", "HOOK_REGS")):  # a tail thunk's impl has the helper's signature, not its own
         return None
     ea, fn = int(h.group(1), 16), h.group(2)
     code = strip_comments(src)
@@ -149,6 +149,72 @@ def reads_before_write(ea, db, reg):
     return walk(0, True, 3)
 
 
+SUBREG = {"eax": r"e?ax|al|ah", "ebx": r"e?bx|bl|bh", "esi": r"e?si", "edi": r"e?di"}
+
+
+def reg_args(ea, db):
+    """Registers among eax/ebx/esi/edi the function reads before it writes them: arguments no calling convention
+    names (LTCG usercall; zlib's 0x6A46A0 takes its state in esi, 0x6A33A0 in eax with the tree in edi). A push is a
+    save, not a read; a call or ret ends a path; every path must read the register (as reads_before_write)."""
+    from packet import disasm
+    if ea not in db.F:
+        return set()
+    ins = disasm(ea, min(db.F[ea]["size"], 400))
+    at = {i.address: k for k, i in enumerate(ins)}
+
+    def walk(reg, k, depth):
+        rx = re.compile(rf"\b(?:{SUBREG[reg]})\b")
+        while k < len(ins):
+            i = ins[k]
+            k += 1
+            m, ops = i.mnemonic, i.op_str
+            if m in ("call", "ret", "push", "pop", "nop") or m.startswith("rep"):
+                if m in ("call", "ret") or (m == "pop" and rx.search(ops)):
+                    return False
+                if m.startswith("rep"):  # string instructions: movs reads esi and edi, stos/scas edi and eax, lods esi
+                    uses = {"movs": ("esi", "edi"), "cmps": ("esi", "edi"), "stos": ("edi", "eax"),
+                            "scas": ("edi", "eax"), "lods": ("esi",)}
+                    if any(k in m + " " + ops for k, v in uses.items() if reg in v):
+                        return True
+                continue
+            if m.startswith("j"):
+                t = int(ops, 16) if re.fullmatch(r"0x[0-9a-f]+", ops) else None
+                if t not in at or depth <= 0:
+                    return False
+                if m == "jmp":
+                    k, depth = at[t], depth - 1
+                    continue
+                return walk(reg, k, depth - 1) and walk(reg, at[t], depth - 1)
+            parts = [x.strip() for x in ops.split(",")]
+            if not parts or not parts[0]:
+                continue
+            dst, srcs = parts[0], parts[1:]
+            if m in ("xor", "sub", "sbb") and len(parts) == 2 and parts[0] == parts[1]:
+                if rx.fullmatch(dst):
+                    return False
+                continue
+            if m == "lea" and srcs and srcs[0] == f"[{dst}]" or m == "mov" and srcs == [dst]:  # padding
+                continue
+            if m[:4] in ("stos", "scas", "movs", "cmps", "lods") and len(m) == 5 and m[4] in "bwd":
+                if reg in {"movs": ("esi", "edi"), "cmps": ("esi", "edi"), "stos": ("edi", "eax"),
+                           "scas": ("edi", "eax"), "lods": ("esi",)}[m[:4]]:
+                    return True
+                continue
+            if any(rx.search(x) for x in srcs) or ("[" in dst and rx.search(dst)):
+                return True
+            if rx.fullmatch(dst):
+                # a write of the register or of a part of it (mov al, ..; fnstsw ax; or eax, -1) ends the path:
+                # what the function reads afterwards is its own value
+                if m in ("mov", "lea", "movzx", "movsx", "fnstsw", "lahf", "imul") and len(parts) != 2 or \
+                        m in ("mov", "lea", "movzx", "movsx") or m.startswith("set") or m == "fnstsw" or \
+                        (m == "or" and srcs == ["0xffffffff"]) or (m == "and" and srcs == ["0"]):
+                    return False
+                return True  # add/and/cmp/test/inc ...: reads it
+        return False
+
+    return {r for r in SUBREG if walk(r, 0, 3)}
+
+
 def norm_name(n):
     return n if re.fullmatch(r"[A-Za-z_]\w*", n or "") and not ADDR_NAME.fullmatch(n) else None
 
@@ -244,6 +310,23 @@ def spurious_regs(ea):
         p = os.path.join(ROOT, "db", "regargs.json")
         _spurious = {int(k, 16): v["spurious"] for k, v in json.load(open(p)).items()} if os.path.exists(p) else {}
     return _spurious.get(ea, [])
+
+
+def real_regs(ea, db=None):
+    """Registers besides ecx/edx the original takes an argument in: ebx/esi/edi proven by tools/regargs.py
+    (db/regargs.json "real"), eax by reg_args' read-before-write scan. Such a function needs HOOK_REGS (or
+    regparm when it is eax alone); a plain convention reads garbage (zlib's deflate half, 2026-10-11)."""
+    global _real
+    if _real is None:
+        p = os.path.join(ROOT, "db", "regargs.json")
+        _real = {int(k, 16): v.get("real", []) for k, v in json.load(open(p)).items()} if os.path.exists(p) else {}
+    regs = set(_real.get(ea, []))
+    if db is not None and "eax" in reg_args(ea, db):
+        regs.add("eax")
+    return sorted(regs)
+
+
+_real = None
 
 
 def without_spurious(ea, a):

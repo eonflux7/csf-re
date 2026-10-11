@@ -326,6 +326,13 @@ def build(db, ea, with_asm_limit=400):
         out.append("NOTE: callers keep a value in ecx across this call (LTCG) and the original never writes ecx: register "
                    "it with HOOK_KEEP_ECX(0xADDR, Fn, <number of stack args>, \"module\") instead of HOOK "
                    "(HOOK_KEEP_ECX_CDECL when the original is __cdecl: it returns with a plain `ret`).")
+    rr = _api.real_regs(ea, db)
+    if rr:
+        out.append(f"NOTE: it takes an argument in {', '.join(rr)} (exact: the register is read before it is written). "
+                   "Write it as `static uint32_t __cdecl Fn(hook::Regs* regs, const uint32_t* args)`: regs->eax / ebx / "
+                   "ecx / edx / esi / edi are the registers at entry, args[0] is the first stack argument, the result "
+                   "is eax. Register with HOOK_REGS(0xADDR, Fn, N, \"module\") instead of HOOK, N = the original's "
+                   "`ret N` (0 for a plain `ret`). No asm, no __regcall.")
     sp = _api.spurious_regs(ea)
     if sp:
         out.append(f"NOTE: its {', '.join('@<' + r + '>' for r in sp)} parameter is NOT an argument (exact: the register "
@@ -409,6 +416,14 @@ def build(db, ea, with_asm_limit=400):
                            "it came from (a float->int cast, int64 arithmetic, a large local array)")
                 continue
             import api
+            crr = api.real_regs(c, db)
+            if crr:
+                out.append(f"- 0x{c:08X} `{nm}` [{status}] takes arguments in {', '.join(crr)} (plus any stack arguments "
+                           "the asm pushes): do NOT declare it with CSF_FUNC. Call it with `hook::Regs r{}; r.eax = ...; "
+                           f"r.esi = ...; uint32_t stack[] = {{first, second}}; uint32_t eax = hook::call_regs("
+                           f"CSF_ADDR_FN(0x{c:08X}), &r, stack, 2);` (set the registers the original loads before the "
+                           "call; pass nullptr, 0 when it pushes nothing; who pops the stack does not matter)")
+                continue
             canon = api.decl_line(c)
             out.append(f"- 0x{c:08X} `{nm}` [{status}] rets={ret_bytes(c, db.F[c]['size']) if c in db.F else '?'} "
                        + (f"bind as: `{canon}`" + ("  (unnamed: keep this signature, the name is yours to choose)"

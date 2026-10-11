@@ -44,7 +44,7 @@ KINDS = {
 
 
 def _hooked(src):
-    m = re.search(r"HOOK(?:_METHOD|_KEEP_ECX_CDECL|_KEEP_ECX|_TAIL)?\(\s*0x[0-9A-Fa-f]+\s*,\s*&?([\w:]+)", src)
+    m = re.search(r"HOOK(?:_METHOD|_KEEP_ECX_CDECL|_KEEP_ECX|_REGS|_TAIL)?\(\s*0x[0-9A-Fa-f]+\s*,\s*&?([\w:]+)", src)
     return m.group(1).split("::")[-1] if m else None
 
 
