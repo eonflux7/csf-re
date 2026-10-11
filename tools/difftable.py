@@ -201,6 +201,12 @@ def t3_effects(db, ea):
                 callees.append(t)
             alias -= set(CLOBBERED)
             continue
+        # an interior pointer of `this` handed on (`lea ecx, [ebx + 0x14]; call push_back`): the callee writes the
+        # sub-object there. Without it in the snapshot the original's write stays for ours' run (0x46E4E0 counted
+        # the vector one longer: 52/188 false mismatches). Its size is unknown: 64 bytes past the pointer.
+        ml = re.fullmatch(r"e[a-z]{2}, \[(e[a-z]{2}) \+ (0x[0-9a-f]+|\d+)\]", ops) if m == "lea" else None
+        if ml and ml.group(1) in alias:
+            this_max = max(this_max, int(ml.group(2), 0) + 64)
         for mm in re.finditer(r"(byte|word|dword|qword) ptr \[(e[a-z]{2})(?: \+ (0x[0-9a-f]+|\d+))?\]", ops):
             if mm.group(2) in alias:
                 this_max = max(this_max, int(mm.group(3) or "0", 0) + SIZE[mm.group(1)])
