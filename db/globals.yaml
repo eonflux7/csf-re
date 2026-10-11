@@ -778,11 +778,13 @@
 - {addr: 0x008A7DB8, name: g_DefaultColorBlue, type: float, uses: 3, src: auto}
 - {addr: 0x008A7DBC, name: g_DefaultColorAlpha, type: float, uses: 3, src: auto}
 - {addr: 0x008A7E18, name: g_ObjectPropertyVersion, type: int32_t, uses: 2, src: auto, alt: [g_ObjectPropsMaximumVersion]}
-- {addr: 0x008A7E1C, name: g_ObjectPropsStreamVersion, type: int32_t, uses: 1, src: auto}
-- {addr: 0x008A7E20, name: g_EntryFormatVersion, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008A7E1C, name: g_MaxPropertiesVersion, type: int, uses: 2, src: auto, alt: [g_ObjectPropsStreamVersion]}
+- {addr: 0x008A7E20, name: g_EntryFormatVersion, type: uint32_t, uses: 2, src: auto, alt: [g_MaxPropertiesVersion]}
 - {addr: 0x008A7E24, name: g_ObjectPropsMaxVersion, type: uint32_t, uses: 2, src: auto, alt: [g_RecordTag]}
 - {addr: 0x008A7E28, name: g_PropertyIndexMax, type: int, uses: 2, src: auto, alt: [g_StreamRecordTag]}
 - {addr: 0x008A7E2C, name: g_ObjectPropsMinimumVersion, type: int, uses: 1, src: auto}
+- {addr: 0x008A7E30, name: g_MinPropertiesVersion, type: int, uses: 1, src: auto}
+- {addr: 0x008A7E34, name: g_MinPropertiesVersion, type: int, uses: 1, src: auto}
 - {addr: 0x008A7E38, name: g_ObjectPropsMinVersion, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008A7E3C, name: g_PropertyIndexMin, type: int, uses: 1, src: auto}
 - {addr: 0x008A7E40, name: g_Float_8A7E40, type: float, uses: 2, src: auto}
@@ -1641,11 +1643,11 @@
 - {addr: 0x008BB448, name: g_ZeroVector2X, type: float, uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008BB44C, name: g_ZeroVector2Y, type: float, uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008BB450, name: g_Value_8BB450, type: int, uses: 2, src: auto}
-- {addr: 0x008BB470, name: g_ActiveEntryKey, type: int, uses: 5, src: auto, alt: [g_CurrentPropertyReference, g_LastUserDataEntry, g_StreamingState, g_cachedEngineHandle]}
-- {addr: 0x008BB474, name: g_ObjectPropertiesPluginOffset, type: int, uses: 21, src: auto, alt: [g_ObjectPropsPluginOffset, g_RwEngineInstanceOffset, dword_8BB474, g_DummyPluginOffset, g_EnginePropertiesOffset, g_EnginePropertyPluginOffset, g_MaterialManagerOffset, g_MaterialPluginOffset, g_ObjectRegistryOffset, g_PropertyTableOffset, g_RwEngineObjectOffset, g_StreamingPluginOffset, g_UserDataEntryOffset, g_dwRwEngineSlotOffset, g_dwRwEngineSubOffset, g_engineBase]}
+- {addr: 0x008BB470, name: g_ActiveEntryKey, type: int, uses: 6, src: auto, alt: [g_CurrentPropertiesEntry, g_CurrentPropertyReference, g_LastUserDataEntry, g_StreamingState, g_cachedEngineHandle]}
+- {addr: 0x008BB474, name: g_ObjectPropertiesPluginOffset, type: int, uses: 25, src: auto, alt: [g_ObjectPropsPluginOffset, g_PropertiesPluginOffset, g_RwEngineInstanceOffset, dword_8BB474, g_DummyPluginOffset, g_EnginePropertiesOffset, g_EnginePropertyPluginOffset, g_MaterialManagerOffset, g_MaterialPluginOffset, g_ObjectPropsEngineOffset, g_ObjectRegistryOffset, g_PropertyTableOffset, g_RwEngineObjectOffset, g_StreamingPluginOffset, g_UserDataEntryOffset, g_dwRwEngineSlotOffset, g_dwRwEngineSubOffset, g_engineBase]}
 - {addr: 0x008BB478, name: g_ObjectPropertiesOffset, type: uint32_t, uses: 11, src: auto, alt: [g_AtomicPropertyPluginOffset, g_DistanceOverrideBase, g_ObjectAttachmentTable, g_ObjectPropertyTable, g_ObjectPropsPluginBase, g_PropsRecordBase, g_PropsSlotBase, g_WaterSourceStateBase, g_8BB478]}
-- {addr: 0x008BB47C, name: g_EntryTable, type: void*, uses: 9, src: auto}
-- {addr: 0x008BB480, name: g_EntryTable, type: void*, uses: 10, src: auto, alt: [g_EntryTable_8BB480]}
+- {addr: 0x008BB47C, name: g_EntryTable, type: void*, uses: 10, src: auto}
+- {addr: 0x008BB480, name: g_EntryTable, type: void*, uses: 11, src: auto, alt: [g_EntryTable_8BB480]}
 - {addr: 0x008BB484, name: dword_8BB484, type: uint32_t, uses: 10, src: auto, alt: [g_LightPropertiesOffset, g_LightPropertyPluginOffset, g_ObjectPropertyTable, g_ObjectPropsBase, g_ObjectPropsData, g_PropertySlotTableBase, g_PropertyTableBase, g_PropertyValueBase, g_PropsTableBase]}
 - {addr: 0x008BB488, name: g_ObjectPropsTableBase, type: uint32_t, uses: 10, src: auto, alt: [g_EntryTableBase, g_GeometryPropertyPluginOffset, g_GfxPropsSlotBase, g_ObjPropsBaseOffset, g_ObjectPropsSlotBase, g_TableBase]}
 - {addr: 0x008BB4B4, name: g_DefaultAtomicCallback, type: uint32_t, uses: 2, src: auto, alt: [g_PassthroughTarget_8BB4B4]}
