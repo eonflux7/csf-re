@@ -108,7 +108,9 @@ static int __stdcall Archive_SerializeStringArray(S_00455ed0* strings, int archi
             uint32_t offset = 0;
             while (index < count)
             {
-                C_00831278 temporary;
+                // sized by the original's frame (0x34 bytes): struct sizes in auto_classes.h are lower bounds
+                alignas(8) uint8_t temporaryBytes[0x34];
+                C_00831278& temporary = *reinterpret_cast<C_00831278*>(temporaryBytes);
                 C_00831278_Initialize(&temporary, nullptr);
                 StringArray_Append(strings, nullptr, reinterpret_cast<int>(&temporary));
 

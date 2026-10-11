@@ -35,7 +35,9 @@ static char __fastcall CGuiControl_FindNearbyChildPosition(
             continue;
 
         auto* dispatcher = CSF_AT(C_0082dd78*, child, 0x4C);
-        S_00694cd0 query{};
+        // sized by the original's frame (0x2C bytes): struct sizes in auto_classes.h are lower bounds
+        alignas(8) uint8_t queryBytes[0x2C] = {};
+        S_00694cd0& query = *reinterpret_cast<S_00694cd0*>(queryBytes);
         std::memset(&query, 0, 12);
         query.field_000c = 10;
         *reinterpret_cast<uint8_t*>(&query.field_0010) = 0;

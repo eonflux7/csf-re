@@ -27,7 +27,9 @@ static char __fastcall GatherEntryRecordsIntoOutput(S_00462c00* self, void* /*ed
 
     if (entryList[2] != 0)
     {
-        C_008313f8 scratchList;
+        // sized by the original's frame (0x14 bytes): struct sizes in auto_classes.h are lower bounds
+        alignas(8) uint8_t scratchListBytes[0x14];
+        C_008313f8& scratchList = *reinterpret_cast<C_008313f8*>(scratchListBytes);
         // Base vtable store at offset 0; C_008313f8 declares no __vftable member.
         CSF_AT(void*, &scratchList, 0) = reinterpret_cast<void*>(CSF_VTBL(0x008313F8));
         scratchList.field_0004 = 0;

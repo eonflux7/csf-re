@@ -30,10 +30,18 @@ static S_004f21d0* __stdcall MpSpawnPoints_FormatLocalizedMessage(
     S_004f21d0* output, int messageKey, int firstPlayerId,
     int secondPlayerId, unsigned int count)
 {
-    S_004f21d0 result{};
-    S_004f21d0 firstName{};
-    S_004f21d0 secondName{};
-    S_004f21d0 localizedPattern{};
+    // sized by the original's frame (0x74 bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t resultBytes[0x74] = {};
+    S_004f21d0& result = *reinterpret_cast<S_004f21d0*>(resultBytes);
+    // sized by the original's frame (0x74 bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t firstNameBytes[0x74] = {};
+    S_004f21d0& firstName = *reinterpret_cast<S_004f21d0*>(firstNameBytes);
+    // sized by the original's frame (0x74 bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t secondNameBytes[0x74] = {};
+    S_004f21d0& secondName = *reinterpret_cast<S_004f21d0*>(secondNameBytes);
+    // sized by the original's frame (0x74 bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t localizedPatternBytes[0x74] = {};
+    S_004f21d0& localizedPattern = *reinterpret_cast<S_004f21d0*>(localizedPatternBytes);
 
     result.field_0018 = 7;
     result.field_0014 = 0;

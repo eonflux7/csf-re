@@ -34,7 +34,9 @@ static int __fastcall C_0082e428_InitializeSteeringAlignment(
                 CSF_AT(void**, entry, 0)[0x40 / 4])(
                     entry, nullptr, &matrixStorage);
 
-    S_00526d40 direction;
+    // sized by the original's frame (0x24 bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t directionBytes[0x24];
+    S_00526d40& direction = *reinterpret_cast<S_00526d40*>(directionBytes);
     std::memcpy(
         &direction,
         reinterpret_cast<std::uint8_t*>(matrixResult->matrix) + 0x20,

@@ -50,7 +50,9 @@ static char __fastcall HudWidget_RefreshLabelFromSceneValue(void* self, void* /*
         else
             valueText = CSF_AT(const char*, valueBase, 0x24);
 
-        C_0082d410 textStorage;
+        // sized by the original's frame (0x24 bytes): struct sizes in auto_classes.h are lower bounds
+        alignas(8) uint8_t textStorageBytes[0x24];
+        C_0082d410& textStorage = *reinterpret_cast<C_0082d410*>(textStorageBytes);
         ConstructStringFromText(&textStorage, nullptr, valueText);
 
         uint32_t textData = textStorage.field_0004;

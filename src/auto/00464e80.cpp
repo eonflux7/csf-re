@@ -58,7 +58,9 @@ static char* __fastcall BuildFsmActionBufferForHandle(void* self, void* /*edx*/,
     S_0069b1c0* targetCollection = *reinterpret_cast<S_0069b1c0**>(lookupTableBase + 12 * tableKey + 4);
     Collection_SetCapacity(targetCollection, nullptr, actionCount + vectorEntryCount);
 
-    C_008313f8 builder;
+    // sized by the original's frame (0x18 bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t builderBytes[0x18];
+    C_008313f8& builder = *reinterpret_cast<C_008313f8*>(builderBytes);
     builder.vtbl = CSF_VTBL(0x008313F8);
     builder.field_0004 = 0;
     builder.field_0008 = static_cast<uint32_t>(-1);

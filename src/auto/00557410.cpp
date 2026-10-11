@@ -201,7 +201,9 @@ static std::uint32_t* __fastcall MpSpawnPoints_UpdatePlayerSpawns(
 
                 int chosenIndex;
                 if (spawnCount >= requiredCount) {
-                    S_00553fa0 candidates{};
+                    // sized by the original's frame (0x48 bytes): struct sizes in auto_classes.h are lower bounds
+                    alignas(8) uint8_t candidatesBytes[0x48] = {};
+                    S_00553fa0& candidates = *reinterpret_cast<S_00553fa0*>(candidatesBytes);
                     std::memset(&candidates.field_0004, 0, 12);
                     int iterationStorage[0x10 / sizeof(int)]{};
                     std::int32_t spawnIndexStorage[0xC / sizeof(std::int32_t)]{};

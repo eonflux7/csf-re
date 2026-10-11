@@ -12,7 +12,9 @@ CSF_FUNC(int, __cdecl, RwV3dTransformVectors, 0x006230A0, (int a1, int a2, int a
 static S_00402350* __fastcall GfxMatrix_TransformFrame(
     uint32_t* self, void* /*edx*/, S_00402350* output, int* matrix)
 {
-    S_00402350 transformed;
+    // sized by the original's frame (0x48 bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t transformedBytes[0x48];
+    S_00402350& transformed = *reinterpret_cast<S_00402350*>(transformedBytes);
     uint32_t vector[3];
 
     // The packet labels the initializer address as a vtable reference.

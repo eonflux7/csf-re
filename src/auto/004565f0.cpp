@@ -22,7 +22,9 @@ static int __fastcall S_00452980_GetElementCount(S_00452980* self, void* /*edx*/
         elementCount = 0;
     }
 
-    C_00831278 tempBuffer;
+    // sized by the original's frame (0x30 bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t tempBufferBytes[0x30];
+    C_00831278& tempBuffer = *reinterpret_cast<C_00831278*>(tempBufferBytes);
     sub_4A10A0(&tempBuffer, nullptr, a2);
     sub_456360(entryList, nullptr, reinterpret_cast<int>(&tempBuffer));
     sub_4A0FF0(&tempBuffer, nullptr);

@@ -27,7 +27,9 @@ static char* __fastcall MissionScript_PopulateValues(
                   CSF_AT(uint32_t, self, 0xC) - begin) / 68)
         : 0;
 
-    C_008313f8 fillValue;
+    // sized by the original's frame (0xC bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t fillValueBytes[0xC];
+    C_008313f8& fillValue = *reinterpret_cast<C_008313f8*>(fillValueBytes);
     fillValue.vtbl = CSF_VTBL(0x0082D410);
     fillValue.vtbl = CSF_VTBL(0x0082D428);
     fillValue.vtbl = CSF_VTBL(0x008313F8);

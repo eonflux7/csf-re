@@ -56,7 +56,9 @@ static C_00833908* __fastcall S_00553680_CreateTeamSpawnPoints(
             CSF_AT(void**, component, 0)[0x48 / 4])(
                 component, nullptr, flags);
 
-        C_008310b8 descriptor{};
+        // sized by the original's frame (0x2C bytes): struct sizes in auto_classes.h are lower bounds
+        alignas(8) uint8_t descriptorBytes[0x2C] = {};
+        C_008310b8& descriptor = *reinterpret_cast<C_008310b8*>(descriptorBytes);
         SpawnDescriptor_Initialize(&descriptor, nullptr);
         reinterpret_cast<std::uint8_t*>(&descriptor)[0] =
             static_cast<std::uint8_t>((team != 0) + 1);

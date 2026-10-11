@@ -50,7 +50,9 @@ static int __fastcall C_008317c8_SetResolvedObjectDirection(
     if (!CSF_AT(uint8_t, reinterpret_cast<void*>(result), 0xD0))
         return result;
 
-    C_00831658 record{};
+    // sized by the original's frame (0x84 bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t recordBytes[0x84] = {};
+    C_00831658& record = *reinterpret_cast<C_00831658*>(recordBytes);
     WeaponFirearms_InitializeEventRecord(&record, nullptr, 17);
 
     void* ownerData = reinterpret_cast<void*>(self->field_0004);

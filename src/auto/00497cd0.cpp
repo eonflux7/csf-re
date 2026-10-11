@@ -143,7 +143,9 @@ static uint32_t* __fastcall CPlayerCharacter_FindNearbyInteraction(
         reinterpret_cast<int>(&option1), query.radius);
 
     if (candidateResult[0]) {
-        C_0082d448 request;
+        // sized by the original's frame (0xC8 bytes): struct sizes in auto_classes.h are lower bounds
+        alignas(8) uint8_t requestBytes[0xC8];
+        C_0082d448& request = *reinterpret_cast<C_0082d448*>(requestBytes);
         C_0082d448_InitDefaults(&request, nullptr);
         uint32_t objectMode = self->field_0078;
         uint32_t handlePart2 = self->field_0024;

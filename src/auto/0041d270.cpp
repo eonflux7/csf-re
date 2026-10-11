@@ -33,7 +33,9 @@ static float* __fastcall C_0082e428_UpdateWheelAxisVector(C_0082e428* self, void
     auto* axisFields = reinterpret_cast<std::uint32_t*>(
         static_cast<std::uintptr_t>(holderFirstDword + 0x20));
 
-    S_00526d40 normalizeInput;
+    // sized by the original's frame (0x24 bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t normalizeInputBytes[0x24];
+    S_00526d40& normalizeInput = *reinterpret_cast<S_00526d40*>(normalizeInputBytes);
     normalizeInput.field_0000 = axisFields[0];
     CSF_AT(std::uint32_t, &normalizeInput, 0x4) = axisFields[1];
     CSF_AT(std::uint32_t, &normalizeInput, 0x8) = axisFields[2];

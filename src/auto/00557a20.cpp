@@ -76,7 +76,9 @@ static std::uint32_t __fastcall MpSpawnPoints_ReturnToGameplay(
         CMenuVideoOptions_ValidateAndApplyMode(videoMenu, nullptr);
     }
 
-    S_0050c9f0 menus{};
+    // sized by the original's frame (0x14 bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t menusBytes[0x14] = {};
+    S_0050c9f0& menus = *reinterpret_cast<S_0050c9f0*>(menusBytes);
     std::memset(&menus.field_0004, 0, 12);
     AppendFourByteElement_50CDF0(&menus, nullptr, &gameplayMenu);
 

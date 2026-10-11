@@ -21,7 +21,9 @@ CSF_FUNC(char*, __cdecl, _strncpy, 0x007AFEC0, (char* dest, const char* src, siz
 static int __stdcall SceneLoader_CheckSceneCompanionFiles(S_00693740* source)
 {
     char destination[512];
-    S_00692b10 file;
+    // sized by the original's frame (0x23C bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t fileBytes[0x23C];
+    S_00692b10& file = *reinterpret_cast<S_00692b10*>(fileBytes);
 
     MenuExtras_InitializeFile(&file, nullptr);
     if (MenuExtras_LoadFile(&file, nullptr, reinterpret_cast<const char*>(source)))

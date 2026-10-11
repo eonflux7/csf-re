@@ -93,7 +93,9 @@ static char __fastcall C_0082d844_InitializeLocalReferencePoints(
         reinterpret_cast<float*>(RwMatrixCreate());
     CSF_AT(uint8_t, inverseMatrixStorage, 4) = 1;
 
-    S_006adb40 frameMatrix;
+    // sized by the original's frame (0x8C bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t frameMatrixBytes[0x8C];
+    S_006adb40& frameMatrix = *reinterpret_cast<S_006adb40*>(frameMatrixBytes);
     frameMatrix.field_0000 = reinterpret_cast<uint32_t>(
         RwFrameGetLTM(CSF_AT(
             uint32_t,

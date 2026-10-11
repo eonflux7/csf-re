@@ -97,7 +97,9 @@ static int __fastcall C_00833908_UpdateAngularSelection(
         reinterpret_cast<S_004503e0*>(g_pCurrentScene), nullptr);
 
     // Uninitialized stack contents are represented by zero.
-    S_0041e5f0 selection{};
+    // sized by the original's frame (0x134 bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t selectionBytes[0x134] = {};
+    S_0041e5f0& selection = *reinterpret_cast<S_0041e5f0*>(selectionBytes);
     selection.field_007c = static_cast<uint32_t>(-1);
     selection.field_0074 = static_cast<uint32_t>(-1);
     selection.field_0078 = StoreFloat(selectionDegrees * g_SelectionDegreesToRadians);

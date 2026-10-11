@@ -26,7 +26,9 @@ static int __fastcall C_0082f9f8_OrientTowardPoint(C_0082f9f8* self, void* /*edx
         referenceObject, nullptr, referencePoint);
 
     // Build a 2D (x, z) offset vector: x = target.x - ref.x, y = 0, z = target.z - ref.z.
-    S_00526d40 offsetVector;
+    // sized by the original's frame (0x18 bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t offsetVectorBytes[0x18];
+    S_00526d40& offsetVector = *reinterpret_cast<S_00526d40*>(offsetVectorBytes);
     CSF_AT(float, &offsetVector, 0x0) = targetPoint[0] - referencePoint[0];
     CSF_AT(float, &offsetVector, 0x4) = 0.0f;
     CSF_AT(float, &offsetVector, 0x8) = targetPoint[2] - referencePoint[2];

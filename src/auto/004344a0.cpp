@@ -57,7 +57,9 @@ static uint32_t __fastcall Hud_UpdateResourceWidget(void* self, void* /*edx*/)
 
     struct TemporaryString
     {
-        C_0082d410 header;
+        // sized by the original's frame (0x21C bytes): struct sizes in auto_classes.h are lower bounds
+        alignas(8) uint8_t headerBytes[0x21C];
+        C_0082d410& header = *reinterpret_cast<C_0082d410*>(headerBytes);
         uint32_t remainingInlineStorage[2];
         uint32_t length;
         uint32_t capacity;

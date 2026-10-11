@@ -35,7 +35,9 @@ static int __stdcall SetCachedProviderNameFromArgString(int a1, int a2, int a3)
     std::uint32_t* innerRecord = reinterpret_cast<std::uint32_t*>(static_cast<std::uintptr_t>(*outerRef));
     std::uintptr_t sourceAddress = static_cast<std::uintptr_t>(innerRecord[1] + 4);
 
-    C_0082d410 stringHolder;
+    // sized by the original's frame (0x1C bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t stringHolderBytes[0x1C];
+    C_0082d410& stringHolder = *reinterpret_cast<C_0082d410*>(stringHolderBytes);
     CSF_AT(std::uint32_t, &stringHolder, 0x18) = 15;   // capacity
     CSF_AT(std::uint32_t, &stringHolder, 0x14) = 0;    // length
     stringHolder.field_0004 = 0;                       // low byte cleared in original

@@ -83,7 +83,9 @@ static char __stdcall SpawnObjectWithScaledOffset(int /*a1*/, int /*_60*/, std::
     C_00834198_SetField0198(spawnedObject, nullptr);
 
     // Build a transform matrix from the row's two floats and read its translation row
-    S_006ada10 matrixHolder;
+    // sized by the original's frame (0x48 bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t matrixHolderBytes[0x48];
+    S_006ada10& matrixHolder = *reinterpret_cast<S_006ada10*>(matrixHolderBytes);
     matrixHolder.field_0000 = reinterpret_cast<std::uintptr_t>(RwMatrixCreate());
     bool matrixOwned = true;
     sub_6AE2F0(&matrixHolder, nullptr, CSF_AT(float, rowData, 0x10), CSF_AT(float, rowData, 0x14), 0.0f);

@@ -55,7 +55,9 @@ static char __fastcall StateRecord_SyncPathFromControl(
         return static_cast<char>(setCountResult);
     }
 
-    C_008313f8 pointBuffer;
+    // sized by the original's frame (0x10 bytes): struct sizes in auto_classes.h are lower bounds
+    alignas(8) uint8_t pointBufferBytes[0x10];
+    C_008313f8& pointBuffer = *reinterpret_cast<C_008313f8*>(pointBufferBytes);
     pointBuffer.vtbl = CSF_VTBL(0x008313F8);
     pointBuffer.field_0004 = 0;
     pointBuffer.field_0008 = static_cast<uint32_t>(-1);
