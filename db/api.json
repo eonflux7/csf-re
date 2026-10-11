@@ -1068,8 +1068,7 @@
   "ret": "char",
   "conv": "__stdcall",
   "params": "int* a2",
-  "sig_src": "impl",
-  "file": "src/auto/00406020.cpp"
+  "sig_src": "abi"
  },
  "00406030": {
   "name": "FreeMatrixEntries",
@@ -1329,8 +1328,7 @@
   "ret": "double",
   "conv": "__cdecl",
   "params": "float a1, float a2",
-  "sig_src": "impl",
-  "file": "src/auto/004068e0.cpp"
+  "sig_src": "vote"
  },
  "00406950": {
   "name": "MenuMpCharacterSelect_NormalizeAngle",
@@ -1914,7 +1912,6 @@
   "name": "MatrixArray_GrowCapacity",
   "name_src": "agent",
   "votes": {
-   "GrowBindingArray": 1,
    "MatrixArray_Grow": 1
   },
   "ret": "void*",
@@ -1969,14 +1966,11 @@
  "004088b0": {
   "name": "C_0082d5e0_ResolvePendingBindings",
   "name_src": "agent",
-  "votes": {
-   "ProcessInnerRequest": 1
-  },
+  "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "C_0082d5e0* self, void* , int* source",
-  "sig_src": "impl",
-  "file": "src/auto/004088b0.cpp"
+  "params": "void* self, void* edx, int* a2",
+  "sig_src": "abi"
  },
  "00408a40": {
   "name": "C_0082d5e0_ResetSlotsAndGetCount",
@@ -8994,7 +8988,7 @@
   "name": "AssignStringRange_429B60",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_429B60": 75,
+   "AssignStringRange_429B60": 76,
    "MenuSceneSelect_InitializeString": 1
   },
   "ret": "void*",
@@ -25257,7 +25251,7 @@
   "name": "MenuManager_AppendPageName",
   "name_src": "agent",
   "votes": {
-   "MenuManager_AppendPageName": 5
+   "MenuManager_AppendPageName": 6
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -79405,7 +79399,7 @@
   "name": "DataDefs_RegisterField",
   "name_src": "vote",
   "votes": {
-   "DataDefs_RegisterField": 2
+   "DataDefs_RegisterField": 3
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
@@ -100515,7 +100509,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 35
+   "RwMatrixDestroy": 34
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -125970,7 +125964,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 237,
+   "Mem_FreeDebug": 238,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -126071,7 +126065,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 238
+   "Mem_Free": 237
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -129003,7 +128997,7 @@
   "name": "MissionScript_HasPendingState",
   "name_src": "vote",
   "votes": {
-   "MissionScript_HasPendingState": 1
+   "MissionScript_HasPendingState": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -130808,7 +130802,9 @@
  "006a07f0": {
   "name": "CoreZlibLog_EndDeflate",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreZlibLog_EndDeflate": 1
+  },
   "ret": "std::uint32_t",
   "conv": "__cdecl",
   "params": "void* stream",
@@ -130857,7 +130853,9 @@
  "006a15c0": {
   "name": "InflateResetStream",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreZlibLog_ResetDeflate": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "uint8_t* strm",
@@ -130865,15 +130863,16 @@
   "file": "src/auto/006a15c0.cpp"
  },
  "006a1640": {
-  "name": "ZlibLog_CoreSetup",
-  "name_src": "vote",
+  "name": "CoreZlibLog_InitializeDeflate",
+  "name_src": "agent",
   "votes": {
    "ZlibLog_CoreSetup": 1
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, int a2, int a3, int a4, int a5, unsigned int a6, uint8_t* a7, int a8",
-  "sig_src": "vote"
+  "params": "uint32_t* stream, int level, int method, int windowBits, int memoryLevel, unsigned int strategy, const uint8_t* version, int streamSize",
+  "sig_src": "impl",
+  "file": "src/auto/006a1640.cpp"
  },
  "006a1840": {
   "name": "ZlibLog_InitWithDefaultParams",
@@ -130888,7 +130887,9 @@
  "006a1870": {
   "name": "ZlibLog_ResetStream",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreZlibLog_ResetInflate": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "void* ctx",
@@ -130898,7 +130899,9 @@
  "006a18c0": {
   "name": "ZlibLog_ReleaseStreamHandle",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreZlibLog_EndInflate": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "uint32_t* a1",
@@ -130906,15 +130909,16 @@
   "file": "src/auto/006a18c0.cpp"
  },
  "006a1910": {
-  "name": "DlgLog_AppendMessageKind",
-  "name_src": "vote",
+  "name": "CoreZlibLog_InitializeInflate",
+  "name_src": "agent",
   "votes": {
    "DlgLog_AppendMessageKind": 1
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, int a2, uint8_t* a3, int a4",
-  "sig_src": "vote"
+  "params": "uint32_t* stream, int windowBits, uint8_t* version, int streamSize",
+  "sig_src": "impl",
+  "file": "src/auto/006a1910.cpp"
  },
  "006a1a10": {
   "name": "DlgLog_AppendMessage",
@@ -130940,7 +130944,9 @@
  "006a1e30": {
   "name": "CoreZlibLog_SendLogLine",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreZlibLog_SendLogLine": 1
+  },
   "ret": "int32_t",
   "conv": "__cdecl",
   "params": "void** window, const char* format, ...",
@@ -130948,13 +130954,14 @@
   "file": "src/auto/006a1e30.cpp"
  },
  "006a1ec0": {
-  "name": "sub_6A1EC0",
-  "name_src": "addr",
+  "name": "CoreZlibLog_ConnectLogWindow",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* Format, char a3",
-  "sig_src": "abi"
+  "params": "void** self, void* , char* format, char",
+  "sig_src": "impl",
+  "file": "src/auto/006a1ec0.cpp"
  },
  "006a20e0": {
   "name": "ProcessRecordAtOffset",
@@ -131074,6 +131081,8 @@
   "name": "C_0085ee28_ReadCompressedBlock",
   "name_src": "agent",
   "votes": {
+   "C_0085ee28_RefillBuffer": 1,
+   "C_0085ee28_LoadBlock": 1,
    "C_0085ee28_FinishSetup": 1
   },
   "ret": "int",
@@ -131083,22 +131092,24 @@
   "file": "src/auto/006a2bb0.cpp"
  },
  "006a2c60": {
-  "name": "sub_6A2C60",
-  "name_src": "addr",
+  "name": "C_0085ee28_ReadBufferedBytes",
+  "name_src": "impl",
   "votes": {},
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2, unsigned int a3",
-  "sig_src": "abi"
+  "params": "C_0085ee28* self, void* , char* destination, unsigned int requestedBytes",
+  "sig_src": "impl",
+  "file": "src/auto/006a2c60.cpp"
  },
  "006a2d20": {
-  "name": "sub_6A2D20",
-  "name_src": "addr",
+  "name": "C_0085ee28_Seek",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_0085ee28* self, void* , int origin, int offset",
+  "sig_src": "impl",
+  "file": "src/auto/006a2d20.cpp"
  },
  "006a2e00": {
   "name": "C_0085ee28_SumFields",
@@ -131239,6 +131250,16 @@
   "sig_src": "impl",
   "file": "src/auto/006a3330.cpp"
  },
+ "006a33a0": {
+  "name": "CoreZlibLog_SiftDownHuffmanHeap",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "void*",
+  "conv": "__cdecl",
+  "params": "void* state, const void* tree, std::int32_t heapIndex",
+  "sig_src": "impl",
+  "file": "src/auto/006a33a0.cpp"
+ },
  "006a3480": {
   "name": "CoreZlibLog_GenerateBitLengths",
   "name_src": "agent",
@@ -131303,7 +131324,7 @@
  },
  "006a4910": {
   "name": "CoreZlibLog_EmitStoredBlock",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -131366,7 +131387,9 @@
  "006a4e70": {
   "name": "CoreZlibLog_CreateInflateBlocks",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreZlibLog_CreateInflateBlocks": 1
+  },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
   "params": "void* stream, std::uint32_t checksumFunction, std::uint32_t windowSize",
@@ -131426,13 +131449,14 @@
   "file": "src/auto/006a6110.cpp"
  },
  "006a65a0": {
-  "name": "sub_6A65A0",
-  "name_src": "addr",
+  "name": "CoreZlibLog_BuildDynamicBitLengthsTree",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, unsigned int* a2, int* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint32_t* lengths, unsigned int* rootBits, int* table, int tableStorage, void* stream",
+  "sig_src": "impl",
+  "file": "src/auto/006a65a0.cpp"
  },
  "006a6650": {
   "name": "sub_6A6650",
@@ -132925,7 +132949,6 @@
   "name": "GfxMatrix_CopyTranslationAndUpdate",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_CopyTranslationAndUpdate": 1,
    "SceneLoader_SetMatrixTranslation": 1
   },
   "ret": "int",
@@ -177873,13 +177896,14 @@
   "file": "src/auto/00756c50.cpp"
  },
  "00756c80": {
-  "name": "sub_756C80",
-  "name_src": "addr",
+  "name": "S_0055af00_ConstructGameConfig",
+  "name_src": "agent",
   "votes": {},
-  "ret": "int",
+  "ret": "S_0055af00*",
   "conv": "__fastcall",
-  "params": "void* a1, int a2",
-  "sig_src": "abi"
+  "params": "S_0055af00* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00756c80.cpp"
  },
  "00759f20": {
   "name": "C_0086a3d8_InitSoundConfig",

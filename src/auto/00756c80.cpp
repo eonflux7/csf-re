@@ -1,0 +1,777 @@
+#include <cstdint>
+#include <cstddef>
+#include "globals.h"
+#include "hook.h"
+#include "types/auto_classes.h"
+
+CSF_FUNC(void*, __fastcall, AssignStringRange_429B60, 0x00429B60, (void* self, void* edx, char* text, unsigned int length));
+CSF_FUNC(void*, __fastcall, MenuManager_AppendPageName, 0x00470FD0, (S_00470ab0* self, void* , void* a3));
+CSF_FUNC(unsigned int, __fastcall, DataDefs_RegisterField, 0x0055AF00, (void* self, void* edx, uint32_t* a2));
+CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
+
+CSF_GLOBAL(uint8_t, g_byte_82E65C, 0x0082E65C);   // ""
+
+// Field kinds understood by the data-definition registry.
+enum : uint32_t {
+    kCfgBool      = 2,
+    kCfgInt       = 8,
+    kCfgUInt      = 16,
+    kCfgFloat     = 32,
+    kCfgString    = 64,
+    kCfgVector2   = 128,
+    kCfgVector3   = 256,
+    kCfgFileName  = 512,
+    kCfgEnum      = 4096,
+    kCfgColorRGBA = 0x10000,
+    kCfgColor     = 0x20000,
+    kCfgMaterial  = 0x80000
+};
+
+// MSVC 7.1 std::string as it lives on the original's stack.
+struct ConfigTempString {
+    uint32_t allocator;
+    union {
+        char  inlineBuffer[16];
+        char* heapBuffer;
+    };
+    uint32_t length;
+    uint32_t capacity;
+};
+
+// Record handed to the registry: name, address of the variable, 0, kind.
+struct ConfigFieldDescriptor {
+    const char* name;
+    void*       address;
+    uint32_t    reserved;
+    uint32_t    type;
+};
+
+static __forceinline void GameConfig_RegisterField(S_0055af00* self, const char* name, void* address, uint32_t type)
+{
+    ConfigFieldDescriptor descriptor;
+    descriptor.address  = address;
+    descriptor.name     = name;
+    descriptor.type     = type;
+    descriptor.reserved = 0;
+    DataDefs_RegisterField(self, nullptr, reinterpret_cast<uint32_t*>(&descriptor));
+}
+
+// Builds a temporary string and appends it to the frame-dump mode name list (+0x4A8).
+static __forceinline void GameConfig_AppendFrameDumpModeName(S_0055af00* self, char* name, unsigned int length)
+{
+    ConfigTempString temp;
+    temp.capacity = 15;
+    temp.length = 0;
+    temp.inlineBuffer[0] = 0;
+    AssignStringRange_429B60(&temp, nullptr, name, length);
+    MenuManager_AppendPageName(reinterpret_cast<S_00470ab0*>(reinterpret_cast<uint8_t*>(self) + 0x4A8), nullptr, &temp);
+    if (temp.capacity >= 0x10 && temp.heapBuffer != nullptr)
+        Mem_FreeDebug(temp.heapBuffer);
+}
+
+static S_0055af00* __fastcall S_0055af00_ConstructGameConfig(S_0055af00* self, void* /*edx*/)
+{
+    uint8_t* const base = reinterpret_cast<uint8_t*>(self);
+    char* const emptyText = reinterpret_cast<char*>(&g_byte_82E65C);
+
+    // ---- member construction -------------------------------------------------
+    self->field_0004 = 0;
+    self->field_0008 = 0;
+    self->field_000c = 0;
+
+    // commandLine string (+0x10)
+    self->field_0028 = 15;
+    self->field_0024 = 0;
+    CSF_AT(char, self, 0x14) = 0;
+    // sceneAlias string (+0x2C)
+    self->field_0044 = 15;
+    self->field_0040 = 0;
+    CSF_AT(char, self, 0x30) = 0;
+    // escenarioDefault file name (+0x68: filter, +0x484: value, +0x4A0: flag)
+    self->field_0080 = 15;
+    self->field_007c = 0;
+    CSF_AT(char, self, 0x6C) = 0;
+    CSF_AT(uint32_t, self, 0x49C) = 15;
+    CSF_AT(uint32_t, self, 0x498) = 0;
+    CSF_AT(char, self, 0x488) = 0;
+    CSF_AT(bool, self, 0x4A0) = false;
+    // framedumpMode enum (+0x4A4: current, +0x4A8: list of names)
+    CSF_AT(uint32_t, self, 0x4AC) = 0;
+    CSF_AT(uint32_t, self, 0x4B0) = 0;
+    CSF_AT(uint32_t, self, 0x4B4) = 0;
+    CSF_AT(int32_t, self, 0x4A4) = -1;
+    // framedumpFile file name (+0x4B8, +0x8D4, +0x8F0)
+    CSF_AT(uint32_t, self, 0x4D0) = 15;
+    CSF_AT(uint32_t, self, 0x4CC) = 0;
+    CSF_AT(char, self, 0x4BC) = 0;
+    CSF_AT(uint32_t, self, 0x8EC) = 15;
+    CSF_AT(uint32_t, self, 0x8E8) = 0;
+    CSF_AT(char, self, 0x8D8) = 0;
+    CSF_AT(bool, self, 0x8F0) = false;
+    // objective colours (5 x vec3) and the two scale vectors
+    CSF_AT(float, self, 0x9FC) = 0.0f;
+    CSF_AT(float, self, 0xA00) = 0.0f;
+    CSF_AT(float, self, 0xA04) = 0.0f;
+    CSF_AT(float, self, 0xA08) = 0.0f;
+    CSF_AT(float, self, 0xA0C) = 0.0f;
+    CSF_AT(float, self, 0xA10) = 0.0f;
+    CSF_AT(float, self, 0xA14) = 0.0f;
+    CSF_AT(float, self, 0xA18) = 0.0f;
+    CSF_AT(float, self, 0xA1C) = 0.0f;
+    CSF_AT(float, self, 0xA20) = 0.0f;
+    CSF_AT(float, self, 0xA24) = 0.0f;
+    CSF_AT(float, self, 0xA28) = 0.0f;
+    CSF_AT(float, self, 0xA2C) = 0.0f;
+    CSF_AT(float, self, 0xA30) = 0.0f;
+    CSF_AT(float, self, 0xA34) = 0.0f;
+    CSF_AT(float, self, 0xA38) = 0.0f;
+    CSF_AT(float, self, 0xA3C) = 0.0f;
+    CSF_AT(float, self, 0xA40) = 0.0f;
+    CSF_AT(float, self, 0xA44) = 0.0f;
+    CSF_AT(float, self, 0xA48) = 0.0f;
+    CSF_AT(float, self, 0xA4C) = 0.0f;
+    // colorQuadPS2 (4 floats)
+    CSF_AT(float, self, 0xB2C) = 0.0f;
+    CSF_AT(float, self, 0xB30) = 0.0f;
+    CSF_AT(float, self, 0xB34) = 0.0f;
+    CSF_AT(float, self, 0xB38) = 0.0f;
+    // sCommandConsoleInit string (+0xB44)
+    CSF_AT(uint32_t, self, 0xB5C) = 15;
+    CSF_AT(uint32_t, self, 0xB58) = 0;
+    CSF_AT(char, self, 0xB48) = 0;
+    // sMusicaMenus file name (+0xB60, +0xF7C, +0xF98)
+    CSF_AT(uint32_t, self, 0xB78) = 15;
+    CSF_AT(uint32_t, self, 0xB74) = 0;
+    CSF_AT(char, self, 0xB64) = 0;
+    CSF_AT(uint32_t, self, 0xF94) = 15;
+    CSF_AT(uint32_t, self, 0xF90) = 0;
+    CSF_AT(char, self, 0xF80) = 0;
+    CSF_AT(bool, self, 0xF98) = false;
+    // sMusicaCreditos file name (+0xF9C, +0x13B8, +0x13D4)
+    CSF_AT(uint32_t, self, 0xFB4) = 15;
+    CSF_AT(uint32_t, self, 0xFB0) = 0;
+    CSF_AT(char, self, 0xFA0) = 0;
+    CSF_AT(uint32_t, self, 0x13D0) = 15;
+    CSF_AT(uint32_t, self, 0x13CC) = 0;
+    CSF_AT(char, self, 0x13BC) = 0;
+    CSF_AT(bool, self, 0x13D4) = false;
+    // sJuegoFont file name (+0x13D8, +0x17F4, +0x1810)
+    CSF_AT(uint32_t, self, 0x13F0) = 15;
+    CSF_AT(uint32_t, self, 0x13EC) = 0;
+    CSF_AT(char, self, 0x13DC) = 0;
+    CSF_AT(uint32_t, self, 0x180C) = 15;
+    CSF_AT(uint32_t, self, 0x1808) = 0;
+    CSF_AT(char, self, 0x17F8) = 0;
+    CSF_AT(bool, self, 0x1810) = false;
+    // vMarcaDanyoOrigen / vMarcaDanyoDestino (2 x vec2)
+    CSF_AT(float, self, 0x18B8) = 0.0f;
+    CSF_AT(float, self, 0x18BC) = 0.0f;
+    CSF_AT(float, self, 0x18C0) = 0.0f;
+    CSF_AT(float, self, 0x18C4) = 0.0f;
+    // sSymbolFilename file name (+0x18F0, +0x1D0C, +0x1D28)
+    CSF_AT(uint32_t, self, 0x1908) = 15;
+    CSF_AT(uint32_t, self, 0x1904) = 0;
+    CSF_AT(char, self, 0x18F4) = 0;
+    CSF_AT(uint32_t, self, 0x1D24) = 15;
+    CSF_AT(uint32_t, self, 0x1D20) = 0;
+    CSF_AT(char, self, 0x1D10) = 0;
+    CSF_AT(bool, self, 0x1D28) = false;
+    // VideoDemo file name (+0x1D94, +0x21B0, +0x21CC)
+    CSF_AT(uint32_t, self, 0x1DAC) = 15;
+    CSF_AT(uint32_t, self, 0x1DA8) = 0;
+    CSF_AT(char, self, 0x1D98) = 0;
+    CSF_AT(uint32_t, self, 0x21C8) = 15;
+    CSF_AT(uint32_t, self, 0x21C4) = 0;
+    CSF_AT(char, self, 0x21B4) = 0;
+    CSF_AT(bool, self, 0x21CC) = false;
+
+    // ---- default values ------------------------------------------------------
+    self->field_004c = 100;                 // VolumenSonido
+    self->field_0050 = 256;                 // ArenaSize
+    CSF_AT(bool, self, 0x54) = true;        // bRWDebugInfo
+    self->field_0058 = 0xFFFFFFFF;          // colorCrossfireNormal
+    self->field_005c = 0xFF0000FF;          // colorCrossfireFriend
+    self->field_0060 = 0xFF00FF00;          // colorCrossfireEnemyNear
+    self->field_0064 = 0xFFFF0000;          // colorCrossfireEnemyFar
+    AssignStringRange_429B60(&self->field_0068, nullptr, (char*)CSF_STR(0x0086BC54, "*.scn"), 5);
+    AssignStringRange_429B60(base + 0x484, nullptr, (char*)CSF_STR(0x0086BC3C, "Maps/Plaza/Plaza.scn"), 20);
+
+    GameConfig_AppendFrameDumpModeName(self, (char*)CSF_STR(0x00833800, "OFF"), 3);
+    GameConfig_AppendFrameDumpModeName(self, (char*)CSF_ADDR_DATA(0x0083F9A8), 4);
+    GameConfig_AppendFrameDumpModeName(self, (char*)CSF_STR(0x0083F9A0, "WRITE"), 5);
+    CSF_AT(int32_t, self, 0x4A4) = 0;
+    AssignStringRange_429B60(base + 0x4B8, nullptr, (char*)CSF_STR(0x0086BC34, "*.fd"), 4);
+    AssignStringRange_429B60(base + 0x8D4, nullptr, emptyText, 0);
+
+    CSF_AT(float, self, 0x918) = 10.0f;
+    CSF_AT(float, self, 0x944) = 10.0f;
+    CSF_AT(float, self, 0x958) = 10.0f;
+    CSF_AT(float, self, 0x95C) = 30.0f;
+    CSF_AT(float, self, 0x960) = 30.0f;
+    CSF_AT(float, self, 0x964) = 30.0f;
+    CSF_AT(float, self, 0x968) = 30.0f;
+    CSF_AT(float, self, 0x96C) = 30.0f;
+    CSF_AT(float, self, 0x970) = 30.0f;
+    CSF_AT(float, self, 0x974) = 30.0f;
+    CSF_AT(float, self, 0x978) = 30.0f;
+    CSF_AT(float, self, 0x97C) = 30.0f;
+    CSF_AT(float, self, 0x980) = 30.0f;
+    CSF_AT(float, self, 0xA38) = 1.0f;
+    CSF_AT(float, self, 0xA3C) = 1.0f;
+    CSF_AT(float, self, 0xA40) = 1.0f;
+    CSF_AT(float, self, 0xA44) = 1.0f;
+    CSF_AT(float, self, 0xA48) = 1.0f;
+    CSF_AT(float, self, 0xA4C) = 1.0f;
+    CSF_AT(bool, self, 0x48) = false;
+    CSF_AT(bool, self, 0x49) = false;
+    CSF_AT(bool, self, 0x8F4) = true;
+    CSF_AT(bool, self, 0x8F5) = true;
+    CSF_AT(bool, self, 0x8F6) = false;
+    CSF_AT(uint32_t, self, 0x8F8) = 3;
+    CSF_AT(uint32_t, self, 0x8FC) = 17;
+    CSF_AT(uint32_t, self, 0x900) = 11;
+    CSF_AT(float, self, 0x908) = 400.0f;
+    CSF_AT(float, self, 0x90C) = 0.2f;
+    CSF_AT(float, self, 0x938) = 50.0f;
+    CSF_AT(float, self, 0x93C) = 0.25f;
+    CSF_AT(float, self, 0x940) = 1.0f;
+    CSF_AT(float, self, 0x948) = 40.0f;
+    CSF_AT(float, self, 0x94C) = 5.0f;
+    CSF_AT(float, self, 0x950) = 1.0f;
+    CSF_AT(float, self, 0x954) = 4500.0f;
+    CSF_AT(uint32_t, self, 0x984) = 50;
+    CSF_AT(bool, self, 0x904) = false;
+    CSF_AT(float, self, 0x91C) = 0.0f;
+    CSF_AT(float, self, 0x920) = 0.0f;
+    CSF_AT(float, self, 0x924) = 0.0f;
+    CSF_AT(float, self, 0x928) = 1.5f;
+    CSF_AT(float, self, 0x92C) = 300.0f;
+    CSF_AT(float, self, 0x930) = 1.0f;
+    CSF_AT(float, self, 0x934) = 1.0f;
+    CSF_AT(float, self, 0x988) = 30.0f;
+    CSF_AT(float, self, 0x98C) = 80.0f;
+    CSF_AT(float, self, 0x990) = 5.0f;
+    CSF_AT(float, self, 0x994) = 5.0f;
+    CSF_AT(float, self, 0x998) = 1.0f;
+    CSF_AT(float, self, 0x99C) = 1.0f;
+    CSF_AT(float, self, 0x9A0) = 1.0f;
+    CSF_AT(float, self, 0x9A4) = 1.0f;
+    CSF_AT(float, self, 0x9A8) = 150.0f;
+    CSF_AT(float, self, 0x9AC) = 100.0f;
+    CSF_AT(float, self, 0x9B0) = 0.5f;
+    CSF_AT(float, self, 0x9B4) = 25.0f;
+    CSF_AT(float, self, 0x9CC) = 5.0f;
+    CSF_AT(float, self, 0x9E0) = 0.5f;
+    CSF_AT(float, self, 0x9FC) = 228.0f;
+    CSF_AT(float, self, 0xA00) = 218.0f;
+    CSF_AT(float, self, 0xA04) = 187.0f;
+    CSF_AT(float, self, 0xA08) = 172.0f;
+    CSF_AT(float, self, 0xA0C) = 197.0f;
+    CSF_AT(float, self, 0xA10) = 206.0f;
+    CSF_AT(float, self, 0xA14) = 255.0f;
+    CSF_AT(float, self, 0xA18) = 70.0f;
+    CSF_AT(float, self, 0xA1C) = 70.0f;
+    CSF_AT(float, self, 0xA20) = 70.0f;
+    CSF_AT(float, self, 0xA24) = 255.0f;
+    CSF_AT(float, self, 0xA28) = 70.0f;
+    CSF_AT(float, self, 0xA2C) = 0.0f;
+    CSF_AT(float, self, 0xA30) = 0.0f;
+    CSF_AT(float, self, 0xA34) = 0.0f;
+    CSF_AT(float, self, 0xA68) = 500.0f;
+    CSF_AT(float, self, 0xA6C) = 500.0f;
+    CSF_AT(float, self, 0x9B8) = -45.0f;
+    CSF_AT(float, self, 0x9BC) = 45.0f;
+    CSF_AT(float, self, 0x9C0) = 0.0f;
+    CSF_AT(float, self, 0x9C4) = 0.03f;
+    CSF_AT(float, self, 0x9C8) = 2000.0f;
+    CSF_AT(float, self, 0x9D0) = 350.0f;
+    CSF_AT(float, self, 0x9D4) = 1500.0f;
+    CSF_AT(float, self, 0x9D8) = 3.5f;
+    CSF_AT(float, self, 0x9DC) = 1.7f;
+    CSF_AT(float, self, 0x9E4) = 0.7f;
+    CSF_AT(uint32_t, self, 0x9E8) = 100;
+    CSF_AT(uint32_t, self, 0x9EC) = 150;
+    CSF_AT(uint32_t, self, 0x9F0) = 600;
+    CSF_AT(uint32_t, self, 0x9F4) = 250;
+    CSF_AT(float, self, 0x9F8) = 200.0f;
+    CSF_AT(float, self, 0xA50) = 55.5f;
+    CSF_AT(bool, self, 0xA54) = false;
+    CSF_AT(bool, self, 0xA55) = false;
+    CSF_AT(float, self, 0xA58) = 20.0f;
+    CSF_AT(float, self, 0xA5C) = 1.0f;
+    CSF_AT(float, self, 0xA60) = 5.0f;
+    CSF_AT(bool, self, 0xA64) = true;
+    CSF_AT(float, self, 0xA70) = 200.0f;
+    CSF_AT(float, self, 0xA74) = 2000.0f;
+    CSF_AT(float, self, 0xA78) = 500.0f;
+    CSF_AT(float, self, 0xA7C) = 100.0f;
+    CSF_AT(float, self, 0xA80) = 0.5f;
+    CSF_AT(float, self, 0xA84) = 5.0f;
+    CSF_AT(float, self, 0xA88) = 10.0f;
+    CSF_AT(float, self, 0xA8C) = 5.0f;
+    CSF_AT(float, self, 0xA90) = 5.0f;
+    CSF_AT(float, self, 0xA94) = 3.0f;
+    CSF_AT(float, self, 0xA98) = 1.0f;
+    CSF_AT(float, self, 0xA9C) = 2.0f;
+    CSF_AT(float, self, 0xAA0) = 1.0f;
+    CSF_AT(float, self, 0xAA4) = 200.0f;
+    CSF_AT(float, self, 0xAA8) = 1000.0f;
+    CSF_AT(float, self, 0xAAC) = 1000.0f;
+    CSF_AT(float, self, 0xAB0) = 1000.0f;
+    CSF_AT(float, self, 0xAB4) = 300.0f;
+    CSF_AT(float, self, 0xAB8) = 60.0f;
+    CSF_AT(float, self, 0xABC) = 1.0f;
+    CSF_AT(float, self, 0xAC0) = 1.0f;
+    CSF_AT(float, self, 0xAC4) = 500.0f;
+    CSF_AT(int32_t, self, 0xAC8) = 5;
+    CSF_AT(int32_t, self, 0xACC) = 10;
+    CSF_AT(float, self, 0xAD0) = 0.5f;
+    CSF_AT(float, self, 0xAD4) = 0.5f;
+    CSF_AT(float, self, 0xAD8) = 2.0f;
+    CSF_AT(float, self, 0xADC) = 0.5f;
+    CSF_AT(float, self, 0xAE0) = 10.0f;
+    CSF_AT(float, self, 0xAE4) = 5.0f;
+    CSF_AT(float, self, 0xAE8) = 10.0f;
+    CSF_AT(float, self, 0xAEC) = 1.0f;
+    CSF_AT(float, self, 0xAF0) = 0.33f;
+    CSF_AT(float, self, 0xAF4) = 0.0f;
+    CSF_AT(float, self, 0xAF8) = 200.0f;
+    CSF_AT(float, self, 0xAFC) = 1500.0f;
+    CSF_AT(float, self, 0xB00) = 200.0f;
+    CSF_AT(float, self, 0xB04) = 500.0f;
+    CSF_AT(float, self, 0xB08) = 150.0f;
+    CSF_AT(float, self, 0xB0C) = 200.0f;
+    CSF_AT(float, self, 0xB10) = 150.0f;
+    CSF_AT(float, self, 0xB14) = 200.0f;
+    CSF_AT(float, self, 0xB18) = 72.88f;
+    CSF_AT(float, self, 0xB1C) = 72.88f;
+    CSF_AT(float, self, 0xB20) = 72.88f;
+    CSF_AT(float, self, 0xB24) = 72.88f;
+    CSF_AT(bool, self, 0xB28) = false;
+    CSF_AT(float, self, 0xB2C) = 255.0f;
+    CSF_AT(float, self, 0xB34) = 0.0f;
+    CSF_AT(float, self, 0xB30) = 0.0f;
+    CSF_AT(float, self, 0xB38) = 255.0f;
+    CSF_AT(int32_t, self, 0xB3C) = 100;
+    CSF_AT(bool, self, 0xB40) = false;
+    AssignStringRange_429B60(base + 0xB44, nullptr, emptyText, 0);
+    AssignStringRange_429B60(base + 0xB60, nullptr, (char*)CSF_STR(0x0086BC2C, "*.rws"), 5);
+    AssignStringRange_429B60(base + 0xF7C, nullptr, emptyText, 0);
+    AssignStringRange_429B60(base + 0xF9C, nullptr, (char*)CSF_STR(0x0086BC2C, "*.rws"), 5);
+    AssignStringRange_429B60(base + 0x13B8, nullptr, emptyText, 0);
+    CSF_AT(float, self, 0x1814) = 20.0f;
+    CSF_AT(float, self, 0x1818) = 10.0f;
+    CSF_AT(float, self, 0x181C) = 3.0f;
+    CSF_AT(uint32_t, self, 0x1820) = 25;
+    CSF_AT(uint32_t, self, 0x1824) = 5;
+    AssignStringRange_429B60(base + 0x13D8, nullptr, (char*)CSF_STR(0x0086BC24, "*.fnt"), 5);
+    AssignStringRange_429B60(base + 0x17F4, nullptr, (char*)CSF_STR(0x008343B0, "menus\\Ingame_01.fnt"), 19);
+    CSF_AT(float, self, 0x1828) = 0.02f;
+    CSF_AT(float, self, 0x182C) = 400.0f;
+    CSF_AT(float, self, 0x1830) = 100.0f;
+    CSF_AT(float, self, 0x1834) = 0.5f;
+    CSF_AT(float, self, 0x1838) = 1000.0f;
+    CSF_AT(float, self, 0x183C) = 100.0f;
+    CSF_AT(float, self, 0x1840) = 0.1f;
+    CSF_AT(float, self, 0x1844) = 100.0f;
+    CSF_AT(float, self, 0x1848) = 50.0f;
+    CSF_AT(float, self, 0x184C) = 200.0f;
+    CSF_AT(float, self, 0x1850) = 150.0f;
+    CSF_AT(float, self, 0x1854) = 50.0f;
+    CSF_AT(float, self, 0x1858) = 100.0f;
+    CSF_AT(float, self, 0x185C) = 150.0f;
+    CSF_AT(float, self, 0x1860) = 200.0f;
+    CSF_AT(float, self, 0x1864) = 50.0f;
+    CSF_AT(float, self, 0x1868) = 10.0f;
+    CSF_AT(uint32_t, self, 0x186C) = 0xFF969696;
+    CSF_AT(float, self, 0x1870) = 100.0f;
+    CSF_AT(float, self, 0x1874) = 50.0f;
+    CSF_AT(float, self, 0x1878) = 200.0f;
+    CSF_AT(float, self, 0x187C) = 150.0f;
+    CSF_AT(float, self, 0x1880) = 50.0f;
+    CSF_AT(float, self, 0x1884) = 100.0f;
+    CSF_AT(float, self, 0x1888) = 150.0f;
+    CSF_AT(float, self, 0x188C) = 200.0f;
+    CSF_AT(float, self, 0x1890) = 50.0f;
+    CSF_AT(float, self, 0x1894) = 10.0f;
+    CSF_AT(float, self, 0x1898) = 0.5f;
+    CSF_AT(float, self, 0x189C) = 0.1f;
+    CSF_AT(float, self, 0x18A0) = 0.5f;
+    CSF_AT(uint32_t, self, 0x18A4) = 0x00FF7F7F;
+    CSF_AT(float, self, 0x18A8) = 1.5f;
+    CSF_AT(float, self, 0x18AC) = 1.0f;
+    CSF_AT(float, self, 0x18B0) = 1.0f;
+    CSF_AT(bool, self, 0x18B4) = true;
+    CSF_AT(float, self, 0x18B8) = 300.0f;
+    CSF_AT(float, self, 0x18BC) = 200.0f;
+    CSF_AT(float, self, 0x18C0) = 500.0f;
+    CSF_AT(float, self, 0x18C4) = 400.0f;
+    CSF_AT(float, self, 0x18C8) = 1.0f;
+    CSF_AT(float, self, 0x18CC) = 0.5f;
+    CSF_AT(bool, self, 0x18D0) = true;
+    CSF_AT(bool, self, 0x18D1) = false;
+    CSF_AT(float, self, 0x18D4) = 3.0f;
+    CSF_AT(float, self, 0x18D8) = 3.0f;
+    CSF_AT(uint32_t, self, 0x18DC) = 3;
+    CSF_AT(uint32_t, self, 0x18E0) = 3;
+    CSF_AT(float, self, 0x18E4) = 0.3f;
+    CSF_AT(float, self, 0x18E8) = 0.9f;
+    CSF_AT(float, self, 0x18EC) = 1.0f;
+    AssignStringRange_429B60(base + 0x18F0, nullptr, (char*)CSF_STR(0x0086BC1C, "*.png"), 5);
+    AssignStringRange_429B60(base + 0x1D0C, nullptr, emptyText, 0);
+    CSF_AT(uint32_t, self, 0x1D2C) = 0;
+    CSF_AT(uint32_t, self, 0x1D30) = 0;
+    CSF_AT(uint32_t, self, 0x1D34) = 0xFFFF0000;
+    CSF_AT(float, self, 0x1D38) = 1.0f;
+    CSF_AT(float, self, 0x1D3C) = 25.0f;
+    CSF_AT(float, self, 0x1D40) = 50.0f;
+    CSF_AT(float, self, 0x1D44) = 5.0f;
+    CSF_AT(float, self, 0x1D48) = 25.0f;
+    CSF_AT(float, self, 0x1D4C) = 50.0f;
+    CSF_AT(float, self, 0x1D54) = 100.0f;
+    CSF_AT(float, self, 0x1D50) = 250.0f;
+    CSF_AT(float, self, 0x1D58) = 1.0f;
+    CSF_AT(float, self, 0x1D5C) = 100.0f;
+    CSF_AT(float, self, 0x1D60) = 100.0f;
+    CSF_AT(float, self, 0x1D68) = 50.0f;
+    CSF_AT(float, self, 0x1D6C) = 40.0f;
+    CSF_AT(float, self, 0x1D70) = 0.45f;
+    CSF_AT(float, self, 0x1D74) = 0.4f;
+    CSF_AT(float, self, 0x1D78) = 0.0f;
+    CSF_AT(float, self, 0x1D7C) = 0.0f;
+    CSF_AT(uint32_t, self, 0x1D80) = 50;
+    CSF_AT(uint32_t, self, 0x1D84) = 80;
+    CSF_AT(bool, self, 0x1D64) = false;
+    CSF_AT(uint32_t, self, 0x1D88) = 0xFF000000;
+    CSF_AT(float, self, 0x1D8C) = 127.0f;
+    CSF_AT(float, self, 0x1D90) = 1.0f;
+    AssignStringRange_429B60(base + 0x1D94, nullptr, (char*)CSF_STR(0x0086BC14, "*.bik"), 5);
+    AssignStringRange_429B60(base + 0x21B0, nullptr, emptyText, 0);
+    CSF_AT(float, self, 0x21D0) = 120.0f;
+    CSF_AT(bool, self, 0x21D4) = true;
+    CSF_AT(float, self, 0x21D8) = 100.0f;
+    CSF_AT(float, self, 0x21DC) = 200.0f;
+    CSF_AT(float, self, 0x21E0) = 0.2f;
+    CSF_AT(float, self, 0x21E4) = 1.0f;
+    CSF_AT(float, self, 0x21E8) = 0.5f;
+    CSF_AT(float, self, 0x21EC) = 1.0f;
+    CSF_AT(float, self, 0x21F0) = 2.0f;
+    CSF_AT(float, self, 0x21F4) = 0.5f;
+    CSF_AT(float, self, 0x21F8) = 500.0f;
+    CSF_AT(float, self, 0x21FC) = 1500.0f;
+    CSF_AT(float, self, 0x2200) = 0.2f;
+    CSF_AT(float, self, 0x2204) = 0.5f;
+    CSF_AT(bool, self, 0x2208) = true;
+    CSF_AT(float, self, 0x220C) = 0.5f;
+    CSF_AT(bool, self, 0x2210) = true;
+    CSF_AT(float, self, 0x2214) = 2.2f;
+    CSF_AT(float, self, 0x2218) = 0.18f;
+    CSF_AT(float, self, 0x221C) = 0.8f;
+    CSF_AT(float, self, 0x2220) = 0.15f;
+    CSF_AT(float, self, 0x2224) = 0.3f;
+    CSF_AT(float, self, 0x2228) = 2.07f;
+    CSF_AT(int32_t, self, 0x222C) = 65;
+    CSF_AT(int32_t, self, 0x2230) = 300;
+    CSF_AT(int32_t, self, 0x2234) = 700;
+    CSF_AT(int32_t, self, 0x2238) = 120;
+    CSF_AT(bool, self, 0x223C) = false;
+    CSF_AT(uint32_t, self, 0x2240) = 0x8000FF00;
+    CSF_AT(uint32_t, self, 0x2244) = 0x80FFFF00;
+    CSF_AT(uint32_t, self, 0x2248) = 0x8000FF00;
+    CSF_AT(uint32_t, self, 0x224C) = 0x80FF0000;
+    CSF_AT(float, self, 0x2250) = 0.05f;
+    CSF_AT(bool, self, 0x2254) = false;
+    CSF_AT(float, self, 0x2258) = 0.25f;
+    CSF_AT(float, self, 0x225C) = 0.5f;
+    CSF_AT(float, self, 0x2260) = 1.0f;
+    CSF_AT(float, self, 0x2264) = 0.5f;
+    CSF_AT(float, self, 0x2268) = 1.0f;
+    CSF_AT(float, self, 0x226C) = 200.0f;
+    CSF_AT(float, self, 0x2270) = 10.0f;
+    CSF_AT(float, self, 0x2274) = 10.0f;
+    CSF_AT(float, self, 0x2278) = 50.0f;
+    CSF_AT(float, self, 0x227C) = 1.0f;
+
+    // ---- variable registration ------------------------------------------------
+    GameConfig_RegisterField(self, CSF_STR(0x0086BC04, ".commandLine"), &self->field_0010, kCfgString);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BBF8, ".bDeveloper"), &self->field_0048, kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BBDC, ".fDistanciaVueloCuchillo"), &CSF_AT(float, self, 0x1838), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BBC8, ".fDistanciaTestMina"), &CSF_AT(float, self, 0x183C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BBB4, ".AnimOcioEsperaMin"), &CSF_AT(int32_t, self, 0xAC8), kCfgInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BBA0, ".AnimOcioEsperaMax"), &CSF_AT(int32_t, self, 0xACC), kCfgInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BB8C, ".fBarcaMaxVelLin"), &CSF_AT(float, self, 0x1D68), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BB78, ".fBarcaMaxVelAng"), &CSF_AT(float, self, 0x1D6C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BB60, ".fBarcaFactorAcelLin"), &CSF_AT(float, self, 0x1D70), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BB48, ".fBarcaFactorAcelAng"), &CSF_AT(float, self, 0x1D74), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BB34, ".fBriefingSoundWait"), &CSF_AT(float, self, 0x227C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BB20, ".fFactorBulletTime"), &CSF_AT(float, self, 0x1898), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BB04, ".fFactorVolumenBulletTime"), &CSF_AT(float, self, 0x189C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BAEC, ".fFactorVistaBulletTime"), &CSF_AT(float, self, 0x18A0), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BAD8, ".colorBlurMoribundo"), &CSF_AT(uint32_t, self, 0x18A4), kCfgColor);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BAC0, ".fBlurTiempoExplosion"), &CSF_AT(float, self, 0x18A8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BAA8, ".fBlurVolumenExplosion"), &CSF_AT(float, self, 0x18AC), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BA8C, ".fBlurFrecuenciaExplosion"), &CSF_AT(float, self, 0x18B0), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BA7C, ".StringSysTime"), &CSF_AT(float, self, 0x18D8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BA64, ".CameraExternaDistancia"), &CSF_AT(float, self, 0x9A8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BA44, ".CameraExternaDistanciaOpacidad"), &CSF_AT(float, self, 0x9AC), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BA28, ".fCameraExternaTiempoAjuste"), &CSF_AT(float, self, 0x9B0), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086BA0C, ".CameraExternaAnguloInicial"), &CSF_AT(float, self, 0x9B4), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B9F0, ".CameraExternaAnguloMinimo"), &CSF_AT(float, self, 0x9B8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B9D4, ".CameraExternaAnguloMaximo"), &CSF_AT(float, self, 0x9BC), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B9BC, ".CameraExternaIncFOV"), &CSF_AT(float, self, 0x9C0), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B9A8, ".fShakeInterpolTime"), &CSF_AT(float, self, 0x9C4), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B98C, ".fShakeDistanciaExplosion"), &CSF_AT(float, self, 0x9C8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B974, ".fShakeValorExplosion"), &CSF_AT(float, self, 0x9CC), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B95C, ".fShakeVehiculoPunto1"), &CSF_AT(float, self, 0x9D0), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B944, ".fShakeVehiculoPunto2"), &CSF_AT(float, self, 0x9D4), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B928, ".fShakeVehiculoValorPunto0"), &CSF_AT(float, self, 0x9D8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B90C, ".fShakeVehiculoValorPunto1"), &CSF_AT(float, self, 0x9DC), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B8F4, ".fCansancioRecuperacion"), &CSF_AT(float, self, 0x1844), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B8E0, ".fCansancioAndar"), &CSF_AT(float, self, 0x1848), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B8CC, ".fCansancioCorrer"), &CSF_AT(float, self, 0x184C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B8B8, ".fCansancioNadar"), &CSF_AT(float, self, 0x1850), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B898, ".fCansancioNadarFrancotirador"), &CSF_AT(float, self, 0x1854), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B884, ".fCansancioBucear"), &CSF_AT(float, self, 0x1858), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B86C, ".fCansancioHoldBreath"), &CSF_AT(float, self, 0x185C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B858, ".fCansancioSalto"), &CSF_AT(float, self, 0x1860), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B838, ".fCansancioPorcentajeAgotado"), &CSF_AT(float, self, 0x1864), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B820, ".fCansancioLimiteMinimo"), &CSF_AT(float, self, 0x1868), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B804, ".colorCansancioLimiteMinimo"), &CSF_AT(uint32_t, self, 0x186C), kCfgColor);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B7EC, ".sCommandConsoleInit"), base + 0xB44, kCfgString);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B7DC, ".bShowConsole"), &CSF_AT(bool, self, 0x8F5), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B7C0, ".fContextoDistanciaActivar"), &CSF_AT(float, self, 0xAF8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B7A4, ".fContextoDistanciaAyuda"), &CSF_AT(float, self, 0xAFC), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B788, ".fContextoDistanciaSaqueo"), &CSF_AT(float, self, 0xB00), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B768, ".fContextoDistanciaCogerItem"), &CSF_AT(float, self, 0xB08), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B748, ".fContextoDistanciaConversacion"), &CSF_AT(float, self, 0xB04), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B72C, ".fContextoDistanciaCurar"), &CSF_AT(float, self, 0xB0C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B708, ".fContextoDistanciaPuestoVehiculo"), &CSF_AT(float, self, 0xB10), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B6E8, ".fContextoDistanciaInterrogar"), &CSF_AT(float, self, 0xB14), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B6C8, ".fContextoDistanciaAcuchillar"), &CSF_AT(float, self, 0xB1C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B6AC, ".fContextoDistanciaAhorcar"), &CSF_AT(float, self, 0xB18), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B690, ".fContextoDistanciaAmenazar"), &CSF_AT(float, self, 0xB24), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B670, ".fContextoDistanciaEstrangular"), &CSF_AT(float, self, 0xB20), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B650, ".fControlesTiempoPulsacionCorto"), &CSF_AT(float, self, 0x1840), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B638, ".colorCrossfireNormal"), &self->field_0058, kCfgColor);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B620, ".colorCrossfireFriend"), &self->field_005c, kCfgColor);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B604, ".colorCrossfireEnemyNear"), &self->field_0060, kCfgColor);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B5EC, ".colorCrossfireEnemyFar"), &self->field_0064, kCfgColor);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B5E0, ".bDebugInfo"), &CSF_AT(bool, self, 0x8F6), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B5CC, ".bEffectsEnabled"), &CSF_AT(bool, self, 0x8F4), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B5BC, ".Scale_AGACHADO"), &CSF_AT(float, self, 0xA38), kCfgVector3);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B5AC, ".Scale_TUMBADO"), &CSF_AT(float, self, 0xA44), kCfgVector3);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B598, ".escenarioDefault"), &self->field_0068, kCfgFileName);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B58C, ".sceneAlias"), &self->field_002c, kCfgString);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B578, ".fPointsPerEnemy"), &CSF_AT(float, self, 0x1D38), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B564, ".fPointsPerHeadshot"), &CSF_AT(float, self, 0x1D3C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B54C, ".fPointsPerSlinkykill"), &CSF_AT(float, self, 0x1D40), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B538, ".fPointsPerSoldier"), &CSF_AT(float, self, 0x1D44), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B520, ".fPointsPerSubOfficer"), &CSF_AT(float, self, 0x1D48), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B50C, ".fPointsPerOfficer"), &CSF_AT(float, self, 0x1D4C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B4F8, ".fPointsPerGestapo"), &CSF_AT(float, self, 0x1D54), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B4E4, ".fPointsPerGeneral"), &CSF_AT(float, self, 0x1D50), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B4CC, ".fPointsPerAlliedSaved"), &CSF_AT(float, self, 0x1D58), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B4B0, ".fPointsPerPrimaryTarget"), &CSF_AT(float, self, 0x1D5C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B494, ".fPointsPerSecondaryTarget"), &CSF_AT(float, self, 0x1D60), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B480, ".fDistSonidoMoneda"), &CSF_AT(float, self, 0xA68), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B46C, ".fDistSonidoCorrer"), &CSF_AT(float, self, 0xA6C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B44C, ".fDistSonidoColisionConBicho"), &CSF_AT(float, self, 0xA70), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B434, ".fDistSonidoExplosion"), &CSF_AT(float, self, 0xA74), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B420, ".fDistSonidoQuejido"), &CSF_AT(float, self, 0xA78), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B408, ".fDistSonidoKillerMove"), &CSF_AT(float, self, 0xA7C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B3F4, ".fTimerEventALWAYS"), &CSF_AT(float, self, 0xA80), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B3DC, ".fPlayerBajoDeMunicion"), &CSF_AT(float, self, 0x944), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B3C8, ".fPlayerBajoDeVida"), &CSF_AT(float, self, 0x948), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B3B4, ".fPlayerEnTiroteo"), &CSF_AT(float, self, 0x94C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B3A0, ".uVozProbabilidad"), &CSF_AT(uint32_t, self, 0x984), kCfgUInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B390, ".fVozEventos"), &CSF_AT(float, self, 0x958), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B378, ".fVozCaminandoAgachado"), &CSF_AT(float, self, 0x95C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B364, ".fVozMatarConSigilo"), &CSF_AT(float, self, 0x960), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B350, ".fVozMatarDeUnTiro"), &CSF_AT(float, self, 0x964), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B338, ".fVozMatarDeTiroSniper"), &CSF_AT(float, self, 0x968), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B324, ".fVozBajoDeMunicion"), &CSF_AT(float, self, 0x96C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B314, ".fVozBajoDeVida"), &CSF_AT(float, self, 0x970), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B304, ".fVozApuntar"), &CSF_AT(float, self, 0x974), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B2F0, ".fVozDisfrazarse"), &CSF_AT(float, self, 0x978), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B2DC, ".fVozSerDescubierto"), &CSF_AT(float, self, 0x97C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B2CC, ".fVozTiroteo"), &CSF_AT(float, self, 0x980), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B2C0, ".fFadeSpeed"), &CSF_AT(float, self, 0x225C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B2B0, ".framedumpMode"), &CSF_AT(int32_t, self, 0x4A4), kCfgEnum);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B2A0, ".framedumpFile"), base + 0x4B8, kCfgFileName);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B294, ".sJuegoFont"), base + 0x13D8, kCfgFileName);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B27C, ".fDistEvitarOclusores"), &CSF_AT(float, self, 0xAA4), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B260, ".fDistBusquedaInteractivos"), &CSF_AT(float, self, 0xAB0), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B248, ".fDistBusquedaParapeto"), &CSF_AT(float, self, 0xAAC), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B230, ".fDistBusquedaRastreo"), &CSF_AT(float, self, 0xAA8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B218, ".fDistPlayerMuyCerca"), &CSF_AT(float, self, 0xAB4), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B204, ".fMaxGiroCintura"), &CSF_AT(float, self, 0xAB8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B1F0, ".fTimerRafagaHumano"), &CSF_AT(float, self, 0xAD0), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B1DC, ".fDelayRafagaHumano"), &CSF_AT(float, self, 0xAD4), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B1C4, ".fTimerRafagaVehiculo"), &CSF_AT(float, self, 0xAD8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B1AC, ".fDelayRafagaVehiculo"), &CSF_AT(float, self, 0xADC), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B194, ".fAlturaDeteccionSonido"), &CSF_AT(float, self, 0xAC4), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B180, ".fTimerEnDistraido"), &CSF_AT(float, self, 0xA84), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B170, ".fTimerEnDudoso"), &CSF_AT(float, self, 0xA88), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B15C, ".fMultTimerEnDudoso"), &CSF_AT(float, self, 0xA9C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B14C, ".fTimerEnAlerta"), &CSF_AT(float, self, 0xA8C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B138, ".fTimerEnCombate"), &CSF_AT(float, self, 0xA90), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B120, ".fTimerEnConversacion"), &CSF_AT(float, self, 0xAE0), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B100, ".fTimerEsperaTrasConversacion"), &CSF_AT(float, self, 0xAE4), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B0E4, ".fTimerAgachadoEnParapeto"), &CSF_AT(float, self, 0xA94), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B0C8, ".fTimerLevantadoEnParapeto"), &CSF_AT(float, self, 0xA98), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B0B8, ".fPausaCombate"), &CSF_AT(float, self, 0xAA0), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B0A0, ".fMultAngleXDistraido"), &CSF_AT(float, self, 0xABC), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B088, ".fMultAngleYDistraido"), &CSF_AT(float, self, 0xAC0), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B074, ".colorDudosoEmpty"), &CSF_AT(uint32_t, self, 0x2240), kCfgColor);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B060, ".colorDudosoFilled"), &CSF_AT(uint32_t, self, 0x2244), kCfgColor);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B04C, ".colorAlertaEmpty"), &CSF_AT(uint32_t, self, 0x2248), kCfgColor);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B038, ".colorAlertaFilled"), &CSF_AT(uint32_t, self, 0x224C), kCfgColor);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B024, ".fMinIconSizeRatio"), &CSF_AT(float, self, 0x2250), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086B010, ".AlturaDeteccion"), &CSF_AT(float, self, 0x182C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AFF4, ".fAlturaDeteccionDistancia"), &CSF_AT(float, self, 0x1830), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AFD8, ".fAlturaDeteccionAlphaMin"), &CSF_AT(float, self, 0x1834), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AFC4, ".MiniMapaVisionIco"), &CSF_AT(bool, self, 0x2254), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AFA8, ".MiniMapaIcoCombatLatency"), &CSF_AT(float, self, 0x2260), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AF8C, ".MiniMapaIcoCombatAlfaMin"), &CSF_AT(float, self, 0x2264), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AF70, ".MiniMapaIcoCombatAlfaMax"), &CSF_AT(float, self, 0x2268), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AF60, ".MiniMapaIncr"), &CSF_AT(float, self, 0xA58), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AF50, ".RTSBordeColor"), &CSF_AT(uint32_t, self, 0x1D88), kCfgColor);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AF40, ".RTSBordeAlpha"), &CSF_AT(float, self, 0x1D8C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AF30, ".VDanyoGradual"), &CSF_AT(float, self, 0xA5C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AF1C, ".bMarcaDanyoActive"), &CSF_AT(bool, self, 0x18B4), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AF08, ".vMarcaDanyoOrigen"), &CSF_AT(float, self, 0x18B8), kCfgVector2);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AEF4, ".vMarcaDanyoDestino"), &CSF_AT(float, self, 0x18C0), kCfgVector2);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AEDC, ".fMarcaDanyoDuracion"), &CSF_AT(float, self, 0x18C8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AEC4, ".MarcaDanyoAlphaSolid"), &CSF_AT(float, self, 0x18CC), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AEB0, ".DefaultMaterial"), &CSF_AT(uint32_t, self, 0x8F8), kCfgMaterial);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AEA0, ".WaterMaterial"), &CSF_AT(uint32_t, self, 0x8FC), kCfgMaterial);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AE90, ".GlassMaterial"), &CSF_AT(uint32_t, self, 0x900), kCfgMaterial);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AE80, ".bMenuRapido"), &CSF_AT(bool, self, 0xA64), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AE70, ".sMusicaMenus"), base + 0xB60, kCfgFileName);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AE5C, ".sMusicaCreditos"), base + 0xF9C, kCfgFileName);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AE48, ".fStateAlphaFadeIn"), &CSF_AT(float, self, 0x1D90), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AE34, ".uPjeVidaMoribundo"), &CSF_AT(uint32_t, self, 0x1820), kCfgUInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AE1C, ".uDuracionEstadoAbatido"), &CSF_AT(uint32_t, self, 0x1824), kCfgUInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AE0C, ".bInvertMouse"), &CSF_AT(bool, self, 0x49), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086ADF8, ".fViniloLatencia"), &CSF_AT(float, self, 0x2258), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086ADDC, ".fMPCansancioRecuperacion"), &CSF_AT(float, self, 0x1870), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086ADC8, ".fMPCansancioAndar"), &CSF_AT(float, self, 0x1874), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086ADB4, ".fMPCansancioCorrer"), &CSF_AT(float, self, 0x1878), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086ADA0, ".fMPCansancioNadar"), &CSF_AT(float, self, 0x187C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AD80, ".fMPCansancioNadarFrancotirador"), &CSF_AT(float, self, 0x1880), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AD6C, ".fMPCansancioBucear"), &CSF_AT(float, self, 0x1884), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AD54, ".fMPCansancioHoldBreath"), &CSF_AT(float, self, 0x1888), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AD40, ".fMPCansancioSalto"), &CSF_AT(float, self, 0x188C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AD20, ".fMPCansancioPorcentajeAgotado"), &CSF_AT(float, self, 0x1890), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AD04, ".fMPCansancioLimiteMinimo"), &CSF_AT(float, self, 0x1894), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086ACE8, ".fMPPlayerFallDamageHeight"), &CSF_AT(float, self, 0x910), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086ACCC, ".fMPPlayerFallDamageRatio"), &CSF_AT(float, self, 0x914), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086ACB8, ".fDuracionMuertos"), &CSF_AT(float, self, 0x1818), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086ACA8, ".fFadeMuertos"), &CSF_AT(float, self, 0x181C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AC8C, ".VerTodasLasPlataformasMP"), &CSF_AT(bool, self, 0x1D64), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AC78, ".fTimeToCheckFinish"), &CSF_AT(float, self, 0xA60), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AC68, ".XQuadObjetivos"), &CSF_AT(uint32_t, self, 0x9E8), kCfgUInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AC58, ".YQuadObjetivos"), &CSF_AT(uint32_t, self, 0x9EC), kCfgUInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AC44, ".SizeXQuadObjetivos"), &CSF_AT(uint32_t, self, 0x9F0), kCfgUInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AC30, ".SizeYQuadObjetivos"), &CSF_AT(uint32_t, self, 0x9F4), kCfgUInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AC18, ".fTransQuadObjetivos"), &CSF_AT(float, self, 0x9F8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AC04, ".colorTitulosObjs"), &CSF_AT(float, self, 0x9FC), kCfgVector3);
+    GameConfig_RegisterField(self, CSF_STR(0x0086ABF4, ".colorObjUndef"), &CSF_AT(float, self, 0xA08), kCfgVector3);
+    GameConfig_RegisterField(self, CSF_STR(0x0086ABE4, ".colorObjFailed"), &CSF_AT(float, self, 0xA14), kCfgVector3);
+    GameConfig_RegisterField(self, CSF_STR(0x0086ABD0, ".colorObjSuccess"), &CSF_AT(float, self, 0xA20), kCfgVector3);
+    GameConfig_RegisterField(self, CSF_STR(0x0086ABBC, ".colorQuadObjetivos"), &CSF_AT(float, self, 0xA2C), kCfgVector3);
+    GameConfig_RegisterField(self, CSF_STR(0x0086ABA8, ".fDuracionObjetos"), &CSF_AT(float, self, 0x1814), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AB9C, ".bUsePak"), &CSF_AT(bool, self, 0xA54), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AB8C, ".bFirstOutPak"), &CSF_AT(bool, self, 0xA55), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AB70, ".fTextControlFlickeringTime"), &CSF_AT(float, self, 0x18EC), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AB60, ".bQuadPS2Active"), &CSF_AT(bool, self, 0xB28), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AB50, ".colorQuadPS2"), &CSF_AT(float, self, 0xB2C), kCfgColorRGBA);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AB34, ".fPlayerAtropelloForceMult"), &CSF_AT(float, self, 0x930), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AB18, ".fPlayerAtropelloDamageMult"), &CSF_AT(float, self, 0x934), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AAFC, ".fAutodefTimeBalasFogueo"), &CSF_AT(float, self, 0x1D78), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AAE0, ".fAutodefTimeBalasVerdad"), &CSF_AT(float, self, 0x1D7C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AAC8, ".uAutodefProbabilidad"), &CSF_AT(uint32_t, self, 0x1D80), kCfgUInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AAA8, ".uAutodefProbabilidadQuemarropa"), &CSF_AT(uint32_t, self, 0x1D84), kCfgUInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AA8C, ".fPlayerFallDamageHeight"), &CSF_AT(float, self, 0x908), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AA74, ".fPlayerFallDamageRatio"), &CSF_AT(float, self, 0x90C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AA64, ".PlayerDownVelo"), &CSF_AT(float, self, 0x918), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AA4C, ".PlayerHitDeviation_H"), &CSF_AT(float, self, 0x91C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AA34, ".PlayerHitDeviation_V"), &CSF_AT(float, self, 0x920), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AA1C, ".PlayerHitDeviation_FA"), &CSF_AT(float, self, 0x924), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086AA04, ".fPlayerHitDesplMult"), &CSF_AT(float, self, 0x928), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A9E8, ".fPlayerHitDesplReduction"), &CSF_AT(float, self, 0x92C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A9C8, ".fCameraRetardoManosLimitHor"), &CSF_AT(float, self, 0x990), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A9A8, ".fCameraRetardoManosLimitVer"), &CSF_AT(float, self, 0x994), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A98C, ".fCameraRetardoManosMult"), &CSF_AT(float, self, 0x998), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A970, ".fCameraRetardoManosAimMult"), &CSF_AT(float, self, 0x99C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A94C, ".fCameraRetardoManosFriccionMult"), &CSF_AT(float, self, 0x9A4), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A92C, ".fCameraRetardoManosDesplMult"), &CSF_AT(float, self, 0x9A0), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A918, ".PlayerLeanDistance"), &CSF_AT(float, self, 0x938), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A908, ".PlayerLeanTime"), &CSF_AT(float, self, 0x93C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A8FC, ".PlayerMass"), &CSF_AT(float, self, 0x940), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A8E0, ".WaitTimeAfterSniperShot"), &CSF_AT(float, self, 0x950), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A8C4, ".fObjectsForceImpulseMult"), &CSF_AT(float, self, 0x954), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A8A8, ".fTimerRecuperacionDisfraz"), &CSF_AT(float, self, 0xAE8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A888, ".fTerceraPersonaOffsetNadando"), &CSF_AT(float, self, 0x988), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A868, ".fTerceraPersonaOffsetBuceando"), &CSF_AT(float, self, 0x98C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A854, ".fDispersionTiempo"), &CSF_AT(float, self, 0xAEC), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A838, ".fDispersionVisualMinima"), &CSF_AT(float, self, 0xAF0), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A824, ".fDispersionMinima"), &CSF_AT(float, self, 0xAF4), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A810, ".distIlumPuertas"), &CSF_AT(float, self, 0x226C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A7F8, ".angXMirarOjoCerradura"), &CSF_AT(float, self, 0x2270), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A7E0, ".angYMirarOjoCerradura"), &CSF_AT(float, self, 0x2274), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A7C8, ".fPorcentajePuertaSneak"), &CSF_AT(float, self, 0x2278), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A7BC, ".fRampAngle"), &CSF_AT(float, self, 0xA50), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A7B0, ".ArenaSize"), &self->field_0050, kCfgInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A7A0, ".bRWDebugInfo"), &self->field_0054, kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A78C, ".PermitirTuneoRed"), &CSF_AT(bool, self, 0xB40), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A77C, ".iSaveGameLOD"), &CSF_AT(int32_t, self, 0xB3C), kCfgInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A768, ".sSymbolFilename"), base + 0x18F0, kCfgFileName);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A748, ".uSymbolScreenWidthAndHeight"), &CSF_AT(uint32_t, self, 0x1D2C), kCfgUInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A728, ".uSymbolTextureWidthAndHeight"), &CSF_AT(uint32_t, self, 0x1D30), kCfgUInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A714, ".uSymbolColorText"), &CSF_AT(uint32_t, self, 0x1D34), kCfgColor);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A704, ".VolumenSonido"), &self->field_004c, kCfgInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A6EC, ".fTiempoPasosAndando"), &CSF_AT(float, self, 0x9E0), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A6D4, ".fTiempoPasosAgachado"), &CSF_AT(float, self, 0x9E4), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A6C0, ".SpaceBetweenLines"), &CSF_AT(float, self, 0x1828), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A6B0, ".MaxStringShow"), &CSF_AT(uint32_t, self, 0x18DC), kCfgUInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A6A0, ".StringShowDown"), &CSF_AT(bool, self, 0x18D0), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A68C, ".StringEventTime"), &CSF_AT(float, self, 0x18D4), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A678, ".MaxStringEventShow"), &CSF_AT(uint32_t, self, 0x18E0), kCfgUInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A664, ".StringEventDown"), &CSF_AT(bool, self, 0x18D1), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A658, ".ShiftTime"), &CSF_AT(float, self, 0x18E4), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A644, ".StringAlphaSolid"), &CSF_AT(float, self, 0x18E8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A634, ".BigTextsMark"), &CSF_AT(bool, self, 0x223C), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A628, ".VibrEnable"), &CSF_AT(bool, self, 0x21D4), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A618, ".VibrDanyoMin"), &CSF_AT(float, self, 0x21D8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A608, ".VibrDanyoMax"), &CSF_AT(float, self, 0x21DC), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A5F8, ".VibrIntensMin"), &CSF_AT(float, self, 0x21E0), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A5E0, ".VibrImpactoDuracion"), &CSF_AT(float, self, 0x21E4), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A5C8, ".VibrDisparoDuracion"), &CSF_AT(float, self, 0x21E8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A5B4, ".VibrCaidaDuracion"), &CSF_AT(float, self, 0x21EC), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A598, ".VibrRafagaDuracionTotal"), &CSF_AT(float, self, 0x21F0), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A578, ".VibrRafagaDuracionAceleracion"), &CSF_AT(float, self, 0x21F4), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A55C, ".VibrDistanciaBlindadoMin"), &CSF_AT(float, self, 0x21F8), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A540, ".VibrDistanciaBlindadoMax"), &CSF_AT(float, self, 0x21FC), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A528, ".VibrBlindadoIntensMin"), &CSF_AT(float, self, 0x2200), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A514, ".VibrFuegoDuracion"), &CSF_AT(float, self, 0x2204), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A500, ".VibrEnableFuego"), &CSF_AT(bool, self, 0x2208), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A4EC, ".VibrGasDuracion"), &CSF_AT(float, self, 0x220C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A4DC, ".VibrEnableGas"), &CSF_AT(bool, self, 0x2210), kCfgBool);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A4C4, ".VibrWaitAntesBullet"), &CSF_AT(float, self, 0x2214), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A4AC, ".VibrBulletDuracion1"), &CSF_AT(float, self, 0x2218), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A498, ".VibrBulletIntens1"), &CSF_AT(float, self, 0x221C), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A480, ".VibrBulletDuracion2"), &CSF_AT(float, self, 0x2220), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A46C, ".VibrBulletIntens2"), &CSF_AT(float, self, 0x2224), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A454, ".VibrWaitDespuesBullet"), &CSF_AT(float, self, 0x2228), kCfgFloat);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A440, ".PosXVentanaChat"), &CSF_AT(int32_t, self, 0x222C), kCfgInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A42C, ".PosYVentanaChat"), &CSF_AT(int32_t, self, 0x2230), kCfgInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A418, ".AnchoVentanaChat"), &CSF_AT(int32_t, self, 0x2234), kCfgInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A404, ".AltoVentanaChat"), &CSF_AT(int32_t, self, 0x2238), kCfgInt);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A3F8, ".VideoDemo"), base + 0x1D94, kCfgFileName);
+    GameConfig_RegisterField(self, CSF_STR(0x0086A3E8, ".VideoDemoTime"), &CSF_AT(float, self, 0x21D0), kCfgFloat);
+
+    return self;
+}
+
+HOOK(0x00756C80, S_0055af00_ConstructGameConfig, "auto");
