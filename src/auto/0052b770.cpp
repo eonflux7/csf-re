@@ -1,49 +1,3 @@
-# Escalation 0x0052B770: differential test mismatch in game (verifier baseline)
-
-## Smoke log tail
-```
-ed)
-DIFF 00716490 CGuiListBoxBase_EnsureColumn: ours made 0 calls, the original 1 (next: 007163F0) | ecx=0D30E288 edx=00000000 args=00000000 
-DIFF 00716490 CGuiListBoxBase_EnsureColumn: ours made 0 calls, the original 1 (next: 007163F0) | ecx=0D343088 edx=00000000 args=00000000 
-T3 00500F10 S_004f21d0_Reset: inconclusive (a callee returned an address in the original's frame)
-T3 00512400 CSaveGameManager_LoadSaveSlot: inconclusive (a callee changed heap memory ours may read; call 5 to 00698600: arg 1 orig 7234DE00 ours 00000000)
-T3 00500F10 S_004f21d0_Reset: inconclusive (a callee returned an address in the original's frame)
-T3 00512400 CSaveGameManager_LoadSaveSlot: inconclusive (a callee changed heap memory ours may read; call 5 to 00698600: arg 1 orig 7234DE00 ours 00000000)
-T3 00500F10 S_004f21d0_Reset: inconclusive (a callee returned an address in the original's frame)
-T3 00512400 CSaveGameManager_LoadSaveSlot: inconclusive (a callee changed heap memory ours may read; call 5 to 00698600: arg 1 orig 7234DE00 ours 00000000)
-DIFF 00716490 CGuiListBoxBase_EnsureColumn: ours made 0 calls, the original 1 (next: 007163F0) | ecx=0D2E82E0 edx=00000000 args=00000000 
-T3 00547F10 CMenuExtras_LoadThumbnails: inconclusive (more calls, callee writes or snapshot bytes than recorded)
-DIFF 0052B770 CMenuMessageBox_UpdateTimersAndSelection: ours made 3 calls, the original 4 (next: 00529E50) | ecx=0D2BE4E0 edx=00000000 args=3B137310 
-DIFF 0052B770 CMenuMessageBox_UpdateTimersAndSelection: ours made 3 calls, the original 4 (next: 00529E50) | ecx=0D2BE4E0 edx=00000000 args=3AE0B25E 
-DIFF 0052B770 CMenuMessageBox_UpdateTimersAndSelection: call 4: ours calls 00529E50, the original made only 3 calls | ecx=0D2BE4E0 edx=00000000 args=3B098C06 
----- csf_hook.log
-menutour: Menus/P_Sound.fbs
-menutour: Menus/P_Contro.fbs
-menutour: Menus/P_Help.fbs
-menutour: Menus/P_Tactic.fbs
-menutour: Menus/P_TVirtu.fbs
-menutour: Menus/P_SShots.fbs
-menutour: Menus/P_Credits.fbs
-menutour: Menus/P_OptIng.fbs
-menutour: Menus/P_SoundI.fbs
-menutour: Menus/P_VideoI.fbs
-menutour: Menus/P_ConIng.fbs
-menutour: Menus/P_SaGame.fbs
-menutour: Menus/P_Carga.fbs
-menutour: Menus/P_ProgBr.fbs
-menutour: Menus/P_SalDem.fbs
-menutour: Menus/P_Edit.fbs
-menutour: Menus/P_EditG.fbs
-menutour: Menus/P_MsgBox.fbs
-menutour: Menus/P_MePrin.fbs
-menutour: done
-SMOKE OK (alive after 43s, until end)
-verify: 7534 hooks installed, 1201 functions executed in this smoke, 295 diffed, 4 with inconclusive tier-3 runs; 0 new code hashes
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include <cstring>
 #include "globals.h"
@@ -148,4 +102,3 @@ static int __fastcall CMenuMessageBox_UpdateTimersAndSelection(
 
 HOOK(0x0052B770, CMenuMessageBox_UpdateTimersAndSelection, "auto");
 
-```

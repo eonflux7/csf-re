@@ -1341,7 +1341,7 @@
   "votes": {
    "MenuMpCharacterSelect_GetAngleDifference": 1,
    "GetAngularDifference": 1,
-   "AngleDiffNormalized": 7
+   "AngleDiffNormalized": 8
   },
   "ret": "double",
   "conv": "__cdecl",
@@ -1353,7 +1353,7 @@
   "name": "MenuMpCharacterSelect_NormalizeAngle",
   "name_src": "agent",
   "votes": {
-   "MenuMpCharacterSelect_NormalizeAngle": 6
+   "MenuMpCharacterSelect_NormalizeAngle": 7
   },
   "ret": "double",
   "conv": "__cdecl",
@@ -3130,7 +3130,7 @@
   "name": "CalculateArcCosine",
   "name_src": "vote",
   "votes": {
-   "CalculateArcCosine": 5
+   "CalculateArcCosine": 6
   },
   "ret": "double",
   "conv": "__cdecl",
@@ -4329,7 +4329,8 @@
   "name_src": "agent",
   "votes": {
    "Member08_Release": 2,
-   "ReleaseStateSnapshot": 1
+   "ReleaseStateSnapshot": 1,
+   "ReleaseSettingsSnapshot": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -4363,7 +4364,8 @@
   "name_src": "agent",
   "votes": {
    "Member08_InitializeFromSource": 1,
-   "CopyStateSnapshot": 1
+   "CopyStateSnapshot": 1,
+   "CopySettingsSnapshot": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -4375,6 +4377,7 @@
   "name": "C_0082deb8_Initialize",
   "name_src": "agent",
   "votes": {
+   "InitializeScriptBase": 1,
    "C_0082deb8_Initialize": 1
   },
   "ret": "uint32_t*",
@@ -4775,7 +4778,7 @@
   "name": "S_00413570_GrowEventRecords",
   "name_src": "agent",
   "votes": {
-   "MissionScript_GrowEventRecords": 9,
+   "MissionScript_GrowEventRecords": 10,
    "S_00413570_GrowEventRecords": 11
   },
   "ret": "unsigned int",
@@ -4919,8 +4922,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0082dfd0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00415ae0.cpp"
  },
  "00415d70": {
   "name": "sub_415D70",
@@ -6683,6 +6687,7 @@
   "name": "S_0041e820_UpdateAngleFactor",
   "name_src": "agent",
   "votes": {
+   "S_0041e820_SetSecondaryAngle": 1,
    "TaskState_SetValueC": 1,
    "SubObjectSetSpeedLimit": 1,
    "AiTaskStates_SetMovementSpeed": 1
@@ -6768,8 +6773,9 @@
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2, float a3",
-  "sig_src": "vote"
+  "params": "S_0041e820* self, void* , float angleStep, float angleInput",
+  "sig_src": "impl",
+  "file": "src/auto/0041ea70.cpp"
  },
  "0041eb00": {
   "name": "C_0082e664_Destroy_41EB00",
@@ -66255,7 +66261,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 284
+   "GetGlobalState_50D190": 285
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -106335,7 +106341,7 @@
   "name": "RwV3dLength",
   "name_src": "rwname",
   "votes": {
-   "RwV3dLength": 5
+   "RwV3dLength": 6
   },
   "ret": "double",
   "conv": "__cdecl",
@@ -139697,7 +139703,8 @@
   "ret": "double",
   "conv": "__fastcall",
   "params": "S_00526d40* self, void*",
-  "sig_src": "vote"
+  "sig_src": "impl",
+  "file": "src/auto/006ab930.cpp"
  },
  "006ab9e0": {
   "name": "S_00526d40_NormalizeCopyAndReportY",
@@ -166739,8 +166746,9 @@
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863dd0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/007123e0.cpp"
  },
  "00712410": {
   "name": "C_00863dd0_ClearPendingEffectState",
@@ -186617,7 +186625,7 @@
   "name": "GetGlobalValue_753A30",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_753A30": 36
+   "GetGlobalValue_753A30": 37
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -187173,7 +187181,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 150,
+   "GetGlobalValue_8BC1E0": 151,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",

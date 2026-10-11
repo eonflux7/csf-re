@@ -1,46 +1,3 @@
-# Escalation 0x00415AE0: differential test mismatch in game (verifier baseline)
-
-## Smoke log tail
-```
-0000002)
-T3 00471060 MissionScript_ExtendTableAndReturnCount: inconclusive (a callee changed heap memory ours may read; call 1 to 004703B0: arg 1 orig 00000004 ours 00000007)
-T3 00471060 MissionScript_ExtendTableAndReturnCount: inconclusive (a callee changed heap memory ours may read; call 1 to 004703B0: arg 1 orig 00000005 ours 00000006)
-T3 0046E4E0 S_0046c260_ResolveScriptIdentifier: inconclusive (a callee returned an address in the original's frame)
-T3 0046E4E0 S_0046c260_ResolveScriptIdentifier: inconclusive (a callee returned an address in the original's frame)
-T3 0046E4E0 S_0046c260_ResolveScriptIdentifier: inconclusive (a callee returned an address in the original's frame)
-DIFF 0046E4E0 S_0046c260_ResolveScriptIdentifier: return orig 8000005 ours 8000006 | ecx=0D34FAA8 edx=00000000 args=0019DEC8 
-DIFF 0046E4E0 S_0046c260_ResolveScriptIdentifier: return orig 8000007 ours 8000008 | ecx=0D34FAA8 edx=00000000 args=0019E190 
-DIFF 0046E4E0 S_0046c260_ResolveScriptIdentifier: return orig 8000008 ours 8000009 | ecx=0D34FAA8 edx=00000000 args=0019E190 
-T3 004E99C0 CGameLevelData_Load: inconclusive (more calls, callee writes or snapshot bytes than recorded)
-T3 006B9580 S_006b9580_FindMatchingEntryIndex: inconclusive (more calls, callee writes or snapshot bytes than recorded)
----- csf_hook.log
-hook 00405720 auto     Game_ComputeLocalDirectionAngleDegrees
-hook 004056a0 auto     AxisPair_TransferComponents
-hook 004055e0 auto     C_0082d58c_ApplyRotationDeltas
-hook 004054f0 auto     C_0082d58c_CacheResources
-hook 004054a0 auto     S_004054a0_ResolveChildAndDispatch
-hook 00405450 auto     AudioSoundManager_ProcessArchiveContext
-diff 00405420 auto     C_0082d510_Destroy
-hook 00405400 auto     C_0082d510_ForwardFloatToTarget
-hook 004053e0 auto     C_0082d510_ForwardSlotCall
-diff 004013e0 auto     ReturnMinusOne
-diff 00401090 auto     GetGlobalValue_401090
-hooks installed=7347 skipped=313 failed=0
-t3: 1614 callees intercepted (1029 wrapped hooks, 585 trampolines, 0 failed)
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00C918C4 wrapped
-devcmd: video mode 1280x960
-devcmd: dev start (scene Maps/FR01/Parachut.scn) instead of Menus/P_Intro.fbs -> state 1
-devcmd: starting scene 'Maps/FR01/Parachut.scn'
-SMOKE OK (alive after 30s, max end)
-verify: 7337 hooks installed, 2701 functions executed in this smoke, 587 diffed, 17 with inconclusive tier-3 runs; 47 new code hashes
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include "globals.h"
 #include "hook.h"
@@ -157,4 +114,3 @@ static int __fastcall C_0082dfd0_Initialize(C_0082dfd0* self, void* /*edx*/)
 
 HOOK(0x00415AE0, C_0082dfd0_Initialize, "auto");
 
-```
