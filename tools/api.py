@@ -368,6 +368,11 @@ def abi_sig(ea, db):
     ret = c_type(a["ret"])
     if ret is None:
         return None
+    # Hex-Rays types a forwarder void when its only statement is a call (0x6C2040: `push [ecx]; call; add esp, 4;
+    # ret`), yet a caller compares against the eax it leaves (0x6E9D00 wrote the key as 0: 200/200 in-game
+    # mismatches). A caller that provably reads eax after the call makes it an int return.
+    if ret == "void" and db is not None and ret_unused(ea, db) is False:
+        ret = "int"
     want = {"thiscall": ["ecx"], "fastcall": ["ecx", "edx"]}.get(cc, [])
     params, stack, regs = [], 0, []
     for t0, n, loc in a["args"]:
