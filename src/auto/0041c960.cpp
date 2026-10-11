@@ -40,9 +40,7 @@ static bool __fastcall Vehicle_AimAtPosition(void* self, void* /*edx*/,
         Vehicle_GetTableEntryDwordByIndex(CSF_AT(void*, self, 0x30), nullptr, 25));
 
     struct MatrixStorage {
-        // sized by the original's frame (0x64 bytes): struct sizes in auto_classes.h are lower bounds
-        alignas(8) uint8_t matrixBytes[0x64];
-        S_006adb40& matrix = *reinterpret_cast<S_006adb40*>(matrixBytes);
+        S_006adb40 matrix;
         std::uint8_t ownsInverse;
         std::uint8_t padding[3];
     } matrices{};
