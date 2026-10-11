@@ -970,3 +970,12 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   gate's failure kinds (work/grunt_log.jsonl still has 1364 such rows), tools/classinfo.py (the captain uses it),
   the manual IDA helpers (decomp.py, decomp_err.py, check_types.py, init_db.py: only tools/ida/ touches the IDB).
 - Found, not fixed: the monitor's Loop tab still shows captain naming as wave stages (backlog).
+
+## 2026-10-11 — OOM: Unicorn instances wait for the cyclic collector
+
+- Two global OOM kills (10:48, 10:51) took the Claude session and the detached wave loop with them: a scratch sweep
+  (8-worker pool over emudiff.Run, thousands of ids) reached ~1.9 GB a worker, 15 GB RAM + 4 GB swap in seconds.
+- Cause: unicorn's Python hook closures refer to themselves and to the Uc, so a finished Run (exe image mapped,
+  ~10 MB) is garbage only the cyclic collector frees, and that one counts objects, not megabytes. `hook_del` does
+  not break the cycle. Plain `emudiff.py --tier diffed --n 40` peaked at 3.5 GB in one process.
+- Fix: Run.__init__ collects every 16 Runs. Same 40 functions: 257 MB peak, same time (4.0 s), identical verdicts.

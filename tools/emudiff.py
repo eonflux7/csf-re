@@ -16,7 +16,7 @@ last bits. A profile where the original faults or runs past the instruction cap 
   emudiff.py --tier diffed [--n 100] functions of an evidence tier (verify.py), summary at the end
   emudiff.py EA --obj FILE.obj       another object for the same address (an old revision, a candidate)
 """
-import argparse, collections, csv, json, os, re, struct, sys
+import argparse, collections, csv, gc, json, os, re, struct, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -243,11 +243,18 @@ def hook_name(ea, src=None):
 # ---------------------------------------------------------------- one run
 
 class Run:
+    made = 0
+
     def __init__(self, ea, prof, own, obj=None, script=None):
         """own: [(start, end)] code that is the function itself. script: the original's events (replayed pops)."""
         self.ea, self.prof, self.own, self.obj, self.script = ea, prof, own, obj, script
         self.events, self.written, self.status, self.pending = [], set(), None, None
         self.crt = crt_ranges()[0]
+        # unicorn's hook closures refer to themselves and to the Uc: a finished Run (the image mapped, ~10 MB) is only
+        # freed by the cyclic collector, which counts objects, not megabytes (8 workers of a sweep took 15 GB)
+        Run.made += 1
+        if Run.made % 16 == 0:
+            gc.collect()
         uc = self.uc = Uc(UC_ARCH_X86, UC_MODE_32)
         img, runs = exe_image()
         for a, b in runs:
