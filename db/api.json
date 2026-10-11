@@ -23487,7 +23487,9 @@
  "00462a80": {
   "name": "S_00692b80_FindIndexOfValue",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_00692b80_FindIndexOfValue": 2
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_00692b80* self, void* , int value",
@@ -41977,13 +41979,15 @@
   "sig_src": "abi"
  },
  "004a9bf0": {
-  "name": "sub_4A9BF0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_ArePointKeysEqual",
+  "name_src": "vote",
+  "votes": {
+   "WaypointGraph_ArePointKeysEqual": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004a9c20": {
   "name": "AiCore_ConstructBase",
@@ -54390,13 +54394,15 @@
   "sig_src": "abi"
  },
  "004dc7a0": {
-  "name": "sub_4DC7A0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_CopyIndexPairs",
+  "name_src": "vote",
+  "votes": {
+   "WaypointGraph_CopyIndexPairs": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004dc810": {
   "name": "sub_4DC810",
@@ -54601,13 +54607,15 @@
   "sig_src": "abi"
  },
  "004dd600": {
-  "name": "sub_4DD600",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_InsertIndexPairs",
+  "name_src": "vote",
+  "votes": {
+   "WaypointGraph_InsertIndexPairs": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a1, unsigned int a3, uint32_t* arg8",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004dd870": {
   "name": "sub_4DD870",
@@ -65458,7 +65466,7 @@
   "name": "C_0082fbe8_GetConstantName",
   "name_src": "agent",
   "votes": {
-   "C_0082fbe8_GetConstantName": 1
+   "C_0082fbe8_GetConstantName": 2
   },
   "ret": "const char*",
   "conv": "__fastcall",
@@ -128058,7 +128066,7 @@
   "name": "GetCachedObjectProvider",
   "name_src": "vote",
   "votes": {
-   "GetCachedObjectProvider": 101
+   "GetCachedObjectProvider": 102
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -130671,7 +130679,7 @@
   "name": "Mem_AllocDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_AllocDebug": 11
+   "Mem_AllocDebug": 13
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -130682,7 +130690,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 314,
+   "Mem_FreeDebug": 320,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -130774,7 +130782,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 195
+   "Mem_Alloc": 198
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -130785,7 +130793,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 395
+   "Mem_Free": 400
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -183913,7 +183921,7 @@
   "name": "ClearMember0C",
   "name_src": "agent",
   "votes": {
-   "ClearMember0C": 1
+   "ClearMember0C": 2
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -183971,7 +183979,7 @@
   "name_src": "agent",
   "votes": {
    "AppendThreeDwordRecord": 1,
-   "AppendThreeDwordRecord_75A3A0": 2
+   "AppendThreeDwordRecord_75A3A0": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -184256,13 +184264,14 @@
   "sig_src": "abi"
  },
  "0075bf30": {
-  "name": "sub_75BF30",
-  "name_src": "addr",
+  "name": "C_0086c288_ResetTimerState",
+  "name_src": "agent",
   "votes": {},
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0086c288* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0075bf30.cpp"
  },
  "0075bf50": {
   "name": "SetMarkedFlagAndIncrementCounter",
@@ -184284,35 +184293,43 @@
   "sig_src": "abi"
  },
  "0075bf70": {
-  "name": "sub_75BF70",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "WaypointGraph_CopyRecordTail",
+  "name_src": "vote",
+  "votes": {
+   "WaypointGraph_CopyRecordTail": 1
+  },
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , void* src",
+  "sig_src": "impl",
+  "file": "src/auto/0075bf70.cpp"
  },
  "0075c000": {
-  "name": "sub_75C000",
-  "name_src": "addr",
+  "name": "WaypointGraph_CopyFrom",
+  "name_src": "impl",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , void* src",
+  "sig_src": "impl",
+  "file": "src/auto/0075c000.cpp"
  },
  "0075c090": {
-  "name": "sub_75C090",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_CopyEmbeddedSubobject",
+  "name_src": "vote",
+  "votes": {
+   "WaypointGraph_CopyEmbeddedSubobject": 1,
+   "WaypointNode_CopyTail": 1,
+   "CopyWaypointTailRecord": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0075c120": {
   "name": "WaypointGraph_AssignElementArray",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
@@ -184322,7 +184339,7 @@
  },
  "0075c1c0": {
   "name": "GrowControlBindingArray",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GrowControlBindingArray": 1
   },
@@ -184334,41 +184351,46 @@
  },
  "0075c260": {
   "name": "GetCachedEntryObject",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GetEntryListFromOwner": 1,
-   "GetCachedEntryObject": 4,
+   "GetCachedEntryObject": 5,
    "GetPositionLookupTable": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0083e0d8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0075c260.cpp"
  },
  "0075c270": {
-  "name": "WaypointGraph_ProcessEntry",
-  "name_src": "vote",
+  "name": "WaypointGraph_CopyRecord",
+  "name_src": "agent",
   "votes": {
    "WaypointGraph_ProcessEntry": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , uint32_t* a2",
+  "sig_src": "impl",
+  "file": "src/auto/0075c270.cpp"
  },
  "0075c2c0": {
-  "name": "sub_75C2C0",
-  "name_src": "addr",
+  "name": "WaypointGraph_CopyRecordsBackward",
+  "name_src": "impl",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3, int a4",
-  "sig_src": "abi"
+  "params": "uint32_t* first, uint32_t* last, uint32_t* destEnd, int",
+  "sig_src": "impl",
+  "file": "src/auto/0075c2c0.cpp"
  },
  "0075c330": {
   "name": "Waypoint_ForwardToNodeIfNonNull",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "CopyConstructGraphEntry_75C330": 1
+  },
   "ret": "uint32_t*",
   "conv": "__stdcall",
   "params": "uint32_t* a1, uint32_t* a2",
@@ -184376,26 +184398,28 @@
   "file": "src/auto/0075c330.cpp"
  },
  "0075c350": {
-  "name": "sub_75C350",
-  "name_src": "addr",
+  "name": "WaypointGraph_CopyNodeRange",
+  "name_src": "impl",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3, int a4",
-  "sig_src": "abi"
+  "params": "uint32_t* srcBegin, uint32_t* srcEnd, uint32_t* dstBegin, int",
+  "sig_src": "impl",
+  "file": "src/auto/0075c350.cpp"
  },
  "0075c3c0": {
-  "name": "sub_75C3C0",
-  "name_src": "addr",
+  "name": "CopyWaypointRecordRange",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "uint32_t* first, uint32_t* last, uint32_t* source",
+  "sig_src": "impl",
+  "file": "src/auto/0075c3c0.cpp"
  },
  "0075c420": {
   "name": "WaypointGraph_ForwardTo75C2C0",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -184405,7 +184429,7 @@
  },
  "0075c440": {
   "name": "WaypointGraph_ForwardTo75C350",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -184414,44 +184438,51 @@
   "file": "src/auto/0075c440.cpp"
  },
  "0075c460": {
-  "name": "sub_75C460",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "char",
+  "name": "WaypointGraph_FreeAndClearBlock",
+  "name_src": "agent",
+  "votes": {
+   "DestroyGraphEntry_75C460": 1,
+   "WaypointRecord_Destroy": 1
+  },
+  "ret": "int",
   "conv": "__stdcall",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0075c460.cpp"
  },
  "0075c490": {
-  "name": "WaypointGraph_Helper_75C490",
-  "name_src": "vote",
+  "name": "CopyConstructGraphEntryRange",
+  "name_src": "agent",
   "votes": {
    "WaypointGraph_Helper_75C490": 1
   },
-  "ret": "uint32_t*",
+  "ret": "int",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "vote"
+  "params": "void* sourceBegin, void* sourceEnd, void* destination, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/0075c490.cpp"
  },
  "0075c520": {
-  "name": "sub_75C520",
-  "name_src": "addr",
+  "name": "C_0083e0d8_CountPointsOfKind",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083e0d8* self, void* , int kind",
+  "sig_src": "impl",
+  "file": "src/auto/0075c520.cpp"
  },
  "0075c5a0": {
-  "name": "NavManager_TryReserveSpot",
-  "name_src": "vote",
+  "name": "BddWaypointGraph_ContainsSpot",
+  "name_src": "agent",
   "votes": {
    "NavManager_TryReserveSpot": 1
   },
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, float* a3",
-  "sig_src": "vote"
+  "params": "void* self, void* , int groupId, float* position",
+  "sig_src": "impl",
+  "file": "src/auto/0075c5a0.cpp"
  },
  "0075c7c0": {
   "name": "GridLookupSlotForVector",
@@ -184462,23 +184493,27 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2, int a3, unsigned int* a4",
-  "sig_src": "vote"
+  "params": "void* self, void* , float* position, void* filter, unsigned int* slot",
+  "sig_src": "impl",
+  "file": "src/auto/0075c7c0.cpp"
  },
  "0075cb30": {
-  "name": "sub_75CB30",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_0083e0d8_FindNearestWaypoint",
+  "name_src": "agent",
+  "votes": {
+   "WaypointGraph_SearchFacing": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, float* a3, uint32_t* a4",
-  "sig_src": "abi"
+  "params": "C_0083e0d8* self, void* , int groupId, float* position, uint32_t* result",
+  "sig_src": "impl",
+  "file": "src/auto/0075cb30.cpp"
  },
  "0075ce00": {
-  "name": "SearchFacingTarget",
-  "name_src": "vote",
+  "name": "C_0083e0d8_SearchFacingTarget",
+  "name_src": "agent",
   "votes": {
-   "SearchFacingTarget": 1,
+   "SearchFacingTarget": 2,
    "TryLocatePointInGrid": 1,
    "Spatial_TestPointInRegion": 1,
    "LookupCellIndexByPosition": 1,
@@ -184486,14 +184521,15 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2, uint32_t* a3",
-  "sig_src": "vote"
+  "params": "C_0083e0d8* self, void* , float* a2, uint32_t* a3",
+  "sig_src": "impl",
+  "file": "src/auto/0075ce00.cpp"
  },
  "0075ce20": {
-  "name": "Table_FindIndex",
-  "name_src": "vote",
+  "name": "C_0086c288_FindIndexOfValue",
+  "name_src": "agent",
   "votes": {
-   "Table_FindIndex": 1,
+   "Table_FindIndex": 3,
    "FindSlotIndex": 1,
    "FindOwnerIndexForKey": 1,
    "FindVectorTrackIndex": 1
@@ -184505,21 +184541,22 @@
   "file": "src/auto/0075ce20.cpp"
  },
  "0075ce80": {
-  "name": "FindSpawnByName",
-  "name_src": "vote",
+  "name": "WaypointGraph_FindSpawnByName",
+  "name_src": "agent",
   "votes": {
    "FindSpawnByName": 1
   },
-  "ret": "unsigned int",
+  "ret": "uint32_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* String1",
-  "sig_src": "vote"
+  "params": "void* self, void* , char* searchName",
+  "sig_src": "impl",
+  "file": "src/auto/0075ce80.cpp"
  },
  "0075cf00": {
   "name": "C_0083e0d8_GetRecordAddress",
   "name_src": "agent",
   "votes": {
-   "Table_GetRecord": 5,
+   "Table_GetRecord": 6,
    "GetGridEntryByIndex": 1,
    "GetSlotRecord": 1,
    "GetOwnerEntryByIndex": 1,
@@ -184536,29 +184573,37 @@
   "file": "src/auto/0075cf00.cpp"
  },
  "0075cf20": {
-  "name": "sub_75CF20",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_GetGroupPointRecord",
+  "name_src": "agent",
+  "votes": {
+   "WaypointGraph_ComputeGridSlotIndex": 2,
+   "GetFacingSourceObject": 1,
+   "LookupGraphEntryByKey": 1,
+   "WaypointGraph_GetPoint": 1,
+   "WaypointGraph_LookupWaypoint": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "C_0086c288* self, void* , uint32_t* a2",
+  "sig_src": "impl",
+  "file": "src/auto/0075cf20.cpp"
  },
  "0075cfb0": {
-  "name": "NavMesh_GetGroupPoint",
-  "name_src": "vote",
+  "name": "C_0086c288_GetGroupPoint",
+  "name_src": "agent",
   "votes": {
    "NavMesh_GetCellPoint": 4,
    "NavMesh_GetGroupPoint": 6
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "vote"
+  "params": "C_0086c288* self, void* , int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/0075cfb0.cpp"
  },
  "0075d000": {
-  "name": "GridGetSlotPosition",
-  "name_src": "vote",
+  "name": "WaypointGraph_GetGridSlotPosition",
+  "name_src": "agent",
   "votes": {
    "ResolveEntryHandle": 1,
    "GridGetSlotPosition": 2,
@@ -184566,81 +184611,98 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "vote"
+  "params": "S_004abb90* self, void* , uint32_t* a2",
+  "sig_src": "impl",
+  "file": "src/auto/0075d000.cpp"
  },
  "0075d020": {
-  "name": "sub_75D020",
-  "name_src": "addr",
+  "name": "C_0086c288_GetPointPosition",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* arg0, int a2, int a4",
-  "sig_src": "abi"
+  "params": "C_0086c288* self, void* , int* arg0, int a2, int a4",
+  "sig_src": "impl",
+  "file": "src/auto/0075d020.cpp"
  },
  "0075d0a0": {
-  "name": "GetFacingAngleRadians",
-  "name_src": "vote",
+  "name": "C_0086c288_GetFacingAngleRadians",
+  "name_src": "agent",
   "votes": {
    "GetFacingAngleRadians": 2,
    "Spatial_GetRegionScale": 1
   },
   "ret": "double",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "vote"
+  "params": "C_0086c288* self, void* , uint32_t* a2",
+  "sig_src": "impl",
+  "file": "src/auto/0075d0a0.cpp"
  },
  "0075d0c0": {
-  "name": "sub_75D0C0",
-  "name_src": "addr",
+  "name": "WaypointGraph_GetGridSlotPositionAdjusted",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "C_0086c288* self, void* , uint32_t* a2",
+  "sig_src": "impl",
+  "file": "src/auto/0075d0c0.cpp"
  },
  "0075d0e0": {
-  "name": "WaypointGraph_ProcessArgumentQuad",
-  "name_src": "vote",
+  "name": "WaypointGraph_FreeRecordBuffers",
+  "name_src": "agent",
   "votes": {
-   "WaypointGraph_ProcessArgumentQuad": 1
+   "WaypointGraph_ProcessArgumentQuad": 1,
+   "WaypointGraph_DestroyRange": 1
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3, int a4",
-  "sig_src": "vote"
+  "params": "int first, int end, int , int",
+  "sig_src": "impl",
+  "file": "src/auto/0075d0e0.cpp"
  },
  "0075d120": {
-  "name": "sub_75D120",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_ProcessRecordRange",
+  "name_src": "agent",
+  "votes": {
+   "S_0075d900_ConstructElement44": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, int a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint8_t* first, std::uint32_t count, uint32_t* forwardArg, int",
+  "sig_src": "impl",
+  "file": "src/auto/0075d120.cpp"
  },
  "0075d1b0": {
-  "name": "sub_75D1B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_0086c288_MatchesLookupResultId",
+  "name_src": "agent",
+  "votes": {
+   "WaypointGraph_IsPointMarked": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "C_0086c288* self, void* , uint32_t* a2",
+  "sig_src": "impl",
+  "file": "src/auto/0075d1b0.cpp"
  },
  "0075d1d0": {
-  "name": "sub_75D1D0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_0086c288_CopyIndexIntoResult",
+  "name_src": "agent",
+  "votes": {
+   "WaypointGraph_MarkPoint": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "C_0086c288* self, void* , std::uint32_t* a2",
+  "sig_src": "impl",
+  "file": "src/auto/0075d1d0.cpp"
  },
  "0075d1f0": {
   "name": "C_0086c288_ResetGraphState",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "C_0086c288_ClearNodeContainers": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_0086c288* self, void*",
@@ -184648,17 +184710,18 @@
   "file": "src/auto/0075d1f0.cpp"
  },
  "0075d2c0": {
-  "name": "sub_75D2C0",
-  "name_src": "addr",
+  "name": "WaypointGraph_VisitNodePair",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_004a9e10* self, void* , uint8_t* ctx",
+  "sig_src": "impl",
+  "file": "src/auto/0075d2c0.cpp"
  },
  "0075d370": {
   "name": "WaypointGraph_ForwardToHelper",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -184668,7 +184731,7 @@
  },
  "0075d390": {
   "name": "WaypointGraph_ForwardPairArguments",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -184677,13 +184740,14 @@
   "file": "src/auto/0075d390.cpp"
  },
  "0075d3b0": {
-  "name": "sub_75D3B0",
-  "name_src": "addr",
+  "name": "WaypointGraph_ReleaseBuffer",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_0051aa70* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0075d3b0.cpp"
  },
  "0075d400": {
   "name": "sub_75D400",
@@ -184695,22 +184759,27 @@
   "sig_src": "abi"
  },
  "0075d430": {
-  "name": "sub_75D430",
-  "name_src": "addr",
-  "votes": {},
+  "name": "DestroyWaypointRecord_75D430",
+  "name_src": "vote",
+  "votes": {
+   "DestroyWaypointRecord_75D430": 2,
+   "WaypointGraph_ReleaseNodeEntry": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0075d4b0": {
-  "name": "sub_75D4B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_InsertIntoContainer",
+  "name_src": "vote",
+  "votes": {
+   "WaypointGraph_InsertIntoContainer": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char* a1, unsigned int a3, uint32_t* arg8",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0075d7d0": {
   "name": "sub_75D7D0",
@@ -184722,13 +184791,16 @@
   "sig_src": "abi"
  },
  "0075d900": {
-  "name": "sub_75D900",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_0075d900_InsertAndGetIterator",
+  "name_src": "agent",
+  "votes": {
+   "S_0075d900_InsertElement44": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, char* a3, uint32_t* a4",
-  "sig_src": "abi"
+  "params": "S_0075d900* self, void* , uint32_t* result, char* position, uint32_t* extraArg",
+  "sig_src": "impl",
+  "file": "src/auto/0075d900.cpp"
  },
  "0075d970": {
   "name": "sub_75D970",
@@ -184758,22 +184830,24 @@
   "sig_src": "abi"
  },
  "0075dc40": {
-  "name": "sub_75DC40",
-  "name_src": "addr",
+  "name": "S_0075d900_AppendElement44",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "S_0075d900* self, void* , std::uint32_t* element",
+  "sig_src": "impl",
+  "file": "src/auto/0075dc40.cpp"
  },
  "0075dcd0": {
-  "name": "sub_75DCD0",
-  "name_src": "addr",
+  "name": "WaypointGraph_FindPointsInRadiusRange",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, float* arg4, float a5, float argC, int* a4",
-  "sig_src": "abi"
+  "params": "void* self, void* , int groupId, float* position, float minimumRadius, float maximumRadius, uint32_t* results",
+  "sig_src": "impl",
+  "file": "src/auto/0075dcd0.cpp"
  },
  "0075dec0": {
   "name": "WaypointGraph_ParseEntry",
@@ -184798,7 +184872,10 @@
  "0075df90": {
   "name": "WaypointGraph_ForwardToParseIfNonNull",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CopyWaypointRecord_75DF90": 1,
+   "ParseWaypointRecord_75DF90": 1
+  },
   "ret": "char*",
   "conv": "__stdcall",
   "params": "char* a1, std::uint32_t* a2",
@@ -184806,15 +184883,16 @@
   "file": "src/auto/0075df90.cpp"
  },
  "0075dfb0": {
-  "name": "WaypointGraph_ProcessEntries",
-  "name_src": "vote",
+  "name": "CopyWaypointRangeWithHandler_75DFB0",
+  "name_src": "agent",
   "votes": {
    "WaypointGraph_ProcessEntries": 1
   },
-  "ret": "uint32_t*",
+  "ret": "std::uint8_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "vote"
+  "params": "std::uint8_t* first, std::uint8_t* last, std::uint8_t* destination, void* context, int unused",
+  "sig_src": "impl",
+  "file": "src/auto/0075dfb0.cpp"
  },
  "0075e040": {
   "name": "sub_75E040",
@@ -184826,13 +184904,16 @@
   "sig_src": "abi"
  },
  "0075e070": {
-  "name": "sub_75E070",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_ResetNodeList",
+  "name_src": "agent",
+  "votes": {
+   "C_0082d410_ReleaseBaseState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0075e070.cpp"
  },
  "0075e0b0": {
   "name": "sub_75E0B0",
@@ -184845,7 +184926,7 @@
  },
  "0075e110": {
   "name": "WaypointGraph_ForwardTo75DF20",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -184854,17 +184935,20 @@
   "file": "src/auto/0075e110.cpp"
  },
  "0075e130": {
-  "name": "sub_75E130",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "ParseWaypointRecordsWithCleanup",
+  "name_src": "agent",
+  "votes": {
+   "S_0075e710_ConstructElement72": 1
+  },
+  "ret": "std::uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, int a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint32_t base, std::uint32_t count, int parseArg, std::uint32_t receiver",
+  "sig_src": "impl",
+  "file": "src/auto/0075e130.cpp"
  },
  "0075e1c0": {
   "name": "WaypointGraph_ForwardToEntryProcessor",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -184873,13 +184957,14 @@
   "file": "src/auto/0075e1c0.cpp"
  },
  "0075e1e0": {
-  "name": "sub_75E1E0",
-  "name_src": "addr",
+  "name": "C_0086c288_ReleaseWaypointGraph",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0086c288* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0075e1e0.cpp"
  },
  "0075e240": {
   "name": "sub_75E240",
@@ -184909,40 +184994,46 @@
   "sig_src": "abi"
  },
  "0075e680": {
-  "name": "sub_75E680",
-  "name_src": "addr",
+  "name": "C_0086c288_Construct_75E680",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "C_0086c288*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0086c288* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0075e680.cpp"
  },
  "0075e6e0": {
-  "name": "sub_75E6E0",
-  "name_src": "addr",
+  "name": "C_0086c288_Destroy",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0086c288* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/0075e6e0.cpp"
  },
  "0075e710": {
-  "name": "sub_75E710",
-  "name_src": "addr",
-  "votes": {},
+  "name": "InsertWaypointRecord",
+  "name_src": "agent",
+  "votes": {
+   "S_0075e710_InsertElement72": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, char* a3, int a4",
-  "sig_src": "abi"
+  "params": "S_0075e710* self, void* , uint32_t* result, char* position, int value",
+  "sig_src": "impl",
+  "file": "src/auto/0075e710.cpp"
  },
  "0075e780": {
-  "name": "sub_75E780",
-  "name_src": "addr",
+  "name": "S_0075e710_AppendElement72",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "S_0075e710* self, void* , std::uint32_t* element",
+  "sig_src": "impl",
+  "file": "src/auto/0075e780.cpp"
  },
  "0075e810": {
   "name": "WaypointGraph_ParseBlock",
@@ -184957,7 +185048,7 @@
  },
  "0075ed00": {
   "name": "C_0086c288_ParseBlockIfNonZero",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -184993,18 +185084,24 @@
   "sig_src": "abi"
  },
  "0075edc0": {
-  "name": "sub_75EDC0",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "char",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, void** Block",
-  "sig_src": "abi"
+  "name": "BddWaypointGraph_DestroyNodeTree",
+  "name_src": "agent",
+  "votes": {
+   "ClearPointListNodes": 1,
+   "DestroyMapTreeBranch": 1
+  },
+  "ret": "std::uint8_t",
+  "conv": "__stdcall",
+  "params": "void** block",
+  "sig_src": "impl",
+  "file": "src/auto/0075edc0.cpp"
  },
  "0075ee00": {
   "name": "WaypointGraph_RetreatIteratorToPrevious",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "WaypointGraph_IteratorPrev": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -185013,7 +185110,7 @@
  },
  "0075ee60": {
   "name": "AdvanceWaypointGraphIterator",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int*",
   "conv": "__fastcall",
@@ -185023,8 +185120,10 @@
  },
  "0075eec0": {
   "name": "WaypointGraph_InitRecordWithPayload",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "InitializeWaypointGraphNode": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* , int firstValue, int secondValue, int thirdValue, const void* payload, char flag",
@@ -185041,27 +185140,33 @@
   "sig_src": "abi"
  },
  "0075ef60": {
-  "name": "sub_75EF60",
-  "name_src": "addr",
+  "name": "WaypointGraph_CreateNode",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__stdcall",
-  "params": "int a1, int a2, int a3, void* a4, char a5",
-  "sig_src": "abi"
+  "params": "int first, int second, int third, const void* payload, char flag",
+  "sig_src": "impl",
+  "file": "src/auto/0075ef60.cpp"
  },
  "0075f000": {
-  "name": "sub_75F000",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "WaypointGraph_CreateEmptyGraph",
+  "name_src": "agent",
+  "votes": {
+   "GraphNode_AllocateSentinel": 1
+  },
+  "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0075f000.cpp"
  },
  "0075f0b0": {
   "name": "WaypointGraph_GrowElementArray",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "TimerSubObject_AdjustTimeout": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , int extra",
@@ -185069,98 +185174,116 @@
   "file": "src/auto/0075f0b0.cpp"
  },
  "0075f160": {
-  "name": "WaypointGraph_Finalize",
-  "name_src": "vote",
+  "name": "WaypointGraph_ResetBufferAndList",
+  "name_src": "agent",
   "votes": {
    "WaypointGraph_Finalize": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0075f160.cpp"
  },
  "0075f1e0": {
-  "name": "sub_75F1E0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "EraseMapNodeFromRange",
+  "name_src": "vote",
+  "votes": {
+   "EraseMapNodeFromRange": 1
+  },
   "ret": "int*",
   "conv": "__fastcall",
   "params": "uint32_t* a1, int a2, int* a3, int a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0075f4a0": {
-  "name": "sub_75F4A0",
-  "name_src": "addr",
+  "name": "MapEraseRangeNodes",
+  "name_src": "impl",
   "votes": {},
-  "ret": "int*",
+  "ret": "int**",
   "conv": "__fastcall",
-  "params": "uint32_t* a1, int a2, int* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "void* self, void* , int** result, int* first, int* last",
+  "sig_src": "impl",
+  "file": "src/auto/0075f4a0.cpp"
  },
  "0075f560": {
-  "name": "sub_75F560",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_InsertNode",
+  "name_src": "vote",
+  "votes": {
+   "WaypointGraph_InsertNode": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "uint32_t* a1, int a2, uint32_t* a3, char a4, uint32_t* a5, void* a6",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0075f700": {
-  "name": "sub_75F700",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_InsertUnique",
+  "name_src": "agent",
+  "votes": {
+   "WaypointGraph_InsertFrontierRecord": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, float* a3",
-  "sig_src": "abi"
+  "params": "int** self, void* , uint8_t* outPair, float* value",
+  "sig_src": "impl",
+  "file": "src/auto/0075f700.cpp"
  },
  "0075f7c0": {
-  "name": "sub_75F7C0",
-  "name_src": "addr",
+  "name": "S_0075f7c0_ExpandNeighbors",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, float* a4, int a5",
-  "sig_src": "abi"
+  "params": "S_0075f7c0* self, void* , int pointIndex, int , float* destination, int frontierAddress",
+  "sig_src": "impl",
+  "file": "src/auto/0075f7c0.cpp"
  },
  "0075f9b0": {
-  "name": "sub_75F9B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_ReleaseNodeBuffer",
+  "name_src": "vote",
+  "votes": {
+   "WaypointGraph_ReleaseNodeBuffer": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0075fa10": {
-  "name": "sub_75FA10",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_BuildCachedPath",
+  "name_src": "vote",
+  "votes": {
+   "WaypointGraph_BuildCachedPath": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float* a2, uint32_t* a3, int a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0075fbf0": {
-  "name": "sub_75FBF0",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "C_0086c288_Construct_75FBF0",
+  "name_src": "agent",
+  "votes": {
+   "Waypoint_ConstructAllocatedNode": 1
+  },
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0086c288* self, void* , int vtableAddress",
+  "sig_src": "impl",
+  "file": "src/auto/0075fbf0.cpp"
  },
  "0075fc40": {
-  "name": "Navigation_FindPath",
-  "name_src": "vote",
+  "name": "S_0075f7c0_FindPath",
+  "name_src": "agent",
   "votes": {
    "Navigation_FindPath": 2
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* arg0, float* arg4, void* a4, uint32_t* a5",
-  "sig_src": "vote"
+  "params": "S_0075f7c0* self, void* , float* origin, float* destination, C_0085e7b8* path, uint32_t* destinationValue",
+  "sig_src": "impl",
+  "file": "src/auto/0075fc40.cpp"
  },
  "0075fdf0": {
   "name": "GetGlobalValue_75FDF0",
@@ -198502,7 +198625,7 @@
   "name": "___CxxFrameHandler",
   "name_src": "ida",
   "votes": {
-   "___CxxFrameHandler": 94,
+   "___CxxFrameHandler": 97,
    "OriginalCxxFrameHandler": 1
   },
   "ret": "int",
@@ -198586,7 +198709,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 124
+   "RethrowCppException": 130
   },
   "ret": "void",
   "conv": "__stdcall",
@@ -199078,7 +199201,7 @@
   "name": "__stricmp",
   "name_src": "ida",
   "votes": {
-   "__stricmp": 46
+   "__stricmp": 47
   },
   "ret": "int",
   "conv": "__cdecl",
