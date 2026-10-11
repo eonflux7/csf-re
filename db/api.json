@@ -4050,7 +4050,7 @@
   "name": "SpatialQuery_BuildContext",
   "name_src": "agent",
   "votes": {
-   "SpatialQuery_BuildContext": 2,
+   "SpatialQuery_BuildContext": 3,
    "InitializeActionBounds": 1,
    "BuildSearchSegment": 1,
    "SceneQueries_ConstructRay": 1
@@ -4220,7 +4220,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 107
+   "AssignStringSubstring": 110
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -4769,7 +4769,8 @@
   "name": "S_00413570_GrowEventRecords",
   "name_src": "agent",
   "votes": {
-   "MissionScript_GrowEventRecords": 10
+   "MissionScript_GrowEventRecords": 10,
+   "S_00413570_GrowEventRecords": 1
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
@@ -9785,7 +9786,7 @@
   "name": "AssignStringRange_429B60",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_429B60": 87,
+   "AssignStringRange_429B60": 88,
    "MenuSceneSelect_InitializeString": 1
   },
   "ret": "void*",
@@ -17824,7 +17825,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 265
+   "CHandleTable_Resolve": 266
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -17949,7 +17950,9 @@
  "00450210": {
   "name": "CGuiControl_FindNearbyChildPosition",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CGuiControl_FindNearbyChildPosition": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "CGuiControl* self, void* , int referenceObject, float maximumDistance, uint32_t* excludedFirst, uint32_t* excludedSecond, uint32_t* outputPosition",
@@ -18491,7 +18494,9 @@
  "00452f20": {
   "name": "CGuiControl_HasListenerIntersectionBefore",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CGuiControl_HasListenerIntersectionBefore": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "CGuiControl* self, void* , int rayAddress, float maximumDistance",
@@ -20840,7 +20845,8 @@
   "name": "ResizePairBuffer",
   "name_src": "agent",
   "votes": {
-   "GrowPairListStorage": 1
+   "GrowPairListStorage": 1,
+   "ResizePairBuffer": 2
   },
   "ret": "const void*",
   "conv": "__fastcall",
@@ -23488,7 +23494,7 @@
   "name": "S_00692b80_FindIndexOfValue",
   "name_src": "agent",
   "votes": {
-   "S_00692b80_FindIndexOfValue": 2
+   "S_00692b80_FindIndexOfValue": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -56473,45 +56479,49 @@
  },
  "004e51b0": {
   "name": "SceneEntity_Activate",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SceneEntity_Activate": 7
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "vote"
+  "params": "uint8_t* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/004e51b0.cpp"
  },
  "004e51d0": {
-  "name": "sub_4E51D0",
-  "name_src": "addr",
+  "name": "GetGroupIndexForSlot",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1",
-  "sig_src": "abi"
+  "params": "int slot",
+  "sig_src": "impl",
+  "file": "src/auto/004e51d0.cpp"
  },
  "004e5230": {
   "name": "AiAutonomous_SetEntityActionFlag",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "AiAutonomous_SetEntityActionFlag": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , char flagValue",
+  "sig_src": "impl",
+  "file": "src/auto/004e5230.cpp"
  },
  "004e5250": {
   "name": "AiAutonomous_SetEntityIndexedActionFlag",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "AiAutonomous_SetEntityIndexedActionFlag": 1
   },
-  "ret": "int",
+  "ret": "uint8_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, char a3",
-  "sig_src": "vote"
+  "params": "void* self, void* , int entityIndex, uint8_t flag",
+  "sig_src": "impl",
+  "file": "src/auto/004e5250.cpp"
  },
  "004e5270": {
   "name": "C_Unknown_ClearField0048",
@@ -56524,13 +56534,16 @@
   "file": "src/auto/004e5270.cpp"
  },
  "004e5280": {
-  "name": "sub_4E5280",
-  "name_src": "addr",
-  "votes": {},
+  "name": "AdjustFieldFloat48ByMinus",
+  "name_src": "agent",
+  "votes": {
+   "Shared_HandleFloatArg": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "C_0083e9d0* self, void* , float amount",
+  "sig_src": "impl",
+  "file": "src/auto/004e5280.cpp"
  },
  "004e5290": {
   "name": "C_0083e9d0_InvokeVtblB0",
@@ -56551,13 +56564,14 @@
   "sig_src": "abi"
  },
  "004e5370": {
-  "name": "sub_4E5370",
-  "name_src": "addr",
+  "name": "C_0083e9d0_SetResultForCodeFourteen",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4",
-  "sig_src": "abi"
+  "params": "C_0083e9d0* self, void* , int a2, int a3, int a4",
+  "sig_src": "impl",
+  "file": "src/auto/004e5370.cpp"
  },
  "004e53a0": {
   "name": "sub_4E53A0",
@@ -56570,14 +56584,15 @@
  },
  "004e55a0": {
   "name": "PairLink_PrepareForRebind",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "PairLink_PrepareForRebind": 6
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0083e9d0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004e55a0.cpp"
  },
  "004e55b0": {
   "name": "DecrementByteCounter",
@@ -56621,13 +56636,14 @@
   "sig_src": "vote"
  },
  "004e5750": {
-  "name": "sub_4E5750",
-  "name_src": "addr",
+  "name": "GetFutureErrorWhatString",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char*",
+  "ret": "const char*",
   "conv": "__cdecl",
-  "params": "int a1",
-  "sig_src": "abi"
+  "params": "int index",
+  "sig_src": "impl",
+  "file": "src/auto/004e5750.cpp"
  },
  "004e5760": {
   "name": "C_0083e9d0_ResetStateFields",
@@ -56649,15 +56665,16 @@
   "sig_src": "abi"
  },
  "004e5870": {
-  "name": "GetCandidateHandle",
-  "name_src": "vote",
+  "name": "C_00832eec_GetCandidateHandle",
+  "name_src": "agent",
   "votes": {
    "GetCandidateHandle": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_00832eec* self, void* , int index",
+  "sig_src": "impl",
+  "file": "src/auto/004e5870.cpp"
  },
  "004e5890": {
   "name": "sub_4E5890",
@@ -56669,22 +56686,26 @@
   "sig_src": "abi"
  },
  "004e58e0": {
-  "name": "sub_4E58E0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_0083eb70_FindIndex",
+  "name_src": "vote",
+  "votes": {
+   "C_0083eb70_FindIndex": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083e9d0* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004e58e0.cpp"
  },
  "004e5930": {
-  "name": "sub_4E5930",
-  "name_src": "addr",
+  "name": "C_0083e9d0_LowerBoundByKey",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083e9d0* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004e5930.cpp"
  },
  "004e5980": {
   "name": "Interact_IsLinkedObjectActive",
@@ -56699,13 +56720,14 @@
   "sig_src": "vote"
  },
  "004e5a30": {
-  "name": "sub_4E5A30",
-  "name_src": "addr",
+  "name": "C_0083e9d0_IsSegmentClear",
+  "name_src": "impl",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a3, uint32_t* a4",
-  "sig_src": "abi"
+  "params": "C_0083e9d0* self, void* , float* segment, uint32_t* outArg",
+  "sig_src": "impl",
+  "file": "src/auto/004e5a30.cpp"
  },
  "004e5b10": {
   "name": "GetEntryAtIndex",
@@ -56715,17 +56737,19 @@
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, int a3",
-  "sig_src": "vote"
+  "params": "void* self, void* , void* out, int index",
+  "sig_src": "impl",
+  "file": "src/auto/004e5b10.cpp"
  },
  "004e5b40": {
-  "name": "sub_4E5B40",
-  "name_src": "addr",
+  "name": "C_0083eb70_HasEntry",
+  "name_src": "impl",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083eb70* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004e5b40.cpp"
  },
  "004e5b60": {
   "name": "PairLink_TestEndpoints",
@@ -56768,13 +56792,16 @@
   "sig_src": "vote"
  },
  "004e5d50": {
-  "name": "sub_4E5D50",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_0082d410_Cleanup",
+  "name_src": "vote",
+  "votes": {
+   "C_0082d410_Cleanup": 1,
+   "C_0083ec48_TeardownBaseMembers": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004e5de0": {
   "name": "sub_4E5DE0",
@@ -56849,13 +56876,14 @@
   "sig_src": "abi"
  },
  "004e63e0": {
-  "name": "sub_4E63E0",
-  "name_src": "addr",
+  "name": "C_0083e9d0_Destroy",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0083e9d0* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/004e63e0.cpp"
  },
  "004e6410": {
   "name": "C_0083e9d0_ComputeValue",
@@ -56879,13 +56907,14 @@
   "sig_src": "abi"
  },
  "004e64f0": {
-  "name": "sub_4E64F0",
-  "name_src": "addr",
+  "name": "C_0083e9d0_Construct",
+  "name_src": "impl",
   "votes": {},
-  "ret": "float*",
+  "ret": "C_0083e9d0*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, float a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "C_0083e9d0* self, void* , int a2, float a3, int a4, int a5",
+  "sig_src": "impl",
+  "file": "src/auto/004e64f0.cpp"
  },
  "004e65a0": {
   "name": "sub_4E65A0",
@@ -56951,22 +56980,25 @@
   "sig_src": "abi"
  },
  "004e6b70": {
-  "name": "sub_4E6B70",
-  "name_src": "addr",
-  "votes": {},
+  "name": "StateNodeBase_UpdateBase",
+  "name_src": "vote",
+  "votes": {
+   "StateNodeBase_UpdateBase": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004e6d40": {
-  "name": "sub_4E6D40",
-  "name_src": "addr",
+  "name": "C_0083eb70_GetModeScaledFloat",
+  "name_src": "impl",
   "votes": {},
   "ret": "double",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0083eb70* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004e6d40.cpp"
  },
  "004e6d80": {
   "name": "sub_4E6D80",
@@ -56978,58 +57010,64 @@
   "sig_src": "abi"
  },
  "004e6dc0": {
-  "name": "sub_4E6DC0",
-  "name_src": "addr",
+  "name": "C_0083eb70_ForwardToChildSlotA4AndReturnArg",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083eb70* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004e6dc0.cpp"
  },
  "004e6de0": {
-  "name": "sub_4E6DE0",
-  "name_src": "addr",
+  "name": "C_0083eb70_ForwardToSubobjectSlotAC",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083eb70* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004e6de0.cpp"
  },
  "004e6e00": {
-  "name": "sub_4E6E00",
-  "name_src": "addr",
+  "name": "C_0083eb70_MapRequestToCategory",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083eb70* self, void* , int requestCode",
+  "sig_src": "impl",
+  "file": "src/auto/004e6e00.cpp"
  },
  "004e6e80": {
-  "name": "sub_4E6E80",
-  "name_src": "addr",
+  "name": "C_0083eb70_FindAvailableAction",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083eb70* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004e6e80.cpp"
  },
  "004e6f30": {
-  "name": "sub_4E6F30",
-  "name_src": "addr",
+  "name": "C_0083eb70_FillActionRequest",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083eb70* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004e6f30.cpp"
  },
  "004e6fd0": {
-  "name": "sub_4E6FD0",
-  "name_src": "addr",
+  "name": "C_0083eb70_TryClaimResultSlot",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083eb70* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004e6fd0.cpp"
  },
  "004e7030": {
   "name": "sub_4E7030",
@@ -57097,13 +57135,14 @@
   "sig_src": "abi"
  },
  "004e73f0": {
-  "name": "sub_4E73F0",
-  "name_src": "addr",
+  "name": "C_0083eb70_HasRecordWithKey",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083eb70* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004e73f0.cpp"
  },
  "004e7430": {
   "name": "sub_4E7430",
@@ -57142,13 +57181,14 @@
   "sig_src": "abi"
  },
  "004e77f0": {
-  "name": "sub_4E77F0",
-  "name_src": "addr",
+  "name": "C_0083eb70_Destroy",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0083eb70* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/004e77f0.cpp"
  },
  "004e7820": {
   "name": "sub_4E7820",
@@ -57317,13 +57357,14 @@
   "sig_src": "abi"
  },
  "004e8ae0": {
-  "name": "sub_4E8AE0",
-  "name_src": "addr",
+  "name": "C_0083ec48_Destroy",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "C_0083ec48*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0083ec48* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/004e8ae0.cpp"
  },
  "004e8b10": {
   "name": "sub_4E8B10",
@@ -57344,22 +57385,24 @@
   "sig_src": "abi"
  },
  "004e8bc0": {
-  "name": "sub_4E8BC0",
-  "name_src": "addr",
+  "name": "C_0083ec48_ForwardFloatArgToSharedHandler",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "C_0083ec48* self, void* , float a2",
+  "sig_src": "impl",
+  "file": "src/auto/004e8bc0.cpp"
  },
  "004e8bd0": {
-  "name": "sub_4E8BD0",
-  "name_src": "addr",
+  "name": "S_004e6b70_UpdateState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_004e6b70* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004e8bd0.cpp"
  },
  "004e8c50": {
   "name": "GetValue8B0554",
@@ -113723,7 +113766,7 @@
   "name": "SceneLoader_GetSceneController",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetSceneController": 32,
+   "SceneLoader_GetSceneController": 33,
    "SceneLoader_GetSceneObject": 1,
    "SceneLoader_GetSubsystem": 1,
    "SceneLoader_GetSceneResources": 1,
@@ -130690,7 +130733,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 320,
+   "Mem_FreeDebug": 322,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -130782,7 +130825,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 198
+   "Mem_Alloc": 199
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -130793,7 +130836,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 400
+   "Mem_Free": 406
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -131306,7 +131349,7 @@
   "name": "MenuExtras_GetChildCount",
   "name_src": "vote",
   "votes": {
-   "MenuExtras_GetChildCount": 58
+   "MenuExtras_GetChildCount": 59
   },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
@@ -131317,7 +131360,7 @@
   "name": "GetComponent",
   "name_src": "vote",
   "votes": {
-   "GetComponent": 67
+   "GetComponent": 68
   },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
@@ -131339,7 +131382,7 @@
   "name": "ReadComponentFloat",
   "name_src": "vote",
   "votes": {
-   "ReadComponentFloat": 16
+   "ReadComponentFloat": 17
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -131408,7 +131451,7 @@
   "name": "FindProperty",
   "name_src": "vote",
   "votes": {
-   "FindProperty": 84
+   "FindProperty": 85
   },
   "ret": "std::uint8_t*",
   "conv": "__fastcall",
@@ -131515,7 +131558,7 @@
   "name": "ReadIntegerAttribute",
   "name_src": "vote",
   "votes": {
-   "ReadIntegerAttribute": 40
+   "ReadIntegerAttribute": 41
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -131526,7 +131569,7 @@
   "name": "ReadFloatAttribute",
   "name_src": "vote",
   "votes": {
-   "ReadFloatAttribute": 25
+   "ReadFloatAttribute": 26
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -131537,7 +131580,7 @@
   "name": "MenuExtras_ReadText",
   "name_src": "vote",
   "votes": {
-   "MenuExtras_ReadText": 49
+   "MenuExtras_ReadText": 50
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -131570,7 +131613,7 @@
   "name": "DataNode_ReadVector3Property",
   "name_src": "vote",
   "votes": {
-   "DataNode_ReadVector3Property": 10,
+   "DataNode_ReadVector3Property": 11,
    "Node_ReadVector3Property": 1
   },
   "ret": "int",
@@ -138536,7 +138579,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 179,
+   "GetGlobalInt": 180,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -145275,7 +145318,7 @@
   "name": "ReleaseVectorStorage",
   "name_src": "vote",
   "votes": {
-   "ReleaseVectorStorage": 11
+   "ReleaseVectorStorage": 12
   },
   "ret": "void*",
   "conv": "__stdcall",
@@ -183791,7 +183834,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 131,
+   "GetGlobalValue_8BC1E0": 132,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
@@ -184276,7 +184319,9 @@
  "0075bf50": {
   "name": "SetMarkedFlagAndIncrementCounter",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "SetMarkedFlagAndIncrementCounter": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -184284,17 +184329,19 @@
   "file": "src/auto/0075bf50.cpp"
  },
  "0075bf60": {
-  "name": "sub_75BF60",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_ClearMarks",
+  "name_src": "vote",
+  "votes": {
+   "WaypointGraph_ClearMarks": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0075bf70": {
-  "name": "WaypointGraph_CopyRecordTail",
-  "name_src": "vote",
+  "name": "WaypointGraph_CloneAndInitTable",
+  "name_src": "agent",
   "votes": {
    "WaypointGraph_CopyRecordTail": 1
   },
@@ -184306,8 +184353,10 @@
  },
  "0075c000": {
   "name": "WaypointGraph_CopyFrom",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "CopyPointSubobjectFrom": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* , void* src",
@@ -184315,22 +184364,26 @@
   "file": "src/auto/0075c000.cpp"
  },
  "0075c090": {
-  "name": "WaypointGraph_CopyEmbeddedSubobject",
-  "name_src": "vote",
+  "name": "WaypointGraph_CopyAssignFrom",
+  "name_src": "agent",
   "votes": {
    "WaypointGraph_CopyEmbeddedSubobject": 1,
    "WaypointNode_CopyTail": 1,
    "CopyWaypointTailRecord": 1
   },
-  "ret": "int",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , void* source",
+  "sig_src": "impl",
+  "file": "src/auto/0075c090.cpp"
  },
  "0075c120": {
   "name": "WaypointGraph_AssignElementArray",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "WaypointGraph_CopyEdgeContainer": 1,
+   "Waypoint_CopyBlock36": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* , void* other",
@@ -184341,7 +184394,7 @@
   "name": "GrowControlBindingArray",
   "name_src": "agent",
   "votes": {
-   "GrowControlBindingArray": 1
+   "GrowControlBindingArray": 2
   },
   "ret": "const void*",
   "conv": "__fastcall",
@@ -184377,7 +184430,7 @@
  },
  "0075c2c0": {
   "name": "WaypointGraph_CopyRecordsBackward",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -184399,8 +184452,10 @@
  },
  "0075c350": {
   "name": "WaypointGraph_CopyNodeRange",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "WaypointGraph_CopyAssignRange": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "uint32_t* srcBegin, uint32_t* srcEnd, uint32_t* dstBegin, int",
@@ -184430,7 +184485,9 @@
  "0075c440": {
   "name": "WaypointGraph_ForwardTo75C350",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "WaypointGraph_CopyExistingRange": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3",
@@ -184454,7 +184511,8 @@
   "name": "CopyConstructGraphEntryRange",
   "name_src": "agent",
   "votes": {
-   "WaypointGraph_Helper_75C490": 1
+   "WaypointGraph_Helper_75C490": 1,
+   "WaypointGraph_ConstructAdditionalRange": 1
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -184485,8 +184543,8 @@
   "file": "src/auto/0075c5a0.cpp"
  },
  "0075c7c0": {
-  "name": "GridLookupSlotForVector",
-  "name_src": "vote",
+  "name": "BddWaypointGraph_LookupSlotForVector",
+  "name_src": "agent",
   "votes": {
    "GridLookupSlotForVector": 2,
    "RunSpatialHitQuery": 1
@@ -184529,7 +184587,7 @@
   "name": "C_0086c288_FindIndexOfValue",
   "name_src": "agent",
   "votes": {
-   "Table_FindIndex": 3,
+   "Table_FindIndex": 4,
    "FindSlotIndex": 1,
    "FindOwnerIndexForKey": 1,
    "FindVectorTrackIndex": 1
@@ -184580,6 +184638,7 @@
    "GetFacingSourceObject": 1,
    "LookupGraphEntryByKey": 1,
    "WaypointGraph_GetPoint": 1,
+   "WaypointGraph_FindPoint": 1,
    "WaypointGraph_LookupWaypoint": 1
   },
   "ret": "int",
@@ -184653,7 +184712,9 @@
   "name_src": "agent",
   "votes": {
    "WaypointGraph_ProcessArgumentQuad": 1,
-   "WaypointGraph_DestroyRange": 1
+   "WaypointGraph_DestroyRange": 1,
+   "WaypointGraph_DestroyEdgeSet": 1,
+   "WaypointGraph_DestroyTrailingRange": 1
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -184689,7 +184750,7 @@
   "name": "C_0086c288_CopyIndexIntoResult",
   "name_src": "agent",
   "votes": {
-   "WaypointGraph_MarkPoint": 1
+   "WaypointGraph_MarkPoint": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -184722,7 +184783,9 @@
  "0075d370": {
   "name": "WaypointGraph_ForwardToHelper",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "WaypointGraph_CopyConstructRange": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "S_0051aa70* self, void* , uint32_t* a1, uint32_t* a2, uint32_t* a3",
@@ -184732,7 +184795,9 @@
  "0075d390": {
   "name": "WaypointGraph_ForwardPairArguments",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "WaypointGraph_DestroyRange": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , int a1, int a2",
@@ -184742,7 +184807,9 @@
  "0075d3b0": {
   "name": "WaypointGraph_ReleaseBuffer",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "WaypointGraph_Clear": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_0051aa70* self, void*",
@@ -184759,16 +184826,18 @@
   "sig_src": "abi"
  },
  "0075d430": {
-  "name": "DestroyWaypointRecord_75D430",
-  "name_src": "vote",
+  "name": "WaypointGraph_ClearStorage",
+  "name_src": "agent",
   "votes": {
    "DestroyWaypointRecord_75D430": 2,
-   "WaypointGraph_ReleaseNodeEntry": 1
+   "WaypointGraph_ReleaseNodeEntry": 1,
+   "WaypointGraph_DestroyTemporaryGroup": 1
   },
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0075d430.cpp"
  },
  "0075d4b0": {
   "name": "WaypointGraph_InsertIntoContainer",
@@ -184782,13 +184851,15 @@
   "sig_src": "vote"
  },
  "0075d7d0": {
-  "name": "sub_75D7D0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_ReservePoints",
+  "name_src": "vote",
+  "votes": {
+   "WaypointGraph_ReservePoints": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, unsigned int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0075d900": {
   "name": "S_0075d900_InsertAndGetIterator",
@@ -184803,36 +184874,46 @@
   "file": "src/auto/0075d900.cpp"
  },
  "0075d970": {
-  "name": "sub_75D970",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_AllocateStorage",
+  "name_src": "vote",
+  "votes": {
+   "WaypointGraph_AllocateStorage": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0075d9c0": {
-  "name": "sub_75D9C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CopyStructSubobjectFrom",
+  "name_src": "vote",
+  "votes": {
+   "CopyStructSubobjectFrom": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0075daa0": {
-  "name": "sub_75DAA0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_0051aa70_Assign",
+  "name_src": "agent",
+  "votes": {
+   "WaypointGraph_CopyLinkContainer": 1,
+   "Waypoint_CopyBlock52": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a4a",
-  "sig_src": "abi"
+  "params": "S_0051aa70* self, void* , S_0051aa70* source",
+  "sig_src": "impl",
+  "file": "src/auto/0075daa0.cpp"
  },
  "0075dc40": {
   "name": "S_0075d900_AppendElement44",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "WaypointGraph_AppendPoint": 1
+  },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
   "params": "S_0075d900* self, void* , std::uint32_t* element",
@@ -184850,24 +184931,26 @@
   "file": "src/auto/0075dcd0.cpp"
  },
  "0075dec0": {
-  "name": "WaypointGraph_ParseEntry",
-  "name_src": "vote",
+  "name": "Waypoint_CopyConstruct",
+  "name_src": "agent",
   "votes": {
    "WaypointGraph_ParseEntry": 1
   },
   "ret": "char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "char* self, void* , uint32_t* a2",
+  "sig_src": "impl",
+  "file": "src/auto/0075dec0.cpp"
  },
  "0075df20": {
-  "name": "sub_75DF20",
-  "name_src": "addr",
+  "name": "WaypointGraph_CopyNodeRangeBackward",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3, int a4",
-  "sig_src": "abi"
+  "params": "std::uint32_t* rangeBegin, std::uint32_t* rangeEnd, std::uint32_t* destEnd, int",
+  "sig_src": "impl",
+  "file": "src/auto/0075df20.cpp"
  },
  "0075df90": {
   "name": "WaypointGraph_ForwardToParseIfNonNull",
@@ -184916,13 +184999,14 @@
   "file": "src/auto/0075e070.cpp"
  },
  "0075e0b0": {
-  "name": "sub_75E0B0",
-  "name_src": "addr",
+  "name": "WaypointGraph_CopyEntryRange",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3",
-  "sig_src": "abi"
+  "params": "int dstBegin, int dstEnd, int src",
+  "sig_src": "impl",
+  "file": "src/auto/0075e0b0.cpp"
  },
  "0075e110": {
   "name": "WaypointGraph_ForwardTo75DF20",
@@ -184958,7 +185042,7 @@
  },
  "0075e1e0": {
   "name": "C_0086c288_ReleaseWaypointGraph",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -184967,13 +185051,15 @@
   "file": "src/auto/0075e1e0.cpp"
  },
  "0075e240": {
-  "name": "sub_75E240",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_ReserveGroups",
+  "name_src": "vote",
+  "votes": {
+   "WaypointGraph_ReserveGroups": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, unsigned int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0075e360": {
   "name": "sub_75E360",
@@ -185028,7 +185114,9 @@
  "0075e780": {
   "name": "S_0075e710_AppendElement72",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "WaypointGraph_AppendGroup": 1
+  },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
   "params": "S_0075e710* self, void* , std::uint32_t* element",
@@ -185036,15 +185124,16 @@
   "file": "src/auto/0075e780.cpp"
  },
  "0075e810": {
-  "name": "WaypointGraph_ParseBlock",
-  "name_src": "vote",
+  "name": "C_0086c288_LoadWaypointGraph",
+  "name_src": "agent",
   "votes": {
    "WaypointGraph_ParseBlock": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "vote"
+  "params": "C_0086c288* self, void* , S_00692b80* node",
+  "sig_src": "impl",
+  "file": "src/auto/0075e810.cpp"
  },
  "0075ed00": {
   "name": "C_0086c288_ParseBlockIfNonZero",
@@ -185165,7 +185254,8 @@
   "name": "WaypointGraph_GrowElementArray",
   "name_src": "agent",
   "votes": {
-   "TimerSubObject_AdjustTimeout": 1
+   "TimerSubObject_AdjustTimeout": 1,
+   "WaypointGraph_GrowSearchRecords": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -185189,7 +185279,8 @@
   "name": "EraseMapNodeFromRange",
   "name_src": "vote",
   "votes": {
-   "EraseMapNodeFromRange": 1
+   "EraseMapNodeFromRange": 1,
+   "WaypointGraph_EraseFrontierNode": 1
   },
   "ret": "int*",
   "conv": "__fastcall",
@@ -185198,8 +185289,11 @@
  },
  "0075f4a0": {
   "name": "MapEraseRangeNodes",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "WaypointGraph_ClearNodeIndex": 1,
+   "WaypointGraph_ClearFrontierRange": 1
+  },
   "ret": "int**",
   "conv": "__fastcall",
   "params": "void* self, void* , int** result, int* first, int* last",
@@ -185221,7 +185315,7 @@
   "name": "WaypointGraph_InsertUnique",
   "name_src": "agent",
   "votes": {
-   "WaypointGraph_InsertFrontierRecord": 1
+   "WaypointGraph_InsertFrontierRecord": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -185232,7 +185326,9 @@
  "0075f7c0": {
   "name": "S_0075f7c0_ExpandNeighbors",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "WaypointGraph_ExpandSearchRecord": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "S_0075f7c0* self, void* , int pointIndex, int , float* destination, int frontierAddress",
@@ -185240,26 +185336,28 @@
   "file": "src/auto/0075f7c0.cpp"
  },
  "0075f9b0": {
-  "name": "WaypointGraph_ReleaseNodeBuffer",
-  "name_src": "vote",
+  "name": "WaypointGraph_ReleaseNodeTable",
+  "name_src": "agent",
   "votes": {
    "WaypointGraph_ReleaseNodeBuffer": 1
   },
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "int a1, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0075f9b0.cpp"
  },
  "0075fa10": {
-  "name": "WaypointGraph_BuildCachedPath",
-  "name_src": "vote",
+  "name": "S_0075f7c0_FindPath_75FA10",
+  "name_src": "agent",
   "votes": {
    "WaypointGraph_BuildCachedPath": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2, uint32_t* a3, int a4",
-  "sig_src": "vote"
+  "params": "S_0075f7c0* self, void* , float* start, uint32_t* destination, int outputAddress",
+  "sig_src": "impl",
+  "file": "src/auto/0075fa10.cpp"
  },
  "0075fbf0": {
   "name": "C_0086c288_Construct_75FBF0",
@@ -185274,7 +185372,7 @@
   "file": "src/auto/0075fbf0.cpp"
  },
  "0075fc40": {
-  "name": "S_0075f7c0_FindPath",
+  "name": "S_0075f7c0_FindPath_75FC40",
   "name_src": "agent",
   "votes": {
    "Navigation_FindPath": 2
@@ -188016,13 +188114,15 @@
   "sig_src": "abi"
  },
  "00774c10": {
-  "name": "sub_774C10",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WaypointGraph_GetSize",
+  "name_src": "vote",
+  "votes": {
+   "WaypointGraph_GetSize": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00774c30": {
   "name": "SceneLoader_ResolveRegionIndex",
