@@ -185799,7 +185799,9 @@
  "00769c70": {
   "name": "InputBindings_IntroSort",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "InputBindings_IntroSort": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int* first, int* last, int depth, SortPredicate pred",
@@ -185853,7 +185855,9 @@
  "0076a1b0": {
   "name": "InputBindings_AllocAndStoreBinding",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "InputBindings_AllocAndStoreBinding": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_0076a140* self, void* , int a2, int a3, int a4, int a5, int a6, int* a7",
@@ -185863,7 +185867,9 @@
  "0076a230": {
   "name": "InputBindings_CreateAndCommitHandle",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "InputBindings_CreateAndCommitHandle": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_0076a140* self, void* , int a2, int a3, int a4, int a5, int a6, int a7, int* a8",
@@ -185873,7 +185879,9 @@
  "0076a2c0": {
   "name": "InputBindings_CreateBindingAndStore",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "InputBindings_CreateBindingAndStore": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_0076a140* self, void* , int a2, int a3, int a4, int a5, int a6, int a7, uint32_t* a8, int* a9",
@@ -185883,7 +185891,9 @@
  "0076a350": {
   "name": "S_0076a140_BuildActionBinding",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_0076a140_BuildActionBinding": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_0076a140* self, void* , int a2, int a3, int a4, int a5, int a6, int a7, uint32_t* a8, uint32_t* a9, int* a10",
@@ -185893,7 +185903,9 @@
  "0076a3e0": {
   "name": "S_0076a140_CreateAndStoreAction",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_0076a140_CreateAndStoreAction": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_0076a140* self, void* , int a2, int a3, int a4, int a5, int a6, int a7, uint32_t* a8, uint32_t* a9, uint32_t* a10, void* a11",
@@ -185903,7 +185915,9 @@
  "0076a470": {
   "name": "S_0076a140_CreateBindingObject",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_0076a140_CreateBindingObject": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_0076a140* self, void* , int a2, int a3, int a4, int a5, int a6, int a7, uint32_t* a8, uint32_t* a9, uint32_t* a10, uint32_t* a11, void* a12",
@@ -185923,13 +185937,14 @@
   "file": "src/auto/0076a4f0.cpp"
  },
  "0076a540": {
-  "name": "sub_76A540",
-  "name_src": "addr",
+  "name": "MissionScriptCatalog_Construct",
+  "name_src": "agent",
   "votes": {},
-  "ret": "int",
+  "ret": "S_0076a140*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_0076a140* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0076a540.cpp"
  },
  "007702b0": {
   "name": "InputBindings_GetSingleton",
