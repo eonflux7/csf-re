@@ -145,11 +145,12 @@ static float* __fastcall C_00832f18_EvaluateHermitePosition(
     const float t = elapsed / (secondTime - firstTime);
     const float squared = t * t;
     const float cubed = squared * t;
-    const float threeSquared = squared * g_MessageBoxSizeScale;
+    // 0x82E1E4 scales t^2 and 0x831430 scales t^3 (the Hermite 3 and -2); they were the other way round
+    const float threeSquared = squared * g_RotationWrapStep;
 
     const float firstWeight = cubed + cubed - threeSquared + g_TransitionOne;
     const float firstTangentWeight = cubed - (squared + squared) + t;
-    const float secondWeight = cubed * g_RotationWrapStep + threeSquared;
+    const float secondWeight = cubed * g_MessageBoxSizeScale + threeSquared;
     const float secondTangentWeight = cubed - squared;
 
     float interpolated[3];
