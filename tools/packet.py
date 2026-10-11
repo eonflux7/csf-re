@@ -246,7 +246,8 @@ def stl_note(ea):
             "size and order). Allocate/free with exactly the functions the original calls.")
 
 
-CODEGEN_HELPER = re.compile(r"^__ftol2?(_sse)?$|^__a(u)?ll(mul|div|rem|shl|shr)$|^__alloca_probe|^_?_chkstk$")
+CODEGEN_HELPER = re.compile(r"^__ftol2?(_sse)?$|^__a(u)?ll(mul|div|rem|shl|shr)$|^__alloca_probe|^_?_chkstk$"
+                            r"|^__CI(a?cos|a?sin|a?tan2?|pow|fmod|exp|log(10)?|sqrt|sinh|cosh|tanh)(_pentium4)?$")
 
 
 VT_STORE = re.compile(r"^dword ptr \[(\w+)(?: \+ (0x[0-9a-f]+|\d+))?\], (0x[0-9a-f]+)$")
@@ -413,7 +414,8 @@ def build(db, ea, with_asm_limit=400):
             nm = db.name(c) or f"sub_{c:X}"
             if CODEGEN_HELPER.search(nm):
                 out.append(f"- 0x{c:08X} `{nm}`: MSVC code-gen helper. Do NOT call or reference it; write the plain C++ "
-                           "it came from (a float->int cast, int64 arithmetic, a large local array)")
+                           "it came from (a float->int cast, int64 arithmetic, a large local array; __CIfmod / __CIpow / __CIacos ... are "
+                           "the math library with operands on the x87 stack: std::fmod, std::pow, std::acos from <cmath>)")
                 continue
             import api
             crr = api.real_regs(c, db)

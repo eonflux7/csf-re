@@ -230,7 +230,9 @@ def orig_refs(ea, db):
 EH_HELPER = re.compile(r"CxxFrameHandler|_EH_prolog|_SEH_prolog|_SEH_epilog|_except_handler|__security_check"
                        # MSVC's code-gen helpers for float->int casts, 64-bit arithmetic and stack probes: a plain
                        # cast / int64 op / large local is the faithful source; clang lowers it its own way
-                       r"|^__ftol2?(_sse)?$|^__a(u)?ll(mul|div|rem|shl|shr)$|^__alloca_probe|^__chkstk$|^_chkstk$")
+                       r"|^__ftol2?(_sse)?$|^__a(u)?ll(mul|div|rem|shl|shr)$|^__alloca_probe|^__chkstk$|^_chkstk$"
+                       # the intrinsic forms of the math library (operands on the x87 stack): std::fmod & co
+                       r"|^__CI(a?cos|a?sin|a?tan2?|pow|fmod|exp|log(10)?|sqrt|sinh|cosh|tanh)(_pentium4)?$")
 
 
 def ida_switches(ea):
