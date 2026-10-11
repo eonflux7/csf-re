@@ -979,3 +979,6 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   ~10 MB) is garbage only the cyclic collector frees, and that one counts objects, not megabytes. `hook_del` does
   not break the cycle. Plain `emudiff.py --tier diffed --n 40` peaked at 3.5 GB in one process.
 - Fix: Run.__init__ collects every 16 Runs. Same 40 functions: 257 MB peak, same time (4.0 s), identical verdicts.
+- The lanes' "link" phase was `api.py build`, not the linker: ninja takes 1-2 s, api.py build took 98 s (4+ min
+  next to a busy machine) after every batch. packet.disasm asked pefile for the memory-mapped image on each of its
+  38,681 calls (2 ms each, 81 s). The image is built once now: 7.9 s, db/api.json byte-identical.

@@ -8,7 +8,7 @@ import pefile
 from capstone import Cs, CS_ARCH_X86, CS_MODE_32
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-_pe = None
+_img = None
 
 
 class DB:
@@ -82,13 +82,14 @@ def disasm(ea, size, linear=False):
     """Instructions of the function at ea. With an IDA export: exactly the code heads IDA knows (all chunks, jump
     tables and embedded data excluded), each decoded by capstone. Otherwise (or linear=True, e.g. for a shared
     block that isn't a function): linear decoding of `size` bytes."""
-    global _pe, _md
+    global _img, _md
     if _md is None:
-        with _init_lock:  # grunt runs this from worker threads: publish _md last, after _pe is ready
+        with _init_lock:  # grunt runs this from worker threads: publish _md last, after _img is ready
             if _md is None:
-                _pe = pefile.PE(os.path.join(ROOT, "work", "pc", "CommXPC.exe"), fast_load=True)
+                # the image once: pefile rebuilds it on every call (2 ms; api.py build asks 38k times)
+                _img = pefile.PE(os.path.join(ROOT, "work", "pc", "CommXPC.exe"), fast_load=True).get_memory_mapped_image()
                 _md = Cs(CS_ARCH_X86, CS_MODE_32)
-    img = _pe.get_memory_mapped_image()
+    img = _img
     view = None if linear else ida_view(ea)
     if view:
         out = []
