@@ -425,6 +425,17 @@ def build(db, ea, with_asm_limit=400):
                            "call; pass nullptr, 0 when it pushes nothing; who pops the stack does not matter)")
                 continue
             canon = api.decl_line(c)
+            if c in db.F and db.F[c]["size"] <= 64:
+                csw = {int(k) for k in ((ida_view(c) or {}).get("switches") or {})}
+                if any(i.mnemonic == "jmp" and not i.op_str.startswith("0x") and i.address not in csw
+                       for i in disasm(c, db.F[c]["size"])):
+                    # 0x454070 bound two such forwarders `int __cdecl ()` and dropped `this` and the argument
+                    out.append(f"- 0x{c:08X} `{nm}` [{status}] is a forwarder: it tail-jumps to a virtual / function "
+                               "pointer, so its arguments are that target's, not its own prototype's. Bind it by what "
+                               "THIS function's asm passes at the call: __fastcall (void* self, void* edx, ...) with "
+                               "ecx as the asm loads it and one parameter per push before the call (the target pops "
+                               "them unless the asm adds to esp after the call: then __cdecl)")
+                    continue
             out.append(f"- 0x{c:08X} `{nm}` [{status}] rets={ret_bytes(c, db.F[c]['size']) if c in db.F else '?'} "
                        + (f"bind as: `{canon}`" + ("  (unnamed: keep this signature, the name is yours to choose)"
                                                    if api.load()[c]["name_src"] == "addr" else "")
