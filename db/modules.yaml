@@ -523,8 +523,8 @@
    classes: ["C_0086c2b4"], strings: [".IncluyeVersionSingleplayer", ".bMenusExtrasActivo", ".bNextMission", ".uPulseDelayTime", ".RENDEZVOUS_URL"], note: ".WINDOWSREGPATH, .resolution, .bCreditos, .Region"}
 - {id: m761800, start: 0x761800, end: 0x7685A0, fns: 54, kb: 26.0, done: 0, name: "bdd_character_defs", name_src: captain, label: "", cohesion: 0.71,
    classes: ["C_0086f128", "C_008406e8", "C_00840e0c"], strings: [], note: "Character/vehicle data table: .MODELO, .VIDA, .ANIMACIONES, .ANGULO_VISTA, .VEHICLE_INFO, .VEH_MAX_VEL"}
-- {id: m7685A0, start: 0x7685A0, end: 0x770470, fns: 55, kb: 29.4, done: 1, name: "input_bindings", name_src: opus, label: "", cohesion: 0.56,
-   classes: ["C_0086f15c"], strings: ["- Id num", "- Duraci", "- Posici", "- Animaci", ".VALOR"], note: "ATACAR/DISPARAR/RECARGAR/AGACHARSE/STRAFE action names"}
+- {id: m7685A0, start: 0x7685A0, end: 0x770470, fns: 55, kb: 29.4, done: 1, name: "mission_script_catalog", name_src: user, label: "", cohesion: 0.56,
+   classes: ["C_0086f15c"], strings: ["- Id num", "- Duraci", "- Posici", "- Animaci", ".VALOR"], note: "the mission-script language's catalog of types and commands (NUMERO/CADENA/BICHO..., SET_VIDA/ADD_ARMA/CUTSCENE_EXE...: ~420 entries built by the constructor 0x76A540, singleton getter 0x7702B0); not input (was input_bindings until 2026-10-11)"}
 - {id: m770470, start: 0x770470, end: 0x771FF0, fns: 36, kb: 3.8, done: 0, name: "bdd_sound_areas", name_src: captain, label: "", cohesion: 0.38,
    classes: ["C_00871914"], strings: [], note: "Parses .AREAS/.PUNTOS/.REVERB/.OCLUSION/.LIMITREVERB sound-area data"}
 - {id: m771FF0, start: 0x771FF0, end: 0x774C30, fns: 46, kb: 8.1, done: 0, name: "bdd_animation_defs", name_src: captain, label: "", cohesion: 0.62,
