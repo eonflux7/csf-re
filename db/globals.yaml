@@ -4,19 +4,19 @@
 - {addr: 0x0082D08C, name: g_GetLastErrorImportSlot, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D094, name: g_pfnGetFileSize, type: GetFileSizeFn, uses: 1, src: auto}
 - {addr: 0x0082D09C, name: g_CreateFileAImport, type: CreateFileAFn, uses: 1, src: auto}
-- {addr: 0x0082D0DC, name: g_FindFirstFileA, type: FindFirstFileAProc, uses: 3, src: auto}
+- {addr: 0x0082D0DC, name: g_FindFirstFileA, type: FindFirstFileAProc, uses: 4, src: auto}
 - {addr: 0x0082D0E0, name: g_pfnCloseHandle, type: void*, uses: 3, src: auto}
-- {addr: 0x0082D118, name: g_SetFileAttributesA, type: SetFileAttributesAProc, uses: 1, src: auto}
+- {addr: 0x0082D118, name: g_SetFileAttributesA, type: SetFileAttributesAFn, uses: 2, src: auto}
 - {addr: 0x0082D184, name: g_FindNextFileA, type: FindNextFileAProc, uses: 3, src: auto}
-- {addr: 0x0082D18C, name: g_FindClose, type: FindCloseProc, uses: 3, src: auto}
-- {addr: 0x0082D190, name: g_SetCurrentDirectoryW, type: SetCurrentDirectoryWProc, uses: 7, src: auto}
+- {addr: 0x0082D18C, name: g_FindClose, type: FindCloseProc, uses: 4, src: auto}
+- {addr: 0x0082D190, name: g_SetCurrentDirectoryW, type: SetCurrentDirectoryWProc, uses: 9, src: auto}
 - {addr: 0x0082D1A0, name: g_CreateThreadImport, type: CreateThreadImportFn, uses: 1, src: auto}
 - {addr: 0x0082D208, name: g_SetThreadPriorityIat, type: void*, uses: 2, src: auto, alt: [g_pfnSetThreadPriority]}
 - {addr: 0x0082D20C, name: g_pfnWaitForSingleObject, type: WaitForSingleObjectFn, uses: 3, src: auto, alt: [g_pWaitForSingleObject]}
-- {addr: 0x0082D210, name: g_DeleteFileA, type: DeleteFileAProc, uses: 2, src: auto}
+- {addr: 0x0082D210, name: g_DeleteFileA, type: DeleteFileAProc, uses: 3, src: auto}
 - {addr: 0x0082D214, name: g_ImportGetLocalTime, type: void*, uses: 1, src: auto}
-- {addr: 0x0082D218, name: g_CreateDirectoryW, type: CreateDirectoryWFunction, uses: 2, src: auto}
-- {addr: 0x0082D21C, name: g_GetCurrentDirectoryW, type: GetCurrentDirectoryWProc, uses: 7, src: auto}
+- {addr: 0x0082D218, name: g_CreateDirectoryW, type: CreateDirectoryWFunction, uses: 3, src: auto}
+- {addr: 0x0082D21C, name: g_GetCurrentDirectoryW, type: GetCurrentDirectoryWProc, uses: 9, src: auto}
 - {addr: 0x0082D228, name: g_CreateProcessAImportSlot, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D22C, name: g_GetFileAttributesAImport, type: GetFileAttributesAFn, uses: 1, src: auto}
 - {addr: 0x0082D230, name: g_SetFilePointerImport, type: void*, uses: 3, src: auto, alt: [g_pSetFilePointerImport]}
@@ -32,7 +32,7 @@
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 2, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 18, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 39, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 40, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 6, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: double, uses: 2, src: auto}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
@@ -119,7 +119,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 53, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 54, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C0, name: g_fBackAngleLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
@@ -1521,8 +1521,8 @@
 - {addr: 0x008BB450, name: g_Value_8BB450, type: int, uses: 1, src: auto}
 - {addr: 0x008BB47C, name: g_EntryTable, type: void*, uses: 1, src: auto}
 - {addr: 0x008BB480, name: g_EntryTable, type: void*, uses: 1, src: auto}
-- {addr: 0x008BB4B4, name: g_DefaultAtomicCallback, type: uint32_t, uses: 1, src: auto}
-- {addr: 0x008BB4B8, name: g_Value_8BB4B8, type: int, uses: 3, src: auto, alt: [g_Value8BB4B8]}
+- {addr: 0x008BB4B4, name: g_DefaultAtomicCallback, type: uint32_t, uses: 2, src: auto, alt: [g_PassthroughTarget_8BB4B4]}
+- {addr: 0x008BB4B8, name: g_Value_8BB4B8, type: int, uses: 7, src: auto, alt: [g_Value8BB4B8]}
 - {addr: 0x008BB4CC, name: g_Value_8BB4CC, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008BB738, name: g_Value_8BB738, type: int, uses: 1, src: auto}
 - {addr: 0x008BBB28, name: g_Value8BBB28, type: int, uses: 1, src: auto}
