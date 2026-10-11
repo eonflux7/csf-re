@@ -292,7 +292,7 @@ ea,size,region,module,name,name_src,status
 0040c800,37,game,m40AC30,,,todo
 0040c830,30,game,m40AC30,,,todo
 0040c850,80,game,m40AC30,,,todo
-0040c8a0,75,game,m40AC30,,,todo
+0040c8a0,75,game,m40AC30,WeaponFirearms_UpdateLinkedObject,vote,todo
 0040c8f0,23,game,m40AC30,,,todo
 0040c910,14,game,m40AC30,IsField90Null,agent,done
 0040c920,87,game,m40AC30,ClampContactComponent,vote,todo
@@ -1451,7 +1451,7 @@ ea,size,region,module,name,name_src,status
 00444a10,71,game,m443760,,,todo
 00444a60,167,game,m443760,,,todo
 00444b10,6,game,m443760,C_444b10_IncrementCounter_0x50,agent,done
-00444b20,134,game,m443760,,,todo
+00444b20,134,game,m443760,WeaponFirearms_NotifyColorAnimation,vote,todo
 00444bb0,359,game,m443760,ComputeControlAnimationKey,vote,todo
 00444d30,39,game,m443760,,,todo
 00444d60,39,game,m443760,,,todo
@@ -2597,7 +2597,7 @@ ea,size,region,module,name,name_src,status
 00474670,136,game,m474380,,,todo
 00474700,73,game,m474380,,,todo
 00474750,82,game,m474380,,,todo
-004747b0,91,game,m474380,,,todo
+004747b0,91,game,m474380,WeaponFirearms_InitializeEventRecord,vote,todo
 00474810,82,game,m474380,,,todo
 00474870,138,game,m474380,,,todo
 00474900,57,game,m474380,,,todo
@@ -2694,13 +2694,13 @@ ea,size,region,module,name,name_src,status
 004771d0,108,game,m4759B0,C_008316d8_ResolveCachedEntry,agent,done
 00477240,104,game,m4759B0,C_0082d448_Initialize,agent,done
 004772b0,61,game,m4759B0,WeaponFirearms_FinalizeSceneObjectOptions,agent,done
-004772f0,607,game,m4759B0,,,todo
+004772f0,607,game,m4759B0,C_008316d8_Fire,agent,done
 00477550,241,game,m4759B0,C_008316d8_SpawnProjectile,agent,done
 00477650,370,game,m4759B0,,,todo
 004777d0,113,game,m4759B0,WeaponFirearms_InitializeSceneObjectOptions,agent,done
 00477850,738,game,m4759B0,C_008316d8_Serialize,agent,done
 00477b40,428,game,m4759B0,WeaponFirearms_Serialize,agent,done
-00477cf0,662,game,m4759B0,Firearms_ConstructBase,vote,todo
+00477cf0,662,game,m4759B0,C_008316d8_InitializeWeapon,agent,done
 00477f90,520,game,m4759B0,PrepareWeaponState,vote,todo
 004781a0,35,game,m4759B0,C_00833b88_CopyAndNormalizeVector3,agent,done
 004781d0,5,game,m4759B0,,,todo
@@ -2725,7 +2725,7 @@ ea,size,region,module,name,name_src,status
 00478c10,128,game,m4759B0,C_008317c8_ResetLinkedWeaponState,agent,done
 00478c90,1132,game,m4759B0,,,todo
 00479120,187,game,m4759B0,C_008317c8_ResetActionState,agent,done
-004791e0,302,game,m4759B0,,,todo
+004791e0,302,game,m4759B0,C_008318c8_ProcessFireAction,vote,todo
 00479310,57,game,m4759B0,C_0086754c_GetItemIdentifier,agent,done
 00479350,58,game,m4759B0,C_008317c8_Initialize,agent,done
 00479390,6,game,m4759B0,C_00861a78_GetSize,agent,done
@@ -2734,7 +2734,7 @@ ea,size,region,module,name,name_src,status
 00479420,82,game,m4759B0,C_008317c8_ClearLinkedWeaponState,agent,done
 00479480,53,game,m4759B0,C_008317c8_Destroy,agent,done
 004794c0,346,game,m4759B0,C_008317c8_InitializeEffect,agent,done
-00479620,316,game,m4759B0,,,todo
+00479620,316,game,m4759B0,C_008317c8_SetResolvedObjectDirection,agent,done
 00479760,746,game,m4759B0,,,todo
 00479a50,185,game,m4759B0,C_008317c8_Serialize,agent,done
 00479b10,159,game,m4759B0,C_008319c0_SerializeObjectState,agent,done
@@ -2754,7 +2754,7 @@ ea,size,region,module,name,name_src,status
 00479ed0,43,game,m4759B0,C_008318c8_GetState,agent,done
 00479f00,153,game,m4759B0,C_008318c8_GetActionCategory,agent,done
 00479fe0,46,game,m4759B0,C_008318c8_GetWeaponCategory,agent,done
-0047a010,194,game,m4759B0,,,todo
+0047a010,194,game,m4759B0,C_008318c8_ApplyFireRecoil,agent,done
 0047a0e0,22,game,m4759B0,C_008318c8_IsFlag40Set,agent,done
 0047a100,93,game,m4759B0,C_008318c8_GetFireActionCode,agent,done
 0047a160,76,game,m4759B0,C_008318c8_UpdateShellEffectState,agent,done
@@ -2763,7 +2763,7 @@ ea,size,region,module,name,name_src,status
 0047a240,102,game,m4759B0,C_008318c8_UpdateState,agent,done
 0047a2b0,33,game,m4759B0,C_008318c8_Destroy,agent,done
 0047a2e0,90,game,m4759B0,C_008318c8_GetFireModeValue,agent,done
-0047a340,237,game,m4759B0,ConstructEntryTypeOne,vote,todo
+0047a340,237,game,m4759B0,C_008318c8_Initialize,agent,done
 0047a430,235,game,m4759B0,C_008318c8_Serialize,agent,done
 0047a520,357,game,m4759B0,GetFirearmUpdateResult,vote,todo
 0047a690,23,game,m4759B0,C_008318c8_UpdateAndGetResult,agent,done
@@ -2773,7 +2773,7 @@ ea,size,region,module,name,name_src,status
 0047a750,94,game,m4759B0,C_008319c0_ApplySceneDependentWeaponAction,agent,done
 0047a7b0,1243,game,m4759B0,C_008319c0_GetFiringPositionAndDirection,agent,done
 0047acc0,102,game,m4759B0,C_008319c0_UpdateState,agent,done
-0047ad30,86,game,m4759B0,,,todo
+0047ad30,86,game,m4759B0,C_008319c0_Destroy,agent,done
 0047ad90,126,game,m4759B0,C_00862490_GetShellCasingResource,agent,done
 0047ae10,11,game,m47AE10,,,todo
 0047ae20,66,game,m47AE10,,,todo
@@ -3315,7 +3315,7 @@ ea,size,region,module,name,name_src,status
 0048e530,24,game,m48E450,,,todo
 0048e550,31,game,m48E550,C_00833908_ResetChildAndDispatch,agent,done
 0048e570,86,game,m48E550,S_0048e570_ActivateFocusEntry,agent,done
-0048e5d0,22,game,m48E550,C_0082f9f8_TryAcquire,agent,done
+0048e5d0,22,game,m48E550,C_0082f9f8_TryAcquire,agent,todo
 0048e5f0,20,game,m48E550,ForwardToAttachedObject,agent,done
 0048e610,9,game,m48E550,C_00833908_ConfigureFocusEntry,agent,done
 0048e620,47,game,m48E550,C_00833908_InitializeAndForward,agent,done
@@ -3398,7 +3398,7 @@ ea,size,region,module,name,name_src,status
 00490660,84,game,m48E550,AppendEntry,agent,done
 004906c0,85,game,m48E550,AppendEntryAndMarkDirty,agent,done
 00490720,102,game,m48E550,C_00833908_UpdateStateFlags,agent,done
-00490790,267,game,m48E550,C_008342e8_SetObjectTransform,agent,done
+00490790,267,game,m48E550,C_008342e8_SetObjectTransform,agent,todo
 004908a0,149,game,m48E550,C_00833908_GetReturnedVector,agent,done
 00490940,865,game,m48E550,C_00833908_Construct,agent,done
 00490cb0,25,game,m48E550,C_00833908_UpdateAndForward,agent,done
@@ -3544,7 +3544,7 @@ ea,size,region,module,name,name_src,status
 004954a0,59,game,m493940,CPlayerCharacter_GetContextHeightOffset,vote,todo
 004954e0,7,game,m493940,GetFloat3D4,agent,done
 004954f0,15,game,m493940,Hud_SetSuspended,vote,todo
-00495500,15,game,m493940,,,todo
+00495500,15,game,m493940,WeaponFirearms_ApplyRecoil,vote,todo
 00495510,11,game,m493940,,,todo
 00495520,46,game,m493940,Hud_IsSuspended,vote,todo
 00495550,8,game,m493940,C_495550_CheckInnerObject,agent,done
@@ -3655,7 +3655,7 @@ ea,size,region,module,name,name_src,status
 0049c850,1725,game,m496080,CPlayerCharacter_Serialize,agent,done
 0049cf10,31,game,m49CF10,,,todo
 0049cf30,8,game,m49CF10,C_00834198_SetField0198,agent,done
-0049cf40,22,game,m49CF10,,,todo
+0049cf40,22,game,m49CF10,WeaponFirearms_SetObjectDirection,vote,todo
 0049cf60,64,game,m49CF10,,,todo
 0049cfa0,83,game,m49CF10,,,todo
 0049d000,82,game,m49CF10,,,todo
@@ -15050,8 +15050,8 @@ ea,size,region,module,name,name_src,status
 006c8390,140,game,m6C4620,,,todo
 006c8420,161,game,m6C4620,GlobalHud_AttachWidget_6C8420,vote,todo
 006c84d0,128,game,m6C84D0,,,todo
-006c8550,197,game,m6C84D0,,,todo
-006c8620,25,game,m6C84D0,,,todo
+006c8550,197,game,m6C84D0,WeaponFirearms_ActivateContext,vote,todo
+006c8620,25,game,m6C84D0,WeaponFirearms_IsContextActive,vote,todo
 006c8640,47,game,m6C84D0,,,todo
 006c8670,51,game,m6C84D0,,,todo
 006c86b0,33,game,m6C84D0,,,todo

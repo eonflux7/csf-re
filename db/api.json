@@ -208,7 +208,7 @@
   "name": "DestroySceneObjectOptionsStorage",
   "name_src": "vote",
   "votes": {
-   "DestroySceneObjectOptionsStorage": 22
+   "DestroySceneObjectOptionsStorage": 24
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
@@ -3055,13 +3055,15 @@
   "sig_src": "abi"
  },
  "0040c8a0": {
-  "name": "sub_40C8A0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WeaponFirearms_UpdateLinkedObject",
+  "name_src": "vote",
+  "votes": {
+   "WeaponFirearms_UpdateLinkedObject": 1
+  },
   "ret": "float*",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0040c8f0": {
   "name": "sub_40C8F0",
@@ -4172,7 +4174,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 92
+   "AssignStringSubstring": 93
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -14777,13 +14779,15 @@
   "file": "src/auto/00444b10.cpp"
  },
  "00444b20": {
-  "name": "sub_444B20",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WeaponFirearms_NotifyColorAnimation",
+  "name_src": "vote",
+  "votes": {
+   "WeaponFirearms_NotifyColorAnimation": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2, void* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00444bb0": {
   "name": "ComputeControlAnimationKey",
@@ -17525,7 +17529,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 239
+   "CHandleTable_Resolve": 240
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -26535,13 +26539,15 @@
   "sig_src": "abi"
  },
  "004747b0": {
-  "name": "sub_4747B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WeaponFirearms_InitializeEventRecord",
+  "name_src": "vote",
+  "votes": {
+   "WeaponFirearms_InitializeEventRecord": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00474810": {
   "name": "sub_474810",
@@ -26700,7 +26706,7 @@
   "name": "GetGlobalObjectField184",
   "name_src": "agent",
   "votes": {
-   "GetGlobalObjectField184": 16
+   "GetGlobalObjectField184": 18
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -26804,7 +26810,7 @@
   "name": "DispatchRecordToGlobalObject",
   "name_src": "vote",
   "votes": {
-   "DispatchRecordToGlobalObject": 14,
+   "DispatchRecordToGlobalObject": 16,
    "QueueTaskRecord": 1
   },
   "ret": "uint32_t",
@@ -27001,7 +27007,7 @@
   "name": "Handle_GetValuePointer",
   "name_src": "vote",
   "votes": {
-   "Handle_GetValuePointer": 36,
+   "Handle_GetValuePointer": 38,
    "ResolveHandleToValuePtr": 2,
    "GetInnerRecordPointer": 1,
    "Entry_GetPayloadPointer": 1
@@ -27051,7 +27057,7 @@
   "name": "C_008319c0_GetSubObjectField74",
   "name_src": "agent",
   "votes": {
-   "C_008319c0_GetSubObjectField74": 38
+   "C_008319c0_GetSubObjectField74": 39
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -27349,7 +27355,9 @@
  "00476820": {
   "name": "C_008316d8_UpdateShellCasingEffect",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "WeaponFirearms_ApplyShotEffect": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "C_008316d8* self, void* , float elapsed",
@@ -27530,6 +27538,7 @@
   "name": "C_0082d448_Initialize_477240",
   "name_src": "agent",
   "votes": {
+   "WeaponFirearms_BuildShotTransform": 1,
    "WeaponFirearms_BuildSpawnParameters": 1
   },
   "ret": "uint32_t*",
@@ -27551,13 +27560,14 @@
   "file": "src/auto/004772b0.cpp"
  },
  "004772f0": {
-  "name": "sub_4772F0",
-  "name_src": "addr",
+  "name": "C_008316d8_Fire",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_008316d8* self, void* , int action",
+  "sig_src": "impl",
+  "file": "src/auto/004772f0.cpp"
  },
  "00477550": {
   "name": "C_008316d8_SpawnProjectile",
@@ -27582,7 +27592,7 @@
   "name": "WeaponFirearms_InitializeSceneObjectOptions",
   "name_src": "agent",
   "votes": {
-   "InitializeSceneObjectOptions": 20
+   "InitializeSceneObjectOptions": 22
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -27614,16 +27624,17 @@
   "file": "src/auto/00477b40.cpp"
  },
  "00477cf0": {
-  "name": "Firearms_ConstructBase",
-  "name_src": "vote",
+  "name": "C_008316d8_InitializeWeapon",
+  "name_src": "agent",
   "votes": {
    "InitializeFirearmBase": 1,
    "Firearms_ConstructBase": 1
   },
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "vote"
+  "params": "C_008316d8* self, void* , int definitionId, int owner",
+  "sig_src": "impl",
+  "file": "src/auto/00477cf0.cpp"
  },
  "00477f90": {
   "name": "PrepareWeaponState",
@@ -27799,7 +27810,9 @@
  "00478930": {
   "name": "WeaponFirearms_ComputeBallisticVelocity",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "WeaponFirearms_CalculateDirection": 1
+  },
   "ret": "float*",
   "conv": "__cdecl",
   "params": "float* velocity, float* origin, float* target",
@@ -27895,13 +27908,15 @@
   "file": "src/auto/00479120.cpp"
  },
  "004791e0": {
-  "name": "sub_4791E0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_008318c8_ProcessFireAction",
+  "name_src": "vote",
+  "votes": {
+   "C_008318c8_ProcessFireAction": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00479310": {
   "name": "C_0086754c_GetItemIdentifier",
@@ -27923,7 +27938,8 @@
   "name": "C_008317c8_Initialize",
   "name_src": "agent",
   "votes": {
-   "ConstructEntryTypeTwo": 1
+   "ConstructEntryTypeTwo": 1,
+   "C_008317c8_Initialize": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -27993,13 +28009,14 @@
   "file": "src/auto/004794c0.cpp"
  },
  "00479620": {
-  "name": "sub_479620",
-  "name_src": "addr",
+  "name": "C_008317c8_SetResolvedObjectDirection",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "params": "C_008317c8* self, void* , float* targetPosition",
+  "sig_src": "impl",
+  "file": "src/auto/00479620.cpp"
  },
  "00479760": {
   "name": "sub_479760",
@@ -28198,13 +28215,14 @@
   "file": "src/auto/00479fe0.cpp"
  },
  "0047a010": {
-  "name": "sub_47A010",
-  "name_src": "addr",
+  "name": "C_008318c8_ApplyFireRecoil",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_008318c8* self, void* , int action",
+  "sig_src": "impl",
+  "file": "src/auto/0047a010.cpp"
  },
  "0047a0e0": {
   "name": "C_008318c8_IsFlag40Set",
@@ -28292,15 +28310,16 @@
   "file": "src/auto/0047a2e0.cpp"
  },
  "0047a340": {
-  "name": "ConstructEntryTypeOne",
-  "name_src": "vote",
+  "name": "C_008318c8_Initialize",
+  "name_src": "agent",
   "votes": {
    "ConstructEntryTypeOne": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "vote"
+  "params": "C_008318c8* self, void* , int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/0047a340.cpp"
  },
  "0047a430": {
   "name": "C_008318c8_Serialize",
@@ -28397,7 +28416,7 @@
  },
  "0047ad30": {
   "name": "C_008319c0_Destroy",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int*",
   "conv": "__fastcall",
@@ -33817,7 +33836,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 67,
+   "GetObjectPositionVector": 68,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -36339,13 +36358,15 @@
   "sig_src": "vote"
  },
  "00495500": {
-  "name": "sub_495500",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WeaponFirearms_ApplyRecoil",
+  "name_src": "vote",
+  "votes": {
+   "WeaponFirearms_ApplyRecoil": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00495510": {
   "name": "sub_495510",
@@ -37604,13 +37625,15 @@
   "file": "src/auto/0049cf30.cpp"
  },
  "0049cf40": {
-  "name": "sub_49CF40",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WeaponFirearms_SetObjectDirection",
+  "name_src": "vote",
+  "votes": {
+   "WeaponFirearms_SetObjectDirection": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0049cf60": {
   "name": "sub_49CF60",
@@ -55497,7 +55520,7 @@
   "name": "GetValue8B0554",
   "name_src": "agent",
   "votes": {
-   "GetValue8B0554": 164
+   "GetValue8B0554": 166
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -59358,7 +59381,7 @@
   "name": "GetGlobalValue_8B0568",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8B0568": 40,
+   "GetGlobalValue_8B0568": 41,
    "GetMissionManager": 1
   },
   "ret": "int",
@@ -59498,7 +59521,7 @@
   "name": "CGuiControl_GetColorAnim",
   "name_src": "opus",
   "votes": {
-   "CGuiControl_GetColorAnim": 7
+   "CGuiControl_GetColorAnim": 8
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -62632,7 +62655,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 214
+   "GetGlobalState_50D190": 216
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -110865,7 +110888,7 @@
   "name": "SceneLoader_GetSceneController",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetSceneController": 22,
+   "SceneLoader_GetSceneController": 24,
    "SceneLoader_GetSceneObject": 1,
    "SceneLoader_GetSubsystem": 1,
    "SceneLoader_GetSceneResources": 1,
@@ -127616,7 +127639,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 239,
+   "Mem_FreeDebug": 241,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -134249,7 +134272,7 @@
   "name": "SceneMissionSetup_GetBoundsCenter",
   "name_src": "vote",
   "votes": {
-   "SceneMissionSetup_GetBoundsCenter": 2
+   "SceneMissionSetup_GetBoundsCenter": 3
   },
   "ret": "float*",
   "conv": "__fastcall",
@@ -135462,7 +135485,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 141,
+   "GetGlobalInt": 143,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -141767,22 +141790,26 @@
   "sig_src": "abi"
  },
  "006c8550": {
-  "name": "sub_6C8550",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WeaponFirearms_ActivateContext",
+  "name_src": "vote",
+  "votes": {
+   "WeaponFirearms_ActivateContext": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006c8620": {
-  "name": "sub_6C8620",
-  "name_src": "addr",
-  "votes": {},
+  "name": "WeaponFirearms_IsContextActive",
+  "name_src": "vote",
+  "votes": {
+   "WeaponFirearms_IsContextActive": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006c8640": {
   "name": "sub_6C8640",
@@ -181020,7 +181047,7 @@
   "name": "IsSubObjectFieldFlagSet",
   "name_src": "vote",
   "votes": {
-   "IsSubObjectFieldFlagSet": 1,
+   "IsSubObjectFieldFlagSet": 2,
    "CharActionFsm_CheckItemChangeEligibility": 1
   },
   "ret": "int",
@@ -181063,6 +181090,7 @@
   "name": "IsSubObjectEligible",
   "name_src": "vote",
   "votes": {
+   "WeaponFirearms_IsAlternateWeaponType": 1,
    "IsSubObjectEligible": 1
   },
   "ret": "int",
