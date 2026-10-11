@@ -17,7 +17,7 @@ static void __fastcall CPlayerCharacter_SwitchCharacterItem(CPlayerCharacter* se
     if (a2 == self->field_03a0)
         return;
 
-    CharActionFsm_SetCharacterItem(nullptr, nullptr, 0);
+    CharActionFsm_SetCharacterItem(self, nullptr, 0);  // ecx is still this at the call
 
     if (self->field_039c != 0)
     {
