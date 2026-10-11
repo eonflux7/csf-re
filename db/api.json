@@ -17986,7 +17986,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 317
+   "CHandleTable_Resolve": 318
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -27191,7 +27191,7 @@
   "name": "ResolveEntryLookupValue",
   "name_src": "vote",
   "votes": {
-   "ResolveEntryLookupValue": 33,
+   "ResolveEntryLookupValue": 35,
    "GetEntityComponent": 1,
    "GetProviderStatusCode": 1,
    "ObjectProvider_IsActive": 1,
@@ -35369,7 +35369,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 113,
+   "GetObjectPositionVector": 115,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -36730,7 +36730,9 @@
  "00491fb0": {
   "name": "ForwardInputEventToDelegate",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ForwardInputEventToDelegate": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* , char event, int value",
@@ -36740,7 +36742,9 @@
  "00491fc0": {
   "name": "GetLinkedObjectStateForwarder",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GetLinkedObjectStateForwarder": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -38222,7 +38226,7 @@
   "name": "Archive_SerializeString",
   "name_src": "agent",
   "votes": {
-   "Archive_SerializeString": 38
+   "Archive_SerializeString": 39
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -39198,7 +39202,7 @@
   "name": "SceneObject_GetDrawState",
   "name_src": "vote",
   "votes": {
-   "SceneObject_GetDrawState": 1
+   "SceneObject_GetDrawState": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -39333,7 +39337,7 @@
   "name": "NotifyDepleted_49D400",
   "name_src": "vote",
   "votes": {
-   "NotifyDepleted_49D400": 1
+   "NotifyDepleted_49D400": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -50301,13 +50305,14 @@
   "file": "src/auto/004ce900.cpp"
  },
  "004ce930": {
-  "name": "sub_4CE930",
-  "name_src": "addr",
+  "name": "C_0083ad48_CacheDrawStateParam",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0083ad48* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004ce930.cpp"
  },
  "004ce960": {
   "name": "sub_4CE960",
@@ -50320,7 +50325,7 @@
  },
  "004ceab0": {
   "name": "C_0083ad48_Destroy",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -50504,26 +50509,28 @@
   "file": "src/auto/004ceff0.cpp"
  },
  "004cf030": {
-  "name": "sub_4CF030",
-  "name_src": "addr",
+  "name": "C_0083b118_UpdateLookupState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0083b118* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004cf030.cpp"
  },
  "004cf090": {
-  "name": "sub_4CF090",
-  "name_src": "addr",
+  "name": "C_0083b118_ResetStateIfProviderInvalid",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083b118* self, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/004cf090.cpp"
  },
  "004cf0f0": {
   "name": "C_0083b118_HandleTaskEvent",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -50566,13 +50573,14 @@
   "file": "src/auto/004cf380.cpp"
  },
  "004cf3b0": {
-  "name": "sub_4CF3B0",
-  "name_src": "addr",
+  "name": "C_0083b1f8_IsWithinProximityOfObject",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "C_0083b1f8* self, void* , C_008342e8* a2",
+  "sig_src": "impl",
+  "file": "src/auto/004cf3b0.cpp"
  },
  "004cf410": {
   "name": "S_0041f0a0_ProcessFields",
@@ -50617,22 +50625,24 @@
   "file": "src/auto/004cf550.cpp"
  },
  "004cf570": {
-  "name": "sub_4CF570",
-  "name_src": "addr",
+  "name": "C_0083b2e0_InitDrawStateSnapshot",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0083b2e0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004cf570.cpp"
  },
  "004cf5a0": {
-  "name": "sub_4CF5A0",
-  "name_src": "addr",
+  "name": "C_0083b2e0_TickDepletionTimer",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "C_0083b2e0* self, void* , float elapsed",
+  "sig_src": "impl",
+  "file": "src/auto/004cf5a0.cpp"
  },
  "004cf620": {
   "name": "S_0041f0a0_SerializeAutonomousState_4CF620",
@@ -50645,13 +50655,14 @@
   "file": "src/auto/004cf620.cpp"
  },
  "004cf6d0": {
-  "name": "sub_4CF6D0",
-  "name_src": "addr",
+  "name": "C_0083b3c0_HandleEvent",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083b3c0* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004cf6d0.cpp"
  },
  "004cf720": {
   "name": "C_0083b3c0_Construct",
@@ -50713,7 +50724,7 @@
   "name": "SceneObject_ResetAttachedColorOverride",
   "name_src": "agent",
   "votes": {
-   "SceneObject_ResetAttachedColorOverride": 2
+   "SceneObject_ResetAttachedColorOverride": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -50773,8 +50784,8 @@
   "sig_src": "abi"
  },
  "004cfa20": {
-  "name": "C_0083b4a0_Construct",
-  "name_src": "vote",
+  "name": "C_0083b4a0_ConstructAutonomousTask",
+  "name_src": "agent",
   "votes": {
    "C_0083b4a0_Construct": 1
   },
@@ -50845,22 +50856,24 @@
   "file": "src/auto/004cfb50.cpp"
  },
  "004cfc30": {
-  "name": "sub_4CFC30",
-  "name_src": "addr",
+  "name": "S_0041f0a0_SerializeSceneObjectState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "S_0041f0a0* self, void* , S_0041f0a0* archive",
+  "sig_src": "impl",
+  "file": "src/auto/004cfc30.cpp"
  },
  "004cfd10": {
-  "name": "sub_4CFD10",
-  "name_src": "addr",
+  "name": "C_0083b580_InitWithUnitScale",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083b580* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004cfd10.cpp"
  },
  "004cfd70": {
   "name": "C_0083b580_Destroy",
@@ -51115,13 +51128,14 @@
   "sig_src": "abi"
  },
  "004d0d40": {
-  "name": "sub_4D0D40",
-  "name_src": "addr",
+  "name": "S_0041f0a0_SerializeAutonomousStateSwappedOffsets",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "S_0041f0a0* self, void* , S_0041f0a0* state",
+  "sig_src": "impl",
+  "file": "src/auto/004d0d40.cpp"
  },
  "004d0df0": {
   "name": "sub_4D0DF0",
@@ -51237,7 +51251,7 @@
   "name": "C_0083b958_DispatchAction",
   "name_src": "agent",
   "votes": {
-   "Autonomo_DispatchAction": 3
+   "Autonomo_DispatchAction": 4
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -51284,7 +51298,7 @@
  },
  "004d1560": {
   "name": "C_0083b958_IsPointInDispatchedBounds",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -51328,7 +51342,7 @@
  },
  "004d1660": {
   "name": "AiAutonomous_ConstructTaskBase",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "AiAutonomous_ConstructTaskBase": 8
   },
@@ -51378,19 +51392,22 @@
  },
  "004d1730": {
   "name": "AiCore_UpdateTargetData",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "AiCore_UpdateTargetData": 8
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "S_0048c9f0* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004d1730.cpp"
  },
  "004d17a0": {
   "name": "RunTransitionStateStep",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "AiAutonomous_SerializeMember14": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , void* state",
@@ -51400,7 +51417,9 @@
  "004d1830": {
   "name": "NamedEntry_Serialize_4D1830",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "AiAutonomous_SerializeMember18": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , S_00691860* archive",
@@ -51423,12 +51442,13 @@
   "name": "AiAutonomous_SerializeBaseState",
   "name_src": "vote",
   "votes": {
-   "AiAutonomous_SerializeBaseState": 6
+   "AiAutonomous_SerializeBaseState": 8
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "vote"
+  "params": "S_0041f0a0* self, void* , S_0041f0a0* archive",
+  "sig_src": "impl",
+  "file": "src/auto/004d19c0.cpp"
  },
  "004d1ae0": {
   "name": "GetPlayerPositionX",
@@ -54452,7 +54472,7 @@
   "name": "TCharTask_PrepareBase",
   "name_src": "vote",
   "votes": {
-   "TCharTask_PrepareBase": 2
+   "TCharTask_PrepareBase": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -54506,7 +54526,7 @@
   "name": "Archive_SerializeBaseFields",
   "name_src": "vote",
   "votes": {
-   "Archive_SerializeBaseFields": 14,
+   "Archive_SerializeBaseFields": 15,
    "TaskState_Prepare": 1,
    "TaskState_Notify": 1
   },
@@ -62256,7 +62276,7 @@
   "name": "GetGlobalValue_4FBDE0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_4FBDE0": 94
+   "GetGlobalValue_4FBDE0": 96
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -62409,7 +62429,7 @@
   "name": "GetFirstElement",
   "name_src": "agent",
   "votes": {
-   "GetFirstElement": 59
+   "GetFirstElement": 61
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -129718,7 +129738,7 @@
   "name": "GetCachedObjectProvider",
   "name_src": "vote",
   "votes": {
-   "GetCachedObjectProvider": 128
+   "GetCachedObjectProvider": 130
   },
   "ret": "void*",
   "conv": "__fastcall",
