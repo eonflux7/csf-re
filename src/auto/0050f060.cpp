@@ -1,47 +1,3 @@
-# Escalation 0x0050F060: in-game smoke failure (verifier bisect: 21 smokes (0 named by crash reports, k=8))
-
-## Smoke log tail
-```
-nohook=False pid=13912 ready=False after=120s alive=False exit=-1 stillrunning=False stop=max ran=0s
----- hits
-0069e3d0    3127010 auto C_0085eb30_ReleaseMutexIfSet
-00726b00    1412916 auto C_008655e8_AcquireTexture
-00726bf0    1412915 auto IncrementField54AndReturn
-007267d0    1412915 auto C_008655e8_CreateTextureWrapper
-0041e5f0     141383 auto S_0041e5f0_GrowArrayCapacity
-006a0370      13102 auto C_0085ec74_ReadBytesFromFile
-0071a2e0       6080 auto CopyTwoDwordsIfDestNonNull
-006a3200       4052 auto CoreZlibLog_ComputeAdler32
-006a6810       4024 auto CoreZlibLog_FlushInflateWindow
-006a0430       3669 auto C_0085ec74_GetCurrentFilePosition
----- diff (0 functions compared)
----- csf_hook.log
-hook 004058d0 auto     C_0082d510_FetchMatrixForIndex
-hook 00405830 auto     C_0082d510_ResolveMatrix
-hook 00405810 auto     C_0082d510_ResetState
-hook 00405720 auto     Game_ComputeLocalDirectionAngleDegrees
-hook 004056a0 auto     AxisPair_TransferComponents
-hook 004055e0 auto     C_0082d58c_ApplyRotationDeltas
-hook 004054f0 auto     C_0082d58c_CacheResources
-hook 004054a0 auto     S_004054a0_ResolveChildAndDispatch
-hook 00405450 auto     AudioSoundManager_ProcessArchiveContext
-hook 00405420 auto     C_0082d510_Destroy
-hook 00405400 auto     C_0082d510_ForwardFloatToTarget
-hook 004053e0 auto     C_0082d510_ForwardSlotCall
-hook 004013e0 auto     ReturnMinusOne
-hook 00401090 auto     GetGlobalValue_401090
-hooks installed=5877 skipped=114 failed=0
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00BB6C14 wrapped
-devcmd: video mode 1280x960
-SMOKE FAIL (never ready: no 'devcmd: starting scene' in csf_hook.log within 120s)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include "globals.h"
 #include "hook.h"
@@ -117,4 +73,3 @@ static int __cdecl GameBddLoader_ApplyConfiguredDisplayString()
 
 HOOK(0x0050F060, GameBddLoader_ApplyConfiguredDisplayString, "auto");
 
-```
