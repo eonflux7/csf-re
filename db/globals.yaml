@@ -32,6 +32,10 @@
 - {addr: 0x0082D29C, name: g_TranslateMessageFn, type: TranslateMessageFn, uses: 1, src: auto}
 - {addr: 0x0082D2A0, name: g_PeekMessageAFn, type: PeekMessageAFn, uses: 1, src: auto}
 - {addr: 0x0082D2A4, name: g_DispatchMessageAFn, type: DispatchMessageAFn, uses: 1, src: auto}
+- {addr: 0x0082D2A8, name: g_PostQuitMessage, type: PostQuitMessageFunction, uses: 1, src: auto}
+- {addr: 0x0082D2AC, name: g_EndPaint, type: EndPaintFunction, uses: 1, src: auto}
+- {addr: 0x0082D2B0, name: g_BeginPaint, type: BeginPaintFunction, uses: 1, src: auto}
+- {addr: 0x0082D2B4, name: g_DefWindowProcA, type: DefWindowProcFunction, uses: 1, src: auto}
 - {addr: 0x0082D2B8, name: g_MoveWindow, type: MoveWindowFn, uses: 1, src: auto}
 - {addr: 0x0082D2BC, name: g_GetSystemMetrics, type: GetSystemMetricsFn, uses: 1, src: auto}
 - {addr: 0x0082D2C0, name: g_AdjustWindowRect, type: AdjustWindowRectFn, uses: 1, src: auto}
@@ -132,7 +136,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 80, src: auto, alt: [g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringByte, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 81, src: auto, alt: [g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringByte, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C0, name: g_fBackAngleLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
@@ -236,7 +240,7 @@
 - {addr: 0x0083F184, name: g_DegreesToRadians, type: float, uses: 7, src: auto, alt: [g_HeadDegreesToRadians]}
 - {addr: 0x0083F188, name: g_CharacterDirectionEpsilon, type: float, uses: 3, src: auto, alt: [g_MotionThreshold, g_PositiveDistanceTolerance]}
 - {addr: 0x0083F18C, name: g_NegativeHalfRotationDegrees, type: float, uses: 2, src: auto}
-- {addr: 0x0083F190, name: g_CameraHeightOffset, type: float, uses: 1, src: auto}
+- {addr: 0x0083F190, name: g_CameraHeightOffset, type: float, uses: 2, src: auto}
 - {addr: 0x0083F194, name: g_MinimumMotionDuration, type: float, uses: 1, src: auto}
 - {addr: 0x0083F198, name: g_HeadSpringScale, type: float, uses: 1, src: auto}
 - {addr: 0x0083F19C, name: g_PositioningAngleLimit, type: float, uses: 1, src: auto}
@@ -244,6 +248,7 @@
 - {addr: 0x0083F250, name: g_MenuHeightScale, type: float, uses: 1, src: auto}
 - {addr: 0x0083F4B0, name: g_MenuResourceDelayMs, type: int, uses: 1, src: auto}
 - {addr: 0x0083F4B4, name: g_SceneDegreesToRadians, type: float, uses: 1, src: auto}
+- {addr: 0x0083F760, name: g_CreditsFadeScale, type: float, uses: 1, src: auto}
 - {addr: 0x0084004C, name: g_CMenuScreenFaderVtbl, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008405DC, name: g_FrameInsetScale, type: float, uses: 2, src: auto}
 - {addr: 0x00840974, name: g_SceneResetValue, type: 'std::uint32_t', uses: 1, src: auto}
@@ -1581,7 +1586,7 @@
 - {addr: 0x008B0560, name: g_globalValue_8B0560, type: int, uses: 2, src: auto}
 - {addr: 0x008B0564, name: g_Value_8B0564, type: int, uses: 1, src: auto}
 - {addr: 0x008B0568, name: g_Value_8B0568, type: int, uses: 2, src: auto}
-- {addr: 0x008B056C, name: g_value_8B056C, type: int, uses: 1, src: auto}
+- {addr: 0x008B056C, name: g_value_8B056C, type: int, uses: 3, src: auto}
 - {addr: 0x008B0570, name: g_pMenuManager, type: void*, uses: 1, src: captain, conf: 0.75, alt: [g_GlobalState]}
 - {addr: 0x008B0574, name: g_Value_8B0574, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008B0578, name: g_GlobalValue_8B0578, type: int, uses: 1, src: auto}
@@ -1626,7 +1631,7 @@
 - {addr: 0x008BAD7C, name: g_MemDebugLine, type: int, uses: 0, src: opus}
 - {addr: 0x008BAD88, name: g_bMemDebugTrackingEnabled, type: bool, uses: 0, src: captain, conf: 0.75}
 - {addr: 0x008BAD8C, name: g_MemDebugTotalAllocatedBytes, type: int, uses: 0, src: captain, conf: 0.85}
-- {addr: 0x008BAD98, name: g_unk_8BAD98, type: uint8_t, uses: 1, src: auto}
+- {addr: 0x008BAD98, name: g_unk_8BAD98, type: uint8_t, uses: 2, src: auto}
 - {addr: 0x008BAEB4, name: g_MemDebugMutex, type: void*, uses: 0, src: captain, conf: 0.75}
 - {addr: 0x008BAF8C, name: g_pOptions, type: COptions*, uses: 2, src: opus}
 - {addr: 0x008BAF90, name: g_ActiveSceneContext, type: void*, uses: 4, src: auto, alt: [g_ActiveSceneLoadContext, g_PendingSceneResource]}
@@ -1652,7 +1657,7 @@
 - {addr: 0x008BB430, name: g_BlackClearColor, type: 'std::uint32_t', uses: 1, src: captain, conf: 0.7, alt: [g_CameraClearColor]}
 - {addr: 0x008BB448, name: g_ZeroVector2X, type: float, uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008BB44C, name: g_ZeroVector2Y, type: float, uses: 0, src: captain, conf: 0.7}
-- {addr: 0x008BB450, name: g_Value_8BB450, type: int, uses: 2, src: auto}
+- {addr: 0x008BB450, name: g_Value_8BB450, type: int, uses: 3, src: auto}
 - {addr: 0x008BB470, name: g_ActiveEntryKey, type: int, uses: 6, src: auto, alt: [g_CurrentPropertiesEntry, g_CurrentPropertyReference, g_LastUserDataEntry, g_StreamingState, g_cachedEngineHandle]}
 - {addr: 0x008BB474, name: g_ObjectPropertiesPluginOffset, type: int, uses: 25, src: auto, alt: [g_ObjectPropsPluginOffset, g_PropertiesPluginOffset, g_RwEngineInstanceOffset, dword_8BB474, g_DummyPluginOffset, g_EnginePropertiesOffset, g_EnginePropertyPluginOffset, g_MaterialManagerOffset, g_MaterialPluginOffset, g_ObjectPropsEngineOffset, g_ObjectRegistryOffset, g_PropertyTableOffset, g_RwEngineObjectOffset, g_StreamingPluginOffset, g_UserDataEntryOffset, g_dwRwEngineSlotOffset, g_dwRwEngineSubOffset, g_engineBase]}
 - {addr: 0x008BB478, name: g_ObjectPropertiesOffset, type: uint32_t, uses: 11, src: auto, alt: [g_AtomicPropertyPluginOffset, g_DistanceOverrideBase, g_ObjectAttachmentTable, g_ObjectPropertyTable, g_ObjectPropsPluginBase, g_PropsRecordBase, g_PropsSlotBase, g_WaterSourceStateBase, g_8BB478]}
