@@ -82,6 +82,7 @@
   "name": "SceneQueries_InitializeFilter",
   "name_src": "vote",
   "votes": {
+   "InitializeActionRequest": 1,
    "SceneQueries_InitializeFilter": 1
   },
   "ret": "uint32_t*",
@@ -4040,6 +4041,7 @@
   "name_src": "agent",
   "votes": {
    "SpatialQuery_BuildContext": 2,
+   "InitializeActionBounds": 1,
    "SceneQueries_ConstructRay": 1
   },
   "ret": "C_00833b88*",
@@ -6538,7 +6540,7 @@
   "name": "S_0041e5f0_GrowArrayCapacity",
   "name_src": "agent",
   "votes": {
-   "GrowButtonArray": 88,
+   "GrowButtonArray": 89,
    "S_0041e5f0_GrowArrayCapacity": 8
   },
   "ret": "void*",
@@ -17528,6 +17530,7 @@
   "name": "InitializeNearbyCandidateResult",
   "name_src": "vote",
   "votes": {
+   "InitializeActionResult": 1,
    "SpatialQuery_InitializeCandidates": 1,
    "InitializeNearbyCandidateResult": 1,
    "SceneQueries_InitializeHits": 1
@@ -17577,7 +17580,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 240
+   "CHandleTable_Resolve": 241
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -17992,6 +17995,7 @@
   "name": "CGuiControl_QueryNearbyCandidates",
   "name_src": "agent",
   "votes": {
+   "ProcessSelectionAction": 1,
    "CGuiControl_QueryNearbyCandidates": 2
   },
   "ret": "void",
@@ -18047,14 +18051,15 @@
  },
  "004523c0": {
   "name": "S_00452280_UpdateControls",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "S_00452280_UpdateControls": 1
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int _AC",
-  "sig_src": "vote"
+  "params": "S_00452280* self, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/004523c0.cpp"
  },
  "004525a0": {
   "name": "CGuiControl_ResetLayoutDefaults",
@@ -34201,6 +34206,7 @@
   "name_src": "agent",
   "votes": {
    "SceneObject_SetColorOverride": 1,
+   "ApplySelectionState": 1,
    "SceneLoader_SetObjectColor": 1,
    "C_00867260_SetColor": 1
   },
@@ -34213,7 +34219,9 @@
  "0048e7b0": {
   "name": "GetDisplayColor",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GetSelectionState": 1
+  },
   "ret": "int*",
   "conv": "__fastcall",
   "params": "void* self, void* , int* output",
@@ -34224,7 +34232,8 @@
   "name": "SceneObject_ResetColorOverride",
   "name_src": "agent",
   "votes": {
-   "SceneObject_ResetColorOverride": 1
+   "SceneObject_ResetColorOverride": 1,
+   "ClearSelectionState": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -35562,7 +35571,7 @@
   "name": "IsField1BCNonNegative",
   "name_src": "agent",
   "votes": {
-   "IsField1BCNonNegative": 12
+   "IsField1BCNonNegative": 13
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -127866,7 +127875,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 297
+   "Mem_Free": 298
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -135135,7 +135144,8 @@
   "name_src": "agent",
   "votes": {
    "GfxMatrix_EulerAnglesToDirection": 3,
-   "EulerAnglesToDirection": 4
+   "EulerAnglesToDirection": 4,
+   "GetActionExtent": 1
   },
   "ret": "float*",
   "conv": "__fastcall",
