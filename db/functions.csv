@@ -1381,7 +1381,7 @@ ea,size,region,module,name,name_src,status
 00441d80,308,game,m4419C0,,,todo
 00441ec0,28,game,m4419C0,,,todo
 00441ee0,43,game,stl,,,todo
-00441f10,121,game,m4419C0,,,todo
+00441f10,121,game,m4419C0,SceneLoader_CreateObject,vote,todo
 00441f90,403,game,m4419C0,,,todo
 00442130,193,game,m4419C0,SceneLoader_ResetSceneService,vote,todo
 00442200,75,game,m4419C0,SceneLoader_ResetNextSceneManager,vote,todo
@@ -14324,8 +14324,8 @@ ea,size,region,module,name,name_src,status
 006ae830,143,game,m6AB8D0,GfxMatrix_MultiplyQuaternionInPlace,agent,done
 006ae8c0,167,game,m6AB8D0,GfxMatrix_SetQuaternionFromAxisAngle,agent,done
 006ae970,163,game,m6AB8D0,GfxMatrix_SetQuaternionAxisAngle,agent,done
-006aea20,15,game,m6AEA20,,,todo
-006aea30,140,game,m6AEA20,,,todo
+006aea20,15,game,m6AEA20,GfxHAnim_GetQuaternionAngle,vote,todo
+006aea30,140,game,m6AEA20,GfxHAnim_GetQuaternionAxis,vote,todo
 006aeac0,244,game,m6AEA20,,,todo
 006aebc0,569,game,m6AEA20,,,todo
 006aee00,62,game,m6AEA20,NormalizeVector2,vote,todo
@@ -14897,8 +14897,8 @@ ea,size,region,module,name,name_src,status
 006c2030,12,game,m6C0EE0,,,todo
 006c2040,12,game,m6C0EE0,,,todo
 006c2050,6,game,m6C0EE0,C_Unknown_GetValue,agent,done
-006c2060,18,game,m6C0EE0,,,todo
-006c2080,111,game,m6C2080,,,todo
+006c2060,18,game,m6C0EE0,GfxHAnim_IsSpecialAnimation,vote,todo
+006c2080,111,game,m6C2080,HAnim_GetSceneChannelCount,vote,todo
 006c20f0,785,game,m6C2080,,,todo
 006c2410,75,game,m6C2080,,,todo
 006c2460,67,game,m6C2080,,,todo
@@ -14914,7 +14914,7 @@ ea,size,region,module,name,name_src,status
 006c2e40,109,game,m6C2080,,,todo
 006c2eb0,980,game,m6C2080,,,todo
 006c3290,140,game,m6C2080,,,todo
-006c3320,151,game,m6C2080,,,todo
+006c3320,151,game,m6C2080,HAnim_ApplyChannelPose,vote,todo
 006c33c0,294,game,m6C2080,,,todo
 006c34f0,112,game,m6C34F0,,,todo
 006c3560,6,game,m6C34F0,C_00860848_GetObjectSize,agent,done
@@ -15944,7 +15944,7 @@ ea,size,region,module,name,name_src,status
 006e89a0,51,game,m6E8010,GetHanimKeyframeEntry,agent,done
 006e89e0,33,game,m6E8010,C_00861e98_QueryInnerOrMinusOne,agent,done
 006e8a10,49,game,m6E8010,C_00861e98_DispatchWithResolvedIndex,agent,done
-006e8a50,200,game,m6E8010,,,todo
+006e8a50,200,game,m6E8010,HanimResolveNodeRecord,vote,todo
 006e8b20,159,game,m6E8010,C_00861e98_RotateNode,agent,done
 006e8bc0,37,game,m6E8010,C_00861e98_ClearAllEntryFlags,agent,done
 006e8bf0,37,game,m6E8010,C_00861e98_SetAllEntryFlags,agent,done
@@ -15957,7 +15957,7 @@ ea,size,region,module,name,name_src,status
 006e8ea0,171,game,m6E8010,GfxHAnim_GrowEntryStorage,agent,done
 006e8f50,223,game,m6E8010,C_00861e98_Construct,agent,done
 006e9030,76,game,m6E8010,C_00861e98_FindEntryById,agent,done
-006e9080,544,game,m6E8010,,,todo
+006e9080,544,game,m6E8010,C_00861e98_PrepareBlendRootMotion,vote,todo
 006e92a0,922,game,m6E8010,C_00861e98_ComposeTransformsAndExtractPose,agent,done
 006e9640,81,game,m6E8010,C_00861e98_UpdateHierarchyMatrices,agent,done
 006e96a0,38,game,m6E8010,C_00861e98_IsBit5SetOnLinkedNode,agent,done
@@ -15975,7 +15975,7 @@ ea,size,region,module,name,name_src,status
 006e9a30,118,game,m6E8010,C_00861e98_StoreJointPosition,agent,done
 006e9ab0,71,game,m6E8010,C_00861e98_AddTranslatedVector,agent,done
 006e9b00,236,game,m6E8010,C_00861e98_RotateNode,agent,done
-006e9bf0,267,game,m6E8010,,,todo
+006e9bf0,267,game,m6E8010,C_00861e98_UpdateHierarchyPose,vote,todo
 006e9d00,91,game,m6E8010,C_00861e98_LookupFirstMatchValue,agent,done
 006e9d60,330,game,m6E8010,C_00861e98_BindHierarchyNodes,agent,done
 006e9eb0,26,game,m6E8010,C_00861e98_SetEntryFlag0x200,agent,done
@@ -15986,9 +15986,9 @@ ea,size,region,module,name,name_src,status
 006ea430,147,game,m6E8010,C_00861e98_AppendSubHierarchyRecord,agent,done
 006ea4d0,1381,game,m6E8010,C_00861e98_StartAnimation,agent,done
 006eaa40,287,game,m6E8010,,,todo
-006eab60,600,game,m6E8010,,,todo
-006eadc0,357,game,m6E8010,,,todo
-006eaf30,579,game,m6E8010,,,todo
+006eab60,600,game,m6E8010,GfxHAnim_UpdateRootMotion,vote,todo
+006eadc0,357,game,m6E8010,GfxHAnim_AdvanceChannel,vote,todo
+006eaf30,579,game,m6E8010,GfxHAnim_AdvanceBlendSource,vote,todo
 006eb180,179,game,m6E8010,C_00861e98_UpdateHierarchyMatrices,agent,done
 006eb240,403,game,m6E8010,,,todo
 006eb3e0,33,game,m6E8010,C_00861e98_Destroy,agent,done
@@ -16362,7 +16362,7 @@ ea,size,region,module,name,name_src,status
 006f77f0,33,game,m6F6FB0,,,todo
 006f7820,6,game,m6F7820,GetValue8BBB28,agent,done
 006f7830,67,game,m6F7820,GfxScene_PrepareSceneServices,vote,todo
-006f7880,224,game,m6F7820,,,todo
+006f7880,224,game,m6F7820,HAnimInstance_Create,vote,todo
 006f7960,266,game,m6F7820,,,todo
 006f7a70,418,game,m6F7820,HAnim_ReleaseTrackHandle,vote,todo
 006f7c20,338,game,m6F7820,,,todo
@@ -16715,9 +16715,9 @@ ea,size,region,module,name,name_src,status
 00707480,73,game,m707430,C_00861e08_ResolveDelegate,vote,todo
 007074d0,39,game,m707430,,,todo
 00707500,73,game,m707430,,,todo
-00707550,55,game,m707430,,,todo
-00707590,41,game,m707430,,,todo
-007075c0,34,game,m707430,,,todo
+00707550,55,game,m707430,ReleaseTrackPayload,vote,todo
+00707590,41,game,m707430,BindHierarchyNode,vote,todo
+007075c0,34,game,m707430,GfxHAnim_ClearBoneMatrix,vote,todo
 007075f0,71,game,m707430,,,todo
 00707640,79,game,m707430,,,todo
 00707690,329,game,m707430,,,todo
@@ -16731,7 +16731,7 @@ ea,size,region,module,name,name_src,status
 00707a40,152,game,m707430,,,todo
 00707ae0,108,game,m707430,,,todo
 00707b50,108,game,m707430,,,todo
-00707bc0,273,game,m707430,,,todo
+00707bc0,273,game,m707430,GfxHAnim_UpdateRelativeTransform,vote,todo
 00707ce0,73,game,m707430,,,todo
 00707d30,36,game,m707430,,,todo
 00707d60,182,game,m707430,,,todo
