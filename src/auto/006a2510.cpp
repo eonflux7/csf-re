@@ -1,0 +1,186 @@
+#include <cstdint>
+#include <cstddef>
+#include <cstring>
+#include "globals.h"
+#include "hook.h"
+#include "core/memory.h"
+#include "types/auto_classes.h"
+
+CSF_FUNC(int, __fastcall, CoreZlibLog_ResetElementStorage, 0x00410D50, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, SaveGame_DestroyLocalizedString, 0x00428E90, (void* string, void* edx));
+CSF_FUNC(void*, __fastcall, AssignStringRange_429B60, 0x00429B60, (void* self, void* edx, char* text, unsigned int length));
+CSF_FUNC(C_0082d410*, __fastcall, C_0082d410_ConstructFromText, 0x00434150, (C_0082d410* self, void* , uint32_t* a2));
+CSF_FUNC(int, __fastcall, CMenuSaveGame_ResetStringStorage, 0x00544310, (void* self, void*));
+CSF_FUNC(int, __fastcall, ParseIntegerComponent, 0x00692C40, (std::uint32_t component));
+CSF_FUNC(double, __fastcall, ReadComponentFloat, 0x00692CC0, (std::uint32_t component));
+CSF_FUNC(char, __fastcall, CopyAttributeText, 0x00692D40, (std::uint8_t* attribute, void* edx, char* buffer, int capacity));
+CSF_FUNC(uint8_t*, __fastcall, CoreZlibLog_ReadWideAttributeText, 0x00692E40, (void* self, void* edx, int64_t a2));
+CSF_FUNC(void, __fastcall, CoreZlibLog_ReadVector2, 0x00692F60, (void* self, void* edx, float* a2));
+CSF_FUNC(int, __fastcall, DataNode_ReadVector3, 0x00693020, (void* self, void* edx, float* a2));
+CSF_FUNC(void, __fastcall, CoreZlibLog_ReadVector4, 0x00693140, (void* self, void* edx, float* a2));
+CSF_FUNC(std::uint8_t*, __fastcall, FindProperty, 0x006932B0, (std::uint8_t* self, void* edx, char* keyword));
+CSF_FUNC(void*, __fastcall, ConstructWideString, 0x00696F50, (void* self, void* edx, wchar_t* String));
+CSF_FUNC(char, __fastcall, CoreZlibLog_AssignPropertyValue, 0x0069D930, (void* self, void* edx, void** a2));
+CSF_FUNC(char, __fastcall, CoreZlibLog_DestroyEmbeddedSettings, 0x006A24B0, (void* self, void* edx));
+
+static char __stdcall CoreZlibLog_ReadPropertyIntoDescriptor(
+    S_00692b80* node, std::uint8_t* descriptor)
+{
+    auto* property = FindProperty(
+        reinterpret_cast<std::uint8_t*>(node), nullptr,
+        CSF_AT(char*, descriptor, 0x0));
+    if (!property)
+        return 0;
+
+    char buffer[256] = {};
+    const std::uint32_t type =
+        CSF_AT(std::uint32_t, descriptor, 0xC) & 0xDFFFFFFF;
+
+    switch (type)
+    {
+    case 2:
+    {
+        std::uint8_t value =
+            ParseIntegerComponent(reinterpret_cast<std::uint32_t>(property)) != 0;
+        return CoreZlibLog_AssignPropertyValue(
+            descriptor, nullptr, reinterpret_cast<void**>(&value));
+    }
+    case 4:
+    {
+        std::uint8_t value = static_cast<std::uint8_t>(
+            ParseIntegerComponent(reinterpret_cast<std::uint32_t>(property)));
+        return CoreZlibLog_AssignPropertyValue(
+            descriptor, nullptr, reinterpret_cast<void**>(&value));
+    }
+    case 8:
+    case 16:
+    case 0x4000:
+    case 0x8000:
+    case 0x20000:
+    case 0x80000:
+    case 0x1000000:
+    {
+        int value = ParseIntegerComponent(
+            reinterpret_cast<std::uint32_t>(property));
+        return CoreZlibLog_AssignPropertyValue(
+            descriptor, nullptr, reinterpret_cast<void**>(&value));
+    }
+    case 32:
+    {
+        float value = static_cast<float>(
+            ReadComponentFloat(reinterpret_cast<std::uint32_t>(property)));
+        return CoreZlibLog_AssignPropertyValue(
+            descriptor, nullptr, reinterpret_cast<void**>(&value));
+    }
+    case 64:
+    {
+        CopyAttributeText(property, nullptr, buffer, 256);
+        alignas(4) std::uint8_t stringStorage[0x1C] = {};
+        auto* string = reinterpret_cast<C_0082d410*>(stringStorage);
+        C_0082d410_ConstructFromText(
+            string, nullptr, reinterpret_cast<uint32_t*>(buffer));
+        CoreZlibLog_AssignPropertyValue(
+            descriptor, nullptr, reinterpret_cast<void**>(string));
+        return static_cast<char>(
+            CMenuSaveGame_ResetStringStorage(string, nullptr));
+    }
+    case 128:
+    {
+        float value[2] = {};
+        CoreZlibLog_ReadVector2(property, nullptr, value);
+        return CoreZlibLog_AssignPropertyValue(
+            descriptor, nullptr, reinterpret_cast<void**>(value));
+    }
+    case 256:
+    {
+        float value[3] = {};
+        DataNode_ReadVector3(property, nullptr, value);
+        return CoreZlibLog_AssignPropertyValue(
+            descriptor, nullptr, reinterpret_cast<void**>(value));
+    }
+    case 512:
+    case 1024:
+    {
+        CopyAttributeText(property, nullptr, buffer, 256);
+
+        // These are distinct objects in the original, despite the assignment
+        // targeting the smaller one and the subsequent calls using the larger.
+        alignas(4) std::uint8_t settings[0x41C] = {};
+        alignas(4) std::uint8_t textStorage[0x20] = {};
+        auto* text = reinterpret_cast<C_0082d410*>(textStorage);
+
+        CSF_AT(int, settings, 0x18) = 15;
+        CSF_AT(int, textStorage, 0x18) = 15;
+        CSF_AT(int, settings, 0x14) = 0;
+        CSF_AT(char, settings, 0x4) = 0;
+        CSF_AT(int, textStorage, 0x14) = 0;
+        reinterpret_cast<std::uint8_t*>(&text->field_0004)[0] = 0;
+        CSF_AT(char, textStorage, 0x1C) = 0;
+
+        AssignStringRange_429B60(
+            text, nullptr, buffer,
+            static_cast<unsigned int>(std::strlen(buffer)));
+        CoreZlibLog_AssignPropertyValue(
+            descriptor, nullptr, reinterpret_cast<void**>(settings));
+        return CoreZlibLog_DestroyEmbeddedSettings(settings, nullptr);
+    }
+    case 4096:
+    {
+        alignas(4) std::uint8_t element[0x14] = {};
+        CSF_AT(int, element, 0x8) = 0;
+        CSF_AT(int, element, 0xC) = 0;
+        CSF_AT(int, element, 0x10) = 0;
+        CSF_AT(int, element, 0x0) = -1;
+        CSF_AT(int, element, 0x0) = ParseIntegerComponent(
+            reinterpret_cast<std::uint32_t>(property));
+        CoreZlibLog_AssignPropertyValue(
+            descriptor, nullptr, reinterpret_cast<void**>(element));
+        return static_cast<char>(
+            CoreZlibLog_ResetElementStorage(element, nullptr));
+    }
+    case 0x2000:
+    {
+        float value[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+        CoreZlibLog_ReadVector4(property, nullptr, value);
+        return CoreZlibLog_AssignPropertyValue(
+            descriptor, nullptr, reinterpret_cast<void**>(value));
+    }
+    case 0x10000:
+    {
+        float value[4] = {};
+        CoreZlibLog_ReadVector4(property, nullptr, value);
+        return CoreZlibLog_AssignPropertyValue(
+            descriptor, nullptr, reinterpret_cast<void**>(value));
+    }
+    case 0x800000:
+    {
+        wchar_t wideText[256] = {};
+        const int64_t bufferAndCapacity = static_cast<int64_t>(
+            (std::uint64_t{256} << 32) |
+            reinterpret_cast<std::uint32_t>(wideText));
+        CoreZlibLog_ReadWideAttributeText(
+            property, nullptr, bufferAndCapacity);
+
+        alignas(4) std::uint8_t stringStorage[0x1C] = {};
+        auto* string = reinterpret_cast<C_0082d410*>(stringStorage);
+        ConstructWideString(string, nullptr, wideText);
+        CoreZlibLog_AssignPropertyValue(
+            descriptor, nullptr, reinterpret_cast<void**>(string));
+        return static_cast<char>(
+            SaveGame_DestroyLocalizedString(string, nullptr));
+    }
+    default:
+        // Preserve the arithmetic residual returned for unsupported types.
+        if (type <= 0x20)
+            return static_cast<char>(type - 2);
+        if (type < 0x100)
+        {
+            if (type < 0x40)
+                return static_cast<char>(type - 0x40);
+            return static_cast<char>(type - 0x40 - 0x40);
+        }
+        return static_cast<char>(type);
+    }
+}
+
+HOOK(0x006A2510, CoreZlibLog_ReadPropertyIntoDescriptor, "auto");
