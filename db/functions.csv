@@ -400,7 +400,7 @@ ea,size,region,module,name,name_src,status
 0040ff70,331,game,m40FB20,C_0082dd78_FindNearestScenePosition,agent,done
 004100c0,111,game,m40FB20,CopySixteenByteRange,agent,done
 00410130,347,game,m40FB20,,,todo
-00410290,871,game,m40FB20,C_0082deb8_UpdateGroundQuery,agent,done
+00410290,871,game,m40FB20,C_0082deb8_UpdateGroundQuery,agent,todo
 00410600,241,game,m40FB20,C_0082deb8_SetFocusPosition,agent,done
 00410700,54,game,m40FB20,RecordStateAndDispatchOnce,agent,done
 00410740,273,game,m40FB20,C_0082deb8_UpdateVerticalPosition,agent,done
@@ -569,7 +569,7 @@ ea,size,region,module,name,name_src,status
 0041c670,454,game,m418370,C_0082e3b8_InitializeWheelRecords,agent,done
 0041c840,140,game,m418370,C_0082e3b8_ConfigureWheelRotations,agent,done
 0041c8d0,140,game,m418370,C_0082e3b8_ConfigureWheelRotations,agent,done
-0041c960,808,game,m418370,,,todo
+0041c960,808,game,m418370,Vehicle_AimAtPosition,agent,done
 0041cc90,68,game,m418370,C_0082e3b8_Destroy,agent,done
 0041cce0,473,game,m418370,C_0082e3b8_Initialize,agent,done
 0041cec0,292,game,m418370,C_0082e3b8_Process,agent,done
@@ -638,7 +638,7 @@ ea,size,region,module,name,name_src,status
 0041ea70,141,game,m41E1D0,S_0041e820_AdvanceAngleAndSnapToTarget,agent,done
 0041eb00,33,game,m41E1D0,C_0082e664_Destroy,agent,done
 0041eb30,252,game,m41E1D0,C_0082e6a0_EnsureButtonCount,agent,done
-0041ec30,87,game,m41E1D0,C_0082e6a0_GetStateResult,vote,todo
+0041ec30,87,game,m41E1D0,C_0082e664_TakeFromFreeListOrAllocate,agent,done
 0041ec90,39,game,m41E1D0,C_0082e6a0_Destroy,agent,done
 0041ecc0,25,game,m41E1D0,C_0082e6a0_InitIfNeededAndGet,agent,done
 0041ece0,80,game,m41E1D0,SceneList_AppendIdIfFound,agent,done
@@ -647,7 +647,7 @@ ea,size,region,module,name,name_src,status
 0041ee60,165,game,m41E1D0,TaskState_SetTime,agent,done
 0041ef10,81,game,m41E1D0,AiTask_QueueStateIfFound,agent,done
 0041ef70,92,game,m41E1D0,FlushPendingSceneIndex,agent,done
-0041efd0,111,game,m41E1D0,AiTaskStates_UpdateSubStateLinks,vote,todo
+0041efd0,111,game,m41E1D0,S_0041e750_RebuildPathPoints,agent,done
 0041f040,96,game,m41E1D0,S_0041e750_LoadTaskRecords,agent,done
 0041f0a0,201,game,m41E1D0,S_0041f0a0_Serialize,agent,done
 0041f170,137,game,m41E1D0,C_0082e684_UpdateState,agent,done
@@ -659,7 +659,7 @@ ea,size,region,module,name,name_src,status
 0041f9f0,20,game,m41E1D0,C_0082e6e8_ResetTaskState,agent,done
 0041fa20,46,game,m41E1D0,C_0082e6e8_Destroy,agent,done
 0041fa50,30,game,m41E1D0,C_0082e6e8_ResetMotionFields,agent,done
-0041fa70,145,game,m41E1D0,,,todo
+0041fa70,145,game,m41E1D0,C_0082e6e8_SetTargetAndAimDirection,agent,done
 0041fb10,87,game,m41E1D0,C_0082e6e8_Initialize,agent,done
 0041fb70,386,game,m41E1D0,C_0082e6e8_Update,agent,done
 0041fd00,338,game,m41E1D0,TaskState_Serialize,agent,done
@@ -714,7 +714,7 @@ ea,size,region,module,name,name_src,status
 00420ec0,42,game,m41E1D0,TCharTask_SetStateAndMaybeStopGirar,agent,done
 00420ef0,41,game,m41E1D0,TNavegando_UpdateStateFlag,agent,done
 00420f20,43,game,m41E1D0,TNavegando_ResetNavigationState,agent,done
-00420f50,117,game,m41E1D0,,,todo
+00420f50,117,game,m41E1D0,TNavegando_OnEnterState,agent,done
 00420fd0,116,game,m41E1D0,C_0082f9f8_GetDirectionAngleToPathPoint,agent,done
 00421050,93,game,m41E1D0,AiTaskStates_RefreshStateFromLastElement,agent,done
 004210b0,15,game,m41E1D0,C_00834fa8_QueryAtFieldOffset0C,agent,done
@@ -754,7 +754,7 @@ ea,size,region,module,name,name_src,status
 00421a80,23,game,m41E1D0,TaskStates_ClearFlagBit3,agent,done
 00421aa0,64,game,m41E1D0,AiTaskStates_EnterStateSetFlag10,agent,done
 00421ae0,66,game,m41E1D0,TCharTask_ClearFlag10,agent,done
-00421b30,149,game,m41E1D0,ApplyScaledStep,vote,todo
+00421b30,149,game,m41E1D0,C_0082f9f8_UpdateFacingAndDispatch,agent,done
 00421bd0,107,game,m41E1D0,TFncGirar_TickRotationAndNotify,agent,done
 00421c40,49,game,m41E1D0,NotifyLinkedObjectAndSetFlag,agent,done
 00421c80,32,game,m41E1D0,TCharTask_ClearOwnerFlag10,agent,done
@@ -763,7 +763,7 @@ ea,size,region,module,name,name_src,status
 004220c0,33,game,m41E1D0,C_0082f9f8_Destroy,agent,done
 004220f0,145,game,m41E1D0,S_00421750_RefreshStateFromAnim,agent,done
 00422190,325,game,m41E1D0,TaskState_UpdateTurn,agent,done
-004222e0,140,game,m41E1D0,,,todo
+004222e0,140,game,m41E1D0,AiTask_UpdateFacingOrDispatch,agent,done
 00422370,119,game,m41E1D0,,,todo
 004223f0,102,game,m41E1D0,S_004223f0_ApplyHeadingFromPositionDelta,agent,done
 00422460,50,game,m41E1D0,S_004223f0_RefreshSubStateIfFlagged,agent,done
@@ -790,7 +790,7 @@ ea,size,region,module,name,name_src,status
 004234c0,185,game,m41E1D0,TaskState_UpdateStates,agent,done
 00423580,159,game,m41E1D0,TaskState_Update,agent,done
 00423620,207,game,m41E1D0,C_0082f9f8_StartTask,agent,done
-004236f0,55,game,m41E1D0,,,todo
+004236f0,55,game,m41E1D0,TCharTask_RunStateStep,agent,done
 00423730,1386,game,m41E1D0,,,todo
 00423ca0,146,game,m423CA0,,,todo
 00423d40,219,game,m423CA0,,,todo
@@ -1544,7 +1544,7 @@ ea,size,region,module,name,name_src,status
 00448c60,232,game,m4480C0,,,todo
 00448d50,69,game,m4480C0,,,todo
 00448da0,38,game,m4480C0,UpdateFinalController,vote,todo
-00448dd0,352,game,m4480C0,,,todo
+00448dd0,352,game,m4480C0,AiTaskStates_AdjustPositionForRegion,vote,todo
 00448f30,250,game,m4480C0,,,todo
 00449030,156,game,m4480C0,,,todo
 004490d0,90,game,m4480C0,,,todo
@@ -1676,7 +1676,7 @@ ea,size,region,module,name,name_src,status
 0044daf0,68,game,m44D360,,,todo
 0044db40,107,game,m44D360,,,todo
 0044dbb0,297,game,m44D360,,,todo
-0044dce0,93,game,m44D360,,,todo
+0044dce0,93,game,m44D360,C_0082e664_StoreAllocatedSlot,vote,todo
 0044dd40,154,game,m44D360,,,todo
 0044dde0,111,game,m44D360,,,todo
 0044de50,49,game,m44D360,,,todo
@@ -19127,7 +19127,7 @@ ea,size,region,module,name,name_src,status
 0075c460,35,game,m75BF30,,,todo
 0075c490,143,game,m75BF30,,,todo
 0075c520,119,game,m75BF30,,,todo
-0075c5a0,544,game,m75BF30,,,todo
+0075c5a0,544,game,m75BF30,NavManager_TryReserveSpot,vote,todo
 0075c7c0,856,game,m75BF30,GridLookupSlotForVector,vote,todo
 0075cb30,716,game,m75BF30,,,todo
 0075ce00,22,game,m75BF30,SearchFacingTarget,vote,todo
