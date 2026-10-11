@@ -1,53 +1,3 @@
-# Escalation 0x00490790: in-game smoke failure (verifier bisect: 8 smokes (1 named by crash reports, k=8))
-
-## Smoke log tail
-```
-nohook=False pid=13960 ready=False after=5s alive=False exit=-1073741819 stillrunning=False stop=exited ran=0s fail_at=0s
----- hits
-006a2c60    1443871 auto C_0085ee28_ReadBufferedBytes
-006a2e00    1431114 auto C_0085ee28_SumFields
-006a3200     422380 auto CoreZlibLog_ComputeAdler32
-006a6810     298885 auto CoreZlibLog_FlushInflateWindow
-0069e3d0     287488 auto C_0085eb30_ReleaseMutexIfSet
-006a2f90     236087 auto CoreZlibLog_AllocateReusableBlock
-006a2eb0     236083 auto ZlibLog_MarkTrackedBlock
-006a0370     197559 auto C_0085ec74_ReadBytesFromFile
-006a6130     130452 auto CoreZlibLog_BuildInflateHuffmanTable
-006a6950      99611 auto CoreZlibLog_InflateFast
----- diff (0 functions compared)
-CRASH code=c0000005 eip=72cb93a8 addr=00000000 (rw=0) eax=00000000 ebx=0019e910 ecx=19b84b90 edx=00000002 esi=0019e810 edi=000001ab ebp=0019e76c esp=0019e714
-  eip module 72BE0000 (ours 72BE0000); stack:
-   00000000 0000000c 3f800000 3f252f3b 3f439387 00000000
-   3f800000 00000000 00000001 19b84bc0 19b84b90 193280b0
-   00000000 3f800000 00000000 00000000 19b84bc0 00000000
-   00000000 81ba0cab 0019e810 000001ab 0019e828 72cf3fa2
----- csf_hook.log
-hook 004054a0 auto     S_004054a0_ResolveChildAndDispatch
-hook 00405450 auto     AudioSoundManager_ProcessArchiveContext
-hook 00405420 auto     C_0082d510_Destroy
-hook 00405400 auto     C_0082d510_ForwardFloatToTarget
-hook 004053e0 auto     C_0082d510_ForwardSlotCall
-hook 004013e0 auto     ReturnMinusOne
-hook 00401090 auto     GetGlobalValue_401090
-hooks installed=5218 skipped=0 failed=0
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00B78984 wrapped
-devcmd: video mode 1280x960
-devcmd: dev start (scene Maps/FR01/Parachut.scn) instead of Menus/P_Intro.fbs -> state 1
-CRASH code=c0000005 eip=72cb93a8 addr=00000000 (rw=0) eax=00000000 ebx=0019e910 ecx=19b84b90 edx=00000002 esi=0019e810 edi=000001ab ebp=0019e76c esp=0019e714
-  eip module 72BE0000 (ours 72BE0000); stack:
-   00000000 0000000c 3f800000 3f252f3b 3f439387 00000000
-   3f800000 00000000 00000001 19b84bc0 19b84b90 193280b0
-   00000000 3f800000 00000000 00000000 19b84bc0 00000000
-   00000000 81ba0cab 0019e810 000001ab 0019e828 72cf3fa2
-SMOKE FAIL (never ready: no 'devcmd: starting scene' in csf_hook.log within 120s)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include <cstring>
 #include "globals.h"
@@ -87,9 +37,10 @@ static char __fastcall C_008342e8_SetObjectTransform(
                 transformOwner, nullptr, transform);
     }
 
+    // The stored index is this call's argument (Hex-Rays moved the push to the invert call below).
     void* parent =
-        reinterpret_cast<void* (__fastcall*)(void*, void*)>(
-            CSF_AT(void**, object, 0)[0x8C / 4])(object, nullptr);
+        reinterpret_cast<void* (__fastcall*)(void*, void*, int)>(
+            CSF_AT(void**, object, 0)[0x8C / 4])(object, nullptr, storedTarget);
 
     void* parentTransform =
         reinterpret_cast<void* (__fastcall*)(void*, void*)>(
@@ -99,13 +50,13 @@ static char __fastcall C_008342e8_SetObjectTransform(
     CSF_AT(char, inverseState, 0x4) = 1;
 
     S_006adb40* inversion =
-        reinterpret_cast<S_006adb40* (__fastcall*)(void*, void*, void*, void*)>(
+        reinterpret_cast<S_006adb40* (__fastcall*)(void*, void*, void*)>(
             CSF_AT(void**, parentTransform, 0)[0x90 / 4])(
-                parentTransform, nullptr, matrixState, inverseState);
+                parentTransform, nullptr, matrixState);
 
+    // Inverts the parent's matrix into the one created above.
     Matrix_InvertWithStoredTarget(
-        inversion, nullptr,
-        reinterpret_cast<float**>(static_cast<std::uintptr_t>(storedTarget)));
+        inversion, nullptr, reinterpret_cast<float**>(inverseState));
 
     if (CSF_AT(char, matrixState, 0x4))
         RwMatrixDestroy(CSF_AT(std::uint32_t*, matrixState, 0));
@@ -142,4 +93,3 @@ HOOK(0x00490790, C_008342e8_SetObjectTransform, "auto");
 
 
 
-```
