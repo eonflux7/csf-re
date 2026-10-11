@@ -5021,9 +5021,9 @@ ea,size,region,module,name,name_src,status
 004d72b0,48,game,m4D6DC0,C_0082f9f8_HandleTaskEvent,agent,done
 004d72e0,23,game,m4D6DC0,Autonomo_InvokeInnerQueryWithFlags,agent,done
 004d7300,55,game,m4D6DC0,TAutonomo_ResetCoverAndRunAction,agent,done
-004d7340,149,game,m4D6DC0,InnerSubobject_UpdateCachedState,vote,todo
+004d7340,149,game,m4D6DC0,TAutonomo_CacheObjectPlacementOnce,agent,done
 004d73e0,107,game,m4D6DC0,TAutonomo_ApplyStanceAndActionMode,agent,done
-004d7450,75,game,m4D6DC0,,,todo
+004d7450,75,game,m4D6DC0,TAutonomo_UpdateAndDispatch,agent,done
 004d74a0,18,game,m4D6DC0,TFncGirar_ClearFlagAndCompleteRotation,agent,done
 004d74c0,71,game,m4D6DC0,TFncGirar_TickRotation,agent,done
 004d7510,23,game,m4D6DC0,Autonomo_InvokeInnerQuery17,agent,done
@@ -5090,12 +5090,12 @@ ea,size,region,module,name,name_src,status
 004d86c0,166,game,m4D6DC0,TAutonomo_StartMovementOrRotate,agent,done
 004d8770,49,game,m4D6DC0,C_0082f9f8_StartMoveToPosition,agent,done
 004d87b0,15,game,m4D6DC0,TLanzarObjetoAPos_ClearInnerFlagBit0,agent,done
-004d87c0,112,game,m4D6DC0,,,todo
+004d87c0,112,game,m4D6DC0,C_0083dbb0_StartMovementTask,agent,done
 004d8830,33,game,m4D6DC0,C_0083dbb0_Destroy,agent,done
 004d8860,117,game,m4D6DC0,,,todo
 004d88e0,99,game,m4D6DC0,,,todo
 004d8950,325,game,m4D6DC0,Autonomous_PlaySoundAndStartAction,agent,done
-004d8aa0,86,game,m4D6DC0,,,todo
+004d8aa0,86,game,m4D6DC0,TCharTask_ResetAndAttachTargetHandle,agent,done
 004d8b00,125,game,m4D6DC0,TAutonomo_StartTaskAndCopyTargetHandle,agent,done
 004d8b80,82,game,m4D6DC0,AiAutonomous_BeginMovementAndCopyTarget,agent,done
 004d8be0,100,game,m4D6DC0,Autonomo_BeginAttackTargetCopy,agent,done
@@ -5116,7 +5116,7 @@ ea,size,region,module,name,name_src,status
 004d99f0,788,game,m4D6DC0,C_0083dbb0_Construct,agent,done
 004d9d10,109,game,m4D6DC0,AiAutonomo_NotifyOwnerWithPositionMessage,agent,done
 004d9d80,159,game,m4D6DC0,AutonomoState_Serialize,agent,done
-004d9e20,138,game,m4D6DC0,,,todo
+004d9e20,138,game,m4D6DC0,AiAutonomous_SerializeLinkedState,agent,done
 004d9eb0,159,game,m4D6DC0,AiAutonomousTask_UpdateState,agent,done
 004d9f50,211,game,m4D6DC0,S_0041f0a0_SerializeFields,agent,done
 004da030,1280,game,m4D6DC0,S_0041f0a0_SerializeAutonomousState,agent,done
@@ -5161,7 +5161,7 @@ ea,size,region,module,name,name_src,status
 004db380,22,game,m4DB200,,,todo
 004db3a0,22,game,m4DB200,,,todo
 004db3c0,21,game,m4DB200,CharTaskBase_Init_4DB3C0,vote,todo
-004db3f0,68,game,m4DB200,,,todo
+004db3f0,68,game,m4DB200,TCharTask_PrepareBase,vote,todo
 004db440,79,game,m4DB200,CharTask_LookupByOffset,vote,todo
 004db490,48,game,m4DB490,,,todo
 004db4c0,34,game,m4DB490,CharTask_InitBase,vote,todo

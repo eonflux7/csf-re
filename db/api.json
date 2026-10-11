@@ -6043,7 +6043,9 @@
  "0041d010": {
   "name": "Vehicle_ProcessEntryKey28WhenState1",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Vehicle_ProcessEntryKey28WhenState1": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -6053,7 +6055,9 @@
  "0041d030": {
   "name": "IsStateFlagBit2Clear",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "IsStateFlagBit2Clear": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -6063,7 +6067,9 @@
  "0041d040": {
   "name": "Vehicle_SetWheelSteeringTowardPoint",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Vehicle_SetWheelSteeringTowardPoint": 1
+  },
   "ret": "std::uint8_t",
   "conv": "__fastcall",
   "params": "void* self, void* , float* target",
@@ -28023,7 +28029,7 @@
   "name": "Handle_GetValuePointer",
   "name_src": "vote",
   "votes": {
-   "Handle_GetValuePointer": 42,
+   "Handle_GetValuePointer": 43,
    "ResolveHandleToValuePtr": 2,
    "GetInnerRecordPointer": 1,
    "Entry_GetPayloadPointer": 1
@@ -29506,7 +29512,8 @@
   "name_src": "agent",
   "votes": {
    "AiAttackTasks_IsAttackDelayActive": 1,
-   "AttackTasks_IsAttackDelayElapsed": 1
+   "AttackTasks_IsAttackDelayElapsed": 1,
+   "AiAttack_IsStoredValueNegative": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -29659,7 +29666,7 @@
   "name": "AttackTasks_SetFieldTransitionScale",
   "name_src": "agent",
   "votes": {
-   "AttackTasks_SetFieldTransitionScale": 4
+   "AttackTasks_SetFieldTransitionScale": 5
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -30208,7 +30215,7 @@
   "name": "C_0082f9f8_SetCoverAttackParameter",
   "name_src": "agent",
   "votes": {
-   "C_0082f9f8_SetCoverAttackParameter": 1
+   "C_0082f9f8_SetCoverAttackParameter": 2
   },
   "ret": "uint8_t",
   "conv": "__fastcall",
@@ -34674,7 +34681,7 @@
   "name": "AiAttackTasks_CopyTargetHandle",
   "name_src": "vote",
   "votes": {
-   "AiAttackTasks_CopyTargetHandle": 11,
+   "AiAttackTasks_CopyTargetHandle": 13,
    "AiAttackTasks_SetWeaponTarget": 1,
    "AiAttackTasks_ApplyTargetData": 1
   },
@@ -34766,7 +34773,7 @@
   "name": "TaskCharAction_48CFE0",
   "name_src": "vote",
   "votes": {
-   "TaskCharAction_48CFE0": 8
+   "TaskCharAction_48CFE0": 9
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -35174,7 +35181,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 86,
+   "GetObjectPositionVector": 88,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -35674,7 +35681,7 @@
   "name_src": "agent",
   "votes": {
    "ComputeScalarForResolvedObject": 10,
-   "C_008342e8_ComputeResolvedObjectScalar": 3
+   "C_008342e8_ComputeResolvedObjectScalar": 4
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -43989,7 +43996,7 @@
   "name": "Archive_SerializeObjectRef",
   "name_src": "vote",
   "votes": {
-   "Archive_SerializeObjectRef": 33
+   "Archive_SerializeObjectRef": 34
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -52072,16 +52079,17 @@
   "file": "src/auto/004d7300.cpp"
  },
  "004d7340": {
-  "name": "InnerSubobject_UpdateCachedState",
-  "name_src": "vote",
+  "name": "TAutonomo_CacheObjectPlacementOnce",
+  "name_src": "agent",
   "votes": {
    "InnerSubobject_UpdateCachedState": 1,
    "TaskOwner_Reset": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004d7340.cpp"
  },
  "004d73e0": {
   "name": "TAutonomo_ApplyStanceAndActionMode",
@@ -52099,7 +52107,7 @@
  },
  "004d7450": {
   "name": "TAutonomo_UpdateAndDispatch",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -52781,7 +52789,7 @@
  },
  "004d87c0": {
   "name": "C_0083dbb0_StartMovementTask",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -52828,13 +52836,14 @@
   "file": "src/auto/004d8950.cpp"
  },
  "004d8aa0": {
-  "name": "sub_4D8AA0",
-  "name_src": "addr",
+  "name": "TCharTask_ResetAndAttachTargetHandle",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "TCharTask* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004d8aa0.cpp"
  },
  "004d8b00": {
   "name": "TAutonomo_StartTaskAndCopyTargetHandle",
@@ -52867,13 +52876,14 @@
   "file": "src/auto/004d8be0.cpp"
  },
  "004d8c50": {
-  "name": "sub_4D8C50",
-  "name_src": "addr",
+  "name": "Autonomo_BeginCoverAttackTargetCopy",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int arg0",
-  "sig_src": "abi"
+  "params": "void* self, void* , int arg0",
+  "sig_src": "impl",
+  "file": "src/auto/004d8c50.cpp"
  },
  "004d8cc0": {
   "name": "AiAutonomous_BeginAttackAndCopyTargetHandle",
@@ -53036,13 +53046,14 @@
   "file": "src/auto/004d9d80.cpp"
  },
  "004d9e20": {
-  "name": "sub_4D9E20",
-  "name_src": "addr",
+  "name": "AiAutonomous_SerializeLinkedState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "S_0041f0a0* self, void* , S_0041f0a0* a2",
+  "sig_src": "impl",
+  "file": "src/auto/004d9e20.cpp"
  },
  "004d9eb0": {
   "name": "AiAutonomousTask_UpdateState",
@@ -53173,10 +53184,11 @@
   "votes": {
    "Autonomous_TryAdvance": 1
   },
-  "ret": "uint8_t",
+  "ret": "std::uint8_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_0083dd58* self, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/004dab80.cpp"
  },
  "004dac20": {
   "name": "C_0083dd58_SetState",
@@ -53519,13 +53531,15 @@
   "sig_src": "vote"
  },
  "004db3f0": {
-  "name": "sub_4DB3F0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "TCharTask_PrepareBase",
+  "name_src": "vote",
+  "votes": {
+   "TCharTask_PrepareBase": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004db440": {
   "name": "CharTask_LookupByOffset",
@@ -53574,7 +53588,7 @@
   "name": "Archive_SerializeBaseFields",
   "name_src": "vote",
   "votes": {
-   "Archive_SerializeBaseFields": 13,
+   "Archive_SerializeBaseFields": 14,
    "TaskState_Prepare": 1,
    "TaskState_Notify": 1
   },
