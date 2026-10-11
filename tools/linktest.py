@@ -97,9 +97,9 @@ def run(jobs):
     defs, refs = collections.defaultdict(list), collections.defaultdict(set)
     other_undef = collections.Counter()
     per = {}
-    for src, obj in objs.items():
-        d, u = symbols(obj)
-        per[src] = (d, u)
+    with cf.ThreadPoolExecutor(jobs) as ex:  # one llvm-nm per object: 35 s for 4k objects one after another
+        for src, du in zip(objs, ex.map(symbols, objs.values())):
+            per[src] = du
     allsyms = set()
     for d, u in per.values():
         allsyms |= {s for s in d | u if "csf@@" in s}

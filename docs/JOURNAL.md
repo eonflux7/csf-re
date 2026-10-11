@@ -982,3 +982,14 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - The lanes' "link" phase was `api.py build`, not the linker: ninja takes 1-2 s, api.py build took 98 s (4+ min
   next to a busy machine) after every batch. packet.disasm asked pefile for the memory-mapped image on each of its
   38,681 calls (2 ms each, 81 s). The image is built once now: 7.9 s, db/api.json byte-identical.
+- Where a wave's time goes (11 waves of 10-09/10-10 rebuilt from grunt_log, verifier_log, work/calls and commits;
+  18-30 min each, nearly independent of size):
+  - production 8-21 min at an average of 2-9 calls in flight out of 23 slots. The last 20% of results take
+    2-13 min: X runs 2 at a time (a cap from the Opus-first days), 13 X functions = 9-13 min alone. Outside model
+    calls a function costs 1 s (median); the p90 of ~100 s was results waiting behind a batch commit (api.py build).
+  - fixed part then: prep 2-3 min (captain + rename pass; now sync + re-decompile, 6 s), last batch commit ~100 s
+    (now ~10 s), verify tree build + baseline smoke 45-130 s, group smoke 34-54 s, link test 96-136 s.
+  - link test: 4,049 llvm-nm calls ran one after another (35 s with nothing to compile); in the pool now: 5.8 s,
+    same content (ties in the counted lists come out in another order).
+  - a change to a shared header (hook.h, globals.h, auto_classes.h) recompiles all ~4,060 files in each of three
+    trees: build ~100 s, verify tree 98 s, standalone 134 s. The per-wave rename pass did that every wave.
