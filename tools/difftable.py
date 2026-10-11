@@ -318,8 +318,9 @@ def analyze(db, ea, tier3=False):
     if conv in (1, 2) and rets and rets[0] != argbytes:
         argbytes = rets[0]
     ret = 3 if re.match(r"(void)\b", proto) and "*" not in proto.split("(")[0] else \
-        1 if re.match(r"float\b", proto) else 2 if re.match(r"double\b", proto) else \
-        4 if re.match(r"(unsigned )?__int64\b", proto) else \
+        1 if re.match(r"float\b", proto) and "*" not in proto.split("(")[0] else \
+        2 if re.match(r"double\b", proto) and "*" not in proto.split("(")[0] else \
+        4 if re.match(r"(unsigned )?__int64\b", proto) and "*" not in proto.split("(")[0] else \
         5 if re.match(r"(unsigned )?(char|bool|__int8|_BYTE)\b", proto) and "*" not in proto.split("(")[0] else \
         6 if re.match(r"(unsigned )?(__int16|short|_WORD|wchar_t)\b", proto) and "*" not in proto.split("(")[0] else 0
     import api
