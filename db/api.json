@@ -324,7 +324,7 @@
   "name": "BuildFacingVectorBetween",
   "name_src": "vote",
   "votes": {
-   "BuildFacingVectorBetween": 12
+   "BuildFacingVectorBetween": 13
   },
   "ret": "float*",
   "conv": "__fastcall",
@@ -1873,7 +1873,7 @@
   "votes": {
    "Vehicle_FindTableEntry": 1,
    "Vehicle_GetTableEntryByIndex": 1,
-   "GetTableEntryDwordByIndex": 3,
+   "GetTableEntryDwordByIndex": 4,
    "Vehicle_GetTableEntryDwordByIndex": 1,
    "Vehicle_GetIndexedChild": 2,
    "IndexedChild_Get": 1
@@ -6220,7 +6220,7 @@
   "name": "C_0082dd78_DispatchReturnedObject",
   "name_src": "agent",
   "votes": {
-   "C_0082dd78_DispatchReturnedObject": 34
+   "C_0082dd78_DispatchReturnedObject": 35
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -14298,7 +14298,7 @@
   "name": "SceneLoader_SerializeReference",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_SerializeReference": 7
+   "SceneLoader_SerializeReference": 8
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -17525,7 +17525,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 238
+   "CHandleTable_Resolve": 239
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -17536,7 +17536,7 @@
   "name": "GetSceneMenuContext",
   "name_src": "vote",
   "votes": {
-   "GetSceneMenuContext": 60
+   "GetSceneMenuContext": 61
   },
   "ret": "uint32_t",
   "conv": "__fastcall",
@@ -26007,7 +26007,7 @@
   "name": "ResolveEntryLookupValue",
   "name_src": "vote",
   "votes": {
-   "ResolveEntryLookupValue": 14,
+   "ResolveEntryLookupValue": 15,
    "GetEntityComponent": 1,
    "GetProviderStatusCode": 1,
    "ObjectProvider_IsActive": 1,
@@ -27051,7 +27051,7 @@
   "name": "C_008319c0_GetSubObjectField74",
   "name_src": "agent",
   "votes": {
-   "C_008319c0_GetSubObjectField74": 37
+   "C_008319c0_GetSubObjectField74": 38
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -27150,7 +27150,8 @@
    "C_008316d8_ReleaseFirearmResources": 1,
    "C_008316d8_StopEffects": 1,
    "WeaponFirearms_FinalizeReset": 1,
-   "WeaponFirearms_UpdateBase": 1
+   "WeaponFirearms_UpdateBase": 1,
+   "WeaponFirearms_ReleaseResources": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -27218,7 +27219,7 @@
  },
  "00476390": {
   "name": "C_008316d8_ApplyEntryState",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -27242,7 +27243,7 @@
   "name": "C_008316d8_Destroy_4764C0",
   "name_src": "agent",
   "votes": {
-   "WeaponFirearms_DestroyBase": 2
+   "WeaponFirearms_DestroyBase": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -27560,7 +27561,7 @@
  },
  "00477550": {
   "name": "C_008316d8_SpawnProjectile",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -28012,7 +28013,9 @@
  "00479a50": {
   "name": "C_008317c8_Serialize",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "WeaponFirearms_SerializeBaseState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_008317c8* self, void* , int a2",
@@ -28300,13 +28303,14 @@
   "sig_src": "vote"
  },
  "0047a430": {
-  "name": "sub_47A430",
-  "name_src": "addr",
+  "name": "C_008318c8_Serialize",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_008318c8* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/0047a430.cpp"
  },
  "0047a520": {
   "name": "GetFirearmUpdateResult",
@@ -28372,13 +28376,14 @@
   "file": "src/auto/0047a750.cpp"
  },
  "0047a7b0": {
-  "name": "sub_47A7B0",
-  "name_src": "addr",
+  "name": "C_008319c0_GetFiringPositionAndDirection",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int* a2, int a3, float* a4",
-  "sig_src": "abi"
+  "params": "C_008319c0* self, void* , int* targeting, float* position, float* direction",
+  "sig_src": "impl",
+  "file": "src/auto/0047a7b0.cpp"
  },
  "0047acc0": {
   "name": "C_008319c0_UpdateState",
@@ -28391,13 +28396,14 @@
   "file": "src/auto/0047acc0.cpp"
  },
  "0047ad30": {
-  "name": "sub_47AD30",
-  "name_src": "addr",
+  "name": "C_008319c0_Destroy",
+  "name_src": "impl",
   "votes": {},
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_008319c0* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/0047ad30.cpp"
  },
  "0047ad90": {
   "name": "C_00862490_GetShellCasingResource",
@@ -42571,7 +42577,7 @@
   "name": "Archive_SerializeObjectRef",
   "name_src": "vote",
   "votes": {
-   "Archive_SerializeObjectRef": 30
+   "Archive_SerializeObjectRef": 31
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -102151,7 +102157,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 56
+   "RwMatrixDestroy": 57
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -127711,7 +127717,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 295
+   "Mem_Free": 296
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -134964,7 +134970,7 @@
   "name": "GfxMatrix_EulerAnglesToDirection",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_EulerAnglesToDirection": 2,
+   "GfxMatrix_EulerAnglesToDirection": 3,
    "EulerAnglesToDirection": 4
   },
   "ret": "float*",
@@ -179158,7 +179164,7 @@
    "IsControlTypeForwardable": 1,
    "IsSceneEntryTypeFlagged": 1,
    "QueryTargetStateFlag": 1,
-   "GameConfig_IsResolvedEntryActive": 1
+   "GameConfig_IsResolvedEntryActive": 2
   },
   "ret": "int",
   "conv": "__cdecl",
