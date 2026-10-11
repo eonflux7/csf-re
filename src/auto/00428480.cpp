@@ -1,0 +1,43 @@
+#include <cstdint>
+#include "globals.h"
+#include "hook.h"
+
+// Original: 0x00506BD0, __cdecl, returns the global value object (int-sized pointer).
+CSF_FUNC(int, __cdecl, GetGlobalValue_8B056C, 0x00506BD0, ());
+// Original: 0x0050D190, __cdecl, returns the global state object.
+CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
+// Original: 0x00428650, __thiscall (ecx = handler object), ret 8. Returns an int code.
+CSF_FUNC(int, __fastcall, sub_428650, 0x00428650, (void* self, void* edx, int a2, int a3));
+// Original: 0x00428680, __thiscall (ecx = handler object), ret 8. Returns a pointer.
+CSF_FUNC(uint32_t*, __fastcall, sub_428680, 0x00428680, (void* self, void* edx, int a2, int a3));
+
+// Reimplements 0x00428480 (__cdecl, ret 0).
+// Checks the global value's handler object (+0x1C) and the global state flag (+0xD0).
+// If both are set, forwards the event to sub_428650; when it returns 22, also calls sub_428680.
+static int __cdecl MenuBase_DefaultHandler(int a1)
+{
+    int result = GetGlobalValue_8B056C();
+    void* globalValue = reinterpret_cast<void*>(static_cast<uintptr_t>(result));
+
+    int handlerObject = CSF_AT(int, globalValue, 0x1C);
+    if (handlerObject != 0)
+    {
+        result = GetGlobalState_50D190();
+        void* globalState = reinterpret_cast<void*>(static_cast<uintptr_t>(result));
+
+        if (CSF_AT(uint8_t, globalState, 0xD0) != 0)
+        {
+            void* handler = reinterpret_cast<void*>(static_cast<uintptr_t>(handlerObject));
+
+            result = sub_428650(handler, nullptr, 0, a1);
+            if (result == 22)
+            {
+                uint32_t* secondResult = sub_428680(handler, nullptr, 0, a1);
+                return static_cast<int>(reinterpret_cast<uintptr_t>(secondResult));
+            }
+        }
+    }
+    return result;
+}
+
+HOOK(0x00428480, MenuBase_DefaultHandler, "auto");
