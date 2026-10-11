@@ -1339,7 +1339,7 @@
   "votes": {
    "MenuMpCharacterSelect_GetAngleDifference": 1,
    "GetAngularDifference": 1,
-   "AngleDiffNormalized": 6
+   "AngleDiffNormalized": 7
   },
   "ret": "double",
   "conv": "__cdecl",
@@ -105538,11 +105538,13 @@
  "006293e0": {
   "name": "RwStreamRead",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwStreamRead": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "uint32_t* a1, void* a2, unsigned int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00629530": {
   "name": "RwStreamWrite",
@@ -105556,29 +105558,35 @@
  "00629700": {
   "name": "RwStreamSkip",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwStreamSkip": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00629810": {
   "name": "RwStreamClose",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwStreamClose": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "uint32_t* a1, uint32_t* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006298e0": {
   "name": "RwStreamOpen",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwStreamOpen": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "int a3, int a4, int a5",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006299c0": {
   "name": "sub_6299C0",
@@ -105637,11 +105645,13 @@
  "00629ce0": {
   "name": "RwStreamReadChunkHeaderInfo",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwStreamReadChunkHeaderInfo": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "uint32_t* a1, uint32_t* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00629e20": {
   "name": "sub_629E20",
@@ -130231,7 +130241,7 @@
   "name": "AllocateAlignedBuffer",
   "name_src": "vote",
   "votes": {
-   "AllocateAlignedBuffer": 1
+   "AllocateAlignedBuffer": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -130242,7 +130252,7 @@
   "name": "FreeBlock_690F70",
   "name_src": "vote",
   "votes": {
-   "FreeBlock_690F70": 1
+   "FreeBlock_690F70": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -132212,7 +132222,7 @@
   "name": "CloseSceneFile",
   "name_src": "vote",
   "votes": {
-   "CloseSceneFile": 7
+   "CloseSceneFile": 8
   },
   "ret": "std::uint32_t",
   "conv": "__cdecl",
@@ -132391,7 +132401,7 @@
   "name": "OpenSceneFile",
   "name_src": "vote",
   "votes": {
-   "OpenSceneFile": 7
+   "OpenSceneFile": 8
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -132460,7 +132470,7 @@
   "name": "MenuManager_CheckPageAvailability",
   "name_src": "vote",
   "votes": {
-   "MenuManager_CheckPageAvailability": 7
+   "MenuManager_CheckPageAvailability": 8
   },
   "ret": "bool",
   "conv": "__cdecl",
@@ -136886,7 +136896,7 @@
   "name": "S_00526d40_GetVectorAngleRadians",
   "name_src": "agent",
   "votes": {
-   "S_00526d40_GetVectorAngleRadians": 12,
+   "S_00526d40_GetVectorAngleRadians": 13,
    "GetVectorAngleRadians": 2
   },
   "ret": "double",
@@ -161383,7 +161393,7 @@
   "name": "GetGlobalValue_70DDE0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_70DDE0": 38
+   "GetGlobalValue_70DDE0": 40
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -161463,6 +161473,26 @@
   "sig_src": "impl",
   "file": "src/auto/0070df30.cpp"
  },
+ "0070df60": {
+  "name": "Audio_ReadElementsFromFile",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "uint32_t",
+  "conv": "__cdecl",
+  "params": "void* buffer, uint32_t elementSize, uint32_t elementCount, void* file",
+  "sig_src": "impl",
+  "file": "src/auto/0070df60.cpp"
+ },
+ "0070dfb0": {
+  "name": "AudioFile_SeekFileChecked",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "void* hFile, int32_t lDistanceToMove, int a3, int a4",
+  "sig_src": "impl",
+  "file": "src/auto/0070dfb0.cpp"
+ },
  "0070e010": {
   "name": "Audio_CloseThreadHandle",
   "name_src": "agent",
@@ -161485,7 +161515,7 @@
  },
  "0070e040": {
   "name": "C_008639b0_SetPlayingState",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -161494,13 +161524,14 @@
   "file": "src/auto/0070e040.cpp"
  },
  "0070e080": {
-  "name": "sub_70E080",
-  "name_src": "addr",
+  "name": "Audio_InsertStereoDirectory",
+  "name_src": "impl",
   "votes": {},
   "ret": "char*",
   "conv": "__stdcall",
-  "params": "char* Str",
-  "sig_src": "abi"
+  "params": "char* path",
+  "sig_src": "impl",
+  "file": "src/auto/0070e080.cpp"
  },
  "0070e170": {
   "name": "sub_70E170",
@@ -161522,8 +161553,8 @@
   "file": "src/auto/0070e200.cpp"
  },
  "0070e220": {
-  "name": "sub_70E220",
-  "name_src": "addr",
+  "name": "S_0070e170_ProcessPlaybackRequests",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -161531,13 +161562,14 @@
   "sig_src": "abi"
  },
  "0070e2d0": {
-  "name": "sub_70E2D0",
-  "name_src": "addr",
+  "name": "C_008639b0_SetTransitionProgress",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "C_008639b0* self, void* , float value",
+  "sig_src": "impl",
+  "file": "src/auto/0070e2d0.cpp"
  },
  "0070e320": {
   "name": "C_008639b0_SetValueAndEnableFlag",
@@ -161550,13 +161582,14 @@
   "file": "src/auto/0070e320.cpp"
  },
  "0070e340": {
-  "name": "sub_70E340",
-  "name_src": "addr",
+  "name": "C_008639b0_SetClampedProgress",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "C_008639b0* self, void* , float value",
+  "sig_src": "impl",
+  "file": "src/auto/0070e340.cpp"
  },
  "0070e390": {
   "name": "CharActionFsm_GetSecondaryCount",
@@ -161582,17 +161615,18 @@
   "sig_src": "abi"
  },
  "0070e3b0": {
-  "name": "sub_70E3B0",
-  "name_src": "addr",
+  "name": "S_0070e170_UpdateFadeAndPlayback",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "S_0070e170* self, void* , float elapsed",
+  "sig_src": "impl",
+  "file": "src/auto/0070e3b0.cpp"
  },
  "0070e4a0": {
   "name": "S_0070e170_FillPcmBuffer",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -161602,7 +161636,7 @@
  },
  "0070e550": {
   "name": "S_0070e170_UpdateAudioBuffer",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -161620,13 +161654,14 @@
   "sig_src": "abi"
  },
  "0070e730": {
-  "name": "sub_70E730",
-  "name_src": "addr",
+  "name": "C_008639b0_Construct",
+  "name_src": "impl",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_008639b0* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/0070e730.cpp"
  },
  "0070e7a0": {
   "name": "sub_70E7A0",
@@ -161656,13 +161691,15 @@
   "sig_src": "abi"
  },
  "0070e910": {
-  "name": "sub_70E910",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Audio_CreateSoundInstance",
+  "name_src": "vote",
+  "votes": {
+   "Audio_CreateSoundInstance": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0070e940": {
   "name": "C_008639b0_Destroy",
@@ -161731,13 +161768,14 @@
   "sig_src": "abi"
  },
  "0070ec70": {
-  "name": "sub_70EC70",
-  "name_src": "addr",
+  "name": "AudioEffect_ConstructDefault",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint8_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863ac0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0070ec70.cpp"
  },
  "0070eca0": {
   "name": "sub_70ECA0",
@@ -161824,13 +161862,14 @@
   "sig_src": "abi"
  },
  "0070ef60": {
-  "name": "sub_70EF60",
-  "name_src": "addr",
+  "name": "AudioDetect_ProbeDirectSoundDevices",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0070ef60.cpp"
  },
  "0070efb0": {
   "name": "sub_70EFB0",
@@ -161851,13 +161890,14 @@
   "sig_src": "abi"
  },
  "0070f080": {
-  "name": "sub_70F080",
-  "name_src": "addr",
+  "name": "C_00863ba8_FindMatchingEntryIndex",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void* , int key",
+  "sig_src": "impl",
+  "file": "src/auto/0070f080.cpp"
  },
  "0070f0c0": {
   "name": "C_00863ac0_CallSlotAcAndStore",
@@ -161870,13 +161910,14 @@
   "file": "src/auto/0070f0c0.cpp"
  },
  "0070f0f0": {
-  "name": "sub_70F0F0",
-  "name_src": "addr",
+  "name": "C_00863ba8_CreateAndRegisterEffect",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0070f0f0.cpp"
  },
  "0070f160": {
   "name": "sub_70F160",
@@ -161917,7 +161958,7 @@
  },
  "0070f2a0": {
   "name": "C_00863ac0_ClearHandle",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -161947,13 +161988,14 @@
   "file": "src/auto/0070f380.cpp"
  },
  "0070f3b0": {
-  "name": "sub_70F3B0",
-  "name_src": "addr",
+  "name": "C_00863ba8_SetClampedLevel",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a1",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void* , float level",
+  "sig_src": "impl",
+  "file": "src/auto/0070f3b0.cpp"
  },
  "0070f410": {
   "name": "C_00863ba8_GetNestedFloat0038",
@@ -161966,40 +162008,44 @@
   "file": "src/auto/0070f410.cpp"
  },
  "0070f420": {
-  "name": "sub_70F420",
-  "name_src": "addr",
+  "name": "C_00863ba8_SetClampedEffectLevel",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void* , float a2",
+  "sig_src": "impl",
+  "file": "src/auto/0070f420.cpp"
  },
  "0070f470": {
-  "name": "sub_70F470",
-  "name_src": "addr",
+  "name": "C_00863ba8_SetEffectValue",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/0070f470.cpp"
  },
  "0070f4a0": {
-  "name": "sub_70F4A0",
-  "name_src": "addr",
+  "name": "AudioEffectDicts_ClearAndResetCurrent",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0070f4a0.cpp"
  },
  "0070f500": {
-  "name": "sub_70F500",
-  "name_src": "addr",
+  "name": "AudioEffects_MergeMissingDictEntries",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0070f500.cpp"
  },
  "0070f570": {
   "name": "C_00863ba8_CallSlot84ReturnsNonZero",
@@ -162032,7 +162078,7 @@
  },
  "0070f610": {
   "name": "AudioEffect_ReleaseAttachedObject",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
@@ -162041,13 +162087,14 @@
   "file": "src/auto/0070f610.cpp"
  },
  "0070f630": {
-  "name": "sub_70F630",
-  "name_src": "addr",
+  "name": "C_00863ba8_LoadSoundFile",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* Block, char* a5, char a6, int a7",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void* , const char* path, const char* name, char forceMono, int quality",
+  "sig_src": "impl",
+  "file": "src/auto/0070f630.cpp"
  },
  "0070f890": {
   "name": "sub_70F890",
@@ -162078,40 +162125,54 @@
   "sig_src": "abi"
  },
  "0070fbb0": {
-  "name": "sub_70FBB0",
-  "name_src": "addr",
+  "name": "Audio_InvokeEffectCallback",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0070fbb0.cpp"
+ },
+ "0070fc30": {
+  "name": "AudioEffects_EnumerateDictionary",
+  "name_src": "impl",
+  "votes": {},
+  "ret": "uint8_t*",
+  "conv": "__stdcall",
+  "params": "uint8_t* fileName, AudioEffectEnumCallback callback",
+  "sig_src": "impl",
+  "file": "src/auto/0070fc30.cpp"
  },
  "0070fd90": {
-  "name": "sub_70FD90",
-  "name_src": "addr",
+  "name": "C_00863ba8_SetReverbPreset",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void* , int presetIndex",
+  "sig_src": "impl",
+  "file": "src/auto/0070fd90.cpp"
  },
  "00710850": {
-  "name": "sub_710850",
-  "name_src": "addr",
+  "name": "C_00863ba8_TrySetEffectMode",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/00710850.cpp"
  },
  "007108b0": {
-  "name": "sub_7108B0",
-  "name_src": "addr",
+  "name": "DSound_MapSpeakerConfiguration",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/007108b0.cpp"
  },
  "00710920": {
   "name": "sub_710920",
@@ -162132,13 +162193,16 @@
   "sig_src": "abi"
  },
  "00710a50": {
-  "name": "sub_710A50",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "C_00863ba8_ResetDefaults",
+  "name_src": "agent",
+  "votes": {
+   "AudioEffectBaseInit": 1
+  },
+  "ret": "C_00863ba8*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00710a50.cpp"
  },
  "00710a90": {
   "name": "C_00863ba8_Destroy",
@@ -162178,22 +162242,24 @@
   "sig_src": "abi"
  },
  "00710d80": {
-  "name": "sub_710D80",
-  "name_src": "addr",
+  "name": "C_00863ba8_ReleaseEffectDictionaries",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00710d80.cpp"
  },
  "00710df0": {
-  "name": "sub_710DF0",
-  "name_src": "addr",
+  "name": "C_00863ba8_ResetAudioEffects",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/00710df0.cpp"
  },
  "00710e50": {
   "name": "C_00863ba8_SetVectorAndMarkChanged",
@@ -162216,17 +162282,18 @@
   "file": "src/auto/00710e80.cpp"
  },
  "00710eb0": {
-  "name": "sub_710EB0",
-  "name_src": "addr",
+  "name": "C_00863ba8_CopyEffectParams",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void** a2",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void* , uint32_t** a2",
+  "sig_src": "impl",
+  "file": "src/auto/00710eb0.cpp"
  },
  "00710f20": {
   "name": "C_00863ba8_CopyVec3FromOffset4C",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -162235,17 +162302,18 @@
   "file": "src/auto/00710f20.cpp"
  },
  "00710f50": {
-  "name": "sub_710F50",
-  "name_src": "addr",
+  "name": "C_00863ba8_SetEnumContextAndRun",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void* , int context",
+  "sig_src": "impl",
+  "file": "src/auto/00710f50.cpp"
  },
  "00710f90": {
   "name": "C_00863ba8_RunCallbackIfFlagSet",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -162273,13 +162341,14 @@
   "sig_src": "abi"
  },
  "00711160": {
-  "name": "sub_711160",
-  "name_src": "addr",
+  "name": "C_00863cd4_ApplyFlagWithDsRetry",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00863cd4* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/00711160.cpp"
  },
  "007111c0": {
   "name": "C_00863cd4_GetInnerFlagBit0",
@@ -162302,13 +162371,14 @@
   "file": "src/auto/007111f0.cpp"
  },
  "00711200": {
-  "name": "sub_711200",
-  "name_src": "addr",
+  "name": "C_00863cd4_PlayWithBufferRestore",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00863cd4* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/00711200.cpp"
  },
  "00711250": {
   "name": "C_00863cd4_ForwardToInnerSlot13",
@@ -162322,7 +162392,7 @@
  },
  "00711270": {
   "name": "C_00863cd4_GetFirstOutputValue",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -162331,31 +162401,34 @@
   "file": "src/auto/00711270.cpp"
  },
  "007112a0": {
-  "name": "sub_7112A0",
-  "name_src": "addr",
+  "name": "C_00863cd4_IsCountAtLeastHalfCapacity",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863cd4* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/007112a0.cpp"
  },
  "007112e0": {
-  "name": "sub_7112E0",
-  "name_src": "addr",
+  "name": "C_00863cd4_WriteSoundBuffer",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2, unsigned int a3, int a4",
-  "sig_src": "abi"
+  "params": "C_00863cd4* self, void* , char* source, unsigned int byteCount, int offset",
+  "sig_src": "impl",
+  "file": "src/auto/007112e0.cpp"
  },
  "007113e0": {
-  "name": "sub_7113E0",
-  "name_src": "addr",
+  "name": "Audio_AmplitudeToClampedMillibels",
+  "name_src": "impl",
   "votes": {},
-  "ret": "uint64_t",
+  "ret": "std::uint64_t",
   "conv": "__cdecl",
-  "params": "float a1, int a2, int a3",
-  "sig_src": "abi"
+  "params": "float amplitude, int minimumMillibels, int maximumMillibels",
+  "sig_src": "impl",
+  "file": "src/auto/007113e0.cpp"
  },
  "007114e0": {
   "name": "C_00863cd4_Initialize",
@@ -162368,13 +162441,14 @@
   "file": "src/auto/007114e0.cpp"
  },
  "00711500": {
-  "name": "sub_711500",
-  "name_src": "addr",
+  "name": "C_00863cd4_StopPollingAndRelease",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863cd4* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00711500.cpp"
  },
  "00711590": {
   "name": "sub_711590",
@@ -162386,13 +162460,14 @@
   "sig_src": "abi"
  },
  "007115f0": {
-  "name": "sub_7115F0",
-  "name_src": "addr",
+  "name": "C_00863cd4_SetNormalizedLevel",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "C_00863cd4* self, void* , float level",
+  "sig_src": "impl",
+  "file": "src/auto/007115f0.cpp"
  },
  "00711690": {
   "name": "C_00863cd4_Destroy",
@@ -162415,13 +162490,14 @@
   "file": "src/auto/007116c0.cpp"
  },
  "007116f0": {
-  "name": "sub_7116F0",
-  "name_src": "addr",
+  "name": "Audio_CreateCaptureBuffer",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int32_t* parameters",
+  "sig_src": "impl",
+  "file": "src/auto/007116f0.cpp"
  },
  "007117a0": {
   "name": "C_00863d18_ReleaseOwnedChild",
@@ -162445,7 +162521,7 @@
  },
  "007117c0": {
   "name": "C_00863d18_QueryEffectValue",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -162454,13 +162530,14 @@
   "file": "src/auto/007117c0.cpp"
  },
  "007117f0": {
-  "name": "sub_7117F0",
-  "name_src": "addr",
+  "name": "C_00863d18_ReadBuffer",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2, int a3, int a4",
-  "sig_src": "abi"
+  "params": "C_00863d18* self, void* , char* destination, int byteCount, int offset",
+  "sig_src": "impl",
+  "file": "src/auto/007117f0.cpp"
  },
  "007118a0": {
   "name": "C_00863d18_Initialize",
@@ -162502,44 +162579,50 @@
   "file": "src/auto/00711940.cpp"
  },
  "00711960": {
-  "name": "sub_711960",
-  "name_src": "addr",
+  "name": "C_00863d80_ReleaseChildrenAndClearFlags",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863d80* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00711960.cpp"
  },
  "007119a0": {
-  "name": "sub_7119A0",
-  "name_src": "addr",
+  "name": "C_00863d80_ReleaseSlotAndReset",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00863d80* self, void* , int slotIndex",
+  "sig_src": "impl",
+  "file": "src/auto/007119a0.cpp"
  },
  "007119e0": {
-  "name": "sub_7119E0",
-  "name_src": "addr",
+  "name": "C_00863d80_SetFlagAndPropagate",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "int a1, int a2, int a3, int a4",
-  "sig_src": "abi"
+  "params": "C_00863d80* self, void* edx, int flag, int mask",
+  "sig_src": "impl",
+  "file": "src/auto/007119e0.cpp"
  },
  "00711a30": {
-  "name": "sub_711A30",
-  "name_src": "addr",
-  "votes": {},
+  "name": "AudioEffect_SetActiveState",
+  "name_src": "agent",
+  "votes": {
+   "TransformEffectValue": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "uint8_t* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/00711a30.cpp"
  },
  "00711a90": {
-  "name": "sub_711A90",
-  "name_src": "addr",
+  "name": "C_00863d80_SetTransitionProgress",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -162547,8 +162630,8 @@
   "sig_src": "abi"
  },
  "00711ae0": {
-  "name": "sub_711AE0",
-  "name_src": "addr",
+  "name": "C_00863d80_SetClampedLevel",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -162556,8 +162639,8 @@
   "sig_src": "abi"
  },
  "00711b30": {
-  "name": "sub_711B30",
-  "name_src": "addr",
+  "name": "C_00863d80_ClampAndForwardToChild",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -162565,8 +162648,8 @@
   "sig_src": "abi"
  },
  "00711b80": {
-  "name": "sub_711B80",
-  "name_src": "addr",
+  "name": "C_00863d80_ClampFractionAndForwardToChild",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -162602,13 +162685,14 @@
   "sig_src": "abi"
  },
  "00711cf0": {
-  "name": "sub_711CF0",
-  "name_src": "addr",
+  "name": "C_00863d80_Init",
+  "name_src": "impl",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, char a3",
-  "sig_src": "abi"
+  "params": "C_00863d80* self, void* , int handleValue, char enabledFlag",
+  "sig_src": "impl",
+  "file": "src/auto/00711cf0.cpp"
  },
  "00711d60": {
   "name": "C_00863d80_GetField01b3",
@@ -162658,22 +162742,26 @@
   "sig_src": "abi"
  },
  "00711f00": {
-  "name": "sub_711F00",
-  "name_src": "addr",
+  "name": "C_00863d80_UpdateSpatialPanAndVolume",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "params": "C_00863d80* self, void* , float* position",
+  "sig_src": "impl",
+  "file": "src/auto/00711f00.cpp"
  },
  "00712050": {
-  "name": "sub_712050",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Audio_UpdatePendingSounds",
+  "name_src": "agent",
+  "votes": {
+   "Audio_ReleaseChannelGroup": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int updateArgument",
+  "sig_src": "impl",
+  "file": "src/auto/00712050.cpp"
  },
  "00712220": {
   "name": "sub_712220",
@@ -162725,22 +162813,24 @@
   "file": "src/auto/007122c0.cpp"
  },
  "007122d0": {
-  "name": "sub_7122D0",
-  "name_src": "addr",
+  "name": "C_00863dd0_SetEnabledFlag",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00863dd0* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/007122d0.cpp"
  },
  "00712310": {
-  "name": "sub_712310",
-  "name_src": "addr",
+  "name": "C_00863dd0_UpdateAudioEffect",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00863dd0* self, void* , int parameter",
+  "sig_src": "impl",
+  "file": "src/auto/00712310.cpp"
  },
  "007123c0": {
   "name": "C_00863dd0_GetSecondFlagBitIfLinked",
@@ -162763,31 +162853,34 @@
   "file": "src/auto/007123e0.cpp"
  },
  "00712410": {
-  "name": "sub_712410",
-  "name_src": "addr",
+  "name": "C_00863dd0_ClearPendingEffectState",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863dd0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00712410.cpp"
  },
  "007124d0": {
-  "name": "sub_7124D0",
-  "name_src": "addr",
+  "name": "C_00863dd0_SynchronizeEffectValue",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00863dd0* self, void* , char capture",
+  "sig_src": "impl",
+  "file": "src/auto/007124d0.cpp"
  },
  "00712590": {
-  "name": "sub_712590",
-  "name_src": "addr",
+  "name": "C_00863dd0_ComputeStreamBitrateRatio",
+  "name_src": "agent",
   "votes": {},
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863dd0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00712590.cpp"
  },
  "007125d0": {
   "name": "sub_7125D0",
@@ -162799,13 +162892,14 @@
   "sig_src": "abi"
  },
  "00712630": {
-  "name": "sub_712630",
-  "name_src": "addr",
+  "name": "C_00863dd0_RefreshEffectValue",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863dd0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00712630.cpp"
  },
  "00712670": {
   "name": "C_00863dd0_GetFloatAt70",
@@ -162819,7 +162913,7 @@
  },
  "00712680": {
   "name": "C_00863dd0_SetEffectValueAndNotify",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -162838,31 +162932,36 @@
   "file": "src/auto/007126b0.cpp"
  },
  "007126c0": {
-  "name": "sub_7126C0",
-  "name_src": "addr",
+  "name": "C_00863dd0_SetEffectValueAndNotifyMode3",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00863dd0* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/007126c0.cpp"
  },
  "007126f0": {
-  "name": "sub_7126F0",
-  "name_src": "addr",
+  "name": "C_00863dd0_SetClampedGain",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "C_00863dd0* self, void* , float requestedGain",
+  "sig_src": "impl",
+  "file": "src/auto/007126f0.cpp"
  },
  "00712770": {
-  "name": "sub_712770",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Audio_SetUnitGainClamped",
+  "name_src": "agent",
+  "votes": {
+   "SoundMax_ApplyMasterLevel": 1
+  },
   "ret": "void",
   "conv": "__cdecl",
-  "params": "float a1, int a2, int a3",
-  "sig_src": "abi"
+  "params": "float gain, int , int",
+  "sig_src": "impl",
+  "file": "src/auto/00712770.cpp"
  },
  "007127c0": {
   "name": "C_00863dd0_GetFloatAt88",
@@ -162875,35 +162974,38 @@
   "file": "src/auto/007127c0.cpp"
  },
  "007127d0": {
-  "name": "sub_7127D0",
-  "name_src": "addr",
+  "name": "C_00863dd0_ApplyVolumeScale",
+  "name_src": "impl",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "C_00863dd0* self, void* , float a2",
+  "sig_src": "impl",
+  "file": "src/auto/007127d0.cpp"
  },
  "00712840": {
-  "name": "sub_712840",
-  "name_src": "addr",
+  "name": "C_00863dd0_RefreshEffectGain",
+  "name_src": "impl",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863dd0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00712840.cpp"
  },
  "007128a0": {
-  "name": "sub_7128A0",
-  "name_src": "addr",
+  "name": "AudioEffect_ApplyScaledLevel",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, float* a2",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/007128a0.cpp"
  },
  "007128f0": {
   "name": "AudioFxDict_ClampToSlot2Limit",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
@@ -162912,13 +163014,14 @@
   "file": "src/auto/007128f0.cpp"
  },
  "00712920": {
-  "name": "sub_712920",
-  "name_src": "addr",
+  "name": "C_00863dd0_Initialize",
+  "name_src": "agent",
   "votes": {},
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863dd0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00712920.cpp"
  },
  "00712a10": {
   "name": "sub_712A10",
@@ -162931,7 +163034,7 @@
  },
  "00712a20": {
   "name": "C_00863dd0_CopyVec3FromOffset88",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -162940,22 +163043,27 @@
   "file": "src/auto/00712a20.cpp"
  },
  "00712a50": {
-  "name": "sub_712A50",
-  "name_src": "addr",
+  "name": "C_00863dd0_StoreEffectParamsAndDispatch",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int* a2",
-  "sig_src": "abi"
+  "params": "C_00863dd0* self, void* , int* a2",
+  "sig_src": "impl",
+  "file": "src/auto/00712a50.cpp"
  },
  "00712ab0": {
-  "name": "sub_712AB0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Audio_SetClampedUnitGain",
+  "name_src": "agent",
+  "votes": {
+   "Audio_ApplyEffectLevel": 1,
+   "Audio_UpdateReverbGain": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "float a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/00712ab0.cpp"
  },
  "00712b10": {
   "name": "sub_712B10",
@@ -162967,13 +163075,16 @@
   "sig_src": "abi"
  },
  "00712b70": {
-  "name": "sub_712B70",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Audio_ReadWaveHeader",
+  "name_src": "agent",
+  "votes": {
+   "Audio_ReadWaveHeader": 1
+  },
   "ret": "char",
   "conv": "__cdecl",
-  "params": "int* a1, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "int* stream, std::uint32_t* header",
+  "sig_src": "impl",
+  "file": "src/auto/00712b70.cpp"
  },
  "00712cc0": {
   "name": "C_00830438_Construct",
@@ -197689,7 +197800,7 @@
   "name": "_strncmp",
   "name_src": "ida",
   "votes": {
-   "_strncmp": 1
+   "_strncmp": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -198290,11 +198401,13 @@
  "007b2350": {
   "name": "_strstr",
   "name_src": "ida",
-  "votes": {},
+  "votes": {
+   "_strstr": 1
+  },
   "ret": "char*",
   "conv": "__cdecl",
   "params": "char* Str, char* SubStr",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007b23e0": {
   "name": "_strncat",
@@ -198587,11 +198700,13 @@
  "007b302e": {
   "name": "__strupr",
   "name_src": "ida",
-  "votes": {},
+  "votes": {
+   "__strupr": 1
+  },
   "ret": "char*",
   "conv": "__cdecl",
   "params": "char* String",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007b3150": {
   "name": "_memcpy_0",
@@ -200837,13 +200952,15 @@
   "sig_src": "abi"
  },
  "007c6300": {
-  "name": "sub_7C6300",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Audio_ReleaseSharedState",
+  "name_src": "vote",
+  "votes": {
+   "Audio_ReleaseSharedState": 1
+  },
   "ret": "void",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007c6350": {
   "name": "sub_7C6350",
@@ -202146,11 +202263,13 @@
  "007db820": {
   "name": "_rwGetNumEngineInstances",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "_rwGetNumEngineInstances": 2
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007db830": {
   "name": "sub_7DB830",
@@ -202164,11 +202283,13 @@
  "007db8b0": {
   "name": "RwResourcesEmptyArena",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwResourcesEmptyArena": 2
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007db8c0": {
   "name": "sub_7DB8C0",
@@ -202281,38 +202402,46 @@
  "007dbd20": {
   "name": "RtDictFindNamedEntry",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RtDictFindNamedEntry": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007dbd70": {
   "name": "RtDictGetEntry",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RtDictGetEntry": 2
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007dbd80": {
   "name": "RtDictGetNumEntries",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RtDictGetNumEntries": 2
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007dbd90": {
-  "name": "sub_7DBD90",
-  "name_src": "addr",
-  "votes": {},
+  "name": "RtDictInsertEntry",
+  "name_src": "vote",
+  "votes": {
+   "RtDictInsertEntry": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007dbdd0": {
   "name": "sub_7DBDD0",
@@ -202326,11 +202455,13 @@
  "007dbe40": {
   "name": "_rtDictRemoveEntryFromAllDictionaries",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "_rtDictRemoveEntryFromAllDictionaries": 1
+  },
   "ret": "int*",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007dbe70": {
   "name": "RpMTEffectDictGetCurrent",
@@ -202344,11 +202475,13 @@
  "007dbe80": {
   "name": "RpMTEffectDictSetCurrent",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RpMTEffectDictSetCurrent": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007dbe90": {
   "name": "sub_7DBE90",
@@ -202729,13 +202862,15 @@
   "sig_src": "abi"
  },
  "007dd4c0": {
-  "name": "sub_7DD4C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "AudioEffect_Create",
+  "name_src": "vote",
+  "votes": {
+   "AudioEffect_Create": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007dd580": {
   "name": "sub_7DD580",
@@ -202912,11 +203047,24 @@
   "name": "DirectSoundEnum_RunWithCallback",
   "name_src": "vote",
   "votes": {
+   "Audio_EnumerateDirectSoundDevices": 1,
+   "Audio_RunEnumCallback": 1,
    "DirectSoundEnum_RunWithCallback": 1
   },
-  "ret": "int",
+  "ret": "void",
   "conv": "__cdecl",
-  "params": "int (__cdecl* callback)(int*, int), int userData",
+  "params": "AudioEnumCallback callback, int context",
+  "sig_src": "vote"
+ },
+ "007de590": {
+  "name": "RwFreeListForAllFreeLists",
+  "name_src": "rwname",
+  "votes": {
+   "RwFreeListForAllFreeLists": 2
+  },
+  "ret": "void",
+  "conv": "__cdecl",
+  "params": "int (__cdecl* a1)(int*, int), int a2",
   "sig_src": "vote"
  },
  "007de5f0": {
@@ -203129,6 +203277,17 @@
   "params": "",
   "sig_src": "abi"
  },
+ "007df2b0": {
+  "name": "Audio_CreatePlaybackObject",
+  "name_src": "vote",
+  "votes": {
+   "Audio_CreatePlaybackObject": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int* a1, char* a2, int a3, int (__cdecl *a4)(int, int, char*, int), int a5",
+  "sig_src": "vote"
+ },
  "007df2e0": {
   "name": "sub_7DF2E0",
   "name_src": "addr",
@@ -203196,7 +203355,9 @@
   "name": "AudioEffect_Release",
   "name_src": "vote",
   "votes": {
-   "AudioEffect_Release": 1
+   "AudioEffect_Release": 1,
+   "Audio_SetEffectActive": 1,
+   "Audio_SetEffectOverrideEnabled": 1
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -203209,7 +203370,8 @@
   "votes": {
    "AudioEffect_ReleaseHandle": 1,
    "AudioEnum_Dispatch": 1,
-   "ReleaseAudioHandle": 1
+   "ReleaseAudioHandle": 1,
+   "Audio_ConfigurePlaybackObject": 1
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -203379,13 +203541,15 @@
   "sig_src": "abi"
  },
  "007dfbd0": {
-  "name": "sub_7DFBD0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Audio_SetSoundIdentity",
+  "name_src": "vote",
+  "votes": {
+   "Audio_SetSoundIdentity": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007dfc10": {
   "name": "sub_7DFC10",
@@ -203414,6 +203578,17 @@
   "params": "int a1",
   "sig_src": "abi"
  },
+ "007dff20": {
+  "name": "Audio_SetSoundData",
+  "name_src": "vote",
+  "votes": {
+   "Audio_SetSoundData": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int sound, int offset, void* data, std::size_t size",
+  "sig_src": "vote"
+ },
  "007e0020": {
   "name": "sub_7E0020",
   "name_src": "addr",
@@ -203422,6 +203597,17 @@
   "conv": "__cdecl",
   "params": "uint32_t* a1, int a2, int a3, int a4",
   "sig_src": "abi"
+ },
+ "007e0170": {
+  "name": "Audio_PollSoundLoad",
+  "name_src": "vote",
+  "votes": {
+   "Audio_PollSoundLoad": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int sound",
+  "sig_src": "vote"
  },
  "007e0190": {
   "name": "sub_7E0190",
@@ -203498,11 +203684,13 @@
  "007e0d10": {
   "name": "RtGUIDGenerate",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RtGUIDGenerate": 1
+  },
   "ret": "unsigned int",
   "conv": "__cdecl",
   "params": "unsigned int* a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007e0d50": {
   "name": "sub_7E0D50",
@@ -203685,13 +203873,15 @@
   "sig_src": "abi"
  },
  "007e1320": {
-  "name": "sub_7E1320",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Audio_DispatchEffectCommand",
+  "name_src": "vote",
+  "votes": {
+   "Audio_DispatchEffectCommand": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "uint32_t* a1, int a2, int a3, int a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007e1350": {
   "name": "sub_7E1350",
@@ -203703,13 +203893,19 @@
   "sig_src": "abi"
  },
  "007e1380": {
-  "name": "sub_7E1380",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Audio_SetEffectParameter",
+  "name_src": "vote",
+  "votes": {
+   "Audio_SetEffectParameter": 1,
+   "Audio_SetEffectInt": 1,
+   "Audio_PushEffectParam": 1,
+   "AudioEffect_SetParamSlot": 1,
+   "Audio_SetParameter": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "uint32_t* a1, int a2, int a3, ...",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007e13b0": {
   "name": "sub_7E13B0",
@@ -203723,11 +203919,13 @@
  "007e13d0": {
   "name": "RpMTEffectGetInt",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RpMTEffectGetInt": 3
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "uint32_t* a1, int a2, int a3, uint32_t* a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007e1410": {
   "name": "sub_7E1410",
@@ -206810,22 +207008,26 @@
   "sig_src": "abi"
  },
  "007f0e80": {
-  "name": "sub_7F0E80",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SoundMax_SetChannelGain",
+  "name_src": "vote",
+  "votes": {
+   "SoundMax_SetChannelGain": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, float a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007f0ee0": {
-  "name": "sub_7F0EE0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "AudioEffect_Register",
+  "name_src": "vote",
+  "votes": {
+   "AudioEffect_Register": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007f0f00": {
   "name": "sub_7F0F00",
@@ -206839,11 +207041,13 @@
  "007f0f30": {
   "name": "_dsoundGetSpeakerConfiguration",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "_dsoundGetSpeakerConfiguration": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007f0fa0": {
   "name": "sub_7F0FA0",
@@ -206909,13 +207113,15 @@
   "sig_src": "abi"
  },
  "007f1850": {
-  "name": "sub_7F1850",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Audio_CreateSound",
+  "name_src": "vote",
+  "votes": {
+   "Audio_CreateSound": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2, uint32_t* a3, char a4, int a5, int a6, int a7, int a8, int a9",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007f1880": {
   "name": "sub_7F1880",
@@ -208636,14 +208842,38 @@
   "params": "int a1, unsigned int a2, void* a3",
   "sig_src": "abi"
  },
+ "007f78e0": {
+  "name": "DirectSoundEnumerateA",
+  "name_src": "rwname",
+  "votes": {
+   "DirectSoundEnumerateA": 1
+  },
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* edx, void* callback, void* context",
+  "sig_src": "vote"
+ },
  "007f78e6": {
   "name": "GetDeviceID",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "GetDeviceID": 1
+  },
   "ret": "int",
-  "conv": "__stdcall",
-  "params": "int a1, int a2",
-  "sig_src": "abi"
+  "conv": "__fastcall",
+  "params": "void* self, void* edx, void* guidPtr, void* outPtr",
+  "sig_src": "vote"
+ },
+ "007f78ec": {
+  "name": "DirectSoundCaptureCreate",
+  "name_src": "rwname",
+  "votes": {
+   "Audio_DirectSoundCaptureCreate": 1
+  },
+  "ret": "int32_t",
+  "conv": "__fastcall",
+  "params": "void* self, void* edx, void* deviceGuid, void** capture, void* outer",
+  "sig_src": "vote"
  },
  "007f7900": {
   "name": "Rt2dObjectDestroy",
