@@ -6120,7 +6120,7 @@ ea,size,region,module,name,name_src,status
 00507730,87,game,m506AD0,,,todo
 00507790,113,game,m506AD0,,,todo
 00507810,158,game,m506AD0,MenuWidget_AdvanceAnimation,vote,todo
-005078b0,621,game,m506AD0,,,todo
+005078b0,621,game,m506AD0,MenuCredits_UpdateScroller,vote,todo
 00507b20,235,game,m506AD0,,,todo
 00507c10,147,game,m506AD0,,,todo
 00507cb0,295,game,m506AD0,,,todo
@@ -7150,7 +7150,7 @@ ea,size,region,module,name,name_src,status
 0052f810,37,game,m52D720,CMenuCredits_InitTitlePanel,agent,done
 0052f840,43,game,m52D720,CMenuScenarioSelect_Hide,agent,done
 0052f870,43,game,m52D720,CMenuCredits_AdvanceAnimation,agent,done
-0052f8a0,58,game,m52D720,,,todo
+0052f8a0,58,game,m52D720,CMenuCredits_UpdateAndForwardSlot78,agent,done
 0052f8e0,58,game,m52D720,MenuScenarioSelect_HandleEmbeddedControlEvent,agent,done
 0052f920,36,game,m52D720,CMenuScenarioSelect_NotifyOwnerIfTrue,agent,done
 0052f950,124,game,m52D720,CMenuPause_CenterOnTarget,agent,done
@@ -14258,9 +14258,9 @@ ea,size,region,module,name,name_src,status
 006ab830,56,game,m6AB460,,,todo
 006ab870,94,game,m6AB460,,,todo
 006ab8d0,81,game,m6AB8D0,NormalizeVector3,vote,todo
-006ab930,176,game,m6AB8D0,GetVectorAngleRadians,vote,todo
+006ab930,176,game,m6AB8D0,S_00526d40_GetVectorAngleRadians,agent,done
 006ab9e0,47,game,m6AB8D0,S_00526d40_NormalizeCopyAndReportY,agent,done
-006aba10,133,game,m6AB8D0,Vector_ConvertDirection,vote,todo
+006aba10,133,game,m6AB8D0,S_00526d40_ConvertDirection,agent,done
 006abaa0,223,game,m6AB8D0,GfxMatrix_SetBoundsAndDefaultAxes,agent,done
 006abb80,183,game,m6AB8D0,S_006abb80_InitializeBounds,agent,done
 006abc40,720,game,m6AB8D0,S_006abb80_WriteBoxCorners,agent,done
@@ -14270,7 +14270,7 @@ ea,size,region,module,name,name_src,status
 006ac530,173,game,m6AB8D0,GfxMatrix_GetBoundingSphere,agent,done
 006ac5e0,226,game,m6AB8D0,S_006abb80_ExpandBounds,agent,done
 006ac6d0,218,game,m6AB8D0,S_006abb80_IncludePointInBounds,agent,done
-006ac7b0,495,game,m6AB8D0,GfxMatrix_ProcessValueAndPointer,vote,todo
+006ac7b0,495,game,m6AB8D0,S_006ac7b0_IntersectsSphere,agent,done
 006ac9a0,125,game,m6AB8D0,Bounds_ContainsPoint,agent,done
 006aca20,20,game,m6AB8D0,GfxMatrix_ForwardValueWithAddress,agent,done
 006aca40,221,game,m6AB8D0,GfxMatrix_RayIntersectsSphere,agent,done
@@ -14280,7 +14280,7 @@ ea,size,region,module,name,name_src,status
 006acf20,504,game,m6AB8D0,GfxMatrix_IntersectRaySphere,agent,done
 006ad120,162,game,m6AB8D0,GfxMatrix_IsPointInsideTriangle,agent,done
 006ad1d0,335,game,m6AB8D0,GfxMatrix_IsPointInsideTriangle,agent,done
-006ad320,372,game,m6AB8D0,,,todo
+006ad320,372,game,m6AB8D0,GfxMatrix_FindClosestPointOnTriangleEdges,agent,done
 006ad4a0,174,game,m6AB8D0,GfxMatrix_CalculateTriangleArea,agent,done
 006ad550,600,game,m6AB8D0,GfxMatrix_ClosestPointOnOrientedBox,agent,done
 006ad7b0,128,game,m6AB8D0,GfxMatrix_ClassifyPointAgainstPlane,agent,done
@@ -14301,10 +14301,10 @@ ea,size,region,module,name,name_src,status
 006adc10,99,game,m6AB8D0,GfxMatrix_ResetAndTranslate,agent,done
 006adc80,151,game,m6AB8D0,GfxMatrix_AreTransformsDifferent,agent,done
 006add20,100,game,m6AB8D0,S_006add20_SetMatrixSlot,agent,done
-006add90,356,game,m6AB8D0,,,todo
+006add90,356,game,m6AB8D0,GfxMatrix_BuildDirectionBasis,agent,done
 006adf00,148,game,m6AB8D0,GfxMatrix_ExtractAndApplyTransform,agent,done
 006adfa0,148,game,m6AB8D0,GfxMatrix_OrientAlongVector,agent,done
-006ae040,331,game,m6AB8D0,,,todo
+006ae040,331,game,m6AB8D0,S_006add20_AlignAxesToDirection,agent,done
 006ae190,51,game,m6AB8D0,GfxMatrix_RotateAroundAxisX,agent,done
 006ae1d0,51,game,m6AB8D0,GfxMatrix_RotateAroundAxisY,agent,done
 006ae210,51,game,m6AB8D0,GfxMatrix_RotateAroundAxisZ,agent,done
