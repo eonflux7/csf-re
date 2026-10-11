@@ -125970,7 +125970,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 234,
+   "Mem_FreeDebug": 237,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -126060,7 +126060,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 131
+   "Mem_Alloc": 133
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -126071,7 +126071,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 234
+   "Mem_Free": 238
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -130667,49 +130667,84 @@
   "sig_src": "abi"
  },
  "006a02b0": {
-  "name": "sub_6A02B0",
-  "name_src": "addr",
+  "name": "C_0085ec74_Construct",
+  "name_src": "agent",
   "votes": {},
-  "ret": "void*",
+  "ret": "C_0085ec74*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0085ec74* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a02b0.cpp"
  },
  "006a02c0": {
-  "name": "sub_6A02C0",
-  "name_src": "addr",
+  "name": "ZlibLog_CopyPathBackslashes",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "char* a1, char* a2, int a3",
-  "sig_src": "abi"
+  "params": "char* dst, const char* src, int",
+  "sig_src": "impl",
+  "file": "src/auto/006a02c0.cpp"
  },
- "006a03f0": {
-  "name": "sub_6A03F0",
-  "name_src": "addr",
+ "006a0310": {
+  "name": "OpenFileForAccess",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int lDistanceToMove",
-  "sig_src": "abi"
+  "params": "C_0085ec74* self, void* , const char* lpFileName, int a3, int a4",
+  "sig_src": "impl",
+  "file": "src/auto/006a0310.cpp"
+ },
+ "006a0370": {
+  "name": "C_0085ec74_ReadBytesFromFile",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "void*",
+  "conv": "__fastcall",
+  "params": "C_0085ec74* self, void* , void* lpBuffer, uint32_t nNumberOfBytesToRead",
+  "sig_src": "impl",
+  "file": "src/auto/006a0370.cpp"
+ },
+ "006a03b0": {
+  "name": "C_0085ec74_WriteBytesToFile",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "void*",
+  "conv": "__fastcall",
+  "params": "C_0085ec74* self, void* , const void* lpBuffer, uint32_t nNumberOfBytesToWrite",
+  "sig_src": "impl",
+  "file": "src/auto/006a03b0.cpp"
+ },
+ "006a03f0": {
+  "name": "C_0085ec74_SeekFile",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "bool",
+  "conv": "__fastcall",
+  "params": "C_0085ec74* self, void* , int seekOrigin, LongValue distanceToMove",
+  "sig_src": "impl",
+  "file": "src/auto/006a03f0.cpp"
  },
  "006a0430": {
-  "name": "sub_6A0430",
-  "name_src": "addr",
+  "name": "C_0085ec74_GetCurrentFilePosition",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0085ec74* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a0430.cpp"
  },
  "006a0450": {
-  "name": "sub_6A0450",
-  "name_src": "addr",
+  "name": "C_0085ec74_IsFilePositionAtEnd",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0085ec74* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a0450.cpp"
  },
  "006a04a0": {
   "name": "C_0085ec74_GetFileSize",
@@ -130722,22 +130757,44 @@
   "file": "src/auto/006a04a0.cpp"
  },
  "006a04b0": {
-  "name": "sub_6A04B0",
-  "name_src": "addr",
+  "name": "C_0085ec74_ForwardStringWithLength",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2",
-  "sig_src": "abi"
+  "params": "C_0085ec74* self, void* , const char* text",
+  "sig_src": "impl",
+  "file": "src/auto/006a04b0.cpp"
+ },
+ "006a04e0": {
+  "name": "CoreLog_PathExists",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "bool",
+  "conv": "__cdecl",
+  "params": "const char* lpFileName",
+  "sig_src": "impl",
+  "file": "src/auto/006a04e0.cpp"
  },
  "006a0500": {
-  "name": "sub_6A0500",
-  "name_src": "addr",
+  "name": "C_0085ec74_Destroy",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0085ec74* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/006a0500.cpp"
+ },
+ "006a0540": {
+  "name": "LogWriter_AppendBigEndianWord",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "void*",
+  "conv": "__cdecl",
+  "params": "void* self, uint16_t value",
+  "sig_src": "impl",
+  "file": "src/auto/006a0540.cpp"
  },
  "006a0570": {
   "name": "sub_6A0570",
@@ -130749,22 +130806,44 @@
   "sig_src": "abi"
  },
  "006a07f0": {
-  "name": "sub_6A07F0",
-  "name_src": "addr",
+  "name": "CoreZlibLog_EndDeflate",
+  "name_src": "agent",
   "votes": {},
-  "ret": "unsigned int",
+  "ret": "std::uint32_t",
   "conv": "__cdecl",
-  "params": "int a1",
-  "sig_src": "abi"
+  "params": "void* stream",
+  "sig_src": "impl",
+  "file": "src/auto/006a07f0.cpp"
  },
  "006a08b0": {
-  "name": "sub_6A08B0",
-  "name_src": "addr",
+  "name": "ResetInflateStateAndLoadTableRow",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "int a1, int a2",
-  "sig_src": "abi"
+  "params": "void* , uint8_t* self",
+  "sig_src": "impl",
+  "file": "src/auto/006a08b0.cpp"
+ },
+ "006a0940": {
+  "name": "CoreZlibLog_FindLongestMatch",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "uint32_t",
+  "conv": "__cdecl",
+  "params": "void* state, uint32_t currentMatch",
+  "sig_src": "impl",
+  "file": "src/auto/006a0940.cpp"
+ },
+ "006a0aa0": {
+  "name": "CoreZlibLog_FillWindow",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "unsigned int",
+  "conv": "__cdecl",
+  "params": "void* state",
+  "sig_src": "impl",
+  "file": "src/auto/006a0aa0.cpp"
  },
  "006a0c40": {
   "name": "sub_6A0C40",
@@ -130776,67 +130855,78 @@
   "sig_src": "abi"
  },
  "006a15c0": {
-  "name": "sub_6A15C0",
-  "name_src": "addr",
+  "name": "InflateResetStream",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "uint32_t* a1",
-  "sig_src": "abi"
+  "params": "uint8_t* strm",
+  "sig_src": "impl",
+  "file": "src/auto/006a15c0.cpp"
  },
  "006a1640": {
-  "name": "sub_6A1640",
-  "name_src": "addr",
-  "votes": {},
+  "name": "ZlibLog_CoreSetup",
+  "name_src": "vote",
+  "votes": {
+   "ZlibLog_CoreSetup": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "uint32_t* a1, int a2, int a3, int a4, int a5, unsigned int a6, uint8_t* a7, int a8",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006a1840": {
-  "name": "sub_6A1840",
-  "name_src": "addr",
+  "name": "ZlibLog_InitWithDefaultParams",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
   "params": "uint32_t* a1, int a2, uint8_t* a3, int a4",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/006a1840.cpp"
  },
  "006a1870": {
-  "name": "sub_6A1870",
-  "name_src": "addr",
+  "name": "ZlibLog_ResetStream",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "uint32_t* a1",
-  "sig_src": "abi"
+  "params": "void* ctx",
+  "sig_src": "impl",
+  "file": "src/auto/006a1870.cpp"
  },
  "006a18c0": {
-  "name": "sub_6A18C0",
-  "name_src": "addr",
+  "name": "ZlibLog_ReleaseStreamHandle",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
   "params": "uint32_t* a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/006a18c0.cpp"
  },
  "006a1910": {
-  "name": "sub_6A1910",
-  "name_src": "addr",
-  "votes": {},
+  "name": "DlgLog_AppendMessageKind",
+  "name_src": "vote",
+  "votes": {
+   "DlgLog_AppendMessageKind": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "uint32_t* a1, int a2, uint8_t* a3, int a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006a1a10": {
-  "name": "sub_6A1A10",
-  "name_src": "addr",
-  "votes": {},
+  "name": "DlgLog_AppendMessage",
+  "name_src": "agent",
+  "votes": {
+   "ZlibInflateInit": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint8_t* a2, int a3",
-  "sig_src": "abi"
+  "params": "uint32_t* logWindow, uint8_t* message, int messageLength",
+  "sig_src": "impl",
+  "file": "src/auto/006a1a10.cpp"
  },
  "006a1a30": {
   "name": "sub_6A1A30",
@@ -130846,6 +130936,16 @@
   "conv": "__cdecl",
   "params": "void** a1, int a2",
   "sig_src": "abi"
+ },
+ "006a1e30": {
+  "name": "CoreZlibLog_SendLogLine",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int32_t",
+  "conv": "__cdecl",
+  "params": "void** window, const char* format, ...",
+  "sig_src": "impl",
+  "file": "src/auto/006a1e30.cpp"
  },
  "006a1ec0": {
   "name": "sub_6A1EC0",
@@ -130857,78 +130957,88 @@
   "sig_src": "abi"
  },
  "006a20e0": {
-  "name": "sub_6A20E0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "ProcessRecordAtOffset",
+  "name_src": "vote",
+  "votes": {
+   "ProcessRecordAtOffset": 1
+  },
   "ret": "uint16_t*",
   "conv": "__stdcall",
   "params": "void* a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006a2460": {
-  "name": "sub_6A2460",
-  "name_src": "addr",
+  "name": "ProcessRecordRange_6A2460",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint16_t*",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a1, int a2",
-  "sig_src": "abi"
+  "conv": "__stdcall",
+  "params": "S_00694cd0* a1, int a2",
+  "sig_src": "impl",
+  "file": "src/auto/006a2460.cpp"
  },
  "006a24b0": {
   "name": "GameConfig_DestroyEmbeddedSettings",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GameConfig_DestroyEmbeddedSettings": 1
   },
-  "ret": "char",
+  "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a24b0.cpp"
  },
  "006a2510": {
-  "name": "sub_6A2510",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_006A2510_ProcessComponent",
+  "name_src": "vote",
+  "votes": {
+   "S_006A2510_ProcessComponent": 1
+  },
   "ret": "char",
   "conv": "__stdcall",
   "params": "void* a1, float ComponentFloat",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006a2910": {
-  "name": "sub_6A2910",
-  "name_src": "addr",
+  "name": "S_00692b80_ApplyComponentCallback",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a1, int a3",
-  "sig_src": "abi"
+  "params": "S_00692b80* self, void* , S_00692b80* a1, void* componentList",
+  "sig_src": "impl",
+  "file": "src/auto/006a2910.cpp"
  },
  "006a29a0": {
-  "name": "sub_6A29A0",
-  "name_src": "addr",
+  "name": "C_0085edfc_Init",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "void**",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4",
-  "sig_src": "abi"
+  "params": "C_0085edfc* self, void* , uint32_t firstArg, uint32_t secondArg, uint32_t thirdArg",
+  "sig_src": "impl",
+  "file": "src/auto/006a29a0.cpp"
  },
  "006a29d0": {
-  "name": "sub_6A29D0",
-  "name_src": "addr",
+  "name": "C_0085edfc_WriteBufferedChunk",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a4, int a5",
-  "sig_src": "abi"
+  "params": "C_0085edfc* self, void* , int sourceData, int requestedLength",
+  "sig_src": "impl",
+  "file": "src/auto/006a29d0.cpp"
  },
  "006a2a40": {
-  "name": "sub_6A2A40",
-  "name_src": "addr",
+  "name": "C_0085edfc_SeekOutputAndCheck",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_0085edfc* self, void* , int mode, int amount",
+  "sig_src": "impl",
+  "file": "src/auto/006a2a40.cpp"
  },
  "006a2ad0": {
   "name": "C_0085edfc_IsValueAt000cEqualValueAt0010",
@@ -130941,31 +131051,36 @@
   "file": "src/auto/006a2ad0.cpp"
  },
  "006a2ae0": {
-  "name": "sub_6A2AE0",
-  "name_src": "addr",
+  "name": "ReadTextLine",
+  "name_src": "agent",
   "votes": {},
-  "ret": "int",
+  "ret": "char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_0085ec74* self, void* , char* buffer, int maxLength",
+  "sig_src": "impl",
+  "file": "src/auto/006a2ae0.cpp"
  },
  "006a2b60": {
-  "name": "sub_6A2B60",
-  "name_src": "addr",
+  "name": "ZlibLog_CopyPathBackslashed",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "char* a1, char* a2",
-  "sig_src": "abi"
+  "params": "char* destination, const char* source",
+  "sig_src": "impl",
+  "file": "src/auto/006a2b60.cpp"
  },
  "006a2bb0": {
-  "name": "sub_6A2BB0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_0085ee28_ReadCompressedBlock",
+  "name_src": "agent",
+  "votes": {
+   "C_0085ee28_FinishSetup": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0085ee28* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a2bb0.cpp"
  },
  "006a2c60": {
   "name": "sub_6A2C60",
@@ -130996,49 +131111,56 @@
   "file": "src/auto/006a2e00.cpp"
  },
  "006a2e10": {
-  "name": "sub_6A2E10",
-  "name_src": "addr",
+  "name": "C_0085ee28_IsFieldSumMatching",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0085ee28* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a2e10.cpp"
  },
  "006a2e30": {
-  "name": "sub_6A2E30",
-  "name_src": "addr",
+  "name": "C_0085ee28_Construct",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "C_0085ee28*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "C_0085ee28* self, void* , int a2, int a3, int a4, int a5",
+  "sig_src": "impl",
+  "file": "src/auto/006a2e30.cpp"
  },
  "006a2e80": {
-  "name": "sub_6A2E80",
-  "name_src": "addr",
+  "name": "C_0085ec4c_ScalarDeletingDestructor",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/006a2e80.cpp"
  },
  "006a2eb0": {
-  "name": "sub_6A2EB0",
-  "name_src": "addr",
+  "name": "ZlibLog_MarkTrackedBlock",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, void* Block",
-  "sig_src": "abi"
+  "params": "int , void* block",
+  "sig_src": "impl",
+  "file": "src/auto/006a2eb0.cpp"
  },
  "006a2f00": {
-  "name": "sub_6A2F00",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "char",
+  "name": "LogWindow_ReleaseBuffers",
+  "name_src": "agent",
+  "votes": {
+   "LogWindow_ReleaseBuffer": 1
+  },
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "uint32_t* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a2f00.cpp"
  },
  "006a2f90": {
   "name": "sub_6A2F90",
@@ -131050,94 +131172,154 @@
   "sig_src": "abi"
  },
  "006a3060": {
-  "name": "sub_6A3060",
-  "name_src": "addr",
+  "name": "LogWindow_ReleaseRef",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/006a3060.cpp"
  },
  "006a30a0": {
-  "name": "sub_6A30A0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CreateInflateStream",
+  "name_src": "agent",
+  "votes": {
+   "LogWindow_Construct": 1
+  },
   "ret": "void**",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_006a30a0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a30a0.cpp"
  },
  "006a3110": {
-  "name": "sub_6A3110",
-  "name_src": "addr",
+  "name": "GetSharedLogWindow",
+  "name_src": "agent",
   "votes": {},
   "ret": "void**",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/006a3110.cpp"
  },
  "006a3150": {
-  "name": "sub_6A3150",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CoreZlibLog_InflateAndReset",
+  "name_src": "agent",
+  "votes": {
+   "CoreZlibLog_DecompressBlock": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "void** self, void* , int outputBuffer, uint32_t* outputSize, int inputBuffer, int inputSize",
+  "sig_src": "impl",
+  "file": "src/auto/006a3150.cpp"
  },
  "006a3200": {
-  "name": "sub_6A3200",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CoreZlibLog_ComputeAdler32",
+  "name_src": "agent",
+  "votes": {
+   "CoreZlibLog_UpdateAdler32": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "unsigned int a1, uint8_t* a2, unsigned int a3",
-  "sig_src": "abi"
+  "params": "unsigned int checksum, unsigned char* data, unsigned int length",
+  "sig_src": "impl",
+  "file": "src/auto/006a3200.cpp"
  },
  "006a3330": {
-  "name": "sub_6A3330",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Inflate_ClearLengthTables",
+  "name_src": "agent",
+  "votes": {
+   "LogWindow_InitSubobjects": 1
+  },
   "ret": "uint16_t*",
   "conv": "__fastcall",
-  "params": "int a1, int a2",
-  "sig_src": "abi"
+  "params": "void* , void* self",
+  "sig_src": "impl",
+  "file": "src/auto/006a3330.cpp"
+ },
+ "006a3480": {
+  "name": "CoreZlibLog_GenerateBitLengths",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "std::uint32_t*",
+  "conv": "__cdecl",
+  "params": "std::uint32_t* state, void* descriptor",
+  "sig_src": "impl",
+  "file": "src/auto/006a3480.cpp"
  },
  "006a4390": {
-  "name": "sub_6A4390",
-  "name_src": "addr",
+  "name": "UpdateBufferPressureFlag",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a4390.cpp"
+ },
+ "006a4420": {
+  "name": "ZlibLog_DrainBitAccumulator",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a4420.cpp"
+ },
+ "006a44a0": {
+  "name": "LogWindow_FlushPendingChars",
+  "name_src": "agent",
+  "votes": {
+   "LogStream_GetContext": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int result",
+  "sig_src": "impl",
+  "file": "src/auto/006a44a0.cpp"
+ },
+ "006a4510": {
+  "name": "LogStream_WriteStoredBlock",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int*",
+  "conv": "__cdecl",
+  "params": "int context, uint8_t* data, uint32_t length, int writeHeader",
+  "sig_src": "impl",
+  "file": "src/auto/006a4510.cpp"
  },
  "006a45a0": {
-  "name": "sub_6A45A0",
-  "name_src": "addr",
+  "name": "LogWindow_InitState",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint16_t*",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/006a45a0.cpp"
  },
  "006a4910": {
-  "name": "sub_6A4910",
-  "name_src": "addr",
+  "name": "CoreZlibLog_EmitStoredBlock",
+  "name_src": "impl",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__cdecl",
-  "params": "int a1, uint8_t* a2, int a3, int a4",
-  "sig_src": "abi"
+  "params": "void* state, std::uint8_t* source, int length, int blockFlags",
+  "sig_src": "impl",
+  "file": "src/auto/006a4910.cpp"
  },
  "006a49c0": {
-  "name": "sub_6A49C0",
-  "name_src": "addr",
+  "name": "CoreZlibLog_AlignDeflateBlock",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1",
-  "sig_src": "abi"
+  "params": "void* state",
+  "sig_src": "impl",
+  "file": "src/auto/006a49c0.cpp"
  },
  "006a4bc0": {
   "name": "sub_6A4BC0",
@@ -131149,31 +131331,47 @@
   "sig_src": "abi"
  },
  "006a4db0": {
-  "name": "sub_6A4DB0",
-  "name_src": "addr",
+  "name": "ZlibLog_AllocZeroed",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__cdecl",
-  "params": "int a1, uint32_t Count, uint32_t Size",
-  "sig_src": "abi"
+  "params": "int , size_t Count, size_t Size",
+  "sig_src": "impl",
+  "file": "src/auto/006a4db0.cpp"
  },
  "006a4dd0": {
-  "name": "sub_6A4DD0",
-  "name_src": "addr",
+  "name": "ZlibLog_ReleaseBlock",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__cdecl",
   "params": "int a1, void* Block",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/006a4dd0.cpp"
+ },
+ "006a4df0": {
+  "name": "ZlibStream_ResetState",
+  "name_src": "agent",
+  "votes": {
+   "ZlibLog_ApplyStreamState": 1,
+   "CoreZlibLog_ResetInflateBlocks": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "void* a1, void* a2, uint32_t* a3",
+  "sig_src": "impl",
+  "file": "src/auto/006a4df0.cpp"
  },
  "006a4e70": {
-  "name": "sub_6A4E70",
-  "name_src": "addr",
+  "name": "CoreZlibLog_CreateInflateBlocks",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3",
-  "sig_src": "abi"
+  "params": "void* stream, std::uint32_t checksumFunction, std::uint32_t windowSize",
+  "sig_src": "impl",
+  "file": "src/auto/006a4e70.cpp"
  },
  "006a4f10": {
   "name": "sub_6A4F10",
@@ -131185,22 +131383,26 @@
   "sig_src": "abi"
  },
  "006a5980": {
-  "name": "sub_6A5980",
-  "name_src": "addr",
-  "votes": {},
+  "name": "LogSink_ResetAndNotify",
+  "name_src": "agent",
+  "votes": {
+   "ZlibLog_DetachStreamOwner": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "uint32_t* a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/006a5980.cpp"
  },
  "006a5a10": {
-  "name": "sub_6A5A10",
-  "name_src": "addr",
+  "name": "ZlibLog_AllocateTaggedNode",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "char a1, char a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "char tagByte, char flagByte, int valueA, int valueB, void* stream",
+  "sig_src": "impl",
+  "file": "src/auto/006a5a10.cpp"
  },
  "006a5a50": {
   "name": "sub_6A5A50",
@@ -131212,13 +131414,16 @@
   "sig_src": "abi"
  },
  "006a6110": {
-  "name": "sub_6A6110",
-  "name_src": "addr",
-  "votes": {},
+  "name": "InvokeStoredCallback",
+  "name_src": "agent",
+  "votes": {
+   "LogSink_FlushRecord": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/006a6110.cpp"
  },
  "006a65a0": {
   "name": "sub_6A65A0",
@@ -131239,31 +131444,34 @@
   "sig_src": "abi"
  },
  "006a67e0": {
-  "name": "sub_6A67E0",
-  "name_src": "addr",
+  "name": "LogWindow_GetStateAddresses",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3, uint32_t* a4",
-  "sig_src": "abi"
+  "params": "uint32_t* outStateA, uint32_t* outStateB, uint32_t* outBlockA, uint32_t* outBlockB",
+  "sig_src": "impl",
+  "file": "src/auto/006a67e0.cpp"
  },
  "006a6810": {
-  "name": "sub_6A6810",
-  "name_src": "addr",
+  "name": "CoreZlibLog_FlushInflateWindow",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, int a3",
-  "sig_src": "abi"
+  "params": "std::uint32_t* state, std::uint32_t* stream, int status",
+  "sig_src": "impl",
+  "file": "src/auto/006a6810.cpp"
  },
  "006a6950": {
-  "name": "sub_6A6950",
-  "name_src": "addr",
+  "name": "CoreZlibLog_InflateFast",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3, int a4, uint32_t* a5, void** a6",
-  "sig_src": "abi"
+  "params": "int literalRootBits, int distanceRootBits, const uint8_t* literalTable, const uint8_t* distanceTable, void* state, void* stream",
+  "sig_src": "impl",
+  "file": "src/auto/006a6950.cpp"
  },
  "006a6ce0": {
   "name": "sub_6A6CE0",
@@ -144397,7 +144605,7 @@
   "name": "GrowRecordArray",
   "name_src": "vote",
   "votes": {
-   "GrowRecordArray": 1,
+   "GrowRecordArray": 2,
    "ArrayGrow": 1
   },
   "ret": "void*",
@@ -182444,7 +182652,7 @@
   "file": "src/auto/00778a90.cpp"
  },
  "00778b20": {
-  "name": "ProcessRecordRange",
+  "name": "ProcessRecordRange_778B20",
   "name_src": "agent",
   "votes": {
    "ConstructElement72_778B20": 1
@@ -192736,6 +192944,17 @@
   "params": "double X",
   "sig_src": "abi"
  },
+ "007b0beb": {
+  "name": "__vsnprintf",
+  "name_src": "ida",
+  "votes": {
+   "Crt_Vsnprintf": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "char* buffer, size_t count, const char* format, char* varargs",
+  "sig_src": "vote"
+ },
  "007b0c41": {
   "name": "__stricmp",
   "name_src": "ida",
@@ -192849,11 +193068,13 @@
  "007b17cc": {
   "name": "_free",
   "name_src": "ida",
-  "votes": {},
+  "votes": {
+   "_free": 1
+  },
   "ret": "void",
   "conv": "__cdecl",
   "params": "void* Block",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007b183d": {
   "name": "___tolower_mt",
@@ -193040,11 +193261,13 @@
  "007b2081": {
   "name": "_calloc",
   "name_src": "ida",
-  "votes": {},
+  "votes": {
+   "_calloc": 1
+  },
   "ret": "void*",
   "conv": "__cdecl",
   "params": "uint32_t Count, uint32_t Size",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007b213c": {
   "name": "_sscanf",
