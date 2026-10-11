@@ -5,22 +5,23 @@
 - {addr: 0x0082D094, name: g_pfnGetFileSize, type: GetFileSizeFn, uses: 1, src: auto}
 - {addr: 0x0082D09C, name: g_CreateFileAImport, type: CreateFileAFn, uses: 1, src: auto}
 - {addr: 0x0082D0DC, name: g_FindFirstFileA, type: FindFirstFileAProc, uses: 4, src: auto}
-- {addr: 0x0082D0E0, name: g_pfnCloseHandle, type: void*, uses: 3, src: auto}
+- {addr: 0x0082D0E0, name: g_pfnCloseHandle, type: void*, uses: 4, src: auto}
 - {addr: 0x0082D118, name: g_SetFileAttributesA, type: SetFileAttributesAFn, uses: 2, src: auto}
 - {addr: 0x0082D184, name: g_FindNextFileA, type: FindNextFileAProc, uses: 3, src: auto}
 - {addr: 0x0082D18C, name: g_FindClose, type: FindCloseProc, uses: 4, src: auto}
 - {addr: 0x0082D190, name: g_SetCurrentDirectoryW, type: SetCurrentDirectoryWProc, uses: 10, src: auto}
 - {addr: 0x0082D1A0, name: g_CreateThreadImport, type: CreateThreadImportFn, uses: 1, src: auto}
+- {addr: 0x0082D204, name: g_GetComputerNameA, type: GetComputerNameFunction, uses: 1, src: auto}
 - {addr: 0x0082D208, name: g_SetThreadPriorityIat, type: void*, uses: 3, src: auto, alt: [g_pfnSetThreadPriority]}
 - {addr: 0x0082D20C, name: g_pfnWaitForSingleObject, type: WaitForSingleObjectFn, uses: 3, src: auto, alt: [g_pWaitForSingleObject]}
 - {addr: 0x0082D210, name: g_DeleteFileA, type: DeleteFileAProc, uses: 3, src: auto}
-- {addr: 0x0082D214, name: g_ImportGetLocalTime, type: NetSessionGetLocalTimeFn, uses: 2, src: auto}
+- {addr: 0x0082D214, name: g_ImportGetLocalTime, type: GetLocalTimeFunction, uses: 3, src: auto, alt: [g_GetLocalTime]}
 - {addr: 0x0082D218, name: g_CreateDirectoryW, type: CreateDirectoryWFunction, uses: 4, src: auto}
 - {addr: 0x0082D21C, name: g_GetCurrentDirectoryW, type: GetCurrentDirectoryWProc, uses: 10, src: auto}
 - {addr: 0x0082D220, name: g_GetSystemTimeAsFileTime, type: GetSystemTimeAsFileTimeFn, uses: 1, src: auto}
 - {addr: 0x0082D228, name: g_CreateProcessAImportSlot, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D22C, name: g_GetFileAttributesAImport, type: GetFileAttributesAFn, uses: 1, src: auto}
-- {addr: 0x0082D230, name: g_SetFilePointerImport, type: void*, uses: 3, src: auto, alt: [g_pSetFilePointerImport]}
+- {addr: 0x0082D230, name: g_SetFilePointerImport, type: void*, uses: 4, src: auto, alt: [g_pSetFilePointerImport]}
 - {addr: 0x0082D234, name: g_pfnWriteFile, type: WriteFileFn, uses: 1, src: auto}
 - {addr: 0x0082D238, name: g_pfnReadFile, type: ReadFileFn, uses: 1, src: auto}
 - {addr: 0x0082D23C, name: g_ReleaseMutex, type: ReleaseMutexFunction, uses: 1, src: auto}
@@ -62,7 +63,7 @@
 - {addr: 0x0082DAF0, name: g_ScoreboardRefreshInterval, type: float, uses: 1, src: auto}
 - {addr: 0x0082DBCC, name: g_VehicleAimLowerLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082DBD0, name: g_VehicleYawUpperLimit, type: float, uses: 1, src: auto}
-- {addr: 0x0082DC68, name: g_MaximumHeadTimeStep, type: float, uses: 1, src: auto}
+- {addr: 0x0082DC68, name: g_MaximumHeadTimeStep, type: float, uses: 2, src: auto}
 - {addr: 0x0082DC70, name: g_SubtitlePanelScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC84, name: g_flt_0082DC84, type: float, uses: 11, src: auto, alt: [g_HeadDampingScale, g_MessageBoxAnimationDuration]}
 - {addr: 0x0082DCE8, name: g_WheelRecordScale, type: float, uses: 2, src: auto}
@@ -1514,8 +1515,11 @@
 - {addr: 0x008B0903, name: byte_8B0903, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008B09EC, name: g_PTankPluginOffset, type: 'std::int32_t', uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008B68C0, name: g_pRwEngineInstance, type: void*, uses: 2, src: captain, conf: 0.9, alt: [g_008B68C0, g_pDispatchTable]}
+- {addr: 0x008B99B0, name: g_NetSessionOwner, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008B99B4, name: g_TransportFlag, type: uint8_t, uses: 1, src: auto}
-- {addr: 0x008B9A90, name: g_MenuMpCharacterSelectLookup, type: uint8_t, uses: 3, src: auto}
+- {addr: 0x008B9A90, name: g_MenuMpCharacterSelectLookup, type: uint8_t, uses: 4, src: auto}
+- {addr: 0x008B9B40, name: g_MenuCharacterRecords, type: uint8_t*, uses: 2, src: auto, alt: [g_NetSessionEntries]}
+- {addr: 0x008B9B48, name: g_DefaultMenuCharacterRecord, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008BABC0, name: g_NetZFloatSink_8BABC0, type: uint8_t, uses: 3, src: opus}
 - {addr: 0x008BABFC, name: g_NetZFloatTripletSink_8BABFC, type: uint8_t, uses: 2, src: opus}
 - {addr: 0x008BAC1C, name: g_TransportSettings, type: uint8_t, uses: 1, src: auto}
@@ -1562,7 +1566,7 @@
 - {addr: 0x008BBF8C, name: g_Block8BBF8C, type: void*, uses: 2, src: auto, alt: [g_QuadVertexBuffer]}
 - {addr: 0x008BBF90, name: g_Block8BBF90, type: void*, uses: 2, src: auto, alt: [g_QuadIndexBuffer]}
 - {addr: 0x008BBF98, name: g_ConnectionRequestFlag, type: uint8_t, uses: 6, src: auto, alt: [g_NetSessionConnectionFlag, g_NetSessionFlag, g_OnlineMenuActive, g_SessionWaitFailedFlag, g_StationDumpPendingFlag]}
-- {addr: 0x008BC098, name: g_dword_8BC098, type: uint32_t, uses: 3, src: auto}
+- {addr: 0x008BC098, name: g_Session, type: uint32_t, uses: 4, src: auto, alt: [g_dword_8BC098]}
 - {addr: 0x008BC120, name: byte_8BC120, type: uint8_t, uses: 3, src: auto, alt: [g_NetSessionWaitingFlag]}
 - {addr: 0x008BC121, name: g_MenuMpCharacterSelectActive, type: uint8_t, uses: 3, src: auto}
 - {addr: 0x008BC124, name: g_IdlePollCallback, type: void*, uses: 1, src: auto}
