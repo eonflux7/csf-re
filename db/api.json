@@ -26767,7 +26767,7 @@
   "name": "ResolveEntryLookupValue",
   "name_src": "vote",
   "votes": {
-   "ResolveEntryLookupValue": 16,
+   "ResolveEntryLookupValue": 17,
    "GetEntityComponent": 1,
    "GetProviderStatusCode": 1,
    "ObjectProvider_IsActive": 1,
@@ -112032,7 +112032,7 @@
   "name": "ResolveClumpManager",
   "name_src": "vote",
   "votes": {
-   "ResolveClumpManager": 9
+   "ResolveClumpManager": 10
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -128840,7 +128840,7 @@
   "name": "SetAllocationMode",
   "name_src": "vote",
   "votes": {
-   "SetAllocationMode": 3
+   "SetAllocationMode": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -128851,7 +128851,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 156
+   "Mem_Alloc": 161
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -128862,7 +128862,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 313
+   "Mem_Free": 316
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -136564,7 +136564,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 149,
+   "GetGlobalInt": 150,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -141928,15 +141928,16 @@
   "file": "src/auto/006c46b0.cpp"
  },
  "006c4740": {
-  "name": "GfxSkin_FinalizeObjectEntry",
-  "name_src": "vote",
+  "name": "GfxSkin_ResolveReferences",
+  "name_src": "agent",
   "votes": {
    "GfxSkin_FinalizeObjectEntry": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006c4740.cpp"
  },
  "006c47f0": {
   "name": "GfxSkin_FlushWidgetParamTable",
@@ -142001,13 +142002,17 @@
   "file": "src/auto/006c4960.cpp"
  },
  "006c49b0": {
-  "name": "sub_6C49B0",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "char",
+  "name": "GfxSkin_GrowEntryStorage_6C49B0",
+  "name_src": "agent",
+  "votes": {
+   "GfxSkin_GrowEntryArray": 1,
+   "GfxSkin_GrowKeyedValues": 1
+  },
+  "ret": "const void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int additionalCapacity",
+  "sig_src": "impl",
+  "file": "src/auto/006c49b0.cpp"
  },
  "006c4a50": {
   "name": "C_00860894_DestroyEmbeddedMember8",
@@ -142032,28 +142037,31 @@
   "file": "src/auto/006c4aa0.cpp"
  },
  "006c4b00": {
-  "name": "GfxSkin_SetKeyedFlag",
-  "name_src": "vote",
+  "name": "C_008670f0_SetEntry",
+  "name_src": "agent",
   "votes": {
    "Object_SetIndexedValue": 1,
    "SetSubobjectState": 1,
+   "GfxSkin_SetPropertyValue": 1,
    "GfxSkin_SetKeyedFlag": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "vote"
+  "params": "C_008670f0* self, void* , int key, int value",
+  "sig_src": "impl",
+  "file": "src/auto/006c4b00.cpp"
  },
  "006c4bf0": {
   "name": "Subobject_SetKeyedValue",
   "name_src": "vote",
   "votes": {
-   "Subobject_SetKeyedValue": 5
+   "Subobject_SetKeyedValue": 6
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, unsigned int a3",
-  "sig_src": "vote"
+  "params": "void* self, void* , int key, unsigned int value",
+  "sig_src": "impl",
+  "file": "src/auto/006c4bf0.cpp"
  },
  "006c4cf0": {
   "name": "C_008670f0_ApplyKeyValueEntries",
@@ -142205,7 +142213,7 @@
  },
  "006c5310": {
   "name": "GfxSkin_ComputeDistanceFade",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__cdecl",
@@ -142278,7 +142286,7 @@
   "name": "GetGlobalValue_6C5760",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_6C5760": 9
+   "GetGlobalValue_6C5760": 10
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -142429,13 +142437,14 @@
   "sig_src": "abi"
  },
  "006c5b30": {
-  "name": "sub_6C5B30",
-  "name_src": "addr",
+  "name": "GfxSkin_GrowEntries",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int additionalCapacity",
+  "sig_src": "impl",
+  "file": "src/auto/006c5b30.cpp"
  },
  "006c5be0": {
   "name": "C_008656d0_SetOrClearFlagBits",
@@ -142482,7 +142491,9 @@
  "006c5cd0": {
   "name": "S_006c5cd0_Render",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_006c5cd0_PreparePrimaryState": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "S_006c5cd0* self, void*",
@@ -142492,7 +142503,9 @@
  "006c5ef0": {
   "name": "RpSkin_UpdateEntriesIfEnabled",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_006c5cd0_PrepareSecondaryState": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_006c5cd0* self, void*",
@@ -142867,7 +142880,9 @@
  "006c7990": {
   "name": "SkinState_RunFlaggedPhases",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_006c5cd0_PrepareFinalState": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_006c5cd0* self, void*",
@@ -142875,13 +142890,14 @@
   "file": "src/auto/006c7990.cpp"
  },
  "006c7a20": {
-  "name": "sub_6C7A20",
-  "name_src": "addr",
+  "name": "S_006c5cd0_ResetAndCommitState",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_006c5cd0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006c7a20.cpp"
  },
  "006c7ac0": {
   "name": "C_00862900_GetSize",
@@ -142918,7 +142934,7 @@
   "name_src": "agent",
   "votes": {
    "RwEngine_SetRenderState": 1,
-   "Hud_SetWidgetParam": 2,
+   "Hud_SetWidgetParam": 3,
    "Hud_SetRenderState": 1
   },
   "ret": "int",
@@ -142961,7 +142977,7 @@
   "name": "GlobalHud_Commit_6C7C30",
   "name_src": "agent",
   "votes": {
-   "GlobalHud_Commit_6C7C30": 5
+   "GlobalHud_Commit_6C7C30": 6
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -142970,27 +142986,29 @@
   "file": "src/auto/006c7c30.cpp"
  },
  "006c7c80": {
-  "name": "GfxSkin_ConfigureDefaultPreset",
-  "name_src": "vote",
+  "name": "GfxSkin_InitializeDefaultProperties",
+  "name_src": "agent",
   "votes": {
    "GfxSkin_ConfigureDefaultPreset": 1
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "void* a1",
-  "sig_src": "vote"
+  "params": "C_008670f0* self",
+  "sig_src": "impl",
+  "file": "src/auto/006c7c80.cpp"
  },
  "006c7dd0": {
-  "name": "GfxSkin_GrowAuxiliaryCapacity",
-  "name_src": "vote",
+  "name": "GfxSkin_GrowEntryStorage_6C7DD0",
+  "name_src": "agent",
   "votes": {
    "GfxSkin_GrowAuxiliaryCapacity": 1,
    "GfxSkin_GrowRecordList": 1
   },
-  "ret": "char",
+  "ret": "const void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int additionalCapacity",
+  "sig_src": "impl",
+  "file": "src/auto/006c7dd0.cpp"
  },
  "006c7e70": {
   "name": "C_008608f8_Destroy",
@@ -147795,13 +147813,15 @@
   "sig_src": "abi"
  },
  "006da3c0": {
-  "name": "sub_6DA3C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxSkin_CompleteEntrySetup",
+  "name_src": "vote",
+  "votes": {
+   "GfxSkin_CompleteEntrySetup": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006da400": {
   "name": "sub_6DA400",

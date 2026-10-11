@@ -14944,16 +14944,16 @@ ea,size,region,module,name,name_src,status
 006c4620,13,game,m6C4620,C_008670f0_SetField0C,agent,done
 006c4630,122,game,m6C4620,C_008670f0_RemoveMatchingEntry,agent,done
 006c46b0,130,game,m6C4620,GfxSkin_RemoveTaggedEntry,agent,done
-006c4740,167,game,m6C4620,GfxSkin_FinalizeObjectEntry,vote,todo
+006c4740,167,game,m6C4620,GfxSkin_ResolveReferences,agent,done
 006c47f0,122,game,m6C4620,GfxSkin_FlushWidgetParamTable,agent,done
 006c4870,65,game,m6C4620,C_0085e7b8_FindEntryPayloadByKey,agent,done
 006c48c0,73,game,m6C4620,C_0085e7b8_ResolveChainedValue,agent,done
 006c4910,67,game,m6C4620,C_008670f0_FindEntryPayloadByKey,agent,done
 006c4960,73,game,m6C4620,C_008670f0_ResolveChainedValue,agent,done
-006c49b0,150,game,m6C4620,,,todo
+006c49b0,150,game,m6C4620,GfxSkin_GrowEntryStorage,agent,done
 006c4a50,70,game,m6C4620,C_00860894_DestroyEmbeddedMember8,agent,done
 006c4aa0,94,game,m6C4620,C_00860894_Destroy,agent,done
-006c4b00,235,game,m6C4620,GfxSkin_SetKeyedFlag,vote,todo
+006c4b00,235,game,m6C4620,C_008670f0_SetEntry,agent,done
 006c4bf0,255,game,m6C4620,Subobject_SetKeyedValue,vote,todo
 006c4cf0,94,game,m6C4620,C_008670f0_ApplyKeyValueEntries,agent,done
 006c4d50,116,game,m6C4620,GfxSkin_ListHasUnresolvedEntry,agent,done
@@ -14969,7 +14969,7 @@ ea,size,region,module,name,name_src,status
 006c5050,93,game,m6C4620,GfxSkin_DistanceBetweenPositions,agent,done
 006c50b0,88,game,m6C4620,GfxSkin_ComputeDistanceToTarget,agent,done
 006c5110,499,game,m6C4620,GfxSkin_GetPointBoxDistance,agent,done
-006c5310,281,game,m6C4620,,,todo
+006c5310,281,game,m6C4620,GfxSkin_ComputeDistanceFade,agent,done
 006c5430,379,game,m6C4620,,,todo
 006c55b0,256,game,m6C4620,GfxSkin_EvaluateValue,vote,todo
 006c56b0,36,game,m6C4620,GfxSkin_GetLinkedValueOrZero,agent,done
@@ -14991,7 +14991,7 @@ ea,size,region,module,name,name_src,status
 006c5a40,122,game,m6C4620,SkinGeom_InitFromSource,agent,done
 006c5ac0,82,game,m6C4620,GfxSkin_CompareSkinKeys,agent,done
 006c5b20,10,game,m6C4620,InvokeTargetFunction,agent,done
-006c5b30,170,game,m6C4620,,,todo
+006c5b30,170,game,m6C4620,GfxSkin_GrowEntries,agent,done
 006c5be0,42,game,m6C4620,C_008656d0_SetOrClearFlagBits,agent,done
 006c5c10,122,game,m6C4620,GfxSkin_RemoveAttachmentEntry,agent,done
 006c5c90,20,game,m6C4620,GfxSkin_CallWithGlobalContext,agent,done
@@ -15033,7 +15033,7 @@ ea,size,region,module,name,name_src,status
 006c74c0,50,game,m6C4620,Skin_GetSingleton,agent,done
 006c7500,1166,game,m6C4620,S_006c5cd0_RenderSkinPass,agent,done
 006c7990,131,game,m6C4620,SkinState_RunFlaggedPhases,agent,done
-006c7a20,157,game,m6C4620,,,todo
+006c7a20,157,game,m6C4620,S_006c5cd0_ResetAndCommitState,agent,done
 006c7ac0,6,game,m6C4620,C_00862900_GetSize,agent,done
 006c7ad0,73,game,m6C4620,C_008608f8_ResolveOrDelegate,agent,done
 006c7b20,28,game,m6C4620,Skin_ResolveEntryOrDispatch,agent,done
@@ -15042,8 +15042,8 @@ ea,size,region,module,name,name_src,status
 006c7b80,109,game,m6C4620,C_008608f8_ReleaseChildrenAndFreeBuffers,agent,done
 006c7bf0,61,game,m6C4620,GfxSkin_CopyLastLinkedEntryOrZero,agent,done
 006c7c30,76,game,m6C4620,GlobalHud_Commit_6C7C30,agent,done
-006c7c80,325,game,m6C4620,GfxSkin_ConfigureDefaultPreset,vote,todo
-006c7dd0,154,game,m6C4620,GfxSkin_GrowAuxiliaryCapacity,vote,todo
+006c7c80,325,game,m6C4620,GfxSkin_InitializeDefaultProperties,agent,done
+006c7dd0,154,game,m6C4620,GfxSkin_GrowEntryStorage,agent,done
 006c7e70,33,game,m6C4620,C_008608f8_Destroy,agent,done
 006c7ea0,1227,game,m6C4620,C_008608f8_Construct,agent,done
 006c8370,24,game,m6C4620,GfxSkin_AllocAndConstruct,agent,done
@@ -15565,7 +15565,7 @@ ea,size,region,module,name,name_src,status
 006da2f0,109,game,m6D9D00,,,todo
 006da360,21,game,m6D9D00,,,todo
 006da380,56,game,m6D9D00,,,todo
-006da3c0,51,game,m6D9D00,,,todo
+006da3c0,51,game,m6D9D00,GfxSkin_CompleteEntrySetup,vote,todo
 006da400,60,game,m6D9D00,,,todo
 006da440,270,game,m6D9D00,,,todo
 006da550,280,game,m6D9D00,,,todo
