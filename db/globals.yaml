@@ -37,7 +37,7 @@
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 2, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 23, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 63, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 64, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 7, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 5, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
@@ -81,7 +81,7 @@
 - {addr: 0x0082DFC0, name: g_DegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x0082DFC4, name: g_FallingSpeedThreshold, type: float, uses: 1, src: auto}
 - {addr: 0x0082DFC8, name: g_VerticalResetDistance, type: float, uses: 1, src: auto}
-- {addr: 0x0082DFCC, name: g_MessageBoxCollapsedScale, type: float, uses: 6, src: auto, alt: [g_HeadTranslationScale, g_PlaneSideUpperThreshold]}
+- {addr: 0x0082DFCC, name: g_MessageBoxCollapsedScale, type: float, uses: 7, src: auto, alt: [g_HeadTranslationScale, g_PlaneSideUpperThreshold]}
 - {addr: 0x0082E030, name: g_fReturnedConstant_0082E030, type: float, uses: 5, src: auto}
 - {addr: 0x0082E034, name: g_MovementScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082E038, name: g_ScaleY_0_6, type: float, uses: 5, src: auto}
@@ -125,7 +125,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 62, src: auto, alt: [g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 63, src: auto, alt: [g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C0, name: g_fBackAngleLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
@@ -350,6 +350,7 @@
 - {addr: 0x00866DB8, name: g_CGuiTextureListBoxVtable, type: void*, uses: 2, src: auto}
 - {addr: 0x00867434, name: g_UnitFactorLowerBound, type: float, uses: 1, src: auto}
 - {addr: 0x00867444, name: g_FontVtable, type: void*, uses: 1, src: auto}
+- {addr: 0x008678E8, name: g_AngleThreshold, type: float, uses: 1, src: auto}
 - {addr: 0x00869C54, name: g_UnassignedSectorFlags, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x00872CA4, name: g_vtbl_872CA4, type: void*, uses: 2, src: auto}
 - {addr: 0x00886ACC, name: g_SixteenByteRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
@@ -1594,6 +1595,7 @@
 - {addr: 0x008BC120, name: byte_8BC120, type: uint8_t, uses: 3, src: auto, alt: [g_NetSessionWaitingFlag]}
 - {addr: 0x008BC121, name: g_MenuMpCharacterSelectActive, type: uint8_t, uses: 3, src: auto}
 - {addr: 0x008BC124, name: g_IdlePollCallback, type: void*, uses: 1, src: auto}
+- {addr: 0x008BC128, name: g_NetCogibleDdlContext, type: int, uses: 3, src: auto, alt: [g_NetCogibleDdlLastArg, g_NetCogibleStoredId]}
 - {addr: 0x008BC15C, name: g_NetPlayerClassId, type: 'std::uint32_t', uses: 0, src: captain, conf: 0.8}
 - {addr: 0x008BC160, name: g_NetProyectilClassId, type: 'std::uint32_t', uses: 0, src: captain, conf: 0.8}
 - {addr: 0x008BC170, name: g_Value_8BC170, type: int, uses: 1, src: auto}
