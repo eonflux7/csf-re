@@ -4220,7 +4220,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 105
+   "AssignStringSubstring": 106
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -9768,7 +9768,7 @@
   "name": "AssignStringRange_429B60",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_429B60": 86,
+   "AssignStringRange_429B60": 87,
    "MenuSceneSelect_InitializeString": 1
   },
   "ret": "void*",
@@ -10841,7 +10841,7 @@
   "name": "CompareStringSubstring",
   "name_src": "vote",
   "votes": {
-   "CompareStringSubstring": 20
+   "CompareStringSubstring": 21
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -11071,7 +11071,8 @@
    "Hud_ScaleCoordinates": 2,
    "Hud_ConvertPosition": 1,
    "Hud_ConvertCoordinates": 1,
-   "Layout_ApplyIntPair": 2
+   "Layout_ApplyIntPair": 2,
+   "ScaleHudSizePair": 1
   },
   "ret": "uint64_t",
   "conv": "__cdecl",
@@ -13409,7 +13410,7 @@
   "name": "GetGlobal8afc7c",
   "name_src": "agent",
   "votes": {
-   "GetGlobal8afc7c": 15
+   "GetGlobal8afc7c": 16
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -13595,13 +13596,15 @@
   "sig_src": "abi"
  },
  "0043e830": {
-  "name": "sub_43E830",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_LoadResourceRange",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_LoadResourceRange": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, unsigned int a2, unsigned int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0043e970": {
   "name": "sub_43E970",
@@ -14198,22 +14201,26 @@
   "sig_src": "abi"
  },
  "00441910": {
-  "name": "sub_441910",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_PrepareResources",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_PrepareResources": 1
+  },
   "ret": "void*",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00441940": {
-  "name": "sub_441940",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_LoadResources",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_LoadResources": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00441960": {
   "name": "sub_441960",
@@ -25007,7 +25014,7 @@
   "name": "MissionScript_DestroyElementRange",
   "name_src": "agent",
   "votes": {
-   "MissionScript_DestroyElementRange": 3,
+   "MissionScript_DestroyElementRange": 4,
    "DestroyElementRange": 8
   },
   "ret": "int",
@@ -25459,7 +25466,7 @@
   "name": "MissionScript_GetEntryCount_46BEA0",
   "name_src": "agent",
   "votes": {
-   "MissionScript_GetEntryCount_46BEA0": 1
+   "MissionScript_GetEntryCount_46BEA0": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -39717,13 +39724,15 @@
   "sig_src": "abi"
  },
  "004a09a0": {
-  "name": "sub_4A09A0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_CleanupMenuServices",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_CleanupMenuServices": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004a0a60": {
   "name": "sub_4A0A60",
@@ -45338,7 +45347,7 @@
   "name": "ReturnZero",
   "name_src": "agent",
   "votes": {
-   "ReturnZero": 1
+   "ReturnZero": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -60519,13 +60528,15 @@
   "sig_src": "abi"
  },
  "004fba10": {
-  "name": "sub_4FBA10",
-  "name_src": "addr",
-  "votes": {},
+  "name": "DestroyTemporaryMenuResource",
+  "name_src": "vote",
+  "votes": {
+   "DestroyTemporaryMenuResource": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004fba30": {
   "name": "sub_4FBA30",
@@ -61064,13 +61075,15 @@
   "file": "src/auto/004fdbb0.cpp"
  },
  "004fdbc0": {
-  "name": "sub_4FDBC0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_CleanupMenuAssets",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_CleanupMenuAssets": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004fdc70": {
   "name": "CSceneLoaderBase_RequestSceneLoad",
@@ -62650,7 +62663,7 @@
   "name": "GetGlobalValue_8B056C",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8B056C": 57
+   "GetGlobalValue_8B056C": 58
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -62677,13 +62690,15 @@
   "sig_src": "abi"
  },
  "00506cd0": {
-  "name": "sub_506CD0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_GetSceneLoader",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_GetSceneLoader": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00506d70": {
   "name": "SetByteAtOffset20",
@@ -62768,6 +62783,17 @@
   "conv": "__fastcall",
   "params": "void* self, void* edx",
   "sig_src": "abi"
+ },
+ "00506f70": {
+  "name": "GameBddLoader_InitializeWindow",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_InitializeWindow": 1
+  },
+  "ret": "char",
+  "conv": "__fastcall",
+  "params": "void* self, void* edx, int window",
+  "sig_src": "vote"
  },
  "00507460": {
   "name": "sub_507460",
@@ -63195,13 +63221,15 @@
   "sig_src": "abi"
  },
  "0050a0a0": {
-  "name": "sub_50A0A0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_AttachMenuManager",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_AttachMenuManager": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0050a0c0": {
   "name": "sub_50A0C0",
@@ -63919,13 +63947,15 @@
   "sig_src": "vote"
  },
  "0050bbb0": {
-  "name": "sub_50BBB0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_InitializeSceneResources",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_InitializeSceneResources": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0050bc30": {
   "name": "sub_50BC30",
@@ -64083,7 +64113,9 @@
  "0050c230": {
   "name": "MenuManager_ClearElementArray",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuManager_ClearElementArray": 1
+  },
   "ret": "int*",
   "conv": "__fastcall",
   "params": "int* self, void*",
@@ -64259,7 +64291,9 @@
  "0050ca20": {
   "name": "FreeBufferAndClear",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "FreeBufferAndClear": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "int* self, void*",
@@ -64369,7 +64403,9 @@
  "0050d270": {
   "name": "MenuSystem_InitCommonMenuBuilder",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuSystem_InitCommonMenuBuilder": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -64730,7 +64766,9 @@
  "0050e070": {
   "name": "BddLoader_RunLoadPhase",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GameBddLoader_FinalizeMenuResources": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -64872,7 +64910,9 @@
  "0050e330": {
   "name": "GameBddLoader_CreateScreenOverlay",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GameBddLoader_InitializeLoadingScreen": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -64882,7 +64922,9 @@
  "0050e430": {
   "name": "GameBddLoader_PositionAndShowControl",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GameBddLoader_UpdateLoadingScreen": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -64941,7 +64983,7 @@
   "name": "GameBddLoader_PrepareMenuForScene",
   "name_src": "agent",
   "votes": {
-   "SceneLoader_PrepareMenuForScene": 1
+   "SceneLoader_PrepareMenuForScene": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -64975,7 +65017,8 @@
   "name": "BddLoader_CreateEmptyRecord",
   "name_src": "agent",
   "votes": {
-   "CreateListSentinel": 1
+   "CreateListSentinel": 1,
+   "GameBddLoader_AllocateTreeHead": 1
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -65008,18 +65051,23 @@
   "file": "src/auto/0050eac0.cpp"
  },
  "0050eb10": {
-  "name": "sub_50EB10",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_PrepareFrameDump",
+  "name_src": "agent",
+  "votes": {
+   "GameBddLoader_InitializeMenuResources": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "char* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0050eb10.cpp"
  },
  "0050ec40": {
   "name": "GameBddLoader_SetSoundSlot",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuManager_ApplySceneResource": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , int soundIndex, int slot",
@@ -65051,13 +65099,14 @@
   "file": "src/auto/0050ee10.cpp"
  },
  "0050ee50": {
-  "name": "sub_50EE50",
-  "name_src": "addr",
+  "name": "CMenuManager_PrepareSceneMenus",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a3",
-  "sig_src": "abi"
+  "params": "CMenuManager* self, void* , void* scene",
+  "sig_src": "impl",
+  "file": "src/auto/0050ee50.cpp"
  },
  "0050efe0": {
   "name": "BddLoader_EnsureDemoScenarioWhenNoSavegames",
@@ -65070,13 +65119,16 @@
   "file": "src/auto/0050efe0.cpp"
  },
  "0050f060": {
-  "name": "sub_50F060",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_ApplyConfiguredDisplayString",
+  "name_src": "agent",
+  "votes": {
+   "GameBddLoader_ConfigureHud": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1",
-  "sig_src": "abi"
+  "params": "",
+  "sig_src": "impl",
+  "file": "src/auto/0050f060.cpp"
  },
  "0050f160": {
   "name": "GameBddLoader_AssignMessageBoxConfiguration",
@@ -65101,25 +65153,27 @@
   "file": "src/auto/0050f230.cpp"
  },
  "0050f2f0": {
-  "name": "sub_50F2F0",
-  "name_src": "addr",
+  "name": "S_0050f2f0_DrawInsetFrameAndEntries",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_0050f2f0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0050f2f0.cpp"
  },
  "0050f540": {
-  "name": "CMenuManager_BaseCleanup",
-  "name_src": "vote",
+  "name": "CMenuManager_Destroy_50F540",
+  "name_src": "agent",
   "votes": {
    "CMenuManager_BaseCleanup": 1,
    "CMenuManager_ReleaseResources": 1
   },
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "CMenuManager* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0050f540.cpp"
  },
  "0050f6d0": {
   "name": "C_0082fbe8_GetConstantName",
@@ -65134,13 +65188,14 @@
   "file": "src/auto/0050f6d0.cpp"
  },
  "0050f6e0": {
-  "name": "sub_50F6E0",
-  "name_src": "addr",
+  "name": "CMenuManager_ResetForTacticScreen",
+  "name_src": "agent",
   "votes": {},
-  "ret": "int",
+  "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "CMenuManager* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0050f6e0.cpp"
  },
  "0050f790": {
   "name": "GameBddLoader_DispatchMenuRequest",
@@ -65169,7 +65224,9 @@
  "0050f980": {
   "name": "GameBddLoader_InitializeDisplayResources",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GameBddLoader_InitializeMenuState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -65177,7 +65234,7 @@
   "file": "src/auto/0050f980.cpp"
  },
  "0050faf0": {
-  "name": "CMenuManager_Destroy",
+  "name": "CMenuManager_Destroy_50FAF0",
   "name_src": "agent",
   "votes": {},
   "ret": "void*",
@@ -65208,6 +65265,16 @@
   "params": "int* firstArgument, int* secondArgument",
   "sig_src": "impl",
   "file": "src/auto/0050fbb0.cpp"
+ },
+ "0050fbd0": {
+  "name": "GameBddLoader_CreateMenuManager",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "char",
+  "conv": "__cdecl",
+  "params": "int window, char* archiveName",
+  "sig_src": "impl",
+  "file": "src/auto/0050fbd0.cpp"
  },
  "0050ff30": {
   "name": "SceneLoader_PrepareGlobalState_50FF30",
@@ -65258,7 +65325,9 @@
  "005102d0": {
   "name": "C_00840680_Construct",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GameBddLoader_ConstructMaterials": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "C_00840680* self, void* , int a2",
@@ -65308,7 +65377,9 @@
  "00510420": {
   "name": "C_008406e8_Construct",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GameBddLoader_ConstructSounds": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "C_008406e8* self, void* , int a2",
@@ -65398,7 +65469,9 @@
  "00510680": {
   "name": "C_00840724_Construct",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GameBddLoader_ConstructDatabase": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "C_00840724* self, void*",
@@ -65473,13 +65546,14 @@
   "file": "src/auto/00510860.cpp"
  },
  "00510bf0": {
-  "name": "sub_510BF0",
-  "name_src": "addr",
+  "name": "GameBddLoader_RebuildDatabases",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00510bf0.cpp"
  },
  "00510f40": {
   "name": "C_0086f128_ResetAndAllocateOwnedSubobject",
@@ -65517,8 +65591,8 @@
   "file": "src/auto/00510ff0.cpp"
  },
  "00511040": {
-  "name": "CharacterDefs_DestroyRecord",
-  "name_src": "vote",
+  "name": "GameBddLoader_DestroyCharacterRecord",
+  "name_src": "agent",
   "votes": {
    "CharacterDefs_DestroyRecord": 2,
    "CharacterDefs_DestroyEntry_511040": 1,
@@ -65599,7 +65673,9 @@
  "005113e0": {
   "name": "C_008407a8_Construct",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GameBddLoader_ConstructMenuManager": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "C_008407a8* self, void* , int a2, int a3, char* String1",
@@ -67396,19 +67472,21 @@
   "sig_src": "abi"
  },
  "00518940": {
-  "name": "sub_518940",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_GetDefaultLoadResult",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_GetDefaultLoadResult": 1
+  },
   "ret": "void*",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00518980": {
   "name": "GetValue_8B0574",
   "name_src": "agent",
   "votes": {
-   "GetValue_8B0574": 5
+   "GetValue_8B0574": 6
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -67417,13 +67495,15 @@
   "file": "src/auto/00518980.cpp"
  },
  "00518990": {
-  "name": "sub_518990",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_CleanupMenuScreens",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_CleanupMenuScreens": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "005189b0": {
   "name": "sub_5189B0",
@@ -68048,13 +68128,15 @@
   "sig_src": "vote"
  },
  "00519c90": {
-  "name": "sub_519C90",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_LogDatabase",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_LogDatabase": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00519d20": {
   "name": "sub_519D20",
@@ -68411,13 +68493,15 @@
   "sig_src": "vote"
  },
  "0051afd0": {
-  "name": "sub_51AFD0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_LogMaterials",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_LogMaterials": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0051b060": {
   "name": "sub_51B060",
@@ -68490,7 +68574,8 @@
   "name": "GameBddLoader_ConstructMenuState",
   "name_src": "vote",
   "votes": {
-   "GameBddLoader_ConstructMenuState": 1
+   "GameBddLoader_ConstructMenuState": 1,
+   "GameBddLoader_ConstructEffectsBase": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -68518,13 +68603,15 @@
   "sig_src": "abi"
  },
  "0051b520": {
-  "name": "sub_51B520",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_LogEffects",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_LogEffects": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0051b5b0": {
   "name": "sub_51B5B0",
@@ -68548,7 +68635,8 @@
   "name": "GameBddLoader_ConstructMenuEffects",
   "name_src": "vote",
   "votes": {
-   "GameBddLoader_ConstructMenuEffects": 1
+   "GameBddLoader_ConstructMenuEffects": 1,
+   "GameBddLoader_ConstructObjectsBase": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -68587,13 +68675,15 @@
   "sig_src": "vote"
  },
  "0051b6f0": {
-  "name": "sub_51B6F0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_LogObjects",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_LogObjects": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0051b780": {
   "name": "sub_51B780",
@@ -68654,13 +68744,15 @@
   "sig_src": "abi"
  },
  "0051b950": {
-  "name": "sub_51B950",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_LogSounds",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_LogSounds": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0051b9e0": {
   "name": "sub_51B9E0",
@@ -68705,13 +68797,15 @@
   "sig_src": "vote"
  },
  "0051bb30": {
-  "name": "sub_51BB30",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_LogWeapons",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_LogWeapons": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0051bbc0": {
   "name": "sub_51BBC0",
@@ -68762,7 +68856,8 @@
   "name": "GameBddLoader_ConstructMenuTransition",
   "name_src": "vote",
   "votes": {
-   "GameBddLoader_ConstructMenuTransition": 1
+   "GameBddLoader_ConstructMenuTransition": 1,
+   "GameBddLoader_ConstructWeaponsBase": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -74844,13 +74939,15 @@
   "sig_src": "abi"
  },
  "005370c0": {
-  "name": "sub_5370C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_FinalizeLoading",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_FinalizeLoading": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00537130": {
   "name": "C_00843720_ReleaseSubobjects",
@@ -78512,7 +78609,7 @@
   "name": "CMenuSaveGame_ResetStringStorage",
   "name_src": "agent",
   "votes": {
-   "CMenuSaveGame_ResetStringStorage": 11
+   "CMenuSaveGame_ResetStringStorage": 12
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -109197,7 +109294,7 @@
   "name": "Game_RaiseStatusNotice",
   "name_src": "vote",
   "votes": {
-   "Game_RaiseStatusNotice": 8
+   "Game_RaiseStatusNotice": 13
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -109214,13 +109311,15 @@
   "sig_src": "abi"
  },
  "00646de0": {
-  "name": "sub_646DE0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetSession_GetLastResultCode",
+  "name_src": "vote",
+  "votes": {
+   "NetSession_GetLastResultCode": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00646df0": {
   "name": "sub_646DF0",
@@ -109553,13 +109652,15 @@
   "sig_src": "abi"
  },
  "006476a0": {
-  "name": "sub_6476A0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "DumpSessionStationRecord",
+  "name_src": "vote",
+  "votes": {
+   "DumpSessionStationRecord": 1
+  },
   "ret": "char",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006476d0": {
   "name": "sub_6476D0",
@@ -109580,13 +109681,15 @@
   "sig_src": "abi"
  },
  "00647790": {
-  "name": "sub_647790",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SpawnPoints_QueryHasEntry",
+  "name_src": "vote",
+  "votes": {
+   "SpawnPoints_QueryHasEntry": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006477f0": {
   "name": "sub_6477F0",
@@ -109691,7 +109794,7 @@
   "name": "Sub_647AA0",
   "name_src": "vote",
   "votes": {
-   "Sub_647AA0": 1
+   "Sub_647AA0": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -109926,22 +110029,26 @@
   "sig_src": "abi"
  },
  "006486c0": {
-  "name": "sub_6486C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetSession_GetPrimaryEndpoint",
+  "name_src": "vote",
+  "votes": {
+   "NetSession_GetPrimaryEndpoint": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006486d0": {
-  "name": "sub_6486D0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetSession_GetSecondaryEndpoint",
+  "name_src": "vote",
+  "votes": {
+   "NetSession_GetSecondaryEndpoint": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006486e0": {
   "name": "sub_6486E0",
@@ -109980,13 +110087,15 @@
   "sig_src": "abi"
  },
  "00648770": {
-  "name": "sub_648770",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetSession_ConfigureEndpoint",
+  "name_src": "vote",
+  "votes": {
+   "NetSession_ConfigureEndpoint": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006487a0": {
   "name": "sub_6487A0",
@@ -110007,13 +110116,15 @@
   "sig_src": "abi"
  },
  "006487d0": {
-  "name": "sub_6487D0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetSession_GetTransportRegistry",
+  "name_src": "vote",
+  "votes": {
+   "NetSession_GetTransportRegistry": 1
+  },
   "ret": "int",
-  "conv": "__cdecl",
-  "params": "",
-  "sig_src": "abi"
+  "conv": "__fastcall",
+  "params": "void* self, void* edx",
+  "sig_src": "vote"
  },
  "006487e0": {
   "name": "sub_6487E0",
@@ -110079,13 +110190,15 @@
   "sig_src": "abi"
  },
  "00648910": {
-  "name": "sub_648910",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetSession_FindTransport",
+  "name_src": "vote",
+  "votes": {
+   "NetSession_FindTransport": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char* String2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00648920": {
   "name": "sub_648920",
@@ -110172,7 +110285,7 @@
   "name": "FetchObject",
   "name_src": "vote",
   "votes": {
-   "FetchObject": 1
+   "FetchObject": 2
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -110216,13 +110329,15 @@
   "sig_src": "abi"
  },
  "00648d60": {
-  "name": "sub_648D60",
-  "name_src": "addr",
-  "votes": {},
+  "name": "ProcessFetchedObject",
+  "name_src": "vote",
+  "votes": {
+   "ProcessFetchedObject": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00648e70": {
   "name": "InvokeOnObject",
@@ -110960,13 +111075,15 @@
   "sig_src": "abi"
  },
  "0064ad00": {
-  "name": "sub_64AD00",
-  "name_src": "addr",
-  "votes": {},
+  "name": "LookupObjectByIndex",
+  "name_src": "vote",
+  "votes": {
+   "LookupObjectByIndex": 4
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0064ad60": {
   "name": "sub_64AD60",
@@ -112879,13 +112996,17 @@
   "sig_src": "abi"
  },
  "00651b40": {
-  "name": "sub_651B40",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SpawnPoints_ReleaseEntry",
+  "name_src": "vote",
+  "votes": {
+   "SpawnPoints_ReleaseEntry": 1,
+   "SessionScope_End": 1,
+   "NetSession_ReleaseDumpBuffer": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00651b70": {
   "name": "sub_651B70",
@@ -112906,13 +113027,16 @@
   "sig_src": "abi"
  },
  "00651c70": {
-  "name": "sub_651C70",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SessionScope_Begin",
+  "name_src": "vote",
+  "votes": {
+   "SessionScope_Begin": 1,
+   "NetSession_ClearDumpCounter": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00651cb0": {
   "name": "sub_651CB0",
@@ -112924,13 +113048,15 @@
   "sig_src": "abi"
  },
  "00651d00": {
-  "name": "sub_651D00",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SpawnPoints_ApplyTempId",
+  "name_src": "vote",
+  "votes": {
+   "SpawnPoints_ApplyTempId": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00651d30": {
   "name": "sub_651D30",
@@ -113151,13 +113277,15 @@
   "sig_src": "abi"
  },
  "00652070": {
-  "name": "sub_652070",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SpawnPoints_ResolveEntryId",
+  "name_src": "vote",
+  "votes": {
+   "SpawnPoints_ResolveEntryId": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006520a0": {
   "name": "sub_6520A0",
@@ -113181,7 +113309,7 @@
   "name": "LookupObjectById",
   "name_src": "vote",
   "votes": {
-   "LookupObjectById": 52
+   "LookupObjectById": 55
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -113243,13 +113371,16 @@
   "sig_src": "abi"
  },
  "00652290": {
-  "name": "sub_652290",
-  "name_src": "addr",
-  "votes": {},
+  "name": "MpRecords_ResolveOwnerSlot",
+  "name_src": "vote",
+  "votes": {
+   "MpRecords_ResolveOwnerSlot": 1,
+   "SpawnPoints_InitTempId": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "uint32_t* a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006522c0": {
   "name": "sub_6522C0",
@@ -113468,13 +113599,15 @@
   "sig_src": "abi"
  },
  "006530d0": {
-  "name": "sub_6530D0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SessionFlagBuffer_Init",
+  "name_src": "vote",
+  "votes": {
+   "SessionFlagBuffer_Init": 1
+  },
   "ret": "unsigned int*",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00653180": {
   "name": "sub_653180",
@@ -114011,7 +114144,7 @@
   "name": "Sub_655520",
   "name_src": "vote",
   "votes": {
-   "Sub_655520": 1
+   "Sub_655520": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -115098,13 +115231,15 @@
   "sig_src": "abi"
  },
  "00658240": {
-  "name": "sub_658240",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetSession_SetEndpointValue",
+  "name_src": "vote",
+  "votes": {
+   "NetSession_SetEndpointValue": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00658250": {
   "name": "sub_658250",
@@ -116556,13 +116691,16 @@
   "sig_src": "abi"
  },
  "0065e130": {
-  "name": "sub_65E130",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SessionFlagBuffer_SetMode",
+  "name_src": "vote",
+  "votes": {
+   "SessionFlagBuffer_SetMode": 1,
+   "NetSession_SetDumpMode": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0065e1b0": {
   "name": "sub_65E1B0",
@@ -116574,13 +116712,16 @@
   "sig_src": "abi"
  },
  "0065e200": {
-  "name": "sub_65E200",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SessionFlagBuffer_Evaluate",
+  "name_src": "vote",
+  "votes": {
+   "SessionFlagBuffer_Evaluate": 1,
+   "NetSession_ReadStationStatus": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0065e250": {
   "name": "sub_65E250",
@@ -119621,7 +119762,7 @@
   "name": "Sub_6687B0",
   "name_src": "vote",
   "votes": {
-   "Sub_6687B0": 1
+   "Sub_6687B0": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -119636,6 +119777,17 @@
   "conv": "__cdecl",
   "params": "",
   "sig_src": "abi"
+ },
+ "00668a50": {
+  "name": "IsSessionAddressReady",
+  "name_src": "vote",
+  "votes": {
+   "IsSessionAddressReady": 1
+  },
+  "ret": "char",
+  "conv": "__cdecl",
+  "params": "int address",
+  "sig_src": "vote"
  },
  "00668a60": {
   "name": "sub_668A60",
@@ -119665,13 +119817,15 @@
   "sig_src": "abi"
  },
  "00668b70": {
-  "name": "sub_668B70",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GetLocalSessionObject",
+  "name_src": "vote",
+  "votes": {
+   "GetLocalSessionObject": 1
+  },
   "ret": "char*",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00668b90": {
   "name": "sub_668B90",
@@ -119755,13 +119909,15 @@
   "sig_src": "abi"
  },
  "00669280": {
-  "name": "sub_669280",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Session_WaitForSignal",
+  "name_src": "vote",
+  "votes": {
+   "Session_WaitForSignal": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, char a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006692e0": {
   "name": "sub_6692E0",
@@ -125616,6 +125772,19 @@
   "params": "void* self, int a2",
   "sig_src": "abi"
  },
+ "00680d30": {
+  "name": "ParamTable_SetNamedValue",
+  "name_src": "vote",
+  "votes": {
+   "ParamTable_SetNamedValue": 1,
+   "SetSessionOptionString": 1,
+   "NetSession_StoreNamedValue": 1
+  },
+  "ret": "C_008310b8*",
+  "conv": "__fastcall",
+  "params": "C_008310b8* self, void* edx, const char* name, int value",
+  "sig_src": "vote"
+ },
  "00680df0": {
   "name": "sub_680DF0",
   "name_src": "addr",
@@ -129439,13 +129608,15 @@
   "sig_src": "vote"
  },
  "0068f740": {
-  "name": "sub_68F740",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetSession_SetEndpointAttribute",
+  "name_src": "vote",
+  "votes": {
+   "NetSession_SetEndpointAttribute": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0068f750": {
   "name": "sub_68F750",
@@ -129865,7 +130036,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 299,
+   "Mem_FreeDebug": 300,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -129933,7 +130104,9 @@
  "006910a0": {
   "name": "SetGlobalValue8BAD60",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "SetGlobalValue8BAD60": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int32_t value",
@@ -129955,7 +130128,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 175
+   "Mem_Alloc": 177
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -129966,7 +130139,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 351
+   "Mem_Free": 354
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -130308,7 +130481,7 @@
   "name": "ReleaseObjectReference",
   "name_src": "vote",
   "votes": {
-   "ReleaseObjectReference": 31
+   "ReleaseObjectReference": 32
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -130993,7 +131166,7 @@
   "name": "LengthPrefixedBuffer_TerminateAtLength",
   "name_src": "agent",
   "votes": {
-   "LengthPrefixedBuffer_TerminateAtLength": 1
+   "LengthPrefixedBuffer_TerminateAtLength": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -131014,7 +131187,7 @@
   "name": "LoadState_Construct",
   "name_src": "vote",
   "votes": {
-   "LoadState_Construct": 1,
+   "LoadState_Construct": 2,
    "InitTempRecord": 1
   },
   "ret": "void**",
@@ -131100,7 +131273,7 @@
   "name": "CoreZlibLog_BeginRecord",
   "name_src": "vote",
   "votes": {
-   "CoreZlibLog_BeginRecord": 3
+   "CoreZlibLog_BeginRecord": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -131111,7 +131284,7 @@
   "name": "CoreZlibLog_EndGroup_6951D0",
   "name_src": "vote",
   "votes": {
-   "CoreZlibLog_EndGroup_6951D0": 1,
+   "CoreZlibLog_EndGroup_6951D0": 2,
    "CoreZlibLog_EndGroup": 1,
    "CoreZlibLog_EndRecord": 2
   },
@@ -131552,7 +131725,7 @@
   "name": "MenuProgressInput_AssignText",
   "name_src": "vote",
   "votes": {
-   "MenuProgressInput_AssignText": 9
+   "MenuProgressInput_AssignText": 10
   },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
@@ -131597,7 +131770,7 @@
   "name": "TextInputSubobject_Init",
   "name_src": "vote",
   "votes": {
-   "TextInputSubobject_Init": 9
+   "TextInputSubobject_Init": 11
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -131629,7 +131802,7 @@
   "name": "GetOptionsByteAt2",
   "name_src": "agent",
   "votes": {
-   "GetOptionsByteAt2": 18
+   "GetOptionsByteAt2": 19
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -131719,7 +131892,9 @@
  "006973b0": {
   "name": "SetGlobalValue8BB3F8",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "SetGlobalValue8BB3F8": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int value",
@@ -131856,7 +132031,7 @@
   "name": "CloseSceneFile",
   "name_src": "vote",
   "votes": {
-   "CloseSceneFile": 5
+   "CloseSceneFile": 7
   },
   "ret": "std::uint32_t",
   "conv": "__cdecl",
@@ -131981,7 +132156,7 @@
   "name": "SceneLoader_ResetArchiveSelection",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_ResetArchiveSelection": 1,
+   "SceneLoader_ResetArchiveSelection": 2,
    "SceneLoader_ProcessResourcePath": 1,
    "SceneLoader_ApplySceneOptions": 1,
    "SceneLoader_ClosePackage": 1
@@ -132035,7 +132210,7 @@
   "name": "OpenSceneFile",
   "name_src": "vote",
   "votes": {
-   "OpenSceneFile": 5
+   "OpenSceneFile": 7
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -132046,7 +132221,7 @@
   "name": "SceneLoader_SetFileOption",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_SetFileOption": 17,
+   "SceneLoader_SetFileOption": 18,
    "SceneLoader_SetLogState": 1,
    "SceneLoader_SetOptionsByte": 2,
    "SceneLoader_SetPackageLoadingEnabled": 1
@@ -132066,13 +132241,15 @@
   "sig_src": "abi"
  },
  "006986e0": {
-  "name": "sub_6986E0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_WriteLoadingLog",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_WriteLoadingLog": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00698820": {
   "name": "sub_698820",
@@ -132087,7 +132264,7 @@
   "name": "SceneLoader_SelectArchive",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_SelectArchive": 4,
+   "SceneLoader_SelectArchive": 6,
    "SceneLoader_UpdateResourcePath": 1,
    "SceneLoader_LoadSceneOptions": 1,
    "SceneLoader_PrepareSceneArchive": 1,
@@ -133399,7 +133576,7 @@
   "name": "GetGlobalIntPtr",
   "name_src": "agent",
   "votes": {
-   "GetGlobalIntPtr": 5
+   "GetGlobalIntPtr": 7
   },
   "ret": "int*",
   "conv": "__cdecl",
@@ -133698,13 +133875,15 @@
   "file": "src/auto/0069d5b0.cpp"
  },
  "0069d5c0": {
-  "name": "sub_69D5C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_ShouldPreloadResources",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_ShouldPreloadResources": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0069d5d0": {
   "name": "sub_69D5D0",
@@ -135439,7 +135618,7 @@
   "name": "GetGlobalState_6A6D70",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_6A6D70": 27
+   "GetGlobalState_6A6D70": 28
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -137475,22 +137654,26 @@
   "sig_src": "vote"
  },
  "006af940": {
-  "name": "sub_6AF940",
-  "name_src": "addr",
-  "votes": {},
+  "name": "MenuControls_SetDisplayString",
+  "name_src": "vote",
+  "votes": {
+   "MenuControls_SetDisplayString": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006afb10": {
-  "name": "sub_6AFB10",
-  "name_src": "addr",
-  "votes": {},
+  "name": "MenuControls_SetDisplayValue",
+  "name_src": "vote",
+  "votes": {
+   "MenuControls_SetDisplayValue": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, unsigned int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006afb80": {
   "name": "InitializeOwnerHelper",
@@ -137686,7 +137869,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 166,
+   "GetGlobalInt": 172,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -137699,7 +137882,7 @@
   "name": "MenuControls_ResolveObject",
   "name_src": "vote",
   "votes": {
-   "MenuControls_ResolveObject": 28
+   "MenuControls_ResolveObject": 30
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -162577,7 +162760,7 @@
   "name": "ResetEmbeddedMemberAt8",
   "name_src": "vote",
   "votes": {
-   "ResetEmbeddedMemberAt8": 5
+   "ResetEmbeddedMemberAt8": 6
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -174863,13 +175046,14 @@
   "sig_src": "abi"
  },
  "0073c350": {
-  "name": "sub_73C350",
-  "name_src": "addr",
+  "name": "NetSession_InitWithNameOrDefault",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint8_t* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint8_t* name",
+  "sig_src": "impl",
+  "file": "src/auto/0073c350.cpp"
  },
  "0073c380": {
   "name": "sub_73C380",
@@ -174881,13 +175065,14 @@
   "sig_src": "abi"
  },
  "0073c450": {
-  "name": "sub_73C450",
-  "name_src": "addr",
+  "name": "NetSession_WaitForReadyAndDumpStation",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0073c450.cpp"
  },
  "0073c4a0": {
   "name": "sub_73C4A0",
@@ -174909,13 +175094,14 @@
   "file": "src/auto/0073c520.cpp"
  },
  "0073c530": {
-  "name": "sub_73C530",
-  "name_src": "addr",
+  "name": "NetSession_ConfigurePrudpEndpoints",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1, int arg4, int a3, int a4, int a2, int a6",
-  "sig_src": "abi"
+  "params": "int secondaryOption, int secondaryAttribute, int secondaryValue, int primaryOption, int primaryAttribute, int primaryValue",
+  "sig_src": "impl",
+  "file": "src/auto/0073c530.cpp"
  },
  "0073c5e0": {
   "name": "sub_73C5E0",
@@ -174997,13 +175183,14 @@
   "file": "src/auto/0073c6f0.cpp"
  },
  "0073c700": {
-  "name": "sub_73C700",
-  "name_src": "addr",
+  "name": "NetSession_ConsumeSlotIfMatches",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int expectedValue",
+  "sig_src": "impl",
+  "file": "src/auto/0073c700.cpp"
  },
  "0073c730": {
   "name": "sub_73C730",
@@ -175015,129 +175202,144 @@
   "sig_src": "abi"
  },
  "0073c7c0": {
-  "name": "MpSpawnPoints_SetSelectionParameter",
-  "name_src": "vote",
+  "name": "MpSpawnPoints_SetMapNameParameter",
+  "name_src": "agent",
   "votes": {
    "MpSpawnPoints_SetSelectionParameter": 1
   },
   "ret": "C_008310b8*",
   "conv": "__stdcall",
-  "params": "int a1",
-  "sig_src": "vote"
+  "params": "int mapNameValue",
+  "sig_src": "impl",
+  "file": "src/auto/0073c7c0.cpp"
  },
  "0073c7f0": {
   "name": "GlobalObject_ApplyMode",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GlobalObject_ApplyMode": 1
   },
   "ret": "char",
   "conv": "__stdcall",
-  "params": "char a1",
-  "sig_src": "vote"
+  "params": "char mode",
+  "sig_src": "impl",
+  "file": "src/auto/0073c7f0.cpp"
  },
  "0073c800": {
-  "name": "sub_73C800",
-  "name_src": "addr",
+  "name": "NetSession_FormatTimestampField",
+  "name_src": "agent",
   "votes": {},
   "ret": "char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "char* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0073c800.cpp"
  },
  "0073c850": {
-  "name": "sub_73C850",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_0085839c_UpdateFlagFromNetResult",
+  "name_src": "agent",
+  "votes": {
+   "C_0085839c_ReleaseSessionResources": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0085839c* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0073c850.cpp"
  },
  "0073c8a0": {
   "name": "MpSpawnPoints_RefreshLocalSelection",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MpSpawnPoints_RefreshLocalSelection": 1
   },
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "int* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0073c8a0.cpp"
  },
  "0073c900": {
   "name": "MpSpawnPoints_ApplyCharacterSelection",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MpSpawnPoints_ApplyCharacterSelection": 1
   },
   "ret": "int",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "conv": "__cdecl",
+  "params": "",
+  "sig_src": "impl",
+  "file": "src/auto/0073c900.cpp"
  },
  "0073c920": {
-  "name": "sub_73C920",
-  "name_src": "addr",
+  "name": "NetSession_ReportCrcValue",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "int",
   "conv": "__stdcall",
-  "params": "int a2",
-  "sig_src": "abi"
+  "params": "int crcValue",
+  "sig_src": "impl",
+  "file": "src/auto/0073c920.cpp"
  },
  "0073c980": {
-  "name": "sub_73C980",
-  "name_src": "addr",
+  "name": "C_00873b14_CheckNetGameClassRegistered",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00873b14* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0073c980.cpp"
  },
  "0073c9e0": {
-  "name": "sub_73C9E0",
-  "name_src": "addr",
+  "name": "C_00873b14_CheckNetGhostClassRegistered",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00873b14* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0073c9e0.cpp"
  },
  "0073ca40": {
-  "name": "sub_73CA40",
-  "name_src": "addr",
+  "name": "C_00873b14_CheckNetControlClassRegistered",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00873b14* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0073ca40.cpp"
  },
  "0073caa0": {
-  "name": "sub_73CAA0",
-  "name_src": "addr",
+  "name": "NetSession_WriteCurrentMillis",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint64_t*",
   "conv": "__stdcall",
-  "params": "uint64_t* a1",
-  "sig_src": "abi"
+  "params": "uint64_t* result",
+  "sig_src": "impl",
+  "file": "src/auto/0073caa0.cpp"
  },
  "0073cae0": {
-  "name": "sub_73CAE0",
-  "name_src": "addr",
+  "name": "NetSession_ProcessLinkedObjectIfReady",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0085e760** self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0073cae0.cpp"
  },
  "0073cb00": {
-  "name": "sub_73CB00",
-  "name_src": "addr",
+  "name": "C_0085839c_TryAdvanceSession",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0085839c* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/0073cb00.cpp"
  },
  "0073cb80": {
   "name": "sub_73CB80",
@@ -175149,13 +175351,14 @@
   "sig_src": "abi"
  },
  "0073cc40": {
-  "name": "sub_73CC40",
-  "name_src": "addr",
+  "name": "StoreArgsIntoFetchedSlotAndProcess",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1, int a2",
-  "sig_src": "abi"
+  "params": "int firstValue, int secondValue",
+  "sig_src": "impl",
+  "file": "src/auto/0073cc40.cpp"
  },
  "0073cc70": {
   "name": "MpSpawnPoints_RegisterPlayerEntry",
@@ -175179,7 +175382,7 @@
  },
  "0073cd30": {
   "name": "GetSpawnFlagFromGlobal",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GetSpawnFlagFromGlobal": 1,
    "SpawnPoints_GetCharacterUpdateValue": 1,
@@ -175188,46 +175391,51 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0073cd30.cpp"
  },
  "0073cd90": {
   "name": "MpSpawnPoints_GetRecordOwnerId",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MpSpawnPoints_GetRecordOwnerId": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0073cd90.cpp"
  },
  "0073cdb0": {
-  "name": "sub_73CDB0",
-  "name_src": "addr",
+  "name": "C_00873b14_GetVtableIfReady",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00873b14* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0073cdb0.cpp"
  },
  "0073cdd0": {
-  "name": "sub_73CDD0",
-  "name_src": "addr",
+  "name": "C_00873b14_GetVtableIfValid",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00873b14* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0073cdd0.cpp"
  },
  "0073cdf0": {
-  "name": "sub_73CDF0",
-  "name_src": "addr",
+  "name": "C_00873b14_CheckNetPlayerClassRegistered",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00873b14* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0073cdf0.cpp"
  },
  "0073ce50": {
   "name": "sub_73CE50",
@@ -175248,13 +175456,14 @@
   "sig_src": "abi"
  },
  "0073cf40": {
-  "name": "sub_73CF40",
-  "name_src": "addr",
+  "name": "C_008676a4_ScalarDeletingDestructor",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/0073cf40.cpp"
  },
  "0073cf70": {
   "name": "sub_73CF70",
@@ -175267,34 +175476,37 @@
  },
  "0073d050": {
   "name": "CharacterSelect_SetWideName",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CharacterSelect_SetWideName": 1
   },
-  "ret": "int16_t*",
+  "ret": "std::int16_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int16_t* a2",
-  "sig_src": "vote"
+  "params": "std::uint8_t* self, void* , std::int16_t* a2",
+  "sig_src": "impl",
+  "file": "src/auto/0073d050.cpp"
  },
  "0073d0a0": {
-  "name": "sub_73D0A0",
-  "name_src": "addr",
+  "name": "NetSession_SetStationNameText",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint8_t* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint8_t* text",
+  "sig_src": "impl",
+  "file": "src/auto/0073d0a0.cpp"
  },
  "0073d0f0": {
   "name": "MpSpawnPoints_GetPlayerEntryId",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MpSpawnPoints_GetPlayerEntryId": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_0073ecc0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0073d0f0.cpp"
  },
  "0073d150": {
   "name": "sub_73D150",
@@ -175307,14 +175519,15 @@
  },
  "0073d310": {
   "name": "GlobalObject_ResetState",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GlobalObject_ResetState": 1
   },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void*",
-  "sig_src": "vote"
+  "sig_src": "impl",
+  "file": "src/auto/0073d310.cpp"
  },
  "0073d350": {
   "name": "sub_73D350",
@@ -175338,13 +175551,14 @@
   "file": "src/auto/0073d4c0.cpp"
  },
  "0073d4d0": {
-  "name": "sub_73D4D0",
-  "name_src": "addr",
+  "name": "ResetSessionSlotTable",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint8_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_0073d4d0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0073d4d0.cpp"
  },
  "0073d500": {
   "name": "sub_73D500",
@@ -175403,13 +175617,15 @@
   "sig_src": "abi"
  },
  "0073d9c0": {
-  "name": "sub_73D9C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetSession_PrepareStationRecord",
+  "name_src": "vote",
+  "votes": {
+   "NetSession_PrepareStationRecord": 1
+  },
   "ret": "int*",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0073da70": {
   "name": "sub_73DA70",
@@ -175460,14 +175676,15 @@
  },
  "0073e040": {
   "name": "MenuMpPause_QueryGlobalFlagIsOne",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MenuMpPause_QueryGlobalFlagIsOne": 3
   },
-  "ret": "uint8_t",
+  "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0073e040.cpp"
  },
  "0073e0a0": {
   "name": "sub_73E0A0",
@@ -175503,13 +175720,14 @@
   "sig_src": "vote"
  },
  "0073e5a0": {
-  "name": "sub_73E5A0",
-  "name_src": "addr",
+  "name": "NetSession_FlushStationDump",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0073e5a0.cpp"
  },
  "0073e5f0": {
   "name": "LookupSpawnHandleByIndex_73E5F0",
@@ -175520,6 +175738,17 @@
   "ret": "int",
   "conv": "__fastcall",
   "params": "int index, void* edx",
+  "sig_src": "vote"
+ },
+ "0073e770": {
+  "name": "NetSession_GetSessionInterface",
+  "name_src": "vote",
+  "votes": {
+   "NetSession_GetSessionInterface": 1
+  },
+  "ret": "void*",
+  "conv": "__fastcall",
+  "params": "void* self, void* edx",
   "sig_src": "vote"
  },
  "0073e830": {
@@ -175543,8 +175772,8 @@
   "sig_src": "vote"
  },
  "0073ea00": {
-  "name": "sub_73EA00",
-  "name_src": "addr",
+  "name": "NetSession_UpdateAndForward",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -175581,13 +175810,15 @@
   "sig_src": "abi"
  },
  "0073eea0": {
-  "name": "sub_73EEA0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SessionDumpTeardown",
+  "name_src": "vote",
+  "votes": {
+   "SessionDumpTeardown": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0073f000": {
   "name": "sub_73F000",
@@ -175620,23 +175851,25 @@
  },
  "0073f340": {
   "name": "MpSpawnPoints_ResetCharacterMenu",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MpSpawnPoints_ResetCharacterMenu": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0073f340.cpp"
  },
  "0073f380": {
-  "name": "sub_73F380",
-  "name_src": "addr",
+  "name": "ReleaseSessionDumpBuffer",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0073f380.cpp"
  },
  "0073f3b0": {
   "name": "MenuMpAccounts_FillPlayerList",
@@ -175661,13 +175894,15 @@
   "sig_src": "vote"
  },
  "0073f630": {
-  "name": "sub_73F630",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GameBddLoader_PrepareGraphics",
+  "name_src": "vote",
+  "votes": {
+   "GameBddLoader_PrepareGraphics": 1
+  },
   "ret": "bool",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0073f700": {
   "name": "C_00867768_Construct",
@@ -181540,7 +181775,7 @@
   "name": "GetGlobalValue_753A30",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_753A30": 33
+   "GetGlobalValue_753A30": 35
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -182024,7 +182259,7 @@
   "name": "SceneLoader_GetResourceById",
   "name_src": "agent",
   "votes": {
-   "SceneLoader_GetResourceById": 17,
+   "SceneLoader_GetResourceById": 18,
    "SceneLoader_GetResourceByIndex": 1
   },
   "ret": "int",
@@ -182093,7 +182328,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 125,
+   "GetGlobalValue_8BC1E0": 130,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
@@ -183444,7 +183679,7 @@
   "name": "GetGlobalValue_75FDF0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_75FDF0": 32
+   "GetGlobalValue_75FDF0": 33
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -185213,7 +185448,9 @@
  "007702b0": {
   "name": "InputBindings_GetSingleton",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "InputBindings_GetSingleton": 1
+  },
   "ret": "void*",
   "conv": "__cdecl",
   "params": "",
@@ -193055,13 +193292,15 @@
   "sig_src": "abi"
  },
  "007a0150": {
-  "name": "sub_7A0150",
-  "name_src": "addr",
-  "votes": {},
+  "name": "EnsureNetworkInitOnce",
+  "name_src": "vote",
+  "votes": {
+   "EnsureNetworkInitOnce": 1
+  },
   "ret": "char",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007a0200": {
   "name": "sub_7A0200",
@@ -196941,7 +197180,7 @@
   "name": "_sprintf",
   "name_src": "ida",
   "votes": {
-   "_sprintf": 16,
+   "_sprintf": 20,
    "LibSprintf": 1,
    "FormatMissionScore": 1,
    "FormatResolution": 1
@@ -197224,6 +197463,17 @@
   "conv": "__cdecl",
   "params": "",
   "sig_src": "abi"
+ },
+ "007b07f5": {
+  "name": "__beginthread",
+  "name_src": "ida",
+  "votes": {
+   "Crt_BeginThread": 1
+  },
+  "ret": "uintptr_t",
+  "conv": "__cdecl",
+  "params": "void (__cdecl* startAddress)(void*), unsigned stackSize, void* arg",
+  "sig_src": "vote"
  },
  "007b0886": {
   "name": "__amsg_exit",
