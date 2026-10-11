@@ -209,7 +209,7 @@
   "name": "DestroySceneObjectOptionsStorage",
   "name_src": "vote",
   "votes": {
-   "DestroySceneObjectOptionsStorage": 24
+   "DestroySceneObjectOptionsStorage": 25
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
@@ -4210,7 +4210,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 95
+   "AssignStringSubstring": 96
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -27694,7 +27694,7 @@
   "name": "WeaponFirearms_InitializeSceneObjectOptions",
   "name_src": "agent",
   "votes": {
-   "InitializeSceneObjectOptions": 22
+   "InitializeSceneObjectOptions": 23
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -33880,6 +33880,7 @@
   "name": "C_00833908_SendSetupEvent",
   "name_src": "vote",
   "votes": {
+   "SceneMissionSetup_SetObjectNotification": 1,
    "SceneMissionSetup_SetObjectHandler": 1,
    "C_00833908_ApplySetupMessage": 1,
    "SceneObject_SetAttachment": 1,
@@ -35007,7 +35008,7 @@
   "name": "C_00833908_SetDoorStateFlags",
   "name_src": "agent",
   "votes": {
-   "C_00833908_SetDoorStateFlags": 20,
+   "C_00833908_SetDoorStateFlags": 21,
    "SceneLoader_AssignObjectResource": 1
   },
   "ret": "unsigned int",
@@ -35020,6 +35021,7 @@
   "name": "C_00833908_SetSetupMode",
   "name_src": "agent",
   "votes": {
+   "C_00833908_SelectState": 1,
    "C_00833908_SetSetupMode": 6,
    "SceneObject_SetSetupMode": 1,
    "C_00833908_SetInitialState": 1,
@@ -35049,6 +35051,7 @@
   "name": "C_00833908_SetSetupValue",
   "name_src": "agent",
   "votes": {
+   "SceneMissionSetup_SetObjectStateValue": 1,
    "C_00833908_SetSetupValue": 1,
    "SceneObject_SetSetupValue": 1,
    "C_00833908_SetHealthMode": 1,
@@ -55752,7 +55755,7 @@
   "name": "MissionSetup_WriteScaledVectorFromLookup",
   "name_src": "agent",
   "votes": {
-   "SceneMissionSetup_ResolveObjectOptions": 4,
+   "SceneMissionSetup_ResolveObjectOptions": 5,
    "S_004e9090_ApplyDefinitionOptions": 1,
    "SceneMissionSetup_ApplyObjectOptions": 1,
    "MissionSetup_WriteScaledVectorFromLookup": 2,
@@ -55967,6 +55970,7 @@
   "name": "S_004e9090_LoadMissionScene",
   "name_src": "agent",
   "votes": {
+   "SceneMissionSetup_CreateSceneObject": 1,
    "SceneMissionSetup_CreateRelatedObject": 1,
    "S_004e9090_CreateSceneObject": 1,
    "MissionSetup_CreateSceneObject": 3,
@@ -56083,15 +56087,16 @@
  },
  "004ea140": {
   "name": "MissionSetup_InitType31Object",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MissionSetup_InitType31Object": 1,
    "SceneMissionSetup_InitializeType31": 1
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2, int a3",
-  "sig_src": "vote"
+  "params": "S_004e9090* self, void* , C_00833908* object, int definitionIndex",
+  "sig_src": "impl",
+  "file": "src/auto/004ea140.cpp"
  },
  "004ea2e0": {
   "name": "S_004e9090_ConfigureSceneObject_4EA2E0",
@@ -127777,7 +127782,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 245,
+   "Mem_FreeDebug": 246,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
