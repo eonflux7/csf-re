@@ -1099,3 +1099,21 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   They are todo again (the game runs the original); 0x6A4610, 0x6A46A0, 0x6A48A0 are written with HOOK_REGS.
   Lesson: "installed in a passing smoke" is no evidence for code that never executes; `hits == 0` functions rest
   on the gate alone. Worth a look before the 50% playtest: how much accepted code has never run.
+
+## 2026-10-11 — Half of the verified code has never run; emudiff sweep over it
+
+- db/verify.json: 5211 functions installed in passing smokes, 2494 of them with hits == 0 (never executed in any
+  smoke). For those the smoke proves only that installing them is harmless.
+- emudiff over the 2494 (4 processes, 2 minutes, no tokens): 2029 same, 268 inconclusive, 197 DIFF, 4 errors.
+  The list is work/emu_nh_diff.txt (gitignored; regenerate with emudiff over the hits == 0 entries). By kind:
+  82 call arguments, 24 call counts, 21 call targets, 18 ecx at a call, 37 return values, 4 memory, 3 ours runs
+  past the cap, 2 ours changes a callee-saved register (0x73C670, 0x73C6C0).
+- Looked at the ecx ones only. Real: a call that passes nullptr as `this` where the original leaves ecx as it
+  came in (Hex-Rays shows the call without it): 0x49BAF0, and the forwarder 0x4053E0 (`jmp 0x4059D0`) written
+  __stdcall. Both fixed. Statically: 8 files pass a null `this` to a callee that reads ecx (0x45BAC0, 0x462DA0,
+  0x462DC0, 0x462DE0, 0x4C5E50, 0x551700 still open), and 22 implementations are not __fastcall although they
+  pass their incoming ecx on to a callee that reads it; 5 of those 22 run thousands of times without trouble, so
+  that second rule is not exact yet and is NOT in the gate (tried in api.reads_before_write, reverted).
+  Noise among the ecx diffs: ecx left over at a call of a function that ignores it.
+- OPEN: the other ~175 DIFFs are untriaged. A playtest reaches code no smoke does, so this list is where its
+  crashes will come from; cheapest next step is the 24 call-count and 21 call-target differences.
