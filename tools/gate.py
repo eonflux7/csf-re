@@ -8,7 +8,7 @@ and the hooked function's `ret N` matches the original.
 
 Usage: gate.py <ea-hex> <file.cpp>      exit 0 = pass; errors on stdout
 """
-import json, os, re, shlex, subprocess, sys, tempfile
+import glob, json, os, re, shlex, subprocess, sys, tempfile
 sys.path.insert(0, os.path.dirname(__file__))
 from packet import ret_bytes, disasm, DB
 import semcheck
@@ -261,6 +261,9 @@ def gate(ea, path, db=None):
                         "passes whatever ecx holds at that call: find the last instruction that wrote ecx before "
                         "the `call` (often none since entry: then it is this function's own `this`; or a `mov ecx, "
                         "[ebp+N]` that loaded an argument) and pass that")
+    for p_ in glob.glob(os.path.join(ROOT, "src", "**", "*.cpp"), recursive=True):
+        if os.sep + "auto" + os.sep not in p_ and re.search(rf"^HOOK(?:_METHOD|_TRAMP)?\(\s*0x0*{ea:X}\b", open(p_).read(), re.M | re.I):
+            errs.append(f"0x{ea:X} is already hooked by {os.path.relpath(p_, ROOT)} (hand-written): a second hook would replace it")
     errs += check_bindings(src, db)
     errs += api.binding_errors(src, db)
     raw = sorted({v for _, _, v, _ in addrfix.raw_hits(src)})

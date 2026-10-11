@@ -768,8 +768,15 @@ def select(db, n, max_size, min_size=6, exclude=(), modules=None):
     eas = sorted(db.F)
     room = {eas[i]: eas[i + 1] - eas[i] for i in range(len(eas) - 1)}
     cands = []
+    # addresses our hand-written code already hooks (src/ outside auto/: dev mode, handle table, options): a second
+    # hook from src/auto replaces it. 2026-10-11: a wave reimplemented 0x508F50, devcmd's window placement hook, and
+    # every smoke window came up on screen instead of off it.
+    owned = set()
+    for p in glob.glob(os.path.join(ROOT, "src", "**", "*.cpp"), recursive=True):
+        if os.sep + "auto" + os.sep not in p:
+            owned |= {int(m, 16) for m in re.findall(r"^HOOK(?:_METHOD|_TRAMP)?\(\s*0x([0-9A-Fa-f]+)", open(p).read(), re.M)}
     for ea, r in rows.items():
-        if r["status"] != "todo" or r["region"] != "game" or ea in exclude:
+        if r["status"] != "todo" or r["region"] != "game" or ea in exclude or ea in owned:
             continue
         if modules is not None and r["module"] not in modules:
             continue
