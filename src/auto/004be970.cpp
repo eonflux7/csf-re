@@ -28,7 +28,9 @@ static uintptr_t AiCore_ResolveLinkedBase(int linkedObject)
 static uint32_t __stdcall AiCore_AppendMarkerPairToLinkedList(int linkedObject)
 {
     uintptr_t base = AiCore_ResolveLinkedBase(linkedObject);
-    UnnamedApply_4DC180(reinterpret_cast<void*>(base + 0x440), nullptr, static_cast<int>(base + 0x440));
+    // this is the linked object itself (`mov ecx, esi`); the resolved base + 0x440 is the argument
+    UnnamedApply_4DC180(reinterpret_cast<void*>(static_cast<uintptr_t>(linkedObject)), nullptr,
+                        static_cast<int>(base + 0x440));
 
     base = AiCore_ResolveLinkedBase(linkedObject);
     S_0041e5f0* list = reinterpret_cast<S_0041e5f0*>(base + 0x50C);
