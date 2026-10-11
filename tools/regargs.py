@@ -64,7 +64,7 @@ def is_input(db, ea, reg, depth=0):
         return True
     pat = re.compile(SUB[reg])
     saves = any(i.mnemonic == "pop" and i.op_str == reg for i in ins)
-    res, seen, work, budget = False, set(), [0], 3000
+    res, seen, work, budget = False, set(), [0], len(ins) + 1  # every instruction at most once
     while work and not res:
         k = work.pop()
         while k < len(ins) and k not in seen:
@@ -125,8 +125,8 @@ def is_input(db, ea, reg, depth=0):
                 if t not in db.F or is_input(db, t, reg, depth + 1):
                     res = True
                 break
-            reads = pat.search(src) or (pat.search(dst) and (m not in ("mov", "lea", "movzx", "movsx", "pop",
-                                                                        "setne", "sete") or "[" in dst))
+            reads = pat.search(src) or (pat.search(dst) and (not (m in ("mov", "lea", "movzx", "movsx", "pop")
+                                                                  or m.startswith("set")) or "[" in dst))
             if m == "lea" and src == f"[{dst}]":
                 k += 1
                 continue  # `lea ebx, [ebx]`: alignment padding
@@ -137,7 +137,7 @@ def is_input(db, ea, reg, depth=0):
                               "cmpsb", "scasb") and reg in ("esi", "edi"):
                 res = True
                 break
-            if re.fullmatch(SUB[reg], dst) and m in ("mov", "lea", "movzx", "movsx", "pop"):
+            if re.fullmatch(SUB[reg], dst) and (m in ("mov", "lea", "movzx", "movsx", "pop") or m.startswith("set")):
                 break  # written before any read on this path (a sub-register write: what follows reads only it)
             k += 1
     _memo[key] = res
