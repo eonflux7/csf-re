@@ -16,7 +16,7 @@
 - {addr: 0x0082D284, name: g_FindWindowAImportSlot, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D288, name: g_IsWindowImportSlot, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D2EC, name: g_SendMessageAImportSlot, type: void*, uses: 2, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 37, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 38, src: auto}
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 14, src: auto, alt: [g_flt_82D4C4]}
@@ -47,6 +47,7 @@
 - {addr: 0x0082DAF0, name: g_ScoreboardRefreshInterval, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC70, name: g_SubtitlePanelScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC84, name: g_flt_0082DC84, type: float, uses: 6, src: auto, alt: [g_MessageBoxAnimationDuration]}
+- {addr: 0x0082DCE8, name: g_WheelRecordScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082DD68, name: g_PreviewTopScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082DD74, name: g_ContextualDistanceScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082DDEC, name: g_Const200_0f, type: float, uses: 4, src: auto}
@@ -77,12 +78,14 @@
 - {addr: 0x0082E060, name: g_CharacterWidthScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082E068, name: g_Const_0082E068, type: float, uses: 1, src: auto}
 - {addr: 0x0082E074, name: g_MovementAcceleration, type: float, uses: 1, src: auto}
+- {addr: 0x0082E0EC, name: g_GravityAccel, type: float, uses: 1, src: auto}
 - {addr: 0x0082E0F0, name: g_Const20, type: float, uses: 4, src: auto, alt: [g_LayoutInset, g_WidthReduction]}
 - {addr: 0x0082E114, name: g_SoundActivityThreshold, type: float, uses: 2, src: auto}
 - {addr: 0x0082E118, name: g_fIntroVideoDuration, type: float, uses: 2, src: auto}
 - {addr: 0x0082E11C, name: g_WeaponPlacementTraceDepth, type: float, uses: 1, src: auto}
 - {addr: 0x0082E120, name: g_MaxPercent, type: float, uses: 1, src: auto}
 - {addr: 0x0082E1E4, name: g_fRotationWrapStep, type: float, uses: 1, src: auto}
+- {addr: 0x0082E254, name: g_WheelMinLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E25C, name: g_flt_0082E25C, type: float, uses: 3, src: auto}
 - {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 51, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E958, name: g_TParadoString, type: char, uses: 1, src: auto}
@@ -593,13 +596,14 @@
 - {addr: 0x008A6BA0, name: g_psz_vfs_8A6BA0, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A6BA4, name: g_psz_win, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A6BA8, name: g_psz_1_1_4, type: const char*, uses: 0, src: captain, conf: 1.0}
-- {addr: 0x008A6BAC, name: g_LogEntryTable, type: uint8_t, uses: 3, src: auto, alt: [g_RecordArray, g_TrackedBlockTable]}
-- {addr: 0x008A6BB0, name: g_LogEntryAux, type: uint32_t, uses: 2, src: auto, alt: [g_RecordCount]}
-- {addr: 0x008A6BB4, name: g_LogEntryCount, type: uint32_t, uses: 2, src: auto, alt: [g_TrackedBlockCount]}
+- {addr: 0x008A6BAC, name: g_AllocationRecords, type: uint8_t, uses: 4, src: auto, alt: [g_LogEntryTable, g_RecordArray, g_TrackedBlockTable]}
+- {addr: 0x008A6BB0, name: g_AllocationRecordCapacity, type: uint32_t, uses: 3, src: auto, alt: [g_LogEntryAux, g_RecordCount]}
+- {addr: 0x008A6BB4, name: g_AllocationRecordCount, type: uint32_t, uses: 3, src: auto, alt: [g_LogEntryCount, g_TrackedBlockCount]}
+- {addr: 0x008A6BB8, name: g_AllocationRecordGrowth, type: int, uses: 1, src: auto}
 - {addr: 0x008A6C10, name: g_ZlibMemoryError, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008A6C20, name: g_LogStateWordA, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008A6C24, name: g_LogStateWordB, type: uint32_t, uses: 1, src: auto}
-- {addr: 0x008A7D28, name: g_InflateMasks, type: InflateMasks, uses: 1, src: auto}
+- {addr: 0x008A7D28, name: g_InflateBitMasks, type: InflateMasks, uses: 2, src: auto, alt: [g_InflateMasks]}
 - {addr: 0x008A7D6C, name: g_AxisX, type: float, uses: 0, src: captain, conf: 0.85}
 - {addr: 0x008A7D70, name: g_AxisX_Y, type: float, uses: 0, src: captain, conf: 0.85}
 - {addr: 0x008A7D74, name: g_AxisX_Z, type: float, uses: 0, src: captain, conf: 0.85}

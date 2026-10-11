@@ -1,0 +1,14 @@
+#include <cstdint>
+#include "hook.h"
+#include "types/auto_classes.h"
+
+// Clears bit 0 of the state word at +0x7C, then sets bit 2 and returns the new value.
+static int __fastcall C_0082e428_ClearStateBit0AndSetBit2(C_0082e428* self, void* /*edx*/) {
+    uint32_t flags = self->field_007c & 0xFFFFFFFEu;
+    self->field_007c = flags;
+    flags |= 4u;
+    self->field_007c = flags;
+    return static_cast<int>(flags);
+}
+
+HOOK(0x41D260, C_0082e428_ClearStateBit0AndSetBit2, "auto");
