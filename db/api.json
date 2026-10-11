@@ -17989,7 +17989,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 322
+   "CHandleTable_Resolve": 323
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -28200,7 +28200,7 @@
   "name": "Handle_GetValuePointer",
   "name_src": "vote",
   "votes": {
-   "Handle_GetValuePointer": 50,
+   "Handle_GetValuePointer": 51,
    "ResolveHandleToValuePtr": 2,
    "GetInnerRecordPointer": 1,
    "Entry_GetPayloadPointer": 1
@@ -28263,7 +28263,7 @@
   "name_src": "agent",
   "votes": {
    "SceneHandle_GetPosition": 1,
-   "C_00862490_GetPosition": 1
+   "C_00862490_GetPosition": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -35377,7 +35377,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 118,
+   "GetObjectPositionVector": 119,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -35880,7 +35880,7 @@
   "name_src": "agent",
   "votes": {
    "ComputeScalarForResolvedObject": 10,
-   "C_008342e8_ComputeResolvedObjectScalar": 5
+   "C_008342e8_ComputeResolvedObjectScalar": 6
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -51036,16 +51036,17 @@
   "file": "src/auto/004d0400.cpp"
  },
  "004d0410": {
-  "name": "C_00835228_ValidateTarget",
-  "name_src": "vote",
+  "name": "C_0083dd58_IsTargetWithinSensorLimits",
+  "name_src": "agent",
   "votes": {
    "C_00835228_ValidateTarget": 1,
    "C_0083dd58_IsCandidateEligible": 1
   },
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "vote"
+  "params": "C_0083dd58* self, void* , int targetHandle, int sensorId",
+  "sig_src": "impl",
+  "file": "src/auto/004d0410.cpp"
  },
  "004d05e0": {
   "name": "C_00835228_IsTargetPositionClear",
@@ -111507,7 +111508,7 @@
   "name": "NetSession_GetNodeAllocator",
   "name_src": "vote",
   "votes": {
-   "NetSession_GetNodeAllocator": 13,
+   "NetSession_GetNodeAllocator": 14,
    "NetSession_GetAllocator": 1
   },
   "ret": "uint32_t*",
@@ -111521,6 +111522,7 @@
   "votes": {
    "NetGatheringDdl_AllocateNodeMemory": 1,
    "NetSession_AllocateNode": 1,
+   "NetGatheringDdl_AllocateNode": 1,
    "NodeAllocator_AllocBlock": 1
   },
   "ret": "char*",
@@ -138066,6 +138068,7 @@
   "name_src": "agent",
   "votes": {
    "NetGatheringDdl_DeallocateListNode": 2,
+   "NetGatheringDdl_DeallocateNode": 1,
    "NetGatheringDdl_CleanupPartialRecord": 1
   },
   "ret": "void",
@@ -138109,15 +138112,16 @@
   "file": "src/auto/006a6e70.cpp"
  },
  "006a6f10": {
-  "name": "NetGatheringDdl_InitializeSecondaryString",
-  "name_src": "vote",
+  "name": "NetGatheringDdl_CreateListSentinel",
+  "name_src": "agent",
   "votes": {
    "NetGatheringDdl_InitializeSecondaryString": 1
   },
   "ret": "char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* , void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a6f10.cpp"
  },
  "006a6fb0": {
   "name": "NetGatheringDDL_ClearNodeList",
@@ -139397,7 +139401,7 @@
   "name": "S_00526d40_NormalizeCopyAndReportY",
   "name_src": "agent",
   "votes": {
-   "S_00526d40_NormalizeCopyAndReportY": 5
+   "S_00526d40_NormalizeCopyAndReportY": 6
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -140198,7 +140202,7 @@
   "name": "NormalizeVector2",
   "name_src": "vote",
   "votes": {
-   "NormalizeVector2": 5
+   "NormalizeVector2": 6
   },
   "ret": "float*",
   "conv": "__fastcall",
@@ -201860,7 +201864,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 138
+   "RethrowCppException": 139
   },
   "ret": "void",
   "conv": "__stdcall",
