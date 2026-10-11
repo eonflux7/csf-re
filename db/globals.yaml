@@ -121,7 +121,7 @@
 - {addr: 0x0082FAC8, name: g_fQuarterPi, type: float, uses: 1, src: auto}
 - {addr: 0x0082FACC, name: g_HudNegativeHalfPi, type: float, uses: 3, src: auto}
 - {addr: 0x0082FAD0, name: g_TransitionHalfPi, type: float, uses: 4, src: auto}
-- {addr: 0x0082FAD4, name: g_QuarterTurnConstant, type: float, uses: 4, src: auto}
+- {addr: 0x0082FAD4, name: g_QuarterTurnConstant, type: float, uses: 6, src: auto}
 - {addr: 0x0082FAD8, name: g_TurnScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 9, src: auto}
 - {addr: 0x0082FEBC, name: g_LayoutInset, type: float, uses: 5, src: auto, alt: [g_VerticalInset]}
@@ -485,6 +485,10 @@
 - {addr: 0x00899738, name: g_numScenes, type: unsigned int, uses: 0, src: captain, conf: 0.85}
 - {addr: 0x0089973C, name: g_SceneArrayGrowth, type: int, uses: 1, src: auto}
 - {addr: 0x00899740, name: g_pszKey_ICONOS_ESTADO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008997E0, name: g_CoverCandidateData, type: uint32_t*, uses: 1, src: auto}
+- {addr: 0x008997E4, name: g_CoverCandidateCapacity, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008997E8, name: g_CoverCandidateCount, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008997EC, name: g_CoverCandidateGrowth, type: int, uses: 1, src: auto}
 - {addr: 0x008997F0, name: g_psz_DISTRACCION, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x0089985C, name: g_psz_POBJ_PROYECTIL_GRANADA, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x00899860, name: g_psz_POBJ_PROYECTIL_DINAMITA_PEGAJOSA, type: const char*, uses: 0, src: captain, conf: 1.0}
