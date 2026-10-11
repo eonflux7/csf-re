@@ -1025,3 +1025,19 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   itself. Sol low as S writer so far: 50 functions, 92% first try at the gate (Haiku low 94% in the same run).
 - One 5h window of both accounts lasts about an hour of rolling waves (~1,150 functions); a Codex window is ~12%
   of the weekly limit.
+
+## 2026-10-11 — Queue: undersized stack locals (a bug class), first fixes
+
+- 0x4223F0 (broke the verified baseline) built a 12-byte vector in `S_00526d40 heading_vector;`: that struct is 4
+  bytes in auto_classes.h (sizes there are lower bounds), so it overwrote its saved esi and the stack cookie.
+  emudiff showed it as "ours changes ebx/esi/edi/ebp". Scan of src/auto: 31 by-value locals of generated struct
+  types in 28 files, 5 provably reaching past sizeof through CSF_AT (0x41D270, 0x4227B0, 0x4345E0, 0x4346B0,
+  0x464E00: emudiff ran away at 2000 calls before, "same" after); the rest hand the local to callees.
+- Fix for the 26 that were plain locals: a buffer of the original's frame size (`sub esp, N`: an upper bound of
+  any object in it) and a reference of the struct type. Two files lay a local struct out by hand (0x4EA770,
+  0x553270): left as they are.
+- gate: by-value locals of S_/C_ types are rejected (kind local_struct; members of a struct defined in the file
+  are not locals); the writer prompt says how to size the buffer.
+- emudiff gaps seen while triaging the queue: HOOK_KEEP_ECX / HOOK_TAIL wrappers read as runaway calls (their
+  `call [impl]` goes through an unrelocated pointer); a CRT helper the original calls and ours inlines reads as
+  a different call target (0x624D10).

@@ -108,6 +108,26 @@ def strip_cpp_comments(src):
     return re.sub(r"//[^\n]*|/\*.*?\*/", "", src, flags=re.S)
 
 
+_LOCAL_RX = re.compile(r"^[ \t]+((?:S|C)_[0-9a-f]{8}\w*)\s+(\w+)\s*(?:\[[^\]]*\]\s*)?(?:=\s*\{[^}]*\}|\{[^}]*\})?\s*;", re.M)
+
+
+def struct_locals(code):
+    """By-value locals of generated struct types (S_/C_<ea>) in comment-free code: matches of _LOCAL_RX that are not
+    member declarations of a struct/class/union defined in the file (a hand-laid-out frame is the author's sizing)."""
+    out, kinds, pos = [], [], 0
+    for m in re.finditer(r"[{}]|" + _LOCAL_RX.pattern, code, re.M):
+        t = m.group(0)
+        if t == "{":
+            head = code[max(code.rfind(";", 0, m.start()), code.rfind("}", 0, m.start()), code.rfind("{", 0, m.start())) + 1:m.start()]
+            kinds.append(bool(re.search(r"\b(struct|class|union)\b", head)) and "(" not in head)
+        elif t == "}":
+            if kinds:
+                kinds.pop()
+        elif not (kinds and kinds[-1]):
+            out.append(m)
+    return out
+
+
 def gate(ea, path, db=None):
     path = os.path.abspath(path)
     src = open(path).read()
@@ -170,6 +190,16 @@ def gate(ea, path, db=None):
             stripped = re.sub(r'CSF_STR\(\s*0x[0-9A-Fa-f]+\s*,\s*"(?:[^"\\]|\\.)*"\s*\)', "", line)
             if '"' in stripped:
                 errs.append(f"bare string literal (use CSF_STR(0xADDR, \"text\")): {line.strip()[:120]}")
+    # a by-value stack local of a generated struct type: auto_classes.h sizes are lower bounds (the fields seen so
+    # far). 0x4223F0 built a 12-byte vector in a 4-byte S_00526d40 and overwrote its saved esi and the stack
+    # cookie; 5 of 31 such locals in src/auto provably reached past sizeof (2026-10-11)
+    for m in struct_locals(code_only):
+        errs.append(f"stack local `{m.group(1)} {m.group(2)}`: struct sizes in types/auto_classes.h are lower bounds "
+                    "(only the fields seen so far), so a by-value local can be smaller than the object the original "
+                    "keeps on its stack, and callees / CSF_AT then write past it. Reserve the bytes the original's "
+                    f"frame gives the object (from its `lea reg, [ebp-X]` up to the next local; when unsure, the whole "
+                    f"`sub esp, N`): `alignas(8) uint8_t {m.group(2)}Bytes[N];` (add `= {{}}` only if the original zeroes "
+                    f"it) and `{m.group(1)}& {m.group(2)} = *reinterpret_cast<{m.group(1)}*>({m.group(2)}Bytes);`")
     db = db or DB()
     errs += check_bindings(src, db)
     import addrfix, api
@@ -245,6 +275,7 @@ FAIL_KINDS = [
     ("hook", r"need exactly one HOOK"),
     ("asm", r"inline asm"),
     ("deref", r"double dereference"),
+    ("local_struct", r"stack local `"),
     ("include", r"include not allowed|come from #include \"globals.h\""),
     ("alloc", r"Mem_Alloc"),
     ("review", r"reviewer compared your file"),

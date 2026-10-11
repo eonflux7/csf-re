@@ -93,6 +93,10 @@ File rules:
   Never cache a value in a local across a call if the original reloads it after the call — callees may modify
   the object (e.g. a child removing itself from the list being iterated). Don't add checks or reads the
   original doesn't have.
+- An object the original keeps on its own stack (`lea ecx, [ebp-X]` passed as `this` / an out argument): never
+  declare it as a by-value local of an S_/C_ struct type (their sizes are lower bounds; callees write the real
+  size). Reserve the bytes the original's frame gives it: `alignas(8) uint8_t nameBytes[N];` (N: up to the next
+  local in the frame; when unsure the whole `sub esp, N`) and `T& name = *reinterpret_cast<T*>(nameBytes);`.
 - Give functions descriptive names in PascalCase (English) that say what it does or returns (e.g.
   GetCoverFireTaskName, IsInnerObjectType38, SetVisibleFlag) — never placeholders like GetConstant29, Sub_4206B0,
   ReturnValue, Nullsub. Prefix by the class id for methods, e.g.
