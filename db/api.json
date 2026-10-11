@@ -1374,7 +1374,8 @@
   "name": "S_00526d40_TransformVector3",
   "name_src": "agent",
   "votes": {
-   "TransformRotationVector": 1
+   "TransformRotationVector": 1,
+   "S_00526d40_TransformVector3": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -17589,7 +17590,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 244
+   "CHandleTable_Resolve": 246
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -34611,7 +34612,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 72,
+   "GetObjectPositionVector": 73,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -35106,7 +35107,7 @@
   "name_src": "agent",
   "votes": {
    "ComputeScalarForResolvedObject": 10,
-   "C_008342e8_ComputeResolvedObjectScalar": 2
+   "C_008342e8_ComputeResolvedObjectScalar": 3
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -56310,7 +56311,7 @@
   "name": "GetValue8B0554",
   "name_src": "agent",
   "votes": {
-   "GetValue8B0554": 171
+   "GetValue8B0554": 172
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -58806,7 +58807,7 @@
  },
  "004f51b0": {
   "name": "CharacterModel_UpdateOffsetTransform",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -58872,8 +58873,8 @@
   "file": "src/auto/004f55a0.cpp"
  },
  "004f5610": {
-  "name": "MpSpawnPoints_SetProviderState",
-  "name_src": "vote",
+  "name": "S_004f5420_SetProviderState",
+  "name_src": "agent",
   "votes": {
    "MpSpawnPoints_SetProviderState": 1,
    "MpSpawnPoints_SetProviderSpawnState": 1
@@ -58906,6 +58907,16 @@
   "sig_src": "impl",
   "file": "src/auto/004f5780.cpp"
  },
+ "004f5850": {
+  "name": "CharacterModel_SyncCachedTransform",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "void",
+  "conv": "__fastcall",
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004f5850.cpp"
+ },
  "004f58f0": {
   "name": "C_0085ec18_TailCallReferencedObjectSlot50",
   "name_src": "agent",
@@ -58925,8 +58936,8 @@
   "sig_src": "abi"
  },
  "004f5ef0": {
-  "name": "ObjectProvider_SetPendingRequest",
-  "name_src": "vote",
+  "name": "C_00861120_SetPendingRequest",
+  "name_src": "agent",
   "votes": {
    "ObjectProvider_SetPendingRequest": 7
   },
@@ -58937,13 +58948,16 @@
   "file": "src/auto/004f5ef0.cpp"
  },
  "004f5fe0": {
-  "name": "sub_4F5FE0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CharacterModel_ComputePositioningEndpoints",
+  "name_src": "vote",
+  "votes": {
+   "CharacterModel_ComputePositioningEndpoints": 1,
+   "CharacterModel_FindViewEndpoints": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "int a1, int edx0, int a3, float* a4, int a5, float* a6",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004f6990": {
   "name": "CharacterModel_UpdateModel",
@@ -58969,7 +58983,7 @@
   "name": "ObjectProvider_TryFindIndexedEntry",
   "name_src": "agent",
   "votes": {
-   "ObjectProvider_TryFindIndexedEntry": 1
+   "ObjectProvider_TryFindIndexedEntry": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -58979,7 +58993,7 @@
  },
  "004f6f30": {
   "name": "CharacterModel_UpdateTrackedTransform",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -58988,25 +59002,27 @@
   "file": "src/auto/004f6f30.cpp"
  },
  "004f71b0": {
-  "name": "ObjectProvider_CommitPositioning",
-  "name_src": "vote",
+  "name": "CharacterModel_CommitPositioning",
+  "name_src": "agent",
   "votes": {
    "ObjectProvider_CommitPositioning": 1,
    "CharActionFsm_SetProviderValue": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a4",
-  "sig_src": "vote"
+  "params": "void* self, void* , float directionFlag",
+  "sig_src": "impl",
+  "file": "src/auto/004f71b0.cpp"
  },
  "004f7400": {
-  "name": "sub_4F7400",
-  "name_src": "addr",
+  "name": "CharacterModel_UpdateViewTransform",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int _68",
-  "sig_src": "abi"
+  "params": "void* self, void* , int character, int",
+  "sig_src": "impl",
+  "file": "src/auto/004f7400.cpp"
  },
  "004f7730": {
   "name": "CharacterModel_FreeTaggedArray",
@@ -59056,8 +59072,8 @@
   "sig_src": "abi"
  },
  "004f7b40": {
-  "name": "ComputeLerpBetweenPoints",
-  "name_src": "vote",
+  "name": "CharacterModel_ComputeLerpBetweenPoints",
+  "name_src": "agent",
   "votes": {
    "ComputeLerpBetweenPoints": 1,
    "ObjectProvider_ConfigureOrderTarget": 1
@@ -59123,7 +59139,9 @@
  "004f8440": {
   "name": "AppendRecordFromSource",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CharacterModel_InsertProviderSlotBlend": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "S_004f7d10* self, void* , uint32_t* source, int capacityHint",
@@ -59147,12 +59165,13 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int arg0, int a2, int a4, int a5",
-  "sig_src": "vote"
+  "params": "S_004f6e90* self, void* , int slotIndex, int sourceHandle, int targetHandle, int blendFlags",
+  "sig_src": "impl",
+  "file": "src/auto/004f8800.cpp"
  },
  "004f8920": {
   "name": "CharacterModel_ProcessEntryArray",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "unsigned int",
   "conv": "__stdcall",
@@ -64965,9 +64984,7 @@
  "00512cd0": {
   "name": "CSaveGameManager_InitializeSavePaths",
   "name_src": "agent",
-  "votes": {
-   "CSaveGameManager_ResetStateBlock": 1
-  },
+  "votes": {},
   "ret": "int",
   "conv": "__fastcall",
   "params": "CSaveGameManager* self, void*",
@@ -65185,11 +65202,10 @@
   "name": "CSaveGameManager_InitializeDefaults",
   "name_src": "agent",
   "votes": {},
-  "ret": "CSaveGameManager*",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "CSaveGameManager* self, void*",
-  "sig_src": "impl",
-  "file": "src/auto/00513ba0.cpp"
+  "params": "void* self, void* edx",
+  "sig_src": "abi"
  },
  "00513c40": {
   "name": "sub_513C40",
@@ -65442,7 +65458,6 @@
   "name": "ResetSaveSlotBuffers",
   "name_src": "agent",
   "votes": {
-   "DestroyElement_514F30": 1,
    "SaveGameRecord_Destruct": 1
   },
   "ret": "int",
@@ -65961,7 +65976,6 @@
   "name": "Profiles_ForwardToSaveGameIfNonNull",
   "name_src": "agent",
   "votes": {
-   "CopyConstructElement_516960": 1,
    "SaveGameRecord_Process": 1
   },
   "ret": "int",
@@ -65978,9 +65992,8 @@
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "void* sourceBegin, void* sourceEnd, void* destination, void* contextArg, int",
-  "sig_src": "impl",
-  "file": "src/auto/00516980.cpp"
+  "params": "int a1, int a2, int a3, void* a4, int a5",
+  "sig_src": "vote"
  },
  "00516a10": {
   "name": "C_00840af8_ReleaseBufferAndClear",
@@ -102902,7 +102915,7 @@
   "name": "RwV3dTransformVectors",
   "name_src": "rwname",
   "votes": {
-   "RwV3dTransformVectors": 10
+   "RwV3dTransformVectors": 11
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -103342,7 +103355,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 69
+   "RwMatrixDestroy": 71
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -129315,7 +129328,7 @@
   "name": "InitStringFromLiteral",
   "name_src": "vote",
   "votes": {
-   "InitStringFromLiteral": 5
+   "InitStringFromLiteral": 4
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -135455,7 +135468,7 @@
   "name": "NormalizeVector3",
   "name_src": "agent",
   "votes": {
-   "NormalizeVector3": 27,
+   "NormalizeVector3": 29,
    "NormalizeVector": 1
   },
   "ret": "float*",
@@ -136122,7 +136135,7 @@
   "name": "GfxMatrix_EulerAnglesToDirection",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_EulerAnglesToDirection": 3,
+   "GfxMatrix_EulerAnglesToDirection": 4,
    "EulerAnglesToDirection": 5,
    "GetActionExtent": 1
   },
@@ -136173,7 +136186,7 @@
   "name": "GfxMatrix_CreateQuaternionMatrix",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_CreateQuaternionMatrix": 1,
+   "GfxMatrix_CreateQuaternionMatrix": 3,
    "CreateQuaternionMatrix": 1
   },
   "ret": "int",
@@ -136196,7 +136209,7 @@
   "name": "GfxMatrix_SetQuaternionFromAxisAngle",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_SetQuaternionFromAxisAngle": 1
+   "GfxMatrix_SetQuaternionFromAxisAngle": 3
   },
   "ret": "float*",
   "conv": "__fastcall",
@@ -136208,7 +136221,8 @@
   "name": "GfxMatrix_SetQuaternionAxisAngle",
   "name_src": "agent",
   "votes": {
-   "SetQuaternionAxisAngle": 1
+   "SetQuaternionAxisAngle": 1,
+   "GfxMatrix_SetQuaternionAxisAngle": 1
   },
   "ret": "float*",
   "conv": "__fastcall",
@@ -180449,7 +180463,7 @@
   "name": "GetGlobalValue_753A30",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_753A30": 30
+   "GetGlobalValue_753A30": 31
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -181001,7 +181015,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 105,
+   "GetGlobalValue_8BC1E0": 107,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
@@ -195646,7 +195660,7 @@
   "name": "___CxxFrameHandler",
   "name_src": "ida",
   "votes": {
-   "___CxxFrameHandler": 91,
+   "___CxxFrameHandler": 90,
    "OriginalCxxFrameHandler": 1
   },
   "ret": "int",
@@ -195730,7 +195744,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 117
+   "RethrowCppException": 116
   },
   "ret": "void",
   "conv": "__stdcall",
