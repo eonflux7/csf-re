@@ -1,53 +1,3 @@
-# Escalation 0x00419B50: in-game smoke failure (verifier bisect: 1 smokes (1 named by crash reports, k=8))
-
-## Smoke log tail
-```
-nohook=False pid=7900 ready=True after=6s alive=True exit=killed stillrunning=False stop=crash ran=1s fail_at=1s
----- hits
-006a3200     230457 auto CoreZlibLog_ComputeAdler32
-0069e3d0     164204 auto C_0085eb30_ReleaseMutexIfSet
-006a6810     160714 auto CoreZlibLog_FlushInflateWindow
-006a0370     156955 auto C_0085ec74_ReadBytesFromFile
-006a2f90     135678 auto CoreZlibLog_AllocateReusableBlock
-006a2eb0     135674 auto ZlibLog_MarkTrackedBlock
-006a6130      68031 auto CoreZlibLog_BuildInflateHuffmanTable
-00730830      63864 auto CopyDwordIfNotNull
-006a6950      55139 auto CoreZlibLog_InflateFast
-006a5a50      52811 auto CoreZlibLog_InflateCodes
----- diff (0 functions compared)
-CRASH code=c0000005 eip=72bd15ff addr=e90ce9bf (rw=0) eax=e90ce983 ebx=00000027 ecx=00000000 edx=00000000 esi=00000000 edi=0019e918 ebp=0019e890 esp=0019e7a8
-  eip module 72BA0000 (ours 72BA0000); stack:
-   00000000 00000000 00000028 00000000 00000001 0000001c
-   00000000 00000000 3f800000 3f800000 3f800000 00406b60
-   0049f490 19a8f48c 19a8f480 13f88d44 19a82538 19a83208
-   00000002 19a831e8 19a82518 00000001 4125f794 00000000
----- csf_hook.log
-hook 00405450 auto     AudioSoundManager_ProcessArchiveContext
-hook 00405420 auto     C_0082d510_Destroy
-hook 00405400 auto     C_0082d510_ForwardFloatToTarget
-hook 004053e0 auto     C_0082d510_ForwardSlotCall
-hook 004013e0 auto     ReturnMinusOne
-hook 00401090 auto     GetGlobalValue_401090
-hooks installed=4595 skipped=342 failed=0
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00C9CEDC wrapped
-devcmd: video mode 1280x960
-devcmd: dev start (scene Maps/FR01/Parachut.scn) instead of Menus/P_Intro.fbs -> state 1
-devcmd: starting scene 'Maps/FR01/Parachut.scn'
-CRASH code=c0000005 eip=72bd15ff addr=e90ce9bf (rw=0) eax=e90ce983 ebx=00000027 ecx=00000000 edx=00000000 esi=00000000 edi=0019e918 ebp=0019e890 esp=0019e7a8
-  eip module 72BA0000 (ours 72BA0000); stack:
-   00000000 00000000 00000028 00000000 00000001 0000001c
-   00000000 00000000 3f800000 3f800000 3f800000 00406b60
-   0049f490 19a8f48c 19a8f480 13f88d44 19a82538 19a83208
-   00000002 19a831e8 19a82518 00000001 4125f794 00000000
-SMOKE FAIL (alive, but 1 CRASH logged: the game caught it)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include <cstring>
 #include "globals.h"
@@ -157,7 +107,7 @@ static void __fastcall C_0082e1e8_AppendWheelHeightCorrection(
         if (highestWheel >= wheelCount / 2)
         {
             void* entry = reinterpret_cast<void*>(GetTableEntryDwordByIndex(
-                reinterpret_cast<void*>(self->field_0004), nullptr,
+                reinterpret_cast<void*>(self->field_0030), nullptr,
                 CSF_AT(int, reinterpret_cast<void*>(self->field_0034), 32 * firstLeft)));
 
             void* matrixReference =
@@ -175,7 +125,7 @@ static void __fastcall C_0082e1e8_AppendWheelHeightCorrection(
                     reinterpret_cast<std::uint32_t*>(extendedMatrixResult[0]));
 
             entry = reinterpret_cast<void*>(GetTableEntryDwordByIndex(
-                reinterpret_cast<void*>(self->field_0004), nullptr,
+                reinterpret_cast<void*>(self->field_0030), nullptr,
                 CSF_AT(int, reinterpret_cast<void*>(self->field_0044),
                        32 * static_cast<int>(matrixResult[1]))));
 
@@ -197,7 +147,7 @@ static void __fastcall C_0082e1e8_AppendWheelHeightCorrection(
         else
         {
             void* entry = reinterpret_cast<void*>(GetTableEntryDwordByIndex(
-                reinterpret_cast<void*>(self->field_0004), nullptr,
+                reinterpret_cast<void*>(self->field_0030), nullptr,
                 CSF_AT(int, reinterpret_cast<void*>(self->field_0034), 32 * lastLeft)));
 
             void* matrixReference =
@@ -214,7 +164,7 @@ static void __fastcall C_0082e1e8_AppendWheelHeightCorrection(
                 RwMatrixDestroy(reinterpret_cast<std::uint32_t*>(matrixResult[0]));
 
             entry = reinterpret_cast<void*>(GetTableEntryDwordByIndex(
-                reinterpret_cast<void*>(self->field_0004), nullptr,
+                reinterpret_cast<void*>(self->field_0030), nullptr,
                 CSF_AT(int, reinterpret_cast<void*>(self->field_0044), 32 * lastRight)));
 
             matrixReference =
@@ -246,4 +196,3 @@ static void __fastcall C_0082e1e8_AppendWheelHeightCorrection(
 
 HOOK(0x00419B50, C_0082e1e8_AppendWheelHeightCorrection, "auto");
 
-```

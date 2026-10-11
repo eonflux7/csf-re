@@ -1885,8 +1885,8 @@
   "name_src": "agent",
   "votes": {
    "Vehicle_FindTableEntry": 1,
+   "GetTableEntryDwordByIndex": 5,
    "Vehicle_GetTableEntryByIndex": 1,
-   "GetTableEntryDwordByIndex": 4,
    "Vehicle_GetTableEntryDwordByIndex": 1,
    "Vehicle_GetIndexedChild": 2,
    "IndexedChild_Get": 1
@@ -5467,6 +5467,7 @@
   "name": "VehicleArray_Grow",
   "name_src": "agent",
   "votes": {
+   "Vehicle_GrowCorrectionArray": 1,
    "Vehicle_GrowContactRecords": 1,
    "PointBuffer_Grow": 1,
    "Vehicle_GrowConstraintArray": 1,
@@ -5538,8 +5539,9 @@
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "vote"
+  "params": "C_0082e1e8* self, void* , std::uint32_t* settings",
+  "sig_src": "impl",
+  "file": "src/auto/00419b50.cpp"
  },
  "00419fc0": {
   "name": "C_0082e1e8_AccumulateContactResponse",
@@ -6255,7 +6257,7 @@
   "name": "C_0082dd78_DispatchReturnedObject",
   "name_src": "agent",
   "votes": {
-   "C_0082dd78_DispatchReturnedObject": 36
+   "C_0082dd78_DispatchReturnedObject": 37
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -33914,7 +33916,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 69,
+   "GetObjectPositionVector": 70,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -33936,7 +33938,7 @@
   "name": "SceneLoader_ConfigureFocusEntry",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_ConfigureFocusEntry": 21,
+   "SceneLoader_ConfigureFocusEntry": 22,
    "SceneLoader_SetObjectPosition": 2
   },
   "ret": "int",
@@ -102270,7 +102272,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 57
+   "RwMatrixDestroy": 58
   },
   "ret": "int",
   "conv": "__cdecl",
