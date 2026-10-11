@@ -132621,16 +132621,6 @@
   "sig_src": "impl",
   "file": "src/auto/006a0500.cpp"
  },
- "006a0540": {
-  "name": "LogWriter_AppendBigEndianWord",
-  "name_src": "agent",
-  "votes": {},
-  "ret": "void*",
-  "conv": "__cdecl",
-  "params": "void* self, uint16_t value",
-  "sig_src": "impl",
-  "file": "src/auto/006a0540.cpp"
- },
  "006a0570": {
   "name": "sub_6A0570",
   "name_src": "addr",
@@ -132662,37 +132652,14 @@
   "sig_src": "impl",
   "file": "src/auto/006a08b0.cpp"
  },
- "006a0940": {
-  "name": "CoreZlibLog_FindLongestMatch",
-  "name_src": "agent",
-  "votes": {},
-  "ret": "uint32_t",
-  "conv": "__cdecl",
-  "params": "void* state, uint32_t currentMatch",
-  "sig_src": "impl",
-  "file": "src/auto/006a0940.cpp"
- },
- "006a0aa0": {
-  "name": "CoreZlibLog_FillWindow",
-  "name_src": "agent",
-  "votes": {
-   "CoreZlibLog_FillWindow": 1
-  },
-  "ret": "unsigned int",
-  "conv": "__cdecl",
-  "params": "void* state",
-  "sig_src": "impl",
-  "file": "src/auto/006a0aa0.cpp"
- },
  "006a0c40": {
   "name": "CoreZlibLog_DeflateStored",
   "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "void* state, int flush",
-  "sig_src": "impl",
-  "file": "src/auto/006a0c40.cpp"
+  "params": "uint32_t* a1, int a2",
+  "sig_src": "abi"
  },
  "006a15c0": {
   "name": "InflateResetStream",
@@ -133078,9 +133045,7 @@
  "006a3200": {
   "name": "CoreZlibLog_ComputeAdler32",
   "name_src": "agent",
-  "votes": {
-   "CoreZlibLog_UpdateAdler32": 1
-  },
+  "votes": {},
   "ret": "int",
   "conv": "__cdecl",
   "params": "unsigned int checksum, unsigned char* data, unsigned int length",
@@ -133091,34 +133056,13 @@
   "name": "Inflate_ClearLengthTables",
   "name_src": "agent",
   "votes": {
-   "LogWindow_InitSubobjects": 1,
-   "CoreZlibLog_ResetBlock": 1
+   "LogWindow_InitSubobjects": 1
   },
   "ret": "uint16_t*",
   "conv": "__fastcall",
   "params": "void* , void* self",
   "sig_src": "impl",
   "file": "src/auto/006a3330.cpp"
- },
- "006a33a0": {
-  "name": "CoreZlibLog_SiftDownHuffmanHeap",
-  "name_src": "agent",
-  "votes": {},
-  "ret": "void*",
-  "conv": "__cdecl",
-  "params": "void* state, const void* tree, std::int32_t heapIndex",
-  "sig_src": "impl",
-  "file": "src/auto/006a33a0.cpp"
- },
- "006a3480": {
-  "name": "CoreZlibLog_GenerateBitLengths",
-  "name_src": "agent",
-  "votes": {},
-  "ret": "std::uint32_t*",
-  "conv": "__cdecl",
-  "params": "std::uint32_t* state, void* descriptor",
-  "sig_src": "impl",
-  "file": "src/auto/006a3480.cpp"
  },
  "006a3770": {
   "name": "CoreZlibLog_SendCodeLengthTree",
@@ -133133,46 +133077,12 @@
  "006a4390": {
   "name": "UpdateBufferPressureFlag",
   "name_src": "agent",
-  "votes": {
-   "CoreZlibLog_DetectDataType": 1
-  },
+  "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
   "params": "void* self, void*",
   "sig_src": "impl",
   "file": "src/auto/006a4390.cpp"
- },
- "006a4420": {
-  "name": "ZlibLog_DrainBitAccumulator",
-  "name_src": "agent",
-  "votes": {},
-  "ret": "int",
-  "conv": "__fastcall",
-  "params": "void* self, void*",
-  "sig_src": "impl",
-  "file": "src/auto/006a4420.cpp"
- },
- "006a44a0": {
-  "name": "LogWindow_FlushPendingChars",
-  "name_src": "agent",
-  "votes": {
-   "LogStream_GetContext": 1
-  },
-  "ret": "int",
-  "conv": "__cdecl",
-  "params": "int result",
-  "sig_src": "impl",
-  "file": "src/auto/006a44a0.cpp"
- },
- "006a4510": {
-  "name": "LogStream_WriteStoredBlock",
-  "name_src": "agent",
-  "votes": {},
-  "ret": "int*",
-  "conv": "__cdecl",
-  "params": "int context, uint8_t* data, uint32_t length, int writeHeader",
-  "sig_src": "impl",
-  "file": "src/auto/006a4510.cpp"
  },
  "006a45a0": {
   "name": "LogWindow_InitState",
@@ -133184,23 +133094,10 @@
   "sig_src": "impl",
   "file": "src/auto/006a45a0.cpp"
  },
- "006a46a0": {
-  "name": "CoreZlibLog_BuildTree",
-  "name_src": "agent",
-  "votes": {
-   "CoreZlibLog_BuildTree": 1
-  },
-  "ret": "int",
-  "conv": "__cdecl",
-  "params": "uint32_t* state, int* treeDescription",
-  "sig_src": "vote"
- },
  "006a4910": {
   "name": "CoreZlibLog_EmitStoredBlock",
   "name_src": "agent",
-  "votes": {
-   "CoreZlibLog_WriteStoredBlock": 1
-  },
+  "votes": {},
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
   "params": "void* state, std::uint8_t* source, int length, int blockFlags",
@@ -133220,14 +133117,11 @@
  "006a4bc0": {
   "name": "CoreZlibLog_FlushBlock",
   "name_src": "agent",
-  "votes": {
-   "CoreZlibLog_EmitStoredBlock": 1
-  },
+  "votes": {},
   "ret": "uint16_t*",
   "conv": "__cdecl",
-  "params": "int stateAddress, uint8_t* storedData, int storedLength, int finalBlock",
-  "sig_src": "impl",
-  "file": "src/auto/006a4bc0.cpp"
+  "params": "int a1, uint8_t* a2, int a3, int a4",
+  "sig_src": "abi"
  },
  "006a4db0": {
   "name": "ZlibLog_AllocZeroed",
