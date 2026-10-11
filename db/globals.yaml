@@ -17,17 +17,18 @@
 - {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 57, src: auto, alt: [g_MissionUnsignedIntegerBias]}
 - {addr: 0x0082D75C, name: g_HudNegativePi, type: float, uses: 2, src: auto, alt: [g_NegativeHalfTurnRadians]}
 - {addr: 0x0082D7C0, name: g_MessageBoxAnimationScale, type: float, uses: 3, src: auto, alt: [g_flt_0082D7C0]}
+- {addr: 0x0082DAF0, name: g_ScoreboardRefreshInterval, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC70, name: g_SubtitlePanelScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC84, name: g_flt_0082DC84, type: float, uses: 6, src: auto, alt: [g_MessageBoxAnimationDuration]}
 - {addr: 0x0082DD68, name: g_PreviewTopScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082DD74, name: g_ContextualDistanceScale, type: float, uses: 1, src: auto}
-- {addr: 0x0082DDEC, name: g_Const200_0f, type: float, uses: 3, src: auto}
+- {addr: 0x0082DDEC, name: g_Const200_0f, type: float, uses: 4, src: auto}
 - {addr: 0x0082DFCC, name: g_MessageBoxCollapsedScale, type: float, uses: 4, src: auto, alt: [g_PlaneSideUpperThreshold]}
 - {addr: 0x0082E030, name: g_fReturnedConstant_0082E030, type: float, uses: 3, src: auto}
 - {addr: 0x0082E038, name: g_ScaleY_0_6, type: float, uses: 1, src: auto}
 - {addr: 0x0082E03C, name: g_ProgressScale, type: float, uses: 7, src: auto}
 - {addr: 0x0082E044, name: g_FacingAngleOffset, type: float, uses: 1, src: auto}
-- {addr: 0x0082E048, name: g_LevelScaleFactor, type: float, uses: 1, src: auto}
+- {addr: 0x0082E048, name: g_LevelScaleFactor, type: float, uses: 2, src: auto}
 - {addr: 0x0082E04C, name: g_fHudFadeStep, type: float, uses: 1, src: auto}
 - {addr: 0x0082E05C, name: g_FloatConstant_82e05c, type: float, uses: 1, src: auto}
 - {addr: 0x0082E060, name: g_CharacterWidthScale, type: float, uses: 1, src: auto}
@@ -39,7 +40,7 @@
 - {addr: 0x0082E120, name: g_MaxPercent, type: float, uses: 1, src: auto}
 - {addr: 0x0082E1E4, name: g_fRotationWrapStep, type: float, uses: 1, src: auto}
 - {addr: 0x0082E25C, name: g_flt_0082E25C, type: float, uses: 3, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 46, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 48, src: auto, alt: [g_EmptyAccountName, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E958, name: g_TParadoString, type: char, uses: 1, src: auto}
 - {addr: 0x0082F318, name: g_TEndString, type: const char, uses: 1, src: auto}
 - {addr: 0x0082FACC, name: g_HudNegativeHalfPi, type: float, uses: 1, src: auto}
@@ -128,6 +129,8 @@
 - {addr: 0x00843B30, name: g_VtblCMenuSaveGame, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00843B70, name: g_VtblCMenuSaveGameSubObject, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00843C14, name: g_RasterByteScale, type: float, uses: 4, src: auto}
+- {addr: 0x0084462C, name: g_SpawnRegionDistanceSquared, type: float, uses: 1, src: auto}
+- {addr: 0x008446C8, name: g_SpawnTimerThreshold, type: float, uses: 1, src: auto}
 - {addr: 0x00845368, name: g_vtbl_00845368, type: uint8_t, uses: 2, src: auto}
 - {addr: 0x008453A4, name: g_vtbl_8453A4, type: uint8_t, uses: 2, src: auto}
 - {addr: 0x008455B0, name: g_PlayerInfoClearField0010Slot, type: uint32_t, uses: 1, src: auto}
@@ -136,7 +139,7 @@
 - {addr: 0x00845C30, name: g_ClearField0010Slot, type: ClearFieldMethod, uses: 1, src: auto}
 - {addr: 0x00846170, name: g_PlaneSideLowerThreshold, type: float, uses: 1, src: auto}
 - {addr: 0x00846178, name: g_UnitFactorUpperBound, type: float, uses: 1, src: auto}
-- {addr: 0x0085E684, name: g_NumberFormattingMode, type: int, uses: 5, src: auto, alt: [g_MissionNumberFormattingMode]}
+- {addr: 0x0085E684, name: g_NumberFormattingMode, type: int, uses: 6, src: auto, alt: [g_MissionNumberFormattingMode]}
 - {addr: 0x0085FF6C, name: g_Commandos3DGameGatheringVtable, type: void*, uses: 1, src: auto}
 - {addr: 0x0085FF90, name: g_ResourceDescriptorVtable, type: 'std::uint32_t', uses: 1, src: auto}
 - {addr: 0x0086005C, name: g_VectorLengthEpsilon, type: float, uses: 1, src: auto}
@@ -1323,11 +1326,11 @@
 - {addr: 0x008B067C, name: g_FriendsMode, type: uint8_t, uses: 2, src: auto, alt: [g_bUseLbFrInLabel]}
 - {addr: 0x008B0680, name: g_Global_8B0680, type: int, uses: 1, src: auto}
 - {addr: 0x008B0684, name: g_MpCharacterSelect, type: void*, uses: 2, src: auto, alt: [g_GlobalValue]}
-- {addr: 0x008B0688, name: g_Int8B0688, type: int, uses: 2, src: auto}
+- {addr: 0x008B0688, name: g_Int8B0688, type: int, uses: 3, src: auto}
 - {addr: 0x008B068C, name: g_OnlineMatchFlag, type: 'std::uint8_t', uses: 12, src: auto, alt: [g_AccountMenuSecondaryFlag]}
 - {addr: 0x008B0690, name: g_MpSessionState, type: int, uses: 0, src: opus}
-- {addr: 0x008B0694, name: g_CharacterSelectState8B0694, type: uint32_t, uses: 20, src: auto}
-- {addr: 0x008B0698, name: g_MenuMPCharacterSelect_LastState, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008B0694, name: g_CharacterSelectState8B0694, type: uint32_t, uses: 32, src: auto}
+- {addr: 0x008B0698, name: g_MenuMPCharacterSelect_LastState, type: uint32_t, uses: 2, src: auto}
 - {addr: 0x008B08F4, name: g_Value_8B08F4, type: int, uses: 1, src: auto}
 - {addr: 0x008B08F8, name: g_Value_8B08F8, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008B0901, name: g_AccountMenuStateFlag, type: 'std::uint8_t', uses: 3, src: auto}
