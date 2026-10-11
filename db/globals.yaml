@@ -37,7 +37,7 @@
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 2, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 24, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 71, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 73, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 8, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 5, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
@@ -56,7 +56,7 @@
 - {addr: 0x0082D7B4, name: g_ActiveAngularSpeed, type: float, uses: 1, src: auto}
 - {addr: 0x0082D7B8, name: g_InactiveAngularSpeed, type: float, uses: 1, src: auto}
 - {addr: 0x0082D7BC, name: g_DefaultAngleLimit, type: float, uses: 3, src: auto, alt: [g_VehiclePitchUpperLimit]}
-- {addr: 0x0082D7C0, name: g_MessageBoxAnimationScale, type: float, uses: 6, src: auto, alt: [g_flt_0082D7C0]}
+- {addr: 0x0082D7C0, name: g_MessageBoxAnimationScale, type: float, uses: 7, src: auto, alt: [g_flt_0082D7C0]}
 - {addr: 0x0082D7C4, name: g_DegreesPerRadian, type: float, uses: 6, src: auto, alt: [g_RadToDegFactor]}
 - {addr: 0x0082D820, name: g_BoundsInterpolationFraction, type: float, uses: 1, src: auto}
 - {addr: 0x0082D824, name: g_BoundsPointHeightOffset, type: float, uses: 1, src: auto}
@@ -69,7 +69,7 @@
 - {addr: 0x0082DCE8, name: g_WheelRecordScale, type: float, uses: 3, src: auto}
 - {addr: 0x0082DD68, name: g_PreviewTopScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082DD74, name: g_ContextualDistanceScale, type: float, uses: 2, src: auto}
-- {addr: 0x0082DDEC, name: g_Const200_0f, type: float, uses: 7, src: auto}
+- {addr: 0x0082DDEC, name: g_Const200_0f, type: float, uses: 8, src: auto}
 - {addr: 0x0082DEA8, name: g_MovementRateBound, type: float, uses: 1, src: auto}
 - {addr: 0x0082DEAC, name: g_HeightSnapDistance, type: float, uses: 1, src: auto}
 - {addr: 0x0082DEB0, name: g_HeightTolerance, type: float, uses: 2, src: auto, alt: [g_TargetPointDistanceEpsilon]}
@@ -299,7 +299,9 @@
 - {addr: 0x008600D8, name: g_BindingCount, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x00860178, name: g_C_00860178_vtable, type: void*, uses: 1, src: auto}
 - {addr: 0x008608A8, name: g_Value1e8, type: float, uses: 1, src: auto}
-- {addr: 0x00860DAC, name: g_PreviewCameraAngleBits, type: 'std::uint32_t', uses: 2, src: auto}
+- {addr: 0x00860DA4, name: g_WaterCameraNearClip, type: float, uses: 2, src: auto, alt: [g_WaterCameraNearClipBits]}
+- {addr: 0x00860DA8, name: g_WaterCameraFarClip, type: float, uses: 2, src: auto, alt: [g_WaterCameraFarClipBits]}
+- {addr: 0x00860DAC, name: g_PreviewCameraAngleBits, type: 'std::uint32_t', uses: 4, src: auto}
 - {addr: 0x008634C0, name: g_vtbl_C_008634c0, type: void*, uses: 1, src: auto}
 - {addr: 0x008634C8, name: g_vtbl_C_008634c8, type: void*, uses: 1, src: auto}
 - {addr: 0x00863674, name: g_WaterSplitMagnitudeSquared, type: float, uses: 1, src: auto}
