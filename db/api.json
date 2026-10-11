@@ -3675,7 +3675,7 @@
   "name": "CharActionFsm_InitializeHitInfo",
   "name_src": "vote",
   "votes": {
-   "CharActionFsm_InitializeHitInfo": 4
+   "CharActionFsm_InitializeHitInfo": 5
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -4220,7 +4220,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 111
+   "AssignStringSubstring": 112
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -6567,7 +6567,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 67
+   "S_0041e5f0_GrowArrayCapacity": 69
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -12536,13 +12536,15 @@
   "sig_src": "abi"
  },
  "00437d60": {
-  "name": "sub_437D60",
-  "name_src": "addr",
-  "votes": {},
+  "name": "FxParticleManager_HasNamedEffect",
+  "name_src": "vote",
+  "votes": {
+   "FxParticleManager_HasNamedEffect": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "unsigned int* a1, char* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00437da0": {
   "name": "sub_437DA0",
@@ -17850,7 +17852,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 286
+   "CHandleTable_Resolve": 292
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -17861,7 +17863,7 @@
   "name": "GetSceneMenuContext",
   "name_src": "vote",
   "votes": {
-   "GetSceneMenuContext": 65
+   "GetSceneMenuContext": 66
   },
   "ret": "uint32_t",
   "conv": "__fastcall",
@@ -28047,7 +28049,7 @@
   "name": "Handle_GetValuePointer",
   "name_src": "vote",
   "votes": {
-   "Handle_GetValuePointer": 47,
+   "Handle_GetValuePointer": 48,
    "ResolveHandleToValuePtr": 2,
    "GetInnerRecordPointer": 1,
    "Entry_GetPayloadPointer": 1
@@ -35202,7 +35204,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 95,
+   "GetObjectPositionVector": 96,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -57876,7 +57878,7 @@
   "name": "GetValue8B0554",
   "name_src": "agent",
   "votes": {
-   "GetValue8B0554": 205
+   "GetValue8B0554": 211
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -65180,7 +65182,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 248
+   "GetGlobalState_50D190": 250
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -69719,7 +69721,9 @@
  "0051c090": {
   "name": "C_00840e68_UnregisterObject",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00840e68_UnregisterObject": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "C_00840e68* self, void*",
@@ -69818,15 +69822,16 @@
  },
  "0051c1b0": {
   "name": "S_0051c1b0_GrowEntries",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
-   "S_0051c1b0_GrowEntries": 1,
+   "S_0051c1b0_GrowEntries": 4,
    "FxParticleManager_GrowSpawnResults": 1
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int newCapacity",
-  "sig_src": "vote"
+  "params": "S_0051c1b0* self, void* , int additionalCapacity",
+  "sig_src": "impl",
+  "file": "src/auto/0051c1b0.cpp"
  },
  "0051c290": {
   "name": "FxParticleManager_ClearOutputState",
@@ -69869,8 +69874,8 @@
   "file": "src/auto/0051c410.cpp"
  },
  "0051c440": {
-  "name": "C_00840ec0_InitializeState",
-  "name_src": "vote",
+  "name": "C_00840ec0_LoadParticleEffectIds",
+  "name_src": "agent",
   "votes": {
    "C_00840ec0_InitializeState": 1
   },
@@ -69896,6 +69901,7 @@
   "name": "S_0051c1b0_AppendEntry",
   "name_src": "agent",
   "votes": {
+   "S_0051c1b0_AppendEntry": 1,
    "ParticleManager_AppendEffect": 1
   },
   "ret": "uint32_t*",
@@ -69925,13 +69931,16 @@
   "file": "src/auto/0051cfc0.cpp"
  },
  "0051cfe0": {
-  "name": "sub_51CFE0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "FxParticleManager_IsWithinActiveSceneRange",
+  "name_src": "agent",
+  "votes": {
+   "FxParticleManager_CanEmitNamedEffect": 1
+  },
   "ret": "bool",
   "conv": "__stdcall",
-  "params": "void* a1",
-  "sig_src": "abi"
+  "params": "C_008342e8* object",
+  "sig_src": "impl",
+  "file": "src/auto/0051cfe0.cpp"
  },
  "0051d080": {
   "name": "C_00840ee0_Destroy",
@@ -69958,7 +69967,9 @@
  "0051d170": {
   "name": "FxParticleManager_InitializeParticleParameters",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "FxParticleManager_InitializeParticleParameters": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* , const std::uint32_t* firstPair, const std::uint32_t* secondPair, int parameter, const std::uint32_t* firstVector, const std::uint32_t* secondVector",
@@ -69978,22 +69989,26 @@
   "file": "src/auto/0051d1e0.cpp"
  },
  "0051d210": {
-  "name": "sub_51D210",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "void",
+  "name": "C_00840ee0_CreateAttachedParticle",
+  "name_src": "agent",
+  "votes": {
+   "FxParticleManager_EmitAttachmentEffect": 1
+  },
+  "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a3, int a4, void* a5",
-  "sig_src": "abi"
+  "params": "C_00840ee0* self, void* , int source, int frameObject, S_0051c1b0* entries",
+  "sig_src": "impl",
+  "file": "src/auto/0051d210.cpp"
  },
  "0051d3d0": {
-  "name": "sub_51D3D0",
-  "name_src": "addr",
+  "name": "C_00840ee0_CreateImpactEffects",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, void* a3",
-  "sig_src": "abi"
+  "params": "C_00840ee0* self, void* , int requestAddress, S_0051c1b0* output",
+  "sig_src": "impl",
+  "file": "src/auto/0051d3d0.cpp"
  },
  "0051da10": {
   "name": "InitializeParticleManagerNode",
@@ -70040,15 +70055,16 @@
   "file": "src/auto/0051db70.cpp"
  },
  "0051dbe0": {
-  "name": "ParticleManager_GetAttachmentPosition",
-  "name_src": "vote",
+  "name": "FxParticleManager_GetAttachmentPosition",
+  "name_src": "agent",
   "votes": {
    "ParticleManager_GetAttachmentPosition": 1
   },
   "ret": "float*",
   "conv": "__stdcall",
-  "params": "float* a1, int a2, int a3",
-  "sig_src": "vote"
+  "params": "float* output, int entityAddress, int attachmentSelector",
+  "sig_src": "impl",
+  "file": "src/auto/0051dbe0.cpp"
  },
  "0051dd30": {
   "name": "C_00840f00_CreateImpactEffect",
@@ -70117,13 +70133,14 @@
   "file": "src/auto/0051e070.cpp"
  },
  "0051e0a0": {
-  "name": "sub_51E0A0",
-  "name_src": "addr",
+  "name": "C_00840f28_SpawnScaledParticles",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, void* a3",
-  "sig_src": "abi"
+  "params": "C_00840f28* self, void* , uint32_t* event, S_0051c1b0* entries",
+  "sig_src": "impl",
+  "file": "src/auto/0051e0a0.cpp"
  },
  "0051e430": {
   "name": "C_00840f48_ReleaseIfActive",
@@ -70138,7 +70155,9 @@
  "0051e440": {
   "name": "C_00840f48_CreateRegistryObject",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00840f48_CreateParticle": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00840f48* self, void* , int handle",
@@ -70158,7 +70177,9 @@
  "0051e550": {
   "name": "C_00840f48_FindParticleEntry",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00840f48_FindParticleEntry": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00840f48* self, void* , int particle",
@@ -70186,24 +70207,28 @@
   "file": "src/auto/0051e5f0.cpp"
  },
  "0051e640": {
-  "name": "C_00840f48_Stop",
-  "name_src": "vote",
+  "name": "C_00840f48_StopAndReleaseObjects",
+  "name_src": "agent",
   "votes": {
    "C_00840f48_Stop": 1
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00840f48* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0051e640.cpp"
  },
  "0051e720": {
-  "name": "sub_51E720",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "FxParticleManager_GrowEntryArray",
+  "name_src": "agent",
+  "votes": {
+   "FxParticleManager_GrowEntryArray": 1
+  },
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int additionalCapacity",
+  "sig_src": "impl",
+  "file": "src/auto/0051e720.cpp"
  },
  "0051e810": {
   "name": "C_00840f48_Construct",
@@ -70238,13 +70263,14 @@
   "file": "src/auto/0051e910.cpp"
  },
  "0051e940": {
-  "name": "sub_51E940",
-  "name_src": "addr",
+  "name": "C_00840f48_HandleParticleEvent",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "C_00840f48* self, void* , std::uint32_t* event",
+  "sig_src": "impl",
+  "file": "src/auto/0051e940.cpp"
  },
  "0051eac0": {
   "name": "C_00840f48_UpdateIfActive",
@@ -70258,7 +70284,9 @@
  "0051eae0": {
   "name": "FxParticleManager_CompareSortKeys",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "FxParticleManager_CompareSortKeys": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "float* left, float* right",
@@ -70321,22 +70349,27 @@
   "sig_src": "vote"
  },
  "0051eec0": {
-  "name": "sub_51EEC0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "FxParticleManager_ExchangeUpdateEntries",
+  "name_src": "vote",
+  "votes": {
+   "FxParticleManager_ExchangeUpdateEntries": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0051efd0": {
-  "name": "sub_51EFD0",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "FxParticleManager_GrowParticleArray",
+  "name_src": "agent",
+  "votes": {
+   "FxParticleManager_GrowUpdateEntries": 1
+  },
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int additionalCapacity",
+  "sig_src": "impl",
+  "file": "src/auto/0051efd0.cpp"
  },
  "0051f0d0": {
   "name": "C_00840f6c_Construct",
@@ -70381,15 +70414,16 @@
   "file": "src/auto/0051f210.cpp"
  },
  "0051f240": {
-  "name": "PrepareParticleUpdate",
-  "name_src": "vote",
+  "name": "C_00840f6c_PrepareParticleUpdate",
+  "name_src": "agent",
   "votes": {
    "PrepareParticleUpdate": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_00840f6c* self, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/0051f240.cpp"
  },
  "0051f610": {
   "name": "C_00840f6c_UpdateIfActive",
@@ -70600,7 +70634,7 @@
  },
  "0051f950": {
   "name": "S_0051f950_UpdateParticles",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -70641,33 +70675,41 @@
   "file": "src/auto/0051fb00.cpp"
  },
  "0051fb70": {
-  "name": "sub_51FB70",
-  "name_src": "addr",
+  "name": "FxParticleManager_GrowParticleSlots",
+  "name_src": "agent",
   "votes": {},
-  "ret": "void*",
+  "ret": "const void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int additionalCapacity",
+  "sig_src": "impl",
+  "file": "src/auto/0051fb70.cpp"
  },
  "0051fc20": {
   "name": "FxParticleManager_GrowInstanceCache",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "FxParticleManager_GrowInstanceCache": 1
   },
-  "ret": "void*",
+  "ret": "const void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int additionalCapacity",
+  "sig_src": "impl",
+  "file": "src/auto/0051fc20.cpp"
  },
  "0051fcd0": {
-  "name": "sub_51FCD0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "FxParticleManager_GrowParticleStorage",
+  "name_src": "agent",
+  "votes": {
+   "FxParticleManager_GrowRetiredParticleList": 1,
+   "FxParticleManager_GrowRemovedReferences": 1,
+   "FxParticleManager_GrowRetiredParticleArray": 1,
+   "FxParticleManager_GrowSimpleQueue": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int additionalCapacity",
+  "sig_src": "impl",
+  "file": "src/auto/0051fcd0.cpp"
  },
  "0051fd70": {
   "name": "C_00840fdc_Construct",
@@ -70714,35 +70756,38 @@
   "file": "src/auto/00520020.cpp"
  },
  "005200d0": {
-  "name": "ParticleManager_ProcessParticleId",
-  "name_src": "vote",
+  "name": "FxParticleManager_ProcessParticleId",
+  "name_src": "agent",
   "votes": {
    "ParticleManager_ProcessParticleId": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int particleId",
+  "sig_src": "impl",
+  "file": "src/auto/005200d0.cpp"
  },
  "005201d0": {
-  "name": "SceneLoader_RemoveObjectReference",
-  "name_src": "vote",
+  "name": "FxParticleManager_RemoveObjectReference",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_RemoveObjectReference": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , void* reference",
+  "sig_src": "impl",
+  "file": "src/auto/005201d0.cpp"
  },
  "005202e0": {
-  "name": "sub_5202E0",
-  "name_src": "addr",
+  "name": "C_00840fdc_HandleParticleEvent",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "C_00840fdc* self, void* , uint32_t* event",
+  "sig_src": "impl",
+  "file": "src/auto/005202e0.cpp"
  },
  "00520420": {
   "name": "C_00840fdc_ClearSceneResources",
@@ -70790,13 +70835,16 @@
   "file": "src/auto/005209d0.cpp"
  },
  "00520ae0": {
-  "name": "sub_520AE0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_00520ae0_GrowCapacity",
+  "name_src": "agent",
+  "votes": {
+   "FxParticleManager_GrowDetailedQueue": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_00520ae0* self, void* , int additionalCapacity",
+  "sig_src": "impl",
+  "file": "src/auto/00520ae0.cpp"
  },
  "00520bd0": {
   "name": "sub_520BD0",
@@ -70822,7 +70870,9 @@
  "00520d80": {
   "name": "S_00520ae0_AppendParticle",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_00520ae0_AppendParticle": 2
+  },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
   "params": "S_00520ae0* self, void* , std::uint32_t* source, int growth",
@@ -70830,35 +70880,38 @@
   "file": "src/auto/00520d80.cpp"
  },
  "00520e20": {
-  "name": "ParticleManager_ProcessEntry",
-  "name_src": "vote",
+  "name": "FxParticleManager_ProcessEntry",
+  "name_src": "agent",
   "votes": {
    "ParticleManager_ProcessEntry": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int arg0, int a3, int a4",
-  "sig_src": "vote"
+  "params": "char* self, void* , void* source, int entryId, int particleId",
+  "sig_src": "impl",
+  "file": "src/auto/00520e20.cpp"
  },
  "00520f30": {
-  "name": "ApplyResolvedBinding",
-  "name_src": "vote",
+  "name": "FxParticleManager_ApplyResolvedBinding",
+  "name_src": "agent",
   "votes": {
    "ApplyResolvedBinding": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4",
-  "sig_src": "vote"
+  "params": "char* self, void* , int handle, int bindingKey, int particleKey",
+  "sig_src": "impl",
+  "file": "src/auto/00520f30.cpp"
  },
  "00521070": {
-  "name": "sub_521070",
-  "name_src": "addr",
+  "name": "S_0051f950_CollectParticleRequests",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_0051f950* self, void* , int context",
+  "sig_src": "impl",
+  "file": "src/auto/00521070.cpp"
  },
  "005211e0": {
   "name": "sub_5211E0",
@@ -79440,7 +79493,7 @@
   "name": "CMenuSaveGame_ResetStringStorage",
   "name_src": "agent",
   "votes": {
-   "CMenuSaveGame_ResetStringStorage": 12
+   "CMenuSaveGame_ResetStringStorage": 13
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -89849,11 +89902,13 @@
  "005867d0": {
   "name": "RtRandom",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RtRandom": 1
+  },
   "ret": "unsigned int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00586860": {
   "name": "RtRandomSeed",
@@ -104962,7 +105017,7 @@
   "name": "RwV3dLength",
   "name_src": "rwname",
   "votes": {
-   "RwV3dLength": 5
+   "RwV3dLength": 6
   },
   "ret": "double",
   "conv": "__cdecl",
@@ -105058,7 +105113,7 @@
   "name": "RwFrameGetLTM",
   "name_src": "rwname",
   "votes": {
-   "RwFrameGetLTM": 5
+   "RwFrameGetLTM": 6
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -105361,7 +105416,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 84
+   "RwMatrixDestroy": 87
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -105372,7 +105427,7 @@
   "name": "RwMatrixCreate",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixCreate": 54
+   "RwMatrixCreate": 55
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -114271,7 +114326,7 @@
   "name": "SceneLoader_GetSceneController",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetSceneController": 38,
+   "SceneLoader_GetSceneController": 39,
    "SceneLoader_GetSceneObject": 1,
    "SceneLoader_GetSubsystem": 1,
    "SceneLoader_GetSceneResources": 1,
@@ -131330,7 +131385,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 205
+   "Mem_Alloc": 213
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -131341,7 +131396,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 419
+   "Mem_Free": 428
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -137838,7 +137893,7 @@
   "name": "SceneMissionSetup_GetBoundsCenter",
   "name_src": "vote",
   "votes": {
-   "SceneMissionSetup_GetBoundsCenter": 4
+   "SceneMissionSetup_GetBoundsCenter": 5
   },
   "ret": "float*",
   "conv": "__fastcall",
@@ -137896,7 +137951,7 @@
   "name": "NormalizeVector3",
   "name_src": "agent",
   "votes": {
-   "NormalizeVector3": 36,
+   "NormalizeVector3": 37,
    "NormalizeVector": 1
   },
   "ret": "float*",
@@ -138274,7 +138329,7 @@
   "name": "GfxMatrix_SetFourRowsAndUpdate",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_SetFourRowsAndUpdate": 3,
+   "GfxMatrix_SetFourRowsAndUpdate": 4,
    "GfxMatrix_SetBasisAndPosition": 1,
    "GfxMatrix_ApplyAxisTransform": 1
   },
@@ -139084,7 +139139,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 195,
+   "GetGlobalInt": 201,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -141081,7 +141136,7 @@
   "name": "ObjectAttachment_HasSoundTrigger",
   "name_src": "vote",
   "votes": {
-   "ObjectAttachment_HasSoundTrigger": 1
+   "ObjectAttachment_HasSoundTrigger": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -141190,7 +141245,7 @@
   "name": "GetInnerByteFlag",
   "name_src": "agent",
   "votes": {
-   "GetInnerByteFlag": 2
+   "GetInnerByteFlag": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -141473,7 +141528,7 @@
   "name": "SceneLoader_GetObjectAttachment",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetObjectAttachment": 11
+   "SceneLoader_GetObjectAttachment": 13
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -141623,13 +141678,15 @@
   "sig_src": "abi"
  },
  "006b8b10": {
-  "name": "sub_6B8B10",
-  "name_src": "addr",
-  "votes": {},
+  "name": "FxParticleManager_GetAttachmentTransform",
+  "name_src": "vote",
+  "votes": {
+   "FxParticleManager_GetAttachmentTransform": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006b8b40": {
   "name": "sub_6B8B40",
@@ -146427,7 +146484,7 @@
   "name": "FxParticleManager_GetParticleController",
   "name_src": "vote",
   "votes": {
-   "FxParticleManager_GetParticleController": 2
+   "FxParticleManager_GetParticleController": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -151146,13 +151203,15 @@
   "sig_src": "abi"
  },
  "006de030": {
-  "name": "sub_6DE030",
-  "name_src": "addr",
-  "votes": {},
+  "name": "FxParticleManager_UpdateScaledParameters",
+  "name_src": "vote",
+  "votes": {
+   "FxParticleManager_UpdateScaledParameters": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006de0d0": {
   "name": "sub_6DE0D0",
@@ -170474,7 +170533,7 @@
   "name": "SceneLoader_GetObjectRegistry",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetObjectRegistry": 15,
+   "SceneLoader_GetObjectRegistry": 20,
    "SceneLoader_GetRangeManager": 1,
    "SceneLoader_GetServiceInterface": 1,
    "SceneLoader_GetRenderService": 1,
@@ -183787,7 +183846,7 @@
   "name": "GetGlobalValue_753A30",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_753A30": 35
+   "GetGlobalValue_753A30": 36
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -183941,7 +184000,7 @@
    "IsControlTypeForwardable": 1,
    "IsSceneEntryTypeFlagged": 1,
    "QueryTargetStateFlag": 1,
-   "GameConfig_IsResolvedEntryActive": 6
+   "GameConfig_IsResolvedEntryActive": 7
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -184342,7 +184401,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 134,
+   "GetGlobalValue_8BC1E0": 135,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
@@ -199213,6 +199272,7 @@
   "name_src": "ida",
   "votes": {
    "CRT_Qsort": 1,
+   "_qsort": 1,
    "GfxSkin_SortRenderEntries": 2,
    "GfxSkin_SortEntries": 1
   },
@@ -199225,7 +199285,7 @@
   "name": "_memcpy",
   "name_src": "ida",
   "votes": {
-   "_memcpy": 54,
+   "_memcpy": 57,
    "Memcpy": 1
   },
   "ret": "void*",
