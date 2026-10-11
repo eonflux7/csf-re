@@ -1019,3 +1019,9 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - The full regression smoke after m4053E0 crashed 3 s into the savegame start (null read at 0x473F09, original
   code); the bisect quarantined 0x407450 (new) with 0x496080 and 0x470B20 (older, verified; both passed the same
   regression twice earlier in the run). Open: which of the three is wrong (queue).
+- Restarted on the fixed code at 12:52 with Claude at 96% and Codex at 79/87%: 238 more functions (S on Sol low
+  as Haiku's stand-in, M/L/X on Sol high), then both Codex logins at 100%: 126 functions deferred, the three open
+  modules stayed open, no further module admitted, "waiting" printed. Windows reopen ~15:15; the run resumes by
+  itself. Sol low as S writer so far: 50 functions, 92% first try at the gate (Haiku low 94% in the same run).
+- One 5h window of both accounts lasts about an hour of rolling waves (~1,150 functions); a Codex window is ~12%
+  of the weekly limit.
