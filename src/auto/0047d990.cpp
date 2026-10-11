@@ -112,8 +112,9 @@ static void __fastcall TCharTask_UpdateCoverAttack(
     const float sampleTime =
         static_cast<float>(timeJitter) * g_SceneLoadMillisecondsToSeconds
         + CSF_AT(float, CSF_AT(void*, self, 0x8), 684);
-    (reinterpret_cast<void (__stdcall*)(float*, float)>(
-        pathVtable[20 / 4]))(target, sampleTime);
+    // `lea ecx, [eax + 0x88]`: the path object is this of the sampler
+    (reinterpret_cast<void (__fastcall*)(void*, void*, float*, float)>(
+        pathVtable[20 / 4]))(path, nullptr, target, sampleTime);
 
     globalState = reinterpret_cast<void*>(GetGlobalState_50D190());
     const float displacement =
