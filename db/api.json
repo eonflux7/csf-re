@@ -161525,7 +161525,7 @@
  },
  "0070e080": {
   "name": "Audio_InsertStereoDirectory",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char*",
   "conv": "__stdcall",
@@ -161655,7 +161655,7 @@
  },
  "0070e730": {
   "name": "C_008639b0_Construct",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -162019,7 +162019,7 @@
  },
  "0070f470": {
   "name": "C_00863ba8_SetEffectValue",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -162039,7 +162039,7 @@
  },
  "0070f500": {
   "name": "AudioEffects_MergeMissingDictEntries",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
@@ -162126,7 +162126,7 @@
  },
  "0070fbb0": {
   "name": "Audio_InvokeEffectCallback",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
@@ -162136,7 +162136,7 @@
  },
  "0070fc30": {
   "name": "AudioEffects_EnumerateDictionary",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint8_t*",
   "conv": "__stdcall",
@@ -162146,7 +162146,7 @@
  },
  "0070fd90": {
   "name": "C_00863ba8_SetReverbPreset",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -162243,7 +162243,7 @@
  },
  "00710d80": {
   "name": "C_00863ba8_ReleaseEffectDictionaries",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -162332,13 +162332,14 @@
   "file": "src/auto/00710fc0.cpp"
  },
  "00710ff0": {
-  "name": "sub_710FF0",
-  "name_src": "addr",
+  "name": "SoundBuffer_Create",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int* a2, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "uint8_t* self, void* , int* format, uint8_t* context",
+  "sig_src": "impl",
+  "file": "src/auto/00710ff0.cpp"
  },
  "00711160": {
   "name": "C_00863cd4_ApplyFlagWithDsRetry",
@@ -162422,7 +162423,7 @@
  },
  "007113e0": {
   "name": "Audio_AmplitudeToClampedMillibels",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "std::uint64_t",
   "conv": "__cdecl",
@@ -162442,7 +162443,7 @@
  },
  "00711500": {
   "name": "C_00863cd4_StopPollingAndRelease",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -162461,7 +162462,7 @@
  },
  "007115f0": {
   "name": "C_00863cd4_SetNormalizedLevel",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -162686,7 +162687,7 @@
  },
  "00711cf0": {
   "name": "C_00863d80_Init",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -162743,7 +162744,7 @@
  },
  "00711f00": {
   "name": "C_00863d80_UpdateSpatialPanAndVolume",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -162883,13 +162884,14 @@
   "file": "src/auto/00712590.cpp"
  },
  "007125d0": {
-  "name": "sub_7125D0",
-  "name_src": "addr",
+  "name": "C_00863dd0_GetBitrateToSampleRatio",
+  "name_src": "agent",
   "votes": {},
   "ret": "double",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863dd0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/007125d0.cpp"
  },
  "00712630": {
   "name": "C_00863dd0_RefreshEffectValue",
@@ -162943,7 +162945,7 @@
  },
  "007126f0": {
   "name": "C_00863dd0_SetClampedGain",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -162975,7 +162977,7 @@
  },
  "007127d0": {
   "name": "C_00863dd0_ApplyVolumeScale",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -162985,7 +162987,7 @@
  },
  "00712840": {
   "name": "C_00863dd0_RefreshEffectGain",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
