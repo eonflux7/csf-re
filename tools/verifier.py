@@ -66,6 +66,10 @@ def prepare_tree():
             raise SystemExit("verify tree checkout: " + out)
     for d in ("export", "ida", ".venv"):
         link = os.path.join(TREE, d)
+        # a link left over from another checkout (2026-10-08: a worktree since deleted) is dangling: difftable.py
+        # then failed on export/ and every verifier build carried an empty diff table until 2026-10-11
+        if os.path.islink(link) and os.path.realpath(link) != os.path.realpath(os.path.join(ROOT, d)):
+            os.unlink(link)
         if not os.path.lexists(link):
             os.symlink(os.path.join(ROOT, d), link)
     if not os.path.exists(os.path.join(TREE, "build", "build.ninja")):
@@ -77,8 +81,10 @@ def prepare_tree():
 
 def build_tree():
     py = os.path.join(ROOT, ".venv", "bin", "python")
-    sh(py, os.path.join(TREE, "tools", "difftable.py"), "--out", os.path.join(TREE, "build", "diff_table.inc"),
-       cwd=TREE)
+    rc, out = sh(py, os.path.join(TREE, "tools", "difftable.py"), "--out",
+                 os.path.join(TREE, "build", "diff_table.inc"), cwd=TREE)
+    if rc:  # never build with a stale or empty table: the smokes would compare nothing and say nothing
+        return False, "difftable.py failed:\n" + out[-2000:]
     rc, out = sh("ninja", "-C", os.path.join(TREE, "build"))
     return rc == 0, out
 
