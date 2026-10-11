@@ -72,6 +72,11 @@ def prepare_tree():
             os.unlink(link)
         if not os.path.lexists(link):
             os.symlink(os.path.join(ROOT, d), link)
+    # the exe image the table generator disassembles (gitignored work/pc): the tree has none of its own
+    os.makedirs(os.path.join(TREE, "work"), exist_ok=True)
+    pc = os.path.join(TREE, "work", "pc")
+    if not os.path.lexists(pc):
+        os.symlink(os.path.join(ROOT, "work", "pc"), pc)
     if not os.path.exists(os.path.join(TREE, "build", "build.ninja")):
         rc, out = sh("cmake", "-B", "build", "-G", "Ninja", "-DCMAKE_TOOLCHAIN_FILE=cmake/clang-cl-x86.cmake", cwd=TREE)
         if rc:

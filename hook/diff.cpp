@@ -54,6 +54,8 @@ int g_nslots;
 uint32_t g_maxCalls = 200;
 uint32_t g_limit = 0xFFFFFFFF;  // ini diff_limit N: only the first N table entries (bisecting)
 bool g_no_t3 = false;           // ini diff_t3 0: tier 3 off
+uint32_t g_t3limit = 0xFFFFFFFF;  // ini diff_t3_limit N: only the first N tier-3 entries (bisecting)
+bool g_trace = false;           // ini diff_trace 1: log every diffed call before the original runs (who was last)
 constexpr uint32_t kMinArgCopy = 64;  // the invoke thunk restores esp itself, so over-copying args is harmless
 CRITICAL_SECTION g_cs;
 FILE* g_log;
@@ -214,6 +216,16 @@ R run(int i, Regs* r, Invoke invoke) {
             return invoke(s.ours, r->ecx, r->edx, args, argcopy(s, args));
         Sleep(0);
     }
+    // The lock is recursive: a diffed function whose original (or ours) calls another diffed function comes back
+    // here on the same thread. The snapshots below are static, so a nested comparison would overwrite the outer
+    // one's `before` and the outer object would be restored with the inner one's bytes (2026-10-11: 0x463670 ->
+    // 0x46F390 crashed every start once both were in the table). Nested calls just run ours.
+    static int depth;
+    if (depth) {
+        LeaveCriticalSection(&g_cs);
+        return invoke(s.ours, r->ecx, r->edx, args, argcopy(s, args));
+    }
+    struct Depth { Depth() { ++depth; } ~Depth() { --depth; } } nested;
     // static, under the lock: game threads (e.g. the loader) have small stacks
     static Snap before, afterOrig, afterOurs;
     R ro{}, ru{};
@@ -225,6 +237,10 @@ R run(int i, Regs* r, Invoke invoke) {
     if (s.t3)
         hook::t3::begin_record(r->ecx, d.conv == 2 || d.conv == 3 ? d.this_size : 0,
                                (const uint32_t(*)[2])d.globs, d.nglobs);
+    if (g_trace && g_log) {
+        fprintf(g_log, "RUN %08X %s ecx=%08X arg0=%08X\n", d.addr, s.name, r->ecx, *(const uint32_t*)args);
+        fflush(g_log);
+    }
     ro = invoke(s.orig, r->ecx, r->edx, args, argcopy(s, args));
     if (s.t3)
         hook::t3::pause();
@@ -346,6 +362,10 @@ bool diff_install(const Entry& e, uint8_t* stub, uint32_t* counter, int max_slot
             g_limit = (uint32_t)strtoul(n, nullptr, 0);
         if (const char* n = ini_string("diff_t3"))
             g_no_t3 = atoi(n) == 0;
+        if (const char* n = ini_string("diff_t3_limit"))
+            g_t3limit = (uint32_t)strtoul(n, nullptr, 0);
+        if (const char* n = ini_string("diff_trace"))
+            g_trace = atoi(n) != 0;
         CreateThread(nullptr, 0, summary_thread, nullptr, 0, nullptr);
     }
     const DiffInfo* d = nullptr;
@@ -353,7 +373,7 @@ bool diff_install(const Entry& e, uint8_t* stub, uint32_t* counter, int max_slot
     for (uint32_t k = 0; k < sizeof kTable / sizeof kTable[0] && k < g_limit; ++k)
         if (kTable[k].addr == e.addr)
             d = &kTable[k];
-    for (uint32_t k = 0; !d && kT3[k].addr; ++k)
+    for (uint32_t k = 0; !d && kT3[k].addr && k < g_t3limit; ++k)
         if (kT3[k].addr == e.addr && !g_no_t3)
             d = &kT3[k], t3 = true;
     if (!d || g_nslots >= max_slots)
