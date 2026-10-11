@@ -1,53 +1,3 @@
-# Escalation 0x004088B0: in-game smoke failure (verifier bisect: 22 smokes (2 named by crash reports, k=8))
-
-## Smoke log tail
-```
-nohook=False pid=27056 ready=False after=4s alive=False exit=-1073741819 stillrunning=False stop=exited ran=0s fail_at=0s
----- hits
-006a2e00    1568914 auto C_0085ee28_SumFields
-0069e3d0     363703 auto C_0085eb30_ReleaseMutexIfSet
-00730830      64674 auto CopyDwordIfNotNull
-00768e70      33534 auto GetGlobalValue_768E70
-00471450      30823 auto MissionScript_DispatchSectionTable
-004714e0      23793 auto MissionScript_ReleaseBlock
-00718ee0      22910 auto CGuiControl_GetAbsolutePosition
-0071a2e0      22107 auto CopyTwoDwordsIfDestNonNull
-007692f0      19627 auto MissionScript_FindExpressionDefinition
-0046f2b0      19208 auto MissionScript_ResetScratchEntries
----- diff (0 functions compared)
-CRASH code=c0000005 eip=72c3b420 addr=00000008 (rw=1) eax=00000000 ebx=00000001 ecx=13b38838 edx=00000000 esi=13b38838 edi=13b38838 ebp=0019e57c esp=0019e4fc
-  eip module 72C20000 (ours 72C20000); stack:
-   19aa5b00 00000002 00000000 00899080 00000000 19a08400
-   00000000 18f9b778 0019e58c 72c3fc3f 0000003c 75289a00
-   00000278 00000000 0019e550 19a08400 00000278 00000278
-   008baeb4 008bade4 00000005 00000000 00000000 13b38838
----- csf_hook.log
-hook 004054a0 auto     S_004054a0_ResolveChildAndDispatch
-hook 00405450 auto     AudioSoundManager_ProcessArchiveContext
-hook 00405420 auto     C_0082d510_Destroy
-hook 00405400 auto     C_0082d510_ForwardFloatToTarget
-hook 004053e0 auto     C_0082d510_ForwardSlotCall
-hook 004013e0 auto     ReturnMinusOne
-hook 00401090 auto     GetGlobalValue_401090
-hooks installed=4290 skipped=213 failed=0
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00A84EBC wrapped
-devcmd: video mode 1280x960
-devcmd: dev start (scene Maps/FR01/Parachut.scn) instead of Menus/P_Intro.fbs -> state 1
-CRASH code=c0000005 eip=72c3b420 addr=00000008 (rw=1) eax=00000000 ebx=00000001 ecx=13b38838 edx=00000000 esi=13b38838 edi=13b38838 ebp=0019e57c esp=0019e4fc
-  eip module 72C20000 (ours 72C20000); stack:
-   19aa5b00 00000002 00000000 00899080 00000000 19a08400
-   00000000 18f9b778 0019e58c 72c3fc3f 0000003c 75289a00
-   00000278 00000000 0019e550 19a08400 00000278 00000278
-   008baeb4 008bade4 00000005 00000000 00000000 13b38838
-SMOKE FAIL (never ready: no 'devcmd: starting scene' in csf_hook.log within 120s)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include <cstring>
 #include "globals.h"
@@ -188,4 +138,3 @@ static char __fastcall C_0082d5e0_ResolvePendingBindings(
 
 HOOK(0x004088B0, C_0082d5e0_ResolvePendingBindings, "auto");
 
-```
