@@ -42,7 +42,7 @@
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 3, src: auto}
-- {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 32, src: auto, alt: [g_flt_82D4C4]}
+- {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 33, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
 - {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 128, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 12, src: auto}
@@ -64,23 +64,25 @@
 - {addr: 0x0082D7B4, name: g_ActiveAngularSpeed, type: float, uses: 1, src: auto}
 - {addr: 0x0082D7B8, name: g_InactiveAngularSpeed, type: float, uses: 1, src: auto}
 - {addr: 0x0082D7BC, name: g_DefaultAngleLimit, type: float, uses: 5, src: auto, alt: [g_VehiclePitchUpperLimit]}
-- {addr: 0x0082D7C0, name: g_MessageBoxAnimationScale, type: float, uses: 10, src: auto, alt: [g_flt_0082D7C0]}
+- {addr: 0x0082D7C0, name: g_MessageBoxAnimationScale, type: float, uses: 11, src: auto, alt: [g_flt_0082D7C0]}
 - {addr: 0x0082D7C4, name: g_DegreesPerRadian, type: float, uses: 6, src: auto, alt: [g_RadToDegFactor]}
 - {addr: 0x0082D820, name: g_BoundsInterpolationFraction, type: float, uses: 1, src: auto}
 - {addr: 0x0082D824, name: g_BoundsPointHeightOffset, type: float, uses: 1, src: auto}
 - {addr: 0x0082DAF0, name: g_ScoreboardRefreshInterval, type: float, uses: 3, src: auto}
-- {addr: 0x0082DBCC, name: g_VehicleAimLowerLimit, type: float, uses: 2, src: auto}
-- {addr: 0x0082DBD0, name: g_VehicleYawUpperLimit, type: float, uses: 2, src: auto}
+- {addr: 0x0082DBC4, name: g_VehiclePitchLowerLimit, type: float, uses: 1, src: auto}
+- {addr: 0x0082DBC8, name: g_VehiclePitchUpperLimit, type: float, uses: 1, src: auto}
+- {addr: 0x0082DBCC, name: g_VehicleAimLowerLimit, type: float, uses: 3, src: auto}
+- {addr: 0x0082DBD0, name: g_VehicleYawUpperLimit, type: float, uses: 3, src: auto}
 - {addr: 0x0082DC60, name: g_DegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC64, name: g_AngleEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC68, name: g_MaximumHeadTimeStep, type: float, uses: 4, src: auto}
-- {addr: 0x0082DC6C, name: g_RollOscillationScale, type: float, uses: 2, src: auto, alt: [g_SwayRollAmplitude]}
+- {addr: 0x0082DC6C, name: g_RollOscillationScale, type: float, uses: 3, src: auto, alt: [g_SwayRollAmplitude]}
 - {addr: 0x0082DC70, name: g_SubtitlePanelScale, type: float, uses: 3, src: auto}
 - {addr: 0x0082DC74, name: g_SwayResponse, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC78, name: g_SwayImpulseScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC7C, name: g_DirectionYScale, type: float, uses: 4, src: auto, alt: [g_RelatedObjectScaleY]}
 - {addr: 0x0082DC80, name: g_SwayHeightScale, type: float, uses: 1, src: auto}
-- {addr: 0x0082DC84, name: g_flt_0082DC84, type: float, uses: 15, src: auto, alt: [g_HeadDampingScale, g_MessageBoxAnimationDuration]}
+- {addr: 0x0082DC84, name: g_flt_0082DC84, type: float, uses: 16, src: auto, alt: [g_HeadDampingScale, g_MessageBoxAnimationDuration]}
 - {addr: 0x0082DCE8, name: g_WheelRecordScale, type: float, uses: 9, src: auto}
 - {addr: 0x0082DD58, name: g_RadiansToDegrees, type: float, uses: 1, src: auto}
 - {addr: 0x0082DD5C, name: g_DegreesToRadians, type: float, uses: 3, src: auto, alt: [g_fDegToRad]}
@@ -120,15 +122,19 @@
 - {addr: 0x0082E054, name: g_NoFallPeak, type: float, uses: 1, src: auto}
 - {addr: 0x0082E058, name: g_GroundProbeSpeed, type: float, uses: 1, src: auto}
 - {addr: 0x0082E05C, name: g_FloatConstant_82e05c, type: float, uses: 2, src: auto}
-- {addr: 0x0082E060, name: g_CharacterWidthScale, type: float, uses: 3, src: auto}
+- {addr: 0x0082E060, name: g_CharacterWidthScale, type: float, uses: 4, src: auto}
 - {addr: 0x0082E064, name: g_MovementProbeScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082E068, name: g_Const_0082E068, type: float, uses: 3, src: auto}
 - {addr: 0x0082E06C, name: g_SupportRangeScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082E070, name: g_GravityScale, type: float, uses: 5, src: auto, alt: [g_VehicleCorrectionScale]}
 - {addr: 0x0082E074, name: g_MovementAcceleration, type: float, uses: 2, src: auto}
-- {addr: 0x0082E0EC, name: g_GravityAccel, type: float, uses: 3, src: auto}
-- {addr: 0x0082E0F0, name: g_Const20, type: float, uses: 6, src: auto, alt: [g_LayoutInset, g_WidthReduction]}
-- {addr: 0x0082E114, name: g_SoundActivityThreshold, type: float, uses: 11, src: auto}
+- {addr: 0x0082E07C, name: g_RotationPi, type: float, uses: 1, src: auto}
+- {addr: 0x0082E084, name: g_RotationTenPi, type: float, uses: 1, src: auto}
+- {addr: 0x0082E088, name: g_MinimumMotionMagnitude, type: float, uses: 1, src: auto}
+- {addr: 0x0082E08C, name: g_CollisionVerticalScale, type: float, uses: 2, src: auto, alt: [g_MotionScale]}
+- {addr: 0x0082E0EC, name: g_GravityAccel, type: float, uses: 4, src: auto}
+- {addr: 0x0082E0F0, name: g_Const20, type: float, uses: 7, src: auto, alt: [g_LayoutInset, g_WidthReduction]}
+- {addr: 0x0082E114, name: g_SoundActivityThreshold, type: float, uses: 12, src: auto}
 - {addr: 0x0082E118, name: g_fIntroVideoDuration, type: float, uses: 5, src: auto}
 - {addr: 0x0082E11C, name: g_WeaponPlacementTraceDepth, type: float, uses: 6, src: auto}
 - {addr: 0x0082E120, name: g_MaxPercent, type: float, uses: 10, src: auto}
@@ -302,7 +308,7 @@
 - {addr: 0x0083F19C, name: g_PositioningAngleLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0083F1D4, name: g_ProximityEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x0083F248, name: g_ConsoleLineDivisor, type: float, uses: 3, src: auto, alt: [g_ConsoleLineScale, g_TextCharacterWidth]}
-- {addr: 0x0083F24C, name: g_MenuWidthScale, type: float, uses: 6, src: auto}
+- {addr: 0x0083F24C, name: g_MenuWidthScale, type: float, uses: 7, src: auto}
 - {addr: 0x0083F250, name: g_MenuHeightScale, type: float, uses: 4, src: auto}
 - {addr: 0x0083F264, name: g_MenuCursorMarker, type: char, uses: 1, src: auto}
 - {addr: 0x0083F380, name: g_DegreesToRadians, type: float, uses: 2, src: auto, alt: [g_HeadModelScale]}
@@ -331,6 +337,10 @@
 - {addr: 0x00841978, name: off_841978, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00841A98, name: g_VtblCMenuScreenEmbedded, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00841AE8, name: g_VtblCMenuMpServerInfo, type: uint8_t, uses: 1, src: auto}
+- {addr: 0x00841B44, name: g_ServerInfoFourthColumnWidth, type: float, uses: 1, src: auto}
+- {addr: 0x00841B48, name: g_ServerInfoStatisticColumnWidth, type: float, uses: 1, src: auto}
+- {addr: 0x00841B4C, name: g_ServerInfoNameColumnWidth, type: float, uses: 1, src: auto}
+- {addr: 0x00841B50, name: g_ServerInfoFirstColumnWidth, type: float, uses: 1, src: auto}
 - {addr: 0x00841C80, name: g_VtblCMenuLanguageSecondary, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x00842220, name: g_VtblCMenuLoadGame, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00842280, name: g_VtblCMenuLoadGameSub, type: uint8_t, uses: 1, src: auto}
@@ -372,7 +382,7 @@
 - {addr: 0x00846178, name: g_UnitFactorUpperBound, type: float, uses: 1, src: auto}
 - {addr: 0x00846234, name: g_FilmRandomScale, type: float, uses: 3, src: auto}
 - {addr: 0x0085807C, name: g_PreviewTimeoutAction, type: int, uses: 2, src: auto, alt: [g_SettingsWaitDuration]}
-- {addr: 0x0085E684, name: g_NumberFormattingMode, type: int, uses: 12, src: auto, alt: [g_MissionNumberFormattingMode]}
+- {addr: 0x0085E684, name: g_NumberFormattingMode, type: int, uses: 14, src: auto, alt: [g_MissionNumberFormattingMode]}
 - {addr: 0x0085ECD8, name: g_RowWordA_ECD8, type: uint16_t, uses: 1, src: auto}
 - {addr: 0x0085ECDA, name: g_RowWordB_ECDA, type: uint16_t, uses: 1, src: auto}
 - {addr: 0x0085ECDC, name: g_RowWordC_ECDC, type: uint16_t, uses: 1, src: auto}
