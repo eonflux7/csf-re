@@ -130,6 +130,19 @@ def reads_before_write(ea, db, reg):
             if prologue and (m == "mov" and ops in ("ebp, esp", "eax, dword ptr fs:[0]", "dword ptr fs:[0], esp")
                              or m == "sub" and dst == "esp"):
                 continue
+            if m == "push" and dst == reg:
+                # `push ecx; ...; fstp dword ptr [esp]`: room for a float argument, the pushed value is overwritten
+                # (0x439B20: both callers escalated on "reads ecx" against "pops nothing")
+                room = False
+                for j in ins[k:k + 4]:
+                    if j.mnemonic in ("call", "push", "pop", "ret") or j.mnemonic.startswith("j"):
+                        break
+                    if j.mnemonic in ("fstp", "fst", "mov") and j.op_str.split(",")[0].strip() == "dword ptr [esp]":
+                        room = True
+                        break
+                if room:
+                    prologue = False
+                    continue
             prologue = False
             if m == "push":
                 if re.search(rf"\b{reg}\b", dst):
