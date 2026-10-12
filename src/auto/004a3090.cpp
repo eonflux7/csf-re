@@ -10,7 +10,6 @@ CSF_FUNC(int, __fastcall, SceneMissionSetup_GetAnimationEntry, 0x00772120, (void
 // through GetValue8B0554()'s result (+0x1FC4), keyed by this->field_0048.
 static int __fastcall C_008344f0_GetSceneSetupAnimationEntry(C_008344f0* self, void* /*edx*/)
 {
-    GetValue8B0554();
     void* root = reinterpret_cast<void*>(static_cast<uintptr_t>(GetValue8B0554()));
     void* sceneSetup = CSF_AT(void*, root, 0x1FC4);
     return SceneMissionSetup_GetAnimationEntry(sceneSetup, nullptr, self->field_0048);

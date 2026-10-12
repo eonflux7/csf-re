@@ -16,11 +16,11 @@ last bits. A profile where the original faults or runs past the instruction cap 
   emudiff.py --tier diffed [--n 100] functions of an evidence tier (verify.py), summary at the end
   emudiff.py EA --obj FILE.obj       another object for the same address (an old revision, a candidate)
 """
-import argparse, collections, csv, gc, json, os, re, struct, sys
+import argparse, collections, csv, functools, gc, json, os, re, struct, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from unicorn import Uc, UcError, UC_ARCH_X86, UC_MODE_32, UC_HOOK_BLOCK, UC_HOOK_MEM_WRITE, UC_HOOK_MEM_UNMAPPED  # noqa: E402
+from unicorn import Uc, UcError, UC_ARCH_X86, UC_MODE_32, UC_HOOK_BLOCK, UC_HOOK_CODE, UC_HOOK_MEM_WRITE, UC_HOOK_MEM_UNMAPPED  # noqa: E402
 from unicorn import x86_const as X  # noqa: E402
 
 EXE = os.path.join(ROOT, "work", "pc", "CommXPC.exe")
@@ -46,6 +46,8 @@ NATIVE = {"_sqrt": "DD442404D9FAC3", "_sin": "DD442404D9FEC3", "_cos": "DD442404
 NATIVE_AT = {n: SYS_BASE + 0x100 + 16 * i for i, n in enumerate(NATIVE)}
 FLOATS = [0.0, 1.0, 0.5, 2.0, -1.0, 100.0]
 
+GARBAGE_HI = {(ZONES + 0x0A000100 + k * 0x100000) >> 16 for k in (1, 2, 3, 4)}  # initial edx, ebx, esi, edi
+SAVED_REGS = {ZONES + 0x0A000100 + k * 0x100000 for k in (2, 3, 4)}  # initial ebx, esi, edi
 BYTE_TYPES = ("bool", "char", "uint8_t", "unsigned char", "int8_t", "signed char", "_BOOL1", "BOOL1")
 
 _cache = {}
@@ -131,6 +133,7 @@ def proto(ea):
     return ecx, stack, (a.get("ret") or "int").strip(), 0 if conv == "__cdecl" else size
 
 
+@functools.lru_cache(maxsize=None)
 def eax_meaningless(ea):
     """No caller reads eax, or the original leaves it undefined on some path (api.py; the in-game diff's rule)."""
     def go():
@@ -144,6 +147,7 @@ def eax_meaningless(ea):
         return False
 
 
+@functools.lru_cache(maxsize=None)
 def returns_al(ea):
     """The original's last write to eax before some `ret` is to al only (setcc al / mov al / xor al, al): a byte
     return whatever the prototype says (0x468880: `or eax, -1; ...; setne al; ret`, typed int)."""
@@ -291,6 +295,7 @@ class Run:
         """own: [(start, end)] code that is the function itself. script: the original's events (replayed pops)."""
         self.ea, self.prof, self.own, self.obj, self.script = ea, prof, own, obj, script
         self.events, self.written, self.status, self.pending = [], set(), None, None
+        self.reserved_done = {}
         self.crt = crt_ranges()[0]
         # unicorn's hook closures refer to themselves and to the Uc: a finished Run (the image mapped, ~10 MB) is only
         # freed by the cyclic collector, which counts objects, not megabytes (8 workers of a sweep took 15 GB)
@@ -331,6 +336,17 @@ class Run:
                 uc.mem_write(s["base"], bytes(s["data"]))
             uc.mem_map(EXT_BASE, 0x1000)
         self.mapped = set()
+        if not obj:
+            # `push ebp; mov ebp, esp; push ecx [; push ecx]` reserves locals: the slot holds ecx until written, and
+            # the original may pass it on unwritten (0x516C50 forwards [ebp-4] as a 4th argument). It becomes
+            # stack fill, which same_args does not compare
+            raw = bytes(img[ea - IMG:ea - IMG + 5])
+            n = 2 if raw == b"\x55\x8B\xEC\x51\x51" else 1 if raw[:4] == b"\x55\x8B\xEC\x51" else 0
+            pr = proto(ea)
+            if not pr or pr[0]:  # a __thiscall keeps `this` in that slot on purpose (0x4A45D0 returns it from there)
+                n = 0
+            for k in range(n):
+                uc.hook_add(UC_HOOK_CODE, self.on_reserved, begin=ea + 4 + k, end=ea + 4 + k)
         uc.hook_add(UC_HOOK_BLOCK, self.on_block)
         uc.hook_add(UC_HOOK_MEM_WRITE, self.on_write)
         uc.hook_add(UC_HOOK_MEM_UNMAPPED, self.on_unmapped)
@@ -402,6 +418,11 @@ class Run:
             self.pending = addr
             uc.emu_stop()
         self.first = False
+
+    def on_reserved(self, uc, addr, size, _):
+        if not self.reserved_done.get(addr):  # the first pass through the prologue only (a recursive call re-enters)
+            self.reserved_done[addr] = True
+            uc.mem_write(uc.reg_read(X.UC_X86_REG_ESP), b"\xCC" * 4)
 
     def on_write(self, uc, access, addr, size, value, _):
         if not (STACK_LO <= addr < STACK_HI):
@@ -502,6 +523,7 @@ def close(a, b):
     return a == b or (a is not None and b is not None and abs(a - b) <= 1e-5 * max(1.0, abs(a), abs(b)))
 
 
+@functools.lru_cache(maxsize=None)
 def takes_ecx(target):
     """Does the callee read ecx before writing it (api.reads_before_write)? Unknown targets: yes. A prototype
     that says __thiscall for a function that never looks at ecx (0x70DDF0 `fld [..]; ret`) is no argument."""
@@ -516,6 +538,31 @@ def takes_ecx(target):
         return target not in db.F or bool(apimod.reads_before_write(target, db, "ecx"))
     except Exception:
         return True
+
+
+@functools.lru_cache(maxsize=None)
+def unread_args(target):
+    """Stack argument indices an ebp-framed callee never refers to (no `[ebp + 8 + 4k]` anywhere in it, and no
+    `lea` of its argument area): an allocator passed by value to an STL helper is a garbage dword in the
+    original, 0 or nothing in ours (0x502760 -> 0x500D60, 0x728160 -> 0x727540)."""
+    if not isinstance(target, int) or target not in functions():
+        return frozenset()
+    def go():
+        import capstone
+        return capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+    md = load("cs", go)
+    img, _ = exe_image()
+    if bytes(img[target - IMG:target - IMG + 3]) != b"\x55\x8B\xEC":
+        return frozenset()
+    used, text = set(), []
+    for a, b in own_ranges(target)[0]:
+        for ins in md.disasm(bytes(img[a - IMG:b - IMG]), a):
+            text.append(ins.op_str)
+            if ins.mnemonic == "lea" and "ebp +" in ins.op_str:
+                return frozenset()
+            for m in re.finditer(r"ebp \+ (0x[0-9a-f]+|\d+)\]", ins.op_str):
+                used.add((int(m.group(1), 0) - 8) // 4)
+    return frozenset(k for k in range(12) if k not in used)
 
 
 def same_args(eo, em):
@@ -539,6 +586,14 @@ def same_args(eo, em):
         for k in range(4):
             if (a >> 8 * k) & 0xFF == 0xCC:
                 mask &= ~(0xFF << 8 * k)
+        # the upper bytes are still the caller's ebx / esi / edi / edx: the original set bl (or bx) and pushed the
+        # whole register for a byte parameter the prototype calls int (0x48EF60 `sete bl; push ebx`)
+        if i in unread_args(eo[0]):
+            continue
+        if a in SAVED_REGS:
+            continue  # a register the prologue saved: the event counts more arguments than the original pushed
+        if a >> 16 in GARBAGE_HI:
+            mask &= 0xFF if (a >> 8) & 0xFF == 0x01 else 0xFFFF
         if (a ^ b) & mask:
             fa, fb = struct.unpack("<ff", struct.pack("<II", a, b))
             if mask == 0xFFFFFFFF and abs(a - b) < 64 and fa == fa and fb == fb and close(fa, fb) and abs(fa) > 1e-30:
@@ -603,7 +658,7 @@ def compare(ea, o, m):
         if bo != bm:
             bad.append(a)
     groups = sorted({a & ~3 for a in bad})
-    real = []
+    real, soft = [], []
     for g in groups:
         try:
             fo, fm = struct.unpack("<f", o.uc.mem_read(g, 4))[0], struct.unpack("<f", m.uc.mem_read(g, 4))[0]
@@ -615,7 +670,16 @@ def compare(ea, o, m):
             continue  # a pointer into each side's own frame / data
         if fo == fo and fm == fm and abs(wo - wm) < 64 and close(fo, fm):
             continue  # last bits of a float
+        tiny = lambda w, f: (w & 0x7FFFFFFF) == 0 or ((w & 0x7F800000) != 0 and abs(f) < 1e-30)
+        if tiny(wo, fo) and tiny(wm, fm) and (wo | wm) & 0x7F800000:
+            continue  # a float below anything the game computes against a zero (0x4E2110: -6.9e-32 vs -0.0)
+        fill = fill_word(g, o.prof)
+        if 0 < fill < 0x00800000 and fill in (wo, wm) and wo != wm:
+            soft.append(g)  # one side left a small int there, the other computed with it as a (denormal) float
+            continue
         real.append((g, wo, wm))
+    if soft and not real and not out:
+        return ["?float code over small ints (denormals: the emulator and float precision disagree)"]
     if real:
         g, wo, wm = real[0]
         out.append(f"{len(real)} dword(s) of memory differ, first at {g:08x}: "
