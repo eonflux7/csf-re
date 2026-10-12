@@ -44,7 +44,7 @@
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 3, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 27, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 103, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 104, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 8, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 11, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
@@ -193,10 +193,11 @@
 - {addr: 0x00830D20, name: g_fEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x00830DC0, name: g_fMinStepPos, type: float, uses: 1, src: auto}
 - {addr: 0x00830DC4, name: g_fMinStepNeg, type: float, uses: 1, src: auto}
-- {addr: 0x00830E2C, name: g_RadarAngleLoopLimit, type: float, uses: 1, src: auto}
+- {addr: 0x00830E2C, name: g_RadarAngleLoopLimit, type: float, uses: 2, src: auto, alt: [g_RadarTwoPiMinusEpsilon]}
 - {addr: 0x00830E44, name: g_RadarTwoPi, type: float, uses: 1, src: auto}
 - {addr: 0x00830E48, name: g_AudioAttenuationDistance, type: float, uses: 2, src: auto, alt: [g_MinimapZoomNormal]}
 - {addr: 0x00830E4C, name: g_MinimapZoomWide, type: float, uses: 1, src: auto}
+- {addr: 0x00830E54, name: g_RadarTwoPi, type: float, uses: 1, src: auto}
 - {addr: 0x00830E58, name: g_RadarDegToRad, type: float, uses: 1, src: auto}
 - {addr: 0x00830FA0, name: g_BriefingExtensionWord, type: 'std::uint32_t', uses: 1, src: auto}
 - {addr: 0x00830FA4, name: g_BriefingExtensionTerminator, type: char, uses: 1, src: auto}
@@ -448,6 +449,8 @@
 - {addr: 0x00869C58, name: g_QueryInitialState, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x00869C5C, name: g_RayCollisionMask, type: int, uses: 1, src: auto}
 - {addr: 0x00872CA4, name: g_vtbl_872CA4, type: void*, uses: 2, src: auto}
+- {addr: 0x0088664C, name: g_DwordRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x008866EC, name: g_DwordCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00886ACC, name: g_SixteenByteRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00886BA0, name: g_CopyRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00886C90, name: g_DwordPairRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
