@@ -188,6 +188,8 @@ CSF_TAIL_RET_STUB(20) CSF_TAIL_RET_STUB(24) CSF_TAIL_RET_STUB(28) CSF_TAIL_RET_S
 inline Tail tail_jump(void* self, void* target) {
     return (uint64_t)(uintptr_t)self | ((uint64_t)(uintptr_t)target << 32);
 }
+// A direct tail jump to an original function (`jmp 0x48E230` on the other branch): the target as CSF_ADDR_FN(addr).
+inline Tail tail_jump(void* self, uintptr_t target) { return tail_jump(self, (void*)target); }
 inline Tail tail_ret(uint32_t eax = 0) { return eax | ((uint64_t)(uintptr_t)&tail_ret_stub << 32); }
 inline Tail tail_ret(uint32_t eax, unsigned pop) {
     static void (*const stubs[9])() = {&tail_ret_stub, &tail_ret_stub_4, &tail_ret_stub_8, &tail_ret_stub_12,

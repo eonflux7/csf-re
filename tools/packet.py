@@ -383,7 +383,9 @@ def build(db, ea, with_asm_limit=400):
                    "caller's stack arguments, read only, args[0] is the first) and end it with\n"
                    "`return hook::tail_jump(obj, (*reinterpret_cast<void***>(obj))[0xNN / 4]);` (obj: what the "
                    "original puts in ecx for the target; then the jump target, with the slot's byte offset as a "
-                   "constant). A path where the original returns itself: `return hook::tail_ret(eax_value);` "
+                   "constant). A branch that jumps straight to another function (`jmp 0xADDR`): "
+                   "`return hook::tail_jump(obj, CSF_ADDR_FN(0xADDR));`. "
+                   "A path where the original returns itself: `return hook::tail_ret(eax_value);` "
                    "for a plain `ret`, `return hook::tail_ret(eax_value, N);` for `ret N`. Fn takes exactly those two "
                    "parameters whatever the original pops (a third one would pop stack arguments the jump target "
                    "still needs). Register with HOOK_TAIL(0xADDR, Fn, \"module\") instead of HOOK.")
