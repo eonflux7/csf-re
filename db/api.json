@@ -110155,7 +110155,7 @@
   "name": "RwFrameCreate",
   "name_src": "rwname",
   "votes": {
-   "RwFrameCreate": 5
+   "RwFrameCreate": 6
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -111223,7 +111223,7 @@
   "name": "RwRasterDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwRasterDestroy": 11
+   "RwRasterDestroy": 12
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -111588,7 +111588,7 @@
   "name": "RwCameraCreate",
   "name_src": "rwname",
   "votes": {
-   "RwCameraCreate": 2
+   "RwCameraCreate": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -114245,7 +114245,7 @@
   "name": "_rwObjectHasFrameSetFrame",
   "name_src": "rwname",
   "votes": {
-   "_rwObjectHasFrameSetFrame": 3
+   "_rwObjectHasFrameSetFrame": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -136673,7 +136673,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 408
+   "Mem_Alloc": 409
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -157526,7 +157526,7 @@
   "name": "Polygon_GrowEdgeArray",
   "name_src": "agent",
   "votes": {
-   "Polygon_GrowEdgeArray": 1
+   "Polygon_GrowEdgeArray": 3
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -157573,7 +157573,7 @@
   "name": "RecordArray_Grow_6D9EB0",
   "name_src": "agent",
   "votes": {
-   "GrowRecordArray": 3,
+   "GrowRecordArray": 4,
    "ArrayGrow": 1,
    "GrowAllocationRecordArray": 1
   },
@@ -157594,13 +157594,14 @@
   "file": "src/auto/006d9f30.cpp"
  },
  "006d9fa0": {
-  "name": "sub_6D9FA0",
-  "name_src": "addr",
+  "name": "ParticleSystemDefs_AllocSpawnState",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/006d9fa0.cpp"
  },
  "006d9fe0": {
   "name": "CreateStateObjectWithDefaults",
@@ -157636,6 +157637,7 @@
   "name": "S_006d24a0_RecreateRasters",
   "name_src": "agent",
   "votes": {
+   "S_006d24a0_ConfigureCamera": 1,
    "AppMain_ApplyRenderSettings": 1
   },
   "ret": "bool",
@@ -157718,22 +157720,24 @@
   "file": "src/auto/006da400.cpp"
  },
  "006da440": {
-  "name": "sub_6DA440",
-  "name_src": "addr",
+  "name": "RecordList_InsertAfter",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , const std::uint32_t* value",
+  "sig_src": "impl",
+  "file": "src/auto/006da440.cpp"
  },
  "006da550": {
-  "name": "sub_6DA550",
-  "name_src": "addr",
+  "name": "Polygon_InsertEdgeAtCursor",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint32_t* edgeData",
+  "sig_src": "impl",
+  "file": "src/auto/006da550.cpp"
  },
  "006da670": {
   "name": "ForwardWithSelfToSub6D9F30",
@@ -157867,6 +157871,7 @@
   "name": "ViewWindow_ResolveParam",
   "name_src": "vote",
   "votes": {
+   "S_006d2390_ResolveParam": 1,
    "ViewWindow_ResolveParam": 1
   },
   "ret": "char",
@@ -157887,16 +157892,17 @@
   "file": "src/auto/006db0d0.cpp"
  },
  "006db160": {
-  "name": "SceneLoader_RunDeferredClumpFinish",
-  "name_src": "vote",
+  "name": "S_006d24a0_InitializeCamera",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_RunDeferredClumpFinish": 1,
    "AppMain_ReleaseHighQualityResources": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_006d24a0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006db160.cpp"
  },
  "006db280": {
   "name": "sub_6DB280",
@@ -168301,7 +168307,9 @@
  "007012c0": {
   "name": "ParticleSystemDefs_InitSpawnState",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ParticleSystemDefs_InitSpawnState": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "void* self, void* , char a2",
@@ -209196,6 +209204,17 @@
   "ret": "void",
   "conv": "__cdecl",
   "params": "void* base, std::size_t count, std::size_t size, int (__cdecl* compare)(const void*, const void*)",
+  "sig_src": "vote"
+ },
+ "007aee43": {
+  "name": "_atexit",
+  "name_src": "ida",
+  "votes": {
+   "RegisterExitCallback": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "void (__cdecl* callback)()",
   "sig_src": "vote"
  },
  "007aee60": {
