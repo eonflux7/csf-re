@@ -51,7 +51,7 @@ DataTable { scrollbar-size-vertical: 1; }
 
 MOD_COLS = [("area", "area"), ("id", "module"), ("name", "name"), ("fns", "fns"), ("kb", "KB"),
             ("classes", "classes"), ("cls_open", "unnamed"), ("cls_held", "held"), ("prepped", "prepped"),
-            ("named", "fn named"), ("ph", "placeh."), ("done", "done"), ("pct", "done %B"), ("ok", "verified"),
+            ("named", "fn named"), ("ph", "placeh."), ("done", "done"), ("pct", "done %B"), ("ok", "installed"),
             ("exe", "executed"), ("diff", "diffed"), ("rev", "reviewed"), ("esc", "esc")]
 
 

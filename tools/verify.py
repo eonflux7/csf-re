@@ -15,7 +15,7 @@ mismatched.
 
 Pending: a done function whose current code was never *installed* in a passing smoke ("ok" = passing smokes with
 its hook installed, read from csf_hook.log). Grunt lanes commit gated functions without smoking; every deploy
-disables the pending ones (`pending --ini`), so the game always runs the verified baseline, and tools/verifier.py
+disables the pending ones (`pending --ini`), so the game always runs the installed baseline, and tools/verifier.py
 enables them a module group at a time, smokes, bisects, and quarantines what breaks.
 
 Usage:

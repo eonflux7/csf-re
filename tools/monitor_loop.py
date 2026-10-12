@@ -165,7 +165,7 @@ def stop_gauges(L, Z):
     return [("quarantined", q, v + q, th["--stop-quarantine"], q >= 2),
             ("review rejects", Z["rej"], Z["rev"], th["--stop-review"], Z["rej"] >= 2),
             # judged at wave end (wave_report, after the verify step): mid-production nearly all are pending
-            ("unverified", pend, Z["done"], th["--stop-pending"], Z["done"] >= 10 and
+            ("not installed", pend, Z["done"], th["--stop-pending"], Z["done"] >= 10 and
              L["stage"] in ("review", "report", "between"))]
 
 
@@ -219,7 +219,7 @@ def _stage_details(L, S, Z, rank):
             D["produce"].append(Text(f"{len(g['calls'])} in flight  ETA {M.dur(left / rate * 3600)}", style="dim"))
     V = M.cached("verifier", 15, M.verifier)
     if Z["done"]:
-        D["verify"].append(Text(f"verified {Z['ok']}/{Z['done']}", style="green" if Z["ok"] == Z["done"] else "yellow"))
+        D["verify"].append(Text(f"installed {Z['ok']}/{Z['done']}", style="green" if Z["ok"] == Z["done"] else "yellow"))
     if isinstance(V, dict) and V["alive"]:
         D["verify"].append(Text(V["phase"] or "smoking", style="bold cyan", no_wrap=True, overflow="ellipsis"))
     if isinstance(V, dict) and V["pending"] is not None:
@@ -286,7 +286,7 @@ def _now_next(L, Z, rank):
         nxt = (f"{nxt_wave}" + (" after a regression smoke" if L["parent"] and "--regress-every" in
                                 " ".join(L["parent"]["argv"]) else "")) if L["parent"] else "loop ends (single wave)"
     else:
-        now = "Between waves: " + ("regression smoke of the verified baseline (full coverage)" if L["ver"]
+        now = "Between waves: " + ("regression smoke of the installed baseline (full coverage)" if L["ver"]
                                    else "picking the next module by rank")
         nxt = nxt_wave
     return now, nxt

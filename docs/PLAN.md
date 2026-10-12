@@ -49,7 +49,22 @@ verify + link test + report run in the background). Each step also runs alone.
 3. **Install** (`verifier.py`, the wave's verify step; also runs alone next to lanes): its own detached tree, the
    installed baseline smoked alone first, then the module's pending functions enabled on top; crash report ->
    culprit (else bisect), diff mismatches -> quarantine (`queue/`). Every deploy keeps pending hooks off.
-4. **Consolidate**: `api.py build` (per commit), `linktest.py`; stop rule = quarantine rate or functions left pending.
+4. **Consolidate**: `api.py build` (per commit), `linktest.py`; stop rule = the module's own quarantine rate, or
+   functions left pending, or the full regression smoke (every 3 modules) failing twice in a row without a culprit.
+
+### Words (one meaning each)
+
+A function's status is only **todo** or **done** (`db/functions.csv`); the rest are labels on top.
+- Production says: **OK** (passed the gate, committed done + pending), **deferred** (no verdict, quota ran out;
+  retried by itself), **escalated** (every rung of the model ladder failed the gate; stays todo, goes to `queue/`).
+  Moving to the stronger model inside the ladder is the **next rung**, not an escalation.
+- The game says: **pending** (done, hook never on in a passing smoke; off in every deploy), **installed** (hook was
+  on in a passing smoke; older logs say "verified"), **quarantined** (blamed for a crash or a diff mismatch: file
+  to `queue/`, status back to todo).
+- Evidence of an installed function: **never ran** < **executed** < **diffed** (below).
+- **`queue/`** is the orchestrator's inbox. Ways in: escalated, quarantined, **review-rejected** (`review.py`; the
+  file stays in src/auto), **parked** (by hand, keeps the lanes off it). Lanes skip a function while its file is there.
+- **Waived** (`db/waivers.yaml`): one gate check switched off for one function, with the reason.
 
 Evidence per done function, weakest to strongest, always reported by these words (`verify.py report`, status):
 **never ran** (static checks only, even if installed in a passing smoke) < **executed** (ran in a smoke) <
@@ -70,7 +85,7 @@ The orchestrator (Opus, interactive) works `queue/` and the backlog below.
 ## Current focus (priority order)
 
 1. **Waves by centrality**: `wave --waves -1` runs them in rank order (rolling, see the loop) with the stop rule
-   and a full baseline regression smoke after each module.
+   and a full baseline regression smoke every 3 modules.
 2. **Escalation queue** (`queue/`, count in `status.py`): crash bisects, review findings and gate failures of the
    waves; the audio tail-forwarding thunks and the two usercall functions wait on hook.h helpers (backlog, Loop &
    tooling).
@@ -105,7 +120,8 @@ The orchestrator (Opus, interactive) works `queue/` and the backlog below.
 - [ ] The in-lane Codex review after the sharper prompt (2026-10-10): re-read 15 rejections; 10 of 14 were not
   behavior before (load order, INT_MIN, x87, phantom edi)
 - [ ] Monitor: the Loop tab still models captain naming as wave stages ("types", wave end; `monitor_loop.py`);
-  names moved to `tools/naming.py` on 2026-10-10
+  names moved to `tools/naming.py` on 2026-10-10. Its quarantine gauge counts every quarantine since the wave
+  started; `wave_report` counts the module's own (2026-10-12)
 
 ### Types & structure
 - [ ] Unclassed methods left (29% of undone ones): what remains comes from lookups through containers / tables
@@ -189,6 +205,10 @@ guards. One-shot scripts of that phase: `tools/setup/`. History: JOURNAL.
   offline. Tiers 1/2 stay (the only ground truth from the real game).
 
 ## Open decisions (for the user)
+
+- **Quarantine-rate stop rule per module** (`--stop-quarantine` 3%, at least 2). On 2026-10-11 gfx_hanim stopped the
+  run with 4 of 73: all real, 3 of them one bug class. Options: keep; raise it; or judge the rate over the run's
+  last ~300 installed functions instead of one module, so a small module can't stop a run on one bug class.
 
 - (not blocking until cutover) **RenderWare Audio replacement.** librw covers RW Graphics only. Options: reimplement
   the 40-function RWA boundary on our own backend (e.g. miniaudio/OpenAL + libvorbis), or reimplement RWA itself

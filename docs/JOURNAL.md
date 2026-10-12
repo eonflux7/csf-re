@@ -1192,3 +1192,25 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   0x4D9170 and 0x421B30 (classes C_0083dbb0, C_0082f9f8). Open: fix fixbuild, then prefix the ~150 unprefixed
   functions whose class is known from the binary (`db/types/this_class.json`).
 - User: no playtest milestone any more, run the waves to 100%. 27 functions pending (the fixes above), waves stopped.
+
+## 2026-10-12 — Where a day of waves went; what stops a run
+
+- 2026-10-11, 10:38-22:40: lanes produced for ~2.5 h (3654 functions, 642 KB, 260-280 KB/h while running). The
+  rest: ~2.5 h with both Codex logins at 100% (13:10-15:39), ~4 h stopped after regression checks, queue work.
+  One ~770-function run takes a bit over half of a Codex 5h window: ~250 KB per window is the sustained ceiling
+  (1116 KB of game code left: S 295, M 342, L 137, X 343).
+- The first model of each ladder passes the gate 94-100% of the time (Sonnet standing in on M: 80%). Ladders
+  are not where quality is lost; 77 functions entered `queue/` that day (2.1%).
+- In a run, closing modules (baseline + group + link test + full regression, ~4 min each, one at a time) took
+  longer than producing them: 29 min of production, close-out done 26 min later.
+- What stopped runs was not what I assumed. The regression check already quarantines culprits it can name and
+  passes. The stops: (a) 9 regression failures without a culprit: 5 single flakes of the savegame start (the
+  open NaN crash at 0x7FED32), 4 in a row from really broken code; (b) the quarantine-rate rule charged a
+  baseline smoke's quarantines of old functions to the module being closed (net_gathering_ddl "5/105": none of
+  the 5 were its own); (c) one regression check died after 17 minutes without a result line (cause unknown).
+- Changed: a regression failure without a culprit is run once more, two in a row stop; the rate rule counts the
+  module's own functions (others are reported as "+N of other modules"); `--regress-every` 3; "installed" instead
+  of "verified" in tool output; the ladder step is "rung" in call logs; PLAN has the word list.
+- Tier 3 after its repair: six real wrong-value bugs, false-alarm rate since the fixes unmeasured. It stays until
+  emudiff is gate grade. Next for emudiff: does it flag those six on their pre-fix revisions; then the 24
+  call-count and 21 call-target DIFFs of the never-executed sweep.

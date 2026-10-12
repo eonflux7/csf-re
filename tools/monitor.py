@@ -406,7 +406,7 @@ def area_of(m):
 
 
 def area_rows(S):
-    """Per area: modules (started / with code), bytes, bytes done, functions done / verified in game / diffed."""
+    """Per area: modules (started / with code), bytes, bytes done, functions done / installed in game / diffed."""
     out = {a: dict(area=a, mods=0, started=0, bytes=0, done_b=0, done=0, ok=0, diff=0, rev=0, rej=0)
            for a, _ in AREAS + [("other", ()), ("unnamed", ())]}
     for p_ in S["per"].values():
@@ -567,10 +567,10 @@ def verifier_line(V):
         ver = sum(e.get("verified", 0) for e in run)
         q = sum(len(e.get("quarantined") or []) for e in run)
         t.append(f"  last run {ago(last)} ago: ", style="dim")
-        t.append(f"{ver} verified", style="green")
+        t.append(f"{ver} installed", style="green")
         t.append(f", {q} quarantined", style="bold red" if q else "dim")
         tot_q = sum(len(e.get("quarantined") or []) for e in groups)
-        t.append(f"  (all runs: {sum(e.get('verified', 0) for e in groups)} verified, {tot_q} quarantined)",
+        t.append(f"  (all runs: {sum(e.get('verified', 0) for e in groups)} installed, {tot_q} quarantined)",
                  style="dim")
     return t
 
@@ -588,10 +588,10 @@ def review_line(G):
 
 
 def area_table(S):
-    """Areas: bytes done (bar), modules started, functions done / verified in game / diffed, review rejections."""
+    """Areas: bytes done (bar), modules started, functions done / installed in game / diffed, review rejections."""
     tb = Table(box=None, padding=(0, 1), show_edge=False, header_style="dim")
     for c, j in (("area", "left"), ("bytes done", "left"), ("", "right"), ("KB", "right"), ("modules", "right"),
-                 ("done", "right"), ("verified", "right"), ("diffed", "right"), ("reviewed", "right")):
+                 ("done", "right"), ("installed", "right"), ("diffed", "right"), ("reviewed", "right")):
         tb.add_column(c, justify=j, no_wrap=True)
     for r in area_rows(S):
         pct = r["done_b"] / max(1, r["bytes"]) * 100
@@ -718,7 +718,7 @@ def panel_progress(areas=True):
                 t.append(f"/{b:,}", style="dim")
             return t
         tb.add_row(lab("functions"), kv("named", G["named"] - G["ph"], G["fns"]), kv("done", G["done"], G["fns"]),
-                   kv("verified", G["ok"], G["done"]), kv("diffed", G["diff"], G["done"], "cyan"))
+                   kv("installed", G["ok"], G["done"]), kv("diffed", G["diff"], G["done"], "cyan"))
         tb.add_row("", kv("placeholders", G["ph"], st="yellow"), kv("escalated", G["esc"], st="red"),
                    kv("executed", G["exe"], G["done"], "cyan"), "")
         tb.add_row(lab("modules"), kv("named", Mo["named"], Mo["n"]), kv("prepped", Mo["prepped"], Mo["n"]),

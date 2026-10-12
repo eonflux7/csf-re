@@ -436,7 +436,7 @@ def _ask(backend, model, messages, key, effort="high"):
     with _live_lock:
         sysmsg = messages[0]["content"]
         # write = first attempt; then work() says what the call is: retry (same rung, gate errors attached),
-        # escalate (first call of a later rung) or evidence (answering the model's own evidence requests)
+        # rung (first call of a later rung) or evidence (answering the model's own evidence requests)
         kind = ("review" if sysmsg is REVIEW_SYSTEM
                 else "write" if len(messages) <= 2 else getattr(_tl, "step", "retry"))
         _live["calls"][cid] = dict(ea=getattr(_tl, "ea", 0), backend=backend, model=model,
@@ -634,7 +634,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
         if dk in dead:
             continue
         try:
-            _tl.step = "escalate" if first and attempt else "retry"
+            _tl.step = "rung" if first and attempt else "retry"  # "rung": first call of a later rung of the ladder
             text, usage = ask(backend, model, msgs, key, "high" if first else "max")
             usage_all.append(usage)
             code, meta = parse(text)
@@ -1413,7 +1413,7 @@ def lanes(args):
             pool.shutdown(wait=True, cancel_futures=True)
             break
         refill()
-    for o in list(open_mods):  # stopped with modules open: what they have is still verified
+    for o in list(open_mods):  # stopped with modules open: what they have is still checked in game
         if not broken:
             close(o)
     if not broken and flush():
@@ -1517,15 +1517,19 @@ def wave_report(args, mods, t0, since=None):
     still pending (never installed in a passing smoke). `installed` is exactly that: the hook was on in a smoke
     that passed; whether the function ran or was compared is the ledger's tier (verify.py report). One smoke
     failure the verifier can't attribute is reported, not counted as a defect; it leaves functions pending."""
-    v = q = 0
-    notes = []
+    v = 0
+    notes, quar = [], set()
     for r in _jsonl(VERIFIER_LOG):
         if r.get("ts", 0) >= (since or t0) and r.get("event") in ("group", "baseline"):
             v += r.get("verified", 0)
-            q += len(r.get("quarantined") or [])
+            quar.update(r.get("quarantined") or [])
             if r.get("note"):
                 notes.append(r["note"][:160])
     db = DB()
+    # the stop rule counts this module's functions only: a baseline smoke also quarantines older functions of other
+    # modules (2026-10-11: five diff mismatches of old code stopped the run as "net_gathering_ddl 5/105")
+    own = {e for e in quar if db.rows.get(int(e, 16), {}).get("module") in mods}
+    q, q_other = len(own), len(quar - own)
     try:
         led = json.load(open(os.path.join(ROOT, "db", "verify.json")))
     except (OSError, ValueError):
@@ -1541,11 +1545,13 @@ def wave_report(args, mods, t0, since=None):
     import verify
     depth = collections.Counter(t for ea, t in verify.tiers().items() if ea in eas)
     rep = dict(ts=time.time(), modules=sorted(mods), secs=round(time.time() - t0), installed=v, quarantined=q,
+               quarantined_other=q_other,
                diffed=depth["diffed"], executed=depth["executed"], never_ran=depth["gate"],
                done=len(done), pending=len(pend), notes=notes, stop=stop)
     with open(WAVES_LOG, "a") as f:
         f.write(json.dumps(rep) + "\n")
-    print(f"wave report: installed {v}, quarantined {q}, {len(pend)}/{len(done)} still pending; of the module's "
+    print(f"wave report: installed {v}, quarantined {q}" + (f" (+{q_other} of other modules)" if q_other else "") +
+          f", {len(pend)}/{len(done)} still pending; of the module's "
           f"done functions: diffed {depth['diffed']}, executed {depth['executed']}, never ran {depth['gate']}" + (f"\n  unattributed smoke failures: {len(notes)}" if notes else ""),
           flush=True)
     for x in stop:
@@ -1555,8 +1561,9 @@ def wave_report(args, mods, t0, since=None):
 
 def wave_close(args, o, n):
     """End-of-wave steps of one module of a rolling run (lanes' background worker, one module at a time): verify its
-    pending functions in game, link test, report; every --regress-every modules the verified baseline is smoked
-    with the widest coverage (verifier --baseline-only --full: what FR01's short start never reaches). Returns the
+    pending functions in game, link test, report; every --regress-every modules the installed baseline is smoked
+    with the widest coverage (verifier --baseline-only --full: what FR01's short start never reaches; a failure
+    without a culprit is run once more before it stops the run). Returns the
     reasons to stop the run ([] = go on)."""
     py = sys.executable
     tool = lambda *a: subprocess.run([py, os.path.join(ROOT, "tools", a[0]), *a[1:]]).returncode  # noqa: E731
@@ -1579,9 +1586,18 @@ def wave_close(args, o, n):
         tool("linktest.py")
         stop = [f"{o['name']}: {x}" for x in wave_report(args, {o["id"]}, o["t0"], since)["stop"]]
         if not stop and args.regress_every and n % args.regress_every == 0 and not args.no_verify:
-            print(f"wave {o['name']}: regression check (verified baseline, full coverage)", flush=True)
-            if tool("verifier.py", "--baseline-only", "--full"):
-                stop.append("regression check failed (work/verifier.log)")
+            # the verifier quarantines the culprits it can name and passes; it fails when it can't name any (a flaky
+            # crash, an interaction) or dies. One such failure is run again: of 9 on 2026-10-11, 5 were single
+            # flakes of the savegame start and 4 came in a row from code that was really broken
+            for attempt in (1, 2):
+                print(f"wave {o['name']}: regression check (installed baseline, full coverage)"
+                      + (", second run" if attempt == 2 else ""), flush=True)
+                rc = tool("verifier.py", "--baseline-only", "--full")
+                if not rc:
+                    break
+                print(f"wave {o['name']}: regression check failed without a culprit (exit {rc})", flush=True)
+            else:
+                stop.append("regression check failed twice in a row without a culprit (work/baseline_fail_*.log)")
         return stop
     except Exception as e:  # a tooling error here must not pass for a clean wave
         import traceback
@@ -1745,9 +1761,9 @@ if __name__ == "__main__":
                    "ranking runs out); each wave's report -> work/waves.jsonl")
     w.add_argument("--overlap", type=int, default=3, help="with --waves: modules open at once (the next one starts "
                    "while the earlier ones' slow tails finish; 1: one after another)")
-    w.add_argument("--regress-every", type=int, default=1, help="with --waves: full regression smoke of the verified "
+    w.add_argument("--regress-every", type=int, default=3, help="with --waves: full regression smoke of the installed "
                    "baseline every N waves (0: off)")
-    w.add_argument("--stop-quarantine", type=float, default=0.03, help="stop rule: quarantined / verified+quarantined")
+    w.add_argument("--stop-quarantine", type=float, default=0.03, help="stop rule: the module's quarantined / installed+quarantined")
     w.add_argument("--stop-pending", type=float, default=0.25, help="stop rule: module's done functions never installed "
                    "in a passing smoke")
     sub.add_parser("cost")

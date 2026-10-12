@@ -2,7 +2,7 @@
 """Verify loop: the game-side half of the RE loop, decoupled from production (grunt lanes no longer smoke).
 
 Grunt lanes commit gated functions as *pending* (tools/verify.py: never installed in a passing smoke); every deploy
-disables pending hooks, so the game runs the verified baseline. This loop takes the pending functions a module group
+disables pending hooks, so the game runs the installed baseline. This loop takes the pending functions a module group
 at a time and:
 
   1. builds the committed HEAD in its own detached tree (work/verify-tree; in-flight lanes files never get in)
@@ -20,9 +20,9 @@ Usage:
   verifier.py --module m53A0F0,gui_listbox    only these modules' pending functions
   verifier.py --groups 1       one group and stop
   verifier.py --dry            show the groups, run nothing
-  verifier.py --baseline-only --full   regression check: the verified baseline alone (menu tour + savegame),
+  verifier.py --baseline-only --full   regression check: the installed baseline alone (menu tour + savegame),
                                culprits quarantined; `grunt.py wave --waves` runs it between waves
-First the verified baseline alone is smoked (--no-baseline skips it); its culprits are quarantined the same way.
+First the installed baseline alone is smoked (--no-baseline skips it); its culprits are quarantined the same way.
 One instance at a time (work/verify.lock); the play copy is the verifier's alone while it runs.
 """
 import argparse, collections, csv, fcntl, json, os, re, shutil, subprocess, sys, time
@@ -184,9 +184,9 @@ def record(**kw):
 
 
 def baseline(starts):
-    """The verified baseline alone (every pending hook off) must pass; a failure there is in verified code (a smoke
+    """The installed baseline alone (every pending hook off) must pass; a failure there is in installed code (a smoke
     that never covered the path: e.g. menu-tour-only lanes smokes broke the FR01 scene start). Culprits among the
-    verified functions are found the same way (crash report first) and quarantined. Returns (ok, quarantined)."""
+    installed functions are found the same way (crash report first) and quarantined. Returns (ok, quarantined)."""
     verified = [int(os.path.basename(p)[:8], 16) for p in sorted(os.listdir(os.path.join(TREE, "src", "auto")))
                 if p.endswith(".cpp")]
     pend = {int(e, 16) for e in verify.pending()}
@@ -223,7 +223,7 @@ def baseline(starts):
                 return False, bad
             cs = [f"{c:08x}" for c in culprits]
             print(f"baseline: culprits {' '.join(cs)} ({why})", flush=True)
-            quarantine(cs, f"breaks the verified baseline (verifier bisect: {why})", out)
+            quarantine(cs, f"breaks the installed baseline (verifier bisect: {why})", out)
             bad += cs
             for c in cs:  # off in this deploy too, until the tree is rebuilt without them
                 open(INI, "a").write(f"disable 0x{c.upper()} {verify.PENDING_TAG}\n")
@@ -233,7 +233,7 @@ def baseline(starts):
 
 
 def verify_group(group, starts):
-    """Returns (verified, quarantined, note)."""
+    """Returns (installed, quarantined, note)."""
     on, bad, note = list(group), [], ""
     for (secs, env), first in zip(starts, first_round(starts)):
         for attempt in range(6):  # each failing run removes >= 1 culprit
@@ -274,8 +274,8 @@ def main():
     ap.add_argument("--full", action="store_true", help="menu tour + savegame too, per group")
     ap.add_argument("--dry", action="store_true")
     ap.add_argument("--no-baseline", action="store_true", help="skip the baseline smoke (all pending off) first")
-    ap.add_argument("--baseline-only", action="store_true", help="smoke the verified baseline alone and stop "
-                    "(regression check of everything verified so far; with --full the widest coverage)")
+    ap.add_argument("--baseline-only", action="store_true", help="smoke the installed baseline alone and stop "
+                    "(regression check of everything installed so far; with --full the widest coverage)")
     a = ap.parse_args()
     lk = open(os.path.join(ROOT, "work", "verify.lock"), "w")
     try:
@@ -294,7 +294,7 @@ def main():
                 record(event="build_failed", head=head)
                 return 1
             deploy([])
-            phase("regression: verified baseline smoke" + (" (full)" if a.full else ""))
+            phase("regression: installed baseline smoke" + (" (full)" if a.full else ""))
             ok, bad = baseline(FULL if a.full else SHORT)
             phase("finished")
             print(f"baseline{' (full)' if a.full else ''}: {'ok' if ok else 'FAILED'}, {len(bad)} quarantined", flush=True)
@@ -302,7 +302,7 @@ def main():
             if bad:
                 repo.commit(["db/verify.json", "db/functions.csv"] + [f"src/auto/{e}.cpp" for e in bad] +
                             [f"queue/{e}.md" for e in bad],
-                            f"verifier: {len(bad)} functions quarantined (they broke the verified baseline)")
+                            f"verifier: {len(bad)} functions quarantined (they broke the installed baseline)")
             verify.write_pending_ini(INI)
             return 0 if ok else 1
     mods = set(a.module.split(",")) if a.module else None
@@ -324,7 +324,7 @@ def main():
             return 0
         if not gs or (a.groups and done_groups >= a.groups):
             phase("finished")
-            verify.write_pending_ini(INI)  # leave the play copy on the verified baseline
+            verify.write_pending_ini(INI)  # leave the play copy on the installed baseline
             return 0
         if not checked_baseline:
             deploy([])
@@ -333,7 +333,7 @@ def main():
             if bad:
                 repo.commit(["db/verify.json", "db/functions.csv"] + [f"src/auto/{e}.cpp" for e in bad] +
                             [f"queue/{e}.md" for e in bad],
-                            f"verifier: {len(bad)} functions quarantined (they broke the verified baseline)")
+                            f"verifier: {len(bad)} functions quarantined (they broke the installed baseline)")
             record(event="baseline", ok=ok, quarantined=bad, head=head)
             if not ok:
                 return 1
