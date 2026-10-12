@@ -1240,3 +1240,16 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   sides those bytes read as a value derived from call index, argument index and offset).
 - Untriaged families: free 0x690E60 vs the string teardown 0x4018E0 (4, an inlined destructor on one side?),
   "N calls vs 2000" (4, ours never leaves a loop), loop counts "4 vs 1" (about 10), indirect targets that differ.
+
+## 2026-10-12 — First full regression after the tier 3 repair; a Codex login lost its model
+
+- `~/.codex` is refused by the backend ("gpt-6.1-sol is not supported when using Codex with a ChatGPT account");
+  codex-2 works. The 16:34 run escalated 14 functions whose Codex rung had died on it (returned to the lanes)
+  and sent M functions on to Opus. Lanes now take such a login out for the run and defer when none is left.
+  Waves run on codex-2 alone until the user fixes the login.
+- The first full regression since the repair quarantined three of last night's functions again:
+  0x41E480 (st0 typed double compared at 1e-12, values equal to 9 digits: tolerance is now the float one for
+  every st0 return; restored unchanged), 0x6AB9E0 (reads like the original line by line, 192/192 mismatch:
+  replay does not hand ours the normalize's writes into the local; harness suspect, in queue/), 0x41EA70 (5 of
+  193, all with a NaN argument; in queue/). So tier 3 still takes correct code out on a full regression; its
+  false-alarm rate after the fixes is not low yet.

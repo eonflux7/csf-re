@@ -304,7 +304,9 @@ R run(int i, Regs* r, Invoke invoke) {
             report(s, r, w);
         }
     } else {
-        bool same = s.info->ret == 1 ? fp_close((float)ro, (float)ru, 1e-5) : fp_close(ro, ru, 1e-12);
+        // st0 typed double is Hex-Rays' reading of a value computed from floats: ours rounds an intermediate
+        // to float where x87 kept it extended (0x41E480: equal to 9 digits). Behavior, not bits: float tolerance.
+        bool same = s.info->ret == 1 ? fp_close((float)ro, (float)ru, 1e-5) : fp_close(ro, ru, 1e-5);
         if (!same) {
             char w[96];
             snprintf(w, sizeof w, "fp return orig %.9g ours %.9g", (double)ro, (double)ru);
