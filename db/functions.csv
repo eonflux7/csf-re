@@ -4066,7 +4066,7 @@ ea,size,region,module,name,name_src,status
 004aab30,30,game,m4A9CA0,,,todo
 004aab50,30,game,m4A9CA0,,,todo
 004aab70,71,game,m4A9CA0,,,todo
-004aabc0,185,game,m4A9CA0,,,todo
+004aabc0,185,game,m4A9CA0,AiAlert_GetStateName,vote,todo
 004aac90,77,game,m4A9CA0,,,todo
 004aace0,184,game,m4A9CA0,AiStatic_DispatchAction,vote,todo
 004aada0,222,game,m4A9CA0,,,todo
@@ -4080,7 +4080,7 @@ ea,size,region,module,name,name_src,status
 004ab120,17,game,m4A9CA0,,,todo
 004ab140,245,game,m4A9CA0,,,todo
 004ab240,81,game,m4A9CA0,,,todo
-004ab2a0,203,game,m4A9CA0,,,todo
+004ab2a0,203,game,m4A9CA0,TAiState_GetName,vote,todo
 004ab390,9,game,m4A9CA0,,,todo
 004ab3a0,192,game,m4A9CA0,,,todo
 004ab460,17,game,m4A9CA0,,,todo
@@ -4095,7 +4095,7 @@ ea,size,region,module,name,name_src,status
 004ab810,166,game,m4A9CA0,,,todo
 004ab8c0,77,game,m4A9CA0,,,todo
 004ab910,121,game,m4A9CA0,,,todo
-004ab990,69,game,m4A9CA0,,,todo
+004ab990,69,game,m4A9CA0,AiAlert_StartWeaponAction,vote,todo
 004ab9e0,59,game,m4A9CA0,,,todo
 004aba20,45,game,m4A9CA0,,,todo
 004aba50,59,game,m4A9CA0,,,todo
@@ -11445,7 +11445,7 @@ ea,size,region,module,name,name_src,status
 0064eb00,92,netz,,,,lib
 0064eb60,58,netz,,,,lib
 0064eba0,18,netz,,ObjectBase_Initialize,vote,lib
-0064ebc0,11,netz,,,,lib
+0064ebc0,11,netz,,NetSpawnMessages_DestroyBase,vote,lib
 0064ebd0,93,netz,,,,lib
 0064ec60,267,netz,,,,lib
 0064ed70,3,netz,,,,lib
@@ -19233,8 +19233,8 @@ ea,size,region,module,name,name_src,status
 007613c0,15,game,m75FDF0,,,todo
 007613d0,15,game,m75FDF0,AiDistracted_GetFutureErrorText,vote,todo
 007613e0,15,game,m75FDF0,AiDistracted_QueryLinkedStatusText,vote,todo
-007613f0,15,game,m75FDF0,,,todo
-00761400,15,game,m75FDF0,,,todo
+007613f0,15,game,m75FDF0,AiAlert_GetErrorDescription,vote,todo
+00761400,15,game,m75FDF0,AiAlert_LookupDescription,vote,todo
 00761410,138,game,m75FDF0,Hud_FindTextureEntryIndex,vote,todo
 007614a0,15,game,m75FDF0,GameConfig_GetDifficultyName,vote,todo
 007614b0,93,game,m75FDF0,,,todo
@@ -20474,7 +20474,7 @@ ea,size,region,module,name,name_src,status
 007a6840,121,netz,,,,lib
 007a68c0,15,netz,,,,lib
 007a68d0,31,netz,,,,lib
-007a68f0,8,netz,,,,lib
+007a68f0,8,netz,,SetSpawnObjectEnabled,vote,lib
 007a6900,28,netz,,,,lib
 007a6920,31,netz,,,,lib
 007a6960,24,netz,,,,lib
@@ -20483,7 +20483,7 @@ ea,size,region,module,name,name_src,status
 007a6a10,54,netz,,,,lib
 007a6a50,109,netz,,,,lib
 007a6ac0,150,netz,,,,lib
-007a6b60,38,netz,,,,lib
+007a6b60,38,netz,,RegisterSpawnId,vote,lib
 007a6b90,75,netz,,,,lib
 007a6be0,72,netz,,,,lib
 007a6c30,50,netz,,,,lib
@@ -20579,14 +20579,14 @@ ea,size,region,module,name,name_src,status
 007a9a70,19,netz,,,,lib
 007a9a90,109,netz,,,,lib
 007a9b00,20,netz,,,,lib
-007a9b20,36,netz,,,,lib
-007a9b50,130,netz,,,,lib
-007a9be0,67,netz,,,,lib
+007a9b20,36,netz,,SendSpawnMessage,vote,lib
+007a9b50,130,netz,,ProcessSpawnMessage,vote,lib
+007a9be0,67,netz,,RemoveSpawnEntryBase,vote,lib
 007a9c30,46,netz,,,,lib
-007a9c60,56,netz,,,,lib
+007a9c60,56,netz,,DestroySpawnMessageBase,vote,lib
 007a9ca0,76,netz,,,,lib
 007a9cf0,120,netz,,,,lib
-007a9d70,66,netz,,,,lib
+007a9d70,66,netz,,NetSpawnMessages_InitializeBase,vote,lib
 007a9dd0,62,netz,,,,lib
 007a9e10,19,netz,,,,lib
 007a9e30,20,netz,,,,lib
