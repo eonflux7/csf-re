@@ -6979,7 +6979,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 125
+   "S_0041e5f0_GrowArrayCapacity": 127
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -46893,7 +46893,7 @@
   "name": "AiCore_DestroyEmbeddedTask",
   "name_src": "vote",
   "votes": {
-   "AiCore_DestroyEmbeddedTask": 2
+   "AiCore_DestroyEmbeddedTask": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -48003,7 +48003,8 @@
   "name": "TOrden_DestroyOrderTask",
   "name_src": "agent",
   "votes": {
-   "AiCore_DestroyOrderTask": 2
+   "AiCore_DestroyOrderTask": 2,
+   "TOrden_DestroyOrderTask": 1
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -48955,13 +48956,14 @@
   "sig_src": "abi"
  },
  "004b8c80": {
-  "name": "sub_4B8C80",
-  "name_src": "addr",
+  "name": "S_004ad990_ResetCombatOrderFields",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_004ad990* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004b8c80.cpp"
  },
  "004b8cd0": {
   "name": "sub_4B8CD0",
@@ -48998,8 +49000,9 @@
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , void* src",
+  "sig_src": "impl",
+  "file": "src/auto/004b8fd0.cpp"
  },
  "004b9030": {
   "name": "sub_4B9030",
@@ -49018,8 +49021,9 @@
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, char* Format, ...",
-  "sig_src": "vote"
+  "params": "int a1, const char* Format, ...",
+  "sig_src": "impl",
+  "file": "src/auto/004b90c0.cpp"
  },
  "004b9120": {
   "name": "TaskCheck_4B9120",
@@ -49040,8 +49044,9 @@
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1, int a2",
-  "sig_src": "vote"
+  "params": "int firstCandidate, int ctx",
+  "sig_src": "impl",
+  "file": "src/auto/004b9320.cpp"
  },
  "004b93b0": {
   "name": "AiCore_InitializeFallbackQuery",
@@ -49049,10 +49054,11 @@
   "votes": {
    "AiCore_InitializeFallbackQuery": 2
   },
-  "ret": "uint32_t*",
+  "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004b93b0.cpp"
  },
  "004b93e0": {
   "name": "AiCore_ConstructCombatState",
@@ -49083,8 +49089,9 @@
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "TFncMacroOrden* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004b94c0.cpp"
  },
  "004b9540": {
   "name": "TFncMacroOrden_GetTypeId",
@@ -49110,7 +49117,7 @@
   "name": "AiCore_DestroyCombatTask",
   "name_src": "vote",
   "votes": {
-   "AiCore_DestroyCombatTask": 1
+   "AiCore_DestroyCombatTask": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -49129,31 +49136,34 @@
   "sig_src": "vote"
  },
  "004b96b0": {
-  "name": "sub_4B96B0",
-  "name_src": "addr",
+  "name": "TCombate_DeletingDestroy",
+  "name_src": "impl",
   "votes": {},
   "ret": "char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/004b96b0.cpp"
  },
  "004b96e0": {
-  "name": "sub_4B96E0",
-  "name_src": "addr",
+  "name": "TFncMacroOrden_Destroy",
+  "name_src": "impl",
   "votes": {},
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "TFncMacroOrden* self, void* , char freeMemory",
+  "sig_src": "impl",
+  "file": "src/auto/004b96e0.cpp"
  },
  "004b9720": {
-  "name": "sub_4B9720",
-  "name_src": "addr",
+  "name": "C_0083aa80_ResetCombatState",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0083aa80* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004b9720.cpp"
  },
  "004b97a0": {
   "name": "sub_4B97A0",
@@ -53319,7 +53329,7 @@
   "name": "C_004D10F0_ResetFields",
   "name_src": "agent",
   "votes": {
-   "C_004D10F0_ResetFields": 17
+   "C_004D10F0_ResetFields": 18
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -57116,7 +57126,7 @@
   "name": "C_0082d410_SetVtable",
   "name_src": "agent",
   "votes": {
-   "C_0082d410_SetVtable": 9
+   "C_0082d410_SetVtable": 10
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -57199,7 +57209,7 @@
   "name": "TAiState_Constructor",
   "name_src": "agent",
   "votes": {
-   "TAiState_Constructor": 1
+   "TAiState_Constructor": 2
   },
   "ret": "TAiState*",
   "conv": "__fastcall",
@@ -96064,7 +96074,7 @@
   "name": "RpWorldRemoveLight",
   "name_src": "rwname",
   "votes": {
-   "RpWorldRemoveLight": 4
+   "RpWorldRemoveLight": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -96075,7 +96085,7 @@
   "name": "RpLightGetWorld",
   "name_src": "rwname",
   "votes": {
-   "RpLightGetWorld": 5
+   "RpLightGetWorld": 6
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -133716,7 +133726,7 @@
   "name": "GetCachedObjectProvider",
   "name_src": "vote",
   "votes": {
-   "GetCachedObjectProvider": 193
+   "GetCachedObjectProvider": 197
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -136438,7 +136448,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 389
+   "Mem_Alloc": 391
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -136449,7 +136459,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 758
+   "Mem_Free": 761
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -145983,7 +145993,7 @@
   "votes": {
    "C_00860288_ReadVector": 1,
    "C_00860288_GetColor": 1,
-   "C_00860288_GetTintColorDwords": 1
+   "C_00860288_GetTintColorDwords": 2
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -146910,7 +146920,7 @@
   "name": "GetBit2OfField4",
   "name_src": "agent",
   "votes": {
-   "GetBit2OfField4": 7
+   "GetBit2OfField4": 8
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -147293,7 +147303,7 @@
   "name_src": "agent",
   "votes": {
    "SceneLoader_GetObjectAttachment": 18,
-   "GfxObjectProps_GetObjectAttachment": 20
+   "GfxObjectProps_GetObjectAttachment": 21
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -147352,7 +147362,7 @@
   "name": "GfxSkin_GetDistanceOverrideOwner",
   "name_src": "agent",
   "votes": {
-   "GfxSkin_GetDistanceOverrideOwner": 6
+   "GfxSkin_GetDistanceOverrideOwner": 7
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -147401,7 +147411,7 @@
   "name": "GfxProps_ReadPropertyTableEntry",
   "name_src": "agent",
   "votes": {
-   "GfxProps_ReadPropertyTableEntry": 2
+   "GfxProps_ReadPropertyTableEntry": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -154862,8 +154872,10 @@
  },
  "006d0f40": {
   "name": "GfxLights_TryAddLightWithBounds",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "LightObjectCheckAgainstEntry": 1
+  },
   "ret": "bool",
   "conv": "__cdecl",
   "params": "void* lightObject, float* bounds",
@@ -154898,7 +154910,8 @@
   "name": "GfxLights_ApplyPropertyEntries",
   "name_src": "agent",
   "votes": {
-   "GfxLights_ApplyFilteredLightProperties": 1
+   "GfxLights_ApplyFilteredLightProperties": 1,
+   "GfxLights_CommitLightList": 1
   },
   "ret": "uint32_t",
   "conv": "__stdcall",
@@ -154907,13 +154920,16 @@
   "file": "src/auto/006d1050.cpp"
  },
  "006d10c0": {
-  "name": "sub_6D10C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxLights_ApplyLightParamsAndClearSlots",
+  "name_src": "agent",
+  "votes": {
+   "S_006d10c0_ApplyColor": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int* a2, char a3, int a4, int a5, int a6",
-  "sig_src": "abi"
+  "params": "S_006d10c0* self, void* , uint32_t* a2, char a3, int a4, int a5, int a6",
+  "sig_src": "impl",
+  "file": "src/auto/006d10c0.cpp"
  },
  "006d1150": {
   "name": "GfxLights_AddVector4ToDest",
@@ -155083,8 +155099,10 @@
  },
  "006d1730": {
   "name": "GfxLights_FillIntensityFromSceneEntry",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "GfxLights_GetObjectSecondaryColor": 1
+  },
   "ret": "void",
   "conv": "__cdecl",
   "params": "int objectIndex, float* outColor",
@@ -155104,15 +155122,16 @@
   "file": "src/auto/006d17b0.cpp"
  },
  "006d19b0": {
-  "name": "LightWorld_ProcessLightEntry",
-  "name_src": "vote",
+  "name": "S_006d10c0_ConfigureObjectLights",
+  "name_src": "agent",
   "votes": {
    "LightWorld_ProcessLightEntry": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* arg0, void* a3",
-  "sig_src": "vote"
+  "params": "S_006d10c0* self, void* , C_00860288* lights, C_0085ec18* object",
+  "sig_src": "impl",
+  "file": "src/auto/006d19b0.cpp"
  },
  "006d1c70": {
   "name": "GfxLights_ForwardToActiveWorld",
@@ -155147,8 +155166,8 @@
   "file": "src/auto/006d1cb0.cpp"
  },
  "006d1d30": {
-  "name": "C_00860e68_AttachLight",
-  "name_src": "vote",
+  "name": "C_00860e68_DetachLightFromWorld",
+  "name_src": "agent",
   "votes": {
    "C_00860e68_AttachLight": 1,
    "WorldLights_AttachLight": 1,
@@ -155156,8 +155175,9 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "vote"
+  "params": "C_00860e68* self, void* , C_0085e7b8* a2",
+  "sig_src": "impl",
+  "file": "src/auto/006d1d30.cpp"
  },
  "006d1db0": {
   "name": "C_00860e68_RegisterLight",
@@ -155172,17 +155192,18 @@
   "file": "src/auto/006d1db0.cpp"
  },
  "006d1ea0": {
-  "name": "sub_6D1EA0",
-  "name_src": "addr",
+  "name": "C_00860e68_CreateLightObject",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_00860e68* self, void* , int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/006d1ea0.cpp"
  },
  "006d1ef0": {
   "name": "LightWorld_CreateAndAttachLight",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -155203,13 +155224,14 @@
   "file": "src/auto/006d1f30.cpp"
  },
  "006d1f90": {
-  "name": "sub_6D1F90",
-  "name_src": "addr",
+  "name": "C_00860e68_AddLightToWorld",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00860e68* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/006d1f90.cpp"
  },
  "006d2000": {
   "name": "C_00860e68_AddLightIfNotCurrent",
@@ -155233,7 +155255,7 @@
  },
  "006d20d0": {
   "name": "C_00860e68_AppendLightAndAttach",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -155264,7 +155286,9 @@
  "006d2270": {
   "name": "C_00860e68_DetachLightList",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "RefreshAtomicPipelineState": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "C_00860e68* self, void*",
@@ -155272,8 +155296,8 @@
   "file": "src/auto/006d2270.cpp"
  },
  "006d22a0": {
-  "name": "C_00860e68_FireTimedAction",
-  "name_src": "vote",
+  "name": "C_00860e68_DetachAllLights",
+  "name_src": "agent",
   "votes": {
    "C_00860e68_FireTimedAction": 1
   },
@@ -155295,14 +155319,15 @@
  },
  "006d2310": {
   "name": "C_008631c8_PrepareAtomicForPipeline",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_008631c8_PrepareAtomicForPipeline": 1
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_00860e68* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/006d2310.cpp"
  },
  "006d2390": {
   "name": "S_006d2390_ClearLights",
@@ -155318,7 +155343,7 @@
  },
  "006d2440": {
   "name": "S_006d2390_ReleaseBuffers",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -155327,15 +155352,16 @@
   "file": "src/auto/006d2440.cpp"
  },
  "006d24a0": {
-  "name": "GfxLights_ReleaseOwnedState",
-  "name_src": "vote",
+  "name": "S_006d24a0_Release",
+  "name_src": "agent",
   "votes": {
    "GfxLights_ReleaseOwnedState": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_006d24a0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006d24a0.cpp"
  },
  "006d2520": {
   "name": "C_00860e68_ReleaseBaseState",
@@ -166604,7 +166630,7 @@
   "name": "C_00861988_SetSecondaryParameters",
   "name_src": "vote",
   "votes": {
-   "C_00861988_SetSecondaryParameters": 1
+   "C_00861988_SetSecondaryParameters": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -166626,7 +166652,7 @@
   "name": "C_00861988_SetTertiaryParameters",
   "name_src": "vote",
   "votes": {
-   "C_00861988_SetTertiaryParameters": 2
+   "C_00861988_SetTertiaryParameters": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -166645,13 +166671,16 @@
   "sig_src": "vote"
  },
  "006fd0c0": {
-  "name": "sub_6FD0C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxLights_ClearLightFlag",
+  "name_src": "vote",
+  "votes": {
+   "GfxLights_ClearLightFlag": 1,
+   "GfxLights_SetParameterMode": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006fd0e0": {
   "name": "C_00861988_ApplyParameters",
@@ -166769,13 +166798,15 @@
   "sig_src": "abi"
  },
  "006fd540": {
-  "name": "sub_6FD540",
-  "name_src": "addr",
-  "votes": {},
+  "name": "LightObject_Init",
+  "name_src": "vote",
+  "votes": {
+   "LightObject_Init": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006fd5d0": {
   "name": "sub_6FD5D0",
@@ -208675,7 +208706,7 @@
   "name_src": "ida",
   "votes": {
    "CrtVsprintf": 1,
-   "_vsprintf": 1
+   "_vsprintf": 2
   },
   "ret": "int",
   "conv": "__cdecl",
