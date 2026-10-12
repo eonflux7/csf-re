@@ -205,7 +205,7 @@
 - {addr: 0x00833DA0, name: g_DegreesToRadians, type: float, uses: 3, src: auto, alt: [g_SelectionDegreesToRadians]}
 - {addr: 0x00833E00, name: g_ScaleXZ_0_45, type: float, uses: 1, src: auto}
 - {addr: 0x00833E04, name: g_fGroundProbeOffset, type: float, uses: 1, src: auto}
-- {addr: 0x00833E20, name: g_SearchBoundsPadding, type: float, uses: 3, src: auto}
+- {addr: 0x00833E20, name: g_SearchBoundsPadding, type: float, uses: 4, src: auto}
 - {addr: 0x00833E2C, name: g_fRepeatDelay, type: float, uses: 1, src: auto}
 - {addr: 0x00833E30, name: g_SelectionRetryInterval, type: double, uses: 1, src: auto}
 - {addr: 0x00833E34, name: g_SelectionRefreshInterval, type: float, uses: 1, src: auto}
@@ -467,6 +467,13 @@
 - {addr: 0x0088BA8C, name: g_TwentyFourByteCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088C028, name: g_DwordRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088C208, name: g_CopyDwordExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088C2DC, name: g_CopyTwoDwordRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088C32C, name: g_MpRulesCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088C4A0, name: g_MpRulesRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088C540, name: g_MpRulesUnwindState, type: int, uses: 1, src: auto}
+- {addr: 0x0088C664, name: g_CopyRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088C788, name: g_MpRulesRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088C7D8, name: g_SixteenByteCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088FD38, name: g_DwordPairRangeUnwindData, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088FE28, name: g_GfxObjectPropsExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00890284, name: g_MenuElementRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
@@ -1631,8 +1638,8 @@
 - {addr: 0x008B0690, name: g_MpSessionState, type: int, uses: 0, src: opus}
 - {addr: 0x008B0694, name: g_CharacterSelectState8B0694, type: uint32_t, uses: 38, src: auto}
 - {addr: 0x008B0698, name: g_MenuMPCharacterSelect_LastState, type: uint32_t, uses: 3, src: auto}
-- {addr: 0x008B08F4, name: g_Value_8B08F4, type: int, uses: 1, src: auto}
-- {addr: 0x008B08F8, name: g_Value_8B08F8, type: int32_t, uses: 1, src: auto}
+- {addr: 0x008B08F4, name: g_Value_8B08F4, type: int, uses: 3, src: auto, alt: [g_Value8b08f4]}
+- {addr: 0x008B08F8, name: g_Value_8B08F8, type: int, uses: 3, src: auto}
 - {addr: 0x008B0901, name: g_AccountMenuStateFlag, type: 'std::uint8_t', uses: 3, src: auto}
 - {addr: 0x008B0902, name: g_bMenuFlag_8B0902, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008B0903, name: byte_8B0903, type: uint8_t, uses: 3, src: auto, alt: [g_MpSessionsTransitionBlocked, g_SessionThreadStarting]}
