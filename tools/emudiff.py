@@ -183,8 +183,12 @@ def fill_word(addr, prof):
     sel = h % 10
     ptr_until = 9 if prof == 6 else 5 if prof % 2 == 0 else 2
     if sel < ptr_until:
-        return ZONES + ((h >> 4) & 0xFFFF) * 0x1000 + 0x100
+        # profiles 2 and 7: the pointer's low byte has flag bits set (and bit 0, so a byte test and a bool test
+        # agree), or a field that is a pointer in every profile never passes `test byte ptr [x], 0x20`
+        return ZONES + ((h >> 4) & 0xFFFF) * 0x1000 + (0x1F5 if prof in (2, 7) else 0x100)
     if sel < 7:
+        if prof == 5:  # the flags profile: any byte, so `test byte ptr [x], 0x20` goes both ways (0x6B31E0)
+            return (h >> 8) & 0xFF
         return (h >> 8) % (8 if prof < 4 else 3)
     if sel == 7:
         return 0
@@ -430,7 +434,9 @@ class Run:
 
     def on_unmapped(self, uc, access, addr, size, value, _):
         base = addr & ~0xFFF
-        if access == 21 or addr < 0x10000 or addr >= 0xC0000000:  # fetch from nowhere: a call target (on_block can't see it)
+        # fetch from nowhere: a call target (on_block can't see it). Any other address above the null pages is
+        # memory: a raw fill value used as a pointer (0x6B31E0's vtable field under profile 2) reads a filled page
+        if access == 21 or addr < 0x10000 or base >= 0xFFFFF000:
             if access == 21:
                 self.pending = addr
             return False
@@ -479,7 +485,7 @@ class Run:
         odd = lambda v: v if v < 2 else 2 * v - 1
         if rt in BYTE_TYPES:  # before the pointer profiles: the caller extends a byte, the original keeps eax
             val = (h & 1) | (0x5A5A5A00 if self.prof % 2 else 0)
-        elif self.prof >= 6 and rt not in ("float", "double", "long double", "void"):
+        elif self.prof in (2, 6, 7) and rt not in ("float", "double", "long double", "void"):
             val = ZONES + 0x0C000000 + i * 0x10000 + 0x101
         elif "*" in rt or rt == "?":
             val = ZONES + 0x0C000000 + i * 0x10000 + 0x101 if (rt != "?" or self.prof % 2 == 0) else odd(h % 3)
@@ -716,6 +722,7 @@ def check(ea, obj_path=None, src=None, profiles=PROFILES, verbose=False):
         if tmp and os.path.exists(tmp):
             os.remove(tmp)
     own, ret_site = own_ranges(ea)
+    check.trace = ""
     done, diffs, why = 0, [], collections.Counter()
     for prof in range(profiles):
         o = Run(ea, prof, own)
@@ -733,6 +740,11 @@ def check(ea, obj_path=None, src=None, profiles=PROFILES, verbose=False):
         if verbose:
             print(f"  profile {prof}: {len(o.events)} calls, {len(o.written)} bytes written: {'; '.join(d) or 'same'}")
         if d:
+            if not diffs:  # the two call sequences of the first differing profile (the gate shows them)
+                seq = lambda r: ", ".join((tn(e[0]) if isinstance(e[0], int) and e[0] in functions() else
+                                           "indirect" if isinstance(e[0], int) else e[0]) + f"({e[2]} args)"
+                                          for e in r.events[:10]) + (" ..." if len(r.events) > 10 else "")
+                check.trace = f"original calls: {seq(o) or 'none'}\nyours calls:    {seq(m) or 'none'}"
             diffs.append(f"profile {prof}: {d[0]}")
     if diffs:
         return "DIFF", f"{len(diffs)}/{done} profiles; {diffs[0]}"

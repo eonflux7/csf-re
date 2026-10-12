@@ -35,3 +35,7 @@ codex_sub:
 # while the grunts' Claude account is paused: Claude rung model=Codex model standing in (unlisted rungs are skipped)
 claude_sub: claude-haiku-5-5@low=gpt-6.1-sol@low
 claude_sub_login: codex-2
+
+# last gate step: tools/emudiff.py (the original's bytes and the candidate object side by side in an emulator).
+# off | log (run, record the verdict in work/emudiff_gate.jsonl, reject nothing) | on (a DIFF rejects)
+emudiff_gate: off

@@ -108,6 +108,50 @@ def self_refs(obj, src):
     return sorted(set(bad))
 
 
+def emudiff_mode():
+    """db/lanes.yaml `emudiff_gate`: off | log | on. log: run it, append the verdict to work/emudiff_gate.jsonl,
+    reject nothing."""
+    try:
+        import yaml
+        v = (yaml.safe_load(open(os.path.join(ROOT, "db", "lanes.yaml"))) or {}).get("emudiff_gate", "off")
+    except Exception:
+        return "off"
+    return {True: "on", False: "off"}.get(v, str(v))
+
+
+EMU_ERR = "emulated run differs from the original"
+
+
+def emulated_diff(ea, obj, path, db):
+    """The last gate step: tools/emudiff.py runs the original's bytes and this object side by side from the same
+    state. -> error text for a DIFF (mode on), else None. inconclusive / error verdicts never reject."""
+    mode = emudiff_mode()
+    if mode == "off":
+        return None
+    try:
+        import emudiff
+        verdict, detail = emudiff.check(ea, obj_path=obj, src=path)
+    except Exception as e:  # the emulator is a check, not a dependency of the gate
+        verdict, detail = "error", f"{type(e).__name__}: {e}"
+    try:
+        with open(os.path.join(ROOT, "work", "emudiff_gate.jsonl"), "a") as f:
+            f.write(json.dumps({"ea": f"{ea:08x}", "verdict": verdict, "detail": detail[:300], "mode": mode}) + "\n")
+    except OSError:
+        pass
+    if verdict != "DIFF" or mode != "on":
+        return None
+    names = lambda m: f"0x{int(m.group(0), 16):X} ({db.name(int(m.group(0), 16))})" \
+        if int(m.group(0), 16) in db.F and db.name(int(m.group(0), 16)) else m.group(0)
+    detail = re.sub(r"\b00[4-8][0-9a-f]{5}\b", names, detail + "\n" + getattr(emudiff.check, "trace", ""))
+    return (f"{EMU_ERR} (both run in an emulator from the same registers, arguments and memory; calls leaving the "
+            f"function are recorded and answered alike; `X vs Y` is the original's value vs yours):\n{detail}\n"
+            "Read it as: `N calls vs M` = the two took different paths or you call something the original does not "
+            "(or twice); `call K: target A vs B` / `arguments` / `ecx` = the K-th call (from 0) differs in what is "
+            "called or passed (check which call an early `push` belongs to, and `this` = the address of an embedded "
+            "object vs a pointer loaded from it); `returns` = eax at the end; `memory` = a store the other side does "
+            "not make or makes with another value.")
+
+
 def strip_cpp_comments(src):
     return re.sub(r"//[^\n]*|/\*.*?\*/", "", src, flags=re.S)
 
@@ -363,6 +407,9 @@ def gate(ea, path, db=None):
             if rest:
                 return False, "semantic check (references must match the original's):\n" + "\n".join(rest)
             return False, conv[0]
+        emu = emulated_diff(ea, obj, path, db)
+        if emu:
+            return False, emu
     return True, "ok" + (f" (waived: {'; '.join(waived)})" if waived else "")
 
 
@@ -379,6 +426,7 @@ FAIL_KINDS = [
     ("sem_field", r"field offsets the original never uses|computes the ADDRESS this\+"),
     ("sem_const", r"computes with constants your code never uses"),
     ("sem_order", r"the original calls in this order"),
+    ("emudiff", r"emulated run differs from the original"),
     ("tail_jump", r"TAIL-JUMPS"),
     ("compile", r"compile error|error:|could not find compiled function"),
     ("raw_address", r"raw original address"),
