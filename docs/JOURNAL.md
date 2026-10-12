@@ -1267,3 +1267,17 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   that function, crashing too rarely for the first bisects.
 - Baseline quarantines of this run: 0x440F50, 0x441850, 0x43FBA0 (crash, bisect), 0x4E0D70 (crash, bisect),
   0x4B06F0, 0x4DF0D0 (diff mismatch), one in a group. All in queue/.
+
+## 2026-10-12 night — ladders without Opus/Sonnet, two Codex logins, a production-only run
+
+- User: the grunts' Claude account is for Haiku rungs only (db/lanes.yaml: no Opus rung in M/X, no Sonnet
+  stand-in, Haiku out of quota -> gpt-6.1-sol@low). `~/.codex` works again after one CLI token refresh (the
+  lanes now do that refresh once before taking a login out).
+- 18:15-18:57 (full waves, both logins; killed on request): 396 functions. 18:58-19:03 (`--no-verify
+  --no-linktest --stop-on-quota`, new: no game, ends when the windows are spent): 143 functions. Both Codex
+  logins at their cap (92% / 99%), Claude window until 21:30. Game code 60.4%; 313 functions pending, no smoke
+  since about 18:57 (user is using the machine).
+- 114 escalations of these two runs were Codex server errors ("servers are currently overloaded", "an
+  error occurred while processing your request"), not gate verdicts: back to the lanes. Such an error is now
+  retried twice (30 s, 60 s) and then defers. Third kind of false escalation today after the refused login and
+  the unrecognized quota messages: every backend error text the lanes do not know ends in queue/.

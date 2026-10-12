@@ -256,7 +256,7 @@ def _codex_token(home):
     return t["access_token"], t["account_id"]
 
 
-def chat_codex_direct(model, messages, effort="high"):
+def chat_codex_direct(model, messages, effort="high", _try=0):
     """GPT via the ChatGPT Codex backend directly (same subscription and endpoint as the Codex CLI, no CLI harness:
     ~1.4k instead of ~5.7k fixed tokens per call). A fixed session id per system prompt makes the backend cache
     the shared prefix reliably (the CLI's per-run session id hit the cache about half the time)."""
@@ -309,6 +309,11 @@ def chat_codex_direct(model, messages, effort="high"):
         elif ev.get("type") == "response.completed":
             u = ev["response"].get("usage") or {}
         elif ev.get("type") in ("response.failed", "error"):
+            # "servers are currently overloaded", "an error occurred ... you can retry": the backend's state, not
+            # the function's (2026-10-12: 109 such errors were escalated to queue/). Two more tries, then defer.
+            if _try < 2:
+                time.sleep(30 * (_try + 1))
+                return chat_codex_direct(model, messages, effort, _try + 1)
             raise RuntimeError(f"codex backend: {json.dumps(ev)[:300]}")
     if u is None:
         raise RuntimeError("codex backend: stream ended without response.completed")
@@ -668,7 +673,8 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
                 code, meta = parse(text)
         except Exception as e:  # out of credit / quota / CLI failure: fall through to the next rung
             dead.add(dk)
-            quota_hit |= bool(re.search(r"paused by the quota guard|usage.limit|rate.limit|session limit|hit your (session |usage )?limit", str(e), re.I))
+            quota_hit |= bool(re.search(r"paused by the quota guard|usage.limit|rate.limit|session limit|hit your (session |usage )?limit"
+                                        r"|overloaded|server_error|service_unavailable|you can retry|stream ended without", str(e), re.I))
             err = f"{backend} error: {e}"
             fails.append(dict(by=f"{backend}:{model}", kinds=["backend"]))
             continue
