@@ -133,7 +133,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 83, src: auto, alt: [g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringByte, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 85, src: auto, alt: [g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringByte, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C8, name: g_AngleScale, type: float, uses: 1, src: auto}
@@ -405,6 +405,9 @@
 - {addr: 0x00886C90, name: g_DwordPairRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00886CE0, name: g_TwoDwordCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00886D30, name: g_ForwardRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088704C, name: g_CampaignRecordRangeExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x008871C8, name: g_RecordRangeExceptionFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x00887218, name: g_ElementRangeExceptionFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00887CC8, name: g_TwentyByteRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00887D18, name: g_ArrayUpdateExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008886C0, name: g_MissionScriptExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
@@ -1508,7 +1511,7 @@
 - {addr: 0x008AA0E8, name: g_SecurityCookie, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008AFC60, name: g_Value_8afc60, type: int, uses: 1, src: auto}
 - {addr: 0x008AFC78, name: g_Value_8afc78, type: int32_t, uses: 4, src: auto}
-- {addr: 0x008AFC7C, name: g_Value8afc7c, type: int, uses: 1, src: auto}
+- {addr: 0x008AFC7C, name: g_Value8afc7c, type: int, uses: 3, src: auto}
 - {addr: 0x008AFC80, name: g_Value_8afc80, type: int, uses: 1, src: auto}
 - {addr: 0x008AFC84, name: g_Value8AFC84, type: int, uses: 2, src: auto}
 - {addr: 0x008AFC88, name: g_AuxiliaryScene, type: CScene*, uses: 2, src: auto, alt: [g_MainScene]}
@@ -1609,7 +1612,7 @@
 - {addr: 0x008B0680, name: g_Global_8B0680, type: int, uses: 1, src: auto}
 - {addr: 0x008B0684, name: g_MpCharacterSelect, type: void*, uses: 2, src: auto, alt: [g_GlobalValue]}
 - {addr: 0x008B0688, name: g_Int8B0688, type: int, uses: 3, src: auto}
-- {addr: 0x008B068C, name: g_OnlineMatchFlag, type: 'std::uint8_t', uses: 18, src: auto, alt: [g_AccountMenuSecondaryFlag]}
+- {addr: 0x008B068C, name: g_OnlineMatchFlag, type: 'std::uint8_t', uses: 20, src: auto, alt: [g_AccountMenuSecondaryFlag]}
 - {addr: 0x008B0690, name: g_MpSessionState, type: int, uses: 0, src: opus}
 - {addr: 0x008B0694, name: g_CharacterSelectState8B0694, type: uint32_t, uses: 38, src: auto}
 - {addr: 0x008B0698, name: g_MenuMPCharacterSelect_LastState, type: uint32_t, uses: 3, src: auto}
@@ -1617,7 +1620,7 @@
 - {addr: 0x008B08F8, name: g_Value_8B08F8, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008B0901, name: g_AccountMenuStateFlag, type: 'std::uint8_t', uses: 3, src: auto}
 - {addr: 0x008B0902, name: g_bMenuFlag_8B0902, type: 'std::uint8_t', uses: 1, src: auto}
-- {addr: 0x008B0903, name: byte_8B0903, type: uint8_t, uses: 1, src: auto}
+- {addr: 0x008B0903, name: byte_8B0903, type: uint8_t, uses: 2, src: auto, alt: [g_SessionThreadStarting]}
 - {addr: 0x008B09EC, name: g_PTankPluginOffset, type: 'std::int32_t', uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008B68C0, name: g_pRwEngineInstance, type: void*, uses: 2, src: captain, conf: 0.9, alt: [g_008B68C0, g_pDispatchTable]}
 - {addr: 0x008B99B0, name: g_AccountService, type: void*, uses: 2, src: auto, alt: [g_NetSessionOwner]}
