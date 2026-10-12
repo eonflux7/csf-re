@@ -49,7 +49,11 @@ def _main():
     seen = collections.defaultdict(collections.Counter)
     types = collections.defaultdict(collections.Counter)
     for p in glob.glob(os.path.join(ROOT, "src", "**", "*.cpp"), recursive=True):
-        for t, n, a in DECL.findall(open(p).read()):
+        try:
+            text = open(p).read()
+        except FileNotFoundError:  # quarantined by the verifier while this ran
+            continue
+        for t, n, a in DECL.findall(text):
             seen[int(a, 16)][n] += 1
             types[int(a, 16)][t] += 1
     old = {int(g["addr"]): g for g in (yaml.safe_load(open(PATH)) if os.path.exists(PATH) else None) or []}
