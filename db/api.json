@@ -4285,7 +4285,7 @@
   "name": "GfxMatrix_AreVectorsDifferent",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_AreVectorsDifferent": 6
+   "GfxMatrix_AreVectorsDifferent": 7
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -4568,7 +4568,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 174
+   "AssignStringSubstring": 175
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -6981,7 +6981,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 129
+   "S_0041e5f0_GrowArrayCapacity": 135
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -58260,7 +58260,8 @@
   "name_src": "agent",
   "votes": {
    "VecGrow_4DE9B0": 5,
-   "S_0041e750_ReserveVectorCapacity": 1
+   "S_0041e750_ReserveVectorCapacity": 1,
+   "Vec_GrowTwelveByteRecordArray": 1
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -66706,7 +66707,8 @@
   "name": "SceneLoader_DestroyStringRanges",
   "name_src": "agent",
   "votes": {
-   "SceneLoader_DestroyWeatherEffectLists": 1
+   "SceneLoader_DestroyWeatherEffectLists": 1,
+   "SceneLoader_DestroyStringRanges": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -67124,7 +67126,7 @@
   "name": "SceneLoader_NoOp",
   "name_src": "captain",
   "votes": {
-   "SceneLoader_NoOp": 52,
+   "SceneLoader_NoOp": 53,
    "Nullsub_506AC0": 34
   },
   "ret": "void",
@@ -78230,7 +78232,7 @@
   "name": "AiCore_GetSceneEntryCount",
   "name_src": "vote",
   "votes": {
-   "AiCore_GetSceneEntryCount": 2
+   "AiCore_GetSceneEntryCount": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -92283,11 +92285,13 @@
  "00571270": {
   "name": "RpMatFXAtomicEnableEffects",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RpMatFXAtomicEnableEffects": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "005712a0": {
   "name": "RpMatFXAtomicQueryEffects",
@@ -92472,7 +92476,7 @@
   "name": "RpMatFXMaterialSetUVTransformMatrices",
   "name_src": "rwname",
   "votes": {
-   "RpMatFXMaterialSetUVTransformMatrices": 2
+   "RpMatFXMaterialSetUVTransformMatrices": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -92509,11 +92513,13 @@
  "00571a80": {
   "name": "RpMatFXMaterialSetEffects",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RpMatFXMaterialSetEffects": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00571b90": {
   "name": "sub_571B90",
@@ -94197,7 +94203,7 @@
   "name": "RpPTankAtomicLock",
   "name_src": "rwname",
   "votes": {
-   "RpPTankAtomicLock": 11
+   "RpPTankAtomicLock": 12
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -94208,7 +94214,7 @@
   "name": "RpPTankAtomicUnlock",
   "name_src": "rwname",
   "votes": {
-   "RpPTankAtomicUnlock": 11
+   "RpPTankAtomicUnlock": 12
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -96204,7 +96210,7 @@
   "name": "S_006fdfe0_FindWorldFromClump",
   "name_src": "vote",
   "votes": {
-   "S_006fdfe0_FindWorldFromClump": 5
+   "S_006fdfe0_FindWorldFromClump": 6
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -96340,7 +96346,7 @@
   "name": "RpWorldRemoveClump",
   "name_src": "rwname",
   "votes": {
-   "RpWorldRemoveClump": 3,
+   "RpWorldRemoveClump": 4,
    "S_006fdfe0_RpWorldRemoveClump": 1
   },
   "ret": "int",
@@ -109949,11 +109955,13 @@
  "00622fa0": {
   "name": "RwV2dLength",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwV2dLength": 1
+  },
   "ret": "double",
   "conv": "__cdecl",
   "params": "float* a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00623010": {
   "name": "RwV3dTransformPoint",
@@ -109970,7 +109978,7 @@
   "name": "RwV3dTransformPoints",
   "name_src": "rwname",
   "votes": {
-   "RwV3dTransformPoints": 19
+   "RwV3dTransformPoints": 20
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -110476,7 +110484,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 164
+   "RwMatrixDestroy": 167
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -110487,7 +110495,7 @@
   "name": "RwMatrixCreate",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixCreate": 99
+   "RwMatrixCreate": 100
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -119485,7 +119493,7 @@
   "name": "SceneLoader_GetSceneController",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetSceneController": 68,
+   "SceneLoader_GetSceneController": 70,
    "SceneLoader_GetSceneObject": 1,
    "SceneLoader_GetSubsystem": 1,
    "SceneLoader_GetSceneResources": 1,
@@ -132648,7 +132656,7 @@
   "name": "GetCurrentItemCount",
   "name_src": "vote",
   "votes": {
-   "GetCurrentItemCount": 36,
+   "GetCurrentItemCount": 37,
    "Hud_QueryCurrentCount": 1
   },
   "ret": "int",
@@ -136519,7 +136527,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 523,
+   "Mem_FreeDebug": 524,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -136611,7 +136619,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 399
+   "Mem_Alloc": 401
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -136622,7 +136630,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 777
+   "Mem_Free": 784
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -143608,7 +143616,7 @@
   "name": "SceneMissionSetup_GetBoundsCenter",
   "name_src": "vote",
   "votes": {
-   "SceneMissionSetup_GetBoundsCenter": 7
+   "SceneMissionSetup_GetBoundsCenter": 8
   },
   "ret": "float*",
   "conv": "__fastcall",
@@ -143625,13 +143633,15 @@
   "sig_src": "abi"
  },
  "006ab740": {
-  "name": "sub_6AB740",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxPtank_TestBoundsOverlap",
+  "name_src": "vote",
+  "votes": {
+   "GfxPtank_TestBoundsOverlap": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006ab7a0": {
   "name": "sub_6AB7A0",
@@ -144046,7 +144056,7 @@
   "name": "GfxMatrix_CopyTranslationAndUpdate",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_CopyTranslationAndUpdate": 15,
+   "GfxMatrix_CopyTranslationAndUpdate": 16,
    "SceneLoader_SetMatrixTranslation": 1
   },
   "ret": "int",
@@ -144953,7 +144963,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 349,
+   "GetGlobalInt": 351,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -145391,7 +145401,7 @@
   "name": "Hud_CheckFlagAgainstGlobal",
   "name_src": "vote",
   "votes": {
-   "Hud_CheckFlagAgainstGlobal": 39
+   "Hud_CheckFlagAgainstGlobal": 41
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -145414,7 +145424,7 @@
   "name": "C_00860170_Construct",
   "name_src": "agent",
   "votes": {
-   "C_00860170_Construct": 37
+   "C_00860170_Construct": 40
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -145717,7 +145727,7 @@
   "name": "RenderHandle_FromObject",
   "name_src": "vote",
   "votes": {
-   "RenderHandle_FromObject": 23
+   "RenderHandle_FromObject": 24
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -150102,6 +150112,7 @@
   "name": "GfxFrames_ProcessClumpAtomics",
   "name_src": "agent",
   "votes": {
+   "GfxFrames_ProcessClumpAtomics": 1,
    "Water_ProcessHandle": 1
   },
   "ret": "int",
@@ -150115,7 +150126,8 @@
   "name_src": "agent",
   "votes": {
    "CharActionFsm_GetProviderFrameObject": 5,
-   "ObjectProvider_GetSceneObject": 1
+   "ObjectProvider_GetSceneObject": 1,
+   "GfxFrames_GetProviderFrameObject": 1
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -151144,7 +151156,7 @@
   "name_src": "agent",
   "votes": {
    "DestroyEmbeddedMember8": 3,
-   "C_00860894_DestroyEmbeddedMember8": 4
+   "C_00860894_DestroyEmbeddedMember8": 5
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -151185,7 +151197,7 @@
   "name_src": "agent",
   "votes": {
    "Subobject_SetKeyedValue": 6,
-   "GfxSkin_SetKeyedValue": 3
+   "GfxSkin_SetKeyedValue": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -151432,7 +151444,7 @@
   "name": "GetGlobalValue_6C5760",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_6C5760": 64
+   "GetGlobalValue_6C5760": 66
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -151455,7 +151467,7 @@
   "name": "C_008656d0_IsMaskSubset",
   "name_src": "agent",
   "votes": {
-   "C_008656d0_IsMaskSubset": 4
+   "C_008656d0_IsMaskSubset": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -152160,7 +152172,7 @@
   "name": "GlobalHud_Commit_6C7C30",
   "name_src": "agent",
   "votes": {
-   "GlobalHud_Commit_6C7C30": 13
+   "GlobalHud_Commit_6C7C30": 14
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -152248,7 +152260,7 @@
   "name_src": "agent",
   "votes": {
    "GlobalHud_AttachWidget_6C8420": 1,
-   "C_0085e7b8_AttachWidget": 4
+   "C_0085e7b8_AttachWidget": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -152691,7 +152703,7 @@
   "name": "CreateParticleObject",
   "name_src": "vote",
   "votes": {
-   "CreateParticleObject": 1
+   "CreateParticleObject": 4
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -153595,7 +153607,9 @@
  "006cb8b0": {
   "name": "C_00860bb8_GetEntryByIndex",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00860bb8_GetEntryByIndex": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00860bb8* self, void* , int index",
@@ -156012,13 +156026,15 @@
   "sig_src": "abi"
  },
  "006d3fb0": {
-  "name": "sub_6D3FB0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_00862fcc_DelegateResolve",
+  "name_src": "vote",
+  "votes": {
+   "C_00862fcc_DelegateResolve": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, uint32_t* a2, int* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006d4000": {
   "name": "GetShapeRegistryHandle",
@@ -156321,7 +156337,7 @@
   "name": "CollisionShape_ResetVertexBuffer",
   "name_src": "vote",
   "votes": {
-   "CollisionShape_ResetVertexBuffer": 1,
+   "CollisionShape_ResetVertexBuffer": 2,
    "C_00861068_Clear": 1
   },
   "ret": "int",
@@ -156348,13 +156364,15 @@
   "sig_src": "abi"
  },
  "006d5430": {
-  "name": "sub_6D5430",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CollisionShape_ReleaseDerivedState",
+  "name_src": "vote",
+  "votes": {
+   "CollisionShape_ReleaseDerivedState": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006d54a0": {
   "name": "sub_6D54A0",
@@ -156443,7 +156461,7 @@
   "name": "C_00864508_GetField9c",
   "name_src": "agent",
   "votes": {
-   "C_00864508_GetField9c": 1
+   "C_00864508_GetField9c": 2
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -156947,7 +156965,7 @@
   "sig_src": "vote"
  },
  "006d7340": {
-  "name": "C_00861188_Destroy",
+  "name": "C_00861188_Destroy_6D7340",
   "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
@@ -157034,7 +157052,7 @@
   "name": "GfxPtank_TestBoundaryFace",
   "name_src": "agent",
   "votes": {
-   "GfxParticleRender_TestBoundaryFace": 1
+   "GfxParticleRender_TestBoundaryFace": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -157043,15 +157061,16 @@
   "file": "src/auto/006d7450.cpp"
  },
  "006d7720": {
-  "name": "GfxParticleRender_TestSweptBoundary",
-  "name_src": "vote",
+  "name": "GfxPtank_TestSweptBoundary",
+  "name_src": "agent",
   "votes": {
-   "GfxParticleRender_TestSweptBoundary": 1
+   "GfxParticleRender_TestSweptBoundary": 2
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2, float* a3",
-  "sig_src": "vote"
+  "params": "void* self, void* , float* position, float* dimensions",
+  "sig_src": "impl",
+  "file": "src/auto/006d7720.cpp"
  },
  "006d7860": {
   "name": "C_008611d4_RemoveParticle",
@@ -157108,8 +157127,8 @@
   "file": "src/auto/006d7da0.cpp"
  },
  "006d7f40": {
-  "name": "C_00861188_ResetInheritedState",
-  "name_src": "vote",
+  "name": "C_008611d4_ResetInheritedState",
+  "name_src": "agent",
   "votes": {
    "C_00861188_ResetInheritedState": 2,
    "C_008611d4_ResetParticleState": 1
@@ -157121,13 +157140,14 @@
   "file": "src/auto/006d7f40.cpp"
  },
  "006d80d0": {
-  "name": "sub_6D80D0",
-  "name_src": "addr",
+  "name": "C_008611d4_FindOrAddEmitterBounds",
+  "name_src": "agent",
   "votes": {},
-  "ret": "unsigned int",
+  "ret": "std::uint32_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "C_008611d4* self, void* , int parameters",
+  "sig_src": "impl",
+  "file": "src/auto/006d80d0.cpp"
  },
  "006d81d0": {
   "name": "C_008611d4_ClearActiveRenderObject",
@@ -157145,7 +157165,9 @@
  "006d8210": {
   "name": "C_00861188_ClearParticleResources",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00861188_ClearParticleResources": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "C_00861188* self, void*",
@@ -157179,7 +157201,9 @@
  "006d83f0": {
   "name": "GfxPTank_WrapParticlePositions",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxPTank_WrapParticlePositions": 1
+  },
   "ret": "void",
   "conv": "__stdcall",
   "params": "void* emitter",
@@ -157187,15 +157211,16 @@
   "file": "src/auto/006d83f0.cpp"
  },
  "006d8710": {
-  "name": "GfxPTank_RegisterParticle",
-  "name_src": "vote",
+  "name": "GfxPTank_ReflectParticlesBehindPlacementPlane",
+  "name_src": "agent",
   "votes": {
    "GfxPTank_RegisterParticle": 1
   },
   "ret": "char",
   "conv": "__stdcall",
-  "params": "int* a1",
-  "sig_src": "vote"
+  "params": "int* tank",
+  "sig_src": "impl",
+  "file": "src/auto/006d8710.cpp"
  },
  "006d8b70": {
   "name": "C_008611d4_AddParticleObject",
@@ -157211,50 +157236,58 @@
  },
  "006d8bf0": {
   "name": "C_008611d4_UpdateSecondParticleStream",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_008611d4_UpdateSecondParticleStream": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_008611d4* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/006d8bf0.cpp"
  },
  "006d8c70": {
   "name": "C_008611d4_UpdateThirdParticleStream",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_008611d4_UpdateThirdParticleStream": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_008611d4* self, void* , int resource",
+  "sig_src": "impl",
+  "file": "src/auto/006d8c70.cpp"
  },
  "006d8d20": {
   "name": "C_008611d4_UpdateFourthParticleStream",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_008611d4_UpdateFourthParticleStream": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_008611d4* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/006d8d20.cpp"
  },
  "006d8dc0": {
-  "name": "sub_6D8DC0",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "unsigned int",
+  "name": "S_006d8dc0_UpdateParticlePlacement",
+  "name_src": "agent",
+  "votes": {
+   "S_006d8dc0_PrepareSkinObject": 1
+  },
+  "ret": "std::uint32_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_006d8dc0* self, void* , void* source",
+  "sig_src": "impl",
+  "file": "src/auto/006d8dc0.cpp"
  },
  "006d8f80": {
   "name": "S_006d8f80_UpdateParticlePositions",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_006d8f80_UpdateParticlePositions": 1
+  },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
   "params": "S_006d8f80* self, void* , int* source",
@@ -157285,34 +157318,37 @@
  },
  "006d9430": {
   "name": "GfxSkin_RenderGeometry",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GfxSkin_RenderGeometry": 1
   },
-  "ret": "unsigned int",
+  "ret": "std::uint32_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_006d8f80* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006d9430.cpp"
  },
  "006d94b0": {
-  "name": "GfxSkin_FinishSkinObject",
-  "name_src": "vote",
+  "name": "S_006d8dc0_FinishSkinObject",
+  "name_src": "agent",
   "votes": {
    "GfxSkin_FinishSkinObject": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_006d8dc0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006d94b0.cpp"
  },
  "006d96d0": {
-  "name": "sub_6D96D0",
-  "name_src": "addr",
+  "name": "C_00861188_Destroy_6D96D0",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00861188* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006d96d0.cpp"
  },
  "006d97d0": {
   "name": "GfxPtank_RemoveUnresolvedParticleResources",
@@ -157796,13 +157832,15 @@
   "sig_src": "vote"
  },
  "006db670": {
-  "name": "sub_6DB670",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_00863018_ResolveTarget",
+  "name_src": "vote",
+  "votes": {
+   "C_00863018_ResolveTarget": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, uint32_t* a2, int* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006db6c0": {
   "name": "sub_6DB6C0",
@@ -159013,7 +159051,7 @@
   "name": "GetValue_8BB738",
   "name_src": "agent",
   "votes": {
-   "GetValue_8BB738": 6
+   "GetValue_8BB738": 9
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -159080,7 +159118,9 @@
  "006e0810": {
   "name": "ParticleEmitters_GetTableEntry",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ParticleEmitters_GetTableEntry": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , int index",
@@ -159264,7 +159304,7 @@
   "name_src": "agent",
   "votes": {
    "ResolveParticleResource": 1,
-   "GfxParticleEmitters_ResolveParticleResource": 2
+   "GfxParticleEmitters_ResolveParticleResource": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -163322,7 +163362,7 @@
   "name": "SetParticleResource",
   "name_src": "vote",
   "votes": {
-   "SetParticleResource": 1
+   "SetParticleResource": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -164652,7 +164692,7 @@
   "name": "GfxPtank_GetPlacementState",
   "name_src": "agent",
   "votes": {
-   "GfxPtank_GetPlacementState": 2,
+   "GfxPtank_GetPlacementState": 5,
    "GfxPTank_GetEmitterContext": 1
   },
   "ret": "void*",
@@ -167260,31 +167300,34 @@
   "sig_src": "abi"
  },
  "006fd690": {
-  "name": "sub_6FD690",
-  "name_src": "addr",
+  "name": "GfxClumpLoader_SerializeFields",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , void* state",
+  "sig_src": "impl",
+  "file": "src/auto/006fd690.cpp"
  },
  "006fd7c0": {
-  "name": "sub_6FD7C0",
-  "name_src": "addr",
+  "name": "C_00862fcc_ResolveFlagOrDelegate",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, int* a3",
-  "sig_src": "abi"
+  "params": "C_00862fcc* self, void* , uint32_t* a2, int* a3",
+  "sig_src": "impl",
+  "file": "src/auto/006fd7c0.cpp"
  },
  "006fd830": {
-  "name": "sub_6FD830",
-  "name_src": "addr",
+  "name": "C_00862fcc_DestroyAndFreeIfFlag",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/006fd830.cpp"
  },
  "006fd860": {
   "name": "sub_6FD860",
@@ -167296,22 +167339,24 @@
   "sig_src": "abi"
  },
  "006fdaf0": {
-  "name": "sub_6FDAF0",
-  "name_src": "addr",
+  "name": "GfxClumpLoader_UpdateWrappedPhase",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "float* self, void* , float delta",
+  "sig_src": "impl",
+  "file": "src/auto/006fdaf0.cpp"
  },
  "006fdb90": {
-  "name": "sub_6FDB90",
-  "name_src": "addr",
+  "name": "DeleteScheduleGroupBase",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1",
-  "sig_src": "abi"
+  "params": "int objectAddress",
+  "sig_src": "impl",
+  "file": "src/auto/006fdb90.cpp"
  },
  "006fdbb0": {
   "name": "S_006fdbb0_GetPosition",
@@ -167334,68 +167379,78 @@
   "sig_src": "abi"
  },
  "006fde00": {
-  "name": "sub_6FDE00",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_006fde00_UpdateMaterialUVTransforms",
+  "name_src": "agent",
+  "votes": {
+   "PrepareClumpForProcessing": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_006fde00* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006fde00.cpp"
  },
  "006fdec0": {
-  "name": "sub_6FDEC0",
-  "name_src": "addr",
+  "name": "S_006fde00_ProcessClumpIfPresent",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_006fde00* self, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/006fdec0.cpp"
  },
  "006fdee0": {
   "name": "WaterParams_Construct",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
-   "WaterParams_Construct": 2
+   "WaterParams_Construct": 3
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006fdee0.cpp"
  },
  "006fdf70": {
-  "name": "sub_6FDF70",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_006fdf70_Initialize",
+  "name_src": "agent",
+  "votes": {
+   "WaterObject_Construct": 1
+  },
   "ret": "uint8_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_006fdf70* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006fdf70.cpp"
  },
  "006fdfe0": {
-  "name": "sub_6FDFE0",
-  "name_src": "addr",
+  "name": "S_006fdfe0_Destroy",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "S_006fdfe0* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/006fdfe0.cpp"
  },
  "006fe010": {
   "name": "Water_FinalizeState",
   "name_src": "vote",
   "votes": {
-   "Water_FinalizeState": 1
+   "Water_FinalizeState": 2
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_006fdfe0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006fe010.cpp"
  },
  "006fe0c0": {
   "name": "WaterBase_Init",
   "name_src": "vote",
   "votes": {
-   "WaterBase_Init": 1
+   "WaterBase_Init": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -167403,60 +167458,66 @@
   "sig_src": "vote"
  },
  "006fe1d0": {
-  "name": "sub_6FE1D0",
-  "name_src": "addr",
+  "name": "GfxClump_CreateWaterEffect",
+  "name_src": "impl",
   "votes": {},
-  "ret": "void*",
+  "ret": "S_006fe0c0*",
   "conv": "__cdecl",
-  "params": "void* a2, int arg4",
-  "sig_src": "abi"
+  "params": "C_0085ec18* a2, int arg4",
+  "sig_src": "impl",
+  "file": "src/auto/006fe1d0.cpp"
  },
  "006fe250": {
-  "name": "sub_6FE250",
-  "name_src": "addr",
+  "name": "GfxClumpLoader_PrepareDescriptorAndRead",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , C_0082d410* descriptor",
+  "sig_src": "impl",
+  "file": "src/auto/006fe250.cpp"
  },
  "006fe280": {
   "name": "WaterEntry_PrepareFromDescriptor",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
-   "WaterEntry_PrepareFromDescriptor": 2
+   "WaterEntry_PrepareFromDescriptor": 3
   },
-  "ret": "void*",
+  "ret": "C_0082d410*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "vote"
+  "params": "C_0082d410* self, void* , void* descriptor",
+  "sig_src": "impl",
+  "file": "src/auto/006fe280.cpp"
  },
  "006fe310": {
-  "name": "sub_6FE310",
-  "name_src": "addr",
+  "name": "C_00863018_Destroy_6FE310",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00863018* self, void* , char freeSelfFlag",
+  "sig_src": "impl",
+  "file": "src/auto/006fe310.cpp"
  },
  "006fe340": {
-  "name": "sub_6FE340",
-  "name_src": "addr",
+  "name": "C_00863044_ResolveFlagOrDelegate",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, int* a3",
-  "sig_src": "abi"
+  "params": "C_00863044* self, void* , uint32_t* a2, int* a3",
+  "sig_src": "impl",
+  "file": "src/auto/006fe340.cpp"
  },
  "006fe390": {
-  "name": "sub_6FE390",
-  "name_src": "addr",
+  "name": "ClumpLoader_CopySixDwordsAndMarkValid",
+  "name_src": "agent",
   "votes": {},
-  "ret": "int",
+  "ret": "uint8_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , const uint32_t* src",
+  "sig_src": "impl",
+  "file": "src/auto/006fe390.cpp"
  },
  "006fe3d0": {
   "name": "SetByteProperty22",
@@ -167488,22 +167549,29 @@
   "sig_src": "abi"
  },
  "006fe470": {
-  "name": "sub_6FE470",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_00863018_ReleaseBuffers",
+  "name_src": "agent",
+  "votes": {
+   "ClumpLoader_ReleaseStreamBuffer": 1,
+   "ClumpLoader_ReleaseStreamState": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863018* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006fe470.cpp"
  },
  "006fe4f0": {
-  "name": "sub_6FE4F0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_00863044_FindFirstIndexByKey",
+  "name_src": "agent",
+  "votes": {
+   "C_00863044_FindEntryIndex": 2
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00863044* self, void* , int key",
+  "sig_src": "impl",
+  "file": "src/auto/006fe4f0.cpp"
  },
  "006fe540": {
   "name": "sub_6FE540",
@@ -167515,13 +167583,14 @@
   "sig_src": "abi"
  },
  "006fe5f0": {
-  "name": "sub_6FE5F0",
-  "name_src": "addr",
+  "name": "GfxClumpLoader_ComputeVertexAverage",
+  "name_src": "impl",
   "votes": {},
   "ret": "float*",
   "conv": "__stdcall",
-  "params": "float* a1, int a2, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "float* result, int , std::uint32_t* vertexData",
+  "sig_src": "impl",
+  "file": "src/auto/006fe5f0.cpp"
  },
  "006fe780": {
   "name": "sub_6FE780",
@@ -167533,40 +167602,44 @@
   "sig_src": "abi"
  },
  "006fe820": {
-  "name": "sub_6FE820",
-  "name_src": "addr",
+  "name": "C_00863018_ReleasePendingStream",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863018* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006fe820.cpp"
  },
  "006fe840": {
-  "name": "sub_6FE840",
-  "name_src": "addr",
+  "name": "ClumpLoader_RefreshSceneCapacityIfEnabled",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "uint8_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006fe840.cpp"
  },
  "006fe8c0": {
-  "name": "sub_6FE8C0",
-  "name_src": "addr",
+  "name": "C_00863044_GetEntryValueByKey",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00863044* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/006fe8c0.cpp"
  },
  "006fe8f0": {
-  "name": "sub_6FE8F0",
-  "name_src": "addr",
+  "name": "C_00863044_EraseEntryCompacting",
+  "name_src": "agent",
   "votes": {},
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00863044* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/006fe8f0.cpp"
  },
  "006fe940": {
   "name": "sub_6FE940",
@@ -167596,13 +167669,14 @@
   "sig_src": "abi"
  },
  "006feff0": {
-  "name": "sub_6FEFF0",
-  "name_src": "addr",
+  "name": "C_00863018_Destroy_6FEFF0",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863018* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006feff0.cpp"
  },
  "006ff080": {
   "name": "sub_6FF080",
@@ -167614,31 +167688,35 @@
   "sig_src": "abi"
  },
  "006ff2b0": {
-  "name": "sub_6FF2B0",
-  "name_src": "addr",
+  "name": "C_00863044_Destroy",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00863044* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/006ff2b0.cpp"
  },
  "006ff2e0": {
-  "name": "sub_6FF2E0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_00863044_ProcessEntry",
+  "name_src": "vote",
+  "votes": {
+   "C_00863044_ProcessEntry": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx, uint32_t* a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006ff390": {
-  "name": "sub_6FF390",
-  "name_src": "addr",
+  "name": "C_00863044_ProcessSceneEntries",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a3",
-  "sig_src": "abi"
+  "params": "C_00863044* self, void* , int a3",
+  "sig_src": "impl",
+  "file": "src/auto/006ff390.cpp"
  },
  "006ff410": {
   "name": "C_00863070_Destroy",
@@ -167837,13 +167915,14 @@
   "file": "src/auto/006ff9f0.cpp"
  },
  "006ffca0": {
-  "name": "sub_6FFCA0",
-  "name_src": "addr",
+  "name": "C_008630e0_SetPlayerVector",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_008630e0* self, void* , int vectorAddress",
+  "sig_src": "impl",
+  "file": "src/auto/006ffca0.cpp"
  },
  "006ffde0": {
   "name": "C_008630e0_GetAveragePlayerPosition",
@@ -167923,8 +168002,8 @@
   "file": "src/auto/00700500.cpp"
  },
  "00700630": {
-  "name": "TeamGfx_DispatchPlayerEntry",
-  "name_src": "vote",
+  "name": "S_006ff7e0_DrawObjectBounds",
+  "name_src": "agent",
   "votes": {
    "TeamGfx_DispatchPlayerEntry": 1
   },
@@ -168018,7 +168097,9 @@
  "00701030": {
   "name": "ParticleSystem_UpdateWithInnerFlag",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ParticleSystem_UpdateWithInnerFlag": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -168028,7 +168109,9 @@
  "00701050": {
   "name": "C_0086315c_ConstructEmitterParams",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0086315c_ConstructEmitterParams": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_0086315c* self, void*",
@@ -168060,7 +168143,9 @@
  "007011d0": {
   "name": "S_007010e0_InitializeBounds",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_007010e0_InitializeBounds": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_007010e0* self, void* , int parameters",
@@ -170107,7 +170192,9 @@
  "0070a350": {
   "name": "GfxWater_CreateEffectObject",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxWater_CreateEffectObject": 1
+  },
   "ret": "char*",
   "conv": "__cdecl",
   "params": "",
@@ -221334,7 +221421,7 @@
   "name": "RpTeamPlayerSetActive",
   "name_src": "rwname",
   "votes": {
-   "RpTeamPlayerSetActive": 3
+   "RpTeamPlayerSetActive": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -221345,7 +221432,7 @@
   "name": "_rpTeamPlayerSelect",
   "name_src": "rwname",
   "votes": {
-   "_rpTeamPlayerSelect": 3
+   "_rpTeamPlayerSelect": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -221355,11 +221442,13 @@
  "007fef10": {
   "name": "_rpTeamPlayerDeselect",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "_rpTeamPlayerDeselect": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007fef80": {
   "name": "sub_7FEF80",
