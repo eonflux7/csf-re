@@ -17388,7 +17388,7 @@
   "name": "AiAttackTasks_AppendTangent",
   "name_src": "vote",
   "votes": {
-   "AiAttackTasks_AppendTangent": 1
+   "AiAttackTasks_AppendTangent": 2
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -31649,7 +31649,9 @@
  "0047ee50": {
   "name": "AiAttackTasks_AppendSlotOrGrow",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "AiAttackTasks_AppendSlotOrGrow": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* , uint32_t* pointerArg",
@@ -83714,7 +83716,7 @@
   "file": "src/auto/0054ac70.cpp"
  },
  "0054aca0": {
-  "name": "C_008442a0_ForwardToDelegate",
+  "name": "C_008442a0_ForwardToDelegate_54ACA0",
   "name_src": "agent",
   "votes": {},
   "ret": "int",
@@ -83723,8 +83725,8 @@
   "sig_src": "abi"
  },
  "0054acc0": {
-  "name": "sub_54ACC0",
-  "name_src": "addr",
+  "name": "C_008442a0_ForwardToDelegateSlot54",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -83741,8 +83743,8 @@
   "sig_src": "abi"
  },
  "0054ad00": {
-  "name": "sub_54AD00",
-  "name_src": "addr",
+  "name": "C_008442a0_ForwardToDelegateSlot4C",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -83759,8 +83761,8 @@
   "sig_src": "abi"
  },
  "0054ad40": {
-  "name": "sub_54AD40",
-  "name_src": "addr",
+  "name": "C_008442a0_ForwardToDelegateSlot44",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -83768,8 +83770,8 @@
   "sig_src": "abi"
  },
  "0054ad60": {
-  "name": "sub_54AD60",
-  "name_src": "addr",
+  "name": "C_008442a0_ForwardOperation",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -83786,8 +83788,8 @@
   "sig_src": "abi"
  },
  "0054add0": {
-  "name": "sub_54ADD0",
-  "name_src": "addr",
+  "name": "C_008442a0_ForwardToDelegate_54ADD0",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -83804,8 +83806,8 @@
   "sig_src": "abi"
  },
  "0054ae40": {
-  "name": "sub_54AE40",
-  "name_src": "addr",
+  "name": "C_008442a0_ForwardOperationSlot60",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -83831,8 +83833,8 @@
   "sig_src": "abi"
  },
  "0054aea0": {
-  "name": "sub_54AEA0",
-  "name_src": "addr",
+  "name": "C_008442a0_ForwardToDelegateSlot8C",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -83840,15 +83842,16 @@
   "sig_src": "abi"
  },
  "0054aec0": {
-  "name": "TypeRegistry_InitializeEntry",
-  "name_src": "vote",
+  "name": "TypeRegistry_InitializeRecord",
+  "name_src": "agent",
   "votes": {
    "TypeRegistry_InitializeEntry": 1
   },
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4, uint32_t* a5, char a6",
-  "sig_src": "vote"
+  "params": "std::uint32_t* self, void* , int first, int second, int third, std::uint32_t* source, char flag",
+  "sig_src": "impl",
+  "file": "src/auto/0054aec0.cpp"
  },
  "0054af00": {
   "name": "sub_54AF00",
@@ -83947,20 +83950,23 @@
   "file": "src/auto/0054b290.cpp"
  },
  "0054b2f0": {
-  "name": "TypeRegistryDestroyTreeBranch",
-  "name_src": "vote",
+  "name": "TypeRegistry_DestroyBlockTree",
+  "name_src": "agent",
   "votes": {
    "TypeRegistryDestroyTreeBranch": 1
   },
-  "ret": "char",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, void** Block",
-  "sig_src": "vote"
+  "ret": "std::uint8_t",
+  "conv": "__stdcall",
+  "params": "void** block",
+  "sig_src": "impl",
+  "file": "src/auto/0054b2f0.cpp"
  },
  "0054b330": {
   "name": "TypeRegistry_CopyTwoDwordArrayWithContext",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "TypeRegistry_InitElementRange8": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "uint32_t* destination, uint32_t count, const uint32_t* source, void* , void*",
@@ -84040,13 +84046,15 @@
   "file": "src/auto/0054b900.cpp"
  },
  "0054b9f0": {
-  "name": "sub_54B9F0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "TypeRegistry_InsertElementCopies8",
+  "name_src": "vote",
+  "votes": {
+   "TypeRegistry_InsertElementCopies8": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a1, unsigned int a3, uint32_t* arg8",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0054bc60": {
   "name": "TypeRegistryEraseRange",
@@ -84078,13 +84086,14 @@
   "sig_src": "abi"
  },
  "0054be50": {
-  "name": "sub_54BE50",
-  "name_src": "addr",
+  "name": "TypeRegistry_AppendElement8",
+  "name_src": "agent",
   "votes": {},
-  "ret": "unsigned int",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint32_t* source",
+  "sig_src": "impl",
+  "file": "src/auto/0054be50.cpp"
  },
  "0054bec0": {
   "name": "sub_54BEC0",
@@ -84143,15 +84152,16 @@
   "sig_src": "abi"
  },
  "0054c140": {
-  "name": "ProfilesSavegames_ConstructArchiveWrapper",
-  "name_src": "vote",
+  "name": "C_008442a0_ConstructArchiveWrapper",
+  "name_src": "agent",
   "votes": {
    "ProfilesSavegames_ConstructArchiveWrapper": 1
   },
-  "ret": "uint32_t*",
+  "ret": "C_008442a0*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_008442a0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0054c140.cpp"
  },
  "0054c1a0": {
   "name": "C_008442a0_Destroy",
@@ -84173,13 +84183,15 @@
   "sig_src": "abi"
  },
  "0054c240": {
-  "name": "sub_54C240",
-  "name_src": "addr",
-  "votes": {},
+  "name": "TypeRegistry_ProcessRange",
+  "name_src": "vote",
+  "votes": {
+   "TypeRegistry_ProcessRange": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0054c2b0": {
   "name": "TypeRegistry_SerializeSPos",
@@ -84240,13 +84252,14 @@
   "file": "src/auto/0054c640.cpp"
  },
  "0054c750": {
-  "name": "sub_54C750",
-  "name_src": "addr",
+  "name": "TypeRegistry_SerializeIndirectValue",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "uint32_t* a1, int a2",
-  "sig_src": "abi"
+  "params": "uint32_t* value, void* context",
+  "sig_src": "impl",
+  "file": "src/auto/0054c750.cpp"
  },
  "0054c7d0": {
   "name": "sub_54C7D0",
@@ -84325,13 +84338,14 @@
   "file": "src/auto/0054cfd0.cpp"
  },
  "0054cff0": {
-  "name": "sub_54CFF0",
-  "name_src": "addr",
+  "name": "TypeRegistry_ForwardRange",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a1, uint32_t* a2, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint32_t* first, uint32_t* second, uint32_t* third",
+  "sig_src": "impl",
+  "file": "src/auto/0054cff0.cpp"
  },
  "0054d010": {
   "name": "TypeRegistry_SerializeHermite",
@@ -84344,44 +84358,50 @@
   "file": "src/auto/0054d010.cpp"
  },
  "0054d1b0": {
-  "name": "sub_54D1B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "TypeRegistry_ReservePointerSlots",
+  "name_src": "vote",
+  "votes": {
+   "TypeRegistry_ReservePointerSlots": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, unsigned int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0054d2a0": {
-  "name": "sub_54D2A0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "TypeRegistry_ReserveVector3Storage",
+  "name_src": "vote",
+  "votes": {
+   "TypeRegistry_ReserveVector3Storage": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, unsigned int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0054d3b0": {
-  "name": "TypeRegistry_SerializeHermiteVectorMember",
-  "name_src": "vote",
+  "name": "TypeRegistry_SerializeVector3Array",
+  "name_src": "agent",
   "votes": {
    "TypeRegistry_SerializeHermiteVectorMember": 1
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "void* a1, int a2",
-  "sig_src": "vote"
+  "params": "S_0047ea40* values, void* context",
+  "sig_src": "impl",
+  "file": "src/auto/0054d3b0.cpp"
  },
  "0054d5a0": {
-  "name": "TypeRegistry_SerializeHermiteShapeMember",
-  "name_src": "vote",
+  "name": "TypeRegistry_SerializePointerVector",
+  "name_src": "agent",
   "votes": {
    "TypeRegistry_SerializeHermiteShapeMember": 1
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "void* a1, int a2",
-  "sig_src": "vote"
+  "params": "S_0047ea40* storage, int contextAddress",
+  "sig_src": "impl",
+  "file": "src/auto/0054d5a0.cpp"
  },
  "0054d750": {
   "name": "TypeRegistry_SerializeInterpolatorHermite3D",
@@ -84461,15 +84481,16 @@
   "sig_src": "vote"
  },
  "0054d9d0": {
-  "name": "WeaponDefs_CopyTwelveByteVector",
-  "name_src": "vote",
+  "name": "S_0054d8e0_Assign",
+  "name_src": "agent",
   "votes": {
    "WeaponDefs_CopyTwelveByteVector": 2
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "S_0054d8e0* self, void* , int sourceAddress",
+  "sig_src": "impl",
+  "file": "src/auto/0054d9d0.cpp"
  },
  "0054da80": {
   "name": "TypeRegistry_CopyCharacterDefinition",
@@ -84493,13 +84514,14 @@
   "sig_src": "abi"
  },
  "0054e0c0": {
-  "name": "sub_54E0C0",
-  "name_src": "addr",
+  "name": "C_008443c8_ValidateValue",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, int a3",
-  "sig_src": "abi"
+  "params": "C_008443c8* self, void* , uint32_t* value, int context",
+  "sig_src": "impl",
+  "file": "src/auto/0054e0c0.cpp"
  },
  "0054e100": {
   "name": "sub_54E100",
@@ -84511,13 +84533,14 @@
   "sig_src": "abi"
  },
  "0054e140": {
-  "name": "sub_54E140",
-  "name_src": "addr",
+  "name": "C_008443c8_SerializeInt16",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int16_t* a2, int a3",
-  "sig_src": "abi"
+  "params": "C_008443c8* self, void* , int16_t* value, int context",
+  "sig_src": "impl",
+  "file": "src/auto/0054e140.cpp"
  },
  "0054e180": {
   "name": "sub_54E180",
@@ -84529,22 +84552,24 @@
   "sig_src": "abi"
  },
  "0054e1c0": {
-  "name": "sub_54E1C0",
-  "name_src": "addr",
+  "name": "C_008443c8_ValidateElement",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, int a3",
-  "sig_src": "abi"
+  "params": "C_008443c8* self, void* , uint32_t* value, int context",
+  "sig_src": "impl",
+  "file": "src/auto/0054e1c0.cpp"
  },
  "0054e200": {
-  "name": "sub_54E200",
-  "name_src": "addr",
+  "name": "C_008443c8_SerializeByte",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint8_t* a2, int a3",
-  "sig_src": "abi"
+  "params": "C_008443c8* self, void* , std::uint8_t* value, int context",
+  "sig_src": "impl",
+  "file": "src/auto/0054e200.cpp"
  },
  "0054e240": {
   "name": "sub_54E240",
@@ -84556,22 +84581,24 @@
   "sig_src": "abi"
  },
  "0054e260": {
-  "name": "sub_54E260",
-  "name_src": "addr",
+  "name": "C_008443c8_CheckDelegatedResult",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_008443c8* self, void* , int argument, int expected",
+  "sig_src": "impl",
+  "file": "src/auto/0054e260.cpp"
  },
  "0054e280": {
-  "name": "sub_54E280",
-  "name_src": "addr",
+  "name": "C_008443c8_WriteString",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2, int a3",
-  "sig_src": "abi"
+  "params": "C_008443c8* self, void* , const char* text, int",
+  "sig_src": "impl",
+  "file": "src/auto/0054e280.cpp"
  },
  "0054e2c0": {
   "name": "sub_54E2C0",
@@ -84583,13 +84610,14 @@
   "sig_src": "abi"
  },
  "0054e300": {
-  "name": "sub_54E300",
-  "name_src": "addr",
+  "name": "C_008443c8_ReadTerminatedString",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, unsigned int a3, int a4",
-  "sig_src": "abi"
+  "params": "C_008443c8* self, void* , int destination, unsigned int capacity, int",
+  "sig_src": "impl",
+  "file": "src/auto/0054e300.cpp"
  },
  "0054e350": {
   "name": "sub_54E350",
@@ -84601,13 +84629,14 @@
   "sig_src": "abi"
  },
  "0054e3a0": {
-  "name": "sub_54E3A0",
-  "name_src": "addr",
+  "name": "C_008443c8_SerializeValue_54E3A0",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, int a3",
-  "sig_src": "abi"
+  "params": "C_008443c8* self, void* , uint32_t* value, int context",
+  "sig_src": "impl",
+  "file": "src/auto/0054e3a0.cpp"
  },
  "0054e3d0": {
   "name": "C_008443c8_SerializeFields",
@@ -84620,13 +84649,14 @@
   "file": "src/auto/0054e3d0.cpp"
  },
  "0054e4b0": {
-  "name": "sub_54E4B0",
-  "name_src": "addr",
+  "name": "C_008443c8_SerializeValue_54E4B0",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, uint8_t* a3",
-  "sig_src": "abi"
+  "params": "C_008443c8* self, void* , uint32_t* value, uint8_t* context",
+  "sig_src": "impl",
+  "file": "src/auto/0054e4b0.cpp"
  },
  "0054e4f0": {
   "name": "C_008443c8_ForwardToInnerVtblSlot20",
@@ -86387,7 +86417,8 @@
   "name": "S_0047ea40_DestroyPointerStorage",
   "name_src": "agent",
   "votes": {
-   "DestroyPointerStorage": 17
+   "DestroyPointerStorage": 17,
+   "S_0047ea40_DestroyPointerStorage": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -134498,7 +134529,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 411,
+   "Mem_FreeDebug": 412,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -170211,7 +170242,7 @@
   "name": "AllocateTwelveByteVectorStorage",
   "name_src": "vote",
   "votes": {
-   "AllocateTwelveByteVectorStorage": 3
+   "AllocateTwelveByteVectorStorage": 4
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -204486,7 +204517,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 172
+   "RethrowCppException": 173
   },
   "ret": "void",
   "conv": "__stdcall",
