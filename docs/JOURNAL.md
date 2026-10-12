@@ -1342,3 +1342,9 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   function is a constant). New gate rule: `CSF_ADDR_FN` of the function's own address is rejected (three
   recursive callbacks failed the standalone compile; the packet says to pass the function by name).
 - The nine queue items quarantined while the leak was live went back to pending for a `--full` pass.
+- Correction: 0x6B37F0 was not "instruction for instruction the original". It loaded the vtable from +0x30 and
+  then dereferenced it once more (`CSF_AT(void**, vtbl, 0)[4]` indexes the first METHOD's code). The verifier
+  blamed it three times, the last time alone under full coverage; I misread it twice. Fixed by hand.
+- Full-coverage baseline after tonight's installs: 8 crash culprits and 2 mismatches quarantined in the first
+  run, then 0x6B37F0 and four mismatches that outlived the x87 fix (0x41EA70, 0x6AF1C0, 0x4B06F0, 0x6AB9E0).
+  0x47E350 and the three hand fixes pass. 0x43FBA0, 0x440F50, 0x441850, 0x4E0D70 fail as a group, none alone.
