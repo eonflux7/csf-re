@@ -1611,7 +1611,7 @@ def wave_close(args, o, n):
             return []
         if not args.no_verify:
             print(f"wave {o['name']}: verify", flush=True)
-            tool("verifier.py", "--module", o["id"])
+            tool("verifier.py", "--wait", "--module", o["id"])
         if not args.no_linktest:
             print(f"wave {o['name']}: link test", flush=True)
             tool("linktest.py")
@@ -1623,7 +1623,7 @@ def wave_close(args, o, n):
             for attempt in (1, 2):
                 print(f"wave {o['name']}: regression check (installed baseline, full coverage)"
                       + (", second run" if attempt == 2 else ""), flush=True)
-                rc = tool("verifier.py", "--baseline-only", "--full")
+                rc = tool("verifier.py", "--wait", "--baseline-only", "--full")
                 if not rc:
                     break
                 print(f"wave {o['name']}: regression check failed without a culprit (exit {rc})", flush=True)

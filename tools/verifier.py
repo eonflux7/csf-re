@@ -294,13 +294,18 @@ def main():
     ap.add_argument("--no-baseline", action="store_true", help="skip the baseline smoke (all pending off) first")
     ap.add_argument("--baseline-only", action="store_true", help="smoke the installed baseline alone and stop "
                     "(regression check of everything installed so far; with --full the widest coverage)")
+    ap.add_argument("--wait", action="store_true", help="wait for a running verifier to finish instead of leaving "
+                    "(the wave loop: its stop rule reads what this run installed)")
     a = ap.parse_args()
     lk = open(os.path.join(ROOT, "work", "verify.lock"), "w")
     try:
         fcntl.flock(lk, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except OSError:
-        print("verifier already running")
-        return
+        if not a.wait:
+            print("verifier already running")
+            return
+        print("verifier already running: waiting for it", flush=True)
+        fcntl.flock(lk, fcntl.LOCK_EX)
     phase = lambda ph, **kw: grunt.live(mode="verifier", phase=ph, **kw)  # noqa: E731  (monitor: Verify stage)
     if a.baseline_only:
         while True:

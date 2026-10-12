@@ -129,6 +129,8 @@ def run(jobs):
     from addrfix import asm_hits
     raw, asm = {}, {}
     for src in srcs:
+        if not os.path.exists(src):  # quarantined by the verifier while this ran
+            continue
         h = raw_addresses(src)
         if h:
             raw[os.path.relpath(src, ROOT)] = [f"0x{v:X}" for v in h]
