@@ -1,29 +1,3 @@
-# Escalation 0x0047E350: savegame start under 8x load: NaN vectors reach RenderWare (eip 0x7FED32) in 55-80% of runs with this hook on, ~6% with it off
-
-## Orchestrator note (2026-10-12, x87 leak)
-- Until 2026-10-12 every smoke ran with a leaked x87 stack on the main thread (0x4961A0 and 0x40FC50 returned
-  a float the original does not return; fixed, see JOURNAL). With the stack full the original's float code
-  computes NaN and the harness's own float compare fails. Smoke this function again before reading the result
-  below: a float or NaN difference here may be the leak, not the file.
-
-## Orchestrator notes (2026-10-11)
-- Measured with tools/flaky.py (savegame start on 8 copies at once), 16 runs each: this hook off -> 1/16; any of
-  the 7 neighbouring functions off instead -> 10-11/16; everything on -> 12/24, 19/32, 13/24, 18/24.
-- Fixed already: the Hermite constants were swapped (0x82E1E4 = 3.0 scales t^2, 0x831430 = -2.0 scales t^3).
-  The crash rate did not change with that fix.
-- Read against the asm instruction by instruction after the fix (early exits, wrap modes, segment search,
-  weights, the final x87 sums): no difference found. emudiff's remaining DIFF (profile 2) is the mock not pushing
-  st0 for float-returning virtual calls, not a real difference.
-- Not tried: running original and ours side by side in game on the same inputs (HOOK_TRAMP variant hung at
-  startup: the build then also carried full diff tables); x87 control word / precision effects of the /Od build.
-
-## Smoke log tail
-```
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include "globals.h"
 #include "hook.h"
@@ -197,4 +171,3 @@ static float* __fastcall C_00832f18_EvaluateHermitePosition(
 
 HOOK(0x0047E350, C_00832f18_EvaluateHermitePosition, "auto");
 
-```
