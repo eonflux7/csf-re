@@ -117567,7 +117567,7 @@
   "name": "SceneLoader_GetSceneController",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetSceneController": 56,
+   "SceneLoader_GetSceneController": 57,
    "SceneLoader_GetSceneObject": 1,
    "SceneLoader_GetSubsystem": 1,
    "SceneLoader_GetSceneResources": 1,
@@ -124119,7 +124119,7 @@
   "name": "GetReferencedObject",
   "name_src": "vote",
   "votes": {
-   "GetReferencedObject": 74,
+   "GetReferencedObject": 75,
    "MenuPause_ResolveHeldObject_6683F0": 1,
    "Options_ResolveHeldObject_6683F0": 1,
    "MenuSaveGame_ResolveHeldObject_6683F0": 1,
@@ -142893,7 +142893,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 279,
+   "GetGlobalInt": 280,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -144547,7 +144547,7 @@
   "name": "SceneLoader_GetWorldObjectCollection",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetWorldObjectCollection": 19,
+   "SceneLoader_GetWorldObjectCollection": 20,
    "SceneLoader_GetRenderWorld": 2,
    "SceneLoader_GetContextObject": 1
   },
@@ -159130,7 +159130,8 @@
   "name": "GfxCollision_IntersectReferencedTriangle",
   "name_src": "agent",
   "votes": {
-   "GfxCollision_TestQueryBounds": 1
+   "GfxCollision_TestQueryBounds": 1,
+   "GfxCollision_TestDirectIntersection": 1
   },
   "ret": "char",
   "conv": "__stdcall",
@@ -159492,7 +159493,7 @@
   "file": "src/auto/006ecdf0.cpp"
  },
  "006ece90": {
-  "name": "QueryIntersection_6ECE90",
+  "name": "QueryIntersection",
   "name_src": "vote",
   "votes": {
    "QueryIntersection": 3
@@ -159580,7 +159581,8 @@
   "name": "GfxCollision_AddIntersection",
   "name_src": "agent",
   "votes": {
-   "GfxCollision_InsertIntersection": 1
+   "GfxCollision_InsertIntersection": 1,
+   "GfxCollision_RecordIntersection": 1
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -159641,6 +159643,7 @@
   "name": "C_00862028_TestAtomicIntersection",
   "name_src": "agent",
   "votes": {
+   "C_00862028_TestRegisteredObject": 1,
    "ProcessSectorObject": 1
   },
   "ret": "void",
@@ -159652,7 +159655,9 @@
  "006eded0": {
   "name": "C_00862028_QueryIntersections",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00862028_TestWorldCollection": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "C_00862028* self, void* , int world, int userData",
@@ -159660,15 +159665,16 @@
   "file": "src/auto/006eded0.cpp"
  },
  "006edf60": {
-  "name": "QueryIntersection_6EDF60",
-  "name_src": "vote",
+  "name": "C_00862028_QueryIntersection",
+  "name_src": "agent",
   "votes": {
    "QueryIntersection": 2
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2, uint32_t* arg4, int* a4, unsigned int a5",
-  "sig_src": "vote"
+  "params": "C_00862028* self, void* , float* query, uint32_t* parameters, int* filter, unsigned int flags",
+  "sig_src": "impl",
+  "file": "src/auto/006edf60.cpp"
  },
  "006ee1c0": {
   "name": "C_00862028_ProcessSectorObjects",
@@ -184909,7 +184915,7 @@
  },
  "007450d0": {
   "name": "C_00858180_SetIndexByRepetition",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -184976,8 +184982,8 @@
   "file": "src/auto/00745290.cpp"
  },
  "007452d0": {
-  "name": "SpawnPoints_ApplyOutcome",
-  "name_src": "vote",
+  "name": "C_00858180_SetKillOutcome",
+  "name_src": "agent",
   "votes": {
    "SpawnPoints_ApplyOutcome": 1
   },
@@ -185000,8 +185006,8 @@
   "file": "src/auto/00745320.cpp"
  },
  "00745350": {
-  "name": "DdlSpawn_ApplyFallbackFlag",
-  "name_src": "vote",
+  "name": "C_00858180_SetWantsToInterrogate",
+  "name_src": "agent",
   "votes": {
    "DdlSpawn_ApplyFallbackFlag": 1
   },
@@ -185215,7 +185221,7 @@
  },
  "007456b0": {
   "name": "NetPlayer_DispatchEvent",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -185224,8 +185230,8 @@
   "file": "src/auto/007456b0.cpp"
  },
  "00745800": {
-  "name": "NetCogibleDdl_InitializeBase",
-  "name_src": "vote",
+  "name": "C_008678a8_InitializeBase",
+  "name_src": "agent",
   "votes": {
    "NetCogibleDdl_InitializeBase": 1
   },
