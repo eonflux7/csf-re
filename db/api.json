@@ -71839,15 +71839,16 @@
   "sig_src": "abi"
  },
  "00519a80": {
-  "name": "BddTables_ProcessWithContext",
-  "name_src": "vote",
+  "name": "BddTables_CopyDwordRange",
+  "name_src": "agent",
   "votes": {
    "BddTables_ProcessWithContext": 1
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3, int a4, int a5",
-  "sig_src": "vote"
+  "params": "uint32_t source, uint32_t sourceEnd, uint32_t destination, uint32_t , uint32_t",
+  "sig_src": "impl",
+  "file": "src/auto/00519a80.cpp"
  },
  "00519af0": {
   "name": "SceneSubsystem_LookupEntry",
@@ -71875,7 +71876,7 @@
  },
  "00519be0": {
   "name": "BddTables_GetEntryElementCount",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -71885,7 +71886,7 @@
  },
  "00519c10": {
   "name": "S_00519c10_ForwardWithContext",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -71976,7 +71977,7 @@
  },
  "0051a200": {
   "name": "BddTables_ProcessEntryIfNonNull",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int*",
   "conv": "__stdcall",
@@ -72006,7 +72007,7 @@
  },
  "0051a2e0": {
   "name": "BddTables_ForwardOperation",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
@@ -72073,7 +72074,7 @@
  },
  "0051a780": {
   "name": "BddTables_ForwardTableOperationWithSelf",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int*",
   "conv": "__fastcall",
@@ -72164,7 +72165,7 @@
  },
  "0051ad70": {
   "name": "BddTables_GetEntryCount",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -72236,7 +72237,7 @@
  },
  "0051aee0": {
   "name": "BddTables_ForwardByteRange",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint8_t*",
   "conv": "__fastcall",
@@ -72254,8 +72255,8 @@
   "sig_src": "abi"
  },
  "0051af30": {
-  "name": "SceneMissionSetup_AssociateProviderSector",
-  "name_src": "vote",
+  "name": "BddTables_AssociateProviderSector",
+  "name_src": "agent",
   "votes": {
    "SceneMissionSetup_AssociateProviderSector": 1
   },
@@ -72364,8 +72365,8 @@
   "sig_src": "abi"
  },
  "0051b4c0": {
-  "name": "GameBddLoader_ConstructMenuState",
-  "name_src": "vote",
+  "name": "C_00840dac_ConstructMenuState",
+  "name_src": "agent",
   "votes": {
    "GameBddLoader_ConstructMenuState": 1,
    "GameBddLoader_ConstructEffectsBase": 1
@@ -72426,8 +72427,8 @@
   "sig_src": "abi"
  },
  "0051b600": {
-  "name": "GameBddLoader_ConstructMenuEffects",
-  "name_src": "vote",
+  "name": "C_00840de4_ConstructMenuEffects",
+  "name_src": "agent",
   "votes": {
    "GameBddLoader_ConstructMenuEffects": 1,
    "GameBddLoader_ConstructObjectsBase": 1
@@ -179169,7 +179170,7 @@
   "name": "CopyDwordIfNotNull",
   "name_src": "agent",
   "votes": {
-   "CopyDwordIfNotNull": 30
+   "CopyDwordIfNotNull": 31
   },
   "ret": "uint32_t*",
   "conv": "__stdcall",
@@ -205378,7 +205379,7 @@
   "name": "___CxxFrameHandler",
   "name_src": "ida",
   "votes": {
-   "___CxxFrameHandler": 132,
+   "___CxxFrameHandler": 133,
    "OriginalCxxFrameHandler": 1
   },
   "ret": "int",
@@ -205462,7 +205463,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 181
+   "RethrowCppException": 182
   },
   "ret": "void",
   "conv": "__stdcall",
