@@ -3996,7 +3996,7 @@ ea,size,region,module,name,name_src,status
 004a9f00,36,game,m4A9CA0,,,todo
 004a9f30,104,game,m4A9CA0,,,todo
 004a9fa0,6,game,m4A9CA0,GetLanzarGranadaName,agent,done
-004a9fb0,88,game,m4A9CA0,,,todo
+004a9fb0,88,game,m4A9CA0,StaticAi_SetProbeSegment,vote,todo
 004aa010,6,game,m4A9CA0,GetPausaTag,agent,done
 004aa020,6,game,m4A9CA0,TCover_GetName,agent,done
 004aa030,6,game,m4A9CA0,GetRodearString,agent,done
@@ -4167,7 +4167,7 @@ ea,size,region,module,name,name_src,status
 004ad530,43,game,m4AD420,,,todo
 004ad560,53,game,m4AD420,,,todo
 004ad5a0,84,game,m4AD420,,,todo
-004ad600,140,game,m4AD420,,,todo
+004ad600,140,game,m4AD420,AiFncStatic_ApplyCachedProvider,vote,todo
 004ad690,132,game,m4AD420,,,todo
 004ad720,93,game,m4AD420,,,todo
 004ad780,56,game,m4AD420,,,todo
@@ -4190,7 +4190,7 @@ ea,size,region,module,name,name_src,status
 004addb0,167,game,m4AD420,,,todo
 004ade60,174,game,m4ADE60,CoverAttackTasks_GrowRecordArray,vote,todo
 004adf10,165,game,m4ADE60,Archive_SerializeObjectRef,vote,todo
-004adfc0,78,game,m4ADE60,,,todo
+004adfc0,78,game,m4ADE60,StaticAi_InitializeWaypointAssessment,vote,todo
 004ae010,79,game,m4AE010,,,todo
 004ae060,6,game,m4AE010,GetStaticName,agent,done
 004ae070,95,game,m4AE010,,,todo
@@ -4251,7 +4251,7 @@ ea,size,region,module,name,name_src,status
 004aec90,313,game,m4AE010,AiCore_AdvanceCharacterTimer,vote,todo
 004aedd0,88,game,m4AEDD0,AiCore_IsTargetPositionValid,agent,done
 004aee30,92,game,m4AEDD0,StaticGuard_CanEngageTarget,agent,done
-004aee90,214,game,m4AEDD0,AiCoverAttackTasks_UpdateAttackState,vote,todo
+004aee90,214,game,m4AEDD0,AiFncStatic_UpdateCoverAttackState,agent,done
 004aef70,216,game,m4AEDD0,StaticAi_ResolveNoTarget,vote,todo
 004af050,172,game,m4AEDD0,AiFncStatic_PrepareLinkedObject,agent,done
 004af100,81,game,m4AEDD0,S_004aef70_ResolvePendingTarget,agent,done
@@ -4262,7 +4262,7 @@ ea,size,region,module,name,name_src,status
 004af450,236,game,m4AEDD0,S_004af450_FindNearbyPosition,agent,done
 004af540,118,game,m4AEDD0,TEstatico_CopyTargetPositionIfFree,agent,done
 004af5c0,399,game,m4AEDD0,,,todo
-004af750,1015,game,m4AEDD0,,,todo
+004af750,1015,game,m4AEDD0,S_004af750_EvaluateGuardWaypoint,agent,done
 004afb50,82,game,m4AEDD0,AiFncStatic_ResetGuardState,agent,done
 004afbb0,102,game,m4AEDD0,Estatico_ForwardToLinkedHandleWhenState3,agent,done
 004afc20,71,game,m4AEDD0,AiStatic_ResetCoverAttackAndActivateUnassigned,agent,done
@@ -4286,7 +4286,7 @@ ea,size,region,module,name,name_src,status
 004b0770,237,game,m4AEDD0,S_004abb90_FindClosestPositionIndex,agent,done
 004b0860,349,game,m4AEDD0,AiStatic_CalculateObstacleDistance,agent,done
 004b09c0,359,game,m4AEDD0,AiFncStatic_SelectScanAngle,agent,done
-004b0b30,474,game,m4AEDD0,AiStatic_TrySidePosition,vote,todo
+004b0b30,474,game,m4AEDD0,AiFncStatic_TryStoreLateralPosition,agent,done
 004b0d10,279,game,m4AEDD0,AiStatic_TryForwardPosition,vote,todo
 004b0e30,535,game,m4AEDD0,AiStatic_UpdateGuardPosition,agent,done
 004b1050,262,game,m4AEDD0,S_004b1050_HasCompatibleNearbyObject,agent,done
@@ -5251,7 +5251,7 @@ ea,size,region,module,name,name_src,status
 004dc860,32,game,m4DC3E0,,,todo
 004dc880,111,game,m4DC3E0,,,todo
 004dc8f0,135,game,m4DC3E0,,,todo
-004dc980,48,game,m4DC3E0,,,todo
+004dc980,48,game,m4DC3E0,StaticAi_GetCachedWaypointAssessment,vote,todo
 004dc9b0,43,game,stl,,,todo
 004dc9e0,39,game,stl,,,todo
 004dca10,225,game,m4DC3E0,,,todo
@@ -5263,7 +5263,7 @@ ea,size,region,module,name,name_src,status
 004dcfa0,32,game,m4DC3E0,,,todo
 004dcfc0,146,game,m4DC3E0,,,todo
 004dd060,175,game,m4DC3E0,DispatchWithArgBlock,vote,todo
-004dd110,36,game,m4DC3E0,,,todo
+004dd110,36,game,m4DC3E0,StaticAi_StoreWaypointAssessment,vote,todo
 004dd140,216,game,m4DC3E0,,,todo
 004dd220,70,game,m4DC3E0,SceneGrid_RegisterHandlePosition,vote,todo
 004dd270,613,game,stl,,,todo
@@ -14355,7 +14355,7 @@ ea,size,region,module,name,name_src,status
 006b0320,140,game,m6AEA20,S_006b0320_AssignPairTable,agent,done
 006b03b0,188,game,m6AEA20,S_006b0320_AssignWithClonedEntries,agent,done
 006b0470,54,game,m6AEA20,S_006b0320_Init,agent,done
-006b04b0,1622,game,m6AEA20,Geometry_BuildMergeCandidates,vote,todo
+006b04b0,1622,game,m6AEA20,Polygon_TriangulateAndLinkNeighbors,agent,done
 006b0b10,92,game,m6AEA20,S_006b0320_FreeEntries,agent,done
 006b0b70,29,game,m6AEA20,S_006b0320_PrepareAndApply,agent,done
 006b0b90,1144,game,m6AEA20,Geometry_MergeAdjacentPolygons,agent,done
@@ -15549,7 +15549,7 @@ ea,size,region,module,name,name_src,status
 006d9d00,22,game,m6D9D00,GfxScene_AdvanceElapsedTime,vote,todo
 006d9d20,19,game,m6D9D00,,,todo
 006d9d40,63,game,m6D9D00,,,todo
-006d9d80,116,game,m6D9D00,,,todo
+006d9d80,116,game,m6D9D00,Polygon_GrowEdgeArray,vote,todo
 006d9e00,60,game,m6D9D00,ProfilesSavegames_AssignRecordRange,vote,todo
 006d9e40,60,game,m6D9D00,,,todo
 006d9e80,39,game,m6D9D00,CopySixteenByteElement,vote,todo

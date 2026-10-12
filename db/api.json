@@ -3644,6 +3644,7 @@
   "name": "AiStatic_InitializeSegment",
   "name_src": "vote",
   "votes": {
+   "AiFncStatic_InitializePositionPair": 1,
    "AiStatic_InitializeSegment": 1
   },
   "ret": "float*",
@@ -6596,7 +6597,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 90
+   "S_0041e5f0_GrowArrayCapacity": 91
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -18323,7 +18324,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 337
+   "CHandleTable_Resolve": 339
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -18451,7 +18452,7 @@
   "name": "CGuiControl_FindNearbyChildPosition",
   "name_src": "agent",
   "votes": {
-   "CGuiControl_FindNearbyChildPosition": 3
+   "CGuiControl_FindNearbyChildPosition": 4
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -35726,7 +35727,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 129,
+   "GetObjectPositionVector": 130,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -43210,13 +43211,15 @@
   "file": "src/auto/004a9fa0.cpp"
  },
  "004a9fb0": {
-  "name": "sub_4A9FB0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "StaticAi_SetProbeSegment",
+  "name_src": "vote",
+  "votes": {
+   "StaticAi_SetProbeSegment": 1
+  },
   "ret": "float*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float* a2, float* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004aa010": {
   "name": "GetPausaTag",
@@ -44834,13 +44837,15 @@
   "sig_src": "abi"
  },
  "004ad600": {
-  "name": "sub_4AD600",
-  "name_src": "addr",
-  "votes": {},
+  "name": "AiFncStatic_ApplyCachedProvider",
+  "name_src": "vote",
+  "votes": {
+   "AiFncStatic_ApplyCachedProvider": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2, uint32_t* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004ad690": {
   "name": "sub_4AD690",
@@ -45062,13 +45067,15 @@
   "sig_src": "vote"
  },
  "004adfc0": {
-  "name": "sub_4ADFC0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "StaticAi_InitializeWaypointAssessment",
+  "name_src": "vote",
+  "votes": {
+   "StaticAi_InitializeWaypointAssessment": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004ae010": {
   "name": "sub_4AE010",
@@ -45670,8 +45677,8 @@
   "file": "src/auto/004aee30.cpp"
  },
  "004aee90": {
-  "name": "AiCoverAttackTasks_UpdateAttackState",
-  "name_src": "vote",
+  "name": "AiFncStatic_UpdateCoverAttackState",
+  "name_src": "agent",
   "votes": {
    "AiCoverAttackTasks_UpdateAttackState": 1,
    "AiCoverAttackTasks_UpdateAttack": 1,
@@ -45679,8 +45686,9 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2, int a3",
-  "sig_src": "vote"
+  "params": "void* self, void* , C_0085e7b8* actor, int updateArgument",
+  "sig_src": "impl",
+  "file": "src/auto/004aee90.cpp"
  },
  "004aef70": {
   "name": "StaticAi_ResolveNoTarget",
@@ -45749,7 +45757,7 @@
   "name": "CoverTask_IsLinkedObjectReady",
   "name_src": "agent",
   "votes": {
-   "CoverTask_IsLinkedObjectReady": 3
+   "CoverTask_IsLinkedObjectReady": 4
   },
   "ret": "bool",
   "conv": "__fastcall",
@@ -45760,7 +45768,9 @@
  "004af450": {
   "name": "S_004af450_FindNearbyPosition",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "StaticAi_TestLinkedObstruction": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_004af450* self, void* , float* segment, uint32_t* outputPosition",
@@ -45772,6 +45782,8 @@
   "name_src": "agent",
   "votes": {
    "AiStatic_TraceSegment": 1,
+   "AiFncStatic_TestSegment": 1,
+   "AiCharTask_TestPositionPair": 1,
    "AiStatic_TestSegment": 1
   },
   "ret": "char",
@@ -45790,13 +45802,14 @@
   "sig_src": "abi"
  },
  "004af750": {
-  "name": "sub_4AF750",
-  "name_src": "addr",
+  "name": "S_004af750_EvaluateGuardWaypoint",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a3",
-  "sig_src": "abi"
+  "params": "S_004af750* self, void* , float* position",
+  "sig_src": "impl",
+  "file": "src/auto/004af750.cpp"
  },
  "004afb50": {
   "name": "AiFncStatic_ResetGuardState",
@@ -46034,15 +46047,16 @@
   "file": "src/auto/004b09c0.cpp"
  },
  "004b0b30": {
-  "name": "AiStatic_TrySidePosition",
-  "name_src": "vote",
+  "name": "AiFncStatic_TryStoreLateralPosition",
+  "name_src": "agent",
   "votes": {
    "AiStatic_TrySidePosition": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int arg0, float arg4",
-  "sig_src": "vote"
+  "params": "void* self, void* , int actor, float side",
+  "sig_src": "impl",
+  "file": "src/auto/004b0b30.cpp"
  },
  "004b0d10": {
   "name": "AiStatic_TryForwardPosition",
@@ -46052,8 +46066,9 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int arg0",
-  "sig_src": "vote"
+  "params": "void* self, void* , void* linkedHandle",
+  "sig_src": "impl",
+  "file": "src/auto/004b0d10.cpp"
  },
  "004b0e30": {
   "name": "AiStatic_UpdateGuardPosition",
@@ -46086,13 +46101,14 @@
   "file": "src/auto/004b1160.cpp"
  },
  "004b11f0": {
-  "name": "sub_4B11F0",
-  "name_src": "addr",
+  "name": "AiFncStatic_UpdateLinkedCoverTask",
+  "name_src": "impl",
   "votes": {},
   "ret": "void",
   "conv": "__stdcall",
-  "params": "int a1, float a2",
-  "sig_src": "abi"
+  "params": "void* task, float elapsedTime",
+  "sig_src": "impl",
+  "file": "src/auto/004b11f0.cpp"
  },
  "004b1310": {
   "name": "sub_4B1310",
@@ -55065,7 +55081,7 @@
   "name": "GetLinkedObjectValue_4DB5C0",
   "name_src": "agent",
   "votes": {
-   "GetLinkedObjectValue_4DB5C0": 112
+   "GetLinkedObjectValue_4DB5C0": 117
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -55077,7 +55093,7 @@
   "name": "GetLinkedObjectField10",
   "name_src": "agent",
   "votes": {
-   "GetLinkedObjectField10": 34
+   "GetLinkedObjectField10": 35
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -55488,7 +55504,7 @@
   "name": "Dispatch_NoLinkedTarget",
   "name_src": "vote",
   "votes": {
-   "Dispatch_NoLinkedTarget": 2,
+   "Dispatch_NoLinkedTarget": 3,
    "CoverTask_SetTarget": 1
   },
   "ret": "int",
@@ -55653,7 +55669,7 @@
   "name": "UnnamedApply_4DC180",
   "name_src": "vote",
   "votes": {
-   "UnnamedApply_4DC180": 27,
+   "UnnamedApply_4DC180": 28,
    "Owner_ApplyOffset": 1,
    "Task_SetObject": 1,
    "Task_4DC180": 1,
@@ -55707,7 +55723,7 @@
   "name": "AiCoverAttackTasks_ResetLinkedTaskState",
   "name_src": "vote",
   "votes": {
-   "AiCoverAttackTasks_ResetLinkedTaskState": 16,
+   "AiCoverAttackTasks_ResetLinkedTaskState": 17,
    "BindLinkedSubobject": 1,
    "AiCoverAttackTasks_SelectTaskEntry": 1,
    "CoverAttack_Sub_4DC380": 1,
@@ -55899,13 +55915,15 @@
   "sig_src": "abi"
  },
  "004dc980": {
-  "name": "sub_4DC980",
-  "name_src": "addr",
-  "votes": {},
+  "name": "StaticAi_GetCachedWaypointAssessment",
+  "name_src": "vote",
+  "votes": {
+   "StaticAi_GetCachedWaypointAssessment": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004dc9b0": {
   "name": "sub_4DC9B0",
@@ -56009,13 +56027,15 @@
   "sig_src": "vote"
  },
  "004dd110": {
-  "name": "sub_4DD110",
-  "name_src": "addr",
-  "votes": {},
+  "name": "StaticAi_StoreWaypointAssessment",
+  "name_src": "vote",
+  "votes": {
+   "StaticAi_StoreWaypointAssessment": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, uint32_t* a2, void* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004dd140": {
   "name": "sub_4DD140",
@@ -59273,7 +59293,7 @@
   "name": "GetValue8B0554",
   "name_src": "agent",
   "votes": {
-   "GetValue8B0554": 226
+   "GetValue8B0554": 227
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -107341,7 +107361,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 98
+   "RwMatrixDestroy": 100
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -107352,7 +107372,7 @@
   "name": "RwMatrixCreate",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixCreate": 63
+   "RwMatrixCreate": 65
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -116295,7 +116315,7 @@
   "name": "SceneLoader_GetSceneController",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetSceneController": 45,
+   "SceneLoader_GetSceneController": 46,
    "SceneLoader_GetSceneObject": 1,
    "SceneLoader_GetSubsystem": 1,
    "SceneLoader_GetSceneResources": 1,
@@ -130662,7 +130682,7 @@
   "name": "GetCachedObjectProvider",
   "name_src": "vote",
   "votes": {
-   "GetCachedObjectProvider": 140
+   "GetCachedObjectProvider": 141
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -133380,7 +133400,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 293
+   "Mem_Alloc": 294
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -133391,7 +133411,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 567
+   "Mem_Free": 568
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -140274,7 +140294,7 @@
   "name": "NormalizeVector3",
   "name_src": "agent",
   "votes": {
-   "NormalizeVector3": 40,
+   "NormalizeVector3": 41,
    "NormalizeVector": 1
   },
   "ret": "float*",
@@ -140522,7 +140542,9 @@
  "006ad120": {
   "name": "GfxMatrix_IsPointInsideTriangle_6AD120",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxMatrix_IsPointInsideTriangle_6AD120": 1
+  },
   "ret": "bool",
   "conv": "__cdecl",
   "params": "float* point, float* vertexB, float* vertexC, float* vertexD",
@@ -140629,7 +140651,7 @@
   "name": "GfxMatrix_SetScaleAndUpdate",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_SetScaleAndUpdate": 3
+   "GfxMatrix_SetScaleAndUpdate": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -140841,7 +140863,7 @@
   "name": "GfxMatrix_RotateAroundAxisY",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_RotateAroundAxisY": 3,
+   "GfxMatrix_RotateAroundAxisY": 4,
    "RotateMatrixAroundY": 1
   },
   "ret": "int",
@@ -140877,7 +140899,7 @@
   "name": "GfxMatrix_SetYRotation",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_SetYRotation": 4
+   "GfxMatrix_SetYRotation": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -141411,15 +141433,16 @@
   "file": "src/auto/006b0470.cpp"
  },
  "006b04b0": {
-  "name": "Geometry_BuildMergeCandidates",
-  "name_src": "vote",
+  "name": "Polygon_TriangulateAndLinkNeighbors",
+  "name_src": "agent",
   "votes": {
    "Geometry_BuildMergeCandidates": 1
   },
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , void* edges",
+  "sig_src": "impl",
+  "file": "src/auto/006b04b0.cpp"
  },
  "006b0b10": {
   "name": "S_006b0320_FreeEntries",
@@ -141538,7 +141561,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 244,
+   "GetGlobalInt": 245,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -153306,13 +153329,15 @@
   "sig_src": "abi"
  },
  "006d9d80": {
-  "name": "sub_6D9D80",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Polygon_GrowEdgeArray",
+  "name_src": "vote",
+  "votes": {
+   "Polygon_GrowEdgeArray": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006d9e00": {
   "name": "ProfilesSavegames_AssignRecordRange",
@@ -188606,6 +188631,7 @@
   "name": "C_0083e0d8_FindNearestWaypoint",
   "name_src": "agent",
   "votes": {
+   "C_0083e0d8_FindNearestWaypoint": 1,
    "WaypointGraph_SearchFacing": 1
   },
   "ret": "char",
@@ -188739,7 +188765,8 @@
   "name_src": "agent",
   "votes": {
    "GetFacingAngleRadians": 2,
-   "Spatial_GetRegionScale": 1
+   "Spatial_GetRegionScale": 1,
+   "C_0086c288_GetFacingAngleRadians": 1
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -202885,7 +202912,7 @@
   "name": "_memcpy",
   "name_src": "ida",
   "votes": {
-   "_memcpy": 71,
+   "_memcpy": 72,
    "Memcpy": 1
   },
   "ret": "void*",
