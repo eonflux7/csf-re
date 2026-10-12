@@ -1,50 +1,3 @@
-# Escalation 0x006E5580: in-game smoke failure (verifier bisect: 79 smokes (0 named by crash reports, k=8))
-
-## Its lines in the smoke log
-```
-
-```
-
-## Smoke log tail
-```
-60 MissionScript_ExtendTableAndReturnCount: inconclusive (a callee changed heap memory ours may read; call 1 to 004703B0: arg 1 orig 00000004 ours 00000007)
-T3 00471060 MissionScript_ExtendTableAndReturnCount: inconclusive (a callee changed heap memory ours may read; call 1 to 004703B0: arg 1 orig 00000005 ours 00000006)
-T3 0046E4E0 S_0046c260_ResolveScriptIdentifier: inconclusive (a callee returned an address in the original's frame)
-T3 0046E4E0 S_0046c260_ResolveScriptIdentifier: inconclusive (a callee returned an address in the original's frame)
-T3 0046E4E0 S_0046c260_ResolveScriptIdentifier: inconclusive (a callee returned an address in the original's frame)
-T3 006B9580 S_006b9580_FindMatchingEntryIndex: inconclusive (more calls, callee writes or snapshot bytes than recorded)
-T3 006B9580 S_006b9580_FindMatchingEntryIndex: inconclusive (more calls, callee writes or snapshot bytes than recorded)
-T3 006B9580 S_006b9580_FindMatchingEntryIndex: inconclusive (more calls, callee writes or snapshot bytes than recorded)
-T3 0070A230 Water_InitRenderPipeline: inconclusive (a callee changed heap memory ours may read; call 5 to 00637E30: arg 2 orig 03764308 ours 00000000)
-T3 0070A230 Water_InitRenderPipeline: inconclusive (a callee changed heap memory ours may read; call 5 to 00637E30: arg 2 orig 0376433C ours 00000000)
-T3 004DE100 S_004ddf20_FindTargetAtPoint: inconclusive (a callee returned an address in the original's frame)
----- csf_hook.log
-diff 004022a0 auto     InputBinding_Construct
-hook 00402200 auto     IsEntityExcludedOrIgnorable
-hook 004021c0 auto     HudAlertIcons_BuildQueryContext
-hook 004020f0 auto     Geometry_ComputeTriangleResult
-diff 004020a0 auto     S_00526d40_BuildContactFrame
-hook 00402060 auto     Vec3_CrossProductInto
-hook 00402030 auto     BuildFacingVectorBetween
-hook 00402000 auto     AiStatic_AddVectors
-diff 00401fd0 auto     Vec3_AddAssign
-diff 00401f80 auto     MeasureCString
-diff 004013e0 auto     ReturnMinusOne
-diff 00401090 auto     GetGlobalValue_401090
-hooks installed=8995 skipped=745 failed=0
-t3: 2067 callees intercepted (1332 wrapped hooks, 735 trampolines, 0 failed)
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00C73B44 wrapped
-devcmd: video mode 1280x960
-devcmd: dev start (scene Maps/FR01/Parachut.scn) instead of Menus/P_Intro.fbs -> state 1
-SMOKE FAIL (never ready: no 'devcmd: starting scene' in csf_hook.log within 120s)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include <cstddef>
 #include "globals.h"
@@ -110,4 +63,3 @@ static void* __fastcall C_00861ce0_GetOrCreateKey5Payload(C_00861ce0* self, void
 
 HOOK(0x006E5580, C_00861ce0_GetOrCreateKey5Payload, "auto");
 
-```

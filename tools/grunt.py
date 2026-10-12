@@ -999,6 +999,12 @@ def bisect(batch, max_culprits=4, first_out=""):
                             a, b = cur[:len(cur) // 2], cur[len(cur) // 2:]
                             cur = a if run(a)[0] else b
                     c = cur[0]
+                    # a culprit no crash report names is run once more alone: one slow start (never ready within
+                    # the limit on a loaded machine) at any step above would otherwise blame a correct function
+                    # (2026-10-13: four of a group, one of them instruction for instruction the original)
+                    if not run([c])[0]:
+                        return None, (f"{c:x} found by search passes when on alone ({n} smokes): a flaky failure "
+                                      "(slow start?) or an interaction")
             culprits.append(c)
             rest.remove(c)
             failed, out = run(rest)
