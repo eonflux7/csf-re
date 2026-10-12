@@ -86,15 +86,20 @@ The orchestrator (Opus, interactive) works `queue/` and the backlog below.
 
 1. **Waves by centrality**: `wave --waves -1` runs them in rank order (rolling, see the loop) with the stop rule
    and a full baseline regression smoke every 3 modules.
-2. **Escalation queue** (`queue/`, count in `status.py`): crash bisects, review findings and gate failures of the
+2. **emudiff into the gate now** (user, 2026-10-13, at 71.6%): triage its alarms, remove the false ones, then
+   make it a gate step and an evidence level, so the remaining functions are checked at production and a failure
+   goes to the next rung instead of `queue/` (backlog, Verification).
+3. **Escalation queue: park and continue** (user, 2026-10-13): no rung above `gpt-6.1-sol@high`; `queue/` grows
+   and is cleared in batches by the orchestrator. 100% means everything the ladder can do; the tail is for the end.
+   What lands there: crash bisects, review findings and gate failures of the
    waves; the audio tail-forwarding thunks and the two usercall functions wait on hook.h helpers (backlog, Loop &
    tooling).
-3. **No playtest milestone: run the waves to 100% of game code** (user, 2026-10-11, at 51.5%; the playtest at
+4. **No playtest milestone: run the waves to 100% of game code** (user, 2026-10-11, at 51.5%; the playtest at
    25% / 50% is dropped). Evidence comes from the verifier's smokes and the in-game diff (tiers 2 and 3).
-4. **Evidence for the functions that never ran** (about half of the done ones, `status.py`): `emudiff.py` triage
+5. **Evidence for the functions that never ran** (about half of the done ones, `status.py`): `emudiff.py` triage
    and hardening (backlog, Verification), `review.py sample` (weighted to them), `verifier.py --full` over
    everything once.
-5. **Names and types at the next milestone**: `tools/naming.py` (first full run with the captain), then
+6. **Names and types at the next milestone**: `tools/naming.py` (first full run with the captain), then
    `propagate.sh`; what is open is in the backlog (Types & structure).
 
 ## Backlog
