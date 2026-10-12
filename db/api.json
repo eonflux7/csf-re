@@ -4443,7 +4443,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 151
+   "AssignStringSubstring": 152
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -12252,7 +12252,7 @@
   "name": "C_0082d410_AssignWholeString",
   "name_src": "agent",
   "votes": {
-   "C_0082d410_AssignWholeString": 2
+   "C_0082d410_AssignWholeString": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -26584,7 +26584,7 @@
   "name": "MissionScript_GetEntryCount_46BEA0",
   "name_src": "agent",
   "votes": {
-   "MissionScript_GetEntryCount_46BEA0": 5
+   "MissionScript_GetEntryCount_46BEA0": 6
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -35219,7 +35219,7 @@
   "name": "AssignStringRange_488830",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_488830": 40
+   "AssignStringRange_488830": 41
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -65002,7 +65002,7 @@
   "name": "GetGlobalValue_8B0568",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8B0568": 60,
+   "GetGlobalValue_8B0568": 61,
    "GetMissionManager": 1
   },
   "ret": "int",
@@ -65975,7 +65975,7 @@
   "name": "GlobalMenu_SetSelectedScenarioName",
   "name_src": "agent",
   "votes": {
-   "GlobalMenu_SetSelectedScenarioName": 4
+   "GlobalMenu_SetSelectedScenarioName": 5
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -77975,14 +77975,15 @@
  },
  "0052fc60": {
   "name": "CMenuSceneSelect_DispatchCommand",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CMenuSceneSelect_DispatchCommand": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "CMenuSceneSelect* self, void* , int a2",
-  "sig_src": "vote"
+  "params": "CMenuSceneSelect* self, void* , int command",
+  "sig_src": "impl",
+  "file": "src/auto/0052fc60.cpp"
  },
  "0052fd80": {
   "name": "CMenuSceneSelect_HandleCommand",
@@ -78166,7 +78167,7 @@
   "name": "MpServerInfo_InitDefaultStyle",
   "name_src": "agent",
   "votes": {
-   "MpServerInfo_InitDefaultStyle": 3
+   "MpServerInfo_InitDefaultStyle": 4
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -78221,13 +78222,14 @@
   "sig_src": "abi"
  },
  "00531330": {
-  "name": "sub_531330",
-  "name_src": "addr",
+  "name": "MenuMpServerInfo_CreateStyledElement",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__stdcall",
-  "params": "int a1, uint32_t* arg4, int a3, void* a2, int a5",
-  "sig_src": "abi"
+  "params": "int elementId, const std::uint32_t* bounds, void* menu, void* text, int styleId",
+  "sig_src": "impl",
+  "file": "src/auto/00531330.cpp"
  },
  "00531440": {
   "name": "sub_531440",
@@ -82998,7 +83000,7 @@
   "name": "CMenuSaveGame_ResetStringStorage",
   "name_src": "agent",
   "votes": {
-   "CMenuSaveGame_ResetStringStorage": 16
+   "CMenuSaveGame_ResetStringStorage": 17
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -118715,7 +118717,7 @@
   "name": "LookupObjectById",
   "name_src": "vote",
   "votes": {
-   "LookupObjectById": 74
+   "LookupObjectById": 75
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -135653,7 +135655,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 473,
+   "Mem_FreeDebug": 474,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -143983,7 +143985,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 314,
+   "GetGlobalInt": 315,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -164682,7 +164684,7 @@
  },
  "006f99a0": {
   "name": "C_00862d48_InitializeNoiseEffect",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
@@ -172055,7 +172057,7 @@
   "name": "CGuiListBox_GetItemCount_714860",
   "name_src": "agent",
   "votes": {
-   "CGuiListBox_GetItemCount_714860": 4
+   "CGuiListBox_GetItemCount_714860": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -172133,7 +172135,7 @@
   "name": "GetIndexedTableValue_714C20",
   "name_src": "agent",
   "votes": {
-   "GetIndexedTableValue_714C20": 7
+   "GetIndexedTableValue_714C20": 8
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -172145,8 +172147,8 @@
   "name": "GetStoredValueAtIndex",
   "name_src": "agent",
   "votes": {
-   "StoredValue_GetAtIndex": 1,
-   "GetStoredValueAtIndex": 7
+   "GetStoredValueAtIndex": 8,
+   "StoredValue_GetAtIndex": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -191715,7 +191717,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 208,
+   "GetGlobalValue_8BC1E0": 209,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
