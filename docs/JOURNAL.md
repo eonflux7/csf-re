@@ -1227,3 +1227,16 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - So emudiff does not cover tier 3 yet. Missing: mocks that write through their pointer arguments (the class
   of 0x6AB9E0; inherent to mocked callees otherwise), and the uninitialized-stack-argument false alarm.
 - The 27 fixes of last night: installed in one group, baseline passed. Rolling waves restarted 16:34.
+
+## 2026-10-12 — emudiff triage, call-target / call-count DIFFs (started)
+
+- All 49 call-count and call-target DIFFs of the never-executed sweep still reproduce. Families so far:
+  `_atan2` on our side where the original goes through `__CIatan2` (4 functions: native stubs for atan / atan2 /
+  tan added, all four now same); 0x41D270 and likely the other RwMatrixDestroy ones: the original reads an out
+  flag a virtual callee writes, ours zero-initializes the buffer first, and the mock writes nothing, so the two
+  sides branch differently. That is a false alarm of the same root as the missed 0x6AB9E0: mocked callees
+  never write through their pointer arguments. A fix needs to know which bytes the callee produces (idea: the
+  original's run records which bytes behind a pointer argument it reads without having written them; on both
+  sides those bytes read as a value derived from call index, argument index and offset).
+- Untriaged families: free 0x690E60 vs the string teardown 0x4018E0 (4, an inlined destructor on one side?),
+  "N calls vs 2000" (4, ours never leaves a loop), loop counts "4 vs 1" (about 10), indirect targets that differ.

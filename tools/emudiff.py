@@ -38,7 +38,11 @@ INSN_CAP = 300_000
 PROFILES = 8  # 6 and 7: every untyped value is a pointer (int-typed arguments and results often are)
 # CRT math the object imports where the original has the x87 instruction inline: tiny native stubs, not events
 NATIVE = {"_sqrt": "DD442404D9FAC3", "_sin": "DD442404D9FEC3", "_cos": "DD442404D9FFC3", "_fabs": "DD442404D9E1C3",
-          "_sqrtf": "D9442404D9FAC3", "_sinf": "D9442404D9FEC3", "_cosf": "D9442404D9FFC3", "_fabsf": "D9442404D9E1C3"}
+          "_sqrtf": "D9442404D9FAC3", "_sinf": "D9442404D9FEC3", "_cosf": "D9442404D9FFC3", "_fabsf": "D9442404D9E1C3",
+          # the original goes through __CIatan2 & co (CRT, run for real): fpatan / fptan here
+          "_atan2": "DD442404DD44240CD9F3C3", "_atan2f": "D9442404D9442408D9F3C3",
+          "_atan": "DD442404D9E8D9F3C3", "_atanf": "D9442404D9E8D9F3C3",
+          "_tan": "DD442404D9F2DDD8C3", "_tanf": "D9442404D9F2DDD8C3"}
 NATIVE_AT = {n: SYS_BASE + 0x100 + 16 * i for i, n in enumerate(NATIVE)}
 FLOATS = [0.0, 1.0, 0.5, 2.0, -1.0, 100.0]
 
