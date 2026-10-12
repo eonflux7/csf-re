@@ -38,13 +38,13 @@
 - {addr: 0x0082D2B4, name: g_DefWindowProcA, type: DefWindowProcFunction, uses: 1, src: auto}
 - {addr: 0x0082D2E8, name: g_GetDoubleClickTimeImport, type: GetDoubleClickTimeFn, uses: 1, src: auto}
 - {addr: 0x0082D2EC, name: g_SendMessageAImportSlot, type: void*, uses: 2, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 101, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 103, src: auto}
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 3, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 34, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 138, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 141, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 12, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 14, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
@@ -68,7 +68,7 @@
 - {addr: 0x0082D7C4, name: g_DegreesPerRadian, type: float, uses: 6, src: auto, alt: [g_RadToDegFactor]}
 - {addr: 0x0082D820, name: g_BoundsInterpolationFraction, type: float, uses: 1, src: auto}
 - {addr: 0x0082D824, name: g_BoundsPointHeightOffset, type: float, uses: 1, src: auto}
-- {addr: 0x0082DAF0, name: g_ScoreboardRefreshInterval, type: float, uses: 4, src: auto}
+- {addr: 0x0082DAF0, name: g_ScoreboardRefreshInterval, type: float, uses: 5, src: auto}
 - {addr: 0x0082DBC4, name: g_VehiclePitchLowerLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082DBC8, name: g_VehiclePitchUpperLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082DBCC, name: g_VehicleAimLowerLimit, type: float, uses: 3, src: auto}
@@ -526,6 +526,7 @@
 - {addr: 0x008671BC, name: g_ClosingBindingPattern, type: char, uses: 1, src: auto}
 - {addr: 0x008671C0, name: g_OpeningBindingPattern, type: char, uses: 1, src: auto}
 - {addr: 0x008671C4, name: g_SecondWrapPattern, type: const char, uses: 1, src: auto}
+- {addr: 0x008673AC, name: g_SweepEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x00867434, name: g_UnitFactorLowerBound, type: float, uses: 1, src: auto}
 - {addr: 0x00867444, name: g_FontVtable, type: void*, uses: 1, src: auto}
 - {addr: 0x008678E8, name: g_AngleThreshold, type: float, uses: 1, src: auto}
@@ -1201,6 +1202,9 @@
 - {addr: 0x008A88D0, name: g_LayoutCounter, type: 'std::uint32_t', uses: 2, src: auto, alt: [g_LayoutLineIndex]}
 - {addr: 0x008A88D4, name: g_LayoutLineHeight, type: float, uses: 3, src: auto, alt: [g_LayoutPreviousPosition, g_TextLineMetric]}
 - {addr: 0x008A88D8, name: g_LayoutContinuation, type: float, uses: 3, src: auto, alt: [g_LayoutPosition, g_TextRunEndIndex]}
+- {addr: 0x008A88DC, name: g_ForwardSweepCoefficients, type: SweepCoefficients, uses: 1, src: auto}
+- {addr: 0x008A88FC, name: g_ReverseSweepCoefficients, type: SweepCoefficients, uses: 1, src: auto}
+- {addr: 0x008A891C, name: g_SweepAxes, type: SweepAxes, uses: 1, src: auto}
 - {addr: 0x008A8924, name: byte_8A8924, type: uint8_t, uses: 3, src: auto, alt: [g_NetSessionReadyFlag]}
 - {addr: 0x008A8925, name: byte_8A8925, type: uint8_t, uses: 3, src: auto, alt: [g_GlobalObjectMode, g_NetworkUpdateRequested]}
 - {addr: 0x008A8928, name: g_pszKey_VERSION_game_config, type: const char*, uses: 0, src: captain, conf: 1.0}
@@ -1911,6 +1915,18 @@
 - {addr: 0x008BBED0, name: g_SecondV, type: float, uses: 1, src: auto}
 - {addr: 0x008BBF2C, name: g_Value_8bbf2c, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008BBF34, name: g_ObjectValueTotal, type: 'std::uint32_t', uses: 2, src: auto}
+- {addr: 0x008BBF38, name: g_CenterX, type: float, uses: 1, src: auto}
+- {addr: 0x008BBF3C, name: g_CenterY, type: float, uses: 1, src: auto}
+- {addr: 0x008BBF4C, name: g_CenterU, type: float, uses: 1, src: auto}
+- {addr: 0x008BBF50, name: g_CenterV, type: float, uses: 1, src: auto}
+- {addr: 0x008BBF54, name: g_FirstX, type: float, uses: 1, src: auto}
+- {addr: 0x008BBF58, name: g_FirstY, type: float, uses: 1, src: auto}
+- {addr: 0x008BBF68, name: g_FirstU, type: float, uses: 1, src: auto}
+- {addr: 0x008BBF6C, name: g_FirstV, type: float, uses: 1, src: auto}
+- {addr: 0x008BBF70, name: g_SecondX, type: float, uses: 1, src: auto}
+- {addr: 0x008BBF74, name: g_SecondY, type: float, uses: 1, src: auto}
+- {addr: 0x008BBF84, name: g_SecondU, type: float, uses: 1, src: auto}
+- {addr: 0x008BBF88, name: g_SecondV, type: float, uses: 1, src: auto}
 - {addr: 0x008BBF8C, name: g_Block8BBF8C, type: void*, uses: 2, src: auto, alt: [g_QuadVertexBuffer]}
 - {addr: 0x008BBF90, name: g_Block8BBF90, type: void*, uses: 2, src: auto, alt: [g_QuadIndexBuffer]}
 - {addr: 0x008BBF98, name: g_AccountConnectionFlag, type: uint8_t, uses: 7, src: auto, alt: [g_ConnectionRequestFlag, g_NetSessionConnectionFlag, g_NetSessionFlag, g_OnlineMenuActive, g_SessionWaitFailedFlag, g_StationDumpPendingFlag]}
