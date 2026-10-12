@@ -16328,7 +16328,7 @@ ea,size,region,module,name,name_src,status
 006f61b0,278,game,m6F5510,GfxCameraProjection_RenderObjects,agent,done
 006f62d0,96,game,m6F5510,GfxScene_ConstructSceneController,agent,done
 006f6330,129,game,m6F5510,GfxCamera_IsPointInsideConvexPolygon,agent,done
-006f63c0,2798,game,m6F5510,GfxScene_UpdateClumpView,vote,todo
+006f63c0,2798,game,m6F5510,S_006f6330_UpdateClumpView,agent,done
 006f6eb0,245,game,m6F5510,S_006b0320_InitializeSceneInterval,agent,done
 006f6fb0,73,game,m6F6FB0,,,todo
 006f7000,40,game,m6F6FB0,,,todo
@@ -16573,8 +16573,8 @@ ea,size,region,module,name,name_src,status
 006ff560,80,game,m6FF410,C_008630e0_SetIndexedEntryValueIfFlagged,agent,done
 006ff5b0,80,game,m6FF410,C_008630e0_SetIndexedEntryTargetIfFlagged,agent,done
 006ff600,125,game,m6FF410,C_008630e0_IsPlayerInRange,agent,done
-006ff680,141,game,m6FF410,,,todo
-006ff710,75,game,m6FF410,WaterNode_PostUpdate,vote,todo
+006ff680,141,game,m6FF410,C_008630e0_RefreshTeamPlayerSelection,agent,done
+006ff710,75,game,m6FF410,WaterNode_PostUpdate,agent,done
 006ff760,55,game,m6FF410,C_008630e0_IsBitSetInGroupMaskTable,agent,done
 006ff7a0,55,game,m6FF410,C_008630e0_IsIndexBitSetInGroupMask,agent,done
 006ff7e0,303,game,m6FF410,TeamGfx_EnsureInnerObject,vote,todo
@@ -16585,8 +16585,8 @@ ea,size,region,module,name,name_src,status
 006ff9f0,682,game,m6FF410,Water_UpdateBase,vote,todo
 006ffca0,309,game,m6FF410,,,todo
 006ffde0,526,game,m6FF410,C_008630e0_GetAveragePlayerPosition,agent,done
-006ffff0,602,game,m6FF410,,,todo
-00700250,350,game,m6FF410,,,todo
+006ffff0,602,game,m6FF410,GfxTeam_GetClosestPointOnOrientedBox,agent,done
+00700250,350,game,m6FF410,GfxTeam_GetPlayerBounds,agent,done
 007003b0,176,game,m6FF410,Water_GrowEntries,vote,todo
 00700460,70,game,m6FF410,C_008630e0_Destroy,agent,done
 007004b0,76,game,m6FF410,C_008630e0_GetDoubledComponentProduct,agent,done
@@ -16595,9 +16595,9 @@ ea,size,region,module,name,name_src,status
 00700930,164,game,m6FF410,C_008630e0_AppendEnabledPlayerEntry,agent,done
 007009e0,160,game,m6FF410,C_008630e0_AppendEntryIfPlayerEnabled,agent,done
 00700a80,785,game,m6FF410,,,todo
-00700da0,100,game,m6FF410,,,todo
-00700e10,212,game,m6FF410,,,todo
-00700ef0,157,game,m6FF410,,,todo
+00700da0,100,game,m6FF410,S_006ff7e0_RefreshPlayerEntries,agent,done
+00700e10,212,game,m6FF410,C_008630e0_UpdatePlayerMatrices,agent,done
+00700ef0,157,game,m6FF410,C_008630e0_AppendTeamPlayerRecords,agent,done
 00700f90,73,game,m700F90,C_00861188_ResolveOrDelegate,agent,done
 00700fe0,73,game,m700F90,C_0086315c_ResolveFlagOrDelegate,agent,done
 00701030,27,game,m700F90,ParticleSystem_UpdateWithInnerFlag,agent,done
@@ -22289,7 +22289,7 @@ ea,size,region,module,name,name_src,status
 007fe650,27,rw,,,,lib
 007fe670,31,rw,,,,lib
 007fe690,27,rw,,,,lib
-007fe6b0,660,rw,,,,lib
+007fe6b0,660,rw,,RpTeamDictSetFlags,vote,lib
 007fe950,263,rw,,RpTeamRemovePlayer,rwname,lib
 007fea60,284,rw,,,,lib
 007feb80,397,rw,,,,lib

@@ -109987,7 +109987,7 @@
   "name": "RwV3dTransformPoints",
   "name_src": "rwname",
   "votes": {
-   "RwV3dTransformPoints": 18
+   "RwV3dTransformPoints": 19
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -110493,7 +110493,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 160
+   "RwMatrixDestroy": 162
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -110504,7 +110504,7 @@
   "name": "RwMatrixCreate",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixCreate": 96
+   "RwMatrixCreate": 97
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -143685,7 +143685,7 @@
   "name": "NormalizeVector3",
   "name_src": "agent",
   "votes": {
-   "NormalizeVector3": 57,
+   "NormalizeVector3": 58,
    "NormalizeVector": 1
   },
   "ret": "float*",
@@ -144076,7 +144076,7 @@
   "name": "GfxMatrix_SetFourRowsAndUpdate",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_SetFourRowsAndUpdate": 6,
+   "GfxMatrix_SetFourRowsAndUpdate": 8,
    "GfxMatrix_SetBasisAndPosition": 1,
    "GfxMatrix_ApplyAxisTransform": 1
   },
@@ -144112,7 +144112,7 @@
   "name": "Matrix_InvertWithStoredTarget",
   "name_src": "agent",
   "votes": {
-   "Matrix_InvertWithStoredTarget": 22,
+   "Matrix_InvertWithStoredTarget": 23,
    "S006adb40_ComputeMatrix": 1
   },
   "ret": "float*",
@@ -144970,7 +144970,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 348,
+   "GetGlobalInt": 349,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -145734,7 +145734,7 @@
   "name": "RenderHandle_FromObject",
   "name_src": "vote",
   "votes": {
-   "RenderHandle_FromObject": 23
+   "RenderHandle_FromObject": 24
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -146188,7 +146188,9 @@
  "006b3e10": {
   "name": "GfxObject_ApplyToRecordRange",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxObject_ApplyToRecordRange": 1
+  },
   "ret": "void",
   "conv": "__cdecl",
   "params": "int firstRecord, std::uint32_t recordCount, const void** context, int , int",
@@ -146467,7 +146469,7 @@
   "name": "SkinListInsertRange",
   "name_src": "vote",
   "votes": {
-   "SkinListInsertRange": 1
+   "SkinListInsertRange": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -156737,7 +156739,7 @@
   "name": "GetRtDictSchema",
   "name_src": "agent",
   "votes": {
-   "GetRtDictSchema": 2
+   "GetRtDictSchema": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -165292,7 +165294,9 @@
  "006f6330": {
   "name": "GfxCamera_IsPointInsideConvexPolygon",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxCameraProjection_TestViewOrigin": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "S_006f6330* self, void* , int a2",
@@ -165300,15 +165304,16 @@
   "file": "src/auto/006f6330.cpp"
  },
  "006f63c0": {
-  "name": "GfxScene_UpdateClumpView",
-  "name_src": "vote",
+  "name": "S_006f6330_UpdateClumpView",
+  "name_src": "agent",
   "votes": {
    "GfxScene_UpdateClumpView": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, float a4",
-  "sig_src": "vote"
+  "params": "S_006f6330* self, void* , int originAddress, int lateralAddress, float directionArgument",
+  "sig_src": "impl",
+  "file": "src/auto/006f63c0.cpp"
  },
  "006f6eb0": {
   "name": "S_006b0320_InitializeSceneInterval",
@@ -167714,17 +167719,18 @@
   "file": "src/auto/006ff600.cpp"
  },
  "006ff680": {
-  "name": "sub_6FF680",
-  "name_src": "addr",
+  "name": "C_008630e0_RefreshTeamPlayerSelection",
+  "name_src": "agent",
   "votes": {},
-  "ret": "bool",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_008630e0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006ff680.cpp"
  },
  "006ff710": {
   "name": "WaterNode_PostUpdate",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "WaterNode_PostUpdate": 1,
    "WaterFx_Reset": 1
@@ -167844,17 +167850,18 @@
   "file": "src/auto/006ffde0.cpp"
  },
  "006ffff0": {
-  "name": "sub_6FFFF0",
-  "name_src": "addr",
+  "name": "GfxTeam_GetClosestPointOnOrientedBox",
+  "name_src": "agent",
   "votes": {},
   "ret": "float*",
   "conv": "__stdcall",
-  "params": "float* a1, float* a5, int a3",
-  "sig_src": "abi"
+  "params": "float* result, float* box, int point",
+  "sig_src": "impl",
+  "file": "src/auto/006ffff0.cpp"
  },
  "00700250": {
   "name": "GfxTeam_GetPlayerBounds",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "S_00402350*",
   "conv": "__stdcall",
@@ -167944,7 +167951,7 @@
  },
  "00700da0": {
   "name": "S_006ff7e0_RefreshPlayerEntries",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -167953,22 +167960,24 @@
   "file": "src/auto/00700da0.cpp"
  },
  "00700e10": {
-  "name": "sub_700E10",
-  "name_src": "addr",
+  "name": "C_008630e0_UpdatePlayerMatrices",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_008630e0* self, void* , int transforms",
+  "sig_src": "impl",
+  "file": "src/auto/00700e10.cpp"
  },
  "00700ef0": {
-  "name": "sub_700EF0",
-  "name_src": "addr",
+  "name": "C_008630e0_AppendTeamPlayerRecords",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a4",
-  "sig_src": "abi"
+  "params": "C_008630e0* self, void* , void* records",
+  "sig_src": "impl",
+  "file": "src/auto/00700ef0.cpp"
  },
  "00700f90": {
   "name": "C_00861188_ResolveOrDelegate",
@@ -221256,13 +221265,15 @@
   "sig_src": "abi"
  },
  "007fe6b0": {
-  "name": "sub_7FE6B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "RpTeamDictSetFlags",
+  "name_src": "vote",
+  "votes": {
+   "RpTeamDictSetFlags": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "uint32_t* a1, uint16_t* a2, unsigned int a3, char a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007fe950": {
   "name": "RpTeamRemovePlayer",
@@ -221315,7 +221326,7 @@
   "name": "RpTeamPlayerSetActive",
   "name_src": "rwname",
   "votes": {
-   "RpTeamPlayerSetActive": 1
+   "RpTeamPlayerSetActive": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -221326,7 +221337,7 @@
   "name": "_rpTeamPlayerSelect",
   "name_src": "rwname",
   "votes": {
-   "_rpTeamPlayerSelect": 1
+   "_rpTeamPlayerSelect": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -221973,7 +221984,7 @@
   "name": "Water_ApplyTransform",
   "name_src": "vote",
   "votes": {
-   "Water_ApplyTransform": 1
+   "Water_ApplyTransform": 2
   },
   "ret": "float*",
   "conv": "__cdecl",
