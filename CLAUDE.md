@@ -26,7 +26,7 @@ backlog), pending/verified counts and the link-test line, and any open decisions
   `api.py`; `propagate.sh` is the feedback loop (push facts/types -> re-decompile -> this_class.py derives more);
   `export_pseudo.py` writes the typed pseudocode packets show. Precedence: exact binary facts > Hex-Rays > heuristics.
 - `tools/` the loop: grunt.py (lanes, wave; model policy in `db/lanes.yaml`), verifier.py + verify.py (in-game
-  install/diff, evidence ledger), gate.py + semcheck.py + controls.py (static checks), emudiff.py (emulated diff
+  install/diff, evidence ledger), gate.py + semcheck.py + controls.py (static checks; fpret.py: float returns decided from the binary), emudiff.py (emulated diff
   vs the original, offline), api.py + addrfix.py + linktest.py (cutover contract), pool.py + playcopy.py (parallel
   smoke instances), status.py, monitor.py. Between wave runs: naming.py (the only place names change: captain.py +
   fields.py + rename_classes.py under a code-hash invariant), ida/propagate.sh, review.py (rolling Opus sample);

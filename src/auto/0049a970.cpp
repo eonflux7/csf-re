@@ -17,7 +17,7 @@ struct S_ModeEvent
     int32_t param2;    // +0x10
 };
 
-CSF_FUNC(double, __fastcall, EventTarget_SendModeEvent, 0x0040FC50, (void* self, void* edx, S_ModeEvent* event));
+CSF_FUNC(void, __fastcall, EventTarget_SendModeEvent, 0x0040FC50, (void* self, void* edx, S_ModeEvent* event));
 CSF_FUNC(char, __fastcall, SetMenuContextState, 0x0049A0E0, (void* self, void* edx, int a4, char a5));
 CSF_FUNC(int, __fastcall, ObjectProvider_SetUpdateMode, 0x004F7810, (void* self, void* edx, int a3));
 CSF_FUNC(int, __cdecl, GetGlobalValue_4FBDE0, 0x004FBDE0, ());

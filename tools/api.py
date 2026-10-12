@@ -530,13 +530,26 @@ X87_RESULT = re.compile(r"f(i?ld\w*|add|sub|subr|mul|div|divr|i?addp?|i?subr?p?|
 FLOAT_RET = re.compile(r"^(float|double|long double)$")
 
 
-def returns_fpu(ea, db, depth=3):
+_fpret = None
+
+
+def fpret():
+    global _fpret
+    if _fpret is None:
+        p = os.path.join(ROOT, "db", "fpret.json")
+        _fpret = json.load(open(p)) if os.path.exists(p) else {}
+    return _fpret
+
+
+def returns_fpu(ea, db, depth=3, binary=True):
     """Does the function return its value in st0? Hex-Rays' own prototype of it (not a call site's view) says
     float/double, or a `ret` path ends in an x87 result or in a call / tail jump to such a function (only stack
     cleanup in between). 0x42D3C0 returns 0x70DDF0's `fld [0x82D4CC]; ret` (the shared `return 0.0f` stub): Hex-Rays
     typed that call `int` there, the grunt returned eax, and the diff saw 200/200 mismatches on a verified function."""
     from packet import disasm
     ea = thunk_target(ea, db)
+    if binary and f"{ea:08X}" in fpret():  # decided from the x87 stack depth at every ret (tools/fpret.py)
+        return bool(fpret()[f"{ea:08X}"])
     a = ida_abi().get(ea)
     if a and FLOAT_RET.match(c_type(a.get("ret") or "") or ""):
         return True
@@ -548,7 +561,7 @@ def returns_fpu(ea, db, depth=3):
                                         and not db.F[ea]["ea"] <= int(i.op_str, 16) < db.F[ea]["end"]):
             continue
         if i.mnemonic == "jmp":
-            if returns_fpu(int(i.op_str, 16), db, depth - 1):
+            if returns_fpu(int(i.op_str, 16), db, depth - 1, binary):
                 return True
             continue
         j = k - 1
@@ -560,7 +573,7 @@ def returns_fpu(ea, db, depth=3):
         p = ins[j]
         if X87_RESULT.match(p.mnemonic):
             return True
-        if p.mnemonic == "call" and p.op_str.startswith("0x") and returns_fpu(int(p.op_str, 16), db, depth - 1):
+        if p.mnemonic == "call" and p.op_str.startswith("0x") and returns_fpu(int(p.op_str, 16), db, depth - 1, binary):
             return True
     return False
 
@@ -733,7 +746,17 @@ def float_ret_errors(src, db):
         if ea in db.F and not FLOAT_RET.match(ret) and returns_fpu(ea, db):
             errs.append(f"CSF_FUNC {name}: 0x{ea:X} returns its value in st0 (x87), so bind it returning float "
                         f"(or double), not {ret}")
+    # The other way round, where the binary decides it (db/fpret.json): a float return the original doesn't make
+    # leaves one x87 entry behind per call, and the original's float code overflows the stack a few calls later.
+    for m in DECL.finditer(code):
+        ret, ea, name = ws(m.group(1)), int(m.group(4), 16), m.group(3)
+        if FLOAT_RET.match(ret) and fpret().get(f"{thunk_target(ea, db):08X}") == 0:
+            errs.append(f"CSF_FUNC {name}: 0x{ea:X} returns nothing in st0 (no path leaves a value on the x87 "
+                        f"stack, whatever the decompiler's prototype says), so bind it returning void or int, not {ret}")
     sig = impl_signature(src)
+    if sig and FLOAT_RET.match(sig[1]) and fpret().get(f"{sig[0]:08X}") == 0:
+        errs.append(f"{sig[3]} must not return {sig[1]}: the original 0x{sig[0]:X} leaves nothing on the x87 stack "
+                    f"on any path (the decompiler's float return type is wrong); return void, or int if eax is set")
     if sig and sig[0] in db.F and not FLOAT_RET.match(sig[1]) and returns_fpu(sig[0], db):
         errs.append(f"{sig[3]} must return float (or double): the original 0x{sig[0]:X} returns its value in st0 "
                     f"(x87), yours returns {sig[1]}")

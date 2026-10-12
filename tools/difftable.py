@@ -358,6 +358,8 @@ def analyze(db, ea, tier3=False):
         5 if re.match(r"(unsigned )?(char|bool|__int8|_BYTE)\b", proto) and "*" not in proto.split("(")[0] else \
         6 if re.match(r"(unsigned )?(__int16|short|_WORD|wchar_t)\b", proto) and "*" not in proto.split("(")[0] else 0
     import api
+    if ret in (1, 2) and api.fpret().get(f"{ea:08X}") == 0:
+        ret = 0  # Hex-Rays says float, no path of the binary leaves a value in st0 (0x40FC50): tools/fpret.py
     if ret not in (1, 2):
         if api.returns_fpu(ea, db):  # the binary says st0 where Hex-Rays says int/void (0x42D3C0, 0x6FD180)
             ret = 2

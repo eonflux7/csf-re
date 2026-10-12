@@ -16,7 +16,7 @@ CSF_FUNC(double, __fastcall, S_00526d40_NormalizeCopyAndReportY, 0x006AB9E0,
 
 CSF_GLOBAL(float, g_TargetPointDistanceEpsilon, 0x0082DEB0);
 
-static float __fastcall ApplyTargetPointRequest(
+static void __fastcall ApplyTargetPointRequest(
     void* self, void* /*edx*/, void* request)
 {
     int mode = -1;
@@ -29,7 +29,7 @@ static float __fastcall ApplyTargetPointRequest(
     if (CSF_AT(uint8_t, request, 0x00) == 0)
     {
         TargetPoint_ClearMode(CSF_AT(void*, self, 0x10), nullptr, mode);
-        return 0.0f;
+        return;
     }
 
     float position[3];
@@ -63,7 +63,6 @@ static float __fastcall ApplyTargetPointRequest(
             reinterpret_cast<uint32_t*>(angles));
     }
 
-    return 0.0f;
 }
 
 HOOK(0x0040FC50, ApplyTargetPointRequest, "auto");

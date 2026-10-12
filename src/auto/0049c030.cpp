@@ -10,11 +10,11 @@ CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 
 CSF_FUNC(uint32_t, __fastcall, GetSceneMenuContext, 0x0044FC60, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, SceneObj_IsInactive, 0x0048E100, (void* self, void* edx));
-CSF_FUNC(float, __fastcall, C_00833b88_UpdateState, 0x00492C80, (void* self, void* edx, int a2));
+CSF_FUNC(void, __fastcall, C_00833b88_UpdateState, 0x00492C80, (void* self, void* edx, int a2));
 CSF_FUNC(void, __fastcall, CPlayerCharacter_UpdateTimedBehavior, 0x00493BE0, (void* self, void* edx, float a2));
 CSF_FUNC(void, __fastcall, CPlayerCharacter_RefreshState, 0x004947A0, (void* self, void* edx));
 CSF_FUNC(void, __fastcall, CPlayerCharacter_FinishTimedUpdate, 0x00495E80, (void* self, void* edx, float a2));
-CSF_FUNC(float, __fastcall, CPlayerCharacter_RefreshAuxiliaryState, 0x004961A0, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, CPlayerCharacter_RefreshAuxiliaryState, 0x004961A0, (void* self, void* edx));
 CSF_FUNC(void, __fastcall, CPlayerCharacter_UpdateActiveBehavior, 0x00496290, (void* self, void* edx, float a2));
 CSF_FUNC(void, __fastcall, CPlayerCharacter_RefreshBehavior, 0x00497150, (void* self, void* edx));
 CSF_FUNC(uint32_t*, __fastcall, CPlayerCharacter_RefreshBehaviorData, 0x004974C0, (void* self, void* edx));

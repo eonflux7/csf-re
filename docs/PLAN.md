@@ -101,6 +101,11 @@ The orchestrator (Opus, interactive) works `queue/` and the backlog below.
 
 ### Loop & tooling
 - [ ] IDB: apply the corrected prototypes (db/regargs.json spurious regs dropped) in a sync.py stage + propagate
+- [ ] Float returns Hex-Rays got wrong (`tools/fpret.py`: 0x40FC50 typed `long double`, returns nothing): push
+  `void` for the functions in db/fpret.json that differ, in the same sync.py stage, so packets stop showing it.
+- [ ] After the x87 leak fix (2026-10-12): smoke the queue's float/NaN mismatches and crash bisects again
+  (each has a note), and make the verifier fail a smoke on an `X87 ...` line in csf_diff.log (hook/diff.cpp
+  logs x87 entries live at a diffed function's entry), naming the last function entered clean.
 - [ ] Rename guard in `tools/naming.py`: a wrapper whose target got implemented takes its real prototype; an
   int<->float flip of a parameter compiles silently in older callers (value conversion changes the bits). Diff
   old/new wrapper params before the rewrite and revert/flag on a flip with a non-literal argument (first one:

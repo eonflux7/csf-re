@@ -1281,3 +1281,26 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   error occurred while processing your request"), not gate verdicts: back to the lanes. Such an error is now
   retried twice (30 s, 60 s) and then defers. Third kind of false escalation today after the refused login and
   the unrecognized quota messages: every backend error text the lanes do not know ends in queue/.
+
+## 2026-10-12 late — a leaked x87 stack in every smoke since 2026-10-10
+
+- Queue triage, no smokes (user is using the machine). 0x401FA0 (`sqrt(x²+y²+z²)`, file identical to the
+  original) had 44/176 "orig -nan(ind), ours 0": the original loads six x87 values, so it overflows when three
+  or more entries are already live at entry. 0x4DF0D0 the same (ours passed FFC00000, the x87 indefinite).
+- Cause: Hex-Rays typed 0x40FC50 `long double`; no path of it leaves anything in st0. The gate enforced the
+  float return (api.returns_fpu trusted the prototype), 0x4961A0 (player character update) inherited it through
+  its tail call. Ours returned `0.0f`, the original callers never pop it: one x87 entry leaked per call.
+  Ledger: 0x4961A0 installed since 10-10 (1,027 smokes), 0x40FC50 since 10-11 (311,094 hits). So for two
+  days the main thread's x87 stack was full soon after the player started updating: the original's float code
+  computed NaN, and the harness's own float compare failed on equal values (0x41E480: "orig -1.52802813 ours
+  -1.52802813" reported as a mismatch, twice). Likely also behind the NaN vectors reaching RenderWare
+  (0x47E350) and the unattributable savegame-start crashes; an unknown share of the float mismatches
+  quarantined since 10-10 were this. Not yet confirmed in a smoke.
+- New: `tools/fpret.py` -> db/fpret.json decides "returns in st0" from the binary (x87 depth at every ret;
+  nothing is live across a call): 18,782 functions decided, 259 return in st0; 9 differ from the old fact
+  (0x40FC50 and four functions that end in a call to it, four CRT control-word helpers). api.returns_fpu and
+  difftable read it first; the gate now also rejects a float return or float binding where the binary says
+  none. All src files pass. hook/diff.cpp logs `X87 ...` when entries are live at a diffed function's entry.
+- Fixed by hand: 0x40FC50, 0x4961A0 (void), bindings in 0x49C030 and 0x49A970. Back from the queue
+  unchanged: 0x401FA0, 0x41E480, 0x4DF0D0. Nine other queue items carry a note to smoke them again first.
+- Run this after an IDB re-export (`tools/fpret.py`); it reads export/ disassembly and Hex-Rays' prototypes.

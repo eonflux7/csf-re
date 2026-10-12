@@ -10,7 +10,7 @@ CSF_FUNC(int, __cdecl, GetGlobalValue_4FBDE0, 0x004FBDE0, ());
 CSF_FUNC(int, __fastcall, GetFirstElement, 0x004FC1D0, (void* self, void*));
 CSF_FUNC(void*, __fastcall, GetCachedObjectProvider, 0x00686C10, (void* self, void* edx));
 CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x006683F0, (void* self, void* edx));
-CSF_FUNC(float, __fastcall, ApplyTargetPointRequest, 0x0040FC50, (void* self, void* edx, void* request));
+CSF_FUNC(void, __fastcall, ApplyTargetPointRequest, 0x0040FC50, (void* self, void* edx, void* request));
 
 CSF_GLOBAL(float, g_flt_0082E25C, 0x0082E25C);
 
@@ -23,10 +23,10 @@ struct TargetPointRequest
     float z;            // +0x10
 };
 
-static float __fastcall CPlayerCharacter_UpdateFarAimPoint(CPlayerCharacter* self, void* /*edx*/)
+static void __fastcall CPlayerCharacter_UpdateFarAimPoint(CPlayerCharacter* self, void* /*edx*/)
 {
     if ((self->field_02e0 & 0x1000) == 0)
-        return 0.0f; // original leaves st0 untouched on this path
+        return;
 
     void* firstElement = reinterpret_cast<void*>(
         GetFirstElement(reinterpret_cast<void*>(GetGlobalValue_4FBDE0()), nullptr));
@@ -67,7 +67,7 @@ static float __fastcall CPlayerCharacter_UpdateFarAimPoint(CPlayerCharacter* sel
     ApplyTargetPointRequest(target, nullptr, &request);
 
     request.mode = 0;
-    return ApplyTargetPointRequest(target, nullptr, &request);
+    ApplyTargetPointRequest(target, nullptr, &request);
 }
 
 HOOK(0x004961A0, CPlayerCharacter_UpdateFarAimPoint, "auto");
