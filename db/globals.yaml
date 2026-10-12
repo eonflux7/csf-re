@@ -90,7 +90,7 @@
 - {addr: 0x0082DFC4, name: g_FallingSpeedThreshold, type: float, uses: 1, src: auto}
 - {addr: 0x0082DFC8, name: g_VerticalResetDistance, type: float, uses: 1, src: auto}
 - {addr: 0x0082DFCC, name: g_MessageBoxCollapsedScale, type: float, uses: 7, src: auto, alt: [g_HeadTranslationScale, g_PlaneSideUpperThreshold]}
-- {addr: 0x0082E030, name: g_fReturnedConstant_0082E030, type: float, uses: 13, src: auto}
+- {addr: 0x0082E030, name: g_fReturnedConstant_0082E030, type: float, uses: 14, src: auto}
 - {addr: 0x0082E034, name: g_MovementScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082E038, name: g_ScaleY_0_6, type: float, uses: 6, src: auto}
 - {addr: 0x0082E03C, name: g_ProgressScale, type: float, uses: 23, src: auto}
@@ -230,6 +230,7 @@
 - {addr: 0x0083B2BC, name: g_ProximityRadiusSquared, type: float, uses: 1, src: auto}
 - {addr: 0x0083B644, name: g_AngleScale, type: float, uses: 1, src: auto}
 - {addr: 0x0083BB14, name: g_ListenerOffsetScale_83BB14, type: float, uses: 2, src: auto}
+- {addr: 0x0083BB18, name: g_ControlHoldThreshold, type: float, uses: 1, src: auto}
 - {addr: 0x0083C548, name: g_DegToRad, type: float, uses: 2, src: auto, alt: [g_DegreesToRadians]}
 - {addr: 0x0083DD38, name: g_RadToDeg, type: float, uses: 1, src: auto}
 - {addr: 0x0083E0D4, name: g_AiStaticOffsetDistance, type: float, uses: 1, src: auto}
@@ -1640,6 +1641,8 @@
 - {addr: 0x008B0698, name: g_MenuMPCharacterSelect_LastState, type: uint32_t, uses: 3, src: auto}
 - {addr: 0x008B08F4, name: g_Value_8B08F4, type: int, uses: 3, src: auto, alt: [g_Value8b08f4]}
 - {addr: 0x008B08F8, name: g_Value_8B08F8, type: int, uses: 3, src: auto}
+- {addr: 0x008B08FC, name: g_ControlHoldElapsed, type: float, uses: 1, src: auto}
+- {addr: 0x008B0900, name: g_ControlHeldFlag, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008B0901, name: g_AccountMenuStateFlag, type: 'std::uint8_t', uses: 3, src: auto}
 - {addr: 0x008B0902, name: g_bMenuFlag_8B0902, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008B0903, name: byte_8B0903, type: uint8_t, uses: 3, src: auto, alt: [g_MpSessionsTransitionBlocked, g_SessionThreadStarting]}
