@@ -167819,16 +167819,17 @@
   "file": "src/auto/006ff9a0.cpp"
  },
  "006ff9f0": {
-  "name": "Water_UpdateBase",
-  "name_src": "vote",
+  "name": "C_008630e0_UpdateBase",
+  "name_src": "agent",
   "votes": {
    "Water_UpdateBase": 1,
    "WaterBase_HandleFloatParam": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "vote"
+  "params": "C_008630e0* self, void* , float elapsedTime",
+  "sig_src": "impl",
+  "file": "src/auto/006ff9f0.cpp"
  },
  "006ffca0": {
   "name": "sub_6FFCA0",
@@ -208971,7 +208972,7 @@
   "name": "_memcpy",
   "name_src": "ida",
   "votes": {
-   "_memcpy": 100,
+   "_memcpy": 101,
    "Memcpy": 1
   },
   "ret": "void*",
@@ -221326,7 +221327,7 @@
   "name": "RpTeamPlayerSetActive",
   "name_src": "rwname",
   "votes": {
-   "RpTeamPlayerSetActive": 2
+   "RpTeamPlayerSetActive": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -221337,7 +221338,7 @@
   "name": "_rpTeamPlayerSelect",
   "name_src": "rwname",
   "votes": {
-   "_rpTeamPlayerSelect": 2
+   "_rpTeamPlayerSelect": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -221869,13 +221870,15 @@
   "sig_src": "abi"
  },
  "00802410": {
-  "name": "sub_802410",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxTeam_ApplyPlayerMovement",
+  "name_src": "vote",
+  "votes": {
+   "GfxTeam_ApplyPlayerMovement": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "uint32_t* a1, float* a2, float* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00802510": {
   "name": "sub_802510",
