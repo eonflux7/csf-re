@@ -377,14 +377,15 @@
  },
  "004021c0": {
   "name": "HudAlertIcons_BuildQueryContext",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "HudAlertIcons_BuildQueryContext": 1
   },
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2, void** a3",
-  "sig_src": "vote"
+  "params": "C_00833b88* self, void* , uint32_t* a2, uint32_t* a3",
+  "sig_src": "impl",
+  "file": "src/auto/004021c0.cpp"
  },
  "00402200": {
   "name": "IsEntityExcludedOrIgnorable",
@@ -411,7 +412,9 @@
  "004022c0": {
   "name": "S_00403a70_GetElementCount",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "DistanceOwnerList_GetCount": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_00403a70* self, void*",
@@ -455,8 +458,8 @@
   "file": "src/auto/004023f0.cpp"
  },
  "004024d0": {
-  "name": "ComputeVectorDistance",
-  "name_src": "vote",
+  "name": "PlaneDistanceToPoint",
+  "name_src": "agent",
   "votes": {
    "ComputeVectorDistance": 1
   },
@@ -468,7 +471,7 @@
  },
  "00402530": {
   "name": "ResetObjectStateFields",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
@@ -487,13 +490,15 @@
   "file": "src/auto/004025a0.cpp"
  },
  "004026e0": {
-  "name": "sub_4026E0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Collision_TestTriangle",
+  "name_src": "vote",
+  "votes": {
+   "Collision_TestTriangle": 1
+  },
   "ret": "char",
   "conv": "__cdecl",
   "params": "float* arg0, float* a3, void* arg8, int a4, int a5, int a6",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00402cb0": {
   "name": "sub_402CB0",
@@ -514,22 +519,24 @@
   "sig_src": "abi"
  },
  "00403020": {
-  "name": "sub_403020",
-  "name_src": "addr",
+  "name": "Collision_TestScaledBoxTriangles",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__cdecl",
-  "params": "void* a1, int arg4",
-  "sig_src": "abi"
+  "params": "S_006abb80* box, void* query",
+  "sig_src": "impl",
+  "file": "src/auto/00403020.cpp"
  },
  "00403660": {
-  "name": "sub_403660",
-  "name_src": "addr",
+  "name": "Collision_ForAllSceneIntersections",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__cdecl",
   "params": "int* a1, int* a2, int* a3, int* a4, int a5, int* a6",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/00403660.cpp"
  },
  "00403790": {
   "name": "CopyDwordArrayWithContext_403790",
@@ -554,13 +561,14 @@
   "file": "src/auto/00403800.cpp"
  },
  "00403820": {
-  "name": "sub_403820",
-  "name_src": "addr",
+  "name": "StringBuffer_SetLengthMoveInline",
+  "name_src": "agent",
   "votes": {},
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2, unsigned int a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , char a2, uint32_t a3",
+  "sig_src": "impl",
+  "file": "src/auto/00403820.cpp"
  },
  "00403880": {
   "name": "StringEraseRange",
@@ -613,13 +621,14 @@
   "file": "src/auto/00403ad0.cpp"
  },
  "00403ae0": {
-  "name": "sub_403AE0",
-  "name_src": "addr",
+  "name": "C_008769d4_Destroy",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_008769d4* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/00403ae0.cpp"
  },
  "00403b30": {
   "name": "sub_403B30",
@@ -634,7 +643,7 @@
   "name": "MenuExtras_AssignStringRange",
   "name_src": "vote",
   "votes": {
-   "MenuExtras_AssignStringRange": 6
+   "MenuExtras_AssignStringRange": 7
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -683,23 +692,25 @@
  },
  "00403e10": {
   "name": "C_008769d4_ReleaseBase",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_008769d4_ReleaseBase": 2
   },
-  "ret": "int",
+  "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_008769d4* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00403e10.cpp"
  },
  "00403e50": {
-  "name": "sub_403E50",
-  "name_src": "addr",
+  "name": "C_008769d4_Construct",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "C_008769d4* self, void* , void* a2",
+  "sig_src": "impl",
+  "file": "src/auto/00403e50.cpp"
  },
  "00403e90": {
   "name": "C_008769e0_ConstructFromException",
@@ -734,7 +745,9 @@
  "00404230": {
   "name": "AppendDwordPointerElement",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "DistanceOwnerList_Append": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "S_00403a70* self, void* , std::uint32_t* a3",
@@ -742,22 +755,24 @@
   "file": "src/auto/00404230.cpp"
  },
  "004042a0": {
-  "name": "sub_4042A0",
-  "name_src": "addr",
+  "name": "GfxSkin_RegisterDistanceOverride",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2, int a3, int a4, uint32_t* a5",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004042a0.cpp"
  },
  "00404320": {
-  "name": "sub_404320",
-  "name_src": "addr",
+  "name": "WorldCollision_ForAllAtomicIntersections",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int* a2, int a3, int a4",
-  "sig_src": "abi"
+  "params": "int world, int* bounds, int userParam, int owner",
+  "sig_src": "impl",
+  "file": "src/auto/00404320.cpp"
  },
  "00404390": {
   "name": "sub_404390",
@@ -787,25 +802,27 @@
   "sig_src": "abi"
  },
  "00405350": {
-  "name": "sub_405350",
-  "name_src": "addr",
+  "name": "S_00405350_ForwardWithDefaultFlags",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2, float* a3, int* a4",
-  "sig_src": "abi"
+  "params": "S_00405180* self, void* , float* a2, float* a3, int* a4",
+  "sig_src": "impl",
+  "file": "src/auto/00405350.cpp"
  },
  "00405370": {
-  "name": "TestVerticalProbe",
-  "name_src": "vote",
+  "name": "S_00405180_TestVerticalProbe",
+  "name_src": "agent",
   "votes": {
    "TestVerticalProbe": 1,
    "TraceGround": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2, float* a3",
-  "sig_src": "vote"
+  "params": "S_00405180* self, void* , float* a2, float* a3",
+  "sig_src": "impl",
+  "file": "src/auto/00405370.cpp"
  },
  "004053a0": {
   "name": "TraceGroundWithState",
@@ -18649,7 +18666,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 340
+   "CHandleTable_Resolve": 341
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -35356,14 +35373,15 @@
  },
  "0048aa70": {
   "name": "CreateCandidateInteraction",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CreateCandidateInteraction": 1
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "uint32_t* arg0, float a3, int a4, int a2",
-  "sig_src": "vote"
+  "params": "void* a1, float arg4, int a3, int a2",
+  "sig_src": "impl",
+  "file": "src/auto/0048aa70.cpp"
  },
  "0048abb0": {
   "name": "sub_48ABB0",
@@ -59848,7 +59866,7 @@
   "name": "GetValue8B0554",
   "name_src": "agent",
   "votes": {
-   "GetValue8B0554": 233
+   "GetValue8B0554": 234
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -67317,7 +67335,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 300
+   "GetGlobalState_50D190": 301
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -88984,6 +89002,28 @@
   "conv": "__cdecl",
   "params": "int a4, int a5, int a3",
   "sig_src": "abi"
+ },
+ "0056baf0": {
+  "name": "RpCollisionWorldForAllIntersections",
+  "name_src": "rwname",
+  "votes": {
+   "RpCollisionWorldForAllIntersections": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int world, void* box, uintptr_t callback, void* userData",
+  "sig_src": "vote"
+ },
+ "0056bbd0": {
+  "name": "RpWorldForAllAtomicIntersections",
+  "name_src": "rwname",
+  "votes": {
+   "RpWorldForAllAtomicIntersections": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int a1, float* a2, int (__cdecl* a3)(float*, int*, int, uint32_t, int), int a4",
+  "sig_src": "vote"
  },
  "0056bd00": {
   "name": "sub_56BD00",
@@ -117016,7 +117056,7 @@
   "name": "SceneLoader_GetSceneController",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetSceneController": 49,
+   "SceneLoader_GetSceneController": 50,
    "SceneLoader_GetSceneObject": 1,
    "SceneLoader_GetSubsystem": 1,
    "SceneLoader_GetSceneResources": 1,
@@ -134112,7 +134152,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 601
+   "Mem_Free": 604
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -141001,7 +141041,7 @@
   "name": "NormalizeVector3",
   "name_src": "agent",
   "votes": {
-   "NormalizeVector3": 44,
+   "NormalizeVector3": 45,
    "NormalizeVector": 1
   },
   "ret": "float*",
@@ -141077,6 +141117,7 @@
   "name": "S_006abb80_WriteBoxCorners",
   "name_src": "agent",
   "votes": {
+   "S_006abb80_WriteBoxCorners": 1,
    "S_006abb80_GetCornerPoints": 1
   },
   "ret": "float*",
@@ -142270,7 +142311,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 254,
+   "GetGlobalInt": 255,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -143922,7 +143963,7 @@
   "name": "SceneLoader_GetWorldObjectCollection",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetWorldObjectCollection": 16,
+   "SceneLoader_GetWorldObjectCollection": 17,
    "SceneLoader_GetRenderWorld": 2,
    "SceneLoader_GetContextObject": 1
   },
@@ -144778,7 +144819,7 @@
   "name": "GfxSkin_GetDistanceOverrideOwner",
   "name_src": "agent",
   "votes": {
-   "GfxSkin_GetDistanceOverrideOwner": 3
+   "GfxSkin_GetDistanceOverrideOwner": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -188221,7 +188262,7 @@
   "name": "GameConfig_IsResolvedEntryActive",
   "name_src": "agent",
   "votes": {
-   "GameConfig_IsResolvedEntryActive": 12,
+   "GameConfig_IsResolvedEntryActive": 13,
    "IsResolvedEntryActive": 14,
    "IsControlReadyFlagSet": 1,
    "IsObjectKindFlagSet": 1,
@@ -188630,7 +188671,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 173,
+   "GetGlobalValue_8BC1E0": 174,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
