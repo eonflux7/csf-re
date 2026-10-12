@@ -215,6 +215,7 @@ CODEX_URL = "https://chatgpt.com/backend-api/codex/responses"
 # whose 5h window is spent (429 usage_limit, or the quota guard's cap) pauses alone, and CODEX_PAUSED is set only
 # when every login is paused.
 CODEX_HOME_PAUSED = set()
+CODEX_HOME_OUT = set()  # logins the backend refuses (token rejected, model not on the account): out for this run
 _codex_rr = itertools.count()
 
 
@@ -277,6 +278,17 @@ def chat_codex_direct(model, messages, effort="high"):
         msg = e.read()[:300]
         if e.code == 429 and b"usage_limit" in msg:
             codex_pause(home)  # this login's window is spent: the others carry on; all spent -> defer, not escalate
+        if e.code in (401, 403) or (e.code == 400 and b"not supported" in msg):
+            # the account, not the function (2026-10-12: one login lost gpt-6.1-sol; its calls were escalated to
+            # queue/ and M functions fell through to Opus): the login is out, the call goes to another one
+            if home not in CODEX_HOME_OUT:
+                CODEX_HOME_OUT.add(home)
+                print(f"{codex_label(home)} is refused by the backend (HTTP {e.code}: {msg[:160]!r}): out for this "
+                      f"run", flush=True)
+            codex_pause(home)
+            if any(h not in CODEX_HOME_PAUSED for h in codex_homes()):
+                return chat_codex_direct(model, messages, effort)
+            raise RuntimeError("Codex paused by the quota guard (no login the backend accepts)")
         raise RuntimeError(f"codex backend HTTP {e.code}: {msg!r}")
     out, u = [], None
     for raw in r:
@@ -1204,7 +1216,7 @@ def lanes(args):
                 print(f"{codex_label(h)} 5h window at {hp:.0f}% (cap {args.codex_cap}): paused, resets in "
                       f"{hr // 60} min", flush=True)
                 codex_pause(h)
-            elif hp < args.codex_cap and h in CODEX_HOME_PAUSED:
+            elif hp < args.codex_cap and h in CODEX_HOME_PAUSED and h not in CODEX_HOME_OUT:
                 print(f"{codex_label(h)} 5h window at {hp:.0f}%: resumed", flush=True)
                 codex_pause(h, False)
         if not per:
