@@ -52,7 +52,8 @@
 - {addr: 0x0082D564, name: g_AuxObjectCreateArg, type: int, uses: 1, src: auto}
 - {addr: 0x0082D568, name: g_LocalDirectionAngleScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D56C, name: g_Epsilon, type: float, uses: 2, src: auto, alt: [g_MotionEpsilon]}
-- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 77, src: auto, alt: [g_MissionUnsignedIntegerBias]}
+- {addr: 0x0082D6E8, name: g_MatrixRequestFlags, type: 'std::uint32_t', uses: 1, src: auto}
+- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 78, src: auto, alt: [g_MissionUnsignedIntegerBias]}
 - {addr: 0x0082D748, name: g_HudPi, type: float, uses: 2, src: auto, alt: [g_PiConstant]}
 - {addr: 0x0082D74C, name: g_HudTwoPi, type: float, uses: 2, src: auto, alt: [g_TwoPiConstant]}
 - {addr: 0x0082D750, name: g_RotationRadiansToDegrees, type: float, uses: 1, src: auto}
@@ -70,13 +71,20 @@
 - {addr: 0x0082DAF0, name: g_ScoreboardRefreshInterval, type: float, uses: 1, src: auto}
 - {addr: 0x0082DBCC, name: g_VehicleAimLowerLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082DBD0, name: g_VehicleYawUpperLimit, type: float, uses: 1, src: auto}
+- {addr: 0x0082DC60, name: g_DegreesToRadians, type: float, uses: 1, src: auto}
+- {addr: 0x0082DC64, name: g_AngleEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC68, name: g_MaximumHeadTimeStep, type: float, uses: 2, src: auto}
 - {addr: 0x0082DC70, name: g_SubtitlePanelScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC7C, name: g_DirectionYScale, type: float, uses: 3, src: auto, alt: [g_RelatedObjectScaleY]}
 - {addr: 0x0082DC84, name: g_flt_0082DC84, type: float, uses: 12, src: auto, alt: [g_HeadDampingScale, g_MessageBoxAnimationDuration]}
 - {addr: 0x0082DCE8, name: g_WheelRecordScale, type: float, uses: 7, src: auto}
+- {addr: 0x0082DD5C, name: g_DegreesToRadians, type: float, uses: 2, src: auto, alt: [g_fDegToRad]}
+- {addr: 0x0082DD60, name: g_AngleEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x0082DD68, name: g_PreviewTopScale, type: float, uses: 1, src: auto}
-- {addr: 0x0082DD74, name: g_ContextualDistanceScale, type: float, uses: 2, src: auto}
+- {addr: 0x0082DD6C, name: g_Scale100000, type: float, uses: 2, src: auto, alt: [g_SpeedUnitScale]}
+- {addr: 0x0082DD70, name: g_HourTimeFactor, type: float, uses: 2, src: auto, alt: [g_OneOver3600]}
+- {addr: 0x0082DD74, name: g_ContextualDistanceScale, type: float, uses: 3, src: auto}
+- {addr: 0x0082DDE0, name: g_HeightReferenceOffset, type: float, uses: 1, src: auto}
 - {addr: 0x0082DDEC, name: g_Const200_0f, type: float, uses: 9, src: auto}
 - {addr: 0x0082DEA8, name: g_MovementRateBound, type: float, uses: 1, src: auto}
 - {addr: 0x0082DEAC, name: g_HeightSnapDistance, type: float, uses: 1, src: auto}
@@ -234,6 +242,7 @@
 - {addr: 0x0083C548, name: g_DegToRad, type: float, uses: 2, src: auto, alt: [g_DegreesToRadians]}
 - {addr: 0x0083DD38, name: g_RadToDeg, type: float, uses: 1, src: auto}
 - {addr: 0x0083E0D4, name: g_AiStaticOffsetDistance, type: float, uses: 1, src: auto}
+- {addr: 0x0083E108, name: g_SpatialGridCellSize, type: float, uses: 1, src: auto}
 - {addr: 0x0083E10C, name: g_PointToCellScale, type: float, uses: 1, src: auto}
 - {addr: 0x0083E110, name: g_GridCoordinateScale, type: float, uses: 1, src: auto}
 - {addr: 0x0083E138, name: g_ParallelEpsilonScale, type: float, uses: 1, src: auto}
