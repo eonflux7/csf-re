@@ -6591,7 +6591,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 87
+   "S_0041e5f0_GrowArrayCapacity": 89
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -107361,7 +107361,7 @@
   "name": "RwImageSetPath",
   "name_src": "rwname",
   "votes": {
-   "RwImageSetPath": 3
+   "RwImageSetPath": 4
   },
   "ret": "const void*",
   "conv": "__cdecl",
@@ -133306,7 +133306,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 291
+   "Mem_Alloc": 292
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -134264,7 +134264,7 @@
   "name": "SceneLoader_CopyMapFilename",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_CopyMapFilename": 1
+   "SceneLoader_CopyMapFilename": 2
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -134275,7 +134275,7 @@
   "name": "Hud_ExtractResourcePath",
   "name_src": "vote",
   "votes": {
-   "Hud_ExtractResourcePath": 1
+   "Hud_ExtractResourcePath": 2
   },
   "ret": "char*",
   "conv": "__cdecl",
@@ -141125,8 +141125,8 @@
   "file": "src/auto/006af250.cpp"
  },
  "006af390": {
-  "name": "ButtonItem_InitBase",
-  "name_src": "vote",
+  "name": "C_008600d4_InitializeBase",
+  "name_src": "agent",
   "votes": {
    "ButtonItem_InitBase": 1
   },
@@ -141210,8 +141210,9 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_0082d410* self, void* , int descriptorAddress",
+  "sig_src": "impl",
+  "file": "src/auto/006af940.cpp"
  },
  "006afb10": {
   "name": "MenuControls_SetDisplayValue",
@@ -141238,13 +141239,14 @@
   "file": "src/auto/006afb80.cpp"
  },
  "006afca0": {
-  "name": "sub_6AFCA0",
-  "name_src": "addr",
+  "name": "Geometry_ContainsPointInTriangle",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "params": "float* self, void* , float* point",
+  "sig_src": "impl",
+  "file": "src/auto/006afca0.cpp"
  },
  "006afdf0": {
   "name": "CompareDwordPtrsDescending",
@@ -141268,29 +141270,32 @@
   "sig_src": "vote"
  },
  "006afef0": {
-  "name": "Record_FinalizeState",
-  "name_src": "vote",
+  "name": "S_006b0320_EnsureCounterclockwiseWinding",
+  "name_src": "agent",
   "votes": {
    "Record_FinalizeState": 1
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "uint32_t* a1",
-  "sig_src": "vote"
+  "params": "S_006b0320* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006afef0.cpp"
  },
  "006b0030": {
-  "name": "sub_6B0030",
-  "name_src": "addr",
+  "name": "Geometry_IsPolygonStrictlyCounterclockwise",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int* a2",
-  "sig_src": "abi"
+  "params": "int* self, void* , int* polygon",
+  "sig_src": "impl",
+  "file": "src/auto/006b0030.cpp"
  },
  "006b0320": {
   "name": "S_006b0320_AssignPairTable",
   "name_src": "agent",
   "votes": {
+   "S_006b0320_AssignBaseData": 1,
    "S_006b0320_CopyRecord": 1
   },
   "ret": "int",
@@ -141300,15 +141305,16 @@
   "file": "src/auto/006b0320.cpp"
  },
  "006b03b0": {
-  "name": "S_006b0320_ApplyArg",
-  "name_src": "vote",
+  "name": "S_006b0320_AssignWithClonedEntries",
+  "name_src": "agent",
   "votes": {
    "S_006b0320_ApplyArg": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "S_006b0320* self, void* , int sourceAddress",
+  "sig_src": "impl",
+  "file": "src/auto/006b03b0.cpp"
  },
  "006b0470": {
   "name": "S_006b0320_Init",
@@ -149561,7 +149567,7 @@
   "name": "CharacterDefs_AssignEmbeddedMember",
   "name_src": "agent",
   "votes": {
-   "CharacterDefs_AssignEmbeddedMember": 3
+   "CharacterDefs_AssignEmbeddedMember": 4
   },
   "ret": "void*",
   "conv": "__fastcall",
