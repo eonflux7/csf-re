@@ -66561,7 +66561,7 @@
   "name": "SceneLoader_NoOp",
   "name_src": "captain",
   "votes": {
-   "SceneLoader_NoOp": 44,
+   "SceneLoader_NoOp": 46,
    "Nullsub_506AC0": 34
   },
   "ret": "void",
@@ -110330,7 +110330,7 @@
   "name": "RwRasterDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwRasterDestroy": 9
+   "RwRasterDestroy": 10
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -111854,7 +111854,7 @@
   "name": "RwTextureDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwTextureDestroy": 8
+   "RwTextureDestroy": 9
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -111936,7 +111936,7 @@
   "name": "RwTextureRead",
   "name_src": "rwname",
   "votes": {
-   "RwTextureRead": 1
+   "RwTextureRead": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -118715,7 +118715,7 @@
   "name": "LookupObjectById",
   "name_src": "vote",
   "votes": {
-   "LookupObjectById": 73
+   "LookupObjectById": 74
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -143983,7 +143983,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 308,
+   "GetGlobalInt": 314,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -144007,7 +144007,7 @@
   "name": "GlobalInt_ResolveAccessor",
   "name_src": "vote",
   "votes": {
-   "GlobalInt_ResolveAccessor": 48
+   "GlobalInt_ResolveAccessor": 52
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -144018,7 +144018,7 @@
   "name": "ResolveRwManager",
   "name_src": "vote",
   "votes": {
-   "ResolveRwManager": 18
+   "ResolveRwManager": 21
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -153894,7 +153894,7 @@
   "name": "ReleaseManagedResource",
   "name_src": "vote",
   "votes": {
-   "ReleaseManagedResource": 2,
+   "ReleaseManagedResource": 3,
    "ReleaseEffectResource": 1
   },
   "ret": "void**",
@@ -164583,7 +164583,7 @@
   "file": "src/auto/006f92e0.cpp"
  },
  "006f9370": {
-  "name": "C_00862d48_Initialize",
+  "name": "C_00862d48_Initialize_6F9370",
   "name_src": "agent",
   "votes": {},
   "ret": "char",
@@ -164661,7 +164661,8 @@
   "name": "C_00862b04_UpdateFilmCoordinates",
   "name_src": "agent",
   "votes": {
-   "C_00862b04_UpdateEffect": 1
+   "C_00862b04_UpdateEffect": 1,
+   "C_00862b04_UpdateFilmCoordinates": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -164680,13 +164681,14 @@
   "file": "src/auto/006f9980.cpp"
  },
  "006f99a0": {
-  "name": "sub_6F99A0",
-  "name_src": "addr",
+  "name": "C_00862d48_InitializeNoiseEffect",
+  "name_src": "impl",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00862d48* self, void* , int initializationArgument",
+  "sig_src": "impl",
+  "file": "src/auto/006f99a0.cpp"
  },
  "006f9a80": {
   "name": "C_00862b58_RenderFourPasses",
@@ -164788,24 +164790,26 @@
   "file": "src/auto/006f9d40.cpp"
  },
  "006f9d90": {
-  "name": "C_00862c74_CleanupEffectState",
-  "name_src": "vote",
+  "name": "C_00862c74_ReleaseTexturesAndUpdate",
+  "name_src": "agent",
   "votes": {
    "C_00862c74_CleanupEffectState": 1
   },
-  "ret": "int",
+  "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00862c74* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006f9d90.cpp"
  },
  "006f9e60": {
-  "name": "sub_6F9E60",
-  "name_src": "addr",
+  "name": "C_00862c74_LoadOldFilmResources",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00862c74* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006f9e60.cpp"
  },
  "006f9fb0": {
   "name": "sub_6F9FB0",
@@ -164943,22 +164947,24 @@
   "sig_src": "abi"
  },
  "006fa300": {
-  "name": "sub_6FA300",
-  "name_src": "addr",
+  "name": "C_00862c74_RenderFilmEffects",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00862c74* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006fa300.cpp"
  },
  "006fa670": {
-  "name": "sub_6FA670",
-  "name_src": "addr",
+  "name": "C_00862c74_UpdateFilmNoise",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a5",
-  "sig_src": "abi"
+  "params": "C_00862c74* self, void* , float elapsedSeconds",
+  "sig_src": "impl",
+  "file": "src/auto/006fa670.cpp"
  },
  "006faad0": {
   "name": "sub_6FAAD0",
@@ -165055,7 +165061,9 @@
  "006fb5f0": {
   "name": "GfxScreenEffects_CreateRasters",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxScreenEffects_CreateRasters": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -165063,13 +165071,14 @@
   "file": "src/auto/006fb5f0.cpp"
  },
  "006fb670": {
-  "name": "sub_6FB670",
-  "name_src": "addr",
+  "name": "C_00862d48_Initialize_6FB670",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00862d48* self, void* , int effectId",
+  "sig_src": "impl",
+  "file": "src/auto/006fb670.cpp"
  },
  "006fb730": {
   "name": "C_00862cd4_UpdateScreenEffect",
@@ -165144,13 +165153,14 @@
   "file": "src/auto/006fbbf0.cpp"
  },
  "006fbc50": {
-  "name": "sub_6FBC50",
-  "name_src": "addr",
+  "name": "C_00862d48_ApplyFilmLayers",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00862d48* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006fbc50.cpp"
  },
  "006fbe30": {
   "name": "sub_6FBE30",
@@ -168075,7 +168085,7 @@
   "name": "GfxScreenEffects_DrawQuad",
   "name_src": "vote",
   "votes": {
-   "GfxScreenEffects_DrawQuad": 1
+   "GfxScreenEffects_DrawQuad": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -168086,7 +168096,7 @@
   "name": "GfxScreenEffects_BeginDrawing",
   "name_src": "vote",
   "votes": {
-   "GfxScreenEffects_BeginDrawing": 1
+   "GfxScreenEffects_BeginDrawing": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -168097,7 +168107,7 @@
   "name": "GfxScreenEffects_EndDrawing",
   "name_src": "vote",
   "votes": {
-   "GfxScreenEffects_EndDrawing": 1
+   "GfxScreenEffects_EndDrawing": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -168117,7 +168127,7 @@
   "name": "ApplyEffectPass",
   "name_src": "vote",
   "votes": {
-   "ApplyEffectPass": 1,
+   "ApplyEffectPass": 2,
    "ScreenEffects_SetLayerIntensity": 1
   },
   "ret": "int",
@@ -168129,7 +168139,7 @@
   "name": "ScreenEffects_ApplyLayerColor",
   "name_src": "vote",
   "votes": {
-   "ScreenEffects_ApplyLayerColor": 1
+   "ScreenEffects_ApplyLayerColor": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -168200,7 +168210,7 @@
    "ClearScreenEffectResources": 1,
    "ResetScreenEffect": 1,
    "ScreenEffects_ReleaseResources": 1,
-   "ScreenEffects_UpdateBase": 1,
+   "ScreenEffects_UpdateBase": 4,
    "ReleaseBaseScreenEffect": 1,
    "FinishEffectCleanup": 1
   },
@@ -168213,7 +168223,7 @@
   "name": "InitializeScreenEffect",
   "name_src": "vote",
   "votes": {
-   "InitializeScreenEffect": 2
+   "InitializeScreenEffect": 4
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -168233,7 +168243,7 @@
   "name": "ScreenEffects_PrepareLayer",
   "name_src": "vote",
   "votes": {
-   "ScreenEffects_PrepareLayer": 1
+   "ScreenEffects_PrepareLayer": 2
   },
   "ret": "int",
   "conv": "__stdcall",
@@ -207042,7 +207052,7 @@
   "name": "_sprintf",
   "name_src": "ida",
   "votes": {
-   "_sprintf": 33,
+   "_sprintf": 34,
    "LibSprintf": 1,
    "FormatMissionScore": 1,
    "FormatResolution": 1
@@ -207286,7 +207296,7 @@
   "name": "_rand",
   "name_src": "ida",
   "votes": {
-   "_rand": 4
+   "_rand": 6
   },
   "ret": "int",
   "conv": "__cdecl",
