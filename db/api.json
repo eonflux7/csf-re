@@ -4428,7 +4428,7 @@
   "name": "AudioSoundManager_InitializeRequest",
   "name_src": "agent",
   "votes": {
-   "AudioSoundManager_InitializeRequest": 3
+   "AudioSoundManager_InitializeRequest": 4
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -14208,7 +14208,7 @@
   "name": "GetGlobal8afc7c",
   "name_src": "agent",
   "votes": {
-   "GetGlobal8afc7c": 19
+   "GetGlobal8afc7c": 24
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -14355,7 +14355,7 @@
   "name": "Campaign_FindMission",
   "name_src": "agent",
   "votes": {
-   "Campaign_FindMission": 2,
+   "Campaign_FindMission": 7,
    "MenuLoading_FindMission": 4
   },
   "ret": "int",
@@ -14378,6 +14378,7 @@
   "name": "Campaign_ResolveCurrentPanelKey",
   "name_src": "agent",
   "votes": {
+   "Campaign_ResolveCurrentPanelKey": 1,
    "ResolveCurrentPanelKey": 2
   },
   "ret": "uint32_t*",
@@ -19068,7 +19069,7 @@
   "name": "MissionInfo_IsPrerequisiteMet",
   "name_src": "vote",
   "votes": {
-   "MissionInfo_IsPrerequisiteMet": 6
+   "MissionInfo_IsPrerequisiteMet": 8
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -22224,7 +22225,7 @@
   "name_src": "agent",
   "votes": {
    "InitScratchBlock": 1,
-   "MenuProgressInput_ResetSlotsAndUpdate": 1
+   "MenuProgressInput_ResetSlotsAndUpdate": 2
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -65209,7 +65210,7 @@
   "name": "GetGlobalValue_8B0568",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8B0568": 74,
+   "GetGlobalValue_8B0568": 80,
    "GetMissionManager": 1
   },
   "ret": "int",
@@ -65339,7 +65340,7 @@
   "name": "UmsVirtualProcessor_GetDefaultDestination",
   "name_src": "agent",
   "votes": {
-   "UmsVirtualProcessor_GetDefaultDestination": 8,
+   "UmsVirtualProcessor_GetDefaultDestination": 11,
    "DefaultDestination_Get": 17,
    "GetMissionEntries": 1
   },
@@ -65801,7 +65802,8 @@
   "name_src": "agent",
   "votes": {
    "SceneLoader_GetSelectedSceneName": 1,
-   "GetCurrentMenuStringText": 1
+   "GetCurrentMenuStringText": 1,
+   "S_00500350_GetFirstRecordNameBuffer": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -66182,7 +66184,7 @@
   "name": "GlobalMenu_SetSelectedScenarioName",
   "name_src": "agent",
   "votes": {
-   "GlobalMenu_SetSelectedScenarioName": 7
+   "GlobalMenu_SetSelectedScenarioName": 8
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -66819,7 +66821,7 @@
   "name": "GetGlobalValue_8B056C",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8B056C": 63
+   "GetGlobalValue_8B056C": 65
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -68693,7 +68695,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 344
+   "GetGlobalState_50D190": 346
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -69206,7 +69208,8 @@
   "name": "BddLoader_ApplyScratchToGlobalState",
   "name_src": "agent",
   "votes": {
-   "ApplyScratchToGlobalState": 1
+   "ApplyScratchToGlobalState": 1,
+   "BddLoader_ApplyScratchToGlobalState": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -71116,7 +71119,7 @@
   "name": "ProfileSavegames_GetScenarioCollection",
   "name_src": "agent",
   "votes": {
-   "ProfileSavegames_GetScenarioCollection": 2,
+   "ProfileSavegames_GetScenarioCollection": 4,
    "GetScenarioCollection": 5
   },
   "ret": "int*",
@@ -71271,7 +71274,7 @@
   "name": "MissionInfoPanel_AddRecord",
   "name_src": "agent",
   "votes": {
-   "MissionInfoPanel_AddRecord": 1
+   "MissionInfoPanel_AddRecord": 2
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
@@ -71296,7 +71299,8 @@
   "name_src": "agent",
   "votes": {
    "ProfilesSavegames_InitializeEntry": 1,
-   "ProfilesSavegames_InitializeProfile": 1
+   "ProfilesSavegames_InitializeProfile": 1,
+   "S_004f21d0_ResetSaveData": 1
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
@@ -74662,7 +74666,7 @@
   "name": "GetGlobalValue_521BB0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_521BB0": 111
+   "GetGlobalValue_521BB0": 112
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -75212,7 +75216,8 @@
   "name": "CSoundManager_ClearSounds",
   "name_src": "agent",
   "votes": {
-   "ApplyGlobalValueSettings": 6
+   "ApplyGlobalValueSettings": 6,
+   "CSoundManager_ClearSounds": 1
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -75360,7 +75365,7 @@
   "name": "S_00521df0_PlaySoundRequest",
   "name_src": "agent",
   "votes": {
-   "S_00521df0_PlaySoundRequest": 13,
+   "S_00521df0_PlaySoundRequest": 14,
    "ApplyGlobalValueRequest": 9
   },
   "ret": "int",
@@ -81626,7 +81631,9 @@
  "0053d260": {
   "name": "CMenuMissionInfo_SetNormalizedColor",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuMissionInfo_SetNormalizedColor": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "float* self, void* , uint32_t a2, uint32_t a3, uint32_t a4, uint32_t a5",
@@ -81828,14 +81835,15 @@
  },
  "0053d910": {
   "name": "CMenuMissionInfo_UpdatePanels",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CMenuMissionInfo_UpdatePanels": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "CMenuMissionInfo* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0053d910.cpp"
  },
  "0053daa0": {
   "name": "CMenuMissionInfo_ResetPanels",
@@ -81882,13 +81890,14 @@
   "sig_src": "vote"
  },
  "0053dd30": {
-  "name": "sub_53DD30",
-  "name_src": "addr",
+  "name": "MenuMissionInfo_PlayMissionSound",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0053dd30.cpp"
  },
  "0053dde0": {
   "name": "CMenuMissionInfo_SetContextAndRefreshPanels",
@@ -81901,24 +81910,26 @@
   "file": "src/auto/0053dde0.cpp"
  },
  "0053de30": {
-  "name": "sub_53DE30",
-  "name_src": "addr",
+  "name": "MenuMissionInfo_GetCurrentMissionScenarioValue",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0053de30.cpp"
  },
  "0053def0": {
   "name": "CMenuMissionInfo_TryHandleTertiaryPanel",
   "name_src": "vote",
   "votes": {
-   "CMenuMissionInfo_TryHandleTertiaryPanel": 1
+   "CMenuMissionInfo_TryHandleTertiaryPanel": 2
   },
-  "ret": "bool",
-  "conv": "__fastcall",
-  "params": "CMenuMissionInfo* self, void* edx, int a1",
-  "sig_src": "vote"
+  "ret": "int",
+  "conv": "__stdcall",
+  "params": "int panelAddress",
+  "sig_src": "impl",
+  "file": "src/auto/0053def0.cpp"
  },
  "0053dfa0": {
   "name": "CMenuMissionInfo_IsCurrentEntryAbsentFromList",
@@ -81966,13 +81977,14 @@
   "file": "src/auto/0053e1c0.cpp"
  },
  "0053e230": {
-  "name": "sub_53E230",
-  "name_src": "addr",
+  "name": "MenuMissionInfo_GetSelectedMissionFlag",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0053e230.cpp"
  },
  "0053e2f0": {
   "name": "CMenuMissionInfo_RefreshPanelAtIndex",
@@ -82096,14 +82108,15 @@
  },
  "005403a0": {
   "name": "CMenuMissionInfo_Construct",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CMenuMissionInfo_Construct": 1
   },
-  "ret": "C_00843ed0*",
+  "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "C_00843ed0* self, void* , int a2",
-  "sig_src": "vote"
+  "params": "CMenuMissionInfo* self, void* , int context",
+  "sig_src": "impl",
+  "file": "src/auto/005403a0.cpp"
  },
  "00540480": {
   "name": "CMenuMissionInfo_RefreshPanelContent",
@@ -82111,10 +82124,11 @@
   "votes": {
    "CMenuMissionInfo_RefreshPanelContent": 1
   },
-  "ret": "void",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, void* panelArg",
-  "sig_src": "vote"
+  "ret": "char",
+  "conv": "__stdcall",
+  "params": "int panelAddress",
+  "sig_src": "impl",
+  "file": "src/auto/00540480.cpp"
  },
  "00540530": {
   "name": "CMenuMissionInfo_AddRecordFromGlobalLookup",
@@ -171855,7 +171869,7 @@
   "name": "C_00830438_Construct",
   "name_src": "vote",
   "votes": {
-   "C_00830438_Construct": 34,
+   "C_00830438_Construct": 35,
    "MenuScenarioSelect_InitializeEmbeddedSubobject": 1,
    "CMenuScreen_ConstructSubobject": 1,
    "InitEmbeddedSubobject": 1,
@@ -192364,7 +192378,7 @@
   "name": "SceneLoader_GetResourceById",
   "name_src": "agent",
   "votes": {
-   "SceneLoader_GetResourceById": 24,
+   "SceneLoader_GetResourceById": 25,
    "SceneLoader_GetResourceByIndex": 1
   },
   "ret": "int",
@@ -192433,7 +192447,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 214,
+   "GetGlobalValue_8BC1E0": 215,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
@@ -194009,7 +194023,7 @@
   "name": "GetGlobalValue_75FDF0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_75FDF0": 44
+   "GetGlobalValue_75FDF0": 45
   },
   "ret": "int",
   "conv": "__cdecl",
