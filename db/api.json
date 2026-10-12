@@ -3181,7 +3181,9 @@
  "0040c3c0": {
   "name": "S_0040c070_SerializeElements",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Archive_SerializeEmbeddedData": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
   "params": "S_0040c070* self, int contextAddress",
@@ -3189,13 +3191,14 @@
   "file": "src/auto/0040c3c0.cpp"
  },
  "0040c5b0": {
-  "name": "sub_40C5B0",
-  "name_src": "addr",
+  "name": "C_0082daf4_Serialize",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0082daf4* self, void* , int archiveAddress",
+  "sig_src": "impl",
+  "file": "src/auto/0040c5b0.cpp"
  },
  "0040c690": {
   "name": "C_0082db10_BindInputToSubobject",
@@ -10082,7 +10085,7 @@
   "name": "SaveGame_DestroyLocalizedString",
   "name_src": "agent",
   "votes": {
-   "SaveGame_DestroyLocalizedString": 6
+   "SaveGame_DestroyLocalizedString": 7
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -35332,7 +35335,7 @@
   "name": "AssignStringRange_488830",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_488830": 41
+   "AssignStringRange_488830": 42
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -46101,7 +46104,7 @@
   "name": "Archive_SerializeObjectRef",
   "name_src": "vote",
   "votes": {
-   "Archive_SerializeObjectRef": 72
+   "Archive_SerializeObjectRef": 73
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -78197,13 +78200,14 @@
   "file": "src/auto/00530310.cpp"
  },
  "00530330": {
-  "name": "sub_530330",
-  "name_src": "addr",
+  "name": "CMenuMpServerInfo_InitializePanel",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a4, void** a5",
-  "sig_src": "abi"
+  "params": "CMenuMpServerInfo* self, void* , void* gui, S_00692b80** elements",
+  "sig_src": "impl",
+  "file": "src/auto/00530330.cpp"
  },
  "00530610": {
   "name": "CMenuMpServerInfo_ReleaseSubObject",
@@ -78312,7 +78316,9 @@
  "00530b10": {
   "name": "MenuMpServerInfo_FormatPlayerCount",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuMpServerInfo_FormatPlayerLabel": 1
+  },
   "ret": "void",
   "conv": "__stdcall",
   "params": "int category, int enabled, std::uint16_t* destination",
@@ -78332,7 +78338,9 @@
  "00530cd0": {
   "name": "FormatCountText",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "FormatCountText": 1
+  },
   "ret": "void*",
   "conv": "__stdcall",
   "params": "int infoObject, void* outString",
@@ -78340,13 +78348,14 @@
   "file": "src/auto/00530cd0.cpp"
  },
  "00530d20": {
-  "name": "sub_530D20",
-  "name_src": "addr",
+  "name": "CMenuMpServerInfo_AddPlayerRow",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint16_t*",
+  "ret": "std::uint16_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "CMenuMpServerInfo* self, void* , int infoObject",
+  "sig_src": "impl",
+  "file": "src/auto/00530d20.cpp"
  },
  "00531020": {
   "name": "sub_531020",
@@ -86421,7 +86430,9 @@
  "005516c0": {
   "name": "ComputeSpawnPointBalance",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ComputeSpawnPointBalance": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "uint16_t total, uint16_t first_deduction, uint16_t second_deduction",
@@ -118853,7 +118864,7 @@
   "name": "LookupObjectById",
   "name_src": "vote",
   "votes": {
-   "LookupObjectById": 76
+   "LookupObjectById": 77
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -135791,7 +135802,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 482,
+   "Mem_FreeDebug": 483,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -136524,7 +136535,7 @@
   "name": "LookupNamedElement",
   "name_src": "vote",
   "votes": {
-   "LookupNamedElement": 59
+   "LookupNamedElement": 60
   },
   "ret": "uint8_t*",
   "conv": "__fastcall",
@@ -137147,7 +137158,7 @@
   "name": "CopyTrucoStringToWide",
   "name_src": "vote",
   "votes": {
-   "CopyTrucoStringToWide": 10
+   "CopyTrucoStringToWide": 11
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -137198,7 +137209,7 @@
   "name": "MenuLoading_CopyLocalizedText",
   "name_src": "vote",
   "votes": {
-   "MenuLoading_CopyLocalizedText": 1
+   "MenuLoading_CopyLocalizedText": 2
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -137390,7 +137401,7 @@
   "name": "FormatCountTextBuffer",
   "name_src": "vote",
   "votes": {
-   "FormatCountTextBuffer": 10,
+   "FormatCountTextBuffer": 11,
    "FormatMissionEntryText": 1
   },
   "ret": "void*",
@@ -137524,7 +137535,7 @@
   "name": "FormatterSetPattern",
   "name_src": "vote",
   "votes": {
-   "FormatterSetPattern": 14,
+   "FormatterSetPattern": 15,
    "ConstructMissionFormatString": 1
   },
   "ret": "int",
@@ -144121,7 +144132,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 316,
+   "GetGlobalInt": 317,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -172039,7 +172050,7 @@
   "name": "C_00714270_ComputeDoubledFieldOffset",
   "name_src": "agent",
   "votes": {
-   "C_00714270_ComputeDoubledFieldOffset": 1
+   "C_00714270_ComputeDoubledFieldOffset": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -172906,7 +172917,7 @@
   "name": "CGuiTextureListBox_ExtendToRowIndex",
   "name_src": "agent",
   "votes": {
-   "CGuiTextureListBox_ExtendToRowIndex": 3
+   "CGuiTextureListBox_ExtendToRowIndex": 4
   },
   "ret": "int",
   "conv": "__fastcall",
