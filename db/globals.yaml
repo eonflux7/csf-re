@@ -38,13 +38,13 @@
 - {addr: 0x0082D2B4, name: g_DefWindowProcA, type: DefWindowProcFunction, uses: 1, src: auto}
 - {addr: 0x0082D2E8, name: g_GetDoubleClickTimeImport, type: GetDoubleClickTimeFn, uses: 1, src: auto}
 - {addr: 0x0082D2EC, name: g_SendMessageAImportSlot, type: void*, uses: 2, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 72, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 73, src: auto}
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 3, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 27, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 97, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 99, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 8, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 11, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
@@ -52,7 +52,7 @@
 - {addr: 0x0082D564, name: g_AuxObjectCreateArg, type: int, uses: 1, src: auto}
 - {addr: 0x0082D568, name: g_LocalDirectionAngleScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D56C, name: g_Epsilon, type: float, uses: 2, src: auto, alt: [g_MotionEpsilon]}
-- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 76, src: auto, alt: [g_MissionUnsignedIntegerBias]}
+- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 77, src: auto, alt: [g_MissionUnsignedIntegerBias]}
 - {addr: 0x0082D748, name: g_HudPi, type: float, uses: 2, src: auto, alt: [g_PiConstant]}
 - {addr: 0x0082D74C, name: g_HudTwoPi, type: float, uses: 2, src: auto, alt: [g_TwoPiConstant]}
 - {addr: 0x0082D750, name: g_RotationRadiansToDegrees, type: float, uses: 1, src: auto}
@@ -110,7 +110,7 @@
 - {addr: 0x0082E074, name: g_MovementAcceleration, type: float, uses: 2, src: auto}
 - {addr: 0x0082E0EC, name: g_GravityAccel, type: float, uses: 2, src: auto}
 - {addr: 0x0082E0F0, name: g_Const20, type: float, uses: 5, src: auto, alt: [g_LayoutInset, g_WidthReduction]}
-- {addr: 0x0082E114, name: g_SoundActivityThreshold, type: float, uses: 9, src: auto}
+- {addr: 0x0082E114, name: g_SoundActivityThreshold, type: float, uses: 10, src: auto}
 - {addr: 0x0082E118, name: g_fIntroVideoDuration, type: float, uses: 5, src: auto}
 - {addr: 0x0082E11C, name: g_WeaponPlacementTraceDepth, type: float, uses: 4, src: auto}
 - {addr: 0x0082E120, name: g_MaxPercent, type: float, uses: 7, src: auto}
@@ -234,6 +234,8 @@
 - {addr: 0x0083C548, name: g_DegToRad, type: float, uses: 2, src: auto, alt: [g_DegreesToRadians]}
 - {addr: 0x0083DD38, name: g_RadToDeg, type: float, uses: 1, src: auto}
 - {addr: 0x0083E0D4, name: g_AiStaticOffsetDistance, type: float, uses: 1, src: auto}
+- {addr: 0x0083E10C, name: g_PointToCellScale, type: float, uses: 1, src: auto}
+- {addr: 0x0083E138, name: g_ParallelEpsilonScale, type: float, uses: 1, src: auto}
 - {addr: 0x0083E7A4, name: g_AnimationTimeOffset, type: float, uses: 1, src: auto}
 - {addr: 0x0083E7B0, name: g_LightModulationPeriod, type: double, uses: 1, src: auto}
 - {addr: 0x0083E7B8, name: g_LightPhaseRate, type: float, uses: 1, src: auto}
@@ -446,6 +448,8 @@
 - {addr: 0x00889F8C, name: g_CopyDwordPairRangeExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00889FDC, name: g_TwoDwordRangeExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088A150, name: g_TwelveByteRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088A488, name: g_CopyEightByteRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088A4D8, name: g_TwoDwordCopyUnwindMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088A8B0, name: g_RecordRangeExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088A950, name: g_ElementRangeExceptionFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088AA74, name: g_RangeExceptionCatchInfo, type: 'std::uint8_t', uses: 1, src: auto}
