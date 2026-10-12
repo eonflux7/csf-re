@@ -99,7 +99,11 @@ def self_refs(obj, src):
     bad = []
     for sym in re.findall(r"^\s*U\s+(\S+)", out, re.M):
         plain = re.sub(r"^[_@]|@\d+$", "", sym)
-        if re.fullmatch(r"\w+", plain) and re.search(rf"\b{re.escape(plain)}\s*\([^;]*\)\s*\{{", src, re.S):
+        # a definition: `type name(params) {`. Not `if (std::sqrt(x) < y) {`: the CRT's sqrt was reported as the
+        # file's own function (0x4B6A80 went through the whole ladder on it)
+        if re.fullmatch(r"\w+", plain) and re.search(
+                rf"(?:[\w>)]\s+|[*&]\s*)(?<!return )(?<!::)\b{re.escape(plain)}\s*\([^;{{}}()]*(?:\([^()]*\)[^;{{}}()]*)*\)\s*\{{",
+                src, re.S):
             bad.append(plain)
     return sorted(set(bad))
 
