@@ -42,9 +42,9 @@
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 3, src: auto}
-- {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 33, src: auto, alt: [g_flt_82D4C4]}
+- {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 34, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 136, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 137, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 12, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 14, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
@@ -53,7 +53,7 @@
 - {addr: 0x0082D568, name: g_LocalDirectionAngleScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D56C, name: g_Epsilon, type: float, uses: 2, src: auto, alt: [g_MotionEpsilon]}
 - {addr: 0x0082D6E8, name: g_MatrixQueryFlags, type: 'std::uint32_t', uses: 2, src: auto, alt: [g_MatrixRequestFlags]}
-- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 90, src: auto, alt: [g_MissionUnsignedIntegerBias]}
+- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 91, src: auto, alt: [g_MissionUnsignedIntegerBias]}
 - {addr: 0x0082D748, name: g_HudPi, type: float, uses: 2, src: auto, alt: [g_PiConstant]}
 - {addr: 0x0082D74C, name: g_HudTwoPi, type: float, uses: 2, src: auto, alt: [g_TwoPiConstant]}
 - {addr: 0x0082D750, name: g_RotationRadiansToDegrees, type: float, uses: 1, src: auto}
@@ -137,7 +137,7 @@
 - {addr: 0x0082E114, name: g_SoundActivityThreshold, type: float, uses: 12, src: auto}
 - {addr: 0x0082E118, name: g_fIntroVideoDuration, type: float, uses: 5, src: auto}
 - {addr: 0x0082E11C, name: g_WeaponPlacementTraceDepth, type: float, uses: 6, src: auto}
-- {addr: 0x0082E120, name: g_MaxPercent, type: float, uses: 10, src: auto}
+- {addr: 0x0082E120, name: g_MaxPercent, type: float, uses: 11, src: auto}
 - {addr: 0x0082E1D4, name: g_GravityScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082E1D8, name: g_RadToDeg, type: float, uses: 1, src: auto}
 - {addr: 0x0082E1DC, name: g_InitialMinimumWheelHeight, type: float, uses: 1, src: auto}
@@ -157,7 +157,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 100, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 101, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C8, name: g_AngleScale, type: float, uses: 1, src: auto}
@@ -346,6 +346,7 @@
 - {addr: 0x00842220, name: g_VtblCMenuLoadGame, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00842280, name: g_VtblCMenuLoadGameSub, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00842678, name: g_ClearField0010Slot, type: void*, uses: 1, src: auto}
+- {addr: 0x00842D6C, name: g_EmptyPanelText, type: uint16_t, uses: 1, src: auto}
 - {addr: 0x00842DB8, name: g_VtblCMenuMissionInfoSecondary, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008431AC, name: g_FilmBackwardRandomScale, type: float, uses: 1, src: auto}
 - {addr: 0x00843284, name: g_PreviewRotationScale, type: float, uses: 1, src: auto}
@@ -379,11 +380,12 @@
 - {addr: 0x00845C30, name: g_ClearField0010Slot, type: ClearFieldMethod, uses: 1, src: auto}
 - {addr: 0x00846128, name: g_MotionTwoPi, type: float, uses: 1, src: auto}
 - {addr: 0x00846158, name: g_AudioMinimumAmplitude, type: float, uses: 1, src: auto}
+- {addr: 0x00846168, name: g_ParticleRadiusDivisorSquared, type: double, uses: 1, src: auto}
 - {addr: 0x00846170, name: g_PlaneSideLowerThreshold, type: float, uses: 1, src: auto}
 - {addr: 0x00846178, name: g_UnitFactorUpperBound, type: float, uses: 1, src: auto}
 - {addr: 0x00846234, name: g_FilmRandomScale, type: float, uses: 3, src: auto}
 - {addr: 0x0085807C, name: g_PreviewTimeoutAction, type: int, uses: 2, src: auto, alt: [g_SettingsWaitDuration]}
-- {addr: 0x0085E684, name: g_NumberFormattingMode, type: int, uses: 14, src: auto, alt: [g_MissionNumberFormattingMode]}
+- {addr: 0x0085E684, name: g_NumberFormattingMode, type: int, uses: 15, src: auto, alt: [g_MissionNumberFormattingMode]}
 - {addr: 0x0085ECD8, name: g_RowWordA_ECD8, type: uint16_t, uses: 1, src: auto}
 - {addr: 0x0085ECDA, name: g_RowWordB_ECDA, type: uint16_t, uses: 1, src: auto}
 - {addr: 0x0085ECDC, name: g_RowWordC_ECDC, type: uint16_t, uses: 1, src: auto}
@@ -425,6 +427,9 @@
 - {addr: 0x00860DA8, name: g_WaterCameraFarClip, type: float, uses: 3, src: auto, alt: [g_WaterCameraFarClipBits]}
 - {addr: 0x00860DAC, name: g_PreviewCameraAngleBits, type: 'std::uint32_t', uses: 4, src: auto}
 - {addr: 0x0086103C, name: g_ParticleReadParam, type: 'std::uint32_t', uses: 2, src: auto}
+- {addr: 0x00861914, name: g_ParticleSignatureFirst, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x00861918, name: g_ParticleSignatureSecond, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x0086191C, name: g_ParticleSignatureLast, type: uint16_t, uses: 1, src: auto}
 - {addr: 0x00861B78, name: g_InstanceRadiusLimit, type: float, uses: 1, src: auto}
 - {addr: 0x00861B7C, name: g_InstanceMovementThreshold, type: float, uses: 1, src: auto}
 - {addr: 0x00861B8C, name: g_InstanceProjectionThreshold, type: float, uses: 1, src: auto}
@@ -543,6 +548,7 @@
 - {addr: 0x0088704C, name: g_CampaignRecordRangeExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008871C8, name: g_RecordRangeExceptionFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00887218, name: g_ElementRangeExceptionFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x008874B0, name: g_ForwardRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008876F8, name: g_CopyRecordRangeFunctionInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00887CC8, name: g_TwentyByteRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00887D18, name: g_ArrayUpdateExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
@@ -1704,7 +1710,7 @@
 - {addr: 0x008AFC6C, name: g_SmoothedSwayHeight, type: float, uses: 1, src: auto}
 - {addr: 0x008AFC78, name: g_Value_8afc78, type: int32_t, uses: 4, src: auto}
 - {addr: 0x008AFC7C, name: g_Value8afc7c, type: int, uses: 3, src: auto}
-- {addr: 0x008AFC80, name: g_Value_8afc80, type: int, uses: 1, src: auto}
+- {addr: 0x008AFC80, name: g_Value_8afc80, type: int, uses: 3, src: auto}
 - {addr: 0x008AFC84, name: g_Value8AFC84, type: int, uses: 2, src: auto}
 - {addr: 0x008AFC88, name: g_AuxiliaryScene, type: CScene*, uses: 2, src: auto, alt: [g_MainScene]}
 - {addr: 0x008AFC8C, name: g_SceneLoaderMainScenePresent, type: uint8_t, uses: 5, src: auto}
