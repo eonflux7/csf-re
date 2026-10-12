@@ -18923,7 +18923,7 @@
   "name": "GetSceneMenuContext",
   "name_src": "vote",
   "votes": {
-   "GetSceneMenuContext": 102
+   "GetSceneMenuContext": 103
   },
   "ret": "uint32_t",
   "conv": "__fastcall",
@@ -36516,7 +36516,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 165,
+   "GetObjectPositionVector": 166,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -37466,7 +37466,7 @@
   "name_src": "agent",
   "votes": {
    "HandleTargetUnavailable": 14,
-   "C_00833908_GetTargetName": 9,
+   "C_00833908_GetTargetName": 12,
    "RejectCommandOnSceneObject": 1,
    "HandleUnavailableObjectFallback": 1,
    "RejectObjectOrder": 1,
@@ -38055,7 +38055,7 @@
   "name": "CoverAttack_SetStance_492720",
   "name_src": "vote",
   "votes": {
-   "CoverAttack_SetStance_492720": 26,
+   "CoverAttack_SetStance_492720": 28,
    "Controller_492720": 1,
    "CoverTask_SetMode_492720": 2,
    "TMovil_sub_492720": 1,
@@ -43874,7 +43874,7 @@
   "name": "AiCoverAttackTasks_GetPositionData",
   "name_src": "agent",
   "votes": {
-   "AiCoverAttackTasks_GetPositionData": 8,
+   "AiCoverAttackTasks_GetPositionData": 9,
    "AiCoverAttackTasks_GetCoverDestination": 1
   },
   "ret": "uint32_t*",
@@ -44495,15 +44495,16 @@
   "file": "src/auto/004aa300.cpp"
  },
  "004aa310": {
-  "name": "IsGuardStateValidForTarget",
-  "name_src": "vote",
+  "name": "S_004aa310_IsGuardStateValidForTarget",
+  "name_src": "agent",
   "votes": {
    "IsGuardStateValidForTarget": 2
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "S_004aa310* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004aa310.cpp"
  },
  "004aa390": {
   "name": "AiCore_CanReachPosition",
@@ -44519,7 +44520,7 @@
  },
  "004aa3d0": {
   "name": "AiMoveTasks_TestCoverPositionAdjusted",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -44564,15 +44565,16 @@
   "file": "src/auto/004aa4a0.cpp"
  },
  "004aa4d0": {
-  "name": "AiCoverAttackTasks_TestMovementThreshold",
-  "name_src": "vote",
+  "name": "S_004aa4d0_IsWithinMovementThreshold",
+  "name_src": "agent",
   "votes": {
    "AiCoverAttackTasks_TestMovementThreshold": 3
   },
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "vote"
+  "params": "S_004aa4d0* self, void* , float threshold",
+  "sig_src": "impl",
+  "file": "src/auto/004aa4d0.cpp"
  },
  "004aa5a0": {
   "name": "AiCoverAttackTasks_IsMovementBlocked",
@@ -44642,15 +44644,16 @@
   "file": "src/auto/004aa760.cpp"
  },
  "004aa7d0": {
-  "name": "GetLinkedStateName",
-  "name_src": "vote",
+  "name": "AiMoveTasks_GetName",
+  "name_src": "agent",
   "votes": {
    "GetLinkedStateName": 1
   },
-  "ret": "char*",
+  "ret": "const char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , void* aiState",
+  "sig_src": "impl",
+  "file": "src/auto/004aa7d0.cpp"
  },
  "004aa840": {
   "name": "C_0085e760_GetLinkedStateName",
@@ -44674,14 +44677,15 @@
  },
  "004aa8c0": {
   "name": "AiDistracted_GetBaseStateName",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "AiDistracted_GetBaseStateName": 1
   },
-  "ret": "char*",
+  "ret": "const char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "vote"
+  "params": "TDudoso* self, void* , TAiState* a2",
+  "sig_src": "impl",
+  "file": "src/auto/004aa8c0.cpp"
  },
  "004aa940": {
   "name": "AiMoveTasks_SetCoverStanceAndInvokeSlot35",
@@ -44807,13 +44811,14 @@
   "file": "src/auto/004aae80.cpp"
  },
  "004aaef0": {
-  "name": "sub_4AAEF0",
-  "name_src": "addr",
+  "name": "TMovilAPuntoRastreo_InitializeCoverTransition",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a3",
-  "sig_src": "abi"
+  "params": "TMovilAPuntoRastreo* self, void* , TAiState* state",
+  "sig_src": "impl",
+  "file": "src/auto/004aaef0.cpp"
  },
  "004aafc0": {
   "name": "AiMoveTasks_ResetLinkedObjectTaskStateAt16",
@@ -44900,10 +44905,11 @@
   "votes": {
    "TAiState_GetName": 1
   },
-  "ret": "char*",
+  "ret": "const char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "vote"
+  "params": "TCombate* self, void* , TAiState* state",
+  "sig_src": "impl",
+  "file": "src/auto/004ab2a0.cpp"
  },
  "004ab390": {
   "name": "MovilAPunto_ForwardToCoverAttackTasksUpdate",
@@ -44946,13 +44952,14 @@
   "file": "src/auto/004ab480.cpp"
  },
  "004ab520": {
-  "name": "sub_4AB520",
-  "name_src": "addr",
+  "name": "AiMoveTasks_ResetFieldsAndSetState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , TAiState* a2",
+  "sig_src": "impl",
+  "file": "src/auto/004ab520.cpp"
  },
  "004ab5a0": {
   "name": "AiMoveTasks_ApplyLinkedObjectOffset",
@@ -45034,7 +45041,7 @@
  },
  "004ab910": {
   "name": "TMovilAPunto2_ConsumeTimerStep",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -45135,15 +45142,16 @@
   "file": "src/auto/004abb60.cpp"
  },
  "004abb90": {
-  "name": "S_004abb90_CheckCandidate",
-  "name_src": "vote",
+  "name": "S_004abb90_IsCandidateMatchingState",
+  "name_src": "agent",
   "votes": {
    "S_004abb90_CheckCandidate": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "S_004abb90* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004abb90.cpp"
  },
  "004abc10": {
   "name": "S_004abb90_IsCandidateUnassigned",
@@ -52919,7 +52927,7 @@
   "name": "C_004D10F0_ResetFields",
   "name_src": "agent",
   "votes": {
-   "C_004D10F0_ResetFields": 11
+   "C_004D10F0_ResetFields": 13
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -52931,7 +52939,7 @@
   "name": "AiCoverAttackTasks_SetCoverTransition",
   "name_src": "agent",
   "votes": {
-   "AiCoverAttackTasks_SetCoverTransition": 12,
+   "AiCoverAttackTasks_SetCoverTransition": 13,
    "AiCoverAttackTasks_RefreshCoverState": 1
   },
   "ret": "int",
@@ -56270,7 +56278,7 @@
   "name": "GetLinkedObjectValue_4DB5C0",
   "name_src": "agent",
   "votes": {
-   "GetLinkedObjectValue_4DB5C0": 222
+   "GetLinkedObjectValue_4DB5C0": 229
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -56858,7 +56866,7 @@
   "name": "CoverAttack_SetState_4DC150",
   "name_src": "vote",
   "votes": {
-   "CoverAttack_SetState_4DC150": 21,
+   "CoverAttack_SetState_4DC150": 26,
    "TMovil_sub_4DC150": 1,
    "AiState_Init_4DC150": 1
   },
@@ -57018,7 +57026,8 @@
   "name_src": "vote",
   "votes": {
    "LookupEntryIndex_4DC5F0": 3,
-   "LookupSlotIndexForHandle": 1
+   "LookupSlotIndexForHandle": 1,
+   "LookupEntryIndex": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -57042,7 +57051,7 @@
   "name_src": "vote",
   "votes": {
    "GetActiveEntryByIndex": 1,
-   "ResolveEntryStateRecord": 4,
+   "ResolveEntryStateRecord": 5,
    "GetSlotRecordPointer": 1,
    "GetActiveEntryRecord": 1
   },
@@ -60723,7 +60732,7 @@
   "name": "GetValue8B0554",
   "name_src": "agent",
   "votes": {
-   "GetValue8B0554": 251
+   "GetValue8B0554": 253
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -191631,7 +191640,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 204,
+   "GetGlobalValue_8BC1E0": 205,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
@@ -193526,7 +193535,7 @@
   "name": "AiDistracted_GetFutureErrorText",
   "name_src": "vote",
   "votes": {
-   "AiDistracted_GetFutureErrorText": 1
+   "AiDistracted_GetFutureErrorText": 2
   },
   "ret": "char*",
   "conv": "__cdecl",
@@ -193537,7 +193546,7 @@
   "name": "AiDistracted_QueryLinkedStatusText",
   "name_src": "vote",
   "votes": {
-   "AiDistracted_QueryLinkedStatusText": 1
+   "AiDistracted_QueryLinkedStatusText": 2
   },
   "ret": "char*",
   "conv": "__cdecl",
@@ -193559,7 +193568,7 @@
   "name": "AiAlert_LookupDescription",
   "name_src": "vote",
   "votes": {
-   "AiAlert_LookupDescription": 1
+   "AiAlert_LookupDescription": 2
   },
   "ret": "char*",
   "conv": "__cdecl",
@@ -195155,7 +195164,7 @@
   "name": "AiAttackTasks_FindSceneEntryIndex",
   "name_src": "vote",
   "votes": {
-   "AiAttackTasks_FindSceneEntryIndex": 3
+   "AiAttackTasks_FindSceneEntryIndex": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -195166,7 +195175,7 @@
   "name": "SceneLoader_GetSceneEntry",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetSceneEntry": 4
+   "SceneLoader_GetSceneEntry": 5
   },
   "ret": "int",
   "conv": "__fastcall",
