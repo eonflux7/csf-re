@@ -44,7 +44,7 @@
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 3, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 27, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 86, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 93, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 8, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 11, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
@@ -118,7 +118,7 @@
 - {addr: 0x0082E1D8, name: g_RadToDeg, type: float, uses: 1, src: auto}
 - {addr: 0x0082E1DC, name: g_InitialMinimumWheelHeight, type: float, uses: 1, src: auto}
 - {addr: 0x0082E1E0, name: g_SecondaryImpulseScale, type: float, uses: 2, src: auto, alt: [g_fSmallScale]}
-- {addr: 0x0082E1E4, name: g_RotationWrapStep, type: float, uses: 3, src: auto, alt: [g_fRotationWrapStep]}
+- {addr: 0x0082E1E4, name: g_RotationWrapStep, type: float, uses: 4, src: auto, alt: [g_fRotationWrapStep]}
 - {addr: 0x0082E24C, name: g_WheelTravelMultiplier, type: float, uses: 4, src: auto}
 - {addr: 0x0082E250, name: g_NegativeWheelScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082E254, name: g_WheelMinLimit, type: float, uses: 1, src: auto}
@@ -133,7 +133,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 85, src: auto, alt: [g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringByte, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 87, src: auto, alt: [g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringByte, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C8, name: g_AngleScale, type: float, uses: 1, src: auto}
@@ -153,7 +153,7 @@
 - {addr: 0x0082FCB0, name: g_DegToRad_82FCB0, type: float, uses: 1, src: auto}
 - {addr: 0x0082FCB4, name: g_MinMoveDistSq_82FCB4, type: float, uses: 1, src: auto}
 - {addr: 0x0082FEA4, name: g_PathDistanceLimit, type: float, uses: 1, src: auto}
-- {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 9, src: auto}
+- {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 10, src: auto}
 - {addr: 0x0082FEBC, name: g_LayoutInset, type: float, uses: 5, src: auto, alt: [g_VerticalInset]}
 - {addr: 0x00830410, name: g_CheatSequencePreviousBase, type: int32_t, uses: 1, src: auto}
 - {addr: 0x00830414, name: g_CheatSequenceFirst, type: int32_t, uses: 1, src: auto}
@@ -170,6 +170,8 @@
 - {addr: 0x00830D04, name: g_FullRotationDegrees, type: float, uses: 3, src: auto}
 - {addr: 0x00830D08, name: g_PositiveHalfRotationDegrees, type: float, uses: 4, src: auto}
 - {addr: 0x00830E48, name: g_AudioAttenuationDistance, type: float, uses: 1, src: auto}
+- {addr: 0x00830FA0, name: g_BriefingExtensionWord, type: 'std::uint32_t', uses: 1, src: auto}
+- {addr: 0x00830FA4, name: g_BriefingExtensionTerminator, type: char, uses: 1, src: auto}
 - {addr: 0x00831090, name: g_FloatMax, type: float, uses: 11, src: auto}
 - {addr: 0x008310F4, name: g_DegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x00831148, name: g_CloseTargetDistanceSquared, type: float, uses: 1, src: auto}
@@ -179,7 +181,7 @@
 - {addr: 0x00831304, name: g_C_00831304_Vtable, type: void*, uses: 1, src: auto}
 - {addr: 0x008313E4, name: g_RadToDegFactor, type: float, uses: 5, src: auto, alt: [g_DegreesPerRadian, g_RadToDeg, g_RegionScaleFactor]}
 - {addr: 0x008313E8, name: g_DegreesToRadians, type: float, uses: 2, src: auto, alt: [g_DegreesToRadiansFactor]}
-- {addr: 0x00831430, name: g_MessageBoxSizeScale, type: float, uses: 5, src: auto, alt: [g_flt_00831430]}
+- {addr: 0x00831430, name: g_MessageBoxSizeScale, type: float, uses: 8, src: auto, alt: [g_flt_00831430]}
 - {addr: 0x0083169C, name: g_DefaultObjectOptionX, type: float, uses: 1, src: auto}
 - {addr: 0x008316A0, name: g_DefaultObjectOptionY, type: float, uses: 1, src: auto}
 - {addr: 0x008316A4, name: g_DefaultObjectOptionZ, type: float, uses: 1, src: auto}
@@ -250,6 +252,7 @@
 - {addr: 0x0083F4B4, name: g_SceneDegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x0083F760, name: g_CreditsFadeScale, type: float, uses: 1, src: auto}
 - {addr: 0x0084004C, name: g_CMenuScreenFaderVtbl, type: uint8_t, uses: 1, src: auto}
+- {addr: 0x00840540, name: g_MotionRandomScale, type: float, uses: 2, src: auto, alt: [g_RandomNormalizationScale]}
 - {addr: 0x008405DC, name: g_FrameInsetScale, type: float, uses: 2, src: auto}
 - {addr: 0x00840974, name: g_SceneResetValue, type: 'std::uint32_t', uses: 1, src: auto}
 - {addr: 0x00840A80, name: g_MinimumCountThreshold, type: int, uses: 1, src: auto}
@@ -300,6 +303,7 @@
 - {addr: 0x00845A00, name: g_SessionNameWidth, type: float, uses: 1, src: auto}
 - {addr: 0x00845B38, name: g_MenuAccountsPostInitialize, type: void*, uses: 1, src: auto}
 - {addr: 0x00845C30, name: g_ClearField0010Slot, type: ClearFieldMethod, uses: 1, src: auto}
+- {addr: 0x00846128, name: g_MotionTwoPi, type: float, uses: 1, src: auto}
 - {addr: 0x00846158, name: g_AudioMinimumAmplitude, type: float, uses: 1, src: auto}
 - {addr: 0x00846170, name: g_PlaneSideLowerThreshold, type: float, uses: 1, src: auto}
 - {addr: 0x00846178, name: g_UnitFactorUpperBound, type: float, uses: 1, src: auto}
@@ -801,6 +805,7 @@
 - {addr: 0x008A7DB4, name: g_DefaultColorGreen, type: float, uses: 3, src: auto}
 - {addr: 0x008A7DB8, name: g_DefaultColorBlue, type: float, uses: 3, src: auto}
 - {addr: 0x008A7DBC, name: g_DefaultColorAlpha, type: float, uses: 3, src: auto}
+- {addr: 0x008A7DFC, name: g_SegmentInterpolationStep, type: float, uses: 1, src: auto}
 - {addr: 0x008A7E18, name: g_ObjectPropertyVersion, type: int32_t, uses: 2, src: auto, alt: [g_ObjectPropsMaximumVersion]}
 - {addr: 0x008A7E1C, name: g_MaxPropertiesVersion, type: int, uses: 2, src: auto, alt: [g_ObjectPropsStreamVersion]}
 - {addr: 0x008A7E20, name: g_EntryFormatVersion, type: uint32_t, uses: 2, src: auto, alt: [g_MaxPropertiesVersion]}
@@ -1616,7 +1621,7 @@
 - {addr: 0x008B0680, name: g_Global_8B0680, type: int, uses: 1, src: auto}
 - {addr: 0x008B0684, name: g_MpCharacterSelect, type: void*, uses: 2, src: auto, alt: [g_GlobalValue]}
 - {addr: 0x008B0688, name: g_Int8B0688, type: int, uses: 3, src: auto}
-- {addr: 0x008B068C, name: g_OnlineMatchFlag, type: 'std::uint8_t', uses: 22, src: auto, alt: [g_AccountMenuSecondaryFlag]}
+- {addr: 0x008B068C, name: g_OnlineMatchFlag, type: 'std::uint8_t', uses: 24, src: auto, alt: [g_AccountMenuSecondaryFlag]}
 - {addr: 0x008B0690, name: g_MpSessionState, type: int, uses: 0, src: opus}
 - {addr: 0x008B0694, name: g_CharacterSelectState8B0694, type: uint32_t, uses: 38, src: auto}
 - {addr: 0x008B0698, name: g_MenuMPCharacterSelect_LastState, type: uint32_t, uses: 3, src: auto}
