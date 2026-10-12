@@ -38,7 +38,7 @@
 - {addr: 0x0082D2B4, name: g_DefWindowProcA, type: DefWindowProcFunction, uses: 1, src: auto}
 - {addr: 0x0082D2E8, name: g_GetDoubleClickTimeImport, type: GetDoubleClickTimeFn, uses: 1, src: auto}
 - {addr: 0x0082D2EC, name: g_SendMessageAImportSlot, type: void*, uses: 2, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 89, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 90, src: auto}
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 3, src: auto}
@@ -108,7 +108,7 @@
 - {addr: 0x0082DFC4, name: g_FallingSpeedThreshold, type: float, uses: 1, src: auto}
 - {addr: 0x0082DFC8, name: g_VerticalResetDistance, type: float, uses: 1, src: auto}
 - {addr: 0x0082DFCC, name: g_MessageBoxCollapsedScale, type: float, uses: 7, src: auto, alt: [g_HeadTranslationScale, g_PlaneSideUpperThreshold]}
-- {addr: 0x0082E030, name: g_fReturnedConstant_0082E030, type: float, uses: 15, src: auto}
+- {addr: 0x0082E030, name: g_fReturnedConstant_0082E030, type: float, uses: 17, src: auto}
 - {addr: 0x0082E034, name: g_MovementScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082E038, name: g_ScaleY_0_6, type: float, uses: 6, src: auto}
 - {addr: 0x0082E03C, name: g_ProgressScale, type: float, uses: 25, src: auto}
@@ -131,7 +131,7 @@
 - {addr: 0x0082E114, name: g_SoundActivityThreshold, type: float, uses: 10, src: auto}
 - {addr: 0x0082E118, name: g_fIntroVideoDuration, type: float, uses: 5, src: auto}
 - {addr: 0x0082E11C, name: g_WeaponPlacementTraceDepth, type: float, uses: 6, src: auto}
-- {addr: 0x0082E120, name: g_MaxPercent, type: float, uses: 8, src: auto}
+- {addr: 0x0082E120, name: g_MaxPercent, type: float, uses: 10, src: auto}
 - {addr: 0x0082E1D4, name: g_GravityScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082E1D8, name: g_RadToDeg, type: float, uses: 1, src: auto}
 - {addr: 0x0082E1DC, name: g_InitialMinimumWheelHeight, type: float, uses: 1, src: auto}
@@ -252,7 +252,7 @@
 - {addr: 0x00834A40, name: g_szIrAPuesto, type: char, uses: 1, src: auto}
 - {addr: 0x00834E00, name: g_DegreesPerTurn, type: double, uses: 3, src: auto, alt: [g_FullTurnDegrees]}
 - {addr: 0x0083543C, name: g_PayloadScale, type: float, uses: 1, src: auto}
-- {addr: 0x00835440, name: g_DegreesToRadians, type: float, uses: 2, src: auto}
+- {addr: 0x00835440, name: g_DegreesToRadians, type: float, uses: 4, src: auto}
 - {addr: 0x0083688C, name: g_szLanzarGranadaName, type: char, uses: 1, src: auto}
 - {addr: 0x00836D7C, name: g_TRodearString, type: char, uses: 1, src: auto}
 - {addr: 0x0083A218, name: g_StaticScanSamples, type: float, uses: 1, src: auto}
@@ -485,6 +485,8 @@
 - {addr: 0x0088948C, name: g_MissionScriptCopyRangeHandlerData, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008894DC, name: g_DwordCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088961C, name: g_CopyRecordRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x00889898, name: g_DwordCopyRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x008898E8, name: g_DwordFillExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00889B80, name: g_CharActionFsmRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00889BD0, name: g_DwordCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00889D44, name: g_CharActionRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
@@ -1667,6 +1669,11 @@
 - {addr: 0x008AFD94, name: g_Point19Z, type: float, uses: 1, src: auto}
 - {addr: 0x008AFD98, name: g_RayInitializationFlags, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008AFD9C, name: g_GlobalValue, type: int32_t, uses: 1, src: auto}
+- {addr: 0x008B02E8, name: g_BlockList4, type: S_0069b1c0, uses: 1, src: auto}
+- {addr: 0x008B032C, name: g_BlockList0, type: S_0069b1c0, uses: 1, src: auto}
+- {addr: 0x008B0370, name: g_BlockList1, type: S_0069b1c0, uses: 1, src: auto}
+- {addr: 0x008B03B4, name: g_BlockList2, type: S_0069b1c0, uses: 1, src: auto}
+- {addr: 0x008B03F8, name: g_BlockList3, type: S_0069b1c0, uses: 1, src: auto}
 - {addr: 0x008B043C, name: g_IconResources, type: 'std::uint32_t', uses: 4, src: auto, alt: [g_AlertIconSlots, g_MenuServices]}
 - {addr: 0x008B0444, name: g_AlertIconOwner, type: void*, uses: 4, src: auto, alt: [g_FillResources, g_HudAlertIconState, g_MenuServiceString]}
 - {addr: 0x008B0448, name: g_MenuResourcesPrepared, type: 'std::uint8_t', uses: 2, src: auto, alt: [g_MenuServicesReady]}
