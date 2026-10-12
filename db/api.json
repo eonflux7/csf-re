@@ -1341,7 +1341,7 @@
   "votes": {
    "MenuMpCharacterSelect_GetAngleDifference": 1,
    "GetAngularDifference": 1,
-   "AngleDiffNormalized": 8
+   "AngleDiffNormalized": 7
   },
   "ret": "double",
   "conv": "__cdecl",
@@ -1353,7 +1353,7 @@
   "name": "MenuMpCharacterSelect_NormalizeAngle",
   "name_src": "agent",
   "votes": {
-   "MenuMpCharacterSelect_NormalizeAngle": 7
+   "MenuMpCharacterSelect_NormalizeAngle": 6
   },
   "ret": "double",
   "conv": "__cdecl",
@@ -6553,9 +6553,8 @@
   },
   "ret": "double",
   "conv": "__fastcall",
-  "params": "void* self, void*",
-  "sig_src": "impl",
-  "file": "src/auto/0041e480.cpp"
+  "params": "void* self, void* edx",
+  "sig_src": "vote"
  },
  "0041e490": {
   "name": "AiTaskStates_AdvanceAngleTween",
@@ -6699,7 +6698,6 @@
   "name": "S_0041e820_UpdateAngleFactor",
   "name_src": "agent",
   "votes": {
-   "S_0041e820_SetSecondaryAngle": 1,
    "TaskState_SetValueC": 1,
    "SubObjectSetSpeedLimit": 1,
    "AiTaskStates_SetMovementSpeed": 1
@@ -6785,9 +6783,8 @@
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "S_0041e820* self, void* , float angleStep, float angleInput",
-  "sig_src": "impl",
-  "file": "src/auto/0041ea70.cpp"
+  "params": "void* self, void* edx, float a2, float a3",
+  "sig_src": "vote"
  },
  "0041eb00": {
   "name": "C_0082e664_Destroy_41EB00",
@@ -63427,7 +63424,7 @@
   "name_src": "agent",
   "votes": {
    "MenuBuffer_Destroy": 8,
-   "SceneLoader_DestroyMenuBuffer": 2
+   "SceneLoader_DestroyMenuBuffer": 3
   },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
@@ -63934,7 +63931,7 @@
   "name": "MenuBuffer_Init",
   "name_src": "agent",
   "votes": {
-   "MenuBuffer_Init": 9
+   "MenuBuffer_Init": 10
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -64555,7 +64552,7 @@
   "name": "SceneLoader_NoOp",
   "name_src": "captain",
   "votes": {
-   "SceneLoader_NoOp": 29,
+   "SceneLoader_NoOp": 32,
    "Nullsub_506AC0": 34
   },
   "ret": "void",
@@ -64600,7 +64597,7 @@
   "name": "GetGlobalValue_8B056C",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8B056C": 59
+   "GetGlobalValue_8B056C": 60
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -66470,7 +66467,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 287
+   "GetGlobalState_50D190": 290
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -67300,7 +67297,8 @@
   "name": "GameBddLoader_DispatchMenuRequest",
   "name_src": "agent",
   "votes": {
-   "Game_DispatchMenuRequest": 14
+   "Game_DispatchMenuRequest": 14,
+   "GameBddLoader_DispatchMenuRequest": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -83344,7 +83342,7 @@
   "name": "GetGlobalDword_8B0680",
   "name_src": "agent",
   "votes": {
-   "GetGlobalDword_8B0680": 1
+   "GetGlobalDword_8B0680": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -83374,7 +83372,7 @@
   "name": "GetSessionEntryByIndex",
   "name_src": "vote",
   "votes": {
-   "GetSessionEntryByIndex": 1
+   "GetSessionEntryByIndex": 2
   },
   "ret": "uint8_t*",
   "conv": "__fastcall",
@@ -83689,7 +83687,7 @@
   "name": "GetGlobal8B0688",
   "name_src": "agent",
   "votes": {
-   "GetGlobal8B0688": 27
+   "GetGlobal8B0688": 31
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -86792,7 +86790,9 @@
  "005600a0": {
   "name": "MenuMpSessions_ShutdownChildControls",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuMpSessions_ShutdownChildControls": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -86875,7 +86875,9 @@
  "005607d0": {
   "name": "CMenuMpSessions_UpdateSessionPhase",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuMpSessions_UpdateSessionPhase": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -86896,7 +86898,7 @@
   "name": "CMenuMpSessions_RebuildPartidasList",
   "name_src": "agent",
   "votes": {
-   "CMenuMpSessions_RebuildPartidasList": 1
+   "CMenuMpSessions_RebuildPartidasList": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -86970,7 +86972,9 @@
  "005612d0": {
   "name": "CMenuMpSessions_CacheListboxPartidas",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuMpSessions_CacheListboxPartidas": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "CMenuMpSessions* self, void* , int , int",
@@ -86978,18 +86982,23 @@
   "file": "src/auto/005612d0.cpp"
  },
  "005612f0": {
-  "name": "sub_5612F0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_005600a0_InitializeChildControls",
+  "name_src": "agent",
+  "votes": {
+   "CMenuMpSessions_BindAlternateControls": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "S_005600a0* self, void* , int , int",
+  "sig_src": "impl",
+  "file": "src/auto/005612f0.cpp"
  },
  "005615e0": {
   "name": "MenuMpSessions_BindListboxes",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuMpSessions_BindListboxes": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , int a2, int a3",
@@ -87017,13 +87026,14 @@
   "file": "src/auto/005617b0.cpp"
  },
  "005617d0": {
-  "name": "sub_5617D0",
-  "name_src": "addr",
+  "name": "CMenuMpSessionsPC_SubmitSessionSettings",
+  "name_src": "agent",
   "votes": {},
-  "ret": "unsigned int",
+  "ret": "uint32_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "CMenuMpSessionsPC* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/005617d0.cpp"
  },
  "00561930": {
   "name": "CMenuMpSessions_Destruct_561930",
@@ -87046,18 +87056,21 @@
   "file": "src/auto/00561970.cpp"
  },
  "00561990": {
-  "name": "sub_561990",
-  "name_src": "addr",
+  "name": "CMenuMpSessions_BindMainPanel",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, void** a3",
-  "sig_src": "abi"
+  "params": "CMenuMpSessions* self, void* , void* source, uint8_t** elements",
+  "sig_src": "impl",
+  "file": "src/auto/00561990.cpp"
  },
  "00561af0": {
   "name": "MenuMpSessions_DispatchState",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuMpSessions_DispatchState": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -87096,13 +87109,16 @@
   "sig_src": "abi"
  },
  "00562000": {
-  "name": "sub_562000",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CMenuMpSessions_InitializeControls",
+  "name_src": "vote",
+  "votes": {
+   "CMenuMpSessions_InitializeControls": 1,
+   "CMenuMpSessions_PrepareControls": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "005623f0": {
   "name": "StringResize",
@@ -87127,7 +87143,7 @@
   "name": "CMenuMpSessions_RefreshOptionState",
   "name_src": "vote",
   "votes": {
-   "CMenuMpSessions_RefreshOptionState": 1
+   "CMenuMpSessions_RefreshOptionState": 3
   },
   "ret": "bool",
   "conv": "__fastcall",
@@ -87135,40 +87151,47 @@
   "sig_src": "vote"
  },
  "00562d50": {
-  "name": "sub_562D50",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CMenuMpSessions_RefreshSessionSearch",
+  "name_src": "vote",
+  "votes": {
+   "CMenuMpSessions_RefreshSessionSearch": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "uint32_t* a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00562ed0": {
-  "name": "sub_562ED0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CMenuMpSessions_JoinSelectedSession",
+  "name_src": "agent",
+  "votes": {
+   "CMenuMpSessions_ProcessSelectedSession": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "CMenuMpSessions* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00562ed0.cpp"
  },
  "00563140": {
-  "name": "sub_563140",
-  "name_src": "addr",
+  "name": "CMenuMpSessions_InitializeSessionOptions_563140",
+  "name_src": "agent",
   "votes": {},
-  "ret": "bool",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a3, int a4",
-  "sig_src": "abi"
+  "params": "CMenuMpSessions* self, void* , int , int",
+  "sig_src": "impl",
+  "file": "src/auto/00563140.cpp"
  },
  "00563280": {
-  "name": "sub_563280",
-  "name_src": "addr",
+  "name": "CMenuMpSessions_InitializeSessionOptions_563280",
+  "name_src": "agent",
   "votes": {},
-  "ret": "bool",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a3, int a4",
-  "sig_src": "abi"
+  "params": "CMenuMpSessions* self, void* , int , int",
+  "sig_src": "impl",
+  "file": "src/auto/00563280.cpp"
  },
  "00563350": {
   "name": "CMenuMpSessions_ShowFriendlyFireOptionState",
@@ -87190,13 +87213,14 @@
   "sig_src": "abi"
  },
  "005637c0": {
-  "name": "sub_5637C0",
-  "name_src": "addr",
+  "name": "CMenuMpSessions_UpdateAutomaticSessionSelection",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "CMenuMpSessions* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/005637c0.cpp"
  },
  "00563930": {
   "name": "sub_563930",
@@ -87211,7 +87235,7 @@
   "name": "CMenuMpSessions_BuildSessionEntry",
   "name_src": "vote",
   "votes": {
-   "CMenuMpSessions_BuildSessionEntry": 1
+   "CMenuMpSessions_BuildSessionEntry": 2
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -87238,13 +87262,14 @@
   "file": "src/auto/00563fc0.cpp"
  },
  "00563fd0": {
-  "name": "sub_563FD0",
-  "name_src": "addr",
+  "name": "CMenuMpSessions_HandleControlChange",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "CMenuMpSessions* self, void* , std::uint32_t* event",
+  "sig_src": "impl",
+  "file": "src/auto/00563fd0.cpp"
  },
  "00564340": {
   "name": "sub_564340",
@@ -115995,7 +116020,7 @@
   "name": "LookupObjectById",
   "name_src": "vote",
   "votes": {
-   "LookupObjectById": 61
+   "LookupObjectById": 62
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -133015,7 +133040,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 554
+   "Mem_Free": 555
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -133643,7 +133668,7 @@
   "name": "LookupNamedElement",
   "name_src": "vote",
   "votes": {
-   "LookupNamedElement": 53
+   "LookupNamedElement": 54
   },
   "ret": "uint8_t*",
   "conv": "__fastcall",
@@ -134285,7 +134310,7 @@
   "name": "ConvertWideTextToNarrow",
   "name_src": "vote",
   "votes": {
-   "ConvertWideTextToNarrow": 8
+   "ConvertWideTextToNarrow": 9
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -138574,7 +138599,7 @@
   "name": "GetGlobalState_6A6D70",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_6A6D70": 29
+   "GetGlobalState_6A6D70": 32
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -139894,7 +139919,7 @@
   "name": "NormalizeVector3",
   "name_src": "agent",
   "votes": {
-   "NormalizeVector3": 41,
+   "NormalizeVector3": 40,
    "NormalizeVector": 1
   },
   "ret": "float*",
@@ -139925,8 +139950,7 @@
   "ret": "double",
   "conv": "__fastcall",
   "params": "S_00526d40* self, void*",
-  "sig_src": "impl",
-  "file": "src/auto/006ab9e0.cpp"
+  "sig_src": "vote"
  },
  "006aba10": {
   "name": "S_00526d40_ConvertDirection",
@@ -141096,7 +141120,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 240,
+   "GetGlobalInt": 241,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -168026,7 +168050,7 @@
   "name": "CGuiListBoxBase_SetItemHeight",
   "name_src": "agent",
   "votes": {
-   "CGuiListBoxBase_SetItemHeight": 3
+   "CGuiListBoxBase_SetItemHeight": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -168062,7 +168086,7 @@
   "name": "CGuiListBox_GetItemCount_714860",
   "name_src": "agent",
   "votes": {
-   "CGuiListBox_GetItemCount_714860": 2
+   "CGuiListBox_GetItemCount_714860": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -168140,7 +168164,7 @@
   "name": "GetIndexedTableValue_714C20",
   "name_src": "agent",
   "votes": {
-   "GetIndexedTableValue_714C20": 2
+   "GetIndexedTableValue_714C20": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -168153,7 +168177,7 @@
   "name_src": "agent",
   "votes": {
    "StoredValue_GetAtIndex": 1,
-   "GetStoredValueAtIndex": 3
+   "GetStoredValueAtIndex": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -169160,7 +169184,7 @@
   "name": "CGuiSlider_ForwardSelfToParent",
   "name_src": "agent",
   "votes": {
-   "CGuiSlider_ForwardSelfToParent": 22
+   "CGuiSlider_ForwardSelfToParent": 23
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -171372,7 +171396,7 @@
   "name": "GetContainerDataPtr",
   "name_src": "agent",
   "votes": {
-   "GetContainerDataPtr": 2
+   "GetContainerDataPtr": 3
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -171829,9 +171853,9 @@
   "name": "ForwardToStoredObjectVirtualSlot40",
   "name_src": "agent",
   "votes": {
-   "ForwardToStoredObjectVirtualSlot40": 1
+   "ForwardToStoredObjectVirtualSlot40": 2
   },
-  "ret": "int",
+  "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
   "sig_src": "vote"
@@ -179649,7 +179673,7 @@
   "name": "GetGlobalDword_73C020",
   "name_src": "agent",
   "votes": {
-   "GetGlobalDword_73C020": 68
+   "GetGlobalDword_73C020": 72
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -180192,7 +180216,9 @@
  "0073d150": {
   "name": "NetSession_CreateSessionInfo",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "NetSession_CreateSessionInfo": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , int sessionIndex",
@@ -180251,7 +180277,7 @@
   "name": "ForwardToSub6687B0AtOffset9c",
   "name_src": "agent",
   "votes": {
-   "ForwardToSub6687B0AtOffset9c": 1
+   "ForwardToSub6687B0AtOffset9c": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -180381,7 +180407,9 @@
  "0073dc30": {
   "name": "C_0085839c_StartSessionByIndex",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0085839c_StartSessionByIndex": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "C_0085839c* self, void* , uint32_t entryIndex",
@@ -183897,13 +183925,15 @@
   "sig_src": "abi"
  },
  "00749750": {
-  "name": "sub_749750",
-  "name_src": "addr",
-  "votes": {},
+  "name": "MenuMpSessions_EvaluateSessionNameFlag",
+  "name_src": "vote",
+  "votes": {
+   "MenuMpSessions_EvaluateSessionNameFlag": 1
+  },
   "ret": "bool",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00749770": {
   "name": "sub_749770",
