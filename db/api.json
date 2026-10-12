@@ -16720,15 +16720,17 @@
   "file": "src/auto/004485a0.cpp"
  },
  "00448600": {
-  "name": "AiCoverAttackTasks_GrowSubobjectArray",
-  "name_src": "vote",
+  "name": "GrowPolymorphicArray",
+  "name_src": "agent",
   "votes": {
+   "AiTaskStates_GrowRegionEntries": 1,
    "AiCoverAttackTasks_GrowSubobjectArray": 1
   },
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int additionalCapacity",
+  "sig_src": "impl",
+  "file": "src/auto/00448600.cpp"
  },
  "004486e0": {
   "name": "S_004480f0_UpdateTimedControls",
@@ -16777,15 +16779,16 @@
   "file": "src/auto/00448920.cpp"
  },
  "004489c0": {
-  "name": "CopyInnerBlock",
-  "name_src": "vote",
+  "name": "CopyRecordArray_4489C0",
+  "name_src": "agent",
   "votes": {
    "CopyInnerBlock": 1
   },
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "vote"
+  "params": "std::uint32_t* self, void* , std::uint32_t* source",
+  "sig_src": "impl",
+  "file": "src/auto/004489c0.cpp"
  },
  "00448a80": {
   "name": "GrowEntryStorage",
@@ -16852,10 +16855,11 @@
   "votes": {
    "AiTaskStates_AdjustPositionForRegion": 1
   },
-  "ret": "uint32_t*",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int* a2, int a3",
-  "sig_src": "vote"
+  "params": "void* self, void* , int* position, int regionId",
+  "sig_src": "impl",
+  "file": "src/auto/00448dd0.cpp"
  },
  "00448f30": {
   "name": "Archive_SerializeRecord_448F30",
@@ -18814,7 +18818,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 356
+   "CHandleTable_Resolve": 357
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -135054,7 +135058,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 324
+   "Mem_Alloc": 326
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -135065,7 +135069,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 651
+   "Mem_Free": 652
   },
   "ret": "int",
   "conv": "__cdecl",
