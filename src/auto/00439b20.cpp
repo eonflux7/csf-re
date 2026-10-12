@@ -18,7 +18,6 @@ CSF_GLOBAL(float, g_PositiveHalfRotationDegrees, 0x830D08);
 static double __cdecl NormalizeDegreesAngle(float angleDegrees)
 {
     double angleRadians = angleDegrees * g_DegreesToRadiansFactor;
-    MenuMpCharacterSelect_NormalizeAngle((float)angleRadians);
     double normalizedRadians = MenuMpCharacterSelect_NormalizeAngle((float)angleRadians);
     double degrees = normalizedRadians * g_RadiansToDegreesFactor;
 

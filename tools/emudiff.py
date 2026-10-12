@@ -440,6 +440,8 @@ class Run:
             nargs = len(p[1]) if p else pop // 4
             use_ecx = p[0] if p else True
             rt = p[2] if p else "?"
+            if rt not in BYTE_TYPES and IMG <= target < IMG + 0x500000 and target in functions() and returns_al(target):
+                rt = "char"  # the callee sets al only, whatever its prototype says
         elif i < len(self.script):
             _, pop, nargs, use_ecx, rt = self.script[i][:5]
         else:
@@ -448,12 +450,15 @@ class Run:
         self.events.append((name or target, pop, nargs, use_ecx, rt, tuple(self.norm(a) for a in argv),
                             self.norm(uc.reg_read(X.UC_X86_REG_ECX)) if use_ecx else None))
         h = h32(0xE000 + i * 977 + self.prof * 131)
+        # pointer results end in a non-zero byte: `test al, al` and `test eax, eax` on an int-typed callee that
+        # returns a clean 0 / 1 (0x492BD0) must agree; a callee that sets al only gets garbage above it instead,
+        # so a caller that binds it as int and tests eax still differs
         if rt in BYTE_TYPES:  # before the pointer profiles: the caller extends a byte, the original keeps eax
-            val = h & 1
+            val = (h & 1) | (0x5A5A5A00 if self.prof % 2 else 0)
         elif self.prof >= 6 and rt not in ("float", "double", "long double", "void"):
-            val = ZONES + 0x0C000000 + i * 0x10000 + 0x100
+            val = ZONES + 0x0C000000 + i * 0x10000 + 0x104
         elif "*" in rt or rt == "?":
-            val = ZONES + 0x0C000000 + i * 0x10000 + 0x100 if (rt != "?" or self.prof % 2 == 0) else h % 3
+            val = ZONES + 0x0C000000 + i * 0x10000 + 0x104 if (rt != "?" or self.prof % 2 == 0) else h % 3
         elif rt in ("bool", "char", "uint8_t", "unsigned char", "int8_t"):
             val = h & 1
         else:
@@ -497,6 +502,22 @@ def close(a, b):
     return a == b or (a is not None and b is not None and abs(a - b) <= 1e-5 * max(1.0, abs(a), abs(b)))
 
 
+def takes_ecx(target):
+    """Does the callee read ecx before writing it (api.reads_before_write)? Unknown targets: yes. A prototype
+    that says __thiscall for a function that never looks at ecx (0x70DDF0 `fld [..]; ret`) is no argument."""
+    def go():
+        from packet import DB
+        return DB()
+    if not isinstance(target, int):
+        return True
+    try:
+        import api as apimod
+        db = load("db", go)
+        return target not in db.F or bool(apimod.reads_before_write(target, db, "ecx"))
+    except Exception:
+        return True
+
+
 def same_args(eo, em):
     """Stack arguments of one call, original vs ours. A byte or short parameter is compared in its width (the
     original pushes a dword whose upper bytes are whatever its frame held: 0x512400 `mov edx, [ebp-4]; push edx`
@@ -519,6 +540,9 @@ def same_args(eo, em):
             if (a >> 8 * k) & 0xFF == 0xCC:
                 mask &= ~(0xFF << 8 * k)
         if (a ^ b) & mask:
+            fa, fb = struct.unpack("<ff", struct.pack("<II", a, b))
+            if mask == 0xFFFFFFFF and abs(a - b) < 64 and fa == fa and fb == fb and close(fa, fb) and abs(fa) > 1e-30:
+                continue  # last bits of a float (0x6AE210: 3eeb5d7f vs 3eeb5d80)
             return False
     return True
 
@@ -533,7 +557,7 @@ def compare(ea, o, m):
         if not same_args(eo, em):
             out.append(f"call {i} to {tn(eo[0])}: arguments {[tn(x) for x in eo[5]]} vs {[tn(x) for x in em[5]]}")
             return out
-        if eo[6] != em[6]:
+        if eo[6] != em[6] and takes_ecx(eo[0]):
             out.append(f"call {i} to {tn(eo[0])}: ecx {tn(eo[6])} vs {tn(em[6])}")
             return out
     if len(o.events) != len(m.events):
