@@ -63,7 +63,7 @@
 - {addr: 0x0082D7B0, name: g_DefaultAngularSpeed, type: float, uses: 1, src: auto}
 - {addr: 0x0082D7B4, name: g_ActiveAngularSpeed, type: float, uses: 1, src: auto}
 - {addr: 0x0082D7B8, name: g_InactiveAngularSpeed, type: float, uses: 1, src: auto}
-- {addr: 0x0082D7BC, name: g_DefaultAngleLimit, type: float, uses: 4, src: auto, alt: [g_VehiclePitchUpperLimit]}
+- {addr: 0x0082D7BC, name: g_DefaultAngleLimit, type: float, uses: 5, src: auto, alt: [g_VehiclePitchUpperLimit]}
 - {addr: 0x0082D7C0, name: g_MessageBoxAnimationScale, type: float, uses: 10, src: auto, alt: [g_flt_0082D7C0]}
 - {addr: 0x0082D7C4, name: g_DegreesPerRadian, type: float, uses: 6, src: auto, alt: [g_RadToDegFactor]}
 - {addr: 0x0082D820, name: g_BoundsInterpolationFraction, type: float, uses: 1, src: auto}
@@ -254,7 +254,7 @@
 - {addr: 0x00834A40, name: g_szIrAPuesto, type: char, uses: 1, src: auto}
 - {addr: 0x00834E00, name: g_DegreesPerTurn, type: double, uses: 3, src: auto, alt: [g_FullTurnDegrees]}
 - {addr: 0x0083543C, name: g_PayloadScale, type: float, uses: 1, src: auto}
-- {addr: 0x00835440, name: g_DegreesToRadians, type: float, uses: 4, src: auto}
+- {addr: 0x00835440, name: g_DegreesToRadians, type: float, uses: 5, src: auto}
 - {addr: 0x0083688C, name: g_szLanzarGranadaName, type: char, uses: 1, src: auto}
 - {addr: 0x00836D7C, name: g_TRodearString, type: char, uses: 1, src: auto}
 - {addr: 0x0083A218, name: g_StaticScanSamples, type: float, uses: 1, src: auto}
@@ -262,6 +262,9 @@
 - {addr: 0x0083AB1C, name: g_FirstWrapPattern, type: const char, uses: 1, src: auto}
 - {addr: 0x0083AB28, name: g_fPi, type: float, uses: 1, src: auto}
 - {addr: 0x0083AB2C, name: g_fTwoPi, type: float, uses: 1, src: auto}
+- {addr: 0x0083AB30, name: g_SearchRadiansToDegrees, type: float, uses: 1, src: auto}
+- {addr: 0x0083AB34, name: g_SearchDegreesToRadians, type: float, uses: 1, src: auto}
+- {addr: 0x0083AC1C, name: g_SearchTurnRate, type: float, uses: 1, src: auto}
 - {addr: 0x0083B2BC, name: g_ProximityRadiusSquared, type: float, uses: 1, src: auto}
 - {addr: 0x0083B644, name: g_AngleScale, type: float, uses: 1, src: auto}
 - {addr: 0x0083BB14, name: g_ListenerOffsetScale_83BB14, type: float, uses: 2, src: auto}
@@ -557,6 +560,8 @@
 - {addr: 0x0088FE28, name: g_GfxObjectPropsExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00890284, name: g_MenuElementRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008902D4, name: g_MenuElementCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x008905F0, name: g_CollisionShapeRangeExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x00890640, name: g_SceneObjectRangeExceptionFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00890BC0, name: g_TextureRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00890C10, name: g_TextureLoaderCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00890D84, name: g_TextureCopyRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
@@ -1709,7 +1714,7 @@
 - {addr: 0x008B0444, name: g_AlertIconOwner, type: void*, uses: 4, src: auto, alt: [g_FillResources, g_HudAlertIconState, g_MenuServiceString]}
 - {addr: 0x008B0448, name: g_MenuResourcesPrepared, type: 'std::uint8_t', uses: 2, src: auto, alt: [g_MenuServicesReady]}
 - {addr: 0x008B044C, name: g_AiSearchCostThisFrame, type: int, uses: 0, src: opus}
-- {addr: 0x008B0550, name: g_ObjectReferenceManager, type: void*, uses: 19, src: auto, alt: [g_ObjectReferenceRegistry, g_ArchiveReferenceManager, g_AiStateObjectRegistry, g_AiObjectReferenceRegistry, g_AiStateChain]}
+- {addr: 0x008B0550, name: g_ObjectReferenceManager, type: void*, uses: 22, src: auto, alt: [g_ObjectReferenceRegistry, g_ArchiveReferenceManager, g_AiStateObjectRegistry, g_AiObjectReferenceRegistry, g_AiStateChain]}
 - {addr: 0x008B0554, name: g_Value8B0554, type: int, uses: 5, src: auto}
 - {addr: 0x008B0558, name: g_Value8B0558, type: int32_t, uses: 3, src: auto}
 - {addr: 0x008B055C, name: g_Value8B055C, type: int, uses: 5, src: auto}
