@@ -11096,7 +11096,7 @@
   "name": "GetGlobal8afc78",
   "name_src": "agent",
   "votes": {
-   "GetGlobal8afc78": 41
+   "GetGlobal8afc78": 44
   },
   "ret": "int32_t",
   "conv": "__cdecl",
@@ -12240,7 +12240,7 @@
   "name": "CHud_LookupValueByKey",
   "name_src": "agent",
   "votes": {
-   "CHud_LookupValueByKey": 2,
+   "CHud_LookupValueByKey": 5,
    "Hud_GetOverlayIcon": 1
   },
   "ret": "int",
@@ -20925,7 +20925,7 @@
   "name": "InitPoseScratchBuffer",
   "name_src": "agent",
   "votes": {
-   "InitPoseScratchBuffer": 1
+   "InitPoseScratchBuffer": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -20963,8 +20963,8 @@
   "file": "src/auto/00458390.cpp"
  },
  "004583d0": {
-  "name": "HudStatusIcons_ShiftIconsLeft",
-  "name_src": "vote",
+  "name": "HudStatusIcons_CopyStateRecords",
+  "name_src": "agent",
   "votes": {
    "HudStatusIcons_ShiftIconsLeft": 1
   },
@@ -21100,7 +21100,10 @@
  "00458760": {
   "name": "HudStatusIcon_CopyFrom",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "HudStatusIcon_CopyEntry": 1,
+   "HudStatusIcons_ApplyElement": 1
+  },
   "ret": "uint32_t*",
   "conv": "__stdcall",
   "params": "uint32_t* target, uint32_t* source",
@@ -21108,13 +21111,14 @@
   "file": "src/auto/00458760.cpp"
  },
  "004587a0": {
-  "name": "sub_4587A0",
-  "name_src": "addr",
+  "name": "HudStatusIcons_CopyElementRange",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "uint32_t* srcBegin, uint32_t* srcEnd, uint32_t* dstBegin, int copyContext, int unusedArg",
+  "sig_src": "impl",
+  "file": "src/auto/004587a0.cpp"
  },
  "00458840": {
   "name": "StatusIconTable_LookupEntry",
@@ -21127,19 +21131,20 @@
   "file": "src/auto/00458840.cpp"
  },
  "004588d0": {
-  "name": "sub_4588D0",
-  "name_src": "addr",
+  "name": "HudStatusIcons_TryLookupStatusValue",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "S_00458840* self, void* , int a2, uint32_t* a3",
+  "sig_src": "impl",
+  "file": "src/auto/004588d0.cpp"
  },
  "00458930": {
   "name": "S_00458930_FindIndex",
   "name_src": "agent",
   "votes": {
-   "SceneObjList_FindIndex": 1
+   "SceneObjList_FindIndex": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -21150,7 +21155,10 @@
  "00458980": {
   "name": "S_00458980_FindEntryIndexByPosition",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "FindIconIndex": 1,
+   "S_00458980_FindPoseIndex": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_00458980* self, void* , float* position",
@@ -21176,15 +21184,16 @@
   "sig_src": "abi"
  },
  "00458a60": {
-  "name": "S_00459e50_ConstructElement40",
-  "name_src": "vote",
+  "name": "HudStatusIcons_ForEachElement",
+  "name_src": "agent",
   "votes": {
    "S_00459e50_ConstructElement40": 1
   },
   "ret": "void",
   "conv": "__cdecl",
-  "params": "std::uint32_t* a1, int a2, std::uint32_t* a3, int a4, int a5",
-  "sig_src": "vote"
+  "params": "uint32_t* elements, int count, uint32_t* a3, void* a4, int a5",
+  "sig_src": "impl",
+  "file": "src/auto/00458a60.cpp"
  },
  "00458af0": {
   "name": "HudStatusIcons_ProcessState",
@@ -21212,6 +21221,7 @@
   "name": "HudStatusIcons_EraseEntry",
   "name_src": "agent",
   "votes": {
+   "AppendIconRecord": 1,
    "HudStatusIcons_EraseIcon": 1
   },
   "ret": "char**",
@@ -21232,8 +21242,10 @@
  },
  "00458e40": {
   "name": "HudStatusIcons_ClearIconList",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "ReleaseInnerSubobject": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "int* self, void*",
@@ -21261,13 +21273,16 @@
   "file": "src/auto/00458eb0.cpp"
  },
  "00458ed0": {
-  "name": "sub_458ED0",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "char",
+  "name": "HudStatusIcons_TryRegisterIcon",
+  "name_src": "agent",
+  "votes": {
+   "S_00458980_RemovePoseByKey": 1
+  },
+  "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "params": "S_00458980* self, void* , float* a2",
+  "sig_src": "impl",
+  "file": "src/auto/00458ed0.cpp"
  },
  "00458f40": {
   "name": "S_00458f40_UpdateIcons",
@@ -21282,13 +21297,14 @@
   "file": "src/auto/00458f40.cpp"
  },
  "00458fe0": {
-  "name": "sub_458FE0",
-  "name_src": "addr",
+  "name": "HudStatusIcons_PopLastSlotInto",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, int a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint32_t* outResult, uint32_t a3",
+  "sig_src": "impl",
+  "file": "src/auto/00458fe0.cpp"
  },
  "00459030": {
   "name": "sub_459030",
@@ -21305,10 +21321,11 @@
   "votes": {
    "ReleaseIconStatusBase": 1
   },
-  "ret": "void",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_008313dc* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00459060.cpp"
  },
  "004590c0": {
   "name": "HudStatusIcons_DispatchIcon",
@@ -21321,13 +21338,15 @@
   "file": "src/auto/004590c0.cpp"
  },
  "004590d0": {
-  "name": "sub_4590D0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "HudStatusIcons_RemoveByName",
+  "name_src": "vote",
+  "votes": {
+   "HudStatusIcons_RemoveByName": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00459140": {
   "name": "S_00458f40_UpdateStatusIcons",
@@ -21354,17 +21373,18 @@
   "file": "src/auto/00459240.cpp"
  },
  "00459260": {
-  "name": "sub_459260",
-  "name_src": "addr",
+  "name": "C_008313dc_RemoveEntryMatchingId",
+  "name_src": "impl",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_008313dc* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/00459260.cpp"
  },
  "00459300": {
   "name": "Hud_ResetSecondaryWidget",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "Hud_ResetSecondaryWidget": 1
   },
@@ -21476,7 +21496,9 @@
  "00459fa0": {
   "name": "S_00459e50_AppendElement40",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "HudStatusIcons_AppendRecord": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "S_00459e50* self, void* , char* element",
@@ -21487,7 +21509,8 @@
   "name": "S_00459ec0_AppendElement40",
   "name_src": "agent",
   "votes": {
-   "HudStatusIcons_AppendEntry": 1
+   "HudStatusIcons_AppendEntry": 1,
+   "S_00459ec0_AppendPose": 1
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -21506,18 +21529,22 @@
   "file": "src/auto/0045a0c0.cpp"
  },
  "0045a150": {
-  "name": "sub_45A150",
-  "name_src": "addr",
-  "votes": {},
+  "name": "HudStatus_SerializeIconMember",
+  "name_src": "vote",
+  "votes": {
+   "HudStatus_SerializeIconMember": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
   "params": "void* a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0045a360": {
   "name": "HudStatusIcons_ProcessEntries",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "HudStatus_SerializeIconBase": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
   "params": "S_0047ea40* entries, int a2",
@@ -21534,13 +21561,14 @@
   "sig_src": "abi"
  },
  "0045a5e0": {
-  "name": "sub_45A5E0",
-  "name_src": "addr",
+  "name": "S_00458930_UpdateStatusIcon",
+  "name_src": "impl",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2",
-  "sig_src": "abi"
+  "params": "S_00458930* self, void* , char* record",
+  "sig_src": "impl",
+  "file": "src/auto/0045a5e0.cpp"
  },
  "0045a6e0": {
   "name": "ApplyPoseToTarget",
@@ -21550,8 +21578,9 @@
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "vote"
+  "params": "S_00458980* self, void* , float* pose",
+  "sig_src": "impl",
+  "file": "src/auto/0045a6e0.cpp"
  },
  "0045a7d0": {
   "name": "sub_45A7D0",
@@ -21563,13 +21592,14 @@
   "sig_src": "abi"
  },
  "0045a860": {
-  "name": "sub_45A860",
-  "name_src": "addr",
+  "name": "HudStatusIcons_SerializeRecords",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int archiveAddress",
+  "sig_src": "impl",
+  "file": "src/auto/0045a860.cpp"
  },
  "0045a900": {
   "name": "HudStatusIcons_IsWithinDistance3D",
@@ -21637,8 +21667,9 @@
   },
   "ret": "bool",
   "conv": "__stdcall",
-  "params": "int a1, char a2, char a3",
-  "sig_src": "vote"
+  "params": "int entryId, char acceptStateOne, char acceptStateTwo",
+  "sig_src": "impl",
+  "file": "src/auto/0045aa70.cpp"
  },
  "0045aaf0": {
   "name": "ComputeDistanceToPoint",
@@ -29350,7 +29381,7 @@
   "name": "Hud_UnregisterObject",
   "name_src": "vote",
   "votes": {
-   "Hud_UnregisterObject": 5
+   "Hud_UnregisterObject": 6
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -57542,9 +57573,9 @@
   "name": "LookupEntryIndex",
   "name_src": "vote",
   "votes": {
+   "LookupEntryIndex": 2,
    "LookupEntryIndex_4DC5F0": 3,
-   "LookupSlotIndexForHandle": 1,
-   "LookupEntryIndex": 1
+   "LookupSlotIndexForHandle": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -57567,8 +57598,8 @@
   "name": "ResolveEntryStateRecord",
   "name_src": "vote",
   "votes": {
+   "ResolveEntryStateRecord": 7,
    "GetActiveEntryByIndex": 1,
-   "ResolveEntryStateRecord": 6,
    "GetSlotRecordPointer": 1,
    "GetActiveEntryRecord": 1
   },
@@ -61251,7 +61282,7 @@
   "name": "GetValue8B0554",
   "name_src": "agent",
   "votes": {
-   "GetValue8B0554": 267
+   "GetValue8B0554": 268
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -136471,7 +136502,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 513,
+   "Mem_FreeDebug": 514,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -208666,7 +208697,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 225
+   "RethrowCppException": 227
   },
   "ret": "void",
   "conv": "__stdcall",
