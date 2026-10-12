@@ -26,7 +26,7 @@ static int __cdecl HAnimFrame_FindHierarchyRecursive(int frame, uint32_t* outHie
     }
 
     RwFrameForAllChildren(frame,
-        reinterpret_cast<int (__cdecl*)(int, int)>(CSF_ADDR_FN(0x6E8010)),
+        reinterpret_cast<int (__cdecl*)(int, int)>(&HAnimFrame_FindHierarchyRecursive),
         static_cast<int>(reinterpret_cast<uintptr_t>(outHierarchy)));
     return frame;
 }

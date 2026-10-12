@@ -415,6 +415,9 @@ def build(db, ea, with_asm_limit=400):
             t = int(m.group(1), 16)
             line = (f"- `{i.mnemonic} {i.op_str}` at 0x{i.address:08X}: "
                     f"{(db.rows.get(t) or {}).get('name') or f'sub_{t:X}'} = `CSF_ADDR_FN(0x{t:08X})`")
+            if t == ea:  # its own address (a recursive callback): CSF_ADDR_FN of it can't compile standalone
+                line = (f"- `{i.mnemonic} {i.op_str}` at 0x{i.address:08X}: THIS function itself: pass your own "
+                        "function by name (`&YourFunction`, cast as needed), not CSF_ADDR_FN")
             stored.append(line)
     if stored:
         out.append("\n## Functions used as values (stored or passed, not called): their addresses, in code order\n"

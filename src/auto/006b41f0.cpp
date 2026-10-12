@@ -19,7 +19,7 @@ static int __cdecl GfxObject_CollectFrameObjects(int frame, S_0041e5f0* objects)
     {
         RwFrameForAllChildren(
             frame,
-            reinterpret_cast<int (__cdecl*)(int, int)>(CSF_ADDR_FN(0x006B41F0)),
+            reinterpret_cast<int (__cdecl*)(int, int)>(&GfxObject_CollectFrameObjects),
             reinterpret_cast<int>(objects));
         return frame;
     }

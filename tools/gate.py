@@ -285,6 +285,10 @@ def gate(ea, path, db=None):
             out = (r.stdout + r.stderr).strip()
             out = "\n".join(l for l in out.splitlines() if "warning" not in l or "error" in l)
             return False, "compile error:\n" + out[:4000]
+        if re.search(rf"CSF_ADDR_FN\(\s*0x0*{ea:x}\s*\)", strip_cpp_comments(src), re.I):
+            # the standalone build defines this slot with HOOK below the use (3 files failed the link test on it)
+            return False, (f"CSF_ADDR_FN(0x{ea:08X}) is this function's own address: pass your own function by name "
+                           "instead (`&YourFunction`, cast as needed)")
         unres = self_refs(obj, src)
         if unres:  # the gate compiles alone; the batch link would fail on these
             return False, ("link error: " + ", ".join(unres) + " referenced by its plain name (inline asm `offset Fn` / "

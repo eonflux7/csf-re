@@ -30,7 +30,7 @@ static int __cdecl VisitFrameSubtree(int frame, int* failureFlag)
 
     // Recurse into children with this same function as the callback.
     RwFrameForAllChildren(frame,
-                          reinterpret_cast<int (__cdecl*)(int, int)>(CSF_ADDR_FN(0x6C0290)),
+                          reinterpret_cast<int (__cdecl*)(int, int)>(&VisitFrameSubtree),
                           reinterpret_cast<int>(failureFlag));
     if (*failureFlag)
         return 0;
