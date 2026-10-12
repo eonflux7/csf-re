@@ -4436,7 +4436,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 137
+   "AssignStringSubstring": 140
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -11243,7 +11243,7 @@
   "name": "CompareStringSubstring",
   "name_src": "vote",
   "votes": {
-   "CompareStringSubstring": 34
+   "CompareStringSubstring": 35
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -25958,7 +25958,7 @@
   "name": "MissionScript_ReleaseRecordBuffer",
   "name_src": "agent",
   "votes": {
-   "MissionScript_ReleaseRecordBuffer": 3,
+   "MissionScript_ReleaseRecordBuffer": 4,
    "DestroyRecord_469270": 11
   },
   "ret": "int",
@@ -92222,7 +92222,7 @@
   "name": "RpPrtStdPropTabDestroy",
   "name_src": "rwname",
   "votes": {
-   "RpPrtStdPropTabDestroy": 1
+   "RpPrtStdPropTabDestroy": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -92298,7 +92298,7 @@
   "name": "RpPrtStdPropTabCreate",
   "name_src": "rwname",
   "votes": {
-   "RpPrtStdPropTabCreate": 1
+   "RpPrtStdPropTabCreate": 2
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -92354,7 +92354,7 @@
   "name": "RpPrtStdEmitterClassSetPropTab",
   "name_src": "rwname",
   "votes": {
-   "RpPrtStdEmitterClassSetPropTab": 1
+   "RpPrtStdEmitterClassSetPropTab": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -92365,7 +92365,7 @@
   "name": "RpPrtStdEmitterClassGetPropTab",
   "name_src": "rwname",
   "votes": {
-   "RpPrtStdEmitterClassGetPropTab": 1
+   "RpPrtStdEmitterClassGetPropTab": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -135155,7 +135155,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 427,
+   "Mem_FreeDebug": 428,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -135258,7 +135258,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 663
+   "Mem_Free": 664
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -156286,22 +156286,26 @@
   "file": "src/auto/006de1a0.cpp"
  },
  "006de210": {
-  "name": "sub_6DE210",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxParticleEmitters_InitializeSettings",
+  "name_src": "vote",
+  "votes": {
+   "GfxParticleEmitters_InitializeSettings": 1
+  },
   "ret": "int*",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006de360": {
-  "name": "sub_6DE360",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxParticleEmitters_FinalizeSettings",
+  "name_src": "vote",
+  "votes": {
+   "GfxParticleEmitters_FinalizeSettings": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006de370": {
   "name": "GfxTextureLoader_ForwardRangeWithContext",
@@ -156911,17 +156915,18 @@
   "sig_src": "abi"
  },
  "006e04d0": {
-  "name": "sub_6E04D0",
-  "name_src": "addr",
+  "name": "GfxParticleEmitters_AddEmitterProperties",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1, int a2",
-  "sig_src": "abi"
+  "params": "int emitterClass, int emitterType",
+  "sig_src": "impl",
+  "file": "src/auto/006e04d0.cpp"
  },
  "006e05d0": {
   "name": "GfxParticleEmitters_RebuildEmitterPropertyTable",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
@@ -156949,22 +156954,24 @@
   "file": "src/auto/006e0810.cpp"
  },
  "006e0820": {
-  "name": "sub_6E0820",
-  "name_src": "addr",
+  "name": "GfxParticleEmitters_CreateDefaultSettings",
+  "name_src": "impl",
   "votes": {},
-  "ret": "void*",
+  "ret": "S_006dcf90*",
   "conv": "__cdecl",
-  "params": "void* a1",
-  "sig_src": "abi"
+  "params": "S_006dcf90* destination",
+  "sig_src": "impl",
+  "file": "src/auto/006e0820.cpp"
  },
  "006e08d0": {
-  "name": "sub_6E08D0",
-  "name_src": "addr",
+  "name": "ParticleEmitters_ReleaseAll",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006e08d0.cpp"
  },
  "006e0920": {
   "name": "sub_6E0920",
@@ -156994,13 +157001,14 @@
   "sig_src": "abi"
  },
  "006e1050": {
-  "name": "sub_6E1050",
-  "name_src": "addr",
+  "name": "GfxParticleEmitters_EqualsEmitterParameters",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , void* other",
+  "sig_src": "impl",
+  "file": "src/auto/006e1050.cpp"
  },
  "006e10f0": {
   "name": "ParticleEmitters_LookupParticleSlot",
@@ -157044,15 +157052,16 @@
   "sig_src": "vote"
  },
  "006e11c0": {
-  "name": "ParticleEmitters_ApplyEmitterEntry",
-  "name_src": "vote",
+  "name": "C_0082d410_InitFrom",
+  "name_src": "agent",
   "votes": {
    "ParticleEmitters_ApplyEmitterEntry": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "vote"
+  "params": "C_0082d410* self, void* , C_0082d410* a2",
+  "sig_src": "impl",
+  "file": "src/auto/006e11c0.cpp"
  },
  "006e1220": {
   "name": "sub_6E1220",
@@ -157076,7 +157085,8 @@
   "name": "ParticleEmitters_ForwardEntryIfNonNull",
   "name_src": "agent",
   "votes": {
-   "CopyConstructEmitterRecord": 1
+   "CopyConstructEmitterRecord": 1,
+   "ParticleEmitters_ProcessEntry": 1
   },
   "ret": "int",
   "conv": "__stdcall",
@@ -157085,8 +157095,8 @@
   "file": "src/auto/006e1540.cpp"
  },
  "006e1560": {
-  "name": "ParticleEmitter_InitFromArgs",
-  "name_src": "vote",
+  "name": "CopyConstructEmitterRange",
+  "name_src": "agent",
   "votes": {
    "ParticleEmitter_InitFromArgs": 1
   },
@@ -157108,13 +157118,16 @@
   "sig_src": "vote"
  },
  "006e1680": {
-  "name": "sub_6E1680",
-  "name_src": "addr",
-  "votes": {},
+  "name": "ParticleEmitters_ApplyEntryRange",
+  "name_src": "agent",
+  "votes": {
+   "ConstructRecordAtEnd": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, void* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "C_0082d410* first, std::uint32_t count, C_0082d410* forwardArg, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006e1680.cpp"
  },
  "006e1710": {
   "name": "RpPrtStd_ResetParticleBufferRange",
@@ -157127,13 +157140,16 @@
   "file": "src/auto/006e1710.cpp"
  },
  "006e1760": {
-  "name": "sub_6E1760",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "void*",
+  "name": "C_0082d410_CopyDataFrom",
+  "name_src": "agent",
+  "votes": {
+   "ParticleEmitters_AssignEntry": 1
+  },
+  "ret": "C_0082d410*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "C_0082d410* self, void* , std::uint32_t* source",
+  "sig_src": "impl",
+  "file": "src/auto/006e1760.cpp"
  },
  "006e17b0": {
   "name": "sub_6E17B0",
@@ -157145,13 +157161,14 @@
   "sig_src": "abi"
  },
  "006e1860": {
-  "name": "sub_6E1860",
-  "name_src": "addr",
+  "name": "ParticleEmitters_ReleaseEntry",
+  "name_src": "impl",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int index",
+  "sig_src": "impl",
+  "file": "src/auto/006e1860.cpp"
  },
  "006e1920": {
   "name": "ParticleEmitter_ForwardInitWithSelf",
@@ -157164,13 +157181,14 @@
   "file": "src/auto/006e1920.cpp"
  },
  "006e1940": {
-  "name": "sub_6E1940",
-  "name_src": "addr",
+  "name": "ParticleEmitters_CopyEmitterRange",
+  "name_src": "impl",
   "votes": {},
-  "ret": "void*",
+  "ret": "C_0082d410*",
   "conv": "__cdecl",
-  "params": "void* a1, void* a2, void* a3",
-  "sig_src": "abi"
+  "params": "C_0082d410* a1, C_0082d410* a2, uint32_t* a3",
+  "sig_src": "impl",
+  "file": "src/auto/006e1940.cpp"
  },
  "006e19b0": {
   "name": "sub_6E19B0",
@@ -157222,17 +157240,19 @@
   "sig_src": "vote"
  },
  "006e1dc0": {
-  "name": "sub_6E1DC0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "ParticleEmitters_UpdateSlot",
+  "name_src": "vote",
+  "votes": {
+   "ParticleEmitters_UpdateSlot": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a1, unsigned int a3, void* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006e20e0": {
   "name": "S_006e20e0_StoreSlotPointerForItem",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -157241,13 +157261,16 @@
   "file": "src/auto/006e20e0.cpp"
  },
  "006e2150": {
-  "name": "sub_6E2150",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_006e2150_StoreParticleSlotPointer",
+  "name_src": "agent",
+  "votes": {
+   "GrowAndInsertRecord": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, void* a3, void* a4",
-  "sig_src": "abi"
+  "params": "S_006e2150* self, void* , uint32_t* a2, uint32_t a3, C_0082d410* a4",
+  "sig_src": "impl",
+  "file": "src/auto/006e2150.cpp"
  },
  "006e21c0": {
   "name": "ParticleEmitters_TeardownBuffer",
@@ -157279,13 +157302,14 @@
   "sig_src": "abi"
  },
  "006e2650": {
-  "name": "sub_6E2650",
-  "name_src": "addr",
+  "name": "AppendRecordAtEnd",
+  "name_src": "impl",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a3",
-  "sig_src": "abi"
+  "params": "S_006e2150* self, void* , void* a3",
+  "sig_src": "impl",
+  "file": "src/auto/006e2650.cpp"
  },
  "006e26e0": {
   "name": "ParticleEmitters_ConstructInstance",
@@ -157300,7 +157324,7 @@
  },
  "006e2760": {
   "name": "ParticleEmitters_GetSharedInstance",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "S_0041e5f0*",
   "conv": "__cdecl",
@@ -157338,7 +157362,7 @@
  },
  "006e2b30": {
   "name": "ParticleEmitter_InitDefaults",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -205640,7 +205664,7 @@
   "name": "___CxxFrameHandler",
   "name_src": "ida",
   "votes": {
-   "___CxxFrameHandler": 135,
+   "___CxxFrameHandler": 136,
    "OriginalCxxFrameHandler": 1
   },
   "ret": "int",
@@ -205724,7 +205748,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 184
+   "RethrowCppException": 185
   },
   "ret": "void",
   "conv": "__stdcall",
