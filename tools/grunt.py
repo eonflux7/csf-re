@@ -1757,7 +1757,7 @@ def lane_args(l):
 
 
 LANE_KEYS = ("s_max m_max l_max s_ladder m_ladder l_ladder x_ladder hub_callers s_jobs m_jobs l_jobs x_jobs "
-             "review_over review_effort codex_cap claude_cap codex_reserve codex_sub claude_sub claude_sub_login").split()
+             "review_over review_effort codex_cap claude_cap codex_reserve codex_sub claude_sub claude_sub_login emudiff_gate").split()
 
 
 def lane_config(args):
