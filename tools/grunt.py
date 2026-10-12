@@ -1514,7 +1514,7 @@ def wave(args):
     tool = lambda *a: subprocess.run([py, os.path.join(ROOT, "tools", a[0]), *a[1:]])
     if not args.no_verify:
         print("wave: verify", flush=True)
-        tool("verifier.py", "--module", args.module)
+        tool("verifier.py", "--wait", "--module", args.module)
     print("wave: link test", flush=True)
     tool("linktest.py")
     rep = wave_report(args, module_ids(args.module), t0)
