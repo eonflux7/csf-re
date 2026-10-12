@@ -103,6 +103,9 @@ The orchestrator (Opus, interactive) works `queue/` and the backlog below.
 - [ ] IDB: apply the corrected prototypes (db/regargs.json spurious regs dropped) in a sync.py stage + propagate
 - [ ] Float returns Hex-Rays got wrong (`tools/fpret.py`: 0x40FC50 typed `long double`, returns nothing): push
   `void` for the functions in db/fpret.json that differ, in the same sync.py stage, so packets stop showing it.
+- [ ] Tier 3: heap objects reached through a global pointer are not watched for callee writes (only pointer
+  arguments are): 0x6981B0 mismatched 1/1 on a correct file and sits in difftable's NO_DIFF. Watch the objects
+  the function's pointer globals point to (first 256 bytes) and conclude nothing when a callee changed them.
 - [ ] After the x87 leak fix (2026-10-12): smoke the queue's float/NaN mismatches and crash bisects again
   (each has a note), and make the verifier fail a smoke on an `X87 ...` line in csf_diff.log (hook/diff.cpp
   logs x87 entries live at a diffed function's entry), naming the last function entered clean.

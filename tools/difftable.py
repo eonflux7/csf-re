@@ -28,6 +28,10 @@ CONV = {"__cdecl": 0, "__stdcall": 1, "__thiscall": 2, "__fastcall": 3}
 # Functions the harness must not run twice / replay, found in game (bisect with ini diff_limit / diff_t3_limit /
 # diff_skip). Empty: the two singleton initializers first blamed (0x7557C0, 0x759FC0) were a replayer bug.
 NO_DIFF = {
+    # Reads the last entry of the vector behind g_pOptions (a heap object reached through a global), then calls
+    # 0x6980D0, which changes that vector: ours, run second, reads the next entry (arg 1 differs, 1/1). The replayer
+    # only notices heap writes behind pointer arguments. File is the original line by line (2026-10-12).
+    0x6981B0,
 }
 
 
