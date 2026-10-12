@@ -147,7 +147,7 @@
 - {addr: 0x0082FAC8, name: g_fQuarterPi, type: float, uses: 2, src: auto}
 - {addr: 0x0082FACC, name: g_HudNegativeHalfPi, type: float, uses: 3, src: auto}
 - {addr: 0x0082FAD0, name: g_TransitionHalfPi, type: float, uses: 4, src: auto}
-- {addr: 0x0082FAD4, name: g_QuarterTurnConstant, type: float, uses: 7, src: auto}
+- {addr: 0x0082FAD4, name: g_QuarterTurnConstant, type: float, uses: 8, src: auto}
 - {addr: 0x0082FAD8, name: g_TurnScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082FCAC, name: g_RadToDeg_82FCAC, type: float, uses: 1, src: auto}
 - {addr: 0x0082FCB0, name: g_DegToRad_82FCB0, type: float, uses: 1, src: auto}
@@ -207,8 +207,8 @@
 - {addr: 0x00833E2C, name: g_fRepeatDelay, type: float, uses: 1, src: auto}
 - {addr: 0x00833E30, name: g_SelectionRetryInterval, type: double, uses: 1, src: auto}
 - {addr: 0x00833E34, name: g_SelectionRefreshInterval, type: float, uses: 1, src: auto}
-- {addr: 0x00833E38, name: g_MinWidePitch, type: float, uses: 1, src: auto}
-- {addr: 0x00833E3C, name: g_MaxWidePitch, type: float, uses: 1, src: auto}
+- {addr: 0x00833E38, name: g_MinWidePitch, type: float, uses: 2, src: auto}
+- {addr: 0x00833E3C, name: g_MaxWidePitch, type: float, uses: 2, src: auto}
 - {addr: 0x00833E40, name: g_MinNarrowPitch, type: float, uses: 1, src: auto}
 - {addr: 0x00833E44, name: g_LayoutWidthAdjustment, type: float, uses: 5, src: auto}
 - {addr: 0x00834388, name: g_LabelBackgroundOffsetScale, type: float, uses: 1, src: auto}
@@ -244,8 +244,8 @@
 - {addr: 0x0083F194, name: g_MinimumMotionDuration, type: float, uses: 1, src: auto}
 - {addr: 0x0083F198, name: g_HeadSpringScale, type: float, uses: 1, src: auto}
 - {addr: 0x0083F19C, name: g_PositioningAngleLimit, type: float, uses: 1, src: auto}
-- {addr: 0x0083F24C, name: g_MenuWidthScale, type: float, uses: 1, src: auto}
-- {addr: 0x0083F250, name: g_MenuHeightScale, type: float, uses: 1, src: auto}
+- {addr: 0x0083F24C, name: g_MenuWidthScale, type: float, uses: 2, src: auto}
+- {addr: 0x0083F250, name: g_MenuHeightScale, type: float, uses: 2, src: auto}
 - {addr: 0x0083F4B0, name: g_MenuResourceDelayMs, type: int, uses: 1, src: auto}
 - {addr: 0x0083F4B4, name: g_SceneDegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x0083F760, name: g_CreditsFadeScale, type: float, uses: 1, src: auto}
@@ -294,6 +294,10 @@
 - {addr: 0x008453A4, name: g_vtbl_8453A4, type: uint8_t, uses: 2, src: auto}
 - {addr: 0x008455B0, name: g_PlayerInfoClearField0010Slot, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x00845780, name: g_ClearField0010Slot, type: void*, uses: 1, src: auto}
+- {addr: 0x008459F4, name: g_SessionNegativeMapWidth, type: float, uses: 1, src: auto}
+- {addr: 0x008459F8, name: g_SessionNegativeNameWidth, type: float, uses: 1, src: auto}
+- {addr: 0x008459FC, name: g_SessionMapWidth, type: float, uses: 1, src: auto}
+- {addr: 0x00845A00, name: g_SessionNameWidth, type: float, uses: 1, src: auto}
 - {addr: 0x00845B38, name: g_MenuAccountsPostInitialize, type: void*, uses: 1, src: auto}
 - {addr: 0x00845C30, name: g_ClearField0010Slot, type: ClearFieldMethod, uses: 1, src: auto}
 - {addr: 0x00846158, name: g_AudioMinimumAmplitude, type: float, uses: 1, src: auto}
@@ -1612,7 +1616,7 @@
 - {addr: 0x008B0680, name: g_Global_8B0680, type: int, uses: 1, src: auto}
 - {addr: 0x008B0684, name: g_MpCharacterSelect, type: void*, uses: 2, src: auto, alt: [g_GlobalValue]}
 - {addr: 0x008B0688, name: g_Int8B0688, type: int, uses: 3, src: auto}
-- {addr: 0x008B068C, name: g_OnlineMatchFlag, type: 'std::uint8_t', uses: 20, src: auto, alt: [g_AccountMenuSecondaryFlag]}
+- {addr: 0x008B068C, name: g_OnlineMatchFlag, type: 'std::uint8_t', uses: 22, src: auto, alt: [g_AccountMenuSecondaryFlag]}
 - {addr: 0x008B0690, name: g_MpSessionState, type: int, uses: 0, src: opus}
 - {addr: 0x008B0694, name: g_CharacterSelectState8B0694, type: uint32_t, uses: 38, src: auto}
 - {addr: 0x008B0698, name: g_MenuMPCharacterSelect_LastState, type: uint32_t, uses: 3, src: auto}
