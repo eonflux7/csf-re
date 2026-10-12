@@ -4993,7 +4993,7 @@
   "name_src": "agent",
   "votes": {
    "MissionScript_GrowEventRecords": 10,
-   "S_00413570_GrowEventRecords": 11
+   "S_00413570_GrowEventRecords": 12
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
@@ -16720,17 +16720,19 @@
   "file": "src/auto/004485a0.cpp"
  },
  "00448600": {
-  "name": "sub_448600",
-  "name_src": "addr",
-  "votes": {},
+  "name": "AiCoverAttackTasks_GrowSubobjectArray",
+  "name_src": "vote",
+  "votes": {
+   "AiCoverAttackTasks_GrowSubobjectArray": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004486e0": {
-  "name": "UpdateControllerFinalStage",
-  "name_src": "vote",
+  "name": "S_004480f0_UpdateTimedControls",
+  "name_src": "agent",
   "votes": {
    "UpdateControllerFinalStage": 1
   },
@@ -16754,7 +16756,7 @@
  },
  "00448890": {
   "name": "S_00448830_RemoveInactiveEntries",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -16766,7 +16768,7 @@
   "name": "Archive_SerializeEntry",
   "name_src": "agent",
   "votes": {
-   "SerializeEntry": 1
+   "SerializeEntry": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -16786,13 +16788,15 @@
   "sig_src": "vote"
  },
  "00448a80": {
-  "name": "sub_448A80",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GrowEntryStorage",
+  "name_src": "vote",
+  "votes": {
+   "GrowEntryStorage": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00448b60": {
   "name": "CopyRecordTail",
@@ -16806,13 +16810,16 @@
   "sig_src": "vote"
  },
  "00448c60": {
-  "name": "sub_448C60",
-  "name_src": "addr",
-  "votes": {},
+  "name": "EntryTable_GrowStorage",
+  "name_src": "vote",
+  "votes": {
+   "EntryTable_GrowStorage": 1,
+   "Archive_GrowRecordArray": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00448d50": {
   "name": "DestroyElementArray_448D50",
@@ -16851,19 +16858,22 @@
   "sig_src": "vote"
  },
  "00448f30": {
-  "name": "sub_448F30",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Archive_SerializeRecord_448F30",
+  "name_src": "agent",
+  "votes": {
+   "Archive_SerializeRecord": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , S_00691860* archive",
+  "sig_src": "impl",
+  "file": "src/auto/00448f30.cpp"
  },
  "00449030": {
-  "name": "AiCoverAttackTasks_ProcessSecondSubobject",
-  "name_src": "vote",
+  "name": "S_00523cf0_ProcessSecondSubobject",
+  "name_src": "agent",
   "votes": {
-   "AiCoverAttackTasks_ProcessSecondSubobject": 1
+   "AiCoverAttackTasks_ProcessSecondSubobject": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -16923,24 +16933,27 @@
   "file": "src/auto/004491a0.cpp"
  },
  "00449230": {
-  "name": "sub_449230",
-  "name_src": "addr",
+  "name": "EventQueue_TryConsumeRecord",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , const void* incomingRecord",
+  "sig_src": "impl",
+  "file": "src/auto/00449230.cpp"
  },
  "00449390": {
-  "name": "FindAssociatedControl",
-  "name_src": "vote",
+  "name": "EntryTable_FindOrAddEntry",
+  "name_src": "agent",
   "votes": {
-   "FindAssociatedControl": 1
+   "FindAssociatedControl": 1,
+   "FindEntryByHandle": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , const void* source",
+  "sig_src": "impl",
+  "file": "src/auto/00449390.cpp"
  },
  "00449440": {
   "name": "AiDistracted_ProcessObjectPair",
@@ -17030,13 +17043,14 @@
   "file": "src/auto/004496a0.cpp"
  },
  "004496c0": {
-  "name": "sub_4496C0",
-  "name_src": "addr",
+  "name": "S_00448a80_SerializeEntries",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "void* a1, int a2",
-  "sig_src": "abi"
+  "params": "S_00448a80* entries, void* context",
+  "sig_src": "impl",
+  "file": "src/auto/004496c0.cpp"
  },
  "004498b0": {
   "name": "sub_4498B0",
@@ -17069,22 +17083,26 @@
   "file": "src/auto/00449c10.cpp"
  },
  "00449c60": {
-  "name": "sub_449C60",
-  "name_src": "addr",
+  "name": "AiCoverAttackTasks_ProcessSubobjectArray",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "uint32_t* a1, void* a2",
-  "sig_src": "abi"
+  "params": "uint32_t* array, S_00691860* context",
+  "sig_src": "impl",
+  "file": "src/auto/00449c60.cpp"
  },
  "00449e30": {
-  "name": "sub_449E30",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Archive_SerializeRecordArray",
+  "name_src": "agent",
+  "votes": {
+   "DispatchToEventHandlers": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "uint32_t* a1, int a2",
-  "sig_src": "abi"
+  "params": "void* records, S_00691860* context",
+  "sig_src": "impl",
+  "file": "src/auto/00449e30.cpp"
  },
  "0044a030": {
   "name": "sub_44A030",
@@ -17118,8 +17136,8 @@
   "file": "src/auto/0044a1e0.cpp"
  },
  "0044a250": {
-  "name": "Scene_ResetSubsystemC4",
-  "name_src": "vote",
+  "name": "C_0083114c_ResetSubsystemC4",
+  "name_src": "agent",
   "votes": {
    "Scene_ResetSubsystemC4": 1
   },
@@ -17130,13 +17148,14 @@
   "file": "src/auto/0044a250.cpp"
  },
  "0044a2f0": {
-  "name": "sub_44A2F0",
-  "name_src": "addr",
+  "name": "ProcessEventThroughHandlers",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "uint32_t* self, void* , int eventAddress",
+  "sig_src": "impl",
+  "file": "src/auto/0044a2f0.cpp"
  },
  "0044a390": {
   "name": "S_0044a1e0_AppendElement20",
@@ -17177,7 +17196,8 @@
   "name": "S_00448830_GetOrCreateEntry",
   "name_src": "agent",
   "votes": {
-   "FindAssociationGroup": 1
+   "FindAssociationGroup": 1,
+   "S_00448830_FindControlGroup": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -17197,7 +17217,7 @@
  },
  "0044a640": {
   "name": "S_00448830_UpdateControlAssociation",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -17206,17 +17226,18 @@
   "file": "src/auto/0044a640.cpp"
  },
  "0044a690": {
-  "name": "sub_44A690",
-  "name_src": "addr",
+  "name": "S_00448830_MarkAngularExtreme",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_00448830* self, void* , int handle",
+  "sig_src": "impl",
+  "file": "src/auto/0044a690.cpp"
  },
  "0044a950": {
-  "name": "GetPositionCategory",
-  "name_src": "vote",
+  "name": "S_00448830_GetPositionCategory",
+  "name_src": "agent",
   "votes": {
    "GetPositionCategory": 1
   },
@@ -18793,7 +18814,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 354
+   "CHandleTable_Resolve": 356
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -39314,7 +39335,7 @@
   "name": "Archive_SerializeString",
   "name_src": "agent",
   "votes": {
-   "Archive_SerializeString": 42
+   "Archive_SerializeString": 43
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -205288,7 +205309,7 @@
   "name": "_memcpy",
   "name_src": "ida",
   "votes": {
-   "_memcpy": 88,
+   "_memcpy": 89,
    "Memcpy": 1
   },
   "ret": "void*",
