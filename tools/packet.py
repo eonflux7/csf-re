@@ -406,6 +406,19 @@ def build(db, ea, with_asm_limit=400):
                    + "\n".join(f"- [ebp-0x{x:X}]: room 0x{room:X} bytes up to the next such object / the frame end"
                                 + (f"; also accessed directly at {', '.join(f'ebp-0x{y:X}' for y in inner)}" if inner else "")
                                 for x, room, inner in so))
+    # Functions stored or passed as values: the pseudocode shows them by name only, and above with_asm_limit no
+    # disassembly gives the address (0x6E0920 compiled to nothing behind an #if for want of five of them).
+    stored = []
+    for i in disasm(ea, f["size"]):
+        m = re.search(r"\b0x([0-9a-f]{6,8})$", i.op_str)
+        if m and i.mnemonic in ("mov", "push") and int(m.group(1), 16) in db.F:
+            t = int(m.group(1), 16)
+            line = (f"- `{i.mnemonic} {i.op_str}` at 0x{i.address:08X}: "
+                    f"{(db.rows.get(t) or {}).get('name') or f'sub_{t:X}'} = `CSF_ADDR_FN(0x{t:08X})`")
+            stored.append(line)
+    if stored:
+        out.append("\n## Functions used as values (stored or passed, not called): their addresses, in code order\n"
+                   + "\n".join(stored))
     if f["callees"]:
         out.append("\n## Callees")
         for c in f["callees"]:
