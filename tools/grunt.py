@@ -660,7 +660,7 @@ def work(ea, db, key, ladder, out_dir=None, example=None, review_over=None, evid
                 code, meta = parse(text)
         except Exception as e:  # out of credit / quota / CLI failure: fall through to the next rung
             dead.add(dk)
-            quota_hit |= bool(re.search(r"paused by the quota guard|usage limit|rate limit|hit your limit", str(e), re.I))
+            quota_hit |= bool(re.search(r"paused by the quota guard|usage.limit|rate.limit|session limit|hit your (session |usage )?limit", str(e), re.I))
             err = f"{backend} error: {e}"
             fails.append(dict(by=f"{backend}:{model}", kinds=["backend"]))
             continue

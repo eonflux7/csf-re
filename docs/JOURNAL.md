@@ -1253,3 +1253,17 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   replay does not hand ours the normalize's writes into the local; harness suspect, in queue/), 0x41EA70 (5 of
   193, all with a NaN argument; in queue/). So tier 3 still takes correct code out on a full regression; its
   false-alarm rate after the fixes is not low yet.
+
+## 2026-10-12 evening — a run on one Codex login: 484 functions, both quota windows spent, 38 false escalations
+
+- 16:39-17:50 on codex-2 alone: 484 functions (game code 52.1% -> 55.9% with the earlier 100), then codex-2 at
+  its limit and the grunts' Claude account at 100% (session limit, resets 21:30): with one Codex login the S/M
+  work moved to Sonnet and Opus and spent the Claude window the ladders are meant to protect.
+- 39 of the run's 39 escalations had lost a rung to a backend error that the lanes did not read as quota
+  ("You've hit your session limit", "usage_limit"): they were escalated, not deferred. The pattern now covers
+  both; the 39 went back to the lanes.
+- The new regression rule worked as written: two failures in a row without a culprit (savegame start) stopped
+  the run. The regression after it bisected 0x4E0D70 as a culprit and passed, so the two failures were probably
+  that function, crashing too rarely for the first bisects.
+- Baseline quarantines of this run: 0x440F50, 0x441850, 0x43FBA0 (crash, bisect), 0x4E0D70 (crash, bisect),
+  0x4B06F0, 0x4DF0D0 (diff mismatch), one in a group. All in queue/.
