@@ -172,7 +172,7 @@
 - {addr: 0x0082FCB4, name: g_MinMoveDistSq_82FCB4, type: float, uses: 1, src: auto}
 - {addr: 0x0082FEA4, name: g_PathDistanceLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 12, src: auto}
-- {addr: 0x0082FEBC, name: g_LayoutInset, type: float, uses: 5, src: auto, alt: [g_VerticalInset]}
+- {addr: 0x0082FEBC, name: g_LayoutInset, type: float, uses: 6, src: auto, alt: [g_VerticalInset]}
 - {addr: 0x00830410, name: g_CheatSequencePreviousBase, type: int32_t, uses: 1, src: auto}
 - {addr: 0x00830414, name: g_CheatSequenceFirst, type: int32_t, uses: 1, src: auto}
 - {addr: 0x0083042C, name: g_VtblCMenuScreenBase, type: uint8_t, uses: 9, src: auto}
@@ -286,9 +286,9 @@
 - {addr: 0x0083F198, name: g_HeadSpringScale, type: float, uses: 1, src: auto}
 - {addr: 0x0083F19C, name: g_PositioningAngleLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0083F1D4, name: g_ProximityEpsilon, type: float, uses: 1, src: auto}
-- {addr: 0x0083F248, name: g_ConsoleLineScale, type: float, uses: 1, src: auto}
-- {addr: 0x0083F24C, name: g_MenuWidthScale, type: float, uses: 3, src: auto}
-- {addr: 0x0083F250, name: g_MenuHeightScale, type: float, uses: 2, src: auto}
+- {addr: 0x0083F248, name: g_ConsoleLineDivisor, type: float, uses: 3, src: auto, alt: [g_ConsoleLineScale, g_TextCharacterWidth]}
+- {addr: 0x0083F24C, name: g_MenuWidthScale, type: float, uses: 5, src: auto}
+- {addr: 0x0083F250, name: g_MenuHeightScale, type: float, uses: 3, src: auto}
 - {addr: 0x0083F4B0, name: g_MenuResourceDelayMs, type: int, uses: 1, src: auto}
 - {addr: 0x0083F4B4, name: g_SceneDegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x0083F760, name: g_CreditsFadeScale, type: float, uses: 1, src: auto}
@@ -1668,8 +1668,8 @@
 - {addr: 0x008B0550, name: g_ObjectReferenceManager, type: void*, uses: 19, src: auto, alt: [g_ObjectReferenceRegistry, g_ArchiveReferenceManager, g_AiStateObjectRegistry, g_AiObjectReferenceRegistry, g_AiStateChain]}
 - {addr: 0x008B0554, name: g_Value8B0554, type: int, uses: 5, src: auto}
 - {addr: 0x008B0558, name: g_Value8B0558, type: int32_t, uses: 3, src: auto}
-- {addr: 0x008B055C, name: g_Value8B055C, type: int, uses: 1, src: auto}
-- {addr: 0x008B0560, name: g_globalValue_8B0560, type: int, uses: 2, src: auto}
+- {addr: 0x008B055C, name: g_Value8B055C, type: int, uses: 4, src: auto}
+- {addr: 0x008B0560, name: g_globalValue_8B0560, type: int, uses: 5, src: auto}
 - {addr: 0x008B0564, name: g_Value_8B0564, type: int, uses: 1, src: auto}
 - {addr: 0x008B0568, name: g_Value_8B0568, type: int, uses: 2, src: auto}
 - {addr: 0x008B056C, name: g_value_8B056C, type: int, uses: 3, src: auto}
