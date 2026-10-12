@@ -156,6 +156,30 @@ void inconclusive(Slot& s, const char* why) {
     }
 }
 
+// MSVC's convention has the x87 stack empty at every call. Entries live at a diffed function's entry are a leak
+// (somebody returned in st0 to a caller that doesn't pop it): after three, 0x401FA0's six loads overflow and it
+// returns -nan(ind) for a zero vector. Logged with the last diffed function that was entered clean.
+void x87_probe(const Slot& s) {
+    static uint32_t logged;
+    static uint32_t lastClean;  // any thread: the log line names the thread
+    uint16_t env[14];
+    __asm {
+        fnstenv env
+        fldenv env
+    }
+    int live = 0;
+    for (int k = 0; k < 8; ++k)
+        live += ((env[4] >> (2 * k)) & 3) != 3;
+    if (!live) {
+        lastClean = s.info->addr;
+    } else if (logged < 20 && g_log) {
+        ++logged;
+        fprintf(g_log, "X87 %08X %s: %d x87 entries live at entry (thread %lu, last clean entry %08X)\n",
+                s.info->addr, s.name, live, GetCurrentThreadId(), lastClean);
+        fflush(g_log);
+    }
+}
+
 bool fp_close(double a, double b, double rel) {
     if (a == b || (a != a && b != b))
         return true;
@@ -209,6 +233,7 @@ template <typename R, typename Invoke>
 R run(int i, Regs* r, Invoke invoke) {
     Slot& s = g_slots[i];
     const void* args = (const uint8_t*)r + 36;  // past pushad + return address
+    x87_probe(s);
     if (s.calls++ >= g_maxCalls || hook::t3::busy())  // no nested diffs inside a tier-3 record/replay
         return invoke(s.ours, r->ecx, r->edx, args, argcopy(s, args));
     // A tier-3 diff holds the lock while the original's callees run: they may wait on this thread (the loader)
