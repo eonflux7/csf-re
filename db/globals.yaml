@@ -393,6 +393,7 @@
 - {addr: 0x00861F28, name: g_HAnimNegativeRadiansToDegrees, type: float, uses: 2, src: auto, alt: [g_NegativeRadiansToDegrees]}
 - {addr: 0x00861F2C, name: g_HAnimUpdateBaseInterval, type: float, uses: 1, src: auto}
 - {addr: 0x00861F30, name: g_HAnimUpdateIntervalScale, type: float, uses: 1, src: auto}
+- {addr: 0x00861FA8, name: g_CollisionInsertionEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x008634C0, name: g_vtbl_C_008634c0, type: void*, uses: 1, src: auto}
 - {addr: 0x008634C8, name: g_vtbl_C_008634c8, type: void*, uses: 1, src: auto}
 - {addr: 0x00863674, name: g_WaterSplitMagnitudeSquared, type: float, uses: 1, src: auto}
@@ -532,6 +533,7 @@
 - {addr: 0x008902D4, name: g_MenuElementCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00890BC0, name: g_TextureRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00890C10, name: g_TextureLoaderCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x00890D84, name: g_TextureCopyRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00891354, name: g_ScreenEffectsRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00891494, name: g_ElementCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00891744, name: g_WaterCopyPairFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
@@ -1706,6 +1708,7 @@
 - {addr: 0x008B0901, name: g_AccountMenuStateFlag, type: 'std::uint8_t', uses: 3, src: auto}
 - {addr: 0x008B0902, name: g_bMenuFlag_8B0902, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008B0903, name: byte_8B0903, type: uint8_t, uses: 3, src: auto, alt: [g_MpSessionsTransitionBlocked, g_SessionThreadStarting]}
+- {addr: 0x008B0930, name: g_CollisionPluginOffset, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008B09EC, name: g_PTankPluginOffset, type: 'std::int32_t', uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008B68C0, name: g_pRwEngineInstance, type: void*, uses: 2, src: captain, conf: 0.9, alt: [g_008B68C0, g_pDispatchTable]}
 - {addr: 0x008B99B0, name: g_AccountService, type: void*, uses: 2, src: auto, alt: [g_NetSessionOwner]}
