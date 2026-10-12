@@ -4425,7 +4425,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 133
+   "AssignStringSubstring": 135
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -83688,6 +83688,7 @@
   "name": "TypeRegistry_IsStringLess",
   "name_src": "vote",
   "votes": {
+   "TypeRegistry_IsNameBefore": 1,
    "TypeRegistry_IsStringLess": 1
   },
   "ret": "bool",
@@ -83815,8 +83816,8 @@
   "sig_src": "abi"
  },
  "0054ae60": {
-  "name": "sub_54AE60",
-  "name_src": "addr",
+  "name": "C_008442a0_ForwardOperationAt64",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -83881,13 +83882,16 @@
   "sig_src": "abi"
  },
  "0054afb0": {
-  "name": "sub_54AFB0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "TypeRegistry_FindNameLowerBound",
+  "name_src": "agent",
+  "votes": {
+   "TypeRegistry_FindLowerBound": 1
+  },
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void** a2",
-  "sig_src": "abi"
+  "params": "S_0054afb0* self, void* , const char** name",
+  "sig_src": "impl",
+  "file": "src/auto/0054afb0.cpp"
  },
  "0054b020": {
   "name": "sub_54B020",
@@ -83983,15 +83987,16 @@
   "sig_src": "abi"
  },
  "0054b3c0": {
-  "name": "TypeRegistry_FindMeasurementEntry",
-  "name_src": "vote",
+  "name": "TypeRegistry_FindByName",
+  "name_src": "agent",
   "votes": {
    "TypeRegistry_FindMeasurementEntry": 1
   },
-  "ret": "void**",
+  "ret": "int**",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void** a2, void** a3",
-  "sig_src": "vote"
+  "params": "S_0054afb0* self, void* , int** result, const char** name",
+  "sig_src": "impl",
+  "file": "src/auto/0054b3c0.cpp"
  },
  "0054b420": {
   "name": "sub_54B420",
@@ -84003,13 +84008,15 @@
   "sig_src": "abi"
  },
  "0054b450": {
-  "name": "sub_54B450",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_008442a0_ClearContents",
+  "name_src": "vote",
+  "votes": {
+   "C_008442a0_ClearContents": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0054b4a0": {
   "name": "TypeRegistry_InsertTreeNode",
@@ -84049,6 +84056,7 @@
   "name": "TypeRegistry_InsertElementCopies8",
   "name_src": "vote",
   "votes": {
+   "InsertRepeatedElements": 1,
    "TypeRegistry_InsertElementCopies8": 1
   },
   "ret": "unsigned int",
@@ -84059,7 +84067,9 @@
  "0054bc60": {
   "name": "TypeRegistryEraseRange",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "TypeRegistry_EraseNodes": 1
+  },
   "ret": "int**",
   "conv": "__fastcall",
   "params": "void* self, void* , int** result, int* first, int* last",
@@ -84077,13 +84087,14 @@
   "file": "src/auto/0054bd20.cpp"
  },
  "0054bde0": {
-  "name": "sub_54BDE0",
-  "name_src": "addr",
+  "name": "S_007721a0_Resize",
+  "name_src": "agent",
   "votes": {},
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int a2, int a3, int a4",
-  "sig_src": "abi"
+  "params": "S_007721a0* self, void* , unsigned int count, char value, int",
+  "sig_src": "impl",
+  "file": "src/auto/0054bde0.cpp"
  },
  "0054be50": {
   "name": "TypeRegistry_AppendElement8",
@@ -84132,15 +84143,16 @@
   "sig_src": "abi"
  },
  "0054c0b0": {
-  "name": "C_008442a0_Cleanup",
-  "name_src": "vote",
+  "name": "C_008442a0_Destroy_54C0B0",
+  "name_src": "agent",
   "votes": {
    "C_008442a0_Cleanup": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_008442a0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0054c0b0.cpp"
  },
  "0054c130": {
   "name": "C_008442a0_InvokeInnerVirtual90",
@@ -84164,7 +84176,7 @@
   "file": "src/auto/0054c140.cpp"
  },
  "0054c1a0": {
-  "name": "C_008442a0_Destroy",
+  "name": "C_008442a0_Destroy_54C1A0",
   "name_src": "agent",
   "votes": {},
   "ret": "void*",
@@ -84459,26 +84471,28 @@
   "file": "src/auto/0054d8e0.cpp"
  },
  "0054d900": {
-  "name": "TypeRegistry_CopyEmbeddedDefinition",
-  "name_src": "vote",
+  "name": "TypeRegistry_CopyConstructEntry",
+  "name_src": "agent",
   "votes": {
    "TypeRegistry_CopyEmbeddedDefinition": 1
   },
-  "ret": "void**",
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "vote"
+  "params": "std::uint32_t* self, void* , std::uint32_t* source",
+  "sig_src": "impl",
+  "file": "src/auto/0054d900.cpp"
  },
  "0054d960": {
-  "name": "TypeRegistry_CopyTrailingDefinition",
-  "name_src": "vote",
+  "name": "TypeRegistry_CopyEntry",
+  "name_src": "agent",
   "votes": {
    "TypeRegistry_CopyTrailingDefinition": 1
   },
-  "ret": "uint32_t*",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , const void* source",
+  "sig_src": "impl",
+  "file": "src/auto/0054d960.cpp"
  },
  "0054d9d0": {
   "name": "S_0054d8e0_Assign",
@@ -134529,7 +134543,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 412,
+   "Mem_FreeDebug": 413,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -155525,13 +155539,16 @@
   "sig_src": "abi"
  },
  "006dd020": {
-  "name": "sub_6DD020",
-  "name_src": "addr",
-  "votes": {},
+  "name": "TextureLoader_CopyElement",
+  "name_src": "vote",
+  "votes": {
+   "TextureLoader_CopyElement": 1,
+   "CopyTextureElement": 1
+  },
   "ret": "void",
   "conv": "__stdcall",
   "params": "void* a1, void* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006dd040": {
   "name": "sub_6DD040",
@@ -155552,15 +155569,16 @@
   "sig_src": "abi"
  },
  "006de030": {
-  "name": "FxParticleManager_UpdateScaledParameters",
-  "name_src": "vote",
+  "name": "GfxTextureLoader_UpdateScaledParticleParameters",
+  "name_src": "agent",
   "votes": {
    "FxParticleManager_UpdateScaledParameters": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006de030.cpp"
  },
  "006de0d0": {
   "name": "sub_6DE0D0",
@@ -155581,22 +155599,26 @@
   "sig_src": "abi"
  },
  "006de130": {
-  "name": "sub_6DE130",
-  "name_src": "addr",
+  "name": "TextureLoader_CopyElementArray",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__cdecl",
-  "params": "char* a1, int a2, void* a3",
-  "sig_src": "abi"
+  "params": "char* destination, std::uint32_t count, const void* source, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006de130.cpp"
  },
  "006de1a0": {
-  "name": "sub_6DE1A0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxTextureLoader_CopyElementRange",
+  "name_src": "agent",
+  "votes": {
+   "GfxTextureLoader_ProcessRange": 1
+  },
   "ret": "char*",
   "conv": "__cdecl",
-  "params": "char* a1, char* a2, char* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "char* source, char* sourceEnd, char* destination, int , int",
+  "sig_src": "impl",
+  "file": "src/auto/006de1a0.cpp"
  },
  "006de210": {
   "name": "sub_6DE210",
@@ -155617,13 +155639,14 @@
   "sig_src": "abi"
  },
  "006de370": {
-  "name": "sub_6DE370",
-  "name_src": "addr",
+  "name": "GfxTextureLoader_ForwardRangeWithContext",
+  "name_src": "agent",
   "votes": {},
   "ret": "char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a1, char* a2, char* a3",
-  "sig_src": "abi"
+  "params": "S_0046bea0* self, void* , char* first, char* second, char* third",
+  "sig_src": "impl",
+  "file": "src/auto/006de370.cpp"
  },
  "006de390": {
   "name": "sub_6DE390",
@@ -155662,22 +155685,26 @@
   "sig_src": "abi"
  },
  "006de8d0": {
-  "name": "sub_6DE8D0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxTextureLoader_ProcessTextureEntry",
+  "name_src": "vote",
+  "votes": {
+   "GfxTextureLoader_ProcessTextureEntry": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006de9b0": {
-  "name": "sub_6DE9B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxTextureLoader_ProcessEntry",
+  "name_src": "vote",
+  "votes": {
+   "GfxTextureLoader_ProcessEntry": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a5",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006deb50": {
   "name": "sub_6DEB50",
@@ -155689,19 +155716,21 @@
   "sig_src": "abi"
  },
  "006dec00": {
-  "name": "sub_6DEC00",
-  "name_src": "addr",
-  "votes": {},
+  "name": "MoveTextureRecords",
+  "name_src": "vote",
+  "votes": {
+   "MoveTextureRecords": 1
+  },
   "ret": "void*",
   "conv": "__cdecl",
   "params": "int a5, int a2, void* a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006dec40": {
   "name": "ResetRecordRange",
   "name_src": "vote",
   "votes": {
-   "ResetRecordRange": 10
+   "ResetRecordRange": 11
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -155709,31 +155738,37 @@
   "sig_src": "vote"
  },
  "006dec80": {
-  "name": "sub_6DEC80",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxTextureLoader_ProcessEntriesBackward",
+  "name_src": "agent",
+  "votes": {
+   "GfxTextureLoader_ProcessTexture": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3, int a4",
-  "sig_src": "abi"
+  "params": "int sourceBegin, int sourceEnd, int destinationEnd, int",
+  "sig_src": "impl",
+  "file": "src/auto/006dec80.cpp"
  },
  "006decc0": {
-  "name": "sub_6DECC0",
-  "name_src": "addr",
+  "name": "GfxTextureLoader_ForwardTextureEntryIfNonNull",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "void* a1, int a2",
-  "sig_src": "abi"
+  "params": "S_0046bea0* entry, int argument",
+  "sig_src": "impl",
+  "file": "src/auto/006decc0.cpp"
  },
  "006dece0": {
-  "name": "sub_6DECE0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxTextureLoader_ProcessWithContext",
+  "name_src": "vote",
+  "votes": {
+   "GfxTextureLoader_ProcessWithContext": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006ded70": {
   "name": "sub_6DED70",
@@ -155754,13 +155789,14 @@
   "sig_src": "abi"
  },
  "006dee00": {
-  "name": "sub_6DEE00",
-  "name_src": "addr",
+  "name": "GfxTextureLoader_ForwardTextureRequest",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/006dee00.cpp"
  },
  "006dee20": {
   "name": "sub_6DEE20",
@@ -155772,22 +155808,24 @@
   "sig_src": "abi"
  },
  "006deeb0": {
-  "name": "sub_6DEEB0",
-  "name_src": "addr",
+  "name": "GfxTextureLoader_ForwardWithContext",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a1, int a2, int a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , int a1, int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/006deeb0.cpp"
  },
  "006deed0": {
-  "name": "sub_6DEED0",
-  "name_src": "addr",
+  "name": "S_006deed0_EraseRecordRange",
+  "name_src": "agent",
   "votes": {},
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int* a2, int a3, int a4",
-  "sig_src": "abi"
+  "params": "S_006deed0* self, void* , int* output, int rangeBegin, int rangeEnd",
+  "sig_src": "impl",
+  "file": "src/auto/006deed0.cpp"
  },
  "006def20": {
   "name": "sub_6DEF20",
@@ -193279,13 +193317,15 @@
   "sig_src": "abi"
  },
  "007721a0": {
-  "name": "sub_7721A0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "EraseElementRange",
+  "name_src": "vote",
+  "votes": {
+   "EraseElementRange": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, uint32_t* a2, uint32_t* a3, uint32_t* a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007721f0": {
   "name": "sub_7721F0",
@@ -204433,7 +204473,7 @@
   "name": "___CxxFrameHandler",
   "name_src": "ida",
   "votes": {
-   "___CxxFrameHandler": 124,
+   "___CxxFrameHandler": 126,
    "OriginalCxxFrameHandler": 1
   },
   "ret": "int",
@@ -204517,7 +204557,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 173
+   "RethrowCppException": 175
   },
   "ret": "void",
   "conv": "__stdcall",
