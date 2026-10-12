@@ -474,16 +474,17 @@ class Run:
         # pointer results end in a non-zero byte: `test al, al` and `test eax, eax` on an int-typed callee that
         # returns a clean 0 / 1 (0x492BD0) must agree; a callee that sets al only gets garbage above it instead,
         # so a caller that binds it as int and tests eax still differs
+        # every result is 0 or has bit 0 set as well: ours may hold it in a `bool` (clang tests bit 0 only), the
+        # original tests al or eax (0x477B40: a result of 2 sent the two sides different ways)
+        odd = lambda v: v if v < 2 else 2 * v - 1
         if rt in BYTE_TYPES:  # before the pointer profiles: the caller extends a byte, the original keeps eax
             val = (h & 1) | (0x5A5A5A00 if self.prof % 2 else 0)
         elif self.prof >= 6 and rt not in ("float", "double", "long double", "void"):
-            val = ZONES + 0x0C000000 + i * 0x10000 + 0x104
+            val = ZONES + 0x0C000000 + i * 0x10000 + 0x101
         elif "*" in rt or rt == "?":
-            val = ZONES + 0x0C000000 + i * 0x10000 + 0x104 if (rt != "?" or self.prof % 2 == 0) else h % 3
-        elif rt in ("bool", "char", "uint8_t", "unsigned char", "int8_t"):
-            val = h & 1
+            val = ZONES + 0x0C000000 + i * 0x10000 + 0x101 if (rt != "?" or self.prof % 2 == 0) else odd(h % 3)
         else:
-            val = h % 4
+            val = odd(h % 4)
         uc.reg_write(X.UC_X86_REG_EAX, val)
         self.last_mock = (val, rt)
         if rt in ("float", "double", "long double"):
