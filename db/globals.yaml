@@ -38,13 +38,13 @@
 - {addr: 0x0082D2B4, name: g_DefWindowProcA, type: DefWindowProcFunction, uses: 1, src: auto}
 - {addr: 0x0082D2E8, name: g_GetDoubleClickTimeImport, type: GetDoubleClickTimeFn, uses: 1, src: auto}
 - {addr: 0x0082D2EC, name: g_SendMessageAImportSlot, type: void*, uses: 2, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 69, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 70, src: auto}
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 3, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 27, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 93, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 94, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 8, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 11, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
@@ -118,7 +118,7 @@
 - {addr: 0x0082E1D8, name: g_RadToDeg, type: float, uses: 1, src: auto}
 - {addr: 0x0082E1DC, name: g_InitialMinimumWheelHeight, type: float, uses: 1, src: auto}
 - {addr: 0x0082E1E0, name: g_SecondaryImpulseScale, type: float, uses: 2, src: auto, alt: [g_fSmallScale]}
-- {addr: 0x0082E1E4, name: g_RotationWrapStep, type: float, uses: 4, src: auto, alt: [g_fRotationWrapStep]}
+- {addr: 0x0082E1E4, name: g_RotationWrapStep, type: float, uses: 5, src: auto, alt: [g_fRotationWrapStep]}
 - {addr: 0x0082E24C, name: g_WheelTravelMultiplier, type: float, uses: 4, src: auto}
 - {addr: 0x0082E250, name: g_NegativeWheelScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082E254, name: g_WheelMinLimit, type: float, uses: 1, src: auto}
@@ -762,11 +762,11 @@
 - {addr: 0x00899EAC, name: g_psz_VinylD_1, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x0089A414, name: g_ResolutionEntries, type: ResolutionEntries, uses: 1, src: auto}
 - {addr: 0x0089A5E8, name: g_SelectedAccountIndex, type: int, uses: 0, src: captain, conf: 0.75}
-- {addr: 0x0089A5EC, name: g_dwAccountEditScreenState, type: uint32_t, uses: 3, src: auto, alt: [g_MenuMpOnlineAccountEditScreenState]}
+- {addr: 0x0089A5EC, name: g_dwAccountEditScreenState, type: uint32_t, uses: 4, src: auto, alt: [g_MenuMpOnlineAccountEditScreenState]}
 - {addr: 0x0089A5F0, name: g_MpNetworkType, type: int, uses: 0, src: captain, conf: 0.7}
 - {addr: 0x0089A5F4, name: g_MpAccountMode, type: int, uses: 1, src: auto}
 - {addr: 0x0089A5F8, name: dword_89A5F8, type: uint32_t, uses: 2, src: auto, alt: [g_pendingSessionMode]}
-- {addr: 0x0089A5FC, name: g_MenuMpOnlineAccountEditContext, type: uint32_t*, uses: 1, src: auto}
+- {addr: 0x0089A5FC, name: g_MenuMpOnlineAccountEditContext, type: uint32_t*, uses: 2, src: auto}
 - {addr: 0x008A669C, name: g_NextUniqueId, type: 'std::int32_t', uses: 2, src: captain, conf: 0.75, alt: [g_FallbackContext]}
 - {addr: 0x008A6788, name: g_pszKey_PC, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_off_008A6788]}
 - {addr: 0x008A6B90, name: g_pszKey_PREFERENCES, type: const char*, uses: 0, src: captain, conf: 1.0}
@@ -805,6 +805,7 @@
 - {addr: 0x008A7DB4, name: g_DefaultColorGreen, type: float, uses: 3, src: auto}
 - {addr: 0x008A7DB8, name: g_DefaultColorBlue, type: float, uses: 3, src: auto}
 - {addr: 0x008A7DBC, name: g_DefaultColorAlpha, type: float, uses: 3, src: auto}
+- {addr: 0x008A7DE0, name: g_QuaternionAxisCycle, type: QuaternionAxisCycle, uses: 1, src: auto}
 - {addr: 0x008A7DFC, name: g_SegmentInterpolationStep, type: float, uses: 1, src: auto}
 - {addr: 0x008A7E18, name: g_ObjectPropertyVersion, type: int32_t, uses: 2, src: auto, alt: [g_ObjectPropsMaximumVersion]}
 - {addr: 0x008A7E1C, name: g_MaxPropertiesVersion, type: int, uses: 2, src: auto, alt: [g_ObjectPropsStreamVersion]}
@@ -1621,7 +1622,7 @@
 - {addr: 0x008B0680, name: g_Global_8B0680, type: int, uses: 1, src: auto}
 - {addr: 0x008B0684, name: g_MpCharacterSelect, type: void*, uses: 2, src: auto, alt: [g_GlobalValue]}
 - {addr: 0x008B0688, name: g_Int8B0688, type: int, uses: 3, src: auto}
-- {addr: 0x008B068C, name: g_OnlineMatchFlag, type: 'std::uint8_t', uses: 24, src: auto, alt: [g_AccountMenuSecondaryFlag]}
+- {addr: 0x008B068C, name: g_OnlineMatchFlag, type: 'std::uint8_t', uses: 26, src: auto, alt: [g_AccountMenuSecondaryFlag]}
 - {addr: 0x008B0690, name: g_MpSessionState, type: int, uses: 0, src: opus}
 - {addr: 0x008B0694, name: g_CharacterSelectState8B0694, type: uint32_t, uses: 38, src: auto}
 - {addr: 0x008B0698, name: g_MenuMPCharacterSelect_LastState, type: uint32_t, uses: 3, src: auto}
@@ -1629,7 +1630,7 @@
 - {addr: 0x008B08F8, name: g_Value_8B08F8, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008B0901, name: g_AccountMenuStateFlag, type: 'std::uint8_t', uses: 3, src: auto}
 - {addr: 0x008B0902, name: g_bMenuFlag_8B0902, type: 'std::uint8_t', uses: 1, src: auto}
-- {addr: 0x008B0903, name: byte_8B0903, type: uint8_t, uses: 2, src: auto, alt: [g_SessionThreadStarting]}
+- {addr: 0x008B0903, name: byte_8B0903, type: uint8_t, uses: 3, src: auto, alt: [g_MpSessionsTransitionBlocked, g_SessionThreadStarting]}
 - {addr: 0x008B09EC, name: g_PTankPluginOffset, type: 'std::int32_t', uses: 0, src: captain, conf: 0.7}
 - {addr: 0x008B68C0, name: g_pRwEngineInstance, type: void*, uses: 2, src: captain, conf: 0.9, alt: [g_008B68C0, g_pDispatchTable]}
 - {addr: 0x008B99B0, name: g_AccountService, type: void*, uses: 2, src: auto, alt: [g_NetSessionOwner]}
