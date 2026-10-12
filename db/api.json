@@ -15789,8 +15789,8 @@
   "file": "src/auto/00443760.cpp"
  },
  "00443770": {
-  "name": "AiCandidateRadiusQuery",
-  "name_src": "vote",
+  "name": "AiCandidates_CountWithinRadius",
+  "name_src": "agent",
   "votes": {
    "AiCandidateRadiusQuery": 1
   },
@@ -15823,8 +15823,8 @@
   "file": "src/auto/00443a40.cpp"
  },
  "00443a70": {
-  "name": "SceneLoaderList_GrowTo50",
-  "name_src": "vote",
+  "name": "GrowRecordBuffer",
+  "name_src": "agent",
   "votes": {
    "SceneLoaderList_GrowTo50": 1,
    "GrowRecordArray": 1
@@ -15871,7 +15871,7 @@
  },
  "00443ba0": {
   "name": "Collision_IntersectIndexedBounds",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
@@ -15890,10 +15890,10 @@
   "file": "src/auto/00443c50.cpp"
  },
  "00443ca0": {
-  "name": "Scene_ResetSubsystemB8",
-  "name_src": "vote",
+  "name": "C_0083109c_ResetSubsystemB8",
+  "name_src": "agent",
   "votes": {
-   "Scene_ResetSubsystemB8": 1
+   "Scene_ResetSubsystemB8": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -15924,18 +15924,21 @@
   "sig_src": "vote"
  },
  "00443f00": {
-  "name": "sub_443F00",
-  "name_src": "addr",
+  "name": "C_0083109c_Destroy_443F00",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0083109c* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00443f00.cpp"
  },
  "00443f80": {
   "name": "Component_ProcessSelfAndSubobjects",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Archive_SerializeEmbeddedRecord": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , void* state",
@@ -15955,7 +15958,7 @@
   "file": "src/auto/00444050.cpp"
  },
  "00444100": {
-  "name": "C_0083109c_Destroy",
+  "name": "C_0083109c_Destroy_444100",
   "name_src": "agent",
   "votes": {},
   "ret": "void*",
@@ -15966,7 +15969,7 @@
  },
  "00444130": {
   "name": "SceneLoader_PrepareObjectResources",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_PrepareObjectResources": 1
   },
@@ -15978,7 +15981,7 @@
  },
  "00444180": {
   "name": "S_00444180_InsertRecord",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -15988,7 +15991,7 @@
  },
  "00444270": {
   "name": "S_00444180_ForwardWithPackedArgs",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -16004,12 +16007,13 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , S_00691860* state",
+  "sig_src": "impl",
+  "file": "src/auto/004442d0.cpp"
  },
  "004443b0": {
   "name": "ProcessRecordArray_4443B0",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
@@ -16019,7 +16023,7 @@
  },
  "004445b0": {
   "name": "ProcessRecordArray_4445B0",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t",
   "conv": "__stdcall",
@@ -16146,7 +16150,7 @@
  },
  "00444940": {
   "name": "NotifySceneByteChanged",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "NotifySceneByteChanged": 2
   },
@@ -16170,7 +16174,7 @@
  },
  "00444a10": {
   "name": "C_008310b8_Destroy",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "C_008310b8*",
   "conv": "__fastcall",
@@ -16180,7 +16184,7 @@
  },
  "00444a60": {
   "name": "C_008310b8_Serialize",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -16202,7 +16206,7 @@
  },
  "00444b20": {
   "name": "WeaponFirearms_NotifyColorAnimation",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "WeaponFirearms_NotifyColorAnimation": 1
   },
@@ -40016,7 +40020,7 @@
   "name": "Archive_SerializeString",
   "name_src": "agent",
   "votes": {
-   "Archive_SerializeString": 47
+   "Archive_SerializeString": 48
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -136755,7 +136759,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 820
+   "Mem_Free": 821
   },
   "ret": "int",
   "conv": "__cdecl",
