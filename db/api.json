@@ -301,10 +301,11 @@
   "votes": {
    "Vector_GetLength": 9
   },
-  "ret": "double",
+  "ret": "long double",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "float* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00401fa0.cpp"
  },
  "00401fd0": {
   "name": "Vec3_AddAssign",
@@ -6771,8 +6772,9 @@
   },
   "ret": "double",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0041e480.cpp"
  },
  "0041e490": {
   "name": "AiTaskStates_AdvanceAngleTween",
@@ -18848,7 +18850,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 358
+   "CHandleTable_Resolve": 359
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -36258,7 +36260,7 @@
   "name": "SceneObj_IsInactive",
   "name_src": "vote",
   "votes": {
-   "SceneObj_IsInactive": 46
+   "SceneObj_IsInactive": 47
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -38118,7 +38120,7 @@
   "name": "IsField1BCNonNegative",
   "name_src": "agent",
   "votes": {
-   "IsField1BCNonNegative": 24
+   "IsField1BCNonNegative": 25
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -38130,7 +38132,7 @@
   "name": "S_00492b20_GetPtr0x1B4",
   "name_src": "agent",
   "votes": {
-   "S_00492b20_GetPtr0x1B4": 10
+   "S_00492b20_GetPtr0x1B4": 11
   },
   "ret": "char*",
   "conv": "__fastcall",
@@ -51554,15 +51556,16 @@
   "file": "src/auto/004cd740.cpp"
  },
  "004cd7b0": {
-  "name": "C_0083ab58_TickMode3",
-  "name_src": "vote",
+  "name": "C_0083ab58_UpdateSearchTarget",
+  "name_src": "agent",
   "votes": {
    "C_0083ab58_TickMode3": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_0083ab58* self, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/004cd7b0.cpp"
  },
  "004cd870": {
   "name": "C_0083ab58_IssueTargetCheckRequest",
@@ -57613,8 +57616,9 @@
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "float* a1, float* a2, float* a3, float* a4, float* a5, float* a6",
-  "sig_src": "vote"
+  "params": "float* startA, float* endA, float* startB, float* endB, float* outA, float* outB",
+  "sig_src": "impl",
+  "file": "src/auto/004df0d0.cpp"
  },
  "004df140": {
   "name": "ComputeLinkedPairBlockFlags",
