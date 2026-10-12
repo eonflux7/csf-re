@@ -63002,7 +63002,7 @@
   "name": "EraseWideStringRange",
   "name_src": "vote",
   "votes": {
-   "EraseWideStringRange": 7
+   "EraseWideStringRange": 8
   },
   "ret": "int*",
   "conv": "__fastcall",
@@ -71364,7 +71364,7 @@
   "name": "MenuMpAccounts_CompareNames",
   "name_src": "vote",
   "votes": {
-   "MenuMpAccounts_CompareNames": 3
+   "MenuMpAccounts_CompareNames": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -137928,8 +137928,8 @@
   "file": "src/auto/00695680.cpp"
  },
  "006956c0": {
-  "name": "MenuLoading_CopyLocalizedText",
-  "name_src": "vote",
+  "name": "CoreVariantValues_CopyWideStringBounded",
+  "name_src": "agent",
   "votes": {
    "MenuLoading_CopyLocalizedText": 4
   },
@@ -137940,8 +137940,8 @@
   "file": "src/auto/006956c0.cpp"
  },
  "00695700": {
-  "name": "AppendWideString",
-  "name_src": "vote",
+  "name": "VariantValues_AppendWideString",
+  "name_src": "agent",
   "votes": {
    "AppendWideString": 3
   },
@@ -137953,7 +137953,7 @@
  },
  "00695760": {
   "name": "WideString_Compare",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "WideString_Compare": 1
   },
@@ -137997,7 +137997,7 @@
  },
  "006958f0": {
   "name": "CoreVariantValues_CopyDwordArray",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
@@ -138025,19 +138025,22 @@
   "sig_src": "abi"
  },
  "006959b0": {
-  "name": "sub_6959B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "VariantValues_CopyRangeAndSetEnd",
+  "name_src": "agent",
+  "votes": {
+   "EraseTailRange": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, uint32_t* a3, uint32_t* a4",
-  "sig_src": "abi"
+  "params": "S_006959b0* self, void* , uint32_t* outSlot, uint32_t* dest, uint32_t* src",
+  "sig_src": "impl",
+  "file": "src/auto/006959b0.cpp"
  },
  "006959f0": {
   "name": "InsertWideCharacters",
   "name_src": "vote",
   "votes": {
-   "InsertWideCharacters": 1
+   "InsertWideCharacters": 2
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -138092,22 +138095,25 @@
   "sig_src": "abi"
  },
  "00696410": {
-  "name": "sub_696410",
-  "name_src": "addr",
-  "votes": {},
+  "name": "AppendFillElements",
+  "name_src": "vote",
+  "votes": {
+   "AppendFillElements": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, uint32_t* a1, unsigned int a3, uint32_t* arg8",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00696670": {
-  "name": "sub_696670",
-  "name_src": "addr",
+  "name": "S_006959b0_Resize",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int a2, int a3",
-  "sig_src": "abi"
+  "params": "S_006959b0* self, void* , unsigned int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/00696670.cpp"
  },
  "006966e0": {
   "name": "sub_6966E0",
@@ -138142,46 +138148,52 @@
   "sig_src": "vote"
  },
  "00696af0": {
-  "name": "sub_696AF0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "VariantValues_CompareWideStringToNarrow",
+  "name_src": "agent",
+  "votes": {
+   "SaveGame_NameCheckResult": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2",
-  "sig_src": "abi"
+  "params": "S_00696af0* self, void* , char* text",
+  "sig_src": "impl",
+  "file": "src/auto/00696af0.cpp"
  },
  "00696b60": {
-  "name": "MenuAccount_GateCheck_696B60",
-  "name_src": "vote",
+  "name": "MenuAccount_IsGateClear_696B60",
+  "name_src": "agent",
   "votes": {
    "MenuAccount_GateCheck_696B60": 8
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "vote"
+  "params": "S_00696af0* self, void* , char* a2",
+  "sig_src": "impl",
+  "file": "src/auto/00696b60.cpp"
  },
  "00696b80": {
   "name": "MenuProgressInput_InitializeText",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MenuProgressInput_InitializeText": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, wchar_t* String",
-  "sig_src": "vote"
+  "params": "void* self, void* , wchar_t* String",
+  "sig_src": "impl",
+  "file": "src/auto/00696b80.cpp"
  },
  "00696bb0": {
   "name": "SaveGame_ValidateName",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SaveGame_ValidateName": 6
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* name, void* edx, const uint8_t* separator",
-  "sig_src": "vote"
+  "params": "void* self, void* , char* a2",
+  "sig_src": "impl",
+  "file": "src/auto/00696bb0.cpp"
  },
  "00696bd0": {
   "name": "AssignDwordRange_696BD0",
@@ -138214,13 +138226,14 @@
   "file": "src/auto/00696f00.cpp"
  },
  "00696f20": {
-  "name": "sub_696F20",
-  "name_src": "addr",
+  "name": "CoreVariantValues_SetWideString",
+  "name_src": "agent",
   "votes": {},
-  "ret": "void*",
+  "ret": "S_004f21d0*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, wchar_t* String",
-  "sig_src": "abi"
+  "params": "S_004f21d0* self, void* , wchar_t* text",
+  "sig_src": "impl",
+  "file": "src/auto/00696f20.cpp"
  },
  "00696f50": {
   "name": "ConstructWideString",
@@ -138241,8 +138254,9 @@
   },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "std::uint32_t* self, void* edx, std::int16_t* text",
-  "sig_src": "vote"
+  "params": "S_004f21d0* self, void* , std::int16_t* source",
+  "sig_src": "impl",
+  "file": "src/auto/00696f90.cpp"
  },
  "00697020": {
   "name": "SaveSlots_ApplyIndex",
@@ -138269,16 +138283,17 @@
   "sig_src": "vote"
  },
  "00697100": {
-  "name": "FormatterSetPattern",
-  "name_src": "vote",
+  "name": "S_004f21d0_SetPattern",
+  "name_src": "agent",
   "votes": {
    "FormatterSetPattern": 16,
    "ConstructMissionFormatString": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, const char* pattern",
-  "sig_src": "vote"
+  "params": "S_004f21d0* self, void* , uint8_t* a2",
+  "sig_src": "impl",
+  "file": "src/auto/00697100.cpp"
  },
  "00697130": {
   "name": "TextInputSubobject_Init",
@@ -209073,7 +209088,7 @@
   "name": "_wcslen",
   "name_src": "ida",
   "votes": {
-   "_wcslen": 5
+   "_wcslen": 7
   },
   "ret": "size_t",
   "conv": "__cdecl",
