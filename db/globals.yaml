@@ -59,7 +59,7 @@
 - {addr: 0x0082D750, name: g_RotationRadiansToDegrees, type: float, uses: 1, src: auto}
 - {addr: 0x0082D754, name: g_DegreesToRadians, type: float, uses: 6, src: auto, alt: [g_RotationDegreesToRadians, g_fDegToRadFactor]}
 - {addr: 0x0082D758, name: g_AngleSettledTolerance, type: double, uses: 2, src: auto, alt: [g_RotationTolerance]}
-- {addr: 0x0082D75C, name: g_HudNegativePi, type: float, uses: 4, src: auto, alt: [g_NegativeHalfTurnRadians]}
+- {addr: 0x0082D75C, name: g_HudNegativePi, type: float, uses: 5, src: auto, alt: [g_NegativeHalfTurnRadians]}
 - {addr: 0x0082D7B0, name: g_DefaultAngularSpeed, type: float, uses: 1, src: auto}
 - {addr: 0x0082D7B4, name: g_ActiveAngularSpeed, type: float, uses: 1, src: auto}
 - {addr: 0x0082D7B8, name: g_InactiveAngularSpeed, type: float, uses: 1, src: auto}
@@ -260,6 +260,8 @@
 - {addr: 0x0083A218, name: g_StaticScanSamples, type: float, uses: 1, src: auto}
 - {addr: 0x0083A9DC, name: g_CoverAttackNearDistanceSquared, type: float, uses: 2, src: auto}
 - {addr: 0x0083AB1C, name: g_FirstWrapPattern, type: const char, uses: 1, src: auto}
+- {addr: 0x0083AB28, name: g_fPi, type: float, uses: 1, src: auto}
+- {addr: 0x0083AB2C, name: g_fTwoPi, type: float, uses: 1, src: auto}
 - {addr: 0x0083B2BC, name: g_ProximityRadiusSquared, type: float, uses: 1, src: auto}
 - {addr: 0x0083B644, name: g_AngleScale, type: float, uses: 1, src: auto}
 - {addr: 0x0083BB14, name: g_ListenerOffsetScale_83BB14, type: float, uses: 2, src: auto}
@@ -391,7 +393,7 @@
 - {addr: 0x00860178, name: g_C_00860178_vtable, type: void*, uses: 1, src: auto}
 - {addr: 0x00860194, name: g_ColorTransitionEpsilon, type: float, uses: 2, src: auto, alt: [g_TransitionThreshold]}
 - {addr: 0x008603A0, name: g_NearZeroEpsilon, type: float, uses: 6, src: auto, alt: [g_ObjectPropertyTolerance, g_ZeroEpsilon]}
-- {addr: 0x0086061C, name: g_DegreesPerRadian, type: float, uses: 3, src: auto, alt: [g_RadiansToDegrees, g_RadiansToDegreesFactor]}
+- {addr: 0x0086061C, name: g_RadiansToDegrees, type: float, uses: 4, src: auto, alt: [g_DegreesPerRadian, g_RadiansToDegreesFactor]}
 - {addr: 0x00860620, name: g_DegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x008608A8, name: g_Value1e8, type: float, uses: 1, src: auto}
 - {addr: 0x00860DA4, name: g_WaterCameraNearClip, type: float, uses: 3, src: auto, alt: [g_WaterCameraNearClipBits]}
