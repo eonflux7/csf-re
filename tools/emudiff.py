@@ -46,6 +46,8 @@ NATIVE = {"_sqrt": "DD442404D9FAC3", "_sin": "DD442404D9FEC3", "_cos": "DD442404
 NATIVE_AT = {n: SYS_BASE + 0x100 + 16 * i for i, n in enumerate(NATIVE)}
 FLOATS = [0.0, 1.0, 0.5, 2.0, -1.0, 100.0]
 
+BYTE_TYPES = ("bool", "char", "uint8_t", "unsigned char", "int8_t", "signed char", "_BOOL1", "BOOL1")
+
 _cache = {}
 
 
@@ -127,6 +129,42 @@ def proto(ea):
     stack = ps[2:] if conv == "__fastcall" else ps[1:] if conv == "__thiscall" else ps
     size = sum(8 if t.strip() in ("double", "long long", "int64_t", "uint64_t", "__int64") else 4 for t in stack)
     return ecx, stack, (a.get("ret") or "int").strip(), 0 if conv == "__cdecl" else size
+
+
+def eax_meaningless(ea):
+    """No caller reads eax, or the original leaves it undefined on some path (api.py; the in-game diff's rule)."""
+    def go():
+        from packet import DB
+        return DB()
+    try:
+        import api as apimod
+        db = load("db", go)
+        return bool(apimod.eax_undefined_on_return(ea, db) or apimod.ret_unused(ea, db))
+    except Exception:
+        return False
+
+
+def returns_al(ea):
+    """The original's last write to eax before some `ret` is to al only (setcc al / mov al / xor al, al): a byte
+    return whatever the prototype says (0x468880: `or eax, -1; ...; setne al; ret`, typed int)."""
+    def go():
+        import capstone
+        return capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+    md = load("cs", go)
+    img, _ = exe_image()
+    for a, b in own_ranges(ea)[0]:
+        insns = list(md.disasm(bytes(img[a - IMG:b - IMG]), a))
+        for i, ins in enumerate(insns):
+            if ins.mnemonic != "ret":
+                continue
+            for prev in reversed(insns[max(0, i - 8):i]):
+                if prev.mnemonic in ("pop", "leave", "add", "mov") and prev.op_str.split(",")[0].strip() in ("esi", "edi", "ebx", "ebp", "esp", ""):
+                    continue
+                dst = prev.op_str.split(",")[0].strip()
+                if prev.mnemonic.startswith(("set", "mov", "xor", "or", "and", "sbb")) and dst == "al":
+                    return True
+                break
+    return False
 
 
 def h32(x):
@@ -356,6 +394,7 @@ class Run:
         return i >= 0 and self.crt[i][0] <= a < self.crt[i][1]
 
     def on_block(self, uc, addr, size, _):
+        self.blocks += 1
         if addr == RET_MAGIC:
             self.status = "ret"
             uc.emu_stop()
@@ -382,7 +421,7 @@ class Run:
         return True
 
     def norm(self, v):
-        if STACK_LO <= v < ESP0:
+        if STACK_LO <= v < ESP0 + 0x40:  # the frame, or the address of an argument (ours may pass a copy's)
             return "stack"
         if OBJ_BASE <= v < OBJ_BASE + 0x100000:
             return "own-data"
@@ -409,7 +448,9 @@ class Run:
         self.events.append((name or target, pop, nargs, use_ecx, rt, tuple(self.norm(a) for a in argv),
                             self.norm(uc.reg_read(X.UC_X86_REG_ECX)) if use_ecx else None))
         h = h32(0xE000 + i * 977 + self.prof * 131)
-        if self.prof >= 6 and rt not in ("float", "double", "long double", "void"):
+        if rt in BYTE_TYPES:  # before the pointer profiles: the caller extends a byte, the original keeps eax
+            val = h & 1
+        elif self.prof >= 6 and rt not in ("float", "double", "long double", "void"):
             val = ZONES + 0x0C000000 + i * 0x10000 + 0x100
         elif "*" in rt or rt == "?":
             val = ZONES + 0x0C000000 + i * 0x10000 + 0x100 if (rt != "?" or self.prof % 2 == 0) else h % 3
@@ -418,6 +459,7 @@ class Run:
         else:
             val = h % 4
         uc.reg_write(X.UC_X86_REG_EAX, val)
+        self.last_mock = (val, rt)
         if rt in ("float", "double", "long double"):
             uc.mem_write(FVAL, struct.pack("<f", FLOATS[h % len(FLOATS)]))
             uc.mem_write(esp + pop, struct.pack("<I", ret))
@@ -431,6 +473,8 @@ class Run:
 
     tail = False
     ret_site = {}
+    last_mock = None
+    blocks = 0
 
 
 def st0_float(v):
@@ -453,6 +497,32 @@ def close(a, b):
     return a == b or (a is not None and b is not None and abs(a - b) <= 1e-5 * max(1.0, abs(a), abs(b)))
 
 
+def same_args(eo, em):
+    """Stack arguments of one call, original vs ours. A byte or short parameter is compared in its width (the
+    original pushes a dword whose upper bytes are whatever its frame held: 0x512400 `mov edx, [ebp-4]; push edx`
+    for a char); bytes of the original's value still holding the never-written stack fill (0xCC) are not
+    compared (a frame dword passed on before it is written: 0x4696C0, 0x47EE50)."""
+    if eo[5] == em[5]:
+        return True
+    if len(eo[5]) != len(em[5]):
+        return False
+    p = proto(eo[0]) if isinstance(eo[0], int) else None
+    types = [t.strip() for t in p[1]] if p else []
+    for i, (a, b) in enumerate(zip(eo[5], em[5])):
+        if a == b:
+            continue
+        if isinstance(a, str) or isinstance(b, str):
+            return False
+        t = types[i] if i < len(types) else ""
+        mask = 0xFF if t in BYTE_TYPES else 0xFFFF if t in ("short", "uint16_t", "int16_t", "unsigned short") else 0xFFFFFFFF
+        for k in range(4):
+            if (a >> 8 * k) & 0xFF == 0xCC:
+                mask &= ~(0xFF << 8 * k)
+        if (a ^ b) & mask:
+            return False
+    return True
+
+
 def compare(ea, o, m):
     """[difference, ...] between the original's run and ours (empty: same)."""
     out = []
@@ -460,7 +530,7 @@ def compare(ea, o, m):
         if eo[0] != em[0]:
             out.append(f"call {i}: target {tn(eo[0])} vs {tn(em[0])}")
             return out
-        if eo[5] != em[5]:
+        if not same_args(eo, em):
             out.append(f"call {i} to {tn(eo[0])}: arguments {[tn(x) for x in eo[5]]} vs {[tn(x) for x in em[5]]}")
             return out
         if eo[6] != em[6]:
@@ -470,6 +540,10 @@ def compare(ea, o, m):
         out.append(f"{len(o.events)} calls vs {len(m.events)}")
         return out
     if m.status != "ret":
+        if m.status == "cap" and o.blocks > 5000:
+            # a long loop over filled memory the original just finished under the instruction cap (0x4A35D0: a
+            # count from garbage; ours takes a few instructions more per round)
+            return ["?ours runs past the cap after a long run of the original"]
         return [f"ours does not return ({m.status})"]
     if o.esp != m.esp and not (o.tail or m.tail):
         out.append(f"esp after return {o.esp - ESP0:+d} vs {m.esp - ESP0:+d}")
@@ -478,12 +552,20 @@ def compare(ea, o, m):
     p = proto(ea)
     rt = p[2] if p else "int"
     if rt in ("float", "double", "long double"):
-        if not close(st0_float(o.st0), st0_float(m.st0)):
-            out.append(f"st0 {st0_float(o.st0)} vs {st0_float(m.st0)}")
-    elif rt != "void" and not (o.tail or m.tail):
-        mask = 0xFF if rt in ("bool", "char", "uint8_t", "unsigned char", "int8_t") else \
+        fo, fm = st0_float(o.st0), st0_float(m.st0)
+        # the emulator loads a denormal float (a small int read as a float) with a wrong exponent: 0x401FA0 got
+        # 1.47e19 from (4, 0, 5) read as floats. A result no game value has says nothing either way
+        absurd = lambda v: v is not None and (v != v or abs(v) > 1e15 or 0 < abs(v) < 1e-30)
+        if not close(fo, fm) and not absurd(fo) and not absurd(fm):
+            out.append(f"st0 {fo} vs {fm}")
+    elif rt != "void" and not (o.tail or m.tail) and not eax_meaningless(ea):
+        mask = 0xFF if rt in BYTE_TYPES or returns_al(ea) else \
             0xFFFF if rt in ("short", "uint16_t", "int16_t", "unsigned short") else 0xFFFFFFFF
-        if o.norm(o.eax & mask) != m.norm(m.eax & mask):
+        # eax still holds what the last callee left, and that callee returns a byte, a float or nothing while this
+        # function is typed wider: a leftover, not a return value (0x525A50, 0x6CAF00: Hex-Rays says int)
+        lm = o.last_mock
+        left = mask == 0xFFFFFFFF and lm and lm[0] == o.eax and lm[1] in BYTE_TYPES + ("void", "float", "double", "long double")
+        if not left and o.norm(o.eax & mask) != m.norm(m.eax & mask):
             out.append(f"returns {o.eax & mask:x} vs {m.eax & mask:x}")
     skip = lambda a: TEB <= a < TEB + 0x1000 or OBJ_BASE <= a < OBJ_BASE + 0x100000 or SYS_BASE <= a < SYS_BASE + 0x1000
     addrs = sorted(a for a in o.written | m.written if not skip(a))
@@ -529,10 +611,21 @@ def own_ranges(ea):
 
 def check(ea, obj_path=None, src=None, profiles=PROFILES, verbose=False):
     """-> (verdict, detail): same | DIFF | inconclusive | error."""
+    tmp = None
+    if src and not obj_path:  # a source without an object: compile it as the hook build does
+        import subprocess, tempfile, gate
+        tmp = obj_path = tempfile.mktemp(suffix=".obj")
+        r = subprocess.run(gate.compile_cmd() + [f"/Fo{tmp}", "-c", "--", os.path.abspath(src)], capture_output=True,
+                           text=True, cwd=os.path.join(ROOT, "build"))
+        if r.returncode:
+            return "error", "compile: " + (r.stdout + r.stderr).strip()[:200]
     try:
         obj = Obj(obj_path or os.path.join(OBJ_DIR, f"{ea:08x}.cpp.obj"), hook_name(ea, src))
     except (OSError, ValueError, struct.error) as e:
         return "error", str(e)
+    finally:
+        if tmp and os.path.exists(tmp):
+            os.remove(tmp)
     own, ret_site = own_ranges(ea)
     done, diffs, why = 0, [], collections.Counter()
     for prof in range(profiles):
@@ -544,6 +637,9 @@ def check(ea, obj_path=None, src=None, profiles=PROFILES, verbose=False):
             continue
         m = Run(ea, prof, obj.code, obj, o.events).start(obj.entry)
         d = compare(ea, o, m)
+        if d and d[0].startswith("?"):
+            why[d[0][1:41]] += 1
+            continue
         done += 1
         if verbose:
             print(f"  profile {prof}: {len(o.events)} calls, {len(o.written)} bytes written: {'; '.join(d) or 'same'}")
