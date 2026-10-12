@@ -333,7 +333,7 @@
   "name": "BuildFacingVectorBetween",
   "name_src": "agent",
   "votes": {
-   "BuildFacingVectorBetween": 15
+   "BuildFacingVectorBetween": 16
   },
   "ret": "float*",
   "conv": "__fastcall",
@@ -4145,7 +4145,7 @@
   "name": "GfxMatrix_AreVectorsDifferent",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_AreVectorsDifferent": 5
+   "GfxMatrix_AreVectorsDifferent": 6
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -18692,7 +18692,7 @@
   "name": "GetSceneMenuContext",
   "name_src": "vote",
   "votes": {
-   "GetSceneMenuContext": 94
+   "GetSceneMenuContext": 95
   },
   "ret": "uint32_t",
   "conv": "__fastcall",
@@ -27895,7 +27895,7 @@
   "name": "ResolveEntryLookupValue",
   "name_src": "vote",
   "votes": {
-   "ResolveEntryLookupValue": 39,
+   "ResolveEntryLookupValue": 43,
    "GetEntityComponent": 1,
    "GetProviderStatusCode": 1,
    "ObjectProvider_IsActive": 1,
@@ -28693,7 +28693,7 @@
   "name": "MpSpawnPoints_RegisterObject",
   "name_src": "vote",
   "votes": {
-   "MpSpawnPoints_RegisterObject": 3
+   "MpSpawnPoints_RegisterObject": 4
   },
   "ret": "uint32_t",
   "conv": "__cdecl",
@@ -30346,7 +30346,7 @@
   "name": "AiCore_GetTaskTargetNameBuffer",
   "name_src": "agent",
   "votes": {
-   "AiCore_GetTaskTargetNameBuffer": 16,
+   "AiCore_GetTaskTargetNameBuffer": 18,
    "AiCore_GetCoverAttackState": 1
   },
   "ret": "char*",
@@ -35667,7 +35667,7 @@
   "name": "AiAttackTasks_CopyTargetHandle",
   "name_src": "vote",
   "votes": {
-   "AiAttackTasks_CopyTargetHandle": 17,
+   "AiAttackTasks_CopyTargetHandle": 19,
    "AiAttackTasks_SetWeaponTarget": 1,
    "AiAttackTasks_ApplyTargetData": 1
   },
@@ -36178,7 +36178,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 149,
+   "GetObjectPositionVector": 150,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -43839,7 +43839,7 @@
   "name": "AiCoverAttackTasks_IsCoverActionComplete",
   "name_src": "vote",
   "votes": {
-   "AiCoverAttackTasks_IsCoverActionComplete": 1
+   "AiCoverAttackTasks_IsCoverActionComplete": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -44201,7 +44201,7 @@
   "name": "AiCoverAttackTasks_IsMovementBlocked",
   "name_src": "vote",
   "votes": {
-   "AiCoverAttackTasks_IsMovementBlocked": 2,
+   "AiCoverAttackTasks_IsMovementBlocked": 3,
    "AiCoverAttackTasks_ShouldRefreshCover": 1
   },
   "ret": "bool",
@@ -46098,7 +46098,7 @@
   "name": "GetPathStatus",
   "name_src": "vote",
   "votes": {
-   "GetPathStatus": 4,
+   "GetPathStatus": 5,
    "GetTaskSlotResult": 1,
    "AiAutonomous_OwnerQueryMoveStatus": 1,
    "Autonomo_GetMovementState": 1,
@@ -46146,6 +46146,7 @@
   "name": "AiFncStatic_UpdateCoverAttackState",
   "name_src": "agent",
   "votes": {
+   "AiFncStatic_UpdateCoverAttackState": 1,
    "AiCoverAttackTasks_UpdateAttackState": 1,
    "AiCoverAttackTasks_UpdateAttack": 1,
    "AiCoverAttackTasks_UpdateCharacterAttack": 1
@@ -47191,13 +47192,15 @@
   "sig_src": "abi"
  },
  "004b3240": {
-  "name": "sub_4B3240",
-  "name_src": "addr",
-  "votes": {},
+  "name": "AiDistracted_PrepareAlertTransition",
+  "name_src": "vote",
+  "votes": {
+   "AiDistracted_PrepareAlertTransition": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004b3310": {
   "name": "sub_4B3310",
@@ -47221,13 +47224,16 @@
   "sig_src": "vote"
  },
  "004b3430": {
-  "name": "sub_4B3430",
-  "name_src": "addr",
-  "votes": {},
+  "name": "AiDistracted_UpdateLinkedState",
+  "name_src": "vote",
+  "votes": {
+   "AiDistracted_UpdateLinkedState": 1,
+   "AiDistracted_UpdateCharacterReaction": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004b3700": {
   "name": "sub_4B3700",
@@ -47275,13 +47281,16 @@
   "sig_src": "abi"
  },
  "004b3d30": {
-  "name": "sub_4B3D30",
-  "name_src": "addr",
-  "votes": {},
+  "name": "AiDistracted_UpdateResolvedEntry",
+  "name_src": "vote",
+  "votes": {
+   "AiDistracted_UpdateResolvedEntry": 1,
+   "AiDistracted_UpdateLinkedCharacter": 1
+  },
   "ret": "void",
   "conv": "__stdcall",
   "params": "int arg0, float a3, float a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004b3f70": {
   "name": "sub_4B3F70",
@@ -47549,6 +47558,7 @@
   "name_src": "vote",
   "votes": {
    "AiDistracted_InitializeCoreActionState": 1,
+   "AiDistracted_RestartCoverAction": 1,
    "AiDistracted_AttachTask": 1
   },
   "ret": "void",
@@ -48177,6 +48187,7 @@
   "votes": {
    "AiDistracted_ResetTaskState": 1,
    "AiDistracted_HandleNegativeTimer": 1,
+   "AiDistracted_UpdateExpiredDistraction": 1,
    "AiDistracted_HandleExpiredDistraction": 1,
    "AiDistracted_UpdateLinkedObject": 1
   },
@@ -48263,13 +48274,14 @@
   "file": "src/auto/004b9f60.cpp"
  },
  "004ba000": {
-  "name": "sub_4BA000",
-  "name_src": "addr",
+  "name": "AiDistracted_UpdateAssignedCoverState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "void* a1, float a2",
-  "sig_src": "abi"
+  "params": "C_0085e760* self, float deltaTime",
+  "sig_src": "impl",
+  "file": "src/auto/004ba000.cpp"
  },
  "004ba0c0": {
   "name": "TDudoso_ResetAndGetName",
@@ -48292,19 +48304,20 @@
   "file": "src/auto/004ba170.cpp"
  },
  "004ba260": {
-  "name": "sub_4BA260",
-  "name_src": "addr",
+  "name": "AiDistracted_EvaluateAlertTransition",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__stdcall",
-  "params": "int a1",
-  "sig_src": "abi"
+  "params": "void* context",
+  "sig_src": "impl",
+  "file": "src/auto/004ba260.cpp"
  },
  "004ba3c0": {
   "name": "AiCore_ActivateAssignedCoverState",
   "name_src": "vote",
   "votes": {
-   "AiCore_ActivateAssignedCoverState": 2
+   "AiCore_ActivateAssignedCoverState": 6
   },
   "ret": "int",
   "conv": "__stdcall",
@@ -48312,22 +48325,24 @@
   "sig_src": "vote"
  },
  "004ba420": {
-  "name": "sub_4BA420",
-  "name_src": "addr",
+  "name": "AiDistracted_UpdateCharacterDistraction",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__stdcall",
-  "params": "void* a1, float arg4",
-  "sig_src": "abi"
+  "params": "C_0085e760* task, float elapsedTime",
+  "sig_src": "impl",
+  "file": "src/auto/004ba420.cpp"
  },
  "004ba5a0": {
-  "name": "sub_4BA5A0",
-  "name_src": "addr",
+  "name": "C_0085e760_UpdateDistractedTask",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__stdcall",
-  "params": "void* a1, float a2",
-  "sig_src": "abi"
+  "params": "C_0085e760* self, float deltaTime",
+  "sig_src": "impl",
+  "file": "src/auto/004ba5a0.cpp"
  },
  "004ba690": {
   "name": "AiDistracted_CheckExpiredDistraction",
@@ -48352,13 +48367,14 @@
   "file": "src/auto/004ba700.cpp"
  },
  "004ba850": {
-  "name": "sub_4BA850",
-  "name_src": "addr",
+  "name": "AiDistracted_UpdateCharacterState",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a3, float a4",
-  "sig_src": "abi"
+  "params": "void* self, void* , C_0085e760* actor, float deltaTime",
+  "sig_src": "impl",
+  "file": "src/auto/004ba850.cpp"
  },
  "004bab80": {
   "name": "AiDistracted_InitializeTask",
@@ -52277,7 +52293,7 @@
   "name": "AiCoverAttackTasks_SetCoverTransition",
   "name_src": "agent",
   "votes": {
-   "AiCoverAttackTasks_SetCoverTransition": 6,
+   "AiCoverAttackTasks_SetCoverTransition": 7,
    "AiCoverAttackTasks_RefreshCoverState": 1
   },
   "ret": "int",
@@ -52290,7 +52306,7 @@
   "name": "AiCoverAttackTasks_UpdateCoverState",
   "name_src": "agent",
   "votes": {
-   "AiCoverAttackTasks_UpdateCoverState": 4
+   "AiCoverAttackTasks_UpdateCoverState": 6
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -52432,7 +52448,7 @@
   "name": "ResetState",
   "name_src": "agent",
   "votes": {
-   "ResetState": 9
+   "ResetState": 11
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -55603,7 +55619,7 @@
   "name": "IsField10Null",
   "name_src": "agent",
   "votes": {
-   "IsField10Null": 8
+   "IsField10Null": 12
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -55615,7 +55631,7 @@
   "name": "GetLinkedObjectValue_4DB5C0",
   "name_src": "agent",
   "votes": {
-   "GetLinkedObjectValue_4DB5C0": 137
+   "GetLinkedObjectValue_4DB5C0": 142
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -55627,7 +55643,7 @@
   "name": "GetLinkedObjectField10",
   "name_src": "agent",
   "votes": {
-   "GetLinkedObjectField10": 42
+   "GetLinkedObjectField10": 46
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -56038,7 +56054,7 @@
   "name": "Dispatch_NoLinkedTarget",
   "name_src": "vote",
   "votes": {
-   "Dispatch_NoLinkedTarget": 9,
+   "Dispatch_NoLinkedTarget": 10,
    "CoverTask_SetTarget": 1
   },
   "ret": "int",
@@ -56071,7 +56087,7 @@
   "name": "AiCoverAttackTasks_UpdateCharacterTasks",
   "name_src": "vote",
   "votes": {
-   "AiCoverAttackTasks_UpdateCharacterTasks": 5,
+   "AiCoverAttackTasks_UpdateCharacterTasks": 9,
    "PrepareCoverAttackTarget": 1,
    "AiCoverAttackTasks_UpdateBaseTask": 1,
    "AiCoverAttackTasks_UpdateTask": 1,
@@ -56257,7 +56273,7 @@
   "name": "AiCoverAttackTasks_ResetLinkedTaskState",
   "name_src": "vote",
   "votes": {
-   "AiCoverAttackTasks_ResetLinkedTaskState": 20,
+   "AiCoverAttackTasks_ResetLinkedTaskState": 24,
    "BindLinkedSubobject": 1,
    "AiCoverAttackTasks_SelectTaskEntry": 1,
    "CoverAttack_Sub_4DC380": 1,
@@ -60050,7 +60066,7 @@
   "name": "GetValue8B0554",
   "name_src": "agent",
   "votes": {
-   "GetValue8B0554": 240
+   "GetValue8B0554": 241
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -63095,31 +63111,34 @@
   "file": "src/auto/004f8b20.cpp"
  },
  "004f9190": {
-  "name": "sub_4F9190",
-  "name_src": "addr",
+  "name": "DevConsole_SetScaledValue",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2, int a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , float value, int state",
+  "sig_src": "impl",
+  "file": "src/auto/004f9190.cpp"
  },
  "004f91c0": {
-  "name": "sub_4F91C0",
-  "name_src": "addr",
+  "name": "DevConsole_ResetState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , char preserveSecondaryState",
+  "sig_src": "impl",
+  "file": "src/auto/004f91c0.cpp"
  },
  "004f91e0": {
-  "name": "sub_4F91E0",
-  "name_src": "addr",
+  "name": "C_0083f1d8_Initialize",
+  "name_src": "agent",
   "votes": {},
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0083f1d8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004f91e0.cpp"
  },
  "004f9270": {
   "name": "sub_4F9270",
@@ -63131,13 +63150,14 @@
   "sig_src": "abi"
  },
  "004f92a0": {
-  "name": "sub_4F92A0",
-  "name_src": "addr",
+  "name": "DevConsole_UpdateProximityIntensity",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , float deltaTime",
+  "sig_src": "impl",
+  "file": "src/auto/004f92a0.cpp"
  },
  "004f9520": {
   "name": "sub_4F9520",
@@ -63149,13 +63169,14 @@
   "sig_src": "abi"
  },
  "004f9630": {
-  "name": "sub_4F9630",
-  "name_src": "addr",
+  "name": "C_008311c4_DispatchArray",
+  "name_src": "agent",
   "votes": {},
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "C_008311c4* self, void* , std::uint32_t* array",
+  "sig_src": "impl",
+  "file": "src/auto/004f9630.cpp"
  },
  "004f9660": {
   "name": "GetValue8B055C",
@@ -63188,22 +63209,24 @@
   "sig_src": "abi"
  },
  "004f9750": {
-  "name": "sub_4F9750",
-  "name_src": "addr",
+  "name": "C_0083f1f8_Construct",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0083f1f8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004f9750.cpp"
  },
  "004f97c0": {
-  "name": "sub_4F97C0",
-  "name_src": "addr",
+  "name": "C_0083f1f8_AppendCharacter",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int16_t a3",
-  "sig_src": "abi"
+  "params": "C_0083f1f8* self, void* , int16_t character",
+  "sig_src": "impl",
+  "file": "src/auto/004f97c0.cpp"
  },
  "004f98a0": {
   "name": "ActivateCheatOnObject",
@@ -63248,13 +63271,15 @@
   "sig_src": "vote"
  },
  "004f9a50": {
-  "name": "sub_4F9A50",
-  "name_src": "addr",
-  "votes": {},
+  "name": "DevConsole_ApplyState",
+  "name_src": "vote",
+  "votes": {
+   "DevConsole_ApplyState": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004f9b00": {
   "name": "ApplyFloatValue_4F9B00",
@@ -63268,13 +63293,14 @@
   "sig_src": "vote"
  },
  "004f9b80": {
-  "name": "sub_4F9B80",
-  "name_src": "addr",
+  "name": "C_0083f1f8_ActivateIfEnabled",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint8_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083f1f8* self, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/004f9b80.cpp"
  },
  "004f9ba0": {
   "name": "sub_4F9BA0",
@@ -63381,24 +63407,26 @@
   "sig_src": "abi"
  },
  "004fa740": {
-  "name": "sub_4FA740",
-  "name_src": "addr",
+  "name": "C_0083f2f0_AppendConsoleCharacter",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int16_t a2",
-  "sig_src": "abi"
+  "params": "C_0083f2f0* self, void* , int16_t character",
+  "sig_src": "impl",
+  "file": "src/auto/004fa740.cpp"
  },
  "004fa7c0": {
-  "name": "ApplyGlobalValue_4FA7C0",
-  "name_src": "vote",
+  "name": "DevConsole_UpdateBlink",
+  "name_src": "agent",
   "votes": {
    "ApplyGlobalValue_4FA7C0": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004fa7c0.cpp"
  },
  "004fa800": {
   "name": "sub_4FA800",
@@ -63504,13 +63532,15 @@
   "sig_src": "abi"
  },
  "004fb4b0": {
-  "name": "sub_4FB4B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_0083f2f0_Cleanup",
+  "name_src": "vote",
+  "votes": {
+   "C_0083f2f0_Cleanup": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004fb5f0": {
   "name": "GlobalMenu_ApplyFlagReset",
@@ -63533,22 +63563,24 @@
   "sig_src": "abi"
  },
  "004fb6e0": {
-  "name": "sub_4FB6E0",
-  "name_src": "addr",
+  "name": "C_0083f2f0_Destroy",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0083f2f0* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/004fb6e0.cpp"
  },
  "004fb710": {
-  "name": "sub_4FB710",
-  "name_src": "addr",
+  "name": "S_004fb710_ExtractArgument",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int a2, uint8_t* a3",
-  "sig_src": "abi"
+  "params": "S_004fb710* self, void* , unsigned int argumentIndex, char* output",
+  "sig_src": "impl",
+  "file": "src/auto/004fb710.cpp"
  },
  "004fb7a0": {
   "name": "sub_4FB7A0",
@@ -63560,13 +63592,14 @@
   "sig_src": "abi"
  },
  "004fb820": {
-  "name": "sub_4FB820",
-  "name_src": "addr",
+  "name": "S_004fb820_Initialize",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_004fb820* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004fb820.cpp"
  },
  "004fb850": {
   "name": "sub_4FB850",
@@ -63587,8 +63620,8 @@
   "sig_src": "abi"
  },
  "004fb920": {
-  "name": "MenuSystem_UpdatePendingMenu",
-  "name_src": "vote",
+  "name": "DevConsole_ForwardPendingMenuUpdate",
+  "name_src": "agent",
   "votes": {
    "MenuSystem_UpdatePendingMenu": 1
   },
@@ -63598,13 +63631,15 @@
   "sig_src": "vote"
  },
  "004fb970": {
-  "name": "sub_4FB970",
-  "name_src": "addr",
-  "votes": {},
+  "name": "DevConsole_CleanupTemporaryMenuResource",
+  "name_src": "vote",
+  "votes": {
+   "DevConsole_CleanupTemporaryMenuResource": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004fb9f0": {
   "name": "sub_4FB9F0",
@@ -63616,15 +63651,16 @@
   "sig_src": "abi"
  },
  "004fba10": {
-  "name": "DestroyTemporaryMenuResource",
-  "name_src": "vote",
+  "name": "DevConsole_DestroyTemporaryMenuResource",
+  "name_src": "agent",
   "votes": {
    "DestroyTemporaryMenuResource": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004fba10.cpp"
  },
  "004fba30": {
   "name": "sub_4FBA30",
@@ -63658,13 +63694,14 @@
   "sig_src": "vote"
  },
  "004fbc10": {
-  "name": "sub_4FBC10",
-  "name_src": "addr",
+  "name": "C_0083f364_InitializeRenderObject",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "C_0083f364* self, void* , uint32_t* parameters",
+  "sig_src": "impl",
+  "file": "src/auto/004fbc10.cpp"
  },
  "004fbcc0": {
   "name": "sub_4FBCC0",
@@ -67627,7 +67664,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 304
+   "GetGlobalState_50D190": 305
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -107984,7 +108021,7 @@
   "name": "RwV3dLength",
   "name_src": "rwname",
   "votes": {
-   "RwV3dLength": 10
+   "RwV3dLength": 11
   },
   "ret": "double",
   "conv": "__cdecl",
@@ -117432,7 +117469,7 @@
   "name": "LookupObjectById",
   "name_src": "vote",
   "votes": {
-   "LookupObjectById": 65
+   "LookupObjectById": 67
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -131725,7 +131762,7 @@
   "name": "GetCachedObjectProvider",
   "name_src": "vote",
   "votes": {
-   "GetCachedObjectProvider": 149
+   "GetCachedObjectProvider": 153
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -134454,7 +134491,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 616
+   "Mem_Free": 617
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -136510,7 +136547,7 @@
   "name": "SceneLoader_ResetArchiveSelection",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_ResetArchiveSelection": 4,
+   "SceneLoader_ResetArchiveSelection": 3,
    "SceneLoader_ProcessResourcePath": 1,
    "SceneLoader_ApplySceneOptions": 1,
    "SceneLoader_ClosePackage": 1
@@ -136531,8 +136568,7 @@
   "ret": "void",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "impl",
-  "file": "src/auto/006981b0.cpp"
+  "sig_src": "vote"
  },
  "00698200": {
   "name": "sub_698200",
@@ -141394,7 +141430,7 @@
   "name": "NormalizeVector3",
   "name_src": "agent",
   "votes": {
-   "NormalizeVector3": 46,
+   "NormalizeVector3": 47,
    "NormalizeVector": 1
   },
   "ret": "float*",
@@ -142666,7 +142702,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 263,
+   "GetGlobalInt": 266,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -142701,7 +142737,7 @@
   "name": "ResolveRwManager",
   "name_src": "vote",
   "votes": {
-   "ResolveRwManager": 10
+   "ResolveRwManager": 11
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -144318,7 +144354,7 @@
   "name": "SceneLoader_GetWorldObjectCollection",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetWorldObjectCollection": 17,
+   "SceneLoader_GetWorldObjectCollection": 18,
    "SceneLoader_GetRenderWorld": 2,
    "SceneLoader_GetContextObject": 1
   },
@@ -168945,7 +168981,7 @@
   "name": "C_00830438_Construct",
   "name_src": "vote",
   "votes": {
-   "C_00830438_Construct": 31,
+   "C_00830438_Construct": 32,
    "MenuScenarioSelect_InitializeEmbeddedSubobject": 1,
    "CMenuScreen_ConstructSubobject": 1,
    "InitEmbeddedSubobject": 1,
@@ -189211,7 +189247,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 181,
+   "GetGlobalValue_8BC1E0": 184,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
