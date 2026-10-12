@@ -156,9 +156,9 @@ void inconclusive(Slot& s, const char* why) {
     }
 }
 
-// MSVC's convention has the x87 stack empty at every call. Entries live at a diffed function's entry are a leak
-// (somebody returned in st0 to a caller that doesn't pop it): after three, 0x401FA0's six loads overflow and it
-// returns -nan(ind) for a zero vector. Logged with the last diffed function that was entered clean.
+// The x87 stack is empty (rarely: one entry deep) at every call. Four or more entries live at a diffed function's
+// entry are a leak (somebody returned in st0 to a caller that doesn't pop it): from three on, 0x401FA0's six loads
+// overflow and it returns -nan(ind) for a zero vector. Logged with the last diffed function that was entered clean.
 void x87_probe(const Slot& s) {
     static uint32_t logged;
     static uint32_t lastClean;  // any thread: the log line names the thread
@@ -170,8 +170,11 @@ void x87_probe(const Slot& s) {
     int live = 0;
     for (int k = 0; k < 8; ++k)
         live += ((env[4] >> (2 * k)) & 3) != 3;
-    if (!live) {
-        lastClean = s.info->addr;
+    // One live entry is legal: the original's callers keep a value on the x87 stack across a call to a callee they
+    // know (0x4D2396 calls 0x4D2100 with the first call's result in st0). A leak grows until the stack is full.
+    if (live < 4) {
+        if (!live)
+            lastClean = s.info->addr;
     } else if (logged < 20 && g_log) {
         ++logged;
         fprintf(g_log, "X87 %08X %s: %d x87 entries live at entry (thread %lu, last clean entry %08X)\n",

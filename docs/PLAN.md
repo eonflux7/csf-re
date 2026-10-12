@@ -107,8 +107,9 @@ The orchestrator (Opus, interactive) works `queue/` and the backlog below.
   arguments are): 0x6981B0 mismatched 1/1 on a correct file and sits in difftable's NO_DIFF. Watch the objects
   the function's pointer globals point to (first 256 bytes) and conclude nothing when a callee changed them.
 - [ ] After the x87 leak fix (2026-10-12): smoke the queue's float/NaN mismatches and crash bisects again
-  (each has a note), and make the verifier fail a smoke on an `X87 ...` line in csf_diff.log (hook/diff.cpp
-  logs x87 entries live at a diffed function's entry), naming the last function entered clean.
+  (each has a note). The verifier now quarantines nobody on a smoke with an `X87 ...` line (hook/diff.cpp: four
+  or more x87 entries live at a diffed function's entry): baseline stops, a group stays pending. First smoke
+  after the fix: check that no such line appears; if one does, bisect for the leaking function by hand.
 - [ ] Rename guard in `tools/naming.py`: a wrapper whose target got implemented takes its real prototype; an
   int<->float flip of a parameter compiles silently in older callers (value conversion changes the bits). Diff
   old/new wrapper params before the rewrite and revert/flag on a flip with a non-literal argument (first one:

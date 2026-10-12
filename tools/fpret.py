@@ -6,7 +6,8 @@ stack; the gate then made the reimplementation return float, and every call left
 never pops it). After a few calls the original's own float code overflows the stack and computes NaN
 (0x401FA0: -nan(ind) for a zero vector, 2026-10-12). api.returns_fpu reads this file first.
 
-Rules: nothing is live on the x87 stack across a call (MSVC), so every call starts from depth 0; a callee's result
+Rules: nothing is live on the x87 stack across a call, so every call starts from depth 0 (one exception found in
+75,591 calls: 0x4D2396 keeps st0 across a call; that function comes out undecided); a callee's result
 is its own decided depth, else the old fact (Hex-Rays / last instruction); an indirect call's result is decided by
 what follows it (a pop or use on an empty stack = it returned in st0; an expression that completes without it =
 it didn't). A path that ends right after an undecided call is decided by the function's other paths. Functions

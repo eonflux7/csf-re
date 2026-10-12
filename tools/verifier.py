@@ -183,6 +183,15 @@ def record(**kw):
         f.write(json.dumps(dict(ts=time.time(), **kw)) + "\n")
 
 
+def x87_leak(out):
+    """The smoke's first `X87 ...` line (hook/diff.cpp: x87 entries live at a diffed function's entry), or None.
+    With a leaked x87 stack the original's float code computes NaN and the harness's float compare fails on equal
+    values, so the run's MISMATCH lines say nothing about the functions they name (two days of smokes ran that way
+    until 2026-10-12: 0x40FC50 returned a float the original doesn't)."""
+    m = re.search(r"^X87 .*$", out, re.M)
+    return m.group(0) if m else None
+
+
 def baseline(starts):
     """The installed baseline alone (every pending hook off) must pass; a failure there is in installed code (a smoke
     that never covered the path: e.g. menu-tour-only lanes smokes broke the FR01 scene start). Culprits among the
@@ -203,6 +212,12 @@ def baseline(starts):
             if ok:
                 # a verified function that mismatches the original (0x42D3C0 returned eax for st0: 200/200 in every
                 # start, unnoticed while only verify_group read MISMATCH lines)
+                leak = x87_leak(out)
+                if leak:  # nobody is quarantined on this run's mismatches; the leaking function has to be found
+                    keep = os.path.join(ROOT, "work", f"baseline_x87_{int(time.time())}.log")
+                    open(keep, "w").write(f"start: {secs}s {env}\n{out}")
+                    print(f"baseline: x87 stack leak ({leak}); mismatches of this run ignored; output: {keep}", flush=True)
+                    return False, bad
                 mism = [f"{e:08x}" for e in verified if f"{e:08x}" not in bad
                         and re.search(rf"^MISMATCH {e:08X}\b", out, re.M)]
                 if mism:
@@ -244,6 +259,9 @@ def verify_group(group, starts):
             else:
                 ok, out = grunt.smoke(deploy=False)
             if ok:
+                leak = x87_leak(out)
+                if leak:  # the baseline was clean, so one of the group leaks: nobody installed, nobody blamed
+                    return [], bad, f"x87 stack leak with this group on ({leak}); group left pending"
                 mism = [ea for ea in on if re.search(rf"^MISMATCH {ea.upper()}\b", out, re.M)]
                 if mism:  # the ledger already took this run; the quarantine drops their entries
                     quarantine(mism, "differential test mismatch in game (verifier)", out)

@@ -1304,3 +1304,16 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Fixed by hand: 0x40FC50, 0x4961A0 (void), bindings in 0x49C030 and 0x49A970. Back from the queue
   unchanged: 0x401FA0, 0x41E480, 0x4DF0D0. Nine other queue items carry a note to smoke them again first.
 - Run this after an IDB re-export (`tools/fpret.py`); it reads export/ disassembly and Hex-Rays' prototypes.
+- Later the same evening, still without smokes. Queue 19 -> 13; what is left needs a smoke (or is parked).
+  Ladder failures that were the tooling's: the gate's own-function link check read `if (std::sqrt(..) < x) {`
+  as a definition of sqrt (0x4B6A80; 0x6C0450 fled into an SSE builtin); `push ecx; fstp [esp]` (room for a
+  float argument) counted as a read of ecx, so 0x439B20 could be bound neither way (two callers); hook::tail_jump
+  took no direct target (0x494940); packets named functions used as values without their addresses, and above
+  400 bytes show no disassembly (0x6E0920 compiled to nothing behind an `#if`; new packet section). 0x6981B0:
+  tier-3 false alarm (callee changes a heap object reached through a global), in NO_DIFF. 0x780B90: one stray
+  non-ASCII character.
+- The x87 stack is not always empty at a call: 0x4D2396 calls 0x4D2100 with st0 live (1 of 75,591 calls
+  scanned). The probe therefore reports four or more live entries only.
+- Mistake: editing hook/hook.h while a production-only run was going made its batch build recompile all 9,332
+  files (about 5 minutes, load 21 on 12 cores, nice 5) although the user had asked for nothing heavy. Headers
+  every file includes wait until smokes are allowed again.
