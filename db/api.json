@@ -35565,7 +35565,7 @@
   "name": "AiAttackTasks_CopyTargetHandle",
   "name_src": "vote",
   "votes": {
-   "AiAttackTasks_CopyTargetHandle": 18,
+   "AiAttackTasks_CopyTargetHandle": 17,
    "AiAttackTasks_SetWeaponTarget": 1,
    "AiAttackTasks_ApplyTargetData": 1
   },
@@ -46356,8 +46356,7 @@
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1, int a2",
-  "sig_src": "impl",
-  "file": "src/auto/004b06f0.cpp"
+  "sig_src": "abi"
  },
  "004b0760": {
   "name": "C_Unknown_ClearField004",
@@ -55424,7 +55423,7 @@
   "name": "IsField10Null",
   "name_src": "agent",
   "votes": {
-   "IsField10Null": 8
+   "IsField10Null": 7
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -55436,7 +55435,7 @@
   "name": "GetLinkedObjectValue_4DB5C0",
   "name_src": "agent",
   "votes": {
-   "GetLinkedObjectValue_4DB5C0": 119
+   "GetLinkedObjectValue_4DB5C0": 118
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -55892,7 +55891,7 @@
   "name": "AiCoverAttackTasks_UpdateCharacterTasks",
   "name_src": "vote",
   "votes": {
-   "AiCoverAttackTasks_UpdateCharacterTasks": 5,
+   "AiCoverAttackTasks_UpdateCharacterTasks": 4,
    "PrepareCoverAttackTarget": 1,
    "AiCoverAttackTasks_UpdateBaseTask": 1,
    "AiCoverAttackTasks_UpdateTask": 1,
@@ -56960,9 +56959,8 @@
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "float* startA, float* endA, float* startB, float* endB, float* outA, float* outB",
-  "sig_src": "impl",
-  "file": "src/auto/004df0d0.cpp"
+  "params": "float* a1, float* a2, float* a3, float* a4, float* a5, float* a6",
+  "sig_src": "vote"
  },
  "004df140": {
   "name": "ComputeLinkedPairBlockFlags",
@@ -57444,7 +57442,6 @@
   "name": "S_004e0c20_FindContainingTriangle",
   "name_src": "agent",
   "votes": {
-   "S_004e0c20_TryClipPlaneToRay": 1,
    "TraceSubObjectHitToPoint": 1
   },
   "ret": "char",
@@ -57459,9 +57456,8 @@
   "votes": {},
   "ret": "double",
   "conv": "__fastcall",
-  "params": "void* self, void* , uint32_t* a2, int a3",
-  "sig_src": "impl",
-  "file": "src/auto/004e0d70.cpp"
+  "params": "void* self, void* edx, uint32_t* a2, int a3",
+  "sig_src": "abi"
  },
  "004e0de0": {
   "name": "S_004e0de0_GetAveragePosition",
@@ -113131,7 +113127,7 @@
   "name": "NetZ_OperatorNew",
   "name_src": "vote",
   "votes": {
-   "NetZ_OperatorNew": 26
+   "NetZ_OperatorNew": 27
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -113171,7 +113167,7 @@
   "name": "NetSession_ReleaseTransportStorage",
   "name_src": "vote",
   "votes": {
-   "NetSession_ReleaseTransportStorage": 18
+   "NetSession_ReleaseTransportStorage": 20
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -114621,7 +114617,7 @@
   "name": "InitializeTemporaryString",
   "name_src": "vote",
   "votes": {
-   "InitializeTemporaryString": 29
+   "InitializeTemporaryString": 32
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -114641,7 +114637,7 @@
   "name": "DestroyTemporaryString",
   "name_src": "vote",
   "votes": {
-   "DestroyTemporaryString": 21
+   "DestroyTemporaryString": 24
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -114703,19 +114699,23 @@
   "sig_src": "abi"
  },
  "0064a8f0": {
-  "name": "sub_64A8F0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "FormatValueString",
+  "name_src": "vote",
+  "votes": {
+   "FormatValueString": 1,
+   "FormatString": 1,
+   "LegacyString_Format": 1
+  },
   "ret": "char*",
   "conv": "__cdecl",
   "params": "void** a1, char* Format, ...",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0064a960": {
   "name": "NameMatchesCString",
   "name_src": "vote",
   "votes": {
-   "NameMatchesCString": 1
+   "NameMatchesCString": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -114726,7 +114726,7 @@
   "name": "NameMatchesString",
   "name_src": "vote",
   "votes": {
-   "NameMatchesString": 3
+   "NameMatchesString": 6
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -118291,7 +118291,7 @@
   "name": "WriteConfigFlag",
   "name_src": "vote",
   "votes": {
-   "WriteConfigFlag": 2
+   "WriteConfigFlag": 3
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -118313,7 +118313,7 @@
   "name": "GameConfig_WriteWordField",
   "name_src": "vote",
   "votes": {
-   "GameConfig_WriteWordField": 5
+   "GameConfig_WriteWordField": 6
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -118324,7 +118324,7 @@
   "name": "GameConfig_WriteDwordField",
   "name_src": "vote",
   "votes": {
-   "GameConfig_WriteDwordField": 9
+   "GameConfig_WriteDwordField": 10
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -124466,13 +124466,15 @@
   "sig_src": "vote"
  },
  "0066bf70": {
-  "name": "sub_66BF70",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetSpawnMessages_FormatInitialPoint",
+  "name_src": "vote",
+  "votes": {
+   "NetSpawnMessages_FormatInitialPoint": 1
+  },
   "ret": "char",
   "conv": "__cdecl",
   "params": "uint16_t* a1, void** a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0066bf90": {
   "name": "sub_66BF90",
@@ -141367,7 +141369,7 @@
   "name": "GfxPlane_RayIntersectionT",
   "name_src": "agent",
   "votes": {
-   "GfxPlane_RayIntersectionT": 2
+   "GfxPlane_RayIntersectionT": 1
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -166729,7 +166731,7 @@
   "name": "GetGlobalValue_70DDE0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_70DDE0": 41
+   "GetGlobalValue_70DDE0": 42
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -187573,22 +187575,24 @@
   "file": "src/auto/00751990.cpp"
  },
  "007519a0": {
-  "name": "sub_7519A0",
-  "name_src": "addr",
+  "name": "NetSpawnMessages_FormatUnsignedValue",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, void** a3",
-  "sig_src": "abi"
+  "params": "std::uint16_t* self, void* , void* name, void** output",
+  "sig_src": "impl",
+  "file": "src/auto/007519a0.cpp"
  },
  "00751a00": {
-  "name": "sub_751A00",
-  "name_src": "addr",
+  "name": "NetSpawnMessages_FormatLifeCount",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, void** a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , void* name, void** output",
+  "sig_src": "impl",
+  "file": "src/auto/00751a00.cpp"
  },
  "00751a60": {
   "name": "sub_751A60",
@@ -187609,13 +187613,14 @@
   "sig_src": "abi"
  },
  "00751ad0": {
-  "name": "sub_751AD0",
-  "name_src": "addr",
+  "name": "C_008622e8_WriteWordField",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "C_008622e8* self, void* , C_008622e8* destination, int , int , int",
+  "sig_src": "impl",
+  "file": "src/auto/00751ad0.cpp"
  },
  "00751af0": {
   "name": "sub_751AF0",
@@ -187654,13 +187659,14 @@
   "sig_src": "abi"
  },
  "00751de0": {
-  "name": "sub_751DE0",
-  "name_src": "addr",
+  "name": "NetSpawnMessages_CreateType50Message",
+  "name_src": "agent",
   "votes": {},
-  "ret": "int",
+  "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/00751de0.cpp"
  },
  "00751e00": {
   "name": "GetValue200",
@@ -187764,22 +187770,24 @@
   "sig_src": "abi"
  },
  "007520e0": {
-  "name": "sub_7520E0",
-  "name_src": "addr",
+  "name": "C_00868ad8_ScalarDeletingDestructor",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00868ad8* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/007520e0.cpp"
  },
  "00752110": {
-  "name": "sub_752110",
-  "name_src": "addr",
+  "name": "C_00868ae0_ScalarDeletingDestructor",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00868ae0* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/00752110.cpp"
  },
  "00752140": {
   "name": "sub_752140",
@@ -187791,13 +187799,14 @@
   "sig_src": "abi"
  },
  "007521d0": {
-  "name": "sub_7521D0",
-  "name_src": "addr",
+  "name": "C_00868af0_InitializeSpawnBuffer",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_00868af0* self, void* , uint32_t* dimensions, int count",
+  "sig_src": "impl",
+  "file": "src/auto/007521d0.cpp"
  },
  "00752270": {
   "name": "sub_752270",
@@ -187818,22 +187827,24 @@
   "sig_src": "abi"
  },
  "007522f0": {
-  "name": "sub_7522F0",
-  "name_src": "addr",
+  "name": "C_00868b04_ResetSpawnMessage_7522F0",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00868b04* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/007522f0.cpp"
  },
  "00752310": {
-  "name": "sub_752310",
-  "name_src": "addr",
+  "name": "C_00868b04_ResetSpawnMessage_752310",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00868b04* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00752310.cpp"
  },
  "00752330": {
   "name": "sub_752330",
@@ -187908,13 +187919,14 @@
   "sig_src": "abi"
  },
  "00752bb0": {
-  "name": "sub_752BB0",
-  "name_src": "addr",
+  "name": "C_008622e8_WriteSpawnMessage",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "C_008622e8* self, void* , C_008622e8* writer, int , int , int",
+  "sig_src": "impl",
+  "file": "src/auto/00752bb0.cpp"
  },
  "00752c40": {
   "name": "sub_752C40",
@@ -188100,6 +188112,16 @@
   "conv": "__fastcall",
   "params": "void* self, void* edx",
   "sig_src": "abi"
+ },
+ "007538d0": {
+  "name": "NetSpawnMessages_FormatInitialSpawnField",
+  "name_src": "impl",
+  "votes": {},
+  "ret": "char",
+  "conv": "__fastcall",
+  "params": "void* self, void* , void* nameObject, void** output",
+  "sig_src": "impl",
+  "file": "src/auto/007538d0.cpp"
  },
  "007539e0": {
   "name": "GameConfig_WriteSoundAndSubtitleFields",
@@ -203295,13 +203317,15 @@
   "sig_src": "abi"
  },
  "007aac00": {
-  "name": "sub_7AAC00",
-  "name_src": "addr",
-  "votes": {},
+  "name": "InitializeSpawnDimensions",
+  "name_src": "vote",
+  "votes": {
+   "InitializeSpawnDimensions": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007aac30": {
   "name": "sub_7AAC30",
@@ -203421,13 +203445,15 @@
   "sig_src": "abi"
  },
  "007ab350": {
-  "name": "sub_7AB350",
-  "name_src": "addr",
-  "votes": {},
+  "name": "InitializeSpawnMessage",
+  "name_src": "vote",
+  "votes": {
+   "InitializeSpawnMessage": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007ab3a0": {
   "name": "sub_7AB3A0",
