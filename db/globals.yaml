@@ -292,7 +292,7 @@
 - {addr: 0x0083F24C, name: g_MenuWidthScale, type: float, uses: 6, src: auto}
 - {addr: 0x0083F250, name: g_MenuHeightScale, type: float, uses: 4, src: auto}
 - {addr: 0x0083F264, name: g_MenuCursorMarker, type: char, uses: 1, src: auto}
-- {addr: 0x0083F380, name: g_HeadModelScale, type: float, uses: 1, src: auto}
+- {addr: 0x0083F380, name: g_DegreesToRadians, type: float, uses: 2, src: auto, alt: [g_HeadModelScale]}
 - {addr: 0x0083F384, name: g_fEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x0083F4B0, name: g_MenuResourceDelayMs, type: int, uses: 1, src: auto}
 - {addr: 0x0083F4B4, name: g_SceneDegreesToRadians, type: float, uses: 1, src: auto}
@@ -530,6 +530,8 @@
 - {addr: 0x0088BA3C, name: g_CopyRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088BA8C, name: g_TwentyFourByteCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088BC50, name: g_TwoDwordCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088BF04, name: g_DwordRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088BF54, name: g_DwordRangeCopyExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088C028, name: g_DwordRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088C208, name: g_CopyDwordExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088C2DC, name: g_CopyTwoDwordRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
@@ -1787,6 +1789,7 @@
 - {addr: 0x008BB4B8, name: g_Value_8BB4B8, type: int, uses: 7, src: auto, alt: [g_Value8BB4B8]}
 - {addr: 0x008BB4CC, name: g_Value_8BB4CC, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008BB738, name: g_Value_8BB738, type: int, uses: 3, src: auto}
+- {addr: 0x008BB740, name: g_DefaultParticleResource, type: S_006dcf90, uses: 1, src: auto}
 - {addr: 0x008BBABC, name: g_HAnimSharedMatrixA, type: uint32_t*, uses: 7, src: auto, alt: [g_DefaultMatrix, g_DefaultMatrixTarget, g_FirstTransformMatrix, g_QuaternionMatrix, g_QuaternionMatrixA]}
 - {addr: 0x008BBAC0, name: g_HAnimSharedMatrixB, type: 'std::uint32_t*', uses: 4, src: auto, alt: [g_QuaternionMatrixB, g_SecondTransformMatrix]}
 - {addr: 0x008BBAC4, name: g_ComposedMatrix, type: uint32_t*, uses: 5, src: auto, alt: [g_HAnimSharedMatrixC, g_ComposedTransformMatrix]}
