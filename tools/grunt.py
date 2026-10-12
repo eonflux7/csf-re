@@ -1405,6 +1405,10 @@ def lanes(args):
     while inflight or (rolling and open_mods and not stopping and not broken
                        and (CODEX_PAUSED.is_set() or CLAUDE_PAUSED.is_set())):
         if not inflight:  # rolling waves: every open module waits for an account; the quota guard resumes it
+            if getattr(args, "stop_on_quota", False):
+                print("waves: nothing can run until a quota window reopens; stopping (--stop-on-quota)", flush=True)
+                stopping = True
+                break
             if not waiting:
                 print("waves: nothing can run until a quota window reopens; waiting", flush=True)
                 live(phase="waiting for quota")
@@ -1602,8 +1606,9 @@ def wave_close(args, o, n):
         if not args.no_verify:
             print(f"wave {o['name']}: verify", flush=True)
             tool("verifier.py", "--module", o["id"])
-        print(f"wave {o['name']}: link test", flush=True)
-        tool("linktest.py")
+        if not args.no_linktest:
+            print(f"wave {o['name']}: link test", flush=True)
+            tool("linktest.py")
         stop = [f"{o['name']}: {x}" for x in wave_report(args, {o["id"]}, o["t0"], since)["stop"]]
         if not stop and args.regress_every and n % args.regress_every == 0 and not args.no_verify:
             # the verifier quarantines the culprits it can name and passes; it fails when it can't name any (a flaky
@@ -1781,6 +1786,9 @@ if __name__ == "__main__":
                    "ranking runs out); each wave's report -> work/waves.jsonl")
     w.add_argument("--overlap", type=int, default=3, help="with --waves: modules open at once (the next one starts "
                    "while the earlier ones' slow tails finish; 1: one after another)")
+    w.add_argument("--no-linktest", action="store_true", help="with --waves: skip the link test at a module's close")
+    w.add_argument("--stop-on-quota", action="store_true", help="with --waves: end the run when every open module "
+                   "waits for a quota window (default: wait and resume)")
     w.add_argument("--regress-every", type=int, default=3, help="with --waves: full regression smoke of the installed "
                    "baseline every N waves (0: off)")
     w.add_argument("--stop-quarantine", type=float, default=0.03, help="stop rule: the module's quarantined / installed+quarantined")
