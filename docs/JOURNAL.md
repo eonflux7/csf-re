@@ -1214,3 +1214,16 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Tier 3 after its repair: six real wrong-value bugs, false-alarm rate since the fixes unmeasured. It stays until
   emudiff is gate grade. Next for emudiff: does it flag those six on their pre-fix revisions; then the 24
   call-count and 21 call-target DIFFs of the never-executed sweep.
+
+## 2026-10-12 — emudiff against what tier 3 found
+
+- The six real bugs of the tier 3 night, pre-fix revision compiled apart (`work/emu_t3/`, `emudiff.py EA --obj`):
+  emudiff flags 4 (0x41EA70 call argument, 0x7123E0 and 0x447940 return value, 0x70F3B0 call arguments) and
+  calls 2 "same": 0x6AB9E0 (reads a value before a call that the original reloads after it: a mocked callee
+  writes nothing, so both readings are equal) and 0x6AB930 (x87 quotient left unrounded: inside the float
+  tolerance). All six fixed revisions: same.
+- Tier 3's ten false alarms (code unchanged): emudiff says same for 8 and DIFF for 0x4696C0 and 0x47EE50, the
+  same cause as in tier 3 (a frame dword read before it is written is passed on as an argument).
+- So emudiff does not cover tier 3 yet. Missing: mocks that write through their pointer arguments (the class
+  of 0x6AB9E0; inherent to mocked callees otherwise), and the uninitialized-stack-argument false alarm.
+- The 27 fixes of last night: installed in one group, baseline passed. Rolling waves restarted 16:34.

@@ -154,7 +154,10 @@ The orchestrator (Opus, interactive) works `queue/` and the backlog below.
       sample (`emudiff.py --tier gate --n 300`, `--tier executed --n 300`), 0x728160, 0x53D8B0 (harness suspect)
 - [ ] **emudiff to gate grade**, in this order (each is a measured false-alarm or blind spot):
       eax of functions whose callers ignore it (difftable knows them); ecx only for callees that read it
-      (regargs); what a virtual call pops (the gate gap above); inconclusive runs (10% of small, half of large
+      (regargs); what a virtual call pops (the gate gap above); a frame dword passed on before it is written
+      (0x4696C0, 0x47EE50: mask the argument as tier 3 does); mocked callees that write nothing, so a value
+      read before a call equals the one reloaded after it (0x6AB9E0, missed: mocks should dirty what their
+      pointer arguments point to); inconclusive runs (10% of small, half of large
       functions: int-typed values that are pointers; type inputs from class layouts). Then: an `emulated` evidence
       tier in the ledger, a gate step for new functions, and only after that retire parts of semcheck
 - [ ] Remove diff tier 3 (record/replay) once emudiff's false alarms are fixed; tiers 1/2 stay. Footprint:
