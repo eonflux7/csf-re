@@ -351,7 +351,11 @@ def check(ea, obj, db):
     folded = {k + d for k in sums for d in orig_disps | {0}}
     bad = sorted(d for d in our_disps if d >= 8 and d not in orig_disps and d not in imms and d not in folded)
     if bad:
-        errs.append("your code accesses field offsets the original never uses: " + ", ".join(f"0x{d:X}" for d in bad))
+        errs.append("your code accesses field offsets the original never uses: " + ", ".join(f"0x{d:X}" for d in bad)
+                    + " (if they are members of a LOCAL object the original keeps on its stack, e.g. a temporary "
+                    "string, access the local directly in the function body or mark the helper `static inline "
+                    "__attribute__((always_inline))`: a helper reaching it through a pointer shows up as a field "
+                    "access)")
     return errs
 
 
