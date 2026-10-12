@@ -260,9 +260,10 @@
 - {addr: 0x0083A218, name: g_StaticScanSamples, type: float, uses: 1, src: auto}
 - {addr: 0x0083A9DC, name: g_CoverAttackNearDistanceSquared, type: float, uses: 2, src: auto}
 - {addr: 0x0083AB1C, name: g_FirstWrapPattern, type: const char, uses: 1, src: auto}
+- {addr: 0x0083AB24, name: g_SearchPositionTolerance, type: float, uses: 1, src: auto}
 - {addr: 0x0083AB28, name: g_fPi, type: float, uses: 1, src: auto}
 - {addr: 0x0083AB2C, name: g_fTwoPi, type: float, uses: 1, src: auto}
-- {addr: 0x0083AB30, name: g_SearchRadiansToDegrees, type: float, uses: 1, src: auto}
+- {addr: 0x0083AB30, name: g_SearchAngleScale, type: float, uses: 2, src: auto, alt: [g_SearchRadiansToDegrees]}
 - {addr: 0x0083AB34, name: g_SearchDegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x0083AC1C, name: g_SearchTurnRate, type: float, uses: 1, src: auto}
 - {addr: 0x0083B2BC, name: g_ProximityRadiusSquared, type: float, uses: 1, src: auto}
@@ -399,6 +400,8 @@
 - {addr: 0x0086061C, name: g_RadiansToDegrees, type: float, uses: 4, src: auto, alt: [g_DegreesPerRadian, g_RadiansToDegreesFactor]}
 - {addr: 0x00860620, name: g_DegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x008608A8, name: g_Value1e8, type: float, uses: 1, src: auto}
+- {addr: 0x00860C80, name: g_ClumpFileHeader, type: 'std::uint32_t', uses: 1, src: auto}
+- {addr: 0x00860C84, name: g_ClumpFileVersion, type: 'std::uint32_t', uses: 1, src: auto}
 - {addr: 0x00860DA4, name: g_WaterCameraNearClip, type: float, uses: 3, src: auto, alt: [g_WaterCameraNearClipBits]}
 - {addr: 0x00860DA8, name: g_WaterCameraFarClip, type: float, uses: 3, src: auto, alt: [g_WaterCameraFarClipBits]}
 - {addr: 0x00860DAC, name: g_PreviewCameraAngleBits, type: 'std::uint32_t', uses: 4, src: auto}
