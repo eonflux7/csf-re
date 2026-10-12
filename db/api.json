@@ -4565,7 +4565,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 169
+   "AssignStringSubstring": 173
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -72641,7 +72641,7 @@
   "name": "BddTables_ResetRecordBuffers",
   "name_src": "agent",
   "votes": {
-   "BddTables_ResetRecordBuffers": 2
+   "BddTables_ResetRecordBuffers": 4
   },
   "ret": "int",
   "conv": "__stdcall",
@@ -87795,7 +87795,7 @@
   "name_src": "agent",
   "votes": {
    "DestroyPointerStorage": 17,
-   "S_0047ea40_DestroyPointerStorage": 6
+   "S_0047ea40_DestroyPointerStorage": 7
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -87820,7 +87820,7 @@
   "name": "AllocateTeamStorage_5587E0",
   "name_src": "vote",
   "votes": {
-   "AllocateTeamStorage_5587E0": 1,
+   "AllocateTeamStorage_5587E0": 2,
    "MpRules_AllocateVectorStorage": 1
   },
   "ret": "char",
@@ -136170,7 +136170,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 378
+   "Mem_Alloc": 379
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -136698,7 +136698,7 @@
   "name": "MenuExtras_GetChildCount",
   "name_src": "vote",
   "votes": {
-   "MenuExtras_GetChildCount": 85
+   "MenuExtras_GetChildCount": 86
   },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
@@ -136709,7 +136709,7 @@
   "name": "GetComponent",
   "name_src": "vote",
   "votes": {
-   "GetComponent": 98
+   "GetComponent": 99
   },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
@@ -136720,7 +136720,7 @@
   "name": "ParseIntegerComponent",
   "name_src": "vote",
   "votes": {
-   "ParseIntegerComponent": 48
+   "ParseIntegerComponent": 49
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -136800,7 +136800,7 @@
   "name": "FindProperty",
   "name_src": "vote",
   "votes": {
-   "FindProperty": 111
+   "FindProperty": 112
   },
   "ret": "std::uint8_t*",
   "conv": "__fastcall",
@@ -136811,7 +136811,7 @@
   "name": "LookupNamedElement",
   "name_src": "vote",
   "votes": {
-   "LookupNamedElement": 65
+   "LookupNamedElement": 66
   },
   "ret": "uint8_t*",
   "conv": "__fastcall",
@@ -196220,7 +196220,7 @@
  },
  "00772060": {
   "name": "CopyTwoDwordArrayFromSource",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -196239,8 +196239,10 @@
  },
  "00772100": {
   "name": "AnimDefs_ForwardWithSelfToEntryBuilder",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "BuildTeamRange_772100": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* , uint32_t* a1, uint32_t* a2, uint32_t* a3",
@@ -196249,18 +196251,19 @@
  },
  "00772120": {
   "name": "SceneMissionSetup_GetAnimationEntry",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SceneMissionSetup_GetAnimationEntry": 15
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int entryIndex",
+  "sig_src": "impl",
+  "file": "src/auto/00772120.cpp"
  },
  "00772140": {
   "name": "C_00871a18_FindAnimIndexById",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -196272,39 +196275,47 @@
   "name": "EraseElementRange",
   "name_src": "vote",
   "votes": {
-   "EraseElementRange": 1
+   "EraseElementRange": 2
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, uint32_t* a3, uint32_t* a4",
-  "sig_src": "vote"
+  "params": "S_007721a0* self, void* , uint32_t* outIterator, uint32_t* eraseFirst, uint32_t* moveFrom",
+  "sig_src": "impl",
+  "file": "src/auto/007721a0.cpp"
  },
  "007721f0": {
-  "name": "sub_7721F0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "AppendRepeatedValues",
+  "name_src": "vote",
+  "votes": {
+   "AppendRepeatedValues": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char* a1, unsigned int a3, uint32_t* arg8",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00772460": {
-  "name": "sub_772460",
-  "name_src": "addr",
-  "votes": {},
+  "name": "ParamsBlock_CopyFromSource",
+  "name_src": "vote",
+  "votes": {
+   "ParamsBlock_CopyFromSource": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_00772100* self, void* , const int* source",
+  "sig_src": "impl",
+  "file": "src/auto/00772460.cpp"
  },
  "00772500": {
-  "name": "sub_772500",
-  "name_src": "addr",
-  "votes": {},
+  "name": "AnimationEntry_CopyTrailingBlock",
+  "name_src": "vote",
+  "votes": {
+   "AnimationEntry_CopyTrailingBlock": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a5",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00772650": {
   "name": "AnimationDefs_ResizeSounds",
@@ -196314,38 +196325,44 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int a2, int a3, int a4",
-  "sig_src": "vote"
+  "params": "S_007721a0* self, void* , unsigned int count, int value, int",
+  "sig_src": "impl",
+  "file": "src/auto/00772650.cpp"
  },
  "007726c0": {
-  "name": "AnimDefs_ProcessEntry",
-  "name_src": "vote",
+  "name": "AnimationDefs_CopyRecordRange",
+  "name_src": "agent",
   "votes": {
    "AnimDefs_ProcessEntry": 1,
    "AnimationDefs_CopyAssignRange": 1
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "void* a1, void* a2, int a3",
-  "sig_src": "vote"
+  "params": "int sourceBegin, int sourceEnd, int destinationBegin",
+  "sig_src": "impl",
+  "file": "src/auto/007726c0.cpp"
  },
  "00772710": {
-  "name": "sub_772710",
-  "name_src": "addr",
+  "name": "AnimationDefs_CopyEntryRangeReverse",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__cdecl",
-  "params": "void* a1, void* a2, void* a3, int a4",
-  "sig_src": "abi"
+  "params": "void* rangeBegin, void* rangeEnd, void* destEnd, int",
+  "sig_src": "impl",
+  "file": "src/auto/00772710.cpp"
  },
  "00772760": {
-  "name": "sub_772760",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CopyTrackRecord_772760",
+  "name_src": "vote",
+  "votes": {
+   "CopyTrackRecord_772760": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "void* a1, void* a2",
-  "sig_src": "abi"
+  "params": "C_0082d410* self, C_0082d410* source",
+  "sig_src": "impl",
+  "file": "src/auto/00772760.cpp"
  },
  "007727a0": {
   "name": "AnimationDefs_ConstructAdditionalRange",
@@ -196355,8 +196372,9 @@
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "void* a1, void* a2, int a3, int a4, int a5",
-  "sig_src": "vote"
+  "params": "void* sourceBegin, void* sourceEnd, void* destination, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/007727a0.cpp"
  },
  "00772830": {
   "name": "ForwardAnimDefsArgsToProcessEntry",
@@ -196390,17 +196408,20 @@
   "file": "src/auto/00772890.cpp"
  },
  "007728b0": {
-  "name": "sub_7728B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_00773060_ConstructElement44",
+  "name_src": "vote",
+  "votes": {
+   "S_00773060_ConstructElement44": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, void* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "int a1, int a2, void* a3, int a4, int",
+  "sig_src": "impl",
+  "file": "src/auto/007728b0.cpp"
  },
  "00772940": {
   "name": "SetRelinkedAnimValueSlot",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void**",
   "conv": "__fastcall",
@@ -196449,7 +196470,7 @@
  },
  "00772e00": {
   "name": "S_0051aa70_AssignAnimationRecords",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -196470,8 +196491,10 @@
  },
  "00773060": {
   "name": "S_00773060_InsertAndGetRecordPointer",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "S_00773060_InsertElement44": 1
+  },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
   "params": "S_00773060* self, void* , std::uint32_t* result, char* position, C_0082d410* extra",
@@ -196479,15 +196502,16 @@
   "file": "src/auto/00773060.cpp"
  },
  "007730d0": {
-  "name": "AnimationDefs_AssignFile",
-  "name_src": "vote",
+  "name": "S_00773060_AppendElement44",
+  "name_src": "agent",
   "votes": {
    "AnimationDefs_AssignFile": 2
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a3",
-  "sig_src": "vote"
+  "params": "S_00773060* self, void* , int element",
+  "sig_src": "impl",
+  "file": "src/auto/007730d0.cpp"
  },
  "00773160": {
   "name": "AnimDefs_ProcessAnimEntry",
@@ -196509,12 +196533,13 @@
   },
   "ret": "char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "char* self, void* , std::uint8_t* source",
+  "sig_src": "impl",
+  "file": "src/auto/00773200.cpp"
  },
  "00773280": {
   "name": "AnimationDefs_CopyEntryRange",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char*",
   "conv": "__cdecl",
@@ -196524,7 +196549,7 @@
  },
  "007732c0": {
   "name": "Animation_ProcessRecordsBackward",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
@@ -196546,7 +196571,7 @@
  },
  "00773320": {
   "name": "AnimationDefs_CopyRange_773320",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int*",
   "conv": "__cdecl",
@@ -196565,7 +196590,7 @@
  },
  "007737f0": {
   "name": "C_00871a18_ParseAnimation",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "std::uint8_t*",
   "conv": "__fastcall",
@@ -196594,7 +196619,7 @@
  },
  "00773c20": {
   "name": "ApplyToAnimRecords",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char*",
   "conv": "__cdecl",
@@ -196622,8 +196647,8 @@
   "sig_src": "abi"
  },
  "00773d00": {
-  "name": "S_00773d00_EraseRecords",
-  "name_src": "vote",
+  "name": "AnimationDefs_RebuildTableRange",
+  "name_src": "agent",
   "votes": {
    "S_00773d00_EraseRecords": 1
   },
@@ -196646,7 +196671,7 @@
  },
  "00774070": {
   "name": "S_00773d00_Resize",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -196660,10 +196685,11 @@
   "votes": {
    "GameBddLoader_ConstructMenuEventSource": 1
   },
-  "ret": "void*",
+  "ret": "C_00871a18*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00871a18* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00774120.cpp"
  },
  "00774160": {
   "name": "AnimationDefs_ResizeEntries",
@@ -196671,7 +196697,7 @@
   "votes": {
    "AnimationDefs_ResizeEntries": 2,
    "AnimationDefs_ResizeAnimations": 1,
-   "AnimationDefs_ResizeDataArray": 1
+   "AnimationDefs_ResizeDataArray": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -196679,8 +196705,8 @@
   "sig_src": "vote"
  },
  "007741c0": {
-  "name": "C_00871a18_Teardown_7741C0",
-  "name_src": "vote",
+  "name": "C_00871a18_Teardown",
+  "name_src": "agent",
   "votes": {
    "C_00871a18_Teardown_7741C0": 1
   },
@@ -196691,8 +196717,8 @@
   "file": "src/auto/007741c0.cpp"
  },
  "007741f0": {
-  "name": "C_00871a18_LoadVersions1And2",
-  "name_src": "vote",
+  "name": "BddAnimationDefs_LoadAnimationData",
+  "name_src": "agent",
   "votes": {
    "C_00871a18_LoadVersions1And2": 1
   },
@@ -196703,8 +196729,8 @@
   "file": "src/auto/007741f0.cpp"
  },
  "00774420": {
-  "name": "C_00871a18_LoadVersion3",
-  "name_src": "vote",
+  "name": "AnimationDefs_LoadEntries",
+  "name_src": "agent",
   "votes": {
    "C_00871a18_LoadVersion3": 1
   },
@@ -196715,8 +196741,8 @@
   "file": "src/auto/00774420.cpp"
  },
  "00774680": {
-  "name": "C_00871a18_LoadVersion4",
-  "name_src": "vote",
+  "name": "AnimationDefs_LoadAnimations",
+  "name_src": "agent",
   "votes": {
    "C_00871a18_LoadVersion4": 1
   },
@@ -196739,19 +196765,20 @@
   "file": "src/auto/00774950.cpp"
  },
  "00774a20": {
-  "name": "C_00871a18_LoadVersion6",
-  "name_src": "vote",
+  "name": "AnimationDefs_LoadAnimationRecordsWithCounts",
+  "name_src": "agent",
   "votes": {
    "C_00871a18_LoadVersion6": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , std::uint8_t* root",
+  "sig_src": "impl",
+  "file": "src/auto/00774a20.cpp"
  },
  "00774af0": {
   "name": "C_00871a18_Destroy",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int**",
   "conv": "__fastcall",
@@ -207652,7 +207679,7 @@
   "name": "___CxxFrameHandler",
   "name_src": "ida",
   "votes": {
-   "___CxxFrameHandler": 160,
+   "___CxxFrameHandler": 161,
    "OriginalCxxFrameHandler": 1
   },
   "ret": "int",
@@ -207736,7 +207763,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 216
+   "RethrowCppException": 219
   },
   "ret": "void",
   "conv": "__stdcall",
