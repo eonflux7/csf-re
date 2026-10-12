@@ -306,6 +306,10 @@ def check(ea, obj, db):
     known = set(f["callees"]) | set(f.get("srefs", [])) | set(f["drefs"]) | imms
     for a in sorted(ours - known - {ea}):  # own address: the HOOK registration
         if section_of(a) in (".text", ".data", ".rdata", "_rwdseg", "_rwcseg"):
+            # a value inside the code section that starts no function is a constant, not a reference (0x6E4530:
+            # three 0x7F byte stores merged into the dword 0x7F7F7F)
+            if section_of(a) == ".text" and a not in db.F:
+                continue
             n = db.name(a) if a in db.F else None
             errs.append(f"your code references 0x{a:X}{' (' + n + ')' if n else ''}, which the original does not")
     # address-of an embedded sub-object (add ecx, N / lea r, [ecx + N]) must stay an address computation in ours
