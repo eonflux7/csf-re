@@ -118715,7 +118715,7 @@
   "name": "LookupObjectById",
   "name_src": "vote",
   "votes": {
-   "LookupObjectById": 72
+   "LookupObjectById": 73
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -135653,7 +135653,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 472,
+   "Mem_FreeDebug": 473,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -143983,7 +143983,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 307,
+   "GetGlobalInt": 308,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -144018,7 +144018,7 @@
   "name": "ResolveRwManager",
   "name_src": "vote",
   "votes": {
-   "ResolveRwManager": 17
+   "ResolveRwManager": 18
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -153933,7 +153933,7 @@
   "name": "GfxScreenEffects_CreateManagedRaster",
   "name_src": "vote",
   "votes": {
-   "GfxScreenEffects_CreateManagedRaster": 1
+   "GfxScreenEffects_CreateManagedRaster": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -164347,7 +164347,7 @@
  },
  "006f86f0": {
   "name": "GfxScreenEffects_ForwardRangeWithContext",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GfxScreenEffects_ForwardRangeWithContext": 1
   },
@@ -164358,8 +164358,8 @@
   "file": "src/auto/006f86f0.cpp"
  },
  "006f8780": {
-  "name": "S_006f8ce0_ConstructElement44",
-  "name_src": "vote",
+  "name": "GfxScreenEffects_ForwardToEntries",
+  "name_src": "agent",
   "votes": {
    "S_006f8ce0_ConstructElement44": 1
   },
@@ -164499,7 +164499,7 @@
   "name": "C_008629a4_Destroy",
   "name_src": "agent",
   "votes": {
-   "C_008629a4_Destroy": 3,
+   "C_008629a4_Destroy": 4,
    "DestroyScreenEffectBase": 1,
    "ScreenEffects_DestroyBase": 3,
    "C_008629a4_DestroyBase": 1
@@ -164544,7 +164544,7 @@
  },
  "006f9140": {
   "name": "GfxScreenEffects_CreateEffectObject",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "C_00860178*",
   "conv": "__cdecl",
@@ -164573,13 +164573,14 @@
   "file": "src/auto/006f9280.cpp"
  },
  "006f92e0": {
-  "name": "sub_6F92E0",
-  "name_src": "addr",
+  "name": "C_00862a80_UpdateFadeAlpha",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "C_00862a80* self, void* , float a2",
+  "sig_src": "impl",
+  "file": "src/auto/006f92e0.cpp"
  },
  "006f9370": {
   "name": "C_00862d48_Initialize",
@@ -164787,13 +164788,15 @@
   "file": "src/auto/006f9d40.cpp"
  },
  "006f9d90": {
-  "name": "sub_6F9D90",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_00862c74_CleanupEffectState",
+  "name_src": "vote",
+  "votes": {
+   "C_00862c74_CleanupEffectState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006f9e60": {
   "name": "sub_6F9E60",
@@ -164817,7 +164820,8 @@
   "name": "GfxScreenEffects_ShiftTimedEntriesLeft",
   "name_src": "agent",
   "votes": {
-   "ShiftTimedEntriesLeft": 1
+   "ShiftTimedEntriesLeft": 1,
+   "GfxScreenEffects_ShiftTimedEntriesLeft": 1
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -164966,13 +164970,25 @@
   "sig_src": "abi"
  },
  "006fad30": {
-  "name": "sub_6FAD30",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxScreenEffects_InsertTimedEntries",
+  "name_src": "vote",
+  "votes": {
+   "GfxScreenEffects_InsertTimedEntries": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char* a1, unsigned int a3, uint32_t* arg8",
-  "sig_src": "abi"
+  "sig_src": "vote"
+ },
+ "006fb000": {
+  "name": "S_004482c0_ResizeTimedEntries",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "std::uint32_t",
+  "conv": "__fastcall",
+  "params": "S_004482c0* self, void* , unsigned int requestedCount, int entryWord0, int entryWord1, int entryWord2, int entryWord3, int entryWord4",
+  "sig_src": "impl",
+  "file": "src/auto/006fb000.cpp"
  },
  "006fb0b0": {
   "name": "sub_6FB0B0",
@@ -165004,14 +165020,15 @@
  },
  "006fb4c0": {
   "name": "C_00862c74_Cleanup",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_00862c74_Cleanup": 1
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00862c74* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006fb4c0.cpp"
  },
  "006fb580": {
   "name": "ScreenEffects_CreateInstance",
@@ -165107,17 +165124,18 @@
   "file": "src/auto/006fbb30.cpp"
  },
  "006fbb80": {
-  "name": "sub_6FBB80",
-  "name_src": "addr",
+  "name": "GfxScreenEffects_AllocateRasterPyramid",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/006fbb80.cpp"
  },
  "006fbbf0": {
   "name": "C_00862d48_StartEffect",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
