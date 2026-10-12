@@ -215,6 +215,7 @@ CODEX_URL = "https://chatgpt.com/backend-api/codex/responses"
 # whose 5h window is spent (429 usage_limit, or the quota guard's cap) pauses alone, and CODEX_PAUSED is set only
 # when every login is paused.
 CODEX_HOME_PAUSED = set()
+CODEX_REFRESH, CODEX_REFRESHED = set(), set()  # logins whose token the backend called expired: one CLI refresh each
 CODEX_HOME_OUT = set()  # logins the backend refuses (token rejected, model not on the account): out for this run
 _codex_rr = itertools.count()
 
@@ -246,7 +247,8 @@ def _codex_token(home):
     t = json.load(open(auth))["tokens"]
     p = t["access_token"].split(".")[1]
     exp = json.loads(base64.urlsafe_b64decode(p + "=" * (-len(p) % 4)))["exp"]
-    if exp - time.time() < 3600:
+    if exp - time.time() < 3600 or home in CODEX_REFRESH:
+        CODEX_REFRESH.discard(home)
         subprocess.run(["codex", "exec", "--ephemeral", "--skip-git-repo-check", "-s", "read-only", "-"],
                        input="Reply OK.", capture_output=True, text=True, cwd=CODEX_CWD, timeout=300,
                        env=dict(os.environ, CODEX_HOME=home))
@@ -278,6 +280,12 @@ def chat_codex_direct(model, messages, effort="high"):
         msg = e.read()[:300]
         if e.code == 429 and b"usage_limit" in msg:
             codex_pause(home)  # this login's window is spent: the others carry on; all spent -> defer, not escalate
+        if e.code == 401 and home not in CODEX_REFRESHED:
+            # expired on the server while the token's own exp is days away (2026-10-12, after an account change):
+            # the CLI refreshes it; only a second refusal takes the login out
+            CODEX_REFRESHED.add(home)
+            CODEX_REFRESH.add(home)
+            return chat_codex_direct(model, messages, effort)
         if e.code in (401, 403) or (e.code == 400 and b"not supported" in msg):
             # the account, not the function (2026-10-12: one login lost gpt-6.1-sol; its calls were escalated to
             # queue/ and M functions fell through to Opus): the login is out, the call goes to another one

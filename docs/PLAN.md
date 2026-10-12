@@ -30,7 +30,7 @@ module, evidence, link test), `tools/grunt.py wave --next` (what to wave next), 
 - Toolchain: clang-cl 21 + lld-link, `i686-pc-windows-msvc`, MSVC SDK via `xwin` (`~/.xwin`, license accepted by
   the user). x64dbg + x64dbg-automate under `E:\dev\tools` for crash triage and targeted runtime RE.
 - Third-party sources/tools go in `work/tools/` (gitignored). Never leaked RenderWare SDK source; librw (MIT) only.
-- Models: grunts on their own Claude account (`~/.config/csf-re/claude-grunts`, Haiku/Opus via `claude -p`) and
+- Models: grunts on their own Claude account (`~/.config/csf-re/claude-grunts`, Haiku only, via `claude -p`) and
   Codex; the captain (naming) on the main account. Quota guards and ladders: `db/lanes.yaml`.
 
 ## The loop (per module)
@@ -200,6 +200,8 @@ guards. One-shot scripts of that phase: `tools/setup/`. History: JOURNAL.
   callers' cleanup, an entry-block register read); our knowledge goes back into the IDB and Hex-Rays re-derives.
 - 2026-10-08: **fidelity is behavioral**: natural expressions, no emulation of x87 rounding or register/stack
   artifacts; the in-game diff tolerates last-bit float differences where the original stores floats.
+- 2026-10-12 (user): **the grunts' Claude account is for Haiku rungs only.** No Opus rung, no Sonnet stand-in;
+  M/L/X are Codex `gpt-6.1-sol@high` and end in `queue/`; Haiku out of quota -> `gpt-6.1-sol@low`.
 - 2026-10-10 (user): **simpler loop**: names never change inside a wave (tools/naming.py at milestones, code-hash
   invariant); types come first as structure from the binary (propagate.sh), not as names. Review is one rolling
   sample, not a wave stage. Model policy is db/lanes.yaml. One word per evidence level.

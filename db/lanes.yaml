@@ -9,10 +9,10 @@ l_max: 600
 # S, 2026-10-08 (473 results): Haiku low wrote 289 of 330 passes, the strong rung 28; Haiku medium dropped.
 s_ladder: claude:claude-haiku-5-5@low:2,codex:gpt-6.1-sol@high:1
 # M, 2026-10-09 (198 results): Haiku high wrote 3 of 189 passes in 267 calls; Codex first, Opus to escalate.
-m_ladder: codex:gpt-6.1-sol@high:2,claude:claude-opus-5-5@high:1
+m_ladder: codex:gpt-6.1-sol@high:2
 l_ladder: codex:gpt-6.1-sol@high:2
 # X, 2026-10-09: Opus first took the grunts' 5h window from 21% to 78% in one wave; Codex writes, Opus escalates.
-x_ladder: codex:gpt-6.1-sol@high:2,claude:claude-opus-5-5@high:1
+x_ladder: codex:gpt-6.1-sol@high:2
 hub_callers: 25        # called from >= N functions of other modules: the L ladder (0: off)
 
 # functions in flight per tier
@@ -28,8 +28,10 @@ review_effort: medium
 # quota guards (% of the 5h window; 0: off) and stand-ins
 codex_cap: 90          # pause Codex
 claude_cap: 95         # pause the grunts' Claude account (5h or 7d window)
-codex_reserve: 50      # from here S/M Codex rungs run on codex_sub (Codex kept for L)
-codex_sub: claude:claude-sonnet-5-5@medium
+# 2026-10-12 (user): the grunts' Claude account is for the Haiku rungs only. No Opus rung (M and X end on Codex,
+# then queue/), no Sonnet stand-in for Codex; Haiku out of quota -> gpt-6.1-sol@low.
+codex_reserve: 50      # from here S/M Codex rungs run on codex_sub, if one is set (Codex kept for L)
+codex_sub:
 # while the grunts' Claude account is paused: Claude rung model=Codex model standing in (unlisted rungs are skipped)
-claude_sub: claude-haiku-5-5@low=gpt-6.1-sol@low,claude-haiku-5-5@high=gpt-6.1-sol@medium
+claude_sub: claude-haiku-5-5@low=gpt-6.1-sol@low
 claude_sub_login: codex-2
