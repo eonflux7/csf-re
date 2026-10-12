@@ -1317,3 +1317,28 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Mistake: editing hook/hook.h while a production-only run was going made its batch build recompile all 9,332
   files (about 5 minutes, load 21 on 12 cores, nice 5) although the user had asked for nothing heavy. Headers
   every file includes wait until smokes are allowed again.
+
+## 2026-10-13 (night) — first smokes after the x87 leak fix; verifier and waves side by side
+- The baseline smoke after the fix is clean: no `X87` line, nobody quarantined. Two passes of the verifier
+  installed about 1,630 pending functions; game code 71.8%, pending 0 at 00:46.
+- Running `grunt.py wave` next to a full `verifier.py` pass: each wave's verify step left with "verifier already
+  running", its functions stayed pending and the stop rule (> 25% never installed) ended the run. Waves now call
+  `verifier.py --wait` (blocking lock). linktest.py and globals.py died on a file quarantined while they
+  scanned; both skip it now.
+- Mistake: lanes started during the verify tree's full rebuild (hook.h had changed): load 30, later 147 with
+  the smoke pool. The first group took 456 s.
+- Mistake: I called four quarantines of one group (0x6B2A10, 0x6B31E0, 0x6B37F0, 0x6E5580: "never ready", no
+  crash in the lines I read) slow starts under load and restored them; the next pass quarantined the same four.
+  The saved log did hold a crash (c0000096, eip on the stack). Three were real: 0x6B31E0 passed the vtable
+  pointer loaded from +0x30 as `this` (the original passes the address this+0x30); 0x6B2A10 and its clone
+  0x6E5580 gave a no-argument virtual call the `push 5` that belongs to the NEXT call (MSVC pushes it early).
+  Fixed by hand. 0x6B37F0 matches the original instruction for instruction: pending again without the others.
+  The gate has no check for "argument pushed before an earlier call" (backlog).
+- bisect: a culprit found by search (no crash report names it) is now run once more alone; if it passes, nobody
+  is blamed.
+- Gate false alarms removed: a helper reaching a stack-local string through a pointer read as a field access
+  (0x6F93B0 by hand with always_inline; error text now says so; 0x6FB810 back to the lanes); three `0x7F` byte
+  stores merged into the dword 0x7F7F7F read as a code reference (0x6E4530; a value in .text that starts no
+  function is a constant). New gate rule: `CSF_ADDR_FN` of the function's own address is rejected (three
+  recursive callbacks failed the standalone compile; the packet says to pass the function by name).
+- The nine queue items quarantined while the leak was live went back to pending for a `--full` pass.

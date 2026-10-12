@@ -106,6 +106,9 @@ The orchestrator (Opus, interactive) works `queue/` and the backlog below.
 - [ ] Tier 3: heap objects reached through a global pointer are not watched for callee writes (only pointer
   arguments are): 0x6981B0 mismatched 1/1 on a correct file and sits in difftable's NO_DIFF. Watch the objects
   the function's pointer globals point to (first 256 bytes) and conclude nothing when a callee changed them.
+- [ ] Gate: a virtual/indirect call given an argument the original pushes early for the NEXT call
+  (0x6B2A10, 0x6E5580: `push 5; call [eax+0x1c]; mov ecx, eax; call 0x6C4870`) passes every static check and
+  unbalances the stack in game. Count pushes consumed per call from the callee cleanup (`ret N`) where known.
 - [ ] After the x87 leak fix (2026-10-12): smoke the queue's float/NaN mismatches and crash bisects again
   (each has a note). The verifier now quarantines nobody on a smoke with an `X87 ...` line (hook/diff.cpp: four
   or more x87 entries live at a diffed function's entry): baseline stops, a group stays pending. First smoke
