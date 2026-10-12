@@ -1365,7 +1365,7 @@
   "name": "MenuMpCharacterSelect_NormalizeAngle",
   "name_src": "agent",
   "votes": {
-   "MenuMpCharacterSelect_NormalizeAngle": 7
+   "MenuMpCharacterSelect_NormalizeAngle": 9
   },
   "ret": "double",
   "conv": "__cdecl",
@@ -1433,7 +1433,7 @@
   "name": "ClampFloatToBounds",
   "name_src": "agent",
   "votes": {
-   "ClampFloatToBounds": 9
+   "ClampFloatToBounds": 11
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -6742,7 +6742,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 92
+   "S_0041e5f0_GrowArrayCapacity": 93
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -10985,7 +10985,7 @@
    "Hud_ConvertSize": 1,
    "Hud_GetCoordinateScale": 1,
    "Hud_ScaleTextDimensions": 1,
-   "Hud_WriteNormalizedScreenSize": 3
+   "Hud_WriteNormalizedScreenSize": 7
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -11008,7 +11008,9 @@
  "0042df00": {
   "name": "Hud_ReadRectFromProperties",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Hud_ReadRectFromProperties": 2
+  },
   "ret": "void",
   "conv": "__cdecl",
   "params": "S_00692b80* a1, int* a2",
@@ -11167,7 +11169,7 @@
   "name": "CompareStringSubstring",
   "name_src": "vote",
   "votes": {
-   "CompareStringSubstring": 32
+   "CompareStringSubstring": 33
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -11432,7 +11434,7 @@
   "name": "Hud_RenderWidgetAtScaledRect",
   "name_src": "agent",
   "votes": {
-   "Hud_RenderWidgetAtScaledRect": 11,
+   "Hud_RenderWidgetAtScaledRect": 14,
    "Hud_ProcessChild": 1,
    "Hud_DrawWidgetFromEdi": 1,
    "Hud_RenderWidgetNode": 1,
@@ -11641,7 +11643,9 @@
  "0042ff30": {
   "name": "Hud_AppendWidgetHandle",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Hud_AppendWidgetHandle": 2
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "S_00692b80* a1, int a2, S_0041e5f0* a3",
@@ -13198,8 +13202,8 @@
   "sig_src": "vote"
  },
  "0043a700": {
-  "name": "MinimapRadar_InitSubState",
-  "name_src": "vote",
+  "name": "MinimapRadar_EnsureRadarObject",
+  "name_src": "agent",
   "votes": {
    "MinimapRadar_InitSubState": 1
   },
@@ -13220,31 +13224,36 @@
   "file": "src/auto/0043a7d0.cpp"
  },
  "0043a860": {
-  "name": "sub_43A860",
-  "name_src": "addr",
+  "name": "Minimap_FadeByHeightDistance",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__stdcall",
-  "params": "int a1, int* a2",
-  "sig_src": "abi"
+  "params": "void* a1, int* a2",
+  "sig_src": "impl",
+  "file": "src/auto/0043a860.cpp"
  },
  "0043a970": {
-  "name": "sub_43A970",
-  "name_src": "addr",
+  "name": "C_00830d68_ForwardSceneObjectPosition",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2, int a3",
-  "sig_src": "abi"
+  "params": "C_00830d68* self, void* , C_008342e8* a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/0043a970.cpp"
  },
  "0043a9c0": {
-  "name": "sub_43A9C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Minimap_ComputeScaledDirection",
+  "name_src": "agent",
+  "votes": {
+   "Minimap_ComputeBlipPosition": 1
+  },
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2, float* a3, float* a4, float a5, float a6",
-  "sig_src": "abi"
+  "params": "C_00830e5c* self, void* , float* out, float* to, float* from, float refLength, uint32_t absolute",
+  "sig_src": "impl",
+  "file": "src/auto/0043a9c0.cpp"
  },
  "0043aa80": {
   "name": "Minimap_SubmitRectWithFullAlpha",
@@ -13258,8 +13267,11 @@
  },
  "0043aad0": {
   "name": "C_00830e5c_IsPointWithinRadiusOfMenuObject",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "Minimap_SelfPointCheck": 1,
+   "Minimap_IsPointVisible": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00830e5c* self, void* , float* a2",
@@ -13290,7 +13302,8 @@
   "name": "C_00830d68_Construct",
   "name_src": "agent",
   "votes": {
-   "C_00830d68_Init": 1
+   "C_00830d68_Init": 1,
+   "MinimapRenderer_InitSmall": 1
   },
   "ret": "C_00830d68*",
   "conv": "__fastcall",
@@ -13299,8 +13312,8 @@
   "file": "src/auto/0043aba0.cpp"
  },
  "0043abf0": {
-  "name": "Minimap_InitChain",
-  "name_src": "vote",
+  "name": "C_00830d68_Destroy_43ABF0",
+  "name_src": "agent",
   "votes": {
    "Minimap_InitChain": 1,
    "C_00830d68_BaseCleanup": 1
@@ -13326,7 +13339,9 @@
  "0043ad40": {
   "name": "C_00830d90_Construct",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MinimapRenderer_InitLarge": 1
+  },
   "ret": "C_00830d90*",
   "conv": "__fastcall",
   "params": "C_00830d90* self, void*",
@@ -13347,8 +13362,10 @@
  },
  "0043ad70": {
   "name": "Minimap_StepAngleTowards",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "MinimapRadar_SmoothHeading": 1
+  },
   "ret": "double",
   "conv": "__cdecl",
   "params": "float currentDeg, float targetDeg, float* outDelta",
@@ -13356,27 +13373,33 @@
   "file": "src/auto/0043ad70.cpp"
  },
  "0043aeb0": {
-  "name": "sub_43AEB0",
-  "name_src": "addr",
+  "name": "C_00830d90_UpdateRadarHeading",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00830d90* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0043aeb0.cpp"
  },
  "0043af30": {
-  "name": "sub_43AF30",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_00830e5c_RenderRadarWidget",
+  "name_src": "agent",
+  "votes": {
+   "Minimap_DrawBlip": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "abi"
+  "params": "C_00830e5c* self, void* , void* item",
+  "sig_src": "impl",
+  "file": "src/auto/0043af30.cpp"
  },
  "0043b250": {
   "name": "C_00830e5c_RefreshVisibleSceneObjects",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "Minimap_DrawPrimary": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00830e5c* self, void*",
@@ -13384,17 +13407,19 @@
   "file": "src/auto/0043b250.cpp"
  },
  "0043b2d0": {
-  "name": "sub_43B2D0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Minimap_DrawObject",
+  "name_src": "vote",
+  "votes": {
+   "Minimap_DrawObject": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2, char a3, float a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0043b380": {
   "name": "Minimap_GetVectorAngleDegrees",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "double",
   "conv": "__stdcall",
@@ -13403,7 +13428,7 @@
   "file": "src/auto/0043b380.cpp"
  },
  "0043b420": {
-  "name": "C_00830d68_Destroy",
+  "name": "C_00830d68_Destroy_43B420",
   "name_src": "agent",
   "votes": {},
   "ret": "int*",
@@ -13413,15 +13438,16 @@
   "file": "src/auto/0043b420.cpp"
  },
  "0043b450": {
-  "name": "Hud_CreateMinimapRenderer",
-  "name_src": "vote",
+  "name": "Minimap_CreateRenderer",
+  "name_src": "agent",
   "votes": {
    "Hud_CreateMinimapRenderer": 1
   },
-  "ret": "void*",
+  "ret": "uint32_t*",
   "conv": "__cdecl",
-  "params": "int type",
-  "sig_src": "vote"
+  "params": "int selector",
+  "sig_src": "impl",
+  "file": "src/auto/0043b450.cpp"
  },
  "0043b4e0": {
   "name": "Hud_UpdateEnabledWidget",
@@ -13446,22 +13472,40 @@
   "file": "src/auto/0043b500.cpp"
  },
  "0043b530": {
-  "name": "sub_43B530",
-  "name_src": "addr",
-  "votes": {},
+  "name": "MinimapRadar_DrawMarkerAt",
+  "name_src": "vote",
+  "votes": {
+   "MinimapRadar_DrawMarkerAt": 1,
+   "Minimap_DrawBlip": 1
+  },
   "ret": "int*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float* a2, float a3, void* a4, float argC",
-  "sig_src": "abi"
+  "sig_src": "vote"
+ },
+ "0043b720": {
+  "name": "C_00830e5c_DrawMarkerForFlaggedObject",
+  "name_src": "agent",
+  "votes": {
+   "Minimap_HandleOutOfRange": 1
+  },
+  "ret": "uint32_t",
+  "conv": "__fastcall",
+  "params": "C_00830e5c* self, void* , C_008342e8* a2",
+  "sig_src": "impl",
+  "file": "src/auto/0043b720.cpp"
  },
  "0043b7a0": {
-  "name": "sub_43B7A0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Minimap_DrawRadarObjects",
+  "name_src": "agent",
+  "votes": {
+   "Minimap_DrawSecondary": 1
+  },
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00830e5c* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0043b7a0.cpp"
  },
  "0043b8b0": {
   "name": "sub_43B8B0",
@@ -13482,45 +13526,53 @@
   "sig_src": "abi"
  },
  "0043bb40": {
-  "name": "sub_43BB40",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Minimap_SetupFromComponent",
+  "name_src": "vote",
+  "votes": {
+   "Minimap_SetupFromComponent": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0043bf20": {
-  "name": "sub_43BF20",
-  "name_src": "addr",
-  "votes": {},
+  "name": "MinimapRadar_RenderEntity",
+  "name_src": "vote",
+  "votes": {
+   "MinimapRadar_RenderEntity": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* arg0",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0043c050": {
-  "name": "sub_43C050",
-  "name_src": "addr",
+  "name": "MinimapRadar_LoadFromProperties",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , S_00692b80* a2",
+  "sig_src": "impl",
+  "file": "src/auto/0043c050.cpp"
  },
  "0043c160": {
-  "name": "sub_43C160",
-  "name_src": "addr",
+  "name": "C_00830e5c_RenderRadar_43C160",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00830e5c* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0043c160.cpp"
  },
  "0043c280": {
   "name": "IsFlaggedInFirstThreeStates",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "IsFlaggedInFirstThreeStates": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
   "params": "void* object",
@@ -13538,22 +13590,24 @@
   "file": "src/auto/0043c2c0.cpp"
  },
  "0043c2f0": {
-  "name": "sub_43C2F0",
-  "name_src": "addr",
+  "name": "Minimap_ProcessObject",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "C_00830e5c* self, void* , C_008342e8* obj",
+  "sig_src": "impl",
+  "file": "src/auto/0043c2f0.cpp"
  },
  "0043c3a0": {
-  "name": "sub_43C3A0",
-  "name_src": "addr",
+  "name": "MinimapRadar_BuildRingMesh",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , std::uint8_t* properties",
+  "sig_src": "impl",
+  "file": "src/auto/0043c3a0.cpp"
  },
  "0043c780": {
   "name": "sub_43C780",
@@ -13565,13 +13619,16 @@
   "sig_src": "abi"
  },
  "0043c9a0": {
-  "name": "sub_43C9A0",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "void",
+  "name": "Minimap_ApplyRadarTransform",
+  "name_src": "agent",
+  "votes": {
+   "Minimap_PrepareDraw": 1
+  },
+  "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0043c9a0.cpp"
  },
  "0043cb10": {
   "name": "sub_43CB10",
@@ -13581,6 +13638,16 @@
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2",
   "sig_src": "abi"
+ },
+ "0043cc20": {
+  "name": "C_00830e5c_RenderRadar_43CC20",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "uint8_t",
+  "conv": "__fastcall",
+  "params": "C_00830e5c* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0043cc20.cpp"
  },
  "0043cd00": {
   "name": "MinimapRadar_ComputeScaledSize",
@@ -13624,22 +13691,26 @@
   "file": "src/auto/0043ce80.cpp"
  },
  "0043cef0": {
-  "name": "sub_43CEF0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "MinimapRadar_LoadFromComponents",
+  "name_src": "agent",
+  "votes": {
+   "MinimapRadar_ValidateProperty": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , S_00692b80* desc",
+  "sig_src": "impl",
+  "file": "src/auto/0043cef0.cpp"
  },
  "0043cfd0": {
-  "name": "sub_43CFD0",
-  "name_src": "addr",
+  "name": "C_00830e5c_LoadMinimapWidgets",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "C_00830e5c* self, void* , S_00692b80* a2",
+  "sig_src": "impl",
+  "file": "src/auto/0043cfd0.cpp"
  },
  "0043d070": {
   "name": "sub_43D070",
@@ -13683,22 +13754,24 @@
   "file": "src/auto/0043d3a0.cpp"
  },
  "0043d3c0": {
-  "name": "sub_43D3C0",
-  "name_src": "addr",
+  "name": "Minimap_DrawAllBlips",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00830e5c* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0043d3c0.cpp"
  },
  "0043d4b0": {
-  "name": "sub_43D4B0",
-  "name_src": "addr",
+  "name": "C_00830e5c_RebuildRadarGeometry",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00830e5c* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0043d4b0.cpp"
  },
  "0043d7a0": {
   "name": "sub_43D7A0",
@@ -13710,13 +13783,14 @@
   "sig_src": "abi"
  },
  "0043d7d0": {
-  "name": "sub_43D7D0",
-  "name_src": "addr",
+  "name": "C_00830e5c_SelectNamedMenuItem",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a3",
-  "sig_src": "abi"
+  "params": "C_00830e5c* self, void* , void* a3",
+  "sig_src": "impl",
+  "file": "src/auto/0043d7d0.cpp"
  },
  "0043d850": {
   "name": "C_00830e5c_ResetAndForwardToChild",
@@ -16960,7 +17034,7 @@
   "name": "GetGlobalValue_44ACE0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_44ACE0": 3
+   "GetGlobalValue_44ACE0": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -18503,7 +18577,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 339
+   "CHandleTable_Resolve": 340
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -18514,7 +18588,7 @@
   "name": "GetSceneMenuContext",
   "name_src": "vote",
   "votes": {
-   "GetSceneMenuContext": 77
+   "GetSceneMenuContext": 86
   },
   "ret": "uint32_t",
   "conv": "__fastcall",
@@ -35908,7 +35982,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 137,
+   "GetObjectPositionVector": 143,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -36420,7 +36494,7 @@
   "name": "C_008342e8_ComputeResolvedObjectScalar",
   "name_src": "agent",
   "votes": {
-   "C_008342e8_ComputeResolvedObjectScalar": 11,
+   "C_008342e8_ComputeResolvedObjectScalar": 13,
    "ComputeScalarForResolvedObject": 10
   },
   "ret": "double",
@@ -37573,7 +37647,7 @@
   "name": "IsField1BCNonNegative",
   "name_src": "agent",
   "votes": {
-   "IsField1BCNonNegative": 21
+   "IsField1BCNonNegative": 22
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -38707,9 +38781,9 @@
   "name": "GetContextTransform",
   "name_src": "agent",
   "votes": {
-   "GetContextTransform": 2
+   "GetContextTransform": 3
   },
-  "ret": "void*",
+  "ret": "uint32_t",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
   "sig_src": "vote"
@@ -59344,7 +59418,9 @@
  "004e7220": {
   "name": "C_0083e9d0_FindMatchingEntry",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0083e9d0_FindMatchingEntry": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "C_0083e9d0* self, void* , int slotIndex, int matchId, int matchRecord",
@@ -59700,7 +59776,7 @@
   "name": "GetValue8B0554",
   "name_src": "agent",
   "votes": {
-   "GetValue8B0554": 230
+   "GetValue8B0554": 231
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -67169,7 +67245,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 299
+   "GetGlobalState_50D190": 300
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -107431,7 +107507,7 @@
   "name": "RwV3dTransformPoints",
   "name_src": "rwname",
   "votes": {
-   "RwV3dTransformPoints": 9
+   "RwV3dTransformPoints": 11
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -107914,7 +107990,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 109
+   "RwMatrixDestroy": 113
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -107925,7 +108001,7 @@
   "name": "RwMatrixCreate",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixCreate": 69
+   "RwMatrixCreate": 72
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -133953,7 +134029,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 306
+   "Mem_Alloc": 307
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -134481,7 +134557,7 @@
   "name": "MenuExtras_GetChildCount",
   "name_src": "vote",
   "votes": {
-   "MenuExtras_GetChildCount": 67
+   "MenuExtras_GetChildCount": 69
   },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
@@ -134492,7 +134568,7 @@
   "name": "GetComponent",
   "name_src": "vote",
   "votes": {
-   "GetComponent": 76
+   "GetComponent": 79
   },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
@@ -134583,7 +134659,7 @@
   "name": "FindProperty",
   "name_src": "vote",
   "votes": {
-   "FindProperty": 95
+   "FindProperty": 97
   },
   "ret": "std::uint8_t*",
   "conv": "__fastcall",
@@ -134668,7 +134744,7 @@
   "name": "ReadIntegerProperty",
   "name_src": "vote",
   "votes": {
-   "ReadIntegerProperty": 40
+   "ReadIntegerProperty": 42
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -134679,7 +134755,7 @@
   "name": "ReadFloatProperty",
   "name_src": "vote",
   "votes": {
-   "ReadFloatProperty": 29
+   "ReadFloatProperty": 31
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -141284,7 +141360,8 @@
   "name": "GfxMatrix_Scale",
   "name_src": "agent",
   "votes": {
-   "ScaleMatrix": 2
+   "ScaleMatrix": 2,
+   "GfxMatrix_Scale": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -141309,7 +141386,7 @@
   "name_src": "agent",
   "votes": {
    "TranslateMatrixHandle": 4,
-   "GfxMatrix_Translate": 1
+   "GfxMatrix_Translate": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -141435,7 +141512,7 @@
   "name": "GfxMatrix_RotateAroundAxisZ",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_RotateAroundAxisZ": 1,
+   "GfxMatrix_RotateAroundAxisZ": 3,
    "RotateMatrixHandle": 4
   },
   "ret": "int",
@@ -141483,7 +141560,7 @@
   "name": "GfxMatrix_GetEulerAngles",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_GetEulerAngles": 3,
+   "GfxMatrix_GetEulerAngles": 4,
    "GetMatrixEulerAngles": 2
   },
   "ret": "float*",
@@ -141687,7 +141764,7 @@
   "name": "NormalizeVector2",
   "name_src": "agent",
   "votes": {
-   "NormalizeVector2": 6
+   "NormalizeVector2": 7
   },
   "ret": "float*",
   "conv": "__fastcall",
@@ -142121,7 +142198,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 253,
+   "GetGlobalInt": 254,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -142134,7 +142211,7 @@
   "name": "MenuControls_ResolveObject",
   "name_src": "vote",
   "votes": {
-   "MenuControls_ResolveObject": 34
+   "MenuControls_ResolveObject": 35
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -148271,7 +148348,7 @@
   "name": "GetGlobalValue_6C5760",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_6C5760": 30
+   "GetGlobalValue_6C5760": 32
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -148950,7 +149027,8 @@
   "votes": {
    "RwEngine_SetRenderState": 1,
    "Hud_SetWidgetParam": 3,
-   "Hud_SetRenderState": 1
+   "Hud_SetRenderState": 1,
+   "GfxSkin_ForwardToRwEngineSlot20": 2
   },
   "ret": "int",
   "conv": "__stdcall",
@@ -188072,7 +188150,7 @@
   "name_src": "agent",
   "votes": {
    "IsResolvedEntryActive": 14,
-   "GameConfig_IsResolvedEntryActive": 9,
+   "GameConfig_IsResolvedEntryActive": 10,
    "IsControlReadyFlagSet": 1,
    "IsObjectKindFlagSet": 1,
    "Object_IsEnabled": 1,
@@ -188480,7 +188558,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 171,
+   "GetGlobalValue_8BC1E0": 173,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
