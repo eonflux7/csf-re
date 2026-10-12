@@ -15347,11 +15347,11 @@ ea,size,region,module,name,name_src,status
 006d16d0,85,game,m6D0C70,GfxLights_RemovePointerFromList,agent,done
 006d1730,113,game,m6D0C70,,,todo
 006d17b0,501,game,m6D0C70,GfxLights_FilterLightPropertiesAndApplyTint,agent,done
-006d19b0,693,game,m6D0C70,,,todo
+006d19b0,693,game,m6D0C70,LightWorld_ProcessLightEntry,vote,todo
 006d1c70,32,game,m6D0C70,GfxLights_ForwardToActiveWorld,agent,done
 006d1c90,32,game,m6D0C70,GfxLights_ForwardLightEntryToActiveWorld,agent,done
 006d1cb0,122,game,m6D0C70,C_00860e68_ApplyLightWorldAssignment,agent,done
-006d1d30,117,game,m6D0C70,,,todo
+006d1d30,117,game,m6D0C70,C_00860e68_AttachLight,vote,todo
 006d1db0,232,game,m6D0C70,C_00860e68_RegisterLight,agent,done
 006d1ea0,75,game,m6D0C70,,,todo
 006d1ef0,64,game,m6D0C70,,,todo
@@ -15363,12 +15363,12 @@ ea,size,region,module,name,name_src,status
 006d2110,259,game,m6D0C70,C_00860e68_RemoveWorldLights,agent,done
 006d2220,76,game,m6D0C70,C_00860e68_SelectAttachmentCallback,agent,done
 006d2270,48,game,m6D0C70,C_00860e68_DetachLightList,agent,done
-006d22a0,48,game,m6D0C70,,,todo
+006d22a0,48,game,m6D0C70,C_00860e68_FireTimedAction,vote,todo
 006d22d0,60,game,m6D0C70,C_00860e68_AccumulateTimerAndTrigger,agent,done
 006d2310,117,game,m6D0C70,C_008631c8_PrepareAtomicForPipeline,vote,todo
 006d2390,161,game,m6D0C70,S_006d2390_ClearLights,agent,done
 006d2440,89,game,m6D0C70,,,todo
-006d24a0,121,game,m6D0C70,,,todo
+006d24a0,121,game,m6D0C70,GfxLights_ReleaseOwnedState,vote,todo
 006d2520,237,game,m6D0C70,C_00860e68_ReleaseBaseState,agent,done
 006d2610,33,game,m6D0C70,C_00860e68_Destroy,agent,done
 006d2640,204,game,m6D0C70,GfxLights_InitializeState,agent,done
@@ -15560,7 +15560,7 @@ ea,size,region,module,name,name_src,status
 006da020,34,game,m6D9D00,,,todo
 006da050,34,game,m6D9D00,,,todo
 006da080,186,game,m6D9D00,,,todo
-006da140,395,game,m6D9D00,,,todo
+006da140,395,game,m6D9D00,Lights_WorldInsert,vote,todo
 006da2d0,32,game,m6D9D00,,,todo
 006da2f0,109,game,m6D9D00,,,todo
 006da360,21,game,m6D9D00,,,todo
@@ -15580,7 +15580,7 @@ ea,size,region,module,name,name_src,status
 006dad70,5,game,m6D9D00,GfxScene_ResetEntryLookup,vote,todo
 006dad80,229,game,stl,ReserveFirstCollection,vote,todo
 006dae70,124,game,m6D9D00,,,todo
-006daef0,179,game,m6D9D00,,,todo
+006daef0,179,game,m6D9D00,GfxLights_InitializeLightState,vote,todo
 006dafb0,277,game,m6D9D00,,,todo
 006db0d0,134,game,m6D9D00,,,todo
 006db160,278,game,m6D9D00,,,todo
@@ -16517,8 +16517,8 @@ ea,size,region,module,name,name_src,status
 006fd1e0,12,game,m6FC130,CLightObject_CallEmbeddedVirtual19,agent,done
 006fd1f0,46,game,m6FC130,,,todo
 006fd220,241,game,m6FC130,,,todo
-006fd330,203,game,m6FC130,,,todo
-006fd400,210,game,m6FC130,,,todo
+006fd330,203,game,m6FC130,Light_GetWorldMatrixPointer,vote,todo
+006fd400,210,game,m6FC130,GfxLights_ConstructLightObject,vote,todo
 006fd4f0,74,game,m6FC130,,,todo
 006fd540,133,game,m6FC130,,,todo
 006fd5d0,51,game,m6FC130,,,todo
