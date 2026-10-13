@@ -1530,7 +1530,7 @@ ea,size,region,module,name,name_src,status
 00448350,77,game,m4480C0,DestroyElementArray,agent,done
 004483a0,78,game,m4480C0,ClearElementArray,agent,done
 004483f0,82,game,m4480C0,Gui_IsHandleEntryShared,agent,done
-00448450,270,game,m4480C0,ApplyControlAssociation,vote,todo
+00448450,270,game,m4480C0,ApplyControlAssociation,agent,done
 00448560,62,game,m4480C0,Game_DestroyElementArray,agent,done
 004485a0,93,game,m4480C0,HasDifferentMatchingEntry,agent,done
 00448600,212,game,m4480C0,GrowPolymorphicArray,agent,done
@@ -1540,8 +1540,8 @@ ea,size,region,module,name,name_src,status
 00448920,148,game,m4480C0,Archive_SerializeEntry,agent,done
 004489c0,191,game,m4480C0,CopyRecordArray,agent,done
 00448a80,219,game,m4480C0,S_00448a80_GrowCapacity,agent,done
-00448b60,254,game,m4480C0,CopyRecordTail,vote,todo
-00448c60,232,game,m4480C0,EntryTable_GrowStorage,vote,todo
+00448b60,254,game,m4480C0,CopyRecordArray,agent,done
+00448c60,232,game,m4480C0,EntryTable_GrowStorage,agent,done
 00448d50,69,game,m4480C0,DestroyElementArray,agent,done
 00448da0,38,game,m4480C0,S_004480f0_UpdateFinalController,agent,done
 00448dd0,352,game,m4480C0,AiTaskStates_AdjustPositionForRegion,agent,done
@@ -1574,7 +1574,7 @@ ea,size,region,module,name,name_src,status
 0044a2f0,156,game,m4480C0,ProcessEventThroughHandlers,agent,done
 0044a390,130,game,m4480C0,S_0044a1e0_AppendElement20,agent,done
 0044a420,105,game,m4480C0,C_0083114c_Construct,agent,done
-0044a490,236,game,m4480C0,C_0083114c_Cleanup,vote,todo
+0044a490,236,game,m4480C0,C_0083114c_Cleanup,agent,done
 0044a580,130,game,m4480C0,S_00448830_GetOrCreateEntry,agent,done
 0044a610,33,game,m4480C0,C_0083114c_Destroy,agent,done
 0044a640,79,game,m4480C0,S_00448830_UpdateControlAssociation,agent,done
@@ -6286,10 +6286,10 @@ ea,size,region,module,name,name_src,status
 0050d230,51,game,m50D1A0,MenuSystem_ResetStateFields,agent,done
 0050d270,144,game,m50D1A0,MenuSystem_InitCommonMenuBuilder,agent,done
 0050d300,39,game,m50D1A0,MenuSystem_ToggleChildFlag,agent,done
-0050d330,387,game,m50D1A0,C_008407a8_InitializeBase,vote,todo
+0050d330,387,game,m50D1A0,CMenuManager_InitializeBaseScreens,agent,done
 0050d4c0,365,game,m50D1A0,CMenuManager_ReleaseOwnedScreens,agent,done
 0050d630,193,game,m50D1A0,CMenuManager_SelectInitialScreen,agent,done
-0050d700,181,game,m50D1A0,,,todo
+0050d700,181,game,m50D1A0,CMenuManager_SetMenuState,agent,done
 0050d7c0,37,game,m50D1A0,MenuCommon_SetFlagAndNotifyChild,agent,done
 0050d7f0,12,game,m50D1A0,Menus_ForwardCallToChildAt18,agent,done
 0050d800,8,game,m50D1A0,Menus_GetInnerObjectFlag,agent,done
@@ -13962,7 +13962,7 @@ ea,size,region,module,name,name_src,status
 0069dde0,163,game,m69DD10,C_0085eac0_ResetHeapPools,agent,done
 0069de90,94,game,m69DD10,C_0085eac0_ResetEntryTables,agent,done
 0069def0,164,game,m69DD10,Tokenizer_AllocInner,vote,todo
-0069dfa0,97,game,m69DD10,ForwardBlockHandler,vote,todo
+0069dfa0,97,game,m69DD10,C_0085eac0_ForwardBlockHandler,agent,done
 0069e010,10,game,m69DD10,GetFirstArgument,agent,done
 0069e020,24,game,m69DD10,C_0085eac0_ForwardAlloc,agent,done
 0069e040,9,game,m69DD10,C_0085eac0_ForwardBlock,agent,done
