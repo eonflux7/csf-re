@@ -169,18 +169,26 @@ def prepare(name, fresh, tree=None):
 
 
 def login():
-    """The Codex login with the most room in its 5h window (the lanes' round robin does not look)."""
+    """The Codex login with the most room in its 5h window, counting the jobs already running on each (four jobs
+    started together all took the emptiest login and spent its window in 25 minutes, 2026-10-14)."""
     import grunt
+    busy = {}
+    for j in jobs():
+        if j["phase"] == "running" and j.get("home"):
+            busy[j["home"]] = busy.get(j["home"], 0) + 1
     best = None
     for h in grunt.codex_homes():
         try:
             used = grunt.codex_usage(h)["5h"][0]
         except Exception:
             used = 50
-        if best is None or used < best[0]:
-            best = (used, h)
-    if best[0] >= 99:
-        raise SystemExit(f"deep worker: every Codex login is at its 5h limit ({best[0]}%)")
+        if used >= 99:
+            continue
+        score = used + 20 * busy.get(h, 0)  # a running job is worth about a fifth of a window
+        if best is None or score < best[0]:
+            best = (score, h)
+    if best is None:
+        raise SystemExit("deep worker: every Codex login is at its 5h limit")
     return best[1]
 
 
