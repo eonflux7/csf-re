@@ -31,8 +31,10 @@
 - {addr: 0x0082D238, name: g_pfnReadFile, type: ReadFileFn, uses: 2, src: auto}
 - {addr: 0x0082D23C, name: g_ReleaseMutex, type: ReleaseMutexFunction, uses: 1, src: auto}
 - {addr: 0x0082D240, name: g_GlobalMemoryStatusImport, type: void*, uses: 4, src: auto}
+- {addr: 0x0082D244, name: g_IsBadReadPtr, type: IsBadReadPtrFn, uses: 1, src: auto}
 - {addr: 0x0082D24C, name: g_GetCurrentThreadIat, type: GetCurrentThreadFn, uses: 1, src: auto}
 - {addr: 0x0082D254, name: g_GetThreadPriorityIat, type: GetThreadPriorityFn, uses: 1, src: auto}
+- {addr: 0x0082D268, name: g_ShGetFolderPathW, type: ShGetFolderPathWFn, uses: 1, src: auto}
 - {addr: 0x0082D270, name: g_MapVirtualKeyA, type: MapVirtualKeyAFunction, uses: 1, src: auto}
 - {addr: 0x0082D27C, name: g_GetActiveWindow, type: GetActiveWindowFn, uses: 1, src: auto}
 - {addr: 0x0082D280, name: g_ClientToScreen, type: ClientToScreenFn, uses: 1, src: auto}
@@ -72,7 +74,7 @@
 - {addr: 0x0082D568, name: g_LocalDirectionAngleScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D56C, name: g_Epsilon, type: float, uses: 2, src: auto, alt: [g_MotionEpsilon]}
 - {addr: 0x0082D6E8, name: g_MatrixQueryFlags, type: 'std::uint32_t', uses: 2, src: auto, alt: [g_MatrixRequestFlags]}
-- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 117, src: auto, alt: [g_MissionUnsignedIntegerBias]}
+- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 118, src: auto, alt: [g_MissionUnsignedIntegerBias]}
 - {addr: 0x0082D748, name: g_HudPi, type: float, uses: 2, src: auto, alt: [g_PiConstant]}
 - {addr: 0x0082D74C, name: g_HudTwoPi, type: float, uses: 2, src: auto, alt: [g_TwoPiConstant]}
 - {addr: 0x0082D750, name: g_RotationRadiansToDegrees, type: float, uses: 1, src: auto}
@@ -99,7 +101,7 @@
 - {addr: 0x0082DC78, name: g_SwayImpulseScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC7C, name: g_DirectionYScale, type: float, uses: 4, src: auto, alt: [g_RelatedObjectScaleY]}
 - {addr: 0x0082DC80, name: g_SwayHeightScale, type: float, uses: 2, src: auto}
-- {addr: 0x0082DC84, name: g_flt_0082DC84, type: float, uses: 25, src: auto, alt: [g_FadeTimerThreshold, g_HeadDampingScale, g_MessageBoxAnimationDuration]}
+- {addr: 0x0082DC84, name: g_flt_0082DC84, type: float, uses: 26, src: auto, alt: [g_FadeTimerThreshold, g_HeadDampingScale, g_MessageBoxAnimationDuration]}
 - {addr: 0x0082DCE8, name: g_WheelRecordScale, type: float, uses: 9, src: auto}
 - {addr: 0x0082DD58, name: g_RadiansToDegrees, type: float, uses: 1, src: auto}
 - {addr: 0x0082DD5C, name: g_DegreesToRadians, type: float, uses: 3, src: auto, alt: [g_fDegToRad]}
@@ -176,7 +178,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 122, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 123, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C8, name: g_AngleScale, type: float, uses: 1, src: auto}
@@ -408,6 +410,7 @@
 - {addr: 0x008445C4, name: g_GraphScales, type: GraphScales, uses: 1, src: auto}
 - {addr: 0x008445D8, name: g_MaxPlayersSettingValue, type: char, uses: 3, src: auto}
 - {addr: 0x008445DC, name: g_StatsRateScale, type: float, uses: 1, src: auto}
+- {addr: 0x00844624, name: g_SpawnCountdownOffset, type: int, uses: 1, src: auto}
 - {addr: 0x00844628, name: g_SpawnRadiansToDegrees, type: float, uses: 3, src: auto, alt: [g_SpawnAngleScale]}
 - {addr: 0x0084462C, name: g_SpawnRegionDistanceSquared, type: float, uses: 1, src: auto}
 - {addr: 0x008446C8, name: g_SpawnTimerThreshold, type: float, uses: 1, src: auto}
@@ -456,8 +459,12 @@
 - {addr: 0x0085E674, name: g_HeaderTagWord, type: uint16_t, uses: 1, src: auto}
 - {addr: 0x0085E676, name: g_HeaderTagByte, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x0085E680, name: g_CoreStringFormatLineEnding, type: uint16_t, uses: 2, src: auto, alt: [g_CrlfTerminatorWord]}
-- {addr: 0x0085E684, name: g_NumberFormattingMode, type: int, uses: 15, src: auto, alt: [g_MissionNumberFormattingMode]}
+- {addr: 0x0085E684, name: g_NumberFormattingMode, type: int, uses: 16, src: auto, alt: [g_MissionNumberFormattingMode]}
 - {addr: 0x0085E910, name: g_FrameRateTimeScale, type: double, uses: 1, src: auto}
+- {addr: 0x0085E9CC, name: g_NoFileInfoWord0, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x0085E9D0, name: g_NoFileInfoWord1, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x0085E9D4, name: g_NoFileInfoWord2, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x0085E9D8, name: g_NoFileInfoTerminator, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x0085ECD8, name: g_RowWordA_ECD8, type: uint16_t, uses: 1, src: auto}
 - {addr: 0x0085ECDA, name: g_RowWordB_ECDA, type: uint16_t, uses: 1, src: auto}
 - {addr: 0x0085ECDC, name: g_RowWordC_ECDC, type: uint16_t, uses: 1, src: auto}
@@ -2022,9 +2029,12 @@
 - {addr: 0x008BAF98, name: g_Value_8BAF98, type: int, uses: 1, src: auto}
 - {addr: 0x008BAFA4, name: g_Value_8BAFA4, type: int, uses: 1, src: auto}
 - {addr: 0x008BAFD0, name: g_storedWindowHandle, type: void*, uses: 1, src: auto}
+- {addr: 0x008BB3E0, name: Stream, type: void*, uses: 2, src: auto, alt: [g_ErrorLogStream]}
+- {addr: 0x008BB3E4, name: g_ErrorLogBuffer, type: char, uses: 1, src: auto}
+- {addr: 0x008BB3E8, name: g_ErrorLogInitFlags, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008BB3EC, name: g_SomeFlag_8BB3EC, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008BB3F0, name: g_NetProfile_Instance, type: uint32_t, uses: 1, src: auto}
-- {addr: 0x008BB3F4, name: g_fpControlWord_8BB3F4, type: unsigned int, uses: 1, src: auto}
+- {addr: 0x008BB3F4, name: g_fpControlWord_8BB3F4, type: unsigned int, uses: 2, src: auto}
 - {addr: 0x008BB3F8, name: g_Value_8BB3F8, type: int, uses: 1, src: auto}
 - {addr: 0x008BB3FC, name: g_RtfsEntryOffsetBase, type: uint32_t, uses: 4, src: auto, alt: [g_ArchiveVersionFlags, g_RtfsFileOffsetBase]}
 - {addr: 0x008BB400, name: g_008bb400, type: int, uses: 9, src: auto}
