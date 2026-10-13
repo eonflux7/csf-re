@@ -20640,7 +20640,7 @@
   "votes": {
    "Scene_RemoveObjectSlot": 1,
    "SceneReleaseHandle": 1,
-   "CScene_RemoveObjectSlot": 17
+   "CScene_RemoveObjectSlot": 18
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -30134,7 +30134,7 @@
   "name": "GetGlobalObjectField184",
   "name_src": "agent",
   "votes": {
-   "GetGlobalObjectField184": 60
+   "GetGlobalObjectField184": 61
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -30265,7 +30265,7 @@
   "name": "DispatchRecordOrQueueIdentifier",
   "name_src": "agent",
   "votes": {
-   "DispatchRecordToGlobalObject": 53,
+   "DispatchRecordToGlobalObject": 54,
    "QueueTaskRecord": 1
   },
   "ret": "uint32_t",
@@ -54180,7 +54180,9 @@
  "004cef50": {
   "name": "C_0083b038_DispatchIfFlagSet",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0083b038_DispatchIfFlagSet": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "C_0083b038* self, void* , int a2",
@@ -56481,7 +56483,9 @@
  "004d6870": {
   "name": "C_0083c478_UpdateFocusEntryState",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0083c478_UpdatePrimaryObjectState": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "C_0083c478* self, void* , uint32_t* a2",
@@ -56491,7 +56495,9 @@
  "004d6900": {
   "name": "C_0083c478_ConsumePendingIndex",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0083c478_UpdateSecondaryObjectState": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "C_0083c478* self, void* , int a2",
@@ -56501,7 +56507,9 @@
  "004d6980": {
   "name": "C_0083c478_ApplyEntryToMenuIfReady",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0083c478_UpdateTertiaryObjectState": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "C_0083c478* self, void* , int a2",
@@ -56511,7 +56519,9 @@
  "004d6a10": {
   "name": "C_0083c478_HandleMpSpawnPointEvent",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0083c478_UpdateFinalObjectState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_0083c478* self, void* , int a2",
@@ -56575,13 +56585,14 @@
   "file": "src/auto/004d6b40.cpp"
  },
  "004d6b70": {
-  "name": "sub_4D6B70",
-  "name_src": "addr",
+  "name": "C_0083c478_UpdateSpawnedObject",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083c478* self, void* , int elapsed",
+  "sig_src": "impl",
+  "file": "src/auto/004d6b70.cpp"
  },
  "004d6dc0": {
   "name": "GetTIAOffString",
@@ -71229,7 +71240,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 412
+   "GetGlobalState_50D190": 413
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -192130,7 +192141,7 @@
   "name": "ReleaseSpawnObjectReference",
   "name_src": "agent",
   "votes": {
-   "ReleaseSpawnObjectReference": 2,
+   "ReleaseSpawnObjectReference": 3,
    "SpawnPoints_DetachObjectReference": 1,
    "PrepareSpawnResourceForDestruction": 1,
    "MpSpawnPoints_ClearPlayerReference": 1,
@@ -192367,6 +192378,7 @@
   "name": "CMenuMpStats_RefreshIfReadyAndSetFlag",
   "name_src": "agent",
   "votes": {
+   "CMenuMpStats_RefreshIfReadyAndSetFlag": 1,
    "NetCogible_HandleMsg740080": 1
   },
   "ret": "char",
@@ -192378,7 +192390,9 @@
  "007400a0": {
   "name": "NetCogibleDDL_SetSignFlagAndStoreValue",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "NetCogibleDDL_SetSignFlagAndStoreValue": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* , float value",
@@ -192389,6 +192403,7 @@
   "name": "CMenuMpStats_SetScoreFieldAndRefresh",
   "name_src": "agent",
   "votes": {
+   "CMenuMpStats_SetScoreFieldAndRefresh": 1,
    "NetCogible_HandleMsg7400F0": 1
   },
   "ret": "char",
@@ -192400,7 +192415,9 @@
  "00740130": {
   "name": "NetCogibleDDL_GetLazyLatchedByte",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "NetCogibleDDL_GetLazyLatchedByte": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "uint8_t* self, void*",
@@ -192446,7 +192463,9 @@
  "00740360": {
   "name": "NetCogibleDDL_SyncByteFieldIfChanged",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "NetCogibleDDL_SyncByteFieldIfChanged": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -193220,7 +193239,9 @@
  "00742140": {
   "name": "C_00858180_SendHasBeenCaughtCommand",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00858180_SendHasBeenCaughtCommand": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "C_00858180* self, void*",
