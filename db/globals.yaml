@@ -71,7 +71,7 @@
 - {addr: 0x0082D4D0, name: g_CollisionHeightTolerance, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 188, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 15, src: auto}
-- {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 16, src: auto, alt: [g_MinimumHeadTimeStep]}
+- {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 17, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
 - {addr: 0x0082D550, name: g_SecondaryXRotationScale, type: const float, uses: 1, src: auto}
 - {addr: 0x0082D564, name: g_AuxObjectCreateArg, type: int, uses: 1, src: auto}
@@ -469,7 +469,12 @@
 - {addr: 0x0085E680, name: g_CoreStringFormatLineEnding, type: uint16_t, uses: 2, src: auto, alt: [g_CrlfTerminatorWord]}
 - {addr: 0x0085E684, name: g_NumberFormattingMode, type: int, uses: 17, src: auto, alt: [g_MissionNumberFormattingMode]}
 - {addr: 0x0085E71C, name: byte_85E71C, type: uint8_t, uses: 2, src: auto, alt: [g_QuotedTextSuffix]}
-- {addr: 0x0085E910, name: g_FrameRateTimeScale, type: double, uses: 1, src: auto}
+- {addr: 0x0085E8D0, name: g_Value_85E8D0, type: int, uses: 1, src: auto}
+- {addr: 0x0085E8D4, name: g_Value_85E8D4, type: int, uses: 1, src: auto}
+- {addr: 0x0085E8D8, name: g_Value_85E8D8, type: uint16_t, uses: 1, src: auto}
+- {addr: 0x0085E8DA, name: g_Value_85E8DA, type: uint8_t, uses: 1, src: auto}
+- {addr: 0x0085E910, name: g_FrameRateTimeScale, type: double, uses: 2, src: auto}
+- {addr: 0x0085E928, name: g_SecondsToMinutesFactor, type: float, uses: 1, src: auto}
 - {addr: 0x0085E9CC, name: g_NoFileInfoWord0, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x0085E9D0, name: g_NoFileInfoWord1, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x0085E9D4, name: g_NoFileInfoWord2, type: uint32_t, uses: 1, src: auto}
@@ -2042,9 +2047,13 @@
 - {addr: 0x008BAF8C, name: g_pOptions, type: COptions*, uses: 2, src: opus}
 - {addr: 0x008BAF90, name: g_ActiveSceneContext, type: void*, uses: 5, src: auto, alt: [g_ActiveSceneLoadContext, g_PendingSceneResource]}
 - {addr: 0x008BAF94, name: g_Value_8baf94, type: int, uses: 3, src: auto}
-- {addr: 0x008BAF98, name: g_Value_8BAF98, type: int, uses: 1, src: auto}
-- {addr: 0x008BAFA4, name: g_Value_8BAFA4, type: int, uses: 1, src: auto}
+- {addr: 0x008BAF98, name: g_Value_8BAF98, type: int, uses: 2, src: auto}
+- {addr: 0x008BAFA4, name: g_Value_8BAFA4, type: int, uses: 2, src: auto}
+- {addr: 0x008BAFA8, name: g_Value_8BAFA8, type: int, uses: 1, src: auto}
+- {addr: 0x008BAFAC, name: g_Value_8BAFAC, type: uint16_t, uses: 1, src: auto}
+- {addr: 0x008BAFAE, name: g_Value_8BAFAE, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008BAFD0, name: g_storedWindowHandle, type: void*, uses: 1, src: auto}
+- {addr: 0x008BAFD8, name: g_SceneLoaderBlock, type: int, uses: 1, src: auto}
 - {addr: 0x008BB3E0, name: Stream, type: void*, uses: 2, src: auto, alt: [g_ErrorLogStream]}
 - {addr: 0x008BB3E4, name: g_ErrorLogBuffer, type: char, uses: 1, src: auto}
 - {addr: 0x008BB3E8, name: g_ErrorLogInitFlags, type: uint32_t, uses: 1, src: auto}
