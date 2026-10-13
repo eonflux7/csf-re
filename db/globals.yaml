@@ -61,7 +61,7 @@
 - {addr: 0x0082D2FC, name: g_DestroyWindowImport, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D390, name: g_BinkCloseFn, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D394, name: g_BinkPauseImport, type: BinkPauseImportFn, uses: 1, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 143, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 144, src: auto}
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 3, src: auto}
 - {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 5, src: auto}
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 5, src: auto}
@@ -69,7 +69,7 @@
 - {addr: 0x0082D4C8, name: g_CollisionMinimumTriangleArea, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
 - {addr: 0x0082D4D0, name: g_CollisionHeightTolerance, type: float, uses: 1, src: auto}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 182, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 183, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 15, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 16, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
@@ -139,7 +139,7 @@
 - {addr: 0x0082E03C, name: g_ProgressScale, type: float, uses: 31, src: auto}
 - {addr: 0x0082E040, name: g_ContactClampMinimum, type: float, uses: 2, src: auto}
 - {addr: 0x0082E044, name: g_FacingAngleOffset, type: float, uses: 5, src: auto}
-- {addr: 0x0082E048, name: g_LevelScaleFactor, type: float, uses: 8, src: auto}
+- {addr: 0x0082E048, name: g_LevelScaleFactor, type: float, uses: 9, src: auto}
 - {addr: 0x0082E04C, name: g_fHudFadeStep, type: float, uses: 5, src: auto}
 - {addr: 0x0082E050, name: g_LandingThresholdScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082E054, name: g_NoFallPeak, type: float, uses: 1, src: auto}
@@ -182,7 +182,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 124, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 127, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C8, name: g_AngleScale, type: float, uses: 1, src: auto}
@@ -465,6 +465,7 @@
 - {addr: 0x0085E676, name: g_HeaderTagByte, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x0085E680, name: g_CoreStringFormatLineEnding, type: uint16_t, uses: 2, src: auto, alt: [g_CrlfTerminatorWord]}
 - {addr: 0x0085E684, name: g_NumberFormattingMode, type: int, uses: 16, src: auto, alt: [g_MissionNumberFormattingMode]}
+- {addr: 0x0085E71C, name: byte_85E71C, type: uint8_t, uses: 2, src: auto, alt: [g_QuotedTextSuffix]}
 - {addr: 0x0085E910, name: g_FrameRateTimeScale, type: double, uses: 1, src: auto}
 - {addr: 0x0085E9CC, name: g_NoFileInfoWord0, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x0085E9D0, name: g_NoFileInfoWord1, type: uint32_t, uses: 1, src: auto}
@@ -1963,7 +1964,7 @@
 - {addr: 0x008B0448, name: g_MenuResourcesPrepared, type: 'std::uint8_t', uses: 2, src: auto, alt: [g_MenuServicesReady]}
 - {addr: 0x008B044C, name: g_AiSearchCostThisFrame, type: int, uses: 0, src: opus}
 - {addr: 0x008B0450, name: g_DebugLineBuffer, type: char, uses: 1, src: auto}
-- {addr: 0x008B0550, name: g_ObjectReferenceManager, type: void*, uses: 20, src: auto, alt: [g_ObjectReferenceRegistry, g_ArchiveReferenceManager, g_AiStateObjectRegistry, g_AiObjectReferenceRegistry, g_AiStateChain]}
+- {addr: 0x008B0550, name: g_ObjectReferenceManager, type: void*, uses: 21, src: auto, alt: [g_ObjectReferenceRegistry, g_ArchiveReferenceManager, g_AiStateObjectRegistry, g_AiObjectReferenceRegistry, g_AiStateChain]}
 - {addr: 0x008B0554, name: g_Value8B0554, type: int, uses: 5, src: auto}
 - {addr: 0x008B0558, name: g_Value8B0558, type: int32_t, uses: 3, src: auto}
 - {addr: 0x008B055C, name: g_Value8B055C, type: int, uses: 5, src: auto}
