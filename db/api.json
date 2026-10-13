@@ -6992,7 +6992,7 @@
   "name_src": "agent",
   "votes": {
    "ButtonList_InsertAt": 1,
-   "DynArray_InsertAt": 3
+   "DynArray_InsertAt": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -7005,7 +7005,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 147
+   "S_0041e5f0_GrowArrayCapacity": 149
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -137315,7 +137315,7 @@
   "name": "SetAllocationMode",
   "name_src": "vote",
   "votes": {
-   "SetAllocationMode": 12
+   "SetAllocationMode": 13
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -137326,7 +137326,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "Mem_Alloc": 449
+   "Mem_Alloc": 452
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -137338,7 +137338,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "Mem_Free": 879
+   "Mem_Free": 881
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -137468,7 +137468,9 @@
  "00691620": {
   "name": "Memory_LowerBoundByKey",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "FindKeyInBlockRange": 1
+  },
   "ret": "char*",
   "conv": "__stdcall",
   "params": "char* rangeFirst, char* rangeLast, uint32_t wantedKey",
@@ -137488,7 +137490,9 @@
  "00691730": {
   "name": "CoreMemory_GrowReferenceStorage",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreMemory_GrowReferenceArray": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , int additionalCapacity",
@@ -137499,7 +137503,8 @@
   "name": "C_0085e5c4_FindMatchingEntry",
   "name_src": "agent",
   "votes": {
-   "C_0085e5c4_LookupEntryByKey": 1
+   "C_0085e5c4_LookupEntryByKey": 1,
+   "C_0085e5c4_FindReferenceInsertionPoint": 1
   },
   "ret": "unsigned int*",
   "conv": "__fastcall",
@@ -137508,8 +137513,8 @@
   "file": "src/auto/006917e0.cpp"
  },
  "00691860": {
-  "name": "LookupRecordByKey",
-  "name_src": "vote",
+  "name": "S_00691860_FindKeyInSlotTable",
+  "name_src": "agent",
   "votes": {
    "LookupRecordByKey": 1,
    "S_00691860_FindEntry": 1,
@@ -137517,17 +137522,19 @@
   },
   "ret": "char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int a2",
-  "sig_src": "vote"
+  "params": "S_00691860* self, void* , unsigned int a2",
+  "sig_src": "impl",
+  "file": "src/auto/00691860.cpp"
  },
  "006918e0": {
-  "name": "sub_6918E0",
-  "name_src": "addr",
+  "name": "CoreMemory_InsertRecord",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , int index, const std::uint32_t* record",
+  "sig_src": "impl",
+  "file": "src/auto/006918e0.cpp"
  },
  "00691a20": {
   "name": "C_0085e5c4_Construct",
@@ -137564,24 +137571,26 @@
   "file": "src/auto/00691b30.cpp"
  },
  "00691b60": {
-  "name": "sub_691B60",
-  "name_src": "addr",
+  "name": "C_0085e5c4_InsertUniqueReference",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int a2",
-  "sig_src": "abi"
+  "params": "C_0085e5c4* self, void* , unsigned int reference",
+  "sig_src": "impl",
+  "file": "src/auto/00691b60.cpp"
  },
  "00691c80": {
-  "name": "SceneLoader_CreateReferenceArchive",
-  "name_src": "vote",
+  "name": "C_0085e5d8_CreateReferenceArchive",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_CreateReferenceArchive": 3
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_0085e5d8* self, void* , int archiveArgument",
+  "sig_src": "impl",
+  "file": "src/auto/00691c80.cpp"
  },
  "00691d20": {
   "name": "C_0085e5d8_ReleaseOwnedBlocks",
@@ -137606,15 +137615,16 @@
   "file": "src/auto/00691d90.cpp"
  },
  "00691e00": {
-  "name": "SceneLoader_FinalizeReferenceArchive",
-  "name_src": "vote",
+  "name": "CoreMemory_FinalizeReferenceArchive",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_FinalizeReferenceArchive": 2
   },
-  "ret": "char",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "uint32_t* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00691e00.cpp"
  },
  "00691fc0": {
   "name": "S_00691860_InsertEntry",
@@ -140544,7 +140554,7 @@
   "name": "SceneLoader_ServiceLoading",
   "name_src": "agent",
   "votes": {
-   "SceneLoader_ServiceLoading": 2
+   "SceneLoader_ServiceLoading": 3
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -140698,7 +140708,7 @@
   "name_src": "agent",
   "votes": {
    "BlockList_TryHandle": 2,
-   "S_0069b1c0_TryReleaseBlock": 1
+   "S_0069b1c0_TryReleaseBlock": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -210461,7 +210471,7 @@
   "name": "_memcpy",
   "name_src": "ida",
   "votes": {
-   "_memcpy": 111,
+   "_memcpy": 112,
    "Memcpy": 1
   },
   "ret": "void*",
@@ -210676,7 +210686,7 @@
   "name": "_sprintf",
   "name_src": "ida",
   "votes": {
-   "_sprintf": 38,
+   "_sprintf": 39,
    "LibSprintf": 1,
    "FormatMissionScore": 1,
    "FormatResolution": 1
