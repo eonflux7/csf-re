@@ -36903,7 +36903,9 @@
  "0048cf30": {
   "name": "C_00833834_Construct",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00833834_Construct": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "C_00833834* self, void* , int a2",
@@ -38433,7 +38435,7 @@
   "name": "C_00833908_Construct",
   "name_src": "agent",
   "votes": {
-   "C_00833908_Construct": 3
+   "C_00833908_Construct": 4
   },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
@@ -38923,7 +38925,9 @@
  "004925e0": {
   "name": "C_00833b88_SetTransitionState",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00833b88_InitializeMode": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00833b88* self, void* , int state",
@@ -39254,7 +39258,9 @@
  "00492d70": {
   "name": "C_00833b88_ComputeProgressBlend",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00833b88_RefreshState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00833b88* self, void*",
@@ -39294,14 +39300,15 @@
  },
  "00492f60": {
   "name": "C_00833b88_Construct",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_00833b88_Construct": 2
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "vote"
+  "params": "C_00833b88* self, void* , int objectId, int stateCode",
+  "sig_src": "impl",
+  "file": "src/auto/00492f60.cpp"
  },
  "00493120": {
   "name": "S_0048f360_ResetCoreState",
@@ -63735,8 +63742,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float x, float y",
-  "sig_src": "vote"
+  "params": "void* self, void* , int subtitleX, int subtitleY",
+  "sig_src": "impl",
+  "file": "src/auto/004f1ce0.cpp"
  },
  "004f1d00": {
   "name": "HudStringShow_UpdateScaledDistance",
@@ -64259,13 +64267,14 @@
   "file": "src/auto/004f4180.cpp"
  },
  "004f41a0": {
-  "name": "sub_4F41A0",
-  "name_src": "addr",
+  "name": "HudStringShow_Equals16Bytes",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "uint32_t* self, void* , uint32_t* other",
+  "sig_src": "impl",
+  "file": "src/auto/004f41a0.cpp"
  },
  "004f41e0": {
   "name": "S_004f41e0_CreateFrameEdges",
@@ -64332,13 +64341,14 @@
   "sig_src": "vote"
  },
  "004f47d0": {
-  "name": "sub_4F47D0",
-  "name_src": "addr",
+  "name": "C_0083f130_Destroy",
+  "name_src": "impl",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0083f130* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/004f47d0.cpp"
  },
  "004f4800": {
   "name": "sub_4F4800",
@@ -137736,7 +137746,7 @@
   "name_src": "agent",
   "votes": {
    "Mem_Alloc": 482,
-   "CoreMemory_AllocUntagged": 19
+   "CoreMemory_AllocUntagged": 20
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -137749,7 +137759,7 @@
   "name_src": "agent",
   "votes": {
    "Mem_Free": 939,
-   "CoreMemory_Free": 27
+   "CoreMemory_Free": 28
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -152285,13 +152295,14 @@
   "file": "src/auto/006c2460.cpp"
  },
  "006c25e0": {
-  "name": "sub_6C25E0",
-  "name_src": "addr",
+  "name": "GfxAnimCompress_KeyframeToMatrix",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2",
-  "sig_src": "abi"
+  "params": "int matrixAddress, int keyframeAddress",
+  "sig_src": "impl",
+  "file": "src/auto/006c25e0.cpp"
  },
  "006c26e0": {
   "name": "sub_6C26E0",
@@ -152367,7 +152378,9 @@
  "006c2e40": {
   "name": "GfxAnimCompress_InterpolateAtTime",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxAnimCompress_InterpolateChannelPose": 1
+  },
   "ret": "float*",
   "conv": "__stdcall",
   "params": "uint32_t a1",
@@ -152396,15 +152409,16 @@
   "file": "src/auto/006c3290.cpp"
  },
  "006c3320": {
-  "name": "HAnim_ApplyChannelPose",
-  "name_src": "vote",
+  "name": "S_006c3320_ApplyChannelPose",
+  "name_src": "agent",
   "votes": {
    "HAnim_ApplyChannelPose": 1
   },
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, float* a3, float a4",
-  "sig_src": "vote"
+  "params": "S_006c3320* self, void* , int poseAddress, float* channel, float time",
+  "sig_src": "impl",
+  "file": "src/auto/006c3320.cpp"
  },
  "006c33c0": {
   "name": "GfxHAnim_AdvanceAnimationChannel",
