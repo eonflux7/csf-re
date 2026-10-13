@@ -16964,7 +16964,9 @@
  "00445f40": {
   "name": "DestroyElementArray_445F40",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "DestroyElementArray_445F40": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -16975,7 +16977,7 @@
   "name": "Scene_ClearEmbeddedState",
   "name_src": "agent",
   "votes": {
-   "Scene_ClearEmbeddedState": 1
+   "Scene_ClearEmbeddedState": 2
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -17046,15 +17048,16 @@
   "file": "src/auto/00446150.cpp"
  },
  "00446210": {
-  "name": "Scene_ResetSubsystemB0",
-  "name_src": "vote",
+  "name": "C_00831120_ResetSubsystemState",
+  "name_src": "agent",
   "votes": {
    "Scene_ResetSubsystemB0": 2
   },
-  "ret": "int",
+  "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00831120* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00446210.cpp"
  },
  "00446340": {
   "name": "S_00446340_GrowCapacity",
@@ -19208,7 +19211,9 @@
  "0044de50": {
   "name": "ResetBufferAndReleaseEntries",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ResetBufferAndReleaseEntries": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -30177,7 +30182,7 @@
   "name": "GetGlobalObjectField184",
   "name_src": "agent",
   "votes": {
-   "GetGlobalObjectField184": 61
+   "GetGlobalObjectField184": 62
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -30189,7 +30194,7 @@
   "name": "CMissionScript_RemoveObjectEntry",
   "name_src": "agent",
   "votes": {
-   "SceneLoader_RemoveObjectEntry": 4,
+   "SceneLoader_RemoveObjectEntry": 5,
    "SceneRegistry_RemoveObjectEntry": 1
   },
   "ret": "void",
@@ -139827,7 +139832,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 212,
+   "CoreMemory_Free": 213,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -165078,8 +165083,9 @@
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, int a2",
-  "sig_src": "abi"
+  "params": "uint32_t* holder, uint8_t* stateRecord",
+  "sig_src": "impl",
+  "file": "src/auto/006e3f60.cpp"
  },
  "006e3fc0": {
   "name": "C_00861b40_ConstructShapeWrapper",
@@ -227908,7 +227914,7 @@
   "name": "Rt2dObjectSetColorOffset",
   "name_src": "rwname",
   "votes": {
-   "Rt2dObjectSetColorOffset": 2
+   "Rt2dObjectSetColorOffset": 3
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -227919,7 +227925,7 @@
   "name": "Rt2dObjectSetColorMultiplier",
   "name_src": "rwname",
   "votes": {
-   "Rt2dObjectSetColorMultiplier": 2
+   "Rt2dObjectSetColorMultiplier": 3
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
