@@ -43078,7 +43078,7 @@
   "name": "CopyConstructTwelveByteElement",
   "name_src": "agent",
   "votes": {
-   "CopyConstructTwelveByteElement": 4
+   "CopyConstructTwelveByteElement": 7
   },
   "ret": "uint32_t*",
   "conv": "__stdcall",
@@ -48629,7 +48629,7 @@
   "name": "C_008310b8_GetSelf",
   "name_src": "agent",
   "votes": {
-   "C_008310b8_GetSelf": 15
+   "C_008310b8_GetSelf": 16
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -63235,7 +63235,8 @@
   "name_src": "agent",
   "votes": {
    "TextDatabase_ProcessForwardedArgs": 1,
-   "TextDatabase_DestroyEntryRange": 1
+   "TextDatabase_DestroyEntryRange": 1,
+   "TextDatabase_ReleaseEntryRange": 1
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -89296,7 +89297,7 @@
   "name_src": "agent",
   "votes": {
    "DestroyPointerStorage": 17,
-   "S_0047ea40_DestroyPointerStorage": 12
+   "S_0047ea40_DestroyPointerStorage": 13
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -137786,7 +137787,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 595,
+   "Mem_FreeDebug": 596,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -146271,7 +146272,8 @@
   "name": "Geometry_IsPolygonSimple",
   "name_src": "agent",
   "votes": {
-   "Record_HasValidHeader": 1
+   "Record_HasValidHeader": 1,
+   "Geometry_IsPolygonSimple": 1
   },
   "ret": "bool",
   "conv": "__cdecl",
@@ -159146,7 +159148,8 @@
   "name": "GfxPtank_TestBoundaryFace",
   "name_src": "agent",
   "votes": {
-   "GfxParticleRender_TestBoundaryFace": 2
+   "GfxParticleRender_TestBoundaryFace": 2,
+   "GfxPtank_TestBoundaryFace": 1
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -176681,7 +176684,7 @@
   "name": "AllocateTwelveByteVectorStorage",
   "name_src": "vote",
   "votes": {
-   "AllocateTwelveByteVectorStorage": 5
+   "AllocateTwelveByteVectorStorage": 6
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -200064,15 +200067,16 @@
   "file": "src/auto/00770440.cpp"
  },
  "00770470": {
-  "name": "TextDatabase_TestHeight",
-  "name_src": "vote",
+  "name": "SoundAreas_IsHeightInRange",
+  "name_src": "agent",
   "votes": {
    "TextDatabase_TestHeight": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "vote"
+  "params": "float* self, void* , float height",
+  "sig_src": "impl",
+  "file": "src/auto/00770470.cpp"
  },
  "007704a0": {
   "name": "sub_7704A0",
@@ -200084,42 +200088,48 @@
   "sig_src": "abi"
  },
  "007704e0": {
-  "name": "sub_7704E0",
-  "name_src": "addr",
+  "name": "SoundAreas_CallParserWithZeroFourthArg",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/007704e0.cpp"
  },
  "00770500": {
-  "name": "sub_770500",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "CopyTwelveByteArrayWithContext_770500",
+  "name_src": "agent",
+  "votes": {
+   "S_00770ce0_ConstructElement12": 1
+  },
+  "ret": "std::uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, int a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint32_t* destination, std::uint32_t count, std::uint32_t* source, void* , void*",
+  "sig_src": "impl",
+  "file": "src/auto/00770500.cpp"
  },
  "00770570": {
   "name": "TextDatabase_ValidateEntry",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "TextDatabase_ValidateEntry": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_008310b8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00770570.cpp"
  },
  "007705a0": {
-  "name": "sub_7705A0",
-  "name_src": "addr",
+  "name": "CopyTwelveByteRangeToDestination",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint32_t* source, std::uint32_t* sourceEnd, std::uint32_t* destination, std::uint32_t , std::uint32_t",
+  "sig_src": "impl",
+  "file": "src/auto/007705a0.cpp"
  },
  "00770610": {
   "name": "AiAttackTasks_FindSceneEntryIndex",
@@ -200134,23 +200144,25 @@
  },
  "00770690": {
   "name": "SceneLoader_GetSceneEntry",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_GetSceneEntry": 10
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "S_004ef780* self, void* , int index",
+  "sig_src": "impl",
+  "file": "src/auto/00770690.cpp"
  },
  "007706b0": {
-  "name": "sub_7706B0",
-  "name_src": "addr",
+  "name": "SoundAreas_GetMinimumPointY",
+  "name_src": "agent",
   "votes": {},
   "ret": "double",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/007706b0.cpp"
  },
  "00770760": {
   "name": "TextDatabase_TestHorizontalPosition",
@@ -200160,8 +200172,9 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2, float a3",
-  "sig_src": "vote"
+  "params": "S_00770760* self, void* , float a2, float a3",
+  "sig_src": "impl",
+  "file": "src/auto/00770760.cpp"
  },
  "007707b0": {
   "name": "sub_7707B0",
@@ -200191,26 +200204,32 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00770830.cpp"
  },
  "007708f0": {
-  "name": "sub_7708F0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SoundAreas_ForwardWithSelfTo7705A0",
+  "name_src": "agent",
+  "votes": {
+   "CopyTwelveByteRange_7708F0": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a1, uint32_t* a2, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint32_t* a1, uint32_t* a2, uint32_t* a3",
+  "sig_src": "impl",
+  "file": "src/auto/007708f0.cpp"
  },
  "00770910": {
-  "name": "sub_770910",
-  "name_src": "addr",
-  "votes": {},
+  "name": "InsertRecord12At_770910",
+  "name_src": "vote",
+  "votes": {
+   "InsertRecord12At": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char* a1, unsigned int a3, uint32_t* arg8",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00770bd0": {
   "name": "sub_770BD0",
@@ -200222,31 +200241,36 @@
   "sig_src": "abi"
  },
  "00770ce0": {
-  "name": "sub_770CE0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_00770ce0_InsertSoundAreaRecord",
+  "name_src": "agent",
+  "votes": {
+   "S_00770ce0_InsertElement12": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, char* a3, uint32_t* a4",
-  "sig_src": "abi"
+  "params": "S_00770ce0* self, void* , uint32_t* result, char* position, uint32_t* value",
+  "sig_src": "impl",
+  "file": "src/auto/00770ce0.cpp"
  },
  "00770d50": {
-  "name": "sub_770D50",
-  "name_src": "addr",
+  "name": "S_007708f0_AssignRangeFromSource",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_007708f0* self, void* , int sourceAddress",
+  "sig_src": "impl",
+  "file": "src/auto/00770d50.cpp"
  },
  "00770e00": {
-  "name": "sub_770E00",
-  "name_src": "addr",
+  "name": "S_00770ce0_AppendElement12",
+  "name_src": "impl",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "S_00770ce0* self, void* , std::uint32_t* a3",
+  "sig_src": "impl",
+  "file": "src/auto/00770e00.cpp"
  },
  "00770e80": {
   "name": "sub_770E80",
@@ -200267,33 +200291,37 @@
   "sig_src": "abi"
  },
  "00770f80": {
-  "name": "sub_770F80",
-  "name_src": "addr",
+  "name": "SoundAreas_ForwardToEntryIfNonNull",
+  "name_src": "agent",
   "votes": {},
   "ret": "char*",
   "conv": "__stdcall",
-  "params": "char* a1, int a2",
-  "sig_src": "abi"
+  "params": "char* a1, uint32_t* a2",
+  "sig_src": "impl",
+  "file": "src/auto/00770f80.cpp"
  },
  "00770fa0": {
-  "name": "sub_770FA0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SoundAreas_ParseAreaRecord",
+  "name_src": "vote",
+  "votes": {
+   "SoundAreas_ParseAreaRecord": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00771030": {
-  "name": "DestroyBaseLayer",
-  "name_src": "vote",
+  "name": "C_00871914_DestroyBaseLayer",
+  "name_src": "agent",
   "votes": {
    "DestroyBaseLayer": 2
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00871914* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00771030.cpp"
  },
  "00771090": {
   "name": "sub_771090",
@@ -200305,37 +200333,41 @@
   "sig_src": "abi"
  },
  "00771110": {
-  "name": "sub_771110",
-  "name_src": "addr",
+  "name": "SoundAreas_ForwardParseWithZeroTail",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "int* a1, int* a2, uint32_t* a3",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/00771110.cpp"
  },
  "00771130": {
-  "name": "sub_771130",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "S_00771690_ConstructElement104",
+  "name_src": "vote",
+  "votes": {
+   "S_00771690_ConstructElement104": 1
+  },
+  "ret": "std::uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, int a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint32_t* a1, int a2, std::uint32_t* a3, int a4, int a5",
+  "sig_src": "vote"
  },
  "007711c0": {
-  "name": "AreaMeshBase_Init",
-  "name_src": "vote",
+  "name": "C_00871914_Init",
+  "name_src": "agent",
   "votes": {
    "AreaMeshBase_Init": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00871914* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/007711c0.cpp"
  },
  "007711e0": {
   "name": "C_00871914_Destroy",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
@@ -200344,13 +200376,14 @@
   "file": "src/auto/007711e0.cpp"
  },
  "00771210": {
-  "name": "sub_771210",
-  "name_src": "addr",
+  "name": "ForwardAreaRecordWithSelfToParser",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a1, uint32_t* a2, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint32_t* a1, uint32_t* a2, uint32_t* a3",
+  "sig_src": "impl",
+  "file": "src/auto/00771210.cpp"
  },
  "00771230": {
   "name": "sub_771230",
@@ -200380,51 +200413,61 @@
   "sig_src": "abi"
  },
  "00771690": {
-  "name": "sub_771690",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "S_00771690_InsertAndGetRecordPointer",
+  "name_src": "agent",
+  "votes": {
+   "S_00771690_InsertElement104": 1
+  },
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, int* a3, int a4",
-  "sig_src": "abi"
+  "params": "S_00771690* self, void* , std::uint32_t* result, int* position, int extraArg",
+  "sig_src": "impl",
+  "file": "src/auto/00771690.cpp"
  },
  "00771700": {
-  "name": "sub_771700",
-  "name_src": "addr",
+  "name": "S_00771690_AppendElement104",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "S_00771690* self, void* , std::uint32_t* element",
+  "sig_src": "impl",
+  "file": "src/auto/00771700.cpp"
  },
  "00771790": {
-  "name": "sub_771790",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SoundAreas_ParseEntryBody",
+  "name_src": "vote",
+  "votes": {
+   "SoundAreas_ParseEntryBody": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00771af0": {
-  "name": "TextDatabase_LoadEntryList",
-  "name_src": "vote",
+  "name": "C_00871914_LoadEntryList",
+  "name_src": "agent",
   "votes": {
    "TextDatabase_LoadEntryList": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint8_t* a2, int a3",
-  "sig_src": "vote"
+  "params": "C_00871914* self, void* , uint8_t* a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/00771af0.cpp"
  },
  "00771b10": {
-  "name": "sub_771B10",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "CopyTwelveByteArrayWithContext_771B10",
+  "name_src": "agent",
+  "votes": {
+   "S_00771b80_ConstructElement12": 1
+  },
+  "ret": "std::uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, int a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint32_t* destination, std::uint32_t count, std::uint32_t* source, void* , void*",
+  "sig_src": "impl",
+  "file": "src/auto/00771b10.cpp"
  },
  "00771b80": {
   "name": "FindEntryIndex",
@@ -200432,7 +200475,7 @@
   "votes": {
    "FindEntrySlotIndex": 1,
    "FindKeyIndexInTable": 1,
-   "FindEntryIndex": 1
+   "FindEntryIndex": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -200449,31 +200492,37 @@
   "sig_src": "abi"
  },
  "00771c00": {
-  "name": "sub_771C00",
-  "name_src": "addr",
-  "votes": {},
+  "name": "InsertRecord12At_771C00",
+  "name_src": "vote",
+  "votes": {
+   "InsertRecord12At": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char* a1, unsigned int a3, uint32_t* arg8",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00771ec0": {
-  "name": "sub_771EC0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_00771b80_InsertRecord12",
+  "name_src": "agent",
+  "votes": {
+   "S_00771b80_InsertElement12": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, char* a3, uint32_t* a4",
-  "sig_src": "abi"
+  "params": "S_00771b80* self, void* , uint32_t* result, char* position, uint32_t* value",
+  "sig_src": "impl",
+  "file": "src/auto/00771ec0.cpp"
  },
  "00771f30": {
-  "name": "sub_771F30",
-  "name_src": "addr",
+  "name": "S_00771b80_AppendElement12",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "S_00771b80* self, void* , std::uint32_t* element",
+  "sig_src": "impl",
+  "file": "src/auto/00771f30.cpp"
  },
  "00771fb0": {
   "name": "AnimRefList_Add",
@@ -200484,8 +200533,9 @@
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "vote"
+  "params": "S_00771b80* self, void* , uint32_t* record",
+  "sig_src": "impl",
+  "file": "src/auto/00771fb0.cpp"
  },
  "00771ff0": {
   "name": "CopyTwoDwordRangeToDestination",
@@ -212066,7 +212116,7 @@
   "name": "___CxxFrameHandler",
   "name_src": "ida",
   "votes": {
-   "___CxxFrameHandler": 188,
+   "___CxxFrameHandler": 191,
    "OriginalCxxFrameHandler": 1
   },
   "ret": "int",
@@ -212150,7 +212200,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 254
+   "RethrowCppException": 258
   },
   "ret": "void",
   "conv": "__stdcall",
