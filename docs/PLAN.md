@@ -77,8 +77,8 @@ Between wave runs (milestones, e.g. while quota resets):
 - **`tools/ida/propagate.sh`** (~45 min, no tokens): types through Hex-Rays (`this`, parameters, members), then
   `api.py build`, `gen_classes_h.py`.
 - **`tools/review.py sample`**: one rolling Opus sample over all done code, weighted to functions that never ran.
-- **`tools/emudiff.py`** (not gate grade yet, see backlog): original bytes vs our object in an emulator, no game
-  needed.
+- **`tools/emudiff.py`**: original bytes vs our object in an emulator, no game needed. The gate's last step since
+  2026-10-13 (`db/lanes.yaml emudiff_gate`): a DIFF rejects the answer and the ladder retries with what differed.
 
 The orchestrator (Opus, interactive) works `queue/` and the backlog below.
 
