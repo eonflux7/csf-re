@@ -10499,7 +10499,7 @@
   "name": "AssignStringRange_429B60",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_429B60": 181,
+   "AssignStringRange_429B60": 182,
    "MenuSceneSelect_InitializeString": 1
   },
   "ret": "void*",
@@ -27156,7 +27156,7 @@
   "name": "MissionScript_DestroyElementRange",
   "name_src": "agent",
   "votes": {
-   "MissionScript_DestroyElementRange": 15,
+   "MissionScript_DestroyElementRange": 16,
    "DestroyElementRange": 8
   },
   "ret": "int",
@@ -29053,7 +29053,7 @@
   "name": "MenuManager_AppendPageName",
   "name_src": "agent",
   "votes": {
-   "MenuManager_AppendPageName": 17
+   "MenuManager_AppendPageName": 18
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -70494,7 +70494,7 @@
   "name": "MenuManager_ClearElementArray",
   "name_src": "agent",
   "votes": {
-   "MenuManager_ClearElementArray": 2
+   "MenuManager_ClearElementArray": 3
   },
   "ret": "int*",
   "conv": "__fastcall",
@@ -114736,7 +114736,7 @@
   "name": "RwTexDictionaryForAllTextures",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryForAllTextures": 11
+   "RwTexDictionaryForAllTextures": 12
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -114769,7 +114769,7 @@
   "name": "RwTextureDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwTextureDestroy": 14
+   "RwTextureDestroy": 15
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -114811,7 +114811,7 @@
   "name": "RwTexDictionaryRemoveTexture",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryRemoveTexture": 3
+   "RwTexDictionaryRemoveTexture": 4
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -114844,7 +114844,7 @@
   "name": "RwTexDictionaryGetCurrent",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryGetCurrent": 11
+   "RwTexDictionaryGetCurrent": 12
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -138634,7 +138634,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 628,
+   "Mem_FreeDebug": 629,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -139883,7 +139883,7 @@
   "name": "NormalizeResourceName",
   "name_src": "vote",
   "votes": {
-   "NormalizeResourceName": 21
+   "NormalizeResourceName": 22
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -140977,7 +140977,7 @@
   "name": "CoreFiles_CloseSceneFile",
   "name_src": "agent",
   "votes": {
-   "CloseSceneFile": 28
+   "CloseSceneFile": 29
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -141190,7 +141190,7 @@
   "name_src": "agent",
   "votes": {
    "OpenSceneFile": 13,
-   "CoreFiles_OpenSceneFile": 15
+   "CoreFiles_OpenSceneFile": 16
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -153734,7 +153734,9 @@
  "006c1b70": {
   "name": "ResizeTextureDictVector",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "TextureDictionary_InitializeTextureList": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* , unsigned int requestedCount, int fillValue",
@@ -153764,13 +153766,14 @@
   "file": "src/auto/006c1c70.cpp"
  },
  "006c1c90": {
-  "name": "sub_6C1C90",
-  "name_src": "addr",
+  "name": "C_008607f8_SynchronizeTexturesFromFile",
+  "name_src": "agent",
   "votes": {},
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2",
-  "sig_src": "abi"
+  "params": "C_008607f8* self, void* , const char* filename",
+  "sig_src": "impl",
+  "file": "src/auto/006c1c90.cpp"
  },
  "006c2000": {
   "name": "TexDictRecord_Construct",
@@ -214051,7 +214054,7 @@
   "name": "_memcpy",
   "name_src": "ida",
   "votes": {
-   "_memcpy": 123,
+   "_memcpy": 124,
    "Memcpy": 1
   },
   "ret": "void*",
@@ -214658,7 +214661,7 @@
   "name": "__stricmp",
   "name_src": "ida",
   "votes": {
-   "__stricmp": 86
+   "__stricmp": 87
   },
   "ret": "int",
   "conv": "__cdecl",
