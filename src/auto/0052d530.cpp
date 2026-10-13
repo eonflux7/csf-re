@@ -12,7 +12,7 @@ static int __fastcall CMenuProgressBar_ReleaseSubObject(CMenuProgressBar* self, 
     if ( sub )
     {
         // vtable slot 0, __thiscall with one stack argument (popped by the callee)
-        result = reinterpret_cast<int(__fastcall*)(void*, void*, int)>(sub[0])(sub, nullptr, 1);
+        result = reinterpret_cast<int(__fastcall*)(void*, void*, int)>((*reinterpret_cast<void***>(sub))[0])(sub, nullptr, 1);
         self->field_0020 = 0;
     }
     return result;
