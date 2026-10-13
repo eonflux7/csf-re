@@ -71594,8 +71594,8 @@
   "file": "src/auto/0050daf0.cpp"
  },
  "0050db70": {
-  "name": "SceneLoader_ResetSceneEntries",
-  "name_src": "vote",
+  "name": "S_0050f2f0_ResetSceneEntries",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_ResetSceneEntries": 1
   },
@@ -71617,8 +71617,8 @@
   "file": "src/auto/0050dc10.cpp"
  },
  "0050dc30": {
-  "name": "ApplyFloatToGlobalState",
-  "name_src": "vote",
+  "name": "GlobalState_ApplyFloat",
+  "name_src": "agent",
   "votes": {
    "ApplyStateToggleFade_50DC30": 1,
    "ApplyFloatToGlobalState": 1
@@ -71631,18 +71631,19 @@
  },
  "0050dc80": {
   "name": "MenuManager_SetMenuState",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MenuManager_SetMenuState": 6
   },
-  "ret": "void",
+  "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char flag",
-  "sig_src": "vote"
+  "params": "uint8_t* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/0050dc80.cpp"
  },
  "0050dcf0": {
-  "name": "GlobalStateValue_50DCF0",
-  "name_src": "vote",
+  "name": "GlobalState_AdvanceRandomSeed",
+  "name_src": "agent",
   "votes": {
    "GlobalStateValue_50DCF0": 8,
    "NextRandomFromState_50DCF0": 1,
@@ -71655,26 +71656,28 @@
   "file": "src/auto/0050dcf0.cpp"
  },
  "0050dd30": {
-  "name": "GetStateValue",
-  "name_src": "vote",
+  "name": "Game_NextRandomValue",
+  "name_src": "agent",
   "votes": {
    "GetStateValue": 44
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int limit",
+  "sig_src": "impl",
+  "file": "src/auto/0050dd30.cpp"
  },
  "0050dd80": {
   "name": "SceneMissionSetup_EvaluateAnimationTime",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SceneMissionSetup_EvaluateAnimationTime": 3
   },
   "ret": "double",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , float timeScale",
+  "sig_src": "impl",
+  "file": "src/auto/0050dd80.cpp"
  },
  "0050ddd0": {
   "name": "CallInnerObjectAt90_SecondVirtual",
@@ -77478,7 +77481,7 @@
   "name": "GetGlobalValue_521BB0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_521BB0": 141
+   "GetGlobalValue_521BB0": 142
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -77692,7 +77695,7 @@
   "name": "SceneLoader_UpdateLoadingState",
   "name_src": "agent",
   "votes": {
-   "SceneLoader_UpdateLoadingState": 2,
+   "SceneLoader_UpdateLoadingState": 3,
    "SceneLoader_NotifySceneChange": 1,
    "SceneLoader_SetCompletionOptions": 1,
    "SceneLoader_SetLoadContextOptions": 1
@@ -77827,7 +77830,7 @@
   "name_src": "agent",
   "votes": {
    "SceneLoader_FinishLoadContext": 1,
-   "AudioSoundManager_FinishLoadContext": 1
+   "AudioSoundManager_FinishLoadContext": 2
   },
   "ret": "unsigned char",
   "conv": "__fastcall",
@@ -77839,7 +77842,7 @@
   "name": "AudioSoundManager_ProcessPendingStops",
   "name_src": "agent",
   "votes": {
-   "AudioSoundManager_ProcessPendingStops": 2
+   "AudioSoundManager_ProcessPendingStops": 3
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -82609,13 +82612,14 @@
   "file": "src/auto/00536e20.cpp"
  },
  "00536e90": {
-  "name": "Interfaz_InstancingIntroScene",
+  "name": "Interface_InstanceIntroScene",
   "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/00536e90.cpp"
  },
  "005370c0": {
   "name": "GameBddLoader_FinalizeLoading",
@@ -148854,7 +148858,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 495,
+   "GetGlobalInt": 496,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -148867,7 +148871,7 @@
   "name": "MenuControls_ResolveObject",
   "name_src": "vote",
   "votes": {
-   "MenuControls_ResolveObject": 61
+   "MenuControls_ResolveObject": 62
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -148969,20 +148973,24 @@
  "006b1570": {
   "name": "ForwardCallToChildVirtualSlot3",
   "name_src": "agent",
-  "votes": {},
-  "ret": "int",
+  "votes": {
+   "ForwardCallToChildVirtualSlot3": 1
+  },
+  "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006b1590": {
   "name": "ForwardToChildSlot5At8C",
   "name_src": "agent",
-  "votes": {},
-  "ret": "char",
+  "votes": {
+   "ForwardToChildSlot5At8C": 1
+  },
+  "ret": "bool",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006b15b0": {
   "name": "ForwardMetricOrMissingValue",
@@ -169444,7 +169452,7 @@
   "name": "MenuManager_SetIntroPageData",
   "name_src": "agent",
   "votes": {
-   "MenuManager_SetIntroPageData": 3
+   "MenuManager_SetIntroPageData": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -181558,7 +181566,9 @@
  "0071ab00": {
   "name": "ProcessObjectsAtOrBeyondThreshold",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ProcessObjectsAtOrBeyondThreshold": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "int* self, void*",
