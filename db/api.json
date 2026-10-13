@@ -339,7 +339,7 @@
   "name": "BuildFacingVectorBetween",
   "name_src": "agent",
   "votes": {
-   "BuildFacingVectorBetween": 23
+   "BuildFacingVectorBetween": 24
   },
   "ret": "float*",
   "conv": "__fastcall",
@@ -19637,7 +19637,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 416
+   "CHandleTable_Resolve": 417
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -37516,7 +37516,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 218,
+   "GetObjectPositionVector": 219,
    "GetEntityPositionPtr": 1
   },
   "ret": "int",
@@ -37540,7 +37540,7 @@
   "name": "SceneLoader_ConfigureFocusEntry",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_ConfigureFocusEntry": 39,
+   "SceneLoader_ConfigureFocusEntry": 40,
    "SceneLoader_SetObjectPosition": 2
   },
   "ret": "int",
@@ -37552,7 +37552,7 @@
   "name": "DispatchSceneObjectWithPayload",
   "name_src": "vote",
   "votes": {
-   "DispatchSceneObjectWithPayload": 18,
+   "DispatchSceneObjectWithPayload": 19,
    "SceneObject_ApplyStateAction": 1,
    "SceneObject_RefreshAfterRegionHit": 1
   },
@@ -38742,7 +38742,7 @@
   "name_src": "agent",
   "votes": {
    "UpdateBaseWithTime": 1,
-   "C_00833908_UpdateComponents": 1
+   "C_00833908_UpdateComponents": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -42081,13 +42081,14 @@
   "sig_src": "vote"
  },
  "0049eee0": {
-  "name": "sub_49EEE0",
-  "name_src": "addr",
+  "name": "C_008342e8_UpdateFocusEntries",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "C_008342e8* self, void* , float deltaTime",
+  "sig_src": "impl",
+  "file": "src/auto/0049eee0.cpp"
  },
  "0049f140": {
   "name": "C_Unknown_ResetEntryAndFlagOwner",
@@ -42215,7 +42216,7 @@
  },
  "0049f710": {
   "name": "Archive_SerializeRecordArray_49F710",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "unsigned int",
   "conv": "__stdcall",
@@ -111980,7 +111981,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 193
+   "RwMatrixDestroy": 194
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -138871,8 +138872,8 @@
   "file": "src/auto/00692d40.cpp"
  },
  "00692e40": {
-  "name": "CoreZlibLog_ReadWideAttributeText",
-  "name_src": "vote",
+  "name": "S_00692b80_ReadWideAttributeText",
+  "name_src": "agent",
   "votes": {
    "CoreZlibLog_ReadWideAttributeText": 1
   },
@@ -138896,7 +138897,7 @@
  },
  "00693020": {
   "name": "DataNode_ReadVector3",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "DataNode_ReadVector3": 14,
    "Node_ReadVector3": 2,
@@ -139606,8 +139607,9 @@
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "std::uint16_t* text",
-  "sig_src": "vote"
+  "params": "uint16_t* text",
+  "sig_src": "impl",
+  "file": "src/auto/00695560.cpp"
  },
  "00695590": {
   "name": "CopyTrucoStringToWide",
@@ -145652,7 +145654,7 @@
   "name": "S_00526d40_GetVectorAngleRadians",
   "name_src": "agent",
   "votes": {
-   "S_00526d40_GetVectorAngleRadians": 26,
+   "S_00526d40_GetVectorAngleRadians": 27,
    "GetVectorAngleRadians": 2
   },
   "ret": "double",
@@ -146297,7 +146299,7 @@
   "name": "GfxMatrix_GetEulerAngles",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_GetEulerAngles": 10,
+   "GfxMatrix_GetEulerAngles": 11,
    "GetMatrixEulerAngles": 2
   },
   "ret": "float*",
