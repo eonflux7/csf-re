@@ -1404,3 +1404,21 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Verifier over the 395 pending: 392 installed, 3 quarantined (0x6FF2E0, 0x6C9080, 0x6C90C0).
 - Confirmed: fixed 0x4D9170 installed (ran in 99 smokes), then 96 smokes with everything on without eip=006326e4
   (before the fix it showed within 16-40). Flaky baseline crash closed.
+
+## 2026-10-13 (late morning) — waves to 85.7%; regression stop; emudiff imports
+- Waves (restart 09:25 - 11:21): 1176 OK, 44 escalated; game code 78.1% -> 85.7%. Stopped by the stop rule: the
+  full regression check (loadsave 1.sav) failed twice without a culprit.
+- Failure 1 of it, crash at 0x471540 with ecx = 2 (11 s): 0x4B17C0 passes `&a1` to vtable slot 47, which writes
+  through it; the original keeps a1 in edi, ours went on using the overwritten argument as `this`. Found from the
+  crash stack + dinput8.map (return address in ours). Fixed by hand. A parameter whose address is passed on and
+  that is read afterwards is a pattern semcheck could flag when the original holds a register copy.
+- Failure 2, still open: exit 0xC0000409 (fast-fail, no crash report) 18 s into the load, also with CSF_DIFF=0.
+  The verifier's search finds no single part failing alone. `tools/dbg.sh crash` no longer starts the game
+  ("Failed to load executable"; not looked into). New `tools/pairbisect.py`: delta debugging over the installed
+  functions, parts switched off as well as on alone, for failures that need two functions.
+- emudiff false alarms removed (12 of the 43 "emulated run differs" in queue/ pass and went back to the lanes):
+  a `call [__imp_x]` arrives at the raw import-table value (timeGetTime = 0x496C5E, "the middle of a game
+  function"): imports are named now and never compared on ecx; HeapAlloc/HeapFree/HeapReAlloc reached from the CRT
+  running for real had no call site in calls.json, so nothing was popped and esp-based ours "changed ebp"; rdtsc
+  was the host clock, different on each side: a counter now. Proven-in-game check after it: 1 DIFF of 300
+  (0x6F0E60, there before the change).
