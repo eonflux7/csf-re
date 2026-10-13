@@ -54,7 +54,7 @@
 - {addr: 0x0082D2FC, name: g_DestroyWindowImport, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D390, name: g_BinkCloseFn, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D394, name: g_BinkPauseImport, type: BinkPauseImportFn, uses: 1, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 132, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 134, src: auto}
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 3, src: auto}
 - {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 5, src: auto}
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 5, src: auto}
@@ -62,7 +62,7 @@
 - {addr: 0x0082D4C8, name: g_CollisionMinimumTriangleArea, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
 - {addr: 0x0082D4D0, name: g_CollisionHeightTolerance, type: float, uses: 1, src: auto}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 175, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 178, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 13, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 16, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
@@ -71,7 +71,7 @@
 - {addr: 0x0082D568, name: g_LocalDirectionAngleScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D56C, name: g_Epsilon, type: float, uses: 2, src: auto, alt: [g_MotionEpsilon]}
 - {addr: 0x0082D6E8, name: g_MatrixQueryFlags, type: 'std::uint32_t', uses: 2, src: auto, alt: [g_MatrixRequestFlags]}
-- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 114, src: auto, alt: [g_MissionUnsignedIntegerBias]}
+- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 115, src: auto, alt: [g_MissionUnsignedIntegerBias]}
 - {addr: 0x0082D748, name: g_HudPi, type: float, uses: 2, src: auto, alt: [g_PiConstant]}
 - {addr: 0x0082D74C, name: g_HudTwoPi, type: float, uses: 2, src: auto, alt: [g_TwoPiConstant]}
 - {addr: 0x0082D750, name: g_RotationRadiansToDegrees, type: float, uses: 1, src: auto}
@@ -194,8 +194,9 @@
 - {addr: 0x0082FCAC, name: g_RadToDeg_82FCAC, type: float, uses: 1, src: auto}
 - {addr: 0x0082FCB0, name: g_DegToRad_82FCB0, type: float, uses: 1, src: auto}
 - {addr: 0x0082FCB4, name: g_MinMoveDistSq_82FCB4, type: float, uses: 2, src: auto}
+- {addr: 0x0082FE7C, name: g_SpeedScaleFactor, type: float, uses: 1, src: auto}
 - {addr: 0x0082FEA4, name: g_PathDistanceLimit, type: float, uses: 1, src: auto}
-- {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 25, src: auto}
+- {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 26, src: auto}
 - {addr: 0x0082FEBC, name: g_LayoutInset, type: float, uses: 7, src: auto, alt: [g_VerticalInset]}
 - {addr: 0x00830410, name: g_CheatSequencePreviousBase, type: int32_t, uses: 1, src: auto}
 - {addr: 0x00830414, name: g_CheatSequenceFirst, type: int32_t, uses: 1, src: auto}
@@ -417,7 +418,7 @@
 - {addr: 0x00845A00, name: g_SessionNameWidth, type: float, uses: 1, src: auto}
 - {addr: 0x00845B38, name: g_MenuAccountsPostInitialize, type: void*, uses: 1, src: auto}
 - {addr: 0x00845C30, name: g_ClearField0010Slot, type: ClearFieldMethod, uses: 1, src: auto}
-- {addr: 0x00845DB0, name: g_SectorQueryToleranceScale, type: float, uses: 1, src: auto}
+- {addr: 0x00845DB0, name: g_SectorQueryToleranceScale, type: float, uses: 2, src: auto, alt: [g_TriangleQueryToleranceScale]}
 - {addr: 0x00845DC0, name: g_SineCoefficient5, type: float, uses: 2, src: auto}
 - {addr: 0x00845DC4, name: g_SineCoefficient7, type: float, uses: 2, src: auto}
 - {addr: 0x00845DC8, name: g_SineCoefficient9, type: float, uses: 2, src: auto}
@@ -631,6 +632,8 @@
 - {addr: 0x008673AC, name: g_SweepEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x00867434, name: g_UnitFactorLowerBound, type: float, uses: 1, src: auto}
 - {addr: 0x00867444, name: g_FontVtable, type: void*, uses: 1, src: auto}
+- {addr: 0x0086747C, name: g_fPi, type: float, uses: 1, src: auto}
+- {addr: 0x00867480, name: g_NearZeroThreshold, type: float, uses: 3, src: auto, alt: [g_TimerEpsilon, g_fEpsilon]}
 - {addr: 0x008678E8, name: g_AngleThreshold, type: float, uses: 1, src: auto}
 - {addr: 0x008680E4, name: g_SessionRequestTemplateSuffix, type: 'std::uint16_t', uses: 1, src: auto}
 - {addr: 0x008680E6, name: g_SessionRequestTemplateTerminator, type: 'std::uint8_t', uses: 1, src: auto}
