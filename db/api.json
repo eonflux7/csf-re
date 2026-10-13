@@ -118619,13 +118619,15 @@
   "sig_src": "vote"
  },
  "006472c0": {
-  "name": "sub_6472C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "MemDebug_ProcessRecordKey",
+  "name_src": "vote",
+  "votes": {
+   "MemDebug_ProcessRecordKey": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006472e0": {
   "name": "sub_6472E0",
@@ -123067,13 +123069,15 @@
   "sig_src": "abi"
  },
  "00653bd0": {
-  "name": "sub_653BD0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "MemDebug_LogFormatted",
+  "name_src": "vote",
+  "votes": {
+   "MemDebug_LogFormatted": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2, ...",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00653c00": {
   "name": "sub_653C00",
@@ -123674,13 +123678,15 @@
   "sig_src": "abi"
  },
  "00656260": {
-  "name": "sub_656260",
-  "name_src": "addr",
-  "votes": {},
+  "name": "MemDebug_DispatchToOwner",
+  "name_src": "vote",
+  "votes": {
+   "MemDebug_DispatchToOwner": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2, unsigned int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00656280": {
   "name": "NetChatDdl_WriteTextField",
@@ -139381,40 +139387,44 @@
   "sig_src": "abi"
  },
  "00690b10": {
-  "name": "sub_690B10",
-  "name_src": "addr",
+  "name": "IlMethodSect_HasMoreSections",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00690b10.cpp"
  },
  "00690b20": {
-  "name": "sub_690B20",
-  "name_src": "addr",
+  "name": "MemDebug_AdvanceStateByte",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "uint8_t* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00690b20.cpp"
  },
  "00690c00": {
-  "name": "sub_690C00",
-  "name_src": "addr",
+  "name": "MemDebug_MarkFlagThenDispatch",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* arg0, char a3",
-  "sig_src": "abi"
+  "params": "uint8_t* self, void* , C_008622e8* arg0, char a3",
+  "sig_src": "impl",
+  "file": "src/auto/00690c00.cpp"
  },
  "00690c20": {
-  "name": "sub_690C20",
-  "name_src": "addr",
+  "name": "MemDebug_RegisterBlockAndReturnPtr",
+  "name_src": "agent",
   "votes": {},
   "ret": "char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* arg0",
-  "sig_src": "abi"
+  "params": "char* self, void* , C_008622e8* arg0",
+  "sig_src": "impl",
+  "file": "src/auto/00690c20.cpp"
  },
  "00690c40": {
   "name": "StoreValidatedByte",
@@ -139427,70 +139437,78 @@
   "file": "src/auto/00690c40.cpp"
  },
  "00690c70": {
-  "name": "sub_690C70",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "void",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, uint64_t* a4",
-  "sig_src": "abi"
- },
- "00690c90": {
-  "name": "sub_690C90",
-  "name_src": "addr",
+  "name": "C_00861a00_ForwardAllocation",
+  "name_src": "agent",
   "votes": {},
   "ret": "double",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, float a3, int a4, uint64_t* a5",
-  "sig_src": "abi"
+  "params": "C_00861a00* self, void* , int a2, int a3, const uint64_t* a4",
+  "sig_src": "impl",
+  "file": "src/auto/00690c70.cpp"
+ },
+ "00690c90": {
+  "name": "MemDebug_SquaredResidual",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "double",
+  "conv": "__fastcall",
+  "params": "void* self, void* , int a2, float a3, int a4, uint32_t* a5",
+  "sig_src": "impl",
+  "file": "src/auto/00690c90.cpp"
  },
  "00690cc0": {
-  "name": "sub_690CC0",
-  "name_src": "addr",
+  "name": "MemDebug_AllocDebug",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , char a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/00690cc0.cpp"
  },
  "00690cf0": {
-  "name": "sub_690CF0",
-  "name_src": "addr",
+  "name": "MemDebug_HasAllFlagBits",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint8_t a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint8_t mask",
+  "sig_src": "impl",
+  "file": "src/auto/00690cf0.cpp"
  },
  "00690d10": {
-  "name": "sub_690D10",
-  "name_src": "addr",
+  "name": "C_00861a00_ShiftFlagsAndOrByte",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00861a00* self, void* , char flagBits",
+  "sig_src": "impl",
+  "file": "src/auto/00690d10.cpp"
  },
  "00690d30": {
-  "name": "sub_690D30",
-  "name_src": "addr",
+  "name": "C_0085eac0_SetByteFlag118",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0085eac0* self, void* , char value",
+  "sig_src": "impl",
+  "file": "src/auto/00690d30.cpp"
  },
  "00690d40": {
-  "name": "CoreMemDebugFree_TryRecoverAllocation",
-  "name_src": "vote",
+  "name": "CoreMemDebug_TryRecoverAllocation",
+  "name_src": "agent",
   "votes": {
+   "CoreMemDebug_TryRecoverAllocation": 1,
    "CoreMemDebugFree_TryRecoverAllocation": 1,
    "CoreMemDebugFree_ShouldRetryAllocation": 1
   },
   "ret": "char",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "vote"
+  "sig_src": "impl",
+  "file": "src/auto/00690d40.cpp"
  },
  "00690da0": {
   "name": "GetData_8BAD98",
@@ -139517,15 +139535,16 @@
   "file": "src/auto/00690db0.cpp"
  },
  "00690dc0": {
-  "name": "Mem_AllocDebug",
-  "name_src": "opus",
+  "name": "CoreMemDebug_Allocate",
+  "name_src": "agent",
   "votes": {
    "Mem_AllocDebug": 32
   },
-  "ret": "int",
+  "ret": "void*",
   "conv": "__cdecl",
-  "params": "std::size_t size, int flags, int tag",
-  "sig_src": "vote"
+  "params": "size_t size, int file, int line",
+  "sig_src": "impl",
+  "file": "src/auto/00690dc0.cpp"
  },
  "00690e60": {
   "name": "MemDebug_FreeDebugBlock",
@@ -144390,7 +144409,7 @@
   "name": "Tokenizer_AllocInner",
   "name_src": "vote",
   "votes": {
-   "Tokenizer_AllocInner": 1
+   "Tokenizer_AllocInner": 2
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -144525,7 +144544,7 @@
   "name": "C_0085eb30_WaitForEventHandle",
   "name_src": "agent",
   "votes": {
-   "C_0085eb30_WaitForEventHandle": 4
+   "C_0085eb30_WaitForEventHandle": 5
   },
   "ret": "bool",
   "conv": "__fastcall",
@@ -144537,7 +144556,7 @@
   "name": "C_0085eb30_ReleaseMutexIfSet",
   "name_src": "agent",
   "votes": {
-   "C_0085eb30_ReleaseMutexIfSet": 4
+   "C_0085eb30_ReleaseMutexIfSet": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -153711,7 +153730,7 @@
    "FrameApplyToMatch": 1,
    "GfxFrames_SetEmbeddedFrame": 1,
    "C_00860700_SetFrame": 1,
-   "GfxFrame_InitRotationDegreesFromMatrix": 5
+   "GfxFrame_InitRotationDegreesFromMatrix": 6
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -165239,8 +165258,9 @@
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00861ce0* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/006e5510.cpp"
  },
  "006e5530": {
   "name": "C_00861ce0_ResyncSphereAndGetSphereAddress",
