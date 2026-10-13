@@ -2062,7 +2062,7 @@
   "name": "GetTableEntryDwordByIndex",
   "name_src": "agent",
   "votes": {
-   "GetTableEntryDwordByIndex": 10,
+   "GetTableEntryDwordByIndex": 11,
    "Vehicle_FindTableEntry": 1,
    "Vehicle_GetTableEntryByIndex": 1,
    "Vehicle_GetTableEntryDwordByIndex": 1,
@@ -36736,7 +36736,7 @@
   "name": "C_00833708_SendOrder",
   "name_src": "agent",
   "votes": {
-   "C_00833708_SendOrder": 3,
+   "C_00833708_SendOrder": 4,
    "AutoTask_SendOrder": 1,
    "TaskHelper_StartAction": 1
   },
@@ -42268,7 +42268,7 @@
   "name": "C_00833908_SetSceneCallback",
   "name_src": "agent",
   "votes": {
-   "C_00833908_SetSceneCallback": 7
+   "C_00833908_SetSceneCallback": 8
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -42280,7 +42280,7 @@
   "name": "C_00833908_ConfigureMissionInterface",
   "name_src": "agent",
   "votes": {
-   "C_00833908_ConfigureMissionInterface": 7
+   "C_00833908_ConfigureMissionInterface": 8
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -47482,13 +47482,14 @@
   "file": "src/auto/004ae150.cpp"
  },
  "004ae1b0": {
-  "name": "sub_4AE1B0",
-  "name_src": "addr",
+  "name": "TMovilAInteractivo_Construct",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "TMovilAInteractivo* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004ae1b0.cpp"
  },
  "004ae220": {
   "name": "GetStaticParapetName",
@@ -47522,7 +47523,7 @@
  },
  "004ae250": {
   "name": "TMovilAPuntoParapetandose_Construct",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "TMovilAPuntoParapetandose_Construct": 1
   },
@@ -54159,7 +54160,7 @@
   "name": "C_0083b668_UpdateBase",
   "name_src": "agent",
   "votes": {
-   "C_0083b668_UpdateBase": 1,
+   "C_0083b668_UpdateBase": 2,
    "Autonomous_UpdateBase": 2
   },
   "ret": "char",
@@ -54196,7 +54197,7 @@
   "name": "C_0083b668_InitBaseTask",
   "name_src": "agent",
   "votes": {
-   "C_0083b668_InitBaseTask": 1,
+   "C_0083b668_InitBaseTask": 2,
    "TCharTask_BaseInit_4D0350": 5
   },
   "ret": "uint32_t*",
@@ -55523,7 +55524,7 @@
  },
  "004d5500": {
   "name": "C_0083c280_IsTargetPositionClear",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
@@ -55542,13 +55543,14 @@
   "file": "src/auto/004d5520.cpp"
  },
  "004d5550": {
-  "name": "sub_4D5550",
-  "name_src": "addr",
+  "name": "C_0083c280_UpdateAttachmentOffset",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_0083c280* self, void* , int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/004d5550.cpp"
  },
  "004d55c0": {
   "name": "sub_4D55C0",
@@ -55570,7 +55572,7 @@
  },
  "004d5720": {
   "name": "C_0083c280_DispatchItemAction",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_0083c280_DispatchItemAction": 1
   },
@@ -55593,14 +55595,15 @@
  },
  "004d5840": {
   "name": "C_0083c280_ResetTask",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_0083c280_ResetTask": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0083c280* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004d5840.cpp"
  },
  "004d5890": {
   "name": "sub_4D5890",
@@ -55666,13 +55669,14 @@
   "sig_src": "abi"
  },
  "004d6080": {
-  "name": "sub_4D6080",
-  "name_src": "addr",
+  "name": "C_0083c280_UpdateTargetingState",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083c280* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004d6080.cpp"
  },
  "004d6100": {
   "name": "sub_4D6100",
@@ -55685,7 +55689,7 @@
  },
  "004d62e0": {
   "name": "C_0083c280_AdvanceFromStateOneToSix",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -55694,15 +55698,16 @@
   "file": "src/auto/004d62e0.cpp"
  },
  "004d6310": {
-  "name": "C_0083c280_Construct",
-  "name_src": "vote",
+  "name": "C_0083c280_ConstructMissionInterfaceTask",
+  "name_src": "agent",
   "votes": {
    "C_0083c280_Construct": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_0083c280* self, void* , int taskArgument",
+  "sig_src": "impl",
+  "file": "src/auto/004d6310.cpp"
  },
  "004d6450": {
   "name": "C_0083c280_Destroy_4D6450",
@@ -58422,7 +58427,7 @@
   "name": "TAiState_Constructor",
   "name_src": "agent",
   "votes": {
-   "TAiState_Constructor": 14
+   "TAiState_Constructor": 15
   },
   "ret": "TAiState*",
   "conv": "__fastcall",
@@ -149914,7 +149919,7 @@
   "name": "GfxObjectProps_GetAttachmentHeight",
   "name_src": "vote",
   "votes": {
-   "GfxObjectProps_GetAttachmentHeight": 3
+   "GfxObjectProps_GetAttachmentHeight": 4
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -152045,7 +152050,7 @@
   "name": "GfxObject_DestroyEmbeddedState",
   "name_src": "agent",
   "votes": {
-   "GfxObject_DestroyEmbeddedState": 8,
+   "GfxObject_DestroyEmbeddedState": 9,
    "GfxObject_DestroyTransform": 1,
    "GfxFrames_DestroyEmbeddedState": 1,
    "C_00860630_DestroyEmbeddedState": 1
@@ -152413,7 +152418,7 @@
   "name": "GfxObject_ConstructEmbeddedState",
   "name_src": "agent",
   "votes": {
-   "GfxObject_ConstructEmbeddedState": 9,
+   "GfxObject_ConstructEmbeddedState": 10,
    "GfxObject_InitializeTransform": 1,
    "GfxFrames_ConstructEmbeddedState": 1,
    "C_00860700_ConstructEmbeddedState": 1
@@ -152488,7 +152493,7 @@
   "name": "C_00860700_SetPositionVector",
   "name_src": "agent",
   "votes": {
-   "C_00860700_SetPositionVector": 2
+   "C_00860700_SetPositionVector": 3
   },
   "ret": "char",
   "conv": "__fastcall",
