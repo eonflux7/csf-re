@@ -60,6 +60,13 @@ HEX = re.compile(r"0x[0-9a-f]+")
 DISP = re.compile(r"\[(e[a-z]{2})\s*([+-])\s*(0x[0-9a-f]+|\d+)\]")
 
 
+def infrastructure_symbol(sym):
+    # A parameter such as PAURegs@hook@@ is not the function's namespace.
+    # Only the name before the first @@ can put the function in namespace hook.
+    return bool(re.search(r"\?\?__E|_GLOBAL__|__dyn_tls|_Init_thread|\?\$TSS", sym)
+                or sym.split("@@", 1)[0].endswith("@hook"))
+
+
 def our_refs(obj):
     """(absolute game addresses, displacements on non-stack bases) used anywhere in the object's code."""
     dis = subprocess.run(["llvm-objdump-21", "-d", "--no-show-raw-insn", "--x86-asm-syntax=intel", obj],
@@ -68,11 +75,14 @@ def our_refs(obj):
     skip = False
     stack = {"esp", "ebp"}  # plus registers holding a copy of esp/ebp: clang builds outgoing args via `mov eax, esp`
     slots = set()  # frame slots holding such a copy (-O0 spills `lea eax, [ebp + 0xc]` and reloads it later)
+    reg_helper, reg_frames, reg_slots = False, set(), set()
     for line in dis.splitlines():
         m = re.match(r"^[0-9a-f]+ <(.+)>:$", line)
         if m:  # compiler-generated initializers / hook registrars: their field offsets aren't the function's
-            skip = bool(re.search(r"\?\?__E|_GLOBAL__|__dyn_tls|_Init_thread|\?\$TSS|@hook@@", m.group(1)))
+            skip = infrastructure_symbol(m.group(1))
             stack, slots = {"esp", "ebp"}, set()
+            reg_helper = bool(re.search(r"@@YAIPAURegs@hook@@PBI@Z$", m.group(1)))
+            reg_frames, reg_slots = set(), set()
             continue
         if "\t" not in line:
             continue
@@ -80,18 +90,23 @@ def our_refs(obj):
         mn, ops = (ins.split(None, 1) + [""])[:2]
         dst = ops.strip().partition(",")[0].strip()
         for base, sign, off in ([] if skip else DISP.findall(ins)):  # addresses: all code (CSF_GLOBAL binds in init)
-            if base not in stack and sign == "+":
+            if base not in stack and base not in reg_frames and sign == "+":
                 disps.add(int(off, 0))
         if mn.startswith("call"):
             stack -= {"eax", "ecx", "edx"}
+            reg_frames -= {"eax", "ecx", "edx"}
         elif re.fullmatch(r"e[a-z]{2}", dst) and dst not in ("esp", "ebp"):
             src = ops.split(",", 1)[1].strip() if "," in ops else ""
             slot = re.fullmatch(r"dword ptr (\[(?:esp|ebp)[^\]]*\])", src)
             alias = mn == "mov" and (src in ("esp", "ebp") or src in stack or bool(slot and slot.group(1) in slots)) \
                 or mn == "lea" and re.match(r"\[(esp|ebp)\b", src)
+            frame_alias = mn == "mov" and (src in reg_frames or bool(slot and slot.group(1) in reg_slots)
+                          or reg_helper and src == "dword ptr [ebp + 0x8]")
             (stack.add if alias else stack.discard)(dst)
+            (reg_frames.add if frame_alias else reg_frames.discard)(dst)
         elif mn == "mov" and (m2 := re.fullmatch(r"dword ptr (\[(?:esp|ebp)[^\]]*\]), (e[a-z]{2})", ops)):
             (slots.add if m2.group(2) in stack and m2.group(2) not in ("esp", "ebp") else slots.discard)(m2.group(1))
+            (reg_slots.add if m2.group(2) in reg_frames else reg_slots.discard)(m2.group(1))
         if ins.startswith(("call", "jmp")) and "<" in ins and "[" not in ins:  # relative: own helpers / imports
             continue
         for h in HEX.findall(ins):
@@ -112,7 +127,10 @@ def our_refs(obj):
         if m and cur:
             cur[1] += bytes.fromhex(m.group(1).replace(" ", ""))
     for name, blob in secs:
-        if name == ".rdata" and len(blob) != 4:
+        pointer_table = (bool(blob) and len(blob) % 4 == 0 and
+                         all(IMG_LO <= int.from_bytes(blob[i:i + 4], "little") < IMG_HI
+                             for i in range(0, len(blob), 4)))
+        if name == ".rdata" and len(blob) != 4 and not pointer_table:
             continue
         for i in range(0, len(blob) - 3, 4):
             v = int.from_bytes(blob[i:i + 4], "little")
@@ -160,10 +178,56 @@ def coff_data_symbol_values(obj):
     return out
 
 
+def adjustor_thunk_code(ins):
+    """Entry adjustment followed by a jump into the same exported function.
+
+    IDA can merge sibling methods into the extent of this tiny thunk. Follow
+    its actual CFG rather than requiring references in the unreachable sibling.
+    Return None for every other shape (in particular EH-bearing functions).
+    """
+    if (len(ins) < 2 or ins[0].mnemonic not in ("add", "sub")
+            or not re.fullmatch(r"ecx, (0x[0-9a-f]+|\d+)", ins[0].op_str)
+            or ins[1].mnemonic != "jmp" or not ins[1].op_str.startswith("0x")):
+        return None
+    heads = {i.address: i for i in ins}
+    target = int(ins[1].op_str, 16)
+    if target not in heads:
+        return None
+    # Scope this to an ordinary deleting-wrapper prologue, rather than
+    # pruning exceptional control flow from arbitrary merged methods.
+    addr, prologue = target, []
+    for _ in range(4):
+        if addr not in heads:
+            return None
+        i = heads[addr]
+        prologue.append(f"{i.mnemonic} {i.op_str}")
+        addr += i.size
+    if prologue != ["push ebp", "mov ebp, esp", "push esi", "mov esi, ecx"]:
+        return None
+    seen, todo = set(), [ins[0].address]
+    while todo:
+        addr = todo.pop()
+        if addr in seen or addr not in heads:
+            continue
+        seen.add(addr)
+        i = heads[addr]
+        if i.mnemonic.startswith("j") and i.op_str.startswith("0x"):
+            todo.append(int(i.op_str, 16))
+        if i.mnemonic not in ("jmp", "ret", "int3"):
+            todo.append(i.address + i.size)
+    code = [i for i in ins if i.address in seen]
+    if any("fs:" in i.op_str or i.mnemonic == "push" and i.op_str == "-1" for i in code):
+        return None
+    return code
+
+
 def code_of(ea, db):
     """Original instructions, following tail jumps into shared code blocks that aren't function starts."""
     f = db.F[ea]
     out = list(disasm(ea, f["size"]))
+    thunk = adjustor_thunk_code(out)
+    if thunk is not None:
+        out = thunk
     for i in list(out):
         if i.mnemonic == "jmp" and i.op_str.startswith("0x"):
             t = int(i.op_str, 16)
@@ -226,6 +290,34 @@ def orig_refs(ea, db):
     return imms, disps
 
 
+def copied_field_offsets(ea, db):
+    """Dword fields in a fixed, non-stack source span copied by REP MOVSD."""
+    code = [f"{i.mnemonic} {i.op_str}" for i in code_of(ea, db)]
+    offsets = set()
+    for k, text in enumerate(code):
+        if not text.startswith("rep movsd "):
+            continue
+        count, start = None, None
+        for prev in reversed(code[max(0, k - 8):k]):
+            if prev.startswith(("call", "j")):
+                break
+            if count is None and re.match(r"\w+ ecx(?:,|$)", prev):
+                m = re.fullmatch(r"mov ecx, (0x[0-9a-f]+|\d+)", prev)
+                if not m:
+                    break
+                count = int(m.group(1), 0)
+            if start is None and re.match(r"\w+ esi(?:,|$)", prev):
+                m = re.fullmatch(r"lea esi, \[(?!esp|ebp)(e[a-z]{2}) \+ (0x[0-9a-f]+|\d+)\]", prev)
+                if not m:
+                    break
+                start = int(m.group(2), 0)
+            if start is not None and count is not None:
+                if 0 < count <= 0x100:
+                    offsets |= {start + 4 * n for n in range(count)}
+                break
+    return offsets
+
+
 # Compiler EH/SEH runtime reached from the function's unwind thunk; our compiler emits its own.
 EH_HELPER = re.compile(r"CxxFrameHandler|_EH_prolog|_SEH_prolog|_SEH_epilog|_except_handler|__security_check"
                        # MSVC's code-gen helpers for float->int casts, 64-bit arithmetic and stack probes: a plain
@@ -284,6 +376,11 @@ def check(ea, obj, db):
         if i.address in delegated:
             ours.update(int(h, 16) for h in HEX.findall(i.op_str))
             our_disps.update(int(off, 0) for _, _, off in DISP.findall(i.op_str))
+    if adjustor_thunk_code(code_of(ea, db)) is not None:
+        # Match the metadata to the entry-reachable thunk instructions too.
+        f = dict(f, callees=[c for c in f["callees"] if c in imms],
+                 drefs=[d for d in f["drefs"] if d in imms],
+                 srefs=[s for s in f.get("srefs", []) if s in imms])
     own = range(f["ea"], f["end"])
     errs = []
     required = {}
@@ -309,6 +406,15 @@ def check(ea, obj, db):
             t = image_dword(slot)
             if t is not None:
                 via_slot[t] |= {slot} | {v for v in vtables() if v <= slot < v + 0x400}
+        # IDA may list the first target of an indexed function-pointer table
+        # as a callee. Referencing that same table preserves the dispatch.
+        m = re.fullmatch(r"dword ptr \[e[a-z]{2}\*4 \+ (0x[0-9a-f]+)\]", i.op_str) \
+            if i.mnemonic == "call" else None
+        if m:
+            table = int(m.group(1), 16)
+            t = image_dword(table)
+            if t in db.F:
+                via_slot[t].add(table)
     # an address the compiler reaches as base + displacement (`mov eax, 0x841810; call [eax + 0x40]` for 0x841850)
     reach = ours | {b + d for b in ours for d in our_disps if 0 < d < 0x1000}
     for a, what in sorted(required.items()):
@@ -364,7 +470,15 @@ def check(ea, obj, db):
     if len(adds) <= 40:
         sums |= {a + b for a in adds for b in adds} | {a + b + c for a in adds for b in adds for c in adds}
     folded = {k + d for k in sums for d in orig_disps | {0}}
-    bad = sorted(d for d in our_disps if d >= 8 and d not in orig_disps and d not in imms and d not in folded)
+    # A record cursor may point at its last field: [cursor-4] at base+0x10
+    # is the same access as [base+0xC], not a new field.
+    negative = {-int(off, 0) for i in code_of(ea, db)
+                for base, sign, off in DISP.findall(i.op_str)
+                if base not in ("esp", "ebp") and sign == "-"}
+    folded |= {k + d for k in sums for d in negative}
+    copied = copied_field_offsets(ea, db)
+    bad = sorted(d for d in our_disps if d >= 8 and d not in orig_disps and d not in imms
+                 and d not in folded and d not in copied)
     if bad:
         errs.append("your code accesses field offsets the original never uses: " + ", ".join(f"0x{d:X}" for d in bad)
                     + " (if they are members of a LOCAL object the original keeps on its stack, e.g. a temporary "
@@ -382,8 +496,21 @@ def byte_return_of_bool(ea, obj, fn, db):
     widened = False
     for k, c in enumerate(code):
         if re.match(r"set\w+ al$", c):
-            if "xor eax, eax" in code[:k] or any(x.startswith("movzx eax, al") for x in code[k + 1:k + 4]):
-                widened = True
+            # An internal bool (e.g. a Bink sound-track argument) says nothing
+            # about the return width. Require an intact value at a return.
+            zeroed = False
+            for prev in reversed(code[:k]):
+                if prev.startswith("call") or re.match(r"\w+ (?:eax|ax|al|ah)(?:,|$)", prev):
+                    zeroed = prev == "xor eax, eax"
+                    break
+            for nxt in code[k + 1:]:
+                if nxt == "movzx eax, al":
+                    zeroed = True
+                elif nxt.startswith("ret"):
+                    widened |= zeroed
+                    break
+                elif nxt.startswith(("call", "j")) or re.match(r"\w+ (?:eax|ax|al|ah)(?:,|$)", nxt):
+                    break
     if not widened:
         return []
     syms = subprocess.run(["llvm-nm-21", obj], capture_output=True, text=True).stdout
@@ -467,7 +594,7 @@ def our_consts(funcs, src):
     import struct
     ints, floats = set(), set()
     for sym, ins in funcs.items():
-        if re.search(r"\?\?__E|@hook@@", sym):
+        if infrastructure_symbol(sym):
             continue
         for i in ins:
             for h in re.findall(r"(?<![\w@])(-?0x[0-9a-f]+|-?\d+)(?![\w@])", i):
@@ -536,6 +663,73 @@ def const_found(c, ints, floats):
     return any(a & 0xFFFFFFFF in ints for a in alts) or float(c) in floats
 
 
+def compiled_signed_divisors(funcs):
+    """Constant operands of IDIV, not unrelated frame sizes or field offsets."""
+    out = set()
+    for sym, code in funcs.items():
+        if infrastructure_symbol(sym):
+            continue
+        for k, text in enumerate(code):
+            m = re.fullmatch(r"idiv\s+(e[a-z]{2})", text)
+            if not m:
+                continue
+            for prev in reversed(code[max(0, k - 2):k]):
+                if prev == "cdq":
+                    continue
+                value = re.fullmatch(rf"mov\s+{m.group(1)}, (0x[0-9a-f]+|\d+)", prev)
+                if value:
+                    out.add(int(value.group(1), 0))
+                break
+    return out
+
+
+def binary_constant_forms(ea, db, ints, refs, divisors):
+    """Decompiler literals accounted for by a specific original instruction shape.
+
+    Keep this separate from const_found: a magic multiplier or a folded global
+    value is equivalent only when the binary proves how it is used.
+    """
+    code = [f"{i.mnemonic} {i.op_str}" for i in code_of(ea, db)]
+    out = set()
+    for k, text in enumerate(code):
+        m = re.fullmatch(r"mov \w+, dword ptr \[(0x[0-9a-f]+)\]", text)
+        if m and int(m.group(1), 16) in refs:
+            value = image_dword(int(m.group(1), 16))
+            if value is not None:
+                out.add(value)
+
+        # Hex-Rays removes bits cleared by an immediately following OR from
+        # the AND mask. The actual mask and forced bits must both be present.
+        m = re.fullmatch(r"and (e[a-z]{2}), (0x[0-9a-f]+)", text)
+        if m and k + 1 < len(code):
+            other = re.fullmatch(rf"or {m.group(1)}, (0x[0-9a-f]+|\d+)", code[k + 1])
+            if other:
+                mask, forced = int(m.group(2), 16), int(other.group(1), 0)
+                if mask in ints and forced in ints:
+                    out.add(mask & ~forced)
+
+        # VC7.1 signed division: high32(x*M)+x, arithmetic shift, then the
+        # truncation-towards-zero correction. M = ceil(2**(32+s)/divisor).
+        m = re.fullmatch(r"mov eax, (0x[0-9a-f]+)", text)
+        if not m or k + 7 >= len(code):
+            continue
+        magic = int(m.group(1), 16)
+        operand = re.fullmatch(r"imul (e[a-z]{2})", code[k + 1])
+        shift = re.fullmatch(r"sar edx, (0x[0-9a-f]+|\d+)", code[k + 3])
+        if (magic < 0x80000000 or not operand or not shift
+                or code[k + 2] != f"add edx, {operand.group(1)}"
+                or code[k + 4:k + 7] != ["mov eax, edx", "shr eax, 0x1f", "add eax, edx"]):
+            continue
+        bits = int(shift.group(1), 0)
+        if not 0 <= bits < 32:
+            continue
+        power = 1 << (32 + bits)
+        divisor = round(power / magic)
+        if divisor > 1 and (power + divisor - 1) // divisor == magic and divisor in divisors:
+            out.add(magic)
+    return out
+
+
 def behaviour(ea, obj, fn, src, db):
     """Beyond references: the original's constants must appear in ours, and calls Hex-Rays shows as consecutive
     statements of one block must come in the same order in ours (each callee called once in both, so branches and
@@ -546,7 +740,8 @@ def behaviour(ea, obj, fn, src, db):
     funcs = our_functions(obj)
     errs = []
     ints, floats = our_consts(funcs, src)
-    floats |= rdata_floats(our_refs(obj)[0])  # a .rdata float read by address (CSF_GLOBAL) is the literal itself
+    refs = our_refs(obj)[0]
+    floats |= rdata_floats(refs)  # a .rdata float read by address (CSF_GLOBAL) is the literal itself
     miss = [c for c in a.get("consts", []) if c not in TRIVIAL and not (isinstance(c, float) and c in (0.0, 1.0, -1.0))
             and not const_found(c, ints, floats)]
     bases = [b for b in a.get("consts", []) if isinstance(b, int) and b >= 16 and b & 0xFFFFFFFF in ints]
@@ -556,6 +751,8 @@ def behaviour(ea, obj, fn, src, db):
     masks = {int(i.op_str.split(",")[1], 0) for i in code_of(ea, db)
              if i.mnemonic == "test" and i.op_str.startswith("ah, ")}
     miss = [c for c in miss if c not in masks]
+    forms = binary_constant_forms(ea, db, ints, refs, compiled_signed_divisors(funcs))
+    miss = [c for c in miss if not (isinstance(c, int) and c & 0xFFFFFFFF in forms)]
     # Hex-Rays writes a run of -1 dwords as memset(p, 255, n): the byte fill is the -1 we store (0x4980D0)
     if -1 in a.get("consts", []) and 0xFFFFFFFF in ints:
         miss = [c for c in miss if c != 255]

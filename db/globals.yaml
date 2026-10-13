@@ -79,6 +79,12 @@
 - {addr: 0x0082D39C, name: g_BinkCopyToBuffer, type: BinkCopyFunction, uses: 1, src: auto}
 - {addr: 0x0082D3A0, name: g_BinkDoFrame, type: BinkFrameFunction, uses: 1, src: auto}
 - {addr: 0x0082D3A4, name: g_BinkWait, type: BinkFrameFunction, uses: 1, src: auto}
+- {addr: 0x0082D3A8, name: g_BinkSetVolume, type: BinkSetVolumeFn, uses: 1, src: auto}
+- {addr: 0x0082D3AC, name: g_BinkOpen, type: BinkOpenFn, uses: 1, src: auto}
+- {addr: 0x0082D3B0, name: g_BinkSetSoundTrack, type: BinkSetSoundTrackFn, uses: 1, src: auto}
+- {addr: 0x0082D3B4, name: g_BinkSetMemory, type: BinkSetMemoryFn, uses: 1, src: auto}
+- {addr: 0x0082D3B8, name: g_BinkSetSoundSystem, type: BinkSetSoundSystemFn, uses: 1, src: auto}
+- {addr: 0x0082D3BC, name: g_BinkOpenDirectSound, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 157, src: auto}
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 3, src: auto}
 - {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 5, src: auto}
@@ -96,7 +102,7 @@
 - {addr: 0x0082D568, name: g_LocalDirectionAngleScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D56C, name: g_Epsilon, type: float, uses: 2, src: auto, alt: [g_MotionEpsilon]}
 - {addr: 0x0082D6E8, name: g_MatrixQueryFlags, type: 'std::uint32_t', uses: 2, src: auto, alt: [g_MatrixRequestFlags]}
-- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 127, src: auto, alt: [g_MissionUnsignedIntegerBias]}
+- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 129, src: auto, alt: [g_MissionUnsignedIntegerBias]}
 - {addr: 0x0082D748, name: g_HudPi, type: float, uses: 2, src: auto, alt: [g_PiConstant]}
 - {addr: 0x0082D74C, name: g_HudTwoPi, type: float, uses: 2, src: auto, alt: [g_TwoPiConstant]}
 - {addr: 0x0082D750, name: g_RotationRadiansToDegrees, type: float, uses: 1, src: auto}
@@ -201,7 +207,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 152, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyScenarioSuffix, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 154, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyScenarioSuffix, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C8, name: g_AngleScale, type: float, uses: 1, src: auto}
@@ -373,6 +379,10 @@
 - {addr: 0x0083E9A8, name: g_DegToRad, type: float, uses: 3, src: auto, alt: [g_fAngleScale]}
 - {addr: 0x0083E9AC, name: g_MinDistanceSqEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x0083EC28, name: g_FarDistanceSqThreshold, type: float, uses: 1, src: auto}
+- {addr: 0x0083EE8C, name: g_DefaultTextDatabasePath, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x0083EE90, name: g_DefaultTextDatabasePathWord1, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x0083EE94, name: g_DefaultTextDatabasePathWord2, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x0083EE98, name: g_DefaultTextDatabasePathWord3, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x0083EF0C, name: g_fClampedCountdown, type: float, uses: 1, src: auto}
 - {addr: 0x0083F10C, name: g_HudHorizontalInset, type: float, uses: 1, src: auto}
 - {addr: 0x0083F180, name: g_RadiansToDegrees, type: float, uses: 1, src: auto}
@@ -642,6 +652,7 @@
 - {addr: 0x00863170, name: g_ProjectionHeightOffset, type: double, uses: 1, src: auto}
 - {addr: 0x00863174, name: g_ParticleNearDepthMultiplier, type: float, uses: 1, src: auto}
 - {addr: 0x00863178, name: g_ProjectionRayDistance, type: double, uses: 1, src: auto}
+- {addr: 0x00863190, name: g_BinkVolumeScale, type: float, uses: 1, src: auto}
 - {addr: 0x0086319C, name: g_ParticleFacingEpsilon, type: float, uses: 2, src: auto, alt: [g_ParticleVectorLengthThreshold]}
 - {addr: 0x008631A4, name: g_SweepEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x008631C2, name: g_ParticleSuffixTerminator, type: uint8_t, uses: 1, src: auto}
@@ -1198,7 +1209,9 @@
 - {addr: 0x008A6BAC, name: g_LogEntryTable, type: uint8_t, uses: 3, src: auto, alt: [g_RecordArray, g_TrackedBlockTable]}
 - {addr: 0x008A6BB0, name: g_LogEntryAux, type: uint32_t, uses: 2, src: auto, alt: [g_RecordCount]}
 - {addr: 0x008A6BB4, name: g_LogEntryCount, type: uint32_t, uses: 2, src: auto, alt: [g_TrackedBlockCount]}
+- {addr: 0x008A6C08, name: g_DeflateStreamError, type: const char*, uses: 1, src: auto}
 - {addr: 0x008A6C10, name: g_ZlibMemoryError, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008A6C14, name: g_DeflateBufferError, type: const char*, uses: 1, src: auto}
 - {addr: 0x008A6C20, name: g_LogStateWordA, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008A6C24, name: g_LogStateWordB, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008A7D28, name: g_InflateBitMasks, type: InflateMasks, uses: 2, src: auto, alt: [g_InflateMasks]}

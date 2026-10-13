@@ -62,7 +62,9 @@ def effective_rets(ea, db, depth=3):
     f = db.F.get(ea) or callable_shared_chunk(ea, db)
     if not f:
         return []
-    rets = ret_bytes(ea, f["size"])
+    thunk = semcheck.adjustor_thunk_code(list(disasm(ea, f["size"])))
+    rets = (sorted({int(i.op_str, 0) if i.op_str else 0 for i in thunk if i.mnemonic == "ret"})
+            if thunk is not None else ret_bytes(ea, f["size"]))
     if rets or depth == 0:
         return rets
     tails = {int(i.op_str, 16) for i in disasm(ea, f["size"]) if i.mnemonic == "jmp" and i.op_str.startswith("0x")}
