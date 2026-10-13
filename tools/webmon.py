@@ -106,7 +106,7 @@ def quota():
         row = dict(login=limits.codex_label(h), kind="Codex (sol-hi jobs, lanes)")
         try:
             u = limits.codex_usage(h)
-            row.update({k: dict(used=v[0], reset_min=round(v[1] / 60)) for k, v in u.items()})
+            row.update({k: dict(used=round(v[0]), reset_at=time.time() + v[1]) for k, v in u.items()})
         except Exception as e:
             row["error"] = str(e)[:80]
         out.append(row)
@@ -117,7 +117,9 @@ def quota():
             u = grunt.claude_usage(which)  # {window: (percent, seconds until reset)}
             for k in ("5h", "7d"):
                 if k in u:
-                    row[k] = dict(used=round(u[k][0]), reset_min=max(0, round(u[k][1] / 60)))
+                    # an idle window has no reset time (claude_usage gives "now")
+                    row[k] = dict(used=round(u[k][0]), reset_at=time.time() + u[k][1] if u[k][1] > 0 else None)
+            row["age"] = round(u.get("_age", 0))
         except Exception as e:
             row["error"] = str(e)[:80]
         out.append(row)
@@ -262,7 +264,10 @@ dialog pre{margin:0;padding:14px;white-space:pre-wrap;word-break:break-word;font
 tr.job{cursor:pointer}tr.job:hover td{background:var(--chip)}tr.jd td{background:var(--bg);padding:12px 14px;border-top:none}
 .jdw{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);gap:20px}@media (max-width:1100px){.jdw{grid-template-columns:1fr}}
 .hist{padding:3px 0;border-top:1px solid var(--line);overflow-wrap:anywhere}.hist:first-of-type{border-top:none}
-.meter{display:inline-block;width:64px;height:7px;background:var(--chip);border-radius:4px;overflow:hidden;vertical-align:middle;margin-right:6px}.meter>i{display:block;height:100%}
+.meter{position:relative;height:8px;background:var(--chip);border-radius:4px;margin:4px 0 3px}.meter>i{display:block;height:100%;border-radius:4px}
+.meter>u{position:absolute;top:-3px;bottom:-3px;width:2px;margin-left:-1px;background:var(--ink);opacity:.6;border-radius:1px}
+.qh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;white-space:nowrap}.qh b{font-size:15px;font-weight:650;font-variant-numeric:tabular-nums}
+.qh span{font-variant-numeric:tabular-nums}table.qt td{padding-right:14px;width:38%}table.qt td:first-child{width:24%}table.qt td:last-child{padding-right:0}.warn{color:var(--warn)}
 </style></head><body>
 <header><h1>CSF-RE</h1><span class="dim">agent jobs, queue and what is left of the game code</span><span id="stamp"></span></header>
 <main id="m"><section class="c12">loading…</section></main>
@@ -272,7 +277,9 @@ const E=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;
 const open_=new Set(),openJobs=new Set(),jd={};let last=null;
 const k=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?Math.round(n/1e3)+'k':String(n||0);
 const tok=t=>!t||(!t.input&&!t.output)?'<span class="dim">–</span>':`${k(t.input)} / ${k(t.output)}`;
-const dur=s=>s>=3600?(s/3600).toFixed(1)+' h':s>=60?Math.round(s/60)+' min':s+' s';
+// 3660 -> "1h 1m"; with days: 90060 -> "1d 1h 1m" (leading zero units dropped, inner ones kept)
+const hm=(s,days)=>{let m=Math.max(0,Math.floor(s/60));if(m<1)return '&lt;1m';const d=days?Math.floor(m/1440):0;m-=d*1440;const h=Math.floor(m/60);m%=60;return (d?d+'d ':'')+(d||h?h+'h ':'')+m+'m';};
+const dur=s=>s>=60?hm(s):s+' s';
 function jobDetail(n){const d=jd[n];if(!d)return '<span class="dim">loading…</span>';const t=d.tokens||{};
   return `<div class="jdw"><div><h2>Running shells</h2>${(d.shells||[]).length?d.shells.map(x=>`<div class="mono small"><span class="running">${dur(x.secs)}</span> ${E(x.cmd)}</div>`).join(''):`<span class="dim small">${d.phase=='running'?'none right now (the agent is thinking or reading)':'job is not running'}</span>`}
    <h2 style="margin-top:12px">Tokens</h2><div class="small">input ${k(t.input)} <span class="dim">(${k(t.cached)} from cache)</span> · output ${k(t.output)}${t.context?` · context now ${k(t.context)}${t.window?' of '+k(t.window):''}`:''}${t.cost_usd?` · $${t.cost_usd.toFixed(2)}`:''}</div>
@@ -281,9 +288,16 @@ function jobDetail(n){const d=jd[n];if(!d)return '<span class="dim">loading…</
 async function loadJobs(){for(const n of openJobs){try{const r=await fetch('/api/job/'+n);jd[n]=await r.json();const el=document.getElementById('jd-'+n);if(el)el.innerHTML=jobDetail(n);}catch(e){}}}
 async function show(title,url){dt.textContent=title;ds.textContent=url;dp.textContent='loading…';dlg.showModal();
   const r=await fetch(url);dp.textContent=r.ok?await r.text():'not there (yet)';}
-function meter(u){if(!u)return '<span class="dim">–</span>';const c=u.used>=90?'var(--bad)':u.used>=70?'var(--warn)':'var(--ok)';
-  const r=u.reset_min>=120?Math.round(u.reset_min/60)+' h':u.reset_min+' min';
-  return `<span class="meter"><i style="width:${Math.min(100,u.used)}%;background:${c}"></i></span>${u.used}% <span class="dim small" title="until the window resets">· ${r}</span>`;}
+// One quota window (W seconds long): used %, live countdown to the reset, bar with a tick at the share of the
+// window already gone (bar past the tick = spending faster than the window refills), and when it runs out at this rate.
+function meter(u,W){if(!u)return '<span class="dim">–</span>';const days=W>86400,c=u.used>=90?'var(--bad)':u.used>=70?'var(--warn)':'var(--ok)';
+  const left=u.reset_at?u.reset_at-Date.now()/1000:null,gone=left==null?null:Math.min(1,Math.max(0,1-left/W));
+  const at=u.reset_at?new Date(u.reset_at*1000).toLocaleString([],{weekday:'short',hour:'2-digit',minute:'2-digit'}):'';
+  const r=left==null?(u.used?'':'not started'):left<=0?'resetting…':hm(left,days)+' left';
+  let out='';if(gone>=.05&&u.used>0&&u.used<100){const t=(100-u.used)/(u.used/(gone*W));if(t<left)out=`<div class="small warn" title="at the average rate of this window so far">full in ~${hm(t,days)}</div>`;}
+  if(u.used>=100)out='<div class="small failed">limit reached</div>';
+  return `<div class="qh"><b style="color:${c}">${u.used}%</b><span class="dim small" title="${at?'resets '+at:''}">${r}</span></div>
+   <div class="meter" title="${u.used}% used${gone==null?'':', '+Math.round(gone*100)+'% of the window gone'}"><i style="width:${Math.min(100,u.used)}%;background:${c}"></i>${gone==null?'':`<u style="left:${gone*100}%"></u>`}</div>${out}`;}
 function render(s){last=s;const p=s.progress,ev=s.evidence||{},pl=s.plan||{},bg=s.background||{};let h='';
   // progress
   h+=`<section class="c4"><h2>Game code written</h2><div class="big">${p.pct}%</div><div class="bar"><i style="width:${p.pct}%"></i></div>
@@ -295,8 +309,9 @@ function render(s){last=s;const p=s.progress,ev=s.evidence||{},pl=s.plan||{},bg=
    <tr><td>pending first in-game install</td><td class="n">${ev.pending}</td><td class="n dim">${ev.pending_kb} KB</td></tr></table>`:'<span class="dim">collecting…</span>'}
    ${s.linktest&&s.linktest.summary?`<div class="dim small" style="margin-top:8px">${E(s.linktest.summary)}</div>`:''}</section>`;
   // quota
-  h+=`<section class="c4"><h2>Quota</h2><table><thead><tr><th>Login</th><th>5 h window</th><th>7 d window</th></tr></thead>${(s.quota||[]).map(q=>`<tr><td title="${E(q.kind)}">${E(q.login)}</td>${q.error?`<td colspan=2 class="failed small">${E(q.error)}</td>`:`<td>${meter(q['5h'])}</td><td>${meter(q['7d'])}</td>`}</tr>`).join('')}</table>
-   <h2 style="margin-top:14px">Background</h2>${(bg.states||[]).map(b=>`<div><span class="${b.running?'running':'dim'}">●</span> ${E(b.what)}: ${E(b.phase)||'–'} <span class="dim small">${b.running?'':'(not running, '+b.age_min+' min ago)'}</span></div>`).join('')}
+  h+=`<section class="c4"><h2>Quota</h2><table class="qt"><thead><tr><th>Login</th><th>5 h window</th><th>Weekly window</th></tr></thead>${(s.quota||[]).map(q=>`<tr><td title="${E(q.kind)}">${E(q.login)}${q.age>180?`<div class="warn small" title="the usage endpoint is rate-limited; this is its last good answer">${hm(q.age)} old</div>`:''}</td>${q.error?`<td colspan=2 class="failed small">${E(q.error)}</td>`:`<td>${meter(q['5h'],18000)}</td><td>${meter(q['7d'],604800)}</td>`}</tr>`).join('')}</table>
+   <div class="dim small" style="margin-top:6px">bar: quota used · tick: time gone in the window · hover for the reset time</div>
+   <h2 style="margin-top:14px">Background</h2>${(bg.states||[]).map(b=>`<div><span class="${b.running?'running':'dim'}">●</span> ${E(b.what)}: ${E(b.phase)||'–'} <span class="dim small">${b.running?'':'(not running, '+hm(b.age_min*60,1)+' ago)'}</span></div>`).join('')}
    ${(bg.procs||[]).map(x=>`<div class="mono dim small">${E(x)}</div>`).join('')}</section>`;
   // jobs
   const J=s.jobs||[];const run=J.filter(j=>j.phase=='running').length,wait=J.filter(j=>j.phase!='running'&&!j.review).length;
@@ -304,7 +319,7 @@ function render(s){last=s;const p=s.progress,ev=s.evidence||{},pl=s.plan||{},bg=
    <thead><tr><th>Job</th><th>Agent</th><th>State</th><th class="n">Time</th><th class="n">Tokens in / out</th><th class="n">Patch</th><th>Verdict</th><th>Task</th><th></th></tr></thead>
    ${J.map(j=>`<tr class="job" data-job="${E(j.name)}"><td class="mono"><span class="dim">${openJobs.has(j.name)?'▾':'▸'}</span> ${E(j.name)}</td><td>${E(j.agent||'sol-hi')}<div class="dim small">${E(j.login||'')}</div></td>
     <td class="${j.phase}">${j.phase=='done'&&!j.review?'done, to review':j.phase}${j.shells?` <span class="chip">${j.shells} shell${j.shells>1?'s':''}</span>`:''}${j.runs>1?` <span class="dim small">run ${j.runs}</span>`:''}${j.error?`<div class="small dim">${E(j.error.slice(0,90))}</div>`:''}</td>
-    <td class="n">${j.age_min} min</td><td class="n">${tok(j.tokens)}</td><td class="n">${j.patch_lines??'–'}</td>
+    <td class="n">${hm(j.age_min*60,1)}</td><td class="n">${tok(j.tokens)}</td><td class="n">${j.patch_lines??'–'}</td>
     <td class="${j.review||''}">${j.review||'–'}${j.note?`<div class="small dim">${E(j.note)}</div>`:''}</td>
     <td>${E(j.task)}${(j.eas||[]).length?` <span class="dim small">(${j.eas.length} addresses)</span>`:''}</td>
     <td style="white-space:nowrap" onclick="event.stopPropagation()"><button class="link" onclick="show('${E(j.name)}: task','/job/${E(j.name)}/task')">task</button> ·
