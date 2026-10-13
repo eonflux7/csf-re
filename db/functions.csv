@@ -4733,9 +4733,9 @@ ea,size,region,module,name,name_src,status
 004cdc00,193,game,m4CB490,S_0041f0a0_SerializeSearchOrderState,agent,done
 004cdcd0,135,game,m4CB490,C_0083ab58_UpdateAndDispatch,agent,done
 004cdd60,70,game,m4CB490,C_0083ab58_TryAdvanceSearchSweep,agent,done
-004cddb0,21,game,m4CDDB0,,,todo
-004cddd0,40,game,m4CDDB0,,,todo
-004cde00,16,game,m4CDDB0,,,todo
+004cddb0,21,game,m4CDDB0,C_0083ac40_FireShotAndResetState,agent,done
+004cddd0,40,game,m4CDDB0,AimPrimaryEntryIfField0050Present,agent,done
+004cde00,16,game,m4CDDB0,C_0083ac40_SetStateFlag,agent,done
 004cde10,108,game,m4CDDB0,,,todo
 004cde80,175,game,m4CDDB0,,,todo
 004cdf30,263,game,m4CDDB0,,,todo
@@ -4746,7 +4746,7 @@ ea,size,region,module,name,name_src,status
 004ce460,183,game,m4CDDB0,,,todo
 004ce520,114,game,m4CDDB0,,,todo
 004ce5a0,222,game,m4CDDB0,,,todo
-004ce6c0,36,game,m4CDDB0,,,todo
+004ce6c0,36,game,m4CDDB0,C_0083ac40_AdvanceFromStateOne,agent,done
 004ce6f0,347,game,m4CE6F0,C_0083ac40_Initialize,agent,done
 004ce860,33,game,m4CE6F0,C_0083ac40_Destroy,agent,done
 004ce890,42,game,m4CE6F0,C_0083ac40_Destroy,agent,done
@@ -11692,7 +11692,7 @@ ea,size,region,module,name,name_src,status
 00655a60,384,netz,,,,lib
 00655be0,215,netz,,,,lib
 00655cc0,20,netz,,,,lib
-00655ce0,20,netz,,,,lib
+00655ce0,20,netz,,NetChat_CopyTextBytes,vote,lib
 00655d00,20,netz,,,,lib
 00655d20,202,netz,,,,lib
 00655df0,40,netz,,NetPlayerDDL_ResolveObject,vote,lib
@@ -11707,7 +11707,7 @@ ea,size,region,module,name,name_src,status
 00656090,255,netz,,,,lib
 00656190,200,netz,,,,lib
 00656260,20,netz,,,,lib
-00656280,20,netz,,,,lib
+00656280,20,netz,,NetChatDdl_WriteTextField,vote,lib
 006562a0,20,netz,,,,lib
 006562c0,180,netz,,,,lib
 00656380,33,netz,,WriteConfigFlag,vote,lib
@@ -18907,7 +18907,7 @@ ea,size,region,module,name,name_src,status
 00750a60,33,game,m74F740,NetPostman_Destroy,agent,done
 00750a90,58,game,m750A90,,,todo
 00750ad0,248,game,m750A90,,,todo
-00750bd0,34,game,m750A90,,,todo
+00750bd0,34,game,m750A90,NetChatDDL_AllocateAndInit,agent,done
 00750c00,20,game,m750A90,NetCogible_ReleaseManagedObject,agent,done
 00750c20,6,game,m750A90,NetChat_GetNetChatName,agent,done
 00750c30,30,game,m750A90,NetChatDdl_MatchesStoredClassIdOrDelegate,agent,done
@@ -18917,12 +18917,12 @@ ea,size,region,module,name,name_src,status
 00750c80,9,game,m750A90,ForwardToSub_67F530,agent,done
 00750c90,60,game,m750A90,NetChatDdl_CreatePlayerEvent,agent,done
 00750cd0,9,game,m750A90,ForwardToHandler,agent,done
-00750ce0,32,game,m750A90,NetChatDDL_InitBase,vote,todo
-00750d00,140,game,m750A90,SpawnPoint_HandleSingleplayerRequest,vote,todo
+00750ce0,32,game,m750A90,C_00868050_InitializeAndAttachRegistry,agent,done
+00750d00,140,game,m750A90,C_00858180_HandleSingleplayerSpawnRequest,agent,done
 00750d90,140,game,m750A90,,,todo
-00750e20,133,game,m750A90,,,todo
+00750e20,133,game,m750A90,C_00858180_ReadAndDispatchSpawnRequest,agent,done
 00750eb0,118,game,m750A90,,,todo
-00750f30,23,game,m750A90,,,todo
+00750f30,23,game,m750A90,NetChatDdl_ForwardToSendBaseFields,agent,done
 00750f50,23,game,m750A90,NetChatDdl_ForwardToProcessBaseField,agent,done
 00750f70,23,game,m750A90,NetPlayerDdl_ForwardBaseProperties,agent,done
 00750f90,19,game,m750A90,NetChatDdl_ForwardBaseChunksToPlayer,agent,done
@@ -18931,8 +18931,8 @@ ea,size,region,module,name,name_src,status
 00751020,62,game,m750A90,,,todo
 00751060,161,game,m750A90,,,todo
 00751110,159,game,m750A90,SpawnPoint_CommitSelection,vote,todo
-007511b0,132,game,m750A90,,,todo
-00751240,72,game,m750A90,,,todo
+007511b0,132,game,m750A90,NetChat_OnPrimaryKeyEvent,vote,todo
+00751240,72,game,m750A90,NetChat_TryHandleKeyedEvent,agent,done
 00751290,6,game,m750A90,C_Unknown_SetActiveFlag,agent,done
 007512a0,5,game,m750A90,SceneLoader_ClearWorldResources,vote,todo
 007512b0,531,game,m7512B0,NetSpawnMessages_FormatFieldValue,agent,done

@@ -3768,7 +3768,9 @@
  "0040da80": {
   "name": "IsField0050Null",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "IsField0050Null": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -3788,7 +3790,9 @@
  "0040dab0": {
   "name": "Vehicle_AimPrimaryEntryAtPosition",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Vehicle_AimPrimaryEntryAtPosition": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "void* self, void* , float* position, char interpolate",
@@ -53833,31 +53837,34 @@
   "file": "src/auto/004cdd60.cpp"
  },
  "004cddb0": {
-  "name": "sub_4CDDB0",
-  "name_src": "addr",
+  "name": "C_0083ac40_FireShotAndResetState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0083ac40* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004cddb0.cpp"
  },
  "004cddd0": {
-  "name": "sub_4CDDD0",
-  "name_src": "addr",
+  "name": "AimPrimaryEntryIfField0050Present",
+  "name_src": "agent",
   "votes": {},
-  "ret": "bool",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004cddd0.cpp"
  },
  "004cde00": {
-  "name": "sub_4CDE00",
-  "name_src": "addr",
+  "name": "C_0083ac40_SetStateFlag",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0083ac40* self, void* , char value",
+  "sig_src": "impl",
+  "file": "src/auto/004cde00.cpp"
  },
  "004cde10": {
   "name": "sub_4CDE10",
@@ -53950,13 +53957,14 @@
   "sig_src": "abi"
  },
  "004ce6c0": {
-  "name": "sub_4CE6C0",
-  "name_src": "addr",
+  "name": "C_0083ac40_AdvanceFromStateOne",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0083ac40* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004ce6c0.cpp"
  },
  "004ce6f0": {
   "name": "C_0083ac40_Initialize",
@@ -54736,7 +54744,7 @@
   "name": "C_0083b668_FireShotAtSceneTarget",
   "name_src": "agent",
   "votes": {
-   "C_0083b668_FireShotAtSceneTarget": 1
+   "C_0083b668_FireShotAtSceneTarget": 2
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
@@ -118296,7 +118304,7 @@
   "name": "NetSession_GetNodeAllocator",
   "name_src": "vote",
   "votes": {
-   "NetSession_GetNodeAllocator": 14,
+   "NetSession_GetNodeAllocator": 15,
    "NetSession_GetAllocator": 1
   },
   "ret": "uint32_t*",
@@ -118311,7 +118319,7 @@
    "NetGatheringDdl_AllocateNodeMemory": 1,
    "NetSession_AllocateNode": 1,
    "NetGatheringDdl_AllocateNode": 1,
-   "NodeAllocator_AllocBlock": 1
+   "NodeAllocator_AllocBlock": 2
   },
   "ret": "char*",
   "conv": "__cdecl",
@@ -118322,7 +118330,7 @@
   "name": "NetSession_FreeListNode",
   "name_src": "vote",
   "votes": {
-   "NetSession_FreeListNode": 10,
+   "NetSession_FreeListNode": 11,
    "NetSession_ReleaseAllocation": 1
   },
   "ret": "void",
@@ -119830,7 +119838,7 @@
   "name": "InitializeTemporaryString",
   "name_src": "vote",
   "votes": {
-   "InitializeTemporaryString": 82
+   "InitializeTemporaryString": 83
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -120036,7 +120044,7 @@
   "name": "FindOrCreateConfigEntry",
   "name_src": "vote",
   "votes": {
-   "FindOrCreateConfigEntry": 29
+   "FindOrCreateConfigEntry": 30
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -120705,7 +120713,7 @@
   "name": "AddConfigEntry",
   "name_src": "vote",
   "votes": {
-   "AddConfigEntry": 29
+   "AddConfigEntry": 30
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -123356,13 +123364,15 @@
   "sig_src": "abi"
  },
  "00655ce0": {
-  "name": "sub_655CE0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetChat_CopyTextBytes",
+  "name_src": "vote",
+  "votes": {
+   "NetChat_CopyTextBytes": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char* a2, unsigned int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00655d00": {
   "name": "sub_655D00",
@@ -123412,7 +123422,7 @@
   "name": "ReadCounterWord",
   "name_src": "vote",
   "votes": {
-   "ReadCounterWord": 5,
+   "ReadCounterWord": 7,
    "NetPlayerDdl_ReadShort": 1
   },
   "ret": "int",
@@ -123424,7 +123434,7 @@
   "name": "NetCogibleDdl_ReadIntoSlot",
   "name_src": "vote",
   "votes": {
-   "NetCogibleDdl_ReadIntoSlot": 22,
+   "NetCogibleDdl_ReadIntoSlot": 23,
    "NetZ_ReadIntoOutParam": 1
   },
   "ret": "uint32_t*",
@@ -123509,13 +123519,15 @@
   "sig_src": "abi"
  },
  "00656280": {
-  "name": "sub_656280",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetChatDdl_WriteTextField",
+  "name_src": "vote",
+  "votes": {
+   "NetChatDdl_WriteTextField": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2, unsigned int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006562a0": {
   "name": "sub_6562A0",
@@ -123561,7 +123573,7 @@
   "name": "GameConfig_WriteWordField",
   "name_src": "vote",
   "votes": {
-   "GameConfig_WriteWordField": 12
+   "GameConfig_WriteWordField": 13
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -123572,7 +123584,7 @@
   "name": "GameConfig_WriteDwordField",
   "name_src": "vote",
   "votes": {
-   "GameConfig_WriteDwordField": 34
+   "GameConfig_WriteDwordField": 35
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -125875,7 +125887,7 @@
   "name": "Registry_Attach",
   "name_src": "vote",
   "votes": {
-   "Registry_Attach": 6
+   "Registry_Attach": 7
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -129647,7 +129659,7 @@
   "name_src": "vote",
   "votes": {
    "TempStringHashValue": 1,
-   "HashTemporaryString": 29,
+   "HashTemporaryString": 30,
    "Sub_66B590": 4
   },
   "ret": "int",
@@ -134673,7 +134685,7 @@
   "name": "NetPlayer_DispatchInheritedEvent",
   "name_src": "vote",
   "votes": {
-   "NetPlayer_DispatchInheritedEvent": 1
+   "NetPlayer_DispatchInheritedEvent": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -139346,7 +139358,7 @@
   "name": "MemDebug_FreeDebugBlock",
   "name_src": "agent",
   "votes": {
-   "Mem_FreeDebug": 664,
+   "Mem_FreeDebug": 665,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -141356,7 +141368,7 @@
   "name_src": "agent",
   "votes": {
    "MenuProgressInput_AssignText": 24,
-   "S_004f21d0_AssignText": 5
+   "S_004f21d0_AssignText": 6
   },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
@@ -195622,7 +195634,7 @@
   "name": "SpawnPoint_HandleMultiplayerRequest",
   "name_src": "vote",
   "votes": {
-   "SpawnPoint_HandleMultiplayerRequest": 1
+   "SpawnPoint_HandleMultiplayerRequest": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -198013,7 +198025,7 @@
  },
  "00750bd0": {
   "name": "NetChatDDL_AllocateAndInit",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char*",
   "conv": "__cdecl",
@@ -198117,19 +198129,20 @@
   "file": "src/auto/00750cd0.cpp"
  },
  "00750ce0": {
-  "name": "NetChatDDL_InitBase",
-  "name_src": "vote",
+  "name": "C_00868050_InitializeAndAttachRegistry",
+  "name_src": "agent",
   "votes": {
    "NetChatDDL_InitBase": 1
   },
   "ret": "int*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00868050* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00750ce0.cpp"
  },
  "00750d00": {
-  "name": "SpawnPoint_HandleSingleplayerRequest",
-  "name_src": "vote",
+  "name": "C_00858180_HandleSingleplayerSpawnRequest",
+  "name_src": "agent",
   "votes": {
    "SpawnPoint_HandleSingleplayerRequest": 1
   },
@@ -198149,31 +198162,36 @@
   "sig_src": "abi"
  },
  "00750e20": {
-  "name": "sub_750E20",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_00858180_ReadAndDispatchSpawnRequest",
+  "name_src": "agent",
+  "votes": {
+   "NetChat_OnSecondaryKeyEvent": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* arg0",
-  "sig_src": "abi"
+  "params": "C_00858180* self, void* , C_008622e8* reader",
+  "sig_src": "impl",
+  "file": "src/auto/00750e20.cpp"
  },
  "00750eb0": {
-  "name": "sub_750EB0",
-  "name_src": "addr",
+  "name": "NetChatDDL_ReadMessageText",
+  "name_src": "impl",
   "votes": {},
   "ret": "void",
   "conv": "__cdecl",
-  "params": "void* a1, void* a2",
-  "sig_src": "abi"
+  "params": "C_008622e8* a1, S_004f21d0* a2",
+  "sig_src": "impl",
+  "file": "src/auto/00750eb0.cpp"
  },
  "00750f30": {
-  "name": "sub_750F30",
-  "name_src": "addr",
+  "name": "NetChatDdl_ForwardToSendBaseFields",
+  "name_src": "agent",
   "votes": {},
-  "ret": "int",
+  "ret": "char",
   "conv": "__stdcall",
-  "params": "void* a1, int a2, int a3",
-  "sig_src": "abi"
+  "params": "int a1, int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/00750f30.cpp"
  },
  "00750f50": {
   "name": "NetChatDdl_ForwardToProcessBaseField",
@@ -198250,26 +198268,30 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char arg0, char a3, int a4, void** Block, int a6, int a7, int a8, int16_t a2, unsigned int a10, char a11",
-  "sig_src": "vote"
+  "params": "C_00858180* self, void* , char firstField, char secondField, int , void** block, int inlineWord1, int inlineWord2, int inlineWord3, std::int16_t textLength, unsigned int capacity, char finalField",
+  "sig_src": "impl",
+  "file": "src/auto/00751110.cpp"
  },
  "007511b0": {
-  "name": "sub_7511B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetChat_OnPrimaryKeyEvent",
+  "name_src": "vote",
+  "votes": {
+   "NetChat_OnPrimaryKeyEvent": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00751240": {
-  "name": "sub_751240",
-  "name_src": "addr",
+  "name": "NetChat_TryHandleKeyedEvent",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2, int a3, uint32_t* a4",
-  "sig_src": "abi"
+  "params": "NetChat* self, void* , C_00858180* a2, int a3, void* a4",
+  "sig_src": "impl",
+  "file": "src/auto/00751240.cpp"
  },
  "00751290": {
   "name": "C_Unknown_SetActiveFlag",
@@ -212429,7 +212451,7 @@
   "name": "NetPlayerDdl_InitializeBaseDescriptor",
   "name_src": "vote",
   "votes": {
-   "NetPlayerDdl_InitializeBaseDescriptor": 1
+   "NetPlayerDdl_InitializeBaseDescriptor": 2
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -212703,7 +212725,7 @@
   "name": "NetPlayerDdl_SendBaseFields",
   "name_src": "vote",
   "votes": {
-   "NetPlayerDdl_SendBaseFields": 1
+   "NetPlayerDdl_SendBaseFields": 2
   },
   "ret": "char",
   "conv": "__fastcall",
