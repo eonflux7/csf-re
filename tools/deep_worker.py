@@ -182,7 +182,7 @@ def run(a):
           eas=sorted(set(re.findall(r"\b00[4-7][0-9a-f]{5}\b", task))))
     brief = BRIEF if backend == "codex" and a.agent not in OPENROUTER else BRIEF.replace(
         "Read CLAUDE.md and the parts of docs/PLAN.md\nand docs/JOURNAL.md your task touches before you start.",
-        "Do not read docs/PLAN.md or docs/JOURNAL.md (long, and not\nneeded for a small job); read only what the task names."
+        "Do not read docs/PLAN.md or docs/JOURNAL.md (long, and not\nneeded for a small job); read only what the task names.")
     if backend == "claude":  # the allow-list matches whole commands: haikudiff (2026-10-13) lost every tool run to `| tee`
         brief += ("\nShell: one plain command per call (`.venv/bin/python tools/...`, git diff/status/log/show, ls, cat, rg, "
                   "grep, head, tail, wc, find, sed -n). No pipes, `;`, `&&`, redirection or `cd`: such a call is refused.\n")
