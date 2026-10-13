@@ -1534,3 +1534,22 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - `tools/adopt.py JOB`: takes a job's src/auto files only after gate and emudiff pass here, marks them done.
 - Decisions (user): quarantine-rate stop rule dropped; RenderWare Audio = reimplement the 40-function boundary on
   our own backend.
+- In-game diff (job hookdiff) confirmed by the verifier: 0x69ACB0 compared 200 times, 0x703470 80 times, no mismatch
+  (both were quarantined as false alarms: a returned dead-frame address, a byte argument with the caller's register
+  above it). Rules are by class: stack-range return values compare as "an address in the frame", arguments compare
+  at their declared width.
+- Semantic checker (job qsem): nine false-alarm classes fixed; its before/after regression (300 installed
+  functions, 582 compiled mutants) re-run in main: 460 mutant rejections before and after, no new alarm.
+- Mutation benchmark `tools/emumut.py` (job emumut): emudiff catches 271 of 400 mutants (67.8%) of in-game-proven
+  functions. Weak: loop bounds 33%, signedness 15%, constants 44%, stale-after-call 0/4. Its audit found the
+  float-rounding tolerance accepting integer differences (0 vs 1). Any emudiff change is now judged by
+  `emumut.py run --replay ... && compare` (job emufix is the first).
+- STL: list/string (35), tree (32), vector members (92) adopted, all re-checked in main; with the first 35 that is
+  194 of 418. Six tree erase instances are blocked by an emulator defect (RaiseException cleaned as 0 bytes, 16 in
+  the original), not by the code.
+- Cutover, first mechanical pieces: 70 of 72 files bind vtables through CSF_VTBL now (2 left have an older emudiff
+  DIFF: 0x50C370, 0x532DC0, installed, to look at); 14 of 15 asm thunks no longer embed an address.
+- GLM-5.3-flash (glm-flash) after ten jobs: good at single-function triage with literal paths and at mechanical
+  rewrites (all its adopted output passed gate + emudiff here). Cost: OpenRouter spread the requests over providers
+  up to 6x the listed price: $1.92 real for what the list price put at $0.51. Now `:floor` (cheapest provider) and a
+  budget guard. Jobs with 5+ functions ran 30 min without finishing: keep them to 2-3.
