@@ -47831,7 +47831,7 @@
   "name": "Archive_SerializeObjectReference",
   "name_src": "agent",
   "votes": {
-   "Archive_SerializeObjectRef": 85
+   "Archive_SerializeObjectRef": 86
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -58557,7 +58557,7 @@
  },
  "004db3f0": {
   "name": "TCharTask_PrepareBase",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "TCharTask_PrepareBase": 4
   },
@@ -58567,8 +58567,8 @@
   "sig_src": "vote"
  },
  "004db440": {
-  "name": "CharTask_LookupByOffset",
-  "name_src": "vote",
+  "name": "C_00834fa8_SetLinkedTask",
+  "name_src": "agent",
   "votes": {
    "CharTask_LookupByOffset": 51,
    "CharTask_OnTimerExpired": 1,
@@ -58584,8 +58584,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_00834fa8* self, void* , int taskAddress",
+  "sig_src": "impl",
+  "file": "src/auto/004db440.cpp"
  },
  "004db490": {
   "name": "C_0082d410_ScalarDestroy_4DB490",
@@ -58612,8 +58613,8 @@
   "file": "src/auto/004db4c0.cpp"
  },
  "004db4f0": {
-  "name": "Archive_SerializeBaseFields",
-  "name_src": "vote",
+  "name": "S_0041f0a0_SerializeBaseFields",
+  "name_src": "agent",
   "votes": {
    "Archive_SerializeBaseFields": 22,
    "TaskState_Prepare": 1,
@@ -58621,8 +58622,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "S_0041f0a0* self, void* , bool* archive",
+  "sig_src": "impl",
+  "file": "src/auto/004db4f0.cpp"
  },
  "004db5b0": {
   "name": "IsField10Null",
