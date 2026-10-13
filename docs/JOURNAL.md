@@ -1374,3 +1374,14 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   uncommitted and one verify group failed in 8 s with its control run, which fired the stop rule. repo.commit
   now removes such a lock; the stop rule skips modules with an unattributed smoke failure; the verifier keeps
   that smoke's output (work/group_fail_<ts>.log).
+- Sweep (04:20): emudiff over the 2,296 functions installed on 2026-10-13, compiled fresh: 122 DIFF (5.3%) after
+  four more false-alarm classes went (void callees answering `this`, own address, SEH-head leftover in eax,
+  arguments in eax: zlib's static helpers were all inconclusive with eax = 0). Read: a family of net functions
+  passes a by-value temporary string in ecx where the original builds it in the argument slot (`push ecx; mov
+  ecx, esp; call ctor; call 0x66B590`): real, never ran. The 122 went back to the lanes (status todo, old files
+  in work/emu_t3/redo_old, list in redo_list.txt): the ladder redoes them under the gate. What comes back to
+  `queue/` with "emulated run differs" is the list of remaining false alarms (or of functions the ladder can't do).
+- Flaky baseline crash since about 03:45: c0000005 at 0x6326E4 inside _rwFrameSyncDirty's recursion (a child
+  pointer of -7), 3 of ~40 smokes, passes on re-run (work/baseline_fail_1791851763.log, group_fail_1791851200.log).
+  Some installed function damages a frame tree. Not bisected; first check whether it survives the removal of the
+  122 (frame-related among them: 0x6BFF40, 0x6B2E20, 0x6F4420, 0x6C0450, 0x6C0C20).
