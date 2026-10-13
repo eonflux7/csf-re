@@ -493,7 +493,7 @@
   "name_src": "agent",
   "votes": {
    "InitS00402350Object": 11,
-   "S00402350_InitTransform": 11
+   "S00402350_InitTransform": 12
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -4683,7 +4683,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 228
+   "AssignStringSubstring": 227
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -14810,7 +14810,7 @@
   "name": "Profiles_AppendStringRange",
   "name_src": "vote",
   "votes": {
-   "Profiles_AppendStringRange": 16,
+   "Profiles_AppendStringRange": 15,
    "AppendBytesToString_43EB30": 1
   },
   "ret": "void*",
@@ -29211,7 +29211,7 @@
   "name": "MenuManager_AppendPageName",
   "name_src": "agent",
   "votes": {
-   "MenuManager_AppendPageName": 19
+   "MenuManager_AppendPageName": 18
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -81826,9 +81826,7 @@
  "00533bc0": {
   "name": "MenuMpPause_FindSubstring",
   "name_src": "agent",
-  "votes": {
-   "MenuMpPause_FindSubstring": 1
-  },
+  "votes": {},
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , char* pattern, std::uint64_t searchArguments",
@@ -81838,9 +81836,7 @@
  "00533c90": {
   "name": "MenuMpPause_FindFirstCharacterNotInSet",
   "name_src": "agent",
-  "votes": {
-   "MenuMpPause_FindFirstCharacterNotInSet": 1
-  },
+  "votes": {},
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , void* characterSet, std::uint32_t position, std::size_t setLength",
@@ -82010,9 +82006,8 @@
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "C_0082d410* source, S_00470ab0* destination",
-  "sig_src": "impl",
-  "file": "src/auto/005348b0.cpp"
+  "params": "void* a1, void* arg4",
+  "sig_src": "vote"
  },
  "005349e0": {
   "name": "CMenuLanguage_InitializeMainPanel",
@@ -99482,7 +99477,7 @@
   "name": "RpClumpForAllAtomics",
   "name_src": "rwname",
   "votes": {
-   "RpClumpForAllAtomics": 25
+   "RpClumpForAllAtomics": 26
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -113479,7 +113474,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 219
+   "RwMatrixDestroy": 220
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -113490,7 +113485,7 @@
   "name": "RwMatrixCreate",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixCreate": 129
+   "RwMatrixCreate": 130
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -139669,7 +139664,7 @@
   "name": "MemDebug_FreeDebugBlock",
   "name_src": "agent",
   "votes": {
-   "Mem_FreeDebug": 681,
+   "Mem_FreeDebug": 680,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -139768,7 +139763,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_AllocUntagged": 127,
+   "CoreMemory_AllocUntagged": 128,
    "Mem_Alloc": 482
   },
   "ret": "int",
@@ -139781,7 +139776,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 203,
+   "CoreMemory_Free": 206,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -147748,7 +147743,7 @@
   "name": "S_006abb80_ComputeAxisAlignedBounds",
   "name_src": "agent",
   "votes": {
-   "S_006abb80_ComputeAxisAlignedBounds": 7,
+   "S_006abb80_ComputeAxisAlignedBounds": 8,
    "S_006abb80_GetBounds": 1,
    "S_006abb80_GetAxisBounds": 1
   },
@@ -147762,7 +147757,7 @@
   "name": "GfxMatrix_TransformFrame",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_TransformFrame": 1
+   "GfxMatrix_TransformFrame": 2
   },
   "ret": "S_00402350*",
   "conv": "__fastcall",
@@ -147785,7 +147780,9 @@
  "006ac5e0": {
   "name": "S_006abb80_ExpandBounds",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_006abb80_ExpandBounds": 1
+  },
   "ret": "float*",
   "conv": "__fastcall",
   "params": "S_006abb80* self, void* , S_006abb80* other",
@@ -148086,7 +148083,7 @@
   "name": "Matrix_InvertWithStoredTarget",
   "name_src": "agent",
   "votes": {
-   "Matrix_InvertWithStoredTarget": 22,
+   "Matrix_InvertWithStoredTarget": 23,
    "S006adb40_ComputeMatrix": 1
   },
   "ret": "float*",
@@ -149475,7 +149472,7 @@
   "name": "C_00860178_Construct",
   "name_src": "agent",
   "votes": {
-   "C_00860178_Construct": 59
+   "C_00860178_Construct": 60
   },
   "ret": "C_00860178*",
   "conv": "__fastcall",
@@ -149487,7 +149484,7 @@
   "name": "C_00860170_Construct",
   "name_src": "agent",
   "votes": {
-   "C_00860170_Construct": 87
+   "C_00860170_Construct": 88
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -153740,7 +153737,7 @@
   "name": "GfxObject_DestroyEmbeddedState",
   "name_src": "agent",
   "votes": {
-   "GfxObject_DestroyEmbeddedState": 14,
+   "GfxObject_DestroyEmbeddedState": 15,
    "GfxObject_DestroyTransform": 1,
    "GfxFrames_DestroyEmbeddedState": 1,
    "C_00860630_DestroyEmbeddedState": 1
@@ -153889,8 +153886,8 @@
    "GfxFrames_ProcessFrameLink": 1,
    "FrameApplyToMatch": 1,
    "GfxFrames_SetEmbeddedFrame": 1,
-   "C_00860700_SetFrame": 1,
-   "GfxFrame_InitRotationDegreesFromMatrix": 7
+   "GfxFrame_InitRotationDegreesFromMatrix": 8,
+   "C_00860700_SetFrame": 1
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -154027,6 +154024,7 @@
   "name_src": "agent",
   "votes": {
    "GfxFrames_GetEmbeddedMatrix": 1,
+   "C_00860700_GetFrameLtm": 1,
    "C_00860700_GetFrameMatrix": 1
   },
   "ret": "S_006adb40*",
@@ -154117,7 +154115,7 @@
   "name": "GfxObject_ConstructEmbeddedState",
   "name_src": "agent",
   "votes": {
-   "GfxObject_ConstructEmbeddedState": 15,
+   "GfxObject_ConstructEmbeddedState": 17,
    "GfxObject_InitializeTransform": 1,
    "GfxFrames_ConstructEmbeddedState": 1,
    "C_00860700_ConstructEmbeddedState": 1
@@ -154583,8 +154581,9 @@
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a5, float a3",
-  "sig_src": "vote"
+  "params": "int outputAddress, int clump, float options",
+  "sig_src": "impl",
+  "file": "src/auto/006c0c20.cpp"
  },
  "006c0d70": {
   "name": "GfxFrames_ComputeClumpLocalBoundingSphere",
@@ -166211,13 +166210,14 @@
   "file": "src/auto/006e7bb0.cpp"
  },
  "006e7d10": {
-  "name": "sub_6E7D10",
-  "name_src": "addr",
+  "name": "C_00861da8_Destroy",
+  "name_src": "impl",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00861da8* self, void* , char freeSelfFlag",
+  "sig_src": "impl",
+  "file": "src/auto/006e7d10.cpp"
  },
  "006e7d40": {
   "name": "C_00861dd8_GetSize",
@@ -166250,13 +166250,14 @@
   "sig_src": "vote"
  },
  "006e7e10": {
-  "name": "sub_6E7E10",
-  "name_src": "addr",
+  "name": "C_00861dd8_GetOrCreateBoneName",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00861dd8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006e7e10.cpp"
  },
  "006e7e60": {
   "name": "C_00861dd8_Construct",
@@ -166265,10 +166266,11 @@
    "C_00861dd8_Construct": 1,
    "C_00861dd8_ConstructTrackEntry": 1
   },
-  "ret": "uint32_t*",
+  "ret": "C_00861dd8*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00861dd8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006e7e60.cpp"
  },
  "006e7ea0": {
   "name": "sub_6E7EA0",
@@ -166309,13 +166311,14 @@
   "sig_src": "vote"
  },
  "006e7fe0": {
-  "name": "sub_6E7FE0",
-  "name_src": "addr",
+  "name": "C_00861dd8_Destroy",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00861dd8* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/006e7fe0.cpp"
  },
  "006e8010": {
   "name": "HAnimFrame_FindHierarchyRecursive",
@@ -216271,7 +216274,7 @@
   "name": "_sprintf",
   "name_src": "ida",
   "votes": {
-   "_sprintf": 53,
+   "_sprintf": 54,
    "LibSprintf": 1,
    "FormatMissionScore": 1,
    "FormatResolution": 1
