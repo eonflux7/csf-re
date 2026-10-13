@@ -9,7 +9,7 @@
 - {addr: 0x0082D08C, name: g_GetLastErrorImportSlot, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D094, name: g_pfnGetFileSize, type: GetFileSizeFn, uses: 1, src: auto}
 - {addr: 0x0082D09C, name: g_CreateFileAImport, type: AudioCreateFileA, uses: 2, src: auto}
-- {addr: 0x0082D0C0, name: g_QueryPerformanceCounterIat, type: QueryPerformanceFn, uses: 1, src: auto}
+- {addr: 0x0082D0C0, name: g_QueryPerformanceCounterIat, type: void*, uses: 2, src: auto}
 - {addr: 0x0082D0C4, name: g_QueryPerformanceFrequencyIat, type: QueryPerformanceFn, uses: 1, src: auto}
 - {addr: 0x0082D0DC, name: g_FindFirstFileA, type: FindFirstFileAProc, uses: 4, src: auto}
 - {addr: 0x0082D0E0, name: g_pfnCloseHandle, type: void*, uses: 6, src: auto}
@@ -44,6 +44,7 @@
 - {addr: 0x0082D280, name: g_ClientToScreen, type: ClientToScreenFn, uses: 1, src: auto}
 - {addr: 0x0082D284, name: g_FindWindowAImportSlot, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D288, name: g_IsWindowImportSlot, type: void*, uses: 1, src: auto}
+- {addr: 0x0082D290, name: g_MessageBoxWImport, type: MessageBoxWFunc, uses: 1, src: auto}
 - {addr: 0x0082D294, name: g_VkKeyScanA, type: VkKeyScanAFunction, uses: 1, src: auto}
 - {addr: 0x0082D29C, name: g_TranslateMessageFn, type: TranslateMessageFn, uses: 1, src: auto}
 - {addr: 0x0082D2A0, name: g_PeekMessageAFn, type: PeekMessageAFn, uses: 1, src: auto}
@@ -59,6 +60,7 @@
 - {addr: 0x0082D2F4, name: g_SetWindowTextAImportSlot, type: SetWindowTextFunction, uses: 1, src: auto}
 - {addr: 0x0082D2F8, name: g_GetWindowTextAImportSlot, type: GetWindowTextFunction, uses: 1, src: auto}
 - {addr: 0x0082D2FC, name: g_DestroyWindowImport, type: void*, uses: 1, src: auto}
+- {addr: 0x0082D324, name: g_TimeGetTimeIat, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D390, name: g_BinkCloseFn, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D394, name: g_BinkPauseImport, type: BinkPauseImportFn, uses: 1, src: auto}
 - {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 146, src: auto}
@@ -242,6 +244,7 @@
 - {addr: 0x00830E58, name: g_RadarDegToRad, type: float, uses: 1, src: auto}
 - {addr: 0x00830FA0, name: g_BriefingExtensionWord, type: 'std::uint32_t', uses: 3, src: auto}
 - {addr: 0x00830FA4, name: g_BriefingExtensionTerminator, type: char, uses: 1, src: auto}
+- {addr: 0x00830FF0, name: g_PackageSuffixTerminator, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00831090, name: g_FloatMax, type: float, uses: 13, src: auto}
 - {addr: 0x008310F4, name: g_DegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x00831148, name: g_CloseTargetDistanceSquared, type: float, uses: 3, src: auto}
@@ -476,6 +479,8 @@
 - {addr: 0x0085E8D4, name: g_Value_85E8D4, type: int, uses: 1, src: auto}
 - {addr: 0x0085E8D8, name: g_Value_85E8D8, type: uint16_t, uses: 1, src: auto}
 - {addr: 0x0085E8DA, name: g_Value_85E8DA, type: uint8_t, uses: 1, src: auto}
+- {addr: 0x0085E8E0, name: g_GlobalPrefixTail, type: uint16_t, uses: 1, src: auto}
+- {addr: 0x0085E8E2, name: g_GlobalPrefixTerminator, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x0085E910, name: g_FrameRateTimeScale, type: double, uses: 3, src: auto}
 - {addr: 0x0085E928, name: g_SecondsToMinutesFactor, type: float, uses: 1, src: auto}
 - {addr: 0x0085E9CC, name: g_NoFileInfoWord0, type: uint32_t, uses: 1, src: auto}
@@ -2052,14 +2057,14 @@
 - {addr: 0x008BAF8C, name: g_pOptions, type: COptions*, uses: 2, src: opus}
 - {addr: 0x008BAF90, name: g_ActiveSceneContext, type: void*, uses: 5, src: auto, alt: [g_ActiveSceneLoadContext, g_PendingSceneResource]}
 - {addr: 0x008BAF94, name: g_Value_8baf94, type: int, uses: 3, src: auto}
-- {addr: 0x008BAF98, name: g_CurrentScenarioId, type: int, uses: 3, src: auto, alt: [g_Value_8BAF98]}
-- {addr: 0x008BAF9C, name: g_FallbackScenarioId, type: int, uses: 1, src: auto}
+- {addr: 0x008BAF98, name: g_CurrentScenarioId, type: int, uses: 4, src: auto, alt: [g_Value_8BAF98]}
+- {addr: 0x008BAF9C, name: g_FallbackOption, type: int, uses: 2, src: auto, alt: [g_FallbackScenarioId]}
 - {addr: 0x008BAFA0, name: g_CachedSoundScenarioId, type: int, uses: 1, src: auto}
 - {addr: 0x008BAFA4, name: g_Value_8BAFA4, type: int, uses: 2, src: auto}
 - {addr: 0x008BAFA8, name: g_Value_8BAFA8, type: int, uses: 1, src: auto}
 - {addr: 0x008BAFAC, name: g_Value_8BAFAC, type: uint16_t, uses: 1, src: auto}
 - {addr: 0x008BAFAE, name: g_Value_8BAFAE, type: uint8_t, uses: 1, src: auto}
-- {addr: 0x008BAFD0, name: g_storedWindowHandle, type: void*, uses: 1, src: auto}
+- {addr: 0x008BAFD0, name: g_storedWindowHandle, type: void*, uses: 2, src: auto}
 - {addr: 0x008BAFD8, name: g_SceneLoaderBlock, type: int, uses: 1, src: auto}
 - {addr: 0x008BB3E0, name: Stream, type: void*, uses: 2, src: auto, alt: [g_ErrorLogStream]}
 - {addr: 0x008BB3E4, name: g_ErrorLogBuffer, type: char, uses: 1, src: auto}
@@ -2097,6 +2102,7 @@
 - {addr: 0x008BB488, name: g_ObjectPropsTableBase, type: uint32_t, uses: 10, src: auto, alt: [g_EntryTableBase, g_GeometryPropertyPluginOffset, g_GfxPropsSlotBase, g_ObjPropsBaseOffset, g_ObjectPropsSlotBase, g_TableBase]}
 - {addr: 0x008BB48C, name: g_ObjectFallback, type: ObjectFallback, uses: 2, src: auto, alt: [g_SectorRenderCallBack]}
 - {addr: 0x008BB494, name: g_SectorStateCounter, type: int, uses: 1, src: auto}
+- {addr: 0x008BB49C, name: g_TexDictValueTotal, type: 'std::uint32_t', uses: 1, src: auto}
 - {addr: 0x008BB4B4, name: g_DefaultAtomicCallback, type: uint32_t, uses: 2, src: auto, alt: [g_PassthroughTarget_8BB4B4]}
 - {addr: 0x008BB4B8, name: g_Value_8BB4B8, type: int, uses: 7, src: auto, alt: [g_Value8BB4B8]}
 - {addr: 0x008BB4CC, name: g_Value_8BB4CC, type: int32_t, uses: 3, src: auto}
