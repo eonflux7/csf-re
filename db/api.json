@@ -19840,7 +19840,7 @@
   "name": "GetSceneMenuContext",
   "name_src": "vote",
   "votes": {
-   "GetSceneMenuContext": 113
+   "GetSceneMenuContext": 114
   },
   "ret": "uint32_t",
   "conv": "__fastcall",
@@ -37639,7 +37639,8 @@
   "name": "C_00833b88_IsInactive",
   "name_src": "agent",
   "votes": {
-   "SceneObj_IsInactive": 54
+   "SceneObj_IsInactive": 54,
+   "C_00833b88_IsInactive": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -69034,7 +69035,7 @@
   "name": "SceneLoader_NoOp",
   "name_src": "captain",
   "votes": {
-   "SceneLoader_NoOp": 71,
+   "SceneLoader_NoOp": 72,
    "Nullsub_506AC0": 34
   },
   "ret": "void",
@@ -70807,7 +70808,7 @@
   "name": "CMenuLanguage_ClearPageState",
   "name_src": "agent",
   "votes": {
-   "CMenuLanguage_ClearPageState": 1
+   "CMenuLanguage_ClearPageState": 2
   },
   "ret": "int*",
   "conv": "__cdecl",
@@ -71053,7 +71054,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 408
+   "GetGlobalState_50D190": 409
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -77088,7 +77089,7 @@
   "name": "GetGlobalValue_521BB0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_521BB0": 133
+   "GetGlobalValue_521BB0": 134
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -77600,7 +77601,7 @@
   "name_src": "agent",
   "votes": {
    "GlobalSetValue_5231D0": 21,
-   "S_00522010_AccumulateAndPropagateTime": 6
+   "S_00522010_AccumulateAndPropagateTime": 7
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -81508,31 +81509,36 @@
   "file": "src/auto/005345a0.cpp"
  },
  "005345d0": {
-  "name": "sub_5345D0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CMenuLanguage_InitializeControls",
+  "name_src": "vote",
+  "votes": {
+   "CMenuLanguage_InitializeControls": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "005348b0": {
-  "name": "sub_5348B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CMenuLanguage_CopyPageState",
+  "name_src": "vote",
+  "votes": {
+   "CMenuLanguage_CopyPageState": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "void* a1, void* arg4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "005349e0": {
-  "name": "sub_5349E0",
-  "name_src": "addr",
+  "name": "CMenuLanguage_InitializeMainPanel",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int* a4, void** a5",
-  "sig_src": "abi"
+  "params": "CMenuLanguage* self, void* , int* controller, S_00692b80** elements",
+  "sig_src": "impl",
+  "file": "src/auto/005349e0.cpp"
  },
  "00534ae0": {
   "name": "CMenuMpPause_OnActivate",
@@ -81557,13 +81563,15 @@
   "file": "src/auto/00534b70.cpp"
  },
  "00534b90": {
-  "name": "sub_534B90",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CMenuMpPause_UpdateFriends",
+  "name_src": "vote",
+  "votes": {
+   "CMenuMpPause_UpdateFriends": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00534e40": {
   "name": "CMenuMpPause_InitPauseMenuPanels",
@@ -81629,13 +81637,14 @@
   "file": "src/auto/00534fc0.cpp"
  },
  "005351d0": {
-  "name": "sub_5351D0",
-  "name_src": "addr",
+  "name": "CMenuMpPause_Update",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "CMenuMpPause* self, void* , int deltaBits",
+  "sig_src": "impl",
+  "file": "src/auto/005351d0.cpp"
  },
  "00535310": {
   "name": "CMenuMpPause_Construct",
@@ -89044,7 +89053,7 @@
   "name": "GetGlobal8B0688",
   "name_src": "agent",
   "votes": {
-   "GetGlobal8B0688": 59
+   "GetGlobal8B0688": 60
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -89301,6 +89310,7 @@
   "name": "MpSpawn_QueryFlagForGlobal",
   "name_src": "agent",
   "votes": {
+   "MpSpawn_QueryFlagForGlobal": 1,
    "Mp_QueryFlagForGlobal": 2
   },
   "ret": "int",
@@ -117898,7 +117908,7 @@
   "name": "Game_RaiseStatusNotice",
   "name_src": "vote",
   "votes": {
-   "Game_RaiseStatusNotice": 40
+   "Game_RaiseStatusNotice": 41
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -122053,7 +122063,7 @@
   "name": "LookupObjectById",
   "name_src": "vote",
   "votes": {
-   "LookupObjectById": 109
+   "LookupObjectById": 110
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -139123,7 +139133,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_AllocUntagged": 101,
+   "CoreMemory_AllocUntagged": 102,
    "Mem_Alloc": 482
   },
   "ret": "int",
@@ -139136,7 +139146,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 161,
+   "CoreMemory_Free": 163,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -139876,7 +139886,7 @@
   "name": "LookupNamedElement",
   "name_src": "agent",
   "votes": {
-   "LookupNamedElement": 74
+   "LookupNamedElement": 75
   },
   "ret": "S_00692b80*",
   "conv": "__fastcall",
@@ -140680,7 +140690,7 @@
   "name_src": "agent",
   "votes": {
    "MenuLoading_CopyLocalizedText": 4,
-   "CoreVariantValues_CopyWideStringBounded": 1
+   "CoreVariantValues_CopyWideStringBounded": 2
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -148269,7 +148279,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 474,
+   "GetGlobalInt": 475,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -188718,7 +188728,7 @@
   "name_src": "agent",
   "votes": {
    "SchedulerBase_GetSchedulerProxy": 22,
-   "C_00861120_GetSchedulerProxy": 6
+   "C_00861120_GetSchedulerProxy": 7
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -195165,19 +195175,21 @@
   },
   "ret": "char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* Source",
-  "sig_src": "vote"
+  "params": "char* self, void* , char* source",
+  "sig_src": "impl",
+  "file": "src/auto/007496e0.cpp"
  },
  "00749700": {
   "name": "MpSpawnPoints_SetTertiaryString",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MpSpawnPoints_SetTertiaryString": 2
   },
   "ret": "char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* Source",
-  "sig_src": "vote"
+  "params": "char* self, void* , char* source",
+  "sig_src": "impl",
+  "file": "src/auto/00749700.cpp"
  },
  "00749720": {
   "name": "NetDdlObjectManager_ConvertSessionNameText",
@@ -195300,10 +195312,11 @@
   "votes": {
    "MpSpawnPoints_SetDescriptorName": 1
   },
-  "ret": "void",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint16_t* a2",
-  "sig_src": "vote"
+  "params": "char* self, void* , int sourceString",
+  "sig_src": "impl",
+  "file": "src/auto/00749a80.cpp"
  },
  "00749aa0": {
   "name": "NetCogibleDdl_ProcessSource",
@@ -195361,8 +195374,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "S_00749b70* self, void* , int slot",
+  "sig_src": "impl",
+  "file": "src/auto/00749b70.cpp"
  },
  "00749c40": {
   "name": "sub_749C40",
@@ -195476,7 +195490,7 @@
   "name": "MpSpawnPoints_FindPlayerIndex",
   "name_src": "agent",
   "votes": {
-   "MpSpawnPoints_FindPlayerIndex": 1
+   "MpSpawnPoints_FindPlayerIndex": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -195498,14 +195512,15 @@
  },
  "0074a230": {
   "name": "MpSpawnPoints_UpdateSecondaryState",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MpSpawnPoints_UpdateSecondaryState": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int index",
+  "sig_src": "impl",
+  "file": "src/auto/0074a230.cpp"
  },
  "0074a250": {
   "name": "NetDdlObjectManager_FindAvailableSlot",
@@ -195529,13 +195544,14 @@
   "sig_src": "abi"
  },
  "0074a450": {
-  "name": "sub_74A450",
-  "name_src": "addr",
+  "name": "S_0074a3e0_RefreshAndMarkReady",
+  "name_src": "impl",
   "votes": {},
-  "ret": "char",
+  "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_0074a3e0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0074a450.cpp"
  },
  "0074a470": {
   "name": "NetHost_EndEntry",
@@ -195545,8 +195561,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* , int a2",
-  "sig_src": "vote"
+  "params": "C_00867900* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/0074a470.cpp"
  },
  "0074a4c0": {
   "name": "C_00867900_FindEntryByPlayerName",
@@ -195631,14 +195648,15 @@
  },
  "0074a770": {
   "name": "NetSession_FinalizeShutdown",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "NetSession_FinalizeShutdown": 1
   },
-  "ret": "char",
+  "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "vote"
+  "sig_src": "impl",
+  "file": "src/auto/0074a770.cpp"
  },
  "0074a790": {
   "name": "C_00873b14_CheckDdlObjectClassSupport",
@@ -195682,14 +195700,15 @@
  },
  "0074a910": {
   "name": "NetSession_InitializeRuntime",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "NetSession_InitializeRuntime": 1
   },
   "ret": "bool",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "vote"
+  "sig_src": "impl",
+  "file": "src/auto/0074a910.cpp"
  },
  "0074a960": {
   "name": "C_00873b14_GetVtableIfReady_74A960",
@@ -200786,7 +200805,7 @@
   "name": "GetGlobalValue_75FDF0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_75FDF0": 51
+   "GetGlobalValue_75FDF0": 52
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -215135,7 +215154,7 @@
   "name": "_strncpy",
   "name_src": "ida",
   "votes": {
-   "_strncpy": 15
+   "_strncpy": 17
   },
   "ret": "char*",
   "conv": "__cdecl",
