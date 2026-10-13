@@ -36,12 +36,15 @@ DEEP = os.path.join(ROOT, "work", "deep")
 # OpenRouter on trial for the small ones instead of Haiku. The Claude code path stays for old jobs' logs.
 AGENTS = {"sol-med": ("codex", "gpt-6.1-sol", "medium"),     # most jobs (default)
           "sol-hi": ("codex", "gpt-6.1-sol", "high"),        # hard jobs
-          "glm-flash": ("codex", "z-ai/glm-5.3-flash", "medium")}  # small jobs that need little thinking (OpenRouter)
+          "glm-flash": ("codex", "z-ai/glm-5.3-flash:floor", "medium")}  # small jobs that need little thinking (OpenRouter)
 DEFAULT = "sol-med"
 CLAUDE_JOBS = 2
 RETIRED = {"opus-me": ("claude", "claude-opus-5-5", "medium"), "haiku-med": ("claude", "claude-haiku-5-5", "medium")}
 # Agents that go through OpenRouter instead of a Codex login: $ per million tokens (input, output), for the
-# job's cost line (https://openrouter.ai/api/v1/models, 2026-10-13).
+# job's cost line (https://openrouter.ai/api/v1/models, 2026-10-13). That is the cheapest provider's price: without
+# `:floor` on the model OpenRouter spreads requests over providers up to 6 times dearer (the first eleven jobs cost
+# $1.92 where this estimate said $0.51). The key's real spend is openrouter_budget(); no job starts below OR_MIN.
+OR_MIN = 0.30
 OPENROUTER = {"glm-flash": (0.0261, 0.9)}
 OR_KEY = os.path.expanduser("~/.config/csf-re/openrouter.key")
 OR_HOME = os.path.expanduser("~/.config/csf-re/codex-openrouter")  # CODEX_HOME of these jobs: session files only
@@ -269,7 +272,12 @@ def start(a):
     """Detached: the job outlives the caller; its last line lands in work/deep/NAME/run.log."""
     task = sys.stdin.read() if a.task == "-" else open(a.task).read()
     if a.agent in OPENROUTER:
-        openrouter_key()
+        try:
+            left = openrouter_budget()["left"]
+        except OSError:
+            left = None  # the budget endpoint is down: the job itself will say if the key is empty
+        if left is not None and left < OR_MIN and not a.force:
+            raise SystemExit(f"the OpenRouter key has ${left:.2f} left (under ${OR_MIN:.2f}): not started (--force to start anyway)")
     if AGENTS[a.agent][0] == "claude":
         busy = [j["name"] for j in jobs() if j["phase"] == "running" and (AGENTS.get(j.get("agent")) or RETIRED.get(j.get("agent"), ("",)))[0] == "claude"]
         if len(busy) >= CLAUDE_JOBS and not a.force:
