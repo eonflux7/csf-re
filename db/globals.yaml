@@ -1078,9 +1078,9 @@
 - {addr: 0x008A7E38, name: g_ObjectPropsMinVersion, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008A7E3C, name: g_PropertyIndexMin, type: int, uses: 1, src: auto}
 - {addr: 0x008A7E40, name: g_Float_8A7E40, type: float, uses: 2, src: auto}
-- {addr: 0x008A7E50, name: g_SectorObjects, type: int*, uses: 2, src: auto}
+- {addr: 0x008A7E50, name: g_SectorObjects, type: int*, uses: 3, src: auto}
 - {addr: 0x008A7E54, name: g_SectorObjectSecondary, type: 'std::uint32_t', uses: 1, src: auto}
-- {addr: 0x008A7E58, name: g_SectorObjectCount, type: 'std::uint32_t', uses: 2, src: auto}
+- {addr: 0x008A7E58, name: g_SectorObjectCount, type: 'std::uint32_t', uses: 4, src: auto}
 - {addr: 0x008A7F18, name: g_pszKey_VERSION_gfx_collision_shapes, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A7F1C, name: g_pszKey_SHAPE_TYPE, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A7F20, name: g_pszKey_USE_OBJETO3D, type: const char*, uses: 0, src: captain, conf: 1.0}
@@ -1972,6 +1972,7 @@
 - {addr: 0x008BB484, name: dword_8BB484, type: uint32_t, uses: 10, src: auto, alt: [g_LightPropertiesOffset, g_LightPropertyPluginOffset, g_ObjectPropertyTable, g_ObjectPropsBase, g_ObjectPropsData, g_PropertySlotTableBase, g_PropertyTableBase, g_PropertyValueBase, g_PropsTableBase]}
 - {addr: 0x008BB488, name: g_ObjectPropsTableBase, type: uint32_t, uses: 10, src: auto, alt: [g_EntryTableBase, g_GeometryPropertyPluginOffset, g_GfxPropsSlotBase, g_ObjPropsBaseOffset, g_ObjectPropsSlotBase, g_TableBase]}
 - {addr: 0x008BB48C, name: g_ObjectFallback, type: ObjectFallback, uses: 2, src: auto, alt: [g_SectorRenderCallBack]}
+- {addr: 0x008BB494, name: g_SectorStateCounter, type: int, uses: 1, src: auto}
 - {addr: 0x008BB4B4, name: g_DefaultAtomicCallback, type: uint32_t, uses: 2, src: auto, alt: [g_PassthroughTarget_8BB4B4]}
 - {addr: 0x008BB4B8, name: g_Value_8BB4B8, type: int, uses: 7, src: auto, alt: [g_Value8BB4B8]}
 - {addr: 0x008BB4CC, name: g_Value_8BB4CC, type: int32_t, uses: 3, src: auto}
@@ -2083,15 +2084,15 @@
 - {addr: 0x008BC121, name: g_MenuMpCharacterSelectActive, type: uint8_t, uses: 3, src: auto}
 - {addr: 0x008BC124, name: g_IdlePollCallback, type: void*, uses: 1, src: auto}
 - {addr: 0x008BC128, name: g_NetCogibleDdlContext, type: int, uses: 5, src: auto, alt: [g_NetCogibleDdlLastArg, g_NetCogibleRegistryHandle, g_NetCogibleStoredId]}
-- {addr: 0x008BC12C, name: g_NetCallbackField12C, type: ServiceArray, uses: 2, src: auto, alt: [g_SessionServices]}
+- {addr: 0x008BC12C, name: g_NetCallbackField12C, type: ServiceArray, uses: 3, src: auto, alt: [g_SessionServices, g_SpawnBuffers]}
 - {addr: 0x008BC130, name: g_NetCallbackField130, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008BC134, name: g_NetCallbackField134, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008BC138, name: g_NetCallbackField138, type: uint32_t, uses: 1, src: auto}
-- {addr: 0x008BC13C, name: g_NetTransportObject, type: int, uses: 2, src: auto, alt: [g_Type50Message]}
-- {addr: 0x008BC140, name: g_AlternateStateFlag, type: void*, uses: 6, src: auto, alt: [g_AttachedNetObject, g_MpSpawnPointsObject, g_NetObjectWithRtcCounter, g_PlayerMatchMessages, g_SessionServiceManager]}
-- {addr: 0x008BC144, name: g_NetCallbackObjectA, type: void*, uses: 5, src: auto, alt: [g_NetCallbackSecondary, g_NetPrimary, g_PauseCallbackSecondary, g_SessionService144]}
-- {addr: 0x008BC148, name: g_NetCallbackObjectB, type: void*, uses: 5, src: auto, alt: [g_NetCallbackPrimary, g_NetSecondary, g_PauseCallbackPrimary, g_SessionService148]}
-- {addr: 0x008BC14C, name: g_NetPendingObject, type: void*, uses: 2, src: auto, alt: [g_SessionServiceMemory]}
+- {addr: 0x008BC13C, name: g_NetTransportObject, type: uint8_t*, uses: 3, src: auto, alt: [g_SpawnParameters, g_Type50Message]}
+- {addr: 0x008BC140, name: g_AlternateStateFlag, type: void*, uses: 7, src: auto, alt: [g_AttachedNetObject, g_MpSpawnPointsObject, g_NetObjectWithRtcCounter, g_PlayerMatchMessages, g_SessionServiceManager, g_SpawnManager]}
+- {addr: 0x008BC144, name: g_NetCallbackObjectA, type: void*, uses: 6, src: auto, alt: [g_NetCallbackSecondary, g_NetPrimary, g_PauseCallbackSecondary, g_SessionService144, g_SpawnRegistration]}
+- {addr: 0x008BC148, name: g_NetCallbackObjectB, type: void*, uses: 6, src: auto, alt: [g_NetCallbackPrimary, g_NetSecondary, g_PauseCallbackPrimary, g_SessionService148, g_ThreeElementSpawnBuffer]}
+- {addr: 0x008BC14C, name: g_NetPendingObject, type: void*, uses: 3, src: auto, alt: [g_SessionServiceMemory, g_SpawnStorage]}
 - {addr: 0x008BC150, name: g_PlayerSelectionMessages, type: void*, uses: 3, src: auto, alt: [g_SessionWidgetController, g_TimedEntry]}
 - {addr: 0x008BC154, name: g_NetCallbackField154, type: 'std::uint32_t', uses: 3, src: auto, alt: [g_SelectedPlayerName, g_SessionState154]}
 - {addr: 0x008BC158, name: g_NetCallbackField158, type: 'std::uint32_t', uses: 4, src: auto, alt: [g_NetElapsedTime, g_PauseCallbackPending, g_SessionState158]}
@@ -2110,7 +2111,7 @@
 - {addr: 0x008BC17C, name: g_NetControlClassId, type: 'std::uint32_t', uses: 0, src: captain, conf: 0.8}
 - {addr: 0x008BC180, name: g_DdlObjectClassId, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008BC184, name: g_RequiredObjectClassId, type: uint32_t, uses: 1, src: auto}
-- {addr: 0x008BC188, name: dword_8BC188, type: int, uses: 6, src: auto, alt: [g_NetTempIdValue, g_NetTemporaryId, g_SessionEntryId, g_SpawnPointTempId, g_SpawnTempId]}
+- {addr: 0x008BC188, name: dword_8BC188, type: int, uses: 7, src: auto, alt: [g_NetTempIdValue, g_NetTemporaryId, g_SessionEntryId, g_SpawnPointTempId, g_SpawnTempId, g_TemporarySpawnId]}
 - {addr: 0x008BC1CC, name: g_DdlObjectClassId, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008BC1D0, name: g_DistanceReferenceX, type: float, uses: 2, src: auto, alt: [g_SelectionOriginX]}
 - {addr: 0x008BC1D4, name: g_DistanceReferenceY, type: float, uses: 2, src: auto, alt: [g_SelectionOriginY]}
@@ -2120,4 +2121,4 @@
 - {addr: 0x008BC1E4, name: g_Value_8BC1E4, type: int, uses: 3, src: auto}
 - {addr: 0x008BC1E8, name: g_Value_8BC1E8, type: 'std::uint32_t', uses: 4, src: auto}
 - {addr: 0x008BC1EC, name: g_Value8BC1EC, type: int, uses: 1, src: auto}
-- {addr: 0x008BC27C, name: g_RegisteredNetClassId, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008BC27C, name: g_RegisteredNetClassId, type: uint32_t, uses: 2, src: auto, alt: [g_SpawnObjectType]}
