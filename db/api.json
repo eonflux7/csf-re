@@ -2765,7 +2765,9 @@
  "0040a620": {
   "name": "PickSmallerFloatPointer",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "PickSmallerFloatPointer": 1
+  },
   "ret": "float*",
   "conv": "__cdecl",
   "params": "float* a1, float* a2",
@@ -43548,7 +43550,7 @@
   "name_src": "agent",
   "votes": {
    "GetTwelveByteVectorSize": 2,
-   "S_004a31e0_GetTwelveByteEntryCount": 1
+   "S_004a31e0_GetTwelveByteEntryCount": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -71240,7 +71242,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 413
+   "GetGlobalState_50D190": 414
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -72097,7 +72099,7 @@
   "name": "GameBddLoader_ShowSaveGameMessage",
   "name_src": "agent",
   "votes": {
-   "GameBddLoader_ShowSaveGameMessage": 2,
+   "GameBddLoader_ShowSaveGameMessage": 3,
    "SaveGame_ShowMessage": 3
   },
   "ret": "int",
@@ -87402,14 +87404,15 @@
  },
  "00548d20": {
   "name": "CMenuVideoAdvanced_ResetOptionState",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CMenuVideoAdvanced_ResetOptionState": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "CMenuVideoAdvanced* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00548d20.cpp"
  },
  "00549020": {
   "name": "CMenuOptions_ReleaseSubObject",
@@ -87562,7 +87565,9 @@
  "005495d0": {
   "name": "CMenuVideoOptions_HasVideoSettingsChanged",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuVideoOptions_HasVideoSettingsChanged": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "CMenuVideoOptions* self, void*",
@@ -87573,7 +87578,7 @@
   "name": "CMenuVideoOptions_UpdateOptionsMenu",
   "name_src": "agent",
   "votes": {
-   "CMenuVideoOptions_UpdateOptionsMenu": 1
+   "CMenuVideoOptions_UpdateOptionsMenu": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -87764,15 +87769,16 @@
   "sig_src": "abi"
  },
  "00549ff0": {
-  "name": "CommitVideoOptions",
-  "name_src": "vote",
+  "name": "CMenuVideoOptions_CommitVideoOptions",
+  "name_src": "agent",
   "votes": {
    "CommitVideoOptions": 1
   },
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "CMenuVideoOptions* self, void* edx",
-  "sig_src": "vote"
+  "params": "CMenuVideoOptions* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00549ff0.cpp"
  },
  "0054a090": {
   "name": "CMenuVideoOptions_HandleControlEvent",
@@ -87800,7 +87806,7 @@
   "name": "MenuVideoOptions_InsertElementArray24",
   "name_src": "vote",
   "votes": {
-   "MenuVideoOptions_InsertElementArray24": 1
+   "MenuVideoOptions_InsertElementArray24": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -87811,7 +87817,7 @@
   "name": "MenuVideoOptions_InsertElement24",
   "name_src": "agent",
   "votes": {
-   "MenuVideoOptions_InsertElement24": 1
+   "MenuVideoOptions_InsertElement24": 2
   },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
@@ -87822,7 +87828,9 @@
  "0054a600": {
   "name": "CMenuVideoOptions_AppendElement24",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuVideoOptions_AppendElement24": 1
+  },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* , std::uint32_t* a2",
@@ -87830,13 +87838,14 @@
   "file": "src/auto/0054a600.cpp"
  },
  "0054a690": {
-  "name": "sub_54A690",
-  "name_src": "addr",
+  "name": "CMenuVideoOptions_PopulateResolutionList",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "CMenuVideoOptions* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0054a690.cpp"
  },
  "0054a910": {
   "name": "sub_54A910",
@@ -113176,7 +113185,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 211
+   "RwMatrixDestroy": 212
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -113187,7 +113196,7 @@
   "name": "RwMatrixCreate",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixCreate": 127
+   "RwMatrixCreate": 128
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -122347,7 +122356,7 @@
   "name": "LookupObjectById",
   "name_src": "vote",
   "votes": {
-   "LookupObjectById": 111
+   "LookupObjectById": 112
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -139328,7 +139337,7 @@
   "name": "MemDebug_FreeDebugBlock",
   "name_src": "agent",
   "votes": {
-   "Mem_FreeDebug": 659,
+   "Mem_FreeDebug": 661,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -139908,7 +139917,7 @@
   "name": "InitStringFromLiteral",
   "name_src": "agent",
   "votes": {
-   "InitStringFromLiteral": 12
+   "InitStringFromLiteral": 13
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -148605,7 +148614,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 487,
+   "GetGlobalInt": 488,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -157226,7 +157235,7 @@
   "name": "ProcessContextStageHandlers",
   "name_src": "agent",
   "votes": {
-   "ProcessContextStageHandlers": 6
+   "ProcessContextStageHandlers": 7
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -169724,7 +169733,7 @@
   "name": "C_00862748_UpdateParticles_6F4590",
   "name_src": "agent",
   "votes": {
-   "C_00862748_UpdateParticles_6F4590": 2,
+   "C_00862748_UpdateParticles_6F4590": 3,
    "GfxPrtStdParticles_RefreshPlacement": 1
   },
   "ret": "void",
@@ -169855,8 +169864,9 @@
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "S_006ca6f0* self, void* , void* context",
+  "sig_src": "impl",
+  "file": "src/auto/006f5290.cpp"
  },
  "006f54c0": {
   "name": "C_00860af0_ResolveOrDelegate",
@@ -178974,7 +178984,7 @@
   "name": "CGuiListBoxBase_ComputeScrollRange",
   "name_src": "agent",
   "votes": {
-   "CGuiListBoxBase_ComputeScrollRange": 1
+   "CGuiListBoxBase_ComputeScrollRange": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -179081,7 +179091,7 @@
   "name": "CGuiListBoxBase_UpdateSliderFromVisibleRowCount",
   "name_src": "agent",
   "votes": {
-   "CGuiListBoxBase_UpdateSliderFromVisibleRowCount": 1
+   "CGuiListBoxBase_UpdateSliderFromVisibleRowCount": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -179209,7 +179219,7 @@
   "name": "CGuiListBox_GetItemCount_714860",
   "name_src": "agent",
   "votes": {
-   "CGuiListBox_GetItemCount_714860": 7
+   "CGuiListBox_GetItemCount_714860": 8
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -179301,7 +179311,7 @@
   "name": "GetStoredValueAtIndex",
   "name_src": "agent",
   "votes": {
-   "GetStoredValueAtIndex": 11,
+   "GetStoredValueAtIndex": 12,
    "StoredValue_GetAtIndex": 1
   },
   "ret": "int",
@@ -179430,7 +179440,7 @@
   "name": "CGuiListBoxBase_ClearStorageAndSendEvent",
   "name_src": "agent",
   "votes": {
-   "CGuiListBoxBase_ClearStorageAndSendEvent": 12
+   "CGuiListBoxBase_ClearStorageAndSendEvent": 13
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -179745,7 +179755,7 @@
   "name": "CGuiListBoxBase_AddSelectedItem",
   "name_src": "agent",
   "votes": {
-   "CGuiListBoxBase_AddSelectedItem": 11,
+   "CGuiListBoxBase_AddSelectedItem": 12,
    "GuiListBoxBase_AddSelectedItem": 1
   },
   "ret": "void",
@@ -179843,13 +179853,14 @@
   "file": "src/auto/00716f70.cpp"
  },
  "00716fe0": {
-  "name": "sub_716FE0",
-  "name_src": "addr",
+  "name": "CGuiListBoxBase_HandleEvent",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "CGuiListBoxBase* self, void* , int eventId",
+  "sig_src": "impl",
+  "file": "src/auto/00716fe0.cpp"
  },
  "007172a0": {
   "name": "AssignRecordStorage",
@@ -179899,7 +179910,7 @@
   "name": "CGuiListBoxBase_AppendRows",
   "name_src": "agent",
   "votes": {
-   "CGuiListBoxBase_AppendRows": 1
+   "CGuiListBoxBase_AppendRows": 2
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -179921,14 +179932,15 @@
  },
  "007179c0": {
   "name": "CGuiListBoxBase_PrepareVisibleRows",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CGuiListBoxBase_PrepareVisibleRows": 2
   },
-  "ret": "char",
+  "ret": "std::uint8_t",
   "conv": "__fastcall",
-  "params": "CGuiListBoxBase* self, void* edx",
-  "sig_src": "vote"
+  "params": "CGuiListBoxBase* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/007179c0.cpp"
  },
  "00717d00": {
   "name": "CGuiListBoxBase_UpdateAndRender",
@@ -180128,7 +180140,7 @@
   "name": "CGuiStatic_CopyPropertiesToObject",
   "name_src": "agent",
   "votes": {
-   "CGuiStatic_CopyPropertiesToObject": 14
+   "CGuiStatic_CopyPropertiesToObject": 15
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -180152,7 +180164,7 @@
   "name": "CGuiControl_SendEvent",
   "name_src": "agent",
   "votes": {
-   "CGuiControl_SendEvent": 7
+   "CGuiControl_SendEvent": 8
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -180313,7 +180325,7 @@
   "name": "CGuiSlider_ForwardSelfToParent",
   "name_src": "agent",
   "votes": {
-   "CGuiSlider_ForwardSelfToParent": 27
+   "CGuiSlider_ForwardSelfToParent": 28
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -201293,7 +201305,7 @@
   "name": "GetGlobalValue_75FDF0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_75FDF0": 53
+   "GetGlobalValue_75FDF0": 54
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -215565,7 +215577,7 @@
   "name": "_sprintf",
   "name_src": "ida",
   "votes": {
-   "_sprintf": 52,
+   "_sprintf": 53,
    "LibSprintf": 1,
    "FormatMissionScore": 1,
    "FormatResolution": 1
