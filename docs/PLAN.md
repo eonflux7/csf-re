@@ -154,6 +154,10 @@ The orchestrator (Opus, interactive) works `queue/` and the backlog below.
 - [ ] Typed returns for virtual wrappers that return class pointers (now void*: header order)
 
 ### Verification
+- [ ] emudiff: switch cases. 0x4D9170 (40-case command dispatcher) had a wrong `this` in one case and showed
+      `same`: no profile got past the entry test, let alone into each case. For a function with a jump table
+      (export/disasm `switches`), add runs that force each table index at the `jmp [reg*4+table]` (set the register
+      on both sides at that instruction / at ours' matching compare) and count cases reached in the verdict.
 - [ ] Coverage from real play: the T* AI tasks and GUI input handlers only run there. Savegames taken in combat
       (user playtest) and the user's saves 2..24 (2026-10-09), each checked alone first, go into
       `CSF_VERIFY_SAVES` for `verifier.py --full`

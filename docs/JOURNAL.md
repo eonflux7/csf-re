@@ -1394,3 +1394,11 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - `flakybisect.py --among`: resumes an interrupted run from the addresses still suspect. The 05:33 run for
   eip=006326e4 stopped at 06:50 with 43 left (0x4D8B00..0x4DB110, all ai_autonomous, installed 2026-10-11).
 - Queue: 0x48CFE0 and 0x78C1A0 ("emulated run differs") pass under the 05:22 emudiff fixes; back to the lanes.
+- Flaky crash eip=006326e4 (`_rwFrameSyncDirty`, child pointer -7): `flakybisect --among` went 43 -> 1 in 63 min:
+  0x4D9170 (C_0083dbb0_DispatchCommand), alone on -> crash, alone off -> none in 96. Cause, read from the
+  disassembly: command 0x10 calls AttackTasks_SetMode with `this = self->field_0308`; ours passed
+  `*(self->field_0008 + 0x308) + 0x2b8` (copied from command 0x0E's QueueShot), so the mode was written into some
+  other object. Hex-Rays shows neither `this` (`AttackTasks_SetMode(*(a2 + 4))`), the gate has nothing to compare
+  it with, emudiff said `same` on 4/8 profiles without entering the switch (backlog, Verification). Installed since
+  2026-10-11; rare because FR01's start seldom sends command 0x10. The 05:30 bisect was right to say "older code".
+- Verifier over the 395 pending: 392 installed, 3 quarantined (0x6FF2E0, 0x6C9080, 0x6C90C0).
