@@ -44,7 +44,7 @@ AGENTS = {"sol-med": ("codex", "gpt-6.1-sol", "medium"),     # most jobs (defaul
           # glm-flash neither in 25 min
           "haiku-hi": ("claude", "claude-haiku-5-5", "high")}            # small jobs; grunts' Claude account, CLAUDE_JOBS at a time
 DEFAULT = "sol-med"
-CLAUDE_JOBS = 4  # user, 2026-10-13 late: "run more haikus if possible they are cheap" (was 2)
+CLAUDE_JOBS = 8  # user, 2026-10-13 late: "run more haikus if possible they are cheap" (was 2)
 RETIRED = {"opus-me": ("claude", "claude-opus-5-5", "medium"), "haiku-med": ("claude", "claude-haiku-5-5", "medium"),
            "haiku-xhi": ("claude", "claude-haiku-5-5", "xhigh"), "mimo-pro": ("codex", "xiaomi/mimo-v2.6-pro:floor", "medium")}
 # Agents that go through OpenRouter instead of a Codex login: $ per million tokens (input, output), for the
@@ -104,7 +104,7 @@ def sh(*cmd, cwd=None):
     return r.returncode, r.stdout + r.stderr
 
 
-POOL, POOL_SIZE = os.path.join(DEEP, "_pool"), 4
+POOL, POOL_SIZE = os.path.join(DEEP, "_pool"), 8  # user, 2026-10-13 late: four more
 
 
 def pool_take(name):
@@ -217,6 +217,8 @@ def run(a):
               agent=a.agent, task="(waiting for a pool tree)")
         tree, lock = pool_take(a.name)
     d, tree, head = prepare(a.name, a.fresh, tree if a.pool else None)
+    if lock and not a.fresh and os.path.isdir(os.path.join(d, "out")):  # a pool job going on: what it had changed
+        shutil.copytree(os.path.join(d, "out"), tree, dirs_exist_ok=True)
     open(os.path.join(d, "task.md"), "w").write(task)
     report, events = os.path.join(d, "report.md"), os.path.join(d, "events.jsonl")
     if os.path.exists(report):
