@@ -11,6 +11,7 @@ glm-flash run through the Codex CLI sandboxed to the job's tree. Nothing runs on
   deep_worker.py start NAME --task FILE|- [--agent sol-med|sol-hi|haiku-hi|glm-flash] [--timeout 3600] [--fresh]   in the background
   deep_worker.py run   NAME ...           the same, in the foreground
   deep_worker.py list                     jobs and their state
+  deep_worker.py wait NAME... [--adopt]   block until they end (run it in the background); --adopt: adopt.py on each
   deep_worker.py review NAME applied|partial|rejected [--note TEXT]    the orchestrator's verdict on a finished job
   deep_worker.py drop NAME                remove a job's tree and files
 
@@ -458,6 +459,29 @@ def ls(_):
     return 0
 
 
+def wait(a):
+    """Block until the named jobs have ended; each one's line as it ends, with --adopt its functions re-checked and
+    taken by tools/adopt.py. For the orchestrator to run in the background: it is told when this exits, and stays
+    free to talk meanwhile (user, 2026-10-13: no foreground waiting)."""
+    left = set(a.names)
+    while left:
+        for st in jobs():
+            if st["name"] in left and st["phase"] != "running":
+                left.discard(st["name"])
+                u = st.get("usage") or {}
+                print(f"{st['name']}: {st['phase']}" + (f" ({st.get('error')})" if st.get("error") else "")
+                      + f", patch {st.get('patch_lines', 0)} lines" + (f", ${u['cost_usd']:.2f}" if u.get("cost_usd") else ""),
+                      flush=True)
+                if a.adopt and st["phase"] == "done":
+                    r = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "adopt.py"), st["name"]],
+                                       capture_output=True, text=True)
+                    print("\n".join("  " + l[:200] for l in (r.stdout + r.stderr).splitlines()
+                                    if "adopt " in l or "not taken" in l or "no src/auto" in l), flush=True)
+        if left:
+            time.sleep(15)
+    return 0
+
+
 def drop(a):
     d = os.path.join(DEEP, a.name)
     sh("git", "-C", ROOT, "worktree", "remove", "--force", os.path.join(d, "tree"))
@@ -484,6 +508,10 @@ def main():
     rv.add_argument("--note", default="")
     rv.set_defaults(fn=review)
     sub.add_parser("list").set_defaults(fn=ls)
+    w = sub.add_parser("wait")
+    w.add_argument("names", nargs="+")
+    w.add_argument("--adopt", action="store_true", help="run tools/adopt.py on each job that ends done")
+    w.set_defaults(fn=wait)
     dp = sub.add_parser("drop")
     dp.add_argument("name")
     dp.set_defaults(fn=drop)
