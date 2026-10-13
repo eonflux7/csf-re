@@ -725,6 +725,7 @@
 - {addr: 0x0088F08C, name: g_CopyDwordsUnwindInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088F160, name: g_CoreFilesCopyRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088F448, name: g_FillRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088F56C, name: g_CopyRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088F8C0, name: g_InitEntryRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088F910, name: g_DwordRangeFrameInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x0088FAD4, name: g_CopyElementRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
@@ -2009,8 +2010,9 @@
 - {addr: 0x008BB3F0, name: g_NetProfile_Instance, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008BB3F4, name: g_fpControlWord_8BB3F4, type: unsigned int, uses: 1, src: auto}
 - {addr: 0x008BB3F8, name: g_Value_8BB3F8, type: int, uses: 1, src: auto}
-- {addr: 0x008BB400, name: g_008bb400, type: int, uses: 1, src: auto}
-- {addr: 0x008BB404, name: g_GlobalValue_8BB404, type: int, uses: 1, src: auto}
+- {addr: 0x008BB3FC, name: g_RtfsEntryOffsetBase, type: uint32_t, uses: 4, src: auto, alt: [g_ArchiveVersionFlags, g_RtfsFileOffsetBase]}
+- {addr: 0x008BB400, name: g_008bb400, type: int, uses: 9, src: auto}
+- {addr: 0x008BB404, name: g_GlobalValue_8BB404, type: int, uses: 5, src: auto}
 - {addr: 0x008BB408, name: g_8BB408, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008BB410, name: g_LogWindowRefCount, type: int, uses: 2, src: auto, alt: [g_SharedLogWindowRefCount]}
 - {addr: 0x008BB414, name: g_LogWindowBuffer, type: uint32_t, uses: 2, src: auto, alt: [g_SharedLogWindowInstance]}
