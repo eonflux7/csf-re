@@ -918,7 +918,7 @@
   "name": "AudioSoundManager_ProcessArchiveContext",
   "name_src": "agent",
   "votes": {
-   "AudioSoundManager_ProcessArchiveContext": 27,
+   "AudioSoundManager_ProcessArchiveContext": 28,
    "AudioSoundManager_PrepareArchive": 2
   },
   "ret": "int",
@@ -1113,7 +1113,9 @@
  "00405bc0": {
   "name": "SerializeObjectRefWithFlags",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "SerializeObjectRefWithFlags": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, S_00691860* a2, int a3, char a4, char a5",
@@ -4393,7 +4395,9 @@
  "0040fd40": {
   "name": "EdgeLatch_Poll",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "EdgeLatch_Poll": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , int a2",
@@ -6988,7 +6992,7 @@
   "name_src": "agent",
   "votes": {
    "ButtonList_InsertAt": 1,
-   "DynArray_InsertAt": 2
+   "DynArray_InsertAt": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -7001,7 +7005,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 145
+   "S_0041e5f0_GrowArrayCapacity": 146
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -7014,7 +7018,7 @@
   "name_src": "agent",
   "votes": {
    "ButtonList_FindInsertIndex": 1,
-   "C_0082e664_FindLowerBoundIndex": 2
+   "C_0082e664_FindLowerBoundIndex": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -18696,7 +18700,8 @@
   "name": "C_008311f0_FindIndexInSortedArray",
   "name_src": "agent",
   "votes": {
-   "FindIndexInContainer": 1
+   "FindIndexInContainer": 1,
+   "C_008311f0_FindReferenceIndex": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -18974,18 +18979,21 @@
   "file": "src/auto/0044e620.cpp"
  },
  "0044e650": {
-  "name": "sub_44E650",
-  "name_src": "addr",
+  "name": "C_008311f0_SerializeReferences",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_008311f0* self, void* , int archiveAddress",
+  "sig_src": "impl",
+  "file": "src/auto/0044e650.cpp"
  },
  "0044e9e0": {
   "name": "DwordArrayRemoveAtIndexShift",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "EraseReferenceAt": 1
+  },
   "ret": "uint8_t*",
   "conv": "__fastcall",
   "params": "void* self, void* , int32_t index",
@@ -46851,7 +46859,7 @@
   "name": "Archive_SerializeObjectRef",
   "name_src": "vote",
   "votes": {
-   "Archive_SerializeObjectRef": 71
+   "Archive_SerializeObjectRef": 72
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -58232,7 +58240,9 @@
  "004dcfc0": {
   "name": "C_0083e0d8_ClearNodeStorage",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0083e0d8_ReleaseOwnedObjects": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_0083e0d8* self, void*",
@@ -58264,15 +58274,16 @@
   "file": "src/auto/004dd110.cpp"
  },
  "004dd140": {
-  "name": "C_0086c288_BaseCleanup",
-  "name_src": "vote",
+  "name": "C_0083e0d8_Destroy_4DD140",
+  "name_src": "agent",
   "votes": {
    "C_0086c288_BaseCleanup": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0083e0d8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004dd140.cpp"
  },
  "004dd220": {
   "name": "SceneGrid_RegisterHandlePosition",
@@ -58296,7 +58307,7 @@
   "sig_src": "abi"
  },
  "004dd4e0": {
-  "name": "C_0083e0d8_Destroy",
+  "name": "C_0083e0d8_Destroy_4DD4E0",
   "name_src": "agent",
   "votes": {},
   "ret": "void*",
@@ -58346,7 +58357,9 @@
  "004ddc10": {
   "name": "S_004dca10_UpdateEntryState",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_004dca10_UpdateEntryState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_004dca10* self, void* , int entryAddress",
@@ -58366,13 +58379,14 @@
   "file": "src/auto/004ddc90.cpp"
  },
  "004ddce0": {
-  "name": "sub_4DDCE0",
-  "name_src": "addr",
+  "name": "C_0083e0d8_UpdateEntryState",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083e0d8* self, void* , int entryAddress",
+  "sig_src": "impl",
+  "file": "src/auto/004ddce0.cpp"
  },
  "004ddd90": {
   "name": "Geometry_ClassifySegmentRectangleIntersection",
@@ -137192,7 +137206,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 539,
+   "Mem_FreeDebug": 540,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -137284,7 +137298,7 @@
   "name": "Mem_Alloc",
   "name_src": "opus",
   "votes": {
-   "Mem_Alloc": 444
+   "Mem_Alloc": 445
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -137295,7 +137309,7 @@
   "name": "Mem_Free",
   "name_src": "opus",
   "votes": {
-   "Mem_Free": 868
+   "Mem_Free": 870
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -154343,7 +154357,7 @@
   "name": "CharacterDefs_AssignEmbeddedMember",
   "name_src": "agent",
   "votes": {
-   "CharacterDefs_AssignEmbeddedMember": 4
+   "CharacterDefs_AssignEmbeddedMember": 5
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -196115,7 +196129,9 @@
  "0075e1e0": {
   "name": "C_0086c288_ReleaseWaypointGraph",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0086c288_ReleaseWaypointGraph": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_0086c288* self, void*",
