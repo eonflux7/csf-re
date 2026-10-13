@@ -1278,6 +1278,7 @@
 - {addr: 0x008A891C, name: g_SweepAxes, type: SweepAxes, uses: 1, src: auto}
 - {addr: 0x008A8924, name: byte_8A8924, type: uint8_t, uses: 3, src: auto, alt: [g_NetSessionReadyFlag]}
 - {addr: 0x008A8925, name: byte_8A8925, type: uint8_t, uses: 3, src: auto, alt: [g_GlobalObjectMode, g_NetworkUpdateRequested]}
+- {addr: 0x008A8926, name: g_OptionsFlagByte, type: char, uses: 1, src: auto}
 - {addr: 0x008A8928, name: g_pszKey_VERSION_game_config, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A892C, name: g_pszKey_MATERIALES, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A8930, name: g_pszKey_NOMBRE_TIPO, type: const char*, uses: 0, src: captain, conf: 1.0}
@@ -2082,6 +2083,12 @@
 - {addr: 0x008BC124, name: g_IdlePollCallback, type: void*, uses: 1, src: auto}
 - {addr: 0x008BC128, name: g_NetCogibleDdlContext, type: int, uses: 5, src: auto, alt: [g_NetCogibleDdlLastArg, g_NetCogibleRegistryHandle, g_NetCogibleStoredId]}
 - {addr: 0x008BC13C, name: g_NetTransportObject, type: int, uses: 1, src: auto}
+- {addr: 0x008BC140, name: g_AlternateStateFlag, type: uint32_t, uses: 4, src: auto, alt: [g_AttachedNetObject, g_MpSpawnPointsObject, g_PlayerMatchMessages]}
+- {addr: 0x008BC144, name: g_NetCallbackObjectA, type: uint32_t, uses: 2, src: auto, alt: [g_PauseCallbackSecondary]}
+- {addr: 0x008BC148, name: g_NetCallbackObjectB, type: uint32_t, uses: 2, src: auto, alt: [g_PauseCallbackPrimary]}
+- {addr: 0x008BC150, name: g_PlayerSelectionMessages, type: void*, uses: 1, src: auto}
+- {addr: 0x008BC154, name: g_SelectedPlayerName, type: void*, uses: 1, src: auto}
+- {addr: 0x008BC158, name: g_PauseCallbackPending, type: int, uses: 1, src: auto}
 - {addr: 0x008BC15C, name: g_NetPlayerClassId, type: 'std::uint32_t', uses: 0, src: captain, conf: 0.8}
 - {addr: 0x008BC160, name: g_NetProyectilClassId, type: 'std::uint32_t', uses: 0, src: captain, conf: 0.8}
 - {addr: 0x008BC164, name: g_SessionRequest, type: int, uses: 1, src: auto}
@@ -2106,3 +2113,4 @@
 - {addr: 0x008BC1E4, name: g_Value_8BC1E4, type: int, uses: 3, src: auto}
 - {addr: 0x008BC1E8, name: g_Value_8BC1E8, type: 'std::uint32_t', uses: 4, src: auto}
 - {addr: 0x008BC1EC, name: g_Value8BC1EC, type: int, uses: 1, src: auto}
+- {addr: 0x008BC27C, name: g_RegisteredNetClassId, type: uint32_t, uses: 1, src: auto}
