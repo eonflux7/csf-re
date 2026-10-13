@@ -5,12 +5,12 @@
 - {addr: 0x0082D00C, name: g_RegCreateKeyExA, type: RegistryCreateKeyFn, uses: 1, src: auto}
 - {addr: 0x0082D014, name: g_RegistryQueryValue, type: RegistryQueryProc, uses: 1, src: auto}
 - {addr: 0x0082D04C, name: g_RemoveDirectoryA, type: RemoveDirectoryAProc, uses: 1, src: auto}
-- {addr: 0x0082D05C, name: g_SleepImportSlot, type: void*, uses: 9, src: auto, alt: [g_pfnSleep]}
+- {addr: 0x0082D05C, name: g_SleepImportSlot, type: void*, uses: 10, src: auto, alt: [g_pfnSleep]}
 - {addr: 0x0082D08C, name: g_GetLastErrorImportSlot, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D094, name: g_pfnGetFileSize, type: GetFileSizeFn, uses: 1, src: auto}
 - {addr: 0x0082D09C, name: g_CreateFileAImport, type: AudioCreateFileA, uses: 2, src: auto}
 - {addr: 0x0082D0C0, name: g_QueryPerformanceCounterIat, type: void*, uses: 2, src: auto}
-- {addr: 0x0082D0C4, name: g_QueryPerformanceFrequencyIat, type: QueryPerformanceFn, uses: 1, src: auto}
+- {addr: 0x0082D0C4, name: g_QueryPerformanceFrequencyIat, type: QueryFrequencyFn, uses: 2, src: auto}
 - {addr: 0x0082D0DC, name: g_FindFirstFileA, type: FindFirstFileAProc, uses: 4, src: auto}
 - {addr: 0x0082D0E0, name: g_pfnCloseHandle, type: void*, uses: 6, src: auto}
 - {addr: 0x0082D118, name: g_SetFileAttributesA, type: SetFileAttributesAFn, uses: 3, src: auto}
@@ -21,7 +21,7 @@
 - {addr: 0x0082D19C, name: g_pCreateMutexA_Import, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D1A0, name: g_CreateThreadImport, type: CreateThreadImportFn, uses: 1, src: auto}
 - {addr: 0x0082D204, name: g_GetComputerNameA, type: GetComputerNameFunction, uses: 1, src: auto}
-- {addr: 0x0082D208, name: g_SetThreadPriorityIat, type: void*, uses: 4, src: auto, alt: [g_pfnSetThreadPriority]}
+- {addr: 0x0082D208, name: g_SetThreadPriorityIat, type: void*, uses: 5, src: auto, alt: [g_pfnSetThreadPriority]}
 - {addr: 0x0082D20C, name: g_pfnWaitForSingleObject, type: WaitForSingleObjectFn, uses: 4, src: auto, alt: [g_pWaitForSingleObject]}
 - {addr: 0x0082D210, name: g_DeleteFileA, type: DeleteFileAProc, uses: 4, src: auto}
 - {addr: 0x0082D214, name: g_ImportGetLocalTime, type: GetLocalTimeFunction, uses: 3, src: auto, alt: [g_GetLocalTime]}
@@ -36,8 +36,13 @@
 - {addr: 0x0082D23C, name: g_ReleaseMutex, type: ReleaseMutexFunction, uses: 1, src: auto}
 - {addr: 0x0082D240, name: g_GlobalMemoryStatusImport, type: void*, uses: 4, src: auto}
 - {addr: 0x0082D244, name: g_IsBadReadPtr, type: IsBadReadPtrFn, uses: 1, src: auto}
-- {addr: 0x0082D24C, name: g_GetCurrentThreadIat, type: GetCurrentThreadFn, uses: 1, src: auto}
-- {addr: 0x0082D254, name: g_GetThreadPriorityIat, type: GetThreadPriorityFn, uses: 1, src: auto}
+- {addr: 0x0082D248, name: g_GetCurrentProcessIat, type: CurrentHandleFn, uses: 1, src: auto}
+- {addr: 0x0082D24C, name: g_GetCurrentThreadIat, type: CurrentHandleFn, uses: 2, src: auto}
+- {addr: 0x0082D250, name: g_GetPriorityClassIat, type: GetProcessPriorityFn, uses: 1, src: auto}
+- {addr: 0x0082D254, name: g_GetThreadPriorityIat, type: GetThreadPriorityFn, uses: 2, src: auto}
+- {addr: 0x0082D258, name: g_GetProcessAffinityMaskIat, type: GetAffinityFn, uses: 1, src: auto}
+- {addr: 0x0082D25C, name: g_SetPriorityClassIat, type: SetProcessPriorityFn, uses: 1, src: auto}
+- {addr: 0x0082D260, name: g_SetProcessAffinityMaskIat, type: SetAffinityFn, uses: 1, src: auto}
 - {addr: 0x0082D268, name: g_ShGetFolderPathW, type: ShGetFolderPathWFn, uses: 1, src: auto}
 - {addr: 0x0082D270, name: g_MapVirtualKeyA, type: MapVirtualKeyAFunction, uses: 1, src: auto}
 - {addr: 0x0082D27C, name: g_GetActiveWindow, type: GetActiveWindowFn, uses: 1, src: auto}
@@ -2066,6 +2071,8 @@
 - {addr: 0x008BAFA8, name: g_Value_8BAFA8, type: int, uses: 1, src: auto}
 - {addr: 0x008BAFAC, name: g_Value_8BAFAC, type: uint16_t, uses: 1, src: auto}
 - {addr: 0x008BAFAE, name: g_Value_8BAFAE, type: uint8_t, uses: 1, src: auto}
+- {addr: 0x008BAFB8, name: g_CalibratedFrequencyLow, type: 'std::uint32_t', uses: 1, src: auto}
+- {addr: 0x008BAFBC, name: g_CalibratedFrequencyHigh, type: 'std::uint32_t', uses: 1, src: auto}
 - {addr: 0x008BAFD0, name: g_storedWindowHandle, type: void*, uses: 2, src: auto}
 - {addr: 0x008BAFD8, name: g_SceneLoaderBlock, type: int, uses: 1, src: auto}
 - {addr: 0x008BB3E0, name: Stream, type: void*, uses: 2, src: auto, alt: [g_ErrorLogStream]}

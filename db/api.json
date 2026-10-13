@@ -98492,7 +98492,7 @@
   "name": "RpClumpForAllAtomics",
   "name_src": "rwname",
   "votes": {
-   "RpClumpForAllAtomics": 20
+   "RpClumpForAllAtomics": 21
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -113613,7 +113613,7 @@
   "name": "RwStreamWrite",
   "name_src": "rwname",
   "votes": {
-   "RwStreamWrite": 3
+   "RwStreamWrite": 4
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -113635,7 +113635,7 @@
   "name": "RwStreamClose",
   "name_src": "rwname",
   "votes": {
-   "RwStreamClose": 14
+   "RwStreamClose": 17
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -113646,7 +113646,7 @@
   "name": "RwStreamOpen",
   "name_src": "rwname",
   "votes": {
-   "RwStreamOpen": 14
+   "RwStreamOpen": 17
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -113677,7 +113677,7 @@
   "name": "RwStreamFindChunk",
   "name_src": "rwname",
   "votes": {
-   "RwStreamFindChunk": 3
+   "RwStreamFindChunk": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -114590,11 +114590,13 @@
  "006308e0": {
   "name": "RwTexDictionaryStreamWrite",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwTexDictionaryStreamWrite": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, uint32_t* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00630a00": {
   "name": "sub_630A00",
@@ -114608,11 +114610,13 @@
  "00630a20": {
   "name": "RwTexDictionaryStreamRead",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwTexDictionaryStreamRead": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "uint32_t* a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00630c30": {
   "name": "sub_630C30",
@@ -114721,7 +114725,7 @@
   "name": "RwTexDictionaryCreate",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryCreate": 1
+   "RwTexDictionaryCreate": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -114732,11 +114736,22 @@
   "name": "RwTexDictionaryForAllTextures",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryForAllTextures": 6
+   "RwTexDictionaryForAllTextures": 11
   },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int dictionary, int (__cdecl* callback)(uint32_t*, int), int context",
+  "sig_src": "vote"
+ },
+ "00631730": {
+  "name": "RwTexDictionaryForAllTexDictionaries",
+  "name_src": "rwname",
+  "votes": {
+   "RwTexDictionaryForAllTexDictionaries": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "TexDictIterateCallback callback, int userData",
   "sig_src": "vote"
  },
  "00631780": {
@@ -114754,7 +114769,7 @@
   "name": "RwTextureDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwTextureDestroy": 12
+   "RwTextureDestroy": 14
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -114785,7 +114800,7 @@
   "name": "RwTexDictionaryAddTexture",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryAddTexture": 1
+   "RwTexDictionaryAddTexture": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -114796,7 +114811,7 @@
   "name": "RwTexDictionaryRemoveTexture",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryRemoveTexture": 1
+   "RwTexDictionaryRemoveTexture": 3
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -114807,7 +114822,7 @@
   "name": "RwTexDictionaryFindNamedTexture",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryFindNamedTexture": 4
+   "RwTexDictionaryFindNamedTexture": 5
   },
   "ret": "char*",
   "conv": "__cdecl",
@@ -114817,17 +114832,19 @@
  "00631990": {
   "name": "RwTexDictionarySetCurrent",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwTexDictionarySetCurrent": 2
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006319b0": {
   "name": "RwTexDictionaryGetCurrent",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryGetCurrent": 5
+   "RwTexDictionaryGetCurrent": 11
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -114894,7 +114911,7 @@
   "name": "RwTexDictionaryDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryDestroy": 1
+   "RwTexDictionaryDestroy": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -138722,7 +138739,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 131,
+   "CoreMemory_Free": 133,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -142849,7 +142866,8 @@
   "name_src": "vote",
   "votes": {
    "ReadCurrentTickCounter": 1,
-   "ReadHighResolutionCounter": 1
+   "ReadHighResolutionCounter": 1,
+   "C_0085e92c_ReadCounter": 1
   },
   "ret": "uint64_t",
   "conv": "__fastcall",
@@ -142925,13 +142943,14 @@
   "file": "src/auto/0069cbe0.cpp"
  },
  "0069cbf0": {
-  "name": "sub_69CBF0",
-  "name_src": "addr",
+  "name": "C_0085e92c_InitializeFrequency",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0085e92c* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0069cbf0.cpp"
  },
  "0069cd10": {
   "name": "C_0085e92c_Construct",
@@ -148352,7 +148371,7 @@
   "name": "C_00860170_Construct",
   "name_src": "agent",
   "votes": {
-   "C_00860170_Construct": 76
+   "C_00860170_Construct": 78
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -153417,15 +153436,16 @@
   "file": "src/auto/006c0d70.cpp"
  },
  "006c0ee0": {
-  "name": "GfxClumpDict_ResourcesMatch",
-  "name_src": "vote",
+  "name": "GfxTexDict_ClumpsShareResource",
+  "name_src": "agent",
   "votes": {
    "GfxClumpDict_ResourcesMatch": 1
   },
   "ret": "char",
   "conv": "__cdecl",
-  "params": "int a1, int a2",
-  "sig_src": "vote"
+  "params": "int firstClump, int secondClump",
+  "sig_src": "impl",
+  "file": "src/auto/006c0ee0.cpp"
  },
  "006c0fa0": {
   "name": "C_008607b0_Destroy",
@@ -153468,13 +153488,14 @@
   "file": "src/auto/006c1040.cpp"
  },
  "006c1060": {
-  "name": "sub_6C1060",
-  "name_src": "addr",
+  "name": "TexDict_SaveCurrentDictionaryToFile",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__stdcall",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/006c1060.cpp"
  },
  "006c10b0": {
   "name": "GfxTexDict_FindAndStoreNamedTexture",
@@ -153498,59 +153519,66 @@
  },
  "006c1120": {
   "name": "DestroyDictionaryTexture",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "DestroyDictionaryTexture": 1
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "uint32_t* texture, int context",
-  "sig_src": "vote"
+  "params": "int a1",
+  "sig_src": "impl",
+  "file": "src/auto/006c1120.cpp"
  },
  "006c1160": {
-  "name": "sub_6C1160",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "int",
-  "conv": "__cdecl",
-  "params": "int a1, uint32_t* a2",
-  "sig_src": "abi"
- },
- "006c11c0": {
-  "name": "sub_6C11C0",
-  "name_src": "addr",
+  "name": "TexDict_WriteNameLineToStream",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/006c1160.cpp"
+ },
+ "006c11c0": {
+  "name": "TexDict_AddTextureIfMissing",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int textureObj, int dictionary",
+  "sig_src": "impl",
+  "file": "src/auto/006c11c0.cpp"
  },
  "006c11f0": {
-  "name": "sub_6C11F0",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
-  "conv": "__stdcall",
-  "params": "int a1",
-  "sig_src": "abi"
- },
- "006c1230": {
-  "name": "sub_6C1230",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
-  "conv": "__cdecl",
-  "params": "uint32_t* a1",
-  "sig_src": "abi"
- },
- "006c1260": {
-  "name": "sub_6C1260",
-  "name_src": "addr",
+  "name": "GfxTexdict_LoadTexturesFromStreamIntoCurrentDict",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
+  "params": "int a1",
+  "sig_src": "impl",
+  "file": "src/auto/006c11f0.cpp"
+ },
+ "006c1230": {
+  "name": "TexDict_RemoveAndDestroyLowRefTexture",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int a1",
+  "sig_src": "impl",
+  "file": "src/auto/006c1230.cpp"
+ },
+ "006c1260": {
+  "name": "GfxTexdict_ReadDictionaryForMerge",
+  "name_src": "vote",
+  "votes": {
+   "GfxTexdict_ReadDictionaryForMerge": 1
+  },
+  "ret": "int",
+  "conv": "__stdcall",
   "params": "uint32_t* a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006c1420": {
   "name": "CopyDwordRangeToDestination_6C1420",
@@ -153578,27 +153606,29 @@
  },
  "006c14b0": {
   "name": "C_008607f8_ReleaseBase",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_008607f8_ReleaseBase": 1
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_008607f8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006c14b0.cpp"
  },
  "006c1500": {
-  "name": "sub_6C1500",
-  "name_src": "addr",
+  "name": "C_008607f8_LoadTextureDictionary",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint8_t* a2, char a3",
-  "sig_src": "abi"
+  "params": "C_008607f8* self, void* , uint8_t* fileName, char merge",
+  "sig_src": "impl",
+  "file": "src/auto/006c1500.cpp"
  },
  "006c1620": {
   "name": "GfxTexdict_ReadTextureFromResource",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
@@ -153607,13 +153637,14 @@
   "file": "src/auto/006c1620.cpp"
  },
  "006c1700": {
-  "name": "sub_6C1700",
-  "name_src": "addr",
+  "name": "ResetCurrentTextureDictionary",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_008607f8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006c1700.cpp"
  },
  "006c1740": {
   "name": "TexDict_EnumerateCurrentTextures",
@@ -153626,15 +153657,16 @@
   "file": "src/auto/006c1740.cpp"
  },
  "006c1770": {
-  "name": "GlobalInt_FindNameId",
-  "name_src": "vote",
+  "name": "TexDict_FindNameId",
+  "name_src": "agent",
   "votes": {
    "GlobalInt_FindNameId": 9
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "uint8_t* a1",
-  "sig_src": "vote"
+  "params": "uint8_t* nameText",
+  "sig_src": "impl",
+  "file": "src/auto/006c1770.cpp"
  },
  "006c17b0": {
   "name": "C_008607f8_EnumerateCurrentTextures",
@@ -153659,13 +153691,14 @@
   "file": "src/auto/006c17e0.cpp"
  },
  "006c1850": {
-  "name": "sub_6C1850",
-  "name_src": "addr",
+  "name": "C_008607f8_DestroyTextureDictionary",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_008607f8* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/006c1850.cpp"
  },
  "006c18b0": {
   "name": "ForwardThreeArgsWithContextToTexDict6C1420",
@@ -153712,7 +153745,7 @@
   "name": "GfxObjectInstances_AppendMaterialReference",
   "name_src": "agent",
   "votes": {
-   "GfxObjectInstances_AppendMaterialReference": 1
+   "GfxObjectInstances_AppendMaterialReference": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -153721,13 +153754,14 @@
   "file": "src/auto/006c1c00.cpp"
  },
  "006c1c70": {
-  "name": "sub_6C1C70",
-  "name_src": "addr",
+  "name": "GfxTexDict_AppendMaterialRefReturnArg",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int* a2",
-  "sig_src": "abi"
+  "params": "int a1, int a2",
+  "sig_src": "impl",
+  "file": "src/auto/006c1c70.cpp"
  },
  "006c1c90": {
   "name": "sub_6C1C90",
@@ -153739,15 +153773,16 @@
   "sig_src": "abi"
  },
  "006c2000": {
-  "name": "RecordObject_Construct",
-  "name_src": "vote",
+  "name": "TexDictRecord_Construct",
+  "name_src": "agent",
   "votes": {
    "RecordObject_Construct": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_006c2000* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006c2000.cpp"
  },
  "006c2030": {
   "name": "Timevec_Destroy",
@@ -214231,7 +214266,7 @@
   "name": "_sprintf",
   "name_src": "ida",
   "votes": {
-   "_sprintf": 51,
+   "_sprintf": 52,
    "LibSprintf": 1,
    "FormatMissionScore": 1,
    "FormatResolution": 1
