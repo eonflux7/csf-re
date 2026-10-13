@@ -8799,7 +8799,7 @@
   "name_src": "agent",
   "votes": {
    "ApplyHeadingAngle": 1,
-   "C_0082f9f8_Start": 9
+   "C_0082f9f8_Start": 10
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -19856,7 +19856,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 452
+   "CHandleTable_Resolve": 456
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -36089,7 +36089,8 @@
   "name": "CharActionFsm_TryApplyMissionAction",
   "name_src": "agent",
   "votes": {
-   "S_00486c30_RecomputeFromFloat": 2
+   "S_00486c30_RecomputeFromFloat": 2,
+   "CharActionFsm_TryApplyMissionAction": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -37870,7 +37871,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 247,
+   "GetObjectPositionVector": 253,
    "GetEntityPositionPtr": 1
   },
   "ret": "float*",
@@ -38392,7 +38393,7 @@
   "name": "C_008342e8_ComputeResolvedObjectScalar",
   "name_src": "agent",
   "votes": {
-   "C_008342e8_ComputeResolvedObjectScalar": 27,
+   "C_008342e8_ComputeResolvedObjectScalar": 29,
    "ComputeScalarForResolvedObject": 10
   },
   "ret": "double",
@@ -39445,7 +39446,7 @@
   "name_src": "agent",
   "votes": {
    "CoverAttack_SetStance_492720": 31,
-   "CoverAttack_SetStance": 2,
+   "CoverAttack_SetStance": 3,
    "Controller_492720": 1,
    "CoverTask_SetMode_492720": 2,
    "TMovil_sub_492720": 1,
@@ -55798,7 +55799,9 @@
  "004d4920": {
   "name": "C_0082d410_ResetTaskSlots",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0082d410_Cleanup": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "C_0082d410* self, void*",
@@ -55806,22 +55809,24 @@
   "file": "src/auto/004d4920.cpp"
  },
  "004d4960": {
-  "name": "sub_4D4960",
-  "name_src": "addr",
+  "name": "AiGiveObject_DeliverObjectPosition",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "int* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004d4960.cpp"
  },
  "004d49b0": {
-  "name": "sub_4D49B0",
-  "name_src": "addr",
+  "name": "GiveObject_StartFacingTarget",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004d49b0.cpp"
  },
  "004d4a40": {
   "name": "C_00834fa8_GetFlaggedResultOrLookup_4D4A40",
@@ -55864,33 +55869,39 @@
   "file": "src/auto/004d4b00.cpp"
  },
  "004d4b10": {
-  "name": "sub_4D4B10",
-  "name_src": "addr",
+  "name": "AiGiveObject_ResolveStateAtObjectPosition",
+  "name_src": "agent",
   "votes": {},
-  "ret": "void*",
+  "ret": "C_00833908*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_008342e8** self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004d4b10.cpp"
  },
  "004d4bb0": {
-  "name": "sub_4D4BB0",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "int",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
- },
- "004d4c80": {
-  "name": "CheckSubObjectCondition",
+  "name": "RefreshOwnerState",
   "name_src": "vote",
   "votes": {
-   "CheckSubObjectCondition": 1
+   "RefreshOwnerState": 1
+  },
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004d4bb0.cpp"
+ },
+ "004d4c80": {
+  "name": "AiGiveObject_IsTargetWithinRange",
+  "name_src": "agent",
+  "votes": {
+   "CheckSubObjectCondition": 1,
+   "CharTask_IsOwnerLookReady": 1
   },
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004d4c80.cpp"
  },
  "004d4d10": {
   "name": "AiGiveObject_QueryInnerSlot47",
@@ -55904,7 +55915,7 @@
  },
  "004d4d30": {
   "name": "C_00834fa8_ResolveTargetLookup",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -55974,18 +55985,21 @@
   "file": "src/auto/004d4ea0.cpp"
  },
  "004d4ed0": {
-  "name": "sub_4D4ED0",
-  "name_src": "addr",
+  "name": "TDarObjeto_BeginGiveObjectAction",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "TDarObjeto* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004d4ed0.cpp"
  },
  "004d4f70": {
   "name": "C_0082f9f8_ChooseMovementAndStart",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MovementStarted_4D4F70": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_0082f9f8* self, void*",
@@ -55993,13 +56007,14 @@
   "file": "src/auto/004d4f70.cpp"
  },
  "004d4fb0": {
-  "name": "sub_4D4FB0",
-  "name_src": "addr",
+  "name": "TCharTask_UpdateRotationTurn",
+  "name_src": "impl",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "TCharTask* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004d4fb0.cpp"
  },
  "004d5020": {
   "name": "C_00834fa8_ReleaseHandleAndLookup",
@@ -56012,13 +56027,14 @@
   "file": "src/auto/004d5020.cpp"
  },
  "004d5040": {
-  "name": "sub_4D5040",
-  "name_src": "addr",
+  "name": "C_00834fa8_SelectLookupByProximity",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00834fa8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004d5040.cpp"
  },
  "004d50c0": {
   "name": "C_0083c198_Construct",
@@ -56033,13 +56049,14 @@
   "file": "src/auto/004d50c0.cpp"
  },
  "004d5160": {
-  "name": "sub_4D5160",
-  "name_src": "addr",
+  "name": "C_0083c198_Destroy",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0083c198* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/004d5160.cpp"
  },
  "004d51a0": {
   "name": "C_0083c198_ResetAndInvalidateTargets",
@@ -56052,13 +56069,14 @@
   "file": "src/auto/004d51a0.cpp"
  },
  "004d51c0": {
-  "name": "sub_4D51C0",
-  "name_src": "addr",
+  "name": "C_0083c198_BeginMovementFromRequest",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083c198* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004d51c0.cpp"
  },
  "004d5230": {
   "name": "TDarObjeto_ReleaseTaskAndSetStance",
@@ -57211,6 +57229,7 @@
   "name": "C_0083dbb0_Destroy_4D7A00",
   "name_src": "agent",
   "votes": {
+   "C_0083dbb0_Destroy_4D7A00": 1,
    "C_0083b958_BaseCleanup": 1
   },
   "ret": "int",
@@ -58178,7 +58197,7 @@
    "Task_GetSubObject": 1,
    "AiTaskStates_ApplyTaskState": 1,
    "TaskState_4DB140": 1,
-   "C_0082f9f8_StartMovement_4DB140": 5
+   "C_0082f9f8_StartMovement_4DB140": 6
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -58206,7 +58225,7 @@
   "name": "TFncGirar_OnRotationComplete",
   "name_src": "agent",
   "votes": {
-   "TFncGirar_OnRotationComplete": 18,
+   "TFncGirar_OnRotationComplete": 19,
    "SetTaskIdleFlag": 1
   },
   "ret": "void",
@@ -58372,13 +58391,15 @@
   "sig_src": "vote"
  },
  "004db380": {
-  "name": "sub_4DB380",
-  "name_src": "addr",
-  "votes": {},
+  "name": "ForwardRequestWithoutMovement_4DB380",
+  "name_src": "vote",
+  "votes": {
+   "ForwardRequestWithoutMovement_4DB380": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004db3a0": {
   "name": "sub_4DB3A0",
@@ -58419,7 +58440,7 @@
   "name": "CharTask_LookupByOffset",
   "name_src": "vote",
   "votes": {
-   "CharTask_LookupByOffset": 49,
+   "CharTask_LookupByOffset": 51,
    "CharTask_OnTimerExpired": 1,
    "TCharTask_Sub4DB440": 1,
    "C_00834fa8_ApplyTaskExit": 1,
@@ -63040,7 +63061,7 @@
   "name": "GetValue8B0554",
   "name_src": "agent",
   "votes": {
-   "GetValue8B0554": 287
+   "GetValue8B0554": 289
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -63217,7 +63238,7 @@
   "name_src": "agent",
   "votes": {
    "LookupStateEntry": 3,
-   "C_0085e7b8_LookupStateEntry": 2
+   "C_0085e7b8_LookupStateEntry": 3
   },
   "ret": "C_00833908*",
   "conv": "__fastcall",
@@ -78121,7 +78142,7 @@
   "name": "Get_008b0678",
   "name_src": "agent",
   "votes": {
-   "Get_008b0678": 34
+   "Get_008b0678": 35
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -78369,7 +78390,7 @@
   "name": "MenuMissionInfo_SetGlobalIndex",
   "name_src": "agent",
   "votes": {
-   "MenuMissionInfo_SetGlobalIndex": 12
+   "MenuMissionInfo_SetGlobalIndex": 13
   },
   "ret": "int",
   "conv": "__stdcall",
@@ -139246,7 +139267,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 169,
+   "CoreMemory_Free": 170,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -140456,8 +140477,9 @@
   },
   "ret": "uint8_t*",
   "conv": "__cdecl",
-  "params": "uint8_t* a1, char a2, char a3",
-  "sig_src": "vote"
+  "params": "uint8_t* buffer, char fromChar, char toChar",
+  "sig_src": "impl",
+  "file": "src/auto/00694bf0.cpp"
  },
  "00694c20": {
   "name": "LengthPrefixedBuffer_TerminateAtLength",
@@ -147075,7 +147097,7 @@
   "name": "S_00526d40_GetVectorAngleRadians",
   "name_src": "agent",
   "votes": {
-   "S_00526d40_GetVectorAngleRadians": 28,
+   "S_00526d40_GetVectorAngleRadians": 29,
    "GetVectorAngleRadians": 2
   },
   "ret": "double",
@@ -167849,7 +167871,7 @@
  },
  "006ef7b0": {
   "name": "C_008621c8_CreateStreamingSceneObjects",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -199368,7 +199390,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 267,
+   "GetGlobalValue_8BC1E0": 268,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
