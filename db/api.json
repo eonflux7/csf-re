@@ -1485,7 +1485,7 @@
   "name_src": "agent",
   "votes": {
    "SpatialQuery_PositionsMatch": 1,
-   "Vector3ExactEquals": 3
+   "Vector3ExactEquals": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -4609,7 +4609,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 205
+   "AssignStringSubstring": 207
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -122037,7 +122037,7 @@
   "name": "NetStream_ReadIntoSlot",
   "name_src": "vote",
   "votes": {
-   "NetStream_ReadIntoSlot": 1
+   "NetStream_ReadIntoSlot": 2
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -124649,7 +124649,7 @@
   "name": "NetCogible_ForwardMatchTest",
   "name_src": "vote",
   "votes": {
-   "NetCogible_ForwardMatchTest": 2
+   "NetCogible_ForwardMatchTest": 3
   },
   "ret": "bool",
   "conv": "__stdcall",
@@ -135299,7 +135299,7 @@
   "name": "GetCachedObjectProvider",
   "name_src": "vote",
   "votes": {
-   "GetCachedObjectProvider": 220
+   "GetCachedObjectProvider": 221
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -138626,7 +138626,7 @@
   "name_src": "agent",
   "votes": {
    "MenuExtras_InitializeFile": 32,
-   "S_00692b10_InitializeFile": 3
+   "S_00692b10_InitializeFile": 4
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -138662,7 +138662,7 @@
   "name_src": "agent",
   "votes": {
    "GetComponent": 102,
-   "S_00692b80_GetComponent": 14
+   "S_00692b80_GetComponent": 15
   },
   "ret": "S_00692b80*",
   "conv": "__fastcall",
@@ -138675,7 +138675,7 @@
   "name_src": "agent",
   "votes": {
    "ParseIntegerComponent": 55,
-   "S_00692b80_ParseIntegerComponent": 14
+   "S_00692b80_ParseIntegerComponent": 15
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -138687,7 +138687,7 @@
   "name": "ReadComponentFloat",
   "name_src": "vote",
   "votes": {
-   "ReadComponentFloat": 32
+   "ReadComponentFloat": 33
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -138698,7 +138698,7 @@
   "name": "CopyAttributeText",
   "name_src": "vote",
   "votes": {
-   "CopyAttributeText": 31
+   "CopyAttributeText": 32
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -138756,7 +138756,7 @@
   "name": "FindProperty",
   "name_src": "vote",
   "votes": {
-   "FindProperty": 138
+   "FindProperty": 139
   },
   "ret": "std::uint8_t*",
   "conv": "__fastcall",
@@ -139040,7 +139040,7 @@
   "name": "S_00693740_ReleaseBuffers",
   "name_src": "agent",
   "votes": {
-   "MenuExtras_CloseFile": 37
+   "MenuExtras_CloseFile": 38
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -139100,7 +139100,7 @@
   "name": "S_00693740_LoadFile",
   "name_src": "agent",
   "votes": {
-   "MenuExtras_LoadFile": 33
+   "MenuExtras_LoadFile": 34
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -139187,7 +139187,7 @@
   "name": "ResourceName_Transform",
   "name_src": "vote",
   "votes": {
-   "ResourceName_Transform": 5
+   "ResourceName_Transform": 6
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -139231,11 +139231,13 @@
  "00694c30": {
   "name": "GfxTextureLoader_AppendResourceName",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "GfxTextureLoader_AppendResourceName": 1
+  },
   "ret": "char*",
   "conv": "__cdecl",
   "params": "char* a1, int a2, char* Source, int a4, int a5, int a6, int a7, int a8, int a9, int a10",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00694c80": {
   "name": "LoadState_Construct",
@@ -142705,16 +142707,17 @@
   "sig_src": "vote"
  },
  "0069ea90": {
-  "name": "CopyRecord_69EA90",
-  "name_src": "vote",
+  "name": "CopyFileSystemEntry",
+  "name_src": "agent",
   "votes": {
    "CopyRecord_69EA90": 1,
    "RtFS_ProcessFileSystemEntry": 1
   },
-  "ret": "uint32_t",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, void* destRecord, void* srcRecord",
-  "sig_src": "vote"
+  "ret": "std::uint32_t",
+  "conv": "__stdcall",
+  "params": "C_0082d410* a1, C_0082d410* a2",
+  "sig_src": "impl",
+  "file": "src/auto/0069ea90.cpp"
  },
  "0069eae0": {
   "name": "CopyRecordRange44",
@@ -142757,13 +142760,14 @@
   "file": "src/auto/0069ebc0.cpp"
  },
  "0069ec50": {
-  "name": "sub_69EC50",
-  "name_src": "addr",
+  "name": "RtFs_CopyStringRecordsBackward",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__cdecl",
-  "params": "void* a1, void* a2, void* a3, int a4",
-  "sig_src": "abi"
+  "params": "void* rangeBegin, void* rangeEnd, void* destEnd, int",
+  "sig_src": "impl",
+  "file": "src/auto/0069ec50.cpp"
  },
  "0069eca0": {
   "name": "ForwardSetDefaultFileSystemWithSelf",
@@ -142777,7 +142781,7 @@
  },
  "0069ecc0": {
   "name": "RtFs_CopyFileSystemEntries",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t",
   "conv": "__cdecl",
@@ -142887,8 +142891,8 @@
   "file": "src/auto/0069f3b0.cpp"
  },
  "0069f520": {
-  "name": "S_0069f3b0_LoadVersion3Or4Directory",
-  "name_src": "vote",
+  "name": "S_0069f3b0_LoadFileIndex_69F520",
+  "name_src": "agent",
   "votes": {
    "S_0069f3b0_LoadVersion3Or4Directory": 1
   },
@@ -142924,7 +142928,7 @@
  },
  "0069f980": {
   "name": "RtFSFileSystemState_Construct",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -143057,7 +143061,7 @@
  },
  "0069fb40": {
   "name": "RtFS_ResolveEntryByIndex",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
@@ -143067,7 +143071,7 @@
  },
  "0069fb80": {
   "name": "RtFS_FreeStoredBlock",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
@@ -143139,7 +143143,7 @@
  },
  "0069fe80": {
   "name": "RtFs_CloseSceneFileAndReset",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
@@ -143149,7 +143153,7 @@
  },
  "0069feb0": {
   "name": "RtFS_RunStateGatedOperation",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
@@ -143159,7 +143163,7 @@
  },
  "0069ff00": {
   "name": "RtFSManager_RunWithStateSwitch",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
@@ -143169,7 +143173,7 @@
  },
  "0069ff40": {
   "name": "RtFSManager_SetDefaultFileSystem",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
@@ -143249,13 +143253,14 @@
   "sig_src": "abi"
  },
  "006a01d0": {
-  "name": "sub_6A01D0",
-  "name_src": "addr",
+  "name": "C_0085ec34_SetDefaultFileSystemFromCwd",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4",
-  "sig_src": "abi"
+  "params": "C_0085ec34* self, void* , int fileSystemId, int , int",
+  "sig_src": "impl",
+  "file": "src/auto/006a01d0.cpp"
  },
  "006a0240": {
   "name": "C_0085ec18_GetRasterWidth",
@@ -146778,7 +146783,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 428,
+   "GetGlobalInt": 429,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -146802,7 +146807,7 @@
   "name": "GlobalInt_ResolveAccessor",
   "name_src": "vote",
   "votes": {
-   "GlobalInt_ResolveAccessor": 75
+   "GlobalInt_ResolveAccessor": 76
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -152544,7 +152549,7 @@
   "name": "GlobalInt_FindNameId",
   "name_src": "vote",
   "votes": {
-   "GlobalInt_FindNameId": 5
+   "GlobalInt_FindNameId": 6
   },
   "ret": "int",
   "conv": "__stdcall",
@@ -153586,7 +153591,7 @@
   "name": "GetGlobalValue_6C5760",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_6C5760": 84
+   "GetGlobalValue_6C5760": 85
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -154112,7 +154117,9 @@
  "006c6e40": {
   "name": "GfxSkin_ForwardWithSkinVisitorCallback",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxSkin_ForwardWithSkinVisitorCallback": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1",
@@ -158491,7 +158498,7 @@
   "name": "GfxObject_AcquireIndexedResource",
   "name_src": "agent",
   "votes": {
-   "GfxObject_AcquireIndexedResource": 1
+   "GfxObject_AcquireIndexedResource": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -158784,7 +158791,9 @@
  "006d58e0": {
   "name": "GfxTextureLoader_FindModelIndex",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxTextureLoader_FindModelIndex": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_006d4450* self, void* , char* String2, int",
@@ -160824,7 +160833,9 @@
  "006dcef0": {
   "name": "GfxTextureLoader_FindFilterType",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxTextureLoader_FindFilterType": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "char* name",
@@ -160834,7 +160845,9 @@
  "006dcf40": {
   "name": "GfxTextureLoader_FindFacingType",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxTextureLoader_FindFacingType": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "char* name",
@@ -160845,7 +160858,7 @@
   "name": "S_006dcf90_ReleaseResource",
   "name_src": "agent",
   "votes": {
-   "S_006dcf90_ReleaseResource": 1
+   "S_006dcf90_ReleaseResource": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -160879,6 +160892,7 @@
   "name": "S_006dcf90_ResetDefaults",
   "name_src": "agent",
   "votes": {
+   "S_006dcf90_ResetDefaults": 1,
    "S_006dcf90_RefreshSettings": 1
   },
   "ret": "int",
@@ -160893,10 +160907,11 @@
   "votes": {
    "ResourceMatchesName": 1
   },
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a4",
-  "sig_src": "vote"
+  "params": "S_006dcf90* self, void* , char* resourceName",
+  "sig_src": "impl",
+  "file": "src/auto/006dd340.cpp"
  },
  "006de030": {
   "name": "GfxTextureLoader_UpdateScaledParticleParameters",
@@ -171105,7 +171120,9 @@
  "00701ef0": {
   "name": "ParticleSystemDefs_ReadEmitterParameters",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ParticleSystemDefs_ReadEmitterParameters": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "float* self, void* , char* resourceName, std::uint8_t* definition",
@@ -193672,13 +193689,14 @@
   "sig_src": "abi"
  },
  "0074b380": {
-  "name": "sub_74B380",
-  "name_src": "addr",
+  "name": "NetGhostDdl_MatchesClassIdOrDelegate",
+  "name_src": "impl",
   "votes": {},
   "ret": "bool",
   "conv": "__stdcall",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0074b380.cpp"
  },
  "0074b3a0": {
   "name": "sub_74B3A0",
@@ -193690,13 +193708,15 @@
   "sig_src": "abi"
  },
  "0074b3c0": {
-  "name": "sub_74B3C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetGhostDdl_ProcessField",
+  "name_src": "vote",
+  "votes": {
+   "NetGhostDdl_ProcessField": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2, void* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0074b470": {
   "name": "sub_74B470",
@@ -193744,22 +193764,24 @@
   "sig_src": "abi"
  },
  "0074b780": {
-  "name": "sub_74B780",
-  "name_src": "addr",
+  "name": "NetGhostDdl_ForwardToProcessField_74B780",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
   "conv": "__stdcall",
-  "params": "int a1, int a2, void* a3",
-  "sig_src": "abi"
+  "params": "char* a1, char* a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/0074b780.cpp"
  },
  "0074b7a0": {
-  "name": "sub_74B7A0",
-  "name_src": "addr",
+  "name": "NetGhostDDL_WriteSpawnFieldsForward",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1, void* arg4, int _10, int a3, int a4, void* a2, int a5",
-  "sig_src": "abi"
+  "params": "int a1, C_008622e8* arg4, int unused10, int a3, int a4, C_008622e8* a2, int a5",
+  "sig_src": "impl",
+  "file": "src/auto/0074b7a0.cpp"
  },
  "0074b7c0": {
   "name": "sub_74B7C0",
@@ -193780,13 +193802,14 @@
   "sig_src": "abi"
  },
  "0074b810": {
-  "name": "sub_74B810",
-  "name_src": "addr",
+  "name": "NetGhostDdl_ReadIntoSlotViaFourthArg",
+  "name_src": "impl",
   "votes": {},
   "ret": "void*",
   "conv": "__stdcall",
-  "params": "int a1, char* a2, int a3, void* a4, int a5",
-  "sig_src": "abi"
+  "params": "int a1, char* a2, int a3, C_008622e8* a4, int a5",
+  "sig_src": "impl",
+  "file": "src/auto/0074b810.cpp"
  },
  "0074b830": {
   "name": "GetByteFieldAt8",
@@ -193853,13 +193876,15 @@
   "sig_src": "abi"
  },
  "0074bd70": {
-  "name": "sub_74BD70",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetGhostDdl_ProcessFieldHelper",
+  "name_src": "vote",
+  "votes": {
+   "NetGhostDdl_ProcessFieldHelper": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0074bee0": {
   "name": "sub_74BEE0",
@@ -193871,13 +193896,15 @@
   "sig_src": "abi"
  },
  "0074c050": {
-  "name": "sub_74C050",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetGhostDdl_ProcessGhostField",
+  "name_src": "vote",
+  "votes": {
+   "NetGhostDdl_ProcessGhostField": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* arg0, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0074c260": {
   "name": "sub_74C260",
@@ -193889,31 +193916,34 @@
   "sig_src": "abi"
  },
  "0074c440": {
-  "name": "sub_74C440",
-  "name_src": "addr",
+  "name": "NetGhostDdl_ForwardToProcessGhostField",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
   "conv": "__stdcall",
   "params": "void* a1, void* a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0074c440.cpp"
  },
  "0074c460": {
-  "name": "sub_74C460",
-  "name_src": "addr",
+  "name": "NetGhostDdl_ForwardToProcessField_74C460",
+  "name_src": "impl",
   "votes": {},
   "ret": "void",
   "conv": "__stdcall",
-  "params": "uint32_t* a1, int a2, void* a3",
-  "sig_src": "abi"
+  "params": "char* a1, int a2, void* a3",
+  "sig_src": "impl",
+  "file": "src/auto/0074c460.cpp"
  },
  "0074c480": {
-  "name": "sub_74C480",
-  "name_src": "addr",
+  "name": "NetGhostDdl_ForwardToCalleeWithThis",
+  "name_src": "impl",
   "votes": {},
-  "ret": "void",
+  "ret": "int",
   "conv": "__stdcall",
-  "params": "uint32_t* a1, void* a2",
-  "sig_src": "abi"
+  "params": "char* a1, C_008622e8* a2",
+  "sig_src": "impl",
+  "file": "src/auto/0074c480.cpp"
  },
  "0074c4a0": {
   "name": "sub_74C4A0",
@@ -196044,7 +196074,9 @@
  "00753280": {
   "name": "C_008622e8_WriteSpawnFields",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_008622e8_WriteSpawnFields": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_008622e8* self, void* , C_008622e8* destination, int , int , int",
@@ -215984,7 +216016,8 @@
   "name": "Rtfs_RegisterFileSystem",
   "name_src": "vote",
   "votes": {
-   "Rtfs_RegisterFileSystem": 1
+   "Rtfs_RegisterFileSystem": 1,
+   "RtFs_ValidateFileSystemHandle": 1
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -216138,13 +216171,15 @@
   "sig_src": "abi"
  },
  "007c6e90": {
-  "name": "sub_7C6E90",
-  "name_src": "addr",
-  "votes": {},
+  "name": "RtFs_SetDefaultFileSystem",
+  "name_src": "vote",
+  "votes": {
+   "RtFs_SetDefaultFileSystem": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007c7180": {
   "name": "sub_7C7180",
