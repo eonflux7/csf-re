@@ -1453,7 +1453,7 @@
   "votes": {
    "MenuMpCharacterSelect_GetAngleDifference": 1,
    "GetAngularDifference": 1,
-   "AngleDiffNormalized": 11
+   "AngleDiffNormalized": 12
   },
   "ret": "double",
   "conv": "__cdecl",
@@ -1615,7 +1615,7 @@
   "name": "AngleTable_GetAbsoluteAngleForIndex",
   "name_src": "agent",
   "votes": {
-   "AngleTable_GetAbsoluteAngleForIndex": 1
+   "AngleTable_GetAbsoluteAngleForIndex": 2
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -36796,16 +36796,17 @@
   "file": "src/auto/0048c9d0.cpp"
  },
  "0048c9f0": {
-  "name": "AiAttackTasks_CopyTargetHandle",
-  "name_src": "vote",
+  "name": "S_0048c9f0_CopyTargetHandle",
+  "name_src": "agent",
   "votes": {
    "AiAttackTasks_CopyTargetHandle": 31,
    "AiAttackTasks_SetWeaponTarget": 1
   },
-  "ret": "int",
+  "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "S_0048c9f0* self, void* , const void* handle",
+  "sig_src": "impl",
+  "file": "src/auto/0048c9f0.cpp"
  },
  "0048ca40": {
   "name": "AttackTasks_SetCoverAttackPosition",
@@ -36832,15 +36833,16 @@
   "file": "src/auto/0048cac0.cpp"
  },
  "0048cad0": {
-  "name": "AiAttackTasks_ComputeWeaponAction",
-  "name_src": "vote",
+  "name": "S_0048cad0_CheckAngleConstraints",
+  "name_src": "agent",
   "votes": {
    "AiAttackTasks_ComputeWeaponAction": 1
   },
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2, float a3",
-  "sig_src": "vote"
+  "params": "S_0048cad0* self, void* , char flags, float angleLimit",
+  "sig_src": "impl",
+  "file": "src/auto/0048cad0.cpp"
  },
  "0048cbe0": {
   "name": "TCharTask_CheckRotationGate",
@@ -36855,13 +36857,14 @@
   "file": "src/auto/0048cbe0.cpp"
  },
  "0048cca0": {
-  "name": "sub_48CCA0",
-  "name_src": "addr",
+  "name": "S_0048c9f0_RebuildActiveCounterMask",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_0048c9f0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0048cca0.cpp"
  },
  "0048cd50": {
   "name": "sub_48CD50",
@@ -36917,13 +36920,15 @@
   "file": "src/auto/0048d030.cpp"
  },
  "0048d050": {
-  "name": "sub_48D050",
-  "name_src": "addr",
-  "votes": {},
+  "name": "RefreshTargetHandle",
+  "name_src": "vote",
+  "votes": {
+   "RefreshTargetHandle": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0048d0f0": {
   "name": "sub_48D0F0",
@@ -36945,19 +36950,20 @@
   "file": "src/auto/0048d1b0.cpp"
  },
  "0048d240": {
-  "name": "SpawnPoints_ProcessEntryPair",
-  "name_src": "vote",
+  "name": "S_00691860_SerializeObjectState",
+  "name_src": "agent",
   "votes": {
    "SpawnPoints_ProcessEntryPair": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "S_00691860* self, void* , bool* archive",
+  "sig_src": "impl",
+  "file": "src/auto/0048d240.cpp"
  },
  "0048d300": {
   "name": "SpawnPoints_ProcessEntryPairs",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
@@ -37841,7 +37847,7 @@
   "name": "C_008342e8_ComputeResolvedObjectScalar",
   "name_src": "agent",
   "votes": {
-   "C_008342e8_ComputeResolvedObjectScalar": 23,
+   "C_008342e8_ComputeResolvedObjectScalar": 24,
    "ComputeScalarForResolvedObject": 10
   },
   "ret": "double",
@@ -46945,7 +46951,7 @@
   "name": "Archive_SerializeObjectRef",
   "name_src": "vote",
   "votes": {
-   "Archive_SerializeObjectRef": 73
+   "Archive_SerializeObjectRef": 74
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -138187,7 +138193,7 @@
   "name_src": "agent",
   "votes": {
    "MenuExtras_GetChildCount": 89,
-   "S_00692b80_GetChildCount": 8
+   "S_00692b80_GetChildCount": 9
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -138200,7 +138206,7 @@
   "name_src": "agent",
   "votes": {
    "GetComponent": 102,
-   "S_00692b80_GetComponent": 8
+   "S_00692b80_GetComponent": 9
   },
   "ret": "S_00692b80*",
   "conv": "__fastcall",
@@ -138294,7 +138300,7 @@
   "name": "FindProperty",
   "name_src": "vote",
   "votes": {
-   "FindProperty": 131
+   "FindProperty": 132
   },
   "ret": "std::uint8_t*",
   "conv": "__fastcall",
@@ -138423,7 +138429,7 @@
   "name": "MenuExtras_ReadText",
   "name_src": "vote",
   "votes": {
-   "MenuExtras_ReadText": 76
+   "MenuExtras_ReadText": 77
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -144849,7 +144855,7 @@
   "name": "S_00526d40_GetVectorAngleRadians",
   "name_src": "agent",
   "votes": {
-   "S_00526d40_GetVectorAngleRadians": 21,
+   "S_00526d40_GetVectorAngleRadians": 22,
    "GetVectorAngleRadians": 2
   },
   "ret": "double",
@@ -178272,14 +178278,15 @@
  },
  "0071dbe0": {
   "name": "CGuiBuilder_ParseControls",
-  "name_src": "opus",
+  "name_src": "agent",
   "votes": {
    "CGuiBuilder_ParseControls": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "CGuiBuilder* self, void* edx, void* control, uint8_t* node",
-  "sig_src": "vote"
+  "params": "CGuiBuilder* self, void* , int parent, S_00692b80* definition",
+  "sig_src": "impl",
+  "file": "src/auto/0071dbe0.cpp"
  },
  "0071de40": {
   "name": "GuiBuilder_ReadTwoComponents",
@@ -195670,7 +195677,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 238,
+   "GetGlobalValue_8BC1E0": 239,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
@@ -211844,7 +211851,7 @@
   "name": "__stricmp",
   "name_src": "ida",
   "votes": {
-   "__stricmp": 78
+   "__stricmp": 79
   },
   "ret": "int",
   "conv": "__cdecl",
