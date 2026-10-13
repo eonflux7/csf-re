@@ -27089,7 +27089,7 @@
   "name": "MissionScript_ReleaseRecordBuffer",
   "name_src": "agent",
   "votes": {
-   "MissionScript_ReleaseRecordBuffer": 11,
+   "MissionScript_ReleaseRecordBuffer": 12,
    "DestroyRecord_469270": 11
   },
   "ret": "int",
@@ -138794,7 +138794,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 637,
+   "Mem_FreeDebug": 640,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -138886,7 +138886,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_AllocUntagged": 93,
+   "CoreMemory_AllocUntagged": 94,
    "Mem_Alloc": 482
   },
   "ret": "int",
@@ -138899,7 +138899,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 145,
+   "CoreMemory_Free": 147,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -139513,7 +139513,7 @@
   "name_src": "agent",
   "votes": {
    "MenuExtras_GetChildCount": 89,
-   "S_00692b80_GetChildCount": 13
+   "S_00692b80_GetChildCount": 14
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -139526,7 +139526,7 @@
   "name_src": "agent",
   "votes": {
    "GetComponent": 102,
-   "S_00692b80_GetComponent": 16
+   "S_00692b80_GetComponent": 17
   },
   "ret": "S_00692b80*",
   "conv": "__fastcall",
@@ -139639,7 +139639,7 @@
   "name": "LookupNamedElement",
   "name_src": "agent",
   "votes": {
-   "LookupNamedElement": 72
+   "LookupNamedElement": 73
   },
   "ret": "S_00692b80*",
   "conv": "__fastcall",
@@ -139764,7 +139764,7 @@
   "name": "ReadIntegerAttribute",
   "name_src": "agent",
   "votes": {
-   "ReadIntegerAttribute": 67
+   "ReadIntegerAttribute": 68
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -139776,7 +139776,8 @@
   "name": "S_00692b80_ReadFloatAttribute",
   "name_src": "agent",
   "votes": {
-   "ReadFloatAttribute": 42
+   "ReadFloatAttribute": 42,
+   "S_00692b80_ReadFloatAttribute": 1
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -161422,7 +161423,7 @@
   "file": "src/auto/006da360.cpp"
  },
  "006da380": {
-  "name": "ReleaseOwnedBlock",
+  "name": "ReleaseOwnedBlock_6DA380",
   "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
@@ -204800,13 +204801,14 @@
   "sig_src": "abi"
  },
  "007822b0": {
-  "name": "sub_7822B0",
-  "name_src": "addr",
+  "name": "S_007822b0_ClearAndFreeList",
+  "name_src": "impl",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_007822b0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/007822b0.cpp"
  },
  "00782310": {
   "name": "MissionData_ReleaseAndClearFlag",
@@ -204850,13 +204852,14 @@
   "sig_src": "vote"
  },
  "00782590": {
-  "name": "sub_782590",
-  "name_src": "addr",
+  "name": "InitDefaultSlotTable",
+  "name_src": "impl",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00782590.cpp"
  },
  "00782600": {
   "name": "GetGlobalValue8BC1EC",
@@ -204871,13 +204874,14 @@
   "file": "src/auto/00782600.cpp"
  },
  "00782610": {
-  "name": "sub_782610",
-  "name_src": "addr",
+  "name": "ReadFogSettingsFromAttributes",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__stdcall",
-  "params": "void* a1, int a2",
-  "sig_src": "abi"
+  "params": "S_00692b80* self, void* outSettings",
+  "sig_src": "impl",
+  "file": "src/auto/00782610.cpp"
  },
  "00782680": {
   "name": "ElementRange_GetEntryCount348",
@@ -204911,15 +204915,16 @@
  },
  "00782820": {
   "name": "SceneEntry_GetFloatSlotAddress",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SceneEntry_GetFloatSlotAddress": 3,
    "SceneMissionSetup_GetEntryAt": 2
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "vote"
+  "params": "void* self, void* , int slotIndex, int componentIndex",
+  "sig_src": "impl",
+  "file": "src/auto/00782820.cpp"
  },
  "007828a0": {
   "name": "Entry_ProcessWithThis",
@@ -204936,6 +204941,7 @@
   "name": "Entry_ForwardToProcessIfNonNull",
   "name_src": "agent",
   "votes": {
+   "MissionScript_CopyRecordEntry": 1,
    "ForwardToMissionRecord": 1
   },
   "ret": "int",
@@ -204945,18 +204951,21 @@
   "file": "src/auto/00782910.cpp"
  },
  "00782930": {
-  "name": "sub_782930",
-  "name_src": "addr",
+  "name": "MissionScript_CopyRecordRange_782930",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "int first, int last, int dest, int unused4, int unused5",
+  "sig_src": "impl",
+  "file": "src/auto/00782930.cpp"
  },
  "007829d0": {
   "name": "MissionScript_ForwardToRecordBlock",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "S_00782f90_ConstructElement348": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "std::uint8_t* first, std::uint32_t count, void* forwardArg, void* contextObject",
@@ -204967,7 +204976,9 @@
   "name": "ResetRecordRangeFreeBuffers",
   "name_src": "agent",
   "votes": {
-   "Forward_ProcessPair782A70": 1
+   "Forward_ProcessPair782A70": 1,
+   "DestroyBlockElements": 1,
+   "ObjectPayload_Release": 1
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -205044,7 +205055,9 @@
  "00782f90": {
   "name": "S_00782f90_GetSlotPointerForPosition",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_00782f90_InsertElement348": 1
+  },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
   "params": "S_00782f90* self, void* , std::uint32_t* result, C_0082d410* position, C_0082d410* extraArg",
@@ -205052,76 +205065,86 @@
   "file": "src/auto/00782f90.cpp"
  },
  "00783000": {
-  "name": "sub_783000",
-  "name_src": "addr",
+  "name": "S_00782f90_AppendElement348",
+  "name_src": "impl",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a3",
-  "sig_src": "abi"
+  "params": "S_00782f90* self, void* , C_0082d410* element",
+  "sig_src": "impl",
+  "file": "src/auto/00783000.cpp"
  },
  "00783090": {
-  "name": "sub_783090",
-  "name_src": "addr",
+  "name": "ReleaseSubBufferHandle",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_00782f90* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00783090.cpp"
  },
  "007830e0": {
-  "name": "sub_7830E0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "ProcessListaDatosComponent",
+  "name_src": "vote",
+  "votes": {
+   "ProcessListaDatosComponent": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00783260": {
-  "name": "sub_783260",
-  "name_src": "addr",
+  "name": "ReleaseOwnedBlock_783260",
+  "name_src": "impl",
   "votes": {},
-  "ret": "int",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a4",
-  "sig_src": "abi"
+  "params": "void* self, void* , int freeSelfFlags",
+  "sig_src": "impl",
+  "file": "src/auto/00783260.cpp"
  },
  "007832c0": {
-  "name": "sub_7832C0",
-  "name_src": "addr",
+  "name": "ProcessListaDatosChildren",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "S_00782f90* self, void* , S_00692b80* a2",
+  "sig_src": "impl",
+  "file": "src/auto/007832c0.cpp"
  },
  "00783320": {
-  "name": "sub_783320",
-  "name_src": "addr",
+  "name": "ReleasePendingValueIfSet",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/00783320.cpp"
  },
  "00783340": {
-  "name": "sub_783340",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CacheObject_Init",
+  "name_src": "vote",
+  "votes": {
+   "CacheObject_Init": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007833d0": {
-  "name": "sub_7833D0",
-  "name_src": "addr",
+  "name": "EnsureGlobalCacheObject",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
   "conv": "__cdecl",
   "params": "int a2",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/007833d0.cpp"
  },
  "00783430": {
   "name": "WeaponDefs_IsEntryValid",
@@ -214612,7 +214635,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 277
+   "RethrowCppException": 278
   },
   "ret": "void",
   "conv": "__stdcall",
