@@ -244,7 +244,7 @@
 - {addr: 0x00830E58, name: g_RadarDegToRad, type: float, uses: 1, src: auto}
 - {addr: 0x00830FA0, name: g_BriefingExtensionWord, type: 'std::uint32_t', uses: 3, src: auto}
 - {addr: 0x00830FA4, name: g_BriefingExtensionTerminator, type: char, uses: 1, src: auto}
-- {addr: 0x00830FF0, name: g_PackageSuffixTerminator, type: uint8_t, uses: 1, src: auto}
+- {addr: 0x00830FF0, name: g_PackageSuffixTerminator, type: char, uses: 2, src: auto, alt: [g_PakExtensionTerminator]}
 - {addr: 0x00831090, name: g_FloatMax, type: float, uses: 13, src: auto}
 - {addr: 0x008310F4, name: g_DegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x00831148, name: g_CloseTargetDistanceSquared, type: float, uses: 3, src: auto}
@@ -479,8 +479,8 @@
 - {addr: 0x0085E8D4, name: g_Value_85E8D4, type: int, uses: 1, src: auto}
 - {addr: 0x0085E8D8, name: g_Value_85E8D8, type: uint16_t, uses: 1, src: auto}
 - {addr: 0x0085E8DA, name: g_Value_85E8DA, type: uint8_t, uses: 1, src: auto}
-- {addr: 0x0085E8E0, name: g_GlobalPrefixTail, type: uint16_t, uses: 1, src: auto}
-- {addr: 0x0085E8E2, name: g_GlobalPrefixTerminator, type: uint8_t, uses: 1, src: auto}
+- {addr: 0x0085E8E0, name: g_GlobalNameTail, type: uint16_t, uses: 2, src: auto, alt: [g_GlobalPrefixTail]}
+- {addr: 0x0085E8E2, name: g_GlobalNameTerminator, type: char, uses: 2, src: auto, alt: [g_GlobalPrefixTerminator]}
 - {addr: 0x0085E910, name: g_FrameRateTimeScale, type: double, uses: 3, src: auto}
 - {addr: 0x0085E928, name: g_SecondsToMinutesFactor, type: float, uses: 1, src: auto}
 - {addr: 0x0085E9CC, name: g_NoFileInfoWord0, type: uint32_t, uses: 1, src: auto}
@@ -781,6 +781,8 @@
 - {addr: 0x0088FE28, name: g_GfxObjectPropsExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00890284, name: g_MenuElementRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008902D4, name: g_MenuElementCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x008903A8, name: g_DwordRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x008903F8, name: g_TextureDictCopyExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008905F0, name: g_CollisionShapeRangeExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00890640, name: g_SceneObjectRangeExceptionFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008907B4, name: g_CopyClumpRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
@@ -1136,7 +1138,7 @@
 - {addr: 0x008A66B8, name: g_ParserAllocationBlockCapacity, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008A66BC, name: g_ParserAllocationBlockCount, type: uint32_t, uses: 2, src: auto}
 - {addr: 0x008A66C0, name: g_ParserAllocationBlockGrowth, type: int, uses: 1, src: auto}
-- {addr: 0x008A66C8, name: g_ScenarioPathEntries, type: uint8_t, uses: 1, src: auto}
+- {addr: 0x008A66C8, name: g_ConfiguredOptionEntries, type: uint8_t, uses: 2, src: auto, alt: [g_ScenarioPathEntries]}
 - {addr: 0x008A677C, name: g_ScenarioPathEntriesEnd, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008A6788, name: g_pszKey_PC, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_off_008A6788]}
 - {addr: 0x008A6B90, name: g_pszKey_PREFERENCES, type: const char*, uses: 0, src: captain, conf: 1.0}
@@ -2058,7 +2060,7 @@
 - {addr: 0x008BAF90, name: g_ActiveSceneContext, type: void*, uses: 5, src: auto, alt: [g_ActiveSceneLoadContext, g_PendingSceneResource]}
 - {addr: 0x008BAF94, name: g_Value_8baf94, type: int, uses: 3, src: auto}
 - {addr: 0x008BAF98, name: g_CurrentScenarioId, type: int, uses: 4, src: auto, alt: [g_Value_8BAF98]}
-- {addr: 0x008BAF9C, name: g_FallbackOption, type: int, uses: 2, src: auto, alt: [g_FallbackScenarioId]}
+- {addr: 0x008BAF9C, name: g_FallbackOption, type: int, uses: 3, src: auto, alt: [g_FallbackScenarioId, g_PreparedConfiguredOption]}
 - {addr: 0x008BAFA0, name: g_CachedSoundScenarioId, type: int, uses: 1, src: auto}
 - {addr: 0x008BAFA4, name: g_Value_8BAFA4, type: int, uses: 2, src: auto}
 - {addr: 0x008BAFA8, name: g_Value_8BAFA8, type: int, uses: 1, src: auto}
@@ -2102,7 +2104,7 @@
 - {addr: 0x008BB488, name: g_ObjectPropsTableBase, type: uint32_t, uses: 10, src: auto, alt: [g_EntryTableBase, g_GeometryPropertyPluginOffset, g_GfxPropsSlotBase, g_ObjPropsBaseOffset, g_ObjectPropsSlotBase, g_TableBase]}
 - {addr: 0x008BB48C, name: g_ObjectFallback, type: ObjectFallback, uses: 2, src: auto, alt: [g_SectorRenderCallBack]}
 - {addr: 0x008BB494, name: g_SectorStateCounter, type: int, uses: 1, src: auto}
-- {addr: 0x008BB49C, name: g_TexDictValueTotal, type: 'std::uint32_t', uses: 1, src: auto}
+- {addr: 0x008BB49C, name: g_TexDictEnumResetFlag, type: int, uses: 2, src: auto, alt: [g_TexDictValueTotal]}
 - {addr: 0x008BB4B4, name: g_DefaultAtomicCallback, type: uint32_t, uses: 2, src: auto, alt: [g_PassthroughTarget_8BB4B4]}
 - {addr: 0x008BB4B8, name: g_Value_8BB4B8, type: int, uses: 7, src: auto, alt: [g_Value8BB4B8]}
 - {addr: 0x008BB4CC, name: g_Value_8BB4CC, type: int32_t, uses: 3, src: auto}

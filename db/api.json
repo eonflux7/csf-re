@@ -112587,7 +112587,7 @@
   "name": "RwImageSetPath",
   "name_src": "rwname",
   "votes": {
-   "RwImageSetPath": 9
+   "RwImageSetPath": 10
   },
   "ret": "const void*",
   "conv": "__cdecl",
@@ -112598,7 +112598,7 @@
   "name": "RwImageGetPath",
   "name_src": "rwname",
   "votes": {
-   "RwImageGetPath": 2
+   "RwImageGetPath": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -114732,7 +114732,7 @@
   "name": "RwTexDictionaryForAllTextures",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryForAllTextures": 4
+   "RwTexDictionaryForAllTextures": 6
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -114807,7 +114807,7 @@
   "name": "RwTexDictionaryFindNamedTexture",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryFindNamedTexture": 3
+   "RwTexDictionaryFindNamedTexture": 4
   },
   "ret": "char*",
   "conv": "__cdecl",
@@ -114827,7 +114827,7 @@
   "name": "RwTexDictionaryGetCurrent",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryGetCurrent": 3
+   "RwTexDictionaryGetCurrent": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -114838,7 +114838,7 @@
   "name": "RwTextureRead",
   "name_src": "rwname",
   "votes": {
-   "RwTextureRead": 3
+   "RwTextureRead": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -139830,13 +139830,15 @@
   "sig_src": "vote"
  },
  "00694860": {
-  "name": "sub_694860",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GfxTexdict_ExtractResourceExtension",
+  "name_src": "vote",
+  "votes": {
+   "GfxTexdict_ExtractResourceExtension": 1
+  },
   "ret": "char*",
   "conv": "__cdecl",
   "params": "char* a1, uint8_t* a2, char* a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006948e0": {
   "name": "SceneLoader_CopyMapFilename",
@@ -139853,7 +139855,7 @@
   "name": "Hud_ExtractResourcePath",
   "name_src": "vote",
   "votes": {
-   "Hud_ExtractResourcePath": 7
+   "Hud_ExtractResourcePath": 8
   },
   "ret": "char*",
   "conv": "__cdecl",
@@ -139864,7 +139866,7 @@
   "name": "NormalizeResourceName",
   "name_src": "vote",
   "votes": {
-   "NormalizeResourceName": 20
+   "NormalizeResourceName": 21
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -140898,7 +140900,7 @@
   "name": "CoreFiles_CheckScenarioFile",
   "name_src": "agent",
   "votes": {
-   "Campaign_CheckScenarioFile": 5
+   "Campaign_CheckScenarioFile": 6
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -142738,7 +142740,7 @@
   "name": "AppConfig_GetLanguageName",
   "name_src": "agent",
   "votes": {
-   "AppConfig_GetLanguageName": 2
+   "AppConfig_GetLanguageName": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -142797,15 +142799,16 @@
   "file": "src/auto/0069c590.cpp"
  },
  "0069c660": {
-  "name": "AppMain_PrepareConfiguredOption",
-  "name_src": "vote",
+  "name": "CoreWin32Debug_PrepareConfiguredOption",
+  "name_src": "agent",
   "votes": {
    "AppMain_PrepareConfiguredOption": 1
   },
-  "ret": "char",
+  "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1",
-  "sig_src": "vote"
+  "params": "int option",
+  "sig_src": "impl",
+  "file": "src/auto/0069c660.cpp"
  },
  "0069c760": {
   "name": "CoreWin32Debug_ApplyOption",
@@ -148337,7 +148340,7 @@
   "name": "C_00860178_Construct",
   "name_src": "agent",
   "votes": {
-   "C_00860178_Construct": 51
+   "C_00860178_Construct": 52
   },
   "ret": "C_00860178*",
   "conv": "__fastcall",
@@ -153446,7 +153449,7 @@
  },
  "006c0ff0": {
   "name": "C_008607f8_ResolveOrDelegate",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -153474,13 +153477,14 @@
   "sig_src": "abi"
  },
  "006c10b0": {
-  "name": "sub_6C10B0",
-  "name_src": "addr",
+  "name": "GfxTexDict_FindAndStoreNamedTexture",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2",
-  "sig_src": "abi"
+  "params": "int dictionary, uint32_t* outTextureSlot",
+  "sig_src": "impl",
+  "file": "src/auto/006c10b0.cpp"
  },
  "006c10e0": {
   "name": "GfxTexDict_AccumulateObjectValue",
@@ -153549,26 +153553,28 @@
   "sig_src": "abi"
  },
  "006c1420": {
-  "name": "TexDictRelay6C1420_Dispatch",
-  "name_src": "vote",
+  "name": "CopyDwordRangeToDestination_6C1420",
+  "name_src": "agent",
   "votes": {
    "TexDictRelay6C1420_Dispatch": 1
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3, int a4, int a5",
-  "sig_src": "vote"
+  "params": "std::uint32_t source, std::uint32_t sourceEnd, std::uint32_t destination, std::uint32_t , std::uint32_t",
+  "sig_src": "impl",
+  "file": "src/auto/006c1420.cpp"
  },
  "006c1490": {
   "name": "ShapeAllocatorBase_Construct",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "ShapeAllocatorBase_Construct": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_008607f8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006c1490.cpp"
  },
  "006c14b0": {
   "name": "C_008607f8_ReleaseBase",
@@ -153591,13 +153597,14 @@
   "sig_src": "abi"
  },
  "006c1620": {
-  "name": "sub_6C1620",
-  "name_src": "addr",
+  "name": "GfxTexdict_ReadTextureFromResource",
+  "name_src": "impl",
   "votes": {},
-  "ret": "bool",
+  "ret": "int",
   "conv": "__stdcall",
-  "params": "char* Source",
-  "sig_src": "abi"
+  "params": "char* source",
+  "sig_src": "impl",
+  "file": "src/auto/006c1620.cpp"
  },
  "006c1700": {
   "name": "sub_6C1700",
@@ -153609,13 +153616,14 @@
   "sig_src": "abi"
  },
  "006c1740": {
-  "name": "sub_6C1740",
-  "name_src": "addr",
+  "name": "TexDict_EnumerateCurrentTextures",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/006c1740.cpp"
  },
  "006c1770": {
   "name": "GlobalInt_FindNameId",
@@ -153629,18 +153637,21 @@
   "sig_src": "vote"
  },
  "006c17b0": {
-  "name": "sub_6C17B0",
-  "name_src": "addr",
+  "name": "C_008607f8_EnumerateCurrentTextures",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_008607f8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006c17b0.cpp"
  },
  "006c17e0": {
   "name": "TextureDict_CopyDwordArray",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "CopyDwordIntoSlot_6C17E0": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "std::uint32_t* destination, std::uint32_t count, const std::uint32_t* source, void* , void*",
@@ -153676,33 +153687,38 @@
   "sig_src": "abi"
  },
  "006c1910": {
-  "name": "sub_6C1910",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "char",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* Src, unsigned int a3, uint32_t* a4",
-  "sig_src": "abi"
- },
- "006c1b70": {
-  "name": "sub_6C1B70",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "char",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int a2, int a3",
-  "sig_src": "abi"
- },
- "006c1c00": {
-  "name": "GfxObjectInstances_AppendMaterialReference",
+  "name": "TextureDictVector_InsertFilled",
   "name_src": "vote",
   "votes": {
-   "GfxObjectInstances_AppendMaterialReference": 1
+   "TextureDictVector_InsertFilled": 1,
+   "InsertPointerElements_6C1910": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a3",
+  "params": "void* self, void* edx, uint32_t* Src, unsigned int a3, uint32_t* a4",
   "sig_src": "vote"
+ },
+ "006c1b70": {
+  "name": "ResizeTextureDictVector",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "unsigned int",
+  "conv": "__fastcall",
+  "params": "void* self, void* , unsigned int requestedCount, int fillValue",
+  "sig_src": "impl",
+  "file": "src/auto/006c1b70.cpp"
+ },
+ "006c1c00": {
+  "name": "GfxObjectInstances_AppendMaterialReference",
+  "name_src": "agent",
+  "votes": {
+   "GfxObjectInstances_AppendMaterialReference": 1
+  },
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "void* self, void* , std::uint32_t a3",
+  "sig_src": "impl",
+  "file": "src/auto/006c1c00.cpp"
  },
  "006c1c70": {
   "name": "sub_6C1C70",
@@ -153735,7 +153751,7 @@
  },
  "006c2030": {
   "name": "Timevec_Destroy",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -153745,7 +153761,7 @@
  },
  "006c2040": {
   "name": "Timevec_Destruct",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -153767,14 +153783,15 @@
  },
  "006c2060": {
   "name": "GfxHAnim_IsSpecialAnimation",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GfxHAnim_IsSpecialAnimation": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void*** self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006c2060.cpp"
  },
  "006c2080": {
   "name": "HAnim_GetSceneChannelCount",
@@ -186608,7 +186625,7 @@
   "name": "CopyDwordIfNotNull",
   "name_src": "agent",
   "votes": {
-   "CopyDwordIfNotNull": 40
+   "CopyDwordIfNotNull": 41
   },
   "ret": "uint32_t*",
   "conv": "__stdcall",
@@ -213999,7 +214016,7 @@
   "name": "_memcpy",
   "name_src": "ida",
   "votes": {
-   "_memcpy": 122,
+   "_memcpy": 123,
    "Memcpy": 1
   },
   "ret": "void*",
@@ -214020,7 +214037,7 @@
   "name": "___CxxFrameHandler",
   "name_src": "ida",
   "votes": {
-   "___CxxFrameHandler": 197,
+   "___CxxFrameHandler": 198,
    "OriginalCxxFrameHandler": 1
   },
   "ret": "int",
@@ -214104,7 +214121,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 270
+   "RethrowCppException": 271
   },
   "ret": "void",
   "conv": "__stdcall",
@@ -214291,7 +214308,7 @@
   "name": "_strncpy",
   "name_src": "ida",
   "votes": {
-   "_strncpy": 14
+   "_strncpy": 15
   },
   "ret": "char*",
   "conv": "__cdecl",
