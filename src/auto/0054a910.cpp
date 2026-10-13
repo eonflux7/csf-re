@@ -1,54 +1,3 @@
-# Escalation 0x0054A910: breaks the installed baseline (verifier bisect: 39 smokes (0 named by crash reports, k=8))
-
-## Its lines in the smoke log
-```
-
-```
-
-## Smoke log tail
-```
-sive (a callee returned an address in the original's frame)
-T3 00697100 S_004f21d0_SetPattern: inconclusive (a callee returned an address in the original's frame)
-T3 00732460 C_0086709c_ScheduleNonNegativeTime: inconclusive (a callee returned an address in the original's frame)
-T3 00500F10 S_004f21d0_Reset: inconclusive (a callee returned an address in the original's frame)
-T3 00512400 CSaveGameManager_LoadSaveSlot: inconclusive (a callee changed heap memory ours may read; call 5 to 00698600: arg 1 orig 6D843E00 ours 00000000)
-T3 00500F10 S_004f21d0_Reset: inconclusive (a callee returned an address in the original's frame)
-T3 00512400 CSaveGameManager_LoadSaveSlot: inconclusive (a callee changed heap memory ours may read; call 5 to 00698600: arg 1 orig 6D843E00 ours 00000000)
-T3 00500F10 S_004f21d0_Reset: inconclusive (a callee returned an address in the original's frame)
-T3 00512400 CSaveGameManager_LoadSaveSlot: inconclusive (a callee changed heap memory ours may read; call 5 to 00698600: arg 1 orig 6D843E00 ours 00000000)
-CRASH code=c0000005 eip=0000001e addr=0000001e (rw=0) eax=0000001e ebx=00000000 ecx=00000000 edx=00000000 esi=00000000 edi=0d464708 ebp=0019ea70 esp=0019e9d8
-  eip module 00000000 (ours 6D1F0000); stack:
-   6d55a0b2 00000000 00000000 00000001 00000000 6d1fdcc0
-   b61b62cd 007f0c7f 0000001d 00000000 00000000 00000000
-   00000005 00000002 0019ea98 00000000 00000000 0000001e
-   0019e7b0 00865e38 0372e680 0372e680 00000000 0d4f0a70
----- csf_hook.log
-hooks installed=13361 skipped=361 failed=0
-t3: 2844 callees intercepted (2396 wrapped hooks, 448 trampolines, 0 failed)
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00B76AE4 wrapped
-devcmd: video mode 1280x960
-menutour: Menus/P_MePrin.fbs
-menutour: Menus/P_Campan.fbs
-menutour: Menus/P_Scenes.fbs
-menutour: Menus/P_LoGame.fbs
-menutour: Menus/P_Profil.fbs
-menutour: Menus/P_Option.fbs
-menutour: Menus/P_Video.fbs
-CRASH code=c0000005 eip=0000001e addr=0000001e (rw=0) eax=0000001e ebx=00000000 ecx=00000000 edx=00000000 esi=00000000 edi=0d464708 ebp=0019ea70 esp=0019e9d8
-  eip module 00000000 (ours 6D1F0000); stack:
-   6d55a0b2 00000000 00000000 00000001 00000000 6d1fdcc0
-   b61b62cd 007f0c7f 0000001d 00000000 00000000 00000000
-   00000005 00000002 0019ea98 00000000 00000000 0000001e
-   0019e7b0 00865e38 0372e680 0372e680 00000000 0d4f0a70
-SMOKE FAIL (alive, but 1 CRASH logged: the game caught it)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include "globals.h"
 #include "hook.h"
@@ -168,12 +117,15 @@ static int __fastcall CMenuVideoOptions_InitializeControls(
 
         control = reinterpret_cast<void*>(self->field_0064);
         void** sliderVtable = CSF_AT(void**, control, 0);
-        int steps = reinterpret_cast<int(__fastcall*)(void*, void*, int)>(
-            sliderVtable[612 / 4])(control, nullptr, 0);
-        int64_t position = static_cast<int64_t>((steps - 1) * self->field_0034);
+        // The zero pushed before GetCount is SetPosition's second argument:
+        // GetCount returns with ret 0, whereas SetPosition returns with ret 8.
+        int steps = reinterpret_cast<int(__fastcall*)(void*, void*)>(
+            sliderVtable[612 / 4])(control, nullptr);
+        // Keep the product wider than float until the original's _ftol2 conversion.
+        int64_t position = static_cast<int64_t>(static_cast<double>(steps - 1) * self->field_0034);
         control = reinterpret_cast<void*>(self->field_0064);
-        reinterpret_cast<void(__fastcall*)(void*, void*, int)>(
-            sliderVtable[620 / 4])(control, nullptr, static_cast<int32_t>(position));
+        reinterpret_cast<void(__fastcall*)(void*, void*, int, int)>(
+            sliderVtable[620 / 4])(control, nullptr, static_cast<int32_t>(position), 0);
 
         control = reinterpret_cast<void*>(self->field_0064);
         int value = reinterpret_cast<int(__fastcall*)(void*, void*)>(
@@ -183,7 +135,7 @@ static int __fastcall CMenuVideoOptions_InitializeControls(
             CSF_AT(void**, control, 0)[344 / 4])(control, nullptr, value);
     }
 
-    if (!reinterpret_cast<bool(__fastcall*)(void*, void*)>(
+    if (!reinterpret_cast<uint8_t(__fastcall*)(void*, void*)>(
             CSF_AT(void**, self, 0)[0x30 / 4])(self, nullptr))
     {
         control = reinterpret_cast<void*>(self->field_001c);
@@ -238,5 +190,3 @@ static int __fastcall CMenuVideoOptions_InitializeControls(
 }
 
 HOOK(0x0054A910, CMenuVideoOptions_InitializeControls, "auto");
-
-```

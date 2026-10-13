@@ -356,13 +356,17 @@ def thunk_target(ea, db):
 
 
 def takes_reg(ea, db, reg):
-    """Does the function take an argument in `reg` (ecx/edx)? Hex-Rays' data flow decides (export/abi.json);
-    the straight-line scan only where Hex-Rays has nothing (it took `push ecx` for a slot reservation even when
-    the value was a live `this` passed on)."""
+    """Does the function take an argument in ECX/EDX? Retain Hex-Rays locations unless
+    bit-level original control flow proves that no incoming bit is consumed. An
+    ambiguous proof is NOT a spurious argument. Also retain exact entry reads
+    missing from Hex-Rays (notably forwarding thunks' receiver adjustments).
+    """
     ea = thunk_target(ea, db)
     a = ida_abi().get(ea)
     if a and a.get("cc") and any(loc == reg for _, _, loc in a.get("args", [])):
-        return True
+        from regargs import entry_register_reads
+        if entry_register_reads(db, ea, reg) != 0:
+            return True
     # an exact read in the entry block (no branch before it) is a fact even where Hex-Rays says no: thunks like
     # `mov ecx, [ecx+0x30]; jmp target` get the target's prototype from Hex-Rays and lose their `this`
     return reads_before_write(ea, db, reg)
@@ -435,6 +439,16 @@ def abi_sig(ea, db):
     a = without_spurious(ea, ida_abi().get(ea))
     if not a or not a.get("cc") or ea not in db.F:
         return None
+    # Revalidate ECX/EDX locations too: regargs.json covers only the nonstandard
+    # callee-saved arguments, not stale Hex-Rays fastcall register locations.
+    from regargs import entry_register_reads
+    dropped = {loc for _, _, loc in a.get('args', []) if loc in ('ecx', 'edx')
+               and entry_register_reads(db, ea, loc) == 0}
+    if dropped:
+        a = dict(a, args=[x for x in a['args'] if x[2] not in dropped])
+        regs = [loc for _, _, loc in a['args'] if loc != 'stack']
+        if not regs and a['cc'] in ('thiscall', 'fastcall'):
+            a['cc'] = 'stdcall' if a.get('stk') else 'cdecl'
     cc = a["cc"]
     if cc not in ("cdecl", "stdcall", "thiscall", "fastcall", "ellipsis"):
         return None

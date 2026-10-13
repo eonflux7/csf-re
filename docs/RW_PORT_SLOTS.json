@@ -1,0 +1,4002 @@
+[
+  {
+    "address": "0x566520",
+    "name": "RpAnisotGetMaxSupportedMaxAnisotropy",
+    "references": 2,
+    "subsystem": "raster/texture/image",
+    "replacement": "texture.cpp: rw::getMaxSupportedMaxAnisotropy",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x566530",
+    "name": "RpAnisotTextureSetMaxAnisotropy",
+    "references": 1,
+    "subsystem": "raster/texture/image",
+    "replacement": "texture.cpp: rw::Texture::setMaxAnisotropy",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x56B9B0",
+    "name": "RpWorldForAllWorldSectorIntersections",
+    "references": 1,
+    "subsystem": "collision/bounds",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x56BAF0",
+    "name": "RpCollisionWorldForAllIntersections",
+    "references": 5,
+    "subsystem": "collision/bounds",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x56BBD0",
+    "name": "RpWorldForAllAtomicIntersections",
+    "references": 1,
+    "subsystem": "collision/bounds",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x56BDF0",
+    "name": "RpAtomicForAllIntersections",
+    "references": 4,
+    "subsystem": "collision/bounds",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x56CD30",
+    "name": "RpHAnimHierarchyDestroy",
+    "references": 3,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "hanim.cpp: rw::HAnimHierarchy::destroy",
+    "fit": "differs",
+    "notes": "Hierarchy/interpolator/skin layouts and callbacks differ; map handles and plugin payloads. Subhierarchy/compressed formats not implied by this candidate.",
+    "slice": 5
+  },
+  {
+    "address": "0x56CDB0",
+    "name": "RpHAnimHierarchyCreateSubHierarchy",
+    "references": 1,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x56CED0",
+    "name": "RpHAnimHierarchyCreateFromHierarchy",
+    "references": 1,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x56CF50",
+    "name": "RpHAnimHierarchyDetach",
+    "references": 2,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x56CF80",
+    "name": "RpHAnimHierarchyGetMatrixArray",
+    "references": 8,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "rwplugins.h: rw::HAnimHierarchy::matrices [field]",
+    "fit": "differs",
+    "notes": "Hierarchy/interpolator/skin layouts and callbacks differ; map handles and plugin payloads. Subhierarchy/compressed formats not implied by this candidate.",
+    "slice": 5
+  },
+  {
+    "address": "0x56CF90",
+    "name": "RpHAnimFrameGetHierarchy",
+    "references": 2,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "hanim.cpp: rw::HAnimHierarchy::get",
+    "fit": "differs",
+    "notes": "Hierarchy/interpolator/skin layouts and callbacks differ; map handles and plugin payloads. Subhierarchy/compressed formats not implied by this candidate.",
+    "slice": 5
+  },
+  {
+    "address": "0x56CFA0",
+    "name": "RpHAnimFrameGetID",
+    "references": 3,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "rwplugins.h: rw::HAnimData::id [field]",
+    "fit": "differs",
+    "notes": "Hierarchy/interpolator/skin layouts and callbacks differ; map handles and plugin payloads. Subhierarchy/compressed formats not implied by this candidate.",
+    "slice": 5
+  },
+  {
+    "address": "0x56D3F0",
+    "name": "RpHAnimHierarchyUpdateMatrices",
+    "references": 8,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "hanim.cpp: rw::HAnimHierarchy::updateMatrices",
+    "fit": "differs",
+    "notes": "Hierarchy/interpolator/skin layouts and callbacks differ; map handles and plugin payloads. Subhierarchy/compressed formats not implied by this candidate.",
+    "slice": 5
+  },
+  {
+    "address": "0x56DB50",
+    "name": "RpHAnimHierarchyAttach",
+    "references": 2,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "hanim.cpp: rw::HAnimHierarchy::attach",
+    "fit": "differs",
+    "notes": "Hierarchy/interpolator/skin layouts and callbacks differ; map handles and plugin payloads. Subhierarchy/compressed formats not implied by this candidate.",
+    "slice": 5
+  },
+  {
+    "address": "0x56EFF0",
+    "name": "RpLtMapGetRenderStyle",
+    "references": 1,
+    "subsystem": "other plugins",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x56F2B0",
+    "name": "RpLtMapSetRenderStyle",
+    "references": 1,
+    "subsystem": "other plugins",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x56F380",
+    "name": "RpLtMapWorldLightMapsQuery",
+    "references": 1,
+    "subsystem": "other plugins",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x571270",
+    "name": "RpMatFXAtomicEnableEffects",
+    "references": 2,
+    "subsystem": "material/matfx",
+    "replacement": "matfx.cpp: rw::MatFX::enableEffects",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 5
+  },
+  {
+    "address": "0x5712A0",
+    "name": "RpMatFXAtomicQueryEffects",
+    "references": 4,
+    "subsystem": "material/matfx",
+    "replacement": "matfx.cpp: rw::MatFX::getEffects(Atomic*)",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 5
+  },
+  {
+    "address": "0x5712B0",
+    "name": "RpMatFXMaterialGetEffects",
+    "references": 1,
+    "subsystem": "material/matfx",
+    "replacement": "matfx.cpp: rw::MatFX::getEffects(Material*)",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 5
+  },
+  {
+    "address": "0x5715D0",
+    "name": "RpMatFXMaterialSetEnvMapFrame",
+    "references": 1,
+    "subsystem": "material/matfx",
+    "replacement": "matfx.cpp: rw::MatFX::setEnvFrame",
+    "fit": "differs",
+    "notes": "Obtain MatFX extension then setEnvFrame; translate Frame to sidecar and return original Material pointer.",
+    "slice": 5
+  },
+  {
+    "address": "0x571610",
+    "name": "RpMatFXMaterialSetEnvMapFrameBufferAlpha",
+    "references": 1,
+    "subsystem": "material/matfx",
+    "replacement": "matfx.cpp: rw::MatFX::setEnvFBAlpha",
+    "fit": "differs",
+    "notes": "Obtain MatFX extension then setEnvFBAlpha; native method returns void, original returns Material handle.",
+    "slice": 5
+  },
+  {
+    "address": "0x571920",
+    "name": "RpMatFXMaterialSetUVTransformMatrices",
+    "references": 5,
+    "subsystem": "material/matfx",
+    "replacement": "matfx.cpp: rw::MatFX::setUVTransformMatrices",
+    "fit": "differs",
+    "notes": "Extension method versus Material API; matrices may share the compatible POD layout, but extension offsets/ownership do not.",
+    "slice": 5
+  },
+  {
+    "address": "0x571A80",
+    "name": "RpMatFXMaterialSetEffects",
+    "references": 2,
+    "subsystem": "material/matfx",
+    "replacement": "matfx.cpp: rw::MatFX::setEffects",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 5
+  },
+  {
+    "address": "0x5774B0",
+    "name": "RpMorphAtomicAddTime",
+    "references": 1,
+    "subsystem": "other plugins",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x5784E0",
+    "name": "RpPrtAdvEmitterClassCreate",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x5785B0",
+    "name": "RpPrtAdvEClassStdCreate",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x57BBD0",
+    "name": "RpPrtAdvEmtSphereEmitCB",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x57C220",
+    "name": "RpPrtStdAtomicIsEmitter",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x57C290",
+    "name": "RpPrtStdAtomicGetEmitter",
+    "references": 11,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x57C2D0",
+    "name": "RpPrtStdAtomicUpdate",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x57C5D0",
+    "name": "RpPrtStdAtomicCreate",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x57C770",
+    "name": "RpPrtStdPropTabDestroy",
+    "references": 3,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x57C8B0",
+    "name": "RpPrtStdPropTabGetPropOffset",
+    "references": 14,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x57C9A0",
+    "name": "RpPrtStdPropTabCreate",
+    "references": 3,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x57CD60",
+    "name": "RpPrtStdEmitterClassDestroy",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x57CE10",
+    "name": "RpPrtStdEmitterClassSetCallBack",
+    "references": 2,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x57CE90",
+    "name": "RpPrtStdEmitterClassSetPropTab",
+    "references": 3,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x57CED0",
+    "name": "RpPrtStdEmitterClassGetPropTab",
+    "references": 3,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x57CFE0",
+    "name": "unnamed",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code. High confidence particle batch update callback: caller installs in particle class; dt argument, property offsets and PTank arrays. Formal PrtStd callback name uncertain.",
+    "slice": 8
+  },
+  {
+    "address": "0x57DBA0",
+    "name": "unnamed",
+    "references": 2,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code. High confidence emitter emission callback: class callback slot 0, emitter property tables, randomized particle initialization and PTank output. Formal PrtStd name uncertain.",
+    "slice": 8
+  },
+  {
+    "address": "0x57EDA0",
+    "name": "unnamed",
+    "references": 2,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code. High confidence emitter render callback shape: tests flag 0x200, property ID 1, calls RpAtomicRender on the PTank atomic; formal name uncertain.",
+    "slice": 8
+  },
+  {
+    "address": "0x57EF90",
+    "name": "unnamed",
+    "references": 2,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code. High confidence emitter begin-update callback shape: caches atomic frame LTM, adds dt to emitter time, updates particle rotation using 2*pi wrap; installed in callback slot 1. Formal name uncertain.",
+    "slice": 8
+  },
+  {
+    "address": "0x57F050",
+    "name": "unnamed",
+    "references": 2,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code. High confidence emitter end-update/scheduling callback shape: installed in slot 2; LCG constants 196314165/907633515, next emission time from bias/spread. Formal name uncertain.",
+    "slice": 8
+  },
+  {
+    "address": "0x57F970",
+    "name": "RpPrtStdPClassStdCreate",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x57FA90",
+    "name": "RpPrtStdEClassStdCreate",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x57FC60",
+    "name": "RpPrtStdPClassDestroy",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x57FCF0",
+    "name": "RpPrtStdPClassSetCallBack",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x580160",
+    "name": "RpPrtStdEmitterForAllParticleBatch",
+    "references": 3,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x580230",
+    "name": "RpPrtStdEmitterNewParticleBatch",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x5802A0",
+    "name": "RpMultiTextureSetEffect",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x581250",
+    "name": "RpPrtStdEmitterSetPTank",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x5821A0",
+    "name": "RpPTankAtomicDestroy",
+    "references": 3,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x5821B0",
+    "name": "RpPTankAtomicGetDataFormat",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x5821D0",
+    "name": "RpPTankAtomicLock",
+    "references": 13,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x5823E0",
+    "name": "RpPTankAtomicUnlock",
+    "references": 13,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x582400",
+    "name": "RpPTankAtomicCreate",
+    "references": 4,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x5860C0",
+    "name": "RpPVSSetViewPosition",
+    "references": 1,
+    "subsystem": "other plugins",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x5861F0",
+    "name": "RpPVSWorldUnhook",
+    "references": 1,
+    "subsystem": "other plugins",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x5863D0",
+    "name": "RpPVSWorldGetProgressCallBack",
+    "references": 2,
+    "subsystem": "other plugins",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x5865A0",
+    "name": "RpPrtStdWorldSetRenderCallBack",
+    "references": 1,
+    "subsystem": "particles/ptank",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 8
+  },
+  {
+    "address": "0x5867D0",
+    "name": "RtRandom",
+    "references": 6,
+    "subsystem": "random",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 2
+  },
+  {
+    "address": "0x586860",
+    "name": "RtRandomSeed",
+    "references": 1,
+    "subsystem": "random",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 2
+  },
+  {
+    "address": "0x587020",
+    "name": "RpSkinAtomicSetHAnimHierarchy",
+    "references": 1,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "rwplugins.h: rw::Skin::setHierarchy",
+    "fit": "differs",
+    "notes": "Hierarchy/interpolator/skin layouts and callbacks differ; map handles and plugin payloads. Subhierarchy/compressed formats not implied by this candidate.",
+    "slice": 5
+  },
+  {
+    "address": "0x587050",
+    "name": "RpSkinGeometryGetSkin",
+    "references": 3,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "rwplugins.h: rw::Skin::get",
+    "fit": "differs",
+    "notes": "Hierarchy/interpolator/skin layouts and callbacks differ; map handles and plugin payloads. Subhierarchy/compressed formats not implied by this candidate.",
+    "slice": 5
+  },
+  {
+    "address": "0x5870B0",
+    "name": "RpUserDataArrayGetName",
+    "references": 5,
+    "subsystem": "user data",
+    "replacement": "rwuserdata.h: rw::UserDataArray::name [field]",
+    "fit": "same semantics",
+    "notes": "Equivalent value/name retrieval; array handle must be the mapped extension.",
+    "slice": 5
+  },
+  {
+    "address": "0x5870D0",
+    "name": "RwRasterGetWidth",
+    "references": 3,
+    "subsystem": "raster/texture/image",
+    "replacement": "rwobjects.h: rw::Raster::width [field]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x5870E0",
+    "name": "RpSkinIsSplit",
+    "references": 1,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "rwplugins.h: rw::Skin::numMeshes [field; inspect split data]",
+    "fit": "differs",
+    "notes": "Hierarchy/interpolator/skin layouts and callbacks differ; map handles and plugin payloads. Subhierarchy/compressed formats not implied by this candidate.",
+    "slice": 5
+  },
+  {
+    "address": "0x5870F0",
+    "name": "RpSkinAtomicGetType",
+    "references": 1,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x58BCC0",
+    "name": "RpGeometryRemoveUserDataArray",
+    "references": 1,
+    "subsystem": "user data",
+    "replacement": "rwuserdata.h: rw::UserDataArray::geometryRemove",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 5
+  },
+  {
+    "address": "0x58BCE0",
+    "name": "RpGeometryGetUserDataArrayCount",
+    "references": 2,
+    "subsystem": "user data",
+    "replacement": "rwuserdata.h: rw::UserDataArray::geometryGetCount",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 5
+  },
+  {
+    "address": "0x58BD10",
+    "name": "RpGeometryGetUserDataArray",
+    "references": 2,
+    "subsystem": "user data",
+    "replacement": "rwuserdata.h: rw::UserDataArray::geometryGet",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 5
+  },
+  {
+    "address": "0x58BD40",
+    "name": "RwFrameRemoveUserDataArray",
+    "references": 1,
+    "subsystem": "user data",
+    "replacement": "rwuserdata.h: rw::UserDataArray::frameRemove",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 5
+  },
+  {
+    "address": "0x58BD60",
+    "name": "RpMaterialGetUserDataArrayCount",
+    "references": 2,
+    "subsystem": "user data",
+    "replacement": "rwuserdata.h: rw::UserDataArray::materialGetCount",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 5
+  },
+  {
+    "address": "0x58BD90",
+    "name": "RpMaterialGetUserDataArray",
+    "references": 2,
+    "subsystem": "user data",
+    "replacement": "rwuserdata.h: rw::UserDataArray::materialGet",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 5
+  },
+  {
+    "address": "0x58BDC0",
+    "name": "RwTextureRemoveUserDataArray",
+    "references": 1,
+    "subsystem": "user data",
+    "replacement": "rwuserdata.h: rw::UserDataArray::textureRemove",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 5
+  },
+  {
+    "address": "0x58BDE0",
+    "name": "RwTextureGetUserDataArrayCount",
+    "references": 1,
+    "subsystem": "user data",
+    "replacement": "rwuserdata.h: rw::UserDataArray::textureGetCount",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 5
+  },
+  {
+    "address": "0x58BE10",
+    "name": "RwTextureGetUserDataArray",
+    "references": 1,
+    "subsystem": "user data",
+    "replacement": "rwuserdata.h: rw::UserDataArray::textureGet",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 5
+  },
+  {
+    "address": "0x58BE40",
+    "name": "RpUserDataArrayGetReal",
+    "references": 1,
+    "subsystem": "user data",
+    "replacement": "rwuserdata.h: rw::UserDataArray::getFloat",
+    "fit": "same semantics",
+    "notes": "Equivalent value/name retrieval; array handle must be the mapped extension.",
+    "slice": 5
+  },
+  {
+    "address": "0x58BE50",
+    "name": "RpUserDataArrayGetInt",
+    "references": 5,
+    "subsystem": "user data",
+    "replacement": "rwuserdata.h: rw::UserDataArray::getInt",
+    "fit": "same semantics",
+    "notes": "Equivalent value/name retrieval; array handle must be the mapped extension.",
+    "slice": 5
+  },
+  {
+    "address": "0x58CBB0",
+    "name": "RpWorldRender",
+    "references": 2,
+    "subsystem": "world/sector",
+    "replacement": "world.cpp: rw::World::render",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 6
+  },
+  {
+    "address": "0x58CBD0",
+    "name": "RpWorldDestroy",
+    "references": 2,
+    "subsystem": "world/sector",
+    "replacement": "world.cpp: rw::World::destroy",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 6
+  },
+  {
+    "address": "0x58CC60",
+    "name": "RpWorldSetSectorRenderCallBack",
+    "references": 2,
+    "subsystem": "world/sector",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x58CC80",
+    "name": "RpWorldGetSectorRenderCallBack",
+    "references": 2,
+    "subsystem": "world/sector",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x58CC90",
+    "name": "RpAtomicSetPipeline",
+    "references": 2,
+    "subsystem": "geometry/atomic/clump",
+    "replacement": "rwobjects.h: rw::Atomic::pipeline [field]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58CCB0",
+    "name": "RpWorldCreate",
+    "references": 3,
+    "subsystem": "world/sector",
+    "replacement": "world.cpp: rw::World::create",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 6
+  },
+  {
+    "address": "0x58CEF0",
+    "name": "RpWorldForAllClumps",
+    "references": 6,
+    "subsystem": "world/sector",
+    "replacement": "rwobjects.h: rw::World::clumps [list iteration]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 6
+  },
+  {
+    "address": "0x58CF30",
+    "name": "RpWorldForAllMaterials",
+    "references": 4,
+    "subsystem": "material/matfx",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 4
+  },
+  {
+    "address": "0x58CF80",
+    "name": "RpWorldForAllLights",
+    "references": 1,
+    "subsystem": "light",
+    "replacement": "rwobjects.h: rw::World::localLights / globalLights [list iteration]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58CFF0",
+    "name": "RpWorldForAllWorldSectors",
+    "references": 9,
+    "subsystem": "world/sector",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x58D1A0",
+    "name": "RpWorldSectorGetWorld",
+    "references": 5,
+    "subsystem": "world/sector",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x58DD90",
+    "name": "RpWorldAddCamera",
+    "references": 3,
+    "subsystem": "camera",
+    "replacement": "world.cpp: rw::World::addCamera",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58DDC0",
+    "name": "RpWorldRemoveCamera",
+    "references": 8,
+    "subsystem": "camera",
+    "replacement": "world.cpp: rw::World::removeCamera",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58DDF0",
+    "name": "RwCameraGetWorld",
+    "references": 7,
+    "subsystem": "camera",
+    "replacement": "rwobjects.h: rw::Camera::world [field]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58DE00",
+    "name": "RpWorldRemoveAtomic",
+    "references": 1,
+    "subsystem": "world/sector",
+    "replacement": "world.cpp: rw::World::removeAtomic",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 6
+  },
+  {
+    "address": "0x58DE40",
+    "name": "RpAtomicGetWorld",
+    "references": 1,
+    "subsystem": "world/sector",
+    "replacement": "rwobjects.h: rw::Atomic::world [field]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 6
+  },
+  {
+    "address": "0x58DE50",
+    "name": "RpWorldSectorForAllAtomics",
+    "references": 1,
+    "subsystem": "world/sector",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x58DEF0",
+    "name": "RwCameraForAllWorldSectors",
+    "references": 1,
+    "subsystem": "camera",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 4
+  },
+  {
+    "address": "0x58DF40",
+    "name": "S_006fdfe0_FindWorldFromClump",
+    "references": 10,
+    "subsystem": "world/sector",
+    "replacement": "rwobjects.h: rw::Clump::world [field]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 6
+  },
+  {
+    "address": "0x58DF50",
+    "name": "RpWorldAddLight",
+    "references": 3,
+    "subsystem": "light",
+    "replacement": "world.cpp: rw::World::addLight",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58DFA0",
+    "name": "RpWorldRemoveLight",
+    "references": 6,
+    "subsystem": "light",
+    "replacement": "world.cpp: rw::World::removeLight",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58DFD0",
+    "name": "RpLightGetWorld",
+    "references": 8,
+    "subsystem": "light",
+    "replacement": "rwobjects.h: rw::Light::world [field]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58E280",
+    "name": "RpWorldAddClump",
+    "references": 4,
+    "subsystem": "world/sector",
+    "replacement": "world.cpp: rw::World::addClump",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 6
+  },
+  {
+    "address": "0x58E310",
+    "name": "RpWorldRemoveClump",
+    "references": 9,
+    "subsystem": "world/sector",
+    "replacement": "world.cpp: rw::World::removeClump",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 6
+  },
+  {
+    "address": "0x58E680",
+    "name": "unnamed",
+    "references": 3,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code. High confidence atomic pipeline render callback shape: chooses atomic +0x70 pipeline or engine default, invokes RxPipelineExecute, returns atomic/null; medium confidence RpAtomicDefaultRenderCallBack identity. No equivalent Rx graph in librw.",
+    "slice": 7
+  },
+  {
+    "address": "0x58EB40",
+    "name": "_rpAtomicResyncInterpolatedSphere",
+    "references": 6,
+    "subsystem": "geometry/atomic/clump",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 4
+  },
+  {
+    "address": "0x58EC60",
+    "name": "RpAtomicGetWorldBoundingSphere",
+    "references": 7,
+    "subsystem": "world/sector",
+    "replacement": "clump.cpp: rw::Atomic::getWorldBoundingSphere",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 6
+  },
+  {
+    "address": "0x58EEB0",
+    "name": "RpClumpRender",
+    "references": 1,
+    "subsystem": "geometry/atomic/clump",
+    "replacement": "clump.cpp: rw::Clump::render",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58EF00",
+    "name": "RpClumpForAllAtomics",
+    "references": 26,
+    "subsystem": "geometry/atomic/clump",
+    "replacement": "rwobjects.h: rw::Clump::atomics [list iteration]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58EF90",
+    "name": "RpClumpForAllLights",
+    "references": 2,
+    "subsystem": "light",
+    "replacement": "rwobjects.h: rw::Clump::lights [list iteration]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58EFE0",
+    "name": "RpAtomicSetGeometry",
+    "references": 3,
+    "subsystem": "geometry/atomic/clump",
+    "replacement": "clump.cpp: rw::Atomic::setGeometry",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58F060",
+    "name": "RpAtomicDestroy",
+    "references": 4,
+    "subsystem": "geometry/atomic/clump",
+    "replacement": "clump.cpp: rw::Atomic::destroy",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58F0E0",
+    "name": "RpClumpGetWorld",
+    "references": 1,
+    "subsystem": "world/sector",
+    "replacement": "rwobjects.h: rw::Light::clump [database name is suspect; light callers]",
+    "fit": "differs",
+    "notes": "Existing name likely wrong: light callers use result as Clump. Native Light::clump is a field, so confirm package/plugin identity before installing.",
+    "slice": 6
+  },
+  {
+    "address": "0x58F1D0",
+    "name": "RpClumpRemoveLight",
+    "references": 3,
+    "subsystem": "light",
+    "replacement": "clump.cpp: rw::Clump::removeLight",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58F210",
+    "name": "RpAtomicRegisterPlugin",
+    "references": 1,
+    "subsystem": "plugin registry",
+    "replacement": "rwplg.h: rw::Atomic::registerPlugin [PLUGINBASE]",
+    "fit": "differs",
+    "notes": "librw plugin sizes/offsets and callback object pointers are different; maintain separate ABI registry and bridge callbacks/streams.",
+    "slice": 2
+  },
+  {
+    "address": "0x58F270",
+    "name": "RpAtomicRegisterPluginStream",
+    "references": 1,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "rwplg.h: rw::Atomic::registerPluginStream [PLUGINBASE]",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 6
+  },
+  {
+    "address": "0x58F300",
+    "name": "RpAtomicSetFrame",
+    "references": 9,
+    "subsystem": "geometry/atomic/clump",
+    "replacement": "clump.cpp: rw::Atomic::setFrame",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58F560",
+    "name": "RpClumpGetNumAtomics",
+    "references": 2,
+    "subsystem": "geometry/atomic/clump",
+    "replacement": "clump.cpp: rw::Clump::countAtomics",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58F590",
+    "name": "RpClumpGetNumLights",
+    "references": 1,
+    "subsystem": "light",
+    "replacement": "clump.cpp: rw::Clump::countLights",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58F5C0",
+    "name": "RpAtomicCreate",
+    "references": 1,
+    "subsystem": "geometry/atomic/clump",
+    "replacement": "clump.cpp: rw::Atomic::create",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58F740",
+    "name": "RpClumpDestroy",
+    "references": 5,
+    "subsystem": "geometry/atomic/clump",
+    "replacement": "clump.cpp: rw::Clump::destroy",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58FC60",
+    "name": "RpClumpClone",
+    "references": 5,
+    "subsystem": "geometry/atomic/clump",
+    "replacement": "clump.cpp: rw::Clump::clone",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x58FD10",
+    "name": "RpClumpStreamGetSize",
+    "references": 3,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "clump.cpp: rw::Clump::streamGetSize",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 6
+  },
+  {
+    "address": "0x58FDF0",
+    "name": "RpClumpStreamWrite",
+    "references": 2,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "clump.cpp: rw::Clump::streamWrite",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 6
+  },
+  {
+    "address": "0x58FFC0",
+    "name": "RpClumpStreamRead",
+    "references": 4,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "clump.cpp: rw::Clump::streamRead",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 6
+  },
+  {
+    "address": "0x5903F0",
+    "name": "RpWorldSectorRender",
+    "references": 1,
+    "subsystem": "world/sector",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x590400",
+    "name": "RpGeometryRegisterPlugin",
+    "references": 1,
+    "subsystem": "plugin registry",
+    "replacement": "rwplg.h: rw::Geometry::registerPlugin [PLUGINBASE]",
+    "fit": "differs",
+    "notes": "librw plugin sizes/offsets and callback object pointers are different; maintain separate ABI registry and bridge callbacks/streams.",
+    "slice": 2
+  },
+  {
+    "address": "0x590430",
+    "name": "RpGeometryRegisterPluginStream",
+    "references": 1,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "rwplg.h: rw::Geometry::registerPluginStream [PLUGINBASE]",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 6
+  },
+  {
+    "address": "0x590670",
+    "name": "RpGeometryForAllMaterials",
+    "references": 5,
+    "subsystem": "material/matfx",
+    "replacement": "rwobjects.h: rw::Geometry::matList [array iteration]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x590B90",
+    "name": "RpGeometryAddRef",
+    "references": 1,
+    "subsystem": "geometry/atomic/clump",
+    "replacement": "geometry.cpp: rw::Geometry::addRef",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x590FC0",
+    "name": "RpGeometryDestroy",
+    "references": 1,
+    "subsystem": "geometry/atomic/clump",
+    "replacement": "geometry.cpp: rw::Geometry::destroy",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x591560",
+    "name": "RpMaterialSetTexture",
+    "references": 8,
+    "subsystem": "raster/texture/image",
+    "replacement": "geometry.cpp: rw::Material::setTexture",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x591590",
+    "name": "RpMaterialRegisterPlugin",
+    "references": 1,
+    "subsystem": "plugin registry",
+    "replacement": "rwplg.h: rw::Material::registerPlugin [PLUGINBASE]",
+    "fit": "differs",
+    "notes": "librw plugin sizes/offsets and callback object pointers are different; maintain separate ABI registry and bridge callbacks/streams.",
+    "slice": 2
+  },
+  {
+    "address": "0x5915C0",
+    "name": "RpClumpRegisterPluginStream",
+    "references": 1,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "rwplg.h: rw::Material::registerPluginStream [database name is wrong]",
+    "fit": "differs",
+    "notes": "Existing name wrong: original uses Material registry (same as MaterialRegisterPlugin); native Material registry offsets/callback pointers must be translated.",
+    "slice": 6
+  },
+  {
+    "address": "0x592690",
+    "name": "RxD3D9AllInOneSetRenderCallBack",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x5935D0",
+    "name": "RwOsGetFileInterface",
+    "references": 1,
+    "subsystem": "file system",
+    "replacement": "rwengine.h: rw::Engine::filefuncs [field; not the original filesystem interface layout]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 2
+  },
+  {
+    "address": "0x593D30",
+    "name": "RpHAnimFrameSetID",
+    "references": 1,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "hanim.cpp: rw::HAnimData::get [id field]",
+    "fit": "differs",
+    "notes": "No native setter function: write HAnimData::get(mappedFrame)->id; constructor/plugin offset differs.",
+    "slice": 5
+  },
+  {
+    "address": "0x59B990",
+    "name": "_rwD3D9VSSetActiveWorldMatrix",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x59BA20",
+    "name": "_rwD3D9VSGetComposedTransformMatrix",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x59CBD0",
+    "name": "RpLightSetRadius",
+    "references": 1,
+    "subsystem": "light",
+    "replacement": "rwobjects.h: rw::Light::radius [field]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x59CBF0",
+    "name": "RpLightSetColor",
+    "references": 1,
+    "subsystem": "light",
+    "replacement": "light.cpp: rw::Light::setColor",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x59CC50",
+    "name": "RpLightGetConeAngle",
+    "references": 2,
+    "subsystem": "light",
+    "replacement": "light.cpp: rw::Light::getAngle",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x59CE80",
+    "name": "RpLightSetConeAngle",
+    "references": 1,
+    "subsystem": "light",
+    "replacement": "light.cpp: rw::Light::setAngle",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x59CEC0",
+    "name": "RpLightRegisterPlugin",
+    "references": 1,
+    "subsystem": "plugin registry",
+    "replacement": "rwplg.h: rw::Light::registerPlugin [PLUGINBASE]",
+    "fit": "differs",
+    "notes": "librw plugin sizes/offsets and callback object pointers are different; maintain separate ABI registry and bridge callbacks/streams.",
+    "slice": 2
+  },
+  {
+    "address": "0x59CEF0",
+    "name": "RpLightRegisterPluginStream",
+    "references": 1,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "rwplg.h: rw::Light::registerPluginStream [PLUGINBASE]",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 6
+  },
+  {
+    "address": "0x59D000",
+    "name": "RpLightDestroy",
+    "references": 2,
+    "subsystem": "light",
+    "replacement": "light.cpp: rw::Light::destroy",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x59D040",
+    "name": "RpLightCreate",
+    "references": 1,
+    "subsystem": "light",
+    "replacement": "light.cpp: rw::Light::create",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x59FCB0",
+    "name": "RpWorldStreamGetSize",
+    "references": 1,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x59FD10",
+    "name": "RpWorldStreamWrite",
+    "references": 2,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x59FEA0",
+    "name": "RpWorldStreamRead",
+    "references": 2,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x5A1A34",
+    "name": "D3DXAssembleShader",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x5A1B17",
+    "name": "D3DXCompileShader",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x61ED00",
+    "name": "RtAnimRegisterInterpolationScheme",
+    "references": 1,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "anim.cpp: rw::AnimInterpolatorInfo::registerInterp",
+    "fit": "differs",
+    "notes": "Hierarchy/interpolator/skin layouts and callbacks differ; map handles and plugin payloads. Subhierarchy/compressed formats not implied by this candidate.",
+    "slice": 5
+  },
+  {
+    "address": "0x61EE10",
+    "name": "RtAnimAnimationCreate",
+    "references": 2,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "anim.cpp: rw::Animation::create",
+    "fit": "differs",
+    "notes": "Original uses interpolation type ID; native create uses AnimInterpolatorInfo*. Resolve scheme registration and bridge keyframe/custom-data ownership.",
+    "slice": 5
+  },
+  {
+    "address": "0x61EE90",
+    "name": "RtAnimInterpolatorDestroy",
+    "references": 6,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "anim.cpp: rw::AnimInterpolator::destroy",
+    "fit": "differs",
+    "notes": "Hierarchy/interpolator/skin layouts and callbacks differ; map handles and plugin payloads. Subhierarchy/compressed formats not implied by this candidate.",
+    "slice": 5
+  },
+  {
+    "address": "0x61EF90",
+    "name": "RtAnimAnimationStreamGetSize",
+    "references": 1,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "anim.cpp: rw::Animation::streamGetSize",
+    "fit": "differs",
+    "notes": "Hierarchy/interpolator/skin layouts and callbacks differ; map handles and plugin payloads. Subhierarchy/compressed formats not implied by this candidate.",
+    "slice": 5
+  },
+  {
+    "address": "0x61EFB0",
+    "name": "RtAnimAnimationGetNumNodes",
+    "references": 4,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "anim.cpp: rw::Animation::getNumNodes",
+    "fit": "differs",
+    "notes": "Hierarchy/interpolator/skin layouts and callbacks differ; map handles and plugin payloads. Subhierarchy/compressed formats not implied by this candidate.",
+    "slice": 5
+  },
+  {
+    "address": "0x61F050",
+    "name": "RtAnimInterpolatorSetCurrentAnim",
+    "references": 9,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "anim.cpp: rw::AnimInterpolator::setCurrentAnim",
+    "fit": "differs",
+    "notes": "Hierarchy/interpolator/skin layouts and callbacks differ; map handles and plugin payloads. Subhierarchy/compressed formats not implied by this candidate.",
+    "slice": 5
+  },
+  {
+    "address": "0x61F120",
+    "name": "RtAnimInterpolatorCopy",
+    "references": 4,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x61F150",
+    "name": "RtAnimInterpolatorAddAnimTime",
+    "references": 3,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "anim.cpp: rw::AnimInterpolator::addTime",
+    "fit": "differs",
+    "notes": "Native addTime returns void and supports a reduced interpolator contract; original callbacks/time wrapping/subhierarchy policy require an adapter.",
+    "slice": 5
+  },
+  {
+    "address": "0x61F320",
+    "name": "RtAnimInterpolatorBlend",
+    "references": 2,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x61F3C0",
+    "name": "RtAnimAnimationRead",
+    "references": 1,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "anim.cpp: rw::Animation::streamRead [needs StreamFile opening]",
+    "fit": "differs",
+    "notes": "Hierarchy/interpolator/skin layouts and callbacks differ; map handles and plugin payloads. Subhierarchy/compressed formats not implied by this candidate.",
+    "slice": 5
+  },
+  {
+    "address": "0x61F590",
+    "name": "RtAnimInterpolatorSetCurrentTime",
+    "references": 6,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x61F5E0",
+    "name": "_rtCompressedKeyFrameCompressFloat",
+    "references": 1,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x620640",
+    "name": "RtIntersectionLineTriangle",
+    "references": 3,
+    "subsystem": "collision/bounds",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x620840",
+    "name": "RtIntersectionSphereTriangle",
+    "references": 1,
+    "subsystem": "collision/bounds",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x622EE0",
+    "name": "_rwSqrt",
+    "references": 2,
+    "subsystem": "core/frame/matrix",
+    "replacement": "rwbase.h: rw::length(const V3d&) [sqrtf; no standalone API]",
+    "fit": "differs",
+    "notes": "librw uses sqrtf, not the original lookup approximation; Normalize returns a vector, game API also returns length; zero-vector guard needed.",
+    "slice": 1
+  },
+  {
+    "address": "0x622F40",
+    "name": "_rwInvSqrt",
+    "references": 1,
+    "subsystem": "core/frame/matrix",
+    "replacement": "rwbase.h: rw::normalize(const V3d&) [reciprocal sqrt; no standalone API]",
+    "fit": "differs",
+    "notes": "librw uses sqrtf, not the original lookup approximation; Normalize returns a vector, game API also returns length; zero-vector guard needed.",
+    "slice": 1
+  },
+  {
+    "address": "0x622FA0",
+    "name": "RwV2dLength",
+    "references": 1,
+    "subsystem": "core/frame/matrix",
+    "replacement": "rwbase.h: rw::length(const V2d&)",
+    "fit": "differs",
+    "notes": "librw uses sqrtf, not the original lookup approximation; Normalize returns a vector, game API also returns length; zero-vector guard needed.",
+    "slice": 1
+  },
+  {
+    "address": "0x623010",
+    "name": "RwV3dTransformPoint",
+    "references": 3,
+    "subsystem": "core/frame/matrix",
+    "replacement": "base.cpp: rw::V3d::transformPoints",
+    "fit": "same semantics",
+    "notes": "Compatible 32-bit value layout and operation; last-bit float differences allowed. No bitwise equivalence claim.",
+    "slice": 1
+  },
+  {
+    "address": "0x623040",
+    "name": "RwV3dTransformPoints",
+    "references": 25,
+    "subsystem": "core/frame/matrix",
+    "replacement": "base.cpp: rw::V3d::transformPoints",
+    "fit": "same semantics",
+    "notes": "Compatible 32-bit value layout and operation; last-bit float differences allowed. No bitwise equivalence claim.",
+    "slice": 1
+  },
+  {
+    "address": "0x623070",
+    "name": "RwV3dTransformVector",
+    "references": 3,
+    "subsystem": "core/frame/matrix",
+    "replacement": "base.cpp: rw::V3d::transformVectors",
+    "fit": "same semantics",
+    "notes": "Compatible 32-bit value layout and operation; last-bit float differences allowed. No bitwise equivalence claim.",
+    "slice": 1
+  },
+  {
+    "address": "0x6230A0",
+    "name": "RwV3dTransformVectors",
+    "references": 24,
+    "subsystem": "core/frame/matrix",
+    "replacement": "base.cpp: rw::V3d::transformVectors",
+    "fit": "same semantics",
+    "notes": "Compatible 32-bit value layout and operation; last-bit float differences allowed. No bitwise equivalence claim.",
+    "slice": 1
+  },
+  {
+    "address": "0x623250",
+    "name": "RwV3dNormalize",
+    "references": 2,
+    "subsystem": "core/frame/matrix",
+    "replacement": "rwbase.h: rw::normalize(const V3d&)",
+    "fit": "differs",
+    "notes": "librw uses sqrtf, not the original lookup approximation; Normalize returns a vector, game API also returns length; zero-vector guard needed.",
+    "slice": 1
+  },
+  {
+    "address": "0x623360",
+    "name": "RwV3dLength",
+    "references": 17,
+    "subsystem": "core/frame/matrix",
+    "replacement": "rwbase.h: rw::length(const V3d&)",
+    "fit": "differs",
+    "notes": "librw uses sqrtf, not the original lookup approximation; Normalize returns a vector, game API also returns length; zero-vector guard needed.",
+    "slice": 1
+  },
+  {
+    "address": "0x6235D0",
+    "name": "RwFrameCreate",
+    "references": 10,
+    "subsystem": "core/frame/matrix",
+    "replacement": "frame.cpp: rw::Frame::create",
+    "fit": "differs",
+    "notes": "Native Frame matrix/list order differs (+0x18 native matrix vs +0x10 ABI); bridge hierarchy/list/callback pointers and void-method\u2192original-handle/status returns.",
+    "slice": 1
+  },
+  {
+    "address": "0x6236A0",
+    "name": "RwFrameUpdateObjects",
+    "references": 14,
+    "subsystem": "core/frame/matrix",
+    "replacement": "frame.cpp: rw::Frame::updateObjects",
+    "fit": "differs",
+    "notes": "Native Frame matrix/list order differs (+0x18 native matrix vs +0x10 ABI); bridge hierarchy/list/callback pointers and void-method\u2192original-handle/status returns.",
+    "slice": 1
+  },
+  {
+    "address": "0x623720",
+    "name": "RwFrameGetLTM",
+    "references": 29,
+    "subsystem": "core/frame/matrix",
+    "replacement": "frame.cpp: rw::Frame::getLTM",
+    "fit": "differs",
+    "notes": "Native Frame matrix/list order differs (+0x18 native matrix vs +0x10 ABI); bridge hierarchy/list/callback pointers and void-method\u2192original-handle/status returns.",
+    "slice": 1
+  },
+  {
+    "address": "0x623740",
+    "name": "RwFrameGetRoot",
+    "references": 3,
+    "subsystem": "core/frame/matrix",
+    "replacement": "rwobjects.h: rw::Frame::root [field; no function]",
+    "fit": "differs",
+    "notes": "Native Frame matrix/list order differs (+0x18 native matrix vs +0x10 ABI); bridge hierarchy/list/callback pointers and void-method\u2192original-handle/status returns.",
+    "slice": 1
+  },
+  {
+    "address": "0x623750",
+    "name": "RwFrameRemoveChild",
+    "references": 6,
+    "subsystem": "core/frame/matrix",
+    "replacement": "frame.cpp: rw::Frame::removeChild",
+    "fit": "differs",
+    "notes": "Native Frame matrix/list order differs (+0x18 native matrix vs +0x10 ABI); bridge hierarchy/list/callback pointers and void-method\u2192original-handle/status returns.",
+    "slice": 1
+  },
+  {
+    "address": "0x6237C0",
+    "name": "RwFrameForAllChildren",
+    "references": 13,
+    "subsystem": "core/frame/matrix",
+    "replacement": "frame.cpp: rw::Frame::forAllChildren",
+    "fit": "differs",
+    "notes": "Native Frame matrix/list order differs (+0x18 native matrix vs +0x10 ABI); bridge hierarchy/list/callback pointers and void-method\u2192original-handle/status returns.",
+    "slice": 1
+  },
+  {
+    "address": "0x623830",
+    "name": "RwFrameTranslate",
+    "references": 5,
+    "subsystem": "core/frame/matrix",
+    "replacement": "frame.cpp: rw::Frame::translate",
+    "fit": "differs",
+    "notes": "Native Frame matrix/list order differs (+0x18 native matrix vs +0x10 ABI); bridge hierarchy/list/callback pointers and void-method\u2192original-handle/status returns.",
+    "slice": 1
+  },
+  {
+    "address": "0x623860",
+    "name": "RwFrameTransform",
+    "references": 8,
+    "subsystem": "core/frame/matrix",
+    "replacement": "frame.cpp: rw::Frame::transform",
+    "fit": "differs",
+    "notes": "Native Frame matrix/list order differs (+0x18 native matrix vs +0x10 ABI); bridge hierarchy/list/callback pointers and void-method\u2192original-handle/status returns.",
+    "slice": 1
+  },
+  {
+    "address": "0x623890",
+    "name": "RwFrameRotate",
+    "references": 1,
+    "subsystem": "core/frame/matrix",
+    "replacement": "frame.cpp: rw::Frame::rotate",
+    "fit": "differs",
+    "notes": "Native Frame matrix/list order differs (+0x18 native matrix vs +0x10 ABI); bridge hierarchy/list/callback pointers and void-method\u2192original-handle/status returns.",
+    "slice": 1
+  },
+  {
+    "address": "0x6238C0",
+    "name": "RwFrameSetIdentity",
+    "references": 5,
+    "subsystem": "core/frame/matrix",
+    "replacement": "rwbase.h: rw::Matrix::setIdentity [Frame::matrix + updateObjects]",
+    "fit": "differs",
+    "notes": "Native Frame matrix/list order differs (+0x18 native matrix vs +0x10 ABI); bridge hierarchy/list/callback pointers and void-method\u2192original-handle/status returns.",
+    "slice": 1
+  },
+  {
+    "address": "0x623910",
+    "name": "RwFrameForAllObjects",
+    "references": 2,
+    "subsystem": "core/frame/matrix",
+    "replacement": "rwobjects.h: rw::Frame::objectList [iteration; no function]",
+    "fit": "differs",
+    "notes": "Native Frame matrix/list order differs (+0x18 native matrix vs +0x10 ABI); bridge hierarchy/list/callback pointers and void-method\u2192original-handle/status returns.",
+    "slice": 1
+  },
+  {
+    "address": "0x623950",
+    "name": "RwFrameRegisterPlugin",
+    "references": 1,
+    "subsystem": "plugin registry",
+    "replacement": "rwplg.h: rw::Frame::registerPlugin [PLUGINBASE]",
+    "fit": "differs",
+    "notes": "librw plugin sizes/offsets and callback object pointers are different; maintain separate ABI registry and bridge callbacks/streams.",
+    "slice": 2
+  },
+  {
+    "address": "0x623B10",
+    "name": "RwFrameDestroy",
+    "references": 11,
+    "subsystem": "core/frame/matrix",
+    "replacement": "frame.cpp: rw::Frame::destroy",
+    "fit": "differs",
+    "notes": "Native Frame matrix/list order differs (+0x18 native matrix vs +0x10 ABI); bridge hierarchy/list/callback pointers and void-method\u2192original-handle/status returns.",
+    "slice": 1
+  },
+  {
+    "address": "0x623B90",
+    "name": "RwFrameAddChild",
+    "references": 1,
+    "subsystem": "core/frame/matrix",
+    "replacement": "frame.cpp: rw::Frame::addChild",
+    "fit": "differs",
+    "notes": "Native Frame matrix/list order differs (+0x18 native matrix vs +0x10 ABI); bridge hierarchy/list/callback pointers and void-method\u2192original-handle/status returns.",
+    "slice": 1
+  },
+  {
+    "address": "0x624560",
+    "name": "RwMatrixOptimize",
+    "references": 1,
+    "subsystem": "core/frame/matrix",
+    "replacement": "base.cpp: rw::Matrix::optimize",
+    "fit": "same semantics",
+    "notes": "Compatible 32-bit value layout and operation; last-bit float differences allowed. No bitwise equivalence claim.",
+    "slice": 1
+  },
+  {
+    "address": "0x624620",
+    "name": "RwMatrixUpdate",
+    "references": 6,
+    "subsystem": "core/frame/matrix",
+    "replacement": "rwbase.h: rw::Matrix::update",
+    "fit": "same semantics",
+    "notes": "Compatible 32-bit value layout and operation; last-bit float differences allowed. No bitwise equivalence claim.",
+    "slice": 1
+  },
+  {
+    "address": "0x624630",
+    "name": "RwMatrixMultiply",
+    "references": 10,
+    "subsystem": "core/frame/matrix",
+    "replacement": "base.cpp: rw::Matrix::mult",
+    "fit": "same semantics",
+    "notes": "Compatible 32-bit value layout and operation; last-bit float differences allowed. No bitwise equivalence claim.",
+    "slice": 1
+  },
+  {
+    "address": "0x6246A0",
+    "name": "RwMatrixOrthoNormalize",
+    "references": 1,
+    "subsystem": "core/frame/matrix",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 1
+  },
+  {
+    "address": "0x6246C0",
+    "name": "RwMatrixRotateOneMinusCosineSine",
+    "references": 3,
+    "subsystem": "core/frame/matrix",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 1
+  },
+  {
+    "address": "0x6248B0",
+    "name": "RwMatrixRotate",
+    "references": 4,
+    "subsystem": "core/frame/matrix",
+    "replacement": "base.cpp: rw::Matrix::rotate",
+    "fit": "same semantics",
+    "notes": "Compatible 32-bit value layout and operation; last-bit float differences allowed. No bitwise equivalence claim.",
+    "slice": 1
+  },
+  {
+    "address": "0x624950",
+    "name": "RwMatrixInvert",
+    "references": 5,
+    "subsystem": "core/frame/matrix",
+    "replacement": "base.cpp: rw::Matrix::invert",
+    "fit": "same semantics",
+    "notes": "Compatible 32-bit value layout and operation; last-bit float differences allowed. No bitwise equivalence claim.",
+    "slice": 1
+  },
+  {
+    "address": "0x6249A0",
+    "name": "RwMatrixScale",
+    "references": 2,
+    "subsystem": "core/frame/matrix",
+    "replacement": "base.cpp: rw::Matrix::scale",
+    "fit": "same semantics",
+    "notes": "Compatible 32-bit value layout and operation; last-bit float differences allowed. No bitwise equivalence claim.",
+    "slice": 1
+  },
+  {
+    "address": "0x624B30",
+    "name": "RwMatrixTranslate",
+    "references": 4,
+    "subsystem": "core/frame/matrix",
+    "replacement": "base.cpp: rw::Matrix::translate",
+    "fit": "same semantics",
+    "notes": "Compatible 32-bit value layout and operation; last-bit float differences allowed. No bitwise equivalence claim.",
+    "slice": 1
+  },
+  {
+    "address": "0x624C70",
+    "name": "RwMatrixTransform",
+    "references": 6,
+    "subsystem": "core/frame/matrix",
+    "replacement": "base.cpp: rw::Matrix::transform",
+    "fit": "same semantics",
+    "notes": "Compatible 32-bit value layout and operation; last-bit float differences allowed. No bitwise equivalence claim.",
+    "slice": 1
+  },
+  {
+    "address": "0x624D10",
+    "name": "RwMatrixDestroy",
+    "references": 224,
+    "subsystem": "core/frame/matrix",
+    "replacement": "base.cpp: rw::Matrix::destroy",
+    "fit": "same semantics",
+    "notes": "Compatible 32-bit value layout and operation; last-bit float differences allowed. No bitwise equivalence claim.",
+    "slice": 1
+  },
+  {
+    "address": "0x624D40",
+    "name": "RwMatrixCreate",
+    "references": 132,
+    "subsystem": "core/frame/matrix",
+    "replacement": "base.cpp: rw::Matrix::create",
+    "fit": "same semantics",
+    "notes": "Compatible 32-bit value layout and operation; last-bit float differences allowed. No bitwise equivalence claim.",
+    "slice": 1
+  },
+  {
+    "address": "0x625060",
+    "name": "RwImageCreate",
+    "references": 2,
+    "subsystem": "raster/texture/image",
+    "replacement": "image.cpp: rw::Image::create",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x6250C0",
+    "name": "RwImageAllocatePixels",
+    "references": 2,
+    "subsystem": "raster/texture/image",
+    "replacement": "image.cpp: rw::Image::allocate",
+    "fit": "differs",
+    "notes": "Image::allocate returns void; preserve input Image handle and allocation-failure result; bpp inserts a layout field.",
+    "slice": 3
+  },
+  {
+    "address": "0x625270",
+    "name": "RwImageSetPath",
+    "references": 12,
+    "subsystem": "raster/texture/image",
+    "replacement": "image.cpp: rw::Image::setSearchPath",
+    "fit": "differs",
+    "notes": "librw owns a search-path representation, not the old returned char-pointer contract; keep ABI-visible path storage.",
+    "slice": 3
+  },
+  {
+    "address": "0x625320",
+    "name": "RwImageGetPath",
+    "references": 3,
+    "subsystem": "raster/texture/image",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 3
+  },
+  {
+    "address": "0x6254C0",
+    "name": "RwImageRead",
+    "references": 3,
+    "subsystem": "raster/texture/image",
+    "replacement": "image.cpp: rw::Image::read",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x625680",
+    "name": "RwImageRegisterImageFormat",
+    "references": 1,
+    "subsystem": "raster/texture/image",
+    "replacement": "image.cpp: rw::Image::registerFileFormat",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x6257E0",
+    "name": "RwImageWrite",
+    "references": 1,
+    "subsystem": "raster/texture/image",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 3
+  },
+  {
+    "address": "0x625870",
+    "name": "RwRGBAToPixel",
+    "references": 2,
+    "subsystem": "raster/texture/image",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 3
+  },
+  {
+    "address": "0x625F10",
+    "name": "RwImageDestroy",
+    "references": 5,
+    "subsystem": "raster/texture/image",
+    "replacement": "image.cpp: rw::Image::destroy",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x6265F0",
+    "name": "RwFreeListPurgeAllFreeLists",
+    "references": 6,
+    "subsystem": "memory/freelist",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 1
+  },
+  {
+    "address": "0x6269C0",
+    "name": "_rwDeviceSystemRequest",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x626AB0",
+    "name": "RwEngineGetCurrentVideoMode",
+    "references": 1,
+    "subsystem": "engine",
+    "replacement": "engine.cpp: rw::Engine::getCurrentVideoMode",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 2
+  },
+  {
+    "address": "0x626AC0",
+    "name": "Skin_DispatchType4Handler",
+    "references": 2,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x626AE0",
+    "name": "RwEngineRegisterPlugin",
+    "references": 1,
+    "subsystem": "plugin registry",
+    "replacement": "rwengine.h: rw::Engine::registerPlugin",
+    "fit": "differs",
+    "notes": "librw plugin sizes/offsets and callback object pointers are different; maintain separate ABI registry and bridge callbacks/streams.",
+    "slice": 2
+  },
+  {
+    "address": "0x626B30",
+    "name": "RwEngineSetSubSystem",
+    "references": 1,
+    "subsystem": "engine",
+    "replacement": "engine.cpp: rw::Engine::setSubSystem",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 2
+  },
+  {
+    "address": "0x626B90",
+    "name": "RwEngineGetNumVideoModes",
+    "references": 3,
+    "subsystem": "engine",
+    "replacement": "engine.cpp: rw::Engine::getNumVideoModes",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 2
+  },
+  {
+    "address": "0x626C40",
+    "name": "RwEngineSetVideoMode",
+    "references": 1,
+    "subsystem": "engine",
+    "replacement": "engine.cpp: rw::Engine::setVideoMode",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 2
+  },
+  {
+    "address": "0x626C90",
+    "name": "RwEngineGetTextureMemorySize",
+    "references": 1,
+    "subsystem": "engine",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 2
+  },
+  {
+    "address": "0x626CE0",
+    "name": "RwEngineStop",
+    "references": 2,
+    "subsystem": "engine",
+    "replacement": "engine.cpp: rw::Engine::stop",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 2
+  },
+  {
+    "address": "0x626D60",
+    "name": "RwEngineStart",
+    "references": 1,
+    "subsystem": "engine",
+    "replacement": "engine.cpp: rw::Engine::start",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 2
+  },
+  {
+    "address": "0x626E30",
+    "name": "RwEngineClose",
+    "references": 2,
+    "subsystem": "engine",
+    "replacement": "engine.cpp: rw::Engine::close",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 2
+  },
+  {
+    "address": "0x626EC0",
+    "name": "RwEngineTerm",
+    "references": 1,
+    "subsystem": "engine",
+    "replacement": "engine.cpp: rw::Engine::term",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 2
+  },
+  {
+    "address": "0x627290",
+    "name": "RwEngineOpen",
+    "references": 1,
+    "subsystem": "engine",
+    "replacement": "engine.cpp: rw::Engine::open",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 2
+  },
+  {
+    "address": "0x627360",
+    "name": "RwEngineInit",
+    "references": 1,
+    "subsystem": "engine",
+    "replacement": "engine.cpp: rw::Engine::init",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 2
+  },
+  {
+    "address": "0x627430",
+    "name": "RwRasterGetPluginOffset",
+    "references": 2,
+    "subsystem": "raster/texture/image",
+    "replacement": "rwplg.h: rw::Raster::getPluginOffset [PLUGINBASE]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x627470",
+    "name": "RwRasterRenderScaled",
+    "references": 4,
+    "subsystem": "raster/texture/image",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 3
+  },
+  {
+    "address": "0x627490",
+    "name": "RwRasterUnlock",
+    "references": 3,
+    "subsystem": "raster/texture/image",
+    "replacement": "raster.cpp: rw::Raster::unlock",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x6274B0",
+    "name": "RwRasterClear",
+    "references": 7,
+    "subsystem": "raster/texture/image",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 3
+  },
+  {
+    "address": "0x627510",
+    "name": "RwRasterRenderFast",
+    "references": 3,
+    "subsystem": "raster/texture/image",
+    "replacement": "raster.cpp: rw::Raster::renderFast",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x627570",
+    "name": "RwRasterDestroy",
+    "references": 19,
+    "subsystem": "raster/texture/image",
+    "replacement": "raster.cpp: rw::Raster::destroy",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x6275B0",
+    "name": "RwRasterPushContext",
+    "references": 9,
+    "subsystem": "raster/texture/image",
+    "replacement": "raster.cpp: rw::Raster::pushContext",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x627650",
+    "name": "RwRasterPopContext",
+    "references": 9,
+    "subsystem": "raster/texture/image",
+    "replacement": "raster.cpp: rw::Raster::popContext",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x6276A0",
+    "name": "RwRasterGetNumLevels",
+    "references": 2,
+    "subsystem": "raster/texture/image",
+    "replacement": "raster.cpp: rw::Raster::getNumLevels",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x6276E0",
+    "name": "RwRasterShowRaster",
+    "references": 3,
+    "subsystem": "raster/texture/image",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 3
+  },
+  {
+    "address": "0x627710",
+    "name": "RwRasterSubRaster",
+    "references": 6,
+    "subsystem": "raster/texture/image",
+    "replacement": "raster.cpp: rw::Raster::subRaster",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x627770",
+    "name": "RwRasterCreate",
+    "references": 15,
+    "subsystem": "raster/texture/image",
+    "replacement": "raster.cpp: rw::Raster::create",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x627810",
+    "name": "RwRasterLock",
+    "references": 3,
+    "subsystem": "raster/texture/image",
+    "replacement": "raster.cpp: rw::Raster::lock",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x628E50",
+    "name": "RwCameraBeginUpdate",
+    "references": 8,
+    "subsystem": "camera",
+    "replacement": "camera.cpp: rw::Camera::beginUpdate",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x628E90",
+    "name": "RwCameraSetNearClipPlane",
+    "references": 3,
+    "subsystem": "camera",
+    "replacement": "camera.cpp: rw::Camera::setNearPlane",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x628EC0",
+    "name": "RwCameraSetFarClipPlane",
+    "references": 3,
+    "subsystem": "camera",
+    "replacement": "camera.cpp: rw::Camera::setFarPlane",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x628EF0",
+    "name": "RwCameraFrustumTestSphere",
+    "references": 1,
+    "subsystem": "camera",
+    "replacement": "camera.cpp: rw::Camera::frustumTestSphere",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x628F60",
+    "name": "RwCameraClear",
+    "references": 4,
+    "subsystem": "camera",
+    "replacement": "camera.cpp: rw::Camera::clear",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x628F90",
+    "name": "RwCameraSetProjection",
+    "references": 3,
+    "subsystem": "camera",
+    "replacement": "rwobjects.h: rw::Camera::projection [field]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x629000",
+    "name": "RwCameraSetViewWindow",
+    "references": 5,
+    "subsystem": "camera",
+    "replacement": "camera.cpp: rw::Camera::setViewWindow",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x629070",
+    "name": "RwCameraDestroy",
+    "references": 4,
+    "subsystem": "camera",
+    "replacement": "camera.cpp: rw::Camera::destroy",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x6290B0",
+    "name": "RwCameraCreate",
+    "references": 5,
+    "subsystem": "camera",
+    "replacement": "camera.cpp: rw::Camera::create",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 4
+  },
+  {
+    "address": "0x6293E0",
+    "name": "RwStreamRead",
+    "references": 7,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "base.cpp: rw::Stream::read8",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 2
+  },
+  {
+    "address": "0x629530",
+    "name": "RwStreamWrite",
+    "references": 4,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "base.cpp: rw::Stream::write8",
+    "fit": "differs",
+    "notes": "Native write8 returns byte count; game API returns stream handle/null on failure, not the count.",
+    "slice": 2
+  },
+  {
+    "address": "0x629700",
+    "name": "RwStreamSkip",
+    "references": 3,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "rwbase.h: rw::Stream::seek",
+    "fit": "differs",
+    "notes": "Native seek is void and takes whence; check/retain failure policy and return original stream handle.",
+    "slice": 2
+  },
+  {
+    "address": "0x629810",
+    "name": "RwStreamClose",
+    "references": 17,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "rwbase.h: rw::Stream::close",
+    "fit": "differs",
+    "notes": "Virtual close/destructor versus C close callback/data contract; preserve close ownership and original success return.",
+    "slice": 2
+  },
+  {
+    "address": "0x6298E0",
+    "name": "RwStreamOpen",
+    "references": 17,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "base.cpp: rw::StreamFile::open / StreamMemory::open",
+    "fit": "differs",
+    "notes": "Construct StreamFile or StreamMemory from original stream type/access enums and unions; C stream object cannot be reinterpreted as a virtual Stream.",
+    "slice": 2
+  },
+  {
+    "address": "0x629A80",
+    "name": "_rwStreamWriteVersionedChunkHeader",
+    "references": 1,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "base.cpp: rw::writeChunkHeader [uses global version/build]",
+    "fit": "differs",
+    "notes": "librw writeChunkHeader uses global version/build; original has explicit version parameter, so an explicit header adapter is needed.",
+    "slice": 2
+  },
+  {
+    "address": "0x629AE0",
+    "name": "RwStreamFindChunk",
+    "references": 5,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "base.cpp: rw::findChunk",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 2
+  },
+  {
+    "address": "0x629BE0",
+    "name": "RwStreamWriteReal",
+    "references": 1,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "base.cpp: rw::Stream::write32 [float array bytes]",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 2
+  },
+  {
+    "address": "0x629C70",
+    "name": "RwStreamWriteInt32",
+    "references": 6,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "base.cpp: rw::Stream::write32",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 2
+  },
+  {
+    "address": "0x629C90",
+    "name": "RwStreamReadInt32",
+    "references": 6,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "base.cpp: rw::Stream::read32",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 2
+  },
+  {
+    "address": "0x629CE0",
+    "name": "RwStreamReadChunkHeaderInfo",
+    "references": 4,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "base.cpp: rw::readChunkHeaderInfo",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 2
+  },
+  {
+    "address": "0x62B170",
+    "name": "RwD3D9EngineSetMultiSamplingLevels",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "engine.cpp: rw::Engine::setMultiSamplingLevels",
+    "fit": "differs",
+    "notes": "Native setter is Engine-level; translate levels, pre-open lifecycle and status policy rather than merely storing a global.",
+    "slice": 7
+  },
+  {
+    "address": "0x62B200",
+    "name": "RwD3D9EngineSetRefreshRate",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x62B2A0",
+    "name": "RwD3D9EngineSetFullScreenDialogBoxMode",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x62B670",
+    "name": "RwD3D9GetCurrentD3DDevice",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "d3d/rwd3d.h: rw::d3d::d3ddevice [native device pointer]",
+    "fit": "differs",
+    "notes": "Native D3D9 backend only; translate handles/signatures and respect or invalidate librw state caches after direct COM calls.",
+    "slice": 7
+  },
+  {
+    "address": "0x62B720",
+    "name": "RwD3D9SetVertexDeclaration",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "d3d/d3d9render.cpp: rw::d3d::setVertexDeclaration",
+    "fit": "differs",
+    "notes": "Native D3D9 backend only; translate handles/signatures and respect or invalidate librw state caches after direct COM calls.",
+    "slice": 7
+  },
+  {
+    "address": "0x62B760",
+    "name": "RwD3D9SetVertexShader",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "d3d/d3d9render.cpp: rw::d3d::setVertexShader",
+    "fit": "differs",
+    "notes": "Native D3D9 backend only; translate handles/signatures and respect or invalidate librw state caches after direct COM calls.",
+    "slice": 7
+  },
+  {
+    "address": "0x62B7A0",
+    "name": "RwD3D9SetPixelShader",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "d3d/d3d9render.cpp: rw::d3d::setPixelShader",
+    "fit": "differs",
+    "notes": "Native D3D9 backend only; translate handles/signatures and respect or invalidate librw state caches after direct COM calls.",
+    "slice": 7
+  },
+  {
+    "address": "0x62B840",
+    "name": "_rwD3D9SetStreams",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x62B970",
+    "name": "RwD3D9SetIndices",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "d3d/d3d9render.cpp: rw::d3d::setIndices",
+    "fit": "differs",
+    "notes": "Native D3D9 backend only; translate handles/signatures and respect or invalidate librw state caches after direct COM calls.",
+    "slice": 7
+  },
+  {
+    "address": "0x62B9A0",
+    "name": "RwD3D9DrawIndexedPrimitive",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x62BA10",
+    "name": "RwD3D9SetTransform",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x62BB70",
+    "name": "RwD3D9GetTransform",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x62C060",
+    "name": "RwD3D9CreateVertexShader",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "d3d/d3drender.cpp: rw::d3d::createVertexShader",
+    "fit": "differs",
+    "notes": "Native createVertexShader returns a shader pointer; original takes an output pointer/status contract. Native COM handle can be shared.",
+    "slice": 7
+  },
+  {
+    "address": "0x62C0A0",
+    "name": "RwD3D9SetVertexShaderConstant",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x62C0C0",
+    "name": "RwD3D9CreatePixelShader",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "d3d/d3drender.cpp: rw::d3d::createPixelShader",
+    "fit": "differs",
+    "notes": "Native createPixelShader returns a shader pointer; original takes an output pointer/status contract. Native COM handle can be shared.",
+    "slice": 7
+  },
+  {
+    "address": "0x62C0F0",
+    "name": "RwD3D9SetPixelShaderConstant",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x62C110",
+    "name": "RwD3D9GetCaps",
+    "references": 2,
+    "subsystem": "D3D9 driver",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x62D650",
+    "name": "RwD3D9SetRenderState",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "d3d/d3drender.cpp: rw::d3d::setRenderState",
+    "fit": "differs",
+    "notes": "Native D3D9 backend only; translate handles/signatures and respect or invalidate librw state caches after direct COM calls.",
+    "slice": 7
+  },
+  {
+    "address": "0x62F950",
+    "name": "RwD3D9SetTexture",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "d3d/d3ddevice.cpp: rw::d3d::setTexture",
+    "fit": "differs",
+    "notes": "Native setTexture takes stage first and Texture second; translate original argument order and Texture/Raster sidecar before touching the cache.",
+    "slice": 7
+  },
+  {
+    "address": "0x6307D0",
+    "name": "RwTexDictionaryStreamGetSize",
+    "references": 1,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "texture.cpp: rw::TexDictionary::streamGetSize",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 6
+  },
+  {
+    "address": "0x6308E0",
+    "name": "RwTexDictionaryStreamWrite",
+    "references": 1,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "texture.cpp: rw::TexDictionary::streamWrite",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 6
+  },
+  {
+    "address": "0x630A20",
+    "name": "RwTexDictionaryStreamRead",
+    "references": 1,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "texture.cpp: rw::TexDictionary::streamRead",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 6
+  },
+  {
+    "address": "0x6315B0",
+    "name": "RwTextureSetFindCallBack",
+    "references": 1,
+    "subsystem": "raster/texture/image",
+    "replacement": "rwobjects.h: rw::Texture::findCB [field]",
+    "fit": "differs",
+    "notes": "Native findCB is a field; setter must return the previous callback and bridge Texture pointers.",
+    "slice": 3
+  },
+  {
+    "address": "0x6315D0",
+    "name": "RwTextureSetReadCallBack",
+    "references": 1,
+    "subsystem": "raster/texture/image",
+    "replacement": "rwobjects.h: rw::Texture::readCB [field]",
+    "fit": "differs",
+    "notes": "Native readCB is a field; setter must return the previous callback and bridge Texture/Raster ownership.",
+    "slice": 3
+  },
+  {
+    "address": "0x631650",
+    "name": "RwTexDictionaryCreate",
+    "references": 4,
+    "subsystem": "raster/texture/image",
+    "replacement": "texture.cpp: rw::TexDictionary::create",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x6316E0",
+    "name": "RwTexDictionaryForAllTextures",
+    "references": 13,
+    "subsystem": "raster/texture/image",
+    "replacement": "rwobjects.h: rw::TexDictionary::textures [list iteration]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x631730",
+    "name": "RwTexDictionaryForAllTexDictionaries",
+    "references": 1,
+    "subsystem": "raster/texture/image",
+    "replacement": "texture.cpp: rw::TextureGlobals::texDicts [private list; new enumeration adapter needed]",
+    "fit": "differs",
+    "notes": "Native global dictionary list is private TextureGlobals storage; expose an enumeration adapter, translating pointers and early-stop callbacks.",
+    "slice": 3
+  },
+  {
+    "address": "0x631780",
+    "name": "RwTextureCreate",
+    "references": 5,
+    "subsystem": "raster/texture/image",
+    "replacement": "texture.cpp: rw::Texture::create",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x6317E0",
+    "name": "RwTextureDestroy",
+    "references": 20,
+    "subsystem": "raster/texture/image",
+    "replacement": "texture.cpp: rw::Texture::destroy",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x631800",
+    "name": "RwTextureSetName",
+    "references": 2,
+    "subsystem": "raster/texture/image",
+    "replacement": "rwobjects.h: rw::Texture::name [field]",
+    "fit": "differs",
+    "notes": "Native name is a 32-byte field, not a setter API; implement truncation/NUL policy and return the ABI texture.",
+    "slice": 3
+  },
+  {
+    "address": "0x6318E0",
+    "name": "RwTexDictionaryAddTexture",
+    "references": 3,
+    "subsystem": "raster/texture/image",
+    "replacement": "texture.cpp: rw::TexDictionary::add",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x631920",
+    "name": "RwTexDictionaryRemoveTexture",
+    "references": 4,
+    "subsystem": "raster/texture/image",
+    "replacement": "texture.cpp: rw::TexDictionary::remove",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x631950",
+    "name": "RwTexDictionaryFindNamedTexture",
+    "references": 6,
+    "subsystem": "raster/texture/image",
+    "replacement": "texture.cpp: rw::TexDictionary::find",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x631990",
+    "name": "RwTexDictionarySetCurrent",
+    "references": 2,
+    "subsystem": "raster/texture/image",
+    "replacement": "texture.cpp: rw::TexDictionary::setCurrent",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x6319B0",
+    "name": "RwTexDictionaryGetCurrent",
+    "references": 12,
+    "subsystem": "raster/texture/image",
+    "replacement": "texture.cpp: rw::TexDictionary::getCurrent",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x6319C0",
+    "name": "RwTextureRead",
+    "references": 4,
+    "subsystem": "raster/texture/image",
+    "replacement": "texture.cpp: rw::Texture::read",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x632340",
+    "name": "RwTexDictionaryDestroy",
+    "references": 6,
+    "subsystem": "raster/texture/image",
+    "replacement": "texture.cpp: rw::TexDictionary::destroy",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x6327D0",
+    "name": "_rwFrameSyncDirty",
+    "references": 1,
+    "subsystem": "core/frame/matrix",
+    "replacement": "frame.cpp: rw::Frame::syncDirty",
+    "fit": "differs",
+    "notes": "Native Frame matrix/list order differs (+0x18 native matrix vs +0x10 ABI); bridge hierarchy/list/callback pointers and void-method\u2192original-handle/status returns.",
+    "slice": 1
+  },
+  {
+    "address": "0x6329C0",
+    "name": "RwFrameSetStaticPlugins",
+    "references": 1,
+    "subsystem": "plugin registry",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 2
+  },
+  {
+    "address": "0x6329D0",
+    "name": "RwFrameRegisterPluginStream",
+    "references": 1,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "rwplg.h: rw::Frame::registerPluginStream [PLUGINBASE]",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 6
+  },
+  {
+    "address": "0x633010",
+    "name": "RwImageSetFromRaster",
+    "references": 1,
+    "subsystem": "raster/texture/image",
+    "replacement": "raster.cpp: rw::Raster::toImage",
+    "fit": "differs",
+    "notes": "Raster::toImage allocates/returns an Image rather than filling the caller-provided Image; copy/convert into the supplied ABI image and preserve ownership.",
+    "slice": 3
+  },
+  {
+    "address": "0x633040",
+    "name": "RwRasterSetFromImage",
+    "references": 4,
+    "subsystem": "raster/texture/image",
+    "replacement": "raster.cpp: rw::Raster::setFromImage",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x633070",
+    "name": "RwImageFindRasterFormat",
+    "references": 1,
+    "subsystem": "raster/texture/image",
+    "replacement": "raster.cpp: rw::Raster::imageFindRasterFormat",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x633710",
+    "name": "RxPipelineCreate",
+    "references": 1,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x633780",
+    "name": "RxPipelineDestroy",
+    "references": 2,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x6337F0",
+    "name": "RxPipelineSetMaxNodes",
+    "references": 1,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x637E30",
+    "name": "RxLockedPipeUnlock",
+    "references": 1,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x638210",
+    "name": "RxPipelineLock",
+    "references": 1,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x638320",
+    "name": "RxPipelineFindNodeByName",
+    "references": 1,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x6383C0",
+    "name": "RxLockedPipeAddFragment",
+    "references": 1,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x63A4D0",
+    "name": "RwD3D9RasterStreamReadDDS",
+    "references": 1,
+    "subsystem": "D3D9 driver",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x63BD90",
+    "name": "RwMatrixStreamGetSize",
+    "references": 1,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x63BDA0",
+    "name": "RwMatrixStreamWrite",
+    "references": 1,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x63BF20",
+    "name": "RwMatrixStreamRead",
+    "references": 1,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x63C8B0",
+    "name": "RwBBoxCalculate",
+    "references": 1,
+    "subsystem": "collision/bounds",
+    "replacement": "base.cpp: rw::BBox::calculate",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 6
+  },
+  {
+    "address": "0x63C9B0",
+    "name": "RwBBoxAddPoint",
+    "references": 3,
+    "subsystem": "collision/bounds",
+    "replacement": "base.cpp: rw::BBox::addPoint",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 6
+  },
+  {
+    "address": "0x63CA30",
+    "name": "RwBBoxContainsPoint",
+    "references": 1,
+    "subsystem": "collision/bounds",
+    "replacement": "base.cpp: rw::BBox::containsPoint",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 6
+  },
+  {
+    "address": "0x63CB30",
+    "name": "_rwPluginRegistryReadDataChunks",
+    "references": 1,
+    "subsystem": "stream/chunk I/O",
+    "replacement": "plg.cpp: rw::PluginList::streamRead",
+    "fit": "differs",
+    "notes": "Stream/handle ABI differs; chunk version and plugin dispatch must be preserved, including unknown extensions.",
+    "slice": 6
+  },
+  {
+    "address": "0x63CE30",
+    "name": "_rwObjectHasFrameSetFrame",
+    "references": 11,
+    "subsystem": "core/frame/matrix",
+    "replacement": "rwobjects.h: rw::ObjectWithFrame::setFrame",
+    "fit": "differs",
+    "notes": "Native Frame matrix/list order differs (+0x18 native matrix vs +0x10 ABI); bridge hierarchy/list/callback pointers and void-method\u2192original-handle/status returns.",
+    "slice": 2
+  },
+  {
+    "address": "0x63CED0",
+    "name": "RwIm3DTransform",
+    "references": 6,
+    "subsystem": "immediate mode",
+    "replacement": "render.cpp: rw::im3DTransform",
+    "fit": "differs",
+    "notes": "Vertex declaration/UV and camera-Z conventions are backend-specific; convert arrays and primitive enum, not raw passthrough.",
+    "slice": 7
+  },
+  {
+    "address": "0x63CFA0",
+    "name": "RwIm3DEnd",
+    "references": 6,
+    "subsystem": "immediate mode",
+    "replacement": "render.cpp: rw::im3DEnd",
+    "fit": "differs",
+    "notes": "Vertex declaration/UV and camera-Z conventions are backend-specific; convert arrays and primitive enum, not raw passthrough.",
+    "slice": 7
+  },
+  {
+    "address": "0x63CFD0",
+    "name": "RwIm3DRenderIndexedPrimitive",
+    "references": 4,
+    "subsystem": "immediate mode",
+    "replacement": "render.cpp: rw::im3DRenderIndexedPrimitive",
+    "fit": "differs",
+    "notes": "Vertex declaration/UV and camera-Z conventions are backend-specific; convert arrays and primitive enum, not raw passthrough.",
+    "slice": 7
+  },
+  {
+    "address": "0x63D130",
+    "name": "RwIm3DRenderPrimitive",
+    "references": 2,
+    "subsystem": "immediate mode",
+    "replacement": "render.cpp: rw::im3DRenderPrimitive",
+    "fit": "differs",
+    "notes": "Vertex declaration/UV and camera-Z conventions are backend-specific; convert arrays and primitive enum, not raw passthrough.",
+    "slice": 7
+  },
+  {
+    "address": "0x7C5680",
+    "name": "unnamed",
+    "references": 1,
+    "subsystem": "raster/texture/image",
+    "replacement": "bmp.cpp: rw::readBMP",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section. High confidence BMP filename reader: stream mode read, signature 19778 (BM), DIB header sizes and palette handling. Native image layout differs.",
+    "slice": 3
+  },
+  {
+    "address": "0x7C5CA0",
+    "name": "unnamed",
+    "references": 1,
+    "subsystem": "raster/texture/image",
+    "replacement": "bmp.cpp: rw::writeBMP",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section. High confidence BMP filename writer: paired BMP header/palette/pixel writers, stream mode write; original returns image/null whereas librw returns void.",
+    "slice": 3
+  },
+  {
+    "address": "0x7C5D00",
+    "name": "RtCompressedKeyConvertFromStd",
+    "references": 2,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x7C5F60",
+    "name": "RwResourcesSetArenaSize",
+    "references": 1,
+    "subsystem": "memory/freelist",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 2
+  },
+  {
+    "address": "0x7C61A0",
+    "name": "RtFSManagerSetDefaultFileSystem",
+    "references": 2,
+    "subsystem": "file system",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 2
+  },
+  {
+    "address": "0x7C6300",
+    "name": "Audio_ReleaseSharedState",
+    "references": 1,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x7C73A0",
+    "name": "RtSkinSplitAtomicSplit",
+    "references": 1,
+    "subsystem": "hanim/skin/animation",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x7C8D30",
+    "name": "unnamed",
+    "references": 1,
+    "subsystem": "raster/texture/image",
+    "replacement": "png.cpp: rw::writePNG",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section. High confidence PNG filename writer: libpng 1.0.12 create-write context, setjmp, image palette/RGBA conversion; original returns image/null whereas librw returns void. This is RW image glue, not a reimplementation of libpng.",
+    "slice": 3
+  },
+  {
+    "address": "0x7C9050",
+    "name": "unnamed",
+    "references": 1,
+    "subsystem": "raster/texture/image",
+    "replacement": "png.cpp: rw::readPNG",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section. High confidence PNG filename reader: libpng 1.0.12 create-read context, setjmp, read info/palette/pixels; native Image layout differs. This is RW image glue, not libpng internals.",
+    "slice": 3
+  },
+  {
+    "address": "0x7D9D40",
+    "name": "RtQuatConvertFromMatrix",
+    "references": 2,
+    "subsystem": "core/frame/matrix",
+    "replacement": "base.cpp: rw::Matrix::getRotation",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 2
+  },
+  {
+    "address": "0x7D9E30",
+    "name": "RtQuatRotate",
+    "references": 8,
+    "subsystem": "core/frame/matrix",
+    "replacement": "base.cpp: rw::Quat::rotate",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 2
+  },
+  {
+    "address": "0x7DA4E0",
+    "name": "RtIntersectionLineSphere",
+    "references": 3,
+    "subsystem": "collision/bounds",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x7DB650",
+    "name": "DirectInput8Create",
+    "references": 1,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x7DB6F0",
+    "name": "Audio_OpenEngine",
+    "references": 1,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x7DB820",
+    "name": "_rwGetNumEngineInstances",
+    "references": 3,
+    "subsystem": "engine",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 2
+  },
+  {
+    "address": "0x7DB920",
+    "name": "_rxPipelineOpen",
+    "references": 1,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x7DB960",
+    "name": "_rxPipelineClose",
+    "references": 1,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x7DBD20",
+    "name": "RtDictFindNamedEntry",
+    "references": 2,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7DBD70",
+    "name": "RtDictGetEntry",
+    "references": 5,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7DBD80",
+    "name": "RtDictGetNumEntries",
+    "references": 6,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7DBE70",
+    "name": "RpMTEffectDictGetCurrent",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7DBE80",
+    "name": "RpMTEffectDictSetCurrent",
+    "references": 4,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7DE550",
+    "name": "DirectSoundEnum_RunWithCallback",
+    "references": 3,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x7DE590",
+    "name": "RwFreeListForAllFreeLists",
+    "references": 2,
+    "subsystem": "memory/freelist",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 2
+  },
+  {
+    "address": "0x7E4970",
+    "name": "unnamed",
+    "references": 1,
+    "subsystem": "toolkit/unknown",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code. High confidence: one-byte RET, no side effects; formal toolkit name unknown. Caller passes child count.",
+    "slice": 9
+  },
+  {
+    "address": "0x7F17C0",
+    "name": "Audio_InitializeEffectDictionarySupport",
+    "references": 1,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x7F1810",
+    "name": "unnamed",
+    "references": 1,
+    "subsystem": "toolkit/unknown",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code. High confidence shape: registers three dictionary/schema descriptors for type IDs 4, 9, 2; exact package/name uncertain, audio-facing caller.",
+    "slice": 9
+  },
+  {
+    "address": "0x7F78E6",
+    "name": "GetDeviceID",
+    "references": 1,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x7F78EC",
+    "name": "DirectSoundCaptureCreate",
+    "references": 1,
+    "subsystem": "other boundary/pipeline",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 7
+  },
+  {
+    "address": "0x7F7900",
+    "name": "Rt2dObjectDestroy",
+    "references": 2,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7F7BF0",
+    "name": "GfxTeam_GetObjectBoundsData",
+    "references": 2,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7F8250",
+    "name": "Rt2dObjectSetMTM",
+    "references": 3,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7F8320",
+    "name": "Rt2dObjectSetRenderCallBack",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7F8330",
+    "name": "Rt2dObjectGetRenderCallBack",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7F8340",
+    "name": "Rt2dObjectSetColorOffset",
+    "references": 4,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7F8390",
+    "name": "Rt2dObjectSetColorMultiplier",
+    "references": 4,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7F83E0",
+    "name": "Rt2dObjectSetPosition",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7F8410",
+    "name": "Rt2dObjectGetPosition",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7F9860",
+    "name": "Rt2dObjectSetBoundingRadius",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7F9880",
+    "name": "Rt2dObjectStringGetHeight",
+    "references": 2,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7F9B40",
+    "name": "GfxScene_Set2dObjectSize",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7FA460",
+    "name": "CollisionShapes_ApplyShapeParameter",
+    "references": 1,
+    "subsystem": "collision/bounds",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x7FA5B0",
+    "name": "CollisionShapes_ConfigureDefaultShape",
+    "references": 1,
+    "subsystem": "collision/bounds",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 6
+  },
+  {
+    "address": "0x7FAFE0",
+    "name": "Gfx2d_SetSceneVector",
+    "references": 2,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7FB000",
+    "name": "RwImageSetHeight",
+    "references": 2,
+    "subsystem": "raster/texture/image",
+    "replacement": "rwobjects.h: rw::Image::height [field]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x7FB010",
+    "name": "RwImageSetWidth",
+    "references": 2,
+    "subsystem": "raster/texture/image",
+    "replacement": "rwobjects.h: rw::Image::width [field]",
+    "fit": "differs",
+    "notes": "Same purpose, not raw ABI compatibility: translate facade pointers/fields, callbacks and return conventions; see structure section.",
+    "slice": 3
+  },
+  {
+    "address": "0x7FB020",
+    "name": "RpToonInkSetPerspectiveScale",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7FB030",
+    "name": "RpToonInkSetNearDistance",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7FB040",
+    "name": "RpToonInkSetFarScale",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7FB050",
+    "name": "RpToonInkSetFarPerspectiveScale",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7FD8D0",
+    "name": "Gfx2d_CreateRenderHandle",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7FD9C0",
+    "name": "Rt2dMaestroDestroy",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 9
+  },
+  {
+    "address": "0x7FDA30",
+    "name": "RtDictAddEntry",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x7FDA80",
+    "name": "RtDictRemoveEntry",
+    "references": 2,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x7FDAD0",
+    "name": "RtDictGetSchema",
+    "references": 2,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x7FDB00",
+    "name": "RtBinMtxCreate",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x7FDB40",
+    "name": "_rtBitMatrixDestroy",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x7FE6B0",
+    "name": "RpTeamDictSetFlags",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x7FE950",
+    "name": "RpTeamRemovePlayer",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x7FEDC0",
+    "name": "unnamed",
+    "references": 1,
+    "subsystem": "toolkit/team",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code. Medium confidence identity: team/player transform-output query gated by membership bitset; +0x20 player ID, +0x68 membership array, caller consumes six output dwords. Formal API name unknown.",
+    "slice": 10
+  },
+  {
+    "address": "0x7FEE10",
+    "name": "RpTeamPlayerSetActive",
+    "references": 5,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x7FEE60",
+    "name": "_rpTeamPlayerSelect",
+    "references": 5,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x7FEF10",
+    "name": "_rpTeamPlayerDeselect",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x7FEFA0",
+    "name": "GfxWater_UpdateRenderObjectFrame",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x7FF0A0",
+    "name": "RpTeamPlayerSetHAnimHierarchy",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x7FF0C0",
+    "name": "RpTeamPlayerGetUserData",
+    "references": 1,
+    "subsystem": "user data",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 5
+  },
+  {
+    "address": "0x7FF0E0",
+    "name": "Gfx2d_CreateVisibilityProxy",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x7FFB90",
+    "name": "RtWorldImportParametersInit",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x7FFBF0",
+    "name": "Gfx2d_SetImportSectorLimits",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x7FFC20",
+    "name": "RtWorldImportParametersSetMaxSectorSize",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x8006D0",
+    "name": "Gfx2d_ScaleBounds",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x8013C0",
+    "name": "Rt2dSceneGetChildCount",
+    "references": 6,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x8013D0",
+    "name": "Rt2dSceneGetChild",
+    "references": 2,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x801520",
+    "name": "Rt2dClumpGetClump",
+    "references": 2,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x802410",
+    "name": "GfxTeam_ApplyPlayerMovement",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x802650",
+    "name": "GfxTeam_GetBrushWidth",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x802660",
+    "name": "Rt2dBrushGetHeight",
+    "references": 1,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  },
+  {
+    "address": "0x803770",
+    "name": "Water_ApplyTransform",
+    "references": 3,
+    "subsystem": "toolkits",
+    "replacement": "none",
+    "fit": "missing",
+    "notes": "No corresponding API found in this checkout; implement game boundary independently, not original library code.",
+    "slice": 10
+  }
+]

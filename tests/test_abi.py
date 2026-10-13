@@ -10,6 +10,8 @@ import api
 import gate
 import packet
 import stackabi
+import regargs
+import capstone
 
 
 def instructions(ops):
@@ -25,6 +27,91 @@ class BinaryAbiTests(unittest.TestCase):
     def test_crt_constant_register_initialization(self):
         self.assertFalse(api.takes_reg(0x7B2E90, self.db, "ecx"))
         self.assertEqual(api.abi_sig(0x7B2E90, self.db)["conv"], "__cdecl")
+
+    def test_stale_hexrays_ecx_location_is_not_an_input(self):
+        self.assertEqual(regargs.entry_register_reads(self.db, 0x698820, 'ecx'), 0)
+        self.assertFalse(api.takes_reg(0x698820, self.db, 'ecx'))
+        # The stale ECX is disproved, but the EDX proof is inconclusive: do not
+        # invent a standard signature for the remaining EDX-only export.
+        self.assertIsNone(api.abi_sig(0x698820, self.db))
+        decl = 'CSF_FUNC(char, __cdecl, Shutdown, 0x00698820, ());'
+        self.assertEqual(api.binding_errors(decl, self.db), [])
+
+    def test_spurious_volatile_locations_removed_from_generated_prototype(self):
+        sig = api.abi_sig(0x465060, self.db)
+        self.assertEqual(sig['conv'], '__stdcall')
+        self.assertEqual(sig['params'], 'int a3, int a4, int a5')
+
+    def register_proof(self, code, callee=None):
+        md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+        ins = list(md.disasm(bytes.fromhex(code), 0x1000))
+        codes = {0x1000: ins}
+        if callee is not None:
+            codes[0x2000] = list(md.disasm(bytes.fromhex(callee), 0x2000))
+        db = SimpleNamespace(F={ea: dict(size=sum(i.size for i in ii)) for ea, ii in codes.items()},
+                             _import_slots=set())
+        with patch.object(packet, 'disasm', side_effect=lambda ea, size: codes[ea]), \
+                patch.object(packet, 'callable_shared_chunk', return_value=None):
+            return regargs.entry_register_reads(db, 0x1000, 'ecx')
+
+    def test_register_proof_keeps_partial_pointer_and_conditional_inputs(self):
+        # MOV CL,AL; MOV EAX,[ECX]: incoming upper pointer bits remain live.
+        self.assertEqual(self.register_proof('8ac8 8b01 c3'), 0xffffff00)
+        # One branch reads ECX, the other kills it: still a genuine conditional input.
+        self.assertEqual(self.register_proof('85c0 7404 8bc1 c3 90 31c9 c3'), 0xffffffff)
+        self.assertEqual(self.register_proof('8ac8 84c9 31c9 c3'), 0)
+
+    def test_register_proof_distinguishes_preservation_and_unknown_dispatch(self):
+        self.assertEqual(self.register_proof('e8fb0f0000 c3', 'c3'), 0)
+        # A real input can first be read AFTER an original callee preserving ECX.
+        self.assertEqual(self.register_proof('e8fb0f0000 8b01 c3', 'c3'), 0xffffffff)
+        self.assertIsNone(self.register_proof('ff1500900000 c3'))
+
+    def test_unreachable_dispatch_heads_do_not_supply_receiver_facts(self):
+        md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+        ins = list(md.disasm(bytes.fromhex('eb05 8b01 ff10 c3 c3'), 0x1000))
+        db = SimpleNamespace(F={0x1000: dict(size=8)}, classes={}, class_names={}, class_of=lambda ea: None)
+        with patch.object(packet, 'disasm', return_value=ins):
+            self.assertEqual(stackabi.call_evidence(0x1000, db), {})
+
+    def test_image_global_callback_target_not_ida_delta(self):
+        md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+        ins = list(md.disasm(bytes.fromhex('ff1500900000 c3'), 0x1000))
+        db = SimpleNamespace(F={0x1000: dict(size=7), 0x2000: dict(size=1)},
+                             classes={}, class_names={}, class_of=lambda ea: None)
+        import semcheck
+        with patch.object(packet, 'disasm', return_value=ins), \
+                patch.object(semcheck, 'image_dword', return_value=0x2000):
+            self.assertEqual(stackabi.call_evidence(0x1000, db), {0x1000: dict(target=0x2000)})
+
+    def test_known_class_vtable_target(self):
+        fact = stackabi.call_evidence(0x6F5510, self.db)[0x6F5529]
+        self.assertEqual(fact['target'], 0x6F57D0)
+        self.assertEqual(gate.effective_rets(fact['target'], self.db), [12])
+
+    def test_static_class_with_incompatible_override_is_not_exact_target(self):
+        md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+        codes = {0x1000: list(md.disasm(bytes.fromhex('8b01 ff10 c3'), 0x1000)),
+                 0x2000: list(md.disasm(bytes.fromhex('c3'), 0x2000)),
+                 0x3000: list(md.disasm(bytes.fromhex('c20400'), 0x3000))}
+        db = SimpleNamespace(F={ea: dict(ea=ea, size=sum(i.size for i in ii), end=ea+16)
+                                for ea, ii in codes.items()},
+                             classes={'00009000': dict(base=None), '00009010': dict(base='00009000')},
+                             class_names={}, class_of=lambda ea: '00009000' if ea == 0x1000 else None,
+                             _dispatch_metadata=({}, {}, {0x9000: ['00002000'], 0x9010: ['00003000']}))
+        with patch.object(packet, 'disasm', side_effect=lambda ea, size: codes[ea]):
+            fact = stackabi.call_evidence(0x1000, db)[0x1002]
+        self.assertNotIn('target', fact)
+        self.assertEqual(fact['tables'], (0x9000, 0x9010))
+
+    def test_binary_constructor_fields_override_propagated_base_type(self):
+        # Factory -> concrete constructor -> field getter. The propagated base
+        # field says C_00833908, whose slot +18 is an unrelated RET 0 stub.
+        # Original constructor stores instead resolve the concrete backend.
+        facts = stackabi.call_evidence(0x4FCB90, self.db)
+        self.assertEqual(facts[0x4FCC2E]['receiver'], '0083f1a0')
+        self.assertEqual(facts[0x4FCCF1]['target'], 0x6FC220)
+        self.assertEqual(gate.effective_rets(facts[0x4FCCF1]['target'], self.db), [4])
 
     def test_typed_partial_register_argument(self):
         self.assertFalse(api.takes_reg(0x7FEFA0, self.db, "ecx"))

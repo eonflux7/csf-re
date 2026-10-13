@@ -133,7 +133,7 @@ def call_pops():
 
 
 
-def infer_stack_pops(ins, direct_pops, entry=None):
+def infer_stack_pops(ins, direct_pops, entry=None, known=None, groups=None, domains=None, strict=False):
     """Prove call cleanup from the original's CFG, without consulting the candidate.
 
     SP and outstanding pushed arguments are affine expressions in unknown indirect-call pops.
@@ -142,8 +142,10 @@ def infer_stack_pops(ins, direct_pops, entry=None):
     counts replace the export; ambiguous and unsupported frames retain the exported counts.
     """
     import capstone
+    known, groups, domains = known or {}, groups or {}, domains or {}
+    failure = None if strict else {}
     if not ins:
-        return {}
+        return failure
     regs = ('ebx', 'esi', 'edi', 'ebp')
     popregs = {i.op_str for i in ins.values() if i.mnemonic == 'pop'}
     if any(i.mnemonic == 'leave' for i in ins.values()):
@@ -160,21 +162,56 @@ def infer_stack_pops(ins, direct_pops, entry=None):
         return result
 
     equalities, nonnegative, pops, variables, seen = [], [], {}, set(), {}
+    sites = {}
     todo = [(entry if entry is not None else min(ins), ({}, {}, None, {}, frozenset(regs)))]
 
     def equal(a, b):
         equalities.append(plus(a, b, -1))
 
+    def outgoing_reservation(pc, size):
+        """SUB ESP,N whose entire range is filled as a by-value call argument.
+
+        Track copies of ESP while scanning only a straight-line sequence to the
+        next call. A local/dynamic allocation or partial initialization is not a
+        proof. PUSH may move ESP; a saved alias still points at the reservation.
+        """
+        aliases, covered, shift = {}, set(), 0
+        pc += ins[pc].size
+        for _ in range(64):
+            j = ins.get(pc)
+            if j is None:
+                return False
+            m, parts = j.mnemonic, j.op_str.split(', ')
+            if m == 'call':
+                return covered == set(range(size))
+            if m.startswith('j') or m in ('ret', 'pop', 'leave') or parts[0] == 'esp':
+                return False
+            if m == 'push':
+                shift -= 4
+            elif m == 'mov' and len(parts) == 2 and parts[1] == 'esp':
+                aliases[parts[0]] = shift
+            else:
+                match = re.fullmatch(r'(byte|word|dword|qword) ptr \[(e[a-z]{2})(?: \+ (0x[0-9a-f]+|\d+))?\]', parts[0])
+                if match and m in ('mov', 'fst', 'fstp'):
+                    base = shift if match[2] == 'esp' else aliases.get(match[2])
+                    if base is not None:
+                        off = base + int(match[3] or '0', 0)
+                        width = {'byte': 1, 'word': 2, 'dword': 4, 'qword': 8}[match[1]]
+                        covered.update(x for x in range(off, off + width) if 0 <= x < size)
+                aliases.pop(parts[0], None)
+            pc += j.size
+        return False
+
     while todo:
         pc, state = todo.pop()
         sp, args, bp, saves, pristine = state
         if pc not in ins:
-            return {}  # Unknown control flow: do not infer from a partial function.
+            return failure  # Unknown control flow: do not infer from a partial function.
         if pc in seen:
             old = seen[pc]
             if (set(old[3]) != set(saves) or old[4] - old[3].keys() != pristine - saves.keys()
                     or (old[2] is None) != (bp is None)):
-                return {}  # Incompatible frame/register histories.
+                return failure  # Incompatible frame/register histories.
             if bp is not None:
                 equal(bp, old[2])
             equal(sp, old[0])
@@ -207,12 +244,14 @@ def infer_stack_pops(ins, direct_pops, entry=None):
             try:
                 n = int(op.split(', ')[1], 0) * (1 if mn == 'add' else -1)
             except ValueError:
-                return {}
+                return failure
             sp = plus(sp, {None: n})
             if n < 0:
                 # Initial frame allocation is local storage, rather than outgoing arguments.
                 if variables or args:
-                    return {}
+                    if not outgoing_reservation(pc, -n):
+                        return failure
+                    args = plus(args, {None: -n})
             else:
                 args = plus(args, {None: -n})
                 nonnegative.append(args)
@@ -220,27 +259,31 @@ def infer_stack_pops(ins, direct_pops, entry=None):
             bp = sp.copy()
         elif mn == 'mov' and op == 'esp, ebp':
             if bp is None:
-                return {}
+                return failure
             sp, args = bp.copy(), {}
         elif mn == 'leave':
             if bp is None or 'ebp' not in saves:
-                return {}
+                return failure
             equal(bp, saves.pop('ebp'))
             sp, args = plus(bp, {None: 4}), {}
         elif mn == 'call':
-            if i.operands[0].type == capstone.x86.X86_OP_IMM:
+            n = known.get(pc)
+            if n is None and i.operands[0].type == capstone.x86.X86_OP_IMM:
                 n = direct_pops(pc, i.operands[0].imm)
+            if n is not None:
                 pops[pc] = n
                 sp, args = plus(sp, {None: n}), plus(args, {None: -n})
             else:
-                variables.add(pc)
-                sp, args = plus(sp, {pc: 1}), plus(args, {pc: -1})
+                key = groups.get(pc, pc)
+                sites[pc] = key
+                variables.add(key)
+                sp, args = plus(sp, {key: 1}), plus(args, {key: -1})
             nonnegative.append(args)
         elif mn == 'ret' or (mn == 'jmp' and i.operands[0].type != capstone.x86.X86_OP_IMM):
             equal(sp, {})
             continue
         elif any(i.reg_name(r) == 'esp' for r in i.regs_access()[1]):
-            return {}  # Dynamic/aligned frames and unmodelled stack instructions.
+            return failure  # Dynamic/aligned frames and unmodelled stack instructions.
         if mn not in ('push', 'call', 'pop'):
             _, written = i.regs_access()
             pristine -= frozenset(aliases.get(i.reg_name(r), i.reg_name(r)) for r in written)
@@ -252,7 +295,8 @@ def infer_stack_pops(ins, direct_pops, entry=None):
         else:
             todo.append((nextpc, state))
 
-    bounds = {v: [0, 1 << 30] for v in variables}
+    bounds = {v: [min(domains[v]), max(domains[v])] if domains.get(v) else [0, 1 << 30]
+              for v in variables}
     inequalities = nonnegative + equalities + [{k: -v for k, v in x.items()} for x in equalities]
     for _ in range(len(bounds) * 4 + 20):
         changed = False
@@ -260,7 +304,7 @@ def infer_stack_pops(ins, direct_pops, entry=None):
             maximum = exp.get(None, 0) + sum(c * bounds[k][1 if c > 0 else 0]
                                             for k, c in exp.items() if k is not None)
             if maximum < 0:
-                return {}
+                return failure
             for k, c in exp.items():
                 if k is None:
                     continue
@@ -268,14 +312,20 @@ def infer_stack_pops(ins, direct_pops, entry=None):
                 idx = 0 if c > 0 else 1
                 n = (-other + c - 1) // c if c > 0 else other // -c
                 n = (n + 3) // 4 * 4 if c > 0 else n // 4 * 4
+                if domains.get(k):
+                    possible = [x for x in domains[k] if x >= n] if c > 0 else [x for x in domains[k] if x <= n]
+                    if not possible:
+                        return failure
+                    n = min(possible) if c > 0 else max(possible)
                 if (c > 0 and n > bounds[k][0]) or (c < 0 and n < bounds[k][1]):
                     bounds[k][idx] = n
                     changed = True
                 if bounds[k][0] > bounds[k][1]:
-                    return {}
+                    return failure
         if not changed:
             break
-    pops.update({k: b[0] for k, b in bounds.items() if b[0] == b[1]})
+    pops.update({site: bounds[key][0] for site, key in sites.items()
+                 if bounds[key][0] == bounds[key][1]})
     return pops
 
 
@@ -284,14 +334,9 @@ def binary_call_pop(target):
     """Use the callee's actual RET immediate, rather than a decompiler's call-site assignment."""
     if target not in functions():
         return None
-    import capstone
-    md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
-    img, _ = exe_image()
-    counts = set()
-    for lo, hi in own_ranges(target)[0]:
-        for i in md.disasm(bytes(img[lo - IMG:hi - IMG]), lo):
-            if i.mnemonic == "ret":
-                counts.add(int(i.op_str, 0) if i.op_str else 0)
+    from packet import DB
+    from gate import effective_rets
+    counts = set(effective_rets(target, load('db', DB)))
     return next(iter(counts)) if len(counts) == 1 else None
 
 
@@ -304,10 +349,129 @@ def stack_call_pops(ea):
     ins = {}
     for lo, hi in own_ranges(ea)[0]:
         ins.update((i.address, i) for i in md.disasm(bytes(img[lo - IMG:hi - IMG]), lo))
-    def direct(site, target):
-        n = binary_call_pop(target)
-        return n if n is not None else call_pops().get(site, 0)
-    return infer_stack_pops(ins, direct, ea)
+    evidence = dispatch_evidence(ea)
+    known = {pc: n for pc, v in evidence.items() if 'target' in v
+             and (n := dispatch_call_pop(v['target'], v.get('receiver'))) is not None}
+    groups = {pc: v['group'] for pc, v in evidence.items() if 'group' in v}
+    direct = lambda site, target: dispatch_call_pop(target, evidence.get(site, {}).get('receiver'))
+    initial = infer_stack_pops(ins, direct, ea, known, groups)
+    domains, patterns = virtual_pop_domains(evidence)
+    for receiver, choices in patterns.items():
+        sites = {pc: group for pc, group in groups.items() if group[0] == receiver}
+        if all(pc in initial for pc in sites) or len(choices) > 128:
+            continue
+        possible = []
+        for choice in choices:
+            fixed = dict(known)
+            fixed.update({pc: choice[group] for pc, group in sites.items()})
+            if infer_stack_pops(ins, direct, ea, fixed, groups, domains, strict=True) is not None:
+                possible.append(choice)
+        if possible:
+            for group in sites.values():
+                domains[group] = {p[group] for p in possible}
+    refined = infer_stack_pops(ins, direct, ea, known, groups, domains)
+    # The vtable inventory can be incomplete (notably library receivers). It
+    # may bound an otherwise ambiguous call, but cannot invalidate or replace
+    # a cleanup already proved from the original caller without that inventory.
+    refined.update(initial)
+    return refined
+
+
+def virtual_pop_domains(evidence):
+    """Conservative RET domains for unresolved original virtual receivers.
+
+    Keep every exported vtable supporting *all* slots used on the same receiver.
+    Do not select a class or a most-common RET. A missing/ambiguous callee RET
+    disables the bound. Domains alone never choose cleanup: original caller
+    stack constraints must leave exactly one value. Try the slot correlations
+    of each supporting table, then retain the union of feasible RET values;
+    never select the first or most common class.
+    """
+    tables = load('vtables', lambda: json.load(open(os.path.join(ROOT, 'db', 'vtables.json'))))
+    slots = collections.defaultdict(set)
+    allowed = {}
+    for ev in evidence.values():
+        if ev.get('virtual'):
+            slots[ev['group'][0]].add(ev['slot'])
+            if 'tables' in ev:
+                allowed[ev['group'][0]] = set(ev['tables'])
+    domains, patterns = {}, {}
+    for receiver, offsets in slots.items():
+        candidates = [v for v in tables if len(v['slots']) * 4 > max(offsets)
+                      and (receiver not in allowed or int(v['addr'], 16) in allowed[receiver])]
+        choices = []
+        for v in candidates:
+            choice = {(receiver, slot): binary_call_pop(int(v['slots'][slot // 4], 16)) for slot in offsets}
+            if None in choice.values():
+                choices = []
+                break  # an unknown target is not evidence to exclude its table
+            if choice not in choices:
+                choices.append(choice)
+        if choices:
+            patterns[receiver] = choices
+        for slot in offsets:
+            counts = {binary_call_pop(int(v['slots'][slot // 4], 16)) for v in candidates}
+            if counts and None not in counts:
+                domains[(receiver, slot)] = counts
+    return domains, patterns
+
+
+@functools.lru_cache(maxsize=None)
+def dispatch_evidence(ea):
+    from packet import DB
+    from stackabi import call_evidence
+    return call_evidence(ea, load('db', DB))
+
+
+@functools.lru_cache(maxsize=None)
+def dispatch_call_pop(target, receiver=None):
+    pop = binary_call_pop(target)
+    if pop is not None or not receiver:
+        return pop
+    from packet import DB, disasm
+    from stackabi import call_evidence
+    db = load('db', DB)
+    f = db.F.get(target)
+    if not f:
+        return None
+    ev = call_evidence(target, db, receiver=receiver)
+    tails = [i for i in disasm(target, f['size']) if i.mnemonic == 'jmp'
+             and not i.op_str.startswith('0x')]
+    counts = {binary_call_pop(ev[i.address]['target']) if i.address in ev and 'target' in ev[i.address]
+              else None for i in tails}
+    # The tail's RET belongs to this caller only if the forwarding body hands it
+    # the original caller frame, not an unbalanced/unsupported stack transform.
+    import capstone
+    md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+    md.detail = True
+    code = {i.address: next(md.disasm(bytes(i.bytes), i.address)) for i in disasm(target, f['size'])}
+    known = {pc: n for pc, fact in ev.items() if 'target' in fact
+             and (n := binary_call_pop(fact['target'])) is not None}
+    if infer_stack_pops(code, lambda pc, t: binary_call_pop(t), target, known, strict=True) is None:
+        return None
+    return next(iter(counts)) if len(counts) == 1 and None not in counts else None
+
+
+@functools.lru_cache(maxsize=None)
+def resolved_call_facts(ea):
+    """RET evidence > unique original-stack solution > legacy solver > IDA delta."""
+    facts = {pc: dict(v, source='stack') for pc, v in indirect_facts(ea).items()}
+    for pc, pop in stack_call_pops(ea).items():
+        if pc in facts and facts[pc]['pop'] != pop:
+            facts[pc].setdefault('disagreements', []).append(f"legacy stack = {facts[pc]['pop']}")
+            facts[pc].pop('nargs', None)
+        facts.setdefault(pc, {}).update(pop=pop, source='stack')
+    for pc, ev in dispatch_evidence(ea).items():
+        if 'target' not in ev:
+            continue
+        n = dispatch_call_pop(ev['target'], ev.get('receiver'))
+        if n is not None:
+            if pc in facts and facts[pc]['pop'] != n:
+                facts[pc].setdefault('disagreements', []).append(f"caller stack = {facts[pc]['pop']}")
+                facts[pc].pop('nargs', None)
+            kind = 'forwarded RET' if binary_call_pop(ev['target']) is None else 'RET'
+            facts.setdefault(pc, {}).update(pop=n, source=f"callee {ev['target']:08x} {kind}")
+    return facts
 
 
 @functools.lru_cache(maxsize=None)
@@ -557,7 +721,7 @@ class Run:
         self.events, self.written, self.status, self.pending = [], set(), None, None
         self.float_written = set()
         self.reserved_done = {}
-        self.proven_pops = stack_call_pops(ea) if not obj and ea in functions() else {}
+        self.proven_pops = resolved_call_facts(ea) if not obj and ea in functions() else {}
         self.crt = crt_ranges()[0]
         # unicorn's hook closures refer to themselves and to the Uc: a finished Run (the image mapped, ~10 MB) is only
         # freed by the cyclic collector, which counts objects, not megabytes (8 workers of a sweep took 15 GB)
@@ -786,13 +950,14 @@ class Run:
         p = proto(target) if IMG <= target < IMG + 0x500000 and not imp else None
         if self.script is None:  # the original: its call site says what the callee pops
             site = self.ret_site.get(ret)
-            pop = self.proven_pops.get(site, call_pops().get(site, p[3] if p else 0)) if ret != RET_MAGIC else (p[3] if p else 0)
+            fact = self.proven_pops.get(site, {})
+            pop = fact.get('pop', call_pops().get(site, p[3] if p else 0)) if ret != RET_MAGIC else (p[3] if p else 0)
             nargs = len(p[1]) if p else pop // 4
             use_ecx = p[0] if p else not imp
             rt = p[2] if p else "?"
-            fact = indirect_facts(self.ea).get(self.ret_site.get(ret), {})
-            pop = fact.get("pop", pop)
             nargs = fact.get("nargs", nargs)
+            if not p and 'pop' in fact and 'nargs' not in fact:
+                nargs = pop // 4
             use_ecx = fact.get("ecx", use_ecx)
             if imp:
                 proven = import_call_pop(ret, imp)
@@ -1155,6 +1320,12 @@ def check(ea, obj_path=None, src=None, profiles=PROFILES, verbose=False):
         if tmp and os.path.exists(tmp):
             os.remove(tmp)
     own, ret_site = own_ranges(ea)
+    if verbose:
+        for pc, fact in sorted(resolved_call_facts(ea).items()):
+            old = call_pops().get(pc)
+            if old is not None and old != fact['pop'] or fact.get('disagreements'):
+                other = '; '.join(fact.get('disagreements', []) + [f'IDA delta = {old}'])
+                print(f"  cleanup {pc:08x}: {fact['source']} = {fact['pop']} bytes; {other} (disagree)")
     from packet import DB, callable_shared_chunk, disasm, vcall_tail_pops
     shared = []
     if len(own) > 1:

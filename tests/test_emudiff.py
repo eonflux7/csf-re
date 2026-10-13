@@ -143,6 +143,60 @@ class CleanupInferenceTests(unittest.TestCase):
         ins, counts = self.infer("55 8bec 6a01 ff5028 ff502c 8be5 5d c3")
         self.assertEqual(self.indirect_counts(ins, counts), [None, None])
 
+    def test_repeated_receiver_slot_relates_original_stack_constraints(self):
+        ins, counts = self.infer('55 8bec 56 6a01 ff5028 6a02 ff5028 5e 5d c3')
+        sites = [pc for pc, i in ins.items() if i.mnemonic == 'call']
+        self.assertEqual(self.indirect_counts(ins, counts), [None, None])
+        counts = emudiff.infer_stack_pops(ins, lambda pc, target: 0,
+                                         groups={pc: ('receiver', 0x28) for pc in sites})
+        self.assertEqual(self.indirect_counts(ins, counts), [4, 4])
+
+    def test_by_value_outgoing_reservation_after_unknown_call(self):
+        # Unknown call must pop its argument. The later SUB/ESP alias is a fully
+        # initialized 16-byte by-value argument, not a second local frame.
+        ins, counts = self.infer('55 8bec 56 6a01 ff5028 83ec10 8bfc '
+                                 '8907 894704 894708 89470c 6a00 e800000000 5e 5d c3', 20)
+        self.assertEqual(self.indirect_counts(ins, counts), [4])
+        _, counts = self.infer('55 8bec 56 6a01 ff5028 83ec10 8bfc '
+                              '8907 894704 894708 6a00 e800000000 5e 5d c3', 20)
+        self.assertEqual(counts, {})
+
+    def test_binary_getter_leaves_argument_for_later_setter(self):
+        facts = emudiff.resolved_call_facts(0x54A910)
+        self.assertEqual(facts[0x54AA98]['pop'], 0)
+        self.assertEqual(facts[0x54AAB1]['pop'], 8)
+        self.assertEqual(emudiff.call_pops()[0x54AA98], 4)  # export remains unchanged
+
+    def test_receiver_resolves_balanced_indirect_tail(self):
+        self.assertIsNone(emudiff.dispatch_call_pop(0x4F5170))
+        self.assertEqual(emudiff.dispatch_call_pop(0x4F5170, '0083f1a0'), 4)
+
+    def test_unknown_vtable_ret_does_not_narrow_cleanup(self):
+        receiver = ('load', ('input', 'ecx'), 0)
+        ev = {0x1000: dict(group=(receiver, 0), virtual=True, slot=0)}
+        with patch.object(emudiff, 'load', return_value=[dict(addr='00009000', slots=['00002000'])]), \
+                patch.object(emudiff, 'binary_call_pop', return_value=None):
+            self.assertEqual(emudiff.virtual_pop_domains(ev), ({}, {}))
+
+    def test_incomplete_vtable_catalog_cannot_erase_caller_proof(self):
+        ea = 0x438880
+        evidence = emudiff.dispatch_evidence(ea)
+        false_domains = {ev['group']: {0} for ev in evidence.values() if 'group' in ev}
+        emudiff.stack_call_pops.cache_clear()
+        with patch.object(emudiff, 'virtual_pop_domains', return_value=(false_domains, {})):
+            self.assertEqual(emudiff.stack_call_pops(ea)[0x43895A], 12)
+        emudiff.stack_call_pops.cache_clear()
+
+    def test_ret_evidence_has_priority_over_legacy_solver(self):
+        emudiff.resolved_call_facts.cache_clear()
+        with patch.object(emudiff, 'indirect_facts', return_value={0x1000: dict(pop=12)}), \
+                patch.object(emudiff, 'stack_call_pops', return_value={0x1000: 8}), \
+                patch.object(emudiff, 'dispatch_evidence', return_value={0x1000: dict(target=0x2000)}), \
+                patch.object(emudiff, 'binary_call_pop', return_value=4):
+            self.assertEqual(emudiff.resolved_call_facts(0x1000)[0x1000]['pop'], 4)
+            self.assertEqual(len(emudiff.resolved_call_facts(0x1000)[0x1000]['disagreements']), 2)
+        emudiff.resolved_call_facts.cache_clear()
+
     def test_dynamic_frame_keeps_export(self):
         ins, counts = self.infer("55 8bec 83e4f0 ff5028 8be5 5d c3")
         self.assertEqual(counts, {})

@@ -31,6 +31,7 @@ static uint32_t __cdecl string_construct(hook::Regs* r, const uint32_t* a) {
 static void string_destroy(void* self) {
     char* p = *static_cast<char**>(self);
     if (p) game::Mem_Free(p - 4);
+    *static_cast<char**>(self) = nullptr;
 }
 static uint32_t __cdecl string_destruct(hook::Regs* r, const uint32_t*) {
     string_destroy(reinterpret_cast<void*>(r->ecx)); return 0;
@@ -41,8 +42,81 @@ static uint32_t __cdecl string_assign(hook::Regs* r, const uint32_t* a) {
     if (*static_cast<const char**>(self) != text) { string_destroy(self); string_init(self, text); }
     return r->ecx;
 }
+static uint32_t __cdecl session_string_assign(hook::Regs* r, const uint32_t* a) {
+    const char* text = *reinterpret_cast<const char**>(a[0]);
+    void* out = reinterpret_cast<void*>(r->ecx);
+    if (*static_cast<const char**>(out) != text) { string_destroy(out); string_init(out, text); }
+    return r->ecx;
+}
+static uint32_t __cdecl session_string_construct(hook::Regs* r, const uint32_t* a) {
+    return string_construct(r, a);
+}
+static uint32_t __cdecl session_string_destruct(hook::Regs* r, const uint32_t* a) {
+    return string_destruct(r, a);
+}
 static uint32_t __cdecl station_name(hook::Regs*, const uint32_t*) {
     return reinterpret_cast<uintptr_t>("");
+}
+// The alloc boundary ignores this token; no original allocator virtuals are used.
+static uint32_t __cdecl allocator_token(hook::Regs*, const uint32_t*) {
+    static uint32_t token = 0; return reinterpret_cast<uintptr_t>(&token);
+}
+static uint32_t __cdecl list_head(hook::Regs*, const uint32_t*) {
+    auto* p = static_cast<uint32_t*>(game::Mem_Alloc(12));
+    if (p) { p[0] = p[1] = reinterpret_cast<uintptr_t>(p); p[2] = 0; }
+    return reinterpret_cast<uintptr_t>(p);
+}
+static uint32_t __cdecl plain_list_head(hook::Regs* r, const uint32_t* a) { return list_head(r, a); }
+static uint32_t __cdecl list_node(hook::Regs*, const uint32_t* a) {
+    auto* p = static_cast<uint32_t*>(game::Mem_Alloc(12));
+    if (p) {
+        p[0] = a[0]; p[1] = a[1];
+        string_init(p + 2, ""); // offline URL payload, caller links the node
+    }
+    return reinterpret_cast<uintptr_t>(p);
+}
+static uint32_t list_clear(hook::Regs* r, bool strings) {
+    auto* self = reinterpret_cast<uint32_t*>(r->ecx);
+    auto* head = reinterpret_cast<uint32_t*>(self[1]);
+    auto* node = reinterpret_cast<uint32_t*>(head[0]);
+    head[0] = head[1] = reinterpret_cast<uintptr_t>(head); self[2] = 0;
+    while (node != head) {
+        auto* next = reinterpret_cast<uint32_t*>(node[0]);
+        if (strings) string_destroy(node + 2);
+        game::Mem_Free(node); node = next;
+    }
+    return reinterpret_cast<uintptr_t>(head);
+}
+static uint32_t __cdecl list_clear_strings(hook::Regs* r, const uint32_t*) { return list_clear(r, true); }
+static uint32_t __cdecl list_clear_plain(hook::Regs* r, const uint32_t*) { return list_clear(r, false); }
+static uint32_t __cdecl list_count(hook::Regs* r, const uint32_t* a) {
+    reinterpret_cast<uint32_t*>(r->ecx)[2] += a[0]; return 0;
+}
+static uint32_t __cdecl empty_string_output(hook::Regs*, const uint32_t* a) {
+    string_init(reinterpret_cast<void*>(a[0]), ""); return a[0];
+}
+static uint32_t __cdecl empty_format_output(hook::Regs*, const uint32_t* a) {
+    void* out = reinterpret_cast<void*>(a[0]); string_destroy(out); string_init(out, "");
+    // Original has no defined EAX result; game callers ignore it.
+    return a[0];
+}
+static uint32_t __cdecl offline_result(hook::Regs* r, const uint32_t*) {
+    auto* p = reinterpret_cast<uint32_t*>(r->ecx);
+    p[0] = 0x80010001u; p[1] = reinterpret_cast<uintptr_t>("offline"); p[2] = 0;
+    return r->ecx;
+}
+static uint32_t __cdecl gathering_destruct(hook::Regs* r, const uint32_t*) {
+    auto* p = reinterpret_cast<unsigned char*>(r->ecx);
+    string_destroy(p + 0x28); string_destroy(p + 0x24); return r->ecx;
+}
+static uint32_t __cdecl gathering_type(hook::Regs* r, const uint32_t* a) {
+    auto* p = reinterpret_cast<uint32_t*>(r->ecx); p[5] = a[0]; p[6] = a[1]; return 0;
+}
+static uint32_t __cdecl gathering_name(hook::Regs* r, const uint32_t* a) {
+    void* out = reinterpret_cast<unsigned char*>(r->ecx) + 0x24;
+    const char* text = *reinterpret_cast<const char**>(a[0]);
+    if (*static_cast<const char**>(out) != text) { string_destroy(out); string_init(out, text); }
+    return reinterpret_cast<uintptr_t>(out);
 }
 } // namespace
 
@@ -92,12 +166,61 @@ static void gathering_init(void* p) {
     string_init(self + 0x24, ""); string_init(self + 0x28, "");
 }
 static uint32_t __cdecl gathering_construct(hook::Regs* r, const uint32_t*) { gathering_init(reinterpret_cast<void*>(r->ecx)); return r->ecx; }
+static void* __fastcall request_delete(void* p, void*, unsigned flags) {
+    if (flags & 1) game::Mem_Free(p); return p;
+}
+static __declspec(naked) void request_virtual_1() {
+    __asm xor eax, eax
+    __asm ret 0
+}
+static __declspec(naked) void request_virtual_2() {
+    __asm xor eax, eax
+    __asm ret 0
+}
+static __declspec(naked) void request_virtual_3() {
+    __asm xor eax, eax
+    __asm ret 0
+}
+static __declspec(naked) void request_virtual_4() {
+    __asm xor eax, eax
+    __asm ret 8
+}
+static __declspec(naked) void request_virtual_5() {
+    __asm xor eax, eax
+    __asm ret 0
+}
+static void* const offline_request_vtable[] = {(void*)&request_delete, (void*)&request_virtual_1, (void*)&request_virtual_2, (void*)&request_virtual_3, (void*)&request_virtual_4, (void*)&request_virtual_5};
+static uint32_t __cdecl request_construct(hook::Regs* r, const uint32_t*) {
+    auto* p = reinterpret_cast<uint32_t*>(r->ecx); std::memset(p, 0, 0x70);
+    p[0] = reinterpret_cast<uintptr_t>(offline_request_vtable);
+    p[3] = 3; /* completed failure, never pending (1) or success (2) */
+    p[17] = 0x80010001u; p[18] = reinterpret_cast<uintptr_t>("offline"); return r->ecx;
+}
+static void* const offline_connection_vtable[] = {(void*)&request_delete, (void*)&request_virtual_1, (void*)&request_virtual_2, (void*)&request_virtual_3, (void*)&request_virtual_4, (void*)&request_virtual_5};
+static uint32_t __cdecl connection_construct(hook::Regs* r, const uint32_t*) {
+    auto* p = reinterpret_cast<uint32_t*>(r->ecx); std::memset(p, 0, 92);
+    p[0] = reinterpret_cast<uintptr_t>(offline_connection_vtable); p[3] = 3;
+    p[17] = 0x80010001u; p[18] = reinterpret_cast<uintptr_t>("offline"); return r->ecx;
+}
+// Borrowed process-owned endpoints: slot 0 must never free static storage.
+static void* __fastcall endpoint_delete(void* p, void*, unsigned) { return p; }
+static __declspec(naked) void endpoint_reset() { __asm xor eax, eax __asm ret 0 }
+static void* const offline_endpoint_vtable[] = {(void*)&endpoint_delete, (void*)&endpoint_reset};
+struct OfflineEndpoint { void* const* vtable; uint32_t fields[6]; };
+static_assert(sizeof(OfflineEndpoint) == 0x1c);
+static OfflineEndpoint endpoints[2] = {
+    {offline_endpoint_vtable, {0, 0, 0xffffffffu, 0, 0, 0}},
+    {offline_endpoint_vtable, {0, 0, 0xffffffffu, 0, 0, 0}}};
+static uint32_t __cdecl primary_endpoint(hook::Regs*, const uint32_t*) { return reinterpret_cast<uintptr_t>(&endpoints[0]); }
+static uint32_t __cdecl secondary_endpoint(hook::Regs*, const uint32_t*) { return reinterpret_cast<uintptr_t>(&endpoints[1]); }
 // NetSession_GetLastResultCode: offline-error; nonzero error (not a successful status).
 static __declspec(naked) void offline_00646de0() {
     __asm mov eax, -1
     __asm ret 0
 }
 HOOK(0x00646DE0, offline_00646de0, "boundary-netz");
+// NetSession_GetNodeAllocator: audited-offline-support; see audit.json: allocator_token.
+HOOK_REGS(0x00646FF0, allocator_token, 0, "boundary-netz");
 // DumpSessionStationRecord: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_006476a0() {
     __asm mov eax, 0
@@ -110,6 +233,16 @@ static __declspec(naked) void offline_00647790() {
     __asm ret 0
 }
 HOOK(0x00647790, offline_00647790, "boundary-netz");
+// NetSession_GetPrimaryEndpoint: audited-offline-support; see audit.json: primary_endpoint.
+HOOK_REGS(0x006486C0, primary_endpoint, 0, "boundary-netz");
+// NetSession_GetSecondaryEndpoint: audited-offline-support; see audit.json: secondary_endpoint.
+HOOK_REGS(0x006486D0, secondary_endpoint, 0, "boundary-netz");
+// NetSession_ConfigureEndpoint: audited-offline-rejection; caller tests byte result or ignores endpoint setter result; see audit.json.
+static __declspec(naked) void offline_00648770() {
+    __asm mov eax, 0
+    __asm ret 4
+}
+HOOK(0x00648770, offline_00648770, "boundary-netz");
 // ResetBaseState: owned-string; length-prefixed string on the game heap.
 HOOK_REGS(0x0064A690, string_default, 0, "boundary-netz");
 // InitializeTemporaryString: owned-string; length-prefixed string on the game heap.
@@ -118,6 +251,8 @@ HOOK_REGS(0x0064A6B0, string_construct, 4, "boundary-netz");
 HOOK_REGS(0x0064A6F0, string_destruct, 0, "boundary-netz");
 // AssignStringName: owned-string; length-prefixed string on the game heap.
 HOOK_REGS(0x0064A710, string_assign, 4, "boundary-netz");
+// FormatValueString: audited-offline-support; see audit.json: empty_format_output.
+HOOK_REGS(0x0064A8F0, empty_format_output, 0, "boundary-netz");
 // NetSession_TestSelectedObjectState: offline-zero; zero count / false predicate.
 static __declspec(naked) void offline_0064af40() {
     __asm mov eax, 0
@@ -178,6 +313,8 @@ static __declspec(naked) void offline_0064e4f0() {
     __asm ret 4
 }
 HOOK(0x0064E4F0, offline_0064e4f0, "boundary-netz");
+// NetGatheringDdl_DestroyMember50: audited-offline-support; see audit.json: list_clear_plain.
+HOOK_REGS(0x006508A0, list_clear_plain, 0, "boundary-netz");
 // NetGatheringDdl_WaitForResourceCompletion: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_00650ba0() {
     __asm mov eax, 0
@@ -196,6 +333,10 @@ static __declspec(naked) void offline_006510b0() {
     __asm ret 4
 }
 HOOK(0x006510B0, offline_006510b0, "boundary-netz");
+// ApplyPendingChangeFlag: audited-offline-support; see audit.json: list_count.
+HOOK_REGS(0x00651160, list_count, 4, "boundary-netz");
+// NetSession_ConstructConnection: audited-offline-support; see audit.json: connection_construct.
+HOOK_REGS(0x00651770, connection_construct, 0, "boundary-netz");
 // SpawnPoints_ReleaseEntry: offline-noop; no callbacks, transport side effects, or state mutation.
 static __declspec(naked) void offline_00651b40() {
     __asm mov eax, 0
@@ -208,6 +349,12 @@ static __declspec(naked) void offline_00651fc0() {
     __asm ret 8
 }
 HOOK(0x00651FC0, offline_00651fc0, "boundary-netz");
+// CreateListNodeFromEntry: audited-offline-support; see audit.json: list_node.
+HOOK_REGS(0x006524B0, list_node, 12, "boundary-netz");
+// NetGatheringDdl_PrepareRequestData: audited-offline-support; see audit.json: list_clear_strings.
+HOOK_REGS(0x00652810, list_clear_strings, 0, "boundary-netz");
+// sub_653E90: audited-offline-support; see audit.json: plain_list_head.
+HOOK_REGS(0x00653E90, plain_list_head, 0, "boundary-netz");
 // NetChat_CopyTextBytes: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_00655ce0() {
     __asm mov eax, 0
@@ -220,6 +367,22 @@ static __declspec(naked) void offline_00656280() {
     __asm ret 8
 }
 HOOK(0x00656280, offline_00656280, "boundary-netz");
+// NetGathering_CreateTemporaryListHead: audited-offline-support; see audit.json: list_head.
+HOOK_REGS(0x00656DE0, list_head, 0, "boundary-netz");
+// NetGatheringDdl_InitializeScratchObject: audited-offline-support; see audit.json: offline_result.
+HOOK_REGS(0x00657590, offline_result, 0, "boundary-netz");
+// NetSession_CompleteConnection: audited-offline-rejection; caller tests byte result or ignores endpoint setter result; see audit.json.
+static __declspec(naked) void offline_006575d0() {
+    __asm mov eax, 0
+    __asm ret 4
+}
+HOOK(0x006575D0, offline_006575d0, "boundary-netz");
+// NetSession_SetEndpointValue: audited-offline-rejection; caller tests byte result or ignores endpoint setter result; see audit.json.
+static __declspec(naked) void offline_00658240() {
+    __asm mov eax, 0
+    __asm ret 4
+}
+HOOK(0x00658240, offline_00658240, "boundary-netz");
 // SessionFlagBuffer_SetMode: offline-noop; no callbacks, transport side effects, or state mutation.
 static __declspec(naked) void offline_0065e130() {
     __asm mov eax, 0
@@ -298,6 +461,8 @@ static __declspec(naked) void offline_00669ac0() {
     __asm ret 0
 }
 HOOK(0x00669AC0, offline_00669ac0, "boundary-netz");
+// ConstructResource: audited-offline-support; see audit.json: request_construct.
+HOOK_REGS(0x0066A440, request_construct, 0, "boundary-netz");
 // NetSpawnMessages_FormatInitialPoint: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_0066bf70() {
     __asm mov eax, 0
@@ -322,18 +487,26 @@ static __declspec(naked) void offline_0066cf50() {
     __asm ret 20
 }
 HOOK(0x0066CF50, offline_0066cf50, "boundary-netz");
-// NetSessionSlot_Reset: offline-noop; no callbacks, transport side effects, or state mutation.
-static __declspec(naked) void offline_0066f150() {
-    __asm mov eax, 0
-    __asm ret 0
-}
-HOOK(0x0066F150, offline_0066f150, "boundary-netz");
+// NetSessionSlot_SetName: audited-offline-support; see audit.json: session_string_construct.
+HOOK_REGS(0x0066F130, session_string_construct, 4, "boundary-netz");
+// NetSessionSlot_Reset: audited-offline-support; see audit.json: session_string_destruct.
+HOOK_REGS(0x0066F150, session_string_destruct, 0, "boundary-netz");
+// NetSession_UpdateSessionDetails: audited-offline-support; see audit.json: session_string_assign.
+HOOK_REGS(0x0066F180, session_string_assign, 4, "boundary-netz");
 // NetSessionSlot_MatchesKey: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_0066f1a0() {
     __asm mov eax, 0
     __asm ret 4
 }
 HOOK(0x0066F1A0, offline_0066f1a0, "boundary-netz");
+// NetGathering_CopyUrlString: audited-offline-support; see audit.json: empty_string_output.
+HOOK_REGS(0x0066FBB0, empty_string_output, 4, "boundary-netz");
+// NetPrudpSendModeCommand: audited-offline-rejection; caller tests byte result or ignores endpoint setter result; see audit.json.
+static __declspec(naked) void offline_00676700() {
+    __asm mov eax, 0
+    __asm ret 8
+}
+HOOK(0x00676700, offline_00676700, "boundary-netz");
 // NetPostman_Reset: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_0067d040() {
     __asm mov eax, 0
@@ -382,6 +555,12 @@ static __declspec(naked) void offline_0068ec40() {
     __asm ret 8
 }
 HOOK(0x0068EC40, offline_0068ec40, "boundary-netz");
+// NetSession_SetEndpointAttribute: audited-offline-rejection; caller tests byte result or ignores endpoint setter result; see audit.json.
+static __declspec(naked) void offline_0068f740() {
+    __asm mov eax, 0
+    __asm ret 4
+}
+HOOK(0x0068F740, offline_0068f740, "boundary-netz");
 // ChannelIsOpen: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_00790f30() {
     __asm mov eax, 0
@@ -408,12 +587,36 @@ static __declspec(naked) void offline_00791790() {
 HOOK(0x00791790, offline_00791790, "boundary-netz");
 // C_0085ff6c_ConstructGatheringBase: audited-constructor; 0x30-byte offline base, eight ABI-specific virtuals.
 HOOK_REGS(0x00798DF0, gathering_construct, 0, "boundary-netz");
+// sub_798E40: audited-offline-support; see audit.json: gathering_destruct.
+HOOK_REGS(0x00798E40, gathering_destruct, 0, "boundary-netz");
+// Gathering_SetType: audited-offline-support; see audit.json: gathering_type.
+HOOK_REGS(0x00798E60, gathering_type, 8, "boundary-netz");
+// NetGatheringDdl_SetRequestString: audited-offline-support; see audit.json: gathering_name.
+HOOK_REGS(0x00798E80, gathering_name, 4, "boundary-netz");
+// LoadResource: audited-offline-rejection; caller tests byte result or ignores endpoint setter result; see audit.json.
+static __declspec(naked) void offline_00798fb0() {
+    __asm mov eax, 0
+    __asm ret 16
+}
+HOOK(0x00798FB0, offline_00798fb0, "boundary-netz");
 // NetGatheringDdl_RequestGatheringDetails: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_00798fc0() {
     __asm mov eax, 0
     __asm ret 16
 }
 HOOK(0x00798FC0, offline_00798fc0, "boundary-netz");
+// NetGatheringDdl_InitializeGatheringResource: audited-offline-rejection; caller tests byte result or ignores endpoint setter result; see audit.json.
+static __declspec(naked) void offline_00798ff0() {
+    __asm mov eax, 0
+    __asm ret 16
+}
+HOOK(0x00798FF0, offline_00798ff0, "boundary-netz");
+// sub_799020: audited-offline-rejection; caller tests byte result or ignores endpoint setter result; see audit.json.
+static __declspec(naked) void offline_00799020() {
+    __asm mov eax, 0
+    __asm ret 16
+}
+HOOK(0x00799020, offline_00799020, "boundary-netz");
 // NetGatheringDdl_StartResourceRequest_799070: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_00799070() {
     __asm mov eax, 0
@@ -438,6 +641,12 @@ static __declspec(naked) void offline_00799190() {
     __asm ret 8
 }
 HOOK(0x00799190, offline_00799190, "boundary-netz");
+// StartRequest: audited-offline-rejection; caller tests byte result or ignores endpoint setter result; see audit.json.
+static __declspec(naked) void offline_00799220() {
+    __asm mov eax, 0
+    __asm ret 12
+}
+HOOK(0x00799220, offline_00799220, "boundary-netz");
 // NetGathering_TestPeerObject: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_00799c20() {
     __asm mov eax, 0
@@ -462,6 +671,12 @@ static __declspec(naked) void offline_0079fc50() {
     __asm ret 4
 }
 HOOK(0x0079FC50, offline_0079fc50, "boundary-netz");
+// sub_79FF30: audited-offline-rejection; caller tests byte result or ignores endpoint setter result; see audit.json.
+static __declspec(naked) void offline_0079ff30() {
+    __asm mov eax, 0
+    __asm ret 0
+}
+HOOK(0x0079FF30, offline_0079ff30, "boundary-netz");
 // NetGatheringDdl_StartGatheringMonitor: offline-noop; no callbacks, transport side effects, or state mutation.
 static __declspec(naked) void offline_0079fff0() {
     __asm mov eax, 0

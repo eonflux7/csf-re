@@ -29,6 +29,118 @@ SUB = {"ebx": r"\b(ebx|bx|bl|bh)\b", "esi": r"\b(esi|si)\b", "edi": r"\b(edi|di)
 _memo, _ins = {}, {}
 
 
+def entry_register_reads(db, ea, reg):
+    result = _entry_register_flow(db, ea, reg)
+    return result[0] if result is not None else None
+
+
+def _entry_register_flow(db, ea, reg, active=None):
+    """Bit mask of an incoming volatile register consumed by original code.
+
+    None means unproved (unknown control flow/callee), never "not an input".
+    Unlike Hex-Rays register locations this follows partial definitions and all
+    reachable branches. Direct calls consume only the bits their own entry uses;
+    incoming bits surviving their original bodies are followed in the caller.
+    Preserving a register is not taking it as an argument. Used only to discard
+    a decompiler argument when the mask is zero.
+    """
+    import capstone
+    from packet import disasm, callable_shared_chunk
+    if active is None:
+        active = set()
+    key = ea, reg
+    cache = getattr(db, '_entry_register_reads', None)
+    if cache is None:
+        cache = db._entry_register_reads = {}
+    if key in cache:
+        return cache[key]
+    if key in active or len(active) >= 64:
+        return None
+    f = db.F.get(ea) or callable_shared_chunk(ea, db)
+    if not f:
+        return None
+    raw = disasm(ea, f['size'])
+    md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+    md.detail = True
+    ins = {i.address: next(md.disasm(bytes(i.bytes), i.address)) for i in raw}
+    aliases = {reg: 0xffffffff, reg[1:]: 0xffff,
+               reg[1] + 'l': 0xff, reg[1] + 'h': 0xff00}
+    work, seen, consumed, preserved = [(ea, 0xffffffff)], {}, 0, 0
+    while work:
+        pc, live = work.pop()
+        if not live or live & ~seen.get(pc, 0) == 0:
+            continue
+        live &= ~seen.get(pc, 0)
+        seen[pc] = seen.get(pc, 0) | live
+        i = ins.get(pc)
+        if i is None:
+            return None
+        m, op = i.mnemonic, i.op_str
+        parts = op.split(', ')
+        if m == 'lea' and op == f'{reg}, [{reg}]':
+            work.append((pc + i.size, live))
+            continue
+        if m == 'ret':
+            preserved |= live
+            continue
+        if m == 'call' or m == 'jmp' and re.fullmatch(r'0x[0-9a-f]+', op) and int(op, 16) not in ins:
+            if re.fullmatch(r'0x[0-9a-f]+', op):
+                result = _entry_register_flow(db, int(op, 16), reg, active | {key})
+                if result is None:
+                    return None
+                reads, survives = result
+                consumed |= reads & live
+                live &= survives
+            else:
+                # Imports have a standard ABI. Unknown register dispatch may be
+                # thiscall/fastcall; it is not evidence to remove an argument.
+                match = re.fullmatch(r'dword ptr \[(0x[0-9a-f]+)\]', op)
+                if not hasattr(db, '_import_slots'):
+                    import pefile
+                    pe = pefile.PE(os.path.join(ROOT, 'work', 'pc', 'CommXPC.exe'), fast_load=True)
+                    pe.parse_data_directories(directories=[pefile.DIRECTORY_ENTRY['IMAGE_DIRECTORY_ENTRY_IMPORT']])
+                    db._import_slots = {i.address for d in pe.DIRECTORY_ENTRY_IMPORT for i in d.imports}
+                if not match or int(match[1], 16) not in db._import_slots:
+                    return None
+                # The external ABI takes no ECX/EDX. Its implementation is not
+                # available: allow incoming bits to survive, rather than assert
+                # an unproved write. An original LTCG callee can preserve ECX.
+            if m == 'call':
+                work.append((pc + i.size, live))
+            else:
+                preserved |= live
+            continue
+        read, written = i.regs_access()
+        rm = 0
+        for r in read:
+            rm |= aliases.get(i.reg_name(r), 0)
+        constant = len(parts) == 2 and parts[0] in aliases and (
+            m in ('xor', 'sub') and parts[0] == parts[1] or
+            m == 'or' and parts[1] in ('0xffffffff', '-1') or
+            m == 'and' and parts[1] == '0')
+        if constant:
+            rm = 0
+        consumed |= rm & live
+        for r in written:
+            live &= ~aliases.get(i.reg_name(r), 0)
+        if m.startswith('j'):
+            if not re.fullmatch(r'0x[0-9a-f]+', op):
+                table = re.fullmatch(r'dword ptr \[e[a-z]{2}\*4 \+ (0x[0-9a-f]+)\]', op)
+                targets = _jump_table(int(table[1], 16), {pc: pc for pc in ins}) if table and m == 'jmp' else None
+                if not targets:
+                    return None
+                work.extend((t, live) for t in targets)
+                continue
+            if int(op, 16) not in ins:
+                return None
+            work.append((int(op, 16), live))
+            if m == 'jmp':
+                continue
+        work.append((pc + i.size, live))
+    cache[key] = consumed, preserved
+    return consumed, preserved
+
+
 def _code(db, ea):
     if ea not in _ins:
         from packet import disasm

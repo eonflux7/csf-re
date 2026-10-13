@@ -1,0 +1,531 @@
+Compiler-derived Win32 librw layouts, using tools/linktest.py flags().
+Checkout: 18532c2e13efbc1aa43f0b00b4459831f9414de0
+No original RW layout is implied by this file.
+*** Dumping AST Record Layout
+         0 | struct rw::Matrix
+         0 |   struct rw::V3d right
+         0 |     float32 x
+         4 |     float32 y
+         8 |     float32 z
+        12 |   uint32 flags
+        16 |   struct rw::V3d up
+        16 |     float32 x
+        20 |     float32 y
+        24 |     float32 z
+        28 |   uint32 pad1
+        32 |   struct rw::V3d at
+        32 |     float32 x
+        36 |     float32 y
+        40 |     float32 z
+        44 |   uint32 pad2
+        48 |   struct rw::V3d pos
+        48 |     float32 x
+        52 |     float32 y
+        56 |     float32 z
+        60 |   uint32 pad3
+           | [sizeof=64, align=4,
+           |  nvsize=64, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::Frame
+         0 |   struct rw::Object object
+         0 |     uint8 type
+         1 |     uint8 subType
+         2 |     uint8 flags
+         3 |     uint8 privateFlags
+         4 |     void * parent
+         8 |   struct rw::LLLink inDirtyList
+         8 |     LLLink * next
+        12 |     LLLink * prev
+        16 |   struct rw::LinkList objectList
+        16 |     struct rw::LLLink link
+        16 |       LLLink * next
+        20 |       LLLink * prev
+        24 |   struct rw::Matrix matrix
+        24 |     struct rw::V3d right
+        24 |       float32 x
+        28 |       float32 y
+        32 |       float32 z
+        36 |     uint32 flags
+        40 |     struct rw::V3d up
+        40 |       float32 x
+        44 |       float32 y
+        48 |       float32 z
+        52 |     uint32 pad1
+        56 |     struct rw::V3d at
+        56 |       float32 x
+        60 |       float32 y
+        64 |       float32 z
+        68 |     uint32 pad2
+        72 |     struct rw::V3d pos
+        72 |       float32 x
+        76 |       float32 y
+        80 |       float32 z
+        84 |     uint32 pad3
+        88 |   struct rw::Matrix ltm
+        88 |     struct rw::V3d right
+        88 |       float32 x
+        92 |       float32 y
+        96 |       float32 z
+       100 |     uint32 flags
+       104 |     struct rw::V3d up
+       104 |       float32 x
+       108 |       float32 y
+       112 |       float32 z
+       116 |     uint32 pad1
+       120 |     struct rw::V3d at
+       120 |       float32 x
+       124 |       float32 y
+       128 |       float32 z
+       132 |     uint32 pad2
+       136 |     struct rw::V3d pos
+       136 |       float32 x
+       140 |       float32 y
+       144 |       float32 z
+       148 |     uint32 pad3
+       152 |   Frame * child
+       156 |   Frame * next
+       160 |   Frame * root
+           | [sizeof=164, align=4,
+           |  nvsize=164, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::ObjectWithFrame
+         0 |   struct rw::Object object
+         0 |     uint8 type
+         1 |     uint8 subType
+         2 |     uint8 flags
+         3 |     uint8 privateFlags
+         4 |     void * parent
+         8 |   struct rw::LLLink inFrame
+         8 |     LLLink * next
+        12 |     LLLink * prev
+        16 |   Sync syncCB
+           | [sizeof=20, align=4,
+           |  nvsize=20, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::Texture
+         0 |   Raster * raster
+         4 |   TexDictionary * dict
+         8 |   struct rw::LLLink inDict
+         8 |     LLLink * next
+        12 |     LLLink * prev
+        16 |   char[32] name
+        48 |   char[32] mask
+        80 |   uint32 filterAddressing
+        84 |   int32 refCount
+        88 |   struct rw::LLLink inGlobalList
+        88 |     LLLink * next
+        92 |     LLLink * prev
+           | [sizeof=96, align=4,
+           |  nvsize=96, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::Atomic
+         0 |   struct rw::ObjectWithFrame object
+         0 |     struct rw::Object object
+         0 |       uint8 type
+         1 |       uint8 subType
+         2 |       uint8 flags
+         3 |       uint8 privateFlags
+         4 |       void * parent
+         8 |     struct rw::LLLink inFrame
+         8 |       LLLink * next
+        12 |       LLLink * prev
+        16 |     Sync syncCB
+        20 |   Geometry * geometry
+        24 |   struct rw::Sphere boundingSphere
+        24 |     struct rw::V3d center
+        24 |       float32 x
+        28 |       float32 y
+        32 |       float32 z
+        36 |     float32 radius
+        40 |   struct rw::Sphere worldBoundingSphere
+        40 |     struct rw::V3d center
+        40 |       float32 x
+        44 |       float32 y
+        48 |       float32 z
+        52 |     float32 radius
+        56 |   Clump * clump
+        60 |   struct rw::LLLink inClump
+        60 |     LLLink * next
+        64 |     LLLink * prev
+        68 |   ObjPipeline * pipeline
+        72 |   RenderCB renderCB
+        76 |   World * world
+        80 |   ObjectWithFrame::Sync originalSync
+           | [sizeof=84, align=4,
+           |  nvsize=84, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::Light
+         0 |   struct rw::ObjectWithFrame object
+         0 |     struct rw::Object object
+         0 |       uint8 type
+         1 |       uint8 subType
+         2 |       uint8 flags
+         3 |       uint8 privateFlags
+         4 |       void * parent
+         8 |     struct rw::LLLink inFrame
+         8 |       LLLink * next
+        12 |       LLLink * prev
+        16 |     Sync syncCB
+        20 |   float32 radius
+        24 |   struct rw::RGBAf color
+        24 |     float32 red
+        28 |     float32 green
+        32 |     float32 blue
+        36 |     float32 alpha
+        40 |   float32 minusCosAngle
+        44 |   struct rw::LLLink inWorld
+        44 |     LLLink * next
+        48 |     LLLink * prev
+        52 |   Clump * clump
+        56 |   struct rw::LLLink inClump
+        56 |     LLLink * next
+        60 |     LLLink * prev
+        64 |   World * world
+        68 |   ObjectWithFrame::Sync originalSync
+           | [sizeof=72, align=4,
+           |  nvsize=72, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::Camera
+         0 |   struct rw::ObjectWithFrame object
+         0 |     struct rw::Object object
+         0 |       uint8 type
+         1 |       uint8 subType
+         2 |       uint8 flags
+         3 |       uint8 privateFlags
+         4 |       void * parent
+         8 |     struct rw::LLLink inFrame
+         8 |       LLLink * next
+        12 |       LLLink * prev
+        16 |     Sync syncCB
+        20 |   void (*)(Camera *) beginUpdateCB
+        24 |   void (*)(Camera *) endUpdateCB
+        28 |   struct rw::V2d viewWindow
+        28 |     float32 x
+        32 |     float32 y
+        36 |   struct rw::V2d viewOffset
+        36 |     float32 x
+        40 |     float32 y
+        44 |   float32 nearPlane
+        48 |   float32 farPlane
+        52 |   float32 fogPlane
+        56 |   int32 projection
+        60 |   struct rw::Matrix viewMatrix
+        60 |     struct rw::V3d right
+        60 |       float32 x
+        64 |       float32 y
+        68 |       float32 z
+        72 |     uint32 flags
+        76 |     struct rw::V3d up
+        76 |       float32 x
+        80 |       float32 y
+        84 |       float32 z
+        88 |     uint32 pad1
+        92 |     struct rw::V3d at
+        92 |       float32 x
+        96 |       float32 y
+       100 |       float32 z
+       104 |     uint32 pad2
+       108 |     struct rw::V3d pos
+       108 |       float32 x
+       112 |       float32 y
+       116 |       float32 z
+       120 |     uint32 pad3
+       124 |   float32 zScale
+       128 |   float32 zShift
+       132 |   FrustumPlane[6] frustumPlanes
+       252 |   V3d[8] frustumCorners
+       348 |   struct rw::BBox frustumBoundBox
+       348 |     struct rw::V3d sup
+       348 |       float32 x
+       352 |       float32 y
+       356 |       float32 z
+       360 |     struct rw::V3d inf
+       360 |       float32 x
+       364 |       float32 y
+       368 |       float32 z
+       372 |   Raster * frameBuffer
+       376 |   Raster * zBuffer
+       380 |   struct rw::RawMatrix devView
+       380 |     struct rw::V3d right
+       380 |       float32 x
+       384 |       float32 y
+       388 |       float32 z
+       392 |     float32 rightw
+       396 |     struct rw::V3d up
+       396 |       float32 x
+       400 |       float32 y
+       404 |       float32 z
+       408 |     float32 upw
+       412 |     struct rw::V3d at
+       412 |       float32 x
+       416 |       float32 y
+       420 |       float32 z
+       424 |     float32 atw
+       428 |     struct rw::V3d pos
+       428 |       float32 x
+       432 |       float32 y
+       436 |       float32 z
+       440 |     float32 posw
+       444 |   struct rw::RawMatrix devProj
+       444 |     struct rw::V3d right
+       444 |       float32 x
+       448 |       float32 y
+       452 |       float32 z
+       456 |     float32 rightw
+       460 |     struct rw::V3d up
+       460 |       float32 x
+       464 |       float32 y
+       468 |       float32 z
+       472 |     float32 upw
+       476 |     struct rw::V3d at
+       476 |       float32 x
+       480 |       float32 y
+       484 |       float32 z
+       488 |     float32 atw
+       492 |     struct rw::V3d pos
+       492 |       float32 x
+       496 |       float32 y
+       500 |       float32 z
+       504 |     float32 posw
+       508 |   Clump * clump
+       512 |   struct rw::LLLink inClump
+       512 |     LLLink * next
+       516 |     LLLink * prev
+       520 |   World * world
+       524 |   ObjectWithFrame::Sync originalSync
+       528 |   void (*)(Camera *) originalBeginUpdate
+       532 |   void (*)(Camera *) originalEndUpdate
+           | [sizeof=536, align=4,
+           |  nvsize=536, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::Clump
+         0 |   struct rw::Object object
+         0 |     uint8 type
+         1 |     uint8 subType
+         2 |     uint8 flags
+         3 |     uint8 privateFlags
+         4 |     void * parent
+         8 |   struct rw::LinkList atomics
+         8 |     struct rw::LLLink link
+         8 |       LLLink * next
+        12 |       LLLink * prev
+        16 |   struct rw::LinkList lights
+        16 |     struct rw::LLLink link
+        16 |       LLLink * next
+        20 |       LLLink * prev
+        24 |   struct rw::LinkList cameras
+        24 |     struct rw::LLLink link
+        24 |       LLLink * next
+        28 |       LLLink * prev
+        32 |   World * world
+        36 |   struct rw::LLLink inWorld
+        36 |     LLLink * next
+        40 |     LLLink * prev
+           | [sizeof=44, align=4,
+           |  nvsize=44, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::TexDictionary
+         0 |   struct rw::Object object
+         0 |     uint8 type
+         1 |     uint8 subType
+         2 |     uint8 flags
+         3 |     uint8 privateFlags
+         4 |     void * parent
+         8 |   struct rw::LinkList textures
+         8 |     struct rw::LLLink link
+         8 |       LLLink * next
+        12 |       LLLink * prev
+        16 |   struct rw::LLLink inGlobalList
+        16 |     LLLink * next
+        20 |     LLLink * prev
+           | [sizeof=24, align=4,
+           |  nvsize=24, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::AnimInterpolator
+         0 |   Animation * currentAnim
+         4 |   float32 currentTime
+         8 |   void * nextFrame
+        12 |   int32 maxInterpKeyFrameSize
+        16 |   int32 currentInterpKeyFrameSize
+        20 |   int32 currentAnimKeyFrameSize
+        24 |   int32 numNodes
+        28 |   AnimInterpolatorInfo::ApplyCB applyCB
+        32 |   AnimInterpolatorInfo::BlendCB blendCB
+        36 |   AnimInterpolatorInfo::InterpCB interpCB
+        40 |   AnimInterpolatorInfo::AddCB addCB
+           | [sizeof=44, align=4,
+           |  nvsize=44, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::Image
+         0 |   int32 flags
+         4 |   int32 width
+         8 |   int32 height
+        12 |   int32 depth
+        16 |   int32 bpp
+        20 |   int32 stride
+        24 |   uint8 * pixels
+        28 |   uint8 * palette
+           | [sizeof=32, align=4,
+           |  nvsize=32, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::Raster
+         0 |   int32 platform
+         4 |   int32 type
+         8 |   int32 flags
+        12 |   int32 privateFlags
+        16 |   int32 format
+        20 |   int32 width
+        24 |   int32 height
+        28 |   int32 depth
+        32 |   int32 stride
+        36 |   uint8 * pixels
+        40 |   uint8 * palette
+        44 |   uint8 * originalPixels
+        48 |   int32 originalWidth
+        52 |   int32 originalHeight
+        56 |   int32 originalStride
+        60 |   Raster * parent
+        64 |   int32 offsetX
+        68 |   int32 offsetY
+           | [sizeof=72, align=4,
+           |  nvsize=72, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::Material
+         0 |   Texture * texture
+         4 |   struct rw::RGBA color
+         4 |     uint8 red
+         5 |     uint8 green
+         6 |     uint8 blue
+         7 |     uint8 alpha
+         8 |   struct rw::SurfaceProperties surfaceProps
+         8 |     float32 ambient
+        12 |     float32 specular
+        16 |     float32 diffuse
+        20 |   Pipeline * pipeline
+        24 |   int32 refCount
+           | [sizeof=28, align=4,
+           |  nvsize=28, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::Geometry
+         0 |   struct rw::Object object
+         0 |     uint8 type
+         1 |     uint8 subType
+         2 |     uint8 flags
+         3 |     uint8 privateFlags
+         4 |     void * parent
+         8 |   uint32 flags
+        12 |   uint16 lockedSinceInst
+        16 |   int32 numTriangles
+        20 |   int32 numVertices
+        24 |   int32 numMorphTargets
+        28 |   int32 numTexCoordSets
+        32 |   Triangle * triangles
+        36 |   RGBA * colors
+        40 |   TexCoords *[8] texCoords
+        72 |   MorphTarget * morphTargets
+        76 |   struct rw::MaterialList matList
+        76 |     Material ** materials
+        80 |     int32 numMaterials
+        84 |     int32 space
+        88 |   MeshHeader * meshHeader
+        92 |   InstanceDataHeader * instData
+        96 |   int32 refCount
+           | [sizeof=100, align=4,
+           |  nvsize=100, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::World
+         0 |   struct rw::Object object
+         0 |     uint8 type
+         1 |     uint8 subType
+         2 |     uint8 flags
+         3 |     uint8 privateFlags
+         4 |     void * parent
+         8 |   struct rw::LinkList localLights
+         8 |     struct rw::LLLink link
+         8 |       LLLink * next
+        12 |       LLLink * prev
+        16 |   struct rw::LinkList globalLights
+        16 |     struct rw::LLLink link
+        16 |       LLLink * next
+        20 |       LLLink * prev
+        24 |   struct rw::LinkList clumps
+        24 |     struct rw::LLLink link
+        24 |       LLLink * next
+        28 |       LLLink * prev
+           | [sizeof=32, align=4,
+           |  nvsize=32, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::Animation
+         0 |   AnimInterpolatorInfo * interpInfo
+         4 |   int32 numFrames
+         8 |   int32 flags
+        12 |   float32 duration
+        16 |   void * keyframes
+        20 |   void * customData
+           | [sizeof=24, align=4,
+           |  nvsize=24, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::HAnimHierarchy
+         0 |   int32 flags
+         4 |   int32 numNodes
+         8 |   Matrix * matrices
+        12 |   void * matricesUnaligned
+        16 |   HAnimNodeInfo * nodeInfo
+        20 |   Frame * parentFrame
+        24 |   HAnimHierarchy * parentHierarchy
+        28 |   AnimInterpolator * interpolator
+           | [sizeof=32, align=4,
+           |  nvsize=32, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::Skin
+         0 |   int32 numBones
+         4 |   int32 numUsedBones
+         8 |   int32 numWeights
+        12 |   uint8 * usedBones
+        16 |   float * inverseMatrices
+        20 |   uint8 * indices
+        24 |   float * weights
+        28 |   int32 boneLimit
+        32 |   int32 numMeshes
+        36 |   int32 rleSize
+        40 |   int8 * remapIndices
+        44 |   RLEcount * rleCount
+        48 |   RLE * rle
+        52 |   uint8 * data
+        56 |   void * platformData
+        60 |   bool32 legacyType
+           | [sizeof=64, align=4,
+           |  nvsize=64, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::UserDataArray
+         0 |   char * name
+         4 |   uint32 datatype
+         8 |   int32 numElements
+        12 |   void * data
+           | [sizeof=16, align=4,
+           |  nvsize=16, nvalign=4]
+
+*** Dumping AST Record Layout
+         0 | struct rw::MatFX
+         0 |   struct (unnamed struct at /home/eon/dev/csf-re/work/deep/rwsurvey/tree/work/tools/librw/src/rwplugins.h:119:2)[2] fx
+        40 |   uint32 type
+           | [sizeof=44, align=4,
+           |  nvsize=44, nvalign=4]

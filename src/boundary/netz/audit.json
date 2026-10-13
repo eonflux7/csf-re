@@ -1,0 +1,434 @@
+{
+  "0x00646FF0": {
+    "behaviour": "process-owned allocator token; boundary/alloc ignores its identity",
+    "ownership": "static, never freed; all observed callers pass it to the five existing game-heap shims",
+    "evidence": [
+      "binary loads allocator singleton and returns it, cdecl ret 0",
+      "006a8e30 passes it to 00647070; 006aa970/006aaae0 pass it to 006470e0"
+    ],
+    "offsets": [],
+    "open": "006a7000 and other malformed allocation caller declarations remain outside this task"
+  },
+  "0x00656DE0": {
+    "behaviour": "allocate empty 12-byte circular list sentinel; next and previous point to itself",
+    "ownership": "game heap; callers free head with 006470e0 (allocator shim)",
+    "evidence": [
+      "binary allocates 12 bytes and writes node+0/+4 self links",
+      "006a7060 stores return at owner+0x64, count +0x68 = 0",
+      "006aa900 traverses returned head+0; 006aa970/006aaae0 dereference head+0/+4 and free head after clear"
+    ],
+    "offsets": [
+      "head+0 next",
+      "head+4 previous",
+      "head+8 payload",
+      "list+4 head",
+      "list+8 count"
+    ]
+  },
+  "0x00653E90": {
+    "behaviour": "same empty 12-byte sentinel, plain DWORD payload family",
+    "ownership": "game heap; head freed by game caller; 006508a0 clears nodes but retains head",
+    "evidence": [
+      "binary allocates 12 bytes and writes node+0/+4 self links",
+      "006a9f10 stores return at owner+0x1c and clears list at owner+0x18"
+    ],
+    "offsets": [
+      "head+0 next",
+      "head+4 previous",
+      "head+8 payload",
+      "list+4 head",
+      "list+8 count"
+    ]
+  },
+  "0x006524B0": {
+    "behaviour": "allocate 12-byte node with supplied next/previous and owned empty URL String payload",
+    "ownership": "game heap; 00652810 frees String and node; callers link node and own sentinel separately",
+    "evidence": [
+      "binary allocates 12 bytes; its caller supplies next/previous and String source",
+      "006aa970/006aaae0 read returned node+4, link neighbours; 006aa900 replaces matching node with returned node"
+    ],
+    "offsets": [
+      "node+0 next",
+      "node+4 previous",
+      "node+8 owned String"
+    ]
+  },
+  "0x00652810": {
+    "behaviour": "clear String nodes, retain/reset sentinel, zero count",
+    "ownership": "free payload via length-prefix String destroy then node via game heap; sentinel retained",
+    "evidence": [
+      "binary traverses list+4 sentinel, calls 0066f150 on node+8, frees nodes via 006470e0",
+      "006aa970/006aaae0 clear temporary list then separately free head"
+    ],
+    "offsets": [
+      "list+4 head",
+      "list+8 count",
+      "node+0 next",
+      "node+4 previous",
+      "node+8 String"
+    ]
+  },
+  "0x006508A0": {
+    "behaviour": "clear plain nodes, retain/reset sentinel, zero count",
+    "ownership": "game heap nodes; plain payload needs no destructor",
+    "evidence": [
+      "binary traverses list+4 and frees nodes without payload destroy",
+      "006a9f10 clears embedded plain list; 006a95d0 and 006aa760 invoke during shutdown"
+    ],
+    "offsets": [
+      "list+4 head",
+      "list+8 count",
+      "node+0 next",
+      "node+4 previous"
+    ]
+  },
+  "0x00651160": {
+    "behaviour": "increment list count by argument; no transport side effects",
+    "ownership": "caller-owned list",
+    "evidence": [
+      "binary starts with list+8 count and adds requested increment on normal path",
+      "006aa970/006aaae0 call with 1 after insertion; return ignored"
+    ],
+    "offsets": [
+      "list+8 count"
+    ]
+  },
+  "0x0066FBB0": {
+    "behaviour": "construct valid owned empty String in stack output and return output pointer",
+    "ownership": "caller invokes 0064a6f0 to free length-prefixed storage",
+    "evidence": [
+      "binary constructs String at sole stack argument and returns it; ret 4",
+      "006aa970/006aaae0 dereference returned pointer then its first DWORD as C string; destroy supplied output"
+    ],
+    "offsets": [
+      "output+0 char pointer",
+      "char pointer-4 allocation length"
+    ]
+  },
+  "0x0064A8F0": {
+    "behaviour": "replace initialized output String with owned empty text; ignore format/varargs",
+    "ownership": "output already constructed; release old length-prefix storage; caller destroys replacement",
+    "evidence": [
+      "binary uses first cdecl stack argument as output, frees its old String; ret 0",
+      "all 19 CSF_FUNC callers discard EAX; 0078cea0 reads output+0 and destroys output"
+    ],
+    "offsets": [
+      "output+0 char pointer",
+      "char pointer-4 allocation length"
+    ]
+  },
+  "0x00657590": {
+    "behaviour": "12-byte terminal offline error result (0x80010001), borrowed diagnostic text and zero line",
+    "ownership": "caller stack/embedded storage; static diagnostic is not freed",
+    "evidence": [
+      "binary writes status+0, diagnostic+4, line+8; no vtable or heap ownership",
+      "006a7060 supplies embedded +0x94/+0xa0; 006a8780 supplies 12-byte stack scratch"
+    ],
+    "offsets": [
+      "result+0 status",
+      "result+4 borrowed diagnostic",
+      "result+8 line"
+    ]
+  },
+  "0x00798E40": {
+    "behaviour": "destroy two owned Gathering Strings, no free-self",
+    "ownership": "006a8550 separately frees object when delete flag bit 0 set",
+    "evidence": [
+      "binary destroys +0x28 and +0x24, tail to String destructor",
+      "006a8550 calls base destroy then 006471c0"
+    ],
+    "offsets": [
+      "Gathering+0x24 String",
+      "Gathering+0x28 String"
+    ]
+  },
+  "0x00798E60": {
+    "behaviour": "store supplied local Gathering type and option; no session creation",
+    "ownership": "caller-owned Gathering",
+    "evidence": [
+      "binary writes stack arguments to +0x14/+0x18, ret 8",
+      "006a9660 calls with (7,0), ignores return"
+    ],
+    "offsets": [
+      "Gathering+0x14 type",
+      "Gathering+0x18 option"
+    ]
+  },
+  "0x00798E80": {
+    "behaviour": "assign caller String into owned Gathering name; return embedded String pointer",
+    "ownership": "deep copy; 006a8bf0/006a9660 immediately destroy temporary input; Gathering destructor owns replacement",
+    "evidence": [
+      "binary adds 0x24 then tails to String-to-String assignment 0064a750, ret 4",
+      "006a8bf0/006a9660 construct temporary, assign, then destroy temporary"
+    ],
+    "offsets": [
+      "Gathering+0x24 String"
+    ]
+  },
+  "0x0066A440": {
+    "behaviour": "0x70-byte caller-allocated request, terminal failed state 3; six private ABI-specific virtual slots",
+    "ownership": "caller invokes slot 0 with flags=1; private destructor frees through game heap; no owned child resources",
+    "evidence": [
+      "binary constructs base 00651770 then sets vtable 0085b020 and zeros +0x60/+0x64/+0x68",
+      "table is six code pointers followed by text; pops 4/0/0/0/8/0",
+      "006a7520/006a83f0/006a8ed0/006a90b0/006a9c30 read +0x0c state, 1 waits, 2 succeeds, 3 fails; invoke slot 0 on failed requests",
+      "006a8bf0/006a8d00/006a8320 delete via slot 0 on rejected initiation"
+    ],
+    "offsets": [
+      "request+0 vtable",
+      "request+0xc state",
+      "request+0x44 error result",
+      "request+0x48 borrowed diagnostic",
+      "request+0x4c line",
+      "vtable+0 deleting destructor"
+    ],
+    "open": "other base-request constructor 00651770 remains unaudited; private request virtuals reject, not original ref-count implementation"
+  },
+  "0x00799220": {
+    "behaviour": "request rejected (AL=0)",
+    "evidence": [
+      "006a8bf0/006a8d00 test low byte; false sets error and deletes request, true enters waiting state 10"
+    ],
+    "mp_only_proven": false
+  },
+  "0x00798FB0": {
+    "behaviour": "load rejected (AL=0)",
+    "evidence": [
+      "006a8320 false branch sets error 0x494c3036, deletes request, restores state 2; no offline load attempted"
+    ],
+    "mp_only_proven": false
+  },
+  "0x00798FF0": {
+    "behaviour": "network gathering resource initiation rejected (AL=0)",
+    "evidence": [
+      "006a7940/006a8940 inspect byte result; failure deletes request",
+      "006a7520 ignores return but later reads request state, offline request is terminal state 3"
+    ],
+    "mp_only_proven": false
+  },
+  "0x0079FF30": {
+    "behaviour": "offline gathering state transition predicate false",
+    "evidence": [
+      "006a8820 tests boolean result to decide whether to set connected flag +0x334"
+    ],
+    "mp_only_proven": false
+  },
+  "0x00648770": {
+    "behaviour": "endpoint configuration rejected, zero return",
+    "evidence": [
+      "0073c530/0073c5e0 configure prudp endpoints; earlier results ignored and final result forwarded; no result dereference"
+    ],
+    "mp_only_proven": false
+  },
+  "0x00658240": {
+    "behaviour": "endpoint value setter rejected, zero return",
+    "evidence": [
+      "0073c530/0073c5e0 ignore return in prudp endpoint configuration"
+    ],
+    "mp_only_proven": false
+  },
+  "0x0068F740": {
+    "behaviour": "endpoint attribute setter rejected, zero return",
+    "evidence": [
+      "0073c530/0073c5e0 ignore return in prudp endpoint configuration"
+    ],
+    "mp_only_proven": false
+  },
+  "0x00676700": {
+    "behaviour": "prudp mode command rejected, zero return",
+    "evidence": [
+      "0073c4a0 already returns zero for missing transport; forwards command result; no result dereference"
+    ],
+    "mp_only_proven": false
+  },
+  "0x0081DD16": {
+    "behaviour": "unresolved; audio boundary, never network-stubbed",
+    "evidence": [
+      "original binary jmp dword ptr [0x0082D3FC]",
+      "PE import directory: vorbisfile.dll!ov_read",
+      "game audio callers: 0070e4a0"
+    ]
+  },
+  "0x0081DD1C": {
+    "behaviour": "unresolved; audio boundary, never network-stubbed",
+    "evidence": [
+      "original binary jmp dword ptr [0x0082D3E8]",
+      "PE import directory: vorbisfile.dll!ov_clear",
+      "game audio callers: 0070e600, 0070e970"
+    ]
+  },
+  "0x0081DD22": {
+    "behaviour": "unresolved; audio boundary, never network-stubbed",
+    "evidence": [
+      "original binary jmp dword ptr [0x0082D3EC]",
+      "PE import directory: vorbisfile.dll!ov_time_total",
+      "game audio callers: 0070e600, 0070e970"
+    ]
+  },
+  "0x0081DD28": {
+    "behaviour": "unresolved; audio boundary, never network-stubbed",
+    "evidence": [
+      "original binary jmp dword ptr [0x0082D3F0]",
+      "PE import directory: vorbisfile.dll!ov_open_callbacks",
+      "game audio callers: 0070e600, 0070e970"
+    ]
+  },
+  "0x0081DD2E": {
+    "behaviour": "unresolved; audio boundary, never network-stubbed",
+    "evidence": [
+      "original binary jmp dword ptr [0x0082D3F8]",
+      "PE import directory: vorbisfile.dll!ov_pcm_seek_lap",
+      "game audio callers: 0070e830"
+    ]
+  },
+  "0x0081DD34": {
+    "behaviour": "unresolved; audio boundary, never network-stubbed",
+    "evidence": [
+      "original binary jmp dword ptr [0x0082D3F4]",
+      "PE import directory: vorbisfile.dll!ov_info",
+      "game audio callers: 0070e970"
+    ]
+  },
+  "0x00651770": {
+    "behaviour": "92-byte caller-owned connection, completed failure state 3, six-slot private vtable",
+    "ownership": "0073cb80/0073d350 allocate 92 via 00647140; game delete slot 0 with flag 1 frees same heap; no owned children",
+    "evidence": [
+      "binary initializes through +0x58 and installs table 00858c3c; next table word at 00858c54 is text; cleanup 4/0/0/0/8/0",
+      "0073cb80/0073d350 read +0xc, delete old connection slot 0 before starting replacement; offline start functions already reject"
+    ],
+    "offsets": [
+      "connection+0 vtable",
+      "connection+0xc state",
+      "connection+0x44 error status",
+      "connection+0x48 borrowed diagnostic",
+      "connection+0x4c line"
+    ],
+    "open": "offline virtual methods never access original embedded list storage; no claim of original refcount/list behaviour"
+  },
+  "0x0066F130": {
+    "behaviour": "construct owned length-prefixed session String from C text, return supplied self",
+    "ownership": "caller stack word; 0073d2a0/0073d410/0073dc30 destroy via 0066f150",
+    "evidence": [
+      "binary zeros self+0 then calls 0066ee70, which allocates strlen+5 and stores length at allocation+0, text at +4",
+      "0073dc30 passes constructed stack output to 0073d350 then destroys; 0073d2a0/0073d410 compare then destroy each iteration"
+    ],
+    "offsets": [
+      "String+0 char pointer",
+      "char pointer-4 allocation length"
+    ]
+  },
+  "0x0066F150": {
+    "behaviour": "destroy owned length-prefixed session String, replacing the previous unsafe no-op",
+    "ownership": "free char pointer-4 through game heap, clear caller pointer",
+    "evidence": [
+      "binary checks self+0, subtracts 4, calls 006470e0",
+      "same destruction paired with new 0066f130 and existing caller embedded state cleanup"
+    ],
+    "offsets": [
+      "String+0 char pointer"
+    ]
+  },
+  "0x0066F180": {
+    "behaviour": "deep-copy input String into already initialized embedded session String; return self",
+    "ownership": "session owns replacement; input is borrowed and callers destroy it; 0066f150 frees replacement",
+    "evidence": [
+      "binary dereferences argument+0 then calls 0066ee70 assignment/free helper",
+      "0073cb80/0073d350 supply self+0x160; 0073dc30 destroys source after StartSession returns"
+    ],
+    "offsets": [
+      "session+0x160 String",
+      "String+0 char pointer",
+      "char pointer-4 allocation length"
+    ]
+  },
+  "0x006486C0": {
+    "behaviour": "primary borrowed offline endpoint; two-slot private vtable, no transport mutation",
+    "ownership": "process-owned static 28-byte storage, callers borrow; private delete slot does not free static memory",
+    "evidence": [
+      "binary wrapper reads transport+0xc then returns embedded endpoint at 0x1a8",
+      "endpoint constructor 00648720 writes vtable 00858244 and fields through +0x18; table is delete/reset with cleanup 4/0, followed by text",
+      "0073c530 unconditionally dereferences returned endpoint vtable slot 1; 0073c5e0 passes pointer to value/attribute/configure shims, which reject"
+    ],
+    "offsets": [
+      "endpoint+0 vtable",
+      "endpoint+4 byte flag",
+      "endpoint+8 value",
+      "endpoint+0xc default -1",
+      "endpoint+0x10/+0x14/+0x18 zero",
+      "vtable+4 reset"
+    ],
+    "open": "registry getter 006487d0 remains unresolved: indirect callback cleanup not proved; this is not a complete transport chain"
+  },
+  "0x006486D0": {
+    "behaviour": "secondary borrowed offline endpoint; two-slot private vtable, no transport mutation",
+    "ownership": "process-owned static 28-byte storage, callers borrow; private delete slot does not free static memory",
+    "evidence": [
+      "binary wrapper reads transport+0xc then returns embedded endpoint at 0x1c4",
+      "endpoint constructor 00648720 writes vtable 00858244 and fields through +0x18; table is delete/reset with cleanup 4/0, followed by text",
+      "0073c530 unconditionally dereferences returned endpoint vtable slot 1; 0073c5e0 passes pointer to value/attribute/configure shims, which reject"
+    ],
+    "offsets": [
+      "endpoint+0 vtable",
+      "endpoint+4 byte flag",
+      "endpoint+8 value",
+      "endpoint+0xc default -1",
+      "endpoint+0x10/+0x14/+0x18 zero",
+      "vtable+4 reset"
+    ],
+    "open": "registry getter 006487d0 remains unresolved: indirect callback cleanup not proved; this is not a complete transport chain"
+  },
+  "0x006575D0": {
+    "behaviour": "reject connection completion (zero), never claim successful connection",
+    "evidence": [
+      "binary returns equality of DWORD at ECX and DWORD at sole stack argument, ret 4; no output writes",
+      "0073d550 tests low byte: false marks error, deletes connection slot 0 and resets session state to 2; connection scratch +0/+4/+8 copied from request+0x44/+0x48/+0x4c"
+    ],
+    "mp_only_proven": false
+  },
+  "0x00799020": {
+    "behaviour": "reject gathering enumeration (AL=0); no pending request or callbacks",
+    "evidence": [
+      "binary already rejects zero identifier at stack+8 with ret 16; other branches initiate asynchronous gathering work",
+      "006a95d0 initializes output IDs to -1, invokes 00799020, and only sets waiting state +4=1 on a true byte return; false retains failure/no-wait state"
+    ],
+    "mp_only_proven": false,
+    "open": "caller retains the failed 0066a440 request until its own shutdown; not evidence shutdown is reached"
+  },
+  "0x00652010": {
+    "behaviour": "deferred shared gameplay accessor; do not return an offline network object",
+    "evidence": [
+      "binary mov eax,[ecx+0x5c]; ret",
+      "00417020 ProcessMovementCollision obtains the scene controller for real spatial collision work; widespread scene/AI callers retained in manifest"
+    ],
+    "offsets": [
+      "input+0x5c borrowed scene controller"
+    ],
+    "open": "preserve real game object via correctly attributed boundary; not networking failure"
+  },
+  "0x0068E300": {
+    "behaviour": "deferred shared vector math, not network failure",
+    "evidence": [
+      "binary loads three floats from ECX+0/+4/+8, multiplies components and sums on x87, ret 0",
+      "0044f3e0/004503e0/0048b650/00494250/00496e00 use spatial vector result"
+    ],
+    "offsets": [
+      "input+0/+4/+8 vector"
+    ],
+    "open": "requires real scalar result/FP ABI; do not substitute EAX zero"
+  },
+  "0x007A18E0": {
+    "behaviour": "deferred 16-byte nonvirtual operation container, not another request object",
+    "evidence": [
+      "binary calls 007a0840 for tree sentinel, stores at self+8, sentinel+0/+4/+8 self links and +0x15 marker=1, count self+0xc=0, self+0 from argument; ret 4",
+      "006a7520/006a8110 allocate 16 bytes, store result at owner+0x320/+0x28 and pass it to 007a1240"
+    ],
+    "offsets": [
+      "container+0 source",
+      "container+8 tree sentinel",
+      "container+0xc tree count",
+      "sentinel+0/+4/+8 links",
+      "sentinel+0x15 marker"
+    ],
+    "open": "full tree payload/clear/destruction policy needed; a six-slot request vtable or 112-byte memset would corrupt this allocation"
+  }
+}
