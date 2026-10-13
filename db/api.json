@@ -7115,7 +7115,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 177
+   "S_0041e5f0_GrowArrayCapacity": 178
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -164115,7 +164115,7 @@
   "name": "GfxObject_UpdateAttachment",
   "name_src": "agent",
   "votes": {
-   "GfxObject_UpdateAttachment": 3
+   "GfxObject_UpdateAttachment": 4
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -168461,7 +168461,9 @@
  "006f2cc0": {
   "name": "C_00862640_SetResourceRectForTileIndex",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00862640_ApplyFrameIndex": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00862640* self, void* , int tileIndex",
@@ -168503,13 +168505,14 @@
   "file": "src/auto/006f2e10.cpp"
  },
  "006f2e70": {
-  "name": "sub_6F2E70",
-  "name_src": "addr",
+  "name": "C_00862640_AdvanceFrameTimer",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "C_00862640* self, void* , float deltaTime",
+  "sig_src": "impl",
+  "file": "src/auto/006f2e70.cpp"
  },
  "006f2f00": {
   "name": "C_00862640_UpdateParticleTransform",
@@ -172559,7 +172562,7 @@
   "name": "ParticleSystemDefs_ConvertAndShowMessage",
   "name_src": "agent",
   "votes": {
-   "ParticleSystemDefs_ConvertAndShowMessage": 3
+   "ParticleSystemDefs_ConvertAndShowMessage": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -177470,7 +177473,9 @@
  "00712d30": {
   "name": "CInputBase_InitDefaults",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CInputBase_Initialize": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "CInputBase* self, void*",
@@ -177513,7 +177518,9 @@
  "00712e50": {
   "name": "CInputBase_EnsureFiveSlotBuffer",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CInputDirectInput_CreateDirectInputObject": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "CInputBase* self, void* , int , int",
@@ -177534,8 +177541,10 @@
  },
  "00712eb0": {
   "name": "InputDinput_ResetKeyStateTable",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "InputDinput_InitializeEmbeddedState": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "uint8_t* self, void*",
@@ -177580,13 +177589,14 @@
   "sig_src": "abi"
  },
  "007130b0": {
-  "name": "sub_7130B0",
-  "name_src": "addr",
+  "name": "CInputDirectInput_ToggleAcquire",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "CInputDirectInput* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/007130b0.cpp"
  },
  "00713100": {
   "name": "CInputDirectInput_ResetInputBuffers",
@@ -177609,15 +177619,16 @@
   "file": "src/auto/00713140.cpp"
  },
  "00713160": {
-  "name": "SceneLoader_Initialize",
-  "name_src": "vote",
+  "name": "CInputDirectInput_Initialize",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_Initialize": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "CInputDirectInput* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00713160.cpp"
  },
  "00713270": {
   "name": "CInputDirectInput_StoreDeviceIndex0C94",
@@ -177679,23 +177690,37 @@
   "sig_src": "impl",
   "file": "src/auto/007132d0.cpp"
  },
+ "007132f0": {
+  "name": "CInputDirectInput_CreateInputDevices",
+  "name_src": "vote",
+  "votes": {
+   "CInputDirectInput_CreateInputDevices": 1
+  },
+  "ret": "char",
+  "conv": "__fastcall",
+  "params": "void* self, void* edx, void* hWnd, int a3",
+  "sig_src": "vote"
+ },
  "00713400": {
-  "name": "sub_713400",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CInputDirectInput_ReleaseDevices",
+  "name_src": "vote",
+  "votes": {
+   "CInputDirectInput_ReleaseDevices": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007137a0": {
-  "name": "sub_7137A0",
-  "name_src": "addr",
+  "name": "CInputDirectInput_ShutdownIfActive",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "CInputDirectInput* self, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/007137a0.cpp"
  },
  "007137e0": {
   "name": "sub_7137E0",
@@ -177725,14 +177750,25 @@
   "params": "void* self, void* edx, char a2",
   "sig_src": "abi"
  },
+ "00713920": {
+  "name": "CInputDirectInput_InitializeWithWindow",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "char",
+  "conv": "__fastcall",
+  "params": "CInputDirectInput* self, void* , void* hWnd, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/00713920.cpp"
+ },
  "00713970": {
-  "name": "sub_713970",
-  "name_src": "addr",
+  "name": "CInputDirectInput_CopyEnabledStatesToArray",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "CInputDirectInput* self, void* , S_0041e5f0* a2",
+  "sig_src": "impl",
+  "file": "src/auto/00713970.cpp"
  },
  "007139e0": {
   "name": "sub_7139E0",
