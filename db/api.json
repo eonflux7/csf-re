@@ -31683,7 +31683,7 @@
   "name": "AiCore_GetTaskTargetNameBuffer",
   "name_src": "agent",
   "votes": {
-   "AiCore_GetTaskTargetNameBuffer": 32,
+   "AiCore_GetTaskTargetNameBuffer": 35,
    "AiCore_GetCoverAttackState": 1
   },
   "ret": "char*",
@@ -46613,7 +46613,7 @@
   "name": "AiAlert_ApplyCoverAttack",
   "name_src": "vote",
   "votes": {
-   "AiAlert_ApplyCoverAttack": 4
+   "AiAlert_ApplyCoverAttack": 7
   },
   "ret": "int",
   "conv": "__stdcall",
@@ -48548,16 +48548,17 @@
   "file": "src/auto/004b1a60.cpp"
  },
  "004b1b40": {
-  "name": "AiStateFactory_SubmitRequest20",
-  "name_src": "vote",
+  "name": "AiFncMacroOrder_SubmitCoverAttackRequest_4B1B40",
+  "name_src": "agent",
   "votes": {
    "AiStateFactory_SubmitRequest20": 1,
    "AiStateFactory_SubmitPositiveActionRequest": 1
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "void* a1, float a2, int a3, int a4",
-  "sig_src": "vote"
+  "params": "C_0085e7b8* self, float duration, int argument3, int argument4",
+  "sig_src": "impl",
+  "file": "src/auto/004b1b40.cpp"
  },
  "004b1c20": {
   "name": "TFncMacroOrder_UpdateCharacterTasks",
@@ -48582,28 +48583,30 @@
   "file": "src/auto/004b1c60.cpp"
  },
  "004b1d30": {
-  "name": "AiStateFactory_SubmitRequest27",
-  "name_src": "vote",
+  "name": "AiFncMacroOrder_SubmitCoverAttackRequest_4B1D30",
+  "name_src": "agent",
   "votes": {
    "AiStateFactory_SubmitRequest27": 1,
    "AiStateFactory_SubmitRequest28": 1
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "void* a1, float a2, int a3, int a4",
-  "sig_src": "vote"
+  "params": "C_0085e7b8* self, float duration, int argument3, int argument4",
+  "sig_src": "impl",
+  "file": "src/auto/004b1d30.cpp"
  },
  "004b1e10": {
-  "name": "AiStateFactory_SubmitRequest30",
-  "name_src": "vote",
+  "name": "AiFncMacroOrder_SubmitCoverAttackRequest_4B1E10",
+  "name_src": "agent",
   "votes": {
    "AiStateFactory_SubmitRequest29": 1,
    "AiStateFactory_SubmitRequest30": 1
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "void* a1, float a2, int a3, int a4",
-  "sig_src": "vote"
+  "params": "C_0085e7b8* self, float duration, int argument3, int argument4",
+  "sig_src": "impl",
+  "file": "src/auto/004b1e10.cpp"
  },
  "004b1ef0": {
   "name": "Ai_MacroOrderUpdateLinkedTask",
@@ -54589,7 +54592,7 @@
   "name": "AiCore_UpdateTargetData",
   "name_src": "agent",
   "votes": {
-   "AiCore_UpdateTargetData": 11
+   "AiCore_UpdateTargetData": 14
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -57829,7 +57832,7 @@
   "name": "GetLinkedObjectValue_4DB5C0",
   "name_src": "agent",
   "votes": {
-   "GetLinkedObjectValue_4DB5C0": 260
+   "GetLinkedObjectValue_4DB5C0": 263
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -57841,7 +57844,7 @@
   "name": "GetLinkedObjectField10",
   "name_src": "agent",
   "votes": {
-   "GetLinkedObjectField10": 102
+   "GetLinkedObjectField10": 105
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -58421,7 +58424,7 @@
   "name": "CoverAttack_SetState_4DC150",
   "name_src": "vote",
   "votes": {
-   "CoverAttack_SetState_4DC150": 35,
+   "CoverAttack_SetState_4DC150": 38,
    "TMovil_sub_4DC150": 1,
    "AiState_Init_4DC150": 1
   },
@@ -58434,7 +58437,7 @@
   "name": "UnnamedApply_4DC180",
   "name_src": "vote",
   "votes": {
-   "UnnamedApply_4DC180": 47,
+   "UnnamedApply_4DC180": 50,
    "Owner_ApplyOffset": 1,
    "Task_SetObject": 1,
    "Task_4DC180": 1,
@@ -135542,7 +135545,7 @@
   "name": "GetCachedObjectProvider",
   "name_src": "vote",
   "votes": {
-   "GetCachedObjectProvider": 228
+   "GetCachedObjectProvider": 231
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -215987,8 +215990,9 @@
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3, uint32_t* a4",
-  "sig_src": "vote"
+  "params": "void* query, const void* sector, const void* segment, const uint32_t* tolerance",
+  "sig_src": "impl",
+  "file": "src/auto/007c1c70.cpp"
  },
  "007c1e90": {
   "name": "GfxCollision_NextSector",
@@ -216002,15 +216006,16 @@
   "sig_src": "vote"
  },
  "007c2090": {
-  "name": "GfxCollision_ClipSectorQuery",
-  "name_src": "vote",
+  "name": "GfxClipHelpers_ClipSectorQuery",
+  "name_src": "agent",
   "votes": {
    "GfxCollision_ClipSectorQuery": 1
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, float a2, int a3, int a4",
-  "sig_src": "vote"
+  "params": "uint32_t* a1, float a2, int , int",
+  "sig_src": "impl",
+  "file": "src/auto/007c2090.cpp"
  },
  "007c2110": {
   "name": "GfxCollision_InitializeTriangleQuery",
