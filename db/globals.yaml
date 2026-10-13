@@ -183,7 +183,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 132, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 133, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyScenarioSuffix, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C8, name: g_AngleScale, type: float, uses: 1, src: auto}
@@ -469,11 +469,14 @@
 - {addr: 0x0085E680, name: g_CoreStringFormatLineEnding, type: uint16_t, uses: 2, src: auto, alt: [g_CrlfTerminatorWord]}
 - {addr: 0x0085E684, name: g_NumberFormattingMode, type: int, uses: 17, src: auto, alt: [g_MissionNumberFormattingMode]}
 - {addr: 0x0085E71C, name: byte_85E71C, type: uint8_t, uses: 2, src: auto, alt: [g_QuotedTextSuffix]}
+- {addr: 0x0085E8C4, name: g_SoundPathPart4, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x0085E8C8, name: g_SoundPathPart8, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x0085E8CC, name: g_SoundPathPart12, type: uint16_t, uses: 1, src: auto}
 - {addr: 0x0085E8D0, name: g_Value_85E8D0, type: int, uses: 1, src: auto}
 - {addr: 0x0085E8D4, name: g_Value_85E8D4, type: int, uses: 1, src: auto}
 - {addr: 0x0085E8D8, name: g_Value_85E8D8, type: uint16_t, uses: 1, src: auto}
 - {addr: 0x0085E8DA, name: g_Value_85E8DA, type: uint8_t, uses: 1, src: auto}
-- {addr: 0x0085E910, name: g_FrameRateTimeScale, type: double, uses: 2, src: auto}
+- {addr: 0x0085E910, name: g_FrameRateTimeScale, type: double, uses: 3, src: auto}
 - {addr: 0x0085E928, name: g_SecondsToMinutesFactor, type: float, uses: 1, src: auto}
 - {addr: 0x0085E9CC, name: g_NoFileInfoWord0, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x0085E9D0, name: g_NoFileInfoWord1, type: uint32_t, uses: 1, src: auto}
@@ -2049,7 +2052,9 @@
 - {addr: 0x008BAF8C, name: g_pOptions, type: COptions*, uses: 2, src: opus}
 - {addr: 0x008BAF90, name: g_ActiveSceneContext, type: void*, uses: 5, src: auto, alt: [g_ActiveSceneLoadContext, g_PendingSceneResource]}
 - {addr: 0x008BAF94, name: g_Value_8baf94, type: int, uses: 3, src: auto}
-- {addr: 0x008BAF98, name: g_Value_8BAF98, type: int, uses: 2, src: auto}
+- {addr: 0x008BAF98, name: g_CurrentScenarioId, type: int, uses: 3, src: auto, alt: [g_Value_8BAF98]}
+- {addr: 0x008BAF9C, name: g_FallbackScenarioId, type: int, uses: 1, src: auto}
+- {addr: 0x008BAFA0, name: g_CachedSoundScenarioId, type: int, uses: 1, src: auto}
 - {addr: 0x008BAFA4, name: g_Value_8BAFA4, type: int, uses: 2, src: auto}
 - {addr: 0x008BAFA8, name: g_Value_8BAFA8, type: int, uses: 1, src: auto}
 - {addr: 0x008BAFAC, name: g_Value_8BAFAC, type: uint16_t, uses: 1, src: auto}
