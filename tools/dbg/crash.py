@@ -27,7 +27,7 @@ except OSError:
 c = X64DbgClient(x64dbg_path=X64DBG)
 c.start_session(GAME, current_dir=r"E:\dev\csf-play")
 c.wait_until_debugging(30)
-FATAL = (0xC0000005, 0xC000001D, 0xC00000FD, 0xC0000094, 0xC0000096)
+FATAL = (0xC0000005, 0xC000001D, 0xC00000FD, 0xC0000094, 0xC0000096, 0xC0000409)  # 409: fast-fail (stack cookie)
 c.clear_debug_events()
 c.go(pass_exceptions=True)
 t0 = time.time()
@@ -69,7 +69,7 @@ else:
         print(f"  ASM {a:08X} {ins.instruction}")
         a += ins.instr_size
     esp = ctx.esp
-    for i in range(32):
+    for i in range(96):
         try:
             v = c.read_dword(esp + 4 * i)
         except Exception:

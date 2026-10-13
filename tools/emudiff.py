@@ -64,6 +64,26 @@ def load(name, fn):
     return _cache[name]
 
 
+# what the Win32 calls of the CRT's heap pop (the CRT runs for real and has no call sites in export/calls.json)
+IMPORT_POPS = {"HeapAlloc": 12, "HeapFree": 12, "HeapReAlloc": 16, "HeapSize": 12}
+
+
+def imports():
+    """{what an import-table slot holds in the file: "DLL!name"}. Nothing binds the slots here, so a
+    `call [__imp_x]` on either side arrives at that value (timeGetTime: 0x496C5E, the middle of a game function)."""
+    def go():
+        import pefile
+        pe = pefile.PE(EXE, fast_load=True)
+        pe.parse_data_directories(directories=[pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_IMPORT"]])
+        out = {}
+        for d in pe.DIRECTORY_ENTRY_IMPORT:
+            for i in d.imports:
+                raw = struct.unpack("<I", pe.get_data(i.address - IMG, 4))[0]
+                out[raw] = f"{d.dll.decode()}!{(i.name or b'#%d' % (i.ordinal or 0)).decode()}"
+        return out
+    return load("imports", go)
+
+
 def exe_image():
     def go():
         import pefile
@@ -361,6 +381,15 @@ class Run:
                 n = 0
             for k in range(n):
                 uc.hook_add(UC_HOOK_CODE, self.on_reserved, begin=ea + 4 + k, end=ea + 4 + k)
+        # rdtsc is the host's clock here: the two sides would never agree (0x69CB30). A counter instead, set after
+        # the instruction; a 0F 31 that is part of another instruction has no instruction start behind it
+        self.tsc = 0
+        for lo, hi in self.own:
+            code = bytes(uc.mem_read(lo, hi - lo))
+            k = code.find(b"\x0F\x31")
+            while k >= 0:
+                uc.hook_add(UC_HOOK_CODE, self.on_tsc, begin=lo + k + 2, end=lo + k + 2)
+                k = code.find(b"\x0F\x31", k + 2)
         uc.hook_add(UC_HOOK_BLOCK, self.on_block)
         uc.hook_add(UC_HOOK_MEM_WRITE, self.on_write)
         uc.hook_add(UC_HOOK_MEM_UNMAPPED, self.on_unmapped)
@@ -439,6 +468,11 @@ class Run:
             uc.emu_stop()
         self.first = False
 
+    def on_tsc(self, uc, addr, size, _):
+        self.tsc += 1
+        uc.reg_write(X.UC_X86_REG_EAX, h32(0x7500 + self.tsc * 31 + self.prof * 131))
+        uc.reg_write(X.UC_X86_REG_EDX, self.tsc)
+
     def on_reserved(self, uc, addr, size, _):
         if not self.reserved_done.get(addr):  # the first pass through the prologue only (a recursive call re-enters)
             self.reserved_done[addr] = True
@@ -482,13 +516,17 @@ class Run:
         ret = struct.unpack("<I", uc.mem_read(esp, 4))[0]
         i = len(self.events)
         name = self.obj.ext_names.get(target) if self.obj else None
-        p = proto(target) if IMG <= target < IMG + 0x500000 else None
+        imp = imports().get(target)  # a Windows / Bink / vorbis API: no prototype of ours, and ecx is no argument
+        name = imp or name
+        p = proto(target) if IMG <= target < IMG + 0x500000 and not imp else None
         if self.script is None:  # the original: its call site says what the callee pops
             pop = call_pops().get(self.ret_site.get(ret), p[3] if p else 0) if ret != RET_MAGIC else (p[3] if p else 0)
+            if imp and self.ret_site.get(ret) not in call_pops():  # called from CRT code that runs for real
+                pop = IMPORT_POPS.get(imp.split("!")[1], pop)
             nargs = len(p[1]) if p else pop // 4
-            use_ecx = p[0] if p else True
+            use_ecx = p[0] if p else not imp
             rt = p[2] if p else "?"
-            if rt not in BYTE_TYPES and IMG <= target < IMG + 0x500000 and target in functions() and returns_al(target):
+            if not imp and rt not in BYTE_TYPES and IMG <= target < IMG + 0x500000 and target in functions() and returns_al(target):
                 rt = "char"  # the callee sets al only, whatever its prototype says
         elif i < len(self.script):
             _, pop, nargs, use_ecx, rt = self.script[i][:5]
