@@ -68195,7 +68195,7 @@
   "name_src": "agent",
   "votes": {
    "MenuBuffer_Destroy": 8,
-   "SceneLoader_DestroyMenuBuffer": 13
+   "SceneLoader_DestroyMenuBuffer": 15
   },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
@@ -68703,7 +68703,7 @@
   "name": "MenuBuffer_Init",
   "name_src": "agent",
   "votes": {
-   "MenuBuffer_Init": 21
+   "MenuBuffer_Init": 23
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -69379,7 +69379,7 @@
   "name": "GetGlobalValue_8B056C",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8B056C": 81
+   "GetGlobalValue_8B056C": 82
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -71351,7 +71351,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 424
+   "GetGlobalState_50D190": 427
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -72214,7 +72214,7 @@
   "name": "GameBddLoader_ShowSaveGameMessage",
   "name_src": "agent",
   "votes": {
-   "GameBddLoader_ShowSaveGameMessage": 5,
+   "GameBddLoader_ShowSaveGameMessage": 8,
    "SaveGame_ShowMessage": 3
   },
   "ret": "int",
@@ -73792,7 +73792,7 @@
   "name": "ProfileSavegames_GetScenarioCollection",
   "name_src": "agent",
   "votes": {
-   "ProfileSavegames_GetScenarioCollection": 8,
+   "ProfileSavegames_GetScenarioCollection": 9,
    "GetScenarioCollection": 5
   },
   "ret": "int*",
@@ -73879,7 +73879,8 @@
   "name": "C_00840af8_FindEntryIndexByName",
   "name_src": "agent",
   "votes": {
-   "C_00840af8_FindNamedEntry": 1
+   "C_00840af8_FindNamedEntry": 1,
+   "C_00840af8_FindEntryIndexByName": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -77481,7 +77482,7 @@
   "name": "GetGlobalValue_521BB0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_521BB0": 142
+   "GetGlobalValue_521BB0": 143
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -77622,7 +77623,7 @@
   "name": "MenuProgressInput_UpdateGlobalState",
   "name_src": "vote",
   "votes": {
-   "MenuProgressInput_UpdateGlobalState": 27
+   "MenuProgressInput_UpdateGlobalState": 28
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -84091,7 +84092,9 @@
  "0053bbd0": {
   "name": "CMenuProfiles_SyncListboxScrollToSelection",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuProfiles_SyncListboxScrollToSelection": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "CMenuProfiles* self, void*",
@@ -84133,13 +84136,14 @@
   "file": "src/auto/0053bd70.cpp"
  },
  "0053bdd0": {
-  "name": "sub_53BDD0",
-  "name_src": "addr",
+  "name": "CMenuProfiles_InitializeControls",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, int a3",
-  "sig_src": "abi"
+  "params": "CMenuProfiles* self, void* , uint32_t* context, int",
+  "sig_src": "impl",
+  "file": "src/auto/0053bdd0.cpp"
  },
  "0053bf20": {
   "name": "CMenuProfiles_HandleListEvent",
@@ -84198,37 +84202,40 @@
   "file": "src/auto/0053c170.cpp"
  },
  "0053c190": {
-  "name": "CMenuProfiles_CheckEnteredProfileName",
-  "name_src": "vote",
+  "name": "CMenuProfilesPC_CheckEnteredProfileName",
+  "name_src": "agent",
   "votes": {
    "CMenuProfiles_CheckEnteredProfileName": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "vote"
+  "params": "CMenuProfilesPC* self, void* , S_00696af0* enteredName",
+  "sig_src": "impl",
+  "file": "src/auto/0053c190.cpp"
  },
  "0053c270": {
-  "name": "CMenuProfiles_HandleStateTwo",
-  "name_src": "vote",
+  "name": "CMenuProfilesPC_ShowProfileConfirmation",
+  "name_src": "agent",
   "votes": {
    "CMenuProfiles_HandleStateTwo": 1
   },
-  "ret": "unsigned int",
+  "ret": "std::uint32_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "CMenuProfilesPC* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0053c270.cpp"
  },
  "0053c3c0": {
-  "name": "CMenuProfiles_CheckProfileNameConflict",
-  "name_src": "vote",
+  "name": "CMenuProfilesPC_CheckProfileNameConflict",
+  "name_src": "agent",
   "votes": {
    "CMenuProfiles_CheckProfileNameConflict": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int* a2",
-  "sig_src": "vote"
+  "params": "CMenuProfilesPC* self, void* , unsigned int* nameQuery",
+  "sig_src": "impl",
+  "file": "src/auto/0053c3c0.cpp"
  },
  "0053c4a0": {
   "name": "CMenuDemoExit_SwitchToCampaign",
@@ -139575,7 +139582,7 @@
   "name": "MemDebug_FreeDebugBlock",
   "name_src": "agent",
   "votes": {
-   "Mem_FreeDebug": 676,
+   "Mem_FreeDebug": 679,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -140144,7 +140151,7 @@
   "name_src": "agent",
   "votes": {
    "FormatScenarioText": 3,
-   "CoreParser_FormatScenarioText": 2
+   "CoreParser_FormatScenarioText": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -140156,7 +140163,7 @@
   "name": "InitStringFromLiteral",
   "name_src": "agent",
   "votes": {
-   "InitStringFromLiteral": 18
+   "InitStringFromLiteral": 19
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -141496,7 +141503,7 @@
   "name": "MenuAccount_IsGateClear_696B60",
   "name_src": "agent",
   "votes": {
-   "MenuAccount_IsGateClear_696B60": 2,
+   "MenuAccount_IsGateClear_696B60": 3,
    "MenuAccount_GateCheck_696B60": 8
   },
   "ret": "int",
@@ -179567,7 +179574,7 @@
   "name": "CGuiListBoxBase_SetItemHeight",
   "name_src": "agent",
   "votes": {
-   "CGuiListBoxBase_SetItemHeight": 12
+   "CGuiListBoxBase_SetItemHeight": 13
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -183411,7 +183418,7 @@
   "name": "ForwardToStoredObjectVirtualSlot40",
   "name_src": "agent",
   "votes": {
-   "ForwardToStoredObjectVirtualSlot40": 10
+   "ForwardToStoredObjectVirtualSlot40": 11
   },
   "ret": "void*",
   "conv": "__fastcall",
