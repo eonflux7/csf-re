@@ -43418,7 +43418,7 @@
   "name": "CopyConstructTwelveByteElement",
   "name_src": "agent",
   "votes": {
-   "CopyConstructTwelveByteElement": 7
+   "CopyConstructTwelveByteElement": 9
   },
   "ret": "uint32_t*",
   "conv": "__stdcall",
@@ -50356,7 +50356,7 @@
   "name": "AiStateFactory_ProcessFallbackTask",
   "name_src": "agent",
   "votes": {
-   "AiStateFactory_ProcessFallbackTask": 1
+   "AiStateFactory_ProcessFallbackTask": 2
   },
   "ret": "int",
   "conv": "__stdcall",
@@ -87530,13 +87530,14 @@
   "sig_src": "abi"
  },
  "0054af40": {
-  "name": "sub_54AF40",
-  "name_src": "addr",
+  "name": "CopyTwoDwordRangeToDestination_54AF40",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint32_t source, std::uint32_t sourceEnd, std::uint32_t destination, std::uint32_t , std::uint32_t",
+  "sig_src": "impl",
+  "file": "src/auto/0054af40.cpp"
  },
  "0054afb0": {
   "name": "TypeRegistry_FindNameLowerBound",
@@ -87635,13 +87636,14 @@
   "file": "src/auto/0054b330.cpp"
  },
  "0054b3a0": {
-  "name": "sub_54B3A0",
-  "name_src": "addr",
+  "name": "ForwardWithSelfToSerializeHelper",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a1, int a2, int a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , int a1, int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/0054b3a0.cpp"
  },
  "0054b3c0": {
   "name": "TypeRegistry_FindByName",
@@ -87736,7 +87738,9 @@
  "0054bd20": {
   "name": "C_008442a0_AccumulateLastEntryMeasurement",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_008442a0_AccumulateLastEntryMeasurement": 1
+  },
   "ret": "int*",
   "conv": "__fastcall",
   "params": "C_008442a0* self, void*",
@@ -87746,7 +87750,9 @@
  "0054bde0": {
   "name": "S_007721a0_Resize",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_007721a0_Resize": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "S_007721a0* self, void* , unsigned int count, char value, int",
@@ -87773,8 +87779,8 @@
   "sig_src": "abi"
  },
  "0054bf40": {
-  "name": "sub_54BF40",
-  "name_src": "addr",
+  "name": "C_008442a0_PopEntryAndForwardEnd",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -87843,13 +87849,14 @@
   "file": "src/auto/0054c1a0.cpp"
  },
  "0054c1d0": {
-  "name": "sub_54C1D0",
-  "name_src": "addr",
+  "name": "TypeRegistry_CopyDwordRangeToDestination",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint32_t source, std::uint32_t sourceEnd, std::uint32_t destination, std::uint32_t , std::uint32_t",
+  "sig_src": "impl",
+  "file": "src/auto/0054c1d0.cpp"
  },
  "0054c240": {
   "name": "TypeRegistry_ProcessRange",
@@ -87857,10 +87864,11 @@
   "votes": {
    "TypeRegistry_ProcessRange": 1
   },
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "vote"
+  "params": "std::uint32_t* source, std::uint32_t* sourceEnd, std::uint32_t* destination, std::uint32_t , std::uint32_t",
+  "sig_src": "impl",
+  "file": "src/auto/0054c240.cpp"
  },
  "0054c2b0": {
   "name": "TypeRegistry_SerializeSPos",
@@ -87893,22 +87901,24 @@
   "file": "src/auto/0054c410.cpp"
  },
  "0054c4e0": {
-  "name": "sub_54C4E0",
-  "name_src": "addr",
+  "name": "TypeRegistry_SerializeCVector2",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1, int a2",
-  "sig_src": "abi"
+  "params": "void* position, void* context",
+  "sig_src": "impl",
+  "file": "src/auto/0054c4e0.cpp"
  },
  "0054c590": {
-  "name": "sub_54C590",
-  "name_src": "addr",
+  "name": "TypeRegistry_SerializeCDirAng",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1, int a2",
-  "sig_src": "abi"
+  "params": "void* position, void* context",
+  "sig_src": "impl",
+  "file": "src/auto/0054c590.cpp"
  },
  "0054c640": {
   "name": "TypeRegistry_SerializeSphere",
@@ -87960,13 +87970,14 @@
   "file": "src/auto/0054ca90.cpp"
  },
  "0054cbf0": {
-  "name": "sub_54CBF0",
-  "name_src": "addr",
+  "name": "TypeRegistry_SerializeBox",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1, int a2",
-  "sig_src": "abi"
+  "params": "int box, int ctx",
+  "sig_src": "impl",
+  "file": "src/auto/0054cbf0.cpp"
  },
  "0054ccc0": {
   "name": "TypeRegistry_SerializeAABox",
@@ -88112,10 +88123,11 @@
   "votes": {
    "TypeRegistry_ForwardRangeWithContext": 1
   },
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "vote"
+  "params": "std::uint32_t source, std::uint32_t sourceEnd, std::uint32_t destination, std::uint32_t , std::uint32_t",
+  "sig_src": "impl",
+  "file": "src/auto/0054d870.cpp"
  },
  "0054d8e0": {
   "name": "S_0054d8e0_ForwardRange",
@@ -88195,13 +88207,14 @@
   "file": "src/auto/0054e0c0.cpp"
  },
  "0054e100": {
-  "name": "sub_54E100",
-  "name_src": "addr",
+  "name": "C_008443c8_ValidateByContext",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, int a3",
-  "sig_src": "abi"
+  "params": "C_008443c8* self, void* , uint32_t* value, int context",
+  "sig_src": "impl",
+  "file": "src/auto/0054e100.cpp"
  },
  "0054e140": {
   "name": "C_008443c8_SerializeInt16",
@@ -88214,13 +88227,14 @@
   "file": "src/auto/0054e140.cpp"
  },
  "0054e180": {
-  "name": "sub_54E180",
-  "name_src": "addr",
+  "name": "C_008443c8_MatchNameOrNegOne",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2, int a3",
-  "sig_src": "abi"
+  "params": "C_008443c8* self, void* , char* a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/0054e180.cpp"
  },
  "0054e1c0": {
   "name": "C_008443c8_ValidateElement",
@@ -88244,7 +88258,7 @@
  },
  "0054e240": {
   "name": "C_008443c8_DelegatedCallMatchesExpected",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -88273,13 +88287,14 @@
   "file": "src/auto/0054e280.cpp"
  },
  "0054e2c0": {
-  "name": "sub_54E2C0",
-  "name_src": "addr",
+  "name": "C_008443c8_WriteWideTextIfCapacityAllows",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_008443c8* self, void* , int a2, int",
+  "sig_src": "impl",
+  "file": "src/auto/0054e2c0.cpp"
  },
  "0054e300": {
   "name": "C_008443c8_ReadTerminatedString",
@@ -140322,7 +140337,8 @@
   "name": "StringFormat_GetWideTextLength",
   "name_src": "agent",
   "votes": {
-   "GetWideTextLength": 12
+   "GetWideTextLength": 12,
+   "StringFormat_GetWideTextLength": 1
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -180134,7 +180150,7 @@
   "name": "CopyTwoDwordsIfDestNonNull",
   "name_src": "agent",
   "votes": {
-   "CopyTwoDwordsIfDestNonNull": 29
+   "CopyTwoDwordsIfDestNonNull": 30
   },
   "ret": "uint32_t*",
   "conv": "__stdcall",
@@ -186920,7 +186936,7 @@
   "name": "CopyDwordIfNotNull",
   "name_src": "agent",
   "votes": {
-   "CopyDwordIfNotNull": 41
+   "CopyDwordIfNotNull": 42
   },
   "ret": "uint32_t*",
   "conv": "__stdcall",
@@ -214380,7 +214396,7 @@
   "name": "___CxxFrameHandler",
   "name_src": "ida",
   "votes": {
-   "___CxxFrameHandler": 198,
+   "___CxxFrameHandler": 202,
    "OriginalCxxFrameHandler": 1
   },
   "ret": "int",
@@ -214464,7 +214480,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 272
+   "RethrowCppException": 276
   },
   "ret": "void",
   "conv": "__stdcall",
