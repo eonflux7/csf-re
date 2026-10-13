@@ -7136,7 +7136,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 196
+   "S_0041e5f0_GrowArrayCapacity": 197
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -148997,7 +148997,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 498,
+   "GetGlobalInt": 499,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -149021,7 +149021,7 @@
   "name": "GlobalInt_ResolveAccessor",
   "name_src": "vote",
   "votes": {
-   "GlobalInt_ResolveAccessor": 89
+   "GlobalInt_ResolveAccessor": 90
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -150909,7 +150909,7 @@
   "name": "SceneLoader_GetWorldObjectCollection",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetWorldObjectCollection": 30,
+   "SceneLoader_GetWorldObjectCollection": 31,
    "SceneLoader_GetRenderWorld": 2,
    "SceneLoader_GetContextObject": 1
   },
@@ -158839,7 +158839,8 @@
   "name": "GfxCollisionShapes_FindFirstLiveShapeIndex",
   "name_src": "agent",
   "votes": {
-   "GfxCollisionShapes_FindWorldObject": 1
+   "GfxCollisionShapes_FindWorldObject": 1,
+   "GfxCollisionShapes_FindFirstLiveShapeIndex": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -158851,7 +158852,7 @@
   "name": "GfxCollisionShapes_GetRecordValue",
   "name_src": "agent",
   "votes": {
-   "GfxCollisionShapes_GetRecordValue": 1
+   "GfxCollisionShapes_GetRecordValue": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -159192,7 +159193,9 @@
  "006cef30": {
   "name": "CollisionShapes_ApplySetupAndInitEntry",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CollisionShapes_ApplySetupAndInitEntry": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_006cee30* self, void* , char* a2",
@@ -161733,13 +161736,14 @@
   "file": "src/auto/006d6ac0.cpp"
  },
  "006d6b40": {
-  "name": "sub_6D6B40",
-  "name_src": "addr",
+  "name": "C_00861120_CreatePlayerForShape",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2",
-  "sig_src": "abi"
+  "params": "C_00861120* self, void* , char* shapeName",
+  "sig_src": "impl",
+  "file": "src/auto/006d6b40.cpp"
  },
  "006d6c00": {
   "name": "Gfx2d_CollectWorldObjectReferences",
@@ -173394,11 +173398,13 @@
  "006ff490": {
   "name": "GfxTeam_CreatePlayerForReference",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxTeam_CreatePlayerForReference": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "void* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006ff510": {
   "name": "C_008630e0_BaseInit",
