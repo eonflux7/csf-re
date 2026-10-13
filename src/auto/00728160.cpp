@@ -4,7 +4,8 @@
 #include "core/memory.h"
 
 CSF_FUNC(int, __cdecl, CopyConstructElementArray36, 0x00727540,
-         (int destination, int count, std::uint32_t* source));
+         (int destination, int count, std::uint32_t* source,
+          void* context, std::uint32_t* sourceCopy));
 CSF_FUNC(std::uint32_t*, __fastcall, InsertElement36_727F90, 0x00727F90,
          (void* self, void* edx, std::uint32_t* result,
           char* position, int* element));
@@ -33,6 +34,7 @@ static std::uint32_t* __fastcall AppendElement36(
             const std::uint32_t end = CSF_AT(std::uint32_t, self, 0x08);
             const int result = CopyConstructElementArray36(
                 static_cast<std::int32_t>(end), 1,
+                reinterpret_cast<std::uint32_t*>(element), self,
                 reinterpret_cast<std::uint32_t*>(element));
 
             CSF_AT(std::uint32_t, self, 0x08) = end + 36u;

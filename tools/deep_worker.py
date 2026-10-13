@@ -171,8 +171,13 @@ def run(a):
                                    timeout=a.timeout, env=dict(os.environ, CLAUDE_CONFIG_DIR=grunt.CLAUDE_GRUNTS))
             res = {"is_error": True, "result": r.stderr[-400:]}
             for line in open(events, errors="replace"):
-                if line.startswith('{"type":"result"'):
-                    res = json.loads(line)
+                if '"type":"result"' in line:  # the key order is not fixed
+                    try:
+                        d2 = json.loads(line)
+                    except ValueError:
+                        continue
+                    if d2.get("type") == "result":
+                        res = d2
             if res.get("is_error") or not res.get("result"):
                 err = f"claude -p rc={r.returncode}: {str(res.get('result'))[:400]}"
                 if "limit" in err.lower():
