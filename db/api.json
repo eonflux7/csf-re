@@ -84260,8 +84260,8 @@
   "file": "src/auto/00541580.cpp"
  },
  "00541650": {
-  "name": "MenuSaveGame_ClearListContainer",
-  "name_src": "vote",
+  "name": "MenuSaveGame_RebuildListContainer",
+  "name_src": "agent",
   "votes": {
    "MenuSaveGame_ClearListContainer": 4
   },
@@ -118718,7 +118718,7 @@
   "name": "InitializeTemporaryString",
   "name_src": "vote",
   "votes": {
-   "InitializeTemporaryString": 69
+   "InitializeTemporaryString": 70
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -118738,7 +118738,7 @@
   "name": "DestroyTemporaryString",
   "name_src": "vote",
   "votes": {
-   "DestroyTemporaryString": 41
+   "DestroyTemporaryString": 42
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -118818,7 +118818,7 @@
   "name": "NameMatchesCString",
   "name_src": "vote",
   "votes": {
-   "NameMatchesCString": 12
+   "NameMatchesCString": 13
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -118829,7 +118829,7 @@
   "name": "NameMatchesString",
   "name_src": "vote",
   "votes": {
-   "NameMatchesString": 22
+   "NameMatchesString": 23
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -124952,7 +124952,7 @@
   "name": "NetCogible_BaseDispatchField",
   "name_src": "vote",
   "votes": {
-   "NetCogible_BaseDispatchField": 3
+   "NetCogible_BaseDispatchField": 4
   },
   "ret": "char",
   "conv": "__stdcall",
@@ -194087,7 +194087,7 @@
   "name": "NetGame_FormatEndTimeMember",
   "name_src": "agent",
   "votes": {
-   "NetGame_FormatEndTimeMember": 2
+   "NetGame_FormatEndTimeMember": 3
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -194178,7 +194178,7 @@
   "name": "NetPlayer_FormatReferenceMember",
   "name_src": "agent",
   "votes": {
-   "NetPlayer_FormatReferenceMember": 3
+   "NetPlayer_FormatReferenceMember": 4
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -195440,7 +195440,7 @@
  },
  "0074f780": {
   "name": "NetPostmanDdl_MatchesRequiredClassIdOrDelegate",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__stdcall",
@@ -195460,8 +195460,8 @@
   "sig_src": "vote"
  },
  "0074f7c0": {
-  "name": "NetPostmanDdl_ProcessField_74F7C0",
-  "name_src": "vote",
+  "name": "NetPostmanDDL_ProcessField",
+  "name_src": "agent",
   "votes": {
    "NetPostmanDdl_ProcessField": 1
   },
@@ -195473,7 +195473,7 @@
  },
  "0074f890": {
   "name": "CMenuMpStats_RegisterDieConfigEntry",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -195482,17 +195482,18 @@
   "file": "src/auto/0074f890.cpp"
  },
  "0074f8d0": {
-  "name": "sub_74F8D0",
-  "name_src": "addr",
+  "name": "NetPostman_FormatField",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a1, int a2, int a3, void** a4",
-  "sig_src": "abi"
+  "conv": "__stdcall",
+  "params": "void* object, void* fieldRequest, int nameObject, void** output",
+  "sig_src": "impl",
+  "file": "src/auto/0074f8d0.cpp"
  },
  "0074fa80": {
   "name": "NetPostmanDdl_ProcessFields",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__stdcall",
@@ -195520,7 +195521,7 @@
  },
  "0074fc80": {
   "name": "NetPostmanDdl_ForwardToProcessField",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__stdcall",
@@ -195530,7 +195531,7 @@
  },
  "0074fca0": {
   "name": "NetPostmanDDL_ForwardToWriteSoundAndSubtitle",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__stdcall",
@@ -195540,7 +195541,7 @@
  },
  "0074fcc0": {
   "name": "NetPostmanDdl_ForwardToSecondArg",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
@@ -195580,7 +195581,7 @@
  },
  "0074fd40": {
   "name": "C_00858930_ScalarDeletingDestructor",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -195590,7 +195591,7 @@
  },
  "0074fd70": {
   "name": "NetPostman_Construct",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "NetPostman*",
   "conv": "__fastcall",
@@ -195609,7 +195610,7 @@
  },
  "0074fe40": {
   "name": "C_00867ab8_Initialize",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -195628,7 +195629,7 @@
  },
  "0074ff30": {
   "name": "C_00858948_DestroyAndReleaseStorage",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -195675,8 +195676,8 @@
   "sig_src": "vote"
  },
  "00750900": {
-  "name": "NetPostmanDdl_ProcessField_750900",
-  "name_src": "impl",
+  "name": "NetPostmanDdl_ProcessField",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -195686,7 +195687,7 @@
  },
  "007509e0": {
   "name": "NetPostmanDdl_ForwardToProcessRecord",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__stdcall",
@@ -195705,7 +195706,7 @@
  },
  "00750a20": {
   "name": "NetPostmanDdl_ForwardToHandler",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
@@ -195724,7 +195725,7 @@
  },
  "00750a60": {
   "name": "NetPostman_Destroy",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "NetPostman*",
   "conv": "__fastcall",
@@ -196831,7 +196832,9 @@
  "007538d0": {
   "name": "NetSpawnMessages_FormatInitialSpawnField",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "NetSpawnMessages_FormatInitialSpawnField": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* , void* nameObject, void** output",

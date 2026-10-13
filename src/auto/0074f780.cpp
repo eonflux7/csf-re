@@ -1,0 +1,14 @@
+#include "globals.h"
+#include "hook.h"
+
+CSF_FUNC(bool, __stdcall, NetCogible_ForwardMatchTest, 0x0065E6C0, (int a1));
+CSF_GLOBAL(uint32_t, g_RequiredObjectClassId, 0x008BC184);
+
+// Returns true when a1 equals the required object class id; otherwise delegates to the helper.
+static bool __stdcall NetPostmanDdl_MatchesRequiredClassIdOrDelegate(int a1) {
+    if (g_RequiredObjectClassId == static_cast<uint32_t>(a1))
+        return true;
+    return NetCogible_ForwardMatchTest(a1);
+}
+
+HOOK(0x0074F780, NetPostmanDdl_MatchesRequiredClassIdOrDelegate, "auto");
