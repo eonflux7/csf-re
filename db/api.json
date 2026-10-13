@@ -35921,7 +35921,7 @@
   "name": "AssignStringRange_488830",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_488830": 56
+   "AssignStringRange_488830": 55
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -110827,7 +110827,7 @@
   "name": "RwFrameRemoveChild",
   "name_src": "rwname",
   "votes": {
-   "RwFrameRemoveChild": 3
+   "RwFrameRemoveChild": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -110838,7 +110838,7 @@
   "name": "RwFrameForAllChildren",
   "name_src": "rwname",
   "votes": {
-   "RwFrameForAllChildren": 12
+   "RwFrameForAllChildren": 11
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -110951,7 +110951,7 @@
   "name": "RwFrameDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwFrameDestroy": 6
+   "RwFrameDestroy": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -137201,7 +137201,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 553,
+   "Mem_FreeDebug": 552,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -137668,7 +137668,7 @@
   "name": "CoreParser_ResolveEntryByKey",
   "name_src": "agent",
   "votes": {
-   "MenuMessageBox_ResolveEntryByKey": 35
+   "MenuMessageBox_ResolveEntryByKey": 34
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -137718,11 +137718,10 @@
   "votes": {
    "InitStringFromLiteral": 9
   },
-  "ret": "S_004f21d0*",
+  "ret": "void*",
   "conv": "__cdecl",
-  "params": "S_004f21d0* a1, int a2, int a3",
-  "sig_src": "impl",
-  "file": "src/auto/00692720.cpp"
+  "params": "void* returnSlot, const char* text, int count",
+  "sig_src": "vote"
  },
  "006927b0": {
   "name": "CoreParser_CopyBoundedString",
@@ -138557,7 +138556,7 @@
   "name": "MenuMessageBox_TestEntryAgainstFlag",
   "name_src": "vote",
   "votes": {
-   "MenuMessageBox_TestEntryAgainstFlag": 6
+   "MenuMessageBox_TestEntryAgainstFlag": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -138978,7 +138977,7 @@
   "name": "ConstructWideString",
   "name_src": "agent",
   "votes": {
-   "ConstructWideString": 8
+   "ConstructWideString": 7
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -139667,7 +139666,7 @@
   "name": "MenuExtras_ParseDescriptionId",
   "name_src": "vote",
   "votes": {
-   "MenuExtras_ParseDescriptionId": 27
+   "MenuExtras_ParseDescriptionId": 26
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -142908,6 +142907,16 @@
   "params": "void* self, void*",
   "sig_src": "impl",
   "file": "src/auto/006a4390.cpp"
+ },
+ "006a4510": {
+  "name": "LogStream_WriteStoredBlock",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int*",
+  "conv": "__cdecl",
+  "params": "int stream, uint8_t* source, int length, int withHeader",
+  "sig_src": "impl",
+  "file": "src/auto/006a4510.cpp"
  },
  "006a45a0": {
   "name": "LogWindow_InitState",
@@ -150940,8 +150949,7 @@
   "name": "CountFrameChildren",
   "name_src": "agent",
   "votes": {
-   "GfxObject_IsContainerFrame": 1,
-   "CountFrameChildren": 1
+   "GfxObject_IsContainerFrame": 1
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -157088,9 +157096,8 @@
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int frame, int context",
-  "sig_src": "impl",
-  "file": "src/auto/006d4320.cpp"
+  "params": "int a1, int a2",
+  "sig_src": "vote"
  },
  "006d4380": {
   "name": "ClumpLoader_RegisterClump",
@@ -160831,11 +160838,10 @@
   "votes": {
    "LoadTextureWithOptions": 1
   },
-  "ret": "int",
+  "ret": "void*",
   "conv": "__cdecl",
-  "params": "char* Source, char a2, int a3",
-  "sig_src": "impl",
-  "file": "src/auto/006e2eb0.cpp"
+  "params": "char* name, char option, char* status",
+  "sig_src": "vote"
  },
  "006e2ed0": {
   "name": "GfxIm3d_TryLoadTexture",
@@ -161055,9 +161061,8 @@
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "C_00861a78* self, void* , int a2, int a4",
-  "sig_src": "impl",
-  "file": "src/auto/006e3d70.cpp"
+  "params": "void* self, void* edx, int a2, int a4",
+  "sig_src": "abi"
  },
  "006e3da0": {
   "name": "C_00861a78_ConstructShapeWrapper",
@@ -170134,9 +170139,7 @@
  "00705b40": {
   "name": "GfxParticleRender_LoadTexture",
   "name_src": "agent",
-  "votes": {
-   "GfxParticleRender_LoadTexture": 1
-  },
+  "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "char* source, char mipmapping, char* alphaType",
@@ -222099,7 +222102,7 @@
   "name": "Rt2dObjectSetColorOffset",
   "name_src": "rwname",
   "votes": {
-   "Rt2dObjectSetColorOffset": 3
+   "Rt2dObjectSetColorOffset": 2
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -222110,7 +222113,7 @@
   "name": "Rt2dObjectSetColorMultiplier",
   "name_src": "rwname",
   "votes": {
-   "Rt2dObjectSetColorMultiplier": 3
+   "Rt2dObjectSetColorMultiplier": 2
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
