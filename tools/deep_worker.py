@@ -2,9 +2,9 @@
 """Deep worker: one agent session on a job the orchestrator hands out and oversees (2026-10-13, user: the
 orchestrator no longer does the jobs itself; it spawns agents, reviews what they return, decides).
 
-Agents (--agent): sol-hi = gpt-6.1-sol@high through the Codex CLI, sandboxed to the job's tree;
-opus-me = claude-opus-5-5@medium through `claude -p` on the main account (the grunts' account is Haiku only),
-edits and a fixed list of commands allowed, everything else denied.
+Agents (--agent): sol-hi = gpt-6.1-sol@high through the Codex CLI, sandboxed to the job's tree: the default, for
+anything hard. opus-lo = claude-opus-5-5@low through `claude -p` on the grunts' Claude account, a fixed list of
+commands allowed: easy jobs only (user, 2026-10-13). Nothing runs on the main Claude account.
 
 The orchestrator starts a task, fires up workers for the parts that need long reading or trial and error (a queue
 item's root cause, a class of emudiff differences, a container replica), and reviews what comes back. A worker
@@ -12,7 +12,7 @@ never touches the repo: it gets its own detached worktree (work/deep/NAME/tree, 
 build dir) and may edit and run the offline tools there (gate, semcheck, emudiff, single-file compiles). No game,
 no smokes, no verifier, no commits, no IDB writes, no network.
 
-  deep_worker.py start NAME --task FILE|- [--agent sol-hi|opus-me] [--timeout 3600] [--fresh]   in the background
+  deep_worker.py start NAME --task FILE|- [--agent sol-hi|opus-lo] [--timeout 3600] [--fresh]   in the background
   deep_worker.py run   NAME ...           the same, in the foreground
   deep_worker.py list                     jobs and their state
   deep_worker.py review NAME applied|partial|rejected [--note TEXT]    the orchestrator's verdict on a finished job
@@ -29,7 +29,12 @@ import argparse, json, os, re, shutil, subprocess, sys, time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 DEEP = os.path.join(ROOT, "work", "deep")
-AGENTS = {"sol-hi": ("codex", "gpt-6.1-sol", "high"), "opus-me": ("claude", "claude-opus-5-5", "medium")}
+# 2026-10-13 (user): deep workers run on sol-hi only; Claude usage stays with the orchestrator. opus-me
+# (claude-opus-5-5@medium via `claude -p`, main account) ran three jobs that day (about 37% -> 71% of the 5h window
+# together with the session); its code path stays for old jobs' logs and is not offered.
+# opus-lo (user, same day): claude-opus-5-5@low on the grunts' Claude account, for easy jobs only.
+AGENTS = {"sol-hi": ("codex", "gpt-6.1-sol", "high"), "opus-lo": ("claude", "claude-opus-5-5", "low")}
+RETIRED = {"opus-me": ("claude", "claude-opus-5-5", "medium")}
 # opus-me: what `claude -p` may do without asking (dontAsk denies the rest)
 CLAUDE_ALLOW = ["Read", "Grep", "Glob", "Edit", "Write", "Bash(.venv/bin/python:*)", "Bash(git diff:*)",
                 "Bash(git status:*)", "Bash(git log:*)", "Bash(git show:*)", "Bash(ls:*)", "Bash(cat:*)", "Bash(rg:*)",
@@ -157,10 +162,13 @@ def run(a):
             cmd = ["claude", "-p", "--model", model, "--effort", effort, "--permission-mode", "dontAsk",
                    "--allowedTools", *CLAUDE_ALLOW, "--no-session-persistence", "--strict-mcp-config",
                    "--disable-slash-commands", "--output-format", "stream-json", "--verbose"]
-            state(d, login="claude main")
+            import grunt
+            if not grunt.claude_grunts_ready():
+                raise SystemExit(f"grunts' Claude account not logged in: CLAUDE_CONFIG_DIR={grunt.CLAUDE_GRUNTS}")
+            state(d, login="claude grunts")
             with open(events, "w") as ev:  # one JSON event per line as it happens: history and tokens while it runs
                 r = subprocess.run(cmd, input=prompt, stdout=ev, stderr=subprocess.PIPE, text=True, cwd=tree,
-                                   timeout=a.timeout)
+                                   timeout=a.timeout, env=dict(os.environ, CLAUDE_CONFIG_DIR=grunt.CLAUDE_GRUNTS))
             res = {"is_error": True, "result": r.stderr[-400:]}
             for line in open(events, errors="replace"):
                 if line.startswith('{"type":"result"'):
@@ -281,7 +289,7 @@ def tokens(st):
                     output=u.get("output_tokens", 0) + u.get("reasoning_output_tokens", 0),
                     cost_usd=u.get("cost_usd"))
     out = dict(input=0, cached=0, output=0)
-    if AGENTS.get(st.get("agent", "sol-hi"), ("codex",))[0] == "codex":
+    if st.get("agent", "sol-hi") == "sol-hi":
         tid = next((d.get("thread_id") for d in _events(name) if d.get("type") == "thread.started"), None)
         import glob
         files = glob.glob(os.path.join(st.get("home") or "", "sessions", "*", "*", "*", f"rollout-*{tid}.jsonl")) if tid else []
