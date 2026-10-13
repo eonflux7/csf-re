@@ -50,6 +50,7 @@ FLOATS = [0.0, 1.0, 0.5, 2.0, -1.0, 100.0]
 GARBAGE_HI = {(ZONES + 0x0A000100 + k * 0x100000) >> 16 for k in (1, 2, 3, 4)}  # initial edx, ebx, esi, edi
 SAVED_REGS = {ZONES + 0x0A000100 + k * 0x100000 for k in (2, 3, 4)}  # initial ebx, esi, edi
 ECX0 = ZONES + 0x0A000100
+EAX0 = ZONES + 0x0A500100  # a pointer: a few functions take an argument in eax (0x6A0540, zlib's static helpers)
 BYTE_TYPES = ("bool", "char", "uint8_t", "unsigned char", "int8_t", "signed char", "_BOOL1", "BOOL1")
 
 _cache = {}
@@ -386,7 +387,7 @@ class Run:
         vals = self.args()
         uc.mem_write(esp, struct.pack(f"<{1 + len(vals)}I", RET_MAGIC, *vals))
         for r, v in ((X.UC_X86_REG_ESP, esp), (X.UC_X86_REG_EBP, ESP0 + 0x4000), (X.UC_X86_REG_ECX, ZONES + 0x0A000100),
-                     (X.UC_X86_REG_EDX, ZONES + 0x0A100100), (X.UC_X86_REG_EAX, 0), (X.UC_X86_REG_EBX, ZONES + 0x0A200100),
+                     (X.UC_X86_REG_EDX, ZONES + 0x0A100100), (X.UC_X86_REG_EAX, EAX0), (X.UC_X86_REG_EBX, ZONES + 0x0A200100),
                      (X.UC_X86_REG_ESI, ZONES + 0x0A300100), (X.UC_X86_REG_EDI, ZONES + 0x0A400100)):
             uc.reg_write(r, v)
         self.saved = {r: uc.reg_read(r) for r in (X.UC_X86_REG_EBX, X.UC_X86_REG_ESI, X.UC_X86_REG_EDI, X.UC_X86_REG_EBP)}
@@ -684,6 +685,8 @@ def compare(ea, o, m):
         # try block on a path that calls nothing (0x40B4C0, an STL fill over an empty range)
         img, _ = exe_image()
         if o.eax == 0xFFFFFFFF and bytes(img[ea - IMG + 3:ea - IMG + 5]) == b"\x6A\xFF":
+            left = True
+        if o.eax == EAX0:  # never written: the caller's eax
             left = True
         if not left and o.norm(o.eax & mask) != m.norm(m.eax & mask):
             out.append(f"returns {o.eax & mask:x} vs {m.eax & mask:x}")
