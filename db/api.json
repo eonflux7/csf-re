@@ -7052,7 +7052,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 159
+   "S_0041e5f0_GrowArrayCapacity": 160
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -138032,7 +138032,7 @@
   "name_src": "agent",
   "votes": {
    "Mem_Alloc": 482,
-   "CoreMemory_AllocUntagged": 25
+   "CoreMemory_AllocUntagged": 26
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -138530,7 +138530,9 @@
  "006927b0": {
   "name": "CoreParser_CopyBoundedString",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreParser_CopyBoundedString": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* , void* dst, int maxLen",
@@ -138647,7 +138649,7 @@
   "name_src": "agent",
   "votes": {
    "MenuExtras_GetChildCount": 89,
-   "S_00692b80_GetChildCount": 11
+   "S_00692b80_GetChildCount": 12
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -138660,7 +138662,7 @@
   "name_src": "agent",
   "votes": {
    "GetComponent": 102,
-   "S_00692b80_GetComponent": 13
+   "S_00692b80_GetComponent": 14
   },
   "ret": "S_00692b80*",
   "conv": "__fastcall",
@@ -138673,7 +138675,7 @@
   "name_src": "agent",
   "votes": {
    "ParseIntegerComponent": 55,
-   "S_00692b80_ParseIntegerComponent": 13
+   "S_00692b80_ParseIntegerComponent": 14
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -138685,7 +138687,7 @@
   "name": "ReadComponentFloat",
   "name_src": "vote",
   "votes": {
-   "ReadComponentFloat": 31
+   "ReadComponentFloat": 32
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -138696,7 +138698,7 @@
   "name": "CopyAttributeText",
   "name_src": "vote",
   "votes": {
-   "CopyAttributeText": 30
+   "CopyAttributeText": 31
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -138818,22 +138820,26 @@
   "sig_src": "vote"
  },
  "006935a0": {
-  "name": "sub_6935A0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CorePaths_InternAttributeText",
+  "name_src": "vote",
+  "votes": {
+   "CorePaths_InternAttributeText": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char* String1, char a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00693660": {
-  "name": "sub_693660",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CorePaths_InternComponentName",
+  "name_src": "vote",
+  "votes": {
+   "CorePaths_InternComponentName": 1
+  },
   "ret": "int16_t",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char* String1, char a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00693740": {
   "name": "S_00693740_OpenPackedBuffer",
@@ -138996,8 +139002,8 @@
   "file": "src/auto/00693bd0.cpp"
  },
  "00693c90": {
-  "name": "CorePaths_ParseBracketedGroup",
-  "name_src": "vote",
+  "name": "S_00693740_ParseBracketGroup",
+  "name_src": "agent",
   "votes": {
    "CorePaths_ParseBracketedGroup": 1,
    "S_00693740_ProcessSubtree": 1
@@ -139009,8 +139015,8 @@
   "file": "src/auto/00693c90.cpp"
  },
  "00693f00": {
-  "name": "CorePaths_ParseParenthesizedGroup",
-  "name_src": "vote",
+  "name": "S_00693740_ParseParenthesizedGroup",
+  "name_src": "agent",
   "votes": {
    "CorePaths_ParseParenthesizedGroup": 1
   },
@@ -139021,13 +139027,14 @@
   "file": "src/auto/00693f00.cpp"
  },
  "00694180": {
-  "name": "sub_694180",
-  "name_src": "addr",
+  "name": "S_00694180_AppendComponentTree",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2, void* a3, uint32_t* a4, void* a5",
-  "sig_src": "abi"
+  "params": "S_00694180* self, void* , S_00694180* state, S_00692b80* component, std::uint32_t* previousSiblingLink, S_0041e5f0* records",
+  "sig_src": "impl",
+  "file": "src/auto/00694180.cpp"
  },
  "00694380": {
   "name": "S_00693740_ReleaseBuffers",
@@ -142743,13 +142750,14 @@
   "sig_src": "abi"
  },
  "0069ed10": {
-  "name": "sub_69ED10",
-  "name_src": "addr",
+  "name": "RtFS_ForwardThreeArgsTo69EC50",
+  "name_src": "impl",
   "votes": {},
   "ret": "void*",
   "conv": "__cdecl",
   "params": "void* a1, void* a2, void* a3",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0069ed10.cpp"
  },
  "0069ed30": {
   "name": "sub_69ED30",
@@ -143101,13 +143109,14 @@
   "sig_src": "abi"
  },
  "0069ffc0": {
-  "name": "sub_69FFC0",
-  "name_src": "addr",
+  "name": "RtFs_SetDefaultFileSystemFlag",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1",
-  "sig_src": "abi"
+  "params": "int descriptor",
+  "sig_src": "impl",
+  "file": "src/auto/0069ffc0.cpp"
  },
  "0069ffd0": {
   "name": "GetFieldAtOffset32",
@@ -143144,10 +143153,11 @@
   "votes": {
    "C_0085ec18_Construct": 1
   },
-  "ret": "void*",
+  "ret": "C_0085ec18*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0085ec18* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a0010.cpp"
  },
  "006a0020": {
   "name": "sub_6A0020",
@@ -143184,8 +143194,9 @@
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0085ec34* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006a0260.cpp"
  },
  "006a0280": {
   "name": "sub_6A0280",
