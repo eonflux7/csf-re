@@ -30,15 +30,22 @@
 #include <cstring>
 #include "MinHook.h"
 #include "hook.h"
+#include "diff_compare.h"
 
 namespace {
 
-struct Callee { uint32_t addr, pop, nargs, regs, ret; };  // regs: 1 ecx, 2 edx; ret: 0 int32 1 fp 3 void 4 int64
+using hook::diff_detail::on_stack;
+using hook::diff_detail::same_arg;
+
+struct Callee {
+    uint32_t addr, pop, nargs, regs, ret;  // regs: 1 ecx, 2 edx; ret: 0 int32 1 fp 3 void 4 int64
+    uint8_t widths[8];  // defined bytes per stack dword: 1 byte, 2 short, 4 full; 0/unknown also compares full
+};
 const Callee kCallees[] = {
 #define CSF_T3_CALLEES
 #include "replay_table.inc"
 #undef CSF_T3_CALLEES
-    {0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, {}},
 };
 constexpr int kNCallees = sizeof kCallees / sizeof kCallees[0] - 1;
 
@@ -96,10 +103,6 @@ bool readable(uint32_t p, uint32_t n) {
     return p + n <= (uint32_t)mb.BaseAddress + mb.RegionSize;
 }
 
-bool on_stack(uint32_t p) {
-    return p >= __readfsdword(8) && p < __readfsdword(4);  // TEB StackLimit .. StackBase
-}
-
 uint32_t peek_len(uint32_t p) {
     uint32_t top = __readfsdword(4);
     return top - p < kPeek ? top - p : kPeek;
@@ -146,10 +149,6 @@ void mismatch(const char* fmt, ...) {
 uint32_t nargs(const Callee& c, const Rec& R) {
     uint32_t n = c.nargs > R.pop / 4 ? c.nargs : R.pop / 4;
     return n < 8 ? n : 8;
-}
-
-bool same_arg(uint32_t o, uint32_t u) {
-    return o == u || (on_stack(o) && on_stack(u));  // locals live at other addresses in ours
 }
 
 [[noreturn]] void abandon(int why) {
@@ -241,7 +240,7 @@ int __cdecl t3_pre(Regs* r) {
     if ((c.regs & 2) && !same_arg(R.edx, r->edx))
         mismatch("call %d to %08X: edx orig %08X ours %08X", g_cursor, c.addr, R.edx, r->edx);
     for (uint32_t k = 0, n = nargs(c, R); k < n; ++k)
-        if (!same_arg(R.args[k], a[k])) {
+        if (!same_arg(R.args[k], a[k], c.widths[k])) {
             mismatch("call %d to %08X: arg %u orig %08X ours %08X", g_cursor, c.addr, k + 1, R.args[k], a[k]);
             break;
         }

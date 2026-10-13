@@ -17,6 +17,7 @@
 #include <type_traits>
 #include "MinHook.h"
 #include "hook.h"
+#include "diff_compare.h"
 
 namespace hook {
 extern char g_dir[MAX_PATH];
@@ -325,7 +326,9 @@ R run(int i, Regs* r, Invoke invoke) {
     if constexpr (!std::is_floating_point_v<R>) {
         // only the bits the original defines: al for bytes/bools, ax for shorts, edx:eax for 64-bit
         uint64_t mask = s.info->ret == 4 ? ~0ull : s.info->ret == 5 ? 0xFFull : s.info->ret == 6 ? 0xFFFFull : 0xFFFFFFFFull;
-        if (s.info->ret != 3 && ((uint64_t)ro & mask) != ((uint64_t)ru & mask)) {
+        bool frame_return = s.info->ret == 0 &&
+            hook::diff_detail::same_frame_return((uint32_t)ro, (uint32_t)ru, (uint32_t)args);
+        if (s.info->ret != 3 && !frame_return && ((uint64_t)ro & mask) != ((uint64_t)ru & mask)) {
             char w[96];
             snprintf(w, sizeof w, "return orig %llX ours %llX", (unsigned long long)(ro & mask),
                      (unsigned long long)(ru & mask));
