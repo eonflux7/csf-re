@@ -11,8 +11,6 @@ CSF_FUNC(unsigned int, __fastcall, MenuScenarioSelect_InitializeStorage,
 CSF_FUNC(int, __fastcall, CMenuScenarioSelect_ResetSelectionState,
          0x52DD20, (int* self, int edx));
 
-CSF_GLOBAL(uint8_t, g_VtblCMenuScreenBase, 0x83042C);
-CSF_GLOBAL(uint8_t, g_VtblCMenuScenarioSelectMain, 0x841688);
 CSF_GLOBAL(uint8_t, g_VtblCMenuScenarioSelectSecondary, 0x841638);
 
 static CMenuScenarioSelect* __fastcall CMenuScenarioSelect_Construct(

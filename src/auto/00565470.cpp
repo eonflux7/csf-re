@@ -9,8 +9,6 @@ CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x00712CC0,
 CSF_FUNC(void, __fastcall, C_00861bd8_ClearField0010, 0x006E5090,
          (void* self, void* edx));
 
-CSF_GLOBAL(void*, g_MenuAccountsPostInitialize, 0x00845B38);
-
 static CMenuAccounts* __fastcall CMenuAccounts_Construct(
     CMenuAccounts* self, void* /*edx*/, int /*unused*/)
 {
@@ -40,7 +38,7 @@ static CMenuAccounts* __fastcall CMenuAccounts_Construct(
     // Read it at call time, as the original does.
     auto postInitialize = C_00861bd8_ClearField0010;
     postInitialize =
-        reinterpret_cast<decltype(postInitialize)>(g_MenuAccountsPostInitialize);
+        reinterpret_cast<decltype(postInitialize)>(CSF_VTBL(0x00845B38)[0]);
     postInitialize(self, nullptr);
 
     return self;

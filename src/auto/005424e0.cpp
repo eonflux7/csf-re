@@ -6,8 +6,6 @@
 #include "legacy/string.h"
 
 // Vtable of CGuiCharacterPreview (also the first dword written into the object).
-CSF_GLOBAL(void*, g_vtbl_CGuiCharacterPreview, 0x8432B0);
-
 CSF_FUNC(int, __fastcall, CGuiCharacterPreview_ReleaseResources, 0x541ED0, (void* self, void*));
 CSF_FUNC(int, __fastcall, CGuiControl_Destroy, 0x719B10, (void* self, void*));
 CSF_FUNC(int, __cdecl, Mem_Free, 0x691110, (void* p));
@@ -17,7 +15,7 @@ CSF_FUNC(int, __cdecl, Mem_Free, 0x691110, (void* p));
 // low bit of the flag argument is set.
 static int* __fastcall CGuiCharacterPreview_DestroyAndFreeIfFlag(void* self, void* /*edx*/, char a2)
 {
-    *reinterpret_cast<void**>(self) = reinterpret_cast<void*>(&g_vtbl_CGuiCharacterPreview);
+    *reinterpret_cast<void**>(self) = reinterpret_cast<void*>(CSF_VTBL(0x8432B0));
 
     CGuiCharacterPreview_ReleaseResources(self, nullptr);
     CGuiControl_Destroy(self, nullptr);

@@ -10,8 +10,6 @@ CSF_FUNC(void, __fastcall, C_00861bd8_ClearField0010, 0x006E5090,
 
 // This vtable slot contains C_00861bd8_ClearField0010.
 // Read the slot at call time, as the original does.
-CSF_GLOBAL(uint32_t, g_PlayerInfoClearField0010Slot, 0x008455B0);
-
 static CMenuPlayerInfo* __fastcall CMenuPlayerInfo_Construct(
     CMenuPlayerInfo* self, void* /*edx*/, int argument)
 {
@@ -38,7 +36,7 @@ static CMenuPlayerInfo* __fastcall CMenuPlayerInfo_Construct(
     self->field_0044 = 0x40400000u;
 
     reinterpret_cast<void(__fastcall*)(void*, void*)>(
-        static_cast<uintptr_t>(g_PlayerInfoClearField0010Slot))(
+        reinterpret_cast<uintptr_t>(CSF_VTBL(0x008455B0)[0]))(
             self, nullptr);
 
     return self;

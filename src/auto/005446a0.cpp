@@ -12,7 +12,6 @@
 
 // Vtable addresses referenced by the original: primary vtable (0x00843A90) and
 // the secondary-base vtable (0x00843A40) stored at this+4.
-CSF_GLOBAL(uint8_t, g_VtableCMenuProfilesPC, 0x00843A90);
 CSF_GLOBAL(uint8_t, g_VtableCMenuProfilesPCSecondaryBase, 0x00843A40);
 
 // Callees bound by address.

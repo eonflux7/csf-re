@@ -14,8 +14,6 @@ CSF_FUNC(unsigned char, __fastcall, LoadResource, 0x00798FB0,
          (void* self, void* edx, void* resource, void* name,
           std::uint32_t* descriptor, void* parameters));
 
-CSF_GLOBAL(std::uint32_t, g_ResourceDescriptorVtable, 0x0085FF90);
-
 static char __fastcall BeginResourceLoad(
     void* self, void* /*edx*/, std::int32_t source, std::int32_t /*unused*/)
 {
@@ -43,7 +41,7 @@ static char __fastcall BeginResourceLoad(
 
         std::uint32_t descriptor[3];
         descriptor[0] = reinterpret_cast<std::uintptr_t>(
-            &g_ResourceDescriptorVtable);
+            CSF_VTBL(0x0085FF90));
         descriptor[1] = 0xFFFFFFFFu;
         descriptor[2] = 10;
 

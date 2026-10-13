@@ -6,8 +6,6 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_GLOBAL(uint8_t, g_vtbl_8453A4, 0x008453A4);
-
 // Releases the buffer owned by C_008453a4 and consumes its flag (returns char, ignored here).
 CSF_FUNC(char, __fastcall, C_008453a4_ReleaseOwnedBufferAndConsumeFlag, 0x0055BE20, (C_008453a4* self, void* edx));
 
@@ -25,7 +23,7 @@ CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
 // bit 0 of the argument is set. Returns this.
 static uint8_t* __fastcall C_008453a4_DestroyAndFree(C_008453a4* self, void* /*edx*/, char freeFlags)
 {
-    *reinterpret_cast<uint32_t*>(self) = reinterpret_cast<uint32_t>(&g_vtbl_8453A4);
+    *reinterpret_cast<uint32_t*>(self) = reinterpret_cast<uint32_t>(CSF_VTBL(0x008453A4));
 
     C_008453a4_ReleaseOwnedBufferAndConsumeFlag(self, nullptr);
 

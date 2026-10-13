@@ -11,9 +11,7 @@ CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x00712CC0, (void* self, void*
 // Constructor of the sub-object embedded at +0x34; one stack argument (ret 4).
 CSF_FUNC(void*, __fastcall, TextInputSubobject_Init, 0x00697130, (void* self, void* edx, uint8_t* arg));
 
-CSF_GLOBAL(uint8_t, g_VtblCMenuScreenBase, 0x0083042C);
 CSF_GLOBAL(uint8_t, g_VtblCMenuTextInputSecondary, 0x00841400);
-CSF_GLOBAL(uint8_t, g_VtblCMenuTextInput, 0x00841450);
 CSF_GLOBAL(uint8_t, g_byte_82E65C, 0x0082E65C);
 
 static uint32_t AddressOf(const void* p)
@@ -28,13 +26,11 @@ static CMenuTextInput* __fastcall CMenuTextInput_Construct(CMenuTextInput* self,
 
     // Primary vtable of the CMenuScreen base (0x0083042C), stored at [this+0].
     CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x0083042C);
-    (void)AddressOf(&g_VtblCMenuScreenBase);
     C_00830438_Construct(secondary, nullptr);
 
     // Final CMenuTextInput vtable (0x00841450) at [this+0], secondary vtable (0x00841400) at [this+4].
     CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x00841450);
     self->field_0004 = CSF_ADDR_DATA(0x00841400);
-    (void)AddressOf(&g_VtblCMenuTextInput);
     (void)AddressOf(&g_VtblCMenuTextInputSecondary);
 
     // Sub-object at +0x34: fields written here are not declared, use CSF_AT.

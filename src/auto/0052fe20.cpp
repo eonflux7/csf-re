@@ -5,11 +5,8 @@
 #include "types/auto_classes.h"
 
 // Vtable and data addresses referenced by the original destructor body.
-CSF_GLOBAL(uint8_t, off_841978, 0x00841978);
 CSF_GLOBAL(uint8_t, off_841928, 0x00841928);
 CSF_GLOBAL(uint8_t, off_830488, 0x00830488);
-CSF_GLOBAL(uint8_t, off_830438, 0x00830438);
-CSF_GLOBAL(uint8_t, g_VtblCMenuScreenBase, 0x0083042C);
 
 // Container-release helper (cdecl, caller pops 0x10 bytes). Original pushes four arguments.
 CSF_FUNC(int, __cdecl, DestroyElementRange, 0x00469760,

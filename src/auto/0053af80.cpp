@@ -10,8 +10,6 @@ CSF_FUNC(void*, __fastcall, InitEmbeddedSubobject, 0x00712CC0,
 CSF_FUNC(void, __fastcall, C_00861bd8_ClearField0010, 0x006E5090,
          (void* self, void* edx));
 
-CSF_GLOBAL(void*, g_ClearField0010Slot, 0x00842678);
-
 static void(__fastcall* const kClearField0010Target)(void*, void*) =
     C_00861bd8_ClearField0010;
 
@@ -38,7 +36,7 @@ static CMenuOptions* __fastcall CMenuOptions_Construct(
     self->field_002c = 0;
 
     reinterpret_cast<void(__fastcall*)(void*, void*)>(
-        g_ClearField0010Slot)(self, nullptr);
+        CSF_VTBL(0x00842678)[0])(self, nullptr);
 
     return self;
 }

@@ -3,12 +3,10 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_GLOBAL(void*, g_C_00831304_Vtable, 0x00831304);
-
 static C_00831304* __fastcall C_00831304_InitializeDefaults(
     C_00831304* self, void* /*edx*/)
 {
-    self->vtbl = &g_C_00831304_Vtable;
+    self->vtbl = CSF_VTBL(0x00831304);
     self->field_0004 = 0xFFFFFFFFu;
     self->field_0020 = 15;
     self->field_001c = 0;

@@ -9,7 +9,6 @@ CSF_FUNC(void, __fastcall, C_00861bd8_ClearField0010,
          0x006E5090, (void* self, void* edx));
 
 using ClearFieldMethod = void (__fastcall*)(void*, void*);
-CSF_GLOBAL(ClearFieldMethod, g_ClearField0010Slot, 0x00845C30);
 
 static CMenuMpNetworkType* __fastcall CMenuMpNetworkType_Construct(
     CMenuMpNetworkType* self, void* /*edx*/, int argument)
@@ -41,7 +40,7 @@ static CMenuMpNetworkType* __fastcall CMenuMpNetworkType_Construct(
 
     // This slot resolves to C_00861bd8_ClearField0010 (0x006E5090).
     // Preserve the original indirect dispatch rather than bypassing the slot.
-    g_ClearField0010Slot(self, nullptr);
+    reinterpret_cast<ClearFieldMethod>(CSF_VTBL(0x00845C30)[0])(self, nullptr);
     return self;
 }
 

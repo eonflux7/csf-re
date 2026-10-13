@@ -17,8 +17,6 @@ CSF_FUNC(int, __fastcall, CMenuAccountEdit_ResetInnerObject, 0x518890, (void* se
 CSF_FUNC(int, __cdecl, Mem_Free, 0x691110, (void* block));
 
 // CMenuScreen base vtable global, bound by address.
-CSF_GLOBAL(uint8_t, g_VtblCMenuScreenBase, 0x83042C);
-
 static CMenuAccountEdit* __fastcall CMenuAccountEdit_DestroyAndMaybeFree(CMenuAccountEdit* self, void* /*edx*/, char freeFlag)
 {
     // Install CMenuAccountEdit primary vtable and secondary vtable.
@@ -40,7 +38,7 @@ static CMenuAccountEdit* __fastcall CMenuAccountEdit_DestroyAndMaybeFree(CMenuAc
     // Restore base-class vtables.
     self->field_0004 = CSF_ADDR_DATA(0x830488);
     self->field_0004 = CSF_ADDR_VT(0x830438);
-    CSF_AT(uint32_t, self, 0) = reinterpret_cast<uint32_t>(&g_VtblCMenuScreenBase);
+    CSF_AT(uint32_t, self, 0) = reinterpret_cast<uint32_t>(CSF_VTBL(0x83042C));
 
     // Free the object storage when the low bit of the flag is set.
     if ((freeFlag & 1) != 0)

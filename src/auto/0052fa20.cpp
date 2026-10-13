@@ -17,7 +17,6 @@ CSF_FUNC(unsigned int, __fastcall, CMenuCredits_DestroyEmbeddedMember, 0x508430,
 CSF_FUNC(int, __cdecl, Mem_Free, 0x691110, (void* block));
 
 // Vtables and the CMenuScreen base vtable global, bound by address.
-CSF_GLOBAL(uint8_t, g_VtblCMenuScreenBase, 0x83042C);
 
 static CMenuCredits* __fastcall CMenuCredits_DestroyAndMaybeFree(CMenuCredits* self, void* /*edx*/, char freeFlag)
 {
@@ -40,7 +39,7 @@ static CMenuCredits* __fastcall CMenuCredits_DestroyAndMaybeFree(CMenuCredits* s
     // Restore base-class vtables.
     self->field_0004 = CSF_ADDR_DATA(0x830488);
     self->field_0004 = CSF_ADDR_VT(0x830438);
-    CSF_AT(uint32_t, self, 0) = reinterpret_cast<uint32_t>(&g_VtblCMenuScreenBase);
+    CSF_AT(uint32_t, self, 0) = reinterpret_cast<uint32_t>(CSF_VTBL(0x83042C));
 
     // Free the object storage when the low bit of the flag is set.
     if ((freeFlag & 1) != 0)

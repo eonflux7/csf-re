@@ -3,8 +3,6 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_GLOBAL(void*, g_ClearField0010Slot, 0x00845780);
-
 CSF_FUNC(uint32_t*, __fastcall, MenuSubobjectBase_Init, 0x00712CC0,
          (void* self, void* edx));
 CSF_FUNC(void, __fastcall, C_00861bd8_ClearField0010, 0x006E5090,
@@ -43,7 +41,7 @@ static CMenuMpOnline* __fastcall CMenuMpOnline_Construct(
     CSF_AT(uint32_t, self, 0x50) = 0;
 
     reinterpret_cast<void(__fastcall*)(void*, void*)>(
-        g_ClearField0010Slot)(self, nullptr);
+        CSF_VTBL(0x00845780)[0])(self, nullptr);
     return self;
 }
 

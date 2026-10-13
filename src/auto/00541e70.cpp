@@ -17,8 +17,6 @@ CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x50D190, ());
 CSF_FUNC(int, __fastcall, CGuiControl_Construct_71A170, 0x71A170, (void* self, void* edx, void* a2));
 
 // Vtable of CGuiCharacterPreview.
-CSF_GLOBAL(void*, g_vtbl_CGuiCharacterPreview, 0x008432B0);
-
 // CGuiCharacterPreview constructor (__thiscall, ret 0).
 static CGuiCharacterPreview* __fastcall CGuiCharacterPreview_Construct(CGuiCharacterPreview* self, void* /*edx*/)
 {
@@ -42,7 +40,7 @@ static CGuiCharacterPreview* __fastcall CGuiCharacterPreview_Construct(CGuiChara
     self->m_pLight = 0;
     self->m_angle = 0;
 
-    *reinterpret_cast<void**>(self) = static_cast<void*>(&g_vtbl_CGuiCharacterPreview);
+    *reinterpret_cast<void**>(self) = static_cast<void*>(CSF_VTBL(0x008432B0));
     return self;
 }
 

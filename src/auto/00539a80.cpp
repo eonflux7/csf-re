@@ -16,9 +16,6 @@ CSF_FUNC(void, __fastcall, ResetInnerBuffer, 0x501170, (void* self, void* edx));
 CSF_FUNC(void, __fastcall, AssignStringRange_429B60, 0x429B60, (void* self, void* edx, char* text, unsigned int length));
 
 // Vtables and data referenced by the original, bound by address.
-CSF_GLOBAL(uint8_t, g_VtblCMenuScreenBase, 0x83042C);
-CSF_GLOBAL(uint8_t, g_VtblCMenuLoadGameSub, 0x842280);
-CSF_GLOBAL(uint8_t, g_VtblCMenuLoadGame, 0x842220);
 CSF_GLOBAL(uint8_t, g_EmptyStringLiteral, 0x82E65C);
 
 // Vtable pointer values stored into the object (immediates from the original).

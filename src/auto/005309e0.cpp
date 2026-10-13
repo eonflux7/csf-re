@@ -7,9 +7,7 @@
 // Vtable addresses written by the constructor. The base CMenuScreen vtable is
 // installed first, then the embedded sub-object vtable, then the final
 // CMenuMpServerInfo vtable.
-CSF_GLOBAL(uint8_t, g_VtblCMenuScreenBase, 0x0083042C);
 CSF_GLOBAL(uint8_t, g_VtblCMenuScreenEmbedded, 0x00841A98);
-CSF_GLOBAL(uint8_t, g_VtblCMenuMpServerInfo, 0x00841AE8);
 
 // Initializes the embedded CMenuScreen sub-object at this+0x004 (__thiscall, no stack args).
 CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x00712CC0, (void* self, void* edx));
@@ -20,7 +18,7 @@ static CMenuMpServerInfo* __fastcall CMenuMpServerInfo_Construct(CMenuMpServerIn
                                                                   int ownerHandle) {
     // Install the CMenuScreen base vtable at offset 0 (value 0x0083042C).
     CSF_AT(uint32_t, self, 0x000) = CSF_ADDR_VT(0x0083042C);
-    CSF_AT(uint32_t, self, 0x000) = reinterpret_cast<uint32_t>(&g_VtblCMenuScreenBase);
+    CSF_AT(uint32_t, self, 0x000) = reinterpret_cast<uint32_t>(CSF_VTBL(0x0083042C));
 
     // Initialize the embedded sub-object at this+0x004 (passed as ecx).
     C_00830438_Construct(reinterpret_cast<uint8_t*>(self) + 0x004, nullptr);
@@ -49,7 +47,7 @@ static CMenuMpServerInfo* __fastcall CMenuMpServerInfo_Construct(CMenuMpServerIn
 
     // Final (most-derived) vtable at offset 0 (value 0x00841AE8).
     CSF_AT(uint32_t, self, 0x000) = CSF_ADDR_VT(0x00841AE8);
-    CSF_AT(uint32_t, self, 0x000) = reinterpret_cast<uint32_t>(&g_VtblCMenuMpServerInfo);
+    CSF_AT(uint32_t, self, 0x000) = reinterpret_cast<uint32_t>(CSF_VTBL(0x00841AE8));
 
     return self;
 }

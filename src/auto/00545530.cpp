@@ -20,9 +20,6 @@ CSF_FUNC(void*, __fastcall, MenuSaveGame_ResetState, 0x5445F0, (void* self, void
 CSF_FUNC(int, __cdecl, GetGlobalValue_8B056C, 0x506BD0, ());
 
 // Vtable addresses referenced by the constructor (bound by address).
-CSF_GLOBAL(uint8_t, g_VtblCMenuScreenBase, 0x83042C);
-CSF_GLOBAL(uint8_t, g_VtblCMenuSaveGameSubObject, 0x843B70);
-CSF_GLOBAL(uint8_t, g_VtblCMenuSaveGame, 0x843B30);
 
 // Vtable pointer values stored by the constructor. The literal addresses are kept explicit
 // so the stored vtable pointers are visibly the original's 0x83042C / 0x843B70 / 0x843B30.
