@@ -1434,3 +1434,11 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   the call, last write to that register is `setcc r8` / `mov r8`). Read from the call site, not guessed from the
   values (mock pointers end in 01, so "low bytes agree" alone would hide a bool passed for a pointer). Both back to
   the lanes. Proven-in-game check: 0 DIFF of 300.
+- Failure 2 (exit 0xC0000409 in loadsave 1.sav): `pairbisect.py` named 0x4C4890 alone in 60 smokes / 18 min (the
+  verifier's k-way search had said "no single part fails alone": halves with other hooks off failed in other ways
+  five times during the search, which is what misled it). Cause: the original's frame holds an order (0x14 bytes)
+  with its target (0x20) right behind it and a destination (8) with its target (0x20) behind that; the callees
+  given the outer address write the embedded target as well. Hex-Rays shows 22 separate ints, ours had four
+  separate arrays: the callee ran over the first one into the stack cookie. Fixed by hand (two contiguous blocks).
+  Class: a local whose address goes to a callee, followed in the frame by more locals initialised like an object
+  (vtable store first): one object, not two.

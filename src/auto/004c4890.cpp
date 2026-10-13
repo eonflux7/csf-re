@@ -59,10 +59,14 @@ static int __fastcall S_004ad990_UpdateCoverAttack(S_004ad990* self, void* /*edx
     if (S_004ad990_CheckCoverAttackBlocked(self, nullptr))
         return 0;
 
-    alignas(8) uint8_t orderBytes[0x14];
-    alignas(8) uint8_t orderTargetBytes[0x20];
-    alignas(8) uint8_t destinationBytes[0x08];
-    alignas(8) uint8_t destinationTargetBytes[0x28];
+    // Two objects, each with its target embedded behind it ([ebp-0x64..-0x30) and [ebp-0x30..-0x08) in the
+    // original): the callees given the outer address fill the embedded target too.
+    alignas(8) uint8_t orderBlock[0x14 + 0x20];
+    alignas(8) uint8_t destinationBlock[0x08 + 0x20];
+    uint8_t* const orderBytes = orderBlock;
+    uint8_t* const orderTargetBytes = orderBlock + 0x14;
+    uint8_t* const destinationBytes = destinationBlock;
+    uint8_t* const destinationTargetBytes = destinationBlock + 0x08;
 
     CSF_AT(void**, orderTargetBytes, 0x00) = CSF_VTBL(0x0082D448);
     CSF_AT(void**, destinationTargetBytes, 0x00) = CSF_VTBL(0x0082D448);
