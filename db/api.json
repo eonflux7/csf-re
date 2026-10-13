@@ -10703,7 +10703,8 @@
   "name": "Cheats_RefreshSelection",
   "name_src": "agent",
   "votes": {
-   "SetSelectionRefresh_42AF90": 2
+   "SetSelectionRefresh_42AF90": 2,
+   "Cheats_RefreshSelection": 1
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -71274,7 +71275,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 418
+   "GetGlobalState_50D190": 419
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -77386,7 +77387,7 @@
   "name": "GetGlobalValue_521BB0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_521BB0": 136
+   "GetGlobalValue_521BB0": 137
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -77527,7 +77528,7 @@
   "name": "MenuProgressInput_UpdateGlobalState",
   "name_src": "vote",
   "votes": {
-   "MenuProgressInput_UpdateGlobalState": 23
+   "MenuProgressInput_UpdateGlobalState": 24
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -85787,7 +85788,7 @@
   "name": "CMenuMpOnline_ScrollViewToTarget",
   "name_src": "agent",
   "votes": {
-   "CMenuMpOnline_ScrollViewToTarget": 2
+   "CMenuMpOnline_ScrollViewToTarget": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -85831,8 +85832,9 @@
   "votes": {},
   "ret": "int64_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , const void* source",
+  "sig_src": "impl",
+  "file": "src/auto/00542de0.cpp"
  },
  "00542e20": {
   "name": "CMenuControls_ResetStateIfThree",
@@ -85924,13 +85926,14 @@
   "file": "src/auto/00543150.cpp"
  },
  "00543210": {
-  "name": "sub_543210",
-  "name_src": "addr",
+  "name": "CMenuControls_Initialize",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "CMenuControls* self, void* , int owner, int",
+  "sig_src": "impl",
+  "file": "src/auto/00543210.cpp"
  },
  "00543490": {
   "name": "CMenuControls_DispatchCommand",
@@ -139399,7 +139402,7 @@
   "name": "MemDebug_FreeDebugBlock",
   "name_src": "agent",
   "votes": {
-   "Mem_FreeDebug": 668,
+   "Mem_FreeDebug": 669,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -139979,7 +139982,7 @@
   "name": "InitStringFromLiteral",
   "name_src": "agent",
   "votes": {
-   "InitStringFromLiteral": 14
+   "InitStringFromLiteral": 15
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -179312,7 +179315,7 @@
   "name": "CGuiListBoxBase_SetItemHeight",
   "name_src": "agent",
   "votes": {
-   "CGuiListBoxBase_SetItemHeight": 10
+   "CGuiListBoxBase_SetItemHeight": 11
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -179884,7 +179887,7 @@
   "name": "CGuiListBoxBase_AddSelectedItem",
   "name_src": "agent",
   "votes": {
-   "CGuiListBoxBase_AddSelectedItem": 14,
+   "CGuiListBoxBase_AddSelectedItem": 15,
    "GuiListBoxBase_AddSelectedItem": 1
   },
   "ret": "void",
@@ -180454,7 +180457,7 @@
   "name": "CGuiSlider_ForwardSelfToParent",
   "name_src": "agent",
   "votes": {
-   "CGuiSlider_ForwardSelfToParent": 28
+   "CGuiSlider_ForwardSelfToParent": 29
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -183144,7 +183147,7 @@
   "name": "ForwardToStoredObjectVirtualSlot40",
   "name_src": "agent",
   "votes": {
-   "ForwardToStoredObjectVirtualSlot40": 8
+   "ForwardToStoredObjectVirtualSlot40": 9
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -201526,7 +201529,7 @@
   "name": "GetGlobalValue_75FDF0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_75FDF0": 55
+   "GetGlobalValue_75FDF0": 56
   },
   "ret": "int",
   "conv": "__cdecl",
