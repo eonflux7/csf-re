@@ -47120,7 +47120,7 @@
   "name": "AiAlert_IsLinkedAlertReady",
   "name_src": "vote",
   "votes": {
-   "AiAlert_IsLinkedAlertReady": 1
+   "AiAlert_IsLinkedAlertReady": 2
   },
   "ret": "bool",
   "conv": "__fastcall",
@@ -49322,13 +49322,14 @@
   "sig_src": "abi"
  },
  "004b5710": {
-  "name": "sub_4B5710",
-  "name_src": "addr",
+  "name": "TFncBusqueda_InitializeFromLinkedObject",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "TFncBusqueda* self, void* , TAiState* state",
+  "sig_src": "impl",
+  "file": "src/auto/004b5710.cpp"
  },
  "004b57e0": {
   "name": "S_004abb90_CheckSearchCandidate",
@@ -49376,7 +49377,7 @@
  },
  "004b5e70": {
   "name": "FncSearch_CheckSearchTargetResolved",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__stdcall",
@@ -57686,7 +57687,7 @@
   "name": "GetLinkedObjectValue_4DB5C0",
   "name_src": "agent",
   "votes": {
-   "GetLinkedObjectValue_4DB5C0": 241
+   "GetLinkedObjectValue_4DB5C0": 242
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -58276,7 +58277,7 @@
   "name": "CoverAttack_SetState_4DC150",
   "name_src": "vote",
   "votes": {
-   "CoverAttack_SetState_4DC150": 31,
+   "CoverAttack_SetState_4DC150": 32,
    "TMovil_sub_4DC150": 1,
    "AiState_Init_4DC150": 1
   },
