@@ -39500,8 +39500,8 @@
   "name": "CoverAttack_SetStance",
   "name_src": "agent",
   "votes": {
+   "CoverAttack_SetStance": 8,
    "CoverAttack_SetStance_492720": 31,
-   "CoverAttack_SetStance": 5,
    "Controller_492720": 1,
    "CoverTask_SetMode_492720": 2,
    "TMovil_sub_492720": 1,
@@ -39531,7 +39531,7 @@
   "votes": {
    "Character_SetActionMode": 10,
    "Character_SetSpecialMode": 1,
-   "C_00834050_SetActionMode": 8
+   "C_00834050_SetActionMode": 9
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -45716,8 +45716,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "vote"
+  "params": "S_004a9e10* self, void* , S_004a9e10* context",
+  "sig_src": "impl",
+  "file": "src/auto/004a9e10.cpp"
  },
  "004a9eb0": {
   "name": "C_4A9EB0_GetTBasico",
@@ -46442,7 +46443,8 @@
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004aa870.cpp"
  },
  "004aa8c0": {
   "name": "AiDistracted_GetBaseStateName",
@@ -46750,8 +46752,9 @@
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , TAiState* a2",
+  "sig_src": "impl",
+  "file": "src/auto/004ab5e0.cpp"
  },
  "004ab680": {
   "name": "AiMoveTask_ResetAndSetStance",
@@ -46810,7 +46813,8 @@
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004ab8c0.cpp"
  },
  "004ab910": {
   "name": "TMovilAPunto2_ConsumeTimerStep",
@@ -55037,7 +55041,7 @@
   "name": "C_004D10F0_ResetFields",
   "name_src": "agent",
   "votes": {
-   "C_004D10F0_ResetFields": 17
+   "C_004D10F0_ResetFields": 18
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -58656,7 +58660,7 @@
   "name": "GetLinkedObjectValue_4DB5C0",
   "name_src": "agent",
   "votes": {
-   "GetLinkedObjectValue_4DB5C0": 338
+   "GetLinkedObjectValue_4DB5C0": 341
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -59309,7 +59313,7 @@
   "name": "TAiState_SetCurrentStateIfChanged",
   "name_src": "agent",
   "votes": {
-   "CoverAttack_SetState_4DC150": 43,
+   "CoverAttack_SetState_4DC150": 44,
    "TMovil_sub_4DC150": 1,
    "AiState_Init_4DC150": 1
   },
@@ -85869,8 +85873,8 @@
   "file": "src/auto/005428a0.cpp"
  },
  "00542930": {
-  "name": "Interface_UpdateMenuPreviewTime",
-  "name_src": "vote",
+  "name": "MenuMpCharacterSelect_UpdateMenuPreviewTime",
+  "name_src": "agent",
   "votes": {
    "Interface_UpdateMenuPreviewTime": 1
   },
@@ -201402,7 +201406,7 @@
   "name": "WaypointGraph_VisitNodePair",
   "name_src": "agent",
   "votes": {
-   "WaypointGraph_VisitNodePair": 1
+   "WaypointGraph_VisitNodePair": 2
   },
   "ret": "int",
   "conv": "__fastcall",
