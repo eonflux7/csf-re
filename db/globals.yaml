@@ -72,7 +72,7 @@
 - {addr: 0x0082D568, name: g_LocalDirectionAngleScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D56C, name: g_Epsilon, type: float, uses: 2, src: auto, alt: [g_MotionEpsilon]}
 - {addr: 0x0082D6E8, name: g_MatrixQueryFlags, type: 'std::uint32_t', uses: 2, src: auto, alt: [g_MatrixRequestFlags]}
-- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 116, src: auto, alt: [g_MissionUnsignedIntegerBias]}
+- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 117, src: auto, alt: [g_MissionUnsignedIntegerBias]}
 - {addr: 0x0082D748, name: g_HudPi, type: float, uses: 2, src: auto, alt: [g_PiConstant]}
 - {addr: 0x0082D74C, name: g_HudTwoPi, type: float, uses: 2, src: auto, alt: [g_TwoPiConstant]}
 - {addr: 0x0082D750, name: g_RotationRadiansToDegrees, type: float, uses: 1, src: auto}
@@ -142,7 +142,7 @@
 - {addr: 0x0082E060, name: g_CharacterWidthScale, type: float, uses: 7, src: auto}
 - {addr: 0x0082E064, name: g_MovementProbeScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082E068, name: g_Const_0082E068, type: float, uses: 4, src: auto}
-- {addr: 0x0082E06C, name: g_SupportRangeScale, type: float, uses: 1, src: auto}
+- {addr: 0x0082E06C, name: g_SupportRangeScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082E070, name: g_GravityScale, type: float, uses: 5, src: auto, alt: [g_VehicleCorrectionScale]}
 - {addr: 0x0082E074, name: g_MovementAcceleration, type: float, uses: 2, src: auto}
 - {addr: 0x0082E078, name: g_MovementEpsilon, type: double, uses: 1, src: auto}
@@ -153,7 +153,7 @@
 - {addr: 0x0082E08C, name: g_CollisionVerticalScale, type: float, uses: 2, src: auto, alt: [g_MotionScale]}
 - {addr: 0x0082E0EC, name: g_GravityAccel, type: float, uses: 4, src: auto}
 - {addr: 0x0082E0F0, name: g_Const20, type: float, uses: 9, src: auto, alt: [g_LayoutInset, g_WidthReduction]}
-- {addr: 0x0082E114, name: g_SoundActivityThreshold, type: float, uses: 13, src: auto}
+- {addr: 0x0082E114, name: g_SoundActivityThreshold, type: float, uses: 14, src: auto}
 - {addr: 0x0082E118, name: g_fIntroVideoDuration, type: float, uses: 10, src: auto}
 - {addr: 0x0082E11C, name: g_WeaponPlacementTraceDepth, type: float, uses: 11, src: auto}
 - {addr: 0x0082E120, name: g_MaxPercent, type: float, uses: 18, src: auto}
@@ -176,7 +176,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 120, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 122, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C8, name: g_AngleScale, type: float, uses: 1, src: auto}
@@ -390,7 +390,8 @@
 - {addr: 0x00842280, name: g_VtblCMenuLoadGameSub, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x00842678, name: g_ClearField0010Slot, type: void*, uses: 1, src: auto}
 - {addr: 0x00842DB8, name: g_VtblCMenuMissionInfoSecondary, type: uint8_t, uses: 1, src: auto}
-- {addr: 0x008431AC, name: g_FilmBackwardRandomScale, type: float, uses: 1, src: auto}
+- {addr: 0x008431A0, name: g_MpStatsLastColumnScale, type: float, uses: 1, src: auto}
+- {addr: 0x008431AC, name: g_FilmBackwardRandomScale, type: float, uses: 2, src: auto}
 - {addr: 0x00843284, name: g_PreviewRotationScale, type: float, uses: 1, src: auto}
 - {addr: 0x00843288, name: g_PreviewAnimations, type: PreviewAnimationTable, uses: 2, src: auto}
 - {addr: 0x0084329C, name: g_PreviewAnimationInterval, type: float, uses: 1, src: auto}
@@ -2192,7 +2193,7 @@
 - {addr: 0x008BC178, name: g_NetGameClassId, type: 'std::uint32_t', uses: 0, src: captain, conf: 0.8}
 - {addr: 0x008BC17C, name: g_NetControlClassId, type: 'std::uint32_t', uses: 0, src: captain, conf: 0.8}
 - {addr: 0x008BC180, name: g_DdlObjectClassId, type: uint32_t, uses: 1, src: auto}
-- {addr: 0x008BC184, name: g_RequiredObjectClassId, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008BC184, name: g_RequiredObjectClassId, type: uint32_t, uses: 3, src: auto}
 - {addr: 0x008BC188, name: dword_8BC188, type: int, uses: 7, src: auto, alt: [g_NetTempIdValue, g_NetTemporaryId, g_SessionEntryId, g_SpawnPointTempId, g_SpawnTempId, g_TemporarySpawnId]}
 - {addr: 0x008BC1CC, name: g_DdlObjectClassId, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008BC1D0, name: g_DistanceReferenceX, type: float, uses: 2, src: auto, alt: [g_SelectionOriginX]}
