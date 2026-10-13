@@ -534,7 +534,8 @@ class Run:
             pop, nargs, use_ecx, rt = 0, 0, False, "?"
         argv = struct.unpack(f"<{nargs}I", uc.mem_read(esp + 4, 4 * nargs)) if nargs else ()
         self.events.append((name or target, pop, nargs, use_ecx, rt, tuple(self.norm(a) for a in argv),
-                            self.norm(uc.reg_read(X.UC_X86_REG_ECX)) if use_ecx else None))
+                            self.norm(uc.reg_read(X.UC_X86_REG_ECX)) if use_ecx else None,
+                            self.ret_site.get(ret) if self.script is None else None))
         h = h32(0xE000 + i * 977 + self.prof * 131)
         # pointer results end in a non-zero byte: `test al, al` and `test eax, eax` on an int-typed callee that
         # returns a clean 0 / 1 (0x492BD0) must agree; a callee that sets al only gets garbage above it instead,
@@ -635,6 +636,44 @@ def unread_args(target):
     return frozenset(k for k in range(12) if k not in used)
 
 
+R8 = {"al": "eax", "bl": "ebx", "cl": "ecx", "dl": "edx"}
+
+
+@functools.lru_cache(maxsize=None)
+def byte_pushes(site):
+    """Indices of the stack arguments of the original's call at `site` that are a byte in a pushed register:
+    `setne dl; push edx` (0x71FCB0 to a vtable slot: nothing types the parameter, and edx's upper bytes are whatever
+    it held). Read backwards from the call in its block: the i-th push, then the last write to that register."""
+    import bisect, capstone
+    starts = load("starts", lambda: sorted(functions()))
+    k = bisect.bisect_right(starts, site) - 1
+    if k < 0 or site - starts[k] > 0x4000:
+        return frozenset()
+    img, _ = exe_image()
+    md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+    ins = [i for i in md.disasm(bytes(img[starts[k] - IMG:site - IMG]), starts[k])]
+    out, idx = set(), 0
+    for n in range(len(ins) - 1, max(len(ins) - 40, -1), -1):
+        i = ins[n]
+        if i.mnemonic in ("call", "ret", "pop") or i.mnemonic.startswith("j"):
+            break
+        if i.mnemonic != "push":
+            continue
+        r = i.op_str.strip()
+        if r in R8.values():
+            for j in reversed(ins[max(n - 12, 0):n]):
+                d = j.op_str.split(",")[0].strip()
+                if j.mnemonic in ("call", "ret") or j.mnemonic.startswith("j"):
+                    break
+                if R8.get(d) == r and (j.mnemonic.startswith("set") or j.mnemonic == "mov"):
+                    out.add(idx)
+                    break
+                if d == r and j.mnemonic not in ("push", "cmp", "test"):
+                    break
+        idx += 1
+    return frozenset(out)
+
+
 def same_args(eo, em):
     """Stack arguments of one call, original vs ours. A byte or short parameter is compared in its width (the
     original pushes a dword whose upper bytes are whatever its frame held: 0x512400 `mov edx, [ebp-4]; push edx`
@@ -655,6 +694,8 @@ def same_args(eo, em):
             return False
         t = types[i] if i < len(types) else ""
         mask = 0xFF if t in BYTE_TYPES else 0xFFFF if t in ("short", "uint16_t", "int16_t", "unsigned short") else 0xFFFFFFFF
+        if len(eo) > 7 and eo[7] and i in byte_pushes(eo[7]):
+            mask = 0xFF
         for k in range(4):
             if (a >> 8 * k) & 0xFF == 0xCC:
                 mask &= ~(0xFF << 8 * k)

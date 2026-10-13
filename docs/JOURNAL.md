@@ -1429,3 +1429,8 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   reads_before_write knows the pattern now (5 functions change verdict: 0x64D6B0, 0x64D6D0, 0x65CD40, 0x665EA0,
   0x78F710); the two installed callers rewritten by hand, `same` 8/8.
 - emudiff without --src runs the object in build/, not the source: after a hand fix use `--src src/auto/EA.cpp`.
+- emudiff: a byte in a pushed register at a call nothing types (`setne dl; push edx; call [vtbl+628]`, 0x71FCB0 and
+  0x71EBD0): the argument is compared in its low byte when the original's own code shows it (the i-th push before
+  the call, last write to that register is `setcc r8` / `mov r8`). Read from the call site, not guessed from the
+  values (mock pointers end in 01, so "low bytes agree" alone would hide a bool passed for a pointer). Both back to
+  the lanes. Proven-in-game check: 0 DIFF of 300.
