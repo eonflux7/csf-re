@@ -21,8 +21,11 @@
 #pragma clang diagnostic ignored "-Wundefined-var-template"  // defined in another TU (or the remaining work)
 namespace csf {
 template <uintptr_t A> struct fn_slot { static void* const p; };   // defined by HOOK(A, ...)
-template <uintptr_t A> struct gv { static unsigned char d[]; };     // original data at A (generated)
-template <uintptr_t A> struct vt { static void* const t[]; };       // original vtable at A (generated)
+// Pointers into the SAME generated image: independent arrays would break overlapping globals,
+// indexed accesses and gv/vt address identity. Constant-initialized before any binding constructors.
+template <uintptr_t A> struct gv { static unsigned char* const d; };
+template <uintptr_t A> struct vt { static unsigned char* const t; };
+void initialize_data();  // explicit, once, after CRT startup and before any game/data consumers
 }  // namespace csf
 #endif
 
