@@ -138367,7 +138367,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 615,
+   "Mem_FreeDebug": 616,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -138472,7 +138472,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 93,
+   "CoreMemory_Free": 95,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -140998,40 +140998,46 @@
   "file": "src/auto/00698ba0.cpp"
  },
  "00698bd0": {
-  "name": "sub_698BD0",
-  "name_src": "addr",
+  "name": "SortedTable_ReadNextWord",
+  "name_src": "agent",
   "votes": {},
   "ret": "int16_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint8_t* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint8_t* outPastEnd",
+  "sig_src": "impl",
+  "file": "src/auto/00698bd0.cpp"
  },
  "00698c10": {
-  "name": "sub_698C10",
-  "name_src": "addr",
+  "name": "ScanToCrLfPairInBuffer",
+  "name_src": "agent",
   "votes": {},
   "ret": "int16_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_00698c10* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00698c10.cpp"
  },
  "00698c50": {
-  "name": "sub_698C50",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "char",
+  "name": "SortedTable_NormalizeAlnumChar",
+  "name_src": "agent",
+  "votes": {
+   "ValidateWordValue": 1
+  },
+  "ret": "bool",
   "conv": "__stdcall",
-  "params": "uint16_t* a1",
-  "sig_src": "abi"
+  "params": "uint16_t* charPtr",
+  "sig_src": "impl",
+  "file": "src/auto/00698c50.cpp"
  },
  "00698cb0": {
-  "name": "sub_698CB0",
-  "name_src": "addr",
+  "name": "ReadWordFromCursor",
+  "name_src": "impl",
   "votes": {},
   "ret": "int16_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint8_t* a2",
-  "sig_src": "abi"
+  "params": "S_00698c10* self, void* , uint8_t* okFlag",
+  "sig_src": "impl",
+  "file": "src/auto/00698cb0.cpp"
  },
  "00698d10": {
   "name": "sub_698D10",
@@ -141055,32 +141061,35 @@
  },
  "00698df0": {
   "name": "SelectionData_BuildFromIndex",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SelectionData_BuildFromIndex": 3
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2",
-  "sig_src": "vote"
+  "params": "int packed, int dest",
+  "sig_src": "impl",
+  "file": "src/auto/00698df0.cpp"
  },
  "00698e20": {
-  "name": "sub_698E20",
-  "name_src": "addr",
+  "name": "CompareEntriesBySecondDword",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "uint32_t* entryA, uint32_t* entryB",
+  "sig_src": "impl",
+  "file": "src/auto/00698e20.cpp"
  },
  "00698e40": {
-  "name": "sub_698E40",
-  "name_src": "addr",
+  "name": "SortedTable_SkipWhitespaceToEnd",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_00698c10* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00698e40.cpp"
  },
  "00698ea0": {
   "name": "sub_698EA0",
@@ -141108,26 +141117,30 @@
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3",
-  "sig_src": "vote"
+  "params": "uint32_t* srcBegin, uint32_t* srcEnd, uint32_t* dst",
+  "sig_src": "impl",
+  "file": "src/auto/00698f80.cpp"
  },
  "00698fb0": {
-  "name": "sub_698FB0",
-  "name_src": "addr",
+  "name": "CopyTwoDwordRangeToDestination_698FB0",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint32_t source, std::uint32_t sourceEnd, std::uint32_t destination, std::uint32_t , std::uint32_t",
+  "sig_src": "impl",
+  "file": "src/auto/00698fb0.cpp"
  },
  "00699020": {
-  "name": "sub_699020",
-  "name_src": "addr",
-  "votes": {},
+  "name": "ValidateTableTail",
+  "name_src": "vote",
+  "votes": {
+   "ValidateTableTail": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006990b0": {
   "name": "sub_6990B0",
@@ -141139,31 +141152,36 @@
   "sig_src": "abi"
  },
  "00699180": {
-  "name": "sub_699180",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CopyDwordPairArrayWithContext",
+  "name_src": "agent",
+  "votes": {
+   "CoreSortedTable_InitElementRange8_699180": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint32_t* destination, std::uint32_t count, const std::uint32_t* source, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00699180.cpp"
  },
  "006991f0": {
-  "name": "sub_6991F0",
-  "name_src": "addr",
+  "name": "S_00698c10_AdvanceCursorAndMatchMarker",
+  "name_src": "impl",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_00698c10* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006991f0.cpp"
  },
  "00699220": {
-  "name": "sub_699220",
-  "name_src": "addr",
+  "name": "CoreSortedTable_SortEntries",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/00699220.cpp"
  },
  "00699250": {
   "name": "BucketEntry_Match",
@@ -141189,7 +141207,7 @@
  },
  "00699370": {
   "name": "SortedTable_ForwardWithSelfToSub698FB0",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -141207,22 +141225,26 @@
   "sig_src": "abi"
  },
  "006993c0": {
-  "name": "sub_6993C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_0085e720_Destroy_6993C0",
+  "name_src": "agent",
+  "votes": {
+   "CoreSortedTable_RunBaseCleanup": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0085e720* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006993c0.cpp"
  },
  "00699460": {
-  "name": "sub_699460",
-  "name_src": "addr",
+  "name": "C_0085e720_Destroy_699460",
+  "name_src": "agent",
   "votes": {},
   "ret": "void**",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0085e720* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/00699460.cpp"
  },
  "00699490": {
   "name": "sub_699490",
@@ -141234,13 +141256,15 @@
   "sig_src": "abi"
  },
  "00699520": {
-  "name": "sub_699520",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CoreSortedTable_InsertElementCopies8_699520",
+  "name_src": "vote",
+  "votes": {
+   "CoreSortedTable_InsertElementCopies8_699520": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a1, unsigned int a3, uint32_t* arg8",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006997a0": {
   "name": "sub_6997A0",
@@ -141252,13 +141276,14 @@
   "sig_src": "abi"
  },
  "006998f0": {
-  "name": "sub_6998F0",
-  "name_src": "addr",
+  "name": "CoreSortedTable_AppendEntry8",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "S_00699370* self, void* , uint32_t* source",
+  "sig_src": "impl",
+  "file": "src/auto/006998f0.cpp"
  },
  "00699960": {
   "name": "sub_699960",
@@ -179295,7 +179320,7 @@
   "name": "CopyTwoDwordsIfDestNonNull",
   "name_src": "agent",
   "votes": {
-   "CopyTwoDwordsIfDestNonNull": 27
+   "CopyTwoDwordsIfDestNonNull": 29
   },
   "ret": "uint32_t*",
   "conv": "__stdcall",
@@ -201855,7 +201880,7 @@
   "file": "src/auto/00771fb0.cpp"
  },
  "00771ff0": {
-  "name": "CopyTwoDwordRangeToDestination",
+  "name": "CopyTwoDwordRangeToDestination_771FF0",
   "name_src": "agent",
   "votes": {},
   "ret": "std::uint32_t*",
@@ -213387,7 +213412,7 @@
   "name": "_qsort",
   "name_src": "ida",
   "votes": {
-   "_qsort": 5,
+   "_qsort": 6,
    "CRT_Qsort": 1,
    "GfxSkin_SortRenderEntries": 2,
    "GfxSkin_SortEntries": 1
@@ -213434,7 +213459,7 @@
   "name": "___CxxFrameHandler",
   "name_src": "ida",
   "votes": {
-   "___CxxFrameHandler": 194,
+   "___CxxFrameHandler": 196,
    "OriginalCxxFrameHandler": 1
   },
   "ret": "int",
@@ -213518,7 +213543,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 263
+   "RethrowCppException": 265
   },
   "ret": "void",
   "conv": "__stdcall",
