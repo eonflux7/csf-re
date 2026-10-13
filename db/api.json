@@ -39187,7 +39187,7 @@
   "name_src": "agent",
   "votes": {
    "StateNode_Update": 1,
-   "C_00833908_Serialize_491950": 3
+   "C_00833908_Serialize_491950": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -39867,7 +39867,9 @@
  "00493310": {
   "name": "Node_ProcessThreeChildren",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00833b88_SerializeEmbeddedState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , void* state",
@@ -39876,14 +39878,15 @@
  },
  "004933e0": {
   "name": "C_00833b88_Serialize",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_00833b88_Serialize": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_00833b88* self, void* , int contextAddress",
+  "sig_src": "impl",
+  "file": "src/auto/004933e0.cpp"
  },
  "00493740": {
   "name": "C_00833cf8_Construct",
@@ -40912,7 +40915,7 @@
   "name": "Archive_SerializeString",
   "name_src": "agent",
   "votes": {
-   "Archive_SerializeString": 64
+   "Archive_SerializeString": 65
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -47784,7 +47787,7 @@
   "name": "Archive_SerializeObjectRef",
   "name_src": "vote",
   "votes": {
-   "Archive_SerializeObjectRef": 82
+   "Archive_SerializeObjectRef": 83
   },
   "ret": "char",
   "conv": "__cdecl",
