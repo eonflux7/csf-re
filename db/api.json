@@ -140058,7 +140058,7 @@
   "name": "ReleaseObjectReference",
   "name_src": "vote",
   "votes": {
-   "ReleaseObjectReference": 54
+   "ReleaseObjectReference": 56
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -140279,7 +140279,7 @@
   "name_src": "agent",
   "votes": {
    "GetComponent": 102,
-   "S_00692b80_GetComponent": 18
+   "S_00692b80_GetComponent": 19
   },
   "ret": "S_00692b80*",
   "conv": "__fastcall",
@@ -140292,7 +140292,7 @@
   "name_src": "agent",
   "votes": {
    "ParseIntegerComponent": 55,
-   "S_00692b80_ParseIntegerComponent": 17
+   "S_00692b80_ParseIntegerComponent": 19
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -140379,7 +140379,7 @@
   "name": "S_00692b80_FindProperty",
   "name_src": "agent",
   "votes": {
-   "S_00692b80_FindProperty": 5,
+   "S_00692b80_FindProperty": 7,
    "FindProperty": 145
   },
   "ret": "S_00692b80*",
@@ -140392,7 +140392,7 @@
   "name": "LookupNamedElement",
   "name_src": "agent",
   "votes": {
-   "LookupNamedElement": 76
+   "LookupNamedElement": 77
   },
   "ret": "S_00692b80*",
   "conv": "__fastcall",
@@ -140517,7 +140517,7 @@
   "name": "ReadIntegerAttribute",
   "name_src": "agent",
   "votes": {
-   "ReadIntegerAttribute": 69
+   "ReadIntegerAttribute": 70
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -140542,7 +140542,7 @@
   "name": "MenuExtras_ReadText",
   "name_src": "vote",
   "votes": {
-   "MenuExtras_ReadText": 84
+   "MenuExtras_ReadText": 85
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -165209,8 +165209,9 @@
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , void* context",
+  "sig_src": "impl",
+  "file": "src/auto/006e5280.cpp"
  },
  "006e5370": {
   "name": "GfxObjectInstances_UpdateLeafState",
@@ -180695,7 +180696,7 @@
   "name": "CGuiControl_SetSelectable",
   "name_src": "agent",
   "votes": {
-   "CGuiControl_SetSelectable": 3
+   "CGuiControl_SetSelectable": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -182159,7 +182160,9 @@
  "0071d9e0": {
   "name": "CGuiBuilder_ReadNonzeroFloatAttribute",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CGuiBuilder_ReadNonzeroFloatAttribute": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
   "params": "std::uint8_t* node, float* output",
@@ -182180,7 +182183,7 @@
   "name": "CGuiBuilder_ReadFourComponents",
   "name_src": "agent",
   "votes": {
-   "CGuiBuilder_ReadFourComponents": 8
+   "CGuiBuilder_ReadFourComponents": 9
   },
   "ret": "char",
   "conv": "__stdcall",
@@ -182329,7 +182332,7 @@
   "name": "GetObjectAndSetComponents",
   "name_src": "agent",
   "votes": {
-   "GetObjectAndSetComponents": 1
+   "GetObjectAndSetComponents": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -182341,7 +182344,7 @@
   "name": "CGuiBuilder_CreateColorQuad",
   "name_src": "agent",
   "votes": {
-   "CGuiBuilder_CreateColorQuad": 2
+   "CGuiBuilder_CreateColorQuad": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -182353,7 +182356,7 @@
   "name": "CGuiBuilder_CreateTextureQuad",
   "name_src": "agent",
   "votes": {
-   "CGuiBuilder_CreateTextureQuad": 4
+   "CGuiBuilder_CreateTextureQuad": 6
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -182365,7 +182368,7 @@
   "name": "CGuiBuilder_ApplyTextProperties",
   "name_src": "agent",
   "votes": {
-   "CGuiBuilder_ApplyTextProperties": 1
+   "CGuiBuilder_ApplyTextProperties": 2
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -182377,7 +182380,7 @@
   "name": "ApplyConfiguredRectangle",
   "name_src": "agent",
   "votes": {
-   "ApplyConfiguredRectangle": 1
+   "ApplyConfiguredRectangle": 2
   },
   "ret": "void",
   "conv": "__stdcall",
@@ -182388,7 +182391,9 @@
  "0071eac0": {
   "name": "GuiBuilder_ApplyColorProperties",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GuiBuilder_ApplyColorProperties": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* , unsigned char* node, void* target",
@@ -182397,14 +182402,15 @@
  },
  "0071ebd0": {
   "name": "CGuiBuilder_ReadControlProps",
-  "name_src": "opus",
+  "name_src": "agent",
   "votes": {
-   "CGuiBuilder_ReadControlProps": 6
+   "CGuiBuilder_ReadControlProps": 7
   },
-  "ret": "uint8_t*",
+  "ret": "std::uint8_t*",
   "conv": "__fastcall",
-  "params": "CGuiBuilder* self, void* edx, void* control, uint8_t* node",
-  "sig_src": "vote"
+  "params": "CGuiBuilder* self, void* , int objectAddress, S_00692b80* properties",
+  "sig_src": "impl",
+  "file": "src/auto/0071ebd0.cpp"
  },
  "0071efc0": {
   "name": "CGuiBuilder_ReadControlAppearance",
@@ -182510,7 +182516,7 @@
   "name": "CGuiBuilder_CreateText",
   "name_src": "agent",
   "votes": {
-   "CGuiBuilder_CreateText": 5
+   "CGuiBuilder_CreateText": 6
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -182520,14 +182526,15 @@
  },
  "0071fcb0": {
   "name": "CGuiBuilder_ReadButtonProps",
-  "name_src": "opus",
+  "name_src": "agent",
   "votes": {
    "CGuiBuilder_ReadButtonProps": 4
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "CGuiBuilder* self, void* edx, void* control, std::uint8_t* node",
-  "sig_src": "vote"
+  "params": "CGuiBuilder* self, void* , void* button, std::uint8_t* node",
+  "sig_src": "impl",
+  "file": "src/auto/0071fcb0.cpp"
  },
  "0071ff70": {
   "name": "CGuiBuilder_CreateChoiceButton",
