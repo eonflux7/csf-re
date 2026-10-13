@@ -110945,7 +110945,7 @@
   "name": "RwV3dTransformPoints",
   "name_src": "rwname",
   "votes": {
-   "RwV3dTransformPoints": 24
+   "RwV3dTransformPoints": 25
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -111453,7 +111453,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 189
+   "RwMatrixDestroy": 190
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -111464,7 +111464,7 @@
   "name": "RwMatrixCreate",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixCreate": 113
+   "RwMatrixCreate": 114
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -137658,7 +137658,7 @@
   "name_src": "agent",
   "votes": {
    "Mem_Alloc": 482,
-   "CoreMemory_AllocUntagged": 2
+   "CoreMemory_AllocUntagged": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -137671,7 +137671,7 @@
   "name_src": "agent",
   "votes": {
    "Mem_Free": 939,
-   "CoreMemory_Free": 4
+   "CoreMemory_Free": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -162858,9 +162858,10 @@
   "file": "src/auto/006e6d60.cpp"
  },
  "006e6d90": {
-  "name": "C_00861d48_GetSourceMatrix",
-  "name_src": "vote",
+  "name": "C_00861d48_ResolveOrCreateMatrix",
+  "name_src": "agent",
   "votes": {
+   "C_00861d48_ResolveTransformMatrix": 1,
    "C_00861d48_GetSourceMatrix": 1
   },
   "ret": "int",
@@ -162879,22 +162880,25 @@
   "sig_src": "abi"
  },
  "006e6f40": {
-  "name": "sub_6E6F40",
-  "name_src": "addr",
+  "name": "GrowEntryBuffer_6E6F40",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "const void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int additionalCapacity",
+  "sig_src": "impl",
+  "file": "src/auto/006e6f40.cpp"
  },
  "006e7000": {
-  "name": "sub_6E7000",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Archive_GrowTwentyByteRecordArray",
+  "name_src": "vote",
+  "votes": {
+   "Archive_GrowTwentyByteRecordArray": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006e70a0": {
   "name": "C_00861d48_Destroy_6E70A0",
@@ -162907,17 +162911,18 @@
   "file": "src/auto/006e70a0.cpp"
  },
  "006e70f0": {
-  "name": "sub_6E70F0",
-  "name_src": "addr",
+  "name": "C_00861d48_TransformIndexedPoint",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, int a3",
-  "sig_src": "abi"
+  "params": "C_00861d48* self, void* , std::uint32_t* output, int index",
+  "sig_src": "impl",
+  "file": "src/auto/006e70f0.cpp"
  },
  "006e71a0": {
   "name": "C_00861d48_CreateEntryMatrix",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -162956,7 +162961,9 @@
  "006e75f0": {
   "name": "Serialization_ProcessThreeComponentsVariant",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Archive_ProcessTwentyByteRecord": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , void* state",
@@ -162983,13 +162990,14 @@
   "sig_src": "abi"
  },
  "006e7990": {
-  "name": "sub_6E7990",
-  "name_src": "addr",
+  "name": "Archive_SerializeTwentyByteRecordArray",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int* a1, int a2",
-  "sig_src": "abi"
+  "params": "int* container, int archiveAddress",
+  "sig_src": "impl",
+  "file": "src/auto/006e7990.cpp"
  },
  "006e7bb0": {
   "name": "sub_6E7BB0",
