@@ -77035,7 +77035,7 @@
   "name": "ParticleManager_InitializeEmptyWord",
   "name_src": "agent",
   "votes": {
-   "ParticleManager_InitializeEmptyWord": 1
+   "ParticleManager_InitializeEmptyWord": 2
   },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
@@ -139790,7 +139790,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_AllocUntagged": 130,
+   "CoreMemory_AllocUntagged": 131,
    "Mem_Alloc": 482
   },
   "ret": "int",
@@ -143953,8 +143953,8 @@
   "file": "src/auto/0069c950.cpp"
  },
  "0069c9b0": {
-  "name": "ReadCurrentTickCounter",
-  "name_src": "vote",
+  "name": "C_0085e92c_ReadCurrentTickCounter",
+  "name_src": "agent",
   "votes": {
    "ReadCurrentTickCounter": 1,
    "ReadHighResolutionCounter": 1,
@@ -143962,17 +143962,19 @@
   },
   "ret": "uint64_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0085e92c* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0069c9b0.cpp"
  },
  "0069ca00": {
-  "name": "sub_69CA00",
-  "name_src": "addr",
+  "name": "C_0085e92c_RefreshTimestamp",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0085e92c* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0069ca00.cpp"
  },
  "0069ca60": {
   "name": "C_0085e92c_GetElapsedMilliseconds",
@@ -143995,13 +143997,14 @@
   "file": "src/auto/0069cac0.cpp"
  },
  "0069cb30": {
-  "name": "sub_69CB30",
-  "name_src": "addr",
+  "name": "C_0085e92c_ToggleStopwatch",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0085e92c* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0069cb30.cpp"
  },
  "0069cbc0": {
   "name": "C_0085e92c_FlushStateAndGetField38",
@@ -144090,14 +144093,15 @@
  },
  "0069cdf0": {
   "name": "AppMain_ReportInitializationError",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "AppMain_ReportInitializationError": 3
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "const char* caption, char* format, ...",
-  "sig_src": "vote"
+  "params": "const char* lpCaption, char* Format, ...",
+  "sig_src": "impl",
+  "file": "src/auto/0069cdf0.cpp"
  },
  "0069ce50": {
   "name": "Dialog_ShowLocalizedMessage",
@@ -144113,14 +144117,15 @@
  },
  "0069cee0": {
   "name": "AppMain_ConfigureWindow",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "AppMain_ConfigureWindow": 1
   },
   "ret": "void",
   "conv": "__cdecl",
-  "params": "void* window, char mode",
-  "sig_src": "vote"
+  "params": "void* hWnd, char a2",
+  "sig_src": "impl",
+  "file": "src/auto/0069cee0.cpp"
  },
  "0069cf60": {
   "name": "SceneLoader_ReleaseGlobalBlock",
@@ -145751,7 +145756,9 @@
  "006a1ec0": {
   "name": "CoreZlibLog_ConnectLogWindow",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreZlibLog_ConnectLogWindow": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void** self, void* , char* format, char",
@@ -216354,7 +216361,7 @@
   "name_src": "ida",
   "votes": {
    "CrtVsprintf": 1,
-   "_vsprintf": 2
+   "_vsprintf": 3
   },
   "ret": "int",
   "conv": "__cdecl",

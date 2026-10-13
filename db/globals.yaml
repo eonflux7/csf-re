@@ -12,7 +12,7 @@
 - {addr: 0x0082D09C, name: g_CreateFileAImport, type: AudioCreateFileA, uses: 2, src: auto}
 - {addr: 0x0082D0B4, name: g_OutputDebugStringA, type: DebugOutputFunction, uses: 2, src: auto}
 - {addr: 0x0082D0BC, name: g_MultiByteToWideChar, type: MultiByteToWideCharFn, uses: 1, src: auto}
-- {addr: 0x0082D0C0, name: g_QueryPerformanceCounterIat, type: void*, uses: 2, src: auto}
+- {addr: 0x0082D0C0, name: g_QueryPerformanceCounterIat, type: void*, uses: 5, src: auto}
 - {addr: 0x0082D0C4, name: g_QueryPerformanceFrequencyIat, type: QueryFrequencyFn, uses: 2, src: auto}
 - {addr: 0x0082D0DC, name: g_FindFirstFileA, type: FindFirstFileAProc, uses: 4, src: auto}
 - {addr: 0x0082D0E0, name: g_pfnCloseHandle, type: void*, uses: 6, src: auto}
@@ -53,7 +53,8 @@
 - {addr: 0x0082D27C, name: g_GetActiveWindow, type: GetActiveWindowFn, uses: 1, src: auto}
 - {addr: 0x0082D280, name: g_ClientToScreen, type: ClientToScreenFn, uses: 1, src: auto}
 - {addr: 0x0082D284, name: g_FindWindowAImportSlot, type: void*, uses: 1, src: auto}
-- {addr: 0x0082D288, name: g_IsWindowImportSlot, type: void*, uses: 1, src: auto}
+- {addr: 0x0082D288, name: g_IsWindowImportSlot, type: void*, uses: 2, src: auto}
+- {addr: 0x0082D28C, name: g_SetForegroundWindowImportSlot, type: 'std::uintptr_t', uses: 1, src: auto}
 - {addr: 0x0082D290, name: g_MessageBoxWImport, type: MessageBoxWFunc, uses: 1, src: auto}
 - {addr: 0x0082D294, name: g_VkKeyScanA, type: VkKeyScanAFunction, uses: 1, src: auto}
 - {addr: 0x0082D29C, name: g_TranslateMessageFn, type: TranslateMessageFn, uses: 1, src: auto}
@@ -68,10 +69,10 @@
 - {addr: 0x0082D2EC, name: g_SendMessageAImportSlot, type: void*, uses: 3, src: auto}
 - {addr: 0x0082D2F0, name: g_GetDlgItemImportSlot, type: GetDlgItemFunction, uses: 1, src: auto}
 - {addr: 0x0082D2F4, name: g_SetWindowTextAImportSlot, type: SetWindowTextFunction, uses: 1, src: auto}
-- {addr: 0x0082D2F8, name: g_GetWindowTextAImportSlot, type: GetWindowTextFunction, uses: 1, src: auto}
+- {addr: 0x0082D2F8, name: g_GetWindowTextAImportSlot, type: GetWindowTextFunction, uses: 2, src: auto}
 - {addr: 0x0082D2FC, name: g_DestroyWindowImport, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D31C, name: g_GetWindowLongA, type: GetWindowLongAProc, uses: 1, src: auto}
-- {addr: 0x0082D324, name: g_TimeGetTimeIat, type: void*, uses: 1, src: auto}
+- {addr: 0x0082D324, name: g_TimeGetTimeIat, type: void*, uses: 4, src: auto}
 - {addr: 0x0082D390, name: g_BinkCloseFn, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D394, name: g_BinkPauseImport, type: BinkPauseImportFn, uses: 1, src: auto}
 - {addr: 0x0082D398, name: g_BinkNextFrame, type: BinkFrameFunction, uses: 1, src: auto}
@@ -2117,8 +2118,9 @@
 - {addr: 0x008BAFAE, name: g_Value_8BAFAE, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008BAFB8, name: g_CalibratedFrequencyLow, type: 'std::uint32_t', uses: 1, src: auto}
 - {addr: 0x008BAFBC, name: g_CalibratedFrequencyHigh, type: 'std::uint32_t', uses: 1, src: auto}
-- {addr: 0x008BAFD0, name: g_storedWindowHandle, type: void*, uses: 2, src: auto}
-- {addr: 0x008BAFD8, name: g_SceneLoaderBlock, type: int, uses: 1, src: auto}
+- {addr: 0x008BAFC0, name: g_ErrorReportBuffer, type: char, uses: 1, src: auto}
+- {addr: 0x008BAFD0, name: g_storedWindowHandle, type: void*, uses: 3, src: auto}
+- {addr: 0x008BAFD8, name: g_SceneLoaderBlock, type: int, uses: 2, src: auto}
 - {addr: 0x008BB3E0, name: Stream, type: void*, uses: 2, src: auto, alt: [g_ErrorLogStream]}
 - {addr: 0x008BB3E4, name: g_ErrorLogBuffer, type: char, uses: 1, src: auto}
 - {addr: 0x008BB3E8, name: g_ErrorLogInitFlags, type: uint32_t, uses: 1, src: auto}
