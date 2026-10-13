@@ -4655,7 +4655,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 216
+   "AssignStringSubstring": 217
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -10491,7 +10491,7 @@
   "name": "AssignStringRange_429B60",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_429B60": 178,
+   "AssignStringRange_429B60": 179,
    "MenuSceneSelect_InitializeString": 1
   },
   "ret": "void*",
@@ -19720,7 +19720,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 426
+   "CHandleTable_Resolve": 427
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -37408,7 +37408,7 @@
   "name": "SceneObj_IsInactive",
   "name_src": "vote",
   "votes": {
-   "SceneObj_IsInactive": 52
+   "SceneObj_IsInactive": 53
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -37419,7 +37419,7 @@
   "name": "SceneObject_PassesFirstCheck",
   "name_src": "vote",
   "votes": {
-   "SceneObject_PassesFirstCheck": 25
+   "SceneObject_PassesFirstCheck": 26
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -47346,22 +47346,26 @@
   "sig_src": "vote"
  },
  "004adb70": {
-  "name": "sub_4ADB70",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_004ad990_UpdateActiveCover",
+  "name_src": "vote",
+  "votes": {
+   "S_004ad990_UpdateActiveCover": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004adbd0": {
-  "name": "sub_4ADBD0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_004ad990_UpdateCoverProgress",
+  "name_src": "vote",
+  "votes": {
+   "S_004ad990_UpdateCoverProgress": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "004adcc0": {
   "name": "sub_4ADCC0",
@@ -50074,7 +50078,9 @@
  "004b8c80": {
   "name": "S_004ad990_ResetCombatOrderFields",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_004ad990_ResetCombatOrderFields": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_004ad990* self, void*",
@@ -51118,7 +51124,9 @@
  "004bd800": {
   "name": "S_004ad990_TestAvailableQuery",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_004ad990_TestAvailableQuery": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "S_004ad990* self, void*",
@@ -52315,7 +52323,7 @@
   "name": "CoverAttack_Sub_4C4890",
   "name_src": "vote",
   "votes": {
-   "CoverAttack_Sub_4C4890": 1
+   "CoverAttack_Sub_4C4890": 2
   },
   "ret": "bool",
   "conv": "__fastcall",
@@ -52323,15 +52331,16 @@
   "sig_src": "vote"
  },
  "004c4b80": {
-  "name": "TDudoso_UpdateCoverPlan",
-  "name_src": "vote",
+  "name": "S_004ad990_UpdateGoToCover",
+  "name_src": "agent",
   "votes": {
    "TDudoso_UpdateCoverPlan": 1
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "S_004ad990* self, void* , int deltaBits",
+  "sig_src": "impl",
+  "file": "src/auto/004c4b80.cpp"
  },
  "004c4c90": {
   "name": "sub_4C4C90",
@@ -85447,7 +85456,7 @@
   "name": "CMenuSaveGame_ResetStringStorage",
   "name_src": "agent",
   "votes": {
-   "CMenuSaveGame_ResetStringStorage": 21
+   "CMenuSaveGame_ResetStringStorage": 22
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -138358,7 +138367,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 614,
+   "Mem_FreeDebug": 615,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -138450,7 +138459,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_AllocUntagged": 50,
+   "CoreMemory_AllocUntagged": 51,
    "Mem_Alloc": 482
   },
   "ret": "int",
@@ -138463,7 +138472,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 92,
+   "CoreMemory_Free": 93,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -139565,7 +139574,7 @@
   "name": "SceneLoader_CopyMapFilename",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_CopyMapFilename": 4
+   "SceneLoader_CopyMapFilename": 5
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -139576,7 +139585,7 @@
   "name": "Hud_ExtractResourcePath",
   "name_src": "vote",
   "votes": {
-   "Hud_ExtractResourcePath": 6
+   "Hud_ExtractResourcePath": 7
   },
   "ret": "char*",
   "conv": "__cdecl",
@@ -140629,7 +140638,9 @@
  "006977c0": {
   "name": "CoreFiles_FindNameIndex",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreFiles_FindNameIndex": 2
+  },
   "ret": "unsigned int",
   "conv": "__cdecl",
   "params": "char* name, void* entries",
@@ -140676,7 +140687,7 @@
   "name": "CoreFiles_CloseSceneFile",
   "name_src": "agent",
   "votes": {
-   "CloseSceneFile": 27
+   "CloseSceneFile": 28
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -140687,7 +140698,9 @@
  "00697a40": {
   "name": "CoreFiles_CopyStringRecords",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreFiles_CopyStringRecords": 1
+  },
   "ret": "C_0082d410*",
   "conv": "__cdecl",
   "params": "int first, int last, C_0082d410* destination",
@@ -140698,7 +140711,7 @@
   "name": "MissionScript_DestroyStringRange",
   "name_src": "agent",
   "votes": {
-   "MissionScript_DestroyStringRange": 4,
+   "MissionScript_DestroyStringRange": 5,
    "MissionScript_DestroyBlockRange": 1
   },
   "ret": "int",
@@ -140736,7 +140749,9 @@
  "00697ba0": {
   "name": "C_0082d410_ResetStringAndScanRange",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreFiles_InitializeArchiveEntryString": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "C_0082d410* self, void*",
@@ -140818,18 +140833,19 @@
   "file": "src/auto/00698010.cpp"
  },
  "006980d0": {
-  "name": "SceneLoader_ResetArchiveSelection",
-  "name_src": "vote",
+  "name": "CoreFiles_ResetArchiveSelection",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_ResetArchiveSelection": 4,
    "SceneLoader_ProcessResourcePath": 1,
    "SceneLoader_ApplySceneOptions": 1,
    "SceneLoader_ClosePackage": 1
   },
-  "ret": "char",
+  "ret": "int",
   "conv": "__cdecl",
-  "params": "char* String1",
-  "sig_src": "vote"
+  "params": "char* name",
+  "sig_src": "impl",
+  "file": "src/auto/006980d0.cpp"
  },
  "006981b0": {
   "name": "CoreFiles_RestorePreviousLog",
@@ -140848,7 +140864,9 @@
  "00698200": {
   "name": "CoreFiles_AppendStringBaseElement",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreFiles_InsertArchiveEntry": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , void* sourceString",
@@ -140882,7 +140900,7 @@
   "name_src": "agent",
   "votes": {
    "OpenSceneFile": 13,
-   "CoreFiles_OpenSceneFile": 14
+   "CoreFiles_OpenSceneFile": 15
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -140939,8 +140957,8 @@
   "file": "src/auto/00698820.cpp"
  },
  "00698960": {
-  "name": "SceneLoader_SelectArchive",
-  "name_src": "vote",
+  "name": "CoreFiles_SelectArchive",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_SelectArchive": 6,
    "SceneLoader_UpdateResourcePath": 1,
@@ -140950,8 +140968,9 @@
   },
   "ret": "void",
   "conv": "__cdecl",
-  "params": "char* String1",
-  "sig_src": "vote"
+  "params": "char* filename",
+  "sig_src": "impl",
+  "file": "src/auto/00698960.cpp"
  },
  "00698b20": {
   "name": "CoreFiles_CheckPageAvailability",
@@ -141169,13 +141188,14 @@
   "sig_src": "vote"
  },
  "00699370": {
-  "name": "sub_699370",
-  "name_src": "addr",
+  "name": "SortedTable_ForwardWithSelfToSub698FB0",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a1, int a2, int a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , int a1, int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/00699370.cpp"
  },
  "00699390": {
   "name": "sub_699390",
@@ -143485,7 +143505,7 @@
   "name": "CoreFiles_DestroySceneFileState",
   "name_src": "agent",
   "votes": {
-   "CoreFiles_DestroySceneFileState": 1
+   "CoreFiles_DestroySceneFileState": 2
   },
   "ret": "int*",
   "conv": "__fastcall",
@@ -143545,7 +143565,8 @@
   "name": "RtFSFileSystemState_Construct",
   "name_src": "agent",
   "votes": {
-   "RtFSFileSystemState_Construct": 1
+   "RtFSFileSystemState_Construct": 1,
+   "CoreFiles_ConstructArchiveFileSystem": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -213607,7 +213628,7 @@
   "name": "_sprintf",
   "name_src": "ida",
   "votes": {
-   "_sprintf": 45,
+   "_sprintf": 46,
    "LibSprintf": 1,
    "FormatMissionScore": 1,
    "FormatResolution": 1
@@ -214365,7 +214386,7 @@
   "name": "_strstr",
   "name_src": "ida",
   "votes": {
-   "_strstr": 3
+   "_strstr": 4
   },
   "ret": "char*",
   "conv": "__cdecl",
