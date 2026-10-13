@@ -3769,7 +3769,7 @@
   "name": "IsField0050Null",
   "name_src": "agent",
   "votes": {
-   "IsField0050Null": 2
+   "IsField0050Null": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -3780,7 +3780,9 @@
  "0040da90": {
   "name": "EntryLookup_FindEntryWhenState1",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "EntryLookup_FindEntryWhenState1": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -19862,7 +19864,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 456
+   "CHandleTable_Resolve": 457
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -31997,7 +31999,7 @@
   "votes": {
    "AiAttackTasks_IsAttackDelayActive": 1,
    "AttackTasks_IsAttackDelayElapsed": 1,
-   "AiAttack_IsStoredValueNegative": 3
+   "AiAttack_IsStoredValueNegative": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -42391,7 +42393,8 @@
   "name_src": "agent",
   "votes": {
    "GetControlEntryByIndex": 9,
-   "SceneEntity_LookupSlotEntry": 1
+   "SceneEntity_LookupSlotEntry": 1,
+   "C_008342e8_GetControlEntryByIndex": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -53869,7 +53872,9 @@
  "004cde10": {
   "name": "S_0048c6c0_SendTargetOrder",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0083dd58_SetCandidatePosition": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_0048c6c0* self, void* , int orderData",
@@ -53897,24 +53902,26 @@
   "file": "src/auto/004cdf30.cpp"
  },
  "004ce040": {
-  "name": "C_0083ac40_RunIdlePhase",
-  "name_src": "vote",
+  "name": "C_0083dd58_UpdateCompatibleTarget",
+  "name_src": "agent",
   "votes": {
    "C_0083ac40_RunIdlePhase": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_0083dd58* self, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/004ce040.cpp"
  },
  "004ce150": {
-  "name": "sub_4CE150",
-  "name_src": "addr",
+  "name": "S_0041f0a0_SerializeExtendedAutonomousState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "S_0041f0a0* self, void* , S_0041f0a0* context",
+  "sig_src": "impl",
+  "file": "src/auto/004ce150.cpp"
  },
  "004ce350": {
   "name": "C_0083ac40_SetTaskState",
@@ -54797,7 +54804,7 @@
   "name": "C_0083dd58_FindCompatibleCandidate",
   "name_src": "agent",
   "votes": {
-   "C_0083dd58_FindCompatibleCandidate": 2
+   "C_0083dd58_FindCompatibleCandidate": 3
   },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
@@ -54809,7 +54816,7 @@
   "name": "S_0041f0a0_SerializeAutonomousState_4D0860",
   "name_src": "agent",
   "votes": {
-   "S_0041f0a0_SerializeAutonomousState_4D0860": 1,
+   "S_0041f0a0_SerializeAutonomousState_4D0860": 2,
    "S_0041f0a0_RefreshRecordState": 1,
    "S_0041f0a0_SerializeBaseState": 1
   },
@@ -185098,15 +185105,16 @@
   "sig_src": "abi"
  },
  "007283a0": {
-  "name": "GfxEnvironment_SetAttachmentRecordValue",
-  "name_src": "vote",
+  "name": "C_00840f28_SetAttachmentRecordValue",
+  "name_src": "agent",
   "votes": {
    "GfxEnvironment_SetAttachmentRecordValue": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_00840f28* self, void* , int value",
+  "sig_src": "impl",
+  "file": "src/auto/007283a0.cpp"
  },
  "007283b0": {
   "name": "C_008656d0_SetOwnedPointer0030",
@@ -185556,7 +185564,9 @@
  "007295f0": {
   "name": "C_00865a10_ApplyTextureTransform",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00865a10_ApplyTextureTransform": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "C_00865a10* self, void* , float angleDegrees, const uint32_t* translation, uint32_t scaleX, uint32_t scaleY",
@@ -185564,22 +185574,25 @@
   "file": "src/auto/007295f0.cpp"
  },
  "00729710": {
-  "name": "sub_729710",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_00865a10_ApplyEdgeTextureTransform",
+  "name_src": "vote",
+  "votes": {
+   "C_00865a10_ApplyEdgeTextureTransform": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, float a2, float* a3, float* a4",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00729cd0": {
-  "name": "sub_729CD0",
-  "name_src": "addr",
+  "name": "C_00865a10_UpdateBorderTextureTransforms",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00865a10* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00729cd0.cpp"
  },
  "00729f60": {
   "name": "C_00865a10_ScaleLayout",
