@@ -104,14 +104,15 @@
  },
  "00401230": {
   "name": "RemoveGlobalObjectReference",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "RemoveGlobalObjectReference": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , void* a2",
+  "sig_src": "impl",
+  "file": "src/auto/00401230.cpp"
  },
  "004012c0": {
   "name": "HandleEventType4",
@@ -148,7 +149,7 @@
  },
  "004013f0": {
   "name": "C_0082d46c_Construct",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_0082d46c_Construct": 1
   },
@@ -190,7 +191,7 @@
  },
  "004016b0": {
   "name": "RecordArray_Assign",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -199,13 +200,14 @@
   "file": "src/auto/004016b0.cpp"
  },
  "004017a0": {
-  "name": "sub_4017A0",
-  "name_src": "addr",
+  "name": "Table20_GrowEntryArray",
+  "name_src": "agent",
   "votes": {},
-  "ret": "unsigned int",
+  "ret": "std::uint32_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_004017a0* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004017a0.cpp"
  },
  "00401870": {
   "name": "C_0082d478_ResetState",
@@ -253,7 +255,7 @@
  },
  "00401970": {
   "name": "SceneLoader_ResetGlobalService",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_ResetGlobalService": 1
   },
@@ -265,7 +267,7 @@
  },
  "00401a70": {
   "name": "C_0082d46c_DispatchMessage",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -274,13 +276,14 @@
   "file": "src/auto/00401a70.cpp"
  },
  "00401ac0": {
-  "name": "sub_401AC0",
-  "name_src": "addr",
+  "name": "BuildAndDispatchObjectRecord",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int* a1",
-  "sig_src": "abi"
+  "params": "int* sourceObject",
+  "sig_src": "impl",
+  "file": "src/auto/00401ac0.cpp"
  },
  "00401b50": {
   "name": "sub_401B50",
@@ -293,7 +296,7 @@
  },
  "00401c80": {
   "name": "Entries_AppendRecord",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -29886,7 +29889,7 @@
   "name": "GetGlobalObjectField184",
   "name_src": "agent",
   "votes": {
-   "GetGlobalObjectField184": 43
+   "GetGlobalObjectField184": 44
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -29994,7 +29997,7 @@
   "name": "DispatchRecordToGlobalObject",
   "name_src": "vote",
   "votes": {
-   "DispatchRecordToGlobalObject": 36,
+   "DispatchRecordToGlobalObject": 37,
    "QueueTaskRecord": 1
   },
   "ret": "uint32_t",
@@ -42095,8 +42098,8 @@
   "file": "src/auto/0049edc0.cpp"
  },
  "0049ee00": {
-  "name": "CopyFocusEntryPosition",
-  "name_src": "vote",
+  "name": "C_008342e8_CopyFocusEntryPosition",
+  "name_src": "agent",
   "votes": {
    "CopyFocusEntryPosition": 1
   },
@@ -138221,7 +138224,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_AllocUntagged": 35,
+   "CoreMemory_AllocUntagged": 36,
    "Mem_Alloc": 482
   },
   "ret": "int",
@@ -138234,7 +138237,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 58,
+   "CoreMemory_Free": 59,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -147034,7 +147037,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 434,
+   "GetGlobalInt": 435,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -147847,7 +147850,7 @@
   "name": "RenderHandle_FromObject",
   "name_src": "vote",
   "votes": {
-   "RenderHandle_FromObject": 30
+   "RenderHandle_FromObject": 31
   },
   "ret": "int",
   "conv": "__fastcall",
