@@ -7054,7 +7054,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 160
+   "S_0041e5f0_GrowArrayCapacity": 161
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -138160,7 +138160,7 @@
   "name_src": "agent",
   "votes": {
    "Mem_Alloc": 482,
-   "CoreMemory_AllocUntagged": 29
+   "CoreMemory_AllocUntagged": 30
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -146914,7 +146914,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 431,
+   "GetGlobalInt": 432,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -146938,7 +146938,7 @@
   "name": "GlobalInt_ResolveAccessor",
   "name_src": "vote",
   "votes": {
-   "GlobalInt_ResolveAccessor": 77
+   "GlobalInt_ResolveAccessor": 78
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -152680,7 +152680,7 @@
   "name": "GlobalInt_FindNameId",
   "name_src": "vote",
   "votes": {
-   "GlobalInt_FindNameId": 7
+   "GlobalInt_FindNameId": 8
   },
   "ret": "int",
   "conv": "__stdcall",
@@ -153722,7 +153722,7 @@
   "name": "GetGlobalValue_6C5760",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_6C5760": 87
+   "GetGlobalValue_6C5760": 88
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -153789,7 +153789,7 @@
   "name": "GfxSkin_ApplySceneRegionToObject",
   "name_src": "agent",
   "votes": {
-   "GfxSkin_ApplySceneRegionToObject": 1
+   "GfxSkin_ApplySceneRegionToObject": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -171330,7 +171330,9 @@
  "00702990": {
   "name": "ParticleAtomic_FindEmitterSlotByKey",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00861988_FindEmitterIndex": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , int key",
@@ -171348,13 +171350,14 @@
   "file": "src/auto/007029d0.cpp"
  },
  "00702a40": {
-  "name": "sub_702A40",
-  "name_src": "addr",
+  "name": "C_00861988_UpdateNamedEmitterEntry",
+  "name_src": "agent",
   "votes": {},
-  "ret": "int",
+  "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a3, int arg4",
-  "sig_src": "abi"
+  "params": "C_00861988* self, void* , int emitterKey, int entryArgument",
+  "sig_src": "impl",
+  "file": "src/auto/00702a40.cpp"
  },
  "00702b10": {
   "name": "C_00863180_Destructor",
@@ -173640,7 +173643,9 @@
  "0070b760": {
   "name": "C_008636fc_Construct",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_008636fc_Construct": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_008636fc* self, void* , int a2, int a3",
@@ -173663,7 +173668,7 @@
   "name": "Water_UpdateEntry",
   "name_src": "agent",
   "votes": {
-   "Water_UpdateEntry": 1
+   "Water_UpdateEntry": 2
   },
   "ret": "char",
   "conv": "__fastcall",
