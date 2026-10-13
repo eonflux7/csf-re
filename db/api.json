@@ -180896,7 +180896,9 @@
  "00718c90": {
   "name": "GuiControl_RoundToNearestInteger",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GuiControl_RoundToNearestInteger": 1
+  },
   "ret": "std::uint64_t",
   "conv": "__cdecl",
   "params": "float value",
@@ -181041,14 +181043,15 @@
  },
  "00719530": {
   "name": "CGuiControl_Update",
-  "name_src": "opus",
+  "name_src": "agent",
   "votes": {
    "CGuiControl_Update": 4
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "CGuiControl* self, void* edx, float deltaTime",
-  "sig_src": "vote"
+  "params": "CGuiControl* self, void* , float deltaTime",
+  "sig_src": "impl",
+  "file": "src/auto/00719530.cpp"
  },
  "00719810": {
   "name": "CGuiControl_UpdateAndRenderDebugRect",
