@@ -690,6 +690,9 @@ def compare(ea, o, m):
             left = True
         if o.eax == EAX0:  # never written: the caller's eax
             left = True
+        for k in range(4):  # bytes of the original's eax that are never-written stack fill (0x48CFE0 returns a
+            if (o.eax >> 8 * k) & 0xFF == 0xCC:  # 16-bit local loaded as a dword: cccc0101)
+                mask &= ~(0xFF << 8 * k)
         if not left and o.norm(o.eax & mask) != m.norm(m.eax & mask):
             out.append(f"returns {o.eax & mask:x} vs {m.eax & mask:x}")
     skip = lambda a: TEB <= a < TEB + 0x1000 or OBJ_BASE <= a < OBJ_BASE + 0x100000 or SYS_BASE <= a < SYS_BASE + 0x1000
