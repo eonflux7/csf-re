@@ -19718,7 +19718,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 421
+   "CHandleTable_Resolve": 422
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -36736,7 +36736,7 @@
   "name": "C_00833708_SendOrder",
   "name_src": "agent",
   "votes": {
-   "C_00833708_SendOrder": 4,
+   "C_00833708_SendOrder": 5,
    "AutoTask_SendOrder": 1,
    "TaskHelper_StartAction": 1
   },
@@ -36989,7 +36989,8 @@
   "name": "S_0048c6c0_CheckTarget",
   "name_src": "agent",
   "votes": {
-   "AutoTask_CheckTarget": 3
+   "AutoTask_CheckTarget": 3,
+   "S_0048c6c0_CheckTarget": 1
   },
   "ret": "bool",
   "conv": "__fastcall",
@@ -42091,7 +42092,7 @@
   "name": "C_008342e8_GetControlEntryByIndex",
   "name_src": "agent",
   "votes": {
-   "GetControlEntryByIndex": 7,
+   "GetControlEntryByIndex": 8,
    "SceneEntity_LookupSlotEntry": 1
   },
   "ret": "int",
@@ -47545,14 +47546,15 @@
  },
  "004ae2c0": {
   "name": "TMovilAInteractivo_2_Construct",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "TMovilAInteractivo_2_Construct": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "TMovilAInteractivo_2* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004ae2c0.cpp"
  },
  "004ae330": {
   "name": "TMovilAInteractivo_GetTypeName",
@@ -54644,7 +54646,7 @@
   "name": "AiCore_UpdateTargetData",
   "name_src": "agent",
   "votes": {
-   "AiCore_UpdateTargetData": 14
+   "AiCore_UpdateTargetData": 15
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -55544,7 +55546,7 @@
  },
  "004d5550": {
   "name": "C_0083c280_UpdateAttachmentOffset",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -55584,14 +55586,15 @@
  },
  "004d5780": {
   "name": "C_0083dd58_UpdateTargetData",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_0083dd58_UpdateTargetData": 1
   },
-  "ret": "uint32_t*",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a3",
-  "sig_src": "vote"
+  "params": "C_0083dd58* self, void* , int targetAddress",
+  "sig_src": "impl",
+  "file": "src/auto/004d5780.cpp"
  },
  "004d5840": {
   "name": "C_0083c280_ResetTask",
@@ -58427,7 +58430,7 @@
   "name": "TAiState_Constructor",
   "name_src": "agent",
   "votes": {
-   "TAiState_Constructor": 15
+   "TAiState_Constructor": 16
   },
   "ret": "TAiState*",
   "conv": "__fastcall",
