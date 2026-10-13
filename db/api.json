@@ -54986,7 +54986,7 @@
   "name": "C_0083b958_Destroy",
   "name_src": "agent",
   "votes": {
-   "C_0083b958_Destroy": 19,
+   "C_0083b958_Destroy": 21,
    "BaseChainCleanup_4D1140": 1
   },
   "ret": "int",
@@ -55092,7 +55092,7 @@
   "name": "AiAutonomous_ConstructTaskBase",
   "name_src": "agent",
   "votes": {
-   "AiAutonomous_ConstructTaskBase": 14
+   "AiAutonomous_ConstructTaskBase": 15
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -55130,7 +55130,8 @@
   "votes": {
    "TCharTask_ResetBaseState": 1,
    "PrepareAttackState": 1,
-   "C_0083b958_ResetBase": 1
+   "C_0083b958_ResetBase": 1,
+   "CharTask_ResetState": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -56359,28 +56360,31 @@
   "votes": {
    "C_0083c388_Construct": 1
   },
-  "ret": "int",
+  "ret": "C_0083c388*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_0083c388* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004d64b0.cpp"
  },
  "004d64e0": {
-  "name": "sub_4D64E0",
-  "name_src": "addr",
+  "name": "C_0083c388_Destroy",
+  "name_src": "impl",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "C_0083c388*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0083c388* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/004d64e0.cpp"
  },
  "004d6510": {
-  "name": "sub_4D6510",
-  "name_src": "addr",
+  "name": "C_0083c388_ResetTaskFlag",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0083c388* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004d6510.cpp"
  },
  "004d6520": {
   "name": "sub_4D6520",
@@ -56419,13 +56423,16 @@
   "sig_src": "abi"
  },
  "004d67a0": {
-  "name": "sub_4D67A0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "ReleaseCharTaskBaseState",
+  "name_src": "vote",
+  "votes": {
+   "ReleaseCharTaskBaseState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0083c388* self, void* edx",
+  "sig_src": "impl",
+  "file": "src/auto/004d67a0.cpp"
  },
  "004d67c0": {
   "name": "Alt_InitCategoryObject",
@@ -56536,13 +56543,14 @@
   "file": "src/auto/004d6b20.cpp"
  },
  "004d6b40": {
-  "name": "sub_4D6B40",
-  "name_src": "addr",
+  "name": "C_0083c478_Destroy",
+  "name_src": "impl",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0083c478* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/004d6b40.cpp"
  },
  "004d6b70": {
   "name": "sub_4D6B70",
@@ -82941,7 +82949,7 @@
  },
  "00539830": {
   "name": "CMenuLoadGame_InitializeScreen",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -139396,7 +139404,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 183,
+   "CoreMemory_Free": 185,
    "Mem_Free": 939
   },
   "ret": "int",
