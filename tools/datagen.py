@@ -327,6 +327,8 @@ def main():
     ap.add_argument('--candidate-fixups', action='store_true', help='UNSAFE: also relocate unproven aligned words')
     ap.add_argument('--compile-check', action='store_true', help='compile standalone and check COFF gv/vt symbols')
     args = ap.parse_args()
+    if not args.data_refs and (ROOT / 'export/dataptrs.json').exists():  # tools/ida/export_dataptrs.py
+        args.data_refs = ROOT / 'export/dataptrs.json'
     summary = generate(args)
     return 2 if summary['rejected_references'] else 0
 
