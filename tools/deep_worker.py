@@ -2,17 +2,12 @@
 """Deep worker: one agent session on a job the orchestrator hands out and oversees (2026-10-13, user: the
 orchestrator no longer does the jobs itself; it spawns agents, reviews what they return, decides).
 
-Agents (--agent): sol-hi = gpt-6.1-sol@high through the Codex CLI, sandboxed to the job's tree: the default, for
-anything hard. sonnet-lo = claude-sonnet-5-5@low and opus-lo = claude-opus-5-5@low through `claude -p` on the grunts' Claude
-account, a fixed list of commands allowed: small jobs only, sonnet-lo first (user, 2026-10-13), two at a time. Nothing runs on the main Claude account.
+Agents (--agent), by difficulty of the job (user, 2026-10-13): sol-hi = gpt-6.1-sol@high for hard jobs (default),
+sol-med = gpt-6.1-sol@medium for medium ones, both through the Codex CLI sandboxed to the job's tree; haiku-med =
+claude-haiku-5-5@medium through `claude -p` on the grunts' Claude account for small jobs that need little thinking
+(a fixed list of commands allowed, two at a time). Nothing runs on the main Claude account.
 
-The orchestrator starts a task, fires up workers for the parts that need long reading or trial and error (a queue
-item's root cause, a class of emudiff differences, a container replica), and reviews what comes back. A worker
-never touches the repo: it gets its own detached worktree (work/deep/NAME/tree, derived dirs linked in, its own
-build dir) and may edit and run the offline tools there (gate, semcheck, emudiff, single-file compiles). No game,
-no smokes, no verifier, no commits, no IDB writes, no network.
-
-  deep_worker.py start NAME --task FILE|- [--agent sol-hi|sonnet-lo|opus-lo] [--timeout 3600] [--fresh]   in the background
+  deep_worker.py start NAME --task FILE|- [--agent sol-hi|sol-med|haiku-med] [--timeout 3600] [--fresh]   in the background
   deep_worker.py run   NAME ...           the same, in the foreground
   deep_worker.py list                     jobs and their state
   deep_worker.py review NAME applied|partial|rejected [--note TEXT]    the orchestrator's verdict on a finished job
@@ -36,8 +31,10 @@ DEEP = os.path.join(ROOT, "work", "deep")
 # 2026-10-13 evening: eight opus-lo jobs at once (5-7 queue items each, about 1.1M input tokens and $1.2 per job
 # in 4 minutes) spent the grunts' 5h window; six stopped unfinished. Since then: sonnet-lo is the Claude agent to
 # try first (user), at most CLAUDE_JOBS Claude jobs at a time, and their brief skips PLAN/JOURNAL.
-AGENTS = {"sol-hi": ("codex", "gpt-6.1-sol", "high"), "sonnet-lo": ("claude", "claude-sonnet-5-5", "low"),
-          "opus-lo": ("claude", "claude-opus-5-5", "low")}
+# Later that evening (user): three agents by difficulty. Sonnet and Opus are out.
+AGENTS = {"sol-hi": ("codex", "gpt-6.1-sol", "high"),        # hard jobs
+          "sol-med": ("codex", "gpt-6.1-sol", "medium"),     # medium jobs
+          "haiku-med": ("claude", "claude-haiku-5-5", "medium")}  # small jobs that need little thinking (grunts' account)
 CLAUDE_JOBS = 2
 RETIRED = {"opus-me": ("claude", "claude-opus-5-5", "medium")}
 # opus-me: what `claude -p` may do without asking (dontAsk denies the rest)
@@ -308,7 +305,7 @@ def tokens(st):
                     output=u.get("output_tokens", 0) + u.get("reasoning_output_tokens", 0),
                     cost_usd=u.get("cost_usd"))
     out = dict(input=0, cached=0, output=0)
-    if st.get("agent", "sol-hi") == "sol-hi":
+    if AGENTS.get(st.get("agent", "sol-hi"), ("claude",))[0] == "codex":
         tid = next((d.get("thread_id") for d in _events(name) if d.get("type") == "thread.started"), None)
         import glob
         files = glob.glob(os.path.join(st.get("home") or "", "sessions", "*", "*", "*", f"rollout-*{tid}.jsonl")) if tid else []

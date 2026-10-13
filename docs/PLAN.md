@@ -85,8 +85,8 @@ The orchestrator (Opus, interactive) works `queue/` and the backlog below.
 ## Current focus (priority order)
 
 Stage since 2026-10-13: the waves are exhausted at 91.9% of game code. What is left is done by **agent jobs**
-(`tools/deep_worker.py`: sol-hi = gpt-6.1-sol@high; opus-lo = claude-opus-5-5@low on the grunts' Claude account for
-easy jobs; user 2026-10-13); the orchestrator writes the
+(`tools/deep_worker.py`: sol-hi hard, sol-med medium, haiku-med small on the grunts' Claude account;
+user 2026-10-13); the orchestrator writes the
 tasks, reviews reports and patches, decides. Everything is visible on `tools/webmon.py` (user, 2026-10-13).
 
 1. **Escalation queue** (168 items): jobs per failure class. A false alarm is fixed in the tool for its class and
