@@ -1422,3 +1422,10 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   running for real had no call site in calls.json, so nothing was popped and esp-based ours "changed ebp"; rdtsc
   was the host clock, different on each side: a counter now. Proven-in-game check after it: 1 DIFF of 300
   (0x6F0E60, there before the change).
+- 0x64D6B0 (netz, `__cdecl (ctx, arg)`) was taken to read ecx: `push ecx; mov ecx, [esp+0xc]; mov eax, esp; push ecx;
+  mov dword ptr [eax], 0` is a temporary written through a copy of esp, not a read. The gate forced its callers
+  to `__fastcall` with no stack arguments: 0x742060 and 0x744630 were installed that way (never ran; emudiff says
+  DIFF on both), two more clones escalated on emudiff (0x74B3A0, 0x74F7A0: back to the lanes). api.py
+  reads_before_write knows the pattern now (5 functions change verdict: 0x64D6B0, 0x64D6D0, 0x65CD40, 0x665EA0,
+  0x78F710); the two installed callers rewritten by hand, `same` 8/8.
+- emudiff without --src runs the object in build/, not the source: after a hand fix use `--src src/auto/EA.cpp`.

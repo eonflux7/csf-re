@@ -7114,7 +7114,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 176
+   "S_0041e5f0_GrowArrayCapacity": 175
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -48664,7 +48664,7 @@
   "votes": {},
   "ret": "void",
   "conv": "__stdcall",
-  "params": "C_0085e760* self, int a2",
+  "params": "C_0085e760* a1, int a2",
   "sig_src": "impl",
   "file": "src/auto/004b17c0.cpp"
  },
@@ -63503,9 +63503,8 @@
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void*",
-  "sig_src": "impl",
-  "file": "src/auto/004eefd0.cpp"
+  "params": "void* self, void* edx",
+  "sig_src": "abi"
  },
  "004eeff0": {
   "name": "CTextDatabase_SetMultiPlaAndSysRedPaths",
@@ -112587,7 +112586,7 @@
   "name": "RwImageSetPath",
   "name_src": "rwname",
   "votes": {
-   "RwImageSetPath": 10
+   "RwImageSetPath": 9
   },
   "ret": "const void*",
   "conv": "__cdecl",
@@ -124871,8 +124870,8 @@
   "name_src": "addr",
   "votes": {},
   "ret": "void",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, int* a1, int* a2, int16_t* a3",
+  "conv": "__stdcall",
+  "params": "int* a1, int* a2, int16_t* a3",
   "sig_src": "abi"
  },
  "0065ce70": {
@@ -127485,8 +127484,8 @@
   "name_src": "addr",
   "votes": {},
   "ret": "uint16_t*",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, int a1",
+  "conv": "__stdcall",
+  "params": "int a1",
   "sig_src": "abi"
  },
  "00665ed0": {
@@ -138739,7 +138738,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 133,
+   "CoreMemory_Free": 132,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -139883,7 +139882,7 @@
   "name": "NormalizeResourceName",
   "name_src": "vote",
   "votes": {
-   "NormalizeResourceName": 22
+   "NormalizeResourceName": 21
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -139916,7 +139915,7 @@
   "name": "ResourceName_Transform",
   "name_src": "vote",
   "votes": {
-   "ResourceName_Transform": 9
+   "ResourceName_Transform": 8
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -142641,7 +142640,7 @@
   "name": "CTextDatabase_SetTextDatabasePath",
   "name_src": "agent",
   "votes": {
-   "SceneLoader_SetTextDatabasePath": 5,
+   "SceneLoader_SetTextDatabasePath": 4,
    "SceneLoader_SetSceneText": 1,
    "SceneLoader_LoadTextDatabase": 1,
    "CTextDatabase_SetTextDatabasePath": 1
@@ -172528,11 +172527,10 @@
   "name": "GfxParticleAtomic_ReleaseBlock",
   "name_src": "agent",
   "votes": {},
-  "ret": "int",
+  "ret": "char",
   "conv": "__stdcall",
-  "params": "int block",
-  "sig_src": "impl",
-  "file": "src/auto/00702b60.cpp"
+  "params": "void* a1",
+  "sig_src": "abi"
  },
  "00702b80": {
   "name": "C_00861a00_ReleaseMediaHandles",
@@ -189485,7 +189483,7 @@
   "name": "InsertUniqueUnsignedShortTreeValue",
   "name_src": "agent",
   "votes": {
-   "InsertUniqueUnsignedShortTreeValue": 3
+   "InsertUniqueUnsignedShortTreeValue": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -189513,9 +189511,8 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "C_00867444* self, void* , int* stream",
-  "sig_src": "impl",
-  "file": "src/auto/0073aa60.cpp"
+  "params": "C_00867444* self, void* edx, void* file",
+  "sig_src": "vote"
  },
  "0073ae60": {
   "name": "C_00867444_LoadFontVersion3",
@@ -206195,8 +206192,8 @@
   "name_src": "addr",
   "votes": {},
   "ret": "void",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, uint16_t* a1, int* a2, void* a3, int* a4, char* a5, int a6",
+  "conv": "__stdcall",
+  "params": "uint16_t* a1, int* a2, void* a3, int* a4, char* a5, int a6",
   "sig_src": "abi"
  },
  "0078f850": {
@@ -214269,7 +214266,7 @@
   "name": "_sprintf",
   "name_src": "ida",
   "votes": {
-   "_sprintf": 52,
+   "_sprintf": 51,
    "LibSprintf": 1,
    "FormatMissionScore": 1,
    "FormatResolution": 1

@@ -133,11 +133,23 @@ def reads_before_write(ea, db, reg):
             if m == "push" and dst == reg:
                 # `push ecx; ...; fstp dword ptr [esp]`: room for a float argument, the pushed value is overwritten
                 # (0x439B20: both callers escalated on "reads ecx" against "pops nothing")
-                room = False
-                for j in ins[k:k + 4]:
-                    if j.mnemonic in ("call", "push", "pop", "ret") or j.mnemonic.startswith("j"):
+                # `push ecx; ..; mov eax, esp; push ..; mov dword ptr [eax], 0`: a temporary whose address goes to
+                # the callee, written through the copy of esp (0x64D6B0: its callers were bound __fastcall without
+                # their two stack arguments)
+                room, alias = False, None
+                for j in ins[k:k + 6]:
+                    jd = j.op_str.split(",")[0].strip()
+                    if alias and j.mnemonic == "mov" and jd == f"dword ptr [{alias}]":
+                        room = True
                         break
-                    if j.mnemonic in ("fstp", "fst", "mov") and j.op_str.split(",")[0].strip() == "dword ptr [esp]":
+                    if j.mnemonic in ("call", "pop", "ret") or j.mnemonic.startswith("j") or (j.mnemonic == "push" and not alias):
+                        break
+                    if j.mnemonic == "mov" and j.op_str.replace(" ", "").endswith(",esp") and alias is None:
+                        alias = jd
+                        continue
+                    if alias and re.search(rf"\b{alias}\b", jd) and j.mnemonic != "push":
+                        break  # the copy is overwritten
+                    if j.mnemonic in ("fstp", "fst", "mov") and jd == "dword ptr [esp]" and not alias:
                         room = True
                         break
                 if room:
