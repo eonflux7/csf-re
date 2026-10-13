@@ -15993,8 +15993,9 @@
   },
   "ret": "char",
   "conv": "__cdecl",
-  "params": "void* a3, bool* a2",
-  "sig_src": "vote"
+  "params": "S_00691860* output, bool* state",
+  "sig_src": "impl",
+  "file": "src/auto/00442e70.cpp"
  },
  "00442f20": {
   "name": "C_00831074_Initialize",
@@ -71390,7 +71391,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 438
+   "GetGlobalState_50D190": 439
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -71867,7 +71868,7 @@
   "name_src": "agent",
   "votes": {
    "GlobalState_ResetPending": 15,
-   "GameBddLoader_ResetPending": 8
+   "GameBddLoader_ResetPending": 9
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -71879,7 +71880,7 @@
   "name": "Object_IsFieldF0NonZero",
   "name_src": "agent",
   "votes": {
-   "Object_IsFieldF0NonZero": 6
+   "Object_IsFieldF0NonZero": 7
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -89637,7 +89638,7 @@
   "name": "GetGlobal8B0688",
   "name_src": "agent",
   "votes": {
-   "GetGlobal8B0688": 64
+   "GetGlobal8B0688": 65
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -90918,7 +90919,9 @@
  "00557dd0": {
   "name": "MpSpawnPoints_Update",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MpSpawnPoints_Update": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* , float deltaTime",
@@ -139884,7 +139887,7 @@
   "name": "MissionScript_ProcessDirectValue",
   "name_src": "vote",
   "votes": {
-   "MissionScript_ProcessDirectValue": 3
+   "MissionScript_ProcessDirectValue": 4
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -139895,12 +139898,12 @@
   "name": "CoreMemory_ProcessDescribedValue",
   "name_src": "agent",
   "votes": {
-   "MissionScript_ProcessDescribedValue": 2,
-   "CoreMemory_ProcessDescribedValue": 1
+   "CoreMemory_ProcessDescribedValue": 2,
+   "MissionScript_ProcessDescribedValue": 2
   },
   "ret": "char",
   "conv": "__cdecl",
-  "params": "int a1, uint8_t* a2, void* a3, int a4",
+  "params": "void* object, uint8_t* state, S_00691860* output, void* description",
   "sig_src": "vote"
  },
  "00691580": {
@@ -144291,7 +144294,7 @@
   "name": "GameBddLoader_ShouldPreloadResources",
   "name_src": "agent",
   "votes": {
-   "GameBddLoader_ShouldPreloadResources": 6
+   "GameBddLoader_ShouldPreloadResources": 7
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -146315,7 +146318,7 @@
   "name": "GetGlobalState_6A6D70",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_6A6D70": 50
+   "GetGlobalState_6A6D70": 51
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -191598,7 +191601,7 @@
   "name": "GetGlobalDword_73C020",
   "name_src": "agent",
   "votes": {
-   "GetGlobalDword_73C020": 109
+   "GetGlobalDword_73C020": 110
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -192559,7 +192562,8 @@
   "name": "NetSession_AdvanceCharacterPreviewTimer",
   "name_src": "agent",
   "votes": {
-   "MenuCharSelect_AdvancePreviewTimer": 2
+   "MenuCharSelect_AdvancePreviewTimer": 2,
+   "NetSession_AdvanceCharacterPreviewTimer": 1
   },
   "ret": "void",
   "conv": "__fastcall",
