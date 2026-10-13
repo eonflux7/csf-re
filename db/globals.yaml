@@ -8,16 +8,17 @@
 - {addr: 0x0082D0C0, name: g_QueryPerformanceCounterIat, type: QueryPerformanceFn, uses: 1, src: auto}
 - {addr: 0x0082D0C4, name: g_QueryPerformanceFrequencyIat, type: QueryPerformanceFn, uses: 1, src: auto}
 - {addr: 0x0082D0DC, name: g_FindFirstFileA, type: FindFirstFileAProc, uses: 4, src: auto}
-- {addr: 0x0082D0E0, name: g_pfnCloseHandle, type: void*, uses: 5, src: auto}
+- {addr: 0x0082D0E0, name: g_pfnCloseHandle, type: void*, uses: 6, src: auto}
 - {addr: 0x0082D118, name: g_SetFileAttributesA, type: SetFileAttributesAFn, uses: 3, src: auto}
 - {addr: 0x0082D184, name: g_FindNextFileA, type: FindNextFileAProc, uses: 3, src: auto}
 - {addr: 0x0082D18C, name: g_FindClose, type: FindCloseProc, uses: 4, src: auto}
 - {addr: 0x0082D190, name: g_SetCurrentDirectoryW, type: SetCurrentDirectoryWProc, uses: 10, src: auto}
 - {addr: 0x0082D194, name: g_pfnGetCurrentDirectoryA, type: void*, uses: 1, src: auto}
+- {addr: 0x0082D19C, name: g_pCreateMutexA_Import, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D1A0, name: g_CreateThreadImport, type: CreateThreadImportFn, uses: 1, src: auto}
 - {addr: 0x0082D204, name: g_GetComputerNameA, type: GetComputerNameFunction, uses: 1, src: auto}
 - {addr: 0x0082D208, name: g_SetThreadPriorityIat, type: void*, uses: 4, src: auto, alt: [g_pfnSetThreadPriority]}
-- {addr: 0x0082D20C, name: g_pfnWaitForSingleObject, type: WaitForSingleObjectFn, uses: 3, src: auto, alt: [g_pWaitForSingleObject]}
+- {addr: 0x0082D20C, name: g_pfnWaitForSingleObject, type: WaitForSingleObjectFn, uses: 4, src: auto, alt: [g_pWaitForSingleObject]}
 - {addr: 0x0082D210, name: g_DeleteFileA, type: DeleteFileAProc, uses: 4, src: auto}
 - {addr: 0x0082D214, name: g_ImportGetLocalTime, type: GetLocalTimeFunction, uses: 3, src: auto, alt: [g_GetLocalTime]}
 - {addr: 0x0082D218, name: g_CreateDirectoryW, type: CreateDirectoryWFunction, uses: 4, src: auto}
@@ -29,7 +30,7 @@
 - {addr: 0x0082D234, name: g_pfnWriteFile, type: WriteFileFn, uses: 1, src: auto}
 - {addr: 0x0082D238, name: g_pfnReadFile, type: ReadFileFn, uses: 2, src: auto}
 - {addr: 0x0082D23C, name: g_ReleaseMutex, type: ReleaseMutexFunction, uses: 1, src: auto}
-- {addr: 0x0082D240, name: g_GlobalMemoryStatusImport, type: void*, uses: 1, src: auto}
+- {addr: 0x0082D240, name: g_GlobalMemoryStatusImport, type: void*, uses: 3, src: auto}
 - {addr: 0x0082D24C, name: g_GetCurrentThreadIat, type: GetCurrentThreadFn, uses: 1, src: auto}
 - {addr: 0x0082D254, name: g_GetThreadPriorityIat, type: GetThreadPriorityFn, uses: 1, src: auto}
 - {addr: 0x0082D270, name: g_MapVirtualKeyA, type: MapVirtualKeyAFunction, uses: 1, src: auto}
@@ -54,7 +55,7 @@
 - {addr: 0x0082D2FC, name: g_DestroyWindowImport, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D390, name: g_BinkCloseFn, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D394, name: g_BinkPauseImport, type: BinkPauseImportFn, uses: 1, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 134, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 135, src: auto}
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 3, src: auto}
 - {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 5, src: auto}
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 5, src: auto}
@@ -62,8 +63,8 @@
 - {addr: 0x0082D4C8, name: g_CollisionMinimumTriangleArea, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
 - {addr: 0x0082D4D0, name: g_CollisionHeightTolerance, type: float, uses: 1, src: auto}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 178, src: auto}
-- {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 13, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 179, src: auto}
+- {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 14, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 16, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
 - {addr: 0x0082D550, name: g_SecondaryXRotationScale, type: const float, uses: 1, src: auto}
@@ -71,7 +72,7 @@
 - {addr: 0x0082D568, name: g_LocalDirectionAngleScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D56C, name: g_Epsilon, type: float, uses: 2, src: auto, alt: [g_MotionEpsilon]}
 - {addr: 0x0082D6E8, name: g_MatrixQueryFlags, type: 'std::uint32_t', uses: 2, src: auto, alt: [g_MatrixRequestFlags]}
-- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 115, src: auto, alt: [g_MissionUnsignedIntegerBias]}
+- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 116, src: auto, alt: [g_MissionUnsignedIntegerBias]}
 - {addr: 0x0082D748, name: g_HudPi, type: float, uses: 2, src: auto, alt: [g_PiConstant]}
 - {addr: 0x0082D74C, name: g_HudTwoPi, type: float, uses: 2, src: auto, alt: [g_TwoPiConstant]}
 - {addr: 0x0082D750, name: g_RotationRadiansToDegrees, type: float, uses: 1, src: auto}
@@ -196,7 +197,7 @@
 - {addr: 0x0082FCB4, name: g_MinMoveDistSq_82FCB4, type: float, uses: 2, src: auto}
 - {addr: 0x0082FE7C, name: g_SpeedScaleFactor, type: float, uses: 1, src: auto}
 - {addr: 0x0082FEA4, name: g_PathDistanceLimit, type: float, uses: 1, src: auto}
-- {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 26, src: auto}
+- {addr: 0x0082FEA8, name: g_ColorChannelScale, type: float, uses: 27, src: auto}
 - {addr: 0x0082FEBC, name: g_LayoutInset, type: float, uses: 7, src: auto, alt: [g_VerticalInset]}
 - {addr: 0x00830410, name: g_CheatSequencePreviousBase, type: int32_t, uses: 1, src: auto}
 - {addr: 0x00830414, name: g_CheatSequenceFirst, type: int32_t, uses: 1, src: auto}
@@ -633,7 +634,7 @@
 - {addr: 0x00867434, name: g_UnitFactorLowerBound, type: float, uses: 1, src: auto}
 - {addr: 0x00867444, name: g_FontVtable, type: void*, uses: 1, src: auto}
 - {addr: 0x0086747C, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x00867480, name: g_NearZeroThreshold, type: float, uses: 3, src: auto, alt: [g_TimerEpsilon, g_fEpsilon]}
+- {addr: 0x00867480, name: g_NearZeroThreshold, type: float, uses: 4, src: auto, alt: [g_TimerEpsilon, g_TransitionEpsilon, g_fEpsilon]}
 - {addr: 0x008678E8, name: g_AngleThreshold, type: float, uses: 1, src: auto}
 - {addr: 0x008680E4, name: g_SessionRequestTemplateSuffix, type: 'std::uint16_t', uses: 1, src: auto}
 - {addr: 0x008680E6, name: g_SessionRequestTemplateTerminator, type: 'std::uint8_t', uses: 1, src: auto}
@@ -2026,7 +2027,8 @@
 - {addr: 0x008BB3FC, name: g_RtfsEntryOffsetBase, type: uint32_t, uses: 4, src: auto, alt: [g_ArchiveVersionFlags, g_RtfsFileOffsetBase]}
 - {addr: 0x008BB400, name: g_008bb400, type: int, uses: 9, src: auto}
 - {addr: 0x008BB404, name: g_GlobalValue_8BB404, type: int, uses: 5, src: auto}
-- {addr: 0x008BB408, name: g_8BB408, type: int32_t, uses: 1, src: auto}
+- {addr: 0x008BB408, name: g_8BB408, type: int32_t, uses: 2, src: auto}
+- {addr: 0x008BB40C, name: g_8BB40C, type: int32_t, uses: 1, src: auto}
 - {addr: 0x008BB410, name: g_LogWindowRefCount, type: int, uses: 2, src: auto, alt: [g_SharedLogWindowRefCount]}
 - {addr: 0x008BB414, name: g_LogWindowBuffer, type: uint32_t, uses: 2, src: auto, alt: [g_SharedLogWindowInstance]}
 - {addr: 0x008BB418, name: g_GlobalState, type: int, uses: 3, src: auto}
@@ -2156,7 +2158,7 @@
 - {addr: 0x008BBF88, name: g_SecondV, type: float, uses: 1, src: auto}
 - {addr: 0x008BBF8C, name: g_Block8BBF8C, type: void*, uses: 2, src: auto, alt: [g_QuadVertexBuffer]}
 - {addr: 0x008BBF90, name: g_Block8BBF90, type: void*, uses: 2, src: auto, alt: [g_QuadIndexBuffer]}
-- {addr: 0x008BBF98, name: g_AccountConnectionFlag, type: uint8_t, uses: 7, src: auto, alt: [g_ConnectionRequestFlag, g_NetSessionConnectionFlag, g_NetSessionFlag, g_OnlineMenuActive, g_SessionWaitFailedFlag, g_StationDumpPendingFlag]}
+- {addr: 0x008BBF98, name: g_AccountConnectionFlag, type: uint8_t, uses: 8, src: auto, alt: [g_ConnectionRequestFlag, g_NetSessionConnectionFlag, g_NetSessionFlag, g_OnlineMenuActive, g_SessionWaitFailedFlag, g_StationDumpPendingFlag]}
 - {addr: 0x008BC098, name: g_Session, type: uint32_t, uses: 4, src: auto, alt: [g_dword_8BC098]}
 - {addr: 0x008BC0A0, name: g_MonitorLogSuffix, type: char, uses: 2, src: auto}
 - {addr: 0x008BC120, name: byte_8BC120, type: uint8_t, uses: 3, src: auto, alt: [g_NetSessionWaitingFlag]}
