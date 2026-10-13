@@ -166,6 +166,11 @@ The orchestrator (Opus, interactive) works `queue/` and the backlog below.
 - [ ] 8 done functions whose callers seem to read an ecx the callee *produced* (0x697330, 0x6973C0, 0x6AF8A0,
       0x71DF00, 0x722A40, 0x4F50D0, 0x542850, 0x6D2BE0; regargs.callers_keep_ecx with writes_ecx): check each,
       extend HOOK_KEEP_ECX to an "ecx out" variant if real
+- [x] emudiff gate step (2026-10-13): `emudiff_gate: on` in db/lanes.yaml; 0.13% false alarms on the diffed tier
+- [ ] **Sweep the done functions with emudiff** (`emudiff.py --tier executed`, `--tier gate`: about 6-10% DIFF):
+      read a sample of 30 for the real-bug share, fix the remaining false-alarm classes, then send the flagged
+      ones back to the lanes (status todo) so the ladder redoes them under the emudiff gate
+- [ ] emudiff: an `emulated` evidence level in the ledger (verify.py tiers / status.py) for functions that pass
 - [ ] **emudiff triage**: fix 0x544C60 (passes src+0x1C to the string assign; the original passes src, then adds)
       and 0x42DA20 (binds 0x6C8620 as int, the original tests `al`); read the other ~45 DIFFs of the 600-function
       sample (`emudiff.py --tier gate --n 300`, `--tier executed --n 300`), 0x728160, 0x53D8B0 (harness suspect)

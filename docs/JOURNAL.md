@@ -1348,3 +1348,29 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Full-coverage baseline after tonight's installs: 8 crash culprits and 2 mismatches quarantined in the first
   run, then 0x6B37F0 and four mismatches that outlived the x87 fix (0x41EA70, 0x6AF1C0, 0x4B06F0, 0x6AB9E0).
   0x47E350 and the three hand fixes pass. 0x43FBA0, 0x440F50, 0x441850, 0x4E0D70 fail as a group, none alone.
+
+## 2026-10-13 (night, 01:40-03:40) — emudiff to gate grade; gate step on
+- Measured on functions proven in the game (tier diffed, every DIFF there is a false alarm): 17 of 1,560 at the
+  start, 2 of 1,576 at the end (0.13%; 0x728160, 0x772650), 1.3% inconclusive. 0.3-0.5 s per function.
+- It flags all four crash bugs of this night from their old code (0x6B2A10, 0x6E5580, 0x6B37F0, 0x6B31E0) and
+  passes the four fixes. On 600 executed / 600 never-ran functions it flags 9.5% / 6.2%; of a dozen read, two
+  are real (0x52D530 called the vtable address instead of slot 0; 0x439CF0 looks like an inverted slot test),
+  the rest were the false-alarm classes below. Two "proven" functions called a callee twice (0x439B20,
+  0x4A3090): fixed.
+- False-alarm sources removed, by weight: mock results of 2 (clang tests bit 0 of a `bool`, MSVC tests al or eax:
+  the two sides took different branches; results are now 0 or odd, pointers end in a non-zero odd byte);
+  leftover eax of void-like functions typed int (api.ret_unused / eax_undefined_on_return, a byte-returning
+  last callee, `setcc al` as last writer); byte parameters pushed as dwords with garbage above (stack fill, a
+  caller's ebx/esi/edi); `push ecx` as local reservation passed on unwritten; arguments an ebp-framed callee
+  never reads; saved registers counted as arguments; ecx for callees that never read it; float last bits;
+  denormals (the emulator loads a denormal float with a wrong exponent); NaN vs NaN; CRT `__getptd` (rand)
+  reaching TLS imports; a `rep movs` with a count from the fill (one instruction, 43 minutes: wall-clock and
+  write limits per run).
+- Coverage: profile 2 has flag-carrying pointers and pointer results, a flags profile (5), any non-null address
+  is memory. 0x6B31E0's bug sits behind `test byte ptr [esi+0x64], 0x20` and was invisible before.
+- Gate: `db/lanes.yaml emudiff_gate: on` (off | log | on). A DIFF rejects with the first difference and both
+  call sequences; inconclusive and tool errors never reject. Verdicts go to work/emudiff_gate.jsonl.
+- A stale .git/index.lock (02:52, no git process) made every commit fail for 20 minutes; 390 files stayed
+  uncommitted and one verify group failed in 8 s with its control run, which fired the stop rule. repo.commit
+  now removes such a lock; the stop rule skips modules with an unattributed smoke failure; the verifier keeps
+  that smoke's output (work/group_fail_<ts>.log).
