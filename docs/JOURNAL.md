@@ -1553,3 +1553,28 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   rewrites (all its adopted output passed gate + emudiff here). Cost: OpenRouter spread the requests over providers
   up to 6x the listed price: $1.92 real for what the list price put at $0.51. Now `:floor` (cheapest provider) and a
   budget guard. Jobs with 5+ functions ran 30 min without finishing: keep them to 2-3.
+
+## 2026-10-14 (night): triage pipeline, real bugs in installed code, cutover jobs
+- Triage is two-stage now (user): single-function Haiku-high jobs on a pool of eight reused trees
+  (`deep_worker.py --pool`, `tools/qjobs.py`: batches only functions of one module and failure class within 0x400),
+  watched by `deep_worker.py wait --adopt`, then a sol-med review of each batch of about 15 (job rev1 is the first),
+  then the verifier. Haiku singles up to about 300 bytes pass and cost $0.01-0.05; none of nine between 370 and
+  800 bytes passed ($0.2-0.9 each): those go to sol-med. Triples on the un-slimmed harness cost $0.24-0.94.
+- Claude jobs were not slim: 88 KB per request with 24 tools; now the brief is the system prompt and six tools
+  (15 KB). Their allow-list refuses compound commands: the brief says one plain command per call.
+- Comparison on one task (two installed functions with an emudiff DIFF, both real bugs): Haiku xhigh 4 min, MiMo
+  v2.6 Pro 10 min (verified its own fixes), GLM flash no verdict in 25 min.
+- Real bugs found tonight in INSTALLED functions, each visible as an emudiff DIFF before: 0x53D8B0 (`mov eax,
+  Func` in clang MS asm loads the function's bytes, not its address: use lea), 0x50C370 (two arguments swapped),
+  0x532DC0 (eax not overwritten on one path), 0x4E2110 (float product and 32-bit cast where the original keeps the
+  x87 product and converts through _ftol2: was in the in-game `diffed` tier). A sweep of emudiff over every
+  installed function is running (work/measure/sweep_*.txt).
+- emudiff (job emufix), measured by the benchmark on main's corpus: 271 -> 281 of 400 mutants caught, none lost:
+  import cleanup from ABI/stack constraints (RaiseException: 16 bytes), object mapped at 0x50000000 and mirrored on
+  both sides, float tolerance only for the original's own FP stores, unused-return suppression removed.
+- Cutover: `src/boundary/` (CRT 51 slots, allocator shim, 99 NetZ stubs; link test crt 0, netz 222), data image
+  (`tools/datagen.py` with `tools/ida/export_dataptrs.py`: 36,022 pointers IDA knows in data, the exe has no
+  relocation table). Jobs started: link1 (standalone target, trap stubs, initialiser table, entry), netz2,
+  rwsurvey (docs/RW_PORT.md + first librw slice), rwa (docs/AUDIO_PORT.md + null backend).
+- Game code 97.4%; STL 388 of 418 in; decisions: RWA boundary reimplemented on our own backend, quarantine-rate
+  stop rule dropped.

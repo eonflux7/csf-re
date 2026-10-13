@@ -77,7 +77,7 @@ def main():
                 os.remove(q)
         subprocess.run([PY, os.path.join(ROOT, "tools", "globals.py")], check=False)
     print(f"adopt {a.job}: {len(good)} of {len(files)} pass gate and emudiff here"
-          + (" (dry run, nothing kept)" if a.dry else "; marked done, not committed"))
+          + (" (dry run, nothing kept)" if a.dry else "; marked done, not committed" if good else "; nothing taken"))
     return 1 if bad else 0
 
 

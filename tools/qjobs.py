@@ -6,8 +6,8 @@
 
 Batching: a queue item goes alone unless others share its module and failure class and lie within 0x400 bytes of
 it (clones of one pattern, members of one class: the second is nearly free once the first is understood); then up
-to 3 together. Functions over 300 bytes always go alone; --size picks the range (default up to 800 bytes: small
-jobs; start the bigger ones with `--size 801-99999 --agent sol-med`). Skipped: items a job has already had (`--again` takes
+to 3 together. Functions over 300 bytes always go alone; --size picks the range (default up to 320 bytes, where Haiku singles succeed and cost cents; 2026-10-14: none of nine between 370 and 800 bytes passed: small
+jobs; start the bigger ones with `--size 321-99999 --agent sol-med`). Skipped: items a job has already had (`--again` takes
 them too), items whose queue file holds no candidate code, duplicate-hook notes.
 After starting: `tools/deep_worker.py wait NAMES --adopt` in the background.
 """
@@ -71,7 +71,7 @@ def main():
     ap.add_argument("--max", type=int, default=8, help="jobs to start at most")
     ap.add_argument("--agent", default="haiku-hi")
     ap.add_argument("--again", action="store_true")
-    ap.add_argument("--size", default="0-800", help="function size range in bytes, LO-HI (bigger ones: --agent sol-med)")
+    ap.add_argument("--size", default="0-320", help="function size range in bytes, LO-HI (bigger ones: --agent sol-med)")
     a = ap.parse_args()
     lo, hi = map(int, a.size.split("-"))
     bs = batches([i for i in items(a.again) if lo <= i["size"] <= hi])
