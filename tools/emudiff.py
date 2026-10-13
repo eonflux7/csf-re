@@ -308,6 +308,13 @@ def stack_call_pops(ea):
     return infer_stack_pops(ins, direct, ea)
 
 
+@functools.lru_cache(maxsize=None)
+def indirect_facts(ea):
+    from packet import DB
+    from stackabi import indirect_facts as derive
+    return derive(ea, load("db", DB))
+
+
 def split_params(p):
     out, depth, cur = [], 0, ""
     for ch in p or "":
@@ -723,6 +730,10 @@ class Run:
             nargs = len(p[1]) if p else pop // 4
             use_ecx = p[0] if p else not imp
             rt = p[2] if p else "?"
+            fact = indirect_facts(self.ea).get(self.ret_site.get(ret), {})
+            pop = fact.get("pop", pop)
+            nargs = fact.get("nargs", nargs)
+            use_ecx = fact.get("ecx", use_ecx)
             if not imp and rt not in BYTE_TYPES and IMG <= target < IMG + 0x500000 and target in functions() and returns_al(target):
                 rt = "char"  # the callee sets al only, whatever its prototype says
         elif i < len(self.script):
@@ -1049,6 +1060,13 @@ def check(ea, obj_path=None, src=None, profiles=PROFILES, verbose=False):
         if tmp and os.path.exists(tmp):
             os.remove(tmp)
     own, ret_site = own_ranges(ea)
+    from packet import DB, callable_shared_chunk, disasm, vcall_tail_pops
+    shared = []
+    if len(own) > 1:
+        db = load("db", DB)
+        shared = [(a, b) for a, b in own[1:] if callable_shared_chunk(a, db)]
+        for a, b in shared:
+            call_pops().update(vcall_tail_pops(disasm(a, b - a, linear=True)))
     _tls.trace = ""
     done, diffs, why = 0, [], collections.Counter()
     for prof in range(profiles):
@@ -1058,7 +1076,9 @@ def check(ea, obj_path=None, src=None, profiles=PROFILES, verbose=False):
         if o.status != "ret":
             why[o.status.split(" at ")[0][:40]] += 1
             continue
-        m = Run(ea, prof, obj.code, obj, o.events).start(obj.entry)
+        # IDA appends shared tail chunks to the original's ranges. A candidate can delegate such a chunk
+        # with CSF_FUNC: run the same bytes instead of mocking the chunk as an extra outside call.
+        m = Run(ea, prof, obj.code + shared, obj, o.events).start(obj.entry)
         d = compare(ea, o, m)
         if d and d[0].startswith("?"):
             why[d[0][1:41]] += 1

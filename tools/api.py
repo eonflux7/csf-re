@@ -96,13 +96,44 @@ def reads_before_write(ea, db, reg):
     entry; a call or ret ends a path without a read. Branches are followed (a few levels, inside the function) and
     every path must read the register first: 0x46BE40 tests a stack argument, branches, and reads ecx on both
     sides; its caller bound it __stdcall and passed garbage (2026-10-11)."""
-    from packet import disasm
-    if ea not in db.F:
+    from packet import disasm, callable_shared_chunk
+    f = db.F.get(ea) or callable_shared_chunk(ea, db)
+    if not f:
         return False
-    ins = disasm(ea, min(db.F[ea]["size"], 400))
+    ins = disasm(ea, min(f["size"], 400))
     at = {i.address: k for k, i in enumerate(ins)}
 
-    def walk(k, prologue, depth):
+    aliases = {reg: 0xFFFFFFFF, reg[1:]: 0xFFFF}
+    if reg in ("eax", "ebx", "ecx", "edx"):
+        aliases.update({reg[1] + "l": 0xFF, reg[1] + "h": 0xFF00})
+
+    def read_mask(operand):
+        return sum(mask for name, mask in aliases.items() if re.search(rf"\b{name}\b", operand))
+
+    def pushed_mask(k):
+        """The low bits consumed by a typed stack argument, despite a whole-register push. An untyped or
+        interrupted push sequence stays a full-width read (partial writes must not erase a live pointer).
+        """
+        index = 0
+        for j in ins[k:k + 8]:
+            if j.mnemonic == "push":
+                index += 1
+            elif j.mnemonic == "call" and re.fullmatch(r"0x[0-9a-f]+", j.op_str):
+                a = ida_abi().get(int(j.op_str, 16), {})
+                args = [t for t, _, loc in a.get("args", []) if loc == "stack"]
+                if index < len(args):
+                    t = c_type(args[index])
+                    if t in ("int16_t", "uint16_t", "short", "unsigned short"):
+                        return 0xFFFF
+                    if t in ("int8_t", "uint8_t", "char", "unsigned char", "bool"):
+                        return 0xFF
+                break
+            elif j.mnemonic.startswith("j") or j.mnemonic in ("call", "ret", "pop") or \
+                    j.op_str.startswith("esp,"):
+                break
+        return 0xFFFFFFFF
+
+    def walk(k, prologue, depth, live=0xFFFFFFFF):
         # prologue: MSVC frame/SEH setup and register saves: a `push ecx` there reserves a stack slot
         while k < len(ins):
             i = ins[k]
@@ -118,13 +149,18 @@ def reads_before_write(ea, db, reg):
                 if m == "jmp":
                     k, depth, prologue = at[t], depth - 1, False
                     continue
-                return walk(k, False, depth - 1) and walk(at[t], False, depth - 1)
+                return walk(k, False, depth - 1, live) and walk(at[t], False, depth - 1, live)
             parts = [x.strip() for x in ops.split(",")]
             if not parts or not parts[0]:
                 continue
             dst, srcs = parts[0], parts[1:]
-            written = dst == reg and m in ("mov", "lea", "pop", "movzx", "movsx") or \
-                (m == "xor" and len(parts) == 2 and parts[0] == parts[1] == reg)
+            written = dst in aliases and m in ("mov", "lea", "pop", "movzx", "movsx")
+            # Constant-producing arithmetic does not consume the old destination bits.
+            constant = len(parts) == 2 and dst in aliases and (
+                m in ("xor", "sub") and dst == parts[1] or
+                m == "or" and int_literal(parts[1]) == aliases[dst] or
+                m == "and" and int_literal(parts[1]) == 0)
+            written |= constant
             if m == "push" and prologue and (dst in ("ebp", "ebx", "esi", "edi", "eax", "ecx") or dst.startswith(("0x", "-"))):
                 continue  # `push ecx` in the prologue = `sub esp, 4`; after it (0x431CF0, 0x544390) it passes `this` on
             if prologue and (m == "mov" and ops in ("ebp, esp", "eax, dword ptr fs:[0]", "dword ptr fs:[0], esp")
@@ -157,21 +193,28 @@ def reads_before_write(ea, db, reg):
                     continue
             prologue = False
             if m == "push":
-                if re.search(rf"\b{reg}\b", dst):
+                if read_mask(dst) & live & pushed_mask(k):
                     return True
                 continue
             if m == "lea" and srcs and srcs[0] == f"[{dst}]":  # `lea ecx, [ecx]`: alignment padding
                 continue
-            if m in ("xor", "sub") and len(parts) == 2 and parts[0] == parts[1] == reg:  # zeroing: a write
-                return False
-            read = any(re.search(rf"\b{reg}\b", s) for s in srcs) or (re.search(rf"\b{reg}\b", dst) and not written)
-            if read:
+            read = 0 if constant else (read_mask(", ".join(srcs)) | (read_mask(dst) if not written else 0))
+            if read & live:
                 return True
             if written:
-                return False
+                live &= ~aliases[dst]
+                if not live:
+                    return False
         return False
 
     return walk(0, True, 3)
+
+
+def int_literal(s):
+    try:
+        return int(s, 0) & 0xFFFFFFFF
+    except ValueError:
+        return None
 
 
 SUBREG = {"eax": r"e?ax|al|ah", "ebx": r"e?bx|bl|bh", "esi": r"e?si", "edi": r"e?di"}
@@ -181,10 +224,11 @@ def reg_args(ea, db):
     """Registers among eax/ebx/esi/edi the function reads before it writes them: arguments no calling convention
     names (LTCG usercall; zlib's 0x6A46A0 takes its state in esi, 0x6A33A0 in eax with the tree in edi). A push is a
     save, not a read; a call or ret ends a path; every path must read the register (as reads_before_write)."""
-    from packet import disasm
-    if ea not in db.F:
+    from packet import disasm, callable_shared_chunk
+    f = db.F.get(ea) or callable_shared_chunk(ea, db)
+    if not f:
         return set()
-    ins = disasm(ea, min(db.F[ea]["size"], 400))
+    ins = disasm(ea, min(f["size"], 400))
     at = {i.address: k for k, i in enumerate(ins)}
 
     def walk(reg, k, depth):
@@ -346,6 +390,10 @@ def real_regs(ea, db=None):
         p = os.path.join(ROOT, "db", "regargs.json")
         _real = {int(k, 16): v.get("real", []) for k, v in json.load(open(p)).items()} if os.path.exists(p) else {}
     regs = set(_real.get(ea, []))
+    if db is not None and ea not in db.F:
+        # Shared chunks have no CSV/regargs row. A stack-balanced entry can still require LTCG registers;
+        # admitting its address must not bypass the gate's call_regs requirement.
+        regs.update(reg_args(ea, db))
     # game code only: CRT / library entry points are asm with their own rules (___CxxFrameHandler takes eax)
     if db is not None and db.rows.get(ea, {}).get("region") == "game" and "eax" in reg_args(ea, db):
         regs.add("eax")

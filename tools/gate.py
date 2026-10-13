@@ -10,7 +10,7 @@ Usage: gate.py <ea-hex> <file.cpp>      exit 0 = pass; errors on stdout
 """
 import glob, json, os, re, shlex, subprocess, sys, tempfile
 sys.path.insert(0, os.path.dirname(__file__))
-from packet import ret_bytes, disasm, DB
+from packet import ret_bytes, disasm, DB, callable_shared_chunk
 import semcheck
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -59,10 +59,12 @@ def stack_bytes(conv, params):
 def effective_rets(ea, db, depth=3):
     """`ret N` bytes of a function; one that ends in a direct tail jump (`jmp 0xT`, no ret of its own) inherits T's:
     the jump hands T the caller's stack frame, so T's ret pops the caller's args."""
-    rets = ret_bytes(ea, db.F[ea]["size"])
+    f = db.F.get(ea) or callable_shared_chunk(ea, db)
+    if not f:
+        return []
+    rets = ret_bytes(ea, f["size"])
     if rets or depth == 0:
         return rets
-    f = db.F[ea]
     tails = {int(i.op_str, 16) for i in disasm(ea, f["size"]) if i.mnemonic == "jmp" and i.op_str.startswith("0x")}
     tails = {t for t in tails if t in db.F and not f["ea"] <= t < f["end"]}
     out = set()
@@ -77,7 +79,7 @@ def check_bindings(src, db):
     for m in re.finditer(r"CSF_FUNC\(\s*(.+?)\s*,\s*(__\w+)\s*,\s*(\w+)\s*,\s*0x([0-9A-Fa-f]+)\s*,\s*\((.*?)\)\s*\)",
                          src, re.S):
         conv, name, addr, params = m.group(2), m.group(3), int(m.group(4), 16), m.group(5)
-        if addr not in db.F:
+        if addr not in db.F and not callable_shared_chunk(addr, db):
             errs.append(f"CSF_FUNC {name}: 0x{addr:X} is not a function start")
             continue
         rets = effective_rets(addr, db)

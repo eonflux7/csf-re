@@ -1500,3 +1500,16 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   - hookdiff: not applied yet. Both rules implemented, DLL builds in its tree; needs the loadsave smoke with the
     two functions installed, then FR01 and the menu tour.
   - qemuB's emudiff changes stay out (18 candidates to inconclusive).
+- Job qabi applied, merged with qemuA's emudiff (one adjacent insertion; `stackabi.indirect_facts` made to accept
+  an address without a row). What it changes: `reads_before_write` tracks partial registers (a `mov cx, ..` / `or
+  ecx, -1` is not a read of ecx); a shared tail chunk that is a callable entry (0x661DC0, 0x42B320) is accepted as
+  a CSF_FUNC target and run for real in emudiff; cleanup and ecx use of indirect calls derived from the binary
+  (tools/stackabi.py). Measured: db/api.json identical with and without the tool changes; proven set unchanged;
+  3 more queued candidates DIFF -> same. 12 of its 13 functions and those 3 are pending (0x6D6800 stays queued:
+  emudiff inconclusive).
+- opus-lo (claude-opus-5-5@low on the grunts' Claude account, user 2026-10-13) for easy and small-to-medium jobs.
+  First two: d728160 ($0.35) found a real bug in a function of the diffed tier (3 arguments where the original
+  pushes 5; dead in the callee, so the in-game diff could not see it: emudiff could); lt6910f0 ($0.57) fixed the
+  one file failing the standalone compile (it included the header declaring its own address). Eight triage
+  batches started on it (in-game mismatches, smoke failures, small emudiff rejections): candidates only, no
+  changes under tools/ or hook/.

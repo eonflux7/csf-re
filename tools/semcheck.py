@@ -273,6 +273,17 @@ def check(ea, obj, db):
     f = db.F[ea]
     ours, our_disps = our_refs(obj)
     imms, orig_disps = orig_refs(ea, db)
+    # Calling a shared tail chunk delegates its exact original accesses. Count those references only
+    # when the compiled object actually references that exported, independently callable chunk.
+    from packet import ida_view, callable_shared_chunk
+    delegated = set()
+    for start, end in (ida_view(ea) or {}).get("chunks", [])[1:]:
+        if start in ours and callable_shared_chunk(start, db):
+            delegated.update(i.address for i in disasm(start, end - start, linear=True))
+    for i in code_of(ea, db):
+        if i.address in delegated:
+            ours.update(int(h, 16) for h in HEX.findall(i.op_str))
+            our_disps.update(int(off, 0) for _, _, off in DISP.findall(i.op_str))
     own = range(f["ea"], f["end"])
     errs = []
     required = {}

@@ -116,6 +116,105 @@ def ret_bytes(ea, size):
     return sorted(rets)
 
 
+def callable_shared_chunk(ea, db):
+    """An exported tail chunk can also be called independently. Require an explicit incoming transfer,
+    decoded instruction heads, and a balanced stack on every path to ret. Do not accept arbitrary labels.
+    This is a derived binary fact; it does not create an IDA function or a functions.csv row.
+    """
+    if not hasattr(db, "_callable_chunks"):
+        with _shared_init_lock:
+            if not hasattr(db, "_callable_chunks"):
+                db._callable_chunks = _callable_shared_chunks(db)
+    return db._callable_chunks.get(ea)
+
+
+_shared_init_lock = threading.Lock()
+
+
+def _callable_shared_chunks(db):
+    chunks = {}
+    candidates = {}
+    for path in glob_disasm():
+        with open(path) as stream:
+            v = json.load(stream)
+        starts = {a: b for a, b in v["chunks"] if a != v["ea"] and a not in db.F}
+        for src, target, kind in v.get("crefs", []):
+            if target in starts and kind in ("call", "jump") and not target <= src < starts[target]:
+                candidates.setdefault(target, (starts[target], v["insns"]))
+    pops_path = os.path.join(ROOT, "export", "calls.json")
+    if os.path.exists(pops_path):
+        with open(pops_path) as stream:
+            pops = json.load(stream)
+    else:
+        pops = {}
+    for start, (end, heads) in candidates.items():
+        ins = disasm(start, end - start, linear=True)
+        if not ins or ins[-1].address + ins[-1].size != end or any(i.address not in heads for i in ins):
+            continue
+        at = {i.address: i for i in ins}
+        seen, rets = set(), set()
+
+        def walk(pc, delta):
+            if (pc, delta) in seen or len(seen) > 256 or pc not in at:
+                return False
+            seen.add((pc, delta))
+            i = at[pc]
+            m, ops = i.mnemonic, i.op_str
+            nxt = pc + i.size
+            if m == "ret":
+                rets.add(int(ops, 0) if ops else 0)
+                return delta == 0
+            if m == "push":
+                delta += 4
+            elif m == "pop" and ops != "esp":
+                delta -= 4
+            elif m in ("add", "sub") and ops.startswith("esp, "):
+                delta += (-1 if m == "add" else 1) * int(ops.split(", ")[1], 0)
+            elif m == "call":
+                pop = vcall_tail_pops(ins).get(pc, pops.get(f"{pc:08x}"))
+                if pop is None:
+                    return False
+                delta -= pop
+            elif m.startswith("j"):
+                if not re.fullmatch(r"0x[0-9a-f]+", ops):
+                    return False
+                target = int(ops, 16)
+                # Copy the visited path: converging branches are valid, cycles are not proved here.
+                saved = set(seen)
+                branch = walk(target, delta)
+                seen.clear()
+                seen.update(saved)
+                return branch and (m == "jmp" or walk(nxt, delta))
+            elif ops.split(",")[0] == "esp" or m in ("leave", "enter", "int3"):
+                return False
+            return delta >= 0 and walk(nxt, delta)
+
+        if walk(start, 0) and rets:
+            chunks[start] = dict(ea=start, end=end, size=end - start, shared=True)
+    return chunks
+
+
+def glob_disasm():
+    import glob
+    return glob.glob(os.path.join(ROOT, "export", "disasm", "*.json"))
+
+
+def vcall_tail_pops(ins):
+    """A frameless shared thunk loads its vtable, pushes constants, calls a slot and immediately returns.
+    The slot must remove those pushes: otherwise ret would use a pushed constant as its return address.
+    export/calls.json can report zero for this call because the thunk is only a shared function chunk.
+    Restrict the proof to this complete shape; saved registers / caller-owned stack args are not inferred.
+    """
+    if len(ins) < 4 or (ins[0].mnemonic, ins[0].op_str) != ("mov", "eax, dword ptr [ecx]") or \
+            ins[-1].mnemonic != "ret" or ins[-2].mnemonic != "call" or \
+            not re.fullmatch(r"dword ptr \[eax(?: \+ (?:0x[0-9a-f]+|\d+))?\]", ins[-2].op_str):
+        return {}
+    pushes = ins[1:-2]
+    if not pushes or any(i.mnemonic != "push" or not re.fullmatch(r"(?:0x[0-9a-f]+|-?\d+)", i.op_str) for i in pushes):
+        return {}
+    return {ins[-2].address: 4 * len(pushes)}
+
+
 def pseudo(ea):
     p = os.path.join(ROOT, "export", "funcs", f"{ea:08x}.c")
     return open(p).read() if os.path.exists(p) else None
