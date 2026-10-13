@@ -4675,7 +4675,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 224
+   "AssignStringSubstring": 225
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -10551,7 +10551,7 @@
   "name": "AssignStringRange_429B60",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_429B60": 189,
+   "AssignStringRange_429B60": 190,
    "MenuSceneSelect_InitializeString": 1
   },
   "ret": "void*",
@@ -14790,7 +14790,7 @@
   "name": "Profiles_AppendStringRange",
   "name_src": "vote",
   "votes": {
-   "Profiles_AppendStringRange": 15,
+   "Profiles_AppendStringRange": 16,
    "AppendBytesToString_43EB30": 1
   },
   "ret": "void*",
@@ -72717,7 +72717,7 @@
   "name": "StringAppendFill",
   "name_src": "vote",
   "votes": {
-   "StringAppendFill": 9
+   "StringAppendFill": 10
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -74113,7 +74113,8 @@
   "name": "S_00517800_QueryFirstFreeSlot",
   "name_src": "agent",
   "votes": {
-   "S_00517800_Query": 1
+   "S_00517800_Query": 1,
+   "S_00517800_QueryFirstFreeSlot": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -74137,8 +74138,9 @@
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_00517800* self, void* , int profileAddress",
+  "sig_src": "impl",
+  "file": "src/auto/00517930.cpp"
  },
  "00517b80": {
   "name": "NetProfile_SaveProfile",
@@ -74259,7 +74261,7 @@
   "name": "NetProfile_ReadProfile_518660",
   "name_src": "agent",
   "votes": {
-   "NetProfile_ReadProfile_518660": 1
+   "NetProfile_ReadProfile_518660": 2
   },
   "ret": "int",
   "conv": "__stdcall",
@@ -139253,7 +139255,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 655,
+   "Mem_FreeDebug": 656,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -141353,7 +141355,7 @@
   "name": "GetOptionsByteAt2",
   "name_src": "agent",
   "votes": {
-   "GetOptionsByteAt2": 23
+   "GetOptionsByteAt2": 24
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -141459,7 +141461,7 @@
   "name": "StoreOptionsByte104",
   "name_src": "agent",
   "votes": {
-   "StoreOptionsByte104": 14
+   "StoreOptionsByte104": 15
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -141471,7 +141473,7 @@
   "name": "GetOptionsByte104",
   "name_src": "agent",
   "votes": {
-   "GetOptionsByte104": 14
+   "GetOptionsByte104": 15
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -141614,7 +141616,7 @@
   "name_src": "agent",
   "votes": {
    "CloseSceneFile": 29,
-   "CoreFiles_CloseSceneFile": 3
+   "CoreFiles_CloseSceneFile": 4
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -141827,7 +141829,7 @@
   "name_src": "agent",
   "votes": {
    "OpenSceneFile": 13,
-   "CoreFiles_OpenSceneFile": 19
+   "CoreFiles_OpenSceneFile": 20
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -141843,7 +141845,7 @@
    "SceneLoader_SetLogState": 1,
    "SceneLoader_SetOptionsByte": 2,
    "SceneLoader_SetPackageLoadingEnabled": 1,
-   "CoreFiles_SetFileOption": 11
+   "CoreFiles_SetFileOption": 12
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -141905,7 +141907,7 @@
   "name_src": "agent",
   "votes": {
    "MenuManager_CheckPageAvailability": 10,
-   "CoreFiles_CheckPageAvailability": 7
+   "CoreFiles_CheckPageAvailability": 8
   },
   "ret": "int",
   "conv": "__cdecl",
