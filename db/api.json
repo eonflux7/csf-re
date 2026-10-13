@@ -19867,7 +19867,7 @@
   "name": "CGuiControl_GetSceneMenuContext",
   "name_src": "agent",
   "votes": {
-   "GetSceneMenuContext": 119
+   "GetSceneMenuContext": 124
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -20640,7 +20640,7 @@
   "votes": {
    "Scene_RemoveObjectSlot": 1,
    "SceneReleaseHandle": 1,
-   "CScene_RemoveObjectSlot": 15
+   "CScene_RemoveObjectSlot": 17
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -30134,7 +30134,7 @@
   "name": "GetGlobalObjectField184",
   "name_src": "agent",
   "votes": {
-   "GetGlobalObjectField184": 58
+   "GetGlobalObjectField184": 60
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -30265,7 +30265,7 @@
   "name": "DispatchRecordOrQueueIdentifier",
   "name_src": "agent",
   "votes": {
-   "DispatchRecordToGlobalObject": 51,
+   "DispatchRecordToGlobalObject": 53,
    "QueueTaskRecord": 1
   },
   "ret": "uint32_t",
@@ -36410,7 +36410,9 @@
  "004882c0": {
   "name": "S_00486c30_NotifyAndRecompute",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_00486c30_NotifyAndRecompute": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_00486c30* self, void* , float a2, int a3",
@@ -36420,7 +36422,9 @@
  "004882f0": {
   "name": "S_00486c30_NotifyThenRecompute",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_00486c30_NotifyThenRecompute": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_00486c30* self, void* , float a2, int a3",
@@ -37893,7 +37897,7 @@
   "name": "SceneLoader_ConfigureFocusEntry",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_ConfigureFocusEntry": 40,
+   "SceneLoader_ConfigureFocusEntry": 41,
    "SceneLoader_SetObjectPosition": 2
   },
   "ret": "int",
@@ -56358,7 +56362,7 @@
   "name": "C_0083c388_Construct",
   "name_src": "agent",
   "votes": {
-   "C_0083c388_Construct": 1
+   "C_0083c388_Construct": 2
   },
   "ret": "C_0083c388*",
   "conv": "__fastcall",
@@ -56389,7 +56393,9 @@
  "004d6520": {
   "name": "C_0083c388_NotifySceneMenuAndRemoveSlot",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0083c478_CommitIndexRequest": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "C_0083c388* self, void* , int a2, char a3",
@@ -56397,26 +56403,30 @@
   "file": "src/auto/004d6520.cpp"
  },
  "004d6580": {
-  "name": "sub_4D6580",
-  "name_src": "addr",
+  "name": "C_0083c388_DispatchRecordAndOptionallyRemoveObject",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0083c388* self, void* , char removeObject",
+  "sig_src": "impl",
+  "file": "src/auto/004d6580.cpp"
  },
  "004d6620": {
-  "name": "sub_4D6620",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_0083c388_NotifySceneAndRemoveObject",
+  "name_src": "agent",
+  "votes": {
+   "C_0083c478_CommitFloatRequest": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2, char a3",
-  "sig_src": "abi"
+  "params": "C_0083c388* self, void* , float amount, char removeObject",
+  "sig_src": "impl",
+  "file": "src/auto/004d6620.cpp"
  },
  "004d6710": {
   "name": "S_0041f0a0_UpdateSideStateRecord_4D6710",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -56437,15 +56447,16 @@
   "file": "src/auto/004d67a0.cpp"
  },
  "004d67c0": {
-  "name": "Alt_InitCategoryObject",
-  "name_src": "vote",
+  "name": "C_0083c478_InitCategoryObject",
+  "name_src": "agent",
   "votes": {
    "Alt_InitCategoryObject": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_0083c478* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004d67c0.cpp"
  },
  "004d6810": {
   "name": "C_0083c478_LatchTargetAndNotify",
@@ -56458,69 +56469,76 @@
   "file": "src/auto/004d6810.cpp"
  },
  "004d6840": {
-  "name": "sub_4D6840",
-  "name_src": "addr",
+  "name": "C_0083c478_LatchFirstTargetAndNotify",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, char a3",
-  "sig_src": "abi"
+  "params": "C_0083c478* self, void* , int a2, char a3",
+  "sig_src": "impl",
+  "file": "src/auto/004d6840.cpp"
  },
  "004d6870": {
-  "name": "sub_4D6870",
-  "name_src": "addr",
+  "name": "C_0083c478_UpdateFocusEntryState",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "abi"
+  "params": "C_0083c478* self, void* , uint32_t* a2",
+  "sig_src": "impl",
+  "file": "src/auto/004d6870.cpp"
  },
  "004d6900": {
-  "name": "sub_4D6900",
-  "name_src": "addr",
+  "name": "C_0083c478_ConsumePendingIndex",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083c478* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004d6900.cpp"
  },
  "004d6980": {
-  "name": "sub_4D6980",
-  "name_src": "addr",
+  "name": "C_0083c478_ApplyEntryToMenuIfReady",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083c478* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004d6980.cpp"
  },
  "004d6a10": {
-  "name": "sub_4D6A10",
-  "name_src": "addr",
+  "name": "C_0083c478_HandleMpSpawnPointEvent",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083c478* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004d6a10.cpp"
  },
  "004d6a90": {
-  "name": "sub_4D6A90",
-  "name_src": "addr",
+  "name": "C_0083c478_ResetState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0083c478* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004d6a90.cpp"
  },
  "004d6ac0": {
   "name": "MpSpawnPoints_ResetSpecialObject",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MpSpawnPoints_ResetSpecialObject": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "uint8_t* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004d6ac0.cpp"
  },
  "004d6af0": {
   "name": "MpSpawnPoints_IsSpecialObjectActive",
@@ -112795,7 +112813,7 @@
   "name": "RwFrameUpdateObjects",
   "name_src": "rwname",
   "votes": {
-   "RwFrameUpdateObjects": 13
+   "RwFrameUpdateObjects": 14
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -112859,7 +112877,7 @@
   "name": "RwFrameTranslate",
   "name_src": "rwname",
   "votes": {
-   "RwFrameTranslate": 4
+   "RwFrameTranslate": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -112870,7 +112888,7 @@
   "name": "RwFrameTransform",
   "name_src": "rwname",
   "votes": {
-   "RwFrameTransform": 6
+   "RwFrameTransform": 7
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -113147,7 +113165,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 210
+   "RwMatrixDestroy": 211
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -120245,7 +120263,7 @@
   "name": "Sub_64B250",
   "name_src": "vote",
   "votes": {
-   "Sub_64B250": 52
+   "Sub_64B250": 53
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -148576,7 +148594,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 486,
+   "GetGlobalInt": 487,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -155456,7 +155474,7 @@
   "name": "GetGlobalValue_6C5760",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_6C5760": 114
+   "GetGlobalValue_6C5760": 115
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -169508,7 +169526,8 @@
   "name_src": "agent",
   "votes": {
    "RpPrtStd_ProcessMatrixState": 1,
-   "RpPrtStd_UpdateAtomicChild": 1
+   "RpPrtStd_UpdateAtomicChild": 1,
+   "C_00862748_InitBoundsAndTransform": 1
   },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
@@ -169672,8 +169691,9 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00862748* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006f4420.cpp"
  },
  "006f44c0": {
   "name": "GfxPrtStdParticles_TranslateParticles",
@@ -169693,7 +169713,7 @@
   "name": "C_00862748_UpdateParticles_6F4590",
   "name_src": "agent",
   "votes": {
-   "C_00862748_UpdateParticles_6F4590": 1,
+   "C_00862748_UpdateParticles_6F4590": 2,
    "GfxPrtStdParticles_RefreshPlacement": 1
   },
   "ret": "void",
@@ -169764,8 +169784,9 @@
   "votes": {},
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00862748* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006f4f40.cpp"
  },
  "006f5050": {
   "name": "C_00862748_SetFieldAndRefresh",
@@ -184459,7 +184480,7 @@
   "name": "SceneLoader_GetObjectRegistry",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetObjectRegistry": 48,
+   "SceneLoader_GetObjectRegistry": 49,
    "SceneLoader_GetRangeManager": 1,
    "SceneLoader_GetServiceInterface": 1,
    "SceneLoader_GetRenderService": 1,
@@ -190965,7 +190986,7 @@
   "name": "GetGlobalDword_73C020",
   "name_src": "agent",
   "votes": {
-   "GetGlobalDword_73C020": 105
+   "GetGlobalDword_73C020": 107
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -191542,7 +191563,7 @@
   "name": "MpSpawnPoints_GetPlayerEntryId",
   "name_src": "agent",
   "votes": {
-   "MpSpawnPoints_GetPlayerEntryId": 3
+   "MpSpawnPoints_GetPlayerEntryId": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -192321,7 +192342,9 @@
  "0073ffc0": {
   "name": "CMenuMpStats_ApplyEntryUpdate",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuMpStats_ApplyEntryUpdate": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "CMenuMpStats* self, void* , uint16_t a2, int a3",
@@ -192331,7 +192354,9 @@
  "00740020": {
   "name": "CMenuMpStats_HandlePlayerSpawnEvent",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuMpStats_HandlePlayerSpawnEvent": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* , uint16_t playerSlot, int playerEntryId",
@@ -193305,7 +193330,9 @@
  "00742720": {
   "name": "C_00858180_WriteRecogerArmaFields",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00858180_WriteRecogerArmaFields": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "C_00858180* self, void* , char a2, char a3",
@@ -193337,7 +193364,9 @@
  "00742820": {
   "name": "C_00858180_WriteRecogerMunicionFields_742820",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00858180_WriteRecogerMunicionFields_742820": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "C_00858180* self, void* , char a2, char a3",
@@ -196253,7 +196282,7 @@
   "name": "C_74B200_SetFlagAndReturnTrue",
   "name_src": "agent",
   "votes": {
-   "C_74B200_SetFlagAndReturnTrue": 6
+   "C_74B200_SetFlagAndReturnTrue": 7
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -199200,7 +199229,7 @@
   "name": "GameConfig_IsSceneObjectRemovable",
   "name_src": "agent",
   "votes": {
-   "GameConfig_IsSceneObjectRemovable": 9,
+   "GameConfig_IsSceneObjectRemovable": 10,
    "Scene_IsObjectRemovable": 11
   },
   "ret": "int",
