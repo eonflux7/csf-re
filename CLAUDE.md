@@ -28,7 +28,8 @@ backlog), pending/verified counts and the link-test line, and any open decisions
 - `tools/` the loop: grunt.py (lanes, wave; model policy in `db/lanes.yaml`), verifier.py + verify.py (in-game
   install/diff, evidence ledger), gate.py + semcheck.py + controls.py (static checks; fpret.py: float returns decided from the binary), emudiff.py (emulated diff
   vs the original, offline), api.py + addrfix.py + linktest.py (cutover contract), pool.py + playcopy.py (parallel
-  smoke instances), status.py, monitor.py. Between wave runs: naming.py (the only place names change: captain.py +
+  smoke instances), status.py, monitor.py. deep_worker.py: a Sol High agent in its own worktree for a part of the
+  orchestrator's task (offline tools only; returns report.md + patch.diff under work/deep/, reviewed before use). Between wave runs: naming.py (the only place names change: captain.py +
   fields.py + rename_classes.py under a code-hash invariant), ida/propagate.sh, review.py (rolling Opus sample);
   this_class.py + plain_classes.py + vtbl_types.py (classes, `this`/parameter/member types, typed vtables).
   `tools/setup/`: one-shot scripts of the setup phase (regions, rwname, stl, clones, ...).

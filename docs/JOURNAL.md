@@ -1447,3 +1447,12 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   0x703470); three of them look like diff false alarms from their lines (a returned frame address 0x10 apart, a
   leftover eax of a void-like function, a byte argument with the caller's register above it): to check in queue/.
   Waves restarted.
+
+## 2026-10-13 (afternoon)
+- Waves: ranking exhausted at 91.9% of game code (13,713 of 14,492). Left: stl 418 (by hand, PLAN), queue 169,
+  and 192 stubs of 4-5 bytes (1 KB) no lane was ever offered. The last run was half as fast as the one before
+  (1,073 OK in 4 h): one Codex quota wait (both logins at 93%, up to 141 min), 148 waves of a few functions each.
+- `tools/deep_worker.py` (user, 2026-10-13: the orchestrator may fire up Sol High workers for parts of a task and
+  review what they find). One Codex CLI agent session, gpt-6.1-sol@high, sandboxed to its own worktree
+  (work/deep/NAME/tree, set up like the verify tree); offline tools only. Returns report.md and patch.diff; nothing
+  reaches the repo unreviewed. The captain stays what it is (naming, schema-checked jobs): not renamed.
