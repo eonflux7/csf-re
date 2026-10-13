@@ -16374,7 +16374,9 @@
  "004443b0": {
   "name": "ProcessRecordArray_4443B0",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ProcessRecordArray_4443B0": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
   "params": "std::uint32_t* array, int contextAddress",
@@ -16384,7 +16386,9 @@
  "004445b0": {
   "name": "ProcessRecordArray_4445B0",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ProcessRecordArray_4445B0": 1
+  },
   "ret": "uint32_t",
   "conv": "__stdcall",
   "params": "void* array, char* context",
@@ -16397,8 +16401,9 @@
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0083109c* self, void* , int contextAddress",
+  "sig_src": "impl",
+  "file": "src/auto/004447b0.cpp"
  },
  "00444870": {
   "name": "SceneLoader_PrepareEnvironment",
@@ -198366,14 +198371,15 @@
  },
  "0074f7a0": {
   "name": "NetCallbacks_CreateRecord",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "NetCallbacks_CreateRecord": 1
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "uint32_t a1",
-  "sig_src": "vote"
+  "params": "int a1",
+  "sig_src": "impl",
+  "file": "src/auto/0074f7a0.cpp"
  },
  "0074f7c0": {
   "name": "NetPostmanDDL_ProcessField",
