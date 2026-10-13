@@ -17358,7 +17358,7 @@
   "file": "src/auto/004485a0.cpp"
  },
  "00448600": {
-  "name": "GrowPolymorphicArray",
+  "name": "GrowPolymorphicArray_448600",
   "name_src": "agent",
   "votes": {
    "AiTaskStates_GrowRegionEntries": 1,
@@ -42135,15 +42135,16 @@
   "file": "src/auto/0049f2c0.cpp"
  },
  "0049f330": {
-  "name": "Archive_GrowRecordArray",
-  "name_src": "vote",
+  "name": "GrowPolymorphicArray_49F330",
+  "name_src": "agent",
   "votes": {
    "Archive_GrowRecordArray": 1
   },
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int additionalCapacity",
+  "sig_src": "impl",
+  "file": "src/auto/0049f330.cpp"
  },
  "0049f410": {
   "name": "C_008342e8_Construct",
@@ -138191,7 +138192,7 @@
   "name_src": "agent",
   "votes": {
    "Mem_Alloc": 482,
-   "CoreMemory_AllocUntagged": 30
+   "CoreMemory_AllocUntagged": 33
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -138204,7 +138205,7 @@
   "name_src": "agent",
   "votes": {
    "Mem_Free": 939,
-   "CoreMemory_Free": 51
+   "CoreMemory_Free": 53
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -139413,24 +139414,28 @@
  },
  "00694c80": {
   "name": "LoadState_Construct",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "LoadState_Construct": 4,
    "InitTempRecord": 1
   },
   "ret": "void**",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_00694cd0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00694c80.cpp"
  },
  "00694cd0": {
-  "name": "sub_694CD0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "StringFormat_EnsureBufferCapacity",
+  "name_src": "agent",
+  "votes": {
+   "StrBuf_ReserveForAppend": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_00694cd0* self, void* , int extraBytes",
+  "sig_src": "impl",
+  "file": "src/auto/00694cd0.cpp"
  },
  "00694d50": {
   "name": "sub_694D50",
@@ -139442,13 +139447,14 @@
   "sig_src": "abi"
  },
  "00694dc0": {
-  "name": "sub_694DC0",
-  "name_src": "addr",
+  "name": "S_00694cd0_AppendString",
+  "name_src": "agent",
   "votes": {},
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2",
-  "sig_src": "abi"
+  "params": "S_00694cd0* self, void* , const char* text",
+  "sig_src": "impl",
+  "file": "src/auto/00694dc0.cpp"
  },
  "00694e10": {
   "name": "sub_694E10",
@@ -139480,22 +139486,27 @@
   "sig_src": "vote"
  },
  "00694fb0": {
-  "name": "sub_694FB0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CoreZlibLog_AppendText",
+  "name_src": "vote",
+  "votes": {
+   "CoreZlibLog_AppendText": 2
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2, char* a3",
-  "sig_src": "abi"
+  "params": "S_00694cd0* self, void* , const char* valueText, const char* tagText",
+  "sig_src": "impl",
+  "file": "src/auto/00694fb0.cpp"
  },
  "00695030": {
-  "name": "sub_695030",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CoreLog_FormatPrefixedRecord",
+  "name_src": "vote",
+  "votes": {
+   "CoreLog_FormatPrefixedRecord": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2, char* a3, char a4, char a5, int a6",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006951b0": {
   "name": "CoreZlibLog_BeginRecord",
@@ -139505,8 +139516,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2, char a3, int a4",
-  "sig_src": "vote"
+  "params": "S_00694cd0* self, void* , int a2, int a3, int a4",
+  "sig_src": "impl",
+  "file": "src/auto/006951b0.cpp"
  },
  "006951d0": {
   "name": "CoreZlibLog_EndGroup_6951D0",
@@ -139534,15 +139546,16 @@
   "sig_src": "vote"
  },
  "006952f0": {
-  "name": "CoreZlibLog_WriteInteger",
-  "name_src": "vote",
+  "name": "FormatAndWriteInteger",
+  "name_src": "agent",
   "votes": {
    "CoreZlibLog_WriteInteger": 16
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, char* a3",
-  "sig_src": "vote"
+  "params": "S_00694cd0* self, void* , int value, const char* text",
+  "sig_src": "impl",
+  "file": "src/auto/006952f0.cpp"
  },
  "00695330": {
   "name": "CoreZlibLog_WriteFloat",
@@ -139552,19 +139565,21 @@
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2, char* a3",
-  "sig_src": "vote"
+  "params": "S_00694cd0* self, void* , float value, const char* suffix",
+  "sig_src": "impl",
+  "file": "src/auto/00695330.cpp"
  },
  "00695370": {
   "name": "CoreZlibLog_WriteBoolean",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CoreZlibLog_WriteBoolean": 1
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint8_t a2, char* a3",
-  "sig_src": "vote"
+  "params": "S_00694cd0* self, void* , uint8_t a2, const char* a3",
+  "sig_src": "impl",
+  "file": "src/auto/00695370.cpp"
  },
  "006953b0": {
   "name": "CoreZlibLog_WriteString",
@@ -139589,19 +139604,20 @@
   "sig_src": "vote"
  },
  "00695500": {
-  "name": "MenuMessageBox_TestEntryAgainstFlag",
-  "name_src": "vote",
+  "name": "StringFormat_CompareWideAgainstNarrow",
+  "name_src": "agent",
   "votes": {
    "MenuMessageBox_TestEntryAgainstFlag": 6
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "uint16_t* entry, char* flagByte",
-  "sig_src": "vote"
+  "params": "uint16_t* a1, char* a2",
+  "sig_src": "impl",
+  "file": "src/auto/00695500.cpp"
  },
  "00695560": {
-  "name": "GetWideTextLength",
-  "name_src": "vote",
+  "name": "StringFormat_GetWideTextLength",
+  "name_src": "agent",
   "votes": {
    "GetWideTextLength": 8
   },
@@ -139612,37 +139628,40 @@
   "file": "src/auto/00695560.cpp"
  },
  "00695590": {
-  "name": "CopyTrucoStringToWide",
-  "name_src": "vote",
+  "name": "StringFormat_CopyTrucoStringToWide",
+  "name_src": "agent",
   "votes": {
    "CopyTrucoStringToWide": 11
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
-  "params": "const char* src, uint16_t* dst, int maxCount",
-  "sig_src": "vote"
+  "params": "char* src, uint16_t* dst, int maxCount",
+  "sig_src": "impl",
+  "file": "src/auto/00695590.cpp"
  },
  "006955e0": {
   "name": "CoreZlibLog_ConvertAttributeTextToWide",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CoreZlibLog_ConvertAttributeTextToWide": 1
   },
   "ret": "uint8_t*",
   "conv": "__cdecl",
-  "params": "uint16_t* a1, uint16_t* a2, int a3",
-  "sig_src": "vote"
+  "params": "uint16_t* a1, uint16_t* a2, int",
+  "sig_src": "impl",
+  "file": "src/auto/006955e0.cpp"
  },
  "00695620": {
-  "name": "ConvertWideTextToNarrow",
-  "name_src": "vote",
+  "name": "StringFormat_ConvertWideTextToNarrow",
+  "name_src": "agent",
   "votes": {
    "ConvertWideTextToNarrow": 12
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
-  "params": "std::uint16_t* source, char* destination, unsigned int length",
-  "sig_src": "vote"
+  "params": "const uint16_t* wideText, uint8_t* narrowOut, unsigned int maxChars",
+  "sig_src": "impl",
+  "file": "src/auto/00695620.cpp"
  },
  "00695660": {
   "name": "CoreVariantValues_ReadWcharAndAdvance",
@@ -213135,11 +213154,13 @@
  "007b02f5": {
   "name": "__snprintf",
   "name_src": "ida",
-  "votes": {},
+  "votes": {
+   "__snprintf": 3
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "void* Buffer, uint32_t BufferCount, void* Format, ...",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007b0398": {
   "name": "__except_handler3",
