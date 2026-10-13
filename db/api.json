@@ -207311,7 +207311,8 @@
   "name": "NetPerfCounters_ResetStringToEmpty",
   "name_src": "agent",
   "votes": {
-   "DataSetPerf_DestroyEntry": 1
+   "DataSetPerf_DestroyEntry": 1,
+   "NetPerfCounters_ResetStringToEmpty": 1
   },
   "ret": "int",
   "conv": "__stdcall",
@@ -207362,7 +207363,8 @@
   "name": "NetPerf_ForwardToEntryIfNonNull",
   "name_src": "agent",
   "votes": {
-   "DataSetPerf_ConstructEntry": 1
+   "DataSetPerf_ConstructEntry": 1,
+   "NetPerf_ForwardToEntryIfNonNull": 1
   },
   "ret": "char*",
   "conv": "__stdcall",
@@ -207393,15 +207395,16 @@
   "file": "src/auto/0078bf70.cpp"
  },
  "0078c1a0": {
-  "name": "S_0078c870_ConstructElement164",
-  "name_src": "vote",
+  "name": "NetPerf_ForwardToEntries164",
+  "name_src": "agent",
   "votes": {
    "S_0078c870_ConstructElement164": 1
   },
-  "ret": "std::uint32_t*",
+  "ret": "uint32_t*",
   "conv": "__cdecl",
-  "params": "std::uint32_t* a1, int a2, std::uint32_t* a3, int a4, int a5",
-  "sig_src": "vote"
+  "params": "std::uint8_t* first, std::uint32_t count, uint32_t* forwardArg, void* contextObject",
+  "sig_src": "impl",
+  "file": "src/auto/0078c1a0.cpp"
  },
  "0078c240": {
   "name": "NetPerfCounters_CopyRecordRangeReverse",
@@ -216133,7 +216136,7 @@
   "name": "___CxxFrameHandler",
   "name_src": "ida",
   "votes": {
-   "___CxxFrameHandler": 205,
+   "___CxxFrameHandler": 206,
    "OriginalCxxFrameHandler": 1
   },
   "ret": "int",
@@ -216217,7 +216220,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 284
+   "RethrowCppException": 285
   },
   "ret": "void",
   "conv": "__stdcall",
