@@ -10425,7 +10425,7 @@
   "name": "AssignStringRange_429B60",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_429B60": 174,
+   "AssignStringRange_429B60": 175,
    "MenuSceneSelect_InitializeString": 1
   },
   "ret": "void*",
@@ -14654,7 +14654,7 @@
   "name": "Profiles_AppendStringRange",
   "name_src": "vote",
   "votes": {
-   "Profiles_AppendStringRange": 7,
+   "Profiles_AppendStringRange": 8,
    "AppendBytesToString_43EB30": 1
   },
   "ret": "void*",
@@ -76319,7 +76319,7 @@
   "name": "GetGlobalValue_521BB0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_521BB0": 118
+   "GetGlobalValue_521BB0": 119
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -76521,7 +76521,7 @@
   "name_src": "agent",
   "votes": {
    "Sub_521F10": 5,
-   "SoundMgr_StartActiveInstanceIfReady": 1
+   "SoundMgr_StartActiveInstanceIfReady": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -79463,15 +79463,16 @@
   "file": "src/auto/0052dd80.cpp"
  },
  "0052de50": {
-  "name": "CMenuScenarioSelect_UpdateScenarioForKey",
-  "name_src": "vote",
+  "name": "CMenuScenarioSelect_SelectScenario",
+  "name_src": "agent",
   "votes": {
    "CMenuScenarioSelect_UpdateScenarioForKey": 1
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "CMenuScenarioSelect* self, void* , int scenarioIndex",
+  "sig_src": "impl",
+  "file": "src/auto/0052de50.cpp"
  },
  "0052df20": {
   "name": "CMenuScenarioSelect_RefreshState",
@@ -94759,17 +94760,19 @@
  "0057c220": {
   "name": "RpPrtStdAtomicIsEmitter",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RpPrtStdAtomicIsEmitter": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0057c290": {
   "name": "RpPrtStdAtomicGetEmitter",
   "name_src": "rwname",
   "votes": {
-   "RpPrtStdAtomicGetEmitter": 10
+   "RpPrtStdAtomicGetEmitter": 11
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -94912,7 +94915,7 @@
   "name": "RpPrtStdPropTabGetPropOffset",
   "name_src": "rwname",
   "votes": {
-   "RpPrtStdPropTabGetPropOffset": 13
+   "RpPrtStdPropTabGetPropOffset": 14
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -97985,7 +97988,7 @@
   "name": "RpAtomicDestroy",
   "name_src": "rwname",
   "votes": {
-   "RpAtomicDestroy": 1
+   "RpAtomicDestroy": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -98103,7 +98106,7 @@
   "name": "RpAtomicSetFrame",
   "name_src": "rwname",
   "votes": {
-   "RpAtomicSetFrame": 3
+   "RpAtomicSetFrame": 6
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -111752,7 +111755,7 @@
   "name": "RwFrameDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwFrameDestroy": 7
+   "RwFrameDestroy": 10
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -138064,7 +138067,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 606,
+   "Mem_FreeDebug": 607,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -140666,7 +140669,7 @@
   "name": "SelectionData_BuildFromIndex",
   "name_src": "vote",
   "votes": {
-   "SelectionData_BuildFromIndex": 2
+   "SelectionData_BuildFromIndex": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -160056,7 +160059,8 @@
   "name_src": "agent",
   "votes": {
    "GrowRecordArray": 4,
-   "ArrayGrow": 1
+   "ArrayGrow": 1,
+   "RecordArray_Grow_6D9EB0": 1
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -171443,15 +171447,16 @@
   "file": "src/auto/00702f40.cpp"
  },
  "007030d0": {
-  "name": "Emitter_RunPrimaryStep",
-  "name_src": "vote",
+  "name": "S_007030d0_SelectCachedAtomic",
+  "name_src": "agent",
   "votes": {
    "Emitter_RunPrimaryStep": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, unsigned int a3",
-  "sig_src": "vote"
+  "params": "S_007030d0* self, void* , int bucketIndex, unsigned int requestedSize",
+  "sig_src": "impl",
+  "file": "src/auto/007030d0.cpp"
  },
  "00703280": {
   "name": "RecordParticleSampleAndUpdateAverage",
@@ -171512,18 +171517,21 @@
   "file": "src/auto/00703470.cpp"
  },
  "007034c0": {
-  "name": "sub_7034C0",
-  "name_src": "addr",
+  "name": "GfxParticleAtomic_AddEmitter",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "int* self, void* , int arrayIndex, int atomic",
+  "sig_src": "impl",
+  "file": "src/auto/007034c0.cpp"
  },
  "00703600": {
   "name": "AtomicEmitterArray_FreeElementsAndHeader",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "AtomicEmitterArray_FreeElementsAndHeader": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "int* self, void*",
@@ -171544,15 +171552,16 @@
   "file": "src/auto/00703670.cpp"
  },
  "00703710": {
-  "name": "GfxParticleEmitters_ClearEmbeddedState",
-  "name_src": "vote",
+  "name": "S_00703360_DestroyAtomicsAndClearArray",
+  "name_src": "agent",
   "votes": {
    "GfxParticleEmitters_ClearEmbeddedState": 4
   },
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "int* a1",
-  "sig_src": "vote"
+  "params": "S_00703360* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00703710.cpp"
  },
  "007037c0": {
   "name": "GfxParticleEmitters_DestroyEmbeddedState",
@@ -212666,7 +212675,7 @@
   "name": "_memcpy",
   "name_src": "ida",
   "votes": {
-   "_memcpy": 118,
+   "_memcpy": 119,
    "Memcpy": 1
   },
   "ret": "void*",
