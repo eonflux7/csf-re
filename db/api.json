@@ -19220,7 +19220,7 @@
   "file": "src/auto/0044e030.cpp"
  },
  "0044e070": {
-  "name": "C_0082d410_ScalarDeletingDestructor",
+  "name": "C_0082d410_ScalarDeletingDestructor_44E070",
   "name_src": "agent",
   "votes": {},
   "ret": "void*",
@@ -59010,7 +59010,7 @@
   "name": "AiCore_DestroyBaseAgent",
   "name_src": "vote",
   "votes": {
-   "AiCore_DestroyBaseAgent": 2
+   "AiCore_DestroyBaseAgent": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -59066,22 +59066,24 @@
   "file": "src/auto/004dbf70.cpp"
  },
  "004dbf80": {
-  "name": "sub_4DBF80",
-  "name_src": "addr",
+  "name": "C_0082d410_ScalarDeletingDestructor_4DBF80",
+  "name_src": "impl",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/004dbf80.cpp"
  },
  "004dbfb0": {
-  "name": "sub_4DBFB0",
-  "name_src": "addr",
+  "name": "C_0083dfa0_Destroy",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0083dfa0* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/004dbfb0.cpp"
  },
  "004dbfe0": {
   "name": "sub_4DBFE0",
@@ -59124,8 +59126,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "TAiState* self, void* , int newState",
+  "sig_src": "impl",
+  "file": "src/auto/004dc150.cpp"
  },
  "004dc180": {
   "name": "UnnamedApply_4DC180",
@@ -59151,8 +59154,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/004dc180.cpp"
  },
  "004dc1a0": {
   "name": "sub_4DC1A0",
@@ -139197,13 +139201,16 @@
   "sig_src": "abi"
  },
  "00690d40": {
-  "name": "sub_690D40",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CoreMemDebugFree_TryRecoverAllocation",
+  "name_src": "vote",
+  "votes": {
+   "CoreMemDebugFree_TryRecoverAllocation": 1,
+   "CoreMemDebugFree_ShouldRetryAllocation": 1
+  },
   "ret": "char",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00690da0": {
   "name": "GetData_8BAD98",
@@ -139241,8 +139248,8 @@
   "sig_src": "vote"
  },
  "00690e60": {
-  "name": "Mem_FreeDebug",
-  "name_src": "opus",
+  "name": "MemDebug_FreeDebugBlock",
+  "name_src": "agent",
   "votes": {
    "Mem_FreeDebug": 657,
    "HudWidget_MemFreeDebug": 1,
@@ -139256,15 +139263,16 @@
   "file": "src/auto/00690e60.cpp"
  },
  "00690eb0": {
-  "name": "AllocateAlignedBuffer",
-  "name_src": "vote",
+  "name": "CoreMemDebugFree_AllocateAlignedBuffer",
+  "name_src": "agent",
   "votes": {
    "AllocateAlignedBuffer": 13
   },
-  "ret": "int",
+  "ret": "void*",
   "conv": "__cdecl",
-  "params": "std::size_t size, int alignment, int option1, int option2",
-  "sig_src": "vote"
+  "params": "size_t size, int alignment, int file, int line",
+  "sig_src": "impl",
+  "file": "src/auto/00690eb0.cpp"
  },
  "00690f70": {
   "name": "MemDebug_FreeBlock",
@@ -139279,13 +139287,14 @@
   "file": "src/auto/00690f70.cpp"
  },
  "00690fc0": {
-  "name": "sub_690FC0",
-  "name_src": "addr",
+  "name": "CoreMemDebugFree_ReallocateDebugBlock",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* Block, uint32_t Size, int a3, int a4",
-  "sig_src": "abi"
+  "params": "uint32_t* block, size_t size, int file, int line",
+  "sig_src": "impl",
+  "file": "src/auto/00690fc0.cpp"
  },
  "00691080": {
   "name": "MemDebug_QueryAvailablePhysicalMemory",
@@ -139354,7 +139363,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 178,
+   "CoreMemory_Free": 180,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -144117,7 +144126,9 @@
  "0069e010": {
   "name": "GetFirstArgument",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GetFirstArgument": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
   "params": "int first, int",
@@ -144127,7 +144138,9 @@
  "0069e020": {
   "name": "C_0085eac0_ForwardAlloc",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0085eac0_ForwardAlloc": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "C_0085eac0* self, void* edx, size_t Size, int a3, int a4, int a5",
@@ -144147,13 +144160,15 @@
   "file": "src/auto/0069e040.cpp"
  },
  "0069e050": {
-  "name": "sub_69E050",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CoreMemDebugFree_ReallocateBlock",
+  "name_src": "vote",
+  "votes": {
+   "CoreMemDebugFree_ReallocateBlock": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, uint32_t* Block, uint32_t Size, int a4, int a5",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0069e200": {
   "name": "C_0085eac0_ForwardBlockArgs",
@@ -144193,7 +144208,7 @@
   "name": "C_0085eac0_RoundBlockSizeToClass",
   "name_src": "agent",
   "votes": {
-   "C_0085eac0_RoundBlockSizeToClass": 2
+   "C_0085eac0_RoundBlockSizeToClass": 3
   },
   "ret": "size_t",
   "conv": "__fastcall",
@@ -144225,7 +144240,7 @@
   "name": "C_0085eb30_WaitForEventHandle",
   "name_src": "agent",
   "votes": {
-   "C_0085eb30_WaitForEventHandle": 2
+   "C_0085eb30_WaitForEventHandle": 4
   },
   "ret": "bool",
   "conv": "__fastcall",
@@ -144237,7 +144252,7 @@
   "name": "C_0085eb30_ReleaseMutexIfSet",
   "name_src": "agent",
   "votes": {
-   "C_0085eb30_ReleaseMutexIfSet": 2
+   "C_0085eb30_ReleaseMutexIfSet": 4
   },
   "ret": "int",
   "conv": "__fastcall",

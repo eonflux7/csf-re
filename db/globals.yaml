@@ -2079,7 +2079,8 @@
 - {addr: 0x008BAD7C, name: g_MemDebugLine, type: int, uses: 0, src: opus}
 - {addr: 0x008BAD88, name: g_bMemDebugTrackingEnabled, type: bool, uses: 0, src: captain, conf: 0.75}
 - {addr: 0x008BAD8C, name: g_MemDebugTotalAllocatedBytes, type: int, uses: 0, src: captain, conf: 0.85}
-- {addr: 0x008BAD98, name: g_unk_8BAD98, type: uint8_t, uses: 6, src: auto}
+- {addr: 0x008BAD90, name: g_MemDebugAllocationStatus, type: uint8_t, uses: 2, src: auto, alt: [g_MemDebugFailureFlag]}
+- {addr: 0x008BAD98, name: g_unk_8BAD98, type: uint8_t, uses: 8, src: auto}
 - {addr: 0x008BAEB0, name: g_MemDebugAllocationFlag, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008BAEB4, name: g_MemDebugMutex, type: void*, uses: 0, src: captain, conf: 0.75}
 - {addr: 0x008BAEC0, name: g_ReferenceListPool, type: S_0069afe0, uses: 2, src: auto}

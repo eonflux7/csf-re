@@ -5224,7 +5224,7 @@ ea,size,region,module,name,name_src,status
 004dbf10,83,game,m4DBDB0,,,todo
 004dbf70,9,game,m4DBDB0,TAiState_Constructor,agent,done
 004dbf80,34,game,m4DBDB0,,,todo
-004dbfb0,33,game,m4DBDB0,,,todo
+004dbfb0,33,game,m4DBDB0,C_0083dfa0_Destroy,agent,done
 004dbfe0,115,game,m4DBDB0,,,todo
 004dc060,76,game,m4DBDB0,ResetAiBaseState,vote,todo
 004dc0b0,145,game,m4DBDB0,AiState_SerializeInner,vote,todo
@@ -13535,14 +13535,14 @@ ea,size,region,module,name,name_src,status
 00690cf0,17,game,m690B10,,,todo
 00690d10,17,game,m690B10,,,todo
 00690d30,16,game,m690B10,,,todo
-00690d40,65,game,m690B10,,,todo
+00690d40,65,game,m690B10,CoreMemDebugFree_TryRecoverAllocation,vote,todo
 00690da0,6,game,m690B10,GetData_8BAD98,agent,done
 00690db0,6,game,m690B10,GetGlobal8BAD64,agent,done
 00690dc0,160,game,m690B10,Mem_AllocDebug,opus,todo
-00690e60,78,game,m690E60,Mem_FreeDebug,opus,todo
-00690eb0,183,game,m690E60,AllocateAlignedBuffer,vote,todo
+00690e60,78,game,m690E60,MemDebug_FreeDebugBlock,agent,done
+00690eb0,183,game,m690E60,CoreMemDebugFree_AllocateAlignedBuffer,agent,done
 00690f70,78,game,m690E60,MemDebug_FreeBlock,agent,done
-00690fc0,186,game,m690E60,,,todo
+00690fc0,186,game,m690E60,CoreMemDebugFree_ReallocateDebugBlock,agent,done
 00691080,10,game,m690E60,MemDebug_QueryAvailablePhysicalMemory,agent,done
 00691090,10,game,m690E60,SceneLoader_BeginMemoryMaintenance,agent,done
 006910a0,13,game,m690E60,SetGlobalValue8BAD60,agent,done
@@ -13966,7 +13966,7 @@ ea,size,region,module,name,name_src,status
 0069e010,10,game,m69DD10,GetFirstArgument,agent,done
 0069e020,24,game,m69DD10,C_0085eac0_ForwardAlloc,agent,done
 0069e040,9,game,m69DD10,C_0085eac0_ForwardBlock,agent,done
-0069e050,424,game,m69DD10,,,todo
+0069e050,424,game,m69DD10,CoreMemDebugFree_ReallocateBlock,vote,todo
 0069e200,28,game,m69DD10,C_0085eac0_ForwardBlockArgs,agent,done
 0069e220,23,game,m69DD10,GetAvailablePhysicalMemory,agent,done
 0069e240,30,game,m69DD10,C_0085eac0_GetPhysMemoryDelta,agent,done
