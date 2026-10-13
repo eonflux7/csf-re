@@ -4590,7 +4590,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 194
+   "AssignStringSubstring": 196
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -4716,7 +4716,7 @@
   "name": "S_0046bea0_Copy",
   "name_src": "vote",
   "votes": {
-   "S_0046bea0_Copy": 1
+   "S_0046bea0_Copy": 2
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -10376,7 +10376,7 @@
   "name": "AssignStringRange_429B60",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_429B60": 152,
+   "AssignStringRange_429B60": 153,
    "MenuSceneSelect_InitializeString": 1
   },
   "ret": "void*",
@@ -74474,7 +74474,8 @@
   "name": "BddTables_ResetElementBuffer",
   "name_src": "agent",
   "votes": {
-   "ResetRecord68Entry": 1
+   "ResetRecord68Entry": 1,
+   "BddTables_ResetElementBuffer": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -74507,7 +74508,9 @@
  "0051bf70": {
   "name": "BddTables_ClearRecord68List",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "BddTables_ClearRecord68List": 2
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -95556,7 +95559,7 @@
   "name": "RtRandom",
   "name_src": "rwname",
   "votes": {
-   "RtRandom": 4
+   "RtRandom": 5
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -137327,7 +137330,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 552,
+   "Mem_FreeDebug": 553,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -137419,7 +137422,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "Mem_Alloc": 460
+   "Mem_Alloc": 461
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -137431,7 +137434,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "Mem_Free": 901
+   "Mem_Free": 903
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -153395,14 +153398,15 @@
  },
  "006c8550": {
   "name": "WeaponFirearms_ActivateContext",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "WeaponFirearms_ActivateContext": 2
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006c8550.cpp"
  },
  "006c8620": {
   "name": "WeaponFirearms_IsContextActiveImpl",
@@ -153759,8 +153763,8 @@
   "sig_src": "vote"
  },
  "006c95c0": {
-  "name": "C_00860924_BaseCleanup",
-  "name_src": "vote",
+  "name": "C_00860954_ClearSlots",
+  "name_src": "agent",
   "votes": {
    "C_00860924_BaseCleanup": 1
   },
@@ -153827,7 +153831,9 @@
  "006c99e0": {
   "name": "S_006c9710_AppendElement36",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "StringEntries_AppendEntry": 1
+  },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
   "params": "S_006c9710* self, void* , int element",
@@ -153845,13 +153851,14 @@
   "file": "src/auto/006c9a70.cpp"
  },
  "006c9aa0": {
-  "name": "sub_6C9AA0",
-  "name_src": "addr",
+  "name": "C_00860954_FindOrAddName",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2, int16_t* a3",
-  "sig_src": "abi"
+  "params": "C_00860954* self, void* , char* name, int16_t* value",
+  "sig_src": "impl",
+  "file": "src/auto/006c9aa0.cpp"
  },
  "006c9b50": {
   "name": "sub_6C9B50",
@@ -158675,7 +158682,8 @@
   "name": "S_0046bea0_AssignRecords",
   "name_src": "agent",
   "votes": {
-   "PTank_AssignElement": 1
+   "PTank_AssignElement": 1,
+   "S_0046bea0_AssignRecords": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -195366,7 +195374,7 @@
  },
  "0075a480": {
   "name": "AudioSoundManager_GetSoundDescriptor",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "AudioSoundManager_GetSoundDescriptor": 6,
    "SoundBank_GetEntryByIndex": 1,
@@ -195375,26 +195383,29 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int soundIndex",
+  "sig_src": "impl",
+  "file": "src/auto/0075a480.cpp"
  },
  "0075a4a0": {
-  "name": "sub_75A4A0",
-  "name_src": "addr",
+  "name": "C_0086c1e0_FindEntryIndex",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_0086c1e0* self, void* , int searchKey",
+  "sig_src": "impl",
+  "file": "src/auto/0075a4a0.cpp"
  },
  "0075a500": {
-  "name": "sub_75A500",
-  "name_src": "addr",
+  "name": "C_0086c1e0_FindSoundIndexByName",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* String2",
-  "sig_src": "abi"
+  "params": "C_0086c1e0* self, void* , char* String2",
+  "sig_src": "impl",
+  "file": "src/auto/0075a500.cpp"
  },
  "0075a5b0": {
   "name": "sub_75A5B0",
@@ -195406,13 +195417,16 @@
   "sig_src": "abi"
  },
  "0075a6c0": {
-  "name": "sub_75A6C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SoundDefs_CopyEntryFrom",
+  "name_src": "agent",
+  "votes": {
+   "SoundDefs_CopyRecordBody": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_0046bea0* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/0075a6c0.cpp"
  },
  "0075a720": {
   "name": "sub_75A720",
@@ -195460,58 +195474,71 @@
   "sig_src": "abi"
  },
  "0075aef0": {
-  "name": "sub_75AEF0",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "void*",
+  "name": "InitSoundEntry_75AEF0",
+  "name_src": "vote",
+  "votes": {
+   "InitSoundEntry_75AEF0": 1,
+   "SoundDefs_ApplyToEntry_75AEF0": 1
+  },
+  "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1, int a2",
-  "sig_src": "abi"
+  "params": "int entry, std::uint32_t* source",
+  "sig_src": "impl",
+  "file": "src/auto/0075aef0.cpp"
  },
  "0075af40": {
-  "name": "sub_75AF40",
-  "name_src": "addr",
-  "votes": {},
+  "name": "InitSoundEntryRange_75AF40",
+  "name_src": "agent",
+  "votes": {
+   "SoundDefs_ParseEntry": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "int first, int last, int destination, int context, int unused",
+  "sig_src": "impl",
+  "file": "src/auto/0075af40.cpp"
  },
  "0075afd0": {
-  "name": "sub_75AFD0",
-  "name_src": "addr",
+  "name": "SoundDefs_FillRecordRange",
+  "name_src": "impl",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, uint32_t* a2, int a3",
-  "sig_src": "abi"
+  "params": "std::uint32_t* first, std::uint32_t* last, int sourceAddress",
+  "sig_src": "impl",
+  "file": "src/auto/0075afd0.cpp"
  },
  "0075b070": {
-  "name": "sub_75B070",
-  "name_src": "addr",
+  "name": "SoundDefs_ForwardThreeArgsToAE50",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0075b070.cpp"
  },
  "0075b090": {
-  "name": "sub_75B090",
-  "name_src": "addr",
-  "votes": {},
+  "name": "SoundDefs_ApplyToEntryRange",
+  "name_src": "agent",
+  "votes": {
+   "S_0075b5e0_ConstructElement68": 1
+  },
   "ret": "void*",
   "conv": "__cdecl",
-  "params": "int a1, int a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint32_t base, std::uint32_t count, int argument, int context, int unused",
+  "sig_src": "impl",
+  "file": "src/auto/0075b090.cpp"
  },
  "0075b120": {
-  "name": "sub_75B120",
-  "name_src": "addr",
+  "name": "SoundDefs_ForwardWithSelfToParseEntry",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a1, uint32_t* a2, int a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint32_t* a1, uint32_t* a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/0075b120.cpp"
  },
  "0075b140": {
   "name": "sub_75B140",
@@ -195541,54 +195568,61 @@
   "sig_src": "abi"
  },
  "0075b5a0": {
-  "name": "ResetBaseTransitionState",
-  "name_src": "vote",
+  "name": "C_0086c1e0_ResetBaseTransitionState",
+  "name_src": "agent",
   "votes": {
    "ResetBaseTransitionState": 1
   },
-  "ret": "uint32_t*",
+  "ret": "C_0086c1e0*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0086c1e0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0075b5a0.cpp"
  },
  "0075b5e0": {
-  "name": "sub_75B5E0",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "uint32_t*",
+  "name": "S_0075b5e0_InsertAndGetSoundRecordPointer",
+  "name_src": "agent",
+  "votes": {
+   "S_0075b5e0_InsertElement68": 1
+  },
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, char* a3, int* a4",
-  "sig_src": "abi"
+  "params": "S_0075b5e0* self, void* , std::uint32_t* result, char* position, int* extraArg",
+  "sig_src": "impl",
+  "file": "src/auto/0075b5e0.cpp"
  },
  "0075b650": {
   "name": "C_0086c1e0_ResetBaseState",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_0086c1e0_ResetBaseState": 1,
    "BaseC0086c1e0_ResetState": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0086c1e0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0075b650.cpp"
  },
  "0075b680": {
-  "name": "sub_75B680",
-  "name_src": "addr",
+  "name": "S_0075b5e0_AppendElement68",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int* a3",
-  "sig_src": "abi"
+  "params": "S_0075b5e0* self, void* , int element",
+  "sig_src": "impl",
+  "file": "src/auto/0075b680.cpp"
  },
  "0075b710": {
-  "name": "sub_75B710",
-  "name_src": "addr",
+  "name": "C_0086c1e0_Destroy",
+  "name_src": "agent",
   "votes": {},
-  "ret": "void**",
+  "ret": "int**",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0086c1e0* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/0075b710.cpp"
  },
  "0075b760": {
   "name": "sub_75B760",
@@ -210671,7 +210705,7 @@
   "name": "___CxxFrameHandler",
   "name_src": "ida",
   "votes": {
-   "___CxxFrameHandler": 183,
+   "___CxxFrameHandler": 185,
    "OriginalCxxFrameHandler": 1
   },
   "ret": "int",
@@ -210755,7 +210789,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 246
+   "RethrowCppException": 248
   },
   "ret": "void",
   "conv": "__stdcall",
@@ -211255,7 +211289,7 @@
   "name": "__stricmp",
   "name_src": "ida",
   "votes": {
-   "__stricmp": 75
+   "__stricmp": 76
   },
   "ret": "int",
   "conv": "__cdecl",
