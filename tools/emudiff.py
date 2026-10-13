@@ -611,6 +611,8 @@ def same_args(eo, em):
     for i, (a, b) in enumerate(zip(eo[5], em[5])):
         if a == b:
             continue
+        if i in unread_args(eo[0]) or a in SAVED_REGS:
+            continue  # before the stack test: ours may hold a frame address where the original has a leftover
         if isinstance(a, str) or isinstance(b, str):
             return False
         t = types[i] if i < len(types) else ""
