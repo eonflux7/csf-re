@@ -1,53 +1,3 @@
-# Escalation 0x0070A6A0: breaks the verified baseline (verifier bisect: 1 smokes (1 named by crash reports, k=8))
-
-## Smoke log tail
-```
-nohook=False pid=28376 ready=True after=1s alive=True exit=killed stillrunning=False stop=crash ran=16s fail_at=16s
----- hits
-006c5760    2098481 auto GetGlobalValue
-006a2c60    1809574 auto C_0085ee28_ReadBufferedBytes
-006a2e00    1774915 auto C_0085ee28_SumFields
-006a3200    1736550 auto CoreZlibLog_ComputeAdler32
-006a6810    1556260 auto CoreZlibLog_FlushInflateWindow
-0048e230    1113686 auto C_00833908_GetField016c
-006c4870     976082 auto C_0085e7b8_FindEntryPayloadByKey
-006c63d0     611210 auto C_008656d0_ApplyEntryParameters
-006b1380     591672 auto GetGlobalInt
-0069e3d0     526927 auto C_0085eb30_ReleaseMutexIfSet
----- diff (0 functions compared)
-CRASH code=c0000005 eip=007fed32 addr=00000068 (rw=0) eax=0000ffff ebx=80000000 ecx=0000001f edx=0000ffff esi=00000000 edi=1c5658b8 ebp=0019ea34 esp=0019e9a4
-  eip module 00400000 (ours 721E0000); stack:
-   1c553878 1c5658b8 0000011e 0081bc44 00000000 1c5658b8
-   0019e9c4 0b0318e0 7fc00000 7fc00000 7fc00000 0339e3a4
-   7fc00000 7fc00000 7fc00000 0b0318e0 724258f4 1c5658b8
-   1c5658b8 00000000 0057c8c0 1c565b78 1c3bd040 1c565b78
----- csf_hook.log
-hook 00405450 auto     AudioSoundManager_ProcessArchiveContext
-hook 00405420 auto     C_0082d510_Destroy
-hook 00405400 auto     C_0082d510_ForwardFloatToTarget
-hook 004053e0 auto     C_0082d510_ForwardSlotCall
-hook 004013e0 auto     ReturnMinusOne
-hook 00401090 auto     GetGlobalValue_401090
-hooks installed=6880 skipped=7 failed=0
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00C1BD6C wrapped
-devcmd: video mode 1280x960
-devcmd: dev start (loadsave 1.sav) instead of Menus/P_Intro.fbs -> state 1
-devcmd: starting scene 'Maps/NR01/NR01A/Fiord.scn'
-CRASH code=c0000005 eip=007fed32 addr=00000068 (rw=0) eax=0000ffff ebx=80000000 ecx=0000001f edx=0000ffff esi=00000000 edi=1c5658b8 ebp=0019ea34 esp=0019e9a4
-  eip module 00400000 (ours 721E0000); stack:
-   1c553878 1c5658b8 0000011e 0081bc44 00000000 1c5658b8
-   0019e9c4 0b0318e0 7fc00000 7fc00000 7fc00000 0339e3a4
-   7fc00000 7fc00000 7fc00000 0b0318e0 724258f4 1c5658b8
-   1c5658b8 00000000 0057c8c0 1c565b78 1c3bd040 1c565b78
-SMOKE FAIL (alive, but 1 CRASH logged: the game caught it)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include <cstddef>
 #include <cstring>
@@ -109,5 +59,3 @@ static char __fastcall C_00863588_UpdateTransform(C_00863588* self, void* /*edx*
 }
 
 HOOK(0x0070A6A0, C_00863588_UpdateTransform, "auto");
-
-```
