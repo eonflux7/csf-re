@@ -139714,7 +139714,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_AllocUntagged": 123,
+   "CoreMemory_AllocUntagged": 124,
    "Mem_Alloc": 482
   },
   "ret": "int",
@@ -151178,7 +151178,7 @@
  },
  "006b8020": {
   "name": "SceneLoader_EnsureAttachmentRecord",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_EnsureAttachmentRecord": 1,
    "GfxObjectProps_ResetRecordSlot": 1,
@@ -151188,8 +151188,9 @@
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_006b8020* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006b8020.cpp"
  },
  "006b8080": {
   "name": "GfxEnvironment_GetAttachmentId",
@@ -151216,15 +151217,16 @@
   "file": "src/auto/006b80a0.cpp"
  },
  "006b80b0": {
-  "name": "ObjectAttachment_CopyBounds",
-  "name_src": "vote",
+  "name": "S_00402350_CopyBounds",
+  "name_src": "agent",
   "votes": {
    "ObjectAttachment_CopyBounds": 2
   },
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "vote"
+  "params": "S_00402350* self, void* , uint32_t* outBounds",
+  "sig_src": "impl",
+  "file": "src/auto/006b80b0.cpp"
  },
  "006b8100": {
   "name": "GfxCollision_AttachmentMatchesFilter",
@@ -151407,15 +151409,16 @@
   "file": "src/auto/006b81f0.cpp"
  },
  "006b8210": {
-  "name": "GetAttachmentSecondaryPassFlag",
-  "name_src": "vote",
+  "name": "C_0085ec18_GetAttachmentSecondaryPassFlag",
+  "name_src": "agent",
   "votes": {
    "GetAttachmentSecondaryPassFlag": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0085ec18* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006b8210.cpp"
  },
  "006b8230": {
   "name": "AttachmentRecord_Resolve",
@@ -151466,39 +151469,42 @@
   "file": "src/auto/006b8280.cpp"
  },
  "006b8290": {
-  "name": "GetAttachmentFirstWeight",
-  "name_src": "vote",
+  "name": "C_0085ec18_GetAttachmentFirstWeight",
+  "name_src": "agent",
   "votes": {
    "GetAttachmentFirstWeight": 3,
    "GfxSkin_GetMaximumDistance": 1
   },
   "ret": "double",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "vote"
+  "params": "C_0085ec18* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/006b8290.cpp"
  },
  "006b82c0": {
-  "name": "GetAttachmentSecondWeight",
-  "name_src": "vote",
+  "name": "C_0085ec18_GetAttachmentSecondWeight",
+  "name_src": "agent",
   "votes": {
    "GetAttachmentSecondWeight": 3,
    "GfxSkin_GetMinimumDistance": 1
   },
   "ret": "double",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "vote"
+  "params": "C_0085ec18* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/006b82c0.cpp"
  },
  "006b82f0": {
-  "name": "GfxSkin_GetFadeWidth",
-  "name_src": "vote",
+  "name": "C_0085ec18_GetFadeWidth",
+  "name_src": "agent",
   "votes": {
    "GfxSkin_GetFadeWidth": 2
   },
   "ret": "double",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "vote"
+  "params": "C_0085ec18* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/006b82f0.cpp"
  },
  "006b8320": {
   "name": "GfxObject_GetLinkedFloatOrZero",
