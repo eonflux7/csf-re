@@ -14562,7 +14562,9 @@
  "0043e020": {
   "name": "CampaignBriefing_ReleaseCachedInstance",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CampaignBriefing_ReleaseCachedInstance": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
@@ -58361,8 +58363,8 @@
   "file": "src/auto/004db1d0.cpp"
  },
  "004db200": {
-  "name": "sub_4DB200",
-  "name_src": "addr",
+  "name": "TCharTask_ForwardToSubTask",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -58432,8 +58434,8 @@
   "file": "src/auto/004db270.cpp"
  },
  "004db280": {
-  "name": "sub_4DB280",
-  "name_src": "addr",
+  "name": "TCharTask_ForwardDispatchToChild",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -58441,8 +58443,8 @@
   "sig_src": "abi"
  },
  "004db2a0": {
-  "name": "sub_4DB2A0",
-  "name_src": "addr",
+  "name": "TCharTask_ForwardToChildTask_4DB2A0",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -58470,8 +58472,8 @@
   "file": "src/auto/004db2d0.cpp"
  },
  "004db2e0": {
-  "name": "sub_4DB2E0",
-  "name_src": "addr",
+  "name": "TCharTask_TailForwardToSubtask",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -58479,8 +58481,8 @@
   "sig_src": "abi"
  },
  "004db2f0": {
-  "name": "sub_4DB2F0",
-  "name_src": "addr",
+  "name": "TCharTask_ForwardToChildTask_4DB2F0",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -58488,8 +58490,8 @@
   "sig_src": "abi"
  },
  "004db310": {
-  "name": "sub_4DB310",
-  "name_src": "addr",
+  "name": "TCharTask_ForwardToChildVirtual",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -58497,17 +58499,18 @@
   "sig_src": "abi"
  },
  "004db330": {
-  "name": "sub_4DB330",
-  "name_src": "addr",
+  "name": "TCharTask_ForwardTypeIdToChild",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "TCharTask* self, void* , int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/004db330.cpp"
  },
  "004db360": {
-  "name": "InnerForward_4DB360",
-  "name_src": "vote",
+  "name": "TCharTask_ForwardToChildTask_4DB360",
+  "name_src": "agent",
   "votes": {
    "InnerForward_4DB360": 1
   },
@@ -58517,8 +58520,8 @@
   "sig_src": "vote"
  },
  "004db380": {
-  "name": "ForwardRequestWithoutMovement_4DB380",
-  "name_src": "vote",
+  "name": "TCharTask_ForwardRequestWithoutMovement",
+  "name_src": "agent",
   "votes": {
    "ForwardRequestWithoutMovement_4DB380": 1
   },
@@ -58528,8 +58531,8 @@
   "sig_src": "vote"
  },
  "004db3a0": {
-  "name": "sub_4DB3A0",
-  "name_src": "addr",
+  "name": "TCharTask_ForwardToChildTask_4DB3A0",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -58537,8 +58540,8 @@
   "sig_src": "abi"
  },
  "004db3c0": {
-  "name": "CharTaskBase_Init_4DB3C0",
-  "name_src": "vote",
+  "name": "C_0082d410_InitTaskVtables",
+  "name_src": "agent",
   "votes": {
    "CharTaskBase_Init_4DB3C0": 14,
    "C_0082d410_ReleaseBaseMembers": 1,
@@ -58548,8 +58551,9 @@
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0082d410* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004db3c0.cpp"
  },
  "004db3f0": {
   "name": "TCharTask_PrepareBase",
@@ -58584,17 +58588,18 @@
   "sig_src": "vote"
  },
  "004db490": {
-  "name": "sub_4DB490",
-  "name_src": "addr",
+  "name": "C_0082d410_ScalarDestroy_4DB490",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0082d410* self, void* , char releaseFlags",
+  "sig_src": "impl",
+  "file": "src/auto/004db490.cpp"
  },
  "004db4c0": {
-  "name": "CharTask_InitBase",
-  "name_src": "vote",
+  "name": "TCharTask_InitializeBase",
+  "name_src": "agent",
   "votes": {
    "TCharTask_BaseConstruct": 2,
    "CharTask_InitBase": 16,
@@ -58602,8 +58607,9 @@
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "TCharTask* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004db4c0.cpp"
  },
  "004db4f0": {
   "name": "Archive_SerializeBaseFields",
@@ -69387,7 +69393,7 @@
   "name": "GetGlobalValue_8B056C",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8B056C": 84
+   "GetGlobalValue_8B056C": 85
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -71366,6 +71372,16 @@
   "params": "",
   "sig_src": "impl",
   "file": "src/auto/0050d190.cpp"
+ },
+ "0050d1a0": {
+  "name": "MenuSystem_Shutdown",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "void",
+  "conv": "__cdecl",
+  "params": "",
+  "sig_src": "impl",
+  "file": "src/auto/0050d1a0.cpp"
  },
  "0050d230": {
   "name": "MenuSystem_ResetStateFields",
@@ -77501,13 +77517,15 @@
   "file": "src/auto/00521bb0.cpp"
  },
  "00521bc0": {
-  "name": "sub_521BC0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "MenuSubsystem_ReleaseState",
+  "name_src": "vote",
+  "votes": {
+   "MenuSubsystem_ReleaseState": 1
+  },
   "ret": "void*",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00521bf0": {
   "name": "IsGlobalValueNonZero",
@@ -114045,11 +114063,13 @@
  "00626ec0": {
   "name": "RwEngineTerm",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwEngineTerm": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00626f00": {
   "name": "sub_626F00",
@@ -139714,7 +139734,7 @@
   "name": "SetGlobalValue8BAD60",
   "name_src": "agent",
   "votes": {
-   "SetGlobalValue8BAD60": 1
+   "SetGlobalValue8BAD60": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -139751,7 +139771,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 202,
+   "CoreMemory_Free": 203,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -142153,7 +142173,8 @@
    "SceneLoader_ResetArchiveSelection": 4,
    "SceneLoader_ProcessResourcePath": 1,
    "SceneLoader_ApplySceneOptions": 1,
-   "SceneLoader_ClosePackage": 1
+   "SceneLoader_ClosePackage": 1,
+   "CoreFiles_ResetArchiveSelection": 1
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -143470,7 +143491,9 @@
  "0069b710": {
   "name": "CachedInstance_Release",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CachedInstance_Release": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
@@ -143823,7 +143846,7 @@
   "name": "GetGlobalIntPtr",
   "name_src": "agent",
   "votes": {
-   "GetGlobalIntPtr": 8
+   "GetGlobalIntPtr": 9
   },
   "ret": "int*",
   "conv": "__cdecl",
@@ -146248,7 +146271,7 @@
   "name": "MenuAccounts_ResetPendingEdit",
   "name_src": "agent",
   "votes": {
-   "MenuAccounts_ResetPendingEdit": 3
+   "MenuAccounts_ResetPendingEdit": 4
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -146260,7 +146283,7 @@
   "name": "GetGlobalState_6A6D70",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_6A6D70": 49
+   "GetGlobalState_6A6D70": 50
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -149290,7 +149313,9 @@
  "006b1f80": {
   "name": "ReleaseCachedValueInstance",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ReleaseCachedValueInstance": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
@@ -192568,7 +192593,9 @@
  "0073f380": {
   "name": "ReleaseSessionDumpBuffer",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ReleaseSessionDumpBuffer": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
@@ -200295,7 +200322,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 272,
+   "GetGlobalValue_8BC1E0": 273,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
@@ -203658,7 +203685,9 @@
  "00769bf0": {
   "name": "ReleaseInputBindingsInstance",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ReleaseInputBindingsInstance": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
@@ -219653,6 +219682,17 @@
   "conv": "__cdecl",
   "params": "int a1",
   "sig_src": "abi"
+ },
+ "007c66d0": {
+  "name": "RwNodeRelease",
+  "name_src": "vote",
+  "votes": {
+   "RwNodeRelease": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int a1, int a2",
+  "sig_src": "vote"
  },
  "007c6710": {
   "name": "sub_7C6710",
