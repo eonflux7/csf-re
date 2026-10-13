@@ -116256,7 +116256,7 @@
   "name": "AllocateGatheringStorage",
   "name_src": "vote",
   "votes": {
-   "AllocateGatheringStorage": 14
+   "AllocateGatheringStorage": 15
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -116424,6 +116424,7 @@
   "name": "PerfCounters_GetSampleRecord",
   "name_src": "vote",
   "votes": {
+   "Perf_GetStringRefFields": 1,
    "PerfCounters_GetSampleRecord": 1
   },
   "ret": "uint64_t*",
@@ -117728,7 +117729,8 @@
   "name": "ResetBaseState",
   "name_src": "vote",
   "votes": {
-   "ResetBaseState": 1
+   "ResetBaseState": 1,
+   "TempString_Init": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -117759,7 +117761,7 @@
   "name": "DestroyTemporaryString",
   "name_src": "vote",
   "votes": {
-   "DestroyTemporaryString": 36
+   "DestroyTemporaryString": 37
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -117826,7 +117828,7 @@
   "name": "FormatValueString",
   "name_src": "vote",
   "votes": {
-   "FormatValueString": 12,
+   "FormatValueString": 13,
    "FormatString": 1,
    "LegacyString_Format": 1
   },
@@ -134899,13 +134901,15 @@
   "sig_src": "abi"
  },
  "00688540": {
-  "name": "sub_688540",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Perf_CreatePairEntry",
+  "name_src": "vote",
+  "votes": {
+   "Perf_CreatePairEntry": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char* a2, int arg4, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006885b0": {
   "name": "sub_6885B0",
@@ -201538,7 +201542,7 @@
  },
  "0078b500": {
   "name": "NetPerfCounters_ReadStaticAnimationProperties",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "std::uint8_t",
   "conv": "__stdcall",
@@ -201548,7 +201552,7 @@
  },
  "0078b650": {
   "name": "NetPerfCounters_ReadEffectProperties",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__stdcall",
@@ -201567,7 +201571,7 @@
  },
  "0078b8e0": {
   "name": "NetPerfCounters_ReadVisualSettings",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__stdcall",
@@ -201577,7 +201581,7 @@
  },
  "0078ba10": {
   "name": "NetPerfCounters_ReadEffectParameters",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__stdcall",
@@ -201619,7 +201623,7 @@
  },
  "0078bc70": {
   "name": "CopyPerfCounterRecord",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char*",
   "conv": "__fastcall",
@@ -201690,8 +201694,8 @@
   "file": "src/auto/0078beb0.cpp"
  },
  "0078bed0": {
-  "name": "DataSetPerfCounters_RecordSample",
-  "name_src": "vote",
+  "name": "DataSetPerf_UninitializedCopyEntries",
+  "name_src": "agent",
   "votes": {
    "DataSetPerfCounters_RecordSample": 1
   },
@@ -201723,7 +201727,7 @@
  },
  "0078c240": {
   "name": "NetPerfCounters_CopyRecordRangeReverse",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -201753,7 +201757,7 @@
  },
  "0078c2f0": {
   "name": "NetPerfCounters_FillRecordRange",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
@@ -201874,8 +201878,8 @@
   "sig_src": "abi"
  },
  "0078cc90": {
-  "name": "InputBindings_ParseValueComponent",
-  "name_src": "vote",
+  "name": "NetPerfCounters_ParseValueComponent",
+  "name_src": "agent",
   "votes": {
    "InputBindings_ParseValueComponent": 1
   },
@@ -201925,13 +201929,16 @@
   "sig_src": "abi"
  },
  "0078cea0": {
-  "name": "sub_78CEA0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_0078cea0_FormatNameValuePair",
+  "name_src": "agent",
+  "votes": {
+   "PerfCounters_RegisterCounterEntry": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void** a2, char* a3",
-  "sig_src": "abi"
+  "params": "S_0078cea0* self, void* , C_008310b8** outPtr, const char* suffix",
+  "sig_src": "impl",
+  "file": "src/auto/0078cea0.cpp"
  },
  "0078cf40": {
   "name": "DataSetPerfCounters_RecordSamplePair",
@@ -201944,13 +201951,14 @@
   "file": "src/auto/0078cf40.cpp"
  },
  "0078cfa0": {
-  "name": "sub_78CFA0",
-  "name_src": "addr",
+  "name": "PerfCounters_InitMessageCounters",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_0078cea0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0078cfa0.cpp"
  },
  "0078cfd0": {
   "name": "S_0078cea0_ReleaseTransportSlots",
@@ -201974,7 +201982,7 @@
  },
  "0078d040": {
   "name": "NetPerfCounters_RecordSample",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
