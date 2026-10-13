@@ -4940,7 +4940,7 @@ ea,size,region,module,name,name_src,status
 004d51c0,109,game,m4D48E0,C_0083c198_BeginMovementFromRequest,agent,done
 004d5230,85,game,m4D48E0,TDarObjeto_ReleaseTaskAndSetStance,agent,done
 004d5290,350,game,m4D48E0,,,todo
-004d53f0,271,game,m4D48E0,,,todo
+004d53f0,271,game,m4D48E0,S_0041f0a0_SerializeGiveObjectTask,agent,done
 004d5500,18,game,m4D5500,C_0083c280_IsTargetPositionClear,agent,done
 004d5520,40,game,m4D5500,AimVehicleIfLinkedFieldPresent,agent,done
 004d5550,111,game,m4D5500,C_0083c280_UpdateAttachmentOffset,agent,done
@@ -13642,13 +13642,13 @@ ea,size,region,module,name,name_src,status
 00694660,260,game,m693AD0,S_00693740_OpenFileDescriptor,agent,done
 00694770,92,game,m693AD0,S_00693740_LoadFile,agent,done
 006947d0,139,game,m693AD0,Path_ReplaceExtension,vote,todo
-00694860,125,game,m694860,GfxTexdict_ExtractResourceExtension,vote,todo
+00694860,125,game,m694860,CoreString_ExtractFileExtension,agent,done
 006948e0,125,game,m694860,SceneLoader_CopyMapFilename,agent,done
-00694960,106,game,m694860,Hud_ExtractResourcePath,vote,todo
-006949d0,141,game,m694860,NormalizeResourceName,vote,todo
+00694960,106,game,m694860,CoreString_ExtractResourceDirectory,agent,done
+006949d0,141,game,m694860,CoreString_NormalizeResourceName,agent,done
 00694a60,59,game,m694860,CoreString_GetFileNameComponent,agent,done
-00694aa0,124,game,m694860,SceneNamesMatch,vote,todo
-00694b20,76,game,m694860,ResourceName_Transform,vote,todo
+00694aa0,124,game,m694860,CoreString_SceneNamesMatch,agent,done
+00694b20,76,game,m694860,CoreString_ExtractResourcePathAndAppend,agent,done
 00694b70,124,game,m694860,Audio_FinalizePath,vote,todo
 00694bf0,39,game,m694860,ReplaceCharactersInBuffer,agent,done
 00694c20,12,game,m694860,LengthPrefixedBuffer_TerminateAtLength,agent,done
@@ -15460,7 +15460,7 @@ ea,size,region,module,name,name_src,status
 006d5ad0,209,game,m6D59D0,,,todo
 006d5bb0,86,game,m6D59D0,SceneLoader_ResetRenderMember,vote,todo
 006d5c10,123,game,m6D59D0,,,todo
-006d5c90,128,game,m6D59D0,,,todo
+006d5c90,128,game,m6D59D0,S_006d5c90_LazyInitTextureObject,vote,todo
 006d5d10,29,game,m6D59D0,GfxScene_SetControllerState,vote,todo
 006d5d30,55,game,m6D59D0,,,todo
 006d5d70,73,game,m6D59D0,,,todo

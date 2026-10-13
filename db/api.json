@@ -32591,7 +32591,7 @@
    "TaskState_ResetSlot": 7,
    "TaskState_ResetEntry": 1,
    "AiTaskStates_SerializeTaskState": 1,
-   "AiAttackTasks_ResetSlot": 8
+   "AiAttackTasks_ResetSlot": 9
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -56098,13 +56098,14 @@
   "sig_src": "abi"
  },
  "004d53f0": {
-  "name": "sub_4D53F0",
-  "name_src": "addr",
+  "name": "S_0041f0a0_SerializeGiveObjectTask",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "S_0041f0a0* self, void* , S_0041f0a0* archive",
+  "sig_src": "impl",
+  "file": "src/auto/004d53f0.cpp"
  },
  "004d5500": {
   "name": "C_0083c280_IsTargetPositionClear",
@@ -58483,7 +58484,7 @@
   "name": "Archive_SerializeBaseFields",
   "name_src": "vote",
   "votes": {
-   "Archive_SerializeBaseFields": 21,
+   "Archive_SerializeBaseFields": 22,
    "TaskState_Prepare": 1,
    "TaskState_Notify": 1
   },
@@ -140381,15 +140382,16 @@
   "sig_src": "vote"
  },
  "00694860": {
-  "name": "GfxTexdict_ExtractResourceExtension",
-  "name_src": "vote",
+  "name": "CoreString_ExtractFileExtension",
+  "name_src": "agent",
   "votes": {
    "GfxTexdict_ExtractResourceExtension": 1
   },
-  "ret": "char*",
+  "ret": "const char*",
   "conv": "__cdecl",
-  "params": "char* a1, uint8_t* a2, char* a3",
-  "sig_src": "vote"
+  "params": "const char* path, char* outBuf, const char* outCapacity",
+  "sig_src": "impl",
+  "file": "src/auto/00694860.cpp"
  },
  "006948e0": {
   "name": "SceneLoader_CopyMapFilename",
@@ -140404,10 +140406,10 @@
   "file": "src/auto/006948e0.cpp"
  },
  "00694960": {
-  "name": "Hud_ExtractResourcePath",
-  "name_src": "vote",
+  "name": "CoreString_ExtractResourceDirectory",
+  "name_src": "agent",
   "votes": {
-   "Hud_ExtractResourcePath": 9
+   "Hud_ExtractResourcePath": 10
   },
   "ret": "const char*",
   "conv": "__cdecl",
@@ -140416,15 +140418,16 @@
   "file": "src/auto/00694960.cpp"
  },
  "006949d0": {
-  "name": "NormalizeResourceName",
-  "name_src": "vote",
+  "name": "CoreString_NormalizeResourceName",
+  "name_src": "agent",
   "votes": {
    "NormalizeResourceName": 23
   },
   "ret": "char",
   "conv": "__cdecl",
-  "params": "char* source, char* destination, unsigned int capacity",
-  "sig_src": "vote"
+  "params": "char* source, char* destination, uint32_t capacity",
+  "sig_src": "impl",
+  "file": "src/auto/006949d0.cpp"
  },
  "00694a60": {
   "name": "CoreString_GetFileNameComponent",
@@ -140439,8 +140442,8 @@
   "file": "src/auto/00694a60.cpp"
  },
  "00694aa0": {
-  "name": "SceneNamesMatch",
-  "name_src": "vote",
+  "name": "CoreString_SceneNamesMatch",
+  "name_src": "agent",
   "votes": {
    "SceneNamesMatch": 10
   },
@@ -140451,15 +140454,16 @@
   "file": "src/auto/00694aa0.cpp"
  },
  "00694b20": {
-  "name": "ResourceName_Transform",
-  "name_src": "vote",
+  "name": "CoreString_ExtractResourcePathAndAppend",
+  "name_src": "agent",
   "votes": {
    "ResourceName_Transform": 8
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
-  "params": "char* a1, char* a2, char* a3, unsigned int a4",
-  "sig_src": "vote"
+  "params": "const char* a1, const char* a2, char* a3, unsigned int a4",
+  "sig_src": "impl",
+  "file": "src/auto/00694b20.cpp"
  },
  "00694b70": {
   "name": "Audio_FinalizePath",
@@ -160599,8 +160603,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006d59d0.cpp"
  },
  "006d59f0": {
   "name": "C_00864508_GetField9c",
@@ -160667,13 +160672,15 @@
   "sig_src": "abi"
  },
  "006d5c90": {
-  "name": "sub_6D5C90",
-  "name_src": "addr",
-  "votes": {},
+  "name": "S_006d5c90_LazyInitTextureObject",
+  "name_src": "vote",
+  "votes": {
+   "S_006d5c90_LazyInitTextureObject": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006d5d10": {
   "name": "GfxScene_SetControllerState",
@@ -160754,8 +160761,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_006d5c90* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006d5fb0.cpp"
  },
  "006d5fd0": {
   "name": "GfxWater_GetRenderTarget",
@@ -215386,7 +215394,7 @@
   "name": "_strncpy",
   "name_src": "ida",
   "votes": {
-   "_strncpy": 18
+   "_strncpy": 19
   },
   "ret": "char*",
   "conv": "__cdecl",
