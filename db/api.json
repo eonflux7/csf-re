@@ -113815,7 +113815,7 @@
   "name": "RwRasterCreate",
   "name_src": "rwname",
   "votes": {
-   "RwRasterCreate": 11
+   "RwRasterCreate": 12
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -115283,7 +115283,7 @@
   "name": "RwTextureCreate",
   "name_src": "rwname",
   "votes": {
-   "RwTextureCreate": 3
+   "RwTextureCreate": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -115294,7 +115294,7 @@
   "name": "RwTextureDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwTextureDestroy": 15
+   "RwTextureDestroy": 17
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -139268,7 +139268,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 170,
+   "CoreMemory_Free": 171,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -148901,7 +148901,7 @@
   "name_src": "agent",
   "votes": {
    "Hud_CheckFlagAgainstGlobal": 56,
-   "HudCheckFlagAgainstGlobal": 41
+   "HudCheckFlagAgainstGlobal": 42
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -148925,7 +148925,7 @@
   "name": "C_00860170_Construct",
   "name_src": "agent",
   "votes": {
-   "C_00860170_Construct": 82
+   "C_00860170_Construct": 83
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -154823,7 +154823,7 @@
   "name_src": "agent",
   "votes": {
    "C_008305f8_DelegateResolve": 8,
-   "C_008305f8_ResolveOrDelegate_6C4540": 3
+   "C_008305f8_ResolveOrDelegate_6C4540": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -154994,7 +154994,7 @@
   "name_src": "agent",
   "votes": {
    "DestroyEmbeddedMember8": 3,
-   "C_00860894_DestroyEmbeddedMember8": 10
+   "C_00860894_DestroyEmbeddedMember8": 11
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -155290,7 +155290,7 @@
   "name": "GetGlobalValue_6C5760",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_6C5760": 110
+   "GetGlobalValue_6C5760": 111
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -156040,7 +156040,7 @@
   "name": "GlobalHud_Commit_6C7C30",
   "name_src": "agent",
   "votes": {
-   "GlobalHud_Commit_6C7C30": 20
+   "GlobalHud_Commit_6C7C30": 21
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -156128,7 +156128,7 @@
   "name_src": "agent",
   "votes": {
    "GlobalHud_AttachWidget_6C8420": 1,
-   "C_0085e7b8_AttachWidget": 11
+   "C_0085e7b8_AttachWidget": 12
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -160596,7 +160596,7 @@
  },
  "006d59d0": {
   "name": "Water_GetRasterSize",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "Water_GetRasterSize": 1,
    "GfxWater_GetTargetDimension": 1
@@ -160621,14 +160621,15 @@
  },
  "006d5a00": {
   "name": "GfxScene_UpdateAuxiliaryObject",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GfxScene_UpdateAuxiliaryObject": 1
   },
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/006d5a00.cpp"
  },
  "006d5a40": {
   "name": "GfxScene_RunSubsystemUpdate",
@@ -160642,45 +160643,50 @@
   "sig_src": "vote"
  },
  "006d5ad0": {
-  "name": "sub_6D5AD0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "HudChild_Refresh_6D5AD0",
+  "name_src": "vote",
+  "votes": {
+   "HudChild_Refresh_6D5AD0": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006d5bb0": {
   "name": "SceneLoader_ResetRenderMember",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_ResetRenderMember": 1,
    "SceneLoader_RefreshRenderResource": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0085e7b8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006d5bb0.cpp"
  },
  "006d5c10": {
-  "name": "sub_6D5C10",
-  "name_src": "addr",
+  "name": "FindFirstEntryByName",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2",
-  "sig_src": "abi"
+  "params": "int* self, void* , const char* name",
+  "sig_src": "impl",
+  "file": "src/auto/006d5c10.cpp"
  },
  "006d5c90": {
-  "name": "S_006d5c90_LazyInitTextureObject",
-  "name_src": "vote",
+  "name": "S_006d5c90_RecreateTexture",
+  "name_src": "agent",
   "votes": {
    "S_006d5c90_LazyInitTextureObject": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_006d5c90* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006d5c90.cpp"
  },
  "006d5d10": {
   "name": "GfxScene_SetControllerState",
@@ -160694,31 +160700,34 @@
   "sig_src": "vote"
  },
  "006d5d30": {
-  "name": "sub_6D5D30",
-  "name_src": "addr",
+  "name": "C_008305f8_Destroy_6D5D30",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_008305f8* self, void* , char freeFlag",
+  "sig_src": "impl",
+  "file": "src/auto/006d5d30.cpp"
  },
  "006d5d70": {
-  "name": "sub_6D5D70",
-  "name_src": "addr",
+  "name": "C_008305f8_ResolveHudFlagOrDelegate_6D5D70",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, int* a3",
-  "sig_src": "abi"
+  "params": "C_008305f8* self, void* , uint32_t* a2, int* a3",
+  "sig_src": "impl",
+  "file": "src/auto/006d5d70.cpp"
  },
  "006d5dc0": {
-  "name": "sub_6D5DC0",
-  "name_src": "addr",
+  "name": "Hud_AttachWidgetAndCommit",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006d5dc0.cpp"
  },
  "006d5df0": {
   "name": "GfxScene_DetachFromWorld",
@@ -160755,7 +160764,7 @@
  },
  "006d5fb0": {
   "name": "Water_GetTextureObject",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "Water_GetTextureObject": 1
   },
@@ -160767,14 +160776,15 @@
  },
  "006d5fd0": {
   "name": "GfxWater_GetRenderTarget",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GfxWater_GetRenderTarget": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_006d5c90* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006d5fd0.cpp"
  },
  "006d5ff0": {
   "name": "GfxScene_InitializeSceneAttachment",
@@ -172190,7 +172200,9 @@
  "006fdb90": {
   "name": "DeleteScheduleGroupBase",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "DeleteScheduleGroupBase": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int objectAddress",
@@ -175566,7 +175578,7 @@
   "file": "src/auto/0070b590.cpp"
  },
  "0070b5d0": {
-  "name": "C_008305f8_ResolveHudFlagOrDelegate",
+  "name": "C_008305f8_ResolveHudFlagOrDelegate_70B5D0",
   "name_src": "agent",
   "votes": {},
   "ret": "int",
