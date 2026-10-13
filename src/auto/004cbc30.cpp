@@ -80,7 +80,8 @@ static int __fastcall AiSearchOrders_SerializeAutonomousState(
     if (CSF_AT(uint8_t, context, 0x00) == 0)
     {
         void* stream = CSF_AT(void*, context, 0x04);
-        failed = !reinterpret_cast<bool(__fastcall*)(void*, void*, int, uint8_t*)>(
+        // The original tests the whole AL byte, not a canonical C++ bool.
+        failed = !reinterpret_cast<uint8_t(__fastcall*)(void*, void*, int, uint8_t*)>(
             CSF_AT(void**, stream, 0x00)[128 / 4])(
                 stream, nullptr, 0, context);
     }

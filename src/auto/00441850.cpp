@@ -15,7 +15,8 @@ static int __fastcall C_00831008_SerializeCampaignData(
     if (CSF_AT(uint8_t, context, 0x00) == 0)
     {
         void* serializer = CSF_AT(void*, context, 0x04);
-        failed = !((bool(__fastcall*)(void*, void*, uint32_t*, unsigned int))
+        // The original tests the whole AL byte, not a canonical C++ bool.
+        failed = !((uint8_t(__fastcall*)(void*, void*, uint32_t*, unsigned int))
                        CSF_AT(void**, serializer, 0)[0x80 / 4])(
             serializer, nullptr, nullptr, contextAddress);
     }

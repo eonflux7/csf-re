@@ -102,8 +102,9 @@ static int __fastcall TOrden_Serialize(
     if (CSF_AT(uint8_t, context, 0) == 0)
     {
         void* stream = CSF_AT(void*, context, 4);
+        // The original tests the whole AL byte, not a canonical C++ bool.
         failed =
-            !reinterpret_cast<bool (__fastcall*)(void*, void*, int, void*)>(
+            !reinterpret_cast<uint8_t (__fastcall*)(void*, void*, int, void*)>(
                 CSF_AT(void**, stream, 0)[0x80 / 4])(
                     stream, nullptr, 0, context);
     }

@@ -24,6 +24,7 @@ For each: read the original's disassembly next to the rejected code line by line
 - Code wrong (REAL): write the corrected file (start from the cpp block), run both checks, and quote the original instructions that prove the fix in one or two lines.
 - Code matches the original instruction for instruction: say so (FALSE ALARM) and name what in the failure lines points away from this function. Write the unchanged candidate to src/auto/ only if both checks pass.
 - Not decided: say so and what you would need. Do not guess.
+Read the whole function against the disassembly, not only the place the failure points at: check each callee's real `ret N`, whether a result is used as a byte (al) or as the full eax (never bind a callee as returning `bool` where the original uses eax or compares al with values other than 0/1), and stack objects the original keeps contiguous. A `same` from few profiles, or a crash inside a callee, does not make a FALSE ALARM: say separately what is a shown code defect, what is a tool defect, and what stays unexplained.
 Do not change anything under tools/ or hook/, and do not create files other than the listed ones under src/auto/. Stop after the listed function(s).
 Report a table: address, verdict, cause in one line, final gate line, final emudiff line.
 """
