@@ -47793,36 +47793,39 @@
  },
  "004ade60": {
   "name": "CoverAttackTasks_GrowRecordArray",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CoverAttackTasks_GrowRecordArray": 3
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int additionalCapacity",
+  "sig_src": "impl",
+  "file": "src/auto/004ade60.cpp"
  },
  "004adf10": {
-  "name": "Archive_SerializeObjectRef",
-  "name_src": "vote",
+  "name": "Archive_SerializeObjectReference",
+  "name_src": "agent",
   "votes": {
    "Archive_SerializeObjectRef": 85
   },
   "ret": "char",
   "conv": "__cdecl",
-  "params": "void* a3, bool* a2",
-  "sig_src": "vote"
+  "params": "S_00691860* output, bool* state",
+  "sig_src": "impl",
+  "file": "src/auto/004adf10.cpp"
  },
  "004adfc0": {
-  "name": "StaticAi_InitializeWaypointAssessment",
-  "name_src": "vote",
+  "name": "InitWaypointAssessmentState",
+  "name_src": "agent",
   "votes": {
    "StaticAi_InitializeWaypointAssessment": 2
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_004adfc0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004adfc0.cpp"
  },
  "004ae010": {
   "name": "TMovilAPunto_Construct",
@@ -139649,7 +139652,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_AllocUntagged": 120,
+   "CoreMemory_AllocUntagged": 121,
    "Mem_Alloc": 482
   },
   "ret": "int",
@@ -139662,7 +139665,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 197,
+   "CoreMemory_Free": 198,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -139750,7 +139753,7 @@
   "name": "MissionScript_ProcessDirectValue",
   "name_src": "vote",
   "votes": {
-   "MissionScript_ProcessDirectValue": 2
+   "MissionScript_ProcessDirectValue": 3
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -139761,7 +139764,8 @@
   "name": "CoreMemory_ProcessDescribedValue",
   "name_src": "agent",
   "votes": {
-   "MissionScript_ProcessDescribedValue": 2
+   "MissionScript_ProcessDescribedValue": 2,
+   "CoreMemory_ProcessDescribedValue": 1
   },
   "ret": "char",
   "conv": "__cdecl",
