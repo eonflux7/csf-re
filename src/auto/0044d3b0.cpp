@@ -1,0 +1,20 @@
+#include <cstdint>
+#include "globals.h"
+#include "hook.h"
+#include "types/auto_classes.h"
+
+// Constructor for C_008311e8 (__thiscall, ret 0).
+// Initializes the object's data pointer slots, vtable, and counters.
+static uint32_t* __fastcall C_008311e8_Construct(C_008311e8* self, void* /*edx*/)
+{
+    self->field_0004 = (uint32_t)(uintptr_t)CSF_ADDR_DATA(0x0082D428);
+    self->vtbl = CSF_VTBL(0x008311E8);
+    self->field_0004 = (uint32_t)(uintptr_t)CSF_ADDR_DATA(0x008311CC);
+    self->field_0008 = 0;
+    self->field_000c = 0;
+    self->field_0010 = 0;
+    self->field_0014 = 10;
+    return reinterpret_cast<uint32_t*>(self);
+}
+
+HOOK(0x0044D3B0, C_008311e8_Construct, "auto");
