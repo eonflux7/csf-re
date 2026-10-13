@@ -36,7 +36,10 @@ DEEP = os.path.join(ROOT, "work", "deep")
 # OpenRouter on trial for the small ones instead of Haiku. The Claude code path stays for old jobs' logs.
 AGENTS = {"sol-med": ("codex", "gpt-6.1-sol", "medium"),     # most jobs (default)
           "sol-hi": ("codex", "gpt-6.1-sol", "high"),        # hard jobs
-          "glm-flash": ("codex", "z-ai/glm-5.3-flash:floor", "medium")}  # small jobs that need little thinking (OpenRouter)
+          "glm-flash": ("codex", "z-ai/glm-5.3-flash:floor", "medium"),  # small jobs that need little thinking (OpenRouter)
+          # comparison runs the user asked for (2026-10-13 night), not part of the policy:
+          "mimo-pro": ("codex", "xiaomi/mimo-v2.6-pro:floor", "medium"),  # OpenRouter, about 17x GLM's input price
+          "haiku-xhi": ("claude", "claude-haiku-5-5", "xhigh")}          # grunts' Claude account
 DEFAULT = "sol-med"
 CLAUDE_JOBS = 2
 RETIRED = {"opus-me": ("claude", "claude-opus-5-5", "medium"), "haiku-med": ("claude", "claude-haiku-5-5", "medium")}
@@ -45,7 +48,7 @@ RETIRED = {"opus-me": ("claude", "claude-opus-5-5", "medium"), "haiku-med": ("cl
 # `:floor` on the model OpenRouter spreads requests over providers up to 6 times dearer (the first eleven jobs cost
 # $1.92 where this estimate said $0.51). The key's real spend is openrouter_budget(); no job starts below OR_MIN.
 OR_MIN = 0.30
-OPENROUTER = {"glm-flash": (0.0261, 0.9)}
+OPENROUTER = {"glm-flash": (0.0261, 0.9), "mimo-pro": (0.435, 0.87)}
 OR_KEY = os.path.expanduser("~/.config/csf-re/openrouter.key")
 OR_HOME = os.path.expanduser("~/.config/csf-re/codex-openrouter")  # CODEX_HOME of these jobs: session files only
 OR_ARGS = ["-c", 'model_provider="openrouter"', "-c", 'model_providers.openrouter.name="OpenRouter"',
@@ -179,7 +182,10 @@ def run(a):
           eas=sorted(set(re.findall(r"\b00[4-7][0-9a-f]{5}\b", task))))
     brief = BRIEF if backend == "codex" and a.agent not in OPENROUTER else BRIEF.replace(
         "Read CLAUDE.md and the parts of docs/PLAN.md\nand docs/JOURNAL.md your task touches before you start.",
-        "Do not read docs/PLAN.md or docs/JOURNAL.md (long, and not\nneeded for a small job); read only what the task names.")
+        "Do not read docs/PLAN.md or docs/JOURNAL.md (long, and not\nneeded for a small job); read only what the task names."
+    if backend == "claude":  # the allow-list matches whole commands: haikudiff (2026-10-13) lost every tool run to `| tee`
+        brief += ("\nShell: one plain command per call (`.venv/bin/python tools/...`, git diff/status/log/show, ls, cat, rg, "
+                  "grep, head, tail, wc, find, sed -n). No pipes, `;`, `&&`, redirection or `cd`: such a call is refused.\n")
     assert (backend == "codex" and a.agent not in OPENROUTER) or brief != BRIEF
     # Codex: the brief is the system prompt (in place of the CLI's own), the task the only user message
     prompt = task if backend == "codex" else brief + "\n=== TASK ===\n" + task

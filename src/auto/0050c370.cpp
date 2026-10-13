@@ -4,8 +4,6 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-// Vtable of CMenuScreenFader (0x0084004C). Bound by address.
-CSF_GLOBAL(uint8_t, g_CMenuScreenFaderVtbl, 0x0084004C);
 
 // Game heap free (0x691110, cdecl, one argument).
 CSF_FUNC(void, __cdecl, Mem_Free, 0x691110, (void* block));
@@ -14,9 +12,9 @@ CSF_FUNC(void, __cdecl, Mem_Free, 0x691110, (void* block));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x690E60, (void* block));
 
 // Releases the node list at the embedded range (0x469760, cdecl, four arguments).
-// Caller pushes: first node, &field_0038 (head), [this+0x40] (last), this (owner).
+// Caller pushes: first node, [this+0x40] (end), &field_0038 (head), this (owner); the callee reads the first two.
 CSF_FUNC(int, __cdecl, DestroyElementRange, 0x469760,
-         (void* first, void* head, void* last, void* owner));
+         (void* first, void* end, void* head, void* owner));
 
 // Releases the fader's owned resources and resets it to its default state.
 // Original: __thiscall, ret 0.
@@ -24,7 +22,7 @@ static int* __fastcall CMenuScreenFader_ReleaseResources(CMenuScreenFader* self,
 {
     // Release the child object at +0x34 via its vtable slot 0 (deleting dtor, flag 1).
     void* overlayObject = reinterpret_cast<void*>(self->m_pOverlay);
-    CSF_AT(uint32_t, self, 0x00) = reinterpret_cast<uint32_t>(&g_CMenuScreenFaderVtbl);
+    CSF_AT(uint32_t, self, 0x00) = static_cast<uint32_t>(CSF_ADDR_VT(0x0084004C));
     if (overlayObject)
     {
         void** overlayVtbl = *reinterpret_cast<void***>(overlayObject);
@@ -43,8 +41,8 @@ static int* __fastcall CMenuScreenFader_ReleaseResources(CMenuScreenFader* self,
     if (self->field_003c)
     {
         DestroyElementRange(reinterpret_cast<void*>(self->field_003c),
-                          reinterpret_cast<uint8_t*>(self) + 0x38,
                           reinterpret_cast<void*>(CSF_AT(uint32_t, self, 0x40)),
+                          reinterpret_cast<uint8_t*>(self) + 0x38,
                           self);
         uint32_t remainingBlock = CSF_AT(uint32_t, self, 0x3C);
         if (remainingBlock)

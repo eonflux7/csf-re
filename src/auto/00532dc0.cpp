@@ -16,8 +16,6 @@ CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
 // Debug-variant free used for the secondary buffer (cdecl, one argument).
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
-// Vtable of the base CMenuScreen (data symbol at 0x0083042C).
-CSF_GLOBAL(uint8_t, g_VtblCMenuScreenBase, 0x0083042C);
 
 // Vtable and secondary vtable values written by the original (immediate data).
 static const uint32_t kVtblCMenuEula      = CSF_ADDR_VT(0x00841B78);
@@ -54,7 +52,9 @@ static int __fastcall CMenuEula_ReleaseResources(CMenuEula* self, void* /*edx*/)
     // Unsigned compare (jb): buffer-size field >= 8 means a heap-allocated buffer is in use.
     if (self->field_0054 >= 8u)
     {
+        // Like the original, eax takes the buffer value even when it is 0.
         uint32_t buffer = self->field_0040;
+        result = static_cast<int>(buffer);
         if (buffer != 0)
         {
             result = Mem_FreeDebug(reinterpret_cast<void*>(buffer));
@@ -67,7 +67,7 @@ static int __fastcall CMenuEula_ReleaseResources(CMenuEula* self, void* /*edx*/)
 
     CSF_AT(uint32_t, self, 0x4) = kVtblCMenuScreenA;
     CSF_AT(uint32_t, self, 0x4) = kVtblCMenuScreenB;
-    CSF_AT(uint32_t, self, 0x0) = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(&g_VtblCMenuScreenBase));
+    CSF_AT(uint32_t, self, 0x0) = static_cast<uint32_t>(CSF_ADDR_VT(0x0083042C));
 
     return result;
 }
