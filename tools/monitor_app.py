@@ -92,6 +92,7 @@ class Monitor(App):
         super().__init__()
         self.interval = interval
         self.plan_mtime = 0
+        self.busy = self.again = self.game_built = False
         self.queue_files = []
         self.mod_sort = ("area", False)
 
@@ -149,16 +150,40 @@ class Monitor(App):
         self.query_one(TabbedContent).active = tab
 
     def on_tabbed_content_tab_activated(self, _):
-        self.collect()  # Game / Agents views are only built while shown
+        if self.query_one(TabbedContent).active == "game" and not self.game_built:
+            self.query_one("#gamebody", Static).update(Text("collecting (the first build takes a while) ...", style="dim"))
+        self.collect(again=True)  # Game / Agents views are only built while shown
 
     def action_refresh_now(self):
         M._cache.clear()
-        self.collect()
+        self.collect(again=True)
 
     # ------------------------------------------------------------ data (worker thread)
 
-    @work(thread=True, exclusive=True)
-    def collect(self):
+    def collect(self, again=False):
+        """One collection at a time: the Game view takes seconds to build (a minute next to a running wave), and
+        a new one started on every tick starved the earlier ones, so the tab never filled. A tick during a run is
+        dropped; a tab switch or refresh during a run (again) collects once more when it ends."""
+        if self.busy:
+            self.again = self.again or again
+            return
+        self.busy = True
+        self.collect_run()
+
+    def collected(self):
+        self.busy = False
+        if self.again:
+            self.again = False
+            self.collect()
+
+    @work(thread=True)
+    def collect_run(self):
+        try:
+            self.call_from_thread(self.apply, self.snapshot())
+        finally:
+            self.call_from_thread(self.collected)
+
+    def snapshot(self):
         L = M.cached("loop", 1, ML.loop_state)
         g = L["g"] if isinstance(L, dict) else M.grunt_snapshot()
         pipe, now = ML.pipeline(L) if isinstance(L, dict) else (Text(f"loop n/a: {L}", style="dim"), "")
@@ -176,7 +201,7 @@ class Monitor(App):
         mt = os.path.getmtime(p)
         if mt != self.plan_mtime:
             snap["plan"] = (mt, M.focus(), M.open_items(), M.plan())
-        self.call_from_thread(self.apply, snap)
+        return snap
 
     def commit_rows(self):
         jobs = M.cached("jobs", 1, M.claude_jobs)
@@ -231,6 +256,7 @@ class Monitor(App):
 
     def apply(self, s):
         self.sub_title = s["now"]
+        self.game_built = self.game_built or "gamebody" in s
         for k in ("pipeline", "wavebox", "side", "gamebody", "orch", "costs", "spend", "forecast"):
             if k in s:
                 self.query_one("#" + k, Static).update(s[k])

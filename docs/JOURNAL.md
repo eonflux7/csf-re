@@ -1385,3 +1385,12 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   pointer of -7), 3 of ~40 smokes, passes on re-run (work/baseline_fail_1791851763.log, group_fail_1791851200.log).
   Some installed function damages a frame tree. Not bisected; first check whether it survives the removal of the
   122 (frame-related among them: 0x6BFF40, 0x6B2E20, 0x6F4420, 0x6C0450, 0x6C0C20).
+
+## 2026-10-13 (morning) — monitor Game tab; bisect resume
+- Monitor Game tab stayed empty: `collect` was an exclusive thread worker started on every 2 s tick, and a thread
+  worker can't be cancelled, so builds of the Game view (8 s cold, 49 s next to a running wave) piled up and
+  starved each other. Now one collection at a time (a tick during a run is dropped, a tab switch collects once
+  more after it); the tab says "collecting" until the first build. Old code: blank after 75 s; new: filled in 6 s.
+- `flakybisect.py --among`: resumes an interrupted run from the addresses still suspect. The 05:33 run for
+  eip=006326e4 stopped at 06:50 with 43 left (0x4D8B00..0x4DB110, all ai_autonomous, installed 2026-10-11).
+- Queue: 0x48CFE0 and 0x78C1A0 ("emulated run differs") pass under the 05:22 emudiff fixes; back to the lanes.
