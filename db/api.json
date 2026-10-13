@@ -55820,7 +55820,7 @@
  },
  "004d49b0": {
   "name": "GiveObject_StartFacingTarget",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -55879,8 +55879,8 @@
   "file": "src/auto/004d4b10.cpp"
  },
  "004d4bb0": {
-  "name": "RefreshOwnerState",
-  "name_src": "vote",
+  "name": "AiGiveObject_ApplyMissionAction",
+  "name_src": "agent",
   "votes": {
    "RefreshOwnerState": 1
   },
@@ -56008,7 +56008,7 @@
  },
  "004d4fb0": {
   "name": "TCharTask_UpdateRotationTurn",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -56028,7 +56028,7 @@
  },
  "004d5040": {
   "name": "C_00834fa8_SelectLookupByProximity",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -140393,14 +140393,15 @@
  },
  "006948e0": {
   "name": "SceneLoader_CopyMapFilename",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_CopyMapFilename": 5
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
-  "params": "char* a1, char* a2, unsigned int a3",
-  "sig_src": "vote"
+  "params": "const char* a1, char* a2, unsigned int a3",
+  "sig_src": "impl",
+  "file": "src/auto/006948e0.cpp"
  },
  "00694960": {
   "name": "Hud_ExtractResourcePath",
@@ -140408,10 +140409,11 @@
   "votes": {
    "Hud_ExtractResourcePath": 9
   },
-  "ret": "char*",
+  "ret": "const char*",
   "conv": "__cdecl",
-  "params": "char* a1, uint8_t* a2, unsigned int a3",
-  "sig_src": "vote"
+  "params": "const char* a1, uint8_t* a2, uint32_t a3",
+  "sig_src": "impl",
+  "file": "src/auto/00694960.cpp"
  },
  "006949d0": {
   "name": "NormalizeResourceName",
@@ -140425,15 +140427,16 @@
   "sig_src": "vote"
  },
  "00694a60": {
-  "name": "GetFileNameComponent",
-  "name_src": "vote",
+  "name": "CoreString_GetFileNameComponent",
+  "name_src": "agent",
   "votes": {
    "GetFileNameComponent": 2
   },
-  "ret": "const char*",
+  "ret": "int",
   "conv": "__cdecl",
-  "params": "const char* name",
-  "sig_src": "vote"
+  "params": "const char* a1",
+  "sig_src": "impl",
+  "file": "src/auto/00694a60.cpp"
  },
  "00694aa0": {
   "name": "SceneNamesMatch",
@@ -140443,8 +140446,9 @@
   },
   "ret": "bool",
   "conv": "__cdecl",
-  "params": "char* first, char* second",
-  "sig_src": "vote"
+  "params": "char* a1, char* a2",
+  "sig_src": "impl",
+  "file": "src/auto/00694aa0.cpp"
  },
  "00694b20": {
   "name": "ResourceName_Transform",
@@ -140469,8 +140473,8 @@
   "sig_src": "vote"
  },
  "00694bf0": {
-  "name": "Audio_ReplacePathCharacter",
-  "name_src": "vote",
+  "name": "ReplaceCharactersInBuffer",
+  "name_src": "agent",
   "votes": {
    "CoreTokenizer_ReplacePathCharacter": 2,
    "Audio_ReplacePathCharacter": 2
@@ -140495,14 +140499,15 @@
  },
  "00694c30": {
   "name": "GfxTextureLoader_AppendResourceName",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GfxTextureLoader_AppendResourceName": 1
   },
   "ret": "char*",
   "conv": "__cdecl",
-  "params": "char* a1, int a2, char* Source, int a4, int a5, int a6, int a7, int a8, int a9, int a10",
-  "sig_src": "vote"
+  "params": "char* buffer, int capacity, const char* source",
+  "sig_src": "impl",
+  "file": "src/auto/00694c30.cpp"
  },
  "00694c80": {
   "name": "LoadState_Construct",
@@ -215381,7 +215386,7 @@
   "name": "_strncpy",
   "name_src": "ida",
   "votes": {
-   "_strncpy": 17
+   "_strncpy": 18
   },
   "ret": "char*",
   "conv": "__cdecl",
@@ -215830,7 +215835,7 @@
   "name": "_tolower",
   "name_src": "ida",
   "votes": {
-   "_tolower": 2
+   "_tolower": 3
   },
   "ret": "int",
   "conv": "__cdecl",
