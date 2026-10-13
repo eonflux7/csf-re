@@ -114160,7 +114160,7 @@
   "name": "RwRasterRenderScaled",
   "name_src": "rwname",
   "votes": {
-   "RwRasterRenderScaled": 3
+   "RwRasterRenderScaled": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -114171,7 +114171,7 @@
   "name": "RwRasterUnlock",
   "name_src": "rwname",
   "votes": {
-   "RwRasterUnlock": 2
+   "RwRasterUnlock": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -114182,7 +114182,7 @@
   "name": "RwRasterClear",
   "name_src": "rwname",
   "votes": {
-   "RwRasterClear": 5
+   "RwRasterClear": 6
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -114308,7 +114308,7 @@
   "name": "RwRasterLock",
   "name_src": "rwname",
   "votes": {
-   "RwRasterLock": 2
+   "RwRasterLock": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -122671,7 +122671,7 @@
   "name": "LookupObjectById",
   "name_src": "vote",
   "votes": {
-   "LookupObjectById": 114
+   "LookupObjectById": 115
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -148983,7 +148983,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 497,
+   "GetGlobalInt": 498,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -174106,7 +174106,9 @@
  "00702be0": {
   "name": "C_00861a00_GetLockErrorCode",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00861a00_GetLockErrorCode": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00861a00* self, void*",
@@ -174124,13 +174126,14 @@
   "file": "src/auto/00702c70.cpp"
  },
  "00702cc0": {
-  "name": "sub_702CC0",
-  "name_src": "addr",
+  "name": "C_00861a00_UpdateVideoFrame",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00861a00* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00702cc0.cpp"
  },
  "00702e20": {
   "name": "sub_702E20",
