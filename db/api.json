@@ -38922,7 +38922,7 @@
  },
  "004925e0": {
   "name": "C_00833b88_SetTransitionState",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -152263,8 +152263,8 @@
   "sig_src": "abi"
  },
  "006c2410": {
-  "name": "RecordObject_PreCleanup",
-  "name_src": "vote",
+  "name": "Keyframe_ReleaseAllSlots",
+  "name_src": "agent",
   "votes": {
    "RecordObject_PreCleanup": 1
   },
@@ -152275,13 +152275,14 @@
   "file": "src/auto/006c2410.cpp"
  },
  "006c2460": {
-  "name": "sub_6C2460",
-  "name_src": "addr",
+  "name": "AnimCompress_StoreKeyframe",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, int a3",
-  "sig_src": "abi"
+  "params": "uint32_t* self, void* , uint32_t* a2, uint8_t* a3",
+  "sig_src": "impl",
+  "file": "src/auto/006c2460.cpp"
  },
  "006c25e0": {
   "name": "sub_6C25E0",
@@ -152332,7 +152333,7 @@
  },
  "006c2c20": {
   "name": "GfxAnimCompress_ComposeKeyframes",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "float*",
   "conv": "__cdecl",
@@ -152365,7 +152366,7 @@
  },
  "006c2e40": {
   "name": "GfxAnimCompress_InterpolateAtTime",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "float*",
   "conv": "__stdcall",
@@ -152384,7 +152385,7 @@
  },
  "006c3290": {
   "name": "RecordObject_InitFromSource",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "RecordObject_InitFromSource": 1
   },
