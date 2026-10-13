@@ -237,8 +237,7 @@ static void __fastcall C_0083dbb0_DispatchCommand(
     }
     case 0x10:
         AttackTasks_SetMode(
-            reinterpret_cast<uint8_t*>(CSF_AT(
-                uint32_t, reinterpret_cast<void*>(self->field_0008), 0x308)) + 0x2b8,
+            reinterpret_cast<void*>(self->field_0308),
             nullptr, CSF_AT(int, command, 4));
         return;
 
