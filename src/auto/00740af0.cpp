@@ -38,7 +38,11 @@ static double __fastcall NetCogible_ReadAngleDegreesMod360(void* self, void* /*e
     SceneLoader_NoOp();
 
     double reduced = std::fmod(static_cast<double>(angleDegrees), g_DegreesPerTurn);
+#ifndef CSF_STANDALONE
+    // No operands are loaded into ST0/ST1 by this C++ dummy call. Do not
+    // execute the assembly-only helper in standalone mode; fmod above is it.
     (void)__CIfmod(nullptr, nullptr);
+#endif
     return reduced;
 }
 

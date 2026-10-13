@@ -39,7 +39,11 @@ static double __fastcall NetCogible_ReadYawDegreesMod360(void* self, void* /*edx
     SceneLoader_NoOp();
 
     double reduced = std::fmod(static_cast<double>(angleDegrees), g_DegreesPerTurn);
+#ifndef CSF_STANDALONE
+    // fmod above already computes the result; this dummy call supplies no
+    // x87 operands to the assembly-only helper.
     (void)__CIfmod(nullptr, nullptr);
+#endif
     return reduced;
 }
 
