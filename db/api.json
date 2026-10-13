@@ -6806,7 +6806,9 @@
  "0041ddc0": {
   "name": "Vehicle_CreateObjectByType",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Vehicle_CreateObjectByType": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "int type",
@@ -37702,57 +37704,62 @@
   "file": "src/auto/0048e100.cpp"
  },
  "0048e120": {
-  "name": "SceneObject_PassesFirstCheck",
-  "name_src": "vote",
+  "name": "CPlayerCharacter_PassesFirstCheck",
+  "name_src": "agent",
   "votes": {
    "SceneObject_PassesFirstCheck": 26
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00833908* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0048e120.cpp"
  },
  "0048e140": {
-  "name": "SceneObject_IsSecondCheckTrue",
-  "name_src": "vote",
+  "name": "C_00833b88_IsSecondCheckTrue",
+  "name_src": "agent",
   "votes": {
    "SceneObject_IsSecondCheckTrue": 10
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00833b88* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0048e140.cpp"
  },
  "0048e160": {
-  "name": "SceneObject_PassesSecondCheck",
-  "name_src": "vote",
+  "name": "C_008342e8_PassesSecondCheck",
+  "name_src": "agent",
   "votes": {
    "SceneObject_PassesSecondCheck": 2
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_008342e8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0048e160.cpp"
  },
  "0048e180": {
   "name": "IsTargetActive",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "IsTargetActive": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0048e180.cpp"
  },
  "0048e1d0": {
-  "name": "sub_48E1D0",
-  "name_src": "addr",
+  "name": "C_00833908_ForwardFieldValueToObject",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int* a2, int a3",
-  "sig_src": "abi"
+  "params": "C_00833908* self, void* , int* a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/0048e1d0.cpp"
  },
  "0048e200": {
   "name": "C_00833908_TailDispatchRelatedObject",
@@ -37766,7 +37773,7 @@
  },
  "0048e210": {
   "name": "QueryObjectLockedState_48E210",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "QueryObjectLockedState_48E210": 1,
    "QueryObjectCondition_48E210": 1,
@@ -37775,8 +37782,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0048e210.cpp"
  },
  "0048e230": {
   "name": "C_00833908_GetField016c",
@@ -37792,7 +37800,7 @@
  },
  "0048e240": {
   "name": "C_00833908_ForwardEnabledState",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_00833908_ForwardEnabledState": 1
   },
@@ -37802,19 +37810,20 @@
   "sig_src": "vote"
  },
  "0048e270": {
-  "name": "CPlayerCharacter_InitStateFlag",
-  "name_src": "vote",
+  "name": "C_00833908_InitStateFlag",
+  "name_src": "agent",
   "votes": {
    "CPlayerCharacter_InitStateFlag": 2
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_00833908* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/0048e270.cpp"
  },
  "0048e2b0": {
   "name": "C_00833908_SendSetupEvent",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SceneMissionSetup_SetObjectNotification": 1,
    "SceneMissionSetup_SetObjectHandler": 1,
@@ -37831,39 +37840,43 @@
    "DispatchSceneObjectEvent": 1,
    "C_00833908_SetResourceProperty": 1
   },
-  "ret": "uint32_t*",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "vote"
+  "params": "C_00833908* self, void* , int vehicleType, int setupArg",
+  "sig_src": "impl",
+  "file": "src/auto/0048e2b0.cpp"
  },
  "0048e300": {
-  "name": "sub_48E300",
-  "name_src": "addr",
+  "name": "C_00833908_HasFlag8OrCodeIs34",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00833908* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0048e300.cpp"
  },
  "0048e320": {
   "name": "SceneObj_GetSurfaceId",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SceneObj_GetSurfaceId": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00833b88* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0048e320.cpp"
  },
  "0048e350": {
-  "name": "sub_48E350",
-  "name_src": "addr",
+  "name": "Owner_ActivateChildByKey",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int key",
+  "sig_src": "impl",
+  "file": "src/auto/0048e350.cpp"
  },
  "0048e3a0": {
   "name": "sub_48E3A0",
@@ -37882,12 +37895,13 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "vote"
+  "params": "void* self, void* , int resolveArg, int valueArg",
+  "sig_src": "impl",
+  "file": "src/auto/0048e3f0.cpp"
  },
  "0048e430": {
-  "name": "GetObjectPositionVector",
-  "name_src": "vote",
+  "name": "C_008342e8_GetObjectPositionVector",
+  "name_src": "agent",
   "votes": {
    "GetObjectPositionVector": 254,
    "GetEntityPositionPtr": 1
@@ -63235,7 +63249,7 @@
   "name": "GetValue8B0554",
   "name_src": "agent",
   "votes": {
-   "GetValue8B0554": 289
+   "GetValue8B0554": 290
   },
   "ret": "int",
   "conv": "__cdecl",
