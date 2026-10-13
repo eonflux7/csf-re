@@ -19624,7 +19624,7 @@
   "name": "CGuiControl_GetField012C",
   "name_src": "agent",
   "votes": {
-   "CGuiControl_GetField012C": 28
+   "CGuiControl_GetField012C": 29
   },
   "ret": "uint32_t",
   "conv": "__fastcall",
@@ -37934,20 +37934,21 @@
   "file": "src/auto/0048e450.cpp"
  },
  "0048e460": {
-  "name": "SceneLoader_ConfigureFocusEntry",
-  "name_src": "vote",
+  "name": "C_00834050_ConfigureFocusEntry",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_ConfigureFocusEntry": 41,
    "SceneLoader_SetObjectPosition": 2
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int* a2",
-  "sig_src": "vote"
+  "params": "C_00834050* self, void* , int* entry",
+  "sig_src": "impl",
+  "file": "src/auto/0048e460.cpp"
  },
  "0048e4d0": {
-  "name": "DispatchSceneObjectWithPayload",
-  "name_src": "vote",
+  "name": "CPlayerCharacter_DispatchSceneObjectWithPayload",
+  "name_src": "agent",
   "votes": {
    "DispatchSceneObjectWithPayload": 20,
    "SceneObject_ApplyStateAction": 1,
@@ -37959,8 +37960,8 @@
   "sig_src": "vote"
  },
  "0048e4f0": {
-  "name": "SceneObj_GetQueryRate",
-  "name_src": "vote",
+  "name": "C_00833908_GetQueryRate",
+  "name_src": "agent",
   "votes": {
    "SceneObj_GetQueryRate": 2
   },
@@ -37971,7 +37972,7 @@
  },
  "0048e510": {
   "name": "AiTaskStates_ComputeStateValue",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "TaskObj_GetImpactSpeed": 1,
    "AiTaskStates_ComputeStateValue": 1,
@@ -37985,8 +37986,8 @@
   "sig_src": "vote"
  },
  "0048e530": {
-  "name": "SceneObject_InvokeAction",
-  "name_src": "vote",
+  "name": "ForwardInvokeToComponent",
+  "name_src": "agent",
   "votes": {
    "SceneObject_InvokeAction": 1
   },
@@ -60134,7 +60135,9 @@
  "004de7e0": {
   "name": "C_00834050_ForwardToInnerHandler",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00834050_ForwardToInnerHandler": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00834050* self, void* , int a2, int a3, int a4",
@@ -154418,14 +154421,15 @@
  },
  "006c0450": {
   "name": "GfxFrames_SetBoundsFromSphere",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GfxFrames_SetBoundsFromSphere": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "vote"
+  "params": "float* self, void* , float* sphere",
+  "sig_src": "impl",
+  "file": "src/auto/006c0450.cpp"
  },
  "006c04e0": {
   "name": "GfxFrames_ProcessClumpAtomics",
