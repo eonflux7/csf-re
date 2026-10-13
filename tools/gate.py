@@ -15,7 +15,7 @@ import semcheck
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ALLOWED_INC = {"cstdint", "cstddef", "cstring", "cmath", "climits", "cfloat", "globals.h", "hook.h",
-               "core/memory.h", "types/auto_classes.h", "legacy/string.h"}
+               "core/memory.h", "types/auto_classes.h", "legacy/string.h", "types/vc71_vector.h"}
 
 
 def compile_cmd():
