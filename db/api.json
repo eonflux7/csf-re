@@ -10551,7 +10551,7 @@
   "name": "AssignStringRange_429B60",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_429B60": 184,
+   "AssignStringRange_429B60": 185,
    "MenuSceneSelect_InitializeString": 1
   },
   "ret": "void*",
@@ -14769,7 +14769,7 @@
   "name": "AppendStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AppendStringSubstring": 2
+   "AppendStringSubstring": 3
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -14780,7 +14780,7 @@
   "name": "Profiles_AppendStringRange",
   "name_src": "vote",
   "votes": {
-   "Profiles_AppendStringRange": 9,
+   "Profiles_AppendStringRange": 10,
    "AppendBytesToString_43EB30": 1
   },
   "ret": "void*",
@@ -71053,7 +71053,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 407
+   "GetGlobalState_50D190": 408
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -81445,14 +81445,15 @@
  },
  "005342e0": {
   "name": "CMenuLanguage_DispatchCommand",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CMenuLanguage_DispatchCommand": 1
   },
-  "ret": "uint32_t*",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "CMenuLanguage* self, void* , uint32_t* a3",
-  "sig_src": "vote"
+  "params": "CMenuLanguage* self, void* , int command",
+  "sig_src": "impl",
+  "file": "src/auto/005342e0.cpp"
  },
  "005343e0": {
   "name": "CMenuLanguage_Destroy_5343E0",
@@ -141658,7 +141659,8 @@
    "SceneLoader_UpdateResourcePath": 1,
    "SceneLoader_LoadSceneOptions": 1,
    "SceneLoader_PrepareSceneArchive": 1,
-   "SceneLoader_OpenPackage": 1
+   "SceneLoader_OpenPackage": 1,
+   "CoreFiles_SelectArchive": 1
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -143199,7 +143201,7 @@
   "name": "GetGlobalIntPtr",
   "name_src": "agent",
   "votes": {
-   "GetGlobalIntPtr": 7
+   "GetGlobalIntPtr": 8
   },
   "ret": "int*",
   "conv": "__cdecl",
@@ -199142,7 +199144,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 265,
+   "GetGlobalValue_8BC1E0": 266,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
