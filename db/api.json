@@ -143397,7 +143397,7 @@
   "name": "RangeList_ContainsValue",
   "name_src": "agent",
   "votes": {
-   "RangeList_ContainsValue": 1
+   "RangeList_ContainsValue": 2
   },
   "ret": "bool",
   "conv": "__fastcall",
@@ -143434,7 +143434,7 @@
   "name_src": "agent",
   "votes": {
    "MissionScript_ProcessSectionTable": 4,
-   "S_0069afe0_ProcessSectionTable": 2
+   "S_0069afe0_ProcessSectionTable": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -143447,7 +143447,7 @@
   "name_src": "agent",
   "votes": {
    "BlockList_TryHandle": 1,
-   "S_0069b1c0_TryReleaseBlock": 3
+   "S_0069b1c0_TryReleaseBlock": 4
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -144496,15 +144496,16 @@
   "file": "src/auto/0069de90.cpp"
  },
  "0069def0": {
-  "name": "Tokenizer_AllocInner",
-  "name_src": "vote",
+  "name": "C_0085eac0_AllocateInner",
+  "name_src": "agent",
   "votes": {
    "Tokenizer_AllocInner": 2
   },
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t Size, int a3, int a4",
-  "sig_src": "vote"
+  "params": "C_0085eac0* self, void* , size_t size, int , int",
+  "sig_src": "impl",
+  "file": "src/auto/0069def0.cpp"
  },
  "0069dfa0": {
   "name": "C_0085eac0_ForwardBlockHandler",
@@ -144555,15 +144556,16 @@
   "file": "src/auto/0069e040.cpp"
  },
  "0069e050": {
-  "name": "CoreMemDebugFree_ReallocateBlock",
-  "name_src": "vote",
+  "name": "C_0085eac0_ReallocateBlock",
+  "name_src": "agent",
   "votes": {
    "CoreMemDebugFree_ReallocateBlock": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* Block, uint32_t Size, int a4, int a5",
-  "sig_src": "vote"
+  "params": "C_0085eac0* self, void* , uint32_t* block, size_t size, int allocationArg, int allocationContext",
+  "sig_src": "impl",
+  "file": "src/auto/0069e050.cpp"
  },
  "0069e200": {
   "name": "C_0085eac0_ForwardBlockArgs",
@@ -216914,7 +216916,7 @@
   "name": "_malloc",
   "name_src": "ida",
   "votes": {
-   "_malloc": 1
+   "_malloc": 2
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -216924,11 +216926,13 @@
  "007b1ed4": {
   "name": "_realloc",
   "name_src": "ida",
-  "votes": {},
+  "votes": {
+   "_realloc": 1
+  },
   "ret": "void*",
   "conv": "__cdecl",
   "params": "void* Block, uint32_t Size",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007b2081": {
   "name": "_calloc",
