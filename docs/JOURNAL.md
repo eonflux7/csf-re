@@ -1456,3 +1456,8 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   review what they find). One Codex CLI agent session, gpt-6.1-sol@high, sandboxed to its own worktree
   (work/deep/NAME/tree, set up like the verify tree); offline tools only. Returns report.md and patch.diff; nothing
   reaches the repo unreviewed. The captain stays what it is (naming, schema-checked jobs): not renamed.
+- First deep worker (queue 0x69AE30, 391 s): emudiff false alarm. clang-cl's `__chkstk` was mocked (one call event
+  too many, frame never allocated); it is now resolved to the original CRT's `__alloca_probe` and runs for real.
+  Checked here: tests/test_emudiff.py passes, installed 0x6A1E30 (10,000-byte local) goes DIFF 8/8 -> same 8/8,
+  the candidate is same 2/8. 0x69AE30 back to the lanes. The worker also edited PLAN/JOURNAL in its tree: not
+  taken (the brief now says so).

@@ -261,6 +261,11 @@ class Obj:
             i += 1 + naux
         self.ext, self.natives = {}, {}
         crt_names = crt_ranges()[1]
+        # i386 clang-cl emits __chkstk for large frames / dynamic alloca; VC7.1 names the same
+        # allocating stack-probe ABI __alloca_probe (eax = bytes, helper adjusts esp). Run the
+        # original CRT helper, just as on the original side: mocking it leaves esp unchanged
+        # and adds a spurious call event. This is not the probe-only x64 __chkstk ABI.
+        crt_aliases = {"__chkstk": "__alloca_probe", "_chkstk": "__alloca_probe"}
 
         def resolve(idx):
             s = syms[idx]
@@ -274,6 +279,8 @@ class Obj:
             n = s["name"]
             if n in crt_names:
                 return crt_names[n]
+            if n in crt_aliases and crt_aliases[n] in crt_names:
+                return crt_names[crt_aliases[n]]
             if n in NATIVE_AT:
                 return NATIVE_AT[n]
             if n == "___security_cookie":

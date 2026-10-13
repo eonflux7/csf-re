@@ -30,7 +30,8 @@ Your working directory is your own worktree of the repo. You may edit files in i
 `.venv/bin/python tools/<tool>.py` (gate.py, semcheck.py, emudiff.py: `emudiff.py EA --src src/auto/EA.cpp` after
 an edit, the object in build/ is stale otherwise). Typed pseudocode and other IDA exports are under export/
 (read-only), the original image is work/pc/CommXPC.exe. Not available to you, do not try: the game, smokes,
-tools/verifier.py, tools/grunt.py, anything in tools/ida/ that writes, git commit, the network.
+tools/verifier.py, tools/grunt.py, anything in tools/ida/ that writes, git commit, the network. Leave docs/PLAN.md,
+docs/JOURNAL.md, queue/ and db/ as they are: what belongs there goes in your report.
 
 Rules of the repo that bind you: an original address is never a bare number in code (CSF_FUNC / CSF_GLOBAL /
 CSF_STR / CSF_VTBL / CSF_ADDR_*, see src/globals.h); library regions (rw, d3dx9, netz, crt, png) are not
