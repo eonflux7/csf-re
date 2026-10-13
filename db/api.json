@@ -69302,7 +69302,7 @@
   "name": "GetGlobalValue_8B056C",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8B056C": 78
+   "GetGlobalValue_8B056C": 80
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -71274,7 +71274,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 414
+   "GetGlobalState_50D190": 416
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -72131,7 +72131,7 @@
   "name": "GameBddLoader_ShowSaveGameMessage",
   "name_src": "agent",
   "votes": {
-   "GameBddLoader_ShowSaveGameMessage": 3,
+   "GameBddLoader_ShowSaveGameMessage": 4,
    "SaveGame_ShowMessage": 3
   },
   "ret": "int",
@@ -73707,7 +73707,7 @@
   "name": "ProfileSavegames_GetScenarioCollection",
   "name_src": "agent",
   "votes": {
-   "ProfileSavegames_GetScenarioCollection": 7,
+   "ProfileSavegames_GetScenarioCollection": 8,
    "GetScenarioCollection": 5
   },
   "ret": "int*",
@@ -77384,7 +77384,7 @@
   "name": "GetGlobalValue_521BB0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_521BB0": 135
+   "GetGlobalValue_521BB0": 136
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -77525,7 +77525,7 @@
   "name": "MenuProgressInput_UpdateGlobalState",
   "name_src": "vote",
   "votes": {
-   "MenuProgressInput_UpdateGlobalState": 22
+   "MenuProgressInput_UpdateGlobalState": 23
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -93349,7 +93349,9 @@
  "00564e80": {
   "name": "CMenuAccounts_ScrollToTargetDelta",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuAccounts_ScrollToTargetDelta": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "CMenuAccounts* self, void*",
@@ -93360,10 +93362,11 @@
   "name": "CMenuMpGameMode_PopulateModesForNetworkType",
   "name_src": "agent",
   "votes": {},
-  "ret": "int*",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00564f00.cpp"
  },
  "00564f80": {
   "name": "CMenuAccounts_CallChildVtblMethod290",
@@ -93386,13 +93389,14 @@
   "file": "src/auto/00564fc0.cpp"
  },
  "00564ff0": {
-  "name": "sub_564FF0",
-  "name_src": "addr",
+  "name": "CMenuAccounts_InitializeControls",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "CMenuAccounts* self, void* , int context, int",
+  "sig_src": "impl",
+  "file": "src/auto/00564ff0.cpp"
  },
  "005650f0": {
   "name": "CMenuAccounts_HandleStateOne",
@@ -93438,13 +93442,14 @@
   "file": "src/auto/00565470.cpp"
  },
  "005654e0": {
-  "name": "sub_5654E0",
-  "name_src": "addr",
+  "name": "MenuAccounts_ShowSelectedAccountMessage",
+  "name_src": "impl",
   "votes": {},
   "ret": "char*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/005654e0.cpp"
  },
  "005655b0": {
   "name": "GfxScene_PrepareOwnedResource",
@@ -93595,13 +93600,14 @@
   "file": "src/auto/00565dd0.cpp"
  },
  "00565e20": {
-  "name": "MenuAccounts_HandleInputEvent",
+  "name": "C_0085ec18_HandleInputEvent",
   "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_0085ec18* self, void* , int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/00565e20.cpp"
  },
  "00565e90": {
   "name": "MenuAccounts_HandleEventAndResetControl",
@@ -122395,7 +122401,7 @@
   "name": "LookupObjectById",
   "name_src": "vote",
   "votes": {
-   "LookupObjectById": 112
+   "LookupObjectById": 113
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -128896,7 +128902,7 @@
   "name": "GetReferencedObject",
   "name_src": "vote",
   "votes": {
-   "GetReferencedObject": 95,
+   "GetReferencedObject": 96,
    "MenuPause_ResolveHeldObject_6683F0": 1,
    "Options_ResolveHeldObject_6683F0": 1,
    "MenuSaveGame_ResolveHeldObject_6683F0": 1,
@@ -139389,7 +139395,7 @@
   "name": "MemDebug_FreeDebugBlock",
   "name_src": "agent",
   "votes": {
-   "Mem_FreeDebug": 667,
+   "Mem_FreeDebug": 668,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -139957,7 +139963,7 @@
   "name_src": "agent",
   "votes": {
    "FormatScenarioText": 3,
-   "CoreParser_FormatScenarioText": 1
+   "CoreParser_FormatScenarioText": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -140981,7 +140987,8 @@
   "name": "StringFormat_CopyTrucoStringToWide",
   "name_src": "agent",
   "votes": {
-   "CopyTrucoStringToWide": 13
+   "CopyTrucoStringToWide": 13,
+   "StringFormat_CopyTrucoStringToWide": 1
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -148666,7 +148673,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 488,
+   "GetGlobalInt": 489,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -179241,7 +179248,7 @@
   "name": "CGuiListBoxBase_SetItemHeight",
   "name_src": "agent",
   "votes": {
-   "CGuiListBoxBase_SetItemHeight": 9
+   "CGuiListBoxBase_SetItemHeight": 10
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -179277,7 +179284,7 @@
   "name": "CGuiListBox_GetItemCount_714860",
   "name_src": "agent",
   "votes": {
-   "CGuiListBox_GetItemCount_714860": 8
+   "CGuiListBox_GetItemCount_714860": 9
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -179357,7 +179364,7 @@
   "name": "GetIndexedTableValue_714C20",
   "name_src": "agent",
   "votes": {
-   "GetIndexedTableValue_714C20": 10
+   "GetIndexedTableValue_714C20": 11
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -179369,7 +179376,7 @@
   "name": "GetStoredValueAtIndex",
   "name_src": "agent",
   "votes": {
-   "GetStoredValueAtIndex": 12,
+   "GetStoredValueAtIndex": 13,
    "StoredValue_GetAtIndex": 1
   },
   "ret": "int",
@@ -179498,7 +179505,7 @@
   "name": "CGuiListBoxBase_ClearStorageAndSendEvent",
   "name_src": "agent",
   "votes": {
-   "CGuiListBoxBase_ClearStorageAndSendEvent": 13
+   "CGuiListBoxBase_ClearStorageAndSendEvent": 14
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -179813,7 +179820,7 @@
   "name": "CGuiListBoxBase_AddSelectedItem",
   "name_src": "agent",
   "votes": {
-   "CGuiListBoxBase_AddSelectedItem": 12,
+   "CGuiListBoxBase_AddSelectedItem": 14,
    "GuiListBoxBase_AddSelectedItem": 1
   },
   "ret": "void",
@@ -183073,7 +183080,7 @@
   "name": "ForwardToStoredObjectVirtualSlot40",
   "name_src": "agent",
   "votes": {
-   "ForwardToStoredObjectVirtualSlot40": 7
+   "ForwardToStoredObjectVirtualSlot40": 8
   },
   "ret": "void*",
   "conv": "__fastcall",
