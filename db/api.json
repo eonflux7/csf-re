@@ -4683,7 +4683,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 228
+   "AssignStringSubstring": 229
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -10561,7 +10561,7 @@
   "name": "AssignStringRange_429B60",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_429B60": 194,
+   "AssignStringRange_429B60": 195,
    "MenuSceneSelect_InitializeString": 1
   },
   "ret": "void*",
@@ -27320,7 +27320,7 @@
   "name": "MissionScript_DestroyElementRange",
   "name_src": "agent",
   "votes": {
-   "MissionScript_DestroyElementRange": 16,
+   "MissionScript_DestroyElementRange": 17,
    "DestroyElementRange": 8
   },
   "ret": "int",
@@ -36524,7 +36524,7 @@
   "name": "AssignStringRange_488830",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_488830": 58
+   "AssignStringRange_488830": 59
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -70738,8 +70738,9 @@
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, bool a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint8_t detached",
+  "sig_src": "impl",
+  "file": "src/auto/0050b430.cpp"
  },
  "0050b440": {
   "name": "C_0050b440_SetByteAt0x14",
@@ -70860,8 +70861,9 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "COptionsFile* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0050b710.cpp"
  },
  "0050b7d0": {
   "name": "COptionsFile_LoadOptions",
@@ -70869,8 +70871,9 @@
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "COptionsFile* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0050b7d0.cpp"
  },
  "0050b8b0": {
   "name": "GetInlineOrHeapBuffer",
@@ -70910,8 +70913,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "COptionsFile* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0050b9a0.cpp"
  },
  "0050ba50": {
   "name": "COptionsFile_Construct",
@@ -71193,7 +71197,7 @@
   "name": "GameBddLoader_ConfigureDisplayState",
   "name_src": "vote",
   "votes": {
-   "GameBddLoader_ConfigureDisplayState": 3
+   "GameBddLoader_ConfigureDisplayState": 4
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
@@ -71201,15 +71205,16 @@
   "sig_src": "vote"
  },
  "0050c580": {
-  "name": "GameBddLoader_ConstructFader",
-  "name_src": "vote",
+  "name": "CMenuScreenFader_Construct",
+  "name_src": "agent",
   "votes": {
    "GameBddLoader_ConstructFader": 1
   },
-  "ret": "int",
+  "ret": "CMenuScreenFader*",
   "conv": "__fastcall",
-  "params": "int a1, int a2",
-  "sig_src": "vote"
+  "params": "CMenuScreenFader* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0050c580.cpp"
  },
  "0050c630": {
   "name": "CMenuScreenFader_Destroy",
@@ -71349,7 +71354,7 @@
   "name": "ReserveObjectPointers",
   "name_src": "vote",
   "votes": {
-   "ReserveObjectPointers": 1
+   "ReserveObjectPointers": 2
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
@@ -71381,15 +71386,16 @@
   "file": "src/auto/0050ce60.cpp"
  },
  "0050d0a0": {
-  "name": "GameBddLoader_ConstructFadeController",
-  "name_src": "vote",
+  "name": "S_0050d0a0_ConstructFadeController",
+  "name_src": "agent",
   "votes": {
    "GameBddLoader_ConstructFadeController": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_0050d0a0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0050d0a0.cpp"
  },
  "0050d190": {
   "name": "GetGlobalState_50D190",
@@ -85468,7 +85474,8 @@
   "name": "MenuMpStats_ResolveVideoPath",
   "name_src": "agent",
   "votes": {
-   "MenuPage_LookupByName": 3
+   "MenuPage_LookupByName": 3,
+   "MenuMpStats_ResolveVideoPath": 1
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -139691,7 +139698,7 @@
   "name": "MemDebug_FreeDebugBlock",
   "name_src": "agent",
   "votes": {
-   "Mem_FreeDebug": 681,
+   "Mem_FreeDebug": 683,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -139803,7 +139810,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 209,
+   "CoreMemory_Free": 210,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -141711,7 +141718,7 @@
   "name_src": "agent",
   "votes": {
    "MenuProgressInput_AssignText": 24,
-   "S_004f21d0_AssignText": 7
+   "S_004f21d0_AssignText": 8
   },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
@@ -141722,7 +141729,7 @@
   "name": "SaveSlots_ApplyIndex",
   "name_src": "agent",
   "votes": {
-   "SaveSlots_ApplyIndex": 9,
+   "SaveSlots_ApplyIndex": 10,
    "ProfilesSavegames_AppendWideCharacter": 1,
    "ProfilesSavegames_AppendCharacter": 1
   },
@@ -141774,8 +141781,8 @@
   "name": "AppendNarrowToWideString",
   "name_src": "agent",
   "votes": {
-   "ProfilesSavegames_AppendNarrowText": 2,
-   "AppendNarrowToWideString": 5
+   "AppendNarrowToWideString": 6,
+   "ProfilesSavegames_AppendNarrowText": 2
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -141799,7 +141806,7 @@
   "name": "GetOptionsByteAt2",
   "name_src": "agent",
   "votes": {
-   "GetOptionsByteAt2": 24
+   "GetOptionsByteAt2": 26
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -141834,7 +141841,7 @@
   "name": "SetOptionsByteAt40",
   "name_src": "agent",
   "votes": {
-   "SetOptionsByteAt40": 8
+   "SetOptionsByteAt40": 10
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -141846,7 +141853,7 @@
   "name": "GetOptionsByte40",
   "name_src": "agent",
   "votes": {
-   "GetOptionsByte40": 8
+   "GetOptionsByte40": 10
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -141905,7 +141912,7 @@
   "name": "StoreOptionsByte104",
   "name_src": "agent",
   "votes": {
-   "StoreOptionsByte104": 15
+   "StoreOptionsByte104": 17
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -141917,7 +141924,7 @@
   "name": "GetOptionsByte104",
   "name_src": "agent",
   "votes": {
-   "GetOptionsByte104": 15
+   "GetOptionsByte104": 17
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -141999,7 +142006,8 @@
   "name": "CoreFiles_CheckScenarioFile",
   "name_src": "agent",
   "votes": {
-   "Campaign_CheckScenarioFile": 6
+   "Campaign_CheckScenarioFile": 6,
+   "CoreFiles_CheckScenarioFile": 1
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -142290,7 +142298,7 @@
    "SceneLoader_SetLogState": 1,
    "SceneLoader_SetOptionsByte": 2,
    "SceneLoader_SetPackageLoadingEnabled": 1,
-   "CoreFiles_SetFileOption": 12
+   "CoreFiles_SetFileOption": 14
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -144278,7 +144286,7 @@
   "name": "ProfilesSavegames_GetBaseDirectory",
   "name_src": "agent",
   "votes": {
-   "ProfilesSavegames_GetBaseDirectory": 2,
+   "ProfilesSavegames_GetBaseDirectory": 3,
    "ProfilesSavegames_GetUserDataPath": 1
   },
   "ret": "unsigned int",
@@ -200403,7 +200411,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 273,
+   "GetGlobalValue_8BC1E0": 274,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
@@ -202045,7 +202053,7 @@
   "name": "GetGlobalValue_75FDF0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_75FDF0": 58
+   "GetGlobalValue_75FDF0": 59
   },
   "ret": "int",
   "conv": "__cdecl",
