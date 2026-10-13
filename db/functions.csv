@@ -1127,7 +1127,7 @@ ea,size,region,module,name,name_src,status
 00434800,2225,game,m42CF50,CHud_Destroy,agent,done
 004350c0,454,game,m42CF50,CHud_Render,agent,done
 00435290,823,game,stl,S_00434780_InsertCopiesAt,vote,todo
-004355d0,1840,game,m42CF50,Hud_ConstructInstance,vote,todo
+004355d0,1840,game,m42CF50,CHud_ConstructInstance,agent,done
 00435d00,208,game,m42CF50,Hud_AppendChildComponents,agent,done
 00435dd0,424,game,m42CF50,CHud_Update,agent,done
 00435f80,174,game,m42CF50,S_00434780_ResizeWithValue,agent,done
@@ -7445,9 +7445,9 @@ ea,size,region,module,name,name_src,status
 0053c070,131,game,m53B910,MenuProfiles_UpdateTrucoFlag,agent,done
 0053c100,104,game,m53B910,CMenuProfiles_Construct,agent,done
 0053c170,27,game,m53B910,CMenuProfiles_ProcessActionAndRefresh,agent,done
-0053c190,215,game,m53B910,,,todo
+0053c190,215,game,m53B910,CMenuProfiles_CheckEnteredProfileName,vote,todo
 0053c270,329,game,m53B910,CMenuProfiles_HandleStateTwo,vote,todo
-0053c3c0,221,game,m53B910,,,todo
+0053c3c0,221,game,m53B910,CMenuProfiles_CheckProfileNameConflict,vote,todo
 0053c4a0,37,game,m53B910,CMenuDemoExit_SwitchToCampaign,agent,done
 0053c4d0,110,game,m53B910,CMenuDemoExit_Activate,agent,done
 0053c540,130,game,m53B910,CMenuDemoExit_UpdateCountdown,agent,done
@@ -7653,7 +7653,7 @@ ea,size,region,module,name,name_src,status
 00544310,45,game,m5442A0,CMenuSaveGame_ResetStringStorage,agent,done
 00544340,65,game,m5442A0,MenuSaveGame_ClearSlotRange,agent,done
 00544390,28,game,m5442A0,MenuSaveGame_ForwardArguments,agent,done
-005443b0,208,game,m5442A0,,,todo
+005443b0,208,game,m5442A0,CMenuProfilesPC_HandleEditResult,agent,done
 00544480,72,game,m5442A0,MenuSaveGame_ClearSlotState,agent,done
 005444d0,107,game,m5442A0,MenuSaveGame_ClearStorage,agent,done
 00544550,152,game,m5442A0,CMenuProfilesPC_OpenProfileNameEdit,agent,done
@@ -7670,7 +7670,7 @@ ea,size,region,module,name,name_src,status
 00544980,71,game,m5442A0,MenuSaveGame_ProcessPendingState,agent,done
 005449d0,124,game,m5442A0,CMenuSaveGame_ScrollToTrackedItem,agent,done
 00544a50,70,game,m5442A0,CMenuSaveGame_RefreshListboxIfProxyReady,agent,done
-00544aa0,226,game,m5442A0,,,todo
+00544aa0,226,game,m5442A0,CMenuSaveGame_InitializeControls,agent,done
 00544b90,103,game,m5442A0,MenuSaveGame_RefreshLayoutForScheduler,agent,done
 00544c00,85,game,m5442A0,CopyRecordsBackward,agent,done
 00544c60,63,game,m5442A0,MenuSaveGame_CopySaveEntry,agent,done
@@ -7688,7 +7688,7 @@ ea,size,region,module,name,name_src,status
 00545530,118,game,m5442A0,CMenuSaveGame_Construct,agent,done
 005455b0,8,game,m5442A0,CMenuSaveGame_AdjustThisThenDispatch,agent,done
 005455c0,153,game,m5442A0,CMenuSaveGame_Destruct,agent,done
-00545660,619,game,m5442A0,CMenuSaveGame_HandleButtonEvent,vote,todo
+00545660,619,game,m5442A0,CMenuSaveGame_HandleButtonEvent,agent,done
 005458d0,714,game,m5442A0,CMenuSaveGame_BeginNewSaveFlow,vote,todo
 00545ba0,33,game,m5442A0,CMenuSaveGame_Destroy,agent,done
 00545bd0,105,game,m5442A0,CMenuSaveGame_SetProgressAndDispatchMode,agent,done
