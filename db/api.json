@@ -139805,7 +139805,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_AllocUntagged": 131,
+   "CoreMemory_AllocUntagged": 132,
    "Mem_Alloc": 482
   },
   "ret": "int",
@@ -139818,7 +139818,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 211,
+   "CoreMemory_Free": 212,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -177198,7 +177198,9 @@
  "0070e170": {
   "name": "S_0070e170_ConfigureBuffer",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_0070e170_ConfigureBuffer": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "S_0070e170* self, void* , int a2, int a3",
@@ -177359,7 +177361,9 @@
  "0070e830": {
   "name": "S_0070e170_RunPlaybackLoop",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_0070e170_RunPlaybackLoop": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_0070e170* self, void*",
@@ -177389,15 +177393,16 @@
   "file": "src/auto/0070e940.cpp"
  },
  "0070e970": {
-  "name": "Audio_ProcessEffectEntry",
-  "name_src": "vote",
+  "name": "S_0070e170_ProcessEffectEntry",
+  "name_src": "agent",
   "votes": {
    "Audio_ProcessEffectEntry": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_0070e170* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0070e970.cpp"
  },
  "0070ea60": {
   "name": "Audio_ForwardToEntryHandler",
@@ -231389,7 +231394,7 @@
   "name": "ov_clear",
   "name_src": "ida",
   "votes": {
-   "ov_clear": 1
+   "ov_clear": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -231400,7 +231405,7 @@
   "name": "ov_time_total",
   "name_src": "ida",
   "votes": {
-   "ov_time_total": 1
+   "ov_time_total": 2
   },
   "ret": "double",
   "conv": "__cdecl",
@@ -231411,7 +231416,7 @@
   "name": "ov_open_callbacks",
   "name_src": "ida",
   "votes": {
-   "ov_open_callbacks": 1
+   "ov_open_callbacks": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -231432,11 +231437,13 @@
  "0081dd34": {
   "name": "ov_info",
   "name_src": "ida",
-  "votes": {},
-  "ret": "int",
+  "votes": {
+   "ov_info": 1
+  },
+  "ret": "void*",
   "conv": "__cdecl",
-  "params": "int a1, int a2",
-  "sig_src": "abi"
+  "params": "void* decoder, int link",
+  "sig_src": "vote"
  },
  "0081ddb8": {
   "name": "sub_81DDB8",
