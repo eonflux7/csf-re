@@ -29980,7 +29980,7 @@
  },
  "004752e0": {
   "name": "C_00831678_SerializeFieldGroup",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -142742,16 +142742,17 @@
   "file": "src/auto/0069c3c0.cpp"
  },
  "0069c400": {
-  "name": "Audio_ApplyScenarioPath",
-  "name_src": "vote",
+  "name": "CoreWin32Debug_ApplyScenarioPath",
+  "name_src": "agent",
   "votes": {
    "Audio_ApplyScenarioPath": 1,
    "Audio_ExpandPath": 1
   },
   "ret": "char*",
   "conv": "__cdecl",
-  "params": "char* Str, int a2, int a3, int a4, int a5, int a6, int a7",
-  "sig_src": "vote"
+  "params": "char* path, int , int scenarioId, int , int , int , int",
+  "sig_src": "impl",
+  "file": "src/auto/0069c400.cpp"
  },
  "0069c510": {
   "name": "CoreWin32Debug_CopyScenarioPath",
@@ -142811,7 +142812,7 @@
  },
  "0069c900": {
   "name": "C_0085e92c_FormatTimeHHMMSS",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char*",
   "conv": "__fastcall",
@@ -142820,8 +142821,8 @@
   "file": "src/auto/0069c900.cpp"
  },
  "0069c950": {
-  "name": "C_0085e92c_Refresh",
-  "name_src": "vote",
+  "name": "C_0085e92c_UpdateElapsedTimeFields",
+  "name_src": "agent",
   "votes": {
    "C_0085e92c_Refresh": 1
   },
@@ -142853,7 +142854,7 @@
  },
  "0069ca60": {
   "name": "C_0085e92c_GetElapsedMilliseconds",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "double",
   "conv": "__fastcall",
@@ -214889,7 +214890,7 @@
   "name": "_strstr",
   "name_src": "ida",
   "votes": {
-   "_strstr": 4
+   "_strstr": 5
   },
   "ret": "char*",
   "conv": "__cdecl",
