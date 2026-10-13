@@ -1575,7 +1575,10 @@ def wave_report(args, mods, t0, since=None):
     stop = []
     if q >= 2 and q / max(1, v + q) > args.stop_quarantine:
         stop.append(f"quarantined {q}/{v + q} in game (> {args.stop_quarantine:.0%})")
-    if not args.no_verify and len(done) >= 10 and len(pend) / len(done) > args.stop_pending:
+    # not after a smoke failure the verifier could not attribute: its group is pending because of that failure
+    # (2026-10-13: a control run that failed in 8 s, with a git index.lock error just before, stopped the run as
+    # "41/44 never installed"); a later verify pass takes the group again
+    if not args.no_verify and not notes and len(done) >= 10 and len(pend) / len(done) > args.stop_pending:
         stop.append(f"{len(pend)}/{len(done)} done functions never installed in a passing smoke (> {args.stop_pending:.0%})")
     eas = set(done)
     import verify

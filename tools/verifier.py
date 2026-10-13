@@ -270,7 +270,9 @@ def verify_group(group, starts):
                 break
             culprits, why = grunt.bisect([int(e, 16) for e in on], first_out=out)
             if not culprits:
-                note = f"smoke failed, not attributable to the group ({why}); group left pending"
+                log = os.path.join(ROOT, "work", f"group_fail_{int(time.time())}.log")
+                open(log, "w").write(out)
+                note = f"smoke failed, not attributable to the group ({why}); group left pending; output: {log}"
                 return [], bad, note
             cs = [f"{c:08x}" for c in culprits]
             quarantine(cs, f"in-game smoke failure (verifier bisect: {why})", out)
