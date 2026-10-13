@@ -139337,7 +139337,7 @@
   "name": "MemDebug_FreeDebugBlock",
   "name_src": "agent",
   "votes": {
-   "Mem_FreeDebug": 662,
+   "Mem_FreeDebug": 663,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -139436,7 +139436,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_AllocUntagged": 114,
+   "CoreMemory_AllocUntagged": 115,
    "Mem_Alloc": 482
   },
   "ret": "int",
@@ -139449,7 +139449,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 185,
+   "CoreMemory_Free": 186,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -178663,19 +178663,20 @@
   "file": "src/auto/00713b10.cpp"
  },
  "00713b20": {
-  "name": "GuiEffect_Create",
-  "name_src": "opus",
+  "name": "GuiEffects_Create",
+  "name_src": "agent",
   "votes": {
    "GuiEffect_Create": 9
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
   "params": "int effectType",
-  "sig_src": "vote"
+  "sig_src": "impl",
+  "file": "src/auto/00713b20.cpp"
  },
  "00713c60": {
-  "name": "DrawLine",
-  "name_src": "vote",
+  "name": "GuiEffect_DrawLine",
+  "name_src": "agent",
   "votes": {
    "DrawLine": 1
   },
@@ -178743,8 +178744,8 @@
   "sig_src": "vote"
  },
  "00713d50": {
-  "name": "sub_713D50",
-  "name_src": "addr",
+  "name": "GuiEffect_ForwardToAttachedEffect",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -178898,8 +178899,8 @@
   "sig_src": "vote"
  },
  "00713f40": {
-  "name": "C_00863f60_Destroy",
-  "name_src": "vote",
+  "name": "C_00863f60_Destroy_713F40",
+  "name_src": "agent",
   "votes": {
    "C_00863f60_Destroy": 7
   },
@@ -178942,17 +178943,18 @@
   "file": "src/auto/00713fb0.cpp"
  },
  "00713fc0": {
-  "name": "sub_713FC0",
-  "name_src": "addr",
+  "name": "C_00863f60_Destroy_713FC0",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00863f60* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/00713fc0.cpp"
  },
  "00714020": {
   "name": "C_008656d0_SetText",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
@@ -178961,8 +178963,8 @@
   "file": "src/auto/00714020.cpp"
  },
  "00714050": {
-  "name": "SetListBoxTexture",
-  "name_src": "vote",
+  "name": "GuiEffect_SetListBoxTexture",
+  "name_src": "agent",
   "votes": {
    "SetListBoxTexture": 2
   },
@@ -185557,7 +185559,9 @@
  "0072a140": {
   "name": "C_00865758_Init",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00865758_Init": 1
+  },
   "ret": "C_00865758*",
   "conv": "__fastcall",
   "params": "C_00865758* self, void*",
@@ -185567,7 +185571,9 @@
  "0072a170": {
   "name": "C_008657e0_Initialize",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_008657e0_Initialize": 1
+  },
   "ret": "C_008657e0*",
   "conv": "__fastcall",
   "params": "C_008657e0* self, void*",
@@ -185577,7 +185583,9 @@
  "0072a1b0": {
   "name": "C_00865870_Initialize",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00865870_Initialize": 1
+  },
   "ret": "C_00865870*",
   "conv": "__fastcall",
   "params": "C_00865870* self, void*",
@@ -185587,7 +185595,9 @@
  "0072a1f0": {
   "name": "C_008658f8_Construct",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_008658f8_Construct": 1
+  },
   "ret": "C_008658f8*",
   "conv": "__fastcall",
   "params": "C_008658f8* self, void*",
@@ -185597,7 +185607,9 @@
  "0072a220": {
   "name": "C_00865aa8_Construct",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00865aa8_Construct": 1
+  },
   "ret": "C_00865aa8*",
   "conv": "__fastcall",
   "params": "C_00865aa8* self, void*",
@@ -185627,7 +185639,9 @@
  "0072a2c0": {
   "name": "C_00865980_Construct",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00865980_Construct": 1
+  },
   "ret": "C_00865980*",
   "conv": "__fastcall",
   "params": "C_00865980* self, void*",
@@ -185637,7 +185651,9 @@
  "0072a2f0": {
   "name": "C_00865a10_Initialize",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00865a10_Initialize": 1
+  },
   "ret": "C_00865a10*",
   "conv": "__fastcall",
   "params": "C_00865a10* self, void*",
@@ -185647,7 +185663,9 @@
  "0072a340": {
   "name": "C_008656d0_Construct",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_008656d0_Construct": 1
+  },
   "ret": "C_008656d0*",
   "conv": "__fastcall",
   "params": "C_008656d0* self, void*",
