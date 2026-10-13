@@ -77557,7 +77557,7 @@
   "name": "GetGlobalValue_521BB0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_521BB0": 146
+   "GetGlobalValue_521BB0": 147
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -77700,7 +77700,7 @@
   "name": "MenuProgressInput_UpdateGlobalState",
   "name_src": "vote",
   "votes": {
-   "MenuProgressInput_UpdateGlobalState": 30
+   "MenuProgressInput_UpdateGlobalState": 31
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -83795,7 +83795,7 @@
   "name": "CMenuOptions_ApplyTargetOffset",
   "name_src": "agent",
   "votes": {
-   "CMenuOptions_ApplyTargetOffset": 4,
+   "CMenuOptions_ApplyTargetOffset": 5,
    "CMenuOptions_LayoutOptionButtons": 4
   },
   "ret": "int",
@@ -84609,13 +84609,14 @@
   "file": "src/auto/0053cd30.cpp"
  },
  "0053cda0": {
-  "name": "sub_53CDA0",
-  "name_src": "addr",
+  "name": "CMenuSoundOptions_InitializeControls",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "CMenuSoundOptions* self, void* , int owner, int",
+  "sig_src": "impl",
+  "file": "src/auto/0053cda0.cpp"
  },
  "0053cee0": {
   "name": "CMenuSoundOptions_StoreSliderValueAndRefresh",
@@ -197083,15 +197084,16 @@
   "file": "src/auto/0074b380.cpp"
  },
  "0074b3a0": {
-  "name": "MpSpawnPoints_CreateRecord",
-  "name_src": "vote",
+  "name": "MpSpawnPoints_CreateRecordImpl",
+  "name_src": "agent",
   "votes": {
    "MpSpawnPoints_CreateRecord": 1
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "uint32_t a1",
-  "sig_src": "vote"
+  "params": "int a1",
+  "sig_src": "impl",
+  "file": "src/auto/0074b3a0.cpp"
  },
  "0074b3c0": {
   "name": "NetGhostDDL_ProcessField",
