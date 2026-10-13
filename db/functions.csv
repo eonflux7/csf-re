@@ -5956,11 +5956,11 @@ ea,size,region,module,name,name_src,status
 004fd6e0,50,game,m4FBE10,CommandoAnims_GetSingleton,agent,done
 004fd720,124,game,m4FBE10,S_0047ea40_UpdateAnimEntryState,agent,done
 004fd7a0,665,game,m4FBE10,C_0083f448_Serialize,agent,done
-004fda40,93,game,m4FDA40,,,todo
-004fdaa0,34,game,m4FDA40,,,todo
-004fdad0,221,game,m4FDA40,GameBddLoader_PrepareScenarioSelection,vote,todo
+004fda40,93,game,m4FDA40,AreCStringsEqual,agent,done
+004fdaa0,34,game,m4FDA40,C_0083f4bc_ScalarDeletingDestructor,agent,done
+004fdad0,221,game,m4FDA40,GameBddLoader_PrepareScenarioSelection,agent,done
 004fdbb0,6,game,m4FDA40,GetGlobalValue_8B0568,agent,done
-004fdbc0,173,game,m4FDA40,GameBddLoader_CleanupMenuAssets,vote,todo
+004fdbc0,173,game,m4FDA40,GameBddLoader_CleanupMenuAssets,agent,done
 004fdc70,41,game,m4FDC70,CSceneLoaderBase_RequestSceneLoad,agent,done
 004fdca0,254,game,m4FDC70,SceneLoader_CreateSectorOutline,agent,done
 004fdda0,417,game,m4FDC70,SceneLoader_LoadMapProperties,agent,done
@@ -6630,7 +6630,7 @@ ea,size,region,module,name,name_src,status
 005199e0,146,game,m519190,CreateRecordWithPayload,agent,done
 00519a80,111,game,m519A80,BddTables_CopyDwordRange,agent,done
 00519af0,91,game,m519A80,SceneSubsystem_LookupEntry,agent,done
-00519b50,141,game,m519A80,Tables_ResolveAnimationIndex,agent,todo
+00519b50,141,game,m519A80,Tables_ResolveAnimationIndex,agent,done
 00519be0,40,game,m519A80,BddTables_GetEntryElementCount,agent,done
 00519c10,32,game,m519A80,S_00519c10_ForwardWithContext,agent,done
 00519c30,90,game,m519A80,SceneLoader_PrepareLoadInterface,agent,done
@@ -6677,7 +6677,7 @@ ea,size,region,module,name,name_src,status
 0051afd0,141,game,m519A80,GameBddLoader_LogMaterials,agent,done
 0051b060,95,game,m519A80,CWeaponDatabase_ReleaseArraysAndMaybeFree,agent,done
 0051b0c0,558,game,stl,RangeAllocateTail,vote,todo
-0051b2f0,63,game,m519A80,C_00840680_OrWeaponFlag,agent,todo
+0051b2f0,63,game,m519A80,C_00840680_OrWeaponFlag,agent,done
 0051b330,114,game,m519A80,AdvanceRangeEnd,agent,done
 0051b3b0,196,game,m519A80,BddTables_RefreshWeatherResources,agent,done
 0051b480,48,game,m519A80,CWeaponDatabase_Construct,agent,done
@@ -6686,7 +6686,7 @@ ea,size,region,module,name,name_src,status
 0051b4e0,11,game,m519A80,C_00840dac_Cleanup,agent,done
 0051b4f0,39,game,m519A80,C_00840dac_Destroy,agent,done
 0051b520,141,game,m519A80,GameBddLoader_LogEffects,agent,done
-0051b5b0,56,game,m519A80,C_00840698_LoadElementAndRefresh,agent,todo
+0051b5b0,56,game,m519A80,C_00840698_LoadElementAndRefresh,agent,done
 0051b5f0,9,game,m519A80,BddTables_ForwardGetRecordAddress,agent,done
 0051b600,18,game,m519A80,C_00840de4_ConstructMenuEffects,agent,done
 0051b620,11,game,m519A80,C_008406d0_CleanupBase,agent,done
@@ -6700,7 +6700,7 @@ ea,size,region,module,name,name_src,status
 0051b910,11,game,m519A80,C_00840E0C_Cleanup,agent,done
 0051b920,39,game,m519A80,C_00840e0c_Destroy,agent,done
 0051b950,141,game,m519A80,GameBddLoader_LogObjects,agent,done
-0051b9e0,56,game,m519A80,C_008406e8_ActivateSector,agent,todo
+0051b9e0,56,game,m519A80,C_008406e8_ActivateSector,agent,done
 0051ba20,36,game,m519A80,C_00840e38_GetRecordCount,agent,done
 0051ba50,153,game,m519A80,C_0085e7b8_GetSoundFilename,agent,done
 0051baf0,54,game,m519A80,C_00840e38_Cleanup,agent,done
@@ -14417,7 +14417,7 @@ ea,size,region,module,name,name_src,status
 006b28b0,6,game,m6B2870,C_00860288_GetValue212,agent,done
 006b28c0,73,game,m6B2870,C_00860288_ResolveOrDelegate,agent,done
 006b2910,30,game,m6B2870,GfxObject_ClearBit400AndReturn,agent,done
-006b2930,84,game,m6B2870,C_00860288_RefreshAndForwardTail,agent,todo
+006b2930,84,game,m6B2870,C_00860288_RefreshAndForwardTail,agent,done
 006b2990,4,game,m6B2870,,,todo
 006b29a0,4,game,m6B2870,ResolveSpawnPointName,vote,todo
 006b29b0,19,game,m6B2870,C_00860288_IsFlag0x100Set,agent,done
@@ -14428,7 +14428,7 @@ ea,size,region,module,name,name_src,status
 006b2a90,14,game,m6B2870,C_00860288_IsField0088Set,agent,done
 006b2aa0,42,game,m6B2870,C_00860288_CopyQuadAt008C,agent,done
 006b2ad0,22,game,m6B2870,C_00860288_WriteTagAndClearFirstByte,agent,done
-006b2af0,76,game,m6B2870,GfxObject_ProcessDeepestLeaf,agent,todo
+006b2af0,76,game,m6B2870,GfxObject_ProcessDeepestLeaf,agent,done
 006b2b40,4,game,m6B2870,,,todo
 006b2b50,4,game,m6B2870,GetFpsStatsFromGlobal,vote,todo
 006b2b60,5,game,m6B2870,,,todo
@@ -14443,7 +14443,7 @@ ea,size,region,module,name,name_src,status
 006b2d50,4,game,m6B2870,RenderHandle_FromObject,vote,todo
 006b2d60,54,game,m6B2870,MorphObjectAddTime,agent,done
 006b2da0,22,game,m6B2870,C_00860288_GetEntryTableValue,agent,done
-006b2dc0,93,game,m6B2870,C_00860288_ApplyFlagToSubObject,agent,todo
+006b2dc0,93,game,m6B2870,C_00860288_ApplyFlagToSubObject,agent,done
 006b2e20,269,game,m6B2870,C_00860288_AttachObjectAtFrame,agent,todo
 006b2f30,12,game,m6B2870,C_00860288_ForwardToSubobjectVirtualAt88,agent,done
 006b2f40,8,game,m6B2870,C_00860288_DispatchSubobjectVirtual70,agent,done
