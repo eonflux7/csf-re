@@ -76,6 +76,22 @@ def prepare(name, fresh):
     return d, tree, sh("git", "-C", tree, "rev-parse", "HEAD")[1].strip()
 
 
+def login():
+    """The Codex login with the most room in its 5h window (the lanes' round robin does not look)."""
+    import grunt
+    best = None
+    for h in grunt.codex_homes():
+        try:
+            used = grunt.codex_usage(h)["5h"][0]
+        except Exception:
+            used = 50
+        if best is None or used < best[0]:
+            best = (used, h)
+    if best[0] >= 99:
+        raise SystemExit(f"deep worker: every Codex login is at its 5h limit ({best[0]}%)")
+    return best[1]
+
+
 def state(d, **kw):
     p = os.path.join(d, "state.json")
     st = json.load(open(p)) if os.path.exists(p) else {}
@@ -87,7 +103,6 @@ def state(d, **kw):
 
 
 def run(a):
-    import grunt
     task = sys.stdin.read() if a.task == "-" else open(a.task).read()
     d, tree, head = prepare(a.name, a.fresh)
     open(os.path.join(d, "task.md"), "w").write(task)
@@ -103,9 +118,12 @@ def run(a):
     try:
         with open(events, "w") as ev:
             r = subprocess.run(cmd, input=BRIEF + "\n=== TASK ===\n" + task, stdout=ev, stderr=subprocess.PIPE,
-                               text=True, timeout=a.timeout, env=dict(os.environ, CODEX_HOME=grunt.codex_pick()))
+                               text=True, timeout=a.timeout, env=dict(os.environ, CODEX_HOME=login()))
         if r.returncode or not os.path.exists(report):
+            tail = open(events, errors="replace").read()[-600:]
             err = f"codex exec rc={r.returncode}: {r.stderr[-400:]}"
+            if "usage limit" in tail:  # run again without --fresh after the reset: the tree keeps its changes
+                err = "quota: " + tail[tail.find("usage limit"):][:120].split('"')[0]
     except subprocess.TimeoutExpired:
         err = f"timeout after {a.timeout} s (its tree keeps what it changed)"
     sh("git", "-C", tree, "add", "-A", "-N")  # new files show in the diff
