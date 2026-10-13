@@ -630,7 +630,9 @@
  "00403a70": {
   "name": "Forward3ArgsWithContextTo4022E0",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Forward3ArgsWithContextTo4022E0": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , int a1, int a2, int a3",
@@ -59716,7 +59718,9 @@
  "004e16c0": {
   "name": "C_0083e248_ApplyPlayerEvent",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0083e248_ApplyPlayerEvent": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_0083e248* self, void* , int value1, int value2, int value3, int value4, int playerId, int value6, int value7, int value8",
@@ -137331,7 +137335,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 565,
+   "Mem_FreeDebug": 567,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -147487,7 +147491,7 @@
  },
  "006b4dc0": {
   "name": "GfxSkin_ReleaseBufferElements",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GfxSkin_ReleaseBufferElements": 3,
    "GfxSkin_DestroyEntries": 1
@@ -147575,19 +147579,20 @@
   "file": "src/auto/006b5260.cpp"
  },
  "006b5300": {
-  "name": "Records_ProcessEntry",
-  "name_src": "vote",
+  "name": "AssignWordVectorFromSource",
+  "name_src": "agent",
   "votes": {
    "Records_ProcessEntry": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "S_00403a70* self, void* , void* source",
+  "sig_src": "impl",
+  "file": "src/auto/006b5300.cpp"
  },
  "006b5460": {
   "name": "SkinList_AppendRecord8",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -147620,7 +147625,7 @@
  },
  "006b5530": {
   "name": "CopyElementRange",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int*",
   "conv": "__cdecl",
@@ -147666,8 +147671,8 @@
   "sig_src": "abi"
  },
  "006b5960": {
-  "name": "Container16_InitElementRange_6B5960",
-  "name_src": "vote",
+  "name": "Records16_ForwardToEntries",
+  "name_src": "agent",
   "votes": {
    "Container16_InitElementRange_6B5960": 1
   },
@@ -147678,15 +147683,16 @@
   "file": "src/auto/006b5960.cpp"
  },
  "006b59f0": {
-  "name": "ClearRecordStorage_6B59F0",
-  "name_src": "vote",
+  "name": "S_006b59f0_ClearRecordStorage",
+  "name_src": "agent",
   "votes": {
    "ClearRecordStorage_6B59F0": 2
   },
-  "ret": "std::uint32_t",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_006b59f0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006b59f0.cpp"
  },
  "006b5a40": {
   "name": "ForwardWithSelfToSub6B5530",
@@ -147739,7 +147745,7 @@
  },
  "006b5e90": {
   "name": "ClearTextureAndSkinBuffers",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -153635,7 +153641,7 @@
   "name": "ReleaseVectorStorage",
   "name_src": "agent",
   "votes": {
-   "ReleaseVectorStorage": 23
+   "ReleaseVectorStorage": 24
   },
   "ret": "void*",
   "conv": "__stdcall",
@@ -159974,7 +159980,7 @@
   "name_src": "agent",
   "votes": {
    "ResetRecordRange": 11,
-   "GfxTextureLoader_ResetRecordRange": 3
+   "GfxTextureLoader_ResetRecordRange": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -177067,7 +177073,7 @@
   "name": "CopyWordsAndAdvance",
   "name_src": "agent",
   "votes": {
-   "CopyWordsAndAdvance": 5
+   "CopyWordsAndAdvance": 6
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -179610,7 +179616,7 @@
   "sig_src": "abi"
  },
  "00724420": {
-  "name": "ClearRecordStorage_724420",
+  "name": "ClearRecordStorage",
   "name_src": "agent",
   "votes": {
    "ClearRecordStorage_724420": 1
@@ -183902,7 +183908,7 @@
   "name": "AllocateVectorStorage",
   "name_src": "vote",
   "votes": {
-   "AllocateVectorStorage": 11
+   "AllocateVectorStorage": 12
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -189593,13 +189599,14 @@
   "sig_src": "abi"
  },
  "00743570": {
-  "name": "sub_743570",
-  "name_src": "addr",
+  "name": "S_00743570_ForwardPlayerEvent",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9",
-  "sig_src": "abi"
+  "params": "S_00743570* self, void* , int a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9",
+  "sig_src": "impl",
+  "file": "src/auto/00743570.cpp"
  },
  "00743590": {
   "name": "sub_743590",
@@ -189685,7 +189692,8 @@
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "vote"
+  "sig_src": "impl",
+  "file": "src/auto/007437c0.cpp"
  },
  "007437e0": {
   "name": "Callback_7437E0",
@@ -195751,8 +195759,8 @@
   "file": "src/auto/0075b760.cpp"
  },
  "0075b920": {
-  "name": "C_0086c1e0_ParseVersion2",
-  "name_src": "vote",
+  "name": "SoundDefs_LoadExtendedSoundData",
+  "name_src": "agent",
   "votes": {
    "C_0086c1e0_ParseVersion2": 1
   },
@@ -210811,7 +210819,7 @@
   "name": "_memcpy",
   "name_src": "ida",
   "votes": {
-   "_memcpy": 112,
+   "_memcpy": 113,
    "Memcpy": 1
   },
   "ret": "void*",
