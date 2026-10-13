@@ -73031,7 +73031,7 @@
   "name": "MenuMpAccounts_CompareNames",
   "name_src": "vote",
   "votes": {
-   "MenuMpAccounts_CompareNames": 4
+   "MenuMpAccounts_CompareNames": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -89199,7 +89199,7 @@
   "name": "MenuMpAccounts_CreateListSentinel",
   "name_src": "agent",
   "votes": {
-   "MenuMpAccounts_CreateListSentinel": 11
+   "MenuMpAccounts_CreateListSentinel": 12
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -91489,7 +91489,9 @@
  "0055e110": {
   "name": "CMenuPlayerList_BuildPlayerStatusIcons",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuPlayerList_BuildPlayerStatusIcons": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
   "params": "const std::uint16_t* playerName, int connectionId, int playerId, std::uint16_t* output, int",
@@ -91497,15 +91499,16 @@
   "file": "src/auto/0055e110.cpp"
  },
  "0055e340": {
-  "name": "CMenuPlayerList_RefreshOnlinePlayers",
-  "name_src": "vote",
+  "name": "CMenuPlayerList_RefreshPlayers",
+  "name_src": "agent",
   "votes": {
    "CMenuPlayerList_RefreshOnlinePlayers": 1
   },
   "ret": "void**",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "CMenuPlayerList* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0055e340.cpp"
  },
  "0055e7b0": {
   "name": "MenuMpAccounts_RefreshPlayerList",
@@ -117433,7 +117436,7 @@
   "name": "Game_RaiseStatusNotice",
   "name_src": "vote",
   "votes": {
-   "Game_RaiseStatusNotice": 39
+   "Game_RaiseStatusNotice": 40
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -138566,7 +138569,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 626,
+   "Mem_FreeDebug": 627,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -140143,7 +140146,7 @@
   "name": "StringFormat_CopyTrucoStringToWide",
   "name_src": "agent",
   "votes": {
-   "CopyTrucoStringToWide": 12
+   "CopyTrucoStringToWide": 13
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -140167,7 +140170,7 @@
   "name": "StringFormat_ConvertWideTextToNarrow",
   "name_src": "agent",
   "votes": {
-   "ConvertWideTextToNarrow": 15
+   "ConvertWideTextToNarrow": 16
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -140230,7 +140233,7 @@
   "name": "WideString_Compare",
   "name_src": "agent",
   "votes": {
-   "WideString_Compare": 1
+   "WideString_Compare": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -140491,7 +140494,7 @@
   "name": "SaveGame_ValidateName",
   "name_src": "agent",
   "votes": {
-   "SaveGame_ValidateName": 6
+   "SaveGame_ValidateName": 7
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -178032,7 +178035,7 @@
   "name": "GetStoredValueAtIndex",
   "name_src": "agent",
   "votes": {
-   "GetStoredValueAtIndex": 10,
+   "GetStoredValueAtIndex": 11,
    "StoredValue_GetAtIndex": 1
   },
   "ret": "int",
@@ -178161,7 +178164,7 @@
   "name": "CGuiListBoxBase_ClearStorageAndSendEvent",
   "name_src": "agent",
   "votes": {
-   "CGuiListBoxBase_ClearStorageAndSendEvent": 11
+   "CGuiListBoxBase_ClearStorageAndSendEvent": 12
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -178476,7 +178479,7 @@
   "name": "CGuiListBoxBase_AddSelectedItem",
   "name_src": "agent",
   "votes": {
-   "CGuiListBoxBase_AddSelectedItem": 10,
+   "CGuiListBoxBase_AddSelectedItem": 11,
    "GuiListBoxBase_AddSelectedItem": 1
   },
   "ret": "void",
@@ -181801,7 +181804,7 @@
   "name": "GetCellStringAddress",
   "name_src": "agent",
   "votes": {
-   "GetCellStringAddress": 1
+   "GetCellStringAddress": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -186260,7 +186263,7 @@
   "name": "CGuiStatic_GetField0134",
   "name_src": "agent",
   "votes": {
-   "CGuiStatic_GetField0134": 3
+   "CGuiStatic_GetField0134": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -189720,7 +189723,7 @@
   "name": "GetGlobalDword_73C020",
   "name_src": "agent",
   "votes": {
-   "GetGlobalDword_73C020": 99
+   "GetGlobalDword_73C020": 100
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -190772,7 +190775,7 @@
   "name": "MenuMpAccounts_FillPlayerList",
   "name_src": "vote",
   "votes": {
-   "MenuMpAccounts_FillPlayerList": 9
+   "MenuMpAccounts_FillPlayerList": 10
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -191587,7 +191590,7 @@
   "name": "MenuMpAccounts_GetPlayerName",
   "name_src": "agent",
   "votes": {
-   "MenuMpAccounts_GetPlayerName": 6
+   "MenuMpAccounts_GetPlayerName": 7
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -194650,7 +194653,7 @@
   "name": "MpSpawnPoints_GetPlayerEntry",
   "name_src": "vote",
   "votes": {
-   "MpSpawnPoints_GetPlayerEntry": 1,
+   "MpSpawnPoints_GetPlayerEntry": 2,
    "MpSpawnPoints_GetSyncEntry": 1
   },
   "ret": "char*",
@@ -214070,7 +214073,7 @@
   "name": "_sprintf",
   "name_src": "ida",
   "votes": {
-   "_sprintf": 49,
+   "_sprintf": 50,
    "LibSprintf": 1,
    "FormatMissionScore": 1,
    "FormatResolution": 1
