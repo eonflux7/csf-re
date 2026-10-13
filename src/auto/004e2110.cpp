@@ -27,8 +27,9 @@ static int __fastcall C_0083e5e8_InitializeWithTransitionAlpha(C_0083e5e8* self,
 
     int globalState = GetGlobalState_50D190();
     float transitionAlpha = MenuSystem_GetTransitionAlpha(reinterpret_cast<void*>(globalState), nullptr);
-    float scaledCount = transitionAlpha * (float)(int)self->field_0008;
-    self->field_0008 = (uint32_t)(int)scaledCount;
+    // fimul keeps the product unrounded on the x87 stack until the conversion: not a float product
+    double scaledCount = (double)transitionAlpha * (double)(int)self->field_0008;
+    self->field_0008 = (uint32_t)(long long)scaledCount;  // _ftol2: the low dword of a 64-bit conversion
 
     CSF_AT(uint8_t, self, 0x30) = 0;
     return reinterpret_cast<int>(self);
