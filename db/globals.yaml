@@ -4,6 +4,8 @@
 - {addr: 0x0082D08C, name: g_GetLastErrorImportSlot, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D094, name: g_pfnGetFileSize, type: GetFileSizeFn, uses: 1, src: auto}
 - {addr: 0x0082D09C, name: g_CreateFileAImport, type: CreateFileAFn, uses: 1, src: auto}
+- {addr: 0x0082D0C0, name: g_QueryPerformanceCounterIat, type: QueryPerformanceFn, uses: 1, src: auto}
+- {addr: 0x0082D0C4, name: g_QueryPerformanceFrequencyIat, type: QueryPerformanceFn, uses: 1, src: auto}
 - {addr: 0x0082D0DC, name: g_FindFirstFileA, type: FindFirstFileAProc, uses: 4, src: auto}
 - {addr: 0x0082D0E0, name: g_pfnCloseHandle, type: void*, uses: 4, src: auto}
 - {addr: 0x0082D118, name: g_SetFileAttributesA, type: SetFileAttributesAFn, uses: 3, src: auto}
@@ -12,7 +14,7 @@
 - {addr: 0x0082D190, name: g_SetCurrentDirectoryW, type: SetCurrentDirectoryWProc, uses: 10, src: auto}
 - {addr: 0x0082D1A0, name: g_CreateThreadImport, type: CreateThreadImportFn, uses: 1, src: auto}
 - {addr: 0x0082D204, name: g_GetComputerNameA, type: GetComputerNameFunction, uses: 1, src: auto}
-- {addr: 0x0082D208, name: g_SetThreadPriorityIat, type: void*, uses: 3, src: auto, alt: [g_pfnSetThreadPriority]}
+- {addr: 0x0082D208, name: g_SetThreadPriorityIat, type: void*, uses: 4, src: auto, alt: [g_pfnSetThreadPriority]}
 - {addr: 0x0082D20C, name: g_pfnWaitForSingleObject, type: WaitForSingleObjectFn, uses: 3, src: auto, alt: [g_pWaitForSingleObject]}
 - {addr: 0x0082D210, name: g_DeleteFileA, type: DeleteFileAProc, uses: 4, src: auto}
 - {addr: 0x0082D214, name: g_ImportGetLocalTime, type: GetLocalTimeFunction, uses: 3, src: auto, alt: [g_GetLocalTime]}
@@ -25,7 +27,12 @@
 - {addr: 0x0082D234, name: g_pfnWriteFile, type: WriteFileFn, uses: 1, src: auto}
 - {addr: 0x0082D238, name: g_pfnReadFile, type: ReadFileFn, uses: 2, src: auto}
 - {addr: 0x0082D23C, name: g_ReleaseMutex, type: ReleaseMutexFunction, uses: 1, src: auto}
+- {addr: 0x0082D240, name: g_GlobalMemoryStatusImport, type: void*, uses: 1, src: auto}
+- {addr: 0x0082D24C, name: g_GetCurrentThreadIat, type: GetCurrentThreadFn, uses: 1, src: auto}
+- {addr: 0x0082D254, name: g_GetThreadPriorityIat, type: GetThreadPriorityFn, uses: 1, src: auto}
 - {addr: 0x0082D270, name: g_MapVirtualKeyA, type: MapVirtualKeyAFunction, uses: 1, src: auto}
+- {addr: 0x0082D27C, name: g_GetActiveWindow, type: GetActiveWindowFn, uses: 1, src: auto}
+- {addr: 0x0082D280, name: g_ClientToScreen, type: ClientToScreenFn, uses: 1, src: auto}
 - {addr: 0x0082D284, name: g_FindWindowAImportSlot, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D288, name: g_IsWindowImportSlot, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D294, name: g_VkKeyScanA, type: VkKeyScanAFunction, uses: 1, src: auto}
@@ -36,13 +43,14 @@
 - {addr: 0x0082D2AC, name: g_EndPaint, type: EndPaintFunction, uses: 1, src: auto}
 - {addr: 0x0082D2B0, name: g_BeginPaint, type: BeginPaintFunction, uses: 1, src: auto}
 - {addr: 0x0082D2B4, name: g_DefWindowProcA, type: DefWindowProcFunction, uses: 1, src: auto}
+- {addr: 0x0082D2BC, name: g_GetSystemMetrics, type: GetSystemMetricsFn, uses: 1, src: auto}
 - {addr: 0x0082D2E8, name: g_GetDoubleClickTimeImport, type: GetDoubleClickTimeFn, uses: 1, src: auto}
 - {addr: 0x0082D2EC, name: g_SendMessageAImportSlot, type: void*, uses: 3, src: auto}
 - {addr: 0x0082D2F0, name: g_GetDlgItemImportSlot, type: GetDlgItemFunction, uses: 1, src: auto}
 - {addr: 0x0082D2F4, name: g_SetWindowTextAImportSlot, type: SetWindowTextFunction, uses: 1, src: auto}
 - {addr: 0x0082D2F8, name: g_GetWindowTextAImportSlot, type: GetWindowTextFunction, uses: 1, src: auto}
 - {addr: 0x0082D2FC, name: g_DestroyWindowImport, type: void*, uses: 1, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 124, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 125, src: auto}
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 3, src: auto}
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 4, src: auto}
@@ -161,7 +169,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 113, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 114, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C8, name: g_AngleScale, type: float, uses: 1, src: auto}
@@ -456,10 +464,19 @@
 - {addr: 0x0086105C, name: g_TexturesSuffixPart0, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x00861060, name: g_TexturesSuffixPart1, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x00861064, name: g_TexturesSuffixPart2, type: uint16_t, uses: 1, src: auto}
+- {addr: 0x00861180, name: g_fMaxSceneStep, type: float, uses: 1, src: auto}
 - {addr: 0x008611B4, name: g_SkinCullDistanceSquared, type: float, uses: 1, src: auto}
 - {addr: 0x00861238, name: g_ClumpDefaultValue, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x0086123C, name: g_ClumpDefaultRangeA, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x00861240, name: g_ClumpDefaultRangeB, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x00861254, name: g_DefaultParameterE8, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x00861258, name: g_DefaultParameterEC, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008612DC, name: g_ScreenshotNamePart0, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008612E0, name: g_ScreenshotNamePart1, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008612E4, name: g_ScreenshotNamePart2, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008612E8, name: g_ScreenshotNamePart3, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008612EC, name: g_ScreenshotNamePart4, type: uint16_t, uses: 1, src: auto}
+- {addr: 0x008614E0, name: g_MotionCompletionEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x00861914, name: g_ParticleSignatureFirst, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x00861918, name: g_ParticleSignatureSecond, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x0086191C, name: g_ParticleSignatureLast, type: uint16_t, uses: 1, src: auto}
@@ -1101,6 +1118,9 @@
 - {addr: 0x008A7F48, name: g_pszKey_HOTPOINTS, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A7F4C, name: g_pszKey_OFFSET, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A7F50, name: g_pszKey_MATERIAL, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x008A7F54, name: g_DefaultComponentX, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008A7F58, name: g_DefaultComponentY, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008A7F5C, name: g_DefaultComponentZ, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008A7F78, name: g_pszKey_VERSION_gfx_texture_loader, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A7F7C, name: g_pszKey_MAX_PARTICULAS, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A7F80, name: g_pszKey_AREA_EMISION, type: const char*, uses: 0, src: captain, conf: 1.0}
@@ -1984,6 +2004,7 @@
 - {addr: 0x008BB4F4, name: g_TimerAccumulator, type: float, uses: 1, src: auto}
 - {addr: 0x008BB4FC, name: g_ExtensionReplacementBase, type: char, uses: 1, src: auto}
 - {addr: 0x008BB500, name: g_AlternateTexturePath, type: char, uses: 1, src: auto}
+- {addr: 0x008BB704, name: g_OriginalSectorListCallback, type: int, uses: 2, src: auto, alt: [g_VisibilityRenderCallback]}
 - {addr: 0x008BB710, name: g_Parameter50Resolver, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008BB714, name: g_Parameter20Resolver, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008BB718, name: g_ResolverInitializationFlags, type: uint32_t, uses: 1, src: auto}
