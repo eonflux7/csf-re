@@ -118439,7 +118439,7 @@
   "name": "InitializeTemporaryString",
   "name_src": "vote",
   "votes": {
-   "InitializeTemporaryString": 59
+   "InitializeTemporaryString": 61
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -118459,7 +118459,7 @@
   "name": "DestroyTemporaryString",
   "name_src": "vote",
   "votes": {
-   "DestroyTemporaryString": 37
+   "DestroyTemporaryString": 39
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -118526,7 +118526,7 @@
   "name": "FormatValueString",
   "name_src": "vote",
   "votes": {
-   "FormatValueString": 13,
+   "FormatValueString": 14,
    "FormatString": 1,
    "LegacyString_Format": 1
   },
@@ -118539,7 +118539,7 @@
   "name": "NameMatchesCString",
   "name_src": "vote",
   "votes": {
-   "NameMatchesCString": 11
+   "NameMatchesCString": 12
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -118550,7 +118550,7 @@
   "name": "NameMatchesString",
   "name_src": "vote",
   "votes": {
-   "NameMatchesString": 18
+   "NameMatchesString": 20
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -124671,7 +124671,7 @@
   "name": "NetCogible_BaseDispatchField",
   "name_src": "vote",
   "votes": {
-   "NetCogible_BaseDispatchField": 2
+   "NetCogible_BaseDispatchField": 3
   },
   "ret": "char",
   "conv": "__stdcall",
@@ -124715,7 +124715,7 @@
   "name": "NetGameDDL_ProcessBaseField",
   "name_src": "vote",
   "votes": {
-   "NetGameDDL_ProcessBaseField": 1
+   "NetGameDDL_ProcessBaseField": 2
   },
   "ret": "char",
   "conv": "__stdcall",
@@ -137953,7 +137953,7 @@
   "name": "AllocateAlignedBuffer",
   "name_src": "vote",
   "votes": {
-   "AllocateAlignedBuffer": 12
+   "AllocateAlignedBuffer": 13
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -137964,7 +137964,7 @@
   "name": "FreeBlock_690F70",
   "name_src": "vote",
   "votes": {
-   "FreeBlock_690F70": 14
+   "FreeBlock_690F70": 15
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -143244,13 +143244,14 @@
   "file": "src/auto/006a0010.cpp"
  },
  "006a0020": {
-  "name": "sub_6A0020",
-  "name_src": "addr",
+  "name": "C_0085ec18_RegisterVirtualFileSystem",
+  "name_src": "agent",
   "votes": {},
-  "ret": "bool",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4",
-  "sig_src": "abi"
+  "params": "C_0085ec18* self, void* , int fileCount, int , int",
+  "sig_src": "impl",
+  "file": "src/auto/006a0020.cpp"
  },
  "006a01d0": {
   "name": "C_0085ec34_SetDefaultFileSystemFromCwd",
@@ -193556,7 +193557,7 @@
   "name": "NetGame_FormatEndTimeMember",
   "name_src": "vote",
   "votes": {
-   "NetGame_FormatEndTimeMember": 1
+   "NetGame_FormatEndTimeMember": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -193610,7 +193611,7 @@
   "name": "ReadRespawnMember",
   "name_src": "vote",
   "votes": {
-   "ReadRespawnMember": 3
+   "ReadRespawnMember": 4
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -193640,14 +193641,15 @@
  },
  "0074b2b0": {
   "name": "NetPlayer_FormatReferenceMember",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
-   "NetPlayer_FormatReferenceMember": 2
+   "NetPlayer_FormatReferenceMember": 3
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, void** a3",
-  "sig_src": "vote"
+  "params": "void* self, void* , void* name, void** output",
+  "sig_src": "impl",
+  "file": "src/auto/0074b2b0.cpp"
  },
  "0074b310": {
   "name": "NetPlayerDDL_ProcessForwardedArguments",
@@ -193680,17 +193682,18 @@
   "file": "src/auto/0074b360.cpp"
  },
  "0074b370": {
-  "name": "sub_74B370",
-  "name_src": "addr",
+  "name": "NetGhostDDL_ForwardSlot2Call",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1",
-  "sig_src": "abi"
+  "params": "void* obj",
+  "sig_src": "impl",
+  "file": "src/auto/0074b370.cpp"
  },
  "0074b380": {
   "name": "NetGhostDdl_MatchesClassIdOrDelegate",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "bool",
   "conv": "__stdcall",
@@ -193713,19 +193716,21 @@
   "votes": {
    "NetGhostDdl_ProcessField": 1
   },
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, void* a3",
-  "sig_src": "vote"
+  "params": "char* self, void* , char* field, int operation",
+  "sig_src": "impl",
+  "file": "src/auto/0074b3c0.cpp"
  },
  "0074b470": {
-  "name": "sub_74B470",
-  "name_src": "addr",
+  "name": "NetGhost_DispatchField",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, int a1, int a2, int a3, void** a4",
-  "sig_src": "abi"
+  "conv": "__stdcall",
+  "params": "int objectAddress, int fieldAddress, int propertyAddress, int outputAddress",
+  "sig_src": "impl",
+  "file": "src/auto/0074b470.cpp"
  },
  "0074b5e0": {
   "name": "sub_74B5E0",
@@ -193765,7 +193770,7 @@
  },
  "0074b780": {
   "name": "NetGhostDdl_ForwardToProcessField_74B780",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__stdcall",
@@ -193775,7 +193780,7 @@
  },
  "0074b7a0": {
   "name": "NetGhostDDL_WriteSpawnFieldsForward",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
@@ -193803,7 +193808,7 @@
  },
  "0074b810": {
   "name": "NetGhostDdl_ReadIntoSlotViaFourthArg",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__stdcall",
@@ -193917,7 +193922,7 @@
  },
  "0074c440": {
   "name": "NetGhostDdl_ForwardToProcessGhostField",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__stdcall",
@@ -193927,7 +193932,7 @@
  },
  "0074c460": {
   "name": "NetGhostDdl_ForwardToProcessField_74C460",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__stdcall",
@@ -193937,7 +193942,7 @@
  },
  "0074c480": {
   "name": "NetGhostDdl_ForwardToCalleeWithThis",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
@@ -196064,7 +196069,9 @@
  "007531e0": {
   "name": "NetSpawnMessages_FormatFactionOrClassId",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "NetSpawnMessages_FormatFactionOrClassId": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* , void* property, void** output",
@@ -196139,7 +196146,7 @@
   "name": "NetPlayerDDL_ProcessEmbeddedField",
   "name_src": "vote",
   "votes": {
-   "NetPlayerDDL_ProcessEmbeddedField": 2
+   "NetPlayerDDL_ProcessEmbeddedField": 3
   },
   "ret": "char",
   "conv": "__stdcall",
@@ -215884,7 +215891,7 @@
   "name": "Rt2dFontGet",
   "name_src": "rwname",
   "votes": {
-   "Rt2dFontGet": 1
+   "Rt2dFontGet": 2
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
