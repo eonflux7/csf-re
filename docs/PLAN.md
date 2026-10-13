@@ -49,8 +49,7 @@ verify + link test + report run in the background). Each step also runs alone.
 3. **Install** (`verifier.py`, the wave's verify step; also runs alone next to lanes): its own detached tree, the
    installed baseline smoked alone first, then the module's pending functions enabled on top; crash report ->
    culprit (else bisect), diff mismatches -> quarantine (`queue/`). Every deploy keeps pending hooks off.
-4. **Consolidate**: `api.py build` (per commit), `linktest.py`; stop rule = the module's own quarantine rate, or
-   functions left pending, or the full regression smoke (every 3 modules) failing twice in a row without a culprit.
+4. **Consolidate**: `api.py build` (per commit), `linktest.py`; stop rule = functions left pending (the quarantine-rate rule was dropped, user 2026-10-13), or the full regression smoke (every 3 modules) failing twice in a row without a culprit.
 
 ### Words (one meaning each)
 
@@ -195,7 +194,7 @@ diff and emudiff (user, 2026-10-11); emudiff is a gate step (2026-10-13).
 - [ ] 83 files bind vtables with CSF_GLOBAL and take `&g_X` (right at runtime, resolves as data in the standalone
       build): rewrite to CSF_VTBL / CSF_ADDR_VT (the gate now rejects new ones)
 - [ ] Rewrite the naked asm thunks that embed original addresses (`linktest.py --list asm`)
-- [ ] Library boundaries the standalone link needs: rw (librw), crt, netz (stub), rwa (see decision); what is
+- [ ] Library boundaries the standalone link needs: rw (librw), crt, netz (stub), rwa (reimplement the 40-function boundary on our own audio backend, user 2026-10-13); what is
       unresolved per library is in the `status.py` link-test line
 - [ ] NetZ boundary (320): name only if needed for stubbing — game net layer is stubbed at cutover
 
@@ -235,10 +234,6 @@ guards. One-shot scripts of that phase: `tools/setup/`. History: JOURNAL.
 
 ## Open decisions (for the user)
 
-- **Quarantine-rate stop rule per module** (`--stop-quarantine` 3%, at least 2). On 2026-10-11 gfx_hanim stopped the
-  run with 4 of 73: all real, 3 of them one bug class. Options: keep; raise it; or judge the rate over the run's
-  last ~300 installed functions instead of one module, so a small module can't stop a run on one bug class.
+None open. Decided 2026-10-13 (user): the quarantine-rate stop rule is dropped; RenderWare Audio is replaced by
+reimplementing its 40-function boundary on our own backend (e.g. miniaudio/OpenAL + libvorbis), not RWA itself.
 
-- (not blocking until cutover) **RenderWare Audio replacement.** librw covers RW Graphics only. Options: reimplement
-  the 40-function RWA boundary on our own backend (e.g. miniaudio/OpenAL + libvorbis), or reimplement RWA itself
-  (92 KB). Recommendation: reimplement the boundary — the game only uses 40 calls.

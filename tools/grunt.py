@@ -1499,7 +1499,7 @@ def wave(args):
       2. produce: lanes over the module (gate + link + commit as pending)
       3. verify: tools/verifier.py --module (baseline, then the module's pending functions, in game)
       4. tools/linktest.py summary (what is left before the standalone exe links)
-      5. stop rule (wave_report): too many quarantines or functions never installed in a passing smoke -> exit 3
+      5. stop rule (wave_report): functions never installed in a passing smoke -> exit 3
     The Opus review is not a wave step: tools/review.py sample is one rolling sample over all done code.
     `wave --next` ranks modules by centrality instead (rank_modules); `wave --waves N` runs N waves in rank order."""
     if args.waves:
@@ -1576,8 +1576,7 @@ def wave_report(args, mods, t0, since=None):
     done = [f"{ea:08x}" for ea, r in db.rows.items() if r["module"] in mods and r["status"] == "done"]
     pend = [ea for ea in done if not led.get(ea, {}).get("ok")]
     stop = []
-    if q >= 2 and q / max(1, v + q) > args.stop_quarantine:
-        stop.append(f"quarantined {q}/{v + q} in game (> {args.stop_quarantine:.0%})")
+    # no stop on the quarantine rate (user, 2026-10-13: dropped; quarantines go to queue/ and the run goes on)
     # not after a smoke failure the verifier could not attribute: its group is pending because of that failure
     # (2026-10-13: a control run that failed in 8 s, with a git index.lock error just before, stopped the run as
     # "41/44 never installed"); a later verify pass takes the group again
@@ -1809,7 +1808,6 @@ if __name__ == "__main__":
                    "waits for a quota window (default: wait and resume)")
     w.add_argument("--regress-every", type=int, default=3, help="with --waves: full regression smoke of the installed "
                    "baseline every N waves (0: off)")
-    w.add_argument("--stop-quarantine", type=float, default=0.03, help="stop rule: the module's quarantined / installed+quarantined")
     w.add_argument("--stop-pending", type=float, default=0.25, help="stop rule: module's done functions never installed "
                    "in a passing smoke")
     sub.add_parser("cost")
