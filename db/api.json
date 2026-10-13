@@ -19657,16 +19657,17 @@
   "file": "src/auto/0044f680.cpp"
  },
  "0044f690": {
-  "name": "SceneLoader_PrepareSceneRebuild",
-  "name_src": "vote",
+  "name": "GameSceneAccess_PrepareSceneRebuild",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_PrepareSceneRebuild": 1,
    "SceneLoader_ClearSceneObjects": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0044f690.cpp"
  },
  "0044f830": {
   "name": "CGuiControl_ClearCurrentIndexState",
@@ -37867,7 +37868,7 @@
   "name": "GetObjectPositionVector",
   "name_src": "vote",
   "votes": {
-   "GetObjectPositionVector": 246,
+   "GetObjectPositionVector": 247,
    "GetEntityPositionPtr": 1
   },
   "ret": "float*",
@@ -46313,7 +46314,7 @@
   "name": "AiCore_AdjustPositionToSceneSurface",
   "name_src": "agent",
   "votes": {
-   "AiCore_AdjustPositionToSceneSurface": 4
+   "AiCore_AdjustPositionToSceneSurface": 5
   },
   "ret": "void",
   "conv": "__stdcall",
@@ -48411,7 +48412,7 @@
   "name": "AiCore_IsTargetPositionValid",
   "name_src": "agent",
   "votes": {
-   "AiCore_IsTargetPositionValid": 8
+   "AiCore_IsTargetPositionValid": 9
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -48735,7 +48736,8 @@
   "name": "S_004b0200_FindReachableOffset",
   "name_src": "agent",
   "votes": {
-   "Static_DispatchWithFieldPointer": 1
+   "Static_DispatchWithFieldPointer": 1,
+   "S_004b0200_FindReachableOffset": 1
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -50930,15 +50932,16 @@
   "file": "src/auto/004bace0.cpp"
  },
  "004bad20": {
-  "name": "AiCore_ApplyLinkedPosition",
-  "name_src": "vote",
+  "name": "S_004b0200_ApplyLinkedPosition",
+  "name_src": "agent",
   "votes": {
    "AiCore_ApplyLinkedPosition": 5
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, char a3, uint32_t* a4, int a5, char a6",
-  "sig_src": "vote"
+  "params": "S_004b0200* self, void* , int actor, char findReachableOffset, uint32_t* requestedPosition, int positionOption, char secondaryFlag",
+  "sig_src": "impl",
+  "file": "src/auto/004bad20.cpp"
  },
  "004baef0": {
   "name": "S_004b0200_UpdateDistractedTarget",
@@ -58459,7 +58462,7 @@
   "name": "GetLinkedObjectValue_4DB5C0",
   "name_src": "agent",
   "votes": {
-   "GetLinkedObjectValue_4DB5C0": 334
+   "GetLinkedObjectValue_4DB5C0": 335
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -59462,7 +59465,7 @@
   "name_src": "agent",
   "votes": {
    "DispatchWithArgBlock": 16,
-   "S_004dca10_DispatchWithArgBlock": 2
+   "S_004dca10_DispatchWithArgBlock": 3
   },
   "ret": "uint32_t",
   "conv": "__fastcall",
@@ -63012,7 +63015,7 @@
   "name": "GetValue8B0554",
   "name_src": "agent",
   "votes": {
-   "GetValue8B0554": 285
+   "GetValue8B0554": 287
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -76692,7 +76695,7 @@
   "name": "GetGlobalValue_51F740",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_51F740": 22
+   "GetGlobalValue_51F740": 23
   },
   "ret": "int32_t",
   "conv": "__cdecl",
@@ -76980,8 +76983,8 @@
   "name": "C_00840fdc_ClearSceneResources",
   "name_src": "agent",
   "votes": {
-   "SceneLoader_SetServiceState": 1,
-   "C_00840fdc_ClearSceneResources": 2
+   "C_00840fdc_ClearSceneResources": 3,
+   "SceneLoader_SetServiceState": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -88691,7 +88694,7 @@
   "name": "C_008443c8_Construct",
   "name_src": "agent",
   "votes": {
-   "C_008443c8_Construct": 3,
+   "C_008443c8_Construct": 4,
    "SceneLoader_CreateArchiveReader": 1
   },
   "ret": "uint32_t*",
@@ -139205,7 +139208,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_AllocUntagged": 103,
+   "CoreMemory_AllocUntagged": 104,
    "Mem_Alloc": 482
   },
   "ret": "int",
@@ -139428,7 +139431,7 @@
   "name": "C_0085e5c4_Construct",
   "name_src": "agent",
   "votes": {
-   "C_0085e5c4_Construct": 2
+   "C_0085e5c4_Construct": 3
   },
   "ret": "C_0085e5c4*",
   "conv": "__fastcall",
@@ -142174,6 +142177,7 @@
   "name": "C_0085e748_FinalizeCompression",
   "name_src": "agent",
   "votes": {
+   "C_0085e748_FinalizeCompression": 1,
    "C_0085e748_Finalize": 2
   },
   "ret": "char",
@@ -142186,6 +142190,7 @@
   "name": "C_0085e748_ConstructCompressionStream",
   "name_src": "agent",
   "votes": {
+   "C_0085e748_ConstructCompressionStream": 1,
    "C_0085e748_Construct": 3,
    "SceneLoader_CreateStreamAdapter": 1
   },
@@ -142309,7 +142314,7 @@
   "name": "C_0085e760_Construct",
   "name_src": "agent",
   "votes": {
-   "C_0085e760_Construct": 3,
+   "C_0085e760_Construct": 4,
    "SceneLoader_CreateBufferedStream": 1
   },
   "ret": "uint32_t*",
@@ -142359,7 +142364,7 @@
   "name": "MemoryStream_Construct",
   "name_src": "agent",
   "votes": {
-   "MemoryStream_Construct": 1
+   "MemoryStream_Construct": 2
   },
   "ret": "C_0085e7b8*",
   "conv": "__fastcall",
@@ -199270,7 +199275,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 266,
+   "GetGlobalValue_8BC1E0": 267,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
