@@ -346,6 +346,8 @@ def run(a):
 def start(a):
     """Detached: the job outlives the caller; its last line lands in work/deep/NAME/run.log."""
     task = sys.stdin.read() if a.task == "-" else open(a.task).read()
+    if any(j["name"] == a.name and j["phase"] == "running" for j in jobs()):
+        raise SystemExit(f"job {a.name} is running: not started a second time in its tree")
     if a.agent in OPENROUTER:
         try:
             left = openrouter_budget()["left"]
