@@ -4655,7 +4655,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 215
+   "AssignStringSubstring": 216
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -138234,7 +138234,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 613,
+   "Mem_FreeDebug": 614,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -142476,7 +142476,9 @@
  "0069d000": {
   "name": "ErrorLog_ConcatStrings",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreErrorLog_CombineRegistryPath": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "C_0082d410* a1, C_0082d410* a2, uint32_t* a3",
@@ -142496,15 +142498,16 @@
   "file": "src/auto/0069d070.cpp"
  },
  "0069d0f0": {
-  "name": "S_0069d0f0_OpenKey",
-  "name_src": "vote",
+  "name": "S_0069d0f0_OpenRegistryKey",
+  "name_src": "agent",
   "votes": {
    "S_0069d0f0_OpenKey": 1
   },
-  "ret": "char",
+  "ret": "std::uint8_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_0069d0f0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0069d0f0.cpp"
  },
  "0069d1b0": {
   "name": "S_0069d0f0_ReadValue",
