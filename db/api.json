@@ -15985,7 +15985,7 @@
   "name_src": "agent",
   "votes": {
    "SceneLoader_SerializeReference": 16,
-   "DynamicObjects_SerializeReference": 4
+   "DynamicObjects_SerializeReference": 5
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -113365,7 +113365,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 218
+   "RwMatrixDestroy": 219
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -113376,7 +113376,7 @@
   "name": "RwMatrixCreate",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixCreate": 128
+   "RwMatrixCreate": 129
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -139652,7 +139652,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_AllocUntagged": 121,
+   "CoreMemory_AllocUntagged": 122,
    "Mem_Alloc": 482
   },
   "ret": "int",
@@ -153584,7 +153584,7 @@
   "name": "GfxObject_DestroyEmbeddedState",
   "name_src": "agent",
   "votes": {
-   "GfxObject_DestroyEmbeddedState": 13,
+   "GfxObject_DestroyEmbeddedState": 14,
    "GfxObject_DestroyTransform": 1,
    "GfxFrames_DestroyEmbeddedState": 1,
    "C_00860630_DestroyEmbeddedState": 1
@@ -153734,7 +153734,7 @@
    "FrameApplyToMatch": 1,
    "GfxFrames_SetEmbeddedFrame": 1,
    "C_00860700_SetFrame": 1,
-   "GfxFrame_InitRotationDegreesFromMatrix": 6
+   "GfxFrame_InitRotationDegreesFromMatrix": 7
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -153891,7 +153891,9 @@
  "006bf9c0": {
   "name": "C_00860700_SetMatrixAndUpdateEulerDegrees",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00860700_SetMatrixAndUpdateEulerDegrees": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "C_00860700* self, void* , const void** a2",
@@ -153958,7 +153960,7 @@
   "name": "GfxObject_ConstructEmbeddedState",
   "name_src": "agent",
   "votes": {
-   "GfxObject_ConstructEmbeddedState": 14,
+   "GfxObject_ConstructEmbeddedState": 15,
    "GfxObject_InitializeTransform": 1,
    "GfxFrames_ConstructEmbeddedState": 1,
    "C_00860700_ConstructEmbeddedState": 1
@@ -154064,7 +154066,8 @@
   "name": "GfxFrames_UpdateFrameRecordState",
   "name_src": "agent",
   "votes": {
-   "GfxFrames_UpdateTraversalMatrix": 1
+   "GfxFrames_UpdateTraversalMatrix": 1,
+   "GfxFrames_UpdateFrameRecordState": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -155371,7 +155374,7 @@
   "name": "C_0085e7b8_FindEntryPayloadByKey",
   "name_src": "agent",
   "votes": {
-   "C_0085e7b8_FindEntryPayloadByKey": 17,
+   "C_0085e7b8_FindEntryPayloadByKey": 18,
    "SkinSlot_FindValue": 1
   },
   "ret": "int",
@@ -155459,7 +155462,7 @@
   "name": "C_008670f0_SetEntry",
   "name_src": "agent",
   "votes": {
-   "C_008670f0_SetEntry": 7,
+   "C_008670f0_SetEntry": 8,
    "Object_SetIndexedValue": 1,
    "GfxSkin_SetSlotValue": 1,
    "SetSubobjectState": 1,
@@ -165198,7 +165201,7 @@
   "name": "C_00861bd8_InitWithSkinFlags",
   "name_src": "agent",
   "votes": {
-   "C_00861bd8_InitWithSkinFlags": 3,
+   "C_00861bd8_InitWithSkinFlags": 4,
    "C_00861bd8_InitWithOwner": 1
   },
   "ret": "void*",
@@ -165499,7 +165502,9 @@
  "006e5eb0": {
   "name": "GfxObjectInstance_CopyAtomicMatrixOut",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxObjectInstance_CopyAtomicMatrixOut": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "std::uint32_t* self, void* , void** arg0",
@@ -165661,8 +165666,9 @@
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int arg0",
-  "sig_src": "abi"
+  "params": "void* self, void* , void* stream",
+  "sig_src": "impl",
+  "file": "src/auto/006e64d0.cpp"
  },
  "006e66d0": {
   "name": "GfxObjectInstances_ReserveMaterialReferences",
