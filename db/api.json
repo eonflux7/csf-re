@@ -113232,7 +113232,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 217
+   "RwMatrixDestroy": 218
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -120066,7 +120066,7 @@
   "name": "LookupObjectByIndex",
   "name_src": "vote",
   "votes": {
-   "LookupObjectByIndex": 37,
+   "LookupObjectByIndex": 38,
    "NetSession_GetHandleRegistry": 2
   },
   "ret": "int",
@@ -120182,7 +120182,7 @@
   "name": "FinalizeSpawnUpdate",
   "name_src": "vote",
   "votes": {
-   "FinalizeSpawnUpdate": 3
+   "FinalizeSpawnUpdate": 4
   },
   "ret": "void",
   "conv": "__stdcall",
@@ -127264,7 +127264,7 @@
   "name": "NetCogibleDdl_FindProperty",
   "name_src": "vote",
   "votes": {
-   "NetCogibleDdl_FindProperty": 25,
+   "NetCogibleDdl_FindProperty": 26,
    "ResolveObjectEntry": 1,
    "NetDdl_ResolveChannel": 1
   },
@@ -130082,7 +130082,7 @@
   "name": "NetPlayerDdl_ApplyProperty",
   "name_src": "vote",
   "votes": {
-   "NetPlayerDdl_ApplyProperty": 3
+   "NetPlayerDdl_ApplyProperty": 4
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -139511,7 +139511,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 190,
+   "CoreMemory_Free": 191,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -151468,7 +151468,7 @@
   "name_src": "agent",
   "votes": {
    "SceneLoader_GetObjectAttachment": 18,
-   "GfxObjectProps_GetObjectAttachment": 45
+   "GfxObjectProps_GetObjectAttachment": 46
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -155162,7 +155162,8 @@
   "name": "C_008670f0_RemoveMatchingEntry",
   "name_src": "agent",
   "votes": {
-   "GfxSkin_ClearSlotValue": 1
+   "GfxSkin_ClearSlotValue": 1,
+   "C_008670f0_RemoveMatchingEntry": 1
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -155211,7 +155212,7 @@
   "name": "C_0085e7b8_FindEntryPayloadByKey",
   "name_src": "agent",
   "votes": {
-   "C_0085e7b8_FindEntryPayloadByKey": 16,
+   "C_0085e7b8_FindEntryPayloadByKey": 17,
    "SkinSlot_FindValue": 1
   },
   "ret": "int",
@@ -170716,13 +170717,14 @@
   "file": "src/auto/006f76c0.cpp"
  },
  "006f7720": {
-  "name": "sub_6F7720",
-  "name_src": "addr",
+  "name": "GfxObjectProps_ReleaseAttachedMatrixPayload",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__cdecl",
-  "params": "int a1",
-  "sig_src": "abi"
+  "params": "int objectIndex",
+  "sig_src": "impl",
+  "file": "src/auto/006f7720.cpp"
  },
  "006f7790": {
   "name": "C_008628b8_ReleaseResources",
@@ -197554,15 +197556,16 @@
   "sig_src": "abi"
  },
  "0074eeb0": {
-  "name": "NetPlayerListDdl_ProcessEntry",
-  "name_src": "vote",
+  "name": "NetPlayerListDdl_ApplySpawnProperties",
+  "name_src": "agent",
   "votes": {
    "NetPlayerListDdl_ProcessEntry": 1
   },
-  "ret": "void",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2, int a3",
-  "sig_src": "vote"
+  "params": "void* self, void* , C_008622e8* update, int context",
+  "sig_src": "impl",
+  "file": "src/auto/0074eeb0.cpp"
  },
  "0074ef80": {
   "name": "NetPlayerListDdl_ProcessProperties",
