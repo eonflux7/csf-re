@@ -16,4 +16,5 @@
 - {start: 0x7c4fa0, end: 0x7ca000, kind: lib,  lib: rw,    confidence: med,  note: "RW toolkit (png image?)"}
 - {start: 0x7ca000, end: 0x7d8000, kind: lib,  lib: png,   confidence: med,  note: "libpng 1.0.12 + zlib"}
 - {start: 0x7d8000, end: 0x818000, kind: lib,  lib: rw,    confidence: med,  note: "RW toolkits/plugins; CPU detect at 0x816070"}
-- {start: 0x818000, end: 0x82c410, kind: lib,  lib: netz,  confidence: low,  note: "NetZ extensions tail mixed with RW (calls out: netz 258, rw 122)"}
+- {start: 0x818000, end: 0x8289f0, kind: lib,  lib: netz,  confidence: low,  note: "NetZ extensions tail mixed with RW"}
+- {start: 0x8289f0, end: 0x82c410, kind: game, lib: null,  confidence: med,  note: "dynamic initialisers and atexit destructors of the game's globals (the CRT's __xc table 0x898000..0x898450 points here; 126 calls into game code). Found 2026-10-14 by the standalone link job"}

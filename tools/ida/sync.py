@@ -9,6 +9,7 @@
               (<Class>_vtbl + __vftable: tools/vtbl_types.py), db/globals.yaml types on the globals
   --protos    prototypes the callers' cleanup proves longer than Hex-Rays' (proven_protos)
   --this      `this` typed as the class (db/types/this_class.json) on __thiscall methods (this_protos)
+  --funcs     functions at the addresses of db/extra_functions.txt (code reached only through tables)
 
 Usage: .venv/bin/python tools/ida/sync.py [--dry] [--no-types]
 """
@@ -304,7 +305,34 @@ def main():
     ap.add_argument("--no-types", action="store_true")
     ap.add_argument("--protos", action="store_true", help="only the prototypes stage (proven_protos)")
     ap.add_argument("--this", action="store_true", help="only the `this` types stage (this_protos)")
+    ap.add_argument("--funcs", action="store_true", help="only: create the functions listed in db/extra_functions.txt")
     a = ap.parse_args()
+    if a.funcs:
+        eas = [int(l, 16) for l in open(os.path.join(ROOT, "db", "extra_functions.txt")) if l.strip() and l[0] != "#"]
+        open_db()
+        made = had = bad = 0
+        try:
+            import ida_auto, ida_ua
+            for ea in eas:
+                f = ida_funcs.get_func(ea)
+                if f and f.start_ea == ea:
+                    had += 1
+                elif a.dry:
+                    continue
+                else:
+                    ida_ua.create_insn(ea)  # undefined bytes: start the code here, the analysis follows it
+                    ida_auto.auto_wait()
+                    if ida_funcs.add_func(ea):
+                        made += 1
+                    else:
+                        bad += 1
+                        if bad <= 6:
+                            print(f"  no function at 0x{ea:X}")
+            ida_auto.auto_wait()
+        finally:
+            close_db(save=not a.dry)
+        print(f"functions: {len(eas)} listed, {made} created, {had} already there, {bad} failed")
+        return
     if a.protos or a.this:
         protos = proven_protos() if a.protos else this_protos()
         open_db()
