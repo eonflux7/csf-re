@@ -46984,7 +46984,7 @@
   "name": "Archive_SerializeObjectRef",
   "name_src": "vote",
   "votes": {
-   "Archive_SerializeObjectRef": 75
+   "Archive_SerializeObjectRef": 76
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -61388,7 +61388,7 @@
   "file": "src/auto/004e6750.cpp"
  },
  "004e67b0": {
-  "name": "RecordArray_Transfer",
+  "name": "RecordArray_Transfer_4E67B0",
   "name_src": "agent",
   "votes": {
    "SceneLoader_SerializeMemberGroup": 1
@@ -112586,7 +112586,7 @@
   "name": "RwStreamSkip",
   "name_src": "rwname",
   "votes": {
-   "RwStreamSkip": 2
+   "RwStreamSkip": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -112597,7 +112597,7 @@
   "name": "RwStreamClose",
   "name_src": "rwname",
   "votes": {
-   "RwStreamClose": 11
+   "RwStreamClose": 13
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -112608,7 +112608,7 @@
   "name": "RwStreamOpen",
   "name_src": "rwname",
   "votes": {
-   "RwStreamOpen": 11
+   "RwStreamOpen": 13
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -112683,7 +112683,7 @@
   "name": "RwStreamReadChunkHeaderInfo",
   "name_src": "rwname",
   "votes": {
-   "RwStreamReadChunkHeaderInfo": 3
+   "RwStreamReadChunkHeaderInfo": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -137658,7 +137658,7 @@
   "name_src": "agent",
   "votes": {
    "Mem_Alloc": 482,
-   "CoreMemory_AllocUntagged": 3
+   "CoreMemory_AllocUntagged": 14
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -137671,7 +137671,7 @@
   "name_src": "agent",
   "votes": {
    "Mem_Free": 939,
-   "CoreMemory_Free": 5
+   "CoreMemory_Free": 14
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -138728,7 +138728,7 @@
   "name": "NormalizeResourceName",
   "name_src": "vote",
   "votes": {
-   "NormalizeResourceName": 16
+   "NormalizeResourceName": 17
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -139489,7 +139489,9 @@
  "006971b0": {
   "name": "CoreVariantValues_InitializeFileSystems",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CoreVariantValues_InitializeFileSystems": 2
+  },
   "ret": "char",
   "conv": "__cdecl",
   "params": "int context",
@@ -145224,7 +145226,9 @@
  "006ad550": {
   "name": "GfxMatrix_ClosestPointOnOrientedBox",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxMatrix_ClosestPointOnOrientedBox": 2
+  },
   "ret": "float*",
   "conv": "__cdecl",
   "params": "float* result, int point, float* box",
@@ -162808,7 +162812,9 @@
  "006e6b80": {
   "name": "GrowEntryBuffer_6E6B80",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "RecordArray_Grow": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , int additionalCapacity",
@@ -162871,18 +162877,24 @@
   "file": "src/auto/006e6d90.cpp"
  },
  "006e6e00": {
-  "name": "sub_6E6E00",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Array_InsertRecord",
+  "name_src": "agent",
+  "votes": {
+   "CollisionHits_Insert": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, void* a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , int index, const void* record",
+  "sig_src": "impl",
+  "file": "src/auto/006e6e00.cpp"
  },
  "006e6f40": {
   "name": "GrowEntryBuffer_6E6F40",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CollisionHits_Grow": 1,
+   "GrowQueryResultBuffer": 1
+  },
   "ret": "const void*",
   "conv": "__fastcall",
   "params": "void* self, void* , int additionalCapacity",
@@ -162941,22 +162953,24 @@
   "file": "src/auto/006e7290.cpp"
  },
  "006e72f0": {
-  "name": "sub_6E72F0",
-  "name_src": "addr",
+  "name": "C_00861d48_CollectCollisionHits",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, float a4",
-  "sig_src": "abi"
+  "params": "C_00861d48* self, void* , int query, int outputAddress, float radius",
+  "sig_src": "impl",
+  "file": "src/auto/006e72f0.cpp"
  },
  "006e74e0": {
-  "name": "sub_6E74E0",
-  "name_src": "addr",
+  "name": "C_00861d48_AppendQueryResult",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, void** a3, float a4",
-  "sig_src": "abi"
+  "params": "C_00861d48* self, void* , int query, char** results, float distance",
+  "sig_src": "impl",
+  "file": "src/auto/006e74e0.cpp"
  },
  "006e75f0": {
   "name": "Serialization_ProcessThreeComponentsVariant",
@@ -162973,7 +162987,9 @@
  "006e76c0": {
   "name": "S_00691860_Serialize_6E76C0",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Record_Transfer": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_00691860* self, void* , void* archive",
@@ -162981,18 +162997,23 @@
   "file": "src/auto/006e76c0.cpp"
  },
  "006e77b0": {
-  "name": "sub_6E77B0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "RecordArray_Transfer_6E77B0",
+  "name_src": "agent",
+  "votes": {
+   "Archive_SerializeReferenceCollection": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "uint32_t* a1, int a2",
-  "sig_src": "abi"
+  "params": "void* records, int contextAddress",
+  "sig_src": "impl",
+  "file": "src/auto/006e77b0.cpp"
  },
  "006e7990": {
   "name": "Archive_SerializeTwentyByteRecordArray",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Archive_SerializeValueCollection": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
   "params": "int* container, int archiveAddress",
@@ -163000,13 +163021,14 @@
   "file": "src/auto/006e7990.cpp"
  },
  "006e7bb0": {
-  "name": "sub_6E7BB0",
-  "name_src": "addr",
+  "name": "C_00861d48_Serialize",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00861d48* self, void* , int archiveAddress",
+  "sig_src": "impl",
+  "file": "src/auto/006e7bb0.cpp"
  },
  "006e7d10": {
   "name": "sub_6E7D10",
@@ -170370,7 +170392,7 @@
   "name": "ParticleSystemDefs_ConvertAndShowMessage",
   "name_src": "agent",
   "votes": {
-   "ParticleSystemDefs_ConvertAndShowMessage": 2
+   "ParticleSystemDefs_ConvertAndShowMessage": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -173320,7 +173342,7 @@
   "name": "GetGlobalValue_70DDE0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_70DDE0": 49
+   "GetGlobalValue_70DDE0": 51
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -173380,15 +173402,16 @@
   "file": "src/auto/0070de50.cpp"
  },
  "0070de80": {
-  "name": "SoundManager_CanPlayRequest",
-  "name_src": "vote",
+  "name": "Audio_InitializeSoundManager",
+  "name_src": "agent",
   "votes": {
    "SoundManager_CanPlayRequest": 1
   },
   "ret": "char",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3",
-  "sig_src": "vote"
+  "params": "char useAudioEffect, int request",
+  "sig_src": "impl",
+  "file": "src/auto/0070de80.cpp"
  },
  "0070df30": {
   "name": "C_00863958_ScalarDeletingDestructor",
@@ -173461,13 +173484,14 @@
   "file": "src/auto/0070e080.cpp"
  },
  "0070e170": {
-  "name": "sub_70E170",
-  "name_src": "addr",
+  "name": "S_0070e170_ConfigureBuffer",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "S_0070e170* self, void* , int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/0070e170.cpp"
  },
  "0070e200": {
   "name": "C_008639b0_SetEnabledFlags",
@@ -173583,7 +173607,9 @@
  "0070e730": {
   "name": "C_008639b0_Construct",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_008639b0_Construct": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "C_008639b0* self, void* , int a2",
@@ -173600,13 +173626,14 @@
   "sig_src": "abi"
  },
  "0070e7b0": {
-  "name": "sub_70E7B0",
-  "name_src": "addr",
+  "name": "C_008639b0_ReleaseAll",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_008639b0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0070e7b0.cpp"
  },
  "0070e830": {
   "name": "sub_70E830",
@@ -173619,14 +173646,15 @@
  },
  "0070e910": {
   "name": "Audio_CreateSoundInstance",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
-   "Audio_CreateSoundInstance": 1
+   "Audio_CreateSoundInstance": 2
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
-  "params": "int a2",
-  "sig_src": "vote"
+  "params": "int soundArg",
+  "sig_src": "impl",
+  "file": "src/auto/0070e910.cpp"
  },
  "0070e940": {
   "name": "C_008639b0_Destroy",
@@ -173639,22 +173667,25 @@
   "file": "src/auto/0070e940.cpp"
  },
  "0070e970": {
-  "name": "sub_70E970",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Audio_ProcessEffectEntry",
+  "name_src": "vote",
+  "votes": {
+   "Audio_ProcessEffectEntry": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0070ea60": {
-  "name": "sub_70EA60",
-  "name_src": "addr",
+  "name": "Audio_ForwardToEntryHandler",
+  "name_src": "agent",
   "votes": {},
-  "ret": "void",
+  "ret": "char",
   "conv": "__cdecl",
-  "params": "void* a1",
-  "sig_src": "abi"
+  "params": "S_0070e170* a1",
+  "sig_src": "impl",
+  "file": "src/auto/0070ea60.cpp"
  },
  "0070ea70": {
   "name": "sub_70EA70",
@@ -173686,18 +173717,21 @@
   "file": "src/auto/0070ec20.cpp"
  },
  "0070ec50": {
-  "name": "sub_70EC50",
-  "name_src": "addr",
+  "name": "AudioEffects_AllocateTableObject",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__stdcall",
-  "params": "int a1, int a2",
-  "sig_src": "abi"
+  "params": "int , int",
+  "sig_src": "impl",
+  "file": "src/auto/0070ec50.cpp"
  },
  "0070ec70": {
   "name": "AudioEffect_ConstructDefault",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "AudioEffect_ConstructDefault": 1
+  },
   "ret": "uint8_t*",
   "conv": "__fastcall",
   "params": "C_00863ac0* self, void*",
@@ -173774,27 +173808,41 @@
   "sig_src": "abi"
  },
  "0070ee20": {
-  "name": "sub_70EE20",
-  "name_src": "addr",
+  "name": "C_00863ba8_CreateSoundEffect",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/0070ee20.cpp"
  },
  "0070ee80": {
-  "name": "sub_70EE80",
-  "name_src": "addr",
+  "name": "Audio_EnumCallbackCreateCaptureSlot",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__stdcall",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0070ee80.cpp"
+ },
+ "0070eed0": {
+  "name": "DSoundEnum_MatchSoundMaxCallback",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__stdcall",
+  "params": "const uint8_t* guid, const char* description, const char* moduleName, const void** context",
+  "sig_src": "impl",
+  "file": "src/auto/0070eed0.cpp"
  },
  "0070ef60": {
   "name": "AudioDetect_ProbeDirectSoundDevices",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "AudioDetect_ProbeDirectSoundDevices": 1
+  },
   "ret": "char",
   "conv": "__cdecl",
   "params": "",
@@ -173802,27 +173850,31 @@
   "file": "src/auto/0070ef60.cpp"
  },
  "0070efb0": {
-  "name": "sub_70EFB0",
-  "name_src": "addr",
+  "name": "C_00863ac0_DestructAndMaybeFree",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "C_00863ac0*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00863ac0* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/0070efb0.cpp"
  },
  "0070eff0": {
-  "name": "sub_70EFF0",
-  "name_src": "addr",
+  "name": "C_00863ac0_ProbeAndStoreAudioFlags",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00863ac0* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/0070eff0.cpp"
  },
  "0070f080": {
   "name": "C_00863ba8_FindMatchingEntryIndex",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00863ba8_FindMatchingEntryIndex": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00863ba8* self, void* , int key",
@@ -173842,7 +173894,9 @@
  "0070f0f0": {
   "name": "C_00863ba8_CreateAndRegisterEffect",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00863ba8_CreateAndRegisterEffect": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00863ba8* self, void*",
@@ -173850,31 +173904,38 @@
   "file": "src/auto/0070f0f0.cpp"
  },
  "0070f160": {
-  "name": "sub_70F160",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Audio_QueryAndStoreEffectList",
+  "name_src": "agent",
+  "votes": {
+   "C_00863ba8_InitializeEffectState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0070f160.cpp"
  },
  "0070f1d0": {
-  "name": "sub_70F1D0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_00863ba8_CreateEffectInstance",
+  "name_src": "agent",
+  "votes": {
+   "C_00863ba8_FinalizeEffectState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0070f1d0.cpp"
  },
  "0070f220": {
-  "name": "sub_70F220",
-  "name_src": "addr",
+  "name": "C_00863ba8_ReleaseEffectHandlesAndFreeTable",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0070f220.cpp"
  },
  "0070f280": {
   "name": "C_00863ac0_ReleaseHandleAndClear",
@@ -173897,15 +173958,16 @@
   "file": "src/auto/0070f2a0.cpp"
  },
  "0070f2d0": {
-  "name": "C_00863800_BaseCleanup",
-  "name_src": "vote",
+  "name": "C_00863ba8_CleanupAudio",
+  "name_src": "agent",
   "votes": {
-   "C_00863800_BaseCleanup": 1
+   "C_00863800_BaseCleanup": 2
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00863ba8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0070f2d0.cpp"
  },
  "0070f380": {
   "name": "C_00863ba8_RunActivationSequence",
@@ -173970,7 +174032,9 @@
  "0070f500": {
   "name": "AudioEffects_MergeMissingDictEntries",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "AudioEffects_MergeMissingDictEntries": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1, int a2",
@@ -173988,13 +174052,14 @@
   "file": "src/auto/0070f570.cpp"
  },
  "0070f5a0": {
-  "name": "sub_70F5A0",
-  "name_src": "addr",
+  "name": "C_00863ba8_QueryAndCreateEffectObject",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void* , int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/0070f5a0.cpp"
  },
  "0070f5f0": {
   "name": "AudioEffect_ReleaseIfAttached",
@@ -174019,7 +174084,9 @@
  "0070f630": {
   "name": "C_00863ba8_LoadSoundFile",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00863ba8_LoadSoundFile": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00863ba8* self, void* , const char* path, const char* name, char forceMono, int quality",
@@ -174046,13 +174113,24 @@
   "file": "src/auto/0070f990.cpp"
  },
  "0070f9c0": {
-  "name": "sub_70F9C0",
-  "name_src": "addr",
+  "name": "C_00863ba8_WriteEffectsDictionary",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void* , int streamSource, int formatIndex",
+  "sig_src": "impl",
+  "file": "src/auto/0070f9c0.cpp"
+ },
+ "0070fb20": {
+  "name": "AudioEffects_ForEachEntry",
+  "name_src": "agent",
+  "votes": {},
+  "ret": "int",
+  "conv": "__stdcall",
+  "params": "void (__cdecl* callback)(uint32_t*)",
+  "sig_src": "impl",
+  "file": "src/auto/0070fb20.cpp"
  },
  "0070fbb0": {
   "name": "Audio_InvokeEffectCallback",
@@ -174087,7 +174165,9 @@
  "00710850": {
   "name": "C_00863ba8_TrySetEffectMode",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00863ba8_TrySetEffectMode": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00863ba8* self, void* , int a2",
@@ -174097,7 +174177,9 @@
  "007108b0": {
   "name": "DSound_MapSpeakerConfiguration",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "DSound_MapSpeakerConfiguration": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00863ba8* self, void*",
@@ -174105,22 +174187,24 @@
   "file": "src/auto/007108b0.cpp"
  },
  "00710920": {
-  "name": "sub_710920",
-  "name_src": "addr",
+  "name": "AudioEffectsDict_SumTotals",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00710920.cpp"
  },
  "007109b0": {
-  "name": "sub_7109B0",
-  "name_src": "addr",
+  "name": "AudioEffects_RefreshEffectGain",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__cdecl",
-  "params": "uint32_t* a1, int a2",
-  "sig_src": "abi"
+  "params": "uint32_t* self, int params",
+  "sig_src": "impl",
+  "file": "src/auto/007109b0.cpp"
  },
  "00710a50": {
   "name": "C_00863ba8_ResetDefaults",
@@ -174145,31 +174229,34 @@
   "file": "src/auto/00710a90.cpp"
  },
  "00710ac0": {
-  "name": "sub_710AC0",
-  "name_src": "addr",
+  "name": "C_00863ba8_InitializeAudio",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void* , int configuration",
+  "sig_src": "impl",
+  "file": "src/auto/00710ac0.cpp"
  },
  "00710ba0": {
-  "name": "sub_710BA0",
-  "name_src": "addr",
+  "name": "C_00863ba8_LoadEffectsDictionary",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint8_t* a2, char a3",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void* , uint8_t* filename, char preserveExisting",
+  "sig_src": "impl",
+  "file": "src/auto/00710ba0.cpp"
  },
  "00710d00": {
-  "name": "sub_710D00",
-  "name_src": "addr",
+  "name": "C_00863ba8_FindOrLoadSoundEffect",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* Source, char a3, char a4, int a5",
-  "sig_src": "abi"
+  "params": "C_00863ba8* self, void* , char* source, char forceMono, char shouldLoad, int quality",
+  "sig_src": "impl",
+  "file": "src/auto/00710d00.cpp"
  },
  "00710d80": {
   "name": "C_00863ba8_ReleaseEffectDictionaries",
@@ -174264,7 +174351,9 @@
  "00710ff0": {
   "name": "SoundBuffer_Create",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "SoundBuffer_Create": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "uint8_t* self, void* , int* format, uint8_t* context",
@@ -174354,7 +174443,9 @@
  "007113e0": {
   "name": "Audio_AmplitudeToClampedMillibels",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Audio_AmplitudeToClampedMillibels": 1
+  },
   "ret": "std::uint64_t",
   "conv": "__cdecl",
   "params": "float amplitude, int minimumMillibels, int maximumMillibels",
@@ -174364,7 +174455,9 @@
  "007114e0": {
   "name": "C_00863cd4_Initialize",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00863cd4_Initialize": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "C_00863cd4* self, void*",
@@ -174382,13 +174475,14 @@
   "file": "src/auto/00711500.cpp"
  },
  "00711590": {
-  "name": "sub_711590",
-  "name_src": "addr",
+  "name": "C_00863cd4_SetVolumeFromAmplitude",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "C_00863cd4* self, void* , float amplitude",
+  "sig_src": "impl",
+  "file": "src/auto/00711590.cpp"
  },
  "007115f0": {
   "name": "C_00863cd4_SetNormalizedLevel",
@@ -174423,7 +174517,9 @@
  "007116f0": {
   "name": "Audio_CreateCaptureBuffer",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Audio_CreateCaptureBuffer": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "void* self, void* , int32_t* parameters",
@@ -174473,7 +174569,9 @@
  "007118a0": {
   "name": "C_00863d18_Initialize",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00863d18_Initialize": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "C_00863d18* self, void*",
@@ -174481,13 +174579,14 @@
   "file": "src/auto/007118a0.cpp"
  },
  "007118c0": {
-  "name": "sub_7118C0",
-  "name_src": "addr",
+  "name": "C_00863d18_Destroy",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00863d18* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/007118c0.cpp"
  },
  "00711910": {
   "name": "C_00863d38_ScalarDeletingDestructor",
@@ -174512,7 +174611,9 @@
  "00711960": {
   "name": "C_00863d80_ReleaseChildrenAndClearFlags",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00863d80_ReleaseChildrenAndClearFlags": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00863d80* self, void*",
@@ -174607,18 +174708,21 @@
   "file": "src/auto/00711bf0.cpp"
  },
  "00711c10": {
-  "name": "sub_711C10",
-  "name_src": "addr",
+  "name": "C_00863d80_CreateAndPlaySound",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, float a3, int a4, int a5, int a6, int a7, char a8",
-  "sig_src": "abi"
+  "params": "C_00863d80* self, void* , int playbackArgument, float volume, int soundParameter, int instanceIndex, int playbackArgument2, int playbackArgument3, char creationFlag",
+  "sig_src": "impl",
+  "file": "src/auto/00711c10.cpp"
  },
  "00711cf0": {
   "name": "C_00863d80_Init",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00863d80_Init": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "C_00863d80* self, void* , int handleValue, char enabledFlag",
@@ -174695,13 +174799,14 @@
   "file": "src/auto/00712050.cpp"
  },
  "00712220": {
-  "name": "sub_712220",
-  "name_src": "addr",
+  "name": "C_00863d80_DestroyAndMaybeFree",
+  "name_src": "agent",
   "votes": {},
-  "ret": "int",
+  "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00863d80* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/00712220.cpp"
  },
  "00712260": {
   "name": "C_00863dd0_ForwardToCallbackAndClearField0C",
@@ -174948,7 +175053,9 @@
  "00712920": {
   "name": "C_00863dd0_Initialize",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00863dd0_Initialize": 1
+  },
   "ret": "float*",
   "conv": "__fastcall",
   "params": "C_00863dd0* self, void*",
@@ -174998,13 +175105,14 @@
   "file": "src/auto/00712ab0.cpp"
  },
  "00712b10": {
-  "name": "sub_712B10",
-  "name_src": "addr",
+  "name": "C_00863dd0_Destroy",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00863dd0* self, void* , char freeFlag",
+  "sig_src": "impl",
+  "file": "src/auto/00712b10.cpp"
  },
  "00712b70": {
   "name": "Audio_ReadWaveHeader",
@@ -211488,7 +211596,7 @@
   "name_src": "ida",
   "votes": {
    "CRT_Qsort": 1,
-   "_qsort": 3,
+   "_qsort": 4,
    "GfxSkin_SortRenderEntries": 2,
    "GfxSkin_SortEntries": 1
   },
@@ -211512,7 +211620,7 @@
   "name": "_memcpy",
   "name_src": "ida",
   "votes": {
-   "_memcpy": 115,
+   "_memcpy": 116,
    "Memcpy": 1
   },
   "ret": "void*",
@@ -211804,7 +211912,7 @@
   "name": "_strncpy",
   "name_src": "ida",
   "votes": {
-   "_strncpy": 11
+   "_strncpy": 12
   },
   "ret": "char*",
   "conv": "__cdecl",
@@ -212483,7 +212591,7 @@
   "name": "_strstr",
   "name_src": "ida",
   "votes": {
-   "_strstr": 2
+   "_strstr": 3
   },
   "ret": "char*",
   "conv": "__cdecl",
@@ -212784,7 +212892,7 @@
   "name": "__strupr",
   "name_src": "ida",
   "votes": {
-   "__strupr": 1
+   "__strupr": 3
   },
   "ret": "char*",
   "conv": "__cdecl",
@@ -216339,13 +216447,15 @@
   "sig_src": "abi"
  },
  "007db6f0": {
-  "name": "sub_7DB6F0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Audio_OpenEngine",
+  "name_src": "vote",
+  "votes": {
+   "Audio_OpenEngine": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007db750": {
   "name": "sub_7DB750",
@@ -216369,7 +216479,7 @@
   "name": "_rwGetNumEngineInstances",
   "name_src": "rwname",
   "votes": {
-   "_rwGetNumEngineInstances": 2
+   "_rwGetNumEngineInstances": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -216389,7 +216499,7 @@
   "name": "RwResourcesEmptyArena",
   "name_src": "rwname",
   "votes": {
-   "RwResourcesEmptyArena": 2
+   "RwResourcesEmptyArena": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -216417,20 +216527,24 @@
  "007db920": {
   "name": "_rxPipelineOpen",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "_rxPipelineOpen": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007db960": {
   "name": "_rxPipelineClose",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "_rxPipelineClose": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007db9a0": {
   "name": "sub_7DB9A0",
@@ -216469,22 +216583,27 @@
   "sig_src": "abi"
  },
  "007dbba0": {
-  "name": "sub_7DBBA0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Audio_CreateEffectDictionary",
+  "name_src": "vote",
+  "votes": {
+   "Audio_CreateEffectDictionary": 1,
+   "AudioEffects_CreateDictionary": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007dbc20": {
-  "name": "sub_7DBC20",
-  "name_src": "addr",
-  "votes": {},
+  "name": "AudioEffects_DestroyDictionary",
+  "name_src": "vote",
+  "votes": {
+   "AudioEffects_DestroyDictionary": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007dbcc0": {
   "name": "sub_7DBCC0",
@@ -216508,7 +216627,7 @@
   "name": "RtDictFindNamedEntry",
   "name_src": "rwname",
   "votes": {
-   "RtDictFindNamedEntry": 1
+   "RtDictFindNamedEntry": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -216519,7 +216638,7 @@
   "name": "RtDictGetEntry",
   "name_src": "rwname",
   "votes": {
-   "RtDictGetEntry": 2
+   "RtDictGetEntry": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -216530,7 +216649,7 @@
   "name": "RtDictGetNumEntries",
   "name_src": "rwname",
   "votes": {
-   "RtDictGetNumEntries": 2
+   "RtDictGetNumEntries": 6
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -216571,17 +216690,19 @@
  "007dbe70": {
   "name": "RpMTEffectDictGetCurrent",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RpMTEffectDictGetCurrent": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007dbe80": {
   "name": "RpMTEffectDictSetCurrent",
   "name_src": "rwname",
   "votes": {
-   "RpMTEffectDictSetCurrent": 1
+   "RpMTEffectDictSetCurrent": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -216589,13 +216710,18 @@
   "sig_src": "vote"
  },
  "007dbe90": {
-  "name": "sub_7DBE90",
-  "name_src": "addr",
-  "votes": {},
+  "name": "GetAudioEffectsDictionary",
+  "name_src": "vote",
+  "votes": {
+   "Audio_GetEffectsDictionary": 1,
+   "GetAudioEffectsDictionary": 2,
+   "AudioEffects_GetCurrentDictionary": 1,
+   "RwAudioEffects_GetDictionary": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007dbea0": {
   "name": "sub_7DBEA0",
@@ -217302,6 +217428,7 @@
   "name": "AudioEffect_ReleaseHandle_7DEF60",
   "name_src": "vote",
   "votes": {
+   "AudioEffect_ReleaseHandle_7DEF60": 4,
    "AudioEffect_ReleaseHandle": 1,
    "AudioEffects_ReleaseHandle": 1
   },
@@ -217476,7 +217603,8 @@
    "AudioEffect_ReleaseHandle": 1,
    "AudioEnum_Dispatch": 1,
    "ReleaseAudioHandle": 1,
-   "Audio_ConfigurePlaybackObject": 1
+   "Audio_ConfigurePlaybackObject": 1,
+   "AudioEffect_ReleaseHandle_7DF740": 1
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -217724,13 +217852,15 @@
   "sig_src": "abi"
  },
  "007e0200": {
-  "name": "sub_7E0200",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Audio_WriteEffectEntry",
+  "name_src": "vote",
+  "votes": {
+   "Audio_WriteEffectEntry": 1
+  },
   "ret": "uint32_t*",
   "conv": "__cdecl",
   "params": "uint32_t* a1, uint32_t* a2, uint32_t* a3, uint32_t* a4, int a5",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007e03b0": {
   "name": "sub_7E03B0",
@@ -217742,13 +217872,15 @@
   "sig_src": "abi"
  },
  "007e0540": {
-  "name": "sub_7E0540",
-  "name_src": "addr",
-  "votes": {},
+  "name": "AudioEffects_ReadDictionary",
+  "name_src": "vote",
+  "votes": {
+   "AudioEffects_ReadDictionary": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "uint32_t* a1, int arg4, int a3, int a4, unsigned int a5",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007e07b0": {
   "name": "sub_7E07B0",
@@ -218001,7 +218133,7 @@
   "name": "Audio_SetEffectParameter",
   "name_src": "vote",
   "votes": {
-   "Audio_SetEffectParameter": 1,
+   "Audio_SetEffectParameter": 2,
    "Audio_SetEffectInt": 1,
    "Audio_PushEffectParam": 1,
    "AudioEffect_SetParamSlot": 1,
@@ -218040,6 +218172,17 @@
   "conv": "__cdecl",
   "params": "",
   "sig_src": "abi"
+ },
+ "007e1420": {
+  "name": "Audio_FindEffectHandle",
+  "name_src": "vote",
+  "votes": {
+   "Audio_FindEffectHandle": 1
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int* a1, char* a2, int a3, int (__cdecl* a4)(int, int, char*, int), int a5",
+  "sig_src": "vote"
  },
  "007e1490": {
   "name": "sub_7E1490",
@@ -221200,13 +221343,15 @@
   "sig_src": "abi"
  },
  "007f17c0": {
-  "name": "sub_7F17C0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Audio_InitializeEffectDictionarySupport",
+  "name_src": "vote",
+  "votes": {
+   "Audio_InitializeEffectDictionarySupport": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007f1810": {
   "name": "sub_7F1810",
