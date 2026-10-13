@@ -1561,6 +1561,9 @@ def wave_report(args, mods, t0, since=None):
             quar.update(r.get("quarantined") or [])
             if r.get("note"):
                 notes.append(r["note"][:160])
+            elif r.get("event") == "baseline" and r.get("ok") is False:
+                # the baseline itself failed without a culprit (a flaky crash): the module was never tried
+                notes.append("baseline smoke failed, not attributable")
     db = DB()
     # the stop rule counts this module's functions only: a baseline smoke also quarantines older functions of other
     # modules (2026-10-11: five diff mismatches of old code stopped the run as "net_gathering_ddl 5/105")
