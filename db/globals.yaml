@@ -93,7 +93,7 @@
 - {addr: 0x0082D4C8, name: g_CollisionMinimumTriangleArea, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
 - {addr: 0x0082D4D0, name: g_CollisionHeightTolerance, type: float, uses: 1, src: auto}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 203, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 204, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 15, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 17, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
@@ -837,6 +837,7 @@
 - {addr: 0x008902D4, name: g_MenuElementCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008903A8, name: g_DwordRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008903F8, name: g_TextureDictCopyExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x008904CC, name: g_MissionRecordRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008905F0, name: g_CollisionShapeRangeExceptionInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00890640, name: g_SceneObjectRangeExceptionFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008907B4, name: g_CopyClumpRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
@@ -2142,7 +2143,7 @@
 - {addr: 0x008BB3E8, name: g_ErrorLogInitFlags, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008BB3EC, name: g_SomeFlag_8BB3EC, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008BB3F0, name: g_NetProfile_Instance, type: uint32_t, uses: 1, src: auto}
-- {addr: 0x008BB3F4, name: g_fpControlWord_8BB3F4, type: unsigned int, uses: 1, src: auto}
+- {addr: 0x008BB3F4, name: g_fpControlWord_8BB3F4, type: unsigned int, uses: 2, src: auto}
 - {addr: 0x008BB3F8, name: g_Value_8BB3F8, type: int, uses: 1, src: auto}
 - {addr: 0x008BB3FC, name: g_RtfsEntryOffsetBase, type: uint32_t, uses: 4, src: auto, alt: [g_ArchiveVersionFlags, g_RtfsFileOffsetBase]}
 - {addr: 0x008BB400, name: g_008bb400, type: int, uses: 9, src: auto}
@@ -2186,7 +2187,7 @@
 - {addr: 0x008BB718, name: g_ResolverInitializationFlags, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008BB738, name: g_Value_8BB738, type: int, uses: 5, src: auto}
 - {addr: 0x008BB740, name: g_DefaultParticleResource, type: S_006dcf90, uses: 1, src: auto}
-- {addr: 0x008BB894, name: g_GfxParticleRenderContext, type: void*, uses: 5, src: auto, alt: [g_Im3dSharedBlock, g_ResourceSubsystemBlock, g_Value_8BB894]}
+- {addr: 0x008BB894, name: g_GfxIm3dTextureLoadContext, type: void*, uses: 6, src: auto, alt: [g_GfxParticleRenderContext, g_Im3dSharedBlock, g_ResourceSubsystemBlock, g_Value_8BB894]}
 - {addr: 0x008BB898, name: g_Index00, type: 'std::uint16_t', uses: 1, src: auto}
 - {addr: 0x008BB89A, name: g_Index01, type: 'std::uint16_t', uses: 1, src: auto}
 - {addr: 0x008BB89C, name: g_Index02, type: 'std::uint16_t', uses: 1, src: auto}

@@ -5,7 +5,8 @@
 
 For every new or changed src/auto/EA.cpp in work/deep/JOB/tree: copy it in, run gate.py and emudiff.py --src on it
 from the main tree (the job's own claims are not used). A file that passes both (gate ok; emudiff `same`) stays
-and its function is marked done in db/functions.csv (pending in-game verification, like a lane's output); any
+and its function is marked done in db/functions.csv (pending in-game verification, like a lane's output) and
+its queue/EA.md, if any, is removed; any
 other is taken out again and listed. Other files of the job's patch (tools, headers, docs) are the reviewer's to
 apply by hand. Does not commit.
 """
@@ -64,6 +65,10 @@ def main():
             row = rows[int(ea, 16)]
             row["status"], row["module"] = "done", row["module"] or "auto"
         grunt.save_csv(rows)
+        for ea in good:  # no longer an escalation: back to pending verification
+            q = os.path.join(ROOT, "queue", ea + ".md")
+            if os.path.exists(q):
+                os.remove(q)
         subprocess.run([PY, os.path.join(ROOT, "tools", "globals.py")], check=False)
     print(f"adopt {a.job}: {len(good)} of {len(files)} pass gate and emudiff here"
           + (" (dry run, nothing kept)" if a.dry else "; marked done, not committed"))

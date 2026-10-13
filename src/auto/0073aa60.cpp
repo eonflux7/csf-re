@@ -1,54 +1,3 @@
-# Escalation 0x0073AA60: in-game smoke failure (verifier bisect: 1 smokes (1 named by crash reports, k=8))
-
-## Its lines in the smoke log
-```
-
-```
-
-## Smoke log tail
-```
-pared)
-DIFF 004EEFD0 CTextDatabase_LoadGlobalTextPaths: call 1 to 0069BD90: arg 2 orig 0083EE8C ours 74786554 | ecx=037757E0 edx=00000000 args=
-T3 00697150 AppendNarrowToWideString: inconclusive (a callee returned an address in the original's frame)
-T3 00697150 AppendNarrowToWideString: inconclusive (a callee returned an address in the original's frame)
-T3 00508FF0 AppMain_ReadLanguageId: inconclusive (a callee returned an address in the original's frame)
-T3 00697130 TextInputSubobject_Init: inconclusive (a callee returned an address in the original's frame)
-T3 00697150 AppendNarrowToWideString: inconclusive (a callee returned an address in the original's frame)
-T3 00697130 TextInputSubobject_Init: inconclusive (a callee returned an address in the original's frame)
-T3 00697130 TextInputSubobject_Init: inconclusive (a callee returned an address in the original's frame)
-CRASH code=c0000005 eip=6df2c64b addr=00000004 (rw=0) eax=00000000 ebx=00000000 ecx=0d47be2c edx=00000000 esi=0019e0d8 edi=0019e0d0 ebp=0019dd18 esp=0019dcc0
-  eip module 6DA30000 (ours 6DA30000); stack:
-   00000000 0019dd00 6ddc5f1b 0019dd80 00000004 00000004
-   00000004 0002164f 0002164f 036cbaf4 0377fa70 03723024
-   00000000 00000000 0d47be2c 00000000 0019dd18 6df2da7d
-   1a3b25d2 0019e0d8 0019e0d0 00000000 0019e160 6df2d800
----- csf_hook.log
-hook 00401100 auto     MapActionIdToCode
-diff 004010c0 auto     SortCompare_AscendingKeyAt10
-hook 004010a0 auto     ReleaseCachedObjectGlobal
-diff 00401090 auto     GetGlobalValue_401090
-diff 00401060 auto     CharacterModel_InitializeTrace
-hook 00401030 auto     IndexedTransform_ScaleVector
-hook 00401000 auto     Collision_ScaleDirection
-hooks installed=12657 skipped=0 failed=0
-t3: 2665 callees intercepted (2168 wrapped hooks, 497 trampolines, 0 failed)
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00C616AC wrapped
-devcmd: video mode 1280x960
-CRASH code=c0000005 eip=6df2c64b addr=00000004 (rw=0) eax=00000000 ebx=00000000 ecx=0d47be2c edx=00000000 esi=0019e0d8 edi=0019e0d0 ebp=0019dd18 esp=0019dcc0
-  eip module 6DA30000 (ours 6DA30000); stack:
-   00000000 0019dd00 6ddc5f1b 0019dd80 00000004 00000004
-   00000004 0002164f 0002164f 036cbaf4 0377fa70 03723024
-   00000000 00000000 0d47be2c 00000000 0019dd18 6df2da7d
-   1a3b25d2 0019e0d8 0019e0d0 00000000 0019e160 6df2d800
-SMOKE FAIL (never ready: no 'devcmd: starting scene' in csf_hook.log within 120s)
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include <cstring>
 #include "globals.h"
@@ -57,8 +6,8 @@ SMOKE FAIL (never ready: no 'devcmd: starting scene' in csf_hook.log within 120s
 
 CSF_FUNC(void*, __fastcall, S_0041e5f0_GrowArrayCapacity, 0x0041E5F0, (S_0041e5f0* self, void* , int additionalCapacity));
 CSF_FUNC(const void*, __cdecl, RwImageSetPath, 0x00625270, (const void* path));
-CSF_FUNC(char, __cdecl, NormalizeResourceName, 0x006949D0, (char* source, char* destination, unsigned int capacity));
-CSF_FUNC(unsigned int, __cdecl, ResourceName_Transform, 0x00694B20, (char* a1, char* a2, char* a3, unsigned int a4));
+CSF_FUNC(char, __cdecl, CoreString_NormalizeResourceName, 0x006949D0, (char* source, char* destination, unsigned int capacity));
+CSF_FUNC(unsigned int, __cdecl, CoreString_ExtractResourcePathAndAppend, 0x00694B20, (char* a1, char* a2, char* a3, unsigned int a4));
 CSF_FUNC(int, __fastcall, InsertUniqueUnsignedShortTreeValue, 0x0073A5C0, (void* self, void* , int resultAddress, std::uint16_t* value));
 CSF_FUNC(int, __cdecl, _sprintf, 0x007AF9BB, (char* buffer, const char* format, ...));
 
@@ -158,20 +107,25 @@ static char __fastcall C_00867444_LoadFontVersion2(
             CSF_AT(int, glyph, 0x28) = metric3;
             CSF_AT(int, glyph, 0x34) = metric4;
 
-            const float inverseWidth = g_TransitionOne / static_cast<float>(textureWidth);
-            const float inverseHeight = g_TransitionOne / static_cast<float>(textureHeight);
-            CSF_AT(float, glyph, 0x08) = static_cast<float>(left) * inverseWidth;
-            CSF_AT(float, glyph, 0x0c) = static_cast<float>(top) * inverseHeight;
-            CSF_AT(float, glyph, 0x10) = static_cast<float>(right) * inverseWidth;
-            CSF_AT(float, glyph, 0x14) = static_cast<float>(bottom) * inverseHeight;
+            // The original keeps the quotient in an x87 register (extended precision) and
+            // rounds only each product to float; compute in double to match.
+            const double inverseWidth =
+                static_cast<double>(g_TransitionOne) / static_cast<double>(textureWidth);
+            const double inverseHeight =
+                static_cast<double>(g_TransitionOne) / static_cast<double>(textureHeight);
+            CSF_AT(float, glyph, 0x08) = static_cast<float>(static_cast<double>(left) * inverseWidth);
+            CSF_AT(float, glyph, 0x0c) = static_cast<float>(static_cast<double>(top) * inverseHeight);
+            CSF_AT(float, glyph, 0x10) = static_cast<float>(static_cast<double>(right) * inverseWidth);
+            CSF_AT(float, glyph, 0x14) = static_cast<float>(static_cast<double>(bottom) * inverseHeight);
 
             alignas(8) std::uint8_t entry[0x3c] = {};
             alignas(8) std::uint8_t insertionResult[0x08];
             CSF_AT(std::uint16_t, entry, 0) = CSF_AT(std::uint16_t, glyph, 0);
             std::memcpy(entry + 4, glyph, sizeof(glyph));
+            // Tree head is at self+0x28; the original also passes the entry pointer in edx.
             InsertUniqueUnsignedShortTreeValue(
-                reinterpret_cast<std::uint8_t*>(self) + 0x2c,
-                nullptr,
+                reinterpret_cast<std::uint8_t*>(self) + 0x28,
+                reinterpret_cast<void*>(entry),
                 static_cast<int>(reinterpret_cast<std::uintptr_t>(insertionResult)),
                 reinterpret_cast<std::uint16_t*>(entry));
         }
@@ -184,12 +138,12 @@ static char __fastcall C_00867444_LoadFontVersion2(
     char* source = self->field_0024 < 0x10
         ? reinterpret_cast<char*>(&self->field_0010)
         : reinterpret_cast<char*>(self->field_0010);
-    NormalizeResourceName(source, resourceName, 255);
+    CoreString_NormalizeResourceName(source, resourceName, 255);
 
     source = self->field_0024 < 0x10
         ? reinterpret_cast<char*>(&self->field_0010)
         : reinterpret_cast<char*>(self->field_0010);
-    ResourceName_Transform(
+    CoreString_ExtractResourcePathAndAppend(
         source, const_cast<char*>(CSF_STR(0x00860C74, "Textures/")),
         texturePath, 256);
     RwImageSetPath(texturePath);
@@ -221,5 +175,3 @@ static char __fastcall C_00867444_LoadFontVersion2(
 }
 
 HOOK(0x0073AA60, C_00867444_LoadFontVersion2, "auto");
-
-```
