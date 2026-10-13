@@ -51,6 +51,8 @@
 - {addr: 0x0082D2F4, name: g_SetWindowTextAImportSlot, type: SetWindowTextFunction, uses: 1, src: auto}
 - {addr: 0x0082D2F8, name: g_GetWindowTextAImportSlot, type: GetWindowTextFunction, uses: 1, src: auto}
 - {addr: 0x0082D2FC, name: g_DestroyWindowImport, type: void*, uses: 1, src: auto}
+- {addr: 0x0082D390, name: g_BinkCloseFn, type: void*, uses: 1, src: auto}
+- {addr: 0x0082D394, name: g_BinkPauseImport, type: BinkPauseImportFn, uses: 1, src: auto}
 - {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 128, src: auto}
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 4, src: auto}
@@ -68,7 +70,7 @@
 - {addr: 0x0082D568, name: g_LocalDirectionAngleScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D56C, name: g_Epsilon, type: float, uses: 2, src: auto, alt: [g_MotionEpsilon]}
 - {addr: 0x0082D6E8, name: g_MatrixQueryFlags, type: 'std::uint32_t', uses: 2, src: auto, alt: [g_MatrixRequestFlags]}
-- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 110, src: auto, alt: [g_MissionUnsignedIntegerBias]}
+- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 113, src: auto, alt: [g_MissionUnsignedIntegerBias]}
 - {addr: 0x0082D748, name: g_HudPi, type: float, uses: 2, src: auto, alt: [g_PiConstant]}
 - {addr: 0x0082D74C, name: g_HudTwoPi, type: float, uses: 2, src: auto, alt: [g_TwoPiConstant]}
 - {addr: 0x0082D750, name: g_RotationRadiansToDegrees, type: float, uses: 1, src: auto}
@@ -104,7 +106,7 @@
 - {addr: 0x0082DD68, name: g_PreviewTopScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082DD6C, name: g_SpeedUnitScale, type: float, uses: 5, src: auto, alt: [g_MovementScale, g_Scale100000]}
 - {addr: 0x0082DD70, name: g_HourTimeFactor, type: float, uses: 4, src: auto, alt: [g_OneOver3600, g_SpeedConversion, g_SpeedTimeScale]}
-- {addr: 0x0082DD74, name: g_ContextualDistanceScale, type: float, uses: 3, src: auto}
+- {addr: 0x0082DD74, name: g_ContextualDistanceScale, type: float, uses: 4, src: auto}
 - {addr: 0x0082DDDC, name: g_RayLength, type: float, uses: 1, src: auto}
 - {addr: 0x0082DDE0, name: g_HeightReferenceOffset, type: float, uses: 1, src: auto}
 - {addr: 0x0082DDE8, name: g_PositionHeightOffset, type: float, uses: 2, src: auto}
@@ -172,7 +174,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 119, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 120, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C8, name: g_AngleScale, type: float, uses: 1, src: auto}
@@ -227,7 +229,7 @@
 - {addr: 0x00830E4C, name: g_MinimapZoomWide, type: float, uses: 2, src: auto}
 - {addr: 0x00830E54, name: g_RadarTwoPi, type: float, uses: 1, src: auto}
 - {addr: 0x00830E58, name: g_RadarDegToRad, type: float, uses: 1, src: auto}
-- {addr: 0x00830FA0, name: g_BriefingExtensionWord, type: 'std::uint32_t', uses: 1, src: auto}
+- {addr: 0x00830FA0, name: g_BriefingExtensionWord, type: 'std::uint32_t', uses: 2, src: auto}
 - {addr: 0x00830FA4, name: g_BriefingExtensionTerminator, type: char, uses: 1, src: auto}
 - {addr: 0x00831090, name: g_FloatMax, type: float, uses: 13, src: auto}
 - {addr: 0x008310F4, name: g_DegreesToRadians, type: float, uses: 1, src: auto}
