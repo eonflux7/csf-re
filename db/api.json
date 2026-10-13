@@ -63166,8 +63166,8 @@
   "file": "src/auto/004f09b0.cpp"
  },
  "004f09f0": {
-  "name": "SceneLightsObjects_ParseBlock",
-  "name_src": "vote",
+  "name": "C_0083ef04_ReadSceneObjects",
+  "name_src": "agent",
   "votes": {
    "SceneLightsObjects_ParseBlock": 1
   },
@@ -84573,7 +84573,7 @@
   "name": "MenuSaveGame_ClearSlotRange",
   "name_src": "agent",
   "votes": {
-   "MenuSaveGame_ClearSlotRange": 7
+   "MenuSaveGame_ClearSlotRange": 8
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -137327,7 +137327,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 551,
+   "Mem_FreeDebug": 552,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -137431,7 +137431,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "Mem_Free": 900
+   "Mem_Free": 901
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -139511,7 +139511,7 @@
   "name": "CloseSceneFile",
   "name_src": "vote",
   "votes": {
-   "CloseSceneFile": 19
+   "CloseSceneFile": 20
   },
   "ret": "std::uint32_t",
   "conv": "__cdecl",
@@ -139706,7 +139706,7 @@
   "name_src": "agent",
   "votes": {
    "OpenSceneFile": 13,
-   "CoreFiles_OpenSceneFile": 5
+   "CoreFiles_OpenSceneFile": 6
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -151786,6 +151786,7 @@
   "name_src": "vote",
   "votes": {
    "RecordObject_Cleanup": 1,
+   "SaveGame_DestroySlotData": 1,
    "S_006c20f0_Destroy": 1
   },
   "ret": "void*",
@@ -153473,7 +153474,7 @@
   "name": "S_006c8800_ProcessWeaponContext",
   "name_src": "agent",
   "votes": {
-   "ProcessWeaponContext": 1
+   "ProcessWeaponContext": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -153482,13 +153483,14 @@
   "file": "src/auto/006c8800.cpp"
  },
  "006c8840": {
-  "name": "sub_6C8840",
-  "name_src": "addr",
+  "name": "S_006c8800_UpdateWeaponContext",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "S_006c8800* self, void* , float elapsedTime",
+  "sig_src": "impl",
+  "file": "src/auto/006c8840.cpp"
  },
  "006c88f0": {
   "name": "C_00860908_Serialize",
@@ -153641,13 +153643,14 @@
   "file": "src/auto/006c8ee0.cpp"
  },
  "006c8f00": {
-  "name": "sub_6C8F00",
-  "name_src": "addr",
+  "name": "C_00860954_WriteSceneFile",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2",
-  "sig_src": "abi"
+  "params": "C_00860954* self, void* , const char* filename",
+  "sig_src": "impl",
+  "file": "src/auto/006c8f00.cpp"
  },
  "006c8fe0": {
   "name": "CopyStringEntryRange_6C8FE0",
@@ -153763,8 +153766,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00860954* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006c95c0.cpp"
  },
  "006c9670": {
   "name": "C_00860954_RemoveInactiveSlots",
