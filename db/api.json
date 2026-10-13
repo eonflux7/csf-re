@@ -140428,7 +140428,8 @@
   "name": "CoreParser_CopyAttributeText",
   "name_src": "agent",
   "votes": {
-   "CopyAttributeText": 32
+   "CopyAttributeText": 32,
+   "CoreParser_CopyAttributeText": 1
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -140440,7 +140441,8 @@
   "name": "S_00692b80_ReadWideAttributeText",
   "name_src": "agent",
   "votes": {
-   "CoreZlibLog_ReadWideAttributeText": 2
+   "CoreZlibLog_ReadWideAttributeText": 2,
+   "S_00692b80_ReadWideAttributeText": 1
   },
   "ret": "uint8_t*",
   "conv": "__fastcall",
@@ -140452,7 +140454,7 @@
   "name": "CoreZlibLog_ReadVector2",
   "name_src": "agent",
   "votes": {
-   "CoreZlibLog_ReadVector2": 4
+   "CoreZlibLog_ReadVector2": 5
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -140464,7 +140466,7 @@
   "name": "DataNode_ReadVector3",
   "name_src": "agent",
   "votes": {
-   "DataNode_ReadVector3": 14,
+   "DataNode_ReadVector3": 15,
    "Node_ReadVector3": 2,
    "ReadVectorComponents": 1,
    "DataNode_ParseVector3": 1
@@ -140479,7 +140481,7 @@
   "name": "CoreZlibLog_ReadVector4",
   "name_src": "agent",
   "votes": {
-   "CoreZlibLog_ReadVector4": 1
+   "CoreZlibLog_ReadVector4": 2
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -140491,7 +140493,7 @@
   "name": "S_00692b80_FindProperty",
   "name_src": "agent",
   "votes": {
-   "S_00692b80_FindProperty": 7,
+   "S_00692b80_FindProperty": 12,
    "FindProperty": 145
   },
   "ret": "S_00692b80*",
@@ -140651,60 +140653,65 @@
   "file": "src/auto/00693990.cpp"
  },
  "006939c0": {
-  "name": "MenuExtras_ReadText",
-  "name_src": "vote",
+  "name": "S_00692b80_ReadText",
+  "name_src": "agent",
   "votes": {
    "MenuExtras_ReadText": 85
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "std::uint8_t* self, void* edx, char* keyword, char* buffer, int capacity",
-  "sig_src": "vote"
+  "params": "S_00692b80* self, void* , char* name, char* buffer, int capacity",
+  "sig_src": "impl",
+  "file": "src/auto/006939c0.cpp"
  },
  "006939f0": {
-  "name": "Property_ReadWideText",
-  "name_src": "vote",
+  "name": "S_00692b80_ReadWideText",
+  "name_src": "agent",
   "votes": {
    "Property_ReadWideText": 1
   },
   "ret": "uint8_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* String1, int64_t a3",
-  "sig_src": "vote"
+  "params": "S_00692b80* self, void* , char* attributeName, int64_t outputArguments",
+  "sig_src": "impl",
+  "file": "src/auto/006939f0.cpp"
  },
  "00693a20": {
-  "name": "Hud_ReadFloatPair",
-  "name_src": "vote",
+  "name": "HudReadFloatPair",
+  "name_src": "agent",
   "votes": {
    "Hud_ReadFloatPair": 12
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* String1, int a3",
-  "sig_src": "vote"
+  "params": "S_00692b80* self, void* , char* String1, int32_t* outputWords",
+  "sig_src": "impl",
+  "file": "src/auto/00693a20.cpp"
  },
  "00693a60": {
   "name": "DataNode_ReadVector3Property",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "DataNode_ReadVector3Property": 21,
    "Node_ReadVector3Property": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* String1, int a3",
-  "sig_src": "vote"
+  "params": "S_00692b80* self, void* , char* propertyName, std::uint32_t outputAddress",
+  "sig_src": "impl",
+  "file": "src/auto/00693a60.cpp"
  },
  "00693a90": {
   "name": "Hud_ReadColor",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "Hud_ReadColor": 2
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* String1, int a3",
-  "sig_src": "vote"
+  "params": "S_00692b80* self, void* , char* String1, std::uint8_t* outputColor",
+  "sig_src": "impl",
+  "file": "src/auto/00693a90.cpp"
  },
  "00693ad0": {
   "name": "S_00693ad0_Init",
