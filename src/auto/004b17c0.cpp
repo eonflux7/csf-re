@@ -24,8 +24,10 @@ static void* ToAddress(uint32_t address)
 
 // Dispatches the macro order to the linked AI task: either updates the linked task
 // (when the owner reports it can accept the order) or resets the linked task state.
-static void __stdcall AiFncMacroOrder_DispatchOrder(C_0085e760* self, int a2)
+static void __stdcall AiFncMacroOrder_DispatchOrder(C_0085e760* a1, int a2)
 {
+    // The original keeps a1 in edi; slot 47 gets the address of the argument slot and writes to it.
+    C_0085e760* const self = a1;
     int linkedValue = GetLinkedObjectValue_4DB5C0(self, nullptr);
     int ownerBase = linkedValue ? linkedValue - 4 : 0;
     uint32_t owner = CSF_AT(uint32_t, ToAddress(static_cast<uint32_t>(ownerBase)), 0x2C);
@@ -36,7 +38,7 @@ static void __stdcall AiFncMacroOrder_DispatchOrder(C_0085e760* self, int a2)
     if (!needsReset)
     {
         uint32_t* flagsPtr = ((uint32_t*(__fastcall*)(void*, void*, C_0085e760**))CSF_AT(void**, taskObject, 0)[47])(
-            taskObject, nullptr, &self);
+            taskObject, nullptr, &a1);
         needsReset = (*flagsPtr & 2u) == 0;
     }
 
