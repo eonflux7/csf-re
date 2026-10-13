@@ -68910,7 +68910,7 @@
   "name": "SetValue18",
   "name_src": "agent",
   "votes": {
-   "SetValue18": 1
+   "SetValue18": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -95399,11 +95399,13 @@
  "005860c0": {
   "name": "RpPVSSetViewPosition",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RpPVSSetViewPosition": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int* a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00586180": {
   "name": "sub_586180",
@@ -95426,11 +95428,13 @@
  "005861f0": {
   "name": "RpPVSWorldUnhook",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RpPVSWorldUnhook": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00586230": {
   "name": "sub_586230",
@@ -95518,11 +95522,13 @@
  "005865a0": {
   "name": "RpPrtStdWorldSetRenderCallBack",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RpPrtStdWorldSetRenderCallBack": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "005865e0": {
   "name": "RpPatchPluginAttach",
@@ -96574,7 +96580,7 @@
   "name": "RpWorldRender",
   "name_src": "rwname",
   "votes": {
-   "RpWorldRender": 1
+   "RpWorldRender": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -96594,7 +96600,7 @@
   "name": "RpWorldSetSectorRenderCallBack",
   "name_src": "rwname",
   "votes": {
-   "RpWorldSetSectorRenderCallBack": 1
+   "RpWorldSetSectorRenderCallBack": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -96605,7 +96611,7 @@
   "name": "RpWorldGetSectorRenderCallBack",
   "name_src": "rwname",
   "votes": {
-   "RpWorldGetSectorRenderCallBack": 1
+   "RpWorldGetSectorRenderCallBack": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -96636,7 +96642,7 @@
   "name": "RpWorldCreate",
   "name_src": "rwname",
   "votes": {
-   "RpWorldCreate": 1
+   "RpWorldCreate": 2
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -96680,7 +96686,7 @@
   "name": "RpWorldForAllWorldSectors",
   "name_src": "rwname",
   "votes": {
-   "RpWorldForAllWorldSectors": 5
+   "RpWorldForAllWorldSectors": 6
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -97027,7 +97033,7 @@
   "name": "S_006fdfe0_FindWorldFromClump",
   "name_src": "vote",
   "votes": {
-   "S_006fdfe0_FindWorldFromClump": 8
+   "S_006fdfe0_FindWorldFromClump": 9
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -97163,7 +97169,7 @@
   "name": "RpWorldRemoveClump",
   "name_src": "rwname",
   "votes": {
-   "RpWorldRemoveClump": 6,
+   "RpWorldRemoveClump": 7,
    "S_006fdfe0_RpWorldRemoveClump": 1
   },
   "ret": "int",
@@ -97350,6 +97356,17 @@
   "params": "int clump, AtomicVisitorFn visitor, int data",
   "sig_src": "vote"
  },
+ "0058ef90": {
+  "name": "RpClumpForAllLights",
+  "name_src": "rwname",
+  "votes": {
+   "RpClumpForAllLights": 2
+  },
+  "ret": "int",
+  "conv": "__cdecl",
+  "params": "int a1, int (__cdecl *a2)(char*, int), int a3",
+  "sig_src": "vote"
+ },
  "0058efe0": {
   "name": "RpAtomicSetGeometry",
   "name_src": "rwname",
@@ -97411,11 +97428,13 @@
  "0058f1d0": {
   "name": "RpClumpRemoveLight",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RpClumpRemoveLight": 2
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0058f210": {
   "name": "RpAtomicRegisterPlugin",
@@ -97568,7 +97587,7 @@
   "name": "RpClumpDestroy",
   "name_src": "rwname",
   "votes": {
-   "RpClumpDestroy": 4
+   "RpClumpDestroy": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -98970,11 +98989,13 @@
  "0059d000": {
   "name": "RpLightDestroy",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RpLightDestroy": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0059d040": {
   "name": "RpLightCreate",
@@ -110964,7 +110985,7 @@
   "name": "RwFrameGetLTM",
   "name_src": "rwname",
   "votes": {
-   "RwFrameGetLTM": 23
+   "RwFrameGetLTM": 24
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -110986,7 +111007,7 @@
   "name": "RwFrameRemoveChild",
   "name_src": "rwname",
   "votes": {
-   "RwFrameRemoveChild": 1
+   "RwFrameRemoveChild": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -111028,7 +111049,7 @@
   "name": "RwFrameTransform",
   "name_src": "rwname",
   "votes": {
-   "RwFrameTransform": 4
+   "RwFrameTransform": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -111050,7 +111071,7 @@
   "name": "RwFrameSetIdentity",
   "name_src": "rwname",
   "votes": {
-   "RwFrameSetIdentity": 3
+   "RwFrameSetIdentity": 4
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -113781,11 +113802,13 @@
  "006329c0": {
   "name": "RwFrameSetStaticPlugins",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "RwFrameSetStaticPlugins": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006329d0": {
   "name": "RwFrameRegisterPluginStream",
@@ -114928,7 +114951,7 @@
   "name": "RwBBoxAddPoint",
   "name_src": "rwname",
   "votes": {
-   "RwBBoxAddPoint": 1
+   "RwBBoxAddPoint": 2
   },
   "ret": "float*",
   "conv": "__cdecl",
@@ -120333,7 +120356,7 @@
   "name": "SceneLoader_GetSceneController",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetSceneController": 86,
+   "SceneLoader_GetSceneController": 87,
    "SceneLoader_GetSceneObject": 1,
    "SceneLoader_GetSubsystem": 1,
    "SceneLoader_GetSceneResources": 1,
@@ -120360,7 +120383,7 @@
   "name": "ResolveClumpManager",
   "name_src": "vote",
   "votes": {
-   "ResolveClumpManager": 34
+   "ResolveClumpManager": 35
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -134739,7 +134762,7 @@
   "name": "GetCachedObjectProvider",
   "name_src": "vote",
   "votes": {
-   "GetCachedObjectProvider": 213
+   "GetCachedObjectProvider": 214
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -137379,7 +137402,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 571,
+   "Mem_FreeDebug": 572,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -137483,7 +137506,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "Mem_Free": 916
+   "Mem_Free": 919
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -146036,7 +146059,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 392,
+   "GetGlobalInt": 394,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -148032,7 +148055,7 @@
   "name": "QueryLeafState",
   "name_src": "vote",
   "votes": {
-   "QueryLeafState": 1
+   "QueryLeafState": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -148734,7 +148757,9 @@
  "006b86a0": {
   "name": "GfxObjectProps_UpdateLightType",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxObjectProps_UpdateLightType": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int objectAddress",
@@ -148746,7 +148771,7 @@
   "name_src": "agent",
   "votes": {
    "SceneLoader_GetObjectAttachment": 18,
-   "GfxObjectProps_GetObjectAttachment": 28
+   "GfxObjectProps_GetObjectAttachment": 29
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -148782,7 +148807,9 @@
  "006b8800": {
   "name": "GfxObjectProps_GetObjectPropertyWord",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxObjectProps_GetObjectPropertyWord": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int objectIndex",
@@ -148985,7 +149012,9 @@
  "006b8be0": {
   "name": "GfxObjectProps_SetFlagLightmapBit",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxObjectProps_SetFlagLightmapBit": 1
+  },
   "ret": "uint32_t",
   "conv": "__fastcall",
   "params": "void* self, void* , char enable",
@@ -149970,7 +149999,9 @@
  "006bc310": {
   "name": "Environment_RenderWorldStage",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Environment_RenderWorldStage": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_006bc310* self, void*",
@@ -150187,30 +150218,34 @@
  },
  "006bcb50": {
   "name": "GfxEnvironment_PrepareClumpResources",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GfxEnvironment_PrepareClumpResources": 1
   },
-  "ret": "char",
+  "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1",
-  "sig_src": "vote"
+  "params": "int clumpHandle",
+  "sig_src": "impl",
+  "file": "src/auto/006bcb50.cpp"
  },
  "006bcc20": {
-  "name": "SceneObject_ApplyFlag1Pass",
-  "name_src": "vote",
+  "name": "S_006bc310_RenderWorldWithVisibility",
+  "name_src": "agent",
   "votes": {
    "SceneObject_ApplyFlag1Pass": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_006bc310* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006bcc20.cpp"
  },
  "006bcd10": {
   "name": "GfxEnvironment_ClearAndFreeEntries",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_006bc310_InitializeSectorEntries": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_006bc310* self, void*",
@@ -150311,15 +150346,16 @@
   "file": "src/auto/006bd100.cpp"
  },
  "006bd130": {
-  "name": "GfxEnvironment_FinalizeClumpPreparation",
-  "name_src": "vote",
+  "name": "C_00833708_FinalizeClumpPreparation",
+  "name_src": "agent",
   "votes": {
    "GfxEnvironment_FinalizeClumpPreparation": 1
   },
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00833708* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006bd130.cpp"
  },
  "006bd260": {
   "name": "C_008605d8_FindEntryByAttachmentId",
@@ -150332,13 +150368,14 @@
   "file": "src/auto/006bd260.cpp"
  },
  "006bd2b0": {
-  "name": "sub_6BD2B0",
-  "name_src": "addr",
+  "name": "GfxEnvironment_DestroyClumpArray",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "int",
   "conv": "__stdcall",
-  "params": "void** a1, char a2",
-  "sig_src": "abi"
+  "params": "int* clumps, char skipSkinCleanup",
+  "sig_src": "impl",
+  "file": "src/auto/006bd2b0.cpp"
  },
  "006bd3b0": {
   "name": "EnvironmentTexture_ForwardToProcess",
@@ -150365,15 +150402,16 @@
   "file": "src/auto/006bd3d0.cpp"
  },
  "006bd5e0": {
-  "name": "SceneObject_ApplyFlag2Pass",
-  "name_src": "vote",
+  "name": "S_006bc310_UpdateWorldSectorParticles",
+  "name_src": "agent",
   "votes": {
    "SceneObject_ApplyFlag2Pass": 1
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_006bc310* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006bd5e0.cpp"
  },
  "006bd690": {
   "name": "C_008605d8_BuildClumpFromRecord",
@@ -150450,8 +150488,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_008605d8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006bdb50.cpp"
  },
  "006bdc50": {
   "name": "GfxEnvironment_BuildClumpDescriptor",
@@ -150469,7 +150508,7 @@
   "name": "SceneLoader_FinalizeRenderResources",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_FinalizeRenderResources": 2,
+   "SceneLoader_FinalizeRenderResources": 3,
    "SceneLoader_FinalizeRenderCamera": 1
   },
   "ret": "void*",
@@ -150569,7 +150608,8 @@
   "name": "C_008605d8_ProcessContextObject",
   "name_src": "agent",
   "votes": {
-   "SceneLoader_ProcessContextObject": 2
+   "SceneLoader_ProcessContextObject": 2,
+   "C_008605d8_ProcessContextObject": 1
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -150603,7 +150643,9 @@
  "006bec60": {
   "name": "C_008605d8_LoadEnvironmentStream",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_008605d8_LoadEnvironmentStream": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "C_008605d8* self, void* , unsigned int source, char buffered",
@@ -150611,13 +150653,14 @@
   "file": "src/auto/006bec60.cpp"
  },
  "006bf020": {
-  "name": "sub_6BF020",
-  "name_src": "addr",
+  "name": "C_008605d8_LoadEnvironment",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, char a3",
-  "sig_src": "abi"
+  "params": "C_008605d8* self, void* , const void* sourceDescriptor, char buffered",
+  "sig_src": "impl",
+  "file": "src/auto/006bf020.cpp"
  },
  "006bf0e0": {
   "name": "C_00860630_InitWithOptionalFree",
@@ -151435,7 +151478,7 @@
   "name": "SceneLoader_CollectSectorObjects",
   "name_src": "agent",
   "votes": {
-   "SceneLoader_CollectSectorObjects": 7
+   "SceneLoader_CollectSectorObjects": 8
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -152157,7 +152200,7 @@
   "name": "ParticleInner_Update",
   "name_src": "agent",
   "votes": {
-   "ParticleInner_Update": 2,
+   "ParticleInner_Update": 3,
    "GfxObjectInstances_ReleaseEntryObject": 1
   },
   "ret": "int",
@@ -152705,7 +152748,7 @@
   "name": "GetGlobalValue_6C5760",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_6C5760": 74
+   "GetGlobalValue_6C5760": 77
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -152917,7 +152960,7 @@
   "name": "GfxSkin_ForwardWithSkinCallback",
   "name_src": "agent",
   "votes": {
-   "GfxSkin_ForwardWithSkinCallback": 2
+   "GfxSkin_ForwardWithSkinCallback": 3
   },
   "ret": "int",
   "conv": "__stdcall",
@@ -153393,7 +153436,7 @@
    "RwEngine_SetRenderState": 1,
    "Hud_SetWidgetParam": 3,
    "Hud_SetRenderState": 1,
-   "GfxSkin_ForwardToRwEngineSlot20": 5
+   "GfxSkin_ForwardToRwEngineSlot20": 7
   },
   "ret": "int",
   "conv": "__stdcall",
@@ -153437,7 +153480,7 @@
   "name": "GlobalHud_Commit_6C7C30",
   "name_src": "agent",
   "votes": {
-   "GlobalHud_Commit_6C7C30": 14
+   "GlobalHud_Commit_6C7C30": 15
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -153507,12 +153550,12 @@
   "name": "GfxSkin_AppendObjectRecord",
   "name_src": "agent",
   "votes": {
+   "GfxSkin_AppendObjectRecord": 2,
    "SkinBindSubobject": 1,
    "GfxSkin_SetRenderMode": 1,
    "GfxSkin_SetRenderPhase": 1,
    "GfxSkin_BeginBatch12": 1,
-   "GfxSkin_SetRenderStage": 1,
-   "GfxSkin_AppendObjectRecord": 1
+   "GfxSkin_SetRenderStage": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -156521,7 +156564,7 @@
   "name": "SceneLoader_SetClumpContext",
   "name_src": "agent",
   "votes": {
-   "SceneLoader_SetClumpContext": 1
+   "SceneLoader_SetClumpContext": 2
   },
   "ret": "int",
   "conv": "__fastcall",
