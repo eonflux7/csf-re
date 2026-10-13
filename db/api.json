@@ -36487,7 +36487,7 @@
   "name": "AssignStringRange_488830",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_488830": 54
+   "AssignStringRange_488830": 55
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -116793,7 +116793,7 @@
   "name": "RwBBoxAddPoint",
   "name_src": "rwname",
   "votes": {
-   "RwBBoxAddPoint": 2
+   "RwBBoxAddPoint": 3
   },
   "ret": "float*",
   "conv": "__cdecl",
@@ -139258,7 +139258,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 656,
+   "Mem_FreeDebug": 657,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -140916,7 +140916,7 @@
   "name_src": "agent",
   "votes": {
    "MenuLoading_CopyLocalizedText": 4,
-   "CoreVariantValues_CopyWideStringBounded": 2
+   "CoreVariantValues_CopyWideStringBounded": 3
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -141129,8 +141129,8 @@
   "name": "CoreVariantValues_FormatWideString",
   "name_src": "agent",
   "votes": {
-   "FormatCountTextCore_6966E0": 1,
-   "CoreVariantValues_FormatWideString": 1
+   "CoreVariantValues_FormatWideString": 2,
+   "FormatCountTextCore_6966E0": 1
   },
   "ret": "S_004f21d0*",
   "conv": "__cdecl",
@@ -141146,8 +141146,9 @@
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, void* a3, ...",
-  "sig_src": "vote"
+  "params": "int destination, int maxCount, S_004f21d0* pattern, ...",
+  "sig_src": "impl",
+  "file": "src/auto/006969c0.cpp"
  },
  "00696a80": {
   "name": "FormatCountTextBuffer",
@@ -141307,7 +141308,7 @@
   "name": "S_004f21d0_SetPattern",
   "name_src": "agent",
   "votes": {
-   "S_004f21d0_SetPattern": 5,
+   "S_004f21d0_SetPattern": 6,
    "FormatterSetPattern": 15,
    "ConstructMissionFormatString": 1
   },
@@ -147060,130 +147061,141 @@
   "file": "src/auto/006ab440.cpp"
  },
  "006ab460": {
-  "name": "AiStatic_SetSegmentEndpoints",
-  "name_src": "vote",
+  "name": "GfxBBox_CopyEndpointPair",
+  "name_src": "agent",
   "votes": {
    "AiStatic_SetSegmentEndpoints": 2
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, uint32_t* a3",
-  "sig_src": "vote"
+  "params": "uint32_t* self, void* , const uint32_t* a2, const uint32_t* a3",
+  "sig_src": "impl",
+  "file": "src/auto/006ab460.cpp"
  },
  "006ab4a0": {
-  "name": "Bounds_GetExtents",
-  "name_src": "vote",
+  "name": "BBoxGetExtents",
+  "name_src": "agent",
   "votes": {
    "Bounds_GetExtents": 5
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, uint32_t* a3, uint32_t* a4, uint32_t* a5, uint32_t* a6, uint32_t* a7",
-  "sig_src": "vote"
+  "params": "void* self, void* , uint32_t* outMinX, uint32_t* outMaxX, uint32_t* outMinY, uint32_t* outMaxY, uint32_t* outMinZ, uint32_t* outMaxZ",
+  "sig_src": "impl",
+  "file": "src/auto/006ab4a0.cpp"
  },
  "006ab4e0": {
-  "name": "SceneMissionSetup_SetBounds",
-  "name_src": "vote",
+  "name": "BBoxMath_SetBounds",
+  "name_src": "agent",
   "votes": {
    "SceneMissionSetup_SetBounds": 5,
    "SceneMissionSetup_SetBoxBounds": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4, int a5, int a6, int a7",
-  "sig_src": "vote"
+  "params": "void* self, void* , int a2, int a3, int a4, int a5, int a6, int a7",
+  "sig_src": "impl",
+  "file": "src/auto/006ab4e0.cpp"
  },
  "006ab510": {
-  "name": "GfxCamera_BuildBoxPlanes",
-  "name_src": "vote",
+  "name": "GfxBboxMath_BuildBoxCorners",
+  "name_src": "agent",
   "votes": {
    "GfxCamera_BuildBoxPlanes": 1,
    "SceneMissionSetup_GetBoundsPlanes": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , uint32_t* corners",
+  "sig_src": "impl",
+  "file": "src/auto/006ab510.cpp"
  },
  "006ab5c0": {
-  "name": "SceneMissionSetup_SetBoundsCenter",
-  "name_src": "vote",
+  "name": "GfxBboxMath_SetBoundsCenter",
+  "name_src": "agent",
   "votes": {
    "SceneMissionSetup_SetBoundsCenter": 2,
    "SceneMissionSetup_SetBoxOrigin": 1
   },
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "vote"
+  "params": "float* self, void* , float* center",
+  "sig_src": "impl",
+  "file": "src/auto/006ab5c0.cpp"
  },
  "006ab660": {
-  "name": "SceneMissionSetup_GetBoundsCenter",
-  "name_src": "vote",
+  "name": "GfxBBox_GetCenter",
+  "name_src": "agent",
   "votes": {
    "SceneMissionSetup_GetBoundsCenter": 10
   },
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "vote"
+  "params": "float* self, void* , float* outCenter",
+  "sig_src": "impl",
+  "file": "src/auto/006ab660.cpp"
  },
  "006ab6c0": {
   "name": "Collision_CombineBounds",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "Collision_CombineBounds": 1
   },
-  "ret": "uint32_t*",
+  "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, float* a3",
-  "sig_src": "vote"
+  "params": "int* self, void* , float* out, float* point",
+  "sig_src": "impl",
+  "file": "src/auto/006ab6c0.cpp"
  },
  "006ab740": {
-  "name": "GfxPtank_TestBoundsOverlap",
-  "name_src": "vote",
+  "name": "GfxBbox_TestBoundsOverlap",
+  "name_src": "agent",
   "votes": {
    "WorldCollision_TestBoundsOverlap": 1,
    "GfxPtank_TestBoundsOverlap": 1
   },
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "vote"
+  "params": "float* self, void* , float* other",
+  "sig_src": "impl",
+  "file": "src/auto/006ab740.cpp"
  },
  "006ab7a0": {
-  "name": "SceneMissionSetup_GetBoundingSphere",
-  "name_src": "vote",
+  "name": "GfxBBoxMath_ComputeBoundingSphere",
+  "name_src": "agent",
   "votes": {
    "WorldCollision_GetBoundingSphere": 1,
    "SceneMissionSetup_GetBoundingSphere": 1
   },
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "vote"
+  "params": "float* self, void* , float* outSphere",
+  "sig_src": "impl",
+  "file": "src/auto/006ab7a0.cpp"
  },
  "006ab830": {
-  "name": "Vec3_NormalizeHelper",
-  "name_src": "vote",
+  "name": "GfxBBoxMath_Vec3ScaleByReciprocal",
+  "name_src": "agent",
   "votes": {
    "Vec3_NormalizeHelper": 6
   },
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "vote"
+  "params": "float* self, void* , float length",
+  "sig_src": "impl",
+  "file": "src/auto/006ab830.cpp"
  },
  "006ab870": {
   "name": "GfxObjectInstances_DivideVector",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GfxObjectInstances_DivideVector": 1
   },
   "ret": "float*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2, float a3",
-  "sig_src": "vote"
+  "params": "float* self, void* , float* dest, float divisor",
+  "sig_src": "impl",
+  "file": "src/auto/006ab870.cpp"
  },
  "006ab8d0": {
   "name": "NormalizeVector3",
