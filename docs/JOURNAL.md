@@ -1471,3 +1471,32 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   job holding each item, quota per login, background processes, open decisions and backlog, commits. One collector
   thread; slow readers (evidence 90 s, quota 60 s) keep their last value, so the page never blanks.
 - The 192 leftovers outside stl and queue: 166 are under 6 bytes (the lanes' `min_size`), 27 others.
+- Deep workers on sol-hi only (user, 2026-10-13: Claude usage stays with the orchestrator). Three opus-me jobs ran
+  first: qdiff1 finished (7 min, $1.86), qsem and tiny were stopped after 7 min, their trees kept.
+- Old terminal monitor deleted (monitor.py, monitor_app.py, monitor_loop.py). webmon: a job row opens to its
+  running shells, last steps and token use; Codex jobs no longer run --ephemeral, so the session file gives a
+  running token count.
+- Job qdiff1: the four in-game mismatches of the last regression check are diff false alarms. Taken: difftable
+  reads a char/short return from abi.json when the exported pseudocode still says int (25 tier-3 rows change
+  class); 0x4C4F10 and 0x4C4F80 back to pending. Open (job hookdiff): a return that points into the function's own
+  dead frame (0x69ACB0), a byte argument pushed as a whole register (0x703470).
+- Job qemuB (10 emudiff rejections: 2 real, 8 called false alarms). Taken: the corrected 0x426550 (x87
+  intermediates rounded too early; same 4/8 with the current emudiff). Not taken: its emudiff changes. Measured on
+  the 81 candidates extracted from the queue: 29 same, 18 inconclusive, 34 DIFF (all DIFF before); the 18 come from
+  a new "original mock run corrupts saved registers" exclusion, and inconclusive never rejects in the gate. Needs a
+  measure of what emudiff stops catching first: a mutation benchmark (job to start).
+- emudiff on the diffed tier now: same 294, inconclusive 5, DIFF 1 of 300 (0x728160, an argument where ours has
+  0xCCCCCCCC: not looked at).
+- First round of agent jobs, the rest. Measure used for every emudiff change a job proposes: its emudiff next to
+  the current one over the 81 candidates extracted from queue/ and 300 functions of the diffed tier.
+  - stl: applied. src/types/vc71_vector.h + one `_Insert_n` template, 35 instances (21.5 KB), gate ok and emudiff
+    same 8/8 on all (re-run here). Survey: docs/stl_survey.md (407 of 418 expected from templates, 11 misclassified).
+  - qemuA: applied. emudiff reconstructs a call's cleanup from the original's stack constraints where it is
+    unique, names external targets by relocation. Proven set unchanged (297 same, 3 inconclusive), 7 queued
+    candidates DIFF -> same, none to inconclusive; the 7 pass the gate and are pending (0x44D4D0, 0x492DE0,
+    0x4A6F70, 0x4A7940, 0x4CE460, 0x5477E0, 0x6BFF40; coverage 1-4 of 8 profiles).
+  - qabi: not applied yet. Same emudiff measure as qemuA (7 flips, proven set unchanged), but it also changes
+    api.py: `api.py build` in its tree changes 267 lines of db/api.json. The contract diff has to be read first.
+  - hookdiff: not applied yet. Both rules implemented, DLL builds in its tree; needs the loadsave smoke with the
+    two functions installed, then FR01 and the menu tour.
+  - qemuB's emudiff changes stay out (18 candidates to inconclusive).

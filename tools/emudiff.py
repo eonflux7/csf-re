@@ -132,6 +132,182 @@ def call_pops():
     return load("calls", lambda: {int(k, 16): v for k, v in json.load(open(os.path.join(ROOT, "export", "calls.json"))).items()})
 
 
+
+def infer_stack_pops(ins, direct_pops, entry=None):
+    """Prove call cleanup from the original's CFG, without consulting the candidate.
+
+    SP and outstanding pushed arguments are affine expressions in unknown indirect-call pops.
+    Saved-register restores and CFG joins give equalities. Calls cannot consume locals or saved
+    registers, so outstanding arguments must remain nonnegative. Only uniquely determined indirect
+    counts replace the export; ambiguous and unsupported frames retain the exported counts.
+    """
+    import capstone
+    if not ins:
+        return {}
+    regs = ('ebx', 'esi', 'edi', 'ebp')
+    popregs = {i.op_str for i in ins.values() if i.mnemonic == 'pop'}
+    aliases = {'bl': 'ebx', 'bh': 'ebx', 'bx': 'ebx', 'si': 'esi', 'di': 'edi', 'bp': 'ebp'}
+
+    # Affine expression {None: constant, call-site: coefficient}.
+    def plus(a, b, n=1):
+        result = a.copy()
+        for k, v in b.items():
+            result[k] = result.get(k, 0) + n * v
+            if not result[k]:
+                del result[k]
+        return result
+
+    equalities, nonnegative, pops, variables, seen = [], [], {}, set(), {}
+    todo = [(entry if entry is not None else min(ins), ({}, {}, None, {}, frozenset(regs)))]
+
+    def equal(a, b):
+        equalities.append(plus(a, b, -1))
+
+    while todo:
+        pc, state = todo.pop()
+        sp, args, bp, saves, pristine = state
+        if pc not in ins:
+            return {}  # Unknown control flow: do not infer from a partial function.
+        if pc in seen:
+            old = seen[pc]
+            if (set(old[3]) != set(saves) or old[4] - old[3].keys() != pristine - saves.keys()
+                    or (old[2] is None) != (bp is None)):
+                return {}  # Incompatible frame/register histories.
+            if bp is not None:
+                equal(bp, old[2])
+            equal(sp, old[0])
+            equal(args, old[1])
+            for r in saves:
+                equal(saves[r], old[3][r])
+            continue
+        seen[pc] = state
+        i = ins[pc]
+        mn, op, nextpc = i.mnemonic, i.op_str, pc + i.size
+        sp, args, saves = sp.copy(), args.copy(), saves.copy()
+        if mn == 'push':
+            sp = plus(sp, {None: -4})
+            if op in pristine and op in popregs and op not in saves:
+                equal(args, {})
+                saves[op] = sp.copy()
+            else:
+                args = plus(args, {None: 4})
+        elif mn == 'pop':
+            if op in saves:
+                equal(sp, saves.pop(op))
+                equal(args, {})
+                pristine = pristine | {op}
+            else:
+                args = plus(args, {None: -4})
+                nonnegative.append(args)
+                pristine = pristine - {op}
+            sp = plus(sp, {None: 4})
+        elif mn in ('sub', 'add') and op.startswith('esp, '):
+            try:
+                n = int(op.split(', ')[1], 0) * (1 if mn == 'add' else -1)
+            except ValueError:
+                return {}
+            sp = plus(sp, {None: n})
+            if n < 0:
+                # Initial frame allocation is local storage, rather than outgoing arguments.
+                if variables or args:
+                    return {}
+            else:
+                args = plus(args, {None: -n})
+                nonnegative.append(args)
+        elif mn == 'mov' and op == 'ebp, esp':
+            bp = sp.copy()
+        elif mn == 'mov' and op == 'esp, ebp':
+            if bp is None:
+                return {}
+            sp, args = bp.copy(), {}
+        elif mn == 'leave':
+            if bp is None or 'ebp' not in saves:
+                return {}
+            equal(bp, saves.pop('ebp'))
+            sp, args = plus(bp, {None: 4}), {}
+        elif mn == 'call':
+            if i.operands[0].type == capstone.x86.X86_OP_IMM:
+                n = direct_pops(pc, i.operands[0].imm)
+                pops[pc] = n
+                sp, args = plus(sp, {None: n}), plus(args, {None: -n})
+            else:
+                variables.add(pc)
+                sp, args = plus(sp, {pc: 1}), plus(args, {pc: -1})
+            nonnegative.append(args)
+        elif mn == 'ret' or (mn == 'jmp' and i.operands[0].type != capstone.x86.X86_OP_IMM):
+            equal(sp, {})
+            continue
+        elif any(i.reg_name(r) == 'esp' for r in i.regs_access()[1]):
+            return {}  # Dynamic/aligned frames and unmodelled stack instructions.
+        if mn not in ('push', 'call', 'pop'):
+            _, written = i.regs_access()
+            pristine -= frozenset(aliases.get(i.reg_name(r), i.reg_name(r)) for r in written)
+        state = (sp, args, bp, saves, pristine)
+        if mn == 'jmp':
+            todo.append((i.operands[0].imm, state))
+        elif mn.startswith('j'):
+            todo.extend([(i.operands[0].imm, state), (nextpc, state)])
+        else:
+            todo.append((nextpc, state))
+
+    bounds = {v: [0, 1 << 30] for v in variables}
+    inequalities = nonnegative + equalities + [{k: -v for k, v in x.items()} for x in equalities]
+    for _ in range(len(bounds) * 4 + 20):
+        changed = False
+        for exp in inequalities:
+            maximum = exp.get(None, 0) + sum(c * bounds[k][1 if c > 0 else 0]
+                                            for k, c in exp.items() if k is not None)
+            if maximum < 0:
+                return {}
+            for k, c in exp.items():
+                if k is None:
+                    continue
+                other = maximum - c * bounds[k][1 if c > 0 else 0]
+                idx = 0 if c > 0 else 1
+                n = (-other + c - 1) // c if c > 0 else other // -c
+                n = (n + 3) // 4 * 4 if c > 0 else n // 4 * 4
+                if (c > 0 and n > bounds[k][0]) or (c < 0 and n < bounds[k][1]):
+                    bounds[k][idx] = n
+                    changed = True
+                if bounds[k][0] > bounds[k][1]:
+                    return {}
+        if not changed:
+            break
+    pops.update({k: b[0] for k, b in bounds.items() if b[0] == b[1]})
+    return pops
+
+
+@functools.lru_cache(maxsize=None)
+def binary_call_pop(target):
+    """Use the callee's actual RET immediate, rather than a decompiler's call-site assignment."""
+    if target not in functions():
+        return None
+    import capstone
+    md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+    img, _ = exe_image()
+    counts = set()
+    for lo, hi in own_ranges(target)[0]:
+        for i in md.disasm(bytes(img[lo - IMG:hi - IMG]), lo):
+            if i.mnemonic == "ret":
+                counts.add(int(i.op_str, 0) if i.op_str else 0)
+    return next(iter(counts)) if len(counts) == 1 else None
+
+
+@functools.lru_cache(maxsize=None)
+def stack_call_pops(ea):
+    import capstone
+    md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+    md.detail = True
+    img, _ = exe_image()
+    ins = {}
+    for lo, hi in own_ranges(ea)[0]:
+        ins.update((i.address, i) for i in md.disasm(bytes(img[lo - IMG:hi - IMG]), lo))
+    def direct(site, target):
+        n = binary_call_pop(target)
+        return n if n is not None else call_pops().get(site, 0)
+    return infer_stack_pops(ins, direct, ea)
+
+
 def split_params(p):
     out, depth, cur = [], 0, ""
     for ch in p or "":
@@ -259,7 +435,7 @@ class Obj:
             syms.append(s)
             syms.extend([None] * naux)
             i += 1 + naux
-        self.ext, self.natives = {}, {}
+        self.ext, self.natives, self.external_calls = {}, {}, {}
         crt_names = crt_ranges()[1]
         # i386 clang-cl emits __chkstk for large frames / dynamic alloca; VC7.1 names the same
         # allocating stack-probe ABI __alloca_probe (eax = bytes, helper adjusts esp). Run the
@@ -302,6 +478,12 @@ class Obj:
                     v = cur + tgt
                 elif typ == 20:  # REL32
                     v = cur + tgt - (s["base"] + off + 4)
+                    # Only a CALL relocation makes an address an external symbol.
+                    # An arbitrary indirect target can coincide with our stub range.
+                    if s["code"] and off and s["data"][off - 1] == 0xE8:
+                        name = next((n for n, a in self.ext.items() if a == tgt), None)
+                        if name:
+                            self.external_calls[s["base"] + off + 4] = (tgt, name)
                 else:
                     continue
                 struct.pack_into("<I", s["data"], off, v & 0xFFFFFFFF)
@@ -332,6 +514,7 @@ class Run:
         self.ea, self.prof, self.own, self.obj, self.script = ea, prof, own, obj, script
         self.events, self.written, self.status, self.pending = [], set(), None, None
         self.reserved_done = {}
+        self.proven_pops = stack_call_pops(ea) if not obj and ea in functions() else {}
         self.crt = crt_ranges()[0]
         # unicorn's hook closures refer to themselves and to the Uc: a finished Run (the image mapped, ~10 MB) is only
         # freed by the cyclic collector, which counts objects, not megabytes (8 workers of a sweep took 15 GB)
@@ -522,12 +705,19 @@ class Run:
         esp = uc.reg_read(X.UC_X86_REG_ESP)
         ret = struct.unpack("<I", uc.mem_read(esp, 4))[0]
         i = len(self.events)
-        name = self.obj.ext_names.get(target) if self.obj else None
+        name = None
+        if self.obj:
+            # A random indirect target can equal one of our external stubs. Only a
+            # direct CALL relocation gives that numeric address the external's name.
+            external = self.obj.external_calls.get(ret)
+            if external and external[0] == target:
+                name = external[1]
         imp = imports().get(target)  # a Windows / Bink / vorbis API: no prototype of ours, and ecx is no argument
         name = imp or name
         p = proto(target) if IMG <= target < IMG + 0x500000 and not imp else None
         if self.script is None:  # the original: its call site says what the callee pops
-            pop = call_pops().get(self.ret_site.get(ret), p[3] if p else 0) if ret != RET_MAGIC else (p[3] if p else 0)
+            site = self.ret_site.get(ret)
+            pop = self.proven_pops.get(site, call_pops().get(site, p[3] if p else 0)) if ret != RET_MAGIC else (p[3] if p else 0)
             if imp and self.ret_site.get(ret) not in call_pops():  # called from CRT code that runs for real
                 pop = IMPORT_POPS.get(imp.split("!")[1], pop)
             nargs = len(p[1]) if p else pop // 4
