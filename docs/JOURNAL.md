@@ -1402,3 +1402,5 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   it with, emudiff said `same` on 4/8 profiles without entering the switch (backlog, Verification). Installed since
   2026-10-11; rare because FR01's start seldom sends command 0x10. The 05:30 bisect was right to say "older code".
 - Verifier over the 395 pending: 392 installed, 3 quarantined (0x6FF2E0, 0x6C9080, 0x6C90C0).
+- Confirmed: fixed 0x4D9170 installed (ran in 99 smokes), then 96 smokes with everything on without eip=006326e4
+  (before the fix it showed within 16-40). Flaky baseline crash closed.
