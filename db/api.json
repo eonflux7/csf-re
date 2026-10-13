@@ -27089,7 +27089,7 @@
   "name": "MissionScript_ReleaseRecordBuffer",
   "name_src": "agent",
   "votes": {
-   "MissionScript_ReleaseRecordBuffer": 10,
+   "MissionScript_ReleaseRecordBuffer": 11,
    "DestroyRecord_469270": 11
   },
   "ret": "int",
@@ -138794,7 +138794,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 636,
+   "Mem_FreeDebug": 637,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -162763,7 +162763,7 @@
  },
  "006df990": {
   "name": "C_00861928_Destroy_6DF990",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -162890,7 +162890,7 @@
  },
  "006e01d0": {
   "name": "GfxWater_PrepareSceneObjects",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GfxWater_PrepareSceneObjects": 1
   },
@@ -204809,8 +204809,8 @@
   "sig_src": "abi"
  },
  "00782310": {
-  "name": "MissionData_Release",
-  "name_src": "vote",
+  "name": "MissionData_ReleaseAndClearFlag",
+  "name_src": "agent",
   "votes": {
    "MissionData_Release": 1
   },
@@ -204881,7 +204881,7 @@
  },
  "00782680": {
   "name": "ElementRange_GetEntryCount348",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -204934,8 +204934,10 @@
  },
  "00782910": {
   "name": "Entry_ForwardToProcessIfNonNull",
-  "name_src": "impl",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "ForwardToMissionRecord": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
   "params": "C_0082d410* a1, C_0082d410* a2",
@@ -204952,24 +204954,26 @@
   "sig_src": "abi"
  },
  "007829d0": {
-  "name": "sub_7829D0",
-  "name_src": "addr",
+  "name": "MissionScript_ForwardToRecordBlock",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "std::uint8_t* first, std::uint32_t count, void* forwardArg, void* contextObject",
+  "sig_src": "impl",
+  "file": "src/auto/007829d0.cpp"
  },
  "00782a70": {
-  "name": "Forward_ProcessPair782A70",
-  "name_src": "vote",
+  "name": "ResetRecordRangeFreeBuffers",
+  "name_src": "agent",
   "votes": {
    "Forward_ProcessPair782A70": 1
   },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int* a1, int* a2, int a3, int a4",
-  "sig_src": "vote"
+  "params": "int* first, int* last, int unusedA3, int unusedA4",
+  "sig_src": "impl",
+  "file": "src/auto/00782a70.cpp"
  },
  "00782ac0": {
   "name": "sub_782AC0",
@@ -204982,7 +204986,7 @@
  },
  "00782b60": {
   "name": "ForwardWithSelfToSub782930",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -205000,13 +205004,14 @@
   "sig_src": "abi"
  },
  "00782c00": {
-  "name": "sub_782C00",
-  "name_src": "addr",
+  "name": "Forward3ArgsToAC0",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__cdecl",
   "params": "int a1, int a2, void* a3",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/00782c00.cpp"
  },
  "00782c20": {
   "name": "sub_782C20",
@@ -205019,7 +205024,7 @@
  },
  "00782c50": {
   "name": "ForwardPairWithContext782C50",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -205037,13 +205042,14 @@
   "sig_src": "abi"
  },
  "00782f90": {
-  "name": "sub_782F90",
-  "name_src": "addr",
+  "name": "S_00782f90_GetSlotPointerForPosition",
+  "name_src": "agent",
   "votes": {},
-  "ret": "uint32_t*",
+  "ret": "std::uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, void* a3, void* a4",
-  "sig_src": "abi"
+  "params": "S_00782f90* self, void* , std::uint32_t* result, C_0082d410* position, C_0082d410* extraArg",
+  "sig_src": "impl",
+  "file": "src/auto/00782f90.cpp"
  },
  "00783000": {
   "name": "sub_783000",
@@ -214522,7 +214528,7 @@
   "name": "___CxxFrameHandler",
   "name_src": "ida",
   "votes": {
-   "___CxxFrameHandler": 202,
+   "___CxxFrameHandler": 203,
    "OriginalCxxFrameHandler": 1
   },
   "ret": "int",
@@ -214606,7 +214612,7 @@
   "name": "RethrowCppException",
   "name_src": "vote",
   "votes": {
-   "RethrowCppException": 276
+   "RethrowCppException": 277
   },
   "ret": "void",
   "conv": "__stdcall",
