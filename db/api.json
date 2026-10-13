@@ -10553,7 +10553,7 @@
   "name": "AssignStringRange_429B60",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_429B60": 191,
+   "AssignStringRange_429B60": 192,
    "MenuSceneSelect_InitializeString": 1
   },
   "ret": "void*",
@@ -139337,7 +139337,7 @@
   "name": "MemDebug_FreeDebugBlock",
   "name_src": "agent",
   "votes": {
-   "Mem_FreeDebug": 661,
+   "Mem_FreeDebug": 662,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -178685,8 +178685,8 @@
   "sig_src": "vote"
  },
  "00713c90": {
-  "name": "sub_713C90",
-  "name_src": "addr",
+  "name": "GuiEffect_ForwardToInner",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -178694,8 +178694,8 @@
   "sig_src": "abi"
  },
  "00713cb0": {
-  "name": "sub_713CB0",
-  "name_src": "addr",
+  "name": "GuiEffect_ForwardToChildSlot38",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -178703,8 +178703,8 @@
   "sig_src": "abi"
  },
  "00713cd0": {
-  "name": "sub_713CD0",
-  "name_src": "addr",
+  "name": "GuiEffect_ForwardToInnerObject",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -178712,8 +178712,8 @@
   "sig_src": "abi"
  },
  "00713cf0": {
-  "name": "sub_713CF0",
-  "name_src": "addr",
+  "name": "GuiEffect_ForwardToChildSlot48",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -178721,8 +178721,8 @@
   "sig_src": "abi"
  },
  "00713d10": {
-  "name": "C_00863f60_SetNamedFourWordValue",
-  "name_src": "vote",
+  "name": "C_00863f60_ForwardNamedFourWordToChild",
+  "name_src": "agent",
   "votes": {
    "C_00863f60_SetNamedFourWordValue": 2
   },
@@ -178732,8 +178732,8 @@
   "sig_src": "vote"
  },
  "00713d30": {
-  "name": "C_00863f60_SetNamedByteValue",
-  "name_src": "vote",
+  "name": "C_00863f60_ForwardSetNamedByteValueToChild",
+  "name_src": "agent",
   "votes": {
    "C_00863f60_SetNamedByteValue": 2
   },
@@ -178752,8 +178752,8 @@
   "sig_src": "abi"
  },
  "00713d70": {
-  "name": "sub_713D70",
-  "name_src": "addr",
+  "name": "GuiEffect_ForwardToChildSlot5C",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -178761,8 +178761,8 @@
   "sig_src": "abi"
  },
  "00713d90": {
-  "name": "sub_713D90",
-  "name_src": "addr",
+  "name": "GuiEffect_ForwardToChildEffect",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -178770,8 +178770,8 @@
   "sig_src": "abi"
  },
  "00713db0": {
-  "name": "sub_713DB0",
-  "name_src": "addr",
+  "name": "GuiEffect_ForwardToChildSlot60",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -178779,17 +178779,18 @@
   "sig_src": "abi"
  },
  "00713dd0": {
-  "name": "sub_713DD0",
-  "name_src": "addr",
+  "name": "GuiEffect_ForwardToChildAndReturnArg",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_008656d0* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/00713dd0.cpp"
  },
  "00713e00": {
-  "name": "sub_713E00",
-  "name_src": "addr",
+  "name": "GuiEffect_ForwardToChild",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -178797,8 +178798,8 @@
   "sig_src": "abi"
  },
  "00713e20": {
-  "name": "sub_713E20",
-  "name_src": "addr",
+  "name": "GuiEffect_ForwardToChildSlot70",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -178806,8 +178807,8 @@
   "sig_src": "abi"
  },
  "00713e40": {
-  "name": "sub_713E40",
-  "name_src": "addr",
+  "name": "GuiEffect_ForwardToChildSlot74",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -178815,8 +178816,8 @@
   "sig_src": "abi"
  },
  "00713e60": {
-  "name": "C_00863f60_ScaleCoordinates",
-  "name_src": "vote",
+  "name": "GuiEffect_ForwardScaleToChild",
+  "name_src": "agent",
   "votes": {
    "C_00863f60_ScaleCoordinates": 3
   },
@@ -178826,8 +178827,8 @@
   "sig_src": "vote"
  },
  "00713e80": {
-  "name": "C_00863f60_PrepareUpdate",
-  "name_src": "vote",
+  "name": "PrepareUpdateOrForwardLinked",
+  "name_src": "agent",
   "votes": {
    "C_00863f60_PrepareUpdate": 3
   },
@@ -178837,8 +178838,8 @@
   "sig_src": "vote"
  },
  "00713ea0": {
-  "name": "C_00865870_ResetBase",
-  "name_src": "vote",
+  "name": "C_00865870_ResetBaseForward",
+  "name_src": "agent",
   "votes": {
    "C_00865870_ResetBase": 1
   },
@@ -178848,8 +178849,8 @@
   "sig_src": "vote"
  },
  "00713eb0": {
-  "name": "sub_713EB0",
-  "name_src": "addr",
+  "name": "GuiEffect_ForwardToChildVirtual",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -178857,8 +178858,8 @@
   "sig_src": "abi"
  },
  "00713ed0": {
-  "name": "sub_713ED0",
-  "name_src": "addr",
+  "name": "GuiEffect_ForwardToChildSlot40",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -178866,8 +178867,8 @@
   "sig_src": "abi"
  },
  "00713ef0": {
-  "name": "C_00863f60_UpdateBaseState",
-  "name_src": "vote",
+  "name": "GuiEffect_ForwardUpdateBaseStateToChild",
+  "name_src": "agent",
   "votes": {
    "C_00863f60_UpdateBaseState": 2
   },
@@ -178877,8 +178878,8 @@
   "sig_src": "vote"
  },
  "00713f10": {
-  "name": "sub_713F10",
-  "name_src": "addr",
+  "name": "GuiEffect_ForwardToLinkedObject",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -178886,8 +178887,8 @@
   "sig_src": "abi"
  },
  "00713f20": {
-  "name": "C_00863f60_Sub713F20",
-  "name_src": "vote",
+  "name": "GuiEffect_ForwardValueToChild",
+  "name_src": "agent",
   "votes": {
    "C_00863f60_Sub713F20": 4
   },
@@ -178904,8 +178905,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "C_00863f60* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00863f60* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00713f40.cpp"
  },
  "00713f90": {
   "name": "C_008656d0_SetField002C",
@@ -178949,13 +178951,14 @@
   "sig_src": "abi"
  },
  "00714020": {
-  "name": "sub_714020",
-  "name_src": "addr",
+  "name": "C_008656d0_SetText",
+  "name_src": "impl",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , char* text",
+  "sig_src": "impl",
+  "file": "src/auto/00714020.cpp"
  },
  "00714050": {
   "name": "SetListBoxTexture",
@@ -178965,8 +178968,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int texture",
-  "sig_src": "vote"
+  "params": "void* self, void* , int newTexture",
+  "sig_src": "impl",
+  "file": "src/auto/00714050.cpp"
  },
  "007140b0": {
   "name": "CGuiTextureListBox_SetScrollPosition",
