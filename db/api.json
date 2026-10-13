@@ -88996,7 +88996,9 @@
  "005516c0": {
   "name": "ComputeSpawnPointBalance",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "ComputeSpawnPointBalance": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "uint16_t total, uint16_t first_deduction, uint16_t second_deduction",
@@ -89299,7 +89301,7 @@
   "name": "MenuMpAccounts_CreateListSentinel",
   "name_src": "agent",
   "votes": {
-   "MenuMpAccounts_CreateListSentinel": 12
+   "MenuMpAccounts_CreateListSentinel": 15
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -117794,7 +117796,7 @@
   "name": "MpSpawn_CommitSpawnRecord",
   "name_src": "vote",
   "votes": {
-   "MpSpawn_CommitSpawnRecord": 7
+   "MpSpawn_CommitSpawnRecord": 10
   },
   "ret": "int64_t",
   "conv": "__fastcall",
@@ -118202,7 +118204,7 @@
   "name": "MpSpawn_FetchSpawnRecord",
   "name_src": "vote",
   "votes": {
-   "MpSpawn_FetchSpawnRecord": 7
+   "MpSpawn_FetchSpawnRecord": 10
   },
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -119643,7 +119645,7 @@
   "name": "Sub_64B250",
   "name_src": "vote",
   "votes": {
-   "Sub_64B250": 50
+   "Sub_64B250": 52
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -119987,7 +119989,7 @@
   "name": "NetCogibleDDL_UpdateAuthoritativeState",
   "name_src": "vote",
   "votes": {
-   "NetCogibleDDL_UpdateAuthoritativeState": 6
+   "NetCogibleDDL_UpdateAuthoritativeState": 7
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -120007,7 +120009,7 @@
   "name": "NetCogibleDDL_UpdateReplicaState",
   "name_src": "vote",
   "votes": {
-   "NetCogibleDDL_UpdateReplicaState": 6
+   "NetCogibleDDL_UpdateReplicaState": 7
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -138690,7 +138692,7 @@
   "name": "Mem_FreeDebug",
   "name_src": "opus",
   "votes": {
-   "Mem_FreeDebug": 632,
+   "Mem_FreeDebug": 635,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -189977,7 +189979,7 @@
   "name": "GetGlobalDword_73C020",
   "name_src": "agent",
   "votes": {
-   "GetGlobalDword_73C020": 100
+   "GetGlobalDword_73C020": 103
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -191029,7 +191031,7 @@
   "name": "MenuMpAccounts_FillPlayerList",
   "name_src": "vote",
   "votes": {
-   "MenuMpAccounts_FillPlayerList": 10
+   "MenuMpAccounts_FillPlayerList": 13
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -191556,7 +191558,7 @@
   "name": "GetValueIfNotFlagged",
   "name_src": "agent",
   "votes": {
-   "GetValueIfNotFlagged": 17
+   "GetValueIfNotFlagged": 19
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -191712,7 +191714,7 @@
   "name": "MpSpawnPoints_GetLoadoutThreshold",
   "name_src": "agent",
   "votes": {
-   "MpSpawnPoints_GetLoadoutThreshold": 1,
+   "MpSpawnPoints_GetLoadoutThreshold": 2,
    "MpAccounts_GetStatistic": 1
   },
   "ret": "int16_t",
@@ -191810,7 +191812,7 @@
   "name": "MpSpawnPoints_SetPlayerStateFlag",
   "name_src": "agent",
   "votes": {
-   "MpSpawnPoints_SetPlayerStateFlag": 2
+   "MpSpawnPoints_SetPlayerStateFlag": 3
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -193975,7 +193977,9 @@
  "00747f20": {
   "name": "S_00747f20_GetComparisonStatus",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_00747f20_GetComparisonStatus": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_00747f20* self, void*",
@@ -194191,31 +194195,37 @@
   "file": "src/auto/007484d0.cpp"
  },
  "00748500": {
-  "name": "sub_748500",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetCogibleDDL_UpdateModeThree",
+  "name_src": "vote",
+  "votes": {
+   "NetCogibleDDL_UpdateModeThree": 1
+  },
   "ret": "int64_t",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "007485c0": {
   "name": "S_00747f20_ComputeStateMode1",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "S_00747f20_ComputeStateMode1": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00748670": {
   "name": "S_00747f20_GetRelativeSpawnSlotState",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_00747f20_GetRelativeSpawnSlotState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00748700": {
   "name": "MpSpawn_ProcessSelectedSlot",
@@ -194287,50 +194297,61 @@
  },
  "007489a0": {
   "name": "S_00747f20_ComputeStateMode0",
-  "name_src": "vote",
-  "votes": {},
+  "name_src": "agent",
+  "votes": {
+   "S_00747f20_ComputeStateMode0": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_00747f20* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/007489a0.cpp"
  },
  "00748ae0": {
-  "name": "MpSpawnPoints_RefreshStats",
-  "name_src": "vote",
+  "name": "CMenuMpStats_RefreshSpawnStatistics",
+  "name_src": "agent",
   "votes": {
    "MpSpawnPoints_RefreshStats": 2
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "CMenuMpStats* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00748ae0.cpp"
  },
  "00748bf0": {
-  "name": "sub_748BF0",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "char",
+  "name": "MpSpawn_UpdateMatchingPlayerCountdown",
+  "name_src": "agent",
+  "votes": {
+   "NetCogibleDDL_UpdateModeOne": 1
+  },
+  "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , float elapsed",
+  "sig_src": "impl",
+  "file": "src/auto/00748bf0.cpp"
  },
  "00748d30": {
   "name": "S_00747f20_UpdateStateAndCommit",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_00747f20_UpdateStateAndCommit": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "S_00747f20* self, void* edx, int",
+  "sig_src": "impl",
+  "file": "src/auto/00748d30.cpp"
  },
  "00748dc0": {
-  "name": "sub_748DC0",
-  "name_src": "addr",
+  "name": "NetCogibleDDL_UpdateStateAndTrackChanges",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int updateArgument",
+  "sig_src": "impl",
+  "file": "src/auto/00748dc0.cpp"
  },
  "00748f70": {
   "name": "C_00868050_Destroy",
@@ -195122,7 +195143,7 @@
   "name": "C_74b150_SetFlag8",
   "name_src": "agent",
   "votes": {
-   "C_74b150_SetFlag8": 2
+   "C_74b150_SetFlag8": 3
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -195168,7 +195189,7 @@
   "name": "C_74B200_SetFlagAndReturnTrue",
   "name_src": "agent",
   "votes": {
-   "C_74B200_SetFlagAndReturnTrue": 5
+   "C_74B200_SetFlagAndReturnTrue": 6
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -195213,7 +195234,7 @@
   "name": "C_0074b2a0_SetFlag",
   "name_src": "agent",
   "votes": {
-   "C_0074b2a0_SetFlag": 3
+   "C_0074b2a0_SetFlag": 4
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -195635,11 +195656,13 @@
  "0074c720": {
   "name": "C_00858180_ResetRespawnMemoriesConfig",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00858180_ResetRespawnMemoriesConfig": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0074c760": {
   "name": "NetGame_FormatField",
@@ -197209,7 +197232,7 @@
   "name": "C_751990_SetFlagAndReturnTrue",
   "name_src": "agent",
   "votes": {
-   "C_751990_SetFlagAndReturnTrue": 1
+   "C_751990_SetFlagAndReturnTrue": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -214747,7 +214770,7 @@
   "name": "__stricmp",
   "name_src": "ida",
   "votes": {
-   "__stricmp": 87
+   "__stricmp": 88
   },
   "ret": "int",
   "conv": "__cdecl",
