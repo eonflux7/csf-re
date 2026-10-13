@@ -711,6 +711,8 @@
 - {addr: 0x00887218, name: g_ElementRangeExceptionFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008874B0, name: g_ForwardRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008876F8, name: g_CopyRecordRangeFunctionInfo, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x008878BC, name: g_TwelveByteRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x0088790C, name: g_TwelveByteCopyExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00887B04, name: g_RecordRangeFuncInfo, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00887CC8, name: g_TwentyByteRangeExceptionInformation, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x00887D18, name: g_ArrayUpdateExceptionMetadata, type: 'std::uint8_t', uses: 1, src: auto}
@@ -1001,6 +1003,10 @@
 - {addr: 0x00899738, name: g_numScenes, type: unsigned int, uses: 0, src: captain, conf: 0.85}
 - {addr: 0x0089973C, name: g_SceneArrayGrowth, type: int, uses: 1, src: auto}
 - {addr: 0x00899740, name: g_pszKey_ICONOS_ESTADO, type: const char*, uses: 0, src: captain, conf: 1.0}
+- {addr: 0x00899744, name: g_SceneEntryItems, type: void**, uses: 5, src: auto, alt: [g_SceneEntriesData, g_SceneEntryBuffer, g_SceneEntryObjects]}
+- {addr: 0x00899748, name: g_SceneEntriesCapacity, type: uint32_t, uses: 2, src: auto, alt: [g_SceneEntryCapacity]}
+- {addr: 0x0089974C, name: g_SceneEntryCount, type: uint32_t, uses: 5, src: auto, alt: [g_SceneEntriesCount]}
+- {addr: 0x00899750, name: g_SceneEntriesGrowStep, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x00899780, name: g_NegativeNegativeAttackAngles, type: DirectionAngles, uses: 1, src: auto}
 - {addr: 0x0089978C, name: g_NegativePositiveAttackAngles, type: DirectionAngles, uses: 1, src: auto}
 - {addr: 0x00899798, name: g_PositiveNegativeAttackAngles, type: DirectionAngles, uses: 1, src: auto}
@@ -1930,7 +1936,7 @@
 - {addr: 0x008AFC78, name: g_Value_8afc78, type: int32_t, uses: 4, src: auto}
 - {addr: 0x008AFC7C, name: g_Value8afc7c, type: int, uses: 3, src: auto}
 - {addr: 0x008AFC80, name: g_Value_8afc80, type: int, uses: 3, src: auto}
-- {addr: 0x008AFC84, name: g_Value8AFC84, type: int, uses: 2, src: auto}
+- {addr: 0x008AFC84, name: g_Value8AFC84, type: int, uses: 4, src: auto}
 - {addr: 0x008AFC88, name: g_AuxiliaryScene, type: CScene*, uses: 2, src: auto, alt: [g_MainScene]}
 - {addr: 0x008AFC8C, name: g_SceneLoaderMainScenePresent, type: uint8_t, uses: 5, src: auto}
 - {addr: 0x008AFC90, name: g_pCurrentScene, type: void*, uses: 2, src: captain, conf: 0.7, alt: [g_pGlobalObject_8AFC90]}
