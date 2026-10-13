@@ -4683,7 +4683,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 227
+   "AssignStringSubstring": 228
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -10561,7 +10561,7 @@
   "name": "AssignStringRange_429B60",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_429B60": 193,
+   "AssignStringRange_429B60": 194,
    "MenuSceneSelect_InitializeString": 1
   },
   "ret": "void*",
@@ -90253,7 +90253,7 @@
   "name_src": "agent",
   "votes": {
    "CopyDwordWithOwnerTag_552EF0": 1,
-   "CopyDwordArrayWithContext_552EF0": 1
+   "CopyDwordArrayWithContext_552EF0": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -90720,7 +90720,7 @@
   "name": "AppendDwordCopies_555B70",
   "name_src": "vote",
   "votes": {
-   "AppendDwordCopies_555B70": 5
+   "AppendDwordCopies_555B70": 6
   },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
@@ -139691,7 +139691,7 @@
   "name": "MemDebug_FreeDebugBlock",
   "name_src": "agent",
   "votes": {
-   "Mem_FreeDebug": 680,
+   "Mem_FreeDebug": 681,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -182076,13 +182076,14 @@
   "file": "src/auto/0071c140.cpp"
  },
  "0071c2a0": {
-  "name": "sub_71C2A0",
-  "name_src": "addr",
+  "name": "C_00864508_RequestMenuByName",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char* String2",
-  "sig_src": "abi"
+  "params": "C_00864508* self, void* , char* name",
+  "sig_src": "impl",
+  "file": "src/auto/0071c2a0.cpp"
  },
  "0071c580": {
   "name": "C_00864508_QueueObjectChange",
@@ -216722,7 +216723,7 @@
   "name": "__stricmp",
   "name_src": "ida",
   "votes": {
-   "__stricmp": 89
+   "__stricmp": 90
   },
   "ret": "int",
   "conv": "__cdecl",
