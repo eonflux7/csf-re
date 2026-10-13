@@ -10361,7 +10361,7 @@
   "name": "SaveGame_DestroyLocalizedString",
   "name_src": "agent",
   "votes": {
-   "SaveGame_DestroyLocalizedString": 13
+   "SaveGame_DestroyLocalizedString": 14
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -68118,7 +68118,7 @@
   "name_src": "agent",
   "votes": {
    "MenuBuffer_Destroy": 8,
-   "SceneLoader_DestroyMenuBuffer": 12
+   "SceneLoader_DestroyMenuBuffer": 13
   },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
@@ -68626,7 +68626,7 @@
   "name": "MenuBuffer_Init",
   "name_src": "agent",
   "votes": {
-   "MenuBuffer_Init": 20
+   "MenuBuffer_Init": 21
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -69255,7 +69255,7 @@
   "name": "SceneLoader_NoOp",
   "name_src": "captain",
   "votes": {
-   "SceneLoader_NoOp": 74,
+   "SceneLoader_NoOp": 76,
    "Nullsub_506AC0": 34
   },
   "ret": "void",
@@ -69302,7 +69302,7 @@
   "name": "GetGlobalValue_8B056C",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8B056C": 80
+   "GetGlobalValue_8B056C": 81
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -71274,7 +71274,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 416
+   "GetGlobalState_50D190": 418
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -71733,7 +71733,7 @@
   "name_src": "agent",
   "votes": {
    "GlobalState_ResetPending": 15,
-   "GameBddLoader_ResetPending": 6
+   "GameBddLoader_ResetPending": 7
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -72119,7 +72119,7 @@
   "name_src": "agent",
   "votes": {
    "Game_DispatchMenuRequest": 14,
-   "GameBddLoader_DispatchMenuRequest": 15
+   "GameBddLoader_DispatchMenuRequest": 17
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -74325,7 +74325,9 @@
  "00518490": {
   "name": "NetProfile_SetSlotIfInRange",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "NetProfile_SetSlotIfInRange": 1
+  },
   "ret": "uint32_t",
   "conv": "__fastcall",
   "params": "void* self, void* , uint32_t value",
@@ -93390,7 +93392,7 @@
  },
  "00564ff0": {
   "name": "CMenuAccounts_InitializeControls",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -93400,14 +93402,15 @@
  },
  "005650f0": {
   "name": "CMenuAccounts_HandleStateOne",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CMenuAccounts_HandleStateOne": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "CMenuAccounts* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "CMenuAccounts* self, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/005650f0.cpp"
  },
  "00565390": {
   "name": "CMenuAccounts_Destruct",
@@ -93443,7 +93446,7 @@
  },
  "005654e0": {
   "name": "MenuAccounts_ShowSelectedAccountMessage",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char*",
   "conv": "__fastcall",
@@ -93537,13 +93540,14 @@
   "file": "src/auto/00565940.cpp"
  },
  "005659b0": {
-  "name": "sub_5659B0",
-  "name_src": "addr",
+  "name": "CMenuMpNetworkType_Update",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "CMenuMpNetworkType* self, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/005659b0.cpp"
  },
  "00565cb0": {
   "name": "CMenuMpGameMode_SelectDeathMatchMode",
@@ -139924,7 +139928,7 @@
   "name_src": "agent",
   "votes": {
    "MenuMessageBox_ResolveEntryByKey": 33,
-   "CoreParser_ResolveEntryByKey": 4
+   "CoreParser_ResolveEntryByKey": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -140962,7 +140966,8 @@
   "name": "StringFormat_CompareWideAgainstNarrow",
   "name_src": "agent",
   "votes": {
-   "MenuMessageBox_TestEntryAgainstFlag": 6
+   "MenuMessageBox_TestEntryAgainstFlag": 6,
+   "StringFormat_CompareWideAgainstNarrow": 1
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -140988,7 +140993,7 @@
   "name_src": "agent",
   "votes": {
    "CopyTrucoStringToWide": 13,
-   "StringFormat_CopyTrucoStringToWide": 1
+   "StringFormat_CopyTrucoStringToWide": 2
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -141443,7 +141448,7 @@
   "name": "S_004f21d0_SetPattern",
   "name_src": "agent",
   "votes": {
-   "S_004f21d0_SetPattern": 6,
+   "S_004f21d0_SetPattern": 7,
    "FormatterSetPattern": 15,
    "ConstructMissionFormatString": 1
   },
@@ -145996,7 +146001,7 @@
   "name": "MenuAccounts_ResetPendingEdit",
   "name_src": "agent",
   "votes": {
-   "MenuAccounts_ResetPendingEdit": 2
+   "MenuAccounts_ResetPendingEdit": 3
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -146008,7 +146013,7 @@
   "name": "GetGlobalState_6A6D70",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_6A6D70": 45
+   "GetGlobalState_6A6D70": 46
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -179284,7 +179289,7 @@
   "name": "CGuiListBox_GetItemCount_714860",
   "name_src": "agent",
   "votes": {
-   "CGuiListBox_GetItemCount_714860": 9
+   "CGuiListBox_GetItemCount_714860": 10
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -179364,7 +179369,7 @@
   "name": "GetIndexedTableValue_714C20",
   "name_src": "agent",
   "votes": {
-   "GetIndexedTableValue_714C20": 11
+   "GetIndexedTableValue_714C20": 12
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -179376,7 +179381,7 @@
   "name": "GetStoredValueAtIndex",
   "name_src": "agent",
   "votes": {
-   "GetStoredValueAtIndex": 13,
+   "GetStoredValueAtIndex": 14,
    "StoredValue_GetAtIndex": 1
   },
   "ret": "int",
@@ -182483,7 +182488,7 @@
   "name": "C_00720DF0_ForwardCallToChildVtblSlot16",
   "name_src": "agent",
   "votes": {
-   "C_00720DF0_ForwardCallToChildVtblSlot16": 13
+   "C_00720DF0_ForwardCallToChildVtblSlot16": 14
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -191096,7 +191101,7 @@
   "name": "GetGlobalDword_73C020",
   "name_src": "agent",
   "votes": {
-   "GetGlobalDword_73C020": 107
+   "GetGlobalDword_73C020": 108
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -191134,7 +191139,9 @@
  "0073c320": {
   "name": "NetSession_SetTextInputOrDefault",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "NetSession_SetTextInputOrDefault": 1
+  },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
   "params": "void* self, void* , std::int16_t* text",
