@@ -1516,3 +1516,21 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Eight opus-lo jobs at once spent the grunts' 5h window in 4 minutes (about 1.1M input tokens, $1.1-1.4 each);
   two finished (emu2, mis2), six stopped with their trees kept. deep_worker now: `sonnet-lo` agent (to try first,
   user), at most two Claude jobs at a time, Claude briefs skip PLAN/JOURNAL.
+
+## 2026-10-13 (night): agents, tiny functions, decisions
+- Agent policy (user): sol-med for most jobs, sol-hi for hard ones, GLM-5.3-flash over OpenRouter (`glm-flash`) on
+  trial for small ones; no agent job on a Claude account. Codex requests slimmed after capturing one with a local
+  fake provider: the brief is the system prompt (`model_instructions_file`), unused tools off (53 KB -> 25 KB per
+  request for Sol, 41 KB -> 7.5 KB for GLM). Sol's sub-agent and ask-the-user tools have no switch in codex 0.160.
+- First glm-flash job (2 emudiff rejections, 5 min, $0.02): one false alarm explained (0x6FE8C0: a mocked return
+  value makes the computed pointer land inside our own mapped object at OBJ_BASE, the original side reads a
+  fill-on-touch page: an emudiff fix to do), one not decided. It took the placeholder `src/auto/EA.cpp` literally:
+  tasks for it name literal paths.
+- Tiny functions (job tiny): the 166 game functions under 6 bytes were never produced because the lanes' minimum
+  size is 6, not because the hook does not fit (72 are 5 bytes, 94 are 4 bytes followed by CC padding). Generated
+  from the decoded bytes by `tools/tinygen.py`; all 166 pass gate and emudiff re-run in the main tree. Paper:
+  `docs/TINY_FUNCTIONS.md` (also: rolling admission cuts the ranking before it filters visited modules, so about
+  20 selectable functions were left when it reported the ranking exhausted).
+- `tools/adopt.py JOB`: takes a job's src/auto files only after gate and emudiff pass here, marks them done.
+- Decisions (user): quarantine-rate stop rule dropped; RenderWare Audio = reimplement the 40-function boundary on
+  our own backend.
