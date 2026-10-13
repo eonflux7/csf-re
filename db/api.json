@@ -137681,7 +137681,7 @@
   "name_src": "agent",
   "votes": {
    "Mem_Free": 939,
-   "CoreMemory_Free": 19
+   "CoreMemory_Free": 21
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -146750,7 +146750,7 @@
   "name": "C_00860178_Construct",
   "name_src": "agent",
   "votes": {
-   "C_00860178_Construct": 45
+   "C_00860178_Construct": 46
   },
   "ret": "C_00860178*",
   "conv": "__fastcall",
@@ -146762,7 +146762,7 @@
   "name": "C_00860170_Construct",
   "name_src": "agent",
   "votes": {
-   "C_00860170_Construct": 64
+   "C_00860170_Construct": 65
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -148423,7 +148423,7 @@
   "name": "C_00860388_DestroyBase",
   "name_src": "vote",
   "votes": {
-   "C_00860388_DestroyBase": 1
+   "C_00860388_DestroyBase": 2
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -148451,13 +148451,14 @@
   "sig_src": "abi"
  },
  "006b7ff0": {
-  "name": "sub_6B7FF0",
-  "name_src": "addr",
+  "name": "C_00860388_Destroy",
+  "name_src": "impl",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00860388* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/006b7ff0.cpp"
  },
  "006b8020": {
   "name": "SceneLoader_EnsureAttachmentRecord",
@@ -149092,7 +149093,9 @@
  "006b88e0": {
   "name": "GfxObjectProps_StorePropertyValueAtOffset",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxObjectProps_StorePropertyValueAtOffset": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int offset, int value",
@@ -150917,7 +150920,7 @@
   "name_src": "agent",
   "votes": {
    "GfxObject_DestroyTransform": 1,
-   "GfxObject_DestroyEmbeddedState": 5,
+   "GfxObject_DestroyEmbeddedState": 6,
    "GfxFrames_DestroyEmbeddedState": 1,
    "C_00860630_DestroyEmbeddedState": 1
   },
@@ -151062,7 +151065,7 @@
    "FrameApplyToMatch": 1,
    "GfxFrames_SetEmbeddedFrame": 1,
    "C_00860700_SetFrame": 1,
-   "GfxFrame_InitRotationDegreesFromMatrix": 1
+   "GfxFrame_InitRotationDegreesFromMatrix": 2
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -151285,7 +151288,7 @@
   "name_src": "agent",
   "votes": {
    "GfxObject_InitializeTransform": 1,
-   "GfxObject_ConstructEmbeddedState": 5,
+   "GfxObject_ConstructEmbeddedState": 6,
    "GfxFrames_ConstructEmbeddedState": 1,
    "C_00860700_ConstructEmbeddedState": 1
   },
@@ -157138,7 +157141,7 @@
   "name": "C_00860e68_AddLightIfNotCurrent",
   "name_src": "agent",
   "votes": {
-   "C_00860e68_AddLightIfNotCurrent": 2
+   "C_00860e68_AddLightIfNotCurrent": 3
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -157161,7 +157164,9 @@
  "006d20d0": {
   "name": "C_00860e68_AppendLightAndAttach",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00860e68_AppendLightAndAttach": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "C_00860e68* self, void* , C_0085e7b8* a2",
@@ -168925,7 +168930,7 @@
  },
  "006fc310": {
   "name": "GfxLightObject_ApplyViewportSettings",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -168984,7 +168989,7 @@
  },
  "006fc510": {
   "name": "C_00862e88_RemoveAllLightsFromWorld",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -169043,7 +169048,7 @@
  },
  "006fc900": {
   "name": "C_00862e88_Construct",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -169141,13 +169146,14 @@
   "file": "src/auto/006fcd40.cpp"
  },
  "006fce20": {
-  "name": "sub_6FCE20",
-  "name_src": "addr",
+  "name": "CLightObject_GetLightTypeCode",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "CLightObject* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006fce20.cpp"
  },
  "006fcef0": {
   "name": "CLightObject_GetObjectPropertyClass",
@@ -169345,19 +169351,22 @@
   "file": "src/auto/006fd1f0.cpp"
  },
  "006fd220": {
-  "name": "sub_6FD220",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CLightObject_InitializeProperties",
+  "name_src": "agent",
+  "votes": {
+   "LightObject_ApplyStartupParam": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "CLightObject* self, void* , int owner",
+  "sig_src": "impl",
+  "file": "src/auto/006fd220.cpp"
  },
  "006fd330": {
   "name": "Light_GetWorldMatrixPointer",
   "name_src": "vote",
   "votes": {
-   "Light_GetWorldMatrixPointer": 3
+   "Light_GetWorldMatrixPointer": 4
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -169376,28 +169385,30 @@
   "sig_src": "vote"
  },
  "006fd4f0": {
-  "name": "sub_6FD4F0",
-  "name_src": "addr",
+  "name": "CLightObject_DestructAndMaybeFree",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00862ef8* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/006fd4f0.cpp"
  },
  "006fd540": {
-  "name": "LightObject_Init",
-  "name_src": "vote",
+  "name": "CLightObject_Initialize",
+  "name_src": "agent",
   "votes": {
    "LightObject_Init": 1
   },
-  "ret": "uint32_t*",
+  "ret": "CLightObject*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "vote"
+  "params": "CLightObject* self, void* , int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/006fd540.cpp"
  },
  "006fd5d0": {
   "name": "CLightObject_SetRadius",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -169407,7 +169418,7 @@
  },
  "006fd610": {
   "name": "CLightObject_ResetDirtyAndRegisterLight",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
@@ -169416,15 +169427,16 @@
   "file": "src/auto/006fd610.cpp"
  },
  "006fd640": {
-  "name": "OwnedObject_ProcessArgWithZeroTail",
-  "name_src": "vote",
+  "name": "CLightObject_ProcessArgWithZeroTail",
+  "name_src": "agent",
   "votes": {
    "OwnedObject_ProcessArgWithZeroTail": 1
   },
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "vote"
+  "params": "CLightObject* self, void* , void* a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/006fd640.cpp"
  },
  "006fd690": {
   "name": "GfxClumpLoader_SerializeFields",
@@ -173676,7 +173688,7 @@
  },
  "0070e600": {
   "name": "Audio_GetOggDuration",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "double",
   "conv": "__cdecl",
