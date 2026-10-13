@@ -142,7 +142,7 @@ def emulated_diff(ea, obj, path, db):
         return None
     names = lambda m: f"0x{int(m.group(0), 16):X} ({db.name(int(m.group(0), 16))})" \
         if int(m.group(0), 16) in db.F and db.name(int(m.group(0), 16)) else m.group(0)
-    detail = re.sub(r"\b00[4-8][0-9a-f]{5}\b", names, detail + "\n" + getattr(emudiff.check, "trace", ""))
+    detail = re.sub(r"\b00[4-8][0-9a-f]{5}\b", names, detail + "\n" + getattr(emudiff._tls, "trace", ""))
     return (f"{EMU_ERR} (both run in an emulator from the same registers, arguments and memory; calls leaving the "
             f"function are recorded and answered alike; `X vs Y` is the original's value vs yours):\n{detail}\n"
             "Read it as: `N calls vs M` = the two took different paths or you call something the original does not "

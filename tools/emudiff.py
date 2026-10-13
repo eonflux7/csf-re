@@ -35,6 +35,7 @@ ESP0 = STACK_HI - 0x8000
 TEB = 0x0C000000
 ZONES = 0x20000000      # where filled pointers point
 INSN_CAP = 300_000
+RUN_SECS = 5.0          # wall clock per run
 PROFILES = 8  # 6 and 7: every untyped value is a pointer (int-typed arguments and results often are)
 # CRT math the object imports where the original has the x87 instruction inline: tiny native stubs, not events
 NATIVE = {"_sqrt": "DD442404D9FAC3", "_sin": "DD442404D9FEC3", "_cos": "DD442404D9FFC3", "_fabs": "DD442404D9E1C3",
@@ -48,9 +49,12 @@ FLOATS = [0.0, 1.0, 0.5, 2.0, -1.0, 100.0]
 
 GARBAGE_HI = {(ZONES + 0x0A000100 + k * 0x100000) >> 16 for k in (1, 2, 3, 4)}  # initial edx, ebx, esi, edi
 SAVED_REGS = {ZONES + 0x0A000100 + k * 0x100000 for k in (2, 3, 4)}  # initial ebx, esi, edi
+ECX0 = ZONES + 0x0A000100
 BYTE_TYPES = ("bool", "char", "uint8_t", "unsigned char", "int8_t", "signed char", "_BOOL1", "BOOL1")
 
 _cache = {}
+import threading  # noqa: E402
+_tls = threading.local()  # the gate runs checks from lane threads: the last DIFF's call sequences, per thread
 
 
 def load(name, fn):
@@ -317,6 +321,11 @@ class Run:
         for n, code in NATIVE.items():
             uc.mem_write(NATIVE_AT[n], bytes.fromhex(code))
         uc.mem_write(COOKIE, struct.pack("<I", 0xBB40E64E))
+        # __getptd (per-thread CRT data: rand's seed, errno, strtok) reaches TLS imports: a fixed block instead
+        # (0x6F98F0 called rand, and the "calls" that followed were the CRT's own, into nowhere)
+        ptd = crt_ranges()[1].get("__getptd")
+        if ptd:
+            uc.mem_write(ptd, b"\xB8" + struct.pack("<I", SYS_BASE + 0x400) + b"\xC3")
         uc.mem_map(STACK_LO, STACK_HI - STACK_LO)
         uc.mem_write(STACK_LO, b"\xCC" * (STACK_HI - STACK_LO))
         uc.mem_map(TEB, 0x1000)
@@ -382,14 +391,20 @@ class Run:
             uc.reg_write(r, v)
         self.saved = {r: uc.reg_read(r) for r in (X.UC_X86_REG_EBX, X.UC_X86_REG_ESI, X.UC_X86_REG_EDI, X.UC_X86_REG_EBP)}
         pc, self.first = entry, True
+        import time
+        t_end = time.time() + RUN_SECS
         while self.status is None:
             self.pending = None
             try:
-                uc.emu_start(pc, 0xFFFFFFF0, count=INSN_CAP)
+                # the timeout too: one `rep movs` with a count from the fill is one instruction and 2^29 writes
+                uc.emu_start(pc, 0xFFFFFFF0, timeout=int(max(0.1, t_end - time.time()) * 1e6), count=INSN_CAP)
             except UcError as e:
                 if self.pending is None and self.status is None:
                     self.status = f"fault {e} at {uc.reg_read(X.UC_X86_REG_EIP):08x}"
             if self.status:
+                break
+            if time.time() >= t_end:
+                self.status = "cap"
                 break
             if self.pending is None or len(self.events) >= 2000:
                 self.status = "cap"
@@ -431,6 +446,9 @@ class Run:
     def on_write(self, uc, access, addr, size, value, _):
         if not (STACK_LO <= addr < STACK_HI):
             self.written.update(range(addr, addr + size))
+            if len(self.written) > 1_000_000:  # a runaway copy / fill
+                self.status = "cap"
+                uc.emu_stop()
 
     def on_unmapped(self, uc, access, addr, size, value, _):
         base = addr & ~0xFFF
@@ -619,6 +637,11 @@ def compare(ea, o, m):
         if not same_args(eo, em):
             out.append(f"call {i} to {tn(eo[0])}: arguments {[tn(x) for x in eo[5]]} vs {[tn(x) for x in em[5]]}")
             return out
+        # the original's ecx is still the value this function was entered with, and the function takes no ecx
+        # argument: a leftover at an indirect call (0x6BC2D0 `call [esi + 0x48]` to a __cdecl callback)
+        pr = proto(ea)
+        if eo[6] == ECX0 and pr and not pr[0]:
+            continue
         if eo[6] != em[6] and takes_ecx(eo[0]):
             out.append(f"call {i} to {tn(eo[0])}: ecx {tn(eo[6])} vs {tn(em[6])}")
             return out
@@ -677,6 +700,15 @@ def compare(ea, o, m):
             continue  # a pointer into each side's own frame / data
         if fo == fo and fm == fm and abs(wo - wm) < 64 and close(fo, fm):
             continue  # last bits of a float
+        ccmask = 0xFFFFFFFF
+        for k in range(4):  # bytes of the original's dword that are never-written stack fill it copied along
+            if (wo >> 8 * k) & 0xFF == 0xCC:
+                ccmask &= ~(0xFF << 8 * k)
+        if ccmask != 0xFFFFFFFF and not (wo ^ wm) & ccmask:
+            continue  # 0x4C0280 stores a byte local as a dword: 23cccccc vs 23000000
+        huge = lambda w, f: (w & 0x7F800000) == 0x7F800000 or abs(f) > 1e15
+        if huge(wo, fo) and huge(wm, fm):
+            continue  # NaN / infinity / beyond any game value on both sides (0x6F5E60: ffffffff vs 7fc00000)
         tiny = lambda w, f: (w & 0x7FFFFFFF) == 0 or ((w & 0x7F800000) != 0 and abs(f) < 1e-30)
         if tiny(wo, fo) and tiny(wm, fm) and (wo | wm) & 0x7F800000:
             continue  # a float below anything the game computes against a zero (0x4E2110: -6.9e-32 vs -0.0)
@@ -722,7 +754,7 @@ def check(ea, obj_path=None, src=None, profiles=PROFILES, verbose=False):
         if tmp and os.path.exists(tmp):
             os.remove(tmp)
     own, ret_site = own_ranges(ea)
-    check.trace = ""
+    _tls.trace = ""
     done, diffs, why = 0, [], collections.Counter()
     for prof in range(profiles):
         o = Run(ea, prof, own)
@@ -744,7 +776,7 @@ def check(ea, obj_path=None, src=None, profiles=PROFILES, verbose=False):
                 seq = lambda r: ", ".join((tn(e[0]) if isinstance(e[0], int) and e[0] in functions() else
                                            "indirect" if isinstance(e[0], int) else e[0]) + f"({e[2]} args)"
                                           for e in r.events[:10]) + (" ..." if len(r.events) > 10 else "")
-                check.trace = f"original calls: {seq(o) or 'none'}\nyours calls:    {seq(m) or 'none'}"
+                _tls.trace = f"original calls: {seq(o) or 'none'}\nyours calls:    {seq(m) or 'none'}"
             diffs.append(f"profile {prof}: {d[0]}")
     if diffs:
         return "DIFF", f"{len(diffs)}/{done} profiles; {diffs[0]}"
