@@ -151193,14 +151193,15 @@
  },
  "006b8080": {
   "name": "GfxEnvironment_GetAttachmentId",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GfxEnvironment_GetAttachmentId": 6
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0085ec18* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006b8080.cpp"
  },
  "006b80a0": {
   "name": "GetUint16OrSentinelMinusOne",
@@ -151227,14 +151228,15 @@
  },
  "006b8100": {
   "name": "GfxCollision_AttachmentMatchesFilter",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GfxCollision_AttachmentMatchesFilter": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int filterMask",
+  "sig_src": "impl",
+  "file": "src/auto/006b8100.cpp"
  },
  "006b8120": {
   "name": "GetFlagBit0At4",
@@ -151249,30 +151251,32 @@
   "file": "src/auto/006b8120.cpp"
  },
  "006b8130": {
-  "name": "AttachmentIsComArray",
-  "name_src": "vote",
+  "name": "IsAttachmentComArray",
+  "name_src": "agent",
   "votes": {
    "AttachmentIsComArray": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006b8130.cpp"
  },
  "006b8140": {
   "name": "ObjectAttachment_HasSoundTrigger",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "ObjectAttachment_HasSoundTrigger": 8
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0085ec18* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006b8140.cpp"
  },
  "006b8150": {
   "name": "GetAttachmentRegionOverrideFlag",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GetAttachmentRegionOverrideFlag": 2
   },
@@ -151344,14 +151348,15 @@
  },
  "006b81b0": {
   "name": "DName_IsPinPtr",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "DName_IsPinPtr": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006b81b0.cpp"
  },
  "006b81c0": {
   "name": "C_6B81C0_GetFirstItem",
@@ -151390,15 +151395,16 @@
   "file": "src/auto/006b81e0.cpp"
  },
  "006b81f0": {
-  "name": "GetAttachmentPrimaryPassFlag",
-  "name_src": "vote",
+  "name": "C_0085ec18_GetAttachmentPrimaryPassFlag",
+  "name_src": "agent",
   "votes": {
    "GetAttachmentPrimaryPassFlag": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0085ec18* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006b81f0.cpp"
  },
  "006b8210": {
   "name": "GetAttachmentSecondaryPassFlag",
@@ -151413,7 +151419,7 @@
  },
  "006b8230": {
   "name": "AttachmentRecord_Resolve",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "AttachmentRecord_Resolve": 3
   },
@@ -151424,15 +151430,16 @@
   "file": "src/auto/006b8230.cpp"
  },
  "006b8250": {
-  "name": "GetAttachmentRenderKey",
-  "name_src": "vote",
+  "name": "C_0085ec18_GetAttachmentRenderKey",
+  "name_src": "agent",
   "votes": {
    "GetAttachmentRenderKey": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0085ec18* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006b8250.cpp"
  },
  "006b8270": {
   "name": "GetReferencedField14",
@@ -151494,22 +151501,24 @@
   "sig_src": "vote"
  },
  "006b8320": {
-  "name": "sub_6B8320",
-  "name_src": "addr",
+  "name": "GfxObject_GetLinkedFloatOrZero",
+  "name_src": "agent",
   "votes": {},
   "ret": "double",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006b8320.cpp"
  },
  "006b8340": {
-  "name": "sub_6B8340",
-  "name_src": "addr",
+  "name": "GfxObject_GetFloatAt2COrZero",
+  "name_src": "agent",
   "votes": {},
   "ret": "double",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006b8340.cpp"
  },
  "006b8360": {
   "name": "GfxObjectProps_GetAttachmentHeight",
@@ -151536,14 +151545,15 @@
  },
  "006b8380": {
   "name": "GfxObjectProps_SetSecondaryRecordValue",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GfxObjectProps_SetSecondaryRecordValue": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "int* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/006b8380.cpp"
  },
  "006b83a0": {
   "name": "GfxObjectProps_AllocateSlotProps",
