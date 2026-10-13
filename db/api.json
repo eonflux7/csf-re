@@ -10353,7 +10353,7 @@
   "name": "SaveGame_DestroyLocalizedString",
   "name_src": "agent",
   "votes": {
-   "SaveGame_DestroyLocalizedString": 11
+   "SaveGame_DestroyLocalizedString": 12
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -13417,7 +13417,7 @@
   "name": "FxParticleManager_HasNamedEffect",
   "name_src": "agent",
   "votes": {
-   "FxParticleManager_HasNamedEffect": 4
+   "FxParticleManager_HasNamedEffect": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -18093,7 +18093,7 @@
  },
  "0044ad30": {
   "name": "FillDwordTripleRange",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__cdecl",
@@ -18102,8 +18102,8 @@
   "file": "src/auto/0044ad30.cpp"
  },
  "0044ad70": {
-  "name": "CopyConstructTwelveByteElements",
-  "name_src": "vote",
+  "name": "CopyTwelveByteRangeToDestination_44AD70",
+  "name_src": "agent",
   "votes": {
    "CopyConstructTwelveByteElements": 2
   },
@@ -18160,7 +18160,7 @@
  },
  "0044aee0": {
   "name": "InitRecordRange12",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
@@ -18169,8 +18169,8 @@
   "file": "src/auto/0044aee0.cpp"
  },
  "0044af70": {
-  "name": "Global_CheckEntry",
-  "name_src": "vote",
+  "name": "Global_ContainsEntryKey",
+  "name_src": "agent",
   "votes": {
    "Global_CheckEntry": 1
   },
@@ -18215,13 +18215,16 @@
   "file": "src/auto/0044b070.cpp"
  },
  "0044b100": {
-  "name": "sub_44B100",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Seq12_EraseAtAndShift",
+  "name_src": "agent",
+  "votes": {
+   "SubTable_ApplyMatchedEntry": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, int a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , uint32_t* outPtr, uint32_t elementPtr",
+  "sig_src": "impl",
+  "file": "src/auto/0044b100.cpp"
  },
  "0044b170": {
   "name": "ForwardWithSelfToSub44AEE0",
@@ -18234,13 +18237,14 @@
   "file": "src/auto/0044b170.cpp"
  },
  "0044b190": {
-  "name": "sub_44B190",
-  "name_src": "addr",
+  "name": "C_008311a0_HandleEntryMessage",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "C_008311a0* self, void* , void* message",
+  "sig_src": "impl",
+  "file": "src/auto/0044b190.cpp"
  },
  "0044b200": {
   "name": "sub_44B200",
@@ -18265,7 +18269,7 @@
  },
  "0044b270": {
   "name": "C_008311a0_Destroy",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void**",
   "conv": "__fastcall",
@@ -18355,7 +18359,7 @@
  },
  "0044baa0": {
   "name": "AiAttackTasks_AppendEntityHandleAtOffset4",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -18365,7 +18369,7 @@
  },
  "0044bab0": {
   "name": "C_008311a0_AppendTangentToSubobject",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -18375,7 +18379,7 @@
  },
  "0044bac0": {
   "name": "MpSpawnPoints_GetSingleton",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "C_008311a0*",
   "conv": "__cdecl",
@@ -18446,15 +18450,16 @@
   "file": "src/auto/0044bba0.cpp"
  },
  "0044bbc0": {
-  "name": "TCharTask_RunAttackStep_44BBC0",
-  "name_src": "vote",
+  "name": "TCharTask_RunAttackStep",
+  "name_src": "agent",
   "votes": {
    "TCharTask_RunAttackStep_44BBC0": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/0044bbc0.cpp"
  },
  "0044bc20": {
   "name": "S_0044bc20_FindIndexByKey",
@@ -79519,7 +79524,9 @@
  "0052a680": {
   "name": "CMenuMessageBox_ForwardToFlaggedChild",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuMessageBox_ForwardToFlaggedChild": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -79560,6 +79567,18 @@
   "sig_src": "impl",
   "file": "src/auto/0052aa30.cpp"
  },
+ "0052aaa0": {
+  "name": "CMenuMessageBox_LayoutButtons",
+  "name_src": "agent",
+  "votes": {
+   "CMenuMessageBox_LayoutMaskedButtons": 1
+  },
+  "ret": "int",
+  "conv": "__fastcall",
+  "params": "CMenuMessageBox* self, void* , unsigned int width, int left",
+  "sig_src": "impl",
+  "file": "src/auto/0052aaa0.cpp"
+ },
  "0052ad20": {
   "name": "CMenuMessageBox_ShowOnTarget",
   "name_src": "agent",
@@ -79595,7 +79614,9 @@
  "0052aee0": {
   "name": "CMenuMessageBox_RegisterMaskedButton",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuMessageBox_RegisterMaskedButton": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "CMenuMessageBox* self, void* , void* button, uint32_t mask",
@@ -79635,15 +79656,16 @@
   "file": "src/auto/0052aff0.cpp"
  },
  "0052b020": {
-  "name": "MenuMessageBox_PreCloseCleanup",
-  "name_src": "vote",
+  "name": "CMenuMessageBox_PreCloseCleanup",
+  "name_src": "agent",
   "votes": {
    "MenuMessageBox_PreCloseCleanup": 3
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "CMenuMessageBox* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0052b020.cpp"
  },
  "0052b550": {
   "name": "MenuMessageBox_CloseAndReportResult",
@@ -139591,7 +139613,7 @@
   "name": "InitStringFromLiteral",
   "name_src": "agent",
   "votes": {
-   "InitStringFromLiteral": 11
+   "InitStringFromLiteral": 12
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -179896,7 +179918,7 @@
   "name": "CGuiSlider_ForwardSelfToParent",
   "name_src": "agent",
   "votes": {
-   "CGuiSlider_ForwardSelfToParent": 26
+   "CGuiSlider_ForwardSelfToParent": 27
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -202765,7 +202787,7 @@
   "file": "src/auto/00770570.cpp"
  },
  "007705a0": {
-  "name": "CopyTwelveByteRangeToDestination",
+  "name": "CopyTwelveByteRangeToDestination_7705A0",
   "name_src": "agent",
   "votes": {},
   "ret": "std::uint32_t*",
