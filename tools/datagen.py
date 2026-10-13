@@ -117,10 +117,15 @@ def generate(args):
     # those DO define fn_slot storage. Scan every src/ TU, not just src/auto.
     impls = set()
     hook = re.compile(r'\b(HOOK(?:_[A-Z_]+)?)\(\s*(0[xX][0-9a-fA-F]+)\s*,')
-    for path in (ROOT / 'src').rglob('*.cpp'):
-        for macro, a in hook.findall(strip_comments(path.read_text())):
-            if macro != 'HOOK_VSLOT':
-                impls.add(number(a))
+    # Prefer actual COFF coverage when supplied by the first-link target.
+    # Source regexes cannot know whether a HOOK is inside a hook-only #ifdef.
+    if 'defined_functions' in linked:
+        impls = {number(a) for a in linked['defined_functions']}
+    else:
+        for path in (ROOT / 'src').rglob('*.cpp'):
+            for macro, a in hook.findall(strip_comments(path.read_text())):
+                if macro != 'HOOK_VSLOT':
+                    impls.add(number(a))
     strings = {number(a) for a in json.loads((ROOT / 'export/strings.json').read_text())}
     anchors = set(globals_) | strings
     with (ROOT / 'export/functions.jsonl').open() as stream:
@@ -287,6 +292,7 @@ def generate(args):
     dump(args.report.with_name('datagen-vtables.json'), vt_rows)
     dump(args.report.with_name('datagen-rejected.json'), rejected)
     summary = dict(relocations_stripped=stripped, image_base=hex(img.start), image_bytes=len(img.bytes),
+                   implementation_inventory='COFF' if 'defined_functions' in linked else 'source-HOOK-scan',
                    sections=img.sections, globals=len(globals_), vtables=len(vtables),
                    vtable_unique_slots=len(slots), pointer_counts=dict(counts),
                    confirmed_pointer_counts=dict(confirmed_counts), unconfirmed_pointer_counts=dict(unconfirmed),
@@ -299,8 +305,9 @@ def generate(args):
                    fixups=len(fixes), candidate_fixups=args.candidate_fixups,
                    relocation_inventory_complete=not stripped, definition_check='ok',
                    all_linktest_definitions=not rejected, rejected_references=len(rejected),
-                   warning='Stripped PE: existing IDA exports have no data-to-data xrefs; '
-                           'aligned words are candidates, NOT proven pointers. Unaligned pointers may be missed.'
+                   warning='Stripped PE: supplied IDA pointer sites are fixed, but inventory completeness '
+                           'is not certified; aligned words are candidates, NOT proven pointers. '
+                           'Other (including unaligned) pointers may be missed.'
                            if stripped else None)
     if args.compile_check:
         from linktest import flags
@@ -326,11 +333,16 @@ def main():
     ap.add_argument('--data-refs', type=Path, help='read-only JSON list of {source,target} absolute addresses')
     ap.add_argument('--candidate-fixups', action='store_true', help='UNSAFE: also relocate unproven aligned words')
     ap.add_argument('--compile-check', action='store_true', help='compile standalone and check COFF gv/vt symbols')
+    ap.add_argument('--allow-rejected', action='store_true',
+                    help='first-link diagnostic only: emit partial data and let the linker report rejected bindings')
     args = ap.parse_args()
     if not args.data_refs and (ROOT / 'export/dataptrs.json').exists():  # tools/ida/export_dataptrs.py
         args.data_refs = ROOT / 'export/dataptrs.json'
     summary = generate(args)
-    return 2 if summary['rejected_references'] else 0
+    if summary['rejected_references'] and args.allow_rejected:
+        print(f"WARNING: {summary['rejected_references']} data bindings deliberately NOT defined; "
+              'see datagen-rejected.json and final linker errors', file=sys.stderr)
+    return 2 if summary['rejected_references'] and not args.allow_rejected else 0
 
 
 if __name__ == '__main__':

@@ -11,6 +11,8 @@ original address (see src/globals.h). Nothing runs; it answers "what is left bef
 
 Usage: linktest.py [--list game|rw|...|raw|dup|fail] [-j N]
 Writes work/linktest.json (status.py shows the summary).
+--objects FILE --out FILE inventories exact COFF linker inputs without compiling
+(used by csf_standalone to include generated data and original initializers).
 """
 import argparse, collections, concurrent.futures as cf, csv, json, os, re, shlex, subprocess, sys
 sys.path.insert(0, os.path.dirname(__file__))
@@ -23,7 +25,8 @@ SLOT = re.compile(r"csf::(fn_slot|gv|vt)<(\d+)>")
 
 
 def flags():
-    cc = json.load(open(os.path.join(ROOT, "build", "compile_commands.json")))
+    with open(os.path.join(ROOT, "build", "compile_commands.json")) as stream:
+        cc = json.load(stream)
     cmd = next(c["command"] for c in cc if c["file"].endswith("hook/main.cpp"))
     a = shlex.split(cmd)
     return [x for x in a[:a.index("-c")] if not x.startswith(("/Fo", "/Fd"))] + ["-DCSF_STANDALONE"]
@@ -66,7 +69,10 @@ def demangle(syms):
 
 
 def symbols(obj):
-    out = subprocess.run(["llvm-nm-21", obj], capture_output=True, text=True).stdout
+    result = subprocess.run(["llvm-nm-21", obj], capture_output=True, text=True)
+    if result.returncode:
+        raise RuntimeError(f"cannot inventory {obj}: {result.stderr.strip()}")
+    out = result.stdout
     defined, undefined = set(), set()
     for l in out.splitlines():
         parts = l.split()
@@ -82,18 +88,38 @@ def raw_addresses(src, known=None):
     return sorted({v for _, _, v, _ in raw_hits(open(src).read())})
 
 
-def run(jobs):
+def run(jobs, object_files=None):
     os.makedirs(OBJ, exist_ok=True)
-    fl = flags()
-    newest = max(os.path.getmtime(os.path.join(ROOT, h)) for h in HEADERS if os.path.exists(os.path.join(ROOT, h)))
+    headers = [os.path.join(d, f) for top in ('src', 'hook')
+               for d, _, fs in os.walk(os.path.join(ROOT, top))
+               for f in fs if f.endswith(('.h', '.inc'))]
+    newest = max(os.path.getmtime(h) for h in headers)
     srcs = sources()
     objs, fails = {}, {}
-    with cf.ThreadPoolExecutor(jobs) as ex:
-        for src, obj, err in ex.map(lambda s: compile_one(fl, s, newest), srcs):
-            if obj:
-                objs[src] = obj
-            else:
-                fails[os.path.relpath(src, ROOT)] = err
+    if object_files is not None:
+        # Actual link inputs, including generated data/startup, NEVER traps.
+        objs = {os.path.abspath(p): os.path.abspath(p) for p in object_files}
+        if any(not os.path.isfile(p) for p in objs):
+            raise FileNotFoundError('missing inventory object')
+    else:
+        fl = flags()
+        flag_file = os.path.join(OBJ, 'flags.json')
+        cached_flags = None
+        if os.path.isfile(flag_file):
+            with open(flag_file) as stream:
+                cached_flags = json.load(stream)
+        if cached_flags != fl:
+            for name in os.listdir(OBJ):
+                if name.endswith('.obj'):
+                    os.remove(os.path.join(OBJ, name))
+            with open(flag_file, 'w') as stream:
+                json.dump(fl, stream)
+        with cf.ThreadPoolExecutor(jobs) as ex:
+            for src, obj, err in ex.map(lambda s: compile_one(fl, s, newest), srcs):
+                if obj:
+                    objs[src] = obj
+                else:
+                    fails[os.path.relpath(src, ROOT)] = err
     defs, refs = collections.defaultdict(list), collections.defaultdict(set)
     other_undef = collections.Counter()
     per = {}
@@ -138,8 +164,9 @@ def run(jobs):
         if h:
             asm[os.path.relpath(src, ROOT)] = [f"0x{v:X}" for v in h]
     res = dict(
-        files=len(srcs), compiled=len(objs), failed=fails,
+        files=len(object_files) if object_files is not None else len(srcs), compiled=len(objs), failed=fails,
         implemented=len(defs),
+        defined_functions=sorted(f"0x{a:X}" for a in defs),
         duplicates={f"0x{a:X}": fs for a, fs in defs.items() if len(fs) > 1},
         unresolved_functions={reg: {f"0x{a:X}": n for a, n in sorted(d.items(), key=lambda x: -x[1])}
                               for reg, d in sorted(fn_unres.items())},
@@ -174,8 +201,12 @@ if __name__ == "__main__":
     ap.add_argument("--list", help="game|rw|crt|...|raw|asm|dup|fail|other")
     ap.add_argument("-j", type=int, default=os.cpu_count())
     ap.add_argument("--cached", action="store_true", help="report the last run (work/linktest.json)")
+    ap.add_argument("--objects", help="newline-separated actual COFF inputs (without trap objects); skip compilation")
+    ap.add_argument("--out", default=OUT, help="inventory output (default work/linktest.json)")
     a = ap.parse_args()
-    res = json.load(open(OUT)) if a.cached else run(a.j)
+    OUT = os.path.abspath(a.out)
+    objects = open(a.objects).read().splitlines() if a.objects else None
+    res = json.load(open(OUT)) if a.cached else run(a.j, objects)
     print(summary(res))
     if a.list in ("raw", "asm"):
         for f, v in res["raw_addresses" if a.list == "raw" else "asm_addresses"].items():

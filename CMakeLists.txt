@@ -24,3 +24,5 @@ target_include_directories(csf_hook PRIVATE hook src ${CMAKE_BINARY_DIR})  # bui
 target_compile_options(csf_hook PRIVATE /W3 /EHsc /Zc:threadSafeInit- -Wno-microsoft-cast -Wno-invalid-offsetof)
 target_link_libraries(csf_hook PRIVATE minhook kernel32 user32 ole32)
 target_link_options(csf_hook PRIVATE /MAP:${CMAKE_BINARY_DIR}/dinput8.map)
+
+include(cmake/standalone.cmake)

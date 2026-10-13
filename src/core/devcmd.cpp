@@ -1,6 +1,10 @@
 // Developer command line. The game reads its "command line" from Juego.cfg (.commandLine), not from the process
 // arguments, and parses -scene <name>, -log, -instance (CDevCommandLine::Parse, 0x4FB850).
 // csf_hook.ini `cmdline <args>` overrides it (`windowed 1` forces windowed mode), e.g. `cmdline -scene Parachut` for unattended smoke tests.
+#ifndef CSF_STANDALONE
+// Hook-only instrumentation: patches the original IAT and wraps RW trampolines.
+// In an exe there is no original/trampoline to call; do not mask the RW boundary
+// with wrappers whose g_Rw* originals are null. The game slots remain explicit.
 #include <windows.h>
 #include <audiopolicy.h>
 #include <mmdeviceapi.h>
@@ -343,3 +347,4 @@ HOOK_TRAMP(0x626BE0, RwEngineGetVideoModeInfo_Dev, g_RwGetVideoModeInfo, "core")
 HOOK(0x4FB8F0, DevCommandLine_Set, "core");
 HOOK_VSLOT(0x864508, 22, &Menus_GotoScreen_Dev, "core");
 HOOK(0x5364D0, GameScreen_HasBriefing, "core");
+#endif
