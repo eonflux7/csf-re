@@ -1,53 +1,3 @@
-# Escalation 0x004C4F80: differential test mismatch in game (verifier baseline)
-
-## Its lines in the smoke log
-```
-MISMATCH 004C4F80     70 compared   70 mismatched    0 inconclusive  TCombate_UpdateCoverAttackTasks
-DIFF 004C4F80 TCombate_UpdateCoverAttackTasks: return orig 1C722600 ours 0 | ecx=1C72273C edx=0083A8B8 args=035E6D24 3D43033B 
-DIFF 004C4F80 TCombate_UpdateCoverAttackTasks: return orig 1C722D00 ours 0 | ecx=1C722E64 edx=0083A8B8 args=035E7324 3D43033B 
-DIFF 004C4F80 TCombate_UpdateCoverAttackTasks: return orig 1C72D300 ours 0 | ecx=1C72D454 edx=0083A8B8 args=035E7824 3D43033B 
-```
-
-## Smoke log tail
-```
-veGameManager_LoadSaveSlot: inconclusive (a callee changed heap memory ours may read; call 5 to 00698600: arg 1 orig 0019DC00 ours 00000000)
-T3 00500F10 S_004f21d0_Reset: inconclusive (a callee returned an address in the original's frame)
-T3 00512400 CSaveGameManager_LoadSaveSlot: inconclusive (a callee changed heap memory ours may read; call 5 to 00698600: arg 1 orig 0019E600 ours 00000000)
-T3 006C1700 ResetCurrentTextureDictionary: inconclusive (a callee changed heap memory ours may read; call 3 to 00632340: arg 2 orig 036185E4 ours 006C1120)
-T3 006C1700 ResetCurrentTextureDictionary: inconclusive (a callee changed heap memory ours may read; call 3 to 00632340: arg 2 orig 036185E4 ours 006C1120)
-T3 006A2E30 C_0085ee28_Construct: inconclusive (more calls, callee writes or snapshot bytes than recorded)
-T3 006A2E30 C_0085ee28_Construct: inconclusive (more calls, callee writes or snapshot bytes than recorded)
-T3 0051B780 C_00840de4_LoadAndNormalizeResourceNames: inconclusive (a callee changed heap memory ours may read; call 3 to 0042E200: arg 2 orig 00000017 ours 00000006)
-T3 006A2E30 C_0085ee28_Construct: inconclusive (more calls, callee writes or snapshot bytes than recorded)
-T3 0046B530 S_0046b530_ParseResourceReferences: inconclusive (more calls, callee writes or snapshot bytes than recorded)
----- csf_hook.log
-hook 004012c0 auto     C_0082d46c_ApplyScaledEffect
-hook 00401230 auto     RemoveGlobalObjectReference
-diff 004011f0 auto     SceneQueries_InitializeFilter
-hook 004011c0 auto     SceneLoader_ConstructArrayElements
-hook 00401100 auto     MapActionIdToCode
-diff 004010c0 auto     SortCompare_AscendingKeyAt10
-hook 004010a0 auto     ReleaseCachedObjectGlobal
-diff 00401090 auto     GetGlobalValue_401090
-diff 00401060 auto     CharacterModel_InitializeTrace
-hook 00401030 auto     IndexedTransform_ScaleVector
-hook 00401000 auto     Collision_ScaleDirection
-hooks installed=12655 skipped=0 failed=0
-t3: 2665 callees intercepted (2168 wrapped hooks, 497 trampolines, 0 failed)
-devcmd: windowed mode forced
-devcmd: audio muted (hr=00000000)
-devcmd: background mode (off-screen, no pause on focus loss)
-autopilot: keyboard device 00B835E4 wrapped
-devcmd: video mode 1280x960
-devcmd: dev start (loadsave 1.sav) instead of Menus/P_Intro.fbs -> state 1
-devcmd: starting scene 'Maps/NR01/NR01A/Fiord.scn'
-SMOKE OK (alive after 60s, max end)
-verify: 12645 hooks installed, 5437 functions executed in this smoke, 1142 diffed, 31 with inconclusive tier-3 runs; 0 new code hashes
-
-```
-
-## Rejected file
-```cpp
 #include <cstdint>
 #include <cstring>
 #include "globals.h"
@@ -153,5 +103,3 @@ static int __stdcall TCombate_UpdateCoverAttackTasks(int objectValue, int elapse
 }
 
 HOOK(0x004C4F80, TCombate_UpdateCoverAttackTasks, "auto");
-
-```

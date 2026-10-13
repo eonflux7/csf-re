@@ -362,6 +362,14 @@ def analyze(db, ea, tier3=False):
         5 if re.match(r"(unsigned )?(char|bool|__int8|_BYTE)\b", proto) and "*" not in proto.split("(")[0] else \
         6 if re.match(r"(unsigned )?(__int16|short|_WORD|wchar_t)\b", proto) and "*" not in proto.split("(")[0] else 0
     import api
+    if ret == 0:
+        # Hex-Rays' own prototype (export/abi.json, what db/api.json and callee_info bind) says char/short where the
+        # exported pseudocode's first line still says int: the function ends in `return callee()` of a char callee
+        # (`mov al, bl; ret`), so only al is defined and the rest of eax is that callee's leftovers (0x4C4F10,
+        # 0x4C4F80: 199/200 and 70/70 mismatches, al equal every time). Narrower wins: compare the defined bits.
+        art = ((api.ida_abi().get(ea) or {}).get("ret") or "").strip()
+        ret = 5 if re.fullmatch(r"(unsigned |signed )?(char|bool|__int8|_BYTE)", art) else \
+            6 if re.fullmatch(r"(unsigned |signed )?(__int16|short|_WORD|wchar_t)", art) else 0
     if ret in (1, 2) and api.fpret().get(f"{ea:08X}") == 0:
         ret = 0  # Hex-Rays says float, no path of the binary leaves a value in st0 (0x40FC50): tools/fpret.py
     if ret not in (1, 2):
