@@ -69,7 +69,7 @@
 - {addr: 0x0082D4C8, name: g_CollisionMinimumTriangleArea, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
 - {addr: 0x0082D4D0, name: g_CollisionHeightTolerance, type: float, uses: 1, src: auto}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 183, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 184, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 15, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 16, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
@@ -182,7 +182,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 127, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 128, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C8, name: g_AngleScale, type: float, uses: 1, src: auto}
@@ -1115,9 +1115,11 @@
 - {addr: 0x0089A5F8, name: dword_89A5F8, type: uint32_t, uses: 2, src: auto, alt: [g_pendingSessionMode]}
 - {addr: 0x0089A5FC, name: g_MenuMpOnlineAccountEditContext, type: uint32_t*, uses: 2, src: auto}
 - {addr: 0x008A669C, name: g_NextUniqueId, type: 'std::int32_t', uses: 2, src: captain, conf: 0.75, alt: [g_FallbackContext]}
-- {addr: 0x008A66B0, name: g_DefaultRecordValue, type: uint32_t, uses: 1, src: auto}
-- {addr: 0x008A66B4, name: g_ParserAllocationBlocks, type: S_0069b1c0**, uses: 1, src: auto}
-- {addr: 0x008A66BC, name: g_ParserAllocationBlockCount, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008A66B0, name: g_DefaultRecordValue, type: uint32_t, uses: 2, src: auto}
+- {addr: 0x008A66B4, name: g_ParserAllocationBlocks, type: void**, uses: 2, src: auto}
+- {addr: 0x008A66B8, name: g_ParserAllocationBlockCapacity, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008A66BC, name: g_ParserAllocationBlockCount, type: uint32_t, uses: 2, src: auto}
+- {addr: 0x008A66C0, name: g_ParserAllocationBlockGrowth, type: int, uses: 1, src: auto}
 - {addr: 0x008A6788, name: g_pszKey_PC, type: const char*, uses: 1, src: captain, conf: 1.0, alt: [g_off_008A6788]}
 - {addr: 0x008A6B90, name: g_pszKey_PREFERENCES, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A6B94, name: g_psz_asyn, type: const char*, uses: 0, src: captain, conf: 1.0}
@@ -2031,7 +2033,7 @@
 - {addr: 0x008BAEB4, name: g_MemDebugMutex, type: void*, uses: 0, src: captain, conf: 0.75}
 - {addr: 0x008BAEC0, name: g_ReferenceListPool, type: S_0069afe0, uses: 2, src: auto}
 - {addr: 0x008BAF04, name: g_PairBlockPool, type: S_0069b1c0, uses: 2, src: auto, alt: [g_ReferenceEntryPool]}
-- {addr: 0x008BAF48, name: g_ComponentPools, type: ComponentPoolEntries, uses: 9, src: auto}
+- {addr: 0x008BAF48, name: g_ComponentPools, type: ComponentPoolEntries, uses: 11, src: auto}
 - {addr: 0x008BAF88, name: g_FormatIndentUnit, type: uint8_t, uses: 2, src: auto, alt: [g_LoadStateLevelByte]}
 - {addr: 0x008BAF89, name: g_LoadStateTrailingFlag, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008BAF8C, name: g_pOptions, type: COptions*, uses: 2, src: opus}
@@ -2045,7 +2047,7 @@
 - {addr: 0x008BB3E8, name: g_ErrorLogInitFlags, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008BB3EC, name: g_SomeFlag_8BB3EC, type: uint8_t, uses: 1, src: auto}
 - {addr: 0x008BB3F0, name: g_NetProfile_Instance, type: uint32_t, uses: 1, src: auto}
-- {addr: 0x008BB3F4, name: g_fpControlWord_8BB3F4, type: unsigned int, uses: 2, src: auto}
+- {addr: 0x008BB3F4, name: g_fpControlWord_8BB3F4, type: unsigned int, uses: 1, src: auto}
 - {addr: 0x008BB3F8, name: g_Value_8BB3F8, type: int, uses: 1, src: auto}
 - {addr: 0x008BB3FC, name: g_RtfsEntryOffsetBase, type: uint32_t, uses: 4, src: auto, alt: [g_ArchiveVersionFlags, g_RtfsFileOffsetBase]}
 - {addr: 0x008BB400, name: g_008bb400, type: int, uses: 9, src: auto}
