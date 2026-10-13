@@ -4683,7 +4683,7 @@
   "name": "AssignStringSubstring",
   "name_src": "vote",
   "votes": {
-   "AssignStringSubstring": 227
+   "AssignStringSubstring": 228
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -10559,7 +10559,7 @@
   "name": "AssignStringRange_429B60",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_429B60": 192,
+   "AssignStringRange_429B60": 193,
    "MenuSceneSelect_InitializeString": 1
   },
   "ret": "void*",
@@ -36505,7 +36505,7 @@
   "name": "AssignStringRange_488830",
   "name_src": "vote",
   "votes": {
-   "AssignStringRange_488830": 56
+   "AssignStringRange_488830": 57
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -71333,7 +71333,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 423
+   "GetGlobalState_50D190": 424
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -86461,7 +86461,7 @@
   "name": "MenuSaveGame_ClearSlotState",
   "name_src": "agent",
   "votes": {
-   "MenuSaveGame_ClearSlotState": 1
+   "MenuSaveGame_ClearSlotState": 2
   },
   "ret": "int*",
   "conv": "__cdecl",
@@ -86798,7 +86798,7 @@
   "name": "CMenuSaveGame_AppendElement36",
   "name_src": "agent",
   "votes": {
-   "CMenuSaveGame_AppendElement36": 1
+   "CMenuSaveGame_AppendElement36": 2
   },
   "ret": "std::uint32_t*",
   "conv": "__fastcall",
@@ -86854,14 +86854,15 @@
  },
  "005458d0": {
   "name": "CMenuSaveGame_BeginNewSaveFlow",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CMenuSaveGame_BeginNewSaveFlow": 1
   },
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "CMenuSaveGame* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/005458d0.cpp"
  },
  "00545ba0": {
   "name": "CMenuSaveGame_Destroy",
@@ -139530,7 +139531,7 @@
   "name": "MemDebug_FreeDebugBlock",
   "name_src": "agent",
   "votes": {
-   "Mem_FreeDebug": 675,
+   "Mem_FreeDebug": 676,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -189483,7 +189484,7 @@
   "name_src": "agent",
   "votes": {
    "SchedulerBase_GetSchedulerProxy": 22,
-   "C_00861120_GetSchedulerProxy": 7
+   "C_00861120_GetSchedulerProxy": 8
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -216139,7 +216140,7 @@
   "name": "_strncpy",
   "name_src": "ida",
   "votes": {
-   "_strncpy": 19
+   "_strncpy": 20
   },
   "ret": "char*",
   "conv": "__cdecl",
