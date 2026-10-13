@@ -7106,7 +7106,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 165
+   "S_0041e5f0_GrowArrayCapacity": 166
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -138507,7 +138507,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 102,
+   "CoreMemory_Free": 103,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -139144,7 +139144,7 @@
   "name_src": "agent",
   "votes": {
    "ParseIntegerComponent": 55,
-   "S_00692b80_ParseIntegerComponent": 15
+   "S_00692b80_ParseIntegerComponent": 17
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -139156,7 +139156,7 @@
   "name": "S_00692b80_ReadComponentFloat",
   "name_src": "agent",
   "votes": {
-   "ReadComponentFloat": 36
+   "ReadComponentFloat": 38
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -139180,7 +139180,7 @@
   "name": "S_00692b80_ReadWideAttributeText",
   "name_src": "agent",
   "votes": {
-   "CoreZlibLog_ReadWideAttributeText": 1
+   "CoreZlibLog_ReadWideAttributeText": 2
   },
   "ret": "uint8_t*",
   "conv": "__fastcall",
@@ -139231,7 +139231,7 @@
   "name": "FindProperty",
   "name_src": "vote",
   "votes": {
-   "FindProperty": 140
+   "FindProperty": 145
   },
   "ret": "std::uint8_t*",
   "conv": "__fastcall",
@@ -139240,14 +139240,15 @@
  },
  "00693360": {
   "name": "LookupNamedElement",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "LookupNamedElement": 72
   },
-  "ret": "uint8_t*",
+  "ret": "S_00692b80*",
   "conv": "__fastcall",
-  "params": "uint8_t* self, void* edx, const char* name",
-  "sig_src": "vote"
+  "params": "S_00692b80* self, void* , char* String1",
+  "sig_src": "impl",
+  "file": "src/auto/00693360.cpp"
  },
  "00693370": {
   "name": "CorePaths_ClearSlotState",
@@ -139256,22 +139257,24 @@
    "CorePaths_ClearSlotState": 1,
    "CorePaths_ClearAllocationContents": 1
   },
-  "ret": "char",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00693370.cpp"
  },
  "00693410": {
   "name": "CorePaths_AppendNode",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CorePaths_AppendNode": 1,
    "CorePaths_AppendChild": 1
   },
   "ret": "unsigned int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int node",
+  "sig_src": "impl",
+  "file": "src/auto/00693410.cpp"
  },
  "00693460": {
   "name": "CoreZlibLog_ReadFallbackWideAttributeText",
@@ -139281,8 +139284,9 @@
   },
   "ret": "uint8_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int64_t a2",
-  "sig_src": "vote"
+  "params": "void** self, void* , int64_t a2",
+  "sig_src": "impl",
+  "file": "src/auto/00693460.cpp"
  },
  "006934e0": {
   "name": "CorePaths_AllocateNodeData",
@@ -139330,48 +139334,52 @@
   "sig_src": "vote"
  },
  "00693910": {
-  "name": "ReadIntegerProperty",
-  "name_src": "vote",
+  "name": "S_00692b80_ReadIntegerProperty",
+  "name_src": "agent",
   "votes": {
    "ReadIntegerProperty": 53
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "std::uint8_t* self, void* edx, char* name",
-  "sig_src": "vote"
+  "params": "S_00692b80* self, void* , char* keyword",
+  "sig_src": "impl",
+  "file": "src/auto/00693910.cpp"
  },
  "00693940": {
-  "name": "ReadFloatProperty",
-  "name_src": "vote",
+  "name": "S_00692b80_ReadFloatProperty",
+  "name_src": "agent",
   "votes": {
    "ReadFloatProperty": 41
   },
   "ret": "double",
   "conv": "__fastcall",
-  "params": "std::uint8_t* self, void* edx, char* name",
-  "sig_src": "vote"
+  "params": "S_00692b80* self, void* , char* keyword",
+  "sig_src": "impl",
+  "file": "src/auto/00693940.cpp"
  },
  "00693970": {
   "name": "ReadIntegerAttribute",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "ReadIntegerAttribute": 66
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "std::uint8_t* node, void* edx, char* name",
-  "sig_src": "vote"
+  "params": "S_00692b80* self, void* , char* attributeName",
+  "sig_src": "impl",
+  "file": "src/auto/00693970.cpp"
  },
  "00693990": {
-  "name": "ReadFloatAttribute",
-  "name_src": "vote",
+  "name": "S_00692b80_ReadFloatAttribute",
+  "name_src": "agent",
   "votes": {
    "ReadFloatAttribute": 42
   },
   "ret": "double",
   "conv": "__fastcall",
-  "params": "std::uint8_t* node, void* edx, char* name",
-  "sig_src": "vote"
+  "params": "S_00692b80* self, void* , char* String1",
+  "sig_src": "impl",
+  "file": "src/auto/00693990.cpp"
  },
  "006939c0": {
   "name": "MenuExtras_ReadText",
@@ -139446,7 +139454,9 @@
  "00693b40": {
   "name": "CorePaths_ReleaseOwnedPathSlot",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CorePaths_ReleaseOwnedPathSlot": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "S_0069b1c0** self, void*",
@@ -139973,7 +139983,7 @@
   "name": "CoreZlibLog_ConvertAttributeTextToWide",
   "name_src": "agent",
   "votes": {
-   "CoreZlibLog_ConvertAttributeTextToWide": 1
+   "CoreZlibLog_ConvertAttributeTextToWide": 2
   },
   "ret": "uint8_t*",
   "conv": "__cdecl",
@@ -141752,13 +141762,15 @@
   "file": "src/auto/0069a7b0.cpp"
  },
  "0069a860": {
-  "name": "sub_69A860",
-  "name_src": "addr",
-  "votes": {},
+  "name": "DestroyEntryTreeBranch",
+  "name_src": "vote",
+  "votes": {
+   "DestroyEntryTreeBranch": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void** Block",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0069a8a0": {
   "name": "RpWorld_ResolveSectorSlot",
@@ -141807,26 +141819,28 @@
   "file": "src/auto/0069ab30.cpp"
  },
  "0069abf0": {
-  "name": "SceneLoader_QueryRegistryBlock",
-  "name_src": "vote",
+  "name": "EntryTree_EraseRange",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_QueryRegistryBlock": 1
   },
-  "ret": "void**",
+  "ret": "int**",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void** a2, int* a3, int* a4",
-  "sig_src": "vote"
+  "params": "void* self, void* , int** result, int* first, int* last",
+  "sig_src": "impl",
+  "file": "src/auto/0069abf0.cpp"
  },
  "0069acb0": {
   "name": "SceneLoader_RegisterArchivedObject",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "SceneLoader_RegisterArchivedObject": 11
   },
-  "ret": "void**",
+  "ret": "int**",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "S_0069a8a0* self, void* , int objectId",
+  "sig_src": "impl",
+  "file": "src/auto/0069acb0.cpp"
  },
  "0069acf0": {
   "name": "SceneLoader_DestroyReferenceRegistry",
@@ -149714,6 +149728,7 @@
   "name": "EraseNodeFromRange",
   "name_src": "vote",
   "votes": {
+   "EraseEntryNodeFromRange": 1,
    "EraseNodeFromRange": 1
   },
   "ret": "int*",
