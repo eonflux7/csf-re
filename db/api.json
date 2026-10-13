@@ -16247,6 +16247,7 @@
   "name": "C_0083109c_ResetSubsystemB8",
   "name_src": "agent",
   "votes": {
+   "C_0083109c_ResetSubsystemB8": 1,
    "Scene_ResetSubsystemB8": 1
   },
   "ret": "int",
@@ -16285,8 +16286,9 @@
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0083109c* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00443f00.cpp"
  },
  "00443f80": {
   "name": "Component_ProcessSelfAndSubobjects",
@@ -16514,8 +16516,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/00444940.cpp"
  },
  "004449d0": {
   "name": "C_008310b8_Construct",
@@ -71401,7 +71404,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 439
+   "GetGlobalState_50D190": 440
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -139810,7 +139813,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 210,
+   "CoreMemory_Free": 211,
    "Mem_Free": 939
   },
   "ret": "int",
