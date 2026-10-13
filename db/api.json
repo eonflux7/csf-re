@@ -70,7 +70,9 @@
  "00401100": {
   "name": "MapActionIdToCode",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MapEffectVariant": 1
+  },
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1",
@@ -115,15 +117,16 @@
   "file": "src/auto/00401230.cpp"
  },
  "004012c0": {
-  "name": "HandleEventType4",
-  "name_src": "vote",
+  "name": "C_0082d46c_ApplyScaledEffect",
+  "name_src": "agent",
   "votes": {
    "HandleEventType4": 1
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_0082d46c* self, void* , int effectAddress",
+  "sig_src": "impl",
+  "file": "src/auto/004012c0.cpp"
  },
  "004013c0": {
   "name": "SpatialQuery_Destroy",
@@ -160,13 +163,14 @@
   "file": "src/auto/004013f0.cpp"
  },
  "00401460": {
-  "name": "sub_401460",
-  "name_src": "addr",
+  "name": "C_0082d46c_Destroy_401460",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0082d46c* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00401460.cpp"
  },
  "00401520": {
   "name": "C_0082d46c_GetSingleton",
@@ -179,20 +183,23 @@
   "file": "src/auto/00401520.cpp"
  },
  "00401550": {
-  "name": "HandleEventType14Or15",
-  "name_src": "vote",
+  "name": "C_0082d46c_ApplyScaledEffectToNearbyObjects",
+  "name_src": "agent",
   "votes": {
    "HandleEventType14Or15": 1
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1",
-  "sig_src": "vote"
+  "params": "void* request",
+  "sig_src": "impl",
+  "file": "src/auto/00401550.cpp"
  },
  "004016b0": {
   "name": "RecordArray_Assign",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Interface_SwapDisplayLists": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , void* source",
@@ -202,7 +209,9 @@
  "004017a0": {
   "name": "Table20_GrowEntryArray",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Interface_GrowDisplayList": 1
+  },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
   "params": "S_004017a0* self, void* , int a2",
@@ -244,7 +253,7 @@
   "file": "src/auto/004018e0.cpp"
  },
  "00401940": {
-  "name": "C_0082d46c_Destroy",
+  "name": "C_0082d46c_Destroy_401940",
   "name_src": "agent",
   "votes": {},
   "ret": "void*",
@@ -277,7 +286,7 @@
  },
  "00401ac0": {
   "name": "BuildAndDispatchObjectRecord",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
@@ -286,18 +295,22 @@
   "file": "src/auto/00401ac0.cpp"
  },
  "00401b50": {
-  "name": "sub_401B50",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Interface_CreateDisplay",
+  "name_src": "vote",
+  "votes": {
+   "Interface_CreateDisplay": 1
+  },
   "ret": "int*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00401c80": {
   "name": "Entries_AppendRecord",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Interface_AppendDisplayEntry": 1
+  },
   "ret": "uint32_t*",
   "conv": "__fastcall",
   "params": "S_004017a0* self, void* , uint32_t* a2, int a3",
@@ -305,15 +318,16 @@
   "file": "src/auto/00401c80.cpp"
  },
  "00401cd0": {
-  "name": "Interface_UpdateGlobalDisplayTime",
-  "name_src": "vote",
+  "name": "S_00401b50_UpdateGlobalDisplayTime",
+  "name_src": "agent",
   "votes": {
    "Interface_UpdateGlobalDisplayTime": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "S_00401b50* self, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/00401cd0.cpp"
  },
  "00401f80": {
   "name": "MeasureCString",
@@ -19219,8 +19233,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , void* state",
+  "sig_src": "impl",
+  "file": "src/auto/0044eb60.cpp"
  },
  "0044ebf0": {
   "name": "Archive_SerializeMemberPair",
@@ -19274,8 +19289,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , void* state",
+  "sig_src": "impl",
+  "file": "src/auto/0044eec0.cpp"
  },
  "0044ef50": {
   "name": "Archive_SerializeOptionalMemberC",
@@ -19330,8 +19346,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2",
-  "sig_src": "vote"
+  "params": "float* self, void* , float a2",
+  "sig_src": "impl",
+  "file": "src/auto/0044f1d0.cpp"
  },
  "0044f200": {
   "name": "SceneQueries_IsSelectionEligible",
@@ -19352,8 +19369,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_0044f300* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0044f300.cpp"
  },
  "0044f380": {
   "name": "SceneLoader_RefreshSceneWeather",
@@ -19367,8 +19385,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0044f380.cpp"
  },
  "0044f390": {
   "name": "Interface_UpdateSceneDisplayTime",
@@ -19378,8 +19397,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "CGuiControl* self, void* , int",
+  "sig_src": "impl",
+  "file": "src/auto/0044f390.cpp"
  },
  "0044f3a0": {
   "name": "Scene_SetSelectionEnabled",
@@ -19665,7 +19685,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 418
+   "CHandleTable_Resolve": 419
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -20483,7 +20503,7 @@
   "name": "CGuiControl_ProcessDisplayFlags_453660",
   "name_src": "agent",
   "votes": {
-   "CGuiControl_ProcessDisplayFlags_453660": 4
+   "CGuiControl_ProcessDisplayFlags_453660": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -29913,7 +29933,7 @@
   "name": "Hud_UnregisterObject",
   "name_src": "vote",
   "votes": {
-   "Hud_UnregisterObject": 9
+   "Hud_UnregisterObject": 10
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -41548,8 +41568,8 @@
   "name": "C_008342e8_GetDrawState",
   "name_src": "agent",
   "votes": {
-   "SceneObject_GetDrawState": 5,
-   "C_008342e8_GetDrawState": 2
+   "C_008342e8_GetDrawState": 3,
+   "SceneObject_GetDrawState": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -42454,7 +42474,9 @@
  "004a0640": {
   "name": "S_004a0490_UpdateAlertIcons",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_004a0490_UpdateAlertIcons": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_004a0490* self, void*",
@@ -59351,7 +59373,9 @@
  "004dee90": {
   "name": "C_0083e124_Initialize",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0083e124_Initialize": 1
+  },
   "ret": "uint8_t",
   "conv": "__fastcall",
   "params": "C_0083e124* self, void*",
@@ -62317,7 +62341,7 @@
   "name": "GetValue8B0554",
   "name_src": "agent",
   "votes": {
-   "GetValue8B0554": 275
+   "GetValue8B0554": 276
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -70369,7 +70393,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 368
+   "GetGlobalState_50D190": 369
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -138224,7 +138248,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_AllocUntagged": 36,
+   "CoreMemory_AllocUntagged": 37,
    "Mem_Alloc": 482
   },
   "ret": "int",
@@ -138237,7 +138261,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 59,
+   "CoreMemory_Free": 62,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -147037,7 +147061,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 435,
+   "GetGlobalInt": 436,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -147850,7 +147874,7 @@
   "name": "RenderHandle_FromObject",
   "name_src": "vote",
   "votes": {
-   "RenderHandle_FromObject": 31
+   "RenderHandle_FromObject": 32
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -196594,7 +196618,7 @@
   "name": "GetGlobalValue_753A30",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_753A30": 38
+   "GetGlobalValue_753A30": 40
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -196762,7 +196786,7 @@
   "name": "GameConfig_IsSceneObjectRemovable",
   "name_src": "agent",
   "votes": {
-   "GameConfig_IsSceneObjectRemovable": 7,
+   "GameConfig_IsSceneObjectRemovable": 8,
    "Scene_IsObjectRemovable": 11
   },
   "ret": "int",
@@ -197161,7 +197185,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 254,
+   "GetGlobalValue_8BC1E0": 255,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
@@ -212778,8 +212802,8 @@
   "name": "_qsort",
   "name_src": "ida",
   "votes": {
+   "_qsort": 5,
    "CRT_Qsort": 1,
-   "_qsort": 4,
    "GfxSkin_SortRenderEntries": 2,
    "GfxSkin_SortEntries": 1
   },
