@@ -50,7 +50,7 @@
 - {addr: 0x0082D2F4, name: g_SetWindowTextAImportSlot, type: SetWindowTextFunction, uses: 1, src: auto}
 - {addr: 0x0082D2F8, name: g_GetWindowTextAImportSlot, type: GetWindowTextFunction, uses: 1, src: auto}
 - {addr: 0x0082D2FC, name: g_DestroyWindowImport, type: void*, uses: 1, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 127, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 128, src: auto}
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 2, src: auto}
 - {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 4, src: auto}
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 4, src: auto}
@@ -58,7 +58,7 @@
 - {addr: 0x0082D4C8, name: g_CollisionMinimumTriangleArea, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
 - {addr: 0x0082D4D0, name: g_CollisionHeightTolerance, type: float, uses: 1, src: auto}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 169, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 171, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 13, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 16, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
@@ -67,7 +67,7 @@
 - {addr: 0x0082D568, name: g_LocalDirectionAngleScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082D56C, name: g_Epsilon, type: float, uses: 2, src: auto, alt: [g_MotionEpsilon]}
 - {addr: 0x0082D6E8, name: g_MatrixQueryFlags, type: 'std::uint32_t', uses: 2, src: auto, alt: [g_MatrixRequestFlags]}
-- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 109, src: auto, alt: [g_MissionUnsignedIntegerBias]}
+- {addr: 0x0082D744, name: g_UnsignedIntegerBias, type: float, uses: 110, src: auto, alt: [g_MissionUnsignedIntegerBias]}
 - {addr: 0x0082D748, name: g_HudPi, type: float, uses: 2, src: auto, alt: [g_PiConstant]}
 - {addr: 0x0082D74C, name: g_HudTwoPi, type: float, uses: 2, src: auto, alt: [g_TwoPiConstant]}
 - {addr: 0x0082D750, name: g_RotationRadiansToDegrees, type: float, uses: 1, src: auto}
@@ -169,7 +169,7 @@
 - {addr: 0x0082E4B4, name: g_WheelAnglePositiveLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E4B8, name: g_WheelAngleNegativeLimit, type: float, uses: 1, src: auto}
 - {addr: 0x0082E568, name: g_fPi, type: float, uses: 1, src: auto}
-- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 115, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
+- {addr: 0x0082E65C, name: g_byte_82E65C, type: uint8_t, uses: 116, src: auto, alt: [g_EmptyStringByte, g_EmptyAccountName, g_EmptyNameByte, g_EmptyPlayerIconText, g_EmptyStringLiteral, g_PageNameSentinel, g_RegistryRootSelector, g_SaveGameFlagByte, g_SaveGameNameSeparator, g_StringConstant]}
 - {addr: 0x0082E660, name: g_InverseGoldenRatio, type: float, uses: 2, src: auto, alt: [g_fBlendFactor]}
 - {addr: 0x0082E6C4, name: g_MinPointDistanceSq, type: float, uses: 1, src: auto}
 - {addr: 0x0082E6C8, name: g_AngleScale, type: float, uses: 1, src: auto}
@@ -182,7 +182,7 @@
 - {addr: 0x0082FAC0, name: g_dThreeQuarterPi, type: double, uses: 1, src: auto}
 - {addr: 0x0082FAC8, name: g_fQuarterPi, type: float, uses: 3, src: auto}
 - {addr: 0x0082FACC, name: g_HudNegativeHalfPi, type: float, uses: 4, src: auto}
-- {addr: 0x0082FAD0, name: g_TransitionHalfPi, type: float, uses: 6, src: auto}
+- {addr: 0x0082FAD0, name: g_TransitionHalfPi, type: float, uses: 7, src: auto}
 - {addr: 0x0082FAD4, name: g_QuarterTurnConstant, type: float, uses: 10, src: auto}
 - {addr: 0x0082FAD8, name: g_TurnScale, type: float, uses: 1, src: auto}
 - {addr: 0x0082FCAC, name: g_RadToDeg_82FCAC, type: float, uses: 1, src: auto}
@@ -407,26 +407,26 @@
 - {addr: 0x00845A00, name: g_SessionNameWidth, type: float, uses: 1, src: auto}
 - {addr: 0x00845B38, name: g_MenuAccountsPostInitialize, type: void*, uses: 1, src: auto}
 - {addr: 0x00845C30, name: g_ClearField0010Slot, type: ClearFieldMethod, uses: 1, src: auto}
-- {addr: 0x00845DC0, name: g_SineCoefficient5, type: float, uses: 1, src: auto}
-- {addr: 0x00845DC4, name: g_SineCoefficient7, type: float, uses: 1, src: auto}
-- {addr: 0x00845DC8, name: g_SineCoefficient9, type: float, uses: 1, src: auto}
-- {addr: 0x00845DCC, name: g_SineCoefficient11, type: float, uses: 1, src: auto}
-- {addr: 0x00845DD0, name: g_SineCoefficient13, type: float, uses: 1, src: auto}
-- {addr: 0x00845DD4, name: g_AcosPiHigh, type: float, uses: 1, src: auto}
-- {addr: 0x00845DD8, name: g_AcosHalfPiHigh, type: float, uses: 1, src: auto}
-- {addr: 0x00845DDC, name: g_AcosCorrection, type: float, uses: 1, src: auto}
-- {addr: 0x00845DE0, name: g_AsinDenominator1, type: float, uses: 1, src: auto}
-- {addr: 0x00845DE4, name: g_AsinDenominator2, type: float, uses: 1, src: auto}
-- {addr: 0x00845DE8, name: g_AsinDenominator3, type: float, uses: 1, src: auto}
-- {addr: 0x00845DEC, name: g_AsinDenominator4, type: float, uses: 1, src: auto}
-- {addr: 0x00845DF0, name: g_AsinNumerator0, type: float, uses: 1, src: auto}
-- {addr: 0x00845DF4, name: g_AsinNumerator1, type: float, uses: 1, src: auto}
-- {addr: 0x00845DF8, name: g_AsinNumerator2, type: float, uses: 1, src: auto}
-- {addr: 0x00845DFC, name: g_AsinNumerator3, type: float, uses: 1, src: auto}
-- {addr: 0x00845E00, name: g_AsinNumerator4, type: float, uses: 1, src: auto}
-- {addr: 0x00845E04, name: g_AsinNumerator5, type: float, uses: 1, src: auto}
-- {addr: 0x00845E08, name: g_AcosPi, type: float, uses: 1, src: auto}
-- {addr: 0x00845E0C, name: g_SlerpLinearThreshold, type: float, uses: 1, src: auto}
+- {addr: 0x00845DC0, name: g_SineCoefficient5, type: float, uses: 2, src: auto}
+- {addr: 0x00845DC4, name: g_SineCoefficient7, type: float, uses: 2, src: auto}
+- {addr: 0x00845DC8, name: g_SineCoefficient9, type: float, uses: 2, src: auto}
+- {addr: 0x00845DCC, name: g_SineCoefficient11, type: float, uses: 2, src: auto}
+- {addr: 0x00845DD0, name: g_SineCoefficient13, type: float, uses: 2, src: auto}
+- {addr: 0x00845DD4, name: g_AcosPiHigh, type: float, uses: 2, src: auto}
+- {addr: 0x00845DD8, name: g_AcosHalfPiHigh, type: float, uses: 2, src: auto}
+- {addr: 0x00845DDC, name: g_AcosCorrection, type: float, uses: 2, src: auto, alt: [g_AcosHalfPiTail]}
+- {addr: 0x00845DE0, name: g_AsinDenominator1, type: float, uses: 2, src: auto}
+- {addr: 0x00845DE4, name: g_AsinDenominator2, type: float, uses: 2, src: auto}
+- {addr: 0x00845DE8, name: g_AsinDenominator3, type: float, uses: 2, src: auto}
+- {addr: 0x00845DEC, name: g_AsinDenominator4, type: float, uses: 2, src: auto}
+- {addr: 0x00845DF0, name: g_AsinNumerator0, type: float, uses: 2, src: auto}
+- {addr: 0x00845DF4, name: g_AsinNumerator1, type: float, uses: 2, src: auto}
+- {addr: 0x00845DF8, name: g_AsinNumerator2, type: float, uses: 2, src: auto}
+- {addr: 0x00845DFC, name: g_AsinNumerator3, type: float, uses: 2, src: auto}
+- {addr: 0x00845E00, name: g_AsinNumerator4, type: float, uses: 2, src: auto}
+- {addr: 0x00845E04, name: g_AsinNumerator5, type: float, uses: 2, src: auto}
+- {addr: 0x00845E08, name: g_AcosPi, type: float, uses: 2, src: auto}
+- {addr: 0x00845E0C, name: g_QuaternionLinearThreshold, type: float, uses: 2, src: auto, alt: [g_SlerpLinearThreshold]}
 - {addr: 0x00846120, name: g_ZeroDouble, type: double, uses: 1, src: auto}
 - {addr: 0x00846128, name: g_MotionTwoPi, type: float, uses: 2, src: auto}
 - {addr: 0x00846158, name: g_AudioMinimumAmplitude, type: float, uses: 1, src: auto}
