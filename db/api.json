@@ -71409,7 +71409,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 440
+   "GetGlobalState_50D190": 441
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -72284,7 +72284,7 @@
   "name": "GameBddLoader_ShowSaveGameMessage",
   "name_src": "agent",
   "votes": {
-   "GameBddLoader_ShowSaveGameMessage": 8,
+   "GameBddLoader_ShowSaveGameMessage": 9,
    "SaveGame_ShowMessage": 3
   },
   "ret": "int",
@@ -84662,15 +84662,16 @@
   "file": "src/auto/0053cfc0.cpp"
  },
  "0053d060": {
-  "name": "CMenuSoundOptions_OnControlMatched",
-  "name_src": "vote",
+  "name": "CMenuSoundOptions_ApplyChangesAndReturn",
+  "name_src": "agent",
   "votes": {
    "CMenuSoundOptions_OnControlMatched": 1
   },
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "CMenuSoundOptions* self, void* edx",
-  "sig_src": "vote"
+  "params": "CMenuSoundOptions* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0053d060.cpp"
  },
  "0053d130": {
   "name": "CMenuSoundOptions_SendOkQuestionGE03",
@@ -139706,7 +139707,7 @@
   "name": "MemDebug_FreeDebugBlock",
   "name_src": "agent",
   "votes": {
-   "Mem_FreeDebug": 683,
+   "Mem_FreeDebug": 684,
    "HudWidget_MemFreeDebug": 1,
    "FreeMissionText": 1,
    "MenuSaveGame_MemFreeDebug": 1
@@ -140287,7 +140288,7 @@
   "name": "InitStringFromLiteral",
   "name_src": "agent",
   "votes": {
-   "InitStringFromLiteral": 19
+   "InitStringFromLiteral": 20
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -172941,8 +172942,9 @@
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , void* context",
+  "sig_src": "impl",
+  "file": "src/auto/006fd690.cpp"
  },
  "006fd7c0": {
   "name": "C_00862fcc_ResolveFlagOrDelegate",
