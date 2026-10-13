@@ -505,7 +505,7 @@
   "name": "Geometry_BuildPlaneFromTriangle",
   "name_src": "agent",
   "votes": {
-   "Geometry_BuildPlaneFromTriangle": 2
+   "Geometry_BuildPlaneFromTriangle": 3
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -58746,26 +58746,28 @@
   "file": "src/auto/004db730.cpp"
  },
  "004db750": {
-  "name": "sub_4DB750",
-  "name_src": "addr",
+  "name": "ForwardToChildAiStateVirtual22",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004db750.cpp"
  },
  "004db770": {
-  "name": "sub_4DB770",
-  "name_src": "addr",
+  "name": "ForwardToChildStateVirtualSlot23",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004db770.cpp"
  },
  "004db790": {
   "name": "AiStateAccessors_ForwardToLinkedSlot24",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
@@ -58775,7 +58777,7 @@
  },
  "004db7b0": {
   "name": "AiStateAccessors_ForwardToLinkedSlot25",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
@@ -58784,67 +58786,74 @@
   "file": "src/auto/004db7b0.cpp"
  },
  "004db7d0": {
-  "name": "sub_4DB7D0",
-  "name_src": "addr",
+  "name": "AiStateAccessors_ForwardToLinkedSlot26",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004db7d0.cpp"
  },
  "004db7f0": {
-  "name": "sub_4DB7F0",
-  "name_src": "addr",
+  "name": "AiStateAccessors_ForwardToChildTask",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004db7f0.cpp"
  },
  "004db810": {
-  "name": "sub_4DB810",
-  "name_src": "addr",
+  "name": "ForwardToChildTaskVirtualSlot28",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004db810.cpp"
  },
  "004db830": {
-  "name": "sub_4DB830",
-  "name_src": "addr",
+  "name": "AiState_ForwardToChildTaskSlot29",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004db830.cpp"
  },
  "004db850": {
-  "name": "sub_4DB850",
-  "name_src": "addr",
+  "name": "ForwardToChildAiStateSlot30",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004db850.cpp"
  },
  "004db870": {
-  "name": "sub_4DB870",
-  "name_src": "addr",
+  "name": "AiState_ForwardToChildSlot31",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004db870.cpp"
  },
  "004db890": {
-  "name": "sub_4DB890",
-  "name_src": "addr",
+  "name": "C_0083dfa0_QueryStateWithFallback",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0083dfa0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004db890.cpp"
  },
  "004db8c0": {
   "name": "sub_4DB8C0",
@@ -59038,8 +59047,8 @@
   "file": "src/auto/004dbc80.cpp"
  },
  "004dbcb0": {
-  "name": "Dispatch_NoLinkedTarget",
-  "name_src": "vote",
+  "name": "AiStateAccessors_DispatchLinkedTarget",
+  "name_src": "agent",
   "votes": {
    "Dispatch_NoLinkedTarget": 26,
    "CoverTask_SetTarget": 1
@@ -59052,7 +59061,7 @@
  },
  "004dbcf0": {
   "name": "AiState_PrepareSlot",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "AiState_PrepareSlot": 1
   },
@@ -98669,7 +98678,7 @@
   "name": "RpWorldSectorGetWorld",
   "name_src": "rwname",
   "votes": {
-   "RpWorldSectorGetWorld": 5
+   "RpWorldSectorGetWorld": 6
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -122392,7 +122401,7 @@
   "name": "SceneLoader_GetSceneController",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_GetSceneController": 102,
+   "SceneLoader_GetSceneController": 103,
    "SceneLoader_GetSceneObject": 1,
    "SceneLoader_GetSubsystem": 1,
    "SceneLoader_GetSceneResources": 1,
@@ -147697,7 +147706,7 @@
   "name": "GfxMatrix_IsPointInsideTriangle_6AD1D0",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_IsPointInsideTriangle_6AD1D0": 1
+   "GfxMatrix_IsPointInsideTriangle_6AD1D0": 2
   },
   "ret": "bool",
   "conv": "__cdecl",
@@ -147709,7 +147718,7 @@
   "name": "GfxMatrix_FindClosestPointOnTriangleEdges",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_FindClosestPointOnTriangleEdges": 1
+   "GfxMatrix_FindClosestPointOnTriangleEdges": 2
   },
   "ret": "float*",
   "conv": "__cdecl",
@@ -147757,7 +147766,7 @@
   "name": "S_00526d40_ProjectPointToPlane",
   "name_src": "agent",
   "votes": {
-   "S_00526d40_ProjectPointToPlane": 6
+   "S_00526d40_ProjectPointToPlane": 7
   },
   "ret": "float*",
   "conv": "__fastcall",
@@ -148746,7 +148755,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 493,
+   "GetGlobalInt": 494,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -150718,7 +150727,8 @@
   "name": "S_006b6be0_GetTriangleSurfaceFlag",
   "name_src": "agent",
   "votes": {
-   "GfxCollision_GetTriangleSurfaceFlag": 3
+   "GfxCollision_GetTriangleSurfaceFlag": 3,
+   "S_006b6be0_GetTriangleSurfaceFlag": 1
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -151548,7 +151558,7 @@
   "name": "GfxObjectProps_GetObjectSectorData",
   "name_src": "agent",
   "votes": {
-   "GfxObjectProps_GetObjectSectorData": 9,
+   "GfxObjectProps_GetObjectSectorData": 10,
    "SceneLoader_GetObjectSectorData": 1
   },
   "ret": "int",
@@ -167127,7 +167137,9 @@
  "006ebde0": {
   "name": "GfxCollision_ResetQuery",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "GfxCollision_ResetQuery": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -167582,7 +167594,7 @@
   "name_src": "agent",
   "votes": {
    "GfxCollision_InsertIntersection": 1,
-   "GfxCollision_AddIntersection": 1,
+   "GfxCollision_AddIntersection": 2,
    "GfxCollision_RecordIntersection": 1
   },
   "ret": "char",
@@ -167614,13 +167626,14 @@
   "file": "src/auto/006ed830.cpp"
  },
  "006ed9a0": {
-  "name": "sub_6ED9A0",
-  "name_src": "addr",
+  "name": "GfxCollision_CollectSphereTriangleIntersection",
+  "name_src": "agent",
   "votes": {},
   "ret": "float*",
   "conv": "__cdecl",
-  "params": "float* a1, int a3, float* arg8, float argC, int a5",
-  "sig_src": "abi"
+  "params": "float* center, int sector, float* triangle, float distance, void* query",
+  "sig_src": "impl",
+  "file": "src/auto/006ed9a0.cpp"
  },
  "006edc00": {
   "name": "GfxCollision_ProcessAtomicIntersection",
