@@ -2,12 +2,12 @@
 """Deep worker: one agent session on a job the orchestrator hands out and oversees (2026-10-13, user: the
 orchestrator no longer does the jobs itself; it spawns agents, reviews what they return, decides).
 
-Agents (--agent), by difficulty of the job (user, 2026-10-13): sol-hi = gpt-6.1-sol@high for hard jobs (default),
-sol-med = gpt-6.1-sol@medium for medium ones, both through the Codex CLI sandboxed to the job's tree; haiku-med =
-claude-haiku-5-5@medium through `claude -p` on the grunts' Claude account for small jobs that need little thinking
-(a fixed list of commands allowed, two at a time). Nothing runs on the main Claude account.
+Agents (--agent; user, 2026-10-13): sol-med = gpt-6.1-sol@medium for most jobs (default), sol-hi = gpt-6.1-sol@high
+for the hard ones, glm-flash = z-ai/glm-5.3-flash over OpenRouter for small jobs that need little thinking (on
+trial in place of Haiku). All three run through the Codex CLI sandboxed to the job's tree; glm-flash pays per token
+from the key in ~/.config/csf-re/openrouter.key (never in the repo). Nothing runs on a Claude account.
 
-  deep_worker.py start NAME --task FILE|- [--agent sol-hi|sol-med|haiku-med] [--timeout 3600] [--fresh]   in the background
+  deep_worker.py start NAME --task FILE|- [--agent sol-med|sol-hi|glm-flash] [--timeout 3600] [--fresh]   in the background
   deep_worker.py run   NAME ...           the same, in the foreground
   deep_worker.py list                     jobs and their state
   deep_worker.py review NAME applied|partial|rejected [--note TEXT]    the orchestrator's verdict on a finished job
@@ -32,16 +32,36 @@ DEEP = os.path.join(ROOT, "work", "deep")
 # in 4 minutes) spent the grunts' 5h window; six stopped unfinished. Since then: sonnet-lo is the Claude agent to
 # try first (user), at most CLAUDE_JOBS Claude jobs at a time, and their brief skips PLAN/JOURNAL.
 # Later that evening (user): three agents by difficulty. Sonnet and Opus are out.
-AGENTS = {"sol-hi": ("codex", "gpt-6.1-sol", "high"),        # hard jobs
-          "sol-med": ("codex", "gpt-6.1-sol", "medium"),     # medium jobs
-          "haiku-med": ("claude", "claude-haiku-5-5", "medium")}  # small jobs that need little thinking (grunts' account)
+# Night (user): "sol medium is the best and not too far from sol high": sol-med for most jobs; GLM-5.3-flash over
+# OpenRouter on trial for the small ones instead of Haiku. The Claude code path stays for old jobs' logs.
+AGENTS = {"sol-med": ("codex", "gpt-6.1-sol", "medium"),     # most jobs (default)
+          "sol-hi": ("codex", "gpt-6.1-sol", "high"),        # hard jobs
+          "glm-flash": ("codex", "z-ai/glm-5.3-flash", "medium")}  # small jobs that need little thinking (OpenRouter)
+DEFAULT = "sol-med"
 CLAUDE_JOBS = 2
-RETIRED = {"opus-me": ("claude", "claude-opus-5-5", "medium")}
+RETIRED = {"opus-me": ("claude", "claude-opus-5-5", "medium"), "haiku-med": ("claude", "claude-haiku-5-5", "medium")}
+# Agents that go through OpenRouter instead of a Codex login: $ per million tokens (input, output), for the
+# job's cost line (https://openrouter.ai/api/v1/models, 2026-10-13).
+OPENROUTER = {"glm-flash": (0.0261, 0.9)}
+OR_KEY = os.path.expanduser("~/.config/csf-re/openrouter.key")
+OR_HOME = os.path.expanduser("~/.config/csf-re/codex-openrouter")  # CODEX_HOME of these jobs: session files only
+OR_ARGS = ["-c", 'model_provider="openrouter"', "-c", 'model_providers.openrouter.name="OpenRouter"',
+           "-c", 'model_providers.openrouter.base_url="https://openrouter.ai/api/v1"',
+           "-c", 'model_providers.openrouter.env_key="OPENROUTER_API_KEY"',
+           "-c", 'model_providers.openrouter.wire_api="responses"']
 # opus-me: what `claude -p` may do without asking (dontAsk denies the rest)
 CLAUDE_ALLOW = ["Read", "Grep", "Glob", "Edit", "Write", "Bash(.venv/bin/python:*)", "Bash(git diff:*)",
                 "Bash(git status:*)", "Bash(git log:*)", "Bash(git show:*)", "Bash(ls:*)", "Bash(cat:*)", "Bash(rg:*)",
                 "Bash(grep:*)", "Bash(head:*)", "Bash(tail:*)", "Bash(wc:*)", "Bash(find:*)", "Bash(sed -n:*)",
                 "Bash(mkdir:*)", "Bash(cp:*)", "Bash(ninja:*)", "Bash(llvm-objdump:*)"]
+
+# What the Codex CLI sends by default and no job uses (measured 2026-10-13 by capturing the request: 53 KB before
+# the task for gpt-6.1-sol, 41 KB for a model it does not know): its general system prompt (replaced by BRIEF
+# through model_instructions_file), sub-agent, goal, image and plugin tools, the bundled skills list, AGENTS.md
+# lookup. With these: 25 KB for Sol (its sub-agent and ask-the-user tools have no switch in 0.160), 7.5 KB for GLM.
+SLIM = [x for f in ("multi_agent", "multi_agent_v2", "goals", "view_image", "apps", "plugins", "image_generation",
+                    "skill_search", "tool_suggest", "browser_use", "computer_use", "sleep_tool", "hooks")
+        for x in ("--disable", f)] + ["-c", "skills.bundled.enabled=false", "-c", "project_doc_max_bytes=0"]
 
 BRIEF = """You are a deep worker on CSF-RE: a C++ reimplementation of CommXPC.exe (Commandos: Strike Force, PC,
 MSVC 7.1), installed function by function as hooks over the original. Read CLAUDE.md and the parts of docs/PLAN.md
@@ -57,6 +77,10 @@ docs/JOURNAL.md, queue/ and db/ as they are: what belongs there goes in your rep
 Rules of the repo that bind you: an original address is never a bare number in code (CSF_FUNC / CSF_GLOBAL /
 CSF_STR / CSF_VTBL / CSF_ADDR_*, see src/globals.h); library regions (rw, d3dx9, netz, crt, png) are not
 reimplemented; no RenderWare SDK source; export/ is never edited by hand; large dumps go to files, not your answer.
+
+You work alone and unattended: nobody answers questions, so decide and say what you assumed; do not spawn
+sub-agents. Edit files with the patch tool if you have one, else with shell commands. Keep going until the task is
+done or you can show why it cannot be.
 
 Your last message is the report the orchestrator reads. Lead with the finding. Then, apart from each other: what
 you verified and with which command, what you concluded without verifying, what you changed (files), what is
@@ -113,6 +137,20 @@ def login():
     return best[1]
 
 
+def openrouter_key():
+    if not os.path.exists(OR_KEY):
+        raise SystemExit(f"no OpenRouter key: put it in {OR_KEY} (chmod 600)")
+    return open(OR_KEY).read().strip()
+
+
+def openrouter_budget():
+    """{limit, spent, left, expires} of the key in $ (limit None: no cap)."""
+    import urllib.request
+    rq = urllib.request.Request("https://openrouter.ai/api/v1/key", headers={"Authorization": "Bearer " + openrouter_key()})
+    d = json.load(urllib.request.urlopen(rq, timeout=15))["data"]
+    return dict(limit=d.get("limit"), spent=d.get("usage", 0), left=d.get("limit_remaining"), expires=d.get("expires_at"))
+
+
 def state(d, **kw):
     p = os.path.join(d, "state.json")
     st = json.load(open(p)) if os.path.exists(p) else {}
@@ -136,11 +174,13 @@ def run(a):
           agent=a.agent, model=model, effort=effort, task=task.strip().splitlines()[0][:160], error=None,
           review=None, note=None, runs=st.get("runs", 0) + 1,
           eas=sorted(set(re.findall(r"\b00[4-7][0-9a-f]{5}\b", task))))
-    brief = BRIEF if backend == "codex" else BRIEF.replace(
+    brief = BRIEF if backend == "codex" and a.agent not in OPENROUTER else BRIEF.replace(
         "Read CLAUDE.md and the parts of docs/PLAN.md\nand docs/JOURNAL.md your task touches before you start.",
         "Do not read docs/PLAN.md or docs/JOURNAL.md (long, and not\nneeded for a small job); read only what the task names.")
-    assert backend == "codex" or brief != BRIEF
-    prompt = brief + "\n=== TASK ===\n" + task
+    assert (backend == "codex" and a.agent not in OPENROUTER) or brief != BRIEF
+    # Codex: the brief is the system prompt (in place of the CLI's own), the task the only user message
+    prompt = task if backend == "codex" else brief + "\n=== TASK ===\n" + task
+    open(os.path.join(d, "instructions.md"), "w").write(brief)
     if os.path.exists(os.path.join(d, "patch.diff")) and os.path.getsize(os.path.join(d, "patch.diff")):
         prompt += ("\n\n(This job was started before and stopped by quota or timeout. Your tree still holds what "
                    "was changed then: look at `git status` and `git diff HEAD` first and go on from there.)\n")
@@ -150,20 +190,37 @@ def run(a):
             # not --ephemeral: the session file in the login's home carries running token counts (tokens())
             cmd = ["codex", "exec", "--ignore-user-config", "-s", "workspace-write", "-C", tree,
                    "-m", model, "-c", f'model_reasoning_effort="{effort}"', "-c", "web_search=disabled",
+                   "-c", "model_instructions_file=" + json.dumps(os.path.join(d, "instructions.md")), *SLIM,
                    "-o", report, "--json", "-"]
-            home = login()
-            state(d, login=os.path.basename(home).lstrip("."), home=home)
+            env = dict(os.environ)
+            if a.agent in OPENROUTER:
+                cmd[-1:-1] = OR_ARGS
+                home = OR_HOME
+                os.makedirs(home, exist_ok=True)
+                env["OPENROUTER_API_KEY"] = openrouter_key()
+                state(d, login="openrouter", home=home)
+            else:
+                home = login()
+                state(d, login=os.path.basename(home).lstrip("."), home=home)
+            env["CODEX_HOME"] = home
             with open(events, "w") as ev:
                 r = subprocess.run(cmd, input=prompt, stdout=ev, stderr=subprocess.PIPE, text=True,
-                                   timeout=a.timeout, env=dict(os.environ, CODEX_HOME=home))
+                                   timeout=a.timeout, env=env)
             tail = open(events, errors="replace").read()[-600:]
             if r.returncode or not os.path.exists(report):
                 err = f"codex exec rc={r.returncode}: {r.stderr[-400:]}"
                 if "usage limit" in tail:
                     err = "quota: " + tail[tail.find("usage limit"):][:120].split('"')[0]
+                elif a.agent in OPENROUTER and re.search(r"\b402\b|credits|key limit", tail + r.stderr[-600:], re.I):
+                    err = "quota: the OpenRouter key has no credit left"
             for line in open(events, errors="replace"):
                 if '"turn.completed"' in line:
-                    usage = json.loads(line).get("usage", {})
+                    u = json.loads(line).get("usage", {})  # one per turn; a job is one turn
+                    usage = {k: usage.get(k, 0) + v for k, v in u.items() if isinstance(v, (int, float))}
+            if a.agent in OPENROUTER and usage:  # list price, cache discount not counted: an upper bound
+                pin, pout = OPENROUTER[a.agent]
+                usage["cost_usd"] = round((usage.get("input_tokens", 0) * pin + (usage.get("output_tokens", 0) +
+                                           usage.get("reasoning_output_tokens", 0)) * pout) / 1e6, 4)
         else:
             cmd = ["claude", "-p", "--model", model, "--effort", effort, "--permission-mode", "dontAsk",
                    "--allowedTools", *CLAUDE_ALLOW, "--no-session-persistence", "--strict-mcp-config",
@@ -211,8 +268,10 @@ def run(a):
 def start(a):
     """Detached: the job outlives the caller; its last line lands in work/deep/NAME/run.log."""
     task = sys.stdin.read() if a.task == "-" else open(a.task).read()
+    if a.agent in OPENROUTER:
+        openrouter_key()
     if AGENTS[a.agent][0] == "claude":
-        busy = [j["name"] for j in jobs() if j["phase"] == "running" and AGENTS.get(j.get("agent"), ("",))[0] == "claude"]
+        busy = [j["name"] for j in jobs() if j["phase"] == "running" and (AGENTS.get(j.get("agent")) or RETIRED.get(j.get("agent"), ("",)))[0] == "claude"]
         if len(busy) >= CLAUDE_JOBS and not a.force:
             raise SystemExit(f"{len(busy)} Claude jobs already run ({', '.join(busy)}): at most {CLAUDE_JOBS} at a "
                              "time on the grunts' account (--force to start anyway)")
@@ -305,7 +364,7 @@ def tokens(st):
                     output=u.get("output_tokens", 0) + u.get("reasoning_output_tokens", 0),
                     cost_usd=u.get("cost_usd"))
     out = dict(input=0, cached=0, output=0)
-    if AGENTS.get(st.get("agent", "sol-hi"), ("claude",))[0] == "codex":
+    if (AGENTS.get(st.get("agent", "sol-hi")) or RETIRED.get(st.get("agent"), ("claude",)))[0] == "codex":
         tid = next((d.get("thread_id") for d in _events(name) if d.get("type") == "thread.started"), None)
         import glob
         files = glob.glob(os.path.join(st.get("home") or "", "sessions", "*", "*", "*", f"rollout-*{tid}.jsonl")) if tid else []
@@ -393,7 +452,7 @@ def main():
         r = sub.add_parser(cmd)
         r.add_argument("name")
         r.add_argument("--task", required=True, help="file with the task, or - for stdin")
-        r.add_argument("--agent", default="sol-hi", choices=sorted(AGENTS))
+        r.add_argument("--agent", default=DEFAULT, choices=list(AGENTS))
         r.add_argument("--timeout", type=int, default=3600)
         r.add_argument("--fresh", action="store_true", help="throw the job's old tree away first")
         r.add_argument("--force", action="store_true", help="start a Claude job past the limit of concurrent ones")

@@ -103,13 +103,21 @@ def evidence():
 def quota():
     out = []
     for h in limits.codex_homes():
-        row = dict(login=limits.codex_label(h), kind="Codex (sol-hi jobs, lanes)")
+        row = dict(login=limits.codex_label(h), kind="Codex (sol-med and sol-hi jobs, lanes)")
         try:
             u = limits.codex_usage(h)
             row.update({k: dict(used=round(v[0]), reset_at=time.time() + v[1]) for k, v in u.items()})
         except Exception as e:
             row["error"] = str(e)[:80]
         out.append(row)
+    try:
+        b = deep_worker.openrouter_budget()
+        out.append(dict(login="openrouter", kind="OpenRouter key (glm-flash jobs), paid per token",
+                        money=dict(spent=round(b["spent"], 3), limit=b["limit"], expires=b["expires"])))
+    except SystemExit:
+        pass  # no key stored
+    except Exception as e:
+        out.append(dict(login="openrouter", kind="OpenRouter key (glm-flash jobs)", error=str(e)[:80]))
     import grunt
     for which, kind in (("main", "Claude main (orchestrator, opus-me jobs)"), ("grunts", "Claude grunts (Haiku lanes)")):
         row = dict(login="claude " + which, kind=kind)
@@ -288,6 +296,10 @@ function jobDetail(n){const d=jd[n];if(!d)return '<span class="dim">loading…</
 async function loadJobs(){for(const n of openJobs){try{const r=await fetch('/api/job/'+n);jd[n]=await r.json();const el=document.getElementById('jd-'+n);if(el)el.innerHTML=jobDetail(n);}catch(e){}}}
 async function show(title,url){dt.textContent=title;ds.textContent=url;dp.textContent='loading…';dlg.showModal();
   const r=await fetch(url);dp.textContent=r.ok?await r.text():'not there (yet)';}
+// A prepaid key: $ spent of its limit
+function money(m){const p=m.limit?Math.min(100,Math.round(100*m.spent/m.limit)):0,c=p>=90?'var(--bad)':p>=70?'var(--warn)':'var(--ok)';
+  return `<div class="qh"><b style="color:${c}">$${m.spent.toFixed(2)}</b><span class="dim small">${m.limit?'of $'+m.limit+' spent':'spent, no limit'}${m.expires?' · key expires '+new Date(m.expires).toLocaleDateString():''}</span></div>
+   <div class="meter"><i style="width:${p}%;background:${c}"></i></div>`;}
 // One quota window (W seconds long): used %, live countdown to the reset, bar with a tick at the share of the
 // window already gone (bar past the tick = spending faster than the window refills), and when it runs out at this rate.
 function meter(u,W){if(!u)return '<span class="dim">–</span>';const days=W>86400,c=u.used>=90?'var(--bad)':u.used>=70?'var(--warn)':'var(--ok)';
@@ -309,7 +321,7 @@ function render(s){last=s;const p=s.progress,ev=s.evidence||{},pl=s.plan||{},bg=
    <tr><td>pending first in-game install</td><td class="n">${ev.pending}</td><td class="n dim">${ev.pending_kb} KB</td></tr></table>`:'<span class="dim">collecting…</span>'}
    ${s.linktest&&s.linktest.summary?`<div class="dim small" style="margin-top:8px">${E(s.linktest.summary)}</div>`:''}</section>`;
   // quota
-  h+=`<section class="c4"><h2>Quota</h2><table class="qt"><thead><tr><th>Login</th><th>5 h window</th><th>Weekly window</th></tr></thead>${(s.quota||[]).map(q=>`<tr><td title="${E(q.kind)}">${E(q.login)}${q.age>180?`<div class="warn small" title="the usage endpoint is rate-limited; this is its last good answer">${hm(q.age)} old</div>`:''}</td>${q.error?`<td colspan=2 class="failed small">${E(q.error)}</td>`:`<td>${meter(q['5h'],18000)}</td><td>${meter(q['7d'],604800)}</td>`}</tr>`).join('')}</table>
+  h+=`<section class="c4"><h2>Quota</h2><table class="qt"><thead><tr><th>Login</th><th>5 h window</th><th>Weekly window</th></tr></thead>${(s.quota||[]).map(q=>`<tr><td title="${E(q.kind)}">${E(q.login)}${q.age>180?`<div class="warn small" title="the usage endpoint is rate-limited; this is its last good answer">${hm(q.age)} old</div>`:''}</td>${q.error?`<td colspan=2 class="failed small">${E(q.error)}</td>`:q.money?`<td colspan=2>${money(q.money)}</td>`:`<td>${meter(q['5h'],18000)}</td><td>${meter(q['7d'],604800)}</td>`}</tr>`).join('')}</table>
    <div class="dim small" style="margin-top:6px">bar: quota used · tick: time gone in the window · hover for the reset time</div>
    <h2 style="margin-top:14px">Background</h2>${(bg.states||[]).map(b=>`<div><span class="${b.running?'running':'dim'}">●</span> ${E(b.what)}: ${E(b.phase)||'–'} <span class="dim small">${b.running?'':'(not running, '+hm(b.age_min*60,1)+' ago)'}</span></div>`).join('')}
    ${(bg.procs||[]).map(x=>`<div class="mono dim small">${E(x)}</div>`).join('')}</section>`;

@@ -85,7 +85,7 @@ The orchestrator (Opus, interactive) works `queue/` and the backlog below.
 ## Current focus (priority order)
 
 Stage since 2026-10-13: the waves are exhausted at 91.9% of game code. What is left is done by **agent jobs**
-(`tools/deep_worker.py`: sol-hi hard, sol-med medium, haiku-med small on the grunts' Claude account;
+(`tools/deep_worker.py`: sol-med for most jobs, sol-hi for hard ones, glm-flash over OpenRouter for small ones, on trial;
 user 2026-10-13); the orchestrator writes the
 tasks, reviews reports and patches, decides. Everything is visible on `tools/webmon.py` (user, 2026-10-13).
 
