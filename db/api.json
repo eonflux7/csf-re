@@ -141586,7 +141586,7 @@
   "name": "SceneLoader_CreateLoadTimer",
   "name_src": "vote",
   "votes": {
-   "SceneLoader_CreateLoadTimer": 7,
+   "SceneLoader_CreateLoadTimer": 8,
    "SceneLoader_CreateLoadScope": 1
   },
   "ret": "uint8_t*",
@@ -173506,11 +173506,13 @@
  "0070e220": {
   "name": "S_0070e170_ProcessPlaybackRequests",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_0070e170_ProcessPlaybackRequests": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0070e2d0": {
   "name": "C_008639b0_SetTransitionProgress",
@@ -173568,7 +173570,9 @@
  "0070e3b0": {
   "name": "S_0070e170_UpdateFadeAndPlayback",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_0070e170_UpdateFadeAndPlayback": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_0070e170* self, void* , float elapsed",
@@ -173578,7 +173582,9 @@
  "0070e4a0": {
   "name": "S_0070e170_FillPcmBuffer",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_0070e170_FillPcmBuffer": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_0070e170* self, void*",
@@ -173588,7 +173594,9 @@
  "0070e550": {
   "name": "S_0070e170_UpdateAudioBuffer",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "S_0070e170_UpdateAudioBuffer": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "S_0070e170* self, void* , char clearBuffer",
@@ -173636,13 +173644,14 @@
   "file": "src/auto/0070e7b0.cpp"
  },
  "0070e830": {
-  "name": "sub_70E830",
-  "name_src": "addr",
+  "name": "S_0070e170_RunPlaybackLoop",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_0070e170* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0070e830.cpp"
  },
  "0070e910": {
   "name": "Audio_CreateSoundInstance",
@@ -226834,11 +226843,13 @@
  "0081dd2e": {
   "name": "ov_pcm_seek_lap",
   "name_src": "ida",
-  "votes": {},
+  "votes": {
+   "ov_pcm_seek_lap": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, int a2, int a3",
-  "sig_src": "abi"
+  "params": "void* stream, int offsetLow, int offsetHigh",
+  "sig_src": "vote"
  },
  "0081dd34": {
   "name": "ov_info",
