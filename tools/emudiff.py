@@ -26,7 +26,7 @@ from unicorn import x86_const as X  # noqa: E402
 EXE = os.path.join(ROOT, "work", "pc", "CommXPC.exe")
 OBJ_DIR = os.path.join(ROOT, "build", "CMakeFiles", "csf_hook.dir", "src", "auto")
 IMG = 0x400000
-OBJ_BASE = 0x10000000   # our object's sections
+OBJ_BASE = 0x50000000   # our object's sections (outside the common wrapped profile pointers)
 EXT_BASE = 0x0F000000   # one address per unresolved external of the object
 SYS_BASE = 0x0D000000   # mock return stub, the magic return address, a `ret`, the security cookie
 RET_MAGIC, FLD_STUB, RET_STUB, COOKIE, FVAL = SYS_BASE + 0x800, SYS_BASE + 0x10, SYS_BASE + 0x20, SYS_BASE + 0x40, SYS_BASE + 0x50
@@ -146,6 +146,8 @@ def infer_stack_pops(ins, direct_pops, entry=None):
         return {}
     regs = ('ebx', 'esi', 'edi', 'ebp')
     popregs = {i.op_str for i in ins.values() if i.mnemonic == 'pop'}
+    if any(i.mnemonic == 'leave' for i in ins.values()):
+        popregs.add('ebp')  # LEAVE restores the frame register just like POP EBP.
     aliases = {'bl': 'ebx', 'bh': 'ebx', 'bx': 'ebx', 'si': 'esi', 'di': 'edi', 'bp': 'ebp'}
 
     # Affine expression {None: constant, call-site: coefficient}.
@@ -309,6 +311,36 @@ def stack_call_pops(ea):
 
 
 @functools.lru_cache(maxsize=None)
+def import_call_pop(ret, name):
+    """Import cleanup from a known ABI, or stack constraints in its original caller.
+
+    CRT calls are absent from export/calls.json and the hook's ret_site map. Find
+    the enclosing original function, never infer cleanup from candidate code.
+    None means ambiguous, not a zero-argument stdcall.
+    """
+    decorated = re.search(r'@(\d+)$', name.split('!')[-1])
+    if decorated:
+        return int(decorated.group(1))
+    known = IMPORT_POPS.get(name.split('!')[-1])
+    if known is not None:
+        return known
+    import bisect, capstone
+    starts = load('starts', lambda: sorted(functions()))
+    k = bisect.bisect_right(starts, ret - 1) - 1
+    if k < 0:
+        return None
+    ea = starts[k]
+    img, _ = exe_image()
+    md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+    for lo, hi in own_ranges(ea)[0]:
+        if lo <= ret - 1 < hi:
+            for ins in md.disasm(img[lo - IMG:hi - IMG], lo):
+                if ins.address + ins.size == ret and ins.mnemonic == 'call':
+                    return stack_call_pops(ea).get(ins.address)
+    return None
+
+
+@functools.lru_cache(maxsize=None)
 def indirect_facts(ea):
     from packet import DB
     from stackabi import indirect_facts as derive
@@ -343,14 +375,17 @@ def proto(ea):
 
 @functools.lru_cache(maxsize=None)
 def eax_meaningless(ea):
-    """No caller reads eax, or the original leaves it undefined on some path (api.py; the in-game diff's rule)."""
+    """The original leaves eax undefined on some path; unused is not undefined.
+
+    Caller usage does not change a function's observable return contract.
+    """
     def go():
         from packet import DB
         return DB()
     try:
         import api as apimod
         db = load("db", go)
-        return bool(apimod.eax_undefined_on_return(ea, db) or apimod.ret_unused(ea, db))
+        return bool(apimod.eax_undefined_on_return(ea, db))
     except Exception:
         return False
 
@@ -516,10 +551,11 @@ def hook_name(ea, src=None):
 class Run:
     made = 0
 
-    def __init__(self, ea, prof, own, obj=None, script=None):
+    def __init__(self, ea, prof, own, obj=None, script=None, memory_obj=None):
         """own: [(start, end)] code that is the function itself. script: the original's events (replayed pops)."""
         self.ea, self.prof, self.own, self.obj, self.script = ea, prof, own, obj, script
         self.events, self.written, self.status, self.pending = [], set(), None, None
+        self.float_written = set()
         self.reserved_done = {}
         self.proven_pops = stack_call_pops(ea) if not obj and ea in functions() else {}
         self.crt = crt_ranges()[0]
@@ -561,10 +597,15 @@ class Run:
         for r in (X.UC_X86_REG_DS, X.UC_X86_REG_ES):
             uc.reg_write(r, 0x7B)
         uc.reg_write(X.UC_X86_REG_FS, 0x83)
-        if obj:
-            uc.mem_map(OBJ_BASE, obj.end - OBJ_BASE)
-            for s in obj.secs:
+        # Numeric pointers from mocks can wrap into the object's address range.
+        # Mirror its bytes in the original run too: moving it merely relocates
+        # the collision and cannot prevent arbitrary 32-bit pointer arithmetic.
+        image_obj = obj or memory_obj
+        if image_obj:
+            uc.mem_map(OBJ_BASE, image_obj.end - OBJ_BASE)
+            for s in image_obj.secs:
                 uc.mem_write(s["base"], bytes(s["data"]))
+        if obj:
             uc.mem_map(EXT_BASE, 0x1000)
         self.mapped = set()
         if not obj:
@@ -678,9 +719,30 @@ class Run:
     def on_write(self, uc, access, addr, size, value, _):
         if not (STACK_LO <= addr < STACK_HI):
             self.written.update(range(addr, addr + size))
+            if not self.obj:
+                pc = uc.reg_read(X.UC_X86_REG_EIP)
+                if self.is_float_store(pc):
+                    self.float_written.update(range(addr, addr + size))
+                else:
+                    self.float_written.difference_update(range(addr, addr + size))
             if len(self.written) > 1_000_000:  # a runaway copy / fill
                 self.status = "cap"
                 uc.emu_stop()
+
+    def is_float_store(self, pc):
+        """Only FP stores in the original justify a rounding comparison."""
+        cache = getattr(self, '_float_store_cache', None)
+        if cache is None:
+            cache = self._float_store_cache = {}
+        if pc not in cache:
+            import capstone
+            md = load('cs', lambda: capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32))
+            ins = next(md.disasm(bytes(self.uc.mem_read(pc, 15)), pc), None)
+            # FIST(P) is deliberately excluded: it writes integers. SSE scalar
+            # stores are MOVSS/MOVSD; other MOVSD is the integer string copy.
+            cache[pc] = bool(ins and (ins.mnemonic in ('fst', 'fstp') or
+                                     ins.mnemonic in ('movss', 'movsd') and 'xmm' in ins.op_str))
+        return cache[pc]
 
     def on_unmapped(self, uc, access, addr, size, value, _):
         base = addr & ~0xFFF
@@ -725,8 +787,6 @@ class Run:
         if self.script is None:  # the original: its call site says what the callee pops
             site = self.ret_site.get(ret)
             pop = self.proven_pops.get(site, call_pops().get(site, p[3] if p else 0)) if ret != RET_MAGIC else (p[3] if p else 0)
-            if imp and self.ret_site.get(ret) not in call_pops():  # called from CRT code that runs for real
-                pop = IMPORT_POPS.get(imp.split("!")[1], pop)
             nargs = len(p[1]) if p else pop // 4
             use_ecx = p[0] if p else not imp
             rt = p[2] if p else "?"
@@ -734,6 +794,12 @@ class Run:
             pop = fact.get("pop", pop)
             nargs = fact.get("nargs", nargs)
             use_ecx = fact.get("ecx", use_ecx)
+            if imp:
+                proven = import_call_pop(ret, imp)
+                if proven is not None:
+                    pop = proven
+                    nargs = pop // 4
+                use_ecx = False
             if not imp and rt not in BYTE_TYPES and IMG <= target < IMG + 0x500000 and target in functions() and returns_al(target):
                 rt = "char"  # the callee sets al only, whatever its prototype says
         elif i < len(self.script):
@@ -848,6 +914,33 @@ R8 = {"al": "eax", "bl": "ebx", "cl": "ecx", "dl": "edx"}
 
 
 @functools.lru_cache(maxsize=None)
+def literal_pushes(site):
+    """Argument indices pushed as immediates in the original basic block.
+
+    A literal 0xCC byte is defined data, not evidence of an unwritten local.
+    Keep the uninitialized-stack rule for cases not proven by the binary.
+    """
+    import bisect, capstone
+    starts = load('starts', lambda: sorted(functions()))
+    k = bisect.bisect_right(starts, site) - 1
+    if k < 0 or site - starts[k] > 0x4000:
+        return frozenset()
+    img, _ = exe_image()
+    md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+    md.detail = True
+    ins = list(md.disasm(img[starts[k] - IMG:site - IMG], starts[k]))
+    out, idx = set(), 0
+    for i in reversed(ins):
+        if i.mnemonic in ('call', 'ret', 'pop') or i.mnemonic.startswith('j'):
+            break
+        if i.mnemonic == 'push':
+            if i.operands[0].type == capstone.x86.X86_OP_IMM:
+                out.add(idx)
+            idx += 1
+    return frozenset(out)
+
+
+@functools.lru_cache(maxsize=None)
 def byte_pushes(site):
     """Indices of the stack arguments of the original's call at `site` that are a byte in a pushed register:
     `setne dl; push edx` (0x71FCB0 to a vtable slot: nothing types the parameter, and edx's upper bytes are whatever
@@ -893,6 +986,7 @@ def same_args(eo, em):
         return False
     p = proto(eo[0]) if isinstance(eo[0], int) else None
     types = [t.strip() for t in p[1]] if p else []
+    literals = literal_pushes(eo[7]) if len(eo) > 7 and eo[7] else frozenset()
     for i, (a, b) in enumerate(zip(eo[5], em[5])):
         if a == b:
             continue
@@ -905,7 +999,7 @@ def same_args(eo, em):
         if len(eo) > 7 and eo[7] and i in byte_pushes(eo[7]):
             mask = 0xFF
         for k in range(4):
-            if (a >> 8 * k) & 0xFF == 0xCC:
+            if i not in literals and (a >> 8 * k) & 0xFF == 0xCC:
                 mask &= ~(0xFF << 8 * k)
         # the upper bytes are still the caller's ebx / esi / edi / edx: the original set bl (or bx) and pushed the
         # whole register for a byte parameter the prototype calls int (0x48EF60 `sete bl; push ebx`)
@@ -1004,7 +1098,8 @@ def compare(ea, o, m):
             continue
         if o.norm(wo) == m.norm(wm) and isinstance(o.norm(wo), str):
             continue  # a pointer into each side's own frame / data
-        if fo == fo and fm == fm and abs(wo - wm) < 64 and close(fo, fm):
+        fp_store = all(g + k in o.float_written for k in range(4))
+        if fp_store and fo == fo and fm == fm and abs(wo - wm) < 64 and close(fo, fm):
             continue  # last bits of a float
         ccmask = 0xFFFFFFFF
         for k in range(4):  # bytes of the original's dword that are never-written stack fill it copied along
@@ -1013,13 +1108,13 @@ def compare(ea, o, m):
         if ccmask != 0xFFFFFFFF and not (wo ^ wm) & ccmask:
             continue  # 0x4C0280 stores a byte local as a dword: 23cccccc vs 23000000
         huge = lambda w, f: (w & 0x7F800000) == 0x7F800000 or abs(f) > 1e15
-        if huge(wo, fo) and huge(wm, fm):
+        if fp_store and huge(wo, fo) and huge(wm, fm):
             continue  # NaN / infinity / beyond any game value on both sides (0x6F5E60: ffffffff vs 7fc00000)
         tiny = lambda w, f: (w & 0x7FFFFFFF) == 0 or ((w & 0x7F800000) != 0 and abs(f) < 1e-30)
-        if tiny(wo, fo) and tiny(wm, fm) and (wo | wm) & 0x7F800000:
+        if fp_store and tiny(wo, fo) and tiny(wm, fm) and (wo | wm) & 0x7F800000:
             continue  # a float below anything the game computes against a zero (0x4E2110: -6.9e-32 vs -0.0)
         fill = fill_word(g, o.prof)
-        if 0 < fill < 0x00800000 and fill in (wo, wm) and wo != wm:
+        if fp_store and 0 < fill < 0x00800000 and fill in (wo, wm) and wo != wm:
             soft.append(g)  # one side left a small int there, the other computed with it as a (denormal) float
             continue
         real.append((g, wo, wm))
@@ -1070,7 +1165,7 @@ def check(ea, obj_path=None, src=None, profiles=PROFILES, verbose=False):
     _tls.trace = ""
     done, diffs, why = 0, [], collections.Counter()
     for prof in range(profiles):
-        o = Run(ea, prof, own)
+        o = Run(ea, prof, own, memory_obj=obj)
         o.ret_site = ret_site
         o.start(ea)
         if o.status != "ret":

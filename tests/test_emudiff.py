@@ -5,6 +5,9 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
+from types import SimpleNamespace
+import struct
 import capstone
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -89,6 +92,23 @@ extern "C" int __cdecl IndirectExternal(unsigned target)
                 self.assertEqual(len(run.events), 1)
                 self.assertEqual(run.events[0][0], "_ExternalValue" if direct else target)
 
+    def test_wrapped_mock_pointer_sees_identical_object_bytes(self):
+        obj = emudiff.Obj(self.obj_path, 'FixedProbe')
+        original = emudiff.Run(0, 2, [], memory_obj=obj)
+        candidate = emudiff.Run(0, 2, obj.code, obj)
+        # The indexed element is 3 dwords wide: the full byte scale is 12.
+        address = (12 * 0x2C000101 + 9) & 0xFFFFFFFF
+        self.assertEqual(address, 0x10000C15)
+        for run in (original, candidate):
+            run.on_unmapped(run.uc, 19, address, 4, 0, None)
+        self.assertEqual(original.uc.mem_read(address, 4), candidate.uc.mem_read(address, 4))
+        fill = emudiff.fill_page(address & ~0xFFF, 2)[address & 0xFFF:(address & 0xFFF) + 4]
+        self.assertEqual(original.uc.mem_read(address, 4), fill)
+        # Even a collision at the new base is symmetric, not merely unlikely.
+        address = emudiff.OBJ_BASE + 0xC15
+        self.assertLess(address + 4, obj.end)
+        self.assertEqual(original.uc.mem_read(address, 4), candidate.uc.mem_read(address, 4))
+
 
 class CleanupInferenceTests(unittest.TestCase):
     def infer(self, code, direct_pop=0):
@@ -126,6 +146,88 @@ class CleanupInferenceTests(unittest.TestCase):
     def test_dynamic_frame_keeps_export(self):
         ins, counts = self.infer("55 8bec 83e4f0 ff5028 8be5 5d c3")
         self.assertEqual(counts, {})
+
+    def test_leave_restores_ebp_and_import_cleanup_is_general(self):
+        ins, counts = self.infer('55 8bec 83ec20 56 57 6a01 6a02 6a03 6a04 ff1500200000 5f 5e c9 c20800')
+        self.assertEqual(self.indirect_counts(ins, counts), [16])
+        # The undecorated import is inferred from its caller, not its name.
+        self.assertEqual(emudiff.import_call_pop(0x7AF69A, 'UNKNOWN.dll!UnknownImport'), 16)
+        self.assertEqual(emudiff.import_call_pop(0, 'UNKNOWN.dll!_Other@20'), 20)
+
+    def test_throw_exception_mock_preserves_saved_registers(self):
+        ea = 0x7AF666
+        own, ret_site = emudiff.own_ranges(ea)
+        run = emudiff.Run(ea, 2, own)
+        run.ret_site = ret_site
+        run.args = lambda: [0, 0]
+        run.start(ea)
+        self.assertEqual(run.status, 'ret')
+        self.assertTrue(run.kept)
+        self.assertEqual(run.esp, emudiff.ESP0 + 12)
+        self.assertEqual(run.events[0][1:3], (16, 4))
+
+
+class ComparisonRuleTests(unittest.TestCase):
+    def memory_run(self, word, floating=False):
+        address = 0x2A000150
+        data = struct.pack('<I', word)
+        uc = SimpleNamespace(mem_read=lambda a, n: data[a-address:a-address+n])
+        return SimpleNamespace(events=[], status='ret', esp=emudiff.ESP0 + 4,
+                               tail=False, kept=True, eax=0, st0=None, last_mock=None,
+                               blocks=1, uc=uc, prof=0, written=set(range(address,address+4)),
+                               float_written=set(range(address,address+4)) if floating else set(),
+                               norm=lambda x: x)
+
+    def test_integer_stores_are_not_float_rounding(self):
+        with patch.object(emudiff, 'proto', return_value=(False, [], 'void', 0)):
+            for word in (1, 3, 6):
+                self.assertTrue(emudiff.compare(0, self.memory_run(0), self.memory_run(word)))
+            # Identical bit deltas are tolerated only for original FP stores.
+            self.assertTrue(emudiff.compare(0, self.memory_run(0x3F800000), self.memory_run(0x3F800001)))
+            self.assertEqual(emudiff.compare(0, self.memory_run(0x3F800000, True), self.memory_run(0x3F800001)), [])
+            with patch.object(emudiff, 'fill_word', return_value=6):
+                result = emudiff.compare(0, self.memory_run(0), self.memory_run(6))
+                self.assertTrue(result)
+                self.assertFalse(result[0].startswith('?'))
+            self.assertTrue(emudiff.compare(0, self.memory_run(0xFFFFFFFF), self.memory_run(0x7FC00000)))
+
+    def test_float_store_instruction_classification_and_overwrite(self):
+        run = emudiff.Run(0, 0, [])
+        pc = emudiff.SYS_BASE + 0x300
+        for code, floating in (('d91f', True), ('db1f', False),
+                               ('f30f1107', True), ('f20f1107', True), ('a5', False)):
+            run.uc.mem_write(pc, bytes.fromhex(code) + b'\x90' * 15)
+            run._float_store_cache = {}
+            self.assertEqual(run.is_float_store(pc), floating)
+            run.uc.reg_write(X.UC_X86_REG_EIP, pc)
+            run.on_write(run.uc, 0, 0x2A000150, 4, 0, None)
+            self.assertEqual(bool(run.float_written), floating)
+
+    def test_unused_return_is_not_undefined(self):
+        import api
+        emudiff.eax_meaningless.cache_clear()
+        with patch.object(api, 'ret_unused', return_value=True), \
+             patch.object(api, 'eax_undefined_on_return', return_value=False), \
+             patch.object(emudiff, 'load', return_value=object()):
+            self.assertFalse(emudiff.eax_meaningless(0))
+        emudiff.eax_meaningless.cache_clear()
+
+    def test_literal_cc_argument_is_not_stack_garbage(self):
+        eo = ('callee', 4, 1, False, 'int', (0xCCCCCCCC,), None, 0x401000)
+        em = ('callee', 4, 1, False, 'int', (1,), None, None)
+        with patch.object(emudiff, 'literal_pushes', return_value=frozenset({0})):
+            self.assertFalse(emudiff.same_args(eo, em))
+        with patch.object(emudiff, 'literal_pushes', return_value=frozenset()):
+            self.assertTrue(emudiff.same_args(eo, em))
+
+    def test_literal_pushes_read_original_instructions(self):
+        emudiff.literal_pushes.cache_clear()
+        # push 0xCCCCCCCC; push eax; push 0; call ...
+        code = bytes.fromhex('68cccccccc 50 6a00 e800000000')
+        with patch.object(emudiff, 'load', return_value=[emudiff.IMG]), \
+             patch.object(emudiff, 'exe_image', return_value=(code, [])):
+            self.assertEqual(emudiff.literal_pushes(emudiff.IMG + 8), frozenset({0, 2}))
+        emudiff.literal_pushes.cache_clear()
 
 
 if __name__ == "__main__":

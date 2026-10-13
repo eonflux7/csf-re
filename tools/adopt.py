@@ -34,9 +34,15 @@ def main():
     ap.add_argument("--dry", action="store_true", help="check only: leave the main tree as it was")
     ap.add_argument("--allow-inconclusive", action="store_true")
     a = ap.parse_args()
-    tree = os.path.join(ROOT, "work", "deep", a.job, "tree")
-    out = subprocess.run(["git", "-C", tree, "status", "--porcelain", "--", "src/auto"], capture_output=True, text=True).stdout
-    files = sorted(l[3:].strip() for l in out.splitlines() if re.fullmatch(r"src/auto/[0-9a-f]{8}\.cpp", l[3:].strip()))
+    tree = os.path.join(ROOT, "work", "deep", a.job, "out")  # a pool job: the files it changed, kept apart
+    if os.path.isdir(tree):
+        names = [os.path.join("src/auto", f) for f in os.listdir(os.path.join(tree, "src", "auto"))] \
+            if os.path.isdir(os.path.join(tree, "src", "auto")) else []
+    else:
+        tree = os.path.join(ROOT, "work", "deep", a.job, "tree")
+        out = subprocess.run(["git", "-C", tree, "status", "--porcelain", "--", "src/auto"], capture_output=True, text=True).stdout
+        names = [l[3:].strip() for l in out.splitlines()]
+    files = sorted(f for f in names if re.fullmatch(r"src/auto/[0-9a-f]{8}\.cpp", f))
     if not files:
         raise SystemExit(f"job {a.job}: no src/auto/EA.cpp files changed in its tree")
     saved = {}

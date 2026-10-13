@@ -104,10 +104,46 @@ def sh(*cmd, cwd=None):
     return r.returncode, r.stdout + r.stderr
 
 
-def prepare(name, fresh):
+POOL, POOL_SIZE = os.path.join(DEEP, "_pool"), 4
+
+
+def pool_take(name):
+    """A free tree of the pool for a small job (user, 2026-10-13: triage jobs reuse a small pool of trees instead of
+    a worktree and a build configuration each). Waits for one; a slot whose job is gone is taken over."""
+    os.makedirs(POOL, exist_ok=True)
+    while True:
+        for i in range(POOL_SIZE):
+            lock = os.path.join(POOL, f"p{i}.lock")
+            try:
+                owner = open(lock).read().strip()
+            except OSError:
+                owner = None
+            if owner:
+                st = next((j for j in jobs() if j["name"] == owner), None)
+                if st and st["phase"] == "running":
+                    continue
+            try:
+                if owner:
+                    os.remove(lock)
+                with os.fdopen(os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY), "w") as f:
+                    f.write(name)
+            except OSError:
+                continue  # another job was quicker
+            tree = os.path.join(POOL, f"p{i}")
+            if os.path.exists(os.path.join(tree, ".git")):  # back to a clean HEAD; build/ and the links are ignored files
+                head = sh("git", "-C", ROOT, "rev-parse", "HEAD")[1].strip()
+                for cmd in (("reset", "-q", "--hard"), ("clean", "-fdq"), ("checkout", "-q", "--detach", head)):
+                    rc, out = sh("git", "-C", tree, *cmd)
+                    if rc:
+                        raise SystemExit(f"pool tree {tree}: git {cmd[0]}: {out}")
+            return tree, lock
+        time.sleep(5)
+
+
+def prepare(name, fresh, tree=None):
     """Detached worktree of HEAD for this worker (like the verify tree: derived dirs linked, own work/ and build/)."""
     d = os.path.join(DEEP, name)
-    tree = os.path.join(d, "tree")
+    tree = tree or os.path.join(d, "tree")
     head = sh("git", "-C", ROOT, "rev-parse", "HEAD")[1].strip()
     if fresh and os.path.exists(tree):
         sh("git", "-C", ROOT, "worktree", "remove", "--force", tree)
@@ -174,7 +210,13 @@ def state(d, **kw):
 
 def run(a):
     task = sys.stdin.read() if a.task == "-" else open(a.task).read()
-    d, tree, head = prepare(a.name, a.fresh)
+    lock = None
+    if a.pool:
+        os.makedirs(os.path.join(DEEP, a.name), exist_ok=True)
+        state(os.path.join(DEEP, a.name), name=a.name, pid=os.getpid(), phase="running", started=time.time(),
+              agent=a.agent, task="(waiting for a pool tree)")
+        tree, lock = pool_take(a.name)
+    d, tree, head = prepare(a.name, a.fresh, tree if a.pool else None)
     open(os.path.join(d, "task.md"), "w").write(task)
     report, events = os.path.join(d, "report.md"), os.path.join(d, "events.jsonl")
     if os.path.exists(report):
@@ -274,6 +316,15 @@ def run(a):
     sh("git", "-C", tree, "add", "-A", "-N")  # new files show in the diff
     patch = subprocess.run(["git", "-C", tree, "diff", "HEAD", "--", ".", ":!build"], capture_output=True, text=True).stdout
     open(os.path.join(d, "patch.diff"), "w").write(patch)
+    if lock:  # the tree goes back to the pool: keep the files it changed (tools/adopt.py reads them from out/)
+        out = os.path.join(d, "out")
+        shutil.rmtree(out, ignore_errors=True)
+        for l in sh("git", "-C", tree, "status", "--porcelain", "--", "src", "tools", "tests", "docs")[1].splitlines():
+            f = l[3:].strip()
+            if os.path.isfile(os.path.join(tree, f)):
+                os.makedirs(os.path.dirname(os.path.join(out, f)), exist_ok=True)
+                shutil.copyfile(os.path.join(tree, f), os.path.join(out, f))
+        os.remove(lock)
     state(d, finished=time.time(), phase=("quota" if err.startswith("quota") else "failed") if err else "done",
           error=err, usage=usage,
           patch_lines=patch.count("\n"))
@@ -301,7 +352,7 @@ def start(a):
     os.makedirs(d, exist_ok=True)
     open(os.path.join(d, "task.md"), "w").write(task)
     cmd = [sys.executable, os.path.abspath(__file__), "run", a.name, "--task", os.path.join(d, "task.md"),
-           "--agent", a.agent, "--timeout", str(a.timeout)] + (["--fresh"] if a.fresh else [])
+           "--agent", a.agent, "--timeout", str(a.timeout)] + (["--fresh"] if a.fresh else []) + (["--pool"] if a.pool else [])
     subprocess.Popen(cmd, stdout=open(os.path.join(d, "run.log"), "a"), stderr=subprocess.STDOUT,
                      stdin=subprocess.DEVNULL, start_new_session=True, cwd=ROOT)
     print(f"deep worker {a.name} ({a.agent}) started; work/deep/{a.name}/run.log")
@@ -501,6 +552,7 @@ def main():
         r.add_argument("--timeout", type=int, default=3600)
         r.add_argument("--fresh", action="store_true", help="throw the job's old tree away first")
         r.add_argument("--force", action="store_true", help="start a Claude job past the limit of concurrent ones")
+        r.add_argument("--pool", action="store_true", help="small job: run in a tree of the shared pool (waits for a free one)")
         r.set_defaults(fn=fn)
     rv = sub.add_parser("review")
     rv.add_argument("name")
