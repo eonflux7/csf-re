@@ -116954,7 +116954,7 @@
   "name": "AllocateGatheringStorage",
   "name_src": "vote",
   "votes": {
-   "AllocateGatheringStorage": 15
+   "AllocateGatheringStorage": 16
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -118439,7 +118439,7 @@
   "name": "InitializeTemporaryString",
   "name_src": "vote",
   "votes": {
-   "InitializeTemporaryString": 61
+   "InitializeTemporaryString": 64
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -118633,7 +118633,7 @@
   "name": "LookupObjectByIndex",
   "name_src": "vote",
   "votes": {
-   "LookupObjectByIndex": 23,
+   "LookupObjectByIndex": 24,
    "NetSession_GetHandleRegistry": 2
   },
   "ret": "int",
@@ -118645,7 +118645,7 @@
   "name": "FindOrCreateConfigEntry",
   "name_src": "vote",
   "votes": {
-   "FindOrCreateConfigEntry": 15
+   "FindOrCreateConfigEntry": 18
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -119308,7 +119308,7 @@
   "name": "AddConfigEntry",
   "name_src": "vote",
   "votes": {
-   "AddConfigEntry": 15
+   "AddConfigEntry": 18
   },
   "ret": "char",
   "conv": "__fastcall",
@@ -121999,7 +121999,7 @@
   "name_src": "vote",
   "votes": {
    "NetCogibleDdl_ReadByte": 1,
-   "ReadSerializedByte": 6,
+   "ReadSerializedByte": 7,
    "NetPlayerDdl_ReadEventByte": 1,
    "ReadPlayerStateTag": 1,
    "NetPlayerDdl_ReadByte": 1
@@ -122025,7 +122025,7 @@
   "name": "NetCogibleDdl_ReadIntoSlot",
   "name_src": "vote",
   "votes": {
-   "NetCogibleDdl_ReadIntoSlot": 12,
+   "NetCogibleDdl_ReadIntoSlot": 13,
    "NetZ_ReadIntoOutParam": 1
   },
   "ret": "uint32_t*",
@@ -122140,7 +122140,7 @@
   "name": "WriteConfigFlag",
   "name_src": "vote",
   "votes": {
-   "WriteConfigFlag": 7
+   "WriteConfigFlag": 8
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -122151,7 +122151,7 @@
   "name": "GameConfig_WriteByteField",
   "name_src": "vote",
   "votes": {
-   "GameConfig_WriteByteField": 14
+   "GameConfig_WriteByteField": 15
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -122173,7 +122173,7 @@
   "name": "GameConfig_WriteDwordField",
   "name_src": "vote",
   "votes": {
-   "GameConfig_WriteDwordField": 26
+   "GameConfig_WriteDwordField": 29
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -122184,7 +122184,7 @@
   "name": "WriteConfigPair",
   "name_src": "vote",
   "votes": {
-   "WriteConfigPair": 1
+   "WriteConfigPair": 2
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -124693,7 +124693,7 @@
   "name": "NetGameDdl_FinishFieldProcessing",
   "name_src": "vote",
   "votes": {
-   "NetGameDdl_FinishFieldProcessing": 1
+   "NetGameDdl_FinishFieldProcessing": 2
   },
   "ret": "void",
   "conv": "__stdcall",
@@ -124704,7 +124704,7 @@
   "name": "NetDdl_FallbackDispatch",
   "name_src": "vote",
   "votes": {
-   "NetDdl_FallbackDispatch": 2
+   "NetDdl_FallbackDispatch": 3
   },
   "ret": "char",
   "conv": "__stdcall",
@@ -125815,7 +125815,7 @@
   "name": "NetCogibleDdl_FindProperty",
   "name_src": "vote",
   "votes": {
-   "NetCogibleDdl_FindProperty": 7,
+   "NetCogibleDdl_FindProperty": 8,
    "ResolveObjectEntry": 1,
    "NetDdl_ResolveChannel": 1
   },
@@ -128245,7 +128245,7 @@
   "name_src": "vote",
   "votes": {
    "TempStringHashValue": 1,
-   "HashTemporaryString": 15,
+   "HashTemporaryString": 18,
    "Sub_66B590": 4
   },
   "ret": "int",
@@ -128653,7 +128653,7 @@
   "name": "NetDdl_SendSubField",
   "name_src": "vote",
   "votes": {
-   "NetDdl_SendSubField": 3
+   "NetDdl_SendSubField": 4
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -189979,7 +189979,7 @@
   "name_src": "agent",
   "votes": {
    "NetCogibleDdl_InitializeEmbeddedState": 1,
-   "C_00867890_InitDefaults": 1
+   "C_00867890_InitDefaults": 2
   },
   "ret": "uint8_t*",
   "conv": "__fastcall",
@@ -193565,13 +193565,14 @@
   "sig_src": "vote"
  },
  "0074b1c0": {
-  "name": "sub_74B1C0",
-  "name_src": "addr",
+  "name": "NetGhostDDL_WriteConfigPairFromPairObject",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "int* pairObject, void* , C_008622e8* configTarget, int a3, int a4, int a5",
+  "sig_src": "impl",
+  "file": "src/auto/0074b1c0.cpp"
  },
  "0074b1e0": {
   "name": "NetSpawnMessages_FormatCharacterValue",
@@ -193619,13 +193620,14 @@
   "sig_src": "vote"
  },
  "0074b280": {
-  "name": "sub_74B280",
-  "name_src": "addr",
+  "name": "NetGhostDDL_WriteObjectTypeByteToConfig",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "C_008622e8* self, void* , C_008622e8* a2, int a3, int a4, int a5",
+  "sig_src": "impl",
+  "file": "src/auto/0074b280.cpp"
  },
  "0074b2a0": {
   "name": "C_0074b2a0_SetFlag",
@@ -193653,23 +193655,25 @@
  },
  "0074b310": {
   "name": "NetPlayerDDL_ProcessForwardedArguments",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "NetPlayerDDL_ProcessForwardedArguments": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4, int a5",
-  "sig_src": "vote"
+  "params": "uint32_t* self, void* , uint32_t a2, uint32_t a3, uint32_t a4, uint32_t a5",
+  "sig_src": "impl",
+  "file": "src/auto/0074b310.cpp"
  },
  "0074b330": {
-  "name": "sub_74B330",
-  "name_src": "addr",
+  "name": "NetGhostDDL_AllocateAndInit",
+  "name_src": "agent",
   "votes": {},
   "ret": "char*",
   "conv": "__cdecl",
   "params": "",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/0074b330.cpp"
  },
  "0074b360": {
   "name": "NetGhost_GetName",
@@ -193683,7 +193687,7 @@
  },
  "0074b370": {
   "name": "NetGhostDDL_ForwardSlot2Call",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
@@ -193711,8 +193715,8 @@
   "sig_src": "abi"
  },
  "0074b3c0": {
-  "name": "NetGhostDdl_ProcessField",
-  "name_src": "vote",
+  "name": "NetGhostDDL_ProcessField",
+  "name_src": "agent",
   "votes": {
    "NetGhostDdl_ProcessField": 1
   },
@@ -193724,7 +193728,7 @@
  },
  "0074b470": {
   "name": "NetGhost_DispatchField",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__stdcall",
@@ -193733,40 +193737,44 @@
   "file": "src/auto/0074b470.cpp"
  },
  "0074b5e0": {
-  "name": "sub_74B5E0",
-  "name_src": "addr",
+  "name": "NetGhostDdl_ProcessFields",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, int a1, int a2",
-  "sig_src": "abi"
+  "conv": "__stdcall",
+  "params": "int objectAddress, int mode",
+  "sig_src": "impl",
+  "file": "src/auto/0074b5e0.cpp"
  },
  "0074b690": {
-  "name": "sub_74B690",
-  "name_src": "addr",
+  "name": "C_00858180_SetStoppedManipulating",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00858180* self, void* , char value",
+  "sig_src": "impl",
+  "file": "src/auto/0074b690.cpp"
  },
  "0074b6e0": {
-  "name": "sub_74B6E0",
-  "name_src": "addr",
+  "name": "C_00858180_SetManipulationRequested",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00858180* self, void* , char value",
+  "sig_src": "impl",
+  "file": "src/auto/0074b6e0.cpp"
  },
  "0074b730": {
-  "name": "sub_74B730",
-  "name_src": "addr",
+  "name": "C_00858180_SetBombActivated",
+  "name_src": "impl",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_00858180* self, void* , char value",
+  "sig_src": "impl",
+  "file": "src/auto/0074b730.cpp"
  },
  "0074b780": {
   "name": "NetGhostDdl_ForwardToProcessField_74B780",
@@ -193789,22 +193797,24 @@
   "file": "src/auto/0074b7a0.cpp"
  },
  "0074b7c0": {
-  "name": "sub_74B7C0",
-  "name_src": "addr",
+  "name": "NetGhostDdl_ReadByteThenSlot",
+  "name_src": "impl",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__stdcall",
-  "params": "int a1, char* a2, int a3, void* a4, int a5",
-  "sig_src": "abi"
+  "params": "int , char* a2, int , C_008622e8* a4, int",
+  "sig_src": "impl",
+  "file": "src/auto/0074b7c0.cpp"
  },
  "0074b7f0": {
-  "name": "sub_74B7F0",
-  "name_src": "addr",
+  "name": "NetGhostDDL_ForwardWithSelf",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__stdcall",
-  "params": "int a1, int* a2, int a3, int a4, int a5, void* a6, int a7",
-  "sig_src": "abi"
+  "params": "int a1, int* a2, int a3, int a4, int a5, C_008622e8* a6, int a7",
+  "sig_src": "impl",
+  "file": "src/auto/0074b7f0.cpp"
  },
  "0074b810": {
   "name": "NetGhostDdl_ReadIntoSlotViaFourthArg",
@@ -193854,13 +193864,15 @@
   "sig_src": "abi"
  },
  "0074b940": {
-  "name": "sub_74B940",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetGhostBase_InitBase",
+  "name_src": "vote",
+  "votes": {
+   "NetGhostBase_InitBase": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0074b9d0": {
   "name": "sub_74B9D0",
@@ -193901,24 +193913,27 @@
   "sig_src": "abi"
  },
  "0074c050": {
-  "name": "NetGhostDdl_ProcessGhostField",
-  "name_src": "vote",
+  "name": "C_00858180_SendDdlFields",
+  "name_src": "agent",
   "votes": {
    "NetGhostDdl_ProcessGhostField": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* arg0, int a3",
-  "sig_src": "vote"
+  "params": "C_00858180* self, void* , C_00858180* selectedField, int contextAddress",
+  "sig_src": "impl",
+  "file": "src/auto/0074c050.cpp"
  },
  "0074c260": {
-  "name": "sub_74C260",
-  "name_src": "addr",
-  "votes": {},
+  "name": "NetGhostDdl_ProcessField",
+  "name_src": "vote",
+  "votes": {
+   "NetGhostDdl_ProcessField": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a5, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0074c440": {
   "name": "NetGhostDdl_ForwardToProcessGhostField",
@@ -193951,13 +193966,14 @@
   "file": "src/auto/0074c480.cpp"
  },
  "0074c4a0": {
-  "name": "sub_74C4A0",
-  "name_src": "addr",
+  "name": "NetGhostDdl_ForwardToProcessField_74C4A0",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__stdcall",
-  "params": "uint32_t* a1, int a2, int a3",
-  "sig_src": "abi"
+  "params": "void* a1, int a2, int a3",
+  "sig_src": "impl",
+  "file": "src/auto/0074c4a0.cpp"
  },
  "0074c4c0": {
   "name": "NetGameDDL_Create",
