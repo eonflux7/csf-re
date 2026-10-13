@@ -9,6 +9,7 @@
 - {addr: 0x0082D08C, name: g_GetLastErrorImportSlot, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D094, name: g_pfnGetFileSize, type: GetFileSizeFn, uses: 1, src: auto}
 - {addr: 0x0082D09C, name: g_CreateFileAImport, type: AudioCreateFileA, uses: 2, src: auto}
+- {addr: 0x0082D0BC, name: g_MultiByteToWideChar, type: MultiByteToWideCharFn, uses: 1, src: auto}
 - {addr: 0x0082D0C0, name: g_QueryPerformanceCounterIat, type: void*, uses: 2, src: auto}
 - {addr: 0x0082D0C4, name: g_QueryPerformanceFrequencyIat, type: QueryFrequencyFn, uses: 2, src: auto}
 - {addr: 0x0082D0DC, name: g_FindFirstFileA, type: FindFirstFileAProc, uses: 4, src: auto}
@@ -28,6 +29,7 @@
 - {addr: 0x0082D218, name: g_CreateDirectoryW, type: CreateDirectoryWFunction, uses: 4, src: auto}
 - {addr: 0x0082D21C, name: g_GetCurrentDirectoryW, type: GetCurrentDirectoryWProc, uses: 10, src: auto}
 - {addr: 0x0082D220, name: g_GetSystemTimeAsFileTime, type: GetSystemTimeAsFileTimeFn, uses: 1, src: auto}
+- {addr: 0x0082D224, name: g_GetLocaleInfoA, type: GetLocaleInfoAFn, uses: 1, src: auto}
 - {addr: 0x0082D228, name: g_CreateProcessAImportSlot, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D22C, name: g_GetFileAttributesAImport, type: GetFileAttributesAFn, uses: 1, src: auto}
 - {addr: 0x0082D230, name: g_SetFilePointerImport, type: void*, uses: 5, src: auto, alt: [g_pSetFilePointerImport]}
@@ -45,6 +47,7 @@
 - {addr: 0x0082D260, name: g_SetProcessAffinityMaskIat, type: SetAffinityFn, uses: 1, src: auto}
 - {addr: 0x0082D268, name: g_ShGetFolderPathW, type: ShGetFolderPathWFn, uses: 1, src: auto}
 - {addr: 0x0082D270, name: g_MapVirtualKeyA, type: MapVirtualKeyAFunction, uses: 1, src: auto}
+- {addr: 0x0082D278, name: g_GetKeyboardLayout, type: GetKeyboardLayoutFn, uses: 1, src: auto}
 - {addr: 0x0082D27C, name: g_GetActiveWindow, type: GetActiveWindowFn, uses: 1, src: auto}
 - {addr: 0x0082D280, name: g_ClientToScreen, type: ClientToScreenFn, uses: 1, src: auto}
 - {addr: 0x0082D284, name: g_FindWindowAImportSlot, type: void*, uses: 1, src: auto}
@@ -65,6 +68,7 @@
 - {addr: 0x0082D2F4, name: g_SetWindowTextAImportSlot, type: SetWindowTextFunction, uses: 1, src: auto}
 - {addr: 0x0082D2F8, name: g_GetWindowTextAImportSlot, type: GetWindowTextFunction, uses: 1, src: auto}
 - {addr: 0x0082D2FC, name: g_DestroyWindowImport, type: void*, uses: 1, src: auto}
+- {addr: 0x0082D31C, name: g_GetWindowLongA, type: GetWindowLongAProc, uses: 1, src: auto}
 - {addr: 0x0082D324, name: g_TimeGetTimeIat, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D390, name: g_BinkCloseFn, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D394, name: g_BinkPauseImport, type: BinkPauseImportFn, uses: 1, src: auto}
@@ -76,7 +80,7 @@
 - {addr: 0x0082D4C8, name: g_CollisionMinimumTriangleArea, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
 - {addr: 0x0082D4D0, name: g_CollisionHeightTolerance, type: float, uses: 1, src: auto}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 191, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 192, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 15, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 18, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}

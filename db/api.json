@@ -969,7 +969,7 @@
   "name": "AudioSoundManager_ProcessArchiveContext",
   "name_src": "agent",
   "votes": {
-   "AudioSoundManager_ProcessArchiveContext": 30,
+   "AudioSoundManager_ProcessArchiveContext": 31,
    "AudioSoundManager_PrepareArchive": 2
   },
   "ret": "int",
@@ -8190,7 +8190,7 @@
   "name": "C_00834fa8_RunStateHandlerAtOffset14",
   "name_src": "agent",
   "votes": {
-   "C_00834fa8_RunStateHandlerAtOffset14": 2
+   "C_00834fa8_RunStateHandlerAtOffset14": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -19769,7 +19769,7 @@
   "name": "CHandleTable_Resolve",
   "name_src": "vote",
   "votes": {
-   "CHandleTable_Resolve": 439
+   "CHandleTable_Resolve": 440
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -44652,7 +44652,9 @@
  "004a7240": {
   "name": "C_0082f9f8_PrepareMountPlacementAndStartMovement",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0082f9f8_PrepareMountPlacementAndStartMovement": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_0082f9f8* self, void*",
@@ -44950,6 +44952,7 @@
   "name": "C_0082f9f8_QueueAction",
   "name_src": "agent",
   "votes": {
+   "C_0082f9f8_QueueAction": 1,
    "Owner_QueueAction": 1
   },
   "ret": "char",
@@ -47282,40 +47285,44 @@
   "sig_src": "abi"
  },
  "004ad4b0": {
-  "name": "sub_4AD4B0",
-  "name_src": "addr",
+  "name": "QueueLinkedObjectAction",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1",
-  "sig_src": "abi"
+  "params": "int linkedObject",
+  "sig_src": "impl",
+  "file": "src/auto/004ad4b0.cpp"
  },
  "004ad4f0": {
-  "name": "sub_4AD4F0",
-  "name_src": "addr",
+  "name": "DispatchToLinkedSubsystem",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1, int a2",
-  "sig_src": "abi"
+  "params": "int ownerHandle, int argument",
+  "sig_src": "impl",
+  "file": "src/auto/004ad4f0.cpp"
  },
  "004ad530": {
-  "name": "sub_4AD530",
-  "name_src": "addr",
+  "name": "StartMountMovementFromLinkedObject",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a2",
-  "sig_src": "abi"
+  "params": "int a1",
+  "sig_src": "impl",
+  "file": "src/auto/004ad530.cpp"
  },
  "004ad560": {
-  "name": "sub_4AD560",
-  "name_src": "addr",
+  "name": "AiState_RunLinkedStateHandler",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "void* a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004ad560.cpp"
  },
  "004ad5a0": {
   "name": "sub_4AD5A0",
@@ -47356,22 +47363,24 @@
   "sig_src": "abi"
  },
  "004ad780": {
-  "name": "sub_4AD780",
-  "name_src": "addr",
+  "name": "DispatchLinkedObjectSlot40",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1",
-  "sig_src": "abi"
+  "params": "int linkedValueArg",
+  "sig_src": "impl",
+  "file": "src/auto/004ad780.cpp"
  },
  "004ad7c0": {
-  "name": "sub_4AD7C0",
-  "name_src": "addr",
+  "name": "AiCoverAttackTasks_ResetLinkedObjectTaskState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1",
-  "sig_src": "abi"
+  "params": "void* self",
+  "sig_src": "impl",
+  "file": "src/auto/004ad7c0.cpp"
  },
  "004ad7e0": {
   "name": "IsField8NonNegative",
@@ -47411,14 +47420,15 @@
  },
  "004ad810": {
   "name": "AiAlert_IsLinkedAlertReady",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "AiAlert_IsLinkedAlertReady": 2
   },
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "int* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004ad810.cpp"
  },
  "004ad850": {
   "name": "GetLinkedPositionWeight",
@@ -47432,13 +47442,14 @@
   "sig_src": "vote"
  },
  "004ad8e0": {
-  "name": "sub_4AD8E0",
-  "name_src": "addr",
+  "name": "InitUnitScaleAndCopyTwoVec3",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "void* self, void* , const int32_t* srcA, const int32_t* srcB",
+  "sig_src": "impl",
+  "file": "src/auto/004ad8e0.cpp"
  },
  "004ad930": {
   "name": "sub_4AD930",
@@ -47483,15 +47494,16 @@
   "sig_src": "vote"
  },
  "004adb50": {
-  "name": "TargetRecord_Activate",
-  "name_src": "vote",
+  "name": "TargetRecord_IsFieldAboveTransitionOne",
+  "name_src": "agent",
   "votes": {
    "TargetRecord_Activate": 2
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "float* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004adb50.cpp"
  },
  "004adb70": {
   "name": "S_004ad990_UpdateActiveCover",
@@ -47525,13 +47537,14 @@
   "sig_src": "abi"
  },
  "004add40": {
-  "name": "sub_4ADD40",
-  "name_src": "addr",
+  "name": "Audio_UpdateAndReportDone",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
-  "conv": "__fastcall",
-  "params": "void* self, void* edx, int a1",
-  "sig_src": "abi"
+  "conv": "__stdcall",
+  "params": "void* a1",
+  "sig_src": "impl",
+  "file": "src/auto/004add40.cpp"
  },
  "004addb0": {
   "name": "AiDistracted_GrowPointList",
@@ -58206,7 +58219,7 @@
   "name": "GetLinkedObjectValue_4DB5C0",
   "name_src": "agent",
   "votes": {
-   "GetLinkedObjectValue_4DB5C0": 266
+   "GetLinkedObjectValue_4DB5C0": 271
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -58218,7 +58231,7 @@
   "name": "GetLinkedObjectField10",
   "name_src": "agent",
   "votes": {
-   "GetLinkedObjectField10": 105
+   "GetLinkedObjectField10": 107
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -58865,7 +58878,7 @@
   "name": "AiCoverAttackTasks_ResetLinkedTaskState",
   "name_src": "vote",
   "votes": {
-   "AiCoverAttackTasks_ResetLinkedTaskState": 66,
+   "AiCoverAttackTasks_ResetLinkedTaskState": 67,
    "BindLinkedSubobject": 1,
    "AiCoverAttackTasks_SelectTaskEntry": 1,
    "CoverAttack_Sub_4DC380": 1,
@@ -58885,7 +58898,7 @@
   "name": "PrepareStaticAiState",
   "name_src": "vote",
   "votes": {
-   "PrepareStaticAiState": 5
+   "PrepareStaticAiState": 6
   },
   "ret": "void",
   "conv": "__stdcall",
@@ -138821,7 +138834,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 136,
+   "CoreMemory_Free": 137,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -177552,13 +177565,16 @@
   "file": "src/auto/00712eb0.cpp"
  },
  "00712f00": {
-  "name": "sub_712F00",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CInputDirectInput_ReleaseDeviceAndInterface",
+  "name_src": "agent",
+  "votes": {
+   "CInputBase_ReleaseResources": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "CInputDirectInput* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00712f00.cpp"
  },
  "00712fc0": {
   "name": "CInputDirectInput_StoreDeviceParams",
@@ -177571,26 +177587,28 @@
   "file": "src/auto/00712fc0.cpp"
  },
  "00712ff0": {
-  "name": "sub_712FF0",
-  "name_src": "addr",
+  "name": "CInputDirectInput_CopyStateBlock",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "CInputDirectInput* self, void* , const void* sourceBlock",
+  "sig_src": "impl",
+  "file": "src/auto/00712ff0.cpp"
  },
  "00713030": {
-  "name": "sub_713030",
-  "name_src": "addr",
+  "name": "CInputDirectInput_SetAcquireEnabled",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "CInputDirectInput* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/00713030.cpp"
  },
  "007130b0": {
   "name": "CInputDirectInput_ToggleAcquire",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -177691,15 +177709,16 @@
   "file": "src/auto/007132d0.cpp"
  },
  "007132f0": {
-  "name": "CInputDirectInput_CreateInputDevices",
-  "name_src": "vote",
+  "name": "CInputDirectInput_InitializeDevices",
+  "name_src": "agent",
   "votes": {
    "CInputDirectInput_CreateInputDevices": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* hWnd, int a3",
-  "sig_src": "vote"
+  "params": "CInputDirectInput* self, void* , void* window, char exclusiveMouse",
+  "sig_src": "impl",
+  "file": "src/auto/007132f0.cpp"
  },
  "00713400": {
   "name": "CInputDirectInput_ReleaseDevices",
@@ -177723,13 +177742,16 @@
   "file": "src/auto/007137a0.cpp"
  },
  "007137e0": {
-  "name": "sub_7137E0",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "int16_t",
+  "name": "CInputDirectInput_ForwardLocaleCharsToHandler",
+  "name_src": "agent",
+  "votes": {
+   "CInputDirectInput_PollEvents": 1
+  },
+  "ret": "std::int16_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "CInputDirectInput* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/007137e0.cpp"
  },
  "00713880": {
   "name": "CInputDirectInput_AppendTypedChar",
@@ -177742,13 +177764,14 @@
   "file": "src/auto/00713880.cpp"
  },
  "007138d0": {
-  "name": "sub_7138D0",
-  "name_src": "addr",
+  "name": "CInputDirectInput_DestroyAndMaybeFree",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "CInputDirectInput* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/007138d0.cpp"
  },
  "00713920": {
   "name": "CInputDirectInput_InitializeWithWindow",
@@ -177762,7 +177785,7 @@
  },
  "00713970": {
   "name": "CInputDirectInput_CopyEnabledStatesToArray",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -177771,13 +177794,14 @@
   "file": "src/auto/00713970.cpp"
  },
  "007139e0": {
-  "name": "sub_7139E0",
-  "name_src": "addr",
+  "name": "CInputDirectInput_DispatchEvents",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "CInputDirectInput* self, void* , int listenerAddress",
+  "sig_src": "impl",
+  "file": "src/auto/007139e0.cpp"
  },
  "00713b10": {
   "name": "C_0083e500_SetField0008",
@@ -214582,7 +214606,7 @@
   "name": "ParseThumbnailIndex",
   "name_src": "vote",
   "votes": {
-   "ParseThumbnailIndex": 7
+   "ParseThumbnailIndex": 8
   },
   "ret": "std::int32_t",
   "conv": "__cdecl",
@@ -219151,6 +219175,17 @@
   "conv": "__cdecl",
   "params": "",
   "sig_src": "abi"
+ },
+ "007db650": {
+  "name": "DirectInput8Create",
+  "name_src": "rwname",
+  "votes": {
+   "InputDInput_CreateDirectInput8": 1
+  },
+  "ret": "int32_t",
+  "conv": "__fastcall",
+  "params": "void* self, void* edx, void* instance, uint32_t version, const void* interfaceId, uint32_t* output, void* outer",
+  "sig_src": "vote"
  },
  "007db660": {
   "name": "sub_7DB660",
