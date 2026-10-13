@@ -32018,7 +32018,7 @@
   "name": "C_0082f9f8_StartCharMovement",
   "name_src": "agent",
   "votes": {
-   "C_0082f9f8_StartCharMovement": 1
+   "C_0082f9f8_StartCharMovement": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -37925,7 +37925,7 @@
   "name": "HasNonzeroLinkedValueDifferentFrom",
   "name_src": "agent",
   "votes": {
-   "HasNonzeroLinkedValueDifferentFrom": 7
+   "HasNonzeroLinkedValueDifferentFrom": 8
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -47020,15 +47020,16 @@
   "sig_src": "vote"
  },
  "004ac980": {
-  "name": "AiStateFactory_HandleRequest31",
-  "name_src": "vote",
+  "name": "AiStateFactory_ResetLinkedCoverTasks",
+  "name_src": "agent",
   "votes": {
    "AiStateFactory_HandleRequest31": 1
   },
   "ret": "char",
   "conv": "__stdcall",
   "params": "int a1",
-  "sig_src": "vote"
+  "sig_src": "impl",
+  "file": "src/auto/004ac980.cpp"
  },
  "004ac9a0": {
   "name": "sub_4AC9A0",
@@ -47085,22 +47086,24 @@
   "sig_src": "abi"
  },
  "004acce0": {
-  "name": "sub_4ACCE0",
-  "name_src": "addr",
+  "name": "Orden_StartMovementOnLinkedObject",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
-  "params": "int a1",
-  "sig_src": "abi"
+  "params": "int owner",
+  "sig_src": "impl",
+  "file": "src/auto/004acce0.cpp"
  },
  "004acd20": {
-  "name": "sub_4ACD20",
-  "name_src": "addr",
+  "name": "Order_ForwardToLinkedMemberSlot36",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1, int a2",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004acd20.cpp"
  },
  "004acd50": {
   "name": "sub_4ACD50",
@@ -47112,13 +47115,14 @@
   "sig_src": "abi"
  },
  "004acdf0": {
-  "name": "sub_4ACDF0",
-  "name_src": "addr",
+  "name": "TOrden_ResetPendingOrderState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004acdf0.cpp"
  },
  "004ace70": {
   "name": "sub_4ACE70",
@@ -47185,7 +47189,8 @@
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1, int a2, int a3, int a4",
-  "sig_src": "vote"
+  "sig_src": "impl",
+  "file": "src/auto/004ad100.cpp"
  },
  "004ad1a0": {
   "name": "sub_4AD1A0",
@@ -47197,67 +47202,74 @@
   "sig_src": "abi"
  },
  "004ad1f0": {
-  "name": "sub_4AD1F0",
-  "name_src": "addr",
+  "name": "AiOrder_DispatchNoLinkedTarget",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004ad1f0.cpp"
  },
  "004ad210": {
-  "name": "sub_4AD210",
-  "name_src": "addr",
+  "name": "TOrden_ApplyOrderState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "TOrden* self, void* , TAiState* a2",
+  "sig_src": "impl",
+  "file": "src/auto/004ad210.cpp"
  },
  "004ad230": {
-  "name": "sub_4AD230",
-  "name_src": "addr",
+  "name": "TOrden_UpdateLinkedObjectAndDispatch",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004ad230.cpp"
  },
  "004ad290": {
-  "name": "sub_4AD290",
-  "name_src": "addr",
+  "name": "AiOrder_ClearLinkedOrderState",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004ad290.cpp"
  },
  "004ad2d0": {
-  "name": "sub_4AD2D0",
-  "name_src": "addr",
+  "name": "AiOrder_SetLinkedObjectDefaultValue",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004ad2d0.cpp"
  },
  "004ad300": {
-  "name": "sub_4AD300",
-  "name_src": "addr",
+  "name": "AiOrder_InvokeLinkedObjectVirtualSlot35",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004ad300.cpp"
  },
  "004ad330": {
-  "name": "sub_4AD330",
-  "name_src": "addr",
+  "name": "Order_ResolveLinkedTargetAndDispatch",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__stdcall",
   "params": "int a1",
-  "sig_src": "abi"
+  "sig_src": "impl",
+  "file": "src/auto/004ad330.cpp"
  },
  "004ad370": {
   "name": "sub_4AD370",
@@ -58269,7 +58281,7 @@
   "name": "GetLinkedObjectValue_4DB5C0",
   "name_src": "agent",
   "votes": {
-   "GetLinkedObjectValue_4DB5C0": 280
+   "GetLinkedObjectValue_4DB5C0": 289
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -58281,7 +58293,7 @@
   "name": "GetLinkedObjectField10",
   "name_src": "agent",
   "votes": {
-   "GetLinkedObjectField10": 109
+   "GetLinkedObjectField10": 112
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -58696,7 +58708,7 @@
   "name": "Dispatch_NoLinkedTarget",
   "name_src": "vote",
   "votes": {
-   "Dispatch_NoLinkedTarget": 23,
+   "Dispatch_NoLinkedTarget": 25,
    "CoverTask_SetTarget": 1
   },
   "ret": "int",
@@ -58861,7 +58873,7 @@
   "name": "CoverAttack_SetState_4DC150",
   "name_src": "vote",
   "votes": {
-   "CoverAttack_SetState_4DC150": 39,
+   "CoverAttack_SetState_4DC150": 40,
    "TMovil_sub_4DC150": 1,
    "AiState_Init_4DC150": 1
   },
@@ -58928,7 +58940,7 @@
   "name": "AiCoverAttackTasks_ResetLinkedTaskState",
   "name_src": "vote",
   "votes": {
-   "AiCoverAttackTasks_ResetLinkedTaskState": 68,
+   "AiCoverAttackTasks_ResetLinkedTaskState": 70,
    "BindLinkedSubobject": 1,
    "AiCoverAttackTasks_SelectTaskEntry": 1,
    "CoverAttack_Sub_4DC380": 1,
