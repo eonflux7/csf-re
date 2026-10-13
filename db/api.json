@@ -17745,7 +17745,7 @@
   "file": "src/auto/00449c60.cpp"
  },
  "00449e30": {
-  "name": "Archive_SerializeRecordArray",
+  "name": "Archive_SerializeRecordArray_449E30",
   "name_src": "agent",
   "votes": {
    "DispatchToEventHandlers": 1
@@ -42134,13 +42134,15 @@
   "file": "src/auto/0049f2c0.cpp"
  },
  "0049f330": {
-  "name": "sub_49F330",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Archive_GrowRecordArray",
+  "name_src": "vote",
+  "votes": {
+   "Archive_GrowRecordArray": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0049f410": {
   "name": "C_008342e8_Construct",
@@ -42201,22 +42203,25 @@
   "file": "src/auto/0049f5a0.cpp"
  },
  "0049f600": {
-  "name": "sub_49F600",
-  "name_src": "addr",
-  "votes": {},
+  "name": "Archive_SerializeRecord_49F600",
+  "name_src": "vote",
+  "votes": {
+   "Archive_SerializeRecord": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0049f710": {
-  "name": "sub_49F710",
-  "name_src": "addr",
+  "name": "Archive_SerializeRecordArray_49F710",
+  "name_src": "impl",
   "votes": {},
   "ret": "unsigned int",
   "conv": "__stdcall",
-  "params": "uint32_t* a1, char* a2",
-  "sig_src": "abi"
+  "params": "void* array, void* context",
+  "sig_src": "impl",
+  "file": "src/auto/0049f710.cpp"
  },
  "0049f8e0": {
   "name": "sub_49F8E0",
@@ -138794,7 +138799,7 @@
   "name": "CoreParser_ReadIndexedEntry",
   "name_src": "agent",
   "votes": {
-   "CoreParser_ReadIndexedEntry": 1
+   "CoreParser_ReadIndexedEntry": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -138842,10 +138847,10 @@
   "file": "src/auto/00692c40.cpp"
  },
  "00692cc0": {
-  "name": "ReadComponentFloat",
-  "name_src": "vote",
+  "name": "S_00692b80_ReadComponentFloat",
+  "name_src": "agent",
   "votes": {
-   "ReadComponentFloat": 34
+   "ReadComponentFloat": 36
   },
   "ret": "double",
   "conv": "__fastcall",
@@ -138854,8 +138859,8 @@
   "file": "src/auto/00692cc0.cpp"
  },
  "00692d40": {
-  "name": "CopyAttributeText",
-  "name_src": "vote",
+  "name": "CoreParser_CopyAttributeText",
+  "name_src": "agent",
   "votes": {
    "CopyAttributeText": 32
   },
@@ -138873,19 +138878,21 @@
   },
   "ret": "uint8_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int64_t a2",
-  "sig_src": "vote"
+  "params": "S_00692b80* self, void* , int64_t outputArguments",
+  "sig_src": "impl",
+  "file": "src/auto/00692e40.cpp"
  },
  "00692f60": {
   "name": "CoreZlibLog_ReadVector2",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CoreZlibLog_ReadVector2": 4
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "vote"
+  "params": "std::uint8_t* self, void* , float* output",
+  "sig_src": "impl",
+  "file": "src/auto/00692f60.cpp"
  },
  "00693020": {
   "name": "DataNode_ReadVector3",
@@ -138898,8 +138905,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float* a2",
-  "sig_src": "vote"
+  "params": "std::uint8_t* self, void* , float* output",
+  "sig_src": "impl",
+  "file": "src/auto/00693020.cpp"
  },
  "00693140": {
   "name": "CoreZlibLog_ReadVector4",
@@ -138960,13 +138968,15 @@
   "sig_src": "vote"
  },
  "00693460": {
-  "name": "sub_693460",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CoreZlibLog_ReadFallbackWideAttributeText",
+  "name_src": "vote",
+  "votes": {
+   "CoreZlibLog_ReadFallbackWideAttributeText": 1
+  },
   "ret": "uint8_t*",
   "conv": "__fastcall",
   "params": "void* self, void* edx, int64_t a2",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "006934e0": {
   "name": "CorePaths_AllocateNodeData",
@@ -139611,13 +139621,15 @@
   "sig_src": "vote"
  },
  "006955e0": {
-  "name": "sub_6955E0",
-  "name_src": "addr",
-  "votes": {},
+  "name": "CoreZlibLog_ConvertAttributeTextToWide",
+  "name_src": "vote",
+  "votes": {
+   "CoreZlibLog_ConvertAttributeTextToWide": 1
+  },
   "ret": "uint8_t*",
   "conv": "__cdecl",
   "params": "uint16_t* a1, uint16_t* a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00695620": {
   "name": "ConvertWideTextToNarrow",
@@ -212927,7 +212939,7 @@
   "name": "_sprintf",
   "name_src": "ida",
   "votes": {
-   "_sprintf": 42,
+   "_sprintf": 43,
    "LibSprintf": 1,
    "FormatMissionScore": 1,
    "FormatResolution": 1
