@@ -42,6 +42,8 @@ def main():
     ap.add_argument("--sig", required=True, help="regex of the crash line, e.g. 'eip=006326e4'")
     ap.add_argument("--since", default="", help="candidates: installed on or after this date (ledger `since`)")
     ap.add_argument("--runs", type=int, default=40, help="smokes without the crash that clear a half")
+    ap.add_argument("--among", default="", help="resume an interrupted run: comma-separated addresses still "
+                    "suspect (the controls are skipped, everything else stays on)")
     a = ap.parse_args()
     lk = open(os.path.join(ROOT, "work", "verify.lock"), "w")
     fcntl.flock(lk, fcntl.LOCK_EX)
@@ -60,13 +62,16 @@ def main():
     secs, env = verifier.SHORT[0]
     print(f"{len(cands)} candidates at {head[:8]}; pool of {pool.size()}; signature /{a.sig}/", flush=True)
     try:
-        if not shows(a.sig, [], a.runs, secs, env, "control, all on"):
+        cur = cands
+        if a.among:
+            cur = sorted(int(x, 16) for x in a.among.split(",") if x.strip())
+            print(f"resuming among {len(cur)}: {cur[0]:08x}..{cur[-1]:08x}", flush=True)
+        elif not shows(a.sig, [], a.runs, secs, env, "control, all on"):
             print("the crash did not show with everything on: nothing to bisect (raise --runs?)")
             return 1
-        if shows(a.sig, cands, a.runs, secs, env, "control, all candidates off"):
+        elif shows(a.sig, cands, a.runs, secs, env, "control, all candidates off"):
             print("the crash shows with every candidate off: older code, or not a hook")
             return 1
-        cur = cands
         while len(cur) > 1:
             half = cur[:len(cur) // 2]
             # half off, the rest of cur on (everything else stays on: cleared already)
