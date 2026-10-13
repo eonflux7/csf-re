@@ -717,7 +717,7 @@
   "name": "MenuExtras_AssignStringRange",
   "name_src": "vote",
   "votes": {
-   "MenuExtras_AssignStringRange": 8
+   "MenuExtras_AssignStringRange": 9
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -1584,7 +1584,7 @@
   "name": "ClampFloatToBounds",
   "name_src": "agent",
   "votes": {
-   "ClampFloatToBounds": 20
+   "ClampFloatToBounds": 21
   },
   "ret": "void",
   "conv": "__cdecl",
@@ -7115,7 +7115,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 175
+   "S_0041e5f0_GrowArrayCapacity": 177
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -70811,7 +70811,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 403
+   "GetGlobalState_50D190": 404
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -86210,7 +86210,9 @@
  "00545f00": {
   "name": "CMenuExtras_IsThumbnailUnlocked",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuExtras_IsThumbnailUnlocked": 1
+  },
   "ret": "char",
   "conv": "__stdcall",
   "params": "int recordId",
@@ -86218,15 +86220,16 @@
   "file": "src/auto/00545f00.cpp"
  },
  "00545fe0": {
-  "name": "CMenuExtras_InitializeThumbnailControls",
-  "name_src": "vote",
+  "name": "CMenuExtras_CreateThumbnailGrid",
+  "name_src": "agent",
   "votes": {
    "CMenuExtras_InitializeThumbnailControls": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "CMenuExtras* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00545fe0.cpp"
  },
  "005464e0": {
   "name": "CMenuExtras_SelectThumbnailFromControl",
@@ -86289,15 +86292,16 @@
   "file": "src/auto/00546700.cpp"
  },
  "00546760": {
-  "name": "CMenuExtras_RefreshThumbnailControls",
-  "name_src": "vote",
+  "name": "CMenuExtras_ConfigureThumbnailNavigation",
+  "name_src": "agent",
   "votes": {
    "CMenuExtras_RefreshThumbnailControls": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "CMenuExtras* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00546760.cpp"
  },
  "00546d60": {
   "name": "MenuExtras_ResetStringRange",
@@ -112119,7 +112123,7 @@
   "name": "RwV3dNormalize",
   "name_src": "rwname",
   "votes": {
-   "RwV3dNormalize": 1
+   "RwV3dNormalize": 2
   },
   "ret": "double",
   "conv": "__cdecl",
@@ -121734,7 +121738,7 @@
   "name": "LookupObjectById",
   "name_src": "vote",
   "votes": {
-   "LookupObjectById": 103
+   "LookupObjectById": 104
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -138804,7 +138808,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_AllocUntagged": 87,
+   "CoreMemory_AllocUntagged": 88,
    "Mem_Alloc": 482
   },
   "ret": "int",
@@ -138817,7 +138821,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 133,
+   "CoreMemory_Free": 136,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -139223,7 +139227,7 @@
   "name": "ReleaseObjectReference",
   "name_src": "vote",
   "votes": {
-   "ReleaseObjectReference": 50
+   "ReleaseObjectReference": 51
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -147942,7 +147946,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 459,
+   "GetGlobalInt": 460,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -147955,7 +147959,7 @@
   "name": "MenuControls_ResolveObject",
   "name_src": "vote",
   "votes": {
-   "MenuControls_ResolveObject": 51
+   "MenuControls_ResolveObject": 52
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -147966,7 +147970,7 @@
   "name": "GlobalInt_ResolveAccessor",
   "name_src": "vote",
   "votes": {
-   "GlobalInt_ResolveAccessor": 85
+   "GlobalInt_ResolveAccessor": 86
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -154732,7 +154736,7 @@
   "name": "GfxSkin_ComputeDistanceFade",
   "name_src": "agent",
   "votes": {
-   "GfxSkin_ComputeDistanceFade": 2
+   "GfxSkin_ComputeDistanceFade": 3
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -154813,7 +154817,7 @@
   "name": "GetGlobalValue_6C5760",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_6C5760": 95
+   "GetGlobalValue_6C5760": 96
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -168355,7 +168359,7 @@
  },
  "006f28d0": {
   "name": "C_00862598_FillTransformMatrixOut",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -168560,13 +168564,14 @@
   "file": "src/auto/006f3080.cpp"
  },
  "006f30b0": {
-  "name": "sub_6F30B0",
-  "name_src": "addr",
+  "name": "C_00862640_UpdateVisibilityFade",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00862640* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006f30b0.cpp"
  },
  "006f3270": {
   "name": "C_00862640_RenderOverlay",
@@ -168600,7 +168605,7 @@
  },
  "006f33d0": {
   "name": "C_00862640_LoadResource",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -177416,7 +177421,7 @@
  },
  "00712cc0": {
   "name": "C_00830438_Construct",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_00830438_Construct": 36,
    "MenuScenarioSelect_InitializeEmbeddedSubobject": 1,
@@ -177428,14 +177433,15 @@
    "MenuSubobjectBase_Init": 1,
    "MenuAccounts_ConstructEmbeddedBase": 1
   },
-  "ret": "void*",
+  "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_00830438* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00712cc0.cpp"
  },
  "00712ce0": {
-  "name": "SetConsoleControlState",
-  "name_src": "vote",
+  "name": "C_0085ec18_SetConsoleControlState",
+  "name_src": "agent",
   "votes": {
    "SetConsoleControlState": 1,
    "MenuSystem_UpdateDialogPanel": 1,
@@ -177445,48 +177451,53 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "C_0085ec18* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/00712ce0.cpp"
  },
  "00712d10": {
-  "name": "ResetEmbeddedMemberAt8",
-  "name_src": "vote",
+  "name": "S_00694cd0_FreeFieldBlock",
+  "name_src": "agent",
   "votes": {
-   "ResetEmbeddedMemberAt8": 12
+   "ResetEmbeddedMemberAt8": 13
   },
-  "ret": "void*",
+  "ret": "char",
   "conv": "__fastcall",
-  "params": "void** self, void* edx",
-  "sig_src": "vote"
+  "params": "S_00694cd0* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00712d10.cpp"
  },
  "00712d30": {
-  "name": "sub_712D30",
-  "name_src": "addr",
+  "name": "CInputBase_InitDefaults",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "CInputBase* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00712d30.cpp"
  },
  "00712d60": {
-  "name": "sub_712D60",
-  "name_src": "addr",
+  "name": "CInputBase_Destroy",
+  "name_src": "agent",
   "votes": {},
   "ret": "void**",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "CInputBase* self, void* , char a2",
+  "sig_src": "impl",
+  "file": "src/auto/00712d60.cpp"
  },
  "00712d90": {
-  "name": "MenuControls_ApplyChildIndex",
-  "name_src": "vote",
+  "name": "MenuControls_RemoveChildIndex",
+  "name_src": "agent",
   "votes": {
    "MenuControls_ApplyChildIndex": 5
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int index",
-  "sig_src": "vote"
+  "params": "C_00840cf8* self, void* , int value",
+  "sig_src": "impl",
+  "file": "src/auto/00712d90.cpp"
  },
  "00712df0": {
   "name": "MenuSystem_ApplyStateFlag",
@@ -177500,33 +177511,36 @@
   "sig_src": "vote"
  },
  "00712e50": {
-  "name": "sub_712E50",
-  "name_src": "addr",
+  "name": "CInputBase_EnsureFiveSlotBuffer",
+  "name_src": "agent",
   "votes": {},
-  "ret": "char",
+  "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "CInputBase* self, void* , int , int",
+  "sig_src": "impl",
+  "file": "src/auto/00712e50.cpp"
  },
  "00712e80": {
   "name": "MenuSystem_AssignDialogPanel",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "MenuSystem_AssignDialogPanel": 3
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int panel",
-  "sig_src": "vote"
+  "params": "C_0085ec18* self, void* , int panel",
+  "sig_src": "impl",
+  "file": "src/auto/00712e80.cpp"
  },
  "00712eb0": {
-  "name": "sub_712EB0",
-  "name_src": "addr",
+  "name": "InputDinput_ResetKeyStateTable",
+  "name_src": "impl",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "uint8_t* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00712eb0.cpp"
  },
  "00712f00": {
   "name": "sub_712F00",
@@ -177538,13 +177552,14 @@
   "sig_src": "abi"
  },
  "00712fc0": {
-  "name": "sub_712FC0",
-  "name_src": "addr",
+  "name": "CInputDirectInput_StoreDeviceParams",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3, int a4, int a5",
-  "sig_src": "abi"
+  "params": "CInputDirectInput* self, void* , int a2, int a3, int a4, int a5",
+  "sig_src": "impl",
+  "file": "src/auto/00712fc0.cpp"
  },
  "00712ff0": {
   "name": "sub_712FF0",
@@ -177574,22 +177589,24 @@
   "sig_src": "abi"
  },
  "00713100": {
-  "name": "sub_713100",
-  "name_src": "addr",
+  "name": "CInputDirectInput_ResetInputBuffers",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "CInputDirectInput* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00713100.cpp"
  },
  "00713140": {
-  "name": "sub_713140",
-  "name_src": "addr",
+  "name": "CInputDirectInput_ClearStateBuffer",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "CInputDirectInput* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00713140.cpp"
  },
  "00713160": {
   "name": "SceneLoader_Initialize",
@@ -177603,13 +177620,14 @@
   "sig_src": "vote"
  },
  "00713270": {
-  "name": "sub_713270",
-  "name_src": "addr",
+  "name": "CInputDirectInput_StoreDeviceIndex0C94",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "CInputDirectInput* self, void* , int value",
+  "sig_src": "impl",
+  "file": "src/auto/00713270.cpp"
  },
  "00713280": {
   "name": "CInputDirectInput_SetFloat0c94",
@@ -177622,13 +177640,14 @@
   "file": "src/auto/00713280.cpp"
  },
  "00713290": {
-  "name": "sub_713290",
-  "name_src": "addr",
+  "name": "CInputDirectInput_StoreTwoFieldsReturnFirst",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "CInputDirectInput* self, void* , int firstValue, int secondValue",
+  "sig_src": "impl",
+  "file": "src/auto/00713290.cpp"
  },
  "007132b0": {
   "name": "CInputDirectInput_GetBlock0C30",
@@ -177651,13 +177670,14 @@
   "file": "src/auto/007132c0.cpp"
  },
  "007132d0": {
-  "name": "sub_7132D0",
-  "name_src": "addr",
+  "name": "CInputDirectInput_CopyStateBuffer256",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void* a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , const void* sourceBuffer",
+  "sig_src": "impl",
+  "file": "src/auto/007132d0.cpp"
  },
  "00713400": {
   "name": "sub_713400",
@@ -177687,13 +177707,14 @@
   "sig_src": "abi"
  },
  "00713880": {
-  "name": "sub_713880",
-  "name_src": "addr",
+  "name": "CInputDirectInput_AppendTypedChar",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "CInputDirectInput* self, void* , char keyChar",
+  "sig_src": "impl",
+  "file": "src/auto/00713880.cpp"
  },
  "007138d0": {
   "name": "sub_7138D0",
@@ -181492,7 +181513,7 @@
   "name": "CGuiStatic_Construct",
   "name_src": "agent",
   "votes": {
-   "CGuiStatic_Construct": 1
+   "CGuiStatic_Construct": 2
   },
   "ret": "CGuiStatic*",
   "conv": "__fastcall",
@@ -183025,6 +183046,7 @@
   "name": "CGuiButton_Construct",
   "name_src": "agent",
   "votes": {
+   "CGuiButton_Construct": 1,
    "CGuiButton_Ctor": 4
   },
   "ret": "int",
@@ -214254,7 +214276,7 @@
   "name": "_memcpy",
   "name_src": "ida",
   "votes": {
-   "_memcpy": 124,
+   "_memcpy": 125,
    "Memcpy": 1
   },
   "ret": "void*",
@@ -214469,7 +214491,7 @@
   "name": "_sprintf",
   "name_src": "ida",
   "votes": {
-   "_sprintf": 51,
+   "_sprintf": 52,
    "LibSprintf": 1,
    "FormatMissionScore": 1,
    "FormatResolution": 1
