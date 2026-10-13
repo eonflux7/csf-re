@@ -48925,8 +48925,8 @@
   "file": "src/auto/004b2190.cpp"
  },
  "004b2210": {
-  "name": "CoverQueryInit",
-  "name_src": "vote",
+  "name": "AiAlertStates_InitCoverQuery",
+  "name_src": "agent",
   "votes": {
    "CoverQueryInit": 1
   },
@@ -117840,7 +117840,7 @@
   "name": "AllocateGatheringStorage",
   "name_src": "vote",
   "votes": {
-   "AllocateGatheringStorage": 19
+   "AllocateGatheringStorage": 20
   },
   "ret": "void*",
   "conv": "__cdecl",
@@ -119325,7 +119325,7 @@
   "name": "InitializeTemporaryString",
   "name_src": "vote",
   "votes": {
-   "InitializeTemporaryString": 76
+   "InitializeTemporaryString": 77
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -125548,7 +125548,7 @@
   "name": "NetCogibleDdl_InitializationCallback",
   "name_src": "vote",
   "votes": {
-   "NetCogibleDdl_InitializationCallback": 3
+   "NetCogibleDdl_InitializationCallback": 4
   },
   "ret": "void",
   "conv": "__stdcall",
@@ -125661,7 +125661,7 @@
   "name": "RootDO_Construct",
   "name_src": "vote",
   "votes": {
-   "RootDO_Construct": 3
+   "RootDO_Construct": 4
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -126704,7 +126704,7 @@
   "name": "NetCogibleDdl_FindProperty",
   "name_src": "vote",
   "votes": {
-   "NetCogibleDdl_FindProperty": 14,
+   "NetCogibleDdl_FindProperty": 15,
    "ResolveObjectEntry": 1,
    "NetDdl_ResolveChannel": 1
   },
@@ -126762,7 +126762,7 @@
   "name": "NetCogibleDdl_RegisterProperty",
   "name_src": "vote",
   "votes": {
-   "NetCogibleDdl_RegisterProperty": 4
+   "NetCogibleDdl_RegisterProperty": 5
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -129209,7 +129209,7 @@
   "name": "ResolveStringId",
   "name_src": "vote",
   "votes": {
-   "ResolveStringId": 4
+   "ResolveStringId": 5
   },
   "ret": "std::uint16_t",
   "conv": "__cdecl",
@@ -129484,7 +129484,7 @@
   "name": "NetCogibleDdl_SetGatherer",
   "name_src": "vote",
   "votes": {
-   "NetCogibleDdl_SetGatherer": 4
+   "NetCogibleDdl_SetGatherer": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -129562,7 +129562,7 @@
   "name": "NetCogibleDdl_SetUpdater",
   "name_src": "vote",
   "votes": {
-   "NetCogibleDdl_SetUpdater": 4
+   "NetCogibleDdl_SetUpdater": 5
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -196254,10 +196254,11 @@
   "name": "NetGame_Construct",
   "name_src": "agent",
   "votes": {},
-  "ret": "uint16_t*",
+  "ret": "NetGame*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "NetGame* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/0074cf90.cpp"
  },
  "0074d050": {
   "name": "NetGame_DispatchEvent",
@@ -196296,8 +196297,9 @@
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "NetGame* self, void* , int mode",
+  "sig_src": "impl",
+  "file": "src/auto/0074d2e0.cpp"
  },
  "0074da00": {
   "name": "NetGameDdl_ApplyPlayerSpawnProperties",
