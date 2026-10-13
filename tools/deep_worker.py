@@ -3,8 +3,8 @@
 orchestrator no longer does the jobs itself; it spawns agents, reviews what they return, decides).
 
 Agents (--agent): sol-hi = gpt-6.1-sol@high through the Codex CLI, sandboxed to the job's tree: the default, for
-anything hard. opus-lo = claude-opus-5-5@low through `claude -p` on the grunts' Claude account, a fixed list of
-commands allowed: easy jobs only (user, 2026-10-13). Nothing runs on the main Claude account.
+anything hard. sonnet-lo = claude-sonnet-5-5@low and opus-lo = claude-opus-5-5@low through `claude -p` on the grunts' Claude
+account, a fixed list of commands allowed: small jobs only, sonnet-lo first (user, 2026-10-13), two at a time. Nothing runs on the main Claude account.
 
 The orchestrator starts a task, fires up workers for the parts that need long reading or trial and error (a queue
 item's root cause, a class of emudiff differences, a container replica), and reviews what comes back. A worker
@@ -12,7 +12,7 @@ never touches the repo: it gets its own detached worktree (work/deep/NAME/tree, 
 build dir) and may edit and run the offline tools there (gate, semcheck, emudiff, single-file compiles). No game,
 no smokes, no verifier, no commits, no IDB writes, no network.
 
-  deep_worker.py start NAME --task FILE|- [--agent sol-hi|opus-lo] [--timeout 3600] [--fresh]   in the background
+  deep_worker.py start NAME --task FILE|- [--agent sol-hi|sonnet-lo|opus-lo] [--timeout 3600] [--fresh]   in the background
   deep_worker.py run   NAME ...           the same, in the foreground
   deep_worker.py list                     jobs and their state
   deep_worker.py review NAME applied|partial|rejected [--note TEXT]    the orchestrator's verdict on a finished job
@@ -33,7 +33,12 @@ DEEP = os.path.join(ROOT, "work", "deep")
 # (claude-opus-5-5@medium via `claude -p`, main account) ran three jobs that day (about 37% -> 71% of the 5h window
 # together with the session); its code path stays for old jobs' logs and is not offered.
 # opus-lo (user, same day): claude-opus-5-5@low on the grunts' Claude account, for easy jobs only.
-AGENTS = {"sol-hi": ("codex", "gpt-6.1-sol", "high"), "opus-lo": ("claude", "claude-opus-5-5", "low")}
+# 2026-10-13 evening: eight opus-lo jobs at once (5-7 queue items each, about 1.1M input tokens and $1.2 per job
+# in 4 minutes) spent the grunts' 5h window; six stopped unfinished. Since then: sonnet-lo is the Claude agent to
+# try first (user), at most CLAUDE_JOBS Claude jobs at a time, and their brief skips PLAN/JOURNAL.
+AGENTS = {"sol-hi": ("codex", "gpt-6.1-sol", "high"), "sonnet-lo": ("claude", "claude-sonnet-5-5", "low"),
+          "opus-lo": ("claude", "claude-opus-5-5", "low")}
+CLAUDE_JOBS = 2
 RETIRED = {"opus-me": ("claude", "claude-opus-5-5", "medium")}
 # opus-me: what `claude -p` may do without asking (dontAsk denies the rest)
 CLAUDE_ALLOW = ["Read", "Grep", "Glob", "Edit", "Write", "Bash(.venv/bin/python:*)", "Bash(git diff:*)",
@@ -134,7 +139,11 @@ def run(a):
           agent=a.agent, model=model, effort=effort, task=task.strip().splitlines()[0][:160], error=None,
           review=None, note=None, runs=st.get("runs", 0) + 1,
           eas=sorted(set(re.findall(r"\b00[4-7][0-9a-f]{5}\b", task))))
-    prompt = BRIEF + "\n=== TASK ===\n" + task
+    brief = BRIEF if backend == "codex" else BRIEF.replace(
+        "Read CLAUDE.md and the parts of docs/PLAN.md\nand docs/JOURNAL.md your task touches before you start.",
+        "Do not read docs/PLAN.md or docs/JOURNAL.md (long, and not\nneeded for a small job); read only what the task names.")
+    assert backend == "codex" or brief != BRIEF
+    prompt = brief + "\n=== TASK ===\n" + task
     if os.path.exists(os.path.join(d, "patch.diff")) and os.path.getsize(os.path.join(d, "patch.diff")):
         prompt += ("\n\n(This job was started before and stopped by quota or timeout. Your tree still holds what "
                    "was changed then: look at `git status` and `git diff HEAD` first and go on from there.)\n")
@@ -205,6 +214,11 @@ def run(a):
 def start(a):
     """Detached: the job outlives the caller; its last line lands in work/deep/NAME/run.log."""
     task = sys.stdin.read() if a.task == "-" else open(a.task).read()
+    if AGENTS[a.agent][0] == "claude":
+        busy = [j["name"] for j in jobs() if j["phase"] == "running" and AGENTS.get(j.get("agent"), ("",))[0] == "claude"]
+        if len(busy) >= CLAUDE_JOBS and not a.force:
+            raise SystemExit(f"{len(busy)} Claude jobs already run ({', '.join(busy)}): at most {CLAUDE_JOBS} at a "
+                             "time on the grunts' account (--force to start anyway)")
     d = os.path.join(DEEP, a.name)
     os.makedirs(d, exist_ok=True)
     open(os.path.join(d, "task.md"), "w").write(task)
@@ -385,6 +399,7 @@ def main():
         r.add_argument("--agent", default="sol-hi", choices=sorted(AGENTS))
         r.add_argument("--timeout", type=int, default=3600)
         r.add_argument("--fresh", action="store_true", help="throw the job's old tree away first")
+        r.add_argument("--force", action="store_true", help="start a Claude job past the limit of concurrent ones")
         r.set_defaults(fn=fn)
     rv = sub.add_parser("review")
     rv.add_argument("name")

@@ -1513,3 +1513,6 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   one file failing the standalone compile (it included the header declaring its own address). Eight triage
   batches started on it (in-game mismatches, smoke failures, small emudiff rejections): candidates only, no
   changes under tools/ or hook/.
+- Eight opus-lo jobs at once spent the grunts' 5h window in 4 minutes (about 1.1M input tokens, $1.1-1.4 each);
+  two finished (emu2, mis2), six stopped with their trees kept. deep_worker now: `sonnet-lo` agent (to try first,
+  user), at most two Claude jobs at a time, Claude briefs skip PLAN/JOURNAL.
