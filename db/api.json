@@ -16036,7 +16036,7 @@
    "ProcessSubObjectRecord": 3,
    "ProcessGlobalSubObjectWithBlock": 1,
    "GlobalSubObjectProcess_443000": 1,
-   "DynamicObj_ProcessSubObjectRecord": 1
+   "DynamicObj_ProcessSubObjectRecord": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -67230,7 +67230,7 @@
   "name": "GetGlobalValue_4FBDE0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_4FBDE0": 120
+   "GetGlobalValue_4FBDE0": 121
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -67338,7 +67338,7 @@
   "name": "GetGlobalSubObject_4FC0A0",
   "name_src": "vote",
   "votes": {
-   "GetGlobalSubObject_4FC0A0": 12
+   "GetGlobalSubObject_4FC0A0": 13
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -69334,7 +69334,7 @@
   "name": "SceneLoader_NoOp",
   "name_src": "captain",
   "votes": {
-   "SceneLoader_NoOp": 80,
+   "SceneLoader_NoOp": 81,
    "Nullsub_506AC0": 34
   },
   "ret": "void",
@@ -69381,7 +69381,7 @@
   "name": "GetGlobalValue_8B056C",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8B056C": 83
+   "GetGlobalValue_8B056C": 84
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -71353,7 +71353,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 435
+   "GetGlobalState_50D190": 437
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -77484,7 +77484,7 @@
   "name": "GetGlobalValue_521BB0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_521BB0": 144
+   "GetGlobalValue_521BB0": 145
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -77625,7 +77625,7 @@
   "name": "MenuProgressInput_UpdateGlobalState",
   "name_src": "vote",
   "votes": {
-   "MenuProgressInput_UpdateGlobalState": 29
+   "MenuProgressInput_UpdateGlobalState": 30
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -77649,7 +77649,7 @@
   "name": "OnlineMenu_SetSharedText",
   "name_src": "agent",
   "votes": {
-   "OnlineMenu_SetSharedText": 2
+   "OnlineMenu_SetSharedText": 3
   },
   "ret": "int",
   "conv": "__stdcall",
@@ -83361,14 +83361,15 @@
  },
  "00539fb0": {
   "name": "CMenuPause_RunStateOneAction",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "CMenuPause_RunStateOneAction": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "int* self, void* edx",
-  "sig_src": "vote"
+  "params": "CMenuPause* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/00539fb0.cpp"
  },
  "0053a070": {
   "name": "CMenuPause_DispatchPendingAction",
@@ -83563,7 +83564,9 @@
  "0053a7d0": {
   "name": "CMenuMain_UpdateLayoutAlignment",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuMain_UpdateLayoutAlignment": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "CMenuMain* self, void*",
@@ -83615,13 +83618,14 @@
   "file": "src/auto/0053a990.cpp"
  },
  "0053a9f0": {
-  "name": "sub_53A9F0",
-  "name_src": "addr",
+  "name": "CMenuMain_InitializeScreen",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "CMenuMain* self, void* , int owner, int",
+  "sig_src": "impl",
+  "file": "src/auto/0053a9f0.cpp"
  },
  "0053ab80": {
   "name": "CMenuOptionsPC_InitTitlePanel",
@@ -151274,8 +151278,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0085ec18* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006b8150.cpp"
  },
  "006b8160": {
   "name": "GetField04Bit1",
@@ -151414,8 +151419,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "C_0085ec18* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006b8230.cpp"
  },
  "006b8250": {
   "name": "GetAttachmentRenderKey",
@@ -189586,7 +189592,7 @@
   "name_src": "agent",
   "votes": {
    "SchedulerBase_GetSchedulerProxy": 22,
-   "C_00861120_GetSchedulerProxy": 10
+   "C_00861120_GetSchedulerProxy": 11
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -200244,7 +200250,7 @@
   "name": "GetGlobalValue_8BC1E0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_8BC1E0": 270,
+   "GetGlobalValue_8BC1E0": 272,
    "GetMissionScoringSettings": 1
   },
   "ret": "int",
@@ -201886,7 +201892,7 @@
   "name": "GetGlobalValue_75FDF0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_75FDF0": 57
+   "GetGlobalValue_75FDF0": 58
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -204396,7 +204402,8 @@
   "name": "S_007721a0_EraseElementRange",
   "name_src": "agent",
   "votes": {
-   "EraseElementRange": 1
+   "EraseElementRange": 1,
+   "S_007721a0_EraseElementRange": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -204407,11 +204414,13 @@
  "007721f0": {
   "name": "AppendRepeatedValues",
   "name_src": "vote",
-  "votes": {},
+  "votes": {
+   "AppendRepeatedValues": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* edx, char* a1, unsigned int a3, uint32_t* arg8",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00772460": {
   "name": "CopyAnimRangeFromSource",
@@ -204445,14 +204454,16 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, unsigned int a2, int a3, int a4",
-  "sig_src": "vote"
+  "params": "S_007721a0* self, void* , unsigned int count, int a3, int a4",
+  "sig_src": "impl",
+  "file": "src/auto/00772650.cpp"
  },
  "007726c0": {
   "name": "AnimationDefs_CopyRecordRange",
   "name_src": "agent",
   "votes": {
    "AnimDefs_ProcessEntry": 1,
+   "AnimationDefs_CopyRecordRange": 1,
    "AnimationDefs_CopyAssignRange": 1
   },
   "ret": "int",
@@ -204544,10 +204555,11 @@
   "votes": {
    "S_00772940_EraseRecordRange": 1
   },
-  "ret": "void**",
+  "ret": "C_0082d410**",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, void** a4, void* arg4, void* arg8",
-  "sig_src": "vote"
+  "params": "S_00772940* self, void* , C_0082d410** outputSlot, C_0082d410* currentValue, C_0082d410* previousValue",
+  "sig_src": "impl",
+  "file": "src/auto/00772940.cpp"
  },
  "00772990": {
   "name": "AnimationDefs_ForwardWithSelfToSub7727A0",
@@ -205156,7 +205168,7 @@
   "name": "UpdateGameDataRecordLinks",
   "name_src": "agent",
   "votes": {
-   "UpdateGameDataRecordLinks": 5,
+   "UpdateGameDataRecordLinks": 6,
    "LevelBlock34_Destroy": 1,
    "DestroyArrayWithCount_7754B0": 1
   },
