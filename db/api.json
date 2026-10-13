@@ -7108,7 +7108,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 174
+   "S_0041e5f0_GrowArrayCapacity": 175
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -112426,7 +112426,7 @@
   "name": "RwImageSetPath",
   "name_src": "rwname",
   "votes": {
-   "RwImageSetPath": 7
+   "RwImageSetPath": 8
   },
   "ret": "const void*",
   "conv": "__cdecl",
@@ -139702,7 +139702,7 @@
   "name": "NormalizeResourceName",
   "name_src": "vote",
   "votes": {
-   "NormalizeResourceName": 19
+   "NormalizeResourceName": 20
   },
   "ret": "char",
   "conv": "__cdecl",
@@ -139735,7 +139735,7 @@
   "name": "ResourceName_Transform",
   "name_src": "vote",
   "votes": {
-   "ResourceName_Transform": 8
+   "ResourceName_Transform": 9
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -189168,7 +189168,7 @@
   "name": "InsertUniqueUnsignedShortTreeValue",
   "name_src": "agent",
   "votes": {
-   "InsertUniqueUnsignedShortTreeValue": 2
+   "InsertUniqueUnsignedShortTreeValue": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -189201,15 +189201,16 @@
   "file": "src/auto/0073aa60.cpp"
  },
  "0073ae60": {
-  "name": "LoadFontVersion3",
-  "name_src": "vote",
+  "name": "C_00867444_LoadFontVersion3",
+  "name_src": "agent",
   "votes": {
    "LoadFontVersion3": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "C_00867444* self, void* edx, void* file",
-  "sig_src": "vote"
+  "params": "C_00867444* self, void* , int* stream",
+  "sig_src": "impl",
+  "file": "src/auto/0073ae60.cpp"
  },
  "0073b290": {
   "name": "C_00867444_LoadFontFile",
@@ -213945,7 +213946,7 @@
   "name": "_sprintf",
   "name_src": "ida",
   "votes": {
-   "_sprintf": 48,
+   "_sprintf": 49,
    "LibSprintf": 1,
    "FormatMissionScore": 1,
    "FormatResolution": 1
