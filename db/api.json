@@ -37870,7 +37870,7 @@
  },
  "0048e350": {
   "name": "Owner_ActivateChildByKey",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -37879,17 +37879,18 @@
   "file": "src/auto/0048e350.cpp"
  },
  "0048e3a0": {
-  "name": "sub_48E3A0",
-  "name_src": "addr",
+  "name": "Owner_ActivateKeyedChildSlot23",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "void* self, void* , int key",
+  "sig_src": "impl",
+  "file": "src/auto/0048e3a0.cpp"
  },
  "0048e3f0": {
   "name": "ApplyScaledValueToResolvedObject",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "ApplyScaledValueToResolvedObject": 1
   },
@@ -71604,15 +71605,16 @@
   "sig_src": "vote"
  },
  "0050dc10": {
-  "name": "Interface_SetMenuState",
-  "name_src": "vote",
+  "name": "InterfaceSetMenuState",
+  "name_src": "agent",
   "votes": {
    "Interface_SetMenuState": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "vote"
+  "params": "void* self, void* , int a2",
+  "sig_src": "impl",
+  "file": "src/auto/0050dc10.cpp"
  },
  "0050dc30": {
   "name": "ApplyFloatToGlobalState",
@@ -71623,8 +71625,9 @@
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2, float a3",
-  "sig_src": "vote"
+  "params": "void* self, void* , char flag, float value",
+  "sig_src": "impl",
+  "file": "src/auto/0050dc30.cpp"
  },
  "0050dc80": {
   "name": "MenuManager_SetMenuState",
@@ -71647,8 +71650,9 @@
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0050dcf0.cpp"
  },
  "0050dd30": {
   "name": "GetStateValue",
