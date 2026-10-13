@@ -6452,7 +6452,9 @@
  "0041c550": {
   "name": "C_0041c550_IsField8CNull",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_0041c550_IsField8CNull": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -6512,7 +6514,9 @@
  "0041c960": {
   "name": "Vehicle_AimAtPosition",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "Vehicle_AimAtPosition": 1
+  },
   "ret": "bool",
   "conv": "__fastcall",
   "params": "void* self, void* , float* position, char interpolate",
@@ -32887,7 +32891,7 @@
   "votes": {
    "C_00832f18_Cleanup": 1,
    "C_00832f18_Destroy": 1,
-   "C_00832f18_ReleaseOwnedBuffers": 2
+   "C_00832f18_ReleaseOwnedBuffers": 3
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -36732,7 +36736,7 @@
   "name": "C_00833708_SendOrder",
   "name_src": "agent",
   "votes": {
-   "C_00833708_SendOrder": 2,
+   "C_00833708_SendOrder": 3,
    "AutoTask_SendOrder": 1,
    "TaskHelper_StartAction": 1
   },
@@ -47419,7 +47423,7 @@
  },
  "004ae010": {
   "name": "TMovilAPunto_Construct",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -47439,7 +47443,7 @@
  },
  "004ae070": {
   "name": "TMovilAPunto_2_Construct",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -47449,7 +47453,7 @@
  },
  "004ae0d0": {
   "name": "TMovilAPuntoRastreo_Construct",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "TMovilAPuntoRastreo*",
   "conv": "__fastcall",
@@ -47469,7 +47473,7 @@
  },
  "004ae150": {
   "name": "TMovilAParapeto_Constructor",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "TMovilAParapeto*",
   "conv": "__fastcall",
@@ -47524,8 +47528,9 @@
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "TMovilAPuntoParapetandose* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004ae250.cpp"
  },
  "004ae2b0": {
   "name": "TMovilAPuntoParapetandose_GetTypeName",
@@ -47559,8 +47564,8 @@
   "file": "src/auto/004ae330.cpp"
  },
  "004ae340": {
-  "name": "AiCore_ConstructTrackingTask",
-  "name_src": "vote",
+  "name": "TFncRastrear_Construct",
+  "name_src": "agent",
   "votes": {
    "AiCore_ConstructTrackingTask": 1
   },
@@ -47581,15 +47586,16 @@
   "file": "src/auto/004ae3c0.cpp"
  },
  "004ae3d0": {
-  "name": "AiCore_ConstructSearchTask",
-  "name_src": "vote",
+  "name": "TFncBusqueda_Construct",
+  "name_src": "agent",
   "votes": {
    "AiCore_ConstructSearchTask": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "TFncBusqueda* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004ae3d0.cpp"
  },
  "004ae420": {
   "name": "TFncBusqueda_GetTFncBusqueda",
@@ -47602,15 +47608,16 @@
   "file": "src/auto/004ae420.cpp"
  },
  "004ae430": {
-  "name": "AiCore_ConstructAttackFromPositionTask",
-  "name_src": "vote",
+  "name": "TFncAtacarDesdePosicion_Construct",
+  "name_src": "agent",
   "votes": {
    "AiCore_ConstructAttackFromPositionTask": 1
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "TFncAtacarDesdePosicion* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004ae430.cpp"
  },
  "004ae480": {
   "name": "C_00860c88_GetSize",
@@ -47703,8 +47710,8 @@
   "file": "src/auto/004ae500.cpp"
  },
  "004ae510": {
-  "name": "AiCore_ConstructMoveToCoverTask",
-  "name_src": "vote",
+  "name": "TFncIrAParapeto_Construct",
+  "name_src": "agent",
   "votes": {
    "AiCore_ConstructMoveToCoverTask": 1
   },
@@ -47735,15 +47742,16 @@
   "file": "src/auto/004ae570.cpp"
  },
  "004ae580": {
-  "name": "AiCore_ConstructWatchFromCoverTask",
-  "name_src": "vote",
+  "name": "TFncVigilarDesdeParapeto_Constructor",
+  "name_src": "agent",
   "votes": {
    "AiCore_ConstructWatchFromCoverTask": 1
   },
-  "ret": "uint32_t*",
+  "ret": "TFncVigilarDesdeParapeto*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "TFncVigilarDesdeParapeto* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004ae580.cpp"
  },
  "004ae5e0": {
   "name": "C_0083b850_GetLimit25",
@@ -47766,8 +47774,8 @@
   "file": "src/auto/004ae5f0.cpp"
  },
  "004ae600": {
-  "name": "AiCore_ConstructAttackFromCoverTask",
-  "name_src": "vote",
+  "name": "TFncAtacarDesdeParapeto_Construct",
+  "name_src": "agent",
   "votes": {
    "AiCore_ConstructAttackFromCoverTask": 1
   },
@@ -47828,8 +47836,8 @@
   "file": "src/auto/004ae6f0.cpp"
  },
  "004ae700": {
-  "name": "AiCore_DestroyTrackingTask",
-  "name_src": "vote",
+  "name": "TFncRastrear_DestroyTrackingTask",
+  "name_src": "agent",
   "votes": {
    "AiCore_DestroyTrackingTask": 2
   },
@@ -47840,8 +47848,8 @@
   "file": "src/auto/004ae700.cpp"
  },
  "004ae760": {
-  "name": "AiCore_DestroyCoverAttackTask",
-  "name_src": "vote",
+  "name": "TFncAtacarDesdeParapeto_DestroySubobjectVtables",
+  "name_src": "agent",
   "votes": {
    "AiCore_DestroyCoverAttackTask": 2
   },
@@ -47873,7 +47881,7 @@
  },
  "004ae850": {
   "name": "TMovilAPuntoParapetandose_DestroyAndMaybeFree",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char*",
   "conv": "__fastcall",
@@ -47943,7 +47951,7 @@
  },
  "004aea30": {
   "name": "AiCore_DestroyEmbeddedTask",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "AiCore_DestroyEmbeddedTask": 3
   },
@@ -47965,7 +47973,7 @@
  },
  "004aead0": {
   "name": "C_0082d410_Destroy_4AEAD0",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "C_0082d410*",
   "conv": "__fastcall",
@@ -47996,8 +48004,8 @@
   "file": "src/auto/004aeb50.cpp"
  },
  "004aeb90": {
-  "name": "GetPathStatus",
-  "name_src": "vote",
+  "name": "S_004aa4d0_GetPathStatus",
+  "name_src": "agent",
   "votes": {
    "GetPathStatus": 5,
    "GetTaskSlotResult": 1,
@@ -48012,8 +48020,8 @@
   "file": "src/auto/004aeb90.cpp"
  },
  "004aec90": {
-  "name": "AiCore_AdvanceCharacterTimer",
-  "name_src": "vote",
+  "name": "AiFncTasks_AdvanceCharacterTimers",
+  "name_src": "agent",
   "votes": {
    "AiCore_AdvanceCharacterTimer": 1
   },
@@ -54246,7 +54254,7 @@
   "name": "C_00835228_IsTargetPositionClear",
   "name_src": "agent",
   "votes": {
-   "C_00835228_IsTargetPositionClear": 1
+   "C_00835228_IsTargetPositionClear": 2
   },
   "ret": "bool",
   "conv": "__fastcall",
@@ -54479,7 +54487,7 @@
   "name": "C_0083b958_Destroy",
   "name_src": "agent",
   "votes": {
-   "C_0083b958_Destroy": 17,
+   "C_0083b958_Destroy": 18,
    "BaseChainCleanup_4D1140": 1
   },
   "ret": "int",
@@ -54609,7 +54617,7 @@
   "name": "ResetState",
   "name_src": "agent",
   "votes": {
-   "ResetState": 22
+   "ResetState": 23
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -55514,22 +55522,24 @@
   "sig_src": "abi"
  },
  "004d5500": {
-  "name": "sub_4D5500",
-  "name_src": "addr",
+  "name": "C_0083c280_IsTargetPositionClear",
+  "name_src": "impl",
   "votes": {},
   "ret": "bool",
   "conv": "__fastcall",
-  "params": "void* a1, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_00835228* self, void* edx, int targetHandle",
+  "sig_src": "impl",
+  "file": "src/auto/004d5500.cpp"
  },
  "004d5520": {
-  "name": "sub_4D5520",
-  "name_src": "addr",
+  "name": "AimVehicleIfLinkedFieldPresent",
+  "name_src": "agent",
   "votes": {},
-  "ret": "bool",
+  "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "void* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004d5520.cpp"
  },
  "004d5550": {
   "name": "sub_4D5550",
@@ -55566,8 +55576,9 @@
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, char a3",
-  "sig_src": "vote"
+  "params": "C_0083c280* self, void* , uint32_t* itemPayload, char actionFlag",
+  "sig_src": "impl",
+  "file": "src/auto/004d5720.cpp"
  },
  "004d5780": {
   "name": "C_0083dd58_UpdateTargetData",
@@ -55673,13 +55684,14 @@
   "sig_src": "abi"
  },
  "004d62e0": {
-  "name": "sub_4D62E0",
-  "name_src": "addr",
+  "name": "C_0083c280_AdvanceFromStateOneToSix",
+  "name_src": "impl",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0083c280* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004d62e0.cpp"
  },
  "004d6310": {
   "name": "C_0083c280_Construct",
@@ -55693,22 +55705,26 @@
   "sig_src": "vote"
  },
  "004d6450": {
-  "name": "sub_4D6450",
-  "name_src": "addr",
+  "name": "C_0083c280_Destroy_4D6450",
+  "name_src": "agent",
   "votes": {},
   "ret": "void*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, char a2",
-  "sig_src": "abi"
+  "params": "C_0083c280* self, void* , char flags",
+  "sig_src": "impl",
+  "file": "src/auto/004d6450.cpp"
  },
  "004d6480": {
-  "name": "sub_4D6480",
-  "name_src": "addr",
-  "votes": {},
+  "name": "C_0083c280_Destroy_4D6480",
+  "name_src": "agent",
+  "votes": {
+   "BaseTask_Cleanup": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_0083c280* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/004d6480.cpp"
  },
  "004d64b0": {
   "name": "C_0083c388_Construct",
@@ -58406,7 +58422,7 @@
   "name": "TAiState_Constructor",
   "name_src": "agent",
   "votes": {
-   "TAiState_Constructor": 10
+   "TAiState_Constructor": 14
   },
   "ret": "TAiState*",
   "conv": "__fastcall",
@@ -138358,7 +138374,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_AllocUntagged": 48,
+   "CoreMemory_AllocUntagged": 49,
    "Mem_Alloc": 482
   },
   "ret": "int",
@@ -138371,7 +138387,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 91,
+   "CoreMemory_Free": 92,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -147299,7 +147315,7 @@
   "name": "GetGlobalInt",
   "name_src": "agent",
   "votes": {
-   "GetGlobalInt": 444,
+   "GetGlobalInt": 445,
    "MenuControls_GetGlobalInt": 1
   },
   "ret": "int",
@@ -147323,7 +147339,7 @@
   "name": "GlobalInt_ResolveAccessor",
   "name_src": "vote",
   "votes": {
-   "GlobalInt_ResolveAccessor": 81
+   "GlobalInt_ResolveAccessor": 82
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -157613,7 +157629,7 @@
   "name": "SceneMissionSetup_FindNamedEntry",
   "name_src": "agent",
   "votes": {
-   "SceneMissionSetup_FindNamedEntry": 1
+   "SceneMissionSetup_FindNamedEntry": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -163959,7 +163975,7 @@
   "name": "C_00861d48_LoadFromRecord",
   "name_src": "agent",
   "votes": {
-   "C_00861d48_LoadFromRecord": 1
+   "C_00861d48_LoadFromRecord": 2
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -172446,7 +172462,7 @@
   "name": "InitSixDwordRecordFromSource",
   "name_src": "agent",
   "votes": {
-   "Bounds_ConstructFromHalfExtents": 1
+   "Bounds_ConstructFromHalfExtents": 2
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -172476,7 +172492,7 @@
  },
  "00706320": {
   "name": "C_00863260_UpdateChildMatrices",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -172496,7 +172512,7 @@
  },
  "00706460": {
   "name": "C_00863260_LoadCollisionShapes",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -172587,7 +172603,7 @@
  },
  "00706a50": {
   "name": "C_008632c0_CollectSortedIntersections",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "char",
   "conv": "__fastcall",
@@ -172599,7 +172615,8 @@
   "name": "C_008632c0_LoadRecords",
   "name_src": "agent",
   "votes": {
-   "ReinitFromRecord": 1
+   "ReinitFromRecord": 1,
+   "C_008632c0_ApplyNamedEntry": 1
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -172628,13 +172645,14 @@
   "file": "src/auto/00707190.cpp"
  },
  "00707220": {
-  "name": "sub_707220",
-  "name_src": "addr",
+  "name": "C_008632c0_LoadFromRecord",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "abi"
+  "params": "C_008632c0* self, void* , int owner, uint32_t* record",
+  "sig_src": "impl",
+  "file": "src/auto/00707220.cpp"
  },
  "00707410": {
   "name": "C_008632c0_ClearFlagsThenValidate",
@@ -174177,7 +174195,7 @@
   "name": "C_00863760_CopyFromDwordArray",
   "name_src": "agent",
   "votes": {
-   "C_00863760_CopyFromDwordArray": 2
+   "C_00863760_CopyFromDwordArray": 3
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -174259,7 +174277,7 @@
   "name": "C_0086379c_Construct",
   "name_src": "agent",
   "votes": {
-   "C_0086379c_Construct": 1
+   "C_0086379c_Construct": 2
   },
   "ret": "C_0086379c*",
   "conv": "__fastcall",
@@ -174335,7 +174353,7 @@
   "name": "C_008637d8_ConstructFromValues",
   "name_src": "agent",
   "votes": {
-   "C_008637d8_ConstructFromValues": 2
+   "C_008637d8_ConstructFromValues": 3
   },
   "ret": "C_008637d8*",
   "conv": "__fastcall",
