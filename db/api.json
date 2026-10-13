@@ -113967,11 +113967,13 @@
  "006269c0": {
   "name": "_rwDeviceSystemRequest",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "_rwDeviceSystemRequest": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, int a2, uint32_t* a3, int a4, int a5",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "00626aa0": {
   "name": "sub_626AA0",
@@ -114645,7 +114647,7 @@
   "name": "RwStreamRead",
   "name_src": "rwname",
   "votes": {
-   "RwStreamRead": 6
+   "RwStreamRead": 7
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -114720,7 +114722,7 @@
   "name": "RwStreamFindChunk",
   "name_src": "rwname",
   "votes": {
-   "RwStreamFindChunk": 4
+   "RwStreamFindChunk": 5
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -115768,7 +115770,7 @@
   "name": "RwTexDictionaryCreate",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryCreate": 3
+   "RwTexDictionaryCreate": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -115779,7 +115781,7 @@
   "name": "RwTexDictionaryForAllTextures",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryForAllTextures": 12
+   "RwTexDictionaryForAllTextures": 13
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -115812,7 +115814,7 @@
   "name": "RwTextureDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwTextureDestroy": 18
+   "RwTextureDestroy": 19
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -115843,7 +115845,7 @@
   "name": "RwTexDictionaryAddTexture",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryAddTexture": 2
+   "RwTexDictionaryAddTexture": 3
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -115865,7 +115867,7 @@
   "name": "RwTexDictionaryFindNamedTexture",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryFindNamedTexture": 5
+   "RwTexDictionaryFindNamedTexture": 6
   },
   "ret": "char*",
   "conv": "__cdecl",
@@ -115954,7 +115956,7 @@
   "name": "RwTexDictionaryDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwTexDictionaryDestroy": 5
+   "RwTexDictionaryDestroy": 6
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -117264,11 +117266,13 @@
  "0063cb30": {
   "name": "_rwPluginRegistryReadDataChunks",
   "name_src": "rwname",
-  "votes": {},
+  "votes": {
+   "_rwPluginRegistryReadDataChunks": 1
+  },
   "ret": "int",
   "conv": "__cdecl",
   "params": "int a1, uint32_t* a2, int a3",
-  "sig_src": "abi"
+  "sig_src": "vote"
  },
  "0063cc70": {
   "name": "sub_63CC70",
@@ -154799,14 +154803,15 @@
  },
  "006c1260": {
   "name": "GfxTexdict_ReadDictionaryForMerge",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "GfxTexdict_ReadDictionaryForMerge": 1
   },
   "ret": "int",
   "conv": "__stdcall",
-  "params": "uint32_t* a1, int a2",
-  "sig_src": "vote"
+  "params": "int streamAddress, int existingDictionary",
+  "sig_src": "impl",
+  "file": "src/auto/006c1260.cpp"
  },
  "006c1420": {
   "name": "CopyDwordRangeToDestination_6C1420",
