@@ -15,10 +15,11 @@
 // control. ebx and the two stack arguments are preserved, and no stack frame is created.
 // The target address is loaded into eax and reached through an indirect jmp, which keeps the
 // caller's return address and stack arguments in place for the callee.
+static const uintptr_t tail_target = CSF_ADDR_FN(0x00541230);
+
 __declspec(naked) static void MenuMpStats_ForwardToLayout541230() {
     __asm {
-        mov eax, 0x00541230
-        jmp eax
+        jmp dword ptr [tail_target]
     }
 }
 

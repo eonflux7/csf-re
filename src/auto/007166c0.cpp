@@ -12,7 +12,6 @@ static const auto CGuiControl_GetRelatedObject =
     reinterpret_cast<void* (__fastcall*)(CGuiListBoxBase*, void*)>(
         CSF_ADDR_FN(0x00686C10));
 
-CSF_GLOBAL(std::uint32_t, g_GuiListBoxBaseVtable, 0x00863FF8);
 
 static CGuiListBoxBase* __fastcall CGuiListBoxBase_Construct(
     CGuiListBoxBase* self, void* /*edx*/, void* owner, int creationFlags)
@@ -21,7 +20,7 @@ static CGuiListBoxBase* __fastcall CGuiListBoxBase_Construct(
         reinterpret_cast<C_00830438*>(self), nullptr, owner, creationFlags);
 
     CSF_AT(void**, self, 0x00) =
-        reinterpret_cast<void**>(&g_GuiListBoxBaseVtable);
+        CSF_VTBL(0x00863FF8);
 
     self->m_itemColor[0] = 0.0f;
     self->m_itemColor[1] = 0.0f;

@@ -7,7 +7,6 @@
 CSF_FUNC(CGuiListBoxBase*, __fastcall, CGuiListBoxBase_Construct, 0x007166C0,
          (CGuiListBoxBase* self, void* edx, int parentAddress, int argument));
 
-CSF_GLOBAL(void*, g_GuiListBoxVtable, 0x00865070);
 
 static CGuiListBox* __fastcall CGuiListBox_Construct(
     CGuiListBox* self, void* /*edx*/, int parentAddress, int argument)
@@ -15,7 +14,7 @@ static CGuiListBox* __fastcall CGuiListBox_Construct(
     CGuiListBoxBase_Construct(
         reinterpret_cast<CGuiListBoxBase*>(self), nullptr, parentAddress, argument);
 
-    CSF_AT(void**, self, 0x000) = &g_GuiListBoxVtable;
+    CSF_AT(void**, self, 0x000) = CSF_VTBL(0x00865070);
 
     self->field_01f8 = 0;
     self->field_01fc = 0;

@@ -11,7 +11,6 @@ CSF_FUNC(legacy::string*, __fastcall, AssignStringRange_429B60, 0x00429B60,
          (legacy::string* self, void* edx,
           const char* text, unsigned int length));
 
-CSF_GLOBAL(std::uint32_t, g_PanelVtable, 0x00865B40);
 
 static CGuiPanel* __fastcall CGuiPanel_Construct(
     CGuiPanel* self, void* /*edx*/, int argument1, int argument2)
@@ -19,7 +18,7 @@ static CGuiPanel* __fastcall CGuiPanel_Construct(
     CGuiControl_Construct_71A010(self, nullptr, argument1, argument2);
 
     CSF_AT(void**, self, 0) =
-        reinterpret_cast<void**>(&g_PanelVtable);
+        reinterpret_cast<void**>(CSF_VTBL(0x00865B40));
     self->m_childrenBegin = 0;
     self->m_childrenEnd = 0;
     self->field_0140 = 0;

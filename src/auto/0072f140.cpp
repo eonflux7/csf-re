@@ -4,7 +4,6 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-CSF_GLOBAL(std::uint32_t, g_ChoiceButtonVtable, 0x00866340);
 
 CSF_FUNC(int, __cdecl, ResetStringRecordRange, 0x0072EF70,
          (int begin, int end, ...));
@@ -18,7 +17,7 @@ static int __fastcall CGuiChoiceButton_Destroy(
 {
     auto* records = reinterpret_cast<std::uint8_t*>(self) + 0x1F0;
     CSF_AT(void**, self, 0) =
-        reinterpret_cast<void**>(&g_ChoiceButtonVtable);
+        reinterpret_cast<void**>(CSF_VTBL(0x00866340));
 
     const std::uint32_t begin = CSF_AT(std::uint32_t, records, 4);
     if (begin)

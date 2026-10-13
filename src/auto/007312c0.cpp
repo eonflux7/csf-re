@@ -6,7 +6,6 @@
 
 // The CGuiTextureListBox vtable pointer stored into the object at construction
 // time and restored here during destruction.
-CSF_GLOBAL(void*, g_CGuiTextureListBoxVtable, 0x00866DB8);
 
 // Releases every record in the range [first, last) of the dynamic array owned
 // by the list box (cdecl, 4 args -> the caller cleans 16 bytes).
@@ -25,7 +24,7 @@ static int __fastcall CGuiTextureListBox_Destroy(
     // Embedded record-array bookkeeping object at +0x1F8.
     auto* range = reinterpret_cast<std::uint8_t*>(self) + 0x1F8;
 
-    CSF_AT(void**, self, 0) = &g_CGuiTextureListBoxVtable;
+    CSF_AT(void**, self, 0) = CSF_VTBL(0x00866DB8);
 
     const std::uint32_t first = CSF_AT(std::uint32_t, range, 4);
     if (first)

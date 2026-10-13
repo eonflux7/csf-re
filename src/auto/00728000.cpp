@@ -5,7 +5,6 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_GLOBAL(void*, g_CameraResourcesVtable, 0x008655E8);
 
 CSF_FUNC(int, __cdecl, InitializeQuadGeometryBuffers, 0x00739340, ());
 CSF_FUNC(void*, __cdecl, RwFrameCreate, 0x006235D0, ());
@@ -24,7 +23,7 @@ static C_008655e8* __fastcall C_008655e8_InitializeCameraResources(
     C_008655e8* self, void* /*edx*/,
     int x, int y, int width, int height)
 {
-    self->vtbl = reinterpret_cast<void**>(&g_CameraResourcesVtable);
+    self->vtbl = CSF_VTBL(0x008655E8);
 
     self->field_001c = 0;
     self->field_0020 = 0;

@@ -4,7 +4,6 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_GLOBAL(void*, g_vtbl_C_00865758, 0x00865758);
 
 CSF_FUNC(int, __fastcall, C_00863f60_Destroy, 0x00713F40,
          (C_00863f60* self, void* edx));
@@ -14,7 +13,7 @@ static C_00865758* __fastcall C_00865758_Destroy(
     C_00865758* self, void* /*edx*/, char flags)
 {
     void* ownedObject = reinterpret_cast<void*>(self->field_0030);
-    CSF_AT(void**, self, 0x00) = &g_vtbl_C_00865758;
+    CSF_AT(void**, self, 0x00) = CSF_VTBL(0x00865758);
 
     if (ownedObject)
     {

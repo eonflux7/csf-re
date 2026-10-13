@@ -10,7 +10,6 @@ CSF_FUNC(int, __cdecl, ResetStringRecordRange, 0x0072EF70,
          (std::uint32_t begin, std::uint32_t end, void* container, int argument));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
-CSF_GLOBAL(std::uint32_t, g_ChoiceButtonVtable, 0x00866340);
 
 static CGuiChoiceButton* __fastcall CGuiChoiceButton_Construct(
     CGuiChoiceButton* self, void* /*edx*/, int argument1, int argument2)
@@ -20,7 +19,7 @@ static CGuiChoiceButton* __fastcall CGuiChoiceButton_Construct(
 
     auto* records = reinterpret_cast<std::uint8_t*>(self) + 0x1F0;
     CSF_AT(std::uint32_t, self, 0) =
-        reinterpret_cast<std::uint32_t>(&g_ChoiceButtonVtable);
+        reinterpret_cast<std::uint32_t>(CSF_VTBL(0x00866340));
 
     CSF_AT(std::uint32_t, records, 4) = 0;
     CSF_AT(std::uint32_t, records, 8) = 0;

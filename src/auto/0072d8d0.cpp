@@ -7,7 +7,6 @@
 CSF_FUNC(int, __fastcall, CGuiControl_Construct_71A010, 0x0071A010,
          (CGuiSlider* self, void* edx, int argument2, int argument3));
 
-CSF_GLOBAL(void*, g_CGuiSliderVtable, 0x00865E38);
 
 static CGuiSlider* __fastcall CGuiSlider_Construct(
     CGuiSlider* self, void* /*edx*/, int argument2, int argument3)
@@ -15,7 +14,7 @@ static CGuiSlider* __fastcall CGuiSlider_Construct(
     CGuiControl_Construct_71A010(self, nullptr, argument2, argument3);
 
     CSF_AT(void**, self, 0) =
-        reinterpret_cast<void**>(&g_CGuiSliderVtable);
+        reinterpret_cast<void**>(CSF_VTBL(0x00865E38));
 
     self->field_0158 = 0;
     self->field_015c = 0;

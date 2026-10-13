@@ -9,11 +9,10 @@ CSF_FUNC(int, __fastcall, CGuiControl_Construct_71A010, 0x0071A010,
 CSF_FUNC(char, __fastcall, CGuiControl_SetDraggable, 0x007180B0,
          (CGuiControl* self, void* edx, char draggable));
 
-CSF_GLOBAL(std::uint32_t, g_SwitchVtable, 0x00866B58);
-CSF_GLOBAL(volatile std::uint32_t, g_CellTextColorSentinelRed, 0x008A7DA0);
-CSF_GLOBAL(volatile std::uint32_t, g_CellTextColorSentinelGreen, 0x008A7DA4);
-CSF_GLOBAL(volatile std::uint32_t, g_CellTextColorSentinelBlue, 0x008A7DA8);
-CSF_GLOBAL(volatile std::uint32_t, g_CellTextColorSentinelAlpha, 0x008A7DAC);
+CSF_GLOBAL(std::uint32_t, g_CellTextColorSentinelRed, 0x008A7DA0);
+CSF_GLOBAL(std::uint32_t, g_CellTextColorSentinelGreen, 0x008A7DA4);
+CSF_GLOBAL(std::uint32_t, g_CellTextColorSentinelBlue, 0x008A7DA8);
+CSF_GLOBAL(std::uint32_t, g_CellTextColorSentinelAlpha, 0x008A7DAC);
 
 static int __fastcall CGuiSwitch_Construct(
     CGuiSwitch* self, void* /*edx*/, int argument1, int argument2)
@@ -22,7 +21,7 @@ static int __fastcall CGuiSwitch_Construct(
         reinterpret_cast<CGuiControl*>(self), nullptr, argument1, argument2);
 
     CSF_AT(std::uint32_t, self, 0x000) =
-        reinterpret_cast<std::uintptr_t>(&g_SwitchVtable);
+        reinterpret_cast<std::uintptr_t>(CSF_VTBL(0x00866B58));
 
     CSF_AT(std::uint32_t, self, 0x15C) = 0;
     CSF_AT(std::uint32_t, self, 0x160) = 0;

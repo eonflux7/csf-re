@@ -4,7 +4,6 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_GLOBAL(std::uint32_t, g_GuiListBoxBaseVtable, 0x00863FF8);
 
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
@@ -25,7 +24,7 @@ static int __fastcall CGuiListBoxBase_Destroy(
 {
     const std::uint32_t embeddedOwner = self->field_0138;
     CSF_AT(void**, self, 0) =
-        reinterpret_cast<void**>(&g_GuiListBoxBaseVtable);
+        CSF_VTBL(0x00863FF8);
 
     if (embeddedOwner != 0)
     {

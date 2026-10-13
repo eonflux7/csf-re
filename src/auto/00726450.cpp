@@ -5,7 +5,6 @@
 #include "types/auto_classes.h"
 
 // Vtable constant written into the object's vptr slot.
-CSF_GLOBAL(void*, g_vtbl_C_008655c0, 0x8655C0);
 
 // Global game heap deallocator called by the deleting destructor.
 CSF_FUNC(int, __cdecl, Mem_Free, 0x691110, (void* ptr));
@@ -15,7 +14,7 @@ CSF_FUNC(int, __cdecl, Mem_Free, 0x691110, (void* ptr));
 static C_008655c0* __fastcall C_008655c0_ScalarDeletingDestructor(
     C_008655c0* self, void* /*edx*/, unsigned char flags)
 {
-    self->vtbl = &g_vtbl_C_008655c0;
+    self->vtbl = CSF_VTBL(0x8655C0);
     if ((flags & 1) != 0)
         Mem_Free(self);
     return self;

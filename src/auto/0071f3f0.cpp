@@ -4,7 +4,6 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_GLOBAL(std::uint32_t, g_GuiBuilderVtable, 0x00864B30);
 
 CSF_FUNC(void*, __fastcall, GrowButtonArray, 0x0041E5F0,
          (void* self, void* edx, int additionalCapacity));
@@ -17,7 +16,7 @@ static CGuiBuilder* __fastcall CGuiBuilder_Construct(
     CGuiBuilder* self, void* /*edx*/, int owner, char flag, int variant)
 {
     CSF_AT(std::uint32_t, self, 0x00) =
-        reinterpret_cast<std::uint32_t>(&g_GuiBuilderVtable);
+        static_cast<std::uint32_t>(CSF_ADDR_VT(0x00864B30));
     self->field_000c = 0;
     self->field_0010 = 0;
     self->field_0014 = 0;

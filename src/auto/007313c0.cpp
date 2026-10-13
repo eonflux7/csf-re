@@ -9,14 +9,13 @@ CSF_FUNC(CGuiListBoxBase*, __fastcall, CGuiListBoxBase_Construct,
 CSF_FUNC(int, __fastcall, CGuiListBoxBase_SetLineSpacing,
          0x00714810, (CGuiListBoxBase* self, void* edx, int spacing));
 
-CSF_GLOBAL(void*, g_CGuiTextureListBoxVtable, 0x00866DB8);
 
 static CGuiTextureListBox* __fastcall CGuiTextureListBox_Construct(
     CGuiTextureListBox* self, void* /*edx*/, int a2, int a3)
 {
     CGuiListBoxBase_Construct(self, nullptr, a2, a3);
 
-    CSF_AT(void**, self, 0) = &g_CGuiTextureListBoxVtable;
+    CSF_AT(void**, self, 0) = CSF_VTBL(0x00866DB8);
     self->field_01fc = 0;
     self->m_textureRowsEnd = 0;
     self->field_0204 = 0;

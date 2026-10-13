@@ -4,7 +4,6 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-static CSF_GLOBAL(void*, g_FontVtable, 0x00867444);
 
 static CSF_FUNC(C_0085e65c*, __fastcall, ConstructFontBase, 0x00692390,
                 (C_0085e65c* self, void* edx));
@@ -17,7 +16,7 @@ static int __fastcall C_00867444_Construct(
     C_00867444* self, void* /*edx*/, int owner)
 {
     ConstructFontBase(reinterpret_cast<C_0085e65c*>(self), nullptr);
-    CSF_AT(void**, self, 0) = &g_FontVtable;
+    CSF_AT(void**, self, 0) = CSF_VTBL(0x00867444);
 
     void* tree = reinterpret_cast<std::uint8_t*>(self) + 0x28;
     CSF_AT(std::uint32_t, self, 0x24) = 15;

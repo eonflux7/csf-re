@@ -3,7 +3,6 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_GLOBAL(std::uint32_t, g_SwitchVtable, 0x00866B58);
 
 CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
@@ -13,7 +12,7 @@ CSF_FUNC(int, __fastcall, CGuiControl_Destroy, 0x00719B10,
 static int __fastcall CGuiSwitch_Destroy(CGuiSwitch* self, void* /*edx*/)
 {
     void* resource = CSF_AT(void*, self, 0x134);
-    CSF_AT(void**, self, 0) = reinterpret_cast<void**>(&g_SwitchVtable);
+    CSF_AT(void**, self, 0) = reinterpret_cast<void**>(CSF_VTBL(0x00866B58));
     if (resource)
     {
         ReleaseObjectReference(static_cast<std::uint8_t*>(resource) + 4, nullptr);

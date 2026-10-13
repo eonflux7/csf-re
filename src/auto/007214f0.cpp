@@ -9,7 +9,6 @@ CSF_FUNC(int, __fastcall, CGuiControl_Construct_71A010, 0x0071A010,
 CSF_FUNC(int, __fastcall, CGuiEdit_ClearTextAndPositions, 0x007213C0,
          (CGuiEdit* self, void* edx));
 
-CSF_GLOBAL(std::uint32_t, g_GuiEditVtable, 0x00864E18);
 
 static int __fastcall CGuiEdit_Construct(
     CGuiEdit* self, void* /*edx*/, int parent, int argument)
@@ -18,7 +17,7 @@ static int __fastcall CGuiEdit_Construct(
                      parent, argument);
 
     CSF_AT(std::uint32_t, self, 0) =
-        reinterpret_cast<std::uint32_t>(&g_GuiEditVtable);
+        static_cast<std::uint32_t>(CSF_ADDR_VT(0x00864E18));
 
     CSF_AT(std::uint32_t, self, 0x164) = 0;
     CSF_AT(std::uint32_t, self, 0x168) = 7;

@@ -6,14 +6,13 @@
 CSF_FUNC(int, __fastcall, CGuiControl_Construct_71A010, 0x0071A010,
          (void* self, void* edx, int owner, int argument));
 
-CSF_GLOBAL(void*, g_GuiStaticVtable, 0x00864BC0);
 
 static CGuiStatic* __fastcall CGuiStatic_Construct(
     CGuiStatic* self, void* /*edx*/, int owner, int argument)
 {
     CGuiControl_Construct_71A010(self, nullptr, owner, argument);
 
-    CSF_AT(void**, self, 0x00) = &g_GuiStaticVtable;
+    CSF_AT(void**, self, 0x00) = CSF_VTBL(0x00864BC0);
     self->field_0138 = 0;
     self->m_pText = 0;
     self->field_0140 = 1.0f;

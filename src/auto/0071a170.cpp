@@ -9,7 +9,6 @@ CSF_FUNC(std::uint32_t*, __fastcall, C_00830438_Construct, 0x00712CC0,
 CSF_FUNC(int, __fastcall, CGuiControl_Reset, 0x00718CC0,
          (CGuiControl* self, void* edx));
 
-CSF_GLOBAL(std::uint32_t, g_GuiControlVtable, 0x00864288);
 
 static int __fastcall CGuiControl_Construct(
     CGuiControl* self, void* /*edx*/, int owner)
@@ -18,7 +17,7 @@ static int __fastcall CGuiControl_Construct(
 
     self->field_0010 = static_cast<std::uint32_t>(owner);
     CSF_AT(std::uint32_t, self, 0x00) =
-        reinterpret_cast<std::uint32_t>(&g_GuiControlVtable);
+        static_cast<std::uint32_t>(CSF_ADDR_VT(0x00864288));
 
     CSF_AT(std::uint32_t, self, 0x2C) = 0;
     CSF_AT(std::uint32_t, self, 0x30) = 15;

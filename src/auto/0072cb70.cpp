@@ -3,7 +3,6 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_GLOBAL(void*, g_CGuiSliderVtable, 0x00865E38);
 
 CSF_FUNC(int, __fastcall, CGuiControl_Destroy, 0x00719B10,
          (CGuiControl* self, void* edx));
@@ -12,7 +11,7 @@ static int __fastcall CGuiSlider_Destroy(
     CGuiSlider* self, void* /*edx*/)
 {
     void* arrowUp = reinterpret_cast<void*>(self->m_pArrowUp);
-    CSF_AT(void**, self, 0) = &g_CGuiSliderVtable;
+    CSF_AT(void**, self, 0) = CSF_VTBL(0x00865E38);
 
     if (arrowUp != nullptr)
     {

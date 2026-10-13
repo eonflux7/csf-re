@@ -40,9 +40,264 @@ template <class T> __forceinline T* pointer(uint32_t p) { return reinterpret_cas
 // VC7.1 emits SAR for the power-of-two strides in these three clusters. Integer address
 // arithmetic also avoids host C++ pointer subtraction between an empty vector's nulls.
 template <size_t Bytes> __forceinline uint32_t distance(uint32_t end, uint32_t begin) {
-    static_assert(Bytes == 4 || Bytes == 8 || Bytes == 16);
-    constexpr unsigned shift = Bytes == 4 ? 2 : Bytes == 8 ? 3 : 4;
-    return static_cast<uint32_t>(static_cast<int32_t>(end - begin) >> shift);
+    if constexpr ((Bytes & (Bytes - 1)) == 0) {
+        constexpr unsigned shift = []() constexpr {
+            unsigned n = 0;
+            for (size_t b = Bytes; b > 1; b >>= 1) ++n;
+            return n;
+        }();
+        return static_cast<uint32_t>(static_cast<int32_t>(end - begin) >> shift);
+    } else {
+        return static_cast<uint32_t>(static_cast<int32_t>(end - begin) / static_cast<int32_t>(Bytes));
+    }
+}
+
+// The binary retains this unsigned max_size comparison even though its limit is
+// UINT32_MAX. A volatile local keeps the original (unreachable) call boundary.
+__forceinline void vector_check_length(void* self, uint32_t count) {
+    volatile uint32_t limit = 0xFFFFFFFFu;
+    if (count > limit) vector_length_error(self, nullptr);
+}
+
+template <class T> __forceinline uint8_t vector_buy(vector<T>* self, uint32_t count) {
+    self->first = nullptr;
+    self->last = nullptr;
+    self->end = nullptr;
+    if (!count) return 0;
+    vector_check_length(self, count);
+    T* block = static_cast<T*>(allocate_buffer(sizeof(T) * count, 0, 0));
+    self->end = pointer<T>(address(block) + sizeof(T) * count);
+    self->first = block;
+    self->last = block;
+    return 1;
+}
+
+// Reserve never grows geometrically. Power-of-two shapes leave new end in EAX;
+// reciprocal-division shapes leave the allocation address instead.
+template <class Ops> __forceinline uint32_t vector_reserve(
+    vector<typename Ops::value_type>* self, uint32_t count) {
+    using T = typename Ops::value_type;
+    constexpr uint32_t bytes = sizeof(T);
+    vector_check_length(self, count);
+    uint32_t first = address(self->first);
+    uint32_t result = first ? distance<bytes>(address(self->end), first) : 0;
+    if (result < count) {
+        T* block = static_cast<T*>(allocate_buffer(bytes * count, 0, 0));
+        try {
+            Ops::copy(self, address(self->first), address(self->last), address(block));
+        } catch (...) {
+            release_failed_buffer(block, pointer<void>(count));
+            rethrow_exception(nullptr, nullptr);
+            __assume(0);
+        }
+        first = address(self->first);
+        uint32_t size = first ? distance<bytes>(address(self->last), first) : 0;
+        if (first) {
+            Ops::destroy(first, address(self->last));
+            if (self->first) release_buffer(self->first);
+        }
+        self->end = pointer<T>(address(block) + bytes * count);
+        self->last = pointer<T>(address(block) + bytes * size);
+        self->first = block;
+        if constexpr (Ops::returns_last) result = address(block) + bytes * size;
+        else result = Ops::returns_end ? address(block) + bytes * count : address(block);
+    }
+    return result;
+}
+
+template <class Ops> __forceinline vector<typename Ops::value_type>* vector_copy_construct(
+    vector<typename Ops::value_type>* self, const vector<typename Ops::value_type>* source) {
+    using T = typename Ops::value_type;
+    uint32_t first = address(source->first);
+    uint32_t count = first ? distance<sizeof(T)>(address(source->last), first) : 0;
+    if (vector_buy(self, count)) {
+        try {
+            self->last = pointer<T>(Ops::copy(self, address(source->first),
+                                             address(source->last), address(self->first)));
+        } catch (...) {
+            Ops::cleanup(self);
+            rethrow_exception(nullptr, nullptr);
+            __assume(0);
+        }
+    }
+    return self;
+}
+
+// Single-value assignment, not iterator-to-iterator assignment: the source is
+// deliberately unchanged throughout the loop. Empty ranges leave EAX unspecified.
+template <class Ops> __forceinline void vector_assign_value(
+    typename Ops::value_type* begin, typename Ops::value_type* end,
+    const typename Ops::value_type* value) {
+    for (auto* p = begin; p != end; ++p) Ops::assign(p, value);
+}
+
+template <class Ops> __forceinline void vector_destroy_range(
+    typename Ops::value_type* begin, typename Ops::value_type* end) {
+    for (auto* p = begin; p != end; ++p) Ops::destroy(p);
+}
+
+template <class Ops> __forceinline uint32_t vector_fill_assign(
+    uint32_t begin, uint32_t end, uint32_t value) {
+    for (uint32_t p = begin; p != end; p += sizeof(typename Ops::value_type))
+        Ops::assign(pointer<typename Ops::value_type>(p),
+                    pointer<typename Ops::value_type>(value));
+    return end;
+}
+
+template <size_t Bytes, size_t Skip = 0> struct trivial_assignment {
+    using value_type = element<Bytes>;
+    static __forceinline void assign(value_type* dest, const value_type* source) {
+        for (size_t i = Skip / 4; i < Bytes / 4; ++i)
+            reinterpret_cast<uint32_t*>(dest)[i] = reinterpret_cast<const uint32_t*>(source)[i];
+    }
+};
+
+template <size_t Bytes> __forceinline uint32_t vector_copy_backward(
+    uint32_t begin, uint32_t end, uint32_t dest) {
+    while (end != begin) {
+        end -= Bytes;
+        dest -= Bytes;
+        trivial_assignment<Bytes>::assign(pointer<element<Bytes>>(dest), pointer<element<Bytes>>(end));
+    }
+    return dest;
+}
+
+template <class Ops> __forceinline uint32_t vector_uninitialized_forward(
+    uint32_t begin, uint32_t end, uint32_t dest, uint32_t context) {
+    // Only the low byte of the original dummy dispatch tag is initialized.
+    // It is an empty type, not an integer argument used by the callee.
+    return Ops::copy(begin, end, dest, context, 0);
+}
+
+struct vector_bool {
+    uint32_t bits;
+    vector<uint32_t> words;
+};
+static_assert(offsetof(vector_bool, words) == 4 && sizeof(vector_bool) == 20);
+
+template <class Ops> __forceinline void vector_bool_trim(vector_bool* self, uint32_t count) {
+    volatile uint32_t limit = 0xFFFFFFFFu;
+    if (count > limit) Ops::length_error(self);
+    uint32_t words = (count + 31) >> 5;
+    uint32_t first = address(self->words.first);
+    if (first && words < distance<4>(address(self->words.last), first)) {
+        uint32_t last = first + 4 * words;
+        if (last != address(self->words.last)) {
+            // erase(end_of_kept_words, end): the source range is empty, but the
+            // original still crosses memcpy before updating the word-vector end.
+            self->words.last = pointer<uint32_t>(Ops::copy(last, address(self->words.last), 0));
+        }
+    }
+    self->bits = count;
+    uint32_t remainder = count & 31;
+    if (remainder) *pointer<uint32_t>(address(self->words.first) + 4 * words - 4)
+                    &= (uint32_t(1) << remainder) - 1;
+}
+
+template <class Ops> __forceinline uint32_t vector_bool_insert(
+    vector_bool* self, uint32_t offset, uint32_t* word, uint32_t count) {
+    uint32_t position = offset + 32 * distance<4>(address(word), address(self->words.first));
+    if (count) {
+        uint32_t old = self->bits;
+        if (0xFFFFFFFFu - old < count) Ops::length_error(self);
+        Ops::resize(&self->words, (old + count + 31) >> 5, 0);
+        old = self->bits;
+        if (!old) {
+            self->bits = count;
+            return position;
+        }
+        struct iterator { uint32_t offset; uint32_t* word; } old_end;
+        old_end.offset = old & 31;
+        old_end.word = pointer<uint32_t>(address(self->words.first) + 4 * (old >> 5));
+        uint32_t added = old + count;
+        self->bits = added;
+        uint32_t* new_end = self->words.first;
+        uint32_t new_offset = 0;
+        if (added) {
+            new_end = pointer<uint32_t>(address(new_end) + 4 * (added >> 5));
+            new_offset = added & 31;
+        }
+        Ops::move(&old_end, position & 31,
+                  pointer<uint32_t>(address(self->words.first) + 4 * (position >> 5)),
+                  old_end.offset, old_end.word, new_offset, new_end);
+    }
+    return position;
+}
+
+template <class Ops> __forceinline uint8_t vector_insert_range(
+    vector<typename Ops::value_type>* self, typename Ops::value_type* position,
+    typename Ops::value_type* begin, typename Ops::value_type* end, uint32_t tag) {
+    using T = typename Ops::value_type;
+    constexpr uint32_t bytes = sizeof(T);
+    uint32_t count = distance<bytes>(address(end), address(begin));
+    uint32_t result = count;
+    uint32_t first = address(self->first);
+    uint32_t capacity = first ? distance<bytes>(address(self->end), first) : 0;
+    uint32_t pos = address(position);
+    if (count) {
+        uint32_t size = first ? distance<bytes>(address(self->last), first) : 0;
+        if (0xFFFFFFFFu - size < count) vector_length_error(self, nullptr);
+        size = first ? distance<bytes>(address(self->last), first) : 0;
+        if (capacity >= count + size) {
+            uint32_t last = address(self->last);
+            if (distance<bytes>(last, pos) >= count) {
+                uint32_t split = last - bytes * count;
+                self->last = pointer<T>(Ops::copy(self, split, last, last));
+                Ops::copy_backward(pos, split, last);
+                result = Ops::assign(address(begin), address(end), pos);
+            } else {
+                Ops::copy(self, pos, last, pos + bytes * count);
+                uint32_t split = address(begin) + bytes * distance<bytes>(address(self->last), pos);
+                // The original's second try block has no cleanup action for these
+                // trivial elements; only reallocation releases a failed buffer.
+                Ops::copy_range(self, split, address(end), address(self->last));
+                self->last = pointer<T>(address(self->last) + bytes * count);
+                result = Ops::assign(address(begin), split, pos);
+            }
+        } else {
+            uint32_t grown = 0xFFFFFFFFu - (capacity >> 1) >= capacity
+                             ? capacity + (capacity >> 1) : 0;
+            if (grown < count + size) grown = count + size;
+            T* block = static_cast<T*>(allocate_buffer(bytes * grown, 0, 0));
+            try {
+                uint32_t next = Ops::copy(self, address(self->first), pos, address(block));
+                next = Ops::copy_range(self, address(begin), address(end), next);
+                Ops::copy(self, pos, address(self->last), next);
+            } catch (...) {
+                release_failed_buffer(block, pointer<void>(tag));
+                rethrow_exception(nullptr, nullptr);
+                __assume(0);
+            }
+            first = address(self->first);
+            result = first ? distance<bytes>(address(self->last), first) : 0;
+            uint32_t new_size = result + count;
+            if (first) result = release_buffer(self->first);
+            self->end = pointer<T>(address(block) + bytes * grown);
+            self->last = pointer<T>(address(block) + bytes * new_size);
+            self->first = block;
+        }
+    }
+    return static_cast<uint8_t>(result);
+}
+
+template <class Ops> __forceinline void vector_xlen() {
+    element<28> message;
+    element<40> exception;
+    auto* m = reinterpret_cast<uint32_t*>(&message);
+    m[6] = 15;
+    m[5] = 0;
+    message.bytes[4] = 0;
+    Ops::text(&message);
+    Ops::exception_construct(&exception);
+    auto* e = reinterpret_cast<uint32_t*>(&exception);
+    e[0] = Ops::runtime_error_vtable();
+    e[9] = 15;
+    e[8] = 0;
+    exception.bytes[16] = 0;
+    Ops::string_copy(exception.bytes + 12, &message);
+    e[0] = Ops::length_error_vtable();
+    Ops::throw_error(&exception);
+    __assume(0);
 }
 
 template <class Ops> struct insert_value {

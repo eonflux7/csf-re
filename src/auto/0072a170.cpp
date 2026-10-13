@@ -3,7 +3,6 @@
 #include "hook.h"
 #include "types/auto_classes.h"
 
-CSF_GLOBAL(void*, g_C_008657e0Vtable, 0x008657E0);
 
 static C_008657e0* __fastcall C_008657e0_Initialize(
     C_008657e0* self, void* /*edx*/)
@@ -11,7 +10,7 @@ static C_008657e0* __fastcall C_008657e0_Initialize(
     self->field_0028 = 15;
     self->field_0024 = 0;
     *reinterpret_cast<std::uint8_t*>(&self->field_0014) = 0;
-    self->vtbl = &g_C_008657e0Vtable;
+    self->vtbl = CSF_VTBL(0x008657E0);
     self->field_0034 = 0;
     self->field_0038 = 0;
     self->field_003c = 0;

@@ -4,7 +4,6 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_GLOBAL(std::uint32_t, g_ButtonVtable, 0x00865328);
 
 CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
@@ -17,7 +16,7 @@ CSF_FUNC(int, __fastcall, CGuiControl_Destroy, 0x00719B10,
 static int __fastcall CGuiButton_Destroy(CGuiButton* self, void* /*edx*/)
 {
     CSF_AT(std::uint32_t, self, 0) =
-        reinterpret_cast<std::uint32_t>(&g_ButtonVtable);
+        static_cast<std::uint32_t>(CSF_ADDR_VT(0x00865328));
 
     auto* quadSlot = &self->m_pIdleQuad;
     for (int remaining = 3; remaining != 0; --remaining)

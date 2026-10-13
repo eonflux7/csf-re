@@ -15,14 +15,13 @@ CSF_FUNC(unsigned int, __fastcall, ReserveSecondCollection, 0x0071BCC0,
 CSF_FUNC(unsigned int, __fastcall, ReserveObjectPointers, 0x0050CD00,
          (void* self, void* edx, unsigned int capacity));
 
-CSF_GLOBAL(uint32_t, g_ControllerVtable, 0x00864508);
 
 static C_00864508* __fastcall C_00864508_Initialize(
     C_00864508* self, void* /*edx*/, void* owner,
     uint32_t firstParameter, uint32_t secondParameter)
 {
     C_00830438_Construct(self, nullptr);
-    self->vtbl = reinterpret_cast<decltype(self->vtbl)>(&g_ControllerVtable);
+    self->vtbl = CSF_VTBL(0x00864508);
 
     self->field_0014 = 0;
     self->field_0018 = 0;

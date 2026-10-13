@@ -4,7 +4,6 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_GLOBAL(void*, g_GuiStaticVtable, 0x00864BC0);
 
 CSF_FUNC(int, __fastcall, ReleaseObjectReference, 0x006923C0,
          (void* self, void* edx));
@@ -15,7 +14,7 @@ static int __fastcall CGuiStatic_Destroy(CGuiStatic* self, void* /*edx*/)
 {
     const std::uint32_t resource = self->field_0138;
     CSF_AT(void**, self, 0) =
-        reinterpret_cast<void**>(&g_GuiStaticVtable);
+        CSF_VTBL(0x00864BC0);
 
     if (resource)
     {

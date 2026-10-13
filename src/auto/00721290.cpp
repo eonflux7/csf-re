@@ -4,7 +4,6 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_GLOBAL(std::uint32_t, g_GuiEditVtable, 0x00864E18);
 
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_FUNC(int, __fastcall, CGuiControl_Destroy, 0x00719B10,
@@ -14,7 +13,7 @@ static int __fastcall CGuiEdit_Destroy(CGuiEdit* self, void* /*edx*/)
 {
     void* object = reinterpret_cast<void*>(self->field_0138);
     CSF_AT(void**, self, 0) =
-        reinterpret_cast<void**>(&g_GuiEditVtable);
+        CSF_VTBL(0x00864E18);
 
     if (object)
     {

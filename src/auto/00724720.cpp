@@ -4,7 +4,6 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_GLOBAL(void*, g_GuiListBoxVtable, 0x00865070);
 
 CSF_FUNC(int*, __cdecl, ResetWideStringRecordRange, 0x007241E0,
          (int* begin, int* end));
@@ -18,7 +17,7 @@ static int __fastcall CGuiListBox_Destroy(
 {
     void* rowText = reinterpret_cast<void*>(self->m_pRowText);
     CSF_AT(void**, self, 0) =
-        reinterpret_cast<void**>(&g_GuiListBoxVtable);
+        CSF_VTBL(0x00865070);
 
     if (rowText) {
         reinterpret_cast<void (__fastcall*)(void*, void*, int)>(
