@@ -136,11 +136,12 @@ def run(a):
     t0, err, usage = time.time(), None, {}
     try:
         if backend == "codex":
-            cmd = ["codex", "exec", "--ephemeral", "--ignore-user-config", "-s", "workspace-write", "-C", tree,
+            # not --ephemeral: the session file in the login's home carries running token counts (tokens())
+            cmd = ["codex", "exec", "--ignore-user-config", "-s", "workspace-write", "-C", tree,
                    "-m", model, "-c", f'model_reasoning_effort="{effort}"', "-c", "web_search=disabled",
                    "-o", report, "--json", "-"]
             home = login()
-            state(d, login=os.path.basename(home).lstrip("."))
+            state(d, login=os.path.basename(home).lstrip("."), home=home)
             with open(events, "w") as ev:
                 r = subprocess.run(cmd, input=prompt, stdout=ev, stderr=subprocess.PIPE, text=True,
                                    timeout=a.timeout, env=dict(os.environ, CODEX_HOME=home))
@@ -155,14 +156,15 @@ def run(a):
         else:
             cmd = ["claude", "-p", "--model", model, "--effort", effort, "--permission-mode", "dontAsk",
                    "--allowedTools", *CLAUDE_ALLOW, "--no-session-persistence", "--strict-mcp-config",
-                   "--disable-slash-commands", "--output-format", "json"]
+                   "--disable-slash-commands", "--output-format", "stream-json", "--verbose"]
             state(d, login="claude main")
-            r = subprocess.run(cmd, input=prompt, capture_output=True, text=True, cwd=tree, timeout=a.timeout)
-            open(events, "w").write(r.stdout)
-            try:
-                res = json.loads(r.stdout)
-            except ValueError:
-                res = {"is_error": True, "result": (r.stderr or r.stdout)[-400:]}
+            with open(events, "w") as ev:  # one JSON event per line as it happens: history and tokens while it runs
+                r = subprocess.run(cmd, input=prompt, stdout=ev, stderr=subprocess.PIPE, text=True, cwd=tree,
+                                   timeout=a.timeout)
+            res = {"is_error": True, "result": r.stderr[-400:]}
+            for line in open(events, errors="replace"):
+                if line.startswith('{"type":"result"'):
+                    res = json.loads(line)
             if res.get("is_error") or not res.get("result"):
                 err = f"claude -p rc={r.returncode}: {str(res.get('result'))[:400]}"
                 if "limit" in err.lower():
@@ -230,6 +232,118 @@ def jobs():
                 st["eas"] = []
         out.append(st)
     return out
+
+
+def _events(name):
+    p = os.path.join(DEEP, name, "events.jsonl")
+    try:
+        lines = open(p, errors="replace").read().splitlines()
+    except OSError:
+        return
+    for line in lines:
+        try:
+            yield json.loads(line)
+        except ValueError:
+            continue
+
+
+def history(name, n=14):
+    """The last things a job did, newest last: [(kind, text)] with kind run / say / edit (both agents' logs)."""
+    out = []
+    for d in _events(name):
+        it = d.get("item") or {}
+        if it.get("type") == "command_execution" and it.get("status") != "in_progress":  # Codex
+            cmd = re.sub(r"^/bin/bash -lc ", "", it.get("command", ""))
+            cmd = cmd[1:-1] if len(cmd) > 1 and cmd[0] == cmd[-1] and cmd[0] in "\"'" else cmd
+            out.append(("run", f"{cmd[:300]}  -> exit {it.get('exit_code')}"))
+        elif it.get("type") == "agent_message" and it.get("text"):
+            out.append(("say", it["text"][:500]))
+        elif d.get("type") == "assistant":  # Claude stream-json
+            for c in (d.get("message") or {}).get("content") or []:
+                if c.get("type") == "text" and c.get("text", "").strip():
+                    out.append(("say", c["text"].strip()[:500]))
+                elif c.get("type") == "tool_use":
+                    i = c.get("input") or {}
+                    if c.get("name") == "Bash":
+                        out.append(("run", str(i.get("command", ""))[:300]))
+                    else:
+                        out.append(("edit" if c.get("name") in ("Edit", "Write") else "read",
+                                    f"{c.get('name')} {i.get('file_path') or i.get('pattern') or ''}"[:300]))
+    return out[-n:]
+
+
+def tokens(st):
+    """Token use of a job so far: {input, cached, output, context, cost_usd?}. Codex: the last token_count of its
+    session file (jobs started with --ephemeral have none until they end); Claude: summed over its messages."""
+    name, u = st["name"], st.get("usage") or {}
+    if st.get("phase") != "running" and u:
+        return dict(input=u.get("input_tokens", 0), cached=u.get("cached_input_tokens", 0),
+                    output=u.get("output_tokens", 0) + u.get("reasoning_output_tokens", 0),
+                    cost_usd=u.get("cost_usd"))
+    out = dict(input=0, cached=0, output=0)
+    if AGENTS.get(st.get("agent", "sol-hi"), ("codex",))[0] == "codex":
+        tid = next((d.get("thread_id") for d in _events(name) if d.get("type") == "thread.started"), None)
+        import glob
+        files = glob.glob(os.path.join(st.get("home") or "", "sessions", "*", "*", "*", f"rollout-*{tid}.jsonl")) if tid else []
+        for line in (open(files[0], errors="replace") if files else ()):
+            if '"token_count"' in line:
+                try:
+                    info = json.loads(line)["payload"]["info"] or {}
+                except (ValueError, KeyError):
+                    continue
+                t = info.get("total_token_usage") or {}
+                out = dict(input=t.get("input_tokens", 0), cached=t.get("cached_input_tokens", 0),
+                           output=t.get("output_tokens", 0) + t.get("reasoning_output_tokens", 0),
+                           context=(info.get("last_token_usage") or {}).get("input_tokens", 0),
+                           window=info.get("model_context_window"))
+        return out
+    seen = set()
+    for d in _events(name):
+        m = d.get("message") or {}
+        if d.get("type") == "assistant" and m.get("id") not in seen and m.get("usage"):
+            seen.add(m.get("id"))
+            mu = m["usage"]
+            ctx = mu.get("input_tokens", 0) + mu.get("cache_read_input_tokens", 0) + mu.get("cache_creation_input_tokens", 0)
+            out = dict(input=out["input"] + ctx, cached=out["cached"] + mu.get("cache_read_input_tokens", 0),
+                       output=out["output"] + mu.get("output_tokens", 0), context=ctx)
+    return out
+
+
+def shells(st):
+    """Commands a running job has in flight: its process tree without the runner and the agent binaries."""
+    if st.get("phase") != "running":
+        return []
+    kids, info = {}, {}
+    hz, now = os.sysconf("SC_CLK_TCK"), time.time()
+    boot = now - float(open("/proc/uptime").read().split()[0])
+    for pid in filter(str.isdigit, os.listdir("/proc")):
+        try:
+            stat = open(f"/proc/{pid}/stat").read().rsplit(")", 1)[1].split()
+            cmd = open(f"/proc/{pid}/cmdline").read().replace("\0", " ").strip()
+        except OSError:
+            continue
+        kids.setdefault(int(stat[1]), []).append(int(pid))
+        info[int(pid)] = (cmd, now - (boot + int(stat[19]) / hz))
+    out, todo = [], list(kids.get(st["pid"], []))
+    while todo:
+        pid = todo.pop()
+        todo += kids.get(pid, [])
+        cmd, age = info.get(pid, ("", 0))
+        if not cmd or re.match(r"\S*(codex|claude|node)\b", cmd) or "codex-linux-sandbox" in cmd.split(" ")[0]:
+            continue
+        if cmd.startswith(("bwrap ", "source /home", "/bin/sh -c source")) or "shell-snapshots" in cmd[:200]:
+            continue  # the sandbox and Claude's shell wrapper: their child is the command
+        cmd = re.sub(r"^(/usr)?/bin/(ba)?sh -l?c ", "", cmd)
+        out.append(dict(pid=pid, secs=round(age), cmd=cmd[:240]))
+    return sorted(out, key=lambda x: -x["secs"])[:8]
+
+
+def detail(name):
+    st = next((j for j in jobs() if j["name"] == name), None)
+    if st is None:
+        return {}
+    return dict(name=name, phase=st["phase"], shells=shells(st), tokens=tokens(st),
+                history=[dict(kind=k, text=t) for k, t in history(name)])
 
 
 def ls(_):

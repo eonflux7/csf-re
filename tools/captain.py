@@ -12,7 +12,7 @@ names/types are checked mechanically (convention, uniqueness, types that compile
 as `src: captain` (pinned: tools/globals.py won't override it), low confidence is held for Opus review
 (work/captain/held.jsonl). Function names the model is sure of (helpers it read) are recorded as proposals.
 
-Live state for tools/monitor.py: work/captain_state.json; per-call log: work/captain_log.jsonl.
+Live state (was read by the retired terminal monitor): work/captain_state.json; per-call log: work/captain_log.jsonl.
 """
 import argparse, collections, fcntl, json, os, re, struct, subprocess, sys, time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

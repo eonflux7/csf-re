@@ -1,4 +1,4 @@
-"""Subscription limits, read with the user's own tokens (read-only endpoints). Used by monitor.py and
+"""Subscription limits, read with the user's own tokens (read-only endpoints). Used by webmon.py and
 by grunt.py lanes (Codex quota guard)."""
 import json
 import os

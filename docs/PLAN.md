@@ -137,10 +137,6 @@ diff and emudiff (user, 2026-10-11); emudiff is a gate step (2026-10-13).
       (Set/Get, Width/Height, Int32/Int16) and low-confidence toolkit internals (RpTeam, Rt2d, RtWorldImport)
 - [ ] The in-lane Codex review after the sharper prompt (2026-10-10): re-read 15 rejections; 10 of 14 were not
   behavior before (load order, INT_MIN, x87, phantom edi)
-- [ ] Monitor: the Loop tab still models captain naming as wave stages ("types", wave end; `monitor_loop.py`);
-  names moved to `tools/naming.py` on 2026-10-10. Its quarantine gauge counts every quarantine since the wave
-  started; `wave_report` counts the module's own (2026-10-12)
-
 ### Types & structure
 - [ ] Unclassed methods left (29% of undone ones): what remains comes from lookups through containers / tables
       (untyped element pointers); needs element types of STL instances (db/stl.json) or table globals
@@ -189,7 +185,7 @@ diff and emudiff (user, 2026-10-11); emudiff is a gate step (2026-10-13).
       tier in the ledger, a gate step for new functions, and only after that retire parts of semcheck
 - [ ] Remove diff tier 3 (record/replay) once emudiff's false alarms are fixed; tiers 1/2 stay. Footprint:
       hook/replay.cpp, the tier 3 half of difftable.py, kT3 / g_no_t3 in hook/diff.cpp, namespace t3 in hook.h,
-      replay_table.inc in CMakeLists.txt, the tier 3 lines of monitor_loop.py / monitor_app.py
+      replay_table.inc in CMakeLists.txt
 
 ### Cutover
 - [ ] Allocator shim (operator new/delete -> game heap; delete = sub_691110), rw.h shim

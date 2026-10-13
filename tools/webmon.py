@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Local web monitor for the current stage: game code is nearly all written, the orchestrator hands jobs to agents
-(tools/deep_worker.py) and oversees them. Replaces tools/monitor.py (the terminal dashboard of the wave stage).
+(tools/deep_worker.py) and oversees them. Replaced the terminal dashboard of the wave stage (deleted 2026-10-13).
 
   .venv/bin/python tools/webmon.py [--port 8777]        then http://127.0.0.1:8777
 
@@ -201,7 +201,8 @@ def collect():
                   tiny=f"under {MIN_HOOK} bytes (no room for a hook)", other="not attempted / returned to the lanes")
     for j in jobs:
         j["age_min"] = round(((j.get("finished") or time.time()) - j["started"]) / 60)
-        j["tokens"] = (j.get("usage") or {}).get("input_tokens", 0) + (j.get("usage") or {}).get("output_tokens", 0)
+        j["tokens"] = slow("tok" + j["name"], 20 if j["phase"] == "running" else 600, lambda j=j: deep_worker.tokens(j))
+        j["shells"] = len(deep_worker.shells(j))
         j.pop("usage", None)
     commits = subprocess.run(["git", "-C", ROOT, "log", "-14", "--format=%h\t%ar\t%s"], capture_output=True,
                              text=True).stdout.splitlines()
@@ -258,6 +259,9 @@ ul{margin:0;padding-left:18px}li{margin:3px 0}
 dialog{width:min(1000px,94vw);max-height:88vh;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);padding:0}
 dialog::backdrop{background:rgba(0,0,0,.45)}dialog header{padding:10px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card)}
 dialog pre{margin:0;padding:14px;white-space:pre-wrap;word-break:break-word;font:12.5px/1.5 ui-monospace,Menlo,Consolas,monospace}
+tr.job{cursor:pointer}tr.job:hover td{background:var(--chip)}tr.jd td{background:var(--bg);padding:12px 14px;border-top:none}
+.jdw{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);gap:20px}@media (max-width:1100px){.jdw{grid-template-columns:1fr}}
+.hist{padding:3px 0;border-top:1px solid var(--line);overflow-wrap:anywhere}.hist:first-of-type{border-top:none}
 .meter{display:inline-block;width:64px;height:7px;background:var(--chip);border-radius:4px;overflow:hidden;vertical-align:middle;margin-right:6px}.meter>i{display:block;height:100%}
 </style></head><body>
 <header><h1>CSF-RE</h1><span class="dim">agent jobs, queue and what is left of the game code</span><span id="stamp"></span></header>
@@ -265,7 +269,16 @@ dialog pre{margin:0;padding:14px;white-space:pre-wrap;word-break:break-word;font
 <dialog id="dlg"><header><b id="dt"></b> <span class="dim small" id="ds"></span><button class="link" style="float:right" onclick="dlg.close()">close</button></header><pre id="dp"></pre></dialog>
 <script>
 const E=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const open_=new Set();let last=null;
+const open_=new Set(),openJobs=new Set(),jd={};let last=null;
+const k=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?Math.round(n/1e3)+'k':String(n||0);
+const tok=t=>!t||(!t.input&&!t.output)?'<span class="dim">–</span>':`${k(t.input)} / ${k(t.output)}`;
+const dur=s=>s>=3600?(s/3600).toFixed(1)+' h':s>=60?Math.round(s/60)+' min':s+' s';
+function jobDetail(n){const d=jd[n];if(!d)return '<span class="dim">loading…</span>';const t=d.tokens||{};
+  return `<div class="jdw"><div><h2>Running shells</h2>${(d.shells||[]).length?d.shells.map(x=>`<div class="mono small"><span class="running">${dur(x.secs)}</span> ${E(x.cmd)}</div>`).join(''):`<span class="dim small">${d.phase=='running'?'none right now (the agent is thinking or reading)':'job is not running'}</span>`}
+   <h2 style="margin-top:12px">Tokens</h2><div class="small">input ${k(t.input)} <span class="dim">(${k(t.cached)} from cache)</span> · output ${k(t.output)}${t.context?` · context now ${k(t.context)}${t.window?' of '+k(t.window):''}`:''}${t.cost_usd?` · $${t.cost_usd.toFixed(2)}`:''}</div>
+   ${!t.input&&d.phase=='running'?'<div class="dim small">no running count for this job (started before the session log was kept); the total shows when it ends</div>':''}</div>
+   <div><h2>Last steps</h2>${(d.history||[]).length?d.history.slice().reverse().map(x=>`<div class="hist"><span class="chip">${x.kind}</span> <span class="${x.kind=='say'?'':'mono small'}">${E(x.text)}</span></div>`).join(''):'<span class="dim small">nothing recorded yet</span>'}</div></div>`;}
+async function loadJobs(){for(const n of openJobs){try{const r=await fetch('/api/job/'+n);jd[n]=await r.json();const el=document.getElementById('jd-'+n);if(el)el.innerHTML=jobDetail(n);}catch(e){}}}
 async function show(title,url){dt.textContent=title;ds.textContent=url;dp.textContent='loading…';dlg.showModal();
   const r=await fetch(url);dp.textContent=r.ok?await r.text():'not there (yet)';}
 function meter(u){if(!u)return '<span class="dim">–</span>';const c=u.used>=90?'var(--bad)':u.used>=70?'var(--warn)':'var(--ok)';
@@ -288,16 +301,17 @@ function render(s){last=s;const p=s.progress,ev=s.evidence||{},pl=s.plan||{},bg=
   // jobs
   const J=s.jobs||[];const run=J.filter(j=>j.phase=='running').length,wait=J.filter(j=>j.phase!='running'&&!j.review).length;
   h+=`<section class="c12"><h2>Agent jobs <span class="chip">${run} running</span> <span class="chip">${wait} waiting for review</span> <span class="chip">${J.length-run-wait} reviewed</span></h2><div class="wrap"><table>
-   <thead><tr><th>Job</th><th>Agent</th><th>State</th><th class="n">Time</th><th class="n">Patch</th><th>Verdict</th><th>Task</th><th></th></tr></thead>
-   ${J.map(j=>`<tr><td class="mono">${E(j.name)}</td><td>${E(j.agent||'sol-hi')}<div class="dim small">${E(j.login||'')}</div></td>
-    <td class="${j.phase}">${j.phase=='done'&&!j.review?'done, to review':j.phase}${j.runs>1?` <span class="dim small">run ${j.runs}</span>`:''}${j.error?`<div class="small dim">${E(j.error.slice(0,90))}</div>`:''}</td>
-    <td class="n">${j.age_min} min</td><td class="n">${j.patch_lines??'–'}</td>
+   <thead><tr><th>Job</th><th>Agent</th><th>State</th><th class="n">Time</th><th class="n">Tokens in / out</th><th class="n">Patch</th><th>Verdict</th><th>Task</th><th></th></tr></thead>
+   ${J.map(j=>`<tr class="job" data-job="${E(j.name)}"><td class="mono"><span class="dim">${openJobs.has(j.name)?'▾':'▸'}</span> ${E(j.name)}</td><td>${E(j.agent||'sol-hi')}<div class="dim small">${E(j.login||'')}</div></td>
+    <td class="${j.phase}">${j.phase=='done'&&!j.review?'done, to review':j.phase}${j.shells?` <span class="chip">${j.shells} shell${j.shells>1?'s':''}</span>`:''}${j.runs>1?` <span class="dim small">run ${j.runs}</span>`:''}${j.error?`<div class="small dim">${E(j.error.slice(0,90))}</div>`:''}</td>
+    <td class="n">${j.age_min} min</td><td class="n">${tok(j.tokens)}</td><td class="n">${j.patch_lines??'–'}</td>
     <td class="${j.review||''}">${j.review||'–'}${j.note?`<div class="small dim">${E(j.note)}</div>`:''}</td>
     <td>${E(j.task)}${(j.eas||[]).length?` <span class="dim small">(${j.eas.length} addresses)</span>`:''}</td>
-    <td style="white-space:nowrap"><button class="link" onclick="show('${E(j.name)}: task','/job/${E(j.name)}/task')">task</button> ·
+    <td style="white-space:nowrap" onclick="event.stopPropagation()"><button class="link" onclick="show('${E(j.name)}: task','/job/${E(j.name)}/task')">task</button> ·
      <button class="link" onclick="show('${E(j.name)}: report','/job/${E(j.name)}/report')">report</button> ·
      <button class="link" onclick="show('${E(j.name)}: patch','/job/${E(j.name)}/patch')">patch</button> ·
-     <button class="link" onclick="show('${E(j.name)}: activity','/job/${E(j.name)}/activity')">activity</button></td></tr>`).join('')||'<tr><td colspan=8 class="dim">no jobs yet</td></tr>'}</table></div></section>`;
+     <button class="link" onclick="show('${E(j.name)}: activity','/job/${E(j.name)}/activity')">full history</button></td></tr>
+    ${openJobs.has(j.name)?`<tr class="jd"><td colspan=9 id="jd-${E(j.name)}">${jobDetail(j.name)}</td></tr>`:''}`).join('')||'<tr><td colspan=9 class="dim">no jobs yet</td></tr>'}</table></div></section>`;
   // queue
   const Q=s.queue||[],by={};Q.forEach(q=>(by[q.cls]=by[q.cls]||[]).push(q));const held=Q.filter(q=>q.job).length;
   h+=`<section class="c7"><h2>Escalation queue <span class="chip">${Q.length} items</span> <span class="chip">${held} held by a job</span></h2>
@@ -308,29 +322,19 @@ function render(s){last=s;const p=s.progress,ev=s.evidence||{},pl=s.plan||{},bg=
    <h2 style="margin-top:14px">Open backlog</h2>${(pl.areas||[]).map(a=>`<details data-k="pl${E(a.area)}" ${open_.has('pl'+a.area)?'open':''}><summary><b>${a.open.length}</b><span class="grow">${E(a.area)}</span><span class="dim small">${a.done} done</span></summary><ul class="small">${a.open.map(o=>`<li>${E(o)}</li>`).join('')}</ul></details>`).join('')}
    <h2 style="margin-top:14px">Recent commits</h2><table>${(s.commits||[]).map(c=>`<tr><td class="mono dim small">${c.hash}</td><td class="small">${E(c.subject)}</td><td class="dim small" style="white-space:nowrap">${E(c.when)}</td></tr>`).join('')}</table></section>`;
   m.innerHTML=h;
+  m.querySelectorAll('tr.job').forEach(r=>r.addEventListener('click',()=>{const n=r.dataset.job;openJobs.has(n)?openJobs.delete(n):openJobs.add(n);render(last);loadJobs();}));
   m.querySelectorAll('details').forEach(d=>d.addEventListener('toggle',()=>d.open?open_.add(d.dataset.k):open_.delete(d.dataset.k)));
   stamp.textContent=(s.error?'collector error: '+s.error+' · ':'')+'state from '+new Date(s.at*1000).toLocaleTimeString();}
-async function tick(){try{const r=await fetch('/api/state');const s=await r.json();if(s.progress&&!dlg.open)render(s);else if(!s.progress)stamp.textContent='collecting…';}
+async function tick(){try{const r=await fetch('/api/state');const s=await r.json();if(s.progress&&!dlg.open){render(s);loadJobs();}else if(!s.progress)stamp.textContent='collecting…';}
   catch(e){stamp.textContent='monitor not reachable';}}
+(location.hash.match(/job=([\w.,-]+)/)||['',''])[1].split(',').filter(Boolean).forEach(n=>openJobs.add(n));
 tick();setInterval(tick,4000);
 </script></body></html>"""
 
 
 def activity(name):
-    """The last things a job did, from its session log (Codex JSONL events; Claude writes its log at the end)."""
-    p = os.path.join(deep_worker.DEEP, name, "events.jsonl")
-    out = []
-    for line in open(p, errors="replace").read().splitlines()[-400:]:
-        try:
-            it = json.loads(line).get("item") or {}
-        except ValueError:
-            continue
-        if it.get("type") == "command_execution" and it.get("status") != "in_progress":
-            out.append(f"$ {it.get('command', '')[:400]}\n  -> exit {it.get('exit_code')}: "
-                       f"{(it.get('aggregated_output') or '').strip()[-300:]}")
-        elif it.get("type") in ("agent_message", "reasoning") and it.get("text"):
-            out.append(f"[{it['type']}] {it['text'][:1200]}")
-    return "\n\n".join(out[-40:]) or "no activity recorded yet (an opus-me job writes its log when it ends)"
+    """A job's longer history as text (the row's click shows the last few)."""
+    return "\n\n".join(f"[{k}] {t}" for k, t in deep_worker.history(name, 80)) or "no activity recorded yet"
 
 
 class H(BaseHTTPRequestHandler):
@@ -353,6 +357,8 @@ class H(BaseHTTPRequestHandler):
                 return self.send(PAGE, "text/html; charset=utf-8")
             if path == "/api/state":
                 return self.send(json.dumps(STATE), "application/json")
+            if m := re.fullmatch(r"/api/job/([\w.-]+)", path):
+                return self.send(json.dumps(deep_worker.detail(m.group(1))), "application/json")
             if m := re.fullmatch(r"/job/([\w.-]+)/(task|report|patch|activity)", path):
                 name, what = m.groups()
                 if what == "activity":

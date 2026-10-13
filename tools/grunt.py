@@ -379,7 +379,7 @@ def chat_codex_cli(model, messages, effort="high"):
                       backend="codex", model=model)
 
 
-# Live state for tools/monitor.py: in-flight model calls, per-backend token totals, run counters.
+# Live state for tools/webmon.py: in-flight model calls, per-backend token totals, run counters.
 LIVE = os.path.join(ROOT, "work", "grunt_state.json")
 _live_lock = threading.Lock()
 _live = dict(pid=os.getpid(), started=time.time(), mode="", phase="", calls={}, tokens={}, counts={})
