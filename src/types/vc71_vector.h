@@ -169,6 +169,14 @@ template <class Ops> __forceinline uint32_t vector_uninitialized_forward(
     return Ops::copy(begin, end, dest, context, 0);
 }
 
+// _Ufill's forwarding overload keeps the container context and dispatch tag at
+// the cdecl boundary; the return is computed independently of the helper's EAX.
+template <class Ops> __forceinline uint32_t vector_ufill(
+    void* self, uint32_t dest, uint32_t count, const typename Ops::value_type* value) {
+    Ops::fill(dest, count, value, self, Ops::zero_tag ? 0 : address(value));
+    return dest + sizeof(typename Ops::value_type) * count;
+}
+
 struct vector_bool {
     uint32_t bits;
     vector<uint32_t> words;
@@ -280,14 +288,14 @@ template <class Ops> __forceinline uint8_t vector_insert_range(
     return static_cast<uint8_t>(result);
 }
 
-template <class Ops> __forceinline void vector_xlen() {
+template <class Ops> __forceinline void vector_xlen(void* edx) {
     element<28> message;
     element<40> exception;
     auto* m = reinterpret_cast<uint32_t*>(&message);
     m[6] = 15;
     m[5] = 0;
     message.bytes[4] = 0;
-    Ops::text(&message);
+    Ops::text(&message, edx);
     Ops::exception_construct(&exception);
     auto* e = reinterpret_cast<uint32_t*>(&exception);
     e[0] = Ops::runtime_error_vtable();
@@ -300,6 +308,13 @@ template <class Ops> __forceinline void vector_xlen() {
     __assume(0);
 }
 
+template <class Ops, class T> __forceinline auto insert_finish_value(T* value, uint32_t result, int)
+    -> decltype(Ops::finish_value(value, result)) { return Ops::finish_value(value, result); }
+template <class Ops, class T> __forceinline uint32_t insert_finish_value(T* value, uint32_t result, long) {
+    if constexpr (Ops::owns_value) return Ops::release_value(value);
+    return result;
+}
+
 template <class Ops> struct insert_value {
     using T = typename Ops::value_type;
     T value; // Some constructors deliberately leave the allocator word untouched.
@@ -309,10 +324,41 @@ template <class Ops> struct insert_value {
         Ops::construct(&value, source);
     }
     __forceinline uint32_t finish(uint32_t result) {
-        if constexpr (Ops::owns_value) return Ops::release_value(&value);
-        return result;
+        return insert_finish_value<Ops>(&value, result, 0);
     }
 };
+
+template <class Ops, class V> __forceinline auto insert_growth_size(V* self, int)
+    -> decltype(Ops::growth_size(self)) { return Ops::growth_size(self); }
+template <class Ops, class V> __forceinline uint32_t insert_growth_size(V* self, long) {
+    return self->first ? distance<sizeof(typename Ops::value_type)>(address(self->last), address(self->first)) : 0;
+}
+template <class Ops, class V> __forceinline auto insert_initial_result(V* self, uint32_t capacity, int)
+    -> decltype(Ops::initial_result(self, capacity)) { return Ops::initial_result(self, capacity); }
+template <class Ops, class V> __forceinline uint32_t insert_initial_result(V*, uint32_t capacity, long) { return capacity; }
+template <class Ops> __forceinline auto insert_allocated_result(uint32_t block, uint32_t result, int)
+    -> decltype(Ops::allocated_result(block, result)) { return Ops::allocated_result(block, result); }
+template <class Ops> __forceinline uint32_t insert_allocated_result(uint32_t, uint32_t result, long) { return result; }
+template <class Ops> __forceinline auto insert_split(uint32_t last, uint32_t count, int)
+    -> decltype(Ops::split(last, count)) { return Ops::split(last, count); }
+template <class Ops> __forceinline uint32_t insert_split(uint32_t last, uint32_t count, long) {
+    return last - sizeof(typename Ops::value_type) * count;
+}
+template <class Ops, class V, class T> __forceinline auto insert_fill_spare(
+    V* self, uint32_t dest, uint32_t count, const T* value, int)
+    -> decltype(Ops::fill_spare(self, dest, count, value)) { return Ops::fill_spare(self, dest, count, value); }
+template <class Ops, class V, class T> __forceinline uint32_t insert_fill_spare(
+    V* self, uint32_t dest, uint32_t count, const T* value, long) { return Ops::fill(self, dest, count, value); }
+template <class Ops, class T> __forceinline auto insert_assign_spare(
+    uint32_t begin, uint32_t end, const T* value, uint32_t bytes, int)
+    -> decltype(Ops::assign_spare(begin, end, value, bytes)) { return Ops::assign_spare(begin, end, value, bytes); }
+template <class Ops, class T> __forceinline uint32_t insert_assign_spare(
+    uint32_t begin, uint32_t end, const T* value, uint32_t, long) { return Ops::assign(begin, end, value); }
+template <class Ops, class V> __forceinline auto insert_release_failed(void* block, V* self, uint32_t count, int)
+    -> decltype(Ops::release_failed(block, self, count), void()) { Ops::release_failed(block, self, count); }
+template <class Ops, class V> __forceinline void insert_release_failed(void* block, V* self, uint32_t, long) {
+    release_failed_buffer(block, self);
+}
 
 // Traits separate element semantics from the container algorithm. Range calls remain at
 // their original boundaries until the range-helper families are replaced in a later slice.
@@ -325,7 +371,7 @@ template <class Ops> __forceinline uint32_t vector_insert_n(
     const uint32_t pos = address(position);
     uint32_t first = address(self->first);
     uint32_t capacity = first ? distance<bytes>(address(self->end), first) : 0;
-    uint32_t result = capacity;
+    uint32_t result = insert_initial_result<Ops>(self, capacity, 0);
     if (count) {
         uint32_t size = first ? distance<bytes>(address(self->last), first) : 0;
         if (0xFFFFFFFFu - size < count) vector_length_error(self, nullptr);
@@ -335,27 +381,27 @@ template <class Ops> __forceinline uint32_t vector_insert_n(
         if (capacity >= count + size) {
             const uint32_t old_last = address(self->last);
             if (distance<bytes>(old_last, pos) >= count) {
-                const uint32_t split = old_last - added_bytes;
+                const uint32_t split = insert_split<Ops>(old_last, count, 0);
                 self->last = pointer<T>(Ops::copy_spare(self, split, old_last, old_last));
                 Ops::copy_backward(pos, split, old_last);
                 result = Ops::assign(pos, pos + added_bytes, &saved.value);
             } else {
                 Ops::copy_spare(self, pos, old_last, pos + added_bytes);
                 try {
-                    Ops::fill(self, address(self->last),
-                              count - distance<bytes>(address(self->last), pos), &saved.value);
+                    insert_fill_spare<Ops>(self, address(self->last),
+                              count - distance<bytes>(address(self->last), pos), &saved.value, 0);
                 } catch (...) {
                     Ops::destroy_failed(self, pos + added_bytes, address(self->last) + added_bytes);
                     rethrow_exception(nullptr, nullptr);
                     __assume(0);
                 }
                 self->last = pointer<T>(address(self->last) + added_bytes);
-                result = Ops::assign(pos, address(self->last) - added_bytes, &saved.value);
+                result = insert_assign_spare<Ops>(pos, address(self->last) - added_bytes, &saved.value, added_bytes, 0);
             }
         } else {
             uint32_t grown = 0xFFFFFFFFu - (capacity >> 1) >= capacity
                            ? capacity + (capacity >> 1) : 0;
-            if (grown < count + size) grown = count + size;
+            if (grown < count + size) grown = count + insert_growth_size<Ops>(self, 0);
             T* block = static_cast<T*>(allocate_buffer(bytes * grown, 0, 0));
             uint32_t constructed_end = address(block);
             try {
@@ -364,7 +410,7 @@ template <class Ops> __forceinline uint32_t vector_insert_n(
                 Ops::copy_new(self, pos, address(self->last), constructed_end);
             } catch (...) {
                 Ops::destroy_failed(self, address(block), constructed_end);
-                release_failed_buffer(block, self);
+                insert_release_failed<Ops>(block, self, count, 0);
                 rethrow_exception(nullptr, nullptr);
                 __assume(0);
             }
@@ -378,6 +424,7 @@ template <class Ops> __forceinline uint32_t vector_insert_n(
             self->end = pointer<T>(address(block) + bytes * grown);
             self->last = pointer<T>(address(block) + bytes * new_size);
             self->first = block;
+            result = insert_allocated_result<Ops>(address(block), result, 0);
         }
     }
     return saved.finish(result);
