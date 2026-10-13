@@ -3,11 +3,12 @@
 orchestrator no longer does the jobs itself; it spawns agents, reviews what they return, decides).
 
 Agents (--agent; user, 2026-10-13): sol-med = gpt-6.1-sol@medium for most jobs (default), sol-hi = gpt-6.1-sol@high
-for the hard ones, glm-flash = z-ai/glm-5.3-flash over OpenRouter for small jobs that need little thinking (on
-trial in place of Haiku). All three run through the Codex CLI sandboxed to the job's tree; glm-flash pays per token
-from the key in ~/.config/csf-re/openrouter.key (never in the repo). Nothing runs on a Claude account.
+for the hard ones; for small jobs haiku-hi = claude-haiku-5-5@high through `claude -p` on the grunts' Claude account
+(a fixed list of commands allowed, two at a time) or glm-flash = z-ai/glm-5.3-flash over OpenRouter (mechanical
+rewrites; pays per token from the key in ~/.config/csf-re/openrouter.key, never in the repo). The Sol agents and
+glm-flash run through the Codex CLI sandboxed to the job's tree. Nothing runs on the main Claude account.
 
-  deep_worker.py start NAME --task FILE|- [--agent sol-med|sol-hi|glm-flash] [--timeout 3600] [--fresh]   in the background
+  deep_worker.py start NAME --task FILE|- [--agent sol-med|sol-hi|haiku-hi|glm-flash] [--timeout 3600] [--fresh]   in the background
   deep_worker.py run   NAME ...           the same, in the foreground
   deep_worker.py list                     jobs and their state
   deep_worker.py review NAME applied|partial|rejected [--note TEXT]    the orchestrator's verdict on a finished job
@@ -37,18 +38,20 @@ DEEP = os.path.join(ROOT, "work", "deep")
 AGENTS = {"sol-med": ("codex", "gpt-6.1-sol", "medium"),     # most jobs (default)
           "sol-hi": ("codex", "gpt-6.1-sol", "high"),        # hard jobs
           "glm-flash": ("codex", "z-ai/glm-5.3-flash:floor", "medium"),  # small jobs that need little thinking (OpenRouter)
-          # comparison runs the user asked for (2026-10-13 night), not part of the policy:
-          "mimo-pro": ("codex", "xiaomi/mimo-v2.6-pro:floor", "medium"),  # OpenRouter, about 17x GLM's input price
-          "haiku-xhi": ("claude", "claude-haiku-5-5", "xhigh")}          # grunts' Claude account
+          # user, 2026-10-13 late: Haiku high is back for small jobs after a comparison on one task (two installed
+          # functions with an emudiff DIFF): haiku xhigh solved both in 4 min, mimo-v2.6-pro both in 10 min,
+          # glm-flash neither in 25 min
+          "haiku-hi": ("claude", "claude-haiku-5-5", "high")}            # small jobs; grunts' Claude account, CLAUDE_JOBS at a time
 DEFAULT = "sol-med"
 CLAUDE_JOBS = 2
-RETIRED = {"opus-me": ("claude", "claude-opus-5-5", "medium"), "haiku-med": ("claude", "claude-haiku-5-5", "medium")}
+RETIRED = {"opus-me": ("claude", "claude-opus-5-5", "medium"), "haiku-med": ("claude", "claude-haiku-5-5", "medium"),
+           "haiku-xhi": ("claude", "claude-haiku-5-5", "xhigh"), "mimo-pro": ("codex", "xiaomi/mimo-v2.6-pro:floor", "medium")}
 # Agents that go through OpenRouter instead of a Codex login: $ per million tokens (input, output), for the
 # job's cost line (https://openrouter.ai/api/v1/models, 2026-10-13). That is the cheapest provider's price: without
 # `:floor` on the model OpenRouter spreads requests over providers up to 6 times dearer (the first eleven jobs cost
 # $1.92 where this estimate said $0.51). The key's real spend is openrouter_budget(); no job starts below OR_MIN.
 OR_MIN = 0.30
-OPENROUTER = {"glm-flash": (0.0261, 0.9), "mimo-pro": (0.435, 0.87)}
+OPENROUTER = {"glm-flash": (0.0261, 0.9)}
 OR_KEY = os.path.expanduser("~/.config/csf-re/openrouter.key")
 OR_HOME = os.path.expanduser("~/.config/csf-re/codex-openrouter")  # CODEX_HOME of these jobs: session files only
 OR_ARGS = ["-c", 'model_provider="openrouter"', "-c", 'model_providers.openrouter.name="OpenRouter"',

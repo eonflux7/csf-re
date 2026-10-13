@@ -22,8 +22,9 @@ backlog), pending/verified counts and the link-test line, and any open decisions
 ## How work is done now (2026-10-13)
 Game code is nearly all written; what is left (queue, STL replicas, verification, cutover) is done by agent jobs.
 The orchestrator writes the task, starts jobs (`tools/deep_worker.py start NAME --task FILE --agent A`: sol-med = gpt-6.1-sol@medium for most jobs (default),
-sol-hi = gpt-6.1-sol@high for the hard ones, glm-flash = GLM-5.3-flash over OpenRouter for small jobs that need
-little thinking (on trial; key in ~/.config/csf-re/openrouter.key, paid per token); never a Claude account),
+sol-hi = gpt-6.1-sol@high for the hard ones; small jobs: haiku-hi = Haiku high on the grunts' Claude account, two
+at a time, or glm-flash = GLM-5.3-flash over OpenRouter for mechanical rewrites (key in
+~/.config/csf-re/openrouter.key, paid per token); never the main Claude account),
 reviews each report and patch (check the claims with the tools before applying), records the verdict
 (`deep_worker.py review NAME applied|partial|rejected --note ...`), then commits. It does a job itself only when
 that is quicker than writing the task. Jobs, queue and quota are on the web monitor: `tools/webmon.py`
