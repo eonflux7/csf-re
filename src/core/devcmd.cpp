@@ -235,7 +235,7 @@ HANDLE WINAPI Multi_CreateMutexA(LPSECURITY_ATTRIBUTES sa, BOOL owner, LPCSTR na
     return CreateMutexA(sa, owner, name);
 }
 struct MultiInstance {
-    MultiInstance() { patch_iat(0x82D19C, (void*)&Multi_CreateMutexA); }
+    MultiInstance() { patch_iat(CSF_ADDR_DATA(0x82D19C), (void*)&Multi_CreateMutexA); }
 } g_multiInstance;
 
 LRESULT CALLBACK Background_WndProc(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
@@ -272,9 +272,9 @@ BOOL __cdecl Window_FitClientArea(HWND wnd, LONG w, LONG h) {
             g_gameWndProc = (WNDPROC)SetWindowLongA(wnd, GWL_WNDPROC, (LONG)&Background_WndProc);
             g_bgWnd = wnd;
             SetWindowLongA(wnd, GWL_EXSTYLE, GetWindowLongA(wnd, GWL_EXSTYLE) | WS_EX_NOACTIVATE);
-            patch_iat(0x82D2D4, (void*)&Bg_ShowWindow);
-            patch_iat(0x82D2CC, (void*)&Bg_SetFocus);
-            patch_iat(0x82D28C, (void*)&Bg_SetForegroundWindow);
+            patch_iat(CSF_ADDR_DATA(0x82D2D4), (void*)&Bg_ShowWindow);
+            patch_iat(CSF_ADDR_DATA(0x82D2CC), (void*)&Bg_SetFocus);
+            patch_iat(CSF_ADDR_DATA(0x82D28C), (void*)&Bg_SetForegroundWindow);
             hook::log("devcmd: background mode (off-screen, no pause on focus loss)");
         }
         // left of the virtual desktop, so no monitor shows it; D3D9 windowed rendering continues

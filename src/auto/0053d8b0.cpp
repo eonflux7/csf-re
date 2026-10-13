@@ -17,6 +17,9 @@ CSF_FUNC(void*, __cdecl, GetGlobalValue_8B056C, 0x506BD0, ());
 // can hand it back to the callee thunk below.
 static void* g_EntryA2 = nullptr;
 
+// Original callee of the tail-jump, as an address value for the thunk below.
+static const uintptr_t CMenuMissionInfo_EnterPanelState_addr = CSF_ADDR_FN(0x0053D740);
+
 // Tail-jump thunk to sub_53D740 (0x53D740). Receives ecx = a1 (self), stack
 // flag. Computes ecx = self-4, restores edi = saved a2, and jumps. The callee
 // pops the flag (ret 4) and returns straight to the caller of this thunk.
@@ -25,7 +28,7 @@ static __declspec(naked) int __fastcall MissionInfo_CallAdvanceTail(void* self, 
     __asm {
         sub ecx, 4
         mov edi, dword ptr [g_EntryA2]
-        mov eax, 0x53D740
+        mov eax, dword ptr [CMenuMissionInfo_EnterPanelState_addr]
         jmp eax
     }
 }
@@ -82,7 +85,7 @@ static __declspec(naked) int MissionInfo_TryAdvanceOnSelection()
 {
     __asm {
         mov dword ptr [g_EntryA2], edi
-        mov eax, MissionInfo_TryAdvanceInner
+        lea eax, MissionInfo_TryAdvanceInner
         jmp eax
     }
 }
