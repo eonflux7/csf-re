@@ -2425,7 +2425,7 @@
   "name_src": "agent",
   "votes": {
    "CharActionFsm_GetTargetTransform": 1,
-   "C_00863430_GetTargetTransform": 2
+   "C_00863430_GetTargetTransform": 3
   },
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -55189,6 +55189,7 @@
   "votes": {
    "C_0083bc28_SetSkinDirectionAndFlags": 1,
    "RunStepOneHandler": 1,
+   "C_0083bc28_ResetMovementState": 1,
    "C_0083bc28_PrepareFirstAction": 1
   },
   "ret": "unsigned int",
@@ -55216,6 +55217,7 @@
   "name": "C_0083bc28_ApplyDistanceScaledSceneOffsets",
   "name_src": "agent",
   "votes": {
+   "C_0083bc28_UpdateWithMovement": 1,
    "C_0083bc28_ApplyAnimationDisplacement": 1
   },
   "ret": "int",
@@ -55310,15 +55312,16 @@
   "file": "src/auto/004d3fe0.cpp"
  },
  "004d4050": {
-  "name": "C_0083bc28_HandleStateThree",
-  "name_src": "vote",
+  "name": "C_0083bc28_UpdateAnimationMovement",
+  "name_src": "agent",
   "votes": {
    "C_0083bc28_HandleStateThree": 1
   },
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int arg0",
-  "sig_src": "vote"
+  "params": "C_0083bc28* self, void* , int animation",
+  "sig_src": "impl",
+  "file": "src/auto/004d4050.cpp"
  },
  "004d42d0": {
   "name": "C_0083bc28_SetAnimationWithDisplacement",
@@ -67519,7 +67522,7 @@
   "name_src": "agent",
   "votes": {
    "MenuBuffer_Destroy": 8,
-   "SceneLoader_DestroyMenuBuffer": 11
+   "SceneLoader_DestroyMenuBuffer": 12
   },
   "ret": "std::uint32_t",
   "conv": "__fastcall",
@@ -68027,7 +68030,7 @@
   "name": "MenuBuffer_Init",
   "name_src": "agent",
   "votes": {
-   "MenuBuffer_Init": 18
+   "MenuBuffer_Init": 19
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -68656,7 +68659,7 @@
   "name": "SceneLoader_NoOp",
   "name_src": "captain",
   "votes": {
-   "SceneLoader_NoOp": 66,
+   "SceneLoader_NoOp": 67,
    "Nullsub_506AC0": 34
   },
   "ret": "void",
@@ -70675,7 +70678,7 @@
   "name": "GetGlobalState_50D190",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_50D190": 385
+   "GetGlobalState_50D190": 389
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -71170,7 +71173,7 @@
   "name": "BddLoader_ReleasePendingHandle",
   "name_src": "agent",
   "votes": {
-   "BddLoader_ReleasePendingHandle": 5
+   "BddLoader_ReleasePendingHandle": 6
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -71520,7 +71523,7 @@
   "name_src": "agent",
   "votes": {
    "Game_DispatchMenuRequest": 14,
-   "GameBddLoader_DispatchMenuRequest": 12
+   "GameBddLoader_DispatchMenuRequest": 14
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -76700,7 +76703,7 @@
   "name": "GetGlobalValue_521BB0",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_521BB0": 126
+   "GetGlobalValue_521BB0": 127
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -77211,7 +77214,7 @@
   "name_src": "agent",
   "votes": {
    "GlobalSetValue_5231D0": 21,
-   "S_00522010_AccumulateAndPropagateTime": 4
+   "S_00522010_AccumulateAndPropagateTime": 5
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -90945,7 +90948,9 @@
  "0055c2b0": {
   "name": "MenuMpAccounts_OnStateTransition",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuMpAccounts_OnStateTransition": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* , int",
@@ -90955,7 +90960,9 @@
  "0055c320": {
   "name": "MenuAccounts_ProcessSchedulerProxyState",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuAccounts_ProcessSchedulerProxyState": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void* , int",
@@ -91017,7 +91024,9 @@
  "0055c780": {
   "name": "MenuMpAccounts_ValidateAccountEditFields",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuMpAccounts_ValidateAccountEditFields": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "void* self, void*",
@@ -91027,7 +91036,9 @@
  "0055c830": {
   "name": "CMenuAccountEdit_LoadSelectedAccount",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "CMenuAccountEdit_LoadSelectedAccount": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "CMenuAccountEdit* self, void* , int",
@@ -91070,7 +91081,7 @@
   "name": "MenuAccounts_FallbackToList",
   "name_src": "vote",
   "votes": {
-   "MenuAccounts_FallbackToList": 3
+   "MenuAccounts_FallbackToList": 4
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -91080,7 +91091,9 @@
  "0055cb10": {
   "name": "S_0055c780_ProcessAccountSelection",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuMpAccounts_ProcessAccountEditState6": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "S_0055c780* self, void* , int",
@@ -91090,7 +91103,9 @@
  "0055cbd0": {
   "name": "MenuAccounts_DispatchProfileState",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuAccounts_DispatchProfileState": 1
+  },
   "ret": "unsigned int",
   "conv": "__fastcall",
   "params": "void* self, void* , int",
@@ -91110,7 +91125,9 @@
  "0055ccc0": {
   "name": "MenuMpAccounts_SubmitAccountEdit",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuMpAccounts_SubmitAccountEdit": 1
+  },
   "ret": "char",
   "conv": "__fastcall",
   "params": "void* self, void* , int",
@@ -91120,7 +91137,9 @@
  "0055ce90": {
   "name": "S_0055c780_SubmitAccountName",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuMpAccounts_CreateAccount": 1
+  },
   "ret": "void",
   "conv": "__fastcall",
   "params": "S_0055c780* self, void*",
@@ -91128,18 +91147,23 @@
   "file": "src/auto/0055ce90.cpp"
  },
  "0055cf60": {
-  "name": "sub_55CF60",
-  "name_src": "addr",
-  "votes": {},
-  "ret": "unsigned int",
+  "name": "MenuMpAccounts_UpdateSelectedAccount",
+  "name_src": "vote",
+  "votes": {
+   "MenuMpAccounts_UpdateSelectedAccount": 1
+  },
+  "ret": "std::uint32_t",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "S_0055c780* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0055cf60.cpp"
  },
  "0055d090": {
   "name": "CMenuAccountEdit_HandleAccountSaveStatus",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "MenuMpAccounts_ProcessAccountEditState7": 1
+  },
   "ret": "void*",
   "conv": "__fastcall",
   "params": "CMenuAccountEdit* self, void* , int",
@@ -91147,15 +91171,16 @@
   "file": "src/auto/0055d090.cpp"
  },
  "0055d130": {
-  "name": "MenuAccounts_ResetOnSelect",
-  "name_src": "vote",
+  "name": "S_0055c780_ResetOnSelect",
+  "name_src": "agent",
   "votes": {
-   "MenuAccounts_ResetOnSelect": 1
+   "MenuAccounts_ResetOnSelect": 2
   },
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "vote"
+  "params": "S_0055c780* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/0055d130.cpp"
  },
  "0055d2a0": {
   "name": "MenuAccounts_HandleEventCode",
@@ -91168,13 +91193,14 @@
   "file": "src/auto/0055d2a0.cpp"
  },
  "0055d2e0": {
-  "name": "sub_55D2E0",
-  "name_src": "addr",
+  "name": "CMenuAccountEdit_Update",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2",
-  "sig_src": "abi"
+  "params": "CMenuAccountEdit* self, void* , int deltaBits",
+  "sig_src": "impl",
+  "file": "src/auto/0055d2e0.cpp"
  },
  "0055d430": {
   "name": "MenuAccounts_CopyWideNameToBuffer",
@@ -91453,7 +91479,7 @@
  },
  "0055e980": {
   "name": "CMenuPlayerList_UpdatePlayerList",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "void**",
   "conv": "__fastcall",
@@ -111884,7 +111910,7 @@
   "name": "RwV3dTransformVectors",
   "name_src": "rwname",
   "votes": {
-   "RwV3dTransformVectors": 23
+   "RwV3dTransformVectors": 24
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -112370,7 +112396,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 201
+   "RwMatrixDestroy": 202
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -122613,7 +122639,7 @@
   "name": "GfxTransform_GetOtherPosition",
   "name_src": "vote",
   "votes": {
-   "GfxTransform_GetOtherPosition": 4
+   "GfxTransform_GetOtherPosition": 5
   },
   "ret": "char*",
   "conv": "__fastcall",
@@ -140098,7 +140124,7 @@
   "name": "StringFormat_ConvertWideTextToNarrow",
   "name_src": "agent",
   "votes": {
-   "ConvertWideTextToNarrow": 13
+   "ConvertWideTextToNarrow": 15
   },
   "ret": "unsigned int",
   "conv": "__cdecl",
@@ -145041,7 +145067,7 @@
   "name": "GetGlobalState_6A6D70",
   "name_src": "agent",
   "votes": {
-   "GetGlobalState_6A6D70": 43
+   "GetGlobalState_6A6D70": 45
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -146413,7 +146439,7 @@
   "name": "S_00526d40_ConvertDirection",
   "name_src": "agent",
   "votes": {
-   "S_00526d40_ConvertDirection": 26,
+   "S_00526d40_ConvertDirection": 27,
    "Vector_ConvertDirection": 4
   },
   "ret": "uint32_t*",
@@ -147148,7 +147174,7 @@
   "name": "GfxMatrix_CreateQuaternionMatrix",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_CreateQuaternionMatrix": 9,
+   "GfxMatrix_CreateQuaternionMatrix": 10,
    "CreateQuaternionMatrix": 1
   },
   "ret": "int",
@@ -147173,7 +147199,7 @@
   "name": "GfxMatrix_SetQuaternionFromAxisAngle",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_SetQuaternionFromAxisAngle": 8
+   "GfxMatrix_SetQuaternionFromAxisAngle": 9
   },
   "ret": "float*",
   "conv": "__fastcall",
@@ -176608,6 +176634,7 @@
   "name": "C_00863430_GetRotationAngle",
   "name_src": "vote",
   "votes": {
+   "C_00863430_GetFacingAngle": 1,
    "C_00863430_GetRotationAngle": 1
   },
   "ret": "double",
@@ -178973,7 +179000,7 @@
   "name": "CGuiSlider_ForwardSelfToParent",
   "name_src": "agent",
   "votes": {
-   "CGuiSlider_ForwardSelfToParent": 24
+   "CGuiSlider_ForwardSelfToParent": 25
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -181196,7 +181223,7 @@
   "name": "GetContainerDataPtr",
   "name_src": "agent",
   "votes": {
-   "GetContainerDataPtr": 4
+   "GetContainerDataPtr": 6
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -187770,7 +187797,7 @@
   "name_src": "agent",
   "votes": {
    "SchedulerBase_GetSchedulerProxy": 22,
-   "C_00861120_GetSchedulerProxy": 5
+   "C_00861120_GetSchedulerProxy": 6
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -189645,7 +189672,7 @@
   "name": "GetGlobalDword_73C020",
   "name_src": "agent",
   "votes": {
-   "GetGlobalDword_73C020": 93
+   "GetGlobalDword_73C020": 94
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -190319,6 +190346,7 @@
   "name": "C_0085839c_UpdateNetworkManager",
   "name_src": "agent",
   "votes": {
+   "C_0085839c_UpdateNetworkManager": 1,
    "MenuMpOnline_UpdateNetworkManager": 1
   },
   "ret": "char",
