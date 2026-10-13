@@ -469,6 +469,8 @@ class Run:
         if STACK_LO <= v < ESP0 + 0x40:  # the frame, or the address of an argument (ours may pass a copy's)
             return "stack"
         if OBJ_BASE <= v < OBJ_BASE + 0x100000:
+            if self.obj and v == self.obj.entry:
+                return self.ea  # the function's own address (a recursive callback: 0x6B41F0)
             return "own-data"
         return v
 
@@ -509,6 +511,10 @@ class Run:
             val = ZONES + 0x0C000000 + i * 0x10000 + 0x101 if (rt != "?" or self.prof % 2 == 0) else odd(h % 3)
         else:
             val = odd(h % 4)
+        if rt == "void" and use_ecx:
+            # typed void, but a constructor-like callee returns `this` and the original may use it (0x751830:
+            # `call 0x64A6B0; push eax`); ours passes the object's address itself
+            val = uc.reg_read(X.UC_X86_REG_ECX)
         uc.reg_write(X.UC_X86_REG_EAX, val)
         self.last_mock = (val, rt)
         if rt in ("float", "double", "long double"):
@@ -674,6 +680,11 @@ def compare(ea, o, m):
         # function is typed wider: a leftover, not a return value (0x525A50, 0x6CAF00: Hex-Rays says int)
         lm = o.last_mock
         left = mask == 0xFFFFFFFF and lm and lm[0] == o.eax and lm[1] in BYTE_TYPES + ("void", "float", "double", "long double")
+        # eax is still the old SEH chain head the prologue loaded (`mov eax, fs:[0]`): a void function with a
+        # try block on a path that calls nothing (0x40B4C0, an STL fill over an empty range)
+        img, _ = exe_image()
+        if o.eax == 0xFFFFFFFF and bytes(img[ea - IMG + 3:ea - IMG + 5]) == b"\x6A\xFF":
+            left = True
         if not left and o.norm(o.eax & mask) != m.norm(m.eax & mask):
             out.append(f"returns {o.eax & mask:x} vs {m.eax & mask:x}")
     skip = lambda a: TEB <= a < TEB + 0x1000 or OBJ_BASE <= a < OBJ_BASE + 0x100000 or SYS_BASE <= a < SYS_BASE + 0x1000
