@@ -88,17 +88,20 @@ Stage since 2026-10-13: the waves are exhausted at 91.9% of game code. What is l
 user 2026-10-13); the orchestrator writes the
 tasks, reviews reports and patches, decides. Everything is visible on `tools/webmon.py` (user, 2026-10-13).
 
-1. **Escalation queue** (168 items): jobs per failure class. A false alarm is fixed in the tool for its class and
-   the items go back to the lanes; a real bug is fixed in the candidate and goes through the verifier.
-2. **STL template instances** (418 functions, 119 KB): VC7.1 container replicas + template implementations, each
-   instance checked by emudiff; a generator for the rest (backlog, Types & structure).
-3. **Functions under 6 bytes** (166, 0.7 KB) the lanes never take (`min_size`): decide how they are implemented
-   and installed (no room for a 5-byte hook in a 4-byte function).
-4. **Evidence for the functions that never ran** (about half of the done ones): emudiff sweep of the `gate` and
-   `executed` tiers, `review.py sample`, `verifier.py --full` over everything once; then the pending installs.
-5. **Names and types**: `tools/naming.py` (first full run with the captain), then `propagate.sh` (backlog, Types
-   & structure).
-6. **Cutover** items (backlog): data generation, the unresolved library boundary, RWA.
+State on the night of 2026-10-13: game code 94.7% (14,153 of 14,492), everything adopted so far installed in a
+passing full smoke. Jobs' output enters the tree only through `tools/adopt.py` (gate + emudiff re-run here).
+
+1. **Remaining game code**: the last STL instances (job stlrest; 194 of 418 were in before it), about 100 queue
+   items, 9 leftovers blocked by emulator/export assumptions. Tiny functions: done (166, `tools/tinygen.py`).
+2. **Escalation queue** (about 100): small triage jobs (2-3 functions each, literal paths), false-alarm classes fixed
+   in the tool and measured (`tools/emumut.py` for emudiff, `tests/semcheck_regression.py` for the semantic check).
+3. **Cutover**, in parallel: data image (`tools/datagen.py` + `tools/ida/export_dataptrs.py`: done for IDA-known
+   pointers; open: 23 references outside data, vtable slots to library targets), boundaries (`src/boundary/`: CRT
+   done, allocator shim written, NetZ 99 of 321), then a first link attempt, then RenderWare on librw (399) and
+   the RWA boundary on our own backend (40).
+4. **Evidence for the functions that never ran** (6,500 of the done ones): emudiff sweep of the `gate` and
+   `executed` tiers, `review.py sample`.
+5. **Names and types**: `tools/naming.py` (first full run with the captain), then `propagate.sh`.
 
 Earlier decisions that still hold: no playtest milestone, evidence comes from the verifier's smokes, the in-game
 diff and emudiff (user, 2026-10-11); emudiff is a gate step (2026-10-13).
@@ -188,12 +191,12 @@ diff and emudiff (user, 2026-10-11); emudiff is a gate step (2026-10-13).
       replay_table.inc in CMakeLists.txt
 
 ### Cutover
-- [ ] Allocator shim (operator new/delete -> game heap; delete = sub_691110), rw.h shim
-- [ ] Generated data for the standalone build: csf::gv<A> (globals: initial bytes from the exe) and csf::vt<A>
+- [ ] Allocator shim: written (`src/boundary/alloc/`, 2026-10-13), not run; open: heap initialisation and alignment, malformed callers (`src/boundary/REPORT.md`); rw.h shim
+- [ ] (generator in place 2026-10-13: `tools/datagen.py`, `docs/DATAGEN.md`; open: see current focus) Generated data for the standalone build: csf::gv<A> (globals: initial bytes from the exe) and csf::vt<A>
       (vtables: tables of csf::fn_slot pointers), from `linktest.py` (`work/linktest.json`; counts in `status.py`)
-- [ ] 83 files bind vtables with CSF_GLOBAL and take `&g_X` (right at runtime, resolves as data in the standalone
+- [x] (2026-10-13: 70 of 72 rewritten by jobs; 0x50C370 and 0x532DC0 wait on an emudiff DIFF) 83 files bind vtables with CSF_GLOBAL and take `&g_X` (right at runtime, resolves as data in the standalone
       build): rewrite to CSF_VTBL / CSF_ADDR_VT (the gate now rejects new ones)
-- [ ] Rewrite the naked asm thunks that embed original addresses (`linktest.py --list asm`)
+- [x] (2026-10-13: 14 of 15; 0x53D8B0 in job glmraw) Rewrite the naked asm thunks that embed original addresses (`linktest.py --list asm`)
 - [ ] Library boundaries the standalone link needs: rw (librw), crt, netz (stub), rwa (reimplement the 40-function boundary on our own audio backend, user 2026-10-13); what is
       unresolved per library is in the `status.py` link-test line
 - [ ] NetZ boundary (320): name only if needed for stubbing — game net layer is stubbed at cutover
