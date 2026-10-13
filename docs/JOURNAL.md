@@ -1442,3 +1442,8 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   separate arrays: the callee ran over the first one into the stack cookie. Fixed by hand (two contiguous blocks).
   Class: a local whose address goes to a callee, followed in the frame by more locals initialised like an object
   (vtable store first): one object, not two.
+- Confirmed: with 0x4C4890, 0x4B17C0, 0x742060 and 0x744630 reinstalled the full regression check passes (FR01,
+  menu tour, loadsave 1.sav). It quarantined four in-game mismatches on the way (0x4C4F10, 0x4C4F80, 0x69ACB0,
+  0x703470); three of them look like diff false alarms from their lines (a returned frame address 0x10 apart, a
+  leftover eax of a void-like function, a byte argument with the caller's register above it): to check in queue/.
+  Waves restarted.
