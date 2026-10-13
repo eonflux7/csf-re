@@ -4,7 +4,7 @@ orchestrator no longer does the jobs itself; it spawns agents, reviews what they
 
 Agents (--agent; user, 2026-10-13): sol-med = gpt-6.1-sol@medium for most jobs (default), sol-hi = gpt-6.1-sol@high
 for the hard ones; for small jobs haiku-hi = claude-haiku-5-5@high through `claude -p` on the grunts' Claude account
-(a fixed list of commands allowed, two at a time) or glm-flash = z-ai/glm-5.3-flash over OpenRouter (mechanical
+(a fixed list of commands allowed, four at a time) or glm-flash = z-ai/glm-5.3-flash over OpenRouter (mechanical
 rewrites; pays per token from the key in ~/.config/csf-re/openrouter.key, never in the repo). The Sol agents and
 glm-flash run through the Codex CLI sandboxed to the job's tree. Nothing runs on the main Claude account.
 
@@ -43,7 +43,7 @@ AGENTS = {"sol-med": ("codex", "gpt-6.1-sol", "medium"),     # most jobs (defaul
           # glm-flash neither in 25 min
           "haiku-hi": ("claude", "claude-haiku-5-5", "high")}            # small jobs; grunts' Claude account, CLAUDE_JOBS at a time
 DEFAULT = "sol-med"
-CLAUDE_JOBS = 2
+CLAUDE_JOBS = 4  # user, 2026-10-13 late: "run more haikus if possible they are cheap" (was 2)
 RETIRED = {"opus-me": ("claude", "claude-opus-5-5", "medium"), "haiku-med": ("claude", "claude-haiku-5-5", "medium"),
            "haiku-xhi": ("claude", "claude-haiku-5-5", "xhigh"), "mimo-pro": ("codex", "xiaomi/mimo-v2.6-pro:floor", "medium")}
 # Agents that go through OpenRouter instead of a Codex login: $ per million tokens (input, output), for the
@@ -59,6 +59,7 @@ OR_ARGS = ["-c", 'model_provider="openrouter"', "-c", 'model_providers.openroute
            "-c", 'model_providers.openrouter.env_key="OPENROUTER_API_KEY"',
            "-c", 'model_providers.openrouter.wire_api="responses"']
 # opus-me: what `claude -p` may do without asking (dontAsk denies the rest)
+CLAUDE_TOOLS = ["Read", "Grep", "Glob", "Edit", "Write", "Bash"]
 CLAUDE_ALLOW = ["Read", "Grep", "Glob", "Edit", "Write", "Bash(.venv/bin/python:*)", "Bash(git diff:*)",
                 "Bash(git status:*)", "Bash(git log:*)", "Bash(git show:*)", "Bash(ls:*)", "Bash(cat:*)", "Bash(rg:*)",
                 "Bash(grep:*)", "Bash(head:*)", "Bash(tail:*)", "Bash(wc:*)", "Bash(find:*)", "Bash(sed -n:*)",
@@ -190,8 +191,8 @@ def run(a):
         brief += ("\nShell: one plain command per call (`.venv/bin/python tools/...`, git diff/status/log/show, ls, cat, rg, "
                   "grep, head, tail, wc, find, sed -n). No pipes, `;`, `&&`, redirection or `cd`: such a call is refused.\n")
     assert (backend == "codex" and a.agent not in OPENROUTER) or brief != BRIEF
-    # Codex: the brief is the system prompt (in place of the CLI's own), the task the only user message
-    prompt = task if backend == "codex" else brief + "\n=== TASK ===\n" + task
+    # the brief is the system prompt (in place of the CLI's own), the task the only user message
+    prompt = task
     open(os.path.join(d, "instructions.md"), "w").write(brief)
     if os.path.exists(os.path.join(d, "patch.diff")) and os.path.getsize(os.path.join(d, "patch.diff")):
         prompt += ("\n\n(This job was started before and stopped by quota or timeout. Your tree still holds what "
@@ -234,7 +235,10 @@ def run(a):
                 usage["cost_usd"] = round((usage.get("input_tokens", 0) * pin + (usage.get("output_tokens", 0) +
                                            usage.get("reasoning_output_tokens", 0)) * pout) / 1e6, 4)
         else:
+            # Slim like the Codex jobs (measured 2026-10-13 by capturing the request: 88 KB with 24 tools as the CLI
+            # comes, 15 KB so): the brief is the whole system prompt, six tools, no settings or CLAUDE.md injected.
             cmd = ["claude", "-p", "--model", model, "--effort", effort, "--permission-mode", "dontAsk",
+                   "--system-prompt", brief, "--tools", *CLAUDE_TOOLS, "--setting-sources", "",
                    "--allowedTools", *CLAUDE_ALLOW, "--no-session-persistence", "--strict-mcp-config",
                    "--disable-slash-commands", "--output-format", "stream-json", "--verbose"]
             import grunt
