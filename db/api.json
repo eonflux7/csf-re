@@ -7136,7 +7136,7 @@
   "name_src": "agent",
   "votes": {
    "GrowButtonArray": 90,
-   "S_0041e5f0_GrowArrayCapacity": 195
+   "S_0041e5f0_GrowArrayCapacity": 196
   },
   "ret": "void*",
   "conv": "__fastcall",
@@ -113155,7 +113155,7 @@
   "name": "RwFrameRemoveChild",
   "name_src": "rwname",
   "votes": {
-   "RwFrameRemoveChild": 3
+   "RwFrameRemoveChild": 4
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -113166,7 +113166,7 @@
   "name": "RwFrameForAllChildren",
   "name_src": "rwname",
   "votes": {
-   "RwFrameForAllChildren": 11
+   "RwFrameForAllChildren": 13
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -113474,7 +113474,7 @@
   "name": "RwMatrixDestroy",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixDestroy": 220
+   "RwMatrixDestroy": 221
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -113485,7 +113485,7 @@
   "name": "RwMatrixCreate",
   "name_src": "rwname",
   "votes": {
-   "RwMatrixCreate": 130
+   "RwMatrixCreate": 131
   },
   "ret": "std::uint32_t*",
   "conv": "__cdecl",
@@ -117283,7 +117283,7 @@
   "name": "RwIm3DTransform",
   "name_src": "rwname",
   "votes": {
-   "RwIm3DTransform": 5
+   "RwIm3DTransform": 6
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -117294,7 +117294,7 @@
   "name": "RwIm3DEnd",
   "name_src": "rwname",
   "votes": {
-   "RwIm3DEnd": 5
+   "RwIm3DEnd": 6
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -117316,7 +117316,7 @@
   "name": "RwIm3DRenderPrimitive",
   "name_src": "rwname",
   "votes": {
-   "RwIm3DRenderPrimitive": 1
+   "RwIm3DRenderPrimitive": 2
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -139763,7 +139763,7 @@
   "name": "CoreMemory_AllocUntagged",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_AllocUntagged": 128,
+   "CoreMemory_AllocUntagged": 129,
    "Mem_Alloc": 482
   },
   "ret": "int",
@@ -139776,7 +139776,7 @@
   "name": "CoreMemory_Free",
   "name_src": "agent",
   "votes": {
-   "CoreMemory_Free": 206,
+   "CoreMemory_Free": 207,
    "Mem_Free": 939
   },
   "ret": "int",
@@ -148047,7 +148047,7 @@
   "name": "GfxMatrix_SetFourRowsAndUpdate",
   "name_src": "agent",
   "votes": {
-   "GfxMatrix_SetFourRowsAndUpdate": 8,
+   "GfxMatrix_SetFourRowsAndUpdate": 9,
    "GfxMatrix_SetBasisAndPosition": 1,
    "GfxMatrix_ApplyAxisTransform": 1
   },
@@ -149460,7 +149460,7 @@
   "name_src": "agent",
   "votes": {
    "Hud_CheckFlagAgainstGlobal": 56,
-   "HudCheckFlagAgainstGlobal": 46
+   "HudCheckFlagAgainstGlobal": 47
   },
   "ret": "int",
   "conv": "__fastcall",
@@ -149484,7 +149484,7 @@
   "name": "C_00860170_Construct",
   "name_src": "agent",
   "votes": {
-   "C_00860170_Construct": 88
+   "C_00860170_Construct": 89
   },
   "ret": "void",
   "conv": "__fastcall",
@@ -153737,7 +153737,7 @@
   "name": "GfxObject_DestroyEmbeddedState",
   "name_src": "agent",
   "votes": {
-   "GfxObject_DestroyEmbeddedState": 15,
+   "GfxObject_DestroyEmbeddedState": 16,
    "GfxObject_DestroyTransform": 1,
    "GfxFrames_DestroyEmbeddedState": 1,
    "C_00860630_DestroyEmbeddedState": 1
@@ -153886,7 +153886,7 @@
    "GfxFrames_ProcessFrameLink": 1,
    "FrameApplyToMatch": 1,
    "GfxFrames_SetEmbeddedFrame": 1,
-   "GfxFrame_InitRotationDegreesFromMatrix": 8,
+   "GfxFrame_InitRotationDegreesFromMatrix": 10,
    "C_00860700_SetFrame": 1
   },
   "ret": "char",
@@ -155893,7 +155893,7 @@
   "name": "GetGlobalValue_6C5760",
   "name_src": "agent",
   "votes": {
-   "GetGlobalValue_6C5760": 118
+   "GetGlobalValue_6C5760": 119
   },
   "ret": "int",
   "conv": "__cdecl",
@@ -166210,8 +166210,8 @@
   "file": "src/auto/006e7bb0.cpp"
  },
  "006e7d10": {
-  "name": "C_00861da8_Destroy",
-  "name_src": "impl",
+  "name": "C_00861da8_Destroy_6E7D10",
+  "name_src": "agent",
   "votes": {},
   "ret": "uint32_t*",
   "conv": "__fastcall",
@@ -166230,28 +166230,30 @@
   "file": "src/auto/006e7d40.cpp"
  },
  "006e7d50": {
-  "name": "sub_6E7D50",
-  "name_src": "addr",
+  "name": "C_00861dd8_ResolveOrDelegate",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, uint32_t* a2, uint32_t* a3",
-  "sig_src": "abi"
+  "params": "C_00861dd8* self, void* , uint32_t* a2, int* a3",
+  "sig_src": "impl",
+  "file": "src/auto/006e7d50.cpp"
  },
  "006e7da0": {
   "name": "C_00861dd8_InitializeFromFrame",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_00861dd8_InitializeFromFrame": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, char* a3, int a4",
-  "sig_src": "vote"
+  "params": "void* self, void* , int a2, const char* a3, int a4",
+  "sig_src": "impl",
+  "file": "src/auto/006e7da0.cpp"
  },
  "006e7e10": {
   "name": "C_00861dd8_GetOrCreateBoneName",
-  "name_src": "impl",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__fastcall",
@@ -166261,7 +166263,7 @@
  },
  "006e7e60": {
   "name": "C_00861dd8_Construct",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_00861dd8_Construct": 1,
    "C_00861dd8_ConstructTrackEntry": 1
@@ -166273,42 +166275,46 @@
   "file": "src/auto/006e7e60.cpp"
  },
  "006e7ea0": {
-  "name": "sub_6E7EA0",
-  "name_src": "addr",
+  "name": "GfxBones_RemoveFrameIfNotInList",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, void** a2",
-  "sig_src": "abi"
+  "params": "int frame, uint32_t** holderSlot",
+  "sig_src": "impl",
+  "file": "src/auto/006e7ea0.cpp"
  },
  "006e7ef0": {
-  "name": "sub_6E7EF0",
-  "name_src": "addr",
+  "name": "GfxBones_AppendBoneIndex",
+  "name_src": "agent",
   "votes": {},
   "ret": "int",
   "conv": "__cdecl",
-  "params": "int a1, void** a2",
-  "sig_src": "abi"
+  "params": "int boneIndex, S_0041e5f0** listRef",
+  "sig_src": "impl",
+  "file": "src/auto/006e7ef0.cpp"
  },
  "006e7f20": {
-  "name": "sub_6E7F20",
-  "name_src": "addr",
+  "name": "C_00861da8_Destroy_6E7F20",
+  "name_src": "agent",
   "votes": {},
   "ret": "void",
   "conv": "__fastcall",
-  "params": "void* self, void* edx",
-  "sig_src": "abi"
+  "params": "C_00861da8* self, void*",
+  "sig_src": "impl",
+  "file": "src/auto/006e7f20.cpp"
  },
  "006e7f90": {
   "name": "C_00861dd8_InitializeTrackEntry",
-  "name_src": "vote",
+  "name_src": "agent",
   "votes": {
    "C_00861dd8_InitializeTrackEntry": 1
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, int a2, int a3",
-  "sig_src": "vote"
+  "params": "void* self, void* , void* matrix, int trackIndex",
+  "sig_src": "impl",
+  "file": "src/auto/006e7f90.cpp"
  },
  "006e7fe0": {
   "name": "C_00861dd8_Destroy",
@@ -174491,8 +174497,9 @@
   },
   "ret": "char",
   "conv": "__fastcall",
-  "params": "void* self, void* edx, float a2, int a3",
-  "sig_src": "vote"
+  "params": "S_00705300* self, void* , float amount, int forward",
+  "sig_src": "impl",
+  "file": "src/auto/00705300.cpp"
  },
  "00705600": {
   "name": "S_00705300_RenderBlendedPasses",
@@ -174884,7 +174891,9 @@
  "00707430": {
   "name": "C_00861da8_ResolveFlagOrDelegate",
   "name_src": "agent",
-  "votes": {},
+  "votes": {
+   "C_00861da8_ResolveFlagOrDelegate": 1
+  },
   "ret": "int",
   "conv": "__fastcall",
   "params": "C_00861da8* self, void* , uint32_t* a2, int* a3",
