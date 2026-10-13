@@ -1461,3 +1461,13 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   Checked here: tests/test_emudiff.py passes, installed 0x6A1E30 (10,000-byte local) goes DIFF 8/8 -> same 8/8,
   the candidate is same 2/8. 0x69AE30 back to the lanes. The worker also edited PLAN/JOURNAL in its tree: not
   taken (the brief now says so).
+- New way of working (user, 2026-10-13): the orchestrator spawns agents and oversees them instead of doing the
+  jobs. `deep_worker.py` got `--agent sol-hi|opus-me` (Opus through `claude -p` on the main account, dontAsk with
+  a fixed command list), `start` (detached), `review NAME verdict --note`, quota stops named as such, the Codex
+  login with the most room. Third Codex login `codex-3` added by the user (the two others hit 100% of their 5h
+  window at once: three jobs died after 3 min, one after 18; restarted in their trees).
+- `tools/webmon.py`: local web monitor for this stage (http://127.0.0.1:8777), replaces `tools/monitor.py`.
+  What is left by kind, evidence tiers, jobs (task / report / patch / activity), queue by failure class with the
+  job holding each item, quota per login, background processes, open decisions and backlog, commits. One collector
+  thread; slow readers (evidence 90 s, quota 60 s) keep their last value, so the page never blanks.
+- The 192 leftovers outside stl and queue: 166 are under 6 bytes (the lanes' `min_size`), 27 others.

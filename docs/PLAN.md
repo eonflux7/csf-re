@@ -84,23 +84,24 @@ The orchestrator (Opus, interactive) works `queue/` and the backlog below.
 
 ## Current focus (priority order)
 
-1. **Waves by centrality**: `wave --waves -1` runs them in rank order (rolling, see the loop) with the stop rule
-   and a full baseline regression smoke every 3 modules.
-2. **emudiff into the gate now** (user, 2026-10-13, at 71.6%): triage its alarms, remove the false ones, then
-   make it a gate step and an evidence level, so the remaining functions are checked at production and a failure
-   goes to the next rung instead of `queue/` (backlog, Verification).
-3. **Escalation queue: park and continue** (user, 2026-10-13): no rung above `gpt-6.1-sol@high`; `queue/` grows
-   and is cleared in batches by the orchestrator. 100% means everything the ladder can do; the tail is for the end.
-   What lands there: crash bisects, review findings and gate failures of the
-   waves; the audio tail-forwarding thunks and the two usercall functions wait on hook.h helpers (backlog, Loop &
-   tooling).
-4. **No playtest milestone: run the waves to 100% of game code** (user, 2026-10-11, at 51.5%; the playtest at
-   25% / 50% is dropped). Evidence comes from the verifier's smokes and the in-game diff (tiers 2 and 3).
-5. **Evidence for the functions that never ran** (about half of the done ones, `status.py`): `emudiff.py` triage
-   and hardening (backlog, Verification), `review.py sample` (weighted to them), `verifier.py --full` over
-   everything once.
-6. **Names and types at the next milestone**: `tools/naming.py` (first full run with the captain), then
-   `propagate.sh`; what is open is in the backlog (Types & structure).
+Stage since 2026-10-13: the waves are exhausted at 91.9% of game code. What is left is done by **agent jobs**
+(`tools/deep_worker.py`: sol-hi = gpt-6.1-sol@high, opus-me = claude-opus-5-5@medium); the orchestrator writes the
+tasks, reviews reports and patches, decides. Everything is visible on `tools/webmon.py` (user, 2026-10-13).
+
+1. **Escalation queue** (168 items): jobs per failure class. A false alarm is fixed in the tool for its class and
+   the items go back to the lanes; a real bug is fixed in the candidate and goes through the verifier.
+2. **STL template instances** (418 functions, 119 KB): VC7.1 container replicas + template implementations, each
+   instance checked by emudiff; a generator for the rest (backlog, Types & structure).
+3. **Functions under 6 bytes** (166, 0.7 KB) the lanes never take (`min_size`): decide how they are implemented
+   and installed (no room for a 5-byte hook in a 4-byte function).
+4. **Evidence for the functions that never ran** (about half of the done ones): emudiff sweep of the `gate` and
+   `executed` tiers, `review.py sample`, `verifier.py --full` over everything once; then the pending installs.
+5. **Names and types**: `tools/naming.py` (first full run with the captain), then `propagate.sh` (backlog, Types
+   & structure).
+6. **Cutover** items (backlog): data generation, the unresolved library boundary, RWA.
+
+Earlier decisions that still hold: no playtest milestone, evidence comes from the verifier's smokes, the in-game
+diff and emudiff (user, 2026-10-11); emudiff is a gate step (2026-10-13).
 
 ## Backlog
 

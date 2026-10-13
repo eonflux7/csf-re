@@ -19,6 +19,14 @@ backlog), pending/verified counts and the link-test line, and any open decisions
    commit (`git add -A && git commit`). Commit messages end with the Co-Authored-By trailer.
 5. Stop and ask when: sudo is needed, an open decision blocks progress, or a playtest is needed.
 
+## How work is done now (2026-10-13)
+Game code is nearly all written; what is left (queue, STL replicas, verification, cutover) is done by agent jobs.
+The orchestrator writes the task, starts jobs (`tools/deep_worker.py start NAME --task FILE --agent sol-hi|opus-me`),
+reviews each report and patch (check the claims with the tools before applying), records the verdict
+(`deep_worker.py review NAME applied|partial|rejected --note ...`), then commits. It does a job itself only when
+that is quicker than writing the task. Jobs, queue and quota are on the web monitor: `tools/webmon.py`
+(http://127.0.0.1:8777), which replaces `tools/monitor.py`.
+
 ## Layout
 - `tools/ida/` idalib scripts (`common.py` opens the IDB). Run with `.venv/bin/python`. IDB: `ida/CommXPC.exe.i64`.
   Only scripts in `tools/ida/` touch the IDB; writes only via `sync.py` (batch). IDA is the source of truth for what
@@ -28,7 +36,7 @@ backlog), pending/verified counts and the link-test line, and any open decisions
 - `tools/` the loop: grunt.py (lanes, wave; model policy in `db/lanes.yaml`), verifier.py + verify.py (in-game
   install/diff, evidence ledger), gate.py + semcheck.py + controls.py (static checks; fpret.py: float returns decided from the binary), emudiff.py (emulated diff
   vs the original, offline), api.py + addrfix.py + linktest.py (cutover contract), pool.py + playcopy.py (parallel
-  smoke instances), status.py, monitor.py. deep_worker.py: a Sol High agent in its own worktree for a part of the
+  smoke instances), status.py, webmon.py (local web monitor; monitor.py is the retired terminal one). deep_worker.py: a Sol High agent in its own worktree for a part of the
   orchestrator's task (offline tools only; returns report.md + patch.diff under work/deep/, reviewed before use). Between wave runs: naming.py (the only place names change: captain.py +
   fields.py + rename_classes.py under a code-hash invariant), ida/propagate.sh, review.py (rolling Opus sample);
   this_class.py + plain_classes.py + vtbl_types.py (classes, `this`/parameter/member types, typed vtables).

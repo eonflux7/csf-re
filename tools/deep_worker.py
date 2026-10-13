@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Deep worker: one agentic GPT session (Codex CLI, gpt-6.1-sol@high) on a task the orchestrator hands out.
+"""Deep worker: one agent session on a job the orchestrator hands out and oversees (2026-10-13, user: the
+orchestrator no longer does the jobs itself; it spawns agents, reviews what they return, decides).
+
+Agents (--agent): sol-hi = gpt-6.1-sol@high through the Codex CLI, sandboxed to the job's tree;
+opus-me = claude-opus-5-5@medium through `claude -p` on the main account (the grunts' account is Haiku only),
+edits and a fixed list of commands allowed, everything else denied.
 
 The orchestrator starts a task, fires up workers for the parts that need long reading or trial and error (a queue
 item's root cause, a class of emudiff differences, a container replica), and reviews what comes back. A worker
@@ -7,20 +12,29 @@ never touches the repo: it gets its own detached worktree (work/deep/NAME/tree, 
 build dir) and may edit and run the offline tools there (gate, semcheck, emudiff, single-file compiles). No game,
 no smokes, no verifier, no commits, no IDB writes, no network.
 
-  deep_worker.py run NAME --task FILE|-  [--model gpt-6.1-sol] [--effort high] [--timeout 3600] [--fresh]
-  deep_worker.py list                     workers and their state
-  deep_worker.py drop NAME                remove a worker's tree and files
+  deep_worker.py start NAME --task FILE|- [--agent sol-hi|opus-me] [--timeout 3600] [--fresh]   in the background
+  deep_worker.py run   NAME ...           the same, in the foreground
+  deep_worker.py list                     jobs and their state
+  deep_worker.py review NAME applied|partial|rejected [--note TEXT]    the orchestrator's verdict on a finished job
+  deep_worker.py drop NAME                remove a job's tree and files
 
 Comes back in work/deep/NAME/: report.md (the worker's last message: findings, what it checked and how, what it
 did not check), patch.diff (everything it changed in its tree, new files included; apply with `git apply` after
-review), events.jsonl (the session), state.json (for tools/monitor.py). Several workers run side by side; the
-Codex login is picked like the lanes pick theirs.
+review), events.jsonl (the session), state.json (shown by tools/webmon.py), run.log. Several jobs run side by
+side; a Codex job takes the login with the most room in its 5h window. A job stopped by quota or timeout keeps
+its tree: start it again without --fresh and it goes on from there.
 """
-import argparse, json, os, shutil, subprocess, sys, time
+import argparse, json, os, re, shutil, subprocess, sys, time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 DEEP = os.path.join(ROOT, "work", "deep")
+AGENTS = {"sol-hi": ("codex", "gpt-6.1-sol", "high"), "opus-me": ("claude", "claude-opus-5-5", "medium")}
+# opus-me: what `claude -p` may do without asking (dontAsk denies the rest)
+CLAUDE_ALLOW = ["Read", "Grep", "Glob", "Edit", "Write", "Bash(.venv/bin/python:*)", "Bash(git diff:*)",
+                "Bash(git status:*)", "Bash(git log:*)", "Bash(git show:*)", "Bash(ls:*)", "Bash(cat:*)", "Bash(rg:*)",
+                "Bash(grep:*)", "Bash(head:*)", "Bash(tail:*)", "Bash(wc:*)", "Bash(find:*)", "Bash(sed -n:*)",
+                "Bash(mkdir:*)", "Bash(cp:*)", "Bash(ninja:*)", "Bash(llvm-objdump:*)"]
 
 BRIEF = """You are a deep worker on CSF-RE: a C++ reimplementation of CommXPC.exe (Commandos: Strike Force, PC,
 MSVC 7.1), installed function by function as hooks over the original. Read CLAUDE.md and the parts of docs/PLAN.md
@@ -109,48 +123,120 @@ def run(a):
     report, events = os.path.join(d, "report.md"), os.path.join(d, "events.jsonl")
     if os.path.exists(report):
         os.remove(report)
+    backend, model, effort = AGENTS[a.agent]
+    st = state(d)
     state(d, name=a.name, pid=os.getpid(), started=time.time(), finished=None, phase="running", head=head,
-          model=a.model, effort=a.effort, task=task.strip().splitlines()[0][:120], error=None)
-    cmd = ["codex", "exec", "--ephemeral", "--ignore-user-config", "-s", "workspace-write", "-C", tree,
-           "-m", a.model, "-c", f'model_reasoning_effort="{a.effort}"', "-c", "web_search=disabled",
-           "-o", report, "--json", "-"]
-    t0, err = time.time(), None
+          agent=a.agent, model=model, effort=effort, task=task.strip().splitlines()[0][:160], error=None,
+          review=None, note=None, runs=st.get("runs", 0) + 1,
+          eas=sorted(set(re.findall(r"\b00[4-7][0-9a-f]{5}\b", task))))
+    prompt = BRIEF + "\n=== TASK ===\n" + task
+    if os.path.exists(os.path.join(d, "patch.diff")) and os.path.getsize(os.path.join(d, "patch.diff")):
+        prompt += ("\n\n(This job was started before and stopped by quota or timeout. Your tree still holds what "
+                   "was changed then: look at `git status` and `git diff HEAD` first and go on from there.)\n")
+    t0, err, usage = time.time(), None, {}
     try:
-        with open(events, "w") as ev:
-            r = subprocess.run(cmd, input=BRIEF + "\n=== TASK ===\n" + task, stdout=ev, stderr=subprocess.PIPE,
-                               text=True, timeout=a.timeout, env=dict(os.environ, CODEX_HOME=login()))
-        if r.returncode or not os.path.exists(report):
+        if backend == "codex":
+            cmd = ["codex", "exec", "--ephemeral", "--ignore-user-config", "-s", "workspace-write", "-C", tree,
+                   "-m", model, "-c", f'model_reasoning_effort="{effort}"', "-c", "web_search=disabled",
+                   "-o", report, "--json", "-"]
+            home = login()
+            state(d, login=os.path.basename(home).lstrip("."))
+            with open(events, "w") as ev:
+                r = subprocess.run(cmd, input=prompt, stdout=ev, stderr=subprocess.PIPE, text=True,
+                                   timeout=a.timeout, env=dict(os.environ, CODEX_HOME=home))
             tail = open(events, errors="replace").read()[-600:]
-            err = f"codex exec rc={r.returncode}: {r.stderr[-400:]}"
-            if "usage limit" in tail:  # run again without --fresh after the reset: the tree keeps its changes
-                err = "quota: " + tail[tail.find("usage limit"):][:120].split('"')[0]
+            if r.returncode or not os.path.exists(report):
+                err = f"codex exec rc={r.returncode}: {r.stderr[-400:]}"
+                if "usage limit" in tail:
+                    err = "quota: " + tail[tail.find("usage limit"):][:120].split('"')[0]
+            for line in open(events, errors="replace"):
+                if '"turn.completed"' in line:
+                    usage = json.loads(line).get("usage", {})
+        else:
+            cmd = ["claude", "-p", "--model", model, "--effort", effort, "--permission-mode", "dontAsk",
+                   "--allowedTools", *CLAUDE_ALLOW, "--no-session-persistence", "--strict-mcp-config",
+                   "--disable-slash-commands", "--output-format", "json"]
+            state(d, login="claude main")
+            r = subprocess.run(cmd, input=prompt, capture_output=True, text=True, cwd=tree, timeout=a.timeout)
+            open(events, "w").write(r.stdout)
+            try:
+                res = json.loads(r.stdout)
+            except ValueError:
+                res = {"is_error": True, "result": (r.stderr or r.stdout)[-400:]}
+            if res.get("is_error") or not res.get("result"):
+                err = f"claude -p rc={r.returncode}: {str(res.get('result'))[:400]}"
+                if "limit" in err.lower():
+                    err = "quota: " + err
+            else:
+                open(report, "w").write(res["result"])
+            u = res.get("usage", {})
+            usage = dict(input_tokens=u.get("input_tokens", 0) + u.get("cache_read_input_tokens", 0) +
+                         u.get("cache_creation_input_tokens", 0), cached_input_tokens=u.get("cache_read_input_tokens", 0),
+                         output_tokens=u.get("output_tokens", 0), cost_usd=res.get("total_cost_usd", 0),
+                         turns=res.get("num_turns", 0))
     except subprocess.TimeoutExpired:
         err = f"timeout after {a.timeout} s (its tree keeps what it changed)"
     sh("git", "-C", tree, "add", "-A", "-N")  # new files show in the diff
     patch = subprocess.run(["git", "-C", tree, "diff", "HEAD", "--", ".", ":!build"], capture_output=True, text=True).stdout
     open(os.path.join(d, "patch.diff"), "w").write(patch)
-    usage = {}
-    for line in open(events, errors="replace"):
-        if '"turn.completed"' in line:
-            usage = json.loads(line).get("usage", {})
-    state(d, finished=time.time(), phase="failed" if err else "done", error=err, usage=usage,
+    state(d, finished=time.time(), phase=("quota" if err.startswith("quota") else "failed") if err else "done",
+          error=err, usage=usage,
           patch_lines=patch.count("\n"))
     print(f"deep worker {a.name}: {'FAILED: ' + err if err else 'done'} in {time.time() - t0:.0f} s; "
           f"report {os.path.relpath(report, ROOT)}, patch {patch.count(chr(10))} lines", flush=True)
     return 1 if err else 0
 
 
-def ls(_):
+def start(a):
+    """Detached: the job outlives the caller; its last line lands in work/deep/NAME/run.log."""
+    task = sys.stdin.read() if a.task == "-" else open(a.task).read()
+    d = os.path.join(DEEP, a.name)
+    os.makedirs(d, exist_ok=True)
+    open(os.path.join(d, "task.md"), "w").write(task)
+    cmd = [sys.executable, os.path.abspath(__file__), "run", a.name, "--task", os.path.join(d, "task.md"),
+           "--agent", a.agent, "--timeout", str(a.timeout)] + (["--fresh"] if a.fresh else [])
+    subprocess.Popen(cmd, stdout=open(os.path.join(d, "run.log"), "a"), stderr=subprocess.STDOUT,
+                     stdin=subprocess.DEVNULL, start_new_session=True, cwd=ROOT)
+    print(f"deep worker {a.name} ({a.agent}) started; work/deep/{a.name}/run.log")
+    return 0
+
+
+def review(a):
+    d = os.path.join(DEEP, a.name)
+    if not os.path.exists(os.path.join(d, "state.json")):
+        raise SystemExit(f"no job {a.name}")
+    state(d, review=a.verdict, note=a.note, reviewed=time.time())
+    return 0
+
+
+def jobs():
+    """Every job's state.json, a running one whose process is gone marked dead (for list and tools/webmon.py)."""
+    out = []
     for name in sorted(os.listdir(DEEP)) if os.path.isdir(DEEP) else []:
         p = os.path.join(DEEP, name, "state.json")
-        if not os.path.exists(p):
+        try:
+            st = json.load(open(p))
+        except (OSError, ValueError):
             continue
-        st = json.load(open(p))
-        phase = st["phase"]
-        if phase == "running" and not os.path.exists(f"/proc/{st['pid']}"):
-            phase = "dead"
+        if "started" not in st:
+            continue
+        if st["phase"] == "running" and not os.path.exists(f"/proc/{st['pid']}"):
+            st["phase"] = "dead"
+        st["has_report"] = os.path.exists(os.path.join(DEEP, name, "report.md"))
+        if "eas" not in st:  # started by an older version of this tool
+            try:
+                st["eas"] = sorted(set(re.findall(r"\b00[4-7][0-9a-f]{5}\b", open(os.path.join(DEEP, name, "task.md")).read())))
+            except OSError:
+                st["eas"] = []
+        out.append(st)
+    return out
+
+
+def ls(_):
+    for st in jobs():
         secs = (st.get("finished") or time.time()) - st["started"]
-        print(f"{name:24} {phase:8} {secs / 60:5.0f} min  patch {st.get('patch_lines', '-'):>5}  {st.get('task', '')}")
+        print(f"{st['name']:20} {st.get('agent', 'sol-hi'):8} {st['phase']:8} {secs / 60:5.0f} min  patch "
+              f"{st.get('patch_lines', '-'):>5}  {st.get('review') or '-':9} {st.get('task', '')[:70]}")
     return 0
 
 
@@ -165,14 +251,19 @@ def drop(a):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
-    r = sub.add_parser("run")
-    r.add_argument("name")
-    r.add_argument("--task", required=True, help="file with the task, or - for stdin")
-    r.add_argument("--model", default="gpt-6.1-sol")
-    r.add_argument("--effort", default="high")
-    r.add_argument("--timeout", type=int, default=3600)
-    r.add_argument("--fresh", action="store_true", help="throw the worker's old tree away first")
-    r.set_defaults(fn=run)
+    for cmd, fn in (("run", run), ("start", start)):
+        r = sub.add_parser(cmd)
+        r.add_argument("name")
+        r.add_argument("--task", required=True, help="file with the task, or - for stdin")
+        r.add_argument("--agent", default="sol-hi", choices=sorted(AGENTS))
+        r.add_argument("--timeout", type=int, default=3600)
+        r.add_argument("--fresh", action="store_true", help="throw the job's old tree away first")
+        r.set_defaults(fn=fn)
+    rv = sub.add_parser("review")
+    rv.add_argument("name")
+    rv.add_argument("verdict", choices=["applied", "partial", "rejected"])
+    rv.add_argument("--note", default="")
+    rv.set_defaults(fn=review)
     sub.add_parser("list").set_defaults(fn=ls)
     dp = sub.add_parser("drop")
     dp.add_argument("name")
