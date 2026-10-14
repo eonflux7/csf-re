@@ -22,7 +22,7 @@ static int __cdecl GfxObjectProps_ReadObjectType(
         propertyOffset > g_ObjectPropsMaxVersion)
         return 0;
 
-    alignas(8) uint8_t valueBytes[0x4] = {};
+    alignas(8) uint8_t valueBytes[0x4];
     if (propertyOffset == 1)
     {
         RwStreamReadInt32(stream, valueBytes, 4);
