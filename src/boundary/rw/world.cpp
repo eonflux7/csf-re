@@ -105,6 +105,17 @@ World* __cdecl removeLight(World* w,Light* l) {
     p->second.native->removeLight(n);remove(l->inWorld);publish(l,lightWorldOffset,0,nullptr);return w;
 }
 World* __cdecl lightWorld(Light* l) { auto* n=lightNative(l);return n?find(n->world):nullptr; }
+// 0058CF80: global (directional) lights, then local lights; next is read before the callback (it may remove the
+// current light) and a null return ends both walks. Returns the world.
+World* __cdecl worldLights(World* w,Light* (__cdecl *cb)(Light*,void*),void* data) {
+    for(Link* ring:{&w->globalLights,&w->localLights})
+        for(Link* l=ring->next;l!=ring;) {
+            Link* next=l->next;
+            if(!cb(reinterpret_cast<Light*>(reinterpret_cast<char*>(l)-offsetof(Light,inWorld)),data)) return w;
+            l=next;
+        }
+    return w;
+}
 int __cdecl destroyWorld(World* w) {
     startupTrace("0x0058CBD0","RpWorldDestroy (empty world)");
     return worldDestroy(w);
@@ -134,4 +145,5 @@ HOOK(0x0058DDF0,cameraWorld,"boundary-rw");
 HOOK(0x0058DF50,addLight,"boundary-rw");
 HOOK(0x0058DFA0,removeLight,"boundary-rw");
 HOOK(0x0058DFD0,lightWorld,"boundary-rw");
+HOOK(0x0058CF80,worldLights,"boundary-rw");
 #endif
