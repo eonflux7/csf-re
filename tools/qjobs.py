@@ -3,6 +3,7 @@
 
   qjobs.py plan [--max N]           the batches it would start
   qjobs.py start [--max N] [--agent haiku-hi]   start them as pool jobs (tools/deep_worker.py --pool), print the names
+  qjobs.py start --sweep FILE ...   the same for installed functions that differ in `emudiff.py --tier` output
 
 Batching: a queue item goes alone unless others share its module and failure class and lie within 0x400 bytes of
 it (clones of one pattern, members of one class: the second is nearly free once the first is understood); then up
@@ -28,6 +29,23 @@ Read the whole function against the disassembly, not only the place the failure 
 Do not change anything under tools/ or hook/, and do not create files other than the listed ones under src/auto/. Stop after the listed function(s).
 Report a table: address, verdict, cause in one line, final gate line, final emudiff line.
 """
+SWEEP_TASK = """Installed function(s) whose emulated run differs from the original. Addresses: {eas}
+{lines}
+Each file under src/auto/ is the current reimplementation; it is installed in the game and passed the smoke tests, but `tools/emudiff.py` (the original's bytes and our compiled code run side by side in an emulator from the same registers, arguments and memory; calls leaving the function are answered by the same mock on both sides) reports the difference quoted with it: `X vs Y` is the original's value vs ours. Work the functions one at a time.
+For each: run the emudiff command first and keep its line. Read the original's disassembly next to the file line by line, starting where the line points:
+- `returns N vs 1` / `vs 0`: the original returns the whole eax (often a callee's result passed through, or a pointer), the file returns a bool or a truncated value; or a callee is bound as returning `bool`/`char` where the original uses the full register. Give the function and the binding the type the instructions show.
+- `call K: target A vs B`: the K-th call (from 0) reaches another function: a wrong vtable slot offset, one dereference too many or too few, a different object's vtable, a call the file adds or drops before it.
+- `call K to F: ecx A vs B` or `arguments [...]`: the K-th call passes another `this` or other arguments: wrong field offset, a value where the original passes an address, swapped or missing arguments, a stale register.
+- `N dword(s) of memory differ, first at ADDR`: a store with another value, width or offset, or a store the file drops; a float product rounded to float where the original keeps it on the x87 stack until the conversion.
+- `N calls vs M`: the two took different paths: an inverted or missing condition, a loop bound.
+Correct the file with the smallest change that makes it do what the original does. Then `.venv/bin/python tools/gate.py <address> src/auto/<address>.cpp` must print ok and the emudiff command must print same. Quote the original instructions that prove the fix in one or two lines. If the file already does what the original does instruction for instruction, change nothing and say what in the emulator's line is an artefact (FALSE ALARM), with the instructions. If you cannot decide, say so and restore the file (`git checkout -- <file>`). Do not guess.
+Read the whole function, not only the place the line points at. Never bind a callee as returning `bool` where the original uses eax or compares al with values other than 0/1.
+Do not change anything under tools/ or hook/, and no files other than the listed ones. Stop after the listed function(s).
+Report a table: address, verdict (REAL fixed / FALSE ALARM / not decided), cause in one line, final gate line, final emudiff line.
+"""
+SWEEP_LINE = ("- {ea}: file src/auto/{ea}.cpp, original `.venv/bin/python tools/packet.py {ea}` and export/funcs/{ea}.c, "
+              "emudiff `.venv/bin/python tools/emudiff.py {ea} --src src/auto/{ea}.cpp` now prints: {why}; "
+              "gate `.venv/bin/python tools/gate.py {ea} src/auto/{ea}.cpp`")
 LINE = ("- {ea}: queue file queue/{ea}.md, original `.venv/bin/python tools/packet.py {ea}` and export/funcs/{ea}.c, "
         "write the corrected file to src/auto/{ea}.cpp, check with `.venv/bin/python tools/gate.py {ea} src/auto/{ea}.cpp` "
         "(must print ok) and `.venv/bin/python tools/emudiff.py {ea} --src src/auto/{ea}.cpp` (must print same)")
@@ -48,6 +66,22 @@ def items(again):
             continue
         r = rows.get(int(ea, 16), {})
         out.append(dict(ea=ea, cls=cls, module=r.get("module", ""), size=int(r.get("size") or 0)))
+    return out
+
+
+def sweep_items(path, again):
+    """Installed functions with an emudiff DIFF: lines of `emudiff.py` output (address DIFF n/m profiles; ...)."""
+    rows = grunt.load_csv()
+    had = set() if again else {e for j in deep_worker.jobs() for e in j.get("eas", [])}
+    out = []
+    for l in open(path):
+        m = re.match(r"([0-9a-f]{8}) DIFF\s+\S+ profiles; (.*)", l.strip())
+        if not m or m.group(1) in had:
+            continue
+        ea, why = m.groups()
+        r = rows.get(int(ea, 16), {})
+        cls = re.sub(r"[0-9a-f]{3,8}|\d+", "N", re.sub(r"^profile \d+: ", "", why))[:24]
+        out.append(dict(ea=ea, cls=cls, module=r.get("module", ""), size=int(r.get("size") or 0), why=why[:200]))
     return out
 
 
@@ -72,19 +106,25 @@ def main():
     ap.add_argument("--max", type=int, default=8, help="jobs to start at most")
     ap.add_argument("--agent", default="haiku-hi")
     ap.add_argument("--again", action="store_true")
+    ap.add_argument("--sweep", help="instead of queue/: a file of emudiff output lines (installed functions that DIFF)")
     ap.add_argument("--size", default="0-320", help="function size range in bytes, LO-HI (bigger ones: --agent sol-med)")
     a = ap.parse_args()
     lo, hi = map(int, a.size.split("-"))
-    bs = batches([i for i in items(a.again) if lo <= i["size"] <= hi])
+    its = sweep_items(a.sweep, a.again) if a.sweep else items(a.again)
+    bs = batches([i for i in its if lo <= i["size"] <= hi])
     print(f"{sum(map(len, bs))} queue items to triage in {len(bs)} jobs ({sum(len(b) > 1 for b in bs)} batched); "
           f"taking {min(a.max, len(bs))}", file=sys.stderr)
     names = []
     for b in bs[:a.max]:
-        name = "q" + b[0]["ea"][2:] + (f"x{len(b)}" if len(b) > 1 else "")
+        name = ("s" if a.sweep else "q") + b[0]["ea"][2:] + (f"x{len(b)}" if len(b) > 1 else "")
         if a.cmd == "plan":
             print(name, " ".join(f"{i['ea']}({i['size']}B {i['module']} {i['cls']})" for i in b))
             continue
-        task = TASK.format(n=len(b), eas=" ".join(i["ea"] for i in b), lines="\n".join(LINE.format(ea=i["ea"]) for i in b))
+        if a.sweep:
+            task = SWEEP_TASK.format(eas=" ".join(i["ea"] for i in b),
+                                     lines="\n".join(SWEEP_LINE.format(ea=i["ea"], why=i["why"]) for i in b))
+        else:
+            task = TASK.format(n=len(b), eas=" ".join(i["ea"] for i in b), lines="\n".join(LINE.format(ea=i["ea"]) for i in b))
         r = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "deep_worker.py"), "start", name, "--task", "-",
                             "--agent", a.agent, "--pool", "--force", "--timeout", "1200"], input=task, text=True,
                            capture_output=True)
