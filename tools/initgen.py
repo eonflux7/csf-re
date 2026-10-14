@@ -102,6 +102,11 @@ def generate(exe, inventory, output):
     source += ['int csf::run_original_initializers() {']
     for r in rows:
         a = int(r['target'], 16)
+        if r['region'] == 'crt':
+            # The original C runtime's own start-up (heap, SSE2 probe, locale, stdio): the standalone exe has its
+            # own runtime, which has done its start-up before main. Not called; listed so the order stays visible.
+            source.append(f'    // {r["table"]}[{r["index"]}] {r["target"]}: original CRT start-up, not called')
+            continue
         source.append(f'    std::fputs("csf: {r["table"]}[{r["index"]}] {r["target"]}\\n", stderr);')
         if r['table'] == 'xi':
             source.append(f'    if (int result = init_{a:08X}()) return result;')

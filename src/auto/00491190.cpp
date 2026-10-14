@@ -20,7 +20,7 @@ static char __fastcall C_008342e8_SetObjectPlacement(
         reinterpret_cast<void* (__fastcall*)(void*, void*)>(
             CSF_AT(void**, owner, 0)[6])(owner, nullptr);
 
-    uint32_t sourceMatrixState[2] = {};
+    uint32_t sourceMatrixState[2];
     uint32_t* matrixView =
         reinterpret_cast<uint32_t* (__fastcall*)(void*, void*, uint32_t*)>(
             CSF_AT(void**, transformSource, 0)[35])(

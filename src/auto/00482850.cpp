@@ -45,7 +45,6 @@ static int __stdcall CharActionFsm_SelectMissionBriefing(int slot)
                            reinterpret_cast<int>(missionGlobalName),
                            briefingValue);
 
-    Get_008b0678();
     result = MenuMissionInfo_SetGlobalIndex(
         reinterpret_cast<void*>(static_cast<uintptr_t>(Get_008b0678())),
         nullptr,

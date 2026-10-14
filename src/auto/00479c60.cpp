@@ -30,7 +30,7 @@ static int __fastcall C_00862490_ActivateSlotEntry(
             std::uint8_t padding[3];
         };
         static_assert(sizeof(MatrixState) == 0x8);
-        MatrixState matrixState{};
+        MatrixState matrixState;
 
         void* transform =
             reinterpret_cast<void* (__fastcall*)(void*, void*)>(
