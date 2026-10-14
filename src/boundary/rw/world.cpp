@@ -13,6 +13,9 @@
 #include <algorithm>
 CSF_GLOBAL(int, cameraWorldOffset, 0x008B1348);
 CSF_GLOBAL(int, lightWorldOffset, 0x008B1354);
+CSF_GLOBAL(int, atomicWorldOffset, 0x008B134C);
+CSF_GLOBAL(int, clumpWorldOffsetB, 0x008B1350);
+CSF_GLOBAL(int, clumpWorldOffset, 0x008B13B4);
 namespace {
 using namespace csf_rw;
 struct Record { rw::World* native; };
@@ -105,6 +108,11 @@ World* __cdecl removeLight(World* w,Light* l) {
     p->second.native->removeLight(n);remove(l->inWorld);publish(l,lightWorldOffset,0,nullptr);return w;
 }
 World* __cdecl lightWorld(Light* l) { auto* n=lightNative(l);return n?find(n->world):nullptr; }
+// 0058F0E0 RpClumpGetWorld, 0058DE40 RpAtomicGetWorld, 0058DF40 (006FDFE0's clump lookup): the word at the
+// world plugin's offset (registered globals), as the original reads it.
+World* __cdecl clumpGetWorld(void* c) { return *reinterpret_cast<World**>(static_cast<char*>(c)+clumpWorldOffset); }
+World* __cdecl atomicGetWorld(void* a) { return *reinterpret_cast<World**>(static_cast<char*>(a)+atomicWorldOffset); }
+World* __cdecl clumpGetWorldB(void* c) { return *reinterpret_cast<World**>(static_cast<char*>(c)+clumpWorldOffsetB); }
 // 0058CEF0: the world's clump ring (+0x2C, link at Clump+0x20); next read before the callback, null stops.
 World* __cdecl worldClumps(World* w,Clump* (__cdecl *cb)(Clump*,void*),void* data) {
     for(Link* l=w->clumps.next;l!=&w->clumps;) {
@@ -163,4 +171,7 @@ HOOK(0x0058DFD0,lightWorld,"boundary-rw");
 HOOK(0x0058CF80,worldLights,"boundary-rw");
 HOOK(0x0058CEF0,worldClumps,"boundary-rw");
 HOOK(0x0058CF30,worldMaterials,"boundary-rw");
+HOOK(0x0058F0E0,clumpGetWorld,"boundary-rw");
+HOOK(0x0058DE40,atomicGetWorld,"boundary-rw");
+HOOK(0x0058DF40,clumpGetWorldB,"boundary-rw");
 #endif
