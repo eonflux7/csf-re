@@ -1,0 +1,86 @@
+g4053e0	00405720	FALSE ALARM	Mock leaves matrix-handle output unwritten; original tests stack-fill ownership byte, ours tests initialized z
+g4053e0	004082e0	FALSE ALARM	Emulator assigns virtual callback zero-byte cleanup instead of four; candidate’s stack becomes unbalanced.
+g4053e0	00408370	FALSE ALARM	Same virtual-call cleanup artefact.
+g4053e0	00408400	FALSE ALARM	Same virtual-call cleanup artefact.
+g42cf50	0042da20	REAL	Duration passed to wrong slot; record argument omitted. Also corrected the `al` test.
+g42cf50	0042f4f0	REAL	Size conversion prematurely rounded to float and used a 32-bit cast.
+g42cf50	00431080	FALSE ALARM	Emulator uses virtual-call cleanup of 12/0/0 bytes instead of 4/4/4.
+g43e010	0043f310	FALSE ALARM	Original recursion is mocked; candidate recursion executes and faults on synthetic memory.
+g43e010	0043faf0	NOT DECIDED	Original scans an uninitialized buffer; removing our initialization exposes stack-layout-dependent length diff
+g47f930	0047fdf0	FALSE ALARM	Original pushes a byte boolean with stale upper bytes from saved ECX.
+g47f930	00482dc0	NOT DECIDED	Original preserves upper EAX; trial correction exposed erroneous emulator cleanup.
+g496080	004974c0	FALSE ALARM	Mock leaves matrix-reference output unwritten; original tests stack-fill ownership, ours initializes it to zer
+g496080	00499080	FALSE ALARM	Emulator gives 004f5170 zero-byte cleanup instead of four, causing a spurious call after return.
+g49fa50	004a1540	NOT DECIDED	Unsupported `_exp2` event; premature float product rounding
+g49fa50	004a1680	NOT DECIDED	Unsupported `_exp2` event; elapsed sum and decay factor rounded early
+g4ddd90	004de010	FALSE ALARM	Mock reports success without writing column/row; original column retains `this`, ours starts at zero.
+g4ddd90	004de430	FALSE ALARM	Mock leaves four bounds unwritten: original uses `CCCCCCCC`, ours zero, selecting different cells and growth p
+g50dde0	0050ea80	FALSE ALARM	Emulator compares undefined upper EAX despite byte return.
+g50dde0	0050ff30	NOT DECIDED	Zero-byte mock cleanup corrupts the return stack; call 8 is a bogus return target.
+g5287f0	00528ae0	FALSE ALARM	Unicorn’s initial x87 control word reads zero but its effective precision differs until explicitly loaded.
+g5287f0	005299a0	FALSE ALARM	Mock incorrectly pops zero bytes for the size setter, corrupting the compiled function’s stack.
+g5384c0	00539810	FALSE ALARM	Mock pops 0 instead of 4/8 bytes at shared virtual calls
+g5384c0	00539930	FALSE ALARM	Same cleanup error; subsequent bogus target differs
+g54abf0	0054b2f0	FALSE ALARM	Byte return compared as full EAX; secondary difference comes from asymmetric recursive-call mocking.
+g54abf0	0054bec0	FALSE ALARM	Emulator overrides final virtual-call cleanup from 8 bytes to zero.
+g6a02b0	006a18c0	FALSE ALARM	Release callback takes stack arguments, not ECX
+g6a02b0	006a4df0	FALSE ALARM	ECX is incidental at cdecl callback
+g6a02b0	006a4e70	FALSE ALARM	Allocator takes three stack arguments
+g6a02b0	006a5980	FALSE ALARM	Initializer takes three zero stack arguments
+g6a02b0	006a65a0	FALSE ALARM	Deallocator takes two stack arguments
+g6a02b0	006a6810	FALSE ALARM	Checksum takes three stack arguments
+g6aea20	006b10b0	FALSE ALARM	`_log2` missing from emulator’s native math shims
+g6aea20	006b1150	FALSE ALARM	Same artefact on the random-generation branch
+g6c4620	006c48c0	FALSE ALARM	Original self-call is mocked; compiled recursion executes another lookup.
+g6c4620	006c4960	FALSE ALARM	Same asymmetric recursion handling.
+g6c4620	006c8420	NOT DECIDED	Quoted mismatch is recursion artefact, but whole-function review found an additional byte-equivalence uncertai
+g70dde0	00710850	REAL	Full EAX narrowed to bool; success must test AL only
+g70dde0	00711160	REAL	Playback flag passed first instead of last
+g70dde0	007111f0	FALSE ALARM	Emulator compares incidental ECX at stdcall COM call
+g70dde0	00711200	FALSE ALARM	Same incidental-ECX comparison
+g70dde0	007113e0	NOT DECIDED	Native FYL2X versus mocked `_log2`; numerical equivalence unproved
+g70dde0	00711500	FALSE ALARM	Incidental ECX; additionally incorrect Release cleanup inference
+g70dde0	007117c0	FALSE ALARM	COM object already passed on stack; ECX is not another argument
+g70dde0	007117f0	FALSE ALARM	Same incidental-ECX comparison
+g728390	007288f0	FALSE ALARM	Wrong cleanup at 007289a1 shifts our stack spills
+g728390	007292c0	FALSE ALARM	Wrong cleanup at 007293e2 corrupts our return path
+g73f700	007409d0	NOT DECIDED	Incorrect return source, compounded by mock clobbering a bare-ret callee’s EAX
+g73f700	007427e0	FALSE ALARM	Mock never writes the selected word; original reads saved ECX bytes, ours reads stack fill
+g73f700	00742a90	FALSE ALARM	Mock never initializes the temporary string; saved ECX versus explicit zero reaches resolver
+g73f700	00742f10	FALSE ALARM	FindProperty mock leaves output untouched; ours dereferences initialized null
+g73f700	00743280	FALSE ALARM	Same unwritten FindProperty output stops ours before dispatch
+g7445d0	00744e00	REAL	Preserve full-width argument/result; reproduce initial temporary word.
+g7445d0	007450d0	REAL	Preserve full-width argument/result; reproduce initial temporary word.
+g7445d0	00745490	REAL	Forward the entire initialized state-tag dword, not a sign-extended byte.
+g7445d0	007459b0	FALSE ALARM	Mock leaves the temporary untouched, exposing irrelevant pre-construction contents.
+g7685a0	00769010	REAL	Preserve full comparator EAX; reported ECX difference is an artefact
+g7685a0	00769c70	FALSE ALARM	Emulator mocks original recursion but executes replacement recursion
+gpack42af90	0042af90	FALSE ALARM	Incorrect indirect-call cleanup corrupts the emulated stack.
+gpack42af90	0043a030	NOT DECIDED	FPCW initialization explains this DIFF; broader x87 precision equivalence remains unresolved.
+gpack42af90	00468500	REAL	Boolean reads truncated raw bytes; descriptor was incorrectly initialized; virtual result needed byte typing.
+gpack42af90	00479bb0	FALSE ALARM	Destructor mock fails to pop its argument, producing a bogus eighth call.
+gpack42af90	00490790	FALSE ALARM	Wrong cleanup attributes the invert argument to the preceding virtual call; getter mock also omits output writ
+gpack495250	00495250	REAL	Tested all of EAX instead of AL.
+gpack495250	004d85d0	FALSE ALARM	Original pushes uninitialized upper bytes of a byte argument.
+gpack495250	004e9200	REAL	C++ bool tests examined bit 0; original tests whole bytes. Provider result also requires a byte, not bool.
+gpack495250	004f4ef0	FALSE ALARM	Emulator misses hidden-result argument cleanup, leaving its stack address as the next argument.
+gpack495250	0052c9d0	FALSE ALARM	Emulator starts with x87 control word zero; candidate’s conversion activates different arithmetic precision.
+gpack52da80	0052da80	FALSE ALARM	Lookup calls incorrectly pop 8/0 bytes instead of 4/4.
+gpack52da80	00535f60	FALSE ALARM	Lookup/activation cleanup incorrectly split 4/8 instead of 8/4.
+gpack52da80	0053b9a0	FALSE ALARM	First anchor getter incorrectly pops saved registers as two arguments.
+gpack52da80	0053d530	FALSE ALARM	Photo lookups incorrectly pop 8/0 bytes instead of 4/4.
+gpack52da80	005633f0	FALSE ALARM	Saved `edi` mistaken for initialization argument; back-button argument omitted.
+gpack6ac5e0	006ac5e0	FALSE ALARM	Mock omits bounds-output writes; original reuses the initialized argument slot.
+gpack6ac5e0	006b8e60	REAL	Removed zero-initialization absent from the original.
+gpack6ac5e0	006bc730	FALSE ALARM	Emulator compares leftover ECX at a cdecl callback.
+gpack6ac5e0	006e8c20	FALSE ALARM	Wrong mocked cleanup: first slot-6C call pops 0 instead of 4; getter pops 8 instead of 4.
+gpack6ac5e0	00714510	FALSE ALARM	Slot-50 mock pops 0 instead of its argument’s 4 bytes, corrupting our stack-relative accesses.
+gpack724b30	00724b30	FALSE ALARM	Mocked copy constructor leaves a stale return address in the outgoing record.
+gpack724b30	0072ec70	FALSE ALARM	Original finishes within the instruction cap; unoptimized replacement exceeds it before finding the matching c
+gret	005209d0	FALSE ALARM	Accidental CRT execution bypasses the real return.
+gret	006ab050	FALSE ALARM	Matching AL zero; stale upper EAX compared.
+gret	006d5a40	FALSE ALARM	Matching AL zero; stale upper EAX compared.
+gret	00719a40	FALSE ALARM	Matching guard byte; caller’s upper EAX compared.
+gret	00733d80	FALSE ALARM	Matching sentinel byte; caller’s upper EAX compared.
+gret	00739b80	FALSE ALARM	Matching sentinel byte; upper EAX compared.
+gret	0075edc0	FALSE ALARM	Matching sentinel byte; caller’s upper EAX compared.

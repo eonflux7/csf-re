@@ -1649,3 +1649,10 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   (the biggest group), mocks that leave output parameters unwritten (0xCC vs 0), ecx compared at cdecl/stdcall/COM
   calls, byte values compared as full registers, mocked self-recursion on the original's side only, `_log2` missing,
   Unicorn's initial x87 control word. Per-function verdicts: work/measure/group_verdicts.tsv.
+- **First run into the game's WinMain** (`tools/dryrun.py --full`, no CSF_DRYRUN, killed at a timeout): all
+  initialisers, then WinMain, then a clean trap at 0x694380 (S_00693740_ReleaseBuffers), a game function quarantined
+  after an in-game smoke failure. The hooked game never needed quarantined functions (the original runs in their
+  place); the standalone exe does. Static closure from WinMain (direct calls only, so a lower bound on what runs):
+  1,042 functions, trap slots rw 31, netz 17, game 12 (10 of them queue items), crt 2, not-a-function 3. The 12 game
+  ones go to three grouped sol-med jobs (work/tasks/wm). Job emufix3 (sol-hi) fixes emudiff's false-alarm causes
+  against the 65 documented cases (docs/EMUDIFF_FALSE_ALARMS.tsv).
