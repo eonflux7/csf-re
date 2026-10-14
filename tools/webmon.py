@@ -410,7 +410,7 @@ function render(s){last=s;const p=s.progress,ev=s.evidence||{},pl=s.plan||{},bg=
    <div class="dim small" style="margin-top:6px">bar: quota used · tick: time gone in the window · hover for the reset time</div>
    <h2 style="margin-top:14px">Background</h2>${(bg.states||[]).map(b=>`<div><span class="${b.running?'running':'dim'}">●</span> ${E(b.what)}: ${E(b.phase)||'–'} <span class="dim small">${b.running?'':'(not running, '+hm(b.age_min*60,1)+' ago)'}</span></div>`).join('')}
    ${(bg.procs||[]).map(x=>`<div class="mono dim small">${E(x)}</div>`).join('')}</section>`;
-  top.innerHTML=h;h='';
+  document.getElementById("top").innerHTML=h;h='';
   // queue
   const Q=s.queue||[],by={};Q.forEach(q=>(by[q.cls]=by[q.cls]||[]).push(q));const held=Q.filter(q=>q.job).length;
   h+=`<section class="c7"><h2>Escalation queue <span class="chip">${Q.length} items</span> <span class="chip">${held} held by a job</span></h2>
