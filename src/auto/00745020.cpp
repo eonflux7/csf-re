@@ -14,15 +14,16 @@ CSF_FUNC(char, __fastcall, C_00858180_EnqueueNetRecord, 0x00741EB0,
 static char __fastcall C_00858180_ReadAndEnqueueNetRecord(
     C_00858180* self, void* /*edx*/, C_008622e8* reader)
 {
-    int record1 = 0;
-    int record2 = 0;
-    int record3 = 0;
-    int record4 = 0;
-    int record5 = 0;
-    int record6 = 0;
-    int record7 = 0;
-    char recordByte[4] = {};
-    int record9 = 0;
+    // No initialisers: the original reserves these slots with plain `sub esp, 0x20` and no stores. The tenth value
+    // goes into the reader parameter's own slot, as the original does (`lea edx, [ebp+8]` before the last read).
+    int record1;
+    int record2;
+    int record3;
+    int record4;
+    int record5;
+    int record6;
+    int record7;
+    char recordByte[4];
 
     NetCogibleDdl_ReadIntoSlot(reader, nullptr, reinterpret_cast<int>(&record1));
     NetCogibleDdl_ReadIntoSlot(reader, nullptr, reinterpret_cast<int>(&record2));
@@ -32,11 +33,11 @@ static char __fastcall C_00858180_ReadAndEnqueueNetRecord(
     NetCogibleDdl_ReadIntoSlot(reader, nullptr, reinterpret_cast<int>(&record6));
     NetCogibleDdl_ReadIntoSlot(reader, nullptr, reinterpret_cast<int>(&record7));
     NetCogibleDdl_ReadByte(reader, nullptr, recordByte);
-    NetCogibleDdl_ReadIntoSlot(reader, nullptr, reinterpret_cast<int>(&record9));
+    NetCogibleDdl_ReadIntoSlot(reader, nullptr, reinterpret_cast<int>(&reader));
 
     return C_00858180_EnqueueNetRecord(
         self, nullptr, record1, record2, record3, record4,
-        record5, record6, record7, recordByte[0], record9);
+        record5, record6, record7, recordByte[0], reinterpret_cast<int>(reader));
 }
 
 HOOK(0x00745020, C_00858180_ReadAndEnqueueNetRecord, "auto");

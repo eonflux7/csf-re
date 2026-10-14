@@ -12,7 +12,7 @@
 
 // Helpers the original calls, bound by address.
 CSF_FUNC(void, __fastcall, InitializeTemporaryString, 0x0064A6B0, (void* self, void* edx, std::int32_t source));
-CSF_FUNC(int, __fastcall, sub_66B590, 0x0066B590, (void* self, void* edx));
+CSF_FUNC(int, __cdecl, HashTemporaryString, 0x0066B590, (std::uint32_t tempObjectWord));
 CSF_FUNC(void*, __fastcall, sub_64AD60, 0x0064AD60, (void* self, void* edx, int a2));
 CSF_FUNC(int, __fastcall, GameConfig_WriteDwordField, 0x006563F0, (void* self, void* edx, char a2));
 CSF_FUNC(char, __fastcall, sub_64CEB0, 0x0064CEB0, (void* self, void* edx, char a2, void* a3));
@@ -26,7 +26,7 @@ static char __fastcall C_00858180_WriteConfigTriplet(C_00858180* self, void* /*e
     *reinterpret_cast<void**>(tempStringBytes) = self;
 
     InitializeTemporaryString(tempStringBytes, nullptr, CSF_ADDR_DATA(0x8679EC));
-    int keyValue = sub_66B590(tempStringBytes, nullptr);
+    int keyValue = HashTemporaryString(*reinterpret_cast<std::uint32_t*>(tempStringBytes));
 
     void* configObject = sub_64AD60(self, nullptr, (int)&keyValue);
 

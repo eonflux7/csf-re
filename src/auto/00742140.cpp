@@ -9,7 +9,7 @@
 CSF_FUNC(void, __fastcall, InitializeTemporaryString, 0x0064A6B0, (void* self, void* edx, std::int32_t source));
 CSF_FUNC(void*, __fastcall, sub_64AD60, 0x0064AD60, (void* self, void* edx, int a2));
 CSF_FUNC(char, __fastcall, sub_64CEB0, 0x0064CEB0, (void* self, void* edx, char a2, void* a3));
-CSF_FUNC(void*, __fastcall, sub_66B590, 0x0066B590, (void* self, void* edx));
+CSF_FUNC(int, __cdecl, HashTemporaryString, 0x0066B590, (std::uint32_t tempObjectWord));
 
 // Sends the "TeHeCogido" (has been caught) command for this object through the
 // command dispatcher and returns the dispatcher's result.
@@ -23,9 +23,10 @@ static char __fastcall C_00858180_SendHasBeenCaughtCommand(C_00858180* self, voi
 
     InitializeTemporaryString(tempObjBytes, nullptr, reinterpret_cast<std::int32_t>(CSF_STR(0x0086797C, "TeHeCogido")));
 
-    // Result of sub_66B590 is stored at [ebp-4] and its address is handed to sub_64AD60.
+    // HashTemporaryString is __cdecl: the original pushes the object's first dword (the value at [ebp-0xC]).
+    // Result is stored at [ebp-4] and its address is handed to sub_64AD60.
     std::uint32_t commandStringField = 0;
-    commandStringField = reinterpret_cast<std::uint32_t>(sub_66B590(tempObjBytes, nullptr));
+    commandStringField = static_cast<std::uint32_t>(HashTemporaryString(*reinterpret_cast<std::uint32_t*>(tempObjBytes)));
 
     void* commandHandle = sub_64AD60(self, nullptr,
         static_cast<int>(reinterpret_cast<std::uintptr_t>(&commandStringField)));

@@ -27,7 +27,7 @@ static char __fastcall C_00858180_WriteRecogerArmaFields(C_00858180* self, void*
     InitializeTemporaryString(tempStringBytes, nullptr, reinterpret_cast<std::int32_t>(CSF_STR(0x008679F0, "RecogerArma")));
     int entryId = Sub_66B590(CSF_AT(std::uint32_t, tempStringBytes, 0));
 
-    void* configEntry = sub_64AD60(self, nullptr, entryId);
+    void* configEntry = sub_64AD60(self, nullptr, (int)&entryId);
     GameConfig_WriteWordField(configEntry, nullptr, a2);
     GameConfig_WriteDwordField(configEntry, nullptr, a3);
     return sub_64CEB0(self, nullptr, 0, configEntry);

@@ -2,8 +2,8 @@
 #include "globals.h"
 #include "hook.h"
 
-CSF_FUNC(void*, __fastcall, NetLookupProtocolHandle, 0x006487D0, (void* self, void* edx, const char* protocolName));
-CSF_FUNC(int, __fastcall, NetProtocolHandleIsReady, 0x00648910, (void* self, void* edx, char* String2));
+CSF_FUNC(void*, __fastcall, NetSession_GetTransportRegistry, 0x006487D0, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, NetSession_FindTransport, 0x00648910, (void* self, void* edx, char* String2));
 CSF_FUNC(void*, __fastcall, NetGetPrudpModeEndpoint, 0x006486E0, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, NetPrudpSendModeCommand, 0x00676700, (void* self, void* edx, int a1, int a2));
 
@@ -16,8 +16,9 @@ static int __fastcall NetSession_SetPrudpConnectionMode(void* self, void* /*edx*
 
     if (CSF_AT(uint32_t, self, 0x98) != 0)
     {
-        void* protocolHandle = NetLookupProtocolHandle(self, nullptr, CSF_STR(0x84468C, "prudp"));
-        int protocolReady = NetProtocolHandleIsReady(protocolHandle, nullptr, nullptr);
+        void* registry = NetSession_GetTransportRegistry(self, nullptr);
+        int protocolReady = NetSession_FindTransport(
+            registry, nullptr, const_cast<char*>(CSF_STR(0x84468C, "prudp")));
 
         if (protocolReady != 0)
         {

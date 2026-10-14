@@ -15,6 +15,8 @@ static int16_t __fastcall S_00740e20_ReadAndAddToCounter(
 {
     void* reader = reinterpret_cast<void*>(static_cast<uintptr_t>(a2));
     alignas(8) uint8_t indexBytes[0x4];
+    // The original pushes `this` into this slot (00745293 push ecx) before the first read fills its low word.
+    CSF_AT(void*, indexBytes, 0) = self;
 
     ReadCounterWord(reader, nullptr, reinterpret_cast<char*>(indexBytes));
     ReadCounterWord(reader, nullptr, reinterpret_cast<char*>(&a2) + 2);

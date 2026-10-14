@@ -5,11 +5,11 @@
 
 // Original callees, bound by address.
 CSF_FUNC(uint32_t*, __fastcall, NetCogibleDdl_ReadIntoSlot, 0x00655F00, (void* self, void* edx, int a2));
-CSF_FUNC(bool, __fastcall, CMenuMpStats_ApplyStatsRow, 0x00740150, (void* self, void* edx, int a2, int a3, int a4, int a5));
+CSF_FUNC(int, __fastcall, CMenuMpStats_ApplyStatsRow, 0x00740150, (void* self, void* edx, int a2, int a3, int a4, int a5));
 
 // Reads four values from the DDL source object into out slots, then hands them to the menu.
 // The fourth read overwrites the stack slot of arg0, and that updated value is what gets forwarded.
-static bool __fastcall CMenuMpStats_ReadStatsRowAndApply(CMenuMpStats* self, void* /*edx*/, C_008622e8* arg0)
+static int __fastcall CMenuMpStats_ReadStatsRowAndApply(CMenuMpStats* self, void* /*edx*/, C_008622e8* arg0)
 {
     C_008622e8* source = arg0;
 

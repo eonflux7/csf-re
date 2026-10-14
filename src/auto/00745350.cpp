@@ -13,6 +13,8 @@ static char __fastcall C_00858180_SetWantsToInterrogate(
     C_00858180* self, void* /*edx*/, char value)
 {
     alignas(8) std::uint8_t temporaryStringBytes[4];
+    // The original pushes `this` into this 4-byte slot (00745356 push ecx) before passing it as ecx.
+    CSF_AT(void*, temporaryStringBytes, 0) = self;
     InitializeTemporaryString(
         temporaryStringBytes, nullptr,
         reinterpret_cast<std::int32_t>(
