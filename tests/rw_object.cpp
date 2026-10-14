@@ -6,7 +6,7 @@
 using namespace csf_rw;
 using Ctor=rw::Constructor; using Dtor=rw::Destructor; using Copy=rw::CopyConstructor;
 CSF_FUNC(int,__cdecl,regAtomic,0x0058F210,(int,unsigned,Ctor,Dtor,Copy));
-CSF_FUNC(int,__cdecl,regGeometry,0x00590400,(int,unsigned,Ctor,Dtor,Copy));
+CSF_FUNC(int,__cdecl,regGeometry,0x00590BA0,(int,unsigned,Ctor,Dtor,Copy));
 CSF_FUNC(int,__cdecl,regMaterial,0x00591590,(int,unsigned,Ctor,Dtor,Copy));
 CSF_FUNC(int,__cdecl,regLight,0x0059CEC0,(int,unsigned,Ctor,Dtor,Copy));
 CSF_FUNC(int,__cdecl,init,0x00627360,(const MemoryFunctions*,char,int));

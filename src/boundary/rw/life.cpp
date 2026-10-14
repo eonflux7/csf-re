@@ -15,6 +15,8 @@
 #include "object.h"
 #include "device.h"
 #include "startup.h"
+#include "plugins.h"
+#include "world.h"
 #ifdef RW_D3D9
 #include "../../../work/tools/librw/src/d3d/rwd3dimpl.h"
 #endif
@@ -69,7 +71,8 @@ rw::PluginList registries[] = {
     rw::PluginList(sizeof(EngineFacade)), rw::PluginList(sizeof(csf_rw::Frame)),
     rw::PluginList(sizeof(csf_rw::Atomic)), rw::PluginList(sizeof(csf_rw::Geometry)), rw::PluginList(sizeof(csf_rw::Material)), rw::PluginList(sizeof(csf_rw::Light)),
     rw::PluginList(sizeof(csf_rw::Raster)), rw::PluginList(sizeof(csf_rw::Texture)),
-    rw::PluginList(sizeof(csf_rw::TexDictionary)), rw::PluginList(sizeof(csf_rw::Clump)), rw::PluginList(sizeof(csf_rw::Camera))
+    rw::PluginList(sizeof(csf_rw::TexDictionary)), rw::PluginList(sizeof(csf_rw::Clump)), rw::PluginList(sizeof(csf_rw::Camera)),
+    rw::PluginList(sizeof(csf_rw::World)), rw::PluginList(sizeof(csf_rw::Sector))
 };
 int __cdecl setState(int state, void* value) {
     if (!rw::engine) return 0;
@@ -200,7 +203,7 @@ int __stdcall engineStart() {
 // 006db7c0/006dbd50 tear down explicitly, 0050d1a0 calls Term. librw returns void for these three
 // transitions; preserve boolean game results and reject invalid ordering.
 int __stdcall engineStop() {
-    if (rw::Engine::state != rw::Engine::Started || !csf_rw::framesEmpty() || !csf_rw::imagesEmpty() || !csf_rw::objectsEmpty() || !csf_rw::pipelinesEmpty()) return 0;
+    if (rw::Engine::state != rw::Engine::Started || !csf_rw::framesEmpty() || !csf_rw::imagesEmpty() || !csf_rw::objectsEmpty() || !csf_rw::pipelinesEmpty() || !csf_rw::worldsEmpty()) return 0;
     csf_rw::destructPlugins(csf_rw::Registry::Engine, gameEngine);
     csf_rw::imageBoundaryStop();
     csf_rw::bindDeviceBackend(nullptr);
@@ -209,7 +212,7 @@ int __stdcall engineStop() {
 int __stdcall engineClose();
 int __stdcall engineTerm() {
     if (rw::Engine::state != rw::Engine::Initialized) return 0;
-    rw::Engine::term(); gameMemory = {}; return 1;
+    rw::Engine::term(); csf_rw::pluginBoundaryTerm(); gameMemory = {}; return 1;
 }
 void* descriptor;
 decltype(rw::Engine::memfuncs.rwmalloc) savedAllocator;
@@ -238,15 +241,20 @@ int registerPlugin(csf_rw::Registry kind, int size, uint32_t id,
     list.size = (off + size + 3) & ~3;
     return off;
 }
-#define REG_FN(name, kind) \
+#define REG_FN(name, kind, ea) \
 int __cdecl name(int n, uint32_t id, rw::Constructor c, rw::Destructor d, rw::CopyConstructor cp) { \
+    csf_rw::startupTrace(ea,"RegisterPlugin"); \
     return registerPlugin(csf_rw::Registry::kind, n, id, c, d, cp); }
-REG_FN(framePlugin, Frame)
-REG_FN(atomicPlugin, Atomic)
-REG_FN(geometryPlugin, Geometry)
-REG_FN(materialPlugin, Material)
-REG_FN(lightPlugin, Light)
+REG_FN(framePlugin, Frame,"0x00623950")
+REG_FN(atomicPlugin, Atomic,"0x0058F210")
+// Executable registry operands prove the exported names are swapped:
+// 590400 -> 89A858 (136-byte world sector), 590BA0 -> 89A870 (96-byte geometry).
+REG_FN(sectorPlugin, Sector,"0x00590400")
+REG_FN(geometryPlugin, Geometry,"0x00590BA0")
+REG_FN(materialPlugin, Material,"0x00591590")
+REG_FN(lightPlugin, Light,"0x0059CEC0")
 int __cdecl enginePlugin(int n, uint32_t id, rw::Constructor c, rw::Destructor d) {
+    csf_rw::startupTrace("0x00626AE0","RegisterPlugin");
     return registerPlugin(csf_rw::Registry::Engine, n, id, c, d, nullptr);
 }
 // 006dc000 selects subsystem and mode before Start, consuming boolean results.
@@ -265,6 +273,9 @@ int __stdcall currentMode() { return rw::engine ? rw::Engine::getCurrentVideoMod
 }
 
 namespace csf_rw {
+int registerABIPlugin(Registry k,int n,uint32_t id,rw::Constructor c,rw::Destructor d,rw::CopyConstructor cp) {
+    return registerPlugin(k,n,id,c,d,cp);
+}
 void* engineWindow() { return windowHandle; }
 rw::PluginList& plugins(Registry k) { return registries[static_cast<unsigned>(k)]; }
 bool constructPlugins(Registry k, void* object) {
@@ -436,7 +447,8 @@ bool streamPrepareWrite(Stream* s, uint32_t n) {
 }
 
 HOOK(0x0058F210, atomicPlugin, "boundary-rw");
-HOOK(0x00590400, geometryPlugin, "boundary-rw");
+HOOK(0x00590400, sectorPlugin, "boundary-rw");
+HOOK(0x00590BA0, geometryPlugin, "boundary-rw");
 HOOK(0x00591590, materialPlugin, "boundary-rw");
 HOOK(0x0059CEC0, lightPlugin, "boundary-rw");
 HOOK(0x00623950, framePlugin, "boundary-rw");

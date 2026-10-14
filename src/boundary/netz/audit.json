@@ -1513,15 +1513,16 @@
     "open": "caller retains the failed 0066a440 request until its own shutdown; not evidence shutdown is reached"
   },
   "0x00652010": {
-    "behaviour": "deferred shared gameplay accessor; do not return an offline network object",
+    "behaviour": "return exact stored borrowed game scene controller at self+0x5c",
+    "ownership": "borrowed; no retain, release, allocation, or offline dummy",
     "evidence": [
-      "binary mov eax,[ecx+0x5c]; ret",
-      "00417020 ProcessMovementCollision obtains the scene controller for real spatial collision work; widespread scene/AI callers retained in manifest"
+      "binary: 00652010 mov eax,[ecx+0x5c]; 00652013 ret",
+      "006d3010 consumes the genuine scene object during world setup; 00417020 uses it for spatial collision"
     ],
     "offsets": [
-      "input+0x5c borrowed scene controller"
+      "self+0x5c"
     ],
-    "open": "preserve real game object via correctly attributed boundary; not networking failure"
+    "open": "no Windows execution"
   },
   "0x0068E300": {
     "behaviour": "deferred shared vector math, not network failure",
@@ -3464,5 +3465,18 @@
       "container+4 head,+8 count",
       "range output+0 iterator"
     ]
+  },
+  "0x006683F0": {
+    "behaviour": "return exact stored borrowed referenced object at self+4",
+    "ownership": "borrowed; no retain, release, allocation, or null substitution",
+    "evidence": [
+      "binary: 006683f0 mov eax,[ecx+4]; 006683f3 ret",
+      "004e9c90 and menu/option callers use holder+4 to access genuine game object identity",
+      "initializer registry vtables also use this getter at slots 4/5 paired with 0067aca0 setter"
+    ],
+    "offsets": [
+      "self+4"
+    ],
+    "open": "no Windows execution"
   }
 }

@@ -58,6 +58,17 @@ public:
     int renderState(unsigned s,unsigned v) override { return device->SetRenderState(static_cast<D3DRENDERSTATETYPE>(s),v); }
     uint32_t textureMemory() override { return device->GetAvailableTextureMem(); }
 #ifdef RW_D3D9
+    bool beginCamera(rw::Camera* camera) override {
+        if(FAILED(device->TestCooperativeLevel())) return false;
+        camera->beginUpdate(); return true;
+    }
+    bool endCamera(rw::Camera* camera) override {
+        camera->endUpdate(); return true;
+    }
+    bool clearCamera(rw::Camera* camera,rw::RGBA* color,uint32_t flags) override {
+        if(FAILED(device->TestCooperativeLevel())) return false;
+        camera->clear(color,flags); return true;
+    }
     bool clearRaster(rw::Raster* target,uint32_t pixel) override {
         if (FAILED(device->TestCooperativeLevel())) return false;
         // This ephemeral NATIVE camera is only a Device.clearCamera carrier.
@@ -220,6 +231,11 @@ bool bindD3D9Device(void* p) {
 #endif
 }
 bool deviceReady() { return backend!=nullptr; }
+bool beginDeviceCamera(rw::Camera* c) { return backend && backend->beginCamera(c); }
+bool endDeviceCamera(rw::Camera* c) { return backend && backend->endCamera(c); }
+bool clearDeviceCamera(rw::Camera* c,rw::RGBA* col,uint32_t flags) {
+    return backend && backend->clearCamera(c,col,flags);
+}
 uint32_t deviceTextureMemory() { return backend ? backend->textureMemory() : 0; }
 bool clearRasterContext(uint32_t pixel) {
     if (!backend || rw::Engine::state!=rw::Engine::Started) return false;

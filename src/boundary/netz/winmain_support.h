@@ -1,5 +1,7 @@
 // Offline session ownership and shared game getters; not an online NetZ implementation.
 namespace {
+static uint32_t __cdecl referenced_object_get(hook::Regs* r, const uint32_t*) { return field(pointer(r->ecx), 4); }
+static uint32_t __cdecl scene_controller_get(hook::Regs* r, const uint32_t*) { return field(pointer(r->ecx), 0x5c); }
 static uint32_t __cdecl session_container_head(hook::Regs*, const uint32_t*) {
     // Original allocates 0x40, not a 12-byte generic list node. Payload is unconstructed.
     void* p = owned(0x40); field(p, 0) = field(p, 4) = address(p); return address(p);

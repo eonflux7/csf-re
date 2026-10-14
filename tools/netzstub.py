@@ -63,6 +63,7 @@ INIT_SUPPORT = {
 }
 SUPPORT_NAMES.update(INIT_SUPPORT)
 WINMAIN_SUPPORT = {
+    0x6683F0: 'referenced_object_get', 0x652010: 'scene_controller_get',
     0x6684F0: 'session_container_head', 0x6687B0: 'session_container_clear',
     0x670020: 'session_embedded_string', 0x671260: 'runtime_state',
     0x652020: 'clump_manager_get', 0x652160: 'object_manager_get',

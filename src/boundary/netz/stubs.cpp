@@ -391,6 +391,8 @@ static __declspec(naked) void offline_00651fc0() {
     __asm ret 8
 }
 HOOK(0x00651FC0, offline_00651fc0, "boundary-netz");
+// SceneLoader_GetSceneController: audited-offline-support; see audit.json: scene_controller_get.
+HOOK_REGS(0x00652010, scene_controller_get, 0, "boundary-netz");
 // ResolveClumpManager: audited-offline-support; see audit.json: clump_manager_get.
 HOOK_REGS(0x00652020, clump_manager_get, 0, "boundary-netz");
 // LookupObjectById: audited-offline-support; see audit.json: object_manager_get.
@@ -507,6 +509,8 @@ HOOK_REGS(0x00662C30, selection_reject_id, 4, "boundary-netz");
 HOOK_REGS(0x00662C60, selection_first, 4, "boundary-netz");
 // sub_662D10: audited-offline-support; see audit.json: selection_last.
 HOOK_REGS(0x00662D10, selection_last, 4, "boundary-netz");
+// GetReferencedObject: audited-offline-support; see audit.json: referenced_object_get.
+HOOK_REGS(0x006683F0, referenced_object_get, 0, "boundary-netz");
 // sub_668450: audited-offline-support; see audit.json: list_factory_668450.
 HOOK_REGS(0x00668450, list_factory_668450, 0, "boundary-netz");
 // NetSession_InitializeContainerStorage: audited-offline-support; see audit.json: session_container_head.

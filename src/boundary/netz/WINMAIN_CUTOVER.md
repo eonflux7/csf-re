@@ -16,6 +16,8 @@ of indirect calls.
 
 | Original slot | Boundary state / what game reads | Offline caller path |
 |---|---|---|
+| 6683F0 | Exact borrowed pointer at self+4, including null; binary `mov eax,[ecx+4]; ret`. | 4E9C90 and menu/options consumers need real game object identity. No network dummy, allocation, or refcount change. |
+| 652010 | Exact borrowed scene-controller pointer at self+5C, including null; binary `mov eax,[ecx+5c]; ret`. | 6D3010 world setup and 417020 spatial collision consume the actual controller. Not a failed network query. |
 | 6684F0 | Allocate independent **0x40-byte** circular sentinels, self-linked at +0/+4; no constructed payload. | 73F080 stores at session+A0/B0 and zeroes counts+A4/B4. Never null: allocation failure aborts before publishing invalid state. |
 | 6687B0 | Clear/reset empty container, retain sentinel; populated transport payloads reject. | 73EEA0 clears session+9C/AC then separately frees both heads through 6470E0. |
 | 670020 | Owned length-prefix String containing original **prudp:/** default, copied from 85B4E4. No fabricated virtual object. | 73F080 constructs session+160; 73EEA0 destroys through 66F150. Original temporary null URL contributes no fields. |

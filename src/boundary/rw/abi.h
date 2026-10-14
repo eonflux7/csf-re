@@ -63,7 +63,6 @@ struct Geometry {
     MeshHeader* mesh;
     void* resource;
     MorphTarget* morphTargets;
-    unsigned char reserved[40]; // existing slice-2 registry's built-in tail
 };
 struct Clump;
 struct Atomic {
@@ -109,7 +108,7 @@ static_assert(offsetof(rw::Matrix, pos) == 48);
 #if UINTPTR_MAX == 0xffffffff
 static_assert(sizeof(Material) == 28 && offsetof(Material, refCount) == 24);
 static_assert(sizeof(MorphTarget) == 28);
-static_assert(sizeof(Geometry) == 136 && offsetof(Geometry, refCount) == 14);
+static_assert(sizeof(Geometry) == 96 && offsetof(Geometry, refCount) == 14);
 static_assert(offsetof(Geometry, matList) == 0x20 && offsetof(Geometry, morphTargets) == 0x5c);
 static_assert(sizeof(Atomic) == 116 && offsetof(Atomic, geometry) == 0x18);
 static_assert(offsetof(Atomic, renderCB) == 0x48 && offsetof(Atomic, pipeline) == 0x70);

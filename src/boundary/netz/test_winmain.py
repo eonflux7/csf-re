@@ -27,6 +27,14 @@ assert words(data(0x8baa9c) + 0x10)[0] == 0x4000011
 put(p + 0x64, output); put(p + 0x70, output + 4)
 assert call('clump_manager_get_regs', p) == output
 assert call('object_manager_get_regs', p) == output + 4
+put(p + 4, output + 8)
+put(p + 0x5c, output + 12)
+assert call('referenced_object_get_regs', p) == output + 8
+assert call('scene_controller_get_regs', p) == output + 12
+put(p + 4, 0)
+put(p + 0x5c, 0)
+assert call('referenced_object_get_regs', p) == 0
+assert call('scene_controller_get_regs', p) == 0
 assert call('constant_enabled_regs') & 255 == 1
 put(p + 0xc, 0); assert call('selected_object_test_regs', p) & 255 == 0
 put(p + 0xc, output); assert call('selected_object_test_regs', p) & 255 == 1

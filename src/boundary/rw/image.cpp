@@ -409,6 +409,8 @@ I* __cdecl imageFromRaster(I* a,R* raster) {
 void exportTexture(T* a,rw::Texture* n) {
     std::memcpy(a->name,n->name,32); std::memcpy(a->mask,n->mask,32);
     a->filterAddressing=n->filterAddressing; a->refCount=n->refCount;
+    int off=csf_rw::plugins(K::Texture).getPluginOffset(295);
+    if(off>=0) reinterpret_cast<unsigned char*>(a)[off]=static_cast<unsigned char>(n->getMaxAnisotropy());
 }
 D* adoptDictionary(rw::TexDictionary* n) {
     if (!n) return nullptr;
@@ -428,6 +430,7 @@ T* adoptTexture(rw::Texture* n) {
     a->raster=csf_rw::rasterFacade(n->raster); initLink(a->inDict); exportTexture(a,n);
     try { textures.emplace(a,n); } catch (...) { freeFacade(a); return nullptr; }
     if (!csf_rw::constructPlugins(K::Texture,a)) { textures.erase(a); freeFacade(a); return nullptr; }
+    exportTexture(a,n);
     return a;
 }
 // 006d0ba0/00705b40 transfer raster ownership to a texture; expose refCount=1
@@ -569,7 +572,7 @@ char __stdcall maxAnisotropy() { return static_cast<char>(std::min(127,rw::getMa
 // Same caller writes +50 filter byte BEFORE this call: import packed word.
 T* __cdecl anisotropy(T* a,char level) {
     auto* n=csf_rw::textureNative(a); if (!n) return nullptr;
-    n->setMaxAnisotropy(static_cast<unsigned char>(level)); return a;
+    n->setMaxAnisotropy(static_cast<unsigned char>(level)); exportTexture(a,n); return a;
 }
 }
 namespace csf_rw {
@@ -587,7 +590,10 @@ rw::Texture* textureNative(Texture* a) {
     auto* r=rasterNative(a->raster); if (a->raster && !r) return nullptr;
     n->raster=r;
     std::memcpy(n->name,a->name,32); std::memcpy(n->mask,a->mask,32);
-    n->filterAddressing=a->filterAddressing; n->refCount=a->refCount; return n;
+    n->filterAddressing=a->filterAddressing; n->refCount=a->refCount;
+    int off=plugins(K::Texture).getPluginOffset(295);
+    if(off>=0) n->setMaxAnisotropy(reinterpret_cast<unsigned char*>(a)[off]);
+    return n;
 }
 Texture* textureFacade(rw::Texture* n) { for (auto& p:textures) if (p.second==n) return p.first; return nullptr; }
 void textureExport(Texture* a) { auto it=textures.find(a); if (it!=textures.end()) exportTexture(a,it->second); }

@@ -21010,8 +21010,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: scene_controller_get",
       "callers": [
         {
           "file": "src/auto/00402cb0.cpp",
@@ -23086,22 +23086,24 @@
           ]
         }
       ],
-      "emitted": false,
+      "emitted": true,
       "audit": {
-        "behaviour": "deferred shared gameplay accessor; do not return an offline network object",
+        "behaviour": "return exact stored borrowed game scene controller at self+0x5c",
+        "ownership": "borrowed; no retain, release, allocation, or offline dummy",
         "evidence": [
-          "binary mov eax,[ecx+0x5c]; ret",
-          "00417020 ProcessMovementCollision obtains the scene controller for real spatial collision work; widespread scene/AI callers retained in manifest"
+          "binary: 00652010 mov eax,[ecx+0x5c]; 00652013 ret",
+          "006d3010 consumes the genuine scene object during world setup; 00417020 uses it for spatial collision"
         ],
         "offsets": [
-          "input+0x5c borrowed scene controller"
+          "self+0x5c"
         ],
-        "open": "preserve real game object via correctly attributed boundary; not networking failure"
+        "open": "no Windows execution"
       },
       "triage_group": "shared-game-caller-needs-boundary-audit",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 0
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x00652020",
@@ -37504,8 +37506,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "pointer result may be dereferenced; no universal fake object",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: referenced_object_get",
       "callers": [
         {
           "file": "src/auto/00404390.cpp",
@@ -39474,12 +39476,25 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "return exact stored borrowed referenced object at self+4",
+        "ownership": "borrowed; no retain, release, allocation, or null substitution",
+        "evidence": [
+          "binary: 006683f0 mov eax,[ecx+4]; 006683f3 ret",
+          "004e9c90 and menu/option callers use holder+4 to access genuine game object identity",
+          "initializer registry vtables also use this getter at slots 4/5 paired with 0067aca0 setter"
+        ],
+        "offsets": [
+          "self+4"
+        ],
+        "open": "no Windows execution"
+      },
       "triage_group": "shared-game-caller-needs-boundary-audit",
       "mp_only_proven": false,
       "result_dereference_review": true,
-      "binary_ret_bytes": 0
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x00668450",
@@ -60458,6 +60473,22 @@
             {
               "line": 36,
               "text": "GlobalFlag_IsSet(reinterpret_cast<void*>(self->field_03e8), nullptr))"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/00506cf0.cpp",
+          "name": "GlobalFlag_IsSet",
+          "ret": "uint8_t",
+          "conv": "__cdecl",
+          "params": "",
+          "caller_functions": [
+            "AttachEnginePlugins"
+          ],
+          "uses": [
+            {
+              "line": 29,
+              "text": "if (!GlobalFlag_IsSet())"
             }
           ]
         },

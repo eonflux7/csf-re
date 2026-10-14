@@ -7,6 +7,8 @@
 #include "hook.h"
 #endif
 #include "object.h"
+#include "device.h"
+#include "startup.h"
 #include <unordered_map>
 #include <vector>
 #include <cstring>
@@ -339,26 +341,50 @@ Light* __cdecl lightCreate(unsigned char type) {
 Camera* __cdecl cameraNear(Camera* a,float v) { auto* n=cameraNative(a); if(!n) return nullptr; n->setNearPlane(v); exportCamera(a,n); return a; }
 Camera* __cdecl cameraFar(Camera* a,float v) { auto* n=cameraNative(a); if(!n) return nullptr; n->setFarPlane(v); exportCamera(a,n); return a; }
 Camera* __cdecl defaultBegin(Camera* a) {
-    auto* n=cameraNative(a); if(!n || rw::platform!=rw::PLATFORM_NULL || !syncFrames()) return nullptr;
-    n->beginUpdate(); frameExport(); objectExport(); return a;
+    auto* n=cameraNative(a); if(!n || !syncFrames()) return nullptr;
+    if(deviceReady() || rw::platform!=rw::PLATFORM_NULL) {
+        if(!n->getFrame() || !n->frameBuffer || n->frameBuffer->width<=0 || n->frameBuffer->height<=0 ||
+           (n->frameBuffer->type!=rw::Raster::CAMERA && n->frameBuffer->type!=rw::Raster::CAMERATEXTURE) ||
+           (n->zBuffer && n->zBuffer->type!=rw::Raster::ZBUFFER) ||
+           rw::engine->currentCamera || !beginDeviceCamera(n)) return nullptr;
+    } else n->beginUpdate();
+    frameExport(); objectExport(); return a;
 }
 Camera* __cdecl defaultEnd(Camera* a) {
-    auto* n=cameraNative(a); if(!n || rw::platform!=rw::PLATFORM_NULL) return nullptr; n->endUpdate(); return a;
+    auto* n=cameraNative(a); if(!n) return nullptr;
+    if(deviceReady() || rw::platform!=rw::PLATFORM_NULL) {
+        if(rw::engine->currentCamera!=n || !endDeviceCamera(n)) return nullptr;
+    } else n->endUpdate();
+    rw::engine->currentCamera=nullptr; return a;
 }
 // 00726a80 checks the callback's handle/null result. The facade +18 callback
 // is game-facing; the native callback accepts a native Camera. NULL's device
 // callbacks are intentionally void no-ops, NOT the asserting raster callbacks.
-// Real-device error reporting requires slice 7 (librw Device callbacks are void).
+// The device seam delegates D3D9/recording updates; native callbacks are void,
+// so GPU HRESULTs remain unobservable rather than fabricated here.
 Camera* __cdecl cameraBegin(Camera* a) {
+    startupTrace("0x00628E50","CameraBeginUpdate");
     if(!lookup(cameras,a) || !a->beginUpdate) return nullptr;
     return a->beginUpdate(a);
 }
+Camera* __cdecl cameraEnd(Camera* a) {
+    startupTrace("0x00628E40","CameraEndUpdate");
+    if(!lookup(cameras,a) || !a->endUpdate) return nullptr;
+    return a->endUpdate(a);
+}
 // 00726a80/00708e40 pass RGBA bytes and clear mode, expect camera/null. NULL
-// intentionally does no buffer clear; forward to the configured native device,
-// never dereference an ABI Raster as a native one. GPU failure is not verified.
+// intentionally does no buffer clear. D3D9/recording delegates through the
+// device seam; never dereference an ABI Raster as a native one.
 Camera* __cdecl cameraClear(Camera* a,rw::RGBA* color,unsigned mode) {
-    auto* n=cameraNative(a); if(!n || !color || rw::platform!=rw::PLATFORM_NULL) return nullptr;
-    n->clear(color,mode); return a;
+    startupTrace("0x00628F60","CameraClear");
+    auto* n=cameraNative(a); if(!n || !color) return nullptr;
+    if(deviceReady() || rw::platform!=rw::PLATFORM_NULL) {
+        if(!n->frameBuffer || n->frameBuffer->width<=0 || n->frameBuffer->height<=0 ||
+           (n->frameBuffer->type!=rw::Raster::CAMERA && n->frameBuffer->type!=rw::Raster::CAMERATEXTURE) ||
+           ((mode&2u) && (!n->zBuffer || n->zBuffer->type!=rw::Raster::ZBUFFER)) ||
+           (mode&~7u) || !clearDeviceCamera(n,color,mode)) return nullptr;
+    } else n->clear(color,mode);
+    return a;
 }
 // Sphere test uses the synchronized planes (0 outside, 1 boundary, 2 inside).
 // Do not rebuild them per test: game callers sync the camera frame beforehand.
@@ -375,7 +401,7 @@ Camera* __cdecl cameraWindow(Camera* a,const rw::V2d* v) {
 }
 // Camera owns neither its frame nor its buffers. Destroy must only detach.
 int __cdecl cameraDestroy(Camera* a) {
-    auto* n=cameraNative(a); if(!n || n->world) return 0;
+    auto* n=cameraNative(a); if(!n || n->world || (deviceReady() && rw::engine->currentCamera==n)) return 0;
     destructPlugins(K::Camera,a); if(n->clump) n->clump->removeCamera(n);
     if(rw::engine->currentCamera==n) rw::engine->currentCamera=nullptr;
     attachFrame(&a->object,nullptr); cameras.erase(a); n->destroy(); freeFacade(a); return 1;
@@ -383,6 +409,7 @@ int __cdecl cameraDestroy(Camera* a) {
 // Create callers write facade +4/+60/+64 themselves. Initialize readable
 // matrix/frustum storage deterministically until the first frame sync.
 Camera* __stdcall cameraCreate() {
+    startupTrace("0x006290B0","CameraCreate");
     auto* a=allocate<Camera>(K::Camera); if(!a) return nullptr;
     auto* n=rw::Camera::create(); if(!n) { freeFacade(a); return nullptr; }
     a->object.object={rw::Camera::ID,0,0,0,nullptr}; a->object.sync=syncFacade;
@@ -469,6 +496,7 @@ Clump* __cdecl clumpClone(Clump* c) {
 
 namespace csf_rw {
 bool objectsEmpty() { return materials.empty() && geometries.empty() && atomics.empty() && lights.empty() && cameras.empty() && clumps.empty(); }
+bool worldHasCamera(rw::World* w) { for(auto& p:cameras) if(p.second->world==w) return true; return false; }
 rw::Material* materialNative(Material* a) {
     auto* n=lookup(materials,a); if(!n || a->refCount<=0) return nullptr;
     if(n->texture && !textureFacade(n->texture)) return nullptr;
@@ -671,6 +699,7 @@ HOOK(0x0059D000,lightDestroy,"boundary-rw");
 // Caller 006fd400 (RpLightCreate): see facade/return/ownership contract above; packet in work/rw4-check/006fd400.packet.
 HOOK(0x0059D040,lightCreate,"boundary-rw");
 HOOK(0x00628E50,cameraBegin,"boundary-rw");
+HOOK(0x00628E40,cameraEnd,"boundary-rw");
 // Caller 006f5cd0 (RwCameraSetNearClipPlane): see facade/return/ownership contract above; packet in work/rw4-check/006f5cd0.packet.
 HOOK(0x00628E90,cameraNear,"boundary-rw");
 // Caller 006f5cd0 (RwCameraSetFarClipPlane): see facade/return/ownership contract above; packet in work/rw4-check/006f5cd0.packet.

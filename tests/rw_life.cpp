@@ -1,5 +1,6 @@
 #include "globals.h"
 #include "boundary/rw/life.h"
+#include "boundary/rw/world.h"
 #include <cassert>
 #include <cstdio>
 #include <cstring>
@@ -27,7 +28,8 @@ CSF_FUNC(int, __cdecl, mode, 0x00626C40, (int));
 CSF_FUNC(int, __cdecl, regEngine, 0x00626AE0, (int, uint32_t, C, D));
 CSF_FUNC(int, __cdecl, regFrame, 0x00623950, (int, uint32_t, C, D, CP));
 CSF_FUNC(int, __cdecl, regAtomic, 0x0058F210, (int, uint32_t, C, D, CP));
-CSF_FUNC(int, __cdecl, regGeometry, 0x00590400, (int, uint32_t, C, D, CP));
+CSF_FUNC(int, __cdecl, regSector, 0x00590400, (int, uint32_t, C, D, CP));
+CSF_FUNC(int, __cdecl, regGeometry, 0x00590BA0, (int, uint32_t, C, D, CP));
 CSF_FUNC(int, __cdecl, regMaterial, 0x00591590, (int, uint32_t, C, D, CP));
 CSF_FUNC(int, __cdecl, regLight, 0x0059CEC0, (int, uint32_t, C, D, CP));
 CSF_FUNC(F*, __stdcall, frameCreate, 0x006235D0, ());
@@ -110,9 +112,10 @@ int main() {
     engineOffset = regEngine(4, 42, engineCtor, engineDtor); assert(engineOffset >= 300);
     frameOffset = regFrame(8, 42, frameCtor, frameDtor, nullptr); assert(frameOffset == sizeof(F));
     // Native fixtures widen pointers; the actual x86 prefixes remain asserted
-    // as 116/136/28/64 in abi.h. Tail storage must not overlap a widened header.
+    // as 116/96/28/64 in abi.h. Tail storage must not overlap a widened header.
     assert(regAtomic(4,42,nullptr,nullptr,nullptr)==sizeof(csf_rw::Atomic));
     assert(regGeometry(4,42,nullptr,nullptr,nullptr)==sizeof(csf_rw::Geometry));
+    assert(regSector(4,42,nullptr,nullptr,nullptr)==sizeof(csf_rw::Sector));
     assert(regMaterial(4,42,nullptr,nullptr,nullptr)==sizeof(csf_rw::Material));
     assert(regLight(4,42,nullptr,nullptr,nullptr)==sizeof(csf_rw::Light));
     assert(regFrame(8,42,nullptr,nullptr,nullptr)==-1);

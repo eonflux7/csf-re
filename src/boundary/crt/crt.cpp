@@ -20,6 +20,12 @@
 // Use concrete wrappers (rather than addresses of overloaded C++ header functions).
 #define FORWARD(R, N, P, E) \
     static R __cdecl boundary_##N P { return E; }
+// VC7.1 __wfopen is the default-sharing wide fopen, not a narrow conversion.
+// Keep UTF-16 paths/modes and wide COMSPEC/command processing in the host CRT.
+FORWARD(FILE*, wfopen, (const wchar_t* p, const wchar_t* mode), ::_wfopen(p,mode));
+HOOK(0x007B02E2, boundary_wfopen, "boundary-crt");
+FORWARD(int, wsystem, (const wchar_t* command), ::_wsystem(command));
+HOOK(0x007B00E9, boundary_wsystem, "boundary-crt");
 FORWARD(void, qsort, (void* p, size_t n, size_t s, int (__cdecl* cmp)(const void*, const void*)), std::qsort(p,n,s,cmp));
 HOOK(0x007AEAE0, boundary_qsort, "boundary-crt");
 FORWARD(int, atexit, (void (__cdecl* f)()), std::atexit(f));

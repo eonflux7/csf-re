@@ -22,6 +22,7 @@ int main() {
 #include "boundary/rw/device.h"
 #include "boundary/rw/startup.h"
 #include <array>
+#include "boundary/rw/object.h"
 #include <cassert>
 #include <cstring>
 #include <cstdio>
@@ -60,6 +61,13 @@ CSF_FUNC(Raster*,__cdecl,scaledRaster,0x00627470,(Raster*,const rw::Rect*));
 CSF_FUNC(Raster*,__cdecl,showRasterSlot,0x006276E0,(Raster*,void*,unsigned));
 CSF_FUNC(int,__stdcall,textureMemorySlot,0x00626C90,());
 CSF_FUNC(int,__cdecl,bboxContains,0x0063CA30,(const rw::BBox*,const rw::V3d*));
+CSF_FUNC(Camera*,__stdcall,newCamera,0x006290B0,());
+CSF_FUNC(Camera*,__cdecl,beginCamera,0x00628E50,(Camera*));
+CSF_FUNC(Camera*,__cdecl,endCamera,0x00628E40,(Camera*));
+CSF_FUNC(Camera*,__cdecl,clearCamera,0x00628F60,(Camera*,rw::RGBA*,unsigned));
+CSF_FUNC(int,__cdecl,deleteCamera,0x00629070,(Camera*));
+CSF_FUNC(Frame*,__stdcall,newFrame,0x006235D0,());
+CSF_FUNC(int,__cdecl,deleteFrame,0x00623B10,(Frame*));
 CSF_FUNC(csf_rw::VideoMode*,__cdecl,modeInfo,0x00626BE0,(csf_rw::VideoMode*,int));
 CSF_FUNC(int,__cdecl,refresh,0x0062B200,(int));
 CSF_FUNC(unsigned,__cdecl,multiSampling,0x0062B170,(unsigned));
@@ -93,6 +101,17 @@ struct Fake final : DeviceBackend {
     rw::Rect rectangle{};
     void* presentWindow{};
     unsigned presentFlags{},clearPixel{},clears{},rasterDraws{},presents{};
+    rw::Camera* cameraSeen{};
+    unsigned cameraBegins{},cameraEnds{},cameraClears{};
+    bool beginCamera(rw::Camera* c) override {
+        ++cameraBegins;cameraSeen=c;if(fail) return false;c->beginUpdate();return true;
+    }
+    bool endCamera(rw::Camera* c) override {
+        ++cameraEnds;cameraSeen=c;if(failEnd) return false;c->endUpdate();return true;
+    }
+    bool clearCamera(rw::Camera* c,rw::RGBA* color,uint32_t flags) override {
+        ++cameraClears;cameraSeen=c;if(fail) return false;c->clear(color,flags);return true;
+    }
     bool clearRaster(rw::Raster* r,uint32_t p) override { ++clears;clearTarget=r;clearPixel=p;return !fail; }
     bool beginRasterDraw(rw::Raster* s,rw::Raster* t,const rw::Rect& rect) override {
         ++rasterDraws;drawSource=s;drawTarget=t;rectangle=rect;return !fail;
@@ -307,6 +326,23 @@ int main() {
     assert(!rw::engine->currentCamera && recordedStates[rw::TEXTURERASTER]==nullptr);
     fake.failEnd=false;
     assert(!showRasterSlot(clock,nullptr,0) && !showRasterSlot(framebuffer,nullptr,2));
+    // Same device seam as production; librw receives native Camera/Frame and
+    // Raster identities, while facade callbacks keep the original pointer.
+    auto* camera=newCamera();auto* frame=newFrame();assert(camera&&frame);
+    rw::platform=rw::PLATFORM_D3D9;
+    assert(!beginCamera(camera));
+    camera->object.object.parent=frame;camera->frameBuffer=framebuffer;camera->zBuffer=zbuffer;
+    rw::RGBA cameraColor{1,2,3,255};
+    assert(clearCamera(camera,&cameraColor,3)==camera && fake.cameraSeen==cameraNative(camera));
+    assert(fake.cameraSeen->frameBuffer==rasterNative(framebuffer) && fake.cameraSeen->zBuffer==rasterNative(zbuffer));
+    fake.fail=true;assert(!beginCamera(camera) && !clearCamera(camera,&cameraColor,3));fake.fail=false;
+    assert(beginCamera(camera)==camera && rw::engine->currentCamera==fake.cameraSeen);
+    assert(!beginCamera(camera) && !deleteCamera(camera));
+    fake.failEnd=true;assert(!endCamera(camera));fake.failEnd=false;
+    assert(endCamera(camera)==camera && !rw::engine->currentCamera && !endCamera(camera));
+    assert(fake.cameraBegins==2 && fake.cameraEnds==2 && fake.cameraClears==2);
+    assert(deleteCamera(camera) && deleteFrame(frame));
+    rw::platform=platform;
     assert(rasterDestroy(clock) && rasterDestroy(offscreen) && rasterDestroy(zbuffer) && rasterDestroy(framebuffer));
     rw::BBox box{rw::makeV3d(1,2,3),rw::makeV3d(-1,-2,-3)};
     rw::V3d inside=box.inf,outside=rw::makeV3d(2,0,0);

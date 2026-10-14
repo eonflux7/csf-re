@@ -13,6 +13,25 @@ CSF_FUNC(char, __fastcall, DevCommandLine_Parse, 0x4FB850, (void* self, void* ed
 CSF_FUNC(uint8_t*, __cdecl, App_Get, 0x50D190, ());
 CSF_FUNC(uint8_t*, __cdecl, Render_GetSystem, 0x6B1380, ());
 CSF_FUNC(void*, __fastcall, Render_GetDevice, 0x652160, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, GameBddLoader_DispatchMenuRequest, 0x0050F790,
+         (void* self, void* edx, int entry, int argument, int request, int configuration));
+CSF_GLOBAL(void*, g_MenuCallbackManager, 0x008B0570);
+
+// Independently callable cdecl callback (0050F920..0050F972), missed by IDA.
+// 0050FBD0 registers it through 006973B0, rather than calling it directly.
+static int __cdecl GameBddLoader_LoadCompleteCallback() {
+    void* manager = g_MenuCallbackManager;
+    void* box = CSF_AT(void*, manager, 0xF0);
+    if (box) {
+        (reinterpret_cast<void (__thiscall*)(void*)>(CSF_AT(void**, box, 0)[0x40 / 4]))(box);
+        box = CSF_AT(void*, manager, 0xF0);
+        CSF_AT(uint32_t, manager, 0xF4) = CSF_AT(uint32_t, box, 0x78);
+        CSF_AT(void*, manager, 0xF0) = nullptr;
+        manager = g_MenuCallbackManager;
+    }
+    return GameBddLoader_DispatchMenuRequest(manager, nullptr, 0x47323037, 8, 0x1800, 0);
+}
+HOOK(0x0050F920, GameBddLoader_LoadCompleteCallback, "auto");
 
 using AdjustWindowRectFn = BOOL (__stdcall*)(RECT*, DWORD, BOOL);
 using GetSystemMetricsFn = int (__stdcall*)(int);

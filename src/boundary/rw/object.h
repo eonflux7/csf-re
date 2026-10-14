@@ -8,6 +8,7 @@ void objectFrameChanged(ObjectWithFrame*);
 void objectExport();
 void objectImport();
 bool objectsEmpty();
+bool worldHasCamera(rw::World*);
 rw::Atomic* atomicNative(Atomic*);
 rw::Geometry* geometryNative(Geometry*);
 rw::Material* materialNative(Material*);

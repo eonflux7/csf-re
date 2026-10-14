@@ -27,10 +27,18 @@ struct DeviceBackend {
     virtual bool endRasterDraw() { return false; }
     virtual bool presentRaster(rw::Raster*, void*, uint32_t) { return false; }
     virtual uint32_t textureMemory() { return 0; }
+    // Native librw callbacks are void. A true result means valid delegation,
+    // not proof that the driver's BeginScene/EndScene/Clear succeeded.
+    virtual bool beginCamera(rw::Camera*) { return false; }
+    virtual bool endCamera(rw::Camera*) { return false; }
+    virtual bool clearCamera(rw::Camera*, rw::RGBA*, uint32_t) { return false; }
 };
 void bindDeviceBackend(DeviceBackend*); // borrowed; native recording fixture
 bool bindD3D9Device(void*);
 bool deviceReady();
+bool beginDeviceCamera(rw::Camera*);
+bool endDeviceCamera(rw::Camera*);
+bool clearDeviceCamera(rw::Camera*, rw::RGBA*, uint32_t);
 bool clearRasterContext(uint32_t);
 bool drawRasterContext(Raster*, const rw::Rect&);
 bool showRaster(Raster*, void*, uint32_t);
