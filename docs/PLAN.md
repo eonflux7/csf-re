@@ -88,16 +88,16 @@ Stage since 2026-10-13: the waves are exhausted at 91.9% of game code. What is l
 user 2026-10-13); the orchestrator writes the
 tasks, reviews reports and patches, decides. Everything is visible on `tools/webmon.py` (user, 2026-10-13).
 
-State on 2026-10-14, night: the standalone exe (`/mnt/e/dev/csf-standalone`, `tools/dryrun.py --full`) runs its
-main loop: the four logo Bink movies and the full intro cinematic play on screen (screenshots taken), no trap or crash
-in 160 s. Next: a playtest (does a key/click skip the intro and reach the main menu? SendKeys Escape did not), then
-the menu itself. Game functions missing from the standalone: 25. Static reach from WinMain: docs/WINMAIN_REACH.txt
-(direct calls) and docs/WINMAIN_REACH_VTABLES.txt (`--vtables`, an upper bound). Jobs' output enters the tree only after review.
+State on 2026-10-15: the standalone exe runs the menus: intro skip, main menu, Settings and all its pages, Credits,
+Campaign profiles, Exit -> Ok (clean exit, code 1). Tested unattended: `tools/dryrun.py --walk` runs every named
+menu script (scripted DirectInput, page trace, screenshots; work/measure/walk.json). Next on the player's path:
+profile creation (text editing) and loading a mission (RW clump streaming, 0x58FFC0). Game functions missing from
+the standalone: 23 (job gamelast); RW 158 (job rwclump: clump streaming). Jobs' output enters the tree only after review.
 
-1. **Run the standalone to its first presented frame**, stop by stop: RtFS and DDS (job rwfs), the particle
-   callbacks left (rw8b), the 32 undecided game functions after emudiff can decide them (emufix4). Each stop:
-   dryrun --full, `tools/dbg.sh crash 60 <exe> full` on a crash.
-2. **RenderWare on librw** beyond start-up: docs/RW_PORT.md slices, 188 slots unresolved.
+1. **Play the standalone further, unattended**: extend dryrun SCRIPTS along the player's path (profile select/new,
+   mission select, mission load) and run `dryrun.py --walk` after every applied job; each FAIL line is the next fix
+   (`tools/dbg/stdsym.py work/measure/walk-NAME.out`; odd exit codes: CSF_EXIT_TRACE=1).
+2. **RenderWare on librw** beyond start-up: docs/RW_PORT.md slices, 158 slots unresolved (world rendering: docs/RW_WORLD_REPORT.md).
 3. **Installed functions that differ in emudiff**: emufix3 removed most false-alarm causes; what still differs goes
    to grouped sol-med jobs (`work/measure/groupwaves.py`, at most 5-6 sol jobs at once, user 2026-10-14).
 4. **Escalation queue** and the last game code: 30 STL instances, the larger queue functions.

@@ -1719,3 +1719,31 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Re-running adopt.py on the grouped jobs changed nothing: their 32 leftovers were never in the patches.
 - Pitfall: background `while pgrep -f check_wm.sh` waiters match each other's command lines and never proceed
   (cost ~3 h). Chain steps in one command instead.
+
+## 2026-10-15 (night): menus run; unattended harness
+- Standalone reaches and runs the main menu, Settings and its pages; intro movies skip on Escape (one per movie).
+- Harness (no human, no x32dbg): `tools/dryrun.py --full --input NAME|SCRIPT --shots T,.. --tag X`. CSF_INPUT appends
+  scripted key/mouse events to dinput8's GetDeviceData (shared vtable slots patched in place: dinput8 tells A/W
+  interfaces apart by the object's vtable pointer, a private vtable copy broke CreateDevice). Cursor moves by
+  relative deltas, 1:1 with the 800x600 menu; `goto` parks it at (0,0) first. Named menu scripts in dryrun.SCRIPTS.
+  CSF_EXCEPTION_TRACE (default in --full): first faults print registers + exe stack words before the game's own
+  `__except` around its main loop swallows them (it then quits with WinMain=1, exit 116). stdsym.py names them.
+- x32dbg via tools/dbg.sh failed intermittently ("Failed to load executable"); dbg.sh now deploys the fresh build
+  (two runs had been read against the wrong link map).
+- Bugs of one family, found by running: pushes left on the stack for a callee that takes none, consumed by the next
+  call (slider slots 0x264/0x270 take 0 args, 0x26C takes 2, vtable 0x865E38; 0x9C/0xA8 depend on the class).
+  Emudiff passes such code only when its mock vtables happen to match; check the real vtable's `ret n`.
+- Bare vtable addresses in 81 sources (menu secondary vtables) - addrfix now flags data-image literals from the binary.
+- IDA leaves code outside functions: tail chunks our sources call as functions (0x42B320), vtable-only scalar
+  deleting destructors, 218 adjustor thunks (generated: tools/gen_adjustors.py). Region border game/RW moved to
+  0x566070 (CMenuMpSessionsPC methods). RW get/set pair 0x626AB0/0x626AC0 was misnamed GetCurrentVideoMode.
+- Device: full-screen vsync (was ~2000 fps) and lost-device reset through librw's native show (alt-tab).
+- Old-film menu effect: two constants swapped by the agent (speck size base 0.005 vs alpha base 0.2) drew the dirt
+  specks 40x too big - the "grey shimmer". Gate/semcheck compare referenced globals as a set, not which use which.
+- Exit -> Ok ended with 116 / heap corruption: WinMain returned 1, then the CRT's static destructors freed and walked
+  boundary containers (rw frame maps, stream callbacks) whose nodes came from the game's allocator, already shut down
+  inside WinMain. standalone/main.cpp now ends the process with WinMain's code (ExitProcess) instead of returning
+  into the CRT's exit. Found with CSF_EXIT_TRACE's new NtTerminateProcess patch (status + stack of the terminator).
+- Harness: `dryrun.py --walk` (all named scripts: ok/FAIL, pages seen via CSF_PAGE_TRACE from 0x71C2A0
+  RequestMenuByName, walk.json, 640-px jpg thumbnails). Menu pages: P_Intro, P_MePrin, P_Profil, P_Credits, P_MsgBox.
+- 0x729710 ApplyEdgeTextureTransform written by hand (Exit dialog's border strips): horizontal when |dy| <= 1e-6.

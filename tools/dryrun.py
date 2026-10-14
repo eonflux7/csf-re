@@ -36,13 +36,22 @@ SCRIPTS = {
     "settings-game": SKIP + ";20:goto:400,344;21:click;24:goto:400,352;25:click",
     "settings-back": SKIP + ";20:goto:400,344;21:click;24:goto:400,517;25:click",
     "exit-ok": SKIP + ";20:goto:400,433;21:click;24:goto:296,320;25:click",  # Exit -> Ok: the process ends
+    # Campaign profiles page: list entries from (494,218), 22 px apart; Select (200,222), New (200,267), Back (400,517)
+    "campaign-select": SKIP + ";20:goto:400,253;21:click;24:goto:494,218;25:click;27:goto:200,222;28:click",
+    "campaign-new": SKIP + ";20:goto:400,253;21:click;24:goto:200,267;25:click",
+    # name entry: T E S T (DIK 20 18 31 20), Backspace (14), T, Enter (28)
+    "campaign-new-type": SKIP + ";20:goto:400,253;21:click;24:goto:200,267;25:click"
+                         ";27:key:20;27.5:key:18;28:key:31;28.5:key:20;29:key:14;29.5:key:20;30:key:28",
 }
 # --walk: screenshot time and the page the script should end on (None: not checked; "exit": the process ends with
 # WinMain's return code - a different one means the CRT's exit failed; rerun with CSF_EXIT_TRACE=1 to see why).
 WALK = {
-    "campaign": (32, None), "credits": (32, None), "settings-controls": (32, None), "settings-video": (32, None),
-    "settings-sound": (42, None), "settings-game": (32, None), "settings-back": (32, None), "exit": (32, None),
-    "exit-ok": (None, "exit"),
+    "campaign": (32, "Menus/P_Profil.fbs"), "credits": (32, "Menus/P_Credits.fbs"),
+    "settings-controls": (32, "Menus/P_Contro.fbs"), "settings-video": (32, "Menus/P_Video.fbs"),
+    "settings-sound": (42, "Menus/P_Sound.fbs"), "settings-game": (32, "Menus/P_Option.fbs"),  # Game: not by name
+    "settings-back": (32, "Menus/P_MePrin.fbs"), "exit": (32, "Menus/P_MsgBox.fbs"), "exit-ok": (None, "exit"),
+    "campaign-select": (38, "Menus/P_Campan.fbs"), "campaign-new": (32, "Menus/P_Edit.fbs"),
+    "campaign-new-type": (34, None),
 }
 
 
