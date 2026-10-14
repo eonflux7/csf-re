@@ -88,20 +88,19 @@ Stage since 2026-10-13: the waves are exhausted at 91.9% of game code. What is l
 user 2026-10-13); the orchestrator writes the
 tasks, reviews reports and patches, decides. Everything is visible on `tools/webmon.py` (user, 2026-10-13).
 
-State on 2026-10-14, early morning: the standalone exe links (`build/csf_standalone.exe`, with explicit trap slots
-for what is missing); nothing has been run yet. Game code 96% of 14,885 functions (the 393 dynamic initialisers and
-atexit destructors were found and added on 2026-10-14). Jobs' output enters the tree only through `tools/adopt.py`.
+State on 2026-10-14, afternoon: the standalone exe (`/mnt/e/dev/csf-standalone`, `tools/dryrun.py --full`) runs
+all C++ initialisers, enters WinMain, initialises NetZ and DirectInput, reaches RW EngineInit and stops at the
+first RW plugin attach (0x58D0B0, called from 0x506CF0). Static reach from WinMain (docs/WINMAIN_REACH.txt): trap
+slots rw 58, netz 2, crt 2, game 1, not-a-function 3. Jobs' output enters the tree only after review.
 
-1. **Towards an exe that reaches WinMain**: the remaining 189 static initialisers (job initfn2), WinMain (0x509250,
-   adopted), start-up order and the allocator before the first constructor (docs/INIT_FUNCTIONS.md,
-   docs/STANDALONE_LINK2.md), then a first run: needs Windows or wine (not installed: ask the user).
-2. **RenderWare on librw**: slices 4 to 10 of docs/RW_PORT.md (slice 3 in: 42 of 50; slice 4, objects/camera/
-   lights/material, is job rw4), 280 slots unresolved.
-3. **Installed functions that differ in emudiff** (407 after the sweep): Haiku singles in waves, sol-med for the
-   84 over 320 bytes, a sol-med review per batch, then the verifier.
-4. **Escalation queue** (about 80) and the last game code: 30 STL instances, the larger queue functions.
-5. **NetZ** (about 200 unresolved slots), audio backend beyond null/PCM (Vorbis through vorbisfile.dll), D3DX9 and
-   PNG slots (trap stubs today).
+1. **Run the standalone to its first presented frame**, stop by stop: RW plugin attach and the rest of RW start-up
+   (job rwplugins, sol-hi), the other WinMain traps (job wmrest, sol-med: CRT __wfopen/_wsystem, 2 NetZ, game
+   0x6A2F90, 3 not-a-function targets). Each stop: dryrun --full, `tools/dbg.sh crash 60 <exe> full` on a crash.
+2. **RenderWare on librw** beyond start-up: docs/RW_PORT.md slices, 188 slots unresolved.
+3. **Installed functions that differ in emudiff**: emufix3 removed most false-alarm causes; what still differs goes
+   to grouped sol-med jobs (`work/measure/groupwaves.py`, at most 5-6 sol jobs at once, user 2026-10-14).
+4. **Escalation queue** and the last game code: 30 STL instances, the larger queue functions.
+5. **NetZ** (165 unresolved), audio backend beyond null/PCM, D3DX9 and PNG slots (trap stubs today).
 6. **Names and types**: `tools/naming.py`, `propagate.sh`.
 
 Earlier decisions that still hold: no playtest milestone, evidence comes from the verifier's smokes, the in-game

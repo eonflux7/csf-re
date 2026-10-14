@@ -1661,3 +1661,22 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   job plain3), then two crashes on raw original data pointers in a language table at 0x8A66C8 (names, and 2-letter
   codes IDA never made strings). datagen applied confirmed pointers only; it now also applies aligned words equal to
   a known item's start and words into the data sections (in-code words stay raw). Next stop: NetZ 0x6684F0.
+
+## 2026-10-14 (afternoon): the standalone through NetZ, DirectInput and RW EngineInit
+- Jobs netzwm (sol-med, 17 NetZ WinMain slots, NetZ unresolved 183 -> 165) and rwstart (sol-hi: engine open keeps
+  the HWND, engine start creates the D3D9 device through librw, camera/Z rasters, D3D9 backend selected; RW 198 ->
+  188) ran on the `codex` login (`deep_worker.py --login`). Both in after RW ASan tests, linktest, netzstub --check,
+  test_offline (603 emulated calls), both builds.
+- Run stops after that: 0x7DB650 is the jump through the DINPUT8 import (bridged to System32's dinput8.dll in
+  standalone/game_plain.cpp). Then a crash inside dinput8 reading 0x7DA654: the exe's c_dfDIKeyboard/c_dfDIMouse
+  (in .rdata) point at object arrays the static dinput8.lib put in **.text**, which the standalone does not have;
+  the SDK's dinput8.lib copies replace them before the first SetDataFormat. Linking `dinput8` by name picked
+  build/dinput8.lib, the hook DLL's import library (lld searches the current directory first): linked by path.
+- 0x699B10 and 0x698D10 adopted by hand: emudiff's only difference is an out-parameter of a callee the emulator
+  answers without writing (the original reads uninitialised stack). 0x506CF0 (RW plugin attach list, rest27's
+  candidate): the only difference is the stack word after a variadic call's two real arguments, and the format
+  has no conversions. Run now: RW EngineInit, then 0x58D0B0 RpWorldPluginAttach. Jobs rwplugins (sol-hi) and
+  wmrest (sol-med) started for the 58 RW and 8 other trap slots WinMain reaches.
+- emufix3's 3 control DIFFs were real: 0x431780, 0x50C1B0, 0x525A50 return a char-returning callee's whole eax in
+  the original; ours returned 0 or another value. Fixed; gate ok.
+

@@ -1,20 +1,43 @@
-from 0x00509250: 1091 functions reached; trap slots {'crt': 2, 'game': 3, 'netz': 2, 'rw': 33, 'not-a-function': 3}
+from 0x00509250: 1217 functions reached; trap slots {'crt': 2, 'game': 1, 'netz': 2, 'rw': 58, 'not-a-function': 3}
 crt            0x007B02E2 __wfopen                                 via 509250 > 7B02E2
 crt            0x007B00E9 _wsystem                                 via 509250 > 7B00E9
-game           0x00506CF0 AppMain_PrepareWindowLoader              via 509250 > 50FBD0 > 506F70 > 506CF0
-game           0x00699B10 <unnamed>                                via 509250 > 50FBD0 > 506F70 > 69BD90 > 699C80 > 699B10
 game           0x006A2F90 CoreZlibLog_AllocateReusableBlock        via 509250 > 55A970 > 55A910 > 55A800 > 694770 > 698350 > 69E910 > 6A2E30 > 6A2BB0 > 6A3150 > 6A2F90
 netz           0x006683F0 GetReferencedObject                      via 509250 > 510BF0 > 5370C0 > 4E9C90 > 6683F0
 netz           0x00652010 SceneLoader_GetSceneController           via 509250 > 510BF0 > 5370C0 > 507570 > 6D3010 > 652010
 not-a-function 0x0050F920 <not in db/functions.csv>                via 509250 > 50FBD0 > 50F920
 not-a-function 0x0057ED00 <not in db/functions.csv>                via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0920 > 57ED00
 not-a-function 0x0057F0B0 <not in db/functions.csv>                via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0920 > 57F0B0
+rw             0x0056F3C0 RpLtMapPluginAttach                      via 509250 > 50FBD0 > 506F70 > 506CF0 > 56F3C0
+rw             0x005663C0 RpADCPluginAttach                        via 509250 > 50FBD0 > 506F70 > 506CF0 > 5663C0
+rw             0x0058C040 RpUserDataPluginAttach                   via 509250 > 50FBD0 > 506F70 > 506CF0 > 58C040
+rw             0x006205C0 RtCompressedKeyFrameRegister             via 509250 > 50FBD0 > 506F70 > 506CF0 > 6205C0
+rw             0x0061ECD0 RtAnimInitialize                         via 509250 > 50FBD0 > 506F70 > 506CF0 > 61ECD0
+rw             0x00587450 RpSkinPluginAttach                       via 509250 > 50FBD0 > 506F70 > 506CF0 > 587450
+rw             0x0057C4A0 RpPrtStdPluginAttach                     via 509250 > 50FBD0 > 506F70 > 506CF0 > 57C4A0
+rw             0x005784A0 Rt2dPluginAttach                         via 509250 > 50FBD0 > 506F70 > 506CF0 > 5784A0
+rw             0x005665A0 RpAnisotPluginAttach                     via 509250 > 50FBD0 > 506F70 > 506CF0 > 5665A0
+rw             0x0056DAE0 RpHAnimPluginAttach                      via 509250 > 50FBD0 > 506F70 > 506CF0 > 56DAE0
+rw             0x00577060 RpMipmapKLPluginAttach                   via 509250 > 50FBD0 > 506F70 > 506CF0 > 577060
+rw             0x005816E0 RpPTankPluginAttach                      via 509250 > 50FBD0 > 506F70 > 506CF0 > 5816E0
+rw             0x005869E0 RtRandomPluginAttach                     via 509250 > 50FBD0 > 506F70 > 506CF0 > 5869E0
+rw             0x005865E0 RpPatchPluginAttach                      via 509250 > 50FBD0 > 506F70 > 506CF0 > 5865E0
+rw             0x005776E0 RpMorphPluginAttach                      via 509250 > 50FBD0 > 506F70 > 506CF0 > 5776E0
+rw             0x0058D0B0 RpWorldPluginAttach                      via 509250 > 50FBD0 > 506F70 > 506CF0 > 58D0B0
+rw             0x0056C1B0 RpCollisionPluginAttach                  via 509250 > 50FBD0 > 506F70 > 506CF0 > 56C1B0
+rw             0x00571FF0 RpMatFXPluginAttach                      via 509250 > 50FBD0 > 506F70 > 506CF0 > 571FF0
 rw             0x00586860 RtRandomSeed                             via 509250 > 50FBD0 > 5113E0 > 510860 > 586860
 rw             0x00628E40 RwCameraEndUpdate                        via 509250 > 510BF0 > 5370C0 > 507570 > 6D2BE0 > 628E40
 rw             0x0058DDC0 RpWorldRemoveCamera                      via 509250 > 510BF0 > 5370C0 > 507570 > 6D3010 > 58DDC0
 rw             0x0058DD90 RpWorldAddCamera                         via 509250 > 510BF0 > 5370C0 > 507570 > 6D3010 > 58DD90
 rw             0x0058DDF0 RwCameraGetWorld                         via 509250 > 510BF0 > 5370C0 > 507570 > 6D3010 > 58DDF0
+rw             0x0061ED00 RtAnimRegisterInterpolationScheme        via 509250 > 50FBD0 > 506F70 > 506CF0 > 6C34F0 > 61ED00
+rw             0x00590430 RpGeometryRegisterPluginStream           via 509250 > 50FBD0 > 506F70 > 506CF0 > 6BBA20 > 590430
+rw             0x005915C0 RpClumpRegisterPluginStream              via 509250 > 50FBD0 > 506F70 > 506CF0 > 6BBA20 > 5915C0
+rw             0x006329D0 RwFrameRegisterPluginStream              via 509250 > 50FBD0 > 506F70 > 506CF0 > 6BBA20 > 6329D0
+rw             0x0058F270 RpAtomicRegisterPluginStream             via 509250 > 50FBD0 > 506F70 > 506CF0 > 6BBA20 > 58F270
+rw             0x0059CEF0 RpLightRegisterPluginStream              via 509250 > 50FBD0 > 506F70 > 506CF0 > 6BBA20 > 59CEF0
 rw             0x007C5F60 RwResourcesSetArenaSize                  via 509250 > 50FBD0 > 506F70 > 521CF0 > 70DE80 > 6971B0 > 7C5F60
+rw             0x0061F5E0 _rtCompressedKeyFrameCompressFloat       via 509250 > 50FBD0 > 506F70 > 506CF0 > 6C34F0 > 6C2AD0 > 61F5E0
 rw             0x0058CCB0 RpWorldCreate                            via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6CB330 > 6BC010 > 58CCB0
 rw             0x0058CC80 RpWorldGetSectorRenderCallBack           via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6CB330 > 6BC010 > 58CC80
 rw             0x0058DF50 RpWorldAddLight                          via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6E3CD0 > 6D2710 > 6D1DB0 > 6D0E70 > 58DF50
