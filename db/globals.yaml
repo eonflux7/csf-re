@@ -2370,10 +2370,13 @@
 - {addr: 0x008BC1E8, name: g_Value_8BC1E8, type: 'std::uint32_t', uses: 4, src: auto}
 - {addr: 0x008BC1EC, name: g_Value8BC1EC, type: int, uses: 3, src: auto}
 - {addr: 0x008BC27C, name: g_RegisteredNetClassId, type: uint32_t, uses: 3, src: auto, alt: [g_SpawnObjectType]}
-- {addr: 0x008BC7C8, name: dword_8BC7C8, type: void*, uses: 2, src: auto, alt: [head]}
-- {addr: 0x008BC7CC, name: capacity, type: int, uses: 1, src: auto}
-- {addr: 0x008BC7D0, name: dword_8BC7D0, type: int, uses: 2, src: auto, alt: [registeredCount]}
-- {addr: 0x008BC7D4, name: dword_8BC7D4, type: int, uses: 1, src: auto}
+- {addr: 0x008BC7C4, name: defaultFS, type: FS*, uses: 1, src: auto}
+- {addr: 0x008BC7C8, name: dword_8BC7C8, type: FS*, uses: 2, src: auto, alt: [head]}
+- {addr: 0x008BC7CC, name: maxSystems, type: int, uses: 1, src: auto}
+- {addr: 0x008BC7D0, name: dword_8BC7D0, type: int, uses: 2, src: auto, alt: [numSystems]}
+- {addr: 0x008BC7D4, name: dword_8BC7D4, type: int, uses: 2, src: auto, alt: [initialized]}
+- {addr: 0x008BC7D8, name: lastError, type: int, uses: 1, src: auto}
+- {addr: 0x008BC7DC, name: errorCallback, type: ErrorCallback, uses: 1, src: auto}
 - {addr: 0x008BC98C, name: defaultDictionary, type: void*, uses: 1, src: auto}
 - {addr: 0x008BC990, name: currentDictionary, type: void*, uses: 1, src: auto}
 - {addr: 0x008BE558, name: hanimOffset, type: int, uses: 1, src: auto}
@@ -2389,6 +2392,7 @@
 - {addr: 0x008BE6A8, name: prtStream, type: int, uses: 1, src: auto}
 - {addr: 0x008BE7A4, name: patchWorld, type: int, uses: 1, src: auto}
 - {addr: 0x008BE7A8, name: patchSector, type: int, uses: 1, src: auto}
+- {addr: 0x008BEB40, name: gameFSLock, type: CRITICAL_SECTION, uses: 1, src: auto}
 - {addr: 0x008BF5E0, name: bankAlignment, type: Word, uses: 1, src: auto}
 - {addr: 0x008C1000, name: controlWord, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008C1004, name: previousControlWord, type: uint32_t, uses: 1, src: auto}
