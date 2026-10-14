@@ -1618,3 +1618,12 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   emufix2; pass today. 0x696000 stays queued: the DIFF is the original's never-written stack (0xCC) copied into an
   output tail, an emudiff comparison question, not a bug in our code.
 - Started rw4 (slice 4: atomic/clump/geometry, camera, lights, material; 41 slots, sol-med).
+- **First run of the standalone exe** (Windows through WSL interop, no wine needed; copy `/mnt/e/dev/csf-standalone`
+  made with `playcopy.py --original`, the exe beside the original): `CSF_DRYRUN=1` ran the C initialisers and 14 of
+  196 C++ ones, then trapped cleanly at `UNRESOLVED 0x00646E10 [netz]` (constructor of the NetZ global at 0x8B9980,
+  from initialiser 0x828BA0). standalone_check.py's "initializer traps 0" counts only table entries; the static
+  closure (work/measure/init_reach.py -> docs/INIT_REACH.txt) finds 51 trap slots reachable from the initialisers:
+  46 NetZ (job netzinit), and 4 RW + 1 game only through atexit destructors. RenderWare is not needed before WinMain.
+- Started rw7 (D3D9 device, sol-hi) and rw9 (toolkits, first half) next to rw4: the slices' dependencies are softer
+  than the plan's table; they code against the RW 3.x offsets for slice 4 objects and append to the shared files.
+- webmon: the top panels never rendered: `top` in a browser is window.top, not the #top element.
