@@ -27,7 +27,7 @@ static int __fastcall C_0082dfd0_TryTransferNearbyObject(
     const float scaledDepth = dimensions[2] * g_ValueScale;
     const float scaledWidth = width * g_ValueScale;
     const float radius =
-        (scaledWidth < scaledDepth ? scaledWidth : scaledDepth) * g_ScaleY_0_6;
+        (scaledWidth < scaledDepth ? scaledDepth : scaledWidth) * g_ScaleY_0_6;
 
     const float* candidatePosition = reinterpret_cast<const float*>(
         GetObjectPositionVector(candidate, nullptr));
@@ -42,10 +42,10 @@ static int __fastcall C_0082dfd0_TryTransferNearbyObject(
 
     if (!force)
     {
-        const float dx = candidateX - ownerX;
-        const float dz = candidateZ - ownerZ;
-        const float distanceSquared =
-            dz * dz + g_fZero * g_fZero + dx * dx;
+        const double dx = static_cast<double>(candidateX) - ownerX;
+        const double dz = static_cast<double>(candidateZ) - ownerZ;
+        const double distanceSquared =
+            dz * dz + static_cast<double>(g_fZero) * g_fZero + dx * dx;
         if (!(radius * radius > distanceSquared))
             return 0;
     }

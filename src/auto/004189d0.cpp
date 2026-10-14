@@ -22,9 +22,11 @@ static void* __fastcall Vehicle_ExtendWheelArray(void* self, void* /*edx*/, int 
     if (oldBlock == nullptr) {
         CSF_AT(void*, self, 0) = result;
     } else {
-        result = reinterpret_cast<void*>(Mem_Free(oldBlock));
+        // Original: eax = Mem_Free(old); [this] = 0; [this] = saved new block; return eax (Free's result).
+        void* freeResult = reinterpret_cast<void*>(Mem_Free(oldBlock));
         CSF_AT(void*, self, 0) = nullptr;
-        CSF_AT(void*, self, 0) = CSF_AT(void*, self, 0) == nullptr ? result : result;
+        CSF_AT(void*, self, 0) = result;
+        return freeResult;
     }
     return result;
 }

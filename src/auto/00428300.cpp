@@ -31,7 +31,8 @@ static int __fastcall HudObjectives_UpdateAuxiliaryWidget(S_004276c0* self, void
         case 3u:
             return sub_4276F0(self, nullptr, a2);
         default:
-            return 0;
+            // 0x428300: `mov eax, [ecx]; cmp eax, 3; ja 0x428337` leaves the whole field in eax
+            return static_cast<int>(self->field_0000);
         }
     }
     return 0;

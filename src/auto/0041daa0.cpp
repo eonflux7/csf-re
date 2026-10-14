@@ -27,7 +27,8 @@ static int __fastcall C_0082e428_InitializeSteeringAlignment(
     void* entry = reinterpret_cast<void*>(sub_4084C0(
         reinterpret_cast<void*>(self->field_0030), nullptr, 25));
 
-    MatrixResult matrixStorage{};
+    // not zero-filled: the original stores nothing to [ebp-8]/[ebp-4] before the indirect call
+    MatrixResult matrixStorage;
     MatrixResult* matrixResult =
         reinterpret_cast<MatrixResult* (__fastcall*)(
             void*, void*, MatrixResult*)>(

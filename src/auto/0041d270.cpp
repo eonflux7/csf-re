@@ -22,7 +22,7 @@ static float* __fastcall C_0082e428_UpdateWheelAxisVector(C_0082e428* self, void
         GetTableEntryDwordByIndex(reinterpret_cast<void*>(static_cast<std::uintptr_t>(self->field_0030)), nullptr, 26)));
 
     // Out pair: matrix pointer (dword) followed by a flag byte.
-    alignas(8) unsigned char matrixBuf[8] = {};
+    alignas(8) unsigned char matrixBuf[8];
 
     // Virtual slot 0x40 / 4 = 16, thiscall with one stack argument.
     int holderValue = reinterpret_cast<EntryGetterFn>(CSF_AT(void**, tableEntry, 0)[16])(

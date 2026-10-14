@@ -98,11 +98,11 @@ static int __fastcall Vehicle_SerializeWheelData(void* self, void* /*edx*/, void
     if (!failed)
     {
         void* processor = CSF_AT(void*, context, 0x04);
-        const bool result =
-            ((bool(__fastcall*)(void*, void*, void*))
+        const int result =
+            ((int(__fastcall*)(void*, void*, void*))
                  CSF_AT(void**, processor, 0)[0x7C / 4])(
                 processor, nullptr, context);
-        if (result)
+        if (static_cast<uint8_t>(result) != 0)
         {
             CSF_AT(uint8_t, context, 0x00) = 0;
             return result;

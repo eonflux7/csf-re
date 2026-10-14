@@ -100,14 +100,16 @@ static int __fastcall S_0041f0a0_SerializeAttackTaskSlots(
     if (CSF_AT(uint8_t, archive, 0x00) == 0)
     {
         void* backend = CSF_AT(void*, archive, 0x04);
-        const bool result =
-            ((bool(__fastcall*)(void*, void*, S_0041f0a0*))
+        // Original 00423f0b-00423f1e: `test al, al` decides, but on the
+        // taken path `ret 4` returns the whole eax of the call, not a bool.
+        const uint32_t result =
+            ((uint32_t(__fastcall*)(void*, void*, S_0041f0a0*))
                 CSF_AT(void**, backend, 0)[0x7C / 4])(
                     backend, nullptr, archive);
-        if (result)
+        if (static_cast<uint8_t>(result) != 0)
         {
             CSF_AT(uint8_t, archive, 0x00) = 0;
-            return result;
+            return static_cast<int>(result);
         }
     }
 

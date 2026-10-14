@@ -36,7 +36,7 @@ static void __fastcall S_0041e750_AddPointIfFarEnough(S_0041e750* self, void* /*
         float dy = last[1] - p[1];
         float dz = last[2] - p[2];
         float distSq = dx * dx + dy * dy + dz * dz;
-        if (!(distSq <= g_MinPointDistanceSq)) {
+        if (distSq > g_MinPointDistanceSq) {
             S_0041e750_AppendPoint(self, point);
         }
     } else {

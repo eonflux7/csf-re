@@ -52,7 +52,7 @@ static char __fastcall C_0082dd78_ConfigureChildAndPosition(
         char owned;
         char padding[3];
     };
-    MatrixReference matrixReference = {};
+    MatrixReference matrixReference;
 
     void* reference = reinterpret_cast<
         void* (__fastcall*)(void*, void*, MatrixReference*)>(

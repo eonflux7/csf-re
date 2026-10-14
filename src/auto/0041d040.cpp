@@ -24,7 +24,7 @@ CSF_FUNC(float*, __fastcall, Matrix_InvertWithStoredTarget, 0x006ADB40,
 
 static const auto g_MatrixInvertVtableReference = CSF_VTBL(0x006ADB40);
 
-static std::uint8_t __fastcall Vehicle_SetWheelSteeringTowardPoint(
+static std::uint32_t __fastcall Vehicle_SetWheelSteeringTowardPoint(
     void* self, void* /*edx*/, float* target)
 {
     float childPosition[3] = {};
@@ -35,7 +35,7 @@ static std::uint8_t __fastcall Vehicle_SetWheelSteeringTowardPoint(
     void* child = reinterpret_cast<void*>(
         Vehicle_GetIndexedChild(CSF_AT(void*, self, 0x30), nullptr, 28));
 
-    alignas(4) std::uint8_t matrixStorage[0x10] = {};
+    alignas(4) std::uint8_t matrixStorage[0x10];
     auto* matrix = reinterpret_cast<S_006adb40*>(matrixStorage);
     reinterpret_cast<void(__fastcall*)(void*, void*, S_006adb40*)>(
         CSF_AT(void**, child, 0)[0x3C / 4])(child, nullptr, matrix);
@@ -79,7 +79,7 @@ static std::uint8_t __fastcall Vehicle_SetWheelSteeringTowardPoint(
     if (result) {
         std::uint32_t* sourceMatrix;
         std::memcpy(&sourceMatrix, &matrix->field_0000, sizeof(sourceMatrix));
-        return static_cast<std::uint8_t>(RwMatrixDestroy(sourceMatrix));
+        return static_cast<std::uint32_t>(RwMatrixDestroy(sourceMatrix));
     }
     return result;
 }

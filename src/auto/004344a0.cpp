@@ -40,8 +40,23 @@ static uint32_t __fastcall Hud_UpdateResourceWidget(void* self, void* /*edx*/)
     else
         resourceName = CSF_AT(const char*, resourceState, 0xD44);
 
-    char source[256];
-    char destination[256];
+    // The original keeps source at ebp-0x21C, destination at ebp-0x11C and the string header at ebp-0x1C, so the
+    // strlen below runs past destination into the frame. One frame object pins that order.
+    struct TemporaryString
+    {
+        C_0082d410 header;
+        uint32_t remainingInlineStorage[2];
+        uint32_t length;
+        uint32_t capacity;
+    };
+    struct Frame
+    {
+        char source[256];
+        char destination[256];
+        TemporaryString text;
+    } frame;
+    char (&source)[256] = frame.source;
+    char (&destination)[256] = frame.destination;
     std::strcpy(source, resourceName);
     Hud_ExtractResourcePath(source, reinterpret_cast<uint8_t*>(destination), 256);
 
@@ -55,28 +70,20 @@ static uint32_t __fastcall Hud_UpdateResourceWidget(void* self, void* /*edx*/)
 
     NormalizeResourceName(source, destination, 256);
 
-    struct TemporaryString
-    {
-        C_0082d410 header;
-        uint32_t remainingInlineStorage[2];
-        uint32_t length;
-        uint32_t capacity;
-    } text;
-
-    text.capacity = 15;
-    text.length = 0;
-    reinterpret_cast<char*>(&text.header.field_0004)[0] = 0;
-    AssignStringRange_429B60(&text.header, nullptr, destination,
+    frame.text.capacity = 15;
+    frame.text.length = 0;
+    reinterpret_cast<char*>(&frame.text.header.field_0004)[0] = 0;
+    AssignStringRange_429B60(&frame.text.header, nullptr, destination,
                            static_cast<unsigned int>(std::strlen(destination)));
 
     void* activeWidget = CSF_AT(void*, self, 0xC4);
     result = reinterpret_cast<uint32_t(__fastcall*)(void*, void*, C_0082d410*)>(
         CSF_AT(void**, activeWidget, 0)[0x1C / 4])(
-            activeWidget, nullptr, &text.header);
+            activeWidget, nullptr, &frame.text.header);
 
-    if (text.capacity >= 0x10u)
+    if (frame.text.capacity >= 0x10u)
     {
-        result = text.header.field_0004;
+        result = frame.text.header.field_0004;
         if (result)
             return Mem_FreeDebug(reinterpret_cast<void*>(result));
     }

@@ -24,9 +24,7 @@ static char __fastcall C_0082e428_SetTargetPosition(C_0082e428* self, void* /*ed
     float rel[3];
     float origin[3];
     std::uint32_t local[3];
-    std::uint8_t matHolder[0x10];
-
-    std::memset(matHolder, 0, sizeof(matHolder));
+    std::uint8_t matHolder[0x10];  // not zeroed: the original's [ebp-0x10] is written only by the callee at slot 0x3C
 
     self->field_0094 = pos[0];
     CSF_AT(float, self, 0x98) = pos[1];
