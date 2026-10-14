@@ -51,8 +51,8 @@ static void __cdecl Hud_RenderWidgetAtScaledRect(void* widget, const int* rect)
     scale[0] = 0.0f;
     scale[1] = 0.0f;
     Hud_ComputeScaleVector(scale);
-    size[0] = static_cast<int>(size[0] * scale[0]);
-    size[1] = static_cast<int>(size[1] * scale[1]);
+    size[0] = static_cast<int>(static_cast<int64_t>(static_cast<double>(size[0]) * scale[0]));
+    size[1] = static_cast<int>(static_cast<int64_t>(static_cast<double>(size[1]) * scale[1]));
 
     reinterpret_cast<SetVec>(Vtbl(widget)[9])(widget, nullptr, pos);
     reinterpret_cast<SetVec>(Vtbl(widget)[14])(widget, nullptr, size);
