@@ -18,11 +18,12 @@ static int __fastcall C_00840ff0_ForwardStateToGlobal(C_00840ff0* self, void* /*
 
     void* stateObj = reinterpret_cast<void*>(static_cast<uintptr_t>(stateResult));
 
-    // Slot 0x18 on the state object, stdcall with one int argument (flag).
+    // Slot 0x18 on the state object: `call [eax+0x18]` with ecx still holding stateObj (this), one pushed int
+    // (flag), no stack cleanup by the caller. Thiscall shape: ecx = stateObj, one stack argument, callee pops.
     if (self->field_0004 == 5)
-        return ((int(__stdcall*)(int))CSF_AT(void**, stateObj, 0)[0x18 / 4])(1);
+        return ((int(__fastcall*)(void*, void*, int))CSF_AT(void**, stateObj, 0)[0x18 / 4])(stateObj, nullptr, 1);
 
-    return ((int(__stdcall*)(int))CSF_AT(void**, stateObj, 0)[0x18 / 4])(0);
+    return ((int(__fastcall*)(void*, void*, int))CSF_AT(void**, stateObj, 0)[0x18 / 4])(stateObj, nullptr, 0);
 }
 
 HOOK(0x00526480, C_00840ff0_ForwardStateToGlobal, "auto");

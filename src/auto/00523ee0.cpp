@@ -61,11 +61,12 @@ static int __fastcall AudioSoundManager_SerializeSoundEntry(
     if (!failed)
     {
         void* backend = CSF_AT(void*, archive, 0x04);
-        const bool result =
-            ((bool(__fastcall*)(void*, void*, bool*))
+        // Original tests only al (test al, al) but returns the whole eax.
+        const int result =
+            ((int(__fastcall*)(void*, void*, bool*))
                 CSF_AT(void**, backend, 0x00)[0x7C / 4])(
                     backend, nullptr, archive);
-        if (result)
+        if (static_cast<std::uint8_t>(result))
         {
             CSF_AT(bool, archive, 0x00) = false;
             return result;

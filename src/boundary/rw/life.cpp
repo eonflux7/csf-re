@@ -7,6 +7,7 @@
 #include "hook.h"
 #endif
 #include "life.h"
+#include "image.h"
 #include <cstdlib>
 #include <cstring>
 #include <limits>
@@ -39,15 +40,25 @@ static_assert(sizeof(void*) != 4 || sizeof(csf_rw::Memory) == 8);
 static_assert(sizeof(void*) != 4 || sizeof(csf_rw::MemoryFunctions) == 16);
 rw::PluginList registries[] = {
     rw::PluginList(sizeof(EngineFacade)), rw::PluginList(sizeof(csf_rw::Frame)),
-    rw::PluginList(116), rw::PluginList(136), rw::PluginList(28), rw::PluginList(64)
+    rw::PluginList(116), rw::PluginList(136), rw::PluginList(28), rw::PluginList(64),
+    rw::PluginList(sizeof(csf_rw::Raster)), rw::PluginList(sizeof(csf_rw::Texture)),
+    rw::PluginList(sizeof(csf_rw::TexDictionary))
 };
 int __cdecl setState(int state, void* value) {
     if (!rw::engine) return 0;
+    if (state == rw::TEXTURERASTER) {
+        auto* r = csf_rw::rasterNative(static_cast<csf_rw::Raster*>(value));
+        if (value && !r) return 0;
+        value = r;
+    }
     rw::SetRenderStatePtr(state, value); return 1;
 }
 int __cdecl getState(int state, void* out) {
     if (!rw::engine || !out) return 0;
-    *static_cast<void**>(out) = rw::GetRenderStatePtr(state); return 1;
+    void* value = rw::GetRenderStatePtr(state);
+    if (state == rw::TEXTURERASTER)
+        value = csf_rw::rasterFacade(static_cast<rw::Raster*>(value));
+    *static_cast<void**>(out) = value; return 1;
 }
 // 00506f70 supplies the four-entry game table (006912a0 installs malloc,
 // free, realloc, calloc), flags=0, arena bytes. librw's table instead orders
@@ -107,16 +118,18 @@ void stopNative() {
 int __stdcall engineStart() {
     if (rw::Engine::state != rw::Engine::Opened || !gameEngine) return 0;
     if (!rw::Engine::start()) return 0;
+    if (!csf_rw::imageBoundaryStart()) { stopNative(); return 0; }
     if (!csf_rw::constructPlugins(csf_rw::Registry::Engine, gameEngine)) {
-        stopNative(); return 0;
+        csf_rw::imageBoundaryStop(); stopNative(); return 0;
     }
     return 1;
 }
 // 006db7c0/006dbd50 tear down explicitly, 0050d1a0 calls Term. librw returns void for these three
 // transitions; preserve boolean game results and reject invalid ordering.
 int __stdcall engineStop() {
-    if (rw::Engine::state != rw::Engine::Started || !csf_rw::framesEmpty()) return 0;
+    if (rw::Engine::state != rw::Engine::Started || !csf_rw::framesEmpty() || !csf_rw::imagesEmpty()) return 0;
     csf_rw::destructPlugins(csf_rw::Registry::Engine, gameEngine);
+    csf_rw::imageBoundaryStop();
     stopNative(); return 1;
 }
 int __stdcall engineClose();
@@ -336,6 +349,12 @@ int __cdecl chunkFind(S* s, uint32_t type, uint32_t* n, uint32_t* version) {
         if (!streamSkip(s, h.length)) return 0;
     }
     return 0;
+}
+}
+
+namespace csf_rw {
+bool streamPrepareWrite(Stream* s, uint32_t n) {
+    return valid(s) && s->access != 1 && reserve(s,n);
 }
 }
 

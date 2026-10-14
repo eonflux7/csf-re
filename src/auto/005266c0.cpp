@@ -27,8 +27,11 @@ static std::uint32_t __fastcall CSoundInstance_StartPlayback(
     self->m_state = 0;
     self->field_0068 = fadeDuration;
 
-    std::uint32_t result = self->vShouldKeepAlive();
-    if (!result)
+    // Original: call [edx+0x3c]; test al, al; jne -> ret 8 with the callee's full eax.
+    // Only al is tested, and the whole eax is returned when it is nonzero.
+    std::uint32_t result = reinterpret_cast<std::uint32_t(__fastcall*)(void*, void*)>(
+        CSF_AT(void**, self, 0)[0x3c / 4])(self, nullptr);
+    if ((result & 0xFFu) == 0)
     {
         if (self->field_0064 > g_fZero)
         {

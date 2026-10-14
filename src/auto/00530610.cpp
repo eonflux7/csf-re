@@ -13,7 +13,9 @@ static int __fastcall CMenuMpServerInfo_ReleaseSubObject(CMenuMpServerInfo* self
     if ( sub )
     {
         // vtable slot 0, __thiscall with one stack argument (popped by the callee)
-        result = reinterpret_cast<int(__fastcall*)(void*, void*, int)>(sub[0])(sub, nullptr, 1);
+        // mov eax,[ecx] (vtable); call [eax] (slot 0): two loads from the object
+        void** vtbl = reinterpret_cast<void**>(sub[0]);
+        result = reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtbl[0])(sub, nullptr, 1);
         self->field_01ec = 0;
     }
     return result;

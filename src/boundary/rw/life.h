@@ -5,7 +5,7 @@
 namespace csf_rw {
 // These callbacks use the same C signatures as librw, but the registry belongs
 // to ABI objects, NEVER to native owning objects. Later slices must use it.
-enum class Registry { Engine, Frame, Atomic, Geometry, Material, Light };
+enum class Registry { Engine, Frame, Atomic, Geometry, Material, Light, Raster, Texture, Dictionary };
 rw::PluginList& plugins(Registry);
 bool constructPlugins(Registry, void*);
 void destructPlugins(Registry, void*);
@@ -22,6 +22,7 @@ struct Memory { uint8_t* start; uint32_t length; };
 // private facade identity, never a pointer to the virtual librw Stream class.
 struct Stream;
 rw::Stream* streamNative(Stream*);
+bool streamPrepareWrite(Stream*, uint32_t);
 struct ChunkHeader { uint32_t type, length, version, build, isComplex; };
 static_assert(sizeof(ChunkHeader) == 20);
 }

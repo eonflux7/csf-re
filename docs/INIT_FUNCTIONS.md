@@ -1,4 +1,76 @@
-# Global initializers: partial completion, 2026-10-14
+# Global initializers: completed follow-up, 2026-10-14
+
+**The remaining 189/189 are now finished offline: every literal gate invocation
+printed `ok`, and every fresh-source emudiff invocation printed `same 8/8 profiles`.**
+Together with the earlier 204, this completes the original 393-entry selection:
+382 generated files and eleven manual files. No unfinished addresses/failing lines
+remain in this task. Database/queue status and in-game installation are not changed
+by this source completion.
+
+## Follow-up verification
+
+Last command over all 189 remaining entries (invokes both literal CLI tools, not
+stale build objects):
+
+```sh
+.venv/bin/python tools/initfngen.py --check --jobs 6 --timeout 180 --results work/initfn-cli-final.json > work/initfn-cli-final.log 2>&1
+```
+
+Final line: `total 189, supported 188, passed 189`. All 189 gate outputs are exactly
+`ok`; all 189 emulator comparisons cover 8/8 profiles. The earlier shared-cache
+retry also passed all 189 (`work/initfn-finished.json`). Generation used
+`tools/initfngen.py --write`; all 188 emitted files were compared against fresh
+generator output. The generator itself is unchanged.
+
+The original first-entry reproduction was:
+
+```sh
+.venv/bin/python tools/emudiff.py 008289f0 --src src/auto/008289f0.cpp -v
+```
+
+It returned `inconclusive cap x8` before the harness change. A block/event trace
+shows `_atexit -> __onexit -> __lock -> __mtinitlocknum -> malloc`, with hundreds
+of repeated mocked `HeapAlloc(..., 32)` events, rather than a loop in the tiny
+initializer. Running process CRT startup machinery against the emulator's
+uninitialized/profile-filled state is the blocker. `tools/emudiff.py` now treats
+CRT `_atexit` (selected by symbol, not initializer address) as a cdecl, one-callback
+boundary event. Its argument uses existing pointer normalization and is compared
+exactly, without unread-argument/stack-garbage/float tolerances. Other CRT helpers
+still execute normally. No gate or semantic-check policy was weakened.
+
+Acceptance evidence:
+
+* `.venv/bin/python tests/test_emudiff.py`: 24 tests pass, including the new
+  registration-boundary/callback-identity/self-pointer-normalization regression.
+* Unchanged-tool baseline:
+  `.venv/bin/python tools/emumut.py run --jobs 6 --out work/emumut-before.json`.
+* Replay:
+  `.venv/bin/python tools/emumut.py run --jobs 6 --replay work/emumut-before.json --out work/emumut-after.json`.
+* Comparison:
+  `.venv/bin/python tools/emumut.py compare work/emumut-before.json work/emumut-after.json`.
+  All 400 mutants pair with unchanged fingerprints. Both runs catch 292/400
+  (73.0%), miss 108, and have zero mutant errors/inconclusives. No lost catches
+  and no new control DIFF; controls remain 448 same / 12 inconclusive out of 460.
+* Mutating `008289f0` to register `0082a5e0` instead of `0082a5c0`:
+  `DIFF 8/8 profiles; profile 0: call 1 to 007aee43: arguments ['0082a5c0'] vs ['0082a5e0']`.
+* Mutating its constructed global to `008afc68` instead of `008afc64`:
+  `DIFF 8/8 profiles; profile 0: call 0 to 006b27e0: arguments ['008afc64'] vs ['008afc68']`.
+  Mutant sources and full verbose outputs are in `work/initfn-wrong-*.cpp/log`.
+
+`0082c404` is handwritten, without inline assembly. FXSAVE captures the raw CW;
+native `_controlfp` supplies the waiting query and 24-bit/masked-exception API;
+FXRSTOR applies the exact modified raw CW, including the denormal mask and
+reserved bits, while preserving the rest of the FP state, including MXCSR. `_controlfp` alone is not
+equivalent: its abstract flags omit raw reserved bits and cannot set the denormal
+mask. Unlike the original FWAIT/FNSTCW/FLDCW sequence, this implementation requires
+FXSR and uses native CRT calls and the normal void-cdecl volatile-register ABI.
+No game or CPU-minimum compatibility test was performed. Startup order and native
+CRT/data initialization requirements below still apply.
+
+The remainder of this document is the **historical partial-completion record**;
+its unfinished table describes the earlier attempt, not the current sources.
+
+# Historical partial completion, 2026-10-14
 
 **204 of 393 selected functions are finished: gate `ok` and fresh-source emudiff `same`.**
 194 are generated, ten are by hand. The 188 atexit initializers and one x87-control-word helper remain unfinished, and have no files under `src/auto/`. This is not standalone startup readiness.

@@ -22,9 +22,11 @@ CSF_FUNC(int, __fastcall, ComputeChildHandleFromSlot, 0x00515BD0, (void* self, v
 static int __fastcall CMenuMissionInfo_SyncPanelWithMissionState(CMenuMissionInfo* self, void* /*edx*/)
 {
     int gameStateA = GetGlobalValue_75FDF0();
+    int lastResult = gameStateA;
     if (CSF_AT(uint8_t, reinterpret_cast<void*>(gameStateA), 0xCC))
     {
         int gameStateB = GetGlobalValue_8B0568();
+        lastResult = gameStateB;
         if (!CSF_AT(uint8_t, reinterpret_cast<void*>(gameStateB), 0xB4))
         {
             int managerRef = GetGlobalValue_8B056C();
@@ -36,7 +38,7 @@ static int __fastcall CMenuMissionInfo_SyncPanelWithMissionState(CMenuMissionInf
                 panelOwner, nullptr, childHandle, panelRegion, 0);
         }
     }
-    return gameStateA;
+    return lastResult;
 }
 
 HOOK(0x0053D640, CMenuMissionInfo_SyncPanelWithMissionState, "auto");

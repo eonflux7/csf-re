@@ -7,31 +7,21 @@
 // It calls GetGlobalValue_521BB0 (0x521BB0), then calls Menu_5225D0 on the result,
 // then if the member pointer at offset 0x1E8 is non-null, it tail-jumps
 // to a virtual method at vtable slot 0x50/4 = 20 of that object.
+// Otherwise it returns 0 (eax is the null member pointer).
 
 CSF_FUNC(int, __cdecl, GetGlobalValue_521BB0, 0x521BB0, ());
 CSF_FUNC(int, __fastcall, Menu_5225D0, 0x5225D0, (void* self, void* edx));
 
-// Naked thunk performing the indirect tail jump.
-// The object pointer is passed in ecx (first __fastcall argument).
-// It loads the vtable and jumps to slot 0x50, forwarding the caller's
-// return address and stack unchanged.
-static __declspec(naked) int CMenuMpServerInfo_TailCallMemberVirtual(int* obj, void* /*edx*/)
-{
-    __asm {
-        mov eax, [ecx]
-        jmp dword ptr [eax + 0x50]
-    }
-}
-
-static int __fastcall CMenuMpServerInfo_InvokeMemberAction(int* self, void* /*edx*/)
-{
-    int* global = (int*)GetGlobalValue_521BB0();
+static hook::Tail __fastcall CMenuMpServerInfo_InvokeMemberAction(void* self, const uint32_t* args) {
+    (void)args;
+    void* global = reinterpret_cast<void*>(GetGlobalValue_521BB0());
     Menu_5225D0(global, nullptr);
 
-    int* member = CSF_AT(int*, self, 0x1e8);
-    if (member)
-        return CMenuMpServerInfo_TailCallMemberVirtual(member, nullptr);
-    return 0;
+    void* member = CSF_AT(void*, self, 0x1e8);
+    if (member == nullptr) {
+        return hook::tail_ret(0);
+    }
+    return hook::tail_jump(member, (*reinterpret_cast<void***>(member))[0x50 / 4]);
 }
 
-HOOK(0x530630, CMenuMpServerInfo_InvokeMemberAction, "auto");
+HOOK_TAIL(0x530630, CMenuMpServerInfo_InvokeMemberAction, "auto");

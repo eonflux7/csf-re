@@ -6,7 +6,8 @@ Both sides start with the same registers, arguments (typed from db/api.json) and
 base, everything else mapped on first touch with a deterministic fill (pointers into fresh zones, small ints,
 floats, zeros; several profiles, so several paths). A call that leaves the function is not executed: it is an
 event (target, arguments, ecx) answered by a mock with a deterministic result, popping what the original's call
-site pops (export/calls.json; tools/ida/export_calls.py). CRT helpers both sides use run for real.
+site pops (export/calls.json; tools/ida/export_calls.py). CRT helpers both sides use run for real,
+except process callback registration (atexit), which is an exact-argument event.
 
 Compared per profile: the call events in order, the bytes left at every non-stack address either side wrote,
 the return value (eax / st0 by the prototype), esp after the return, ebx/esi/edi/ebp. Floats may differ in the
@@ -122,6 +123,18 @@ def crt_ranges():
                 names.setdefault(r["name"], ea)
         return sorted(rs), names
     return load("crt", go)
+
+
+@functools.lru_cache(maxsize=1)
+def crt_events():
+    """Process callback registration is a boundary, not a pure CRT helper.
+
+    Running atexit's onexit table/locks/heap over profile-fill is not a model
+    of initialized CRT state. Record the registration itself on either side.
+    Key by CRT symbol, not by the initializer being checked.
+    """
+    return {ea: (0, 1, False, "int") for name, ea in crt_ranges()[1].items()
+            if name == "_atexit"}
 
 
 def api():
@@ -856,6 +869,8 @@ class Run:
             return True
         if SYS_BASE <= a < RET_MAGIC:
             return True
+        if a in crt_events():
+            return False
         import bisect
         i = bisect.bisect_right(self.crt, (a, 0xFFFFFFFF)) - 1
         return i >= 0 and self.crt[i][0] <= a < self.crt[i][1]
@@ -971,6 +986,10 @@ class Run:
             _, pop, nargs, use_ecx, rt = self.script[i][:5]
         else:
             pop, nargs, use_ecx, rt = 0, 0, False, "?"
+        # Known boundary ABI on BOTH sides; a malformed candidate must not
+        # acquire its argument count from whatever event it replaced.
+        if target in crt_events():
+            pop, nargs, use_ecx, rt = crt_events()[target]
         argv = struct.unpack(f"<{nargs}I", uc.mem_read(esp + 4, 4 * nargs)) if nargs else ()
         self.events.append((name or target, pop, nargs, use_ecx, rt, tuple(self.norm(a) for a in argv),
                             self.norm(uc.reg_read(X.UC_X86_REG_ECX)) if use_ecx else None,
@@ -1145,6 +1164,10 @@ def same_args(eo, em):
     original pushes a dword whose upper bytes are whatever its frame held: 0x512400 `mov edx, [ebp-4]; push edx`
     for a char); bytes of the original's value still holding the never-written stack fill (0xCC) are not
     compared (a frame dword passed on before it is written: 0x4696C0, 0x47EE50)."""
+    if eo[0] in crt_events():
+        # Callback identity is exact: never treat it as unread stack garbage
+        # or as a floating-point value with a rounding tolerance.
+        return eo[5] == em[5]
     if eo[5] == em[5]:
         return True
     if len(eo[5]) != len(em[5]):

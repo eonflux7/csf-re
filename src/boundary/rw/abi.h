@@ -15,10 +15,39 @@ struct Frame {
     Frame *child, *next, *root;
 };
 struct ObjectWithFrame { Object object; Link inFrame; void (__cdecl *sync)(ObjectWithFrame*); };
+struct Image {
+    int flags, width, height, depth, stride;
+    unsigned char *pixels, *palette;
+};
+struct Raster {
+    Raster* parent;
+    unsigned char *pixels, *palette;
+    int width, height, depth, stride;
+    short offsetX, offsetY;
+    unsigned char type, flags, privateFlags, format;
+    unsigned char* originalPixels;
+    int originalWidth, originalHeight, originalStride;
+};
+struct TexDictionary;
+struct Texture {
+    Raster* raster;
+    TexDictionary* dict;
+    Link inDict;
+    char name[32], mask[32];
+    unsigned int filterAddressing;
+    int refCount;
+};
+struct TexDictionary { Object object; Link textures, inGlobalList; };
 static_assert(sizeof(rw::Matrix) == 64);
 static_assert(offsetof(rw::Matrix, flags) == 12);
 static_assert(offsetof(rw::Matrix, pos) == 48);
 #if UINTPTR_MAX == 0xffffffff
+static_assert(sizeof(Image) == 0x1c && offsetof(Image, pixels) == 0x14);
+static_assert(sizeof(Raster) == 0x34 && offsetof(Raster, width) == 0xc);
+static_assert(offsetof(Raster, format) == 0x23);
+static_assert(sizeof(Texture) == 0x58 && offsetof(Texture, refCount) == 0x54);
+static_assert(offsetof(Texture, filterAddressing) == 0x50);
+static_assert(sizeof(TexDictionary) == 0x18);
 static_assert(offsetof(Frame, matrix) == 0x10);
 static_assert(offsetof(Frame, ltm) == 0x50);
 static_assert(offsetof(Frame, objects) == 0x90);

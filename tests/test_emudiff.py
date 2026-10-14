@@ -48,6 +48,15 @@ extern "C" int __cdecl IndirectExternal(unsigned target)
 {
     return reinterpret_cast<int(__cdecl*)()>(target)();
 }
+extern "C" int __cdecl atexit(void (__cdecl*)());
+extern "C" int __cdecl RegisterCallback(unsigned callback)
+{
+    return atexit(reinterpret_cast<void (__cdecl*)()>(callback));
+}
+extern "C" void __cdecl RegisterSelf()
+{
+    atexit(RegisterSelf);
+}
 ''')
         cls.obj_path = os.path.join(cls.tmp.name, "probes.obj")
         subprocess.run(gate.compile_cmd() + [f"/Fo{cls.obj_path}", "-c", "--", str(source)],
@@ -91,6 +100,31 @@ extern "C" int __cdecl IndirectExternal(unsigned target)
                 self.assertEqual(run.status, "ret")
                 self.assertEqual(len(run.events), 1)
                 self.assertEqual(run.events[0][0], "_ExternalValue" if direct else target)
+
+    def test_atexit_is_an_exact_callback_event_not_crt_startup(self):
+        target = emudiff.crt_ranges()[1]['_atexit']
+        obj = emudiff.Obj(self.obj_path, 'RegisterCallback')
+        runs = []
+        for callback in (0x82A5C0, 0x82A5E0):
+            run = emudiff.Run(0, 0, obj.code, obj)
+            run.args = lambda callback=callback: [callback]
+            run.start(obj.entry)
+            self.assertEqual(run.status, 'ret')
+            self.assertEqual(run.esp, emudiff.ESP0 + 4)
+            self.assertTrue(run.kept)
+            self.assertEqual(run.written, set())
+            self.assertEqual(len(run.events), 1)
+            self.assertEqual(run.events[0][:4], (target, 0, 1, False))
+            self.assertEqual(run.events[0][5], (callback,))
+            runs.append(run)
+        self.assertFalse(emudiff.same_args(runs[0].events[0], runs[1].events[0]))
+        # Callback pointers within the candidate's own image retain the
+        # existing original-address normalization, rather than comparing
+        # its relocated entry against the original's numeric address.
+        obj = emudiff.Obj(self.obj_path, 'RegisterSelf')
+        run = emudiff.Run(0x401000, 0, obj.code, obj).start(obj.entry)
+        self.assertEqual(run.status, 'ret')
+        self.assertEqual(run.events[0][5], (0x401000,))
 
     def test_wrapped_mock_pointer_sees_identical_object_bytes(self):
         obj = emudiff.Obj(self.obj_path, 'FixedProbe')

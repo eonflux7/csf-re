@@ -16,11 +16,15 @@ CSF_FUNC(void*, __fastcall, GetReferencedObject, 0x6683F0, (void* self, void* ed
 // Dispatches a menu input/command code for a progress bar / text input control.
 // Codes 1, 14 and 28 are forwarded to the object one dword before `self`
 // (vtable slot 19). Code 50 is forwarded to a child obtained from `self` (vtable slot 7),
-// but only when the flag byte at a3+56 is set. Every other code leaves the
-// result as (code - 1) truncated to a byte.
-static char __fastcall MenuProgress_HandleInputCode(void* self, void* /*edx*/, int a2, int a3)
+// but only when the flag byte at a3+56 is set. The original returns the whole eax, not
+// a byte: the callee's full eax for the forwarded codes, the flag zero-extended for code 50.
+// Other codes: the original computes eax = code - 1, and when (code - 1) <= 49 (unsigned)
+// it looks up a jump-table slot index in a byte table (slot 2 = default) and overwrites eax
+// with that index before jumping, so the default path returns 2 in eax. Codes with
+// (code - 1) > 49 (unsigned) return code - 1 in full.
+static int __fastcall MenuProgress_HandleInputCode(void* self, void* /*edx*/, int a2, int a3)
 {
-    char result = static_cast<char>(a2 - 1);
+    int result = a2 - 1;
 
     switch (a2)
     {
@@ -31,7 +35,7 @@ static char __fastcall MenuProgress_HandleInputCode(void* self, void* /*edx*/, i
         // Original: eax = [ecx-4]; ecx = ecx-4; call [eax+0x4c]
         void* owner = reinterpret_cast<void*>(reinterpret_cast<uint8_t*>(self) - 4);
         void** vtbl = *reinterpret_cast<void***>(owner);
-        result = reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x4c / 4])(owner, nullptr);
+        result = reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x4c / 4])(owner, nullptr);
         break;
     }
     case 50:
@@ -41,11 +45,14 @@ static char __fastcall MenuProgress_HandleInputCode(void* self, void* /*edx*/, i
         {
             void* child = GetReferencedObject(self, nullptr);
             void** vtbl = *reinterpret_cast<void***>(child);
-            result = reinterpret_cast<char(__fastcall*)(void*, void*)>(vtbl[0x1c / 4])(child, nullptr);
+            result = reinterpret_cast<int(__fastcall*)(void*, void*)>(vtbl[0x1c / 4])(child, nullptr);
         }
         break;
     }
     default:
+        // Original: eax = code - 1; if ((unsigned)eax <= 49) eax = jump-table slot index (2 = default)
+        if (static_cast<unsigned int>(a2 - 1) <= 49u)
+            return 2;
         return result;
     }
     return result;

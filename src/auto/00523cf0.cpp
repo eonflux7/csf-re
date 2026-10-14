@@ -48,9 +48,10 @@ static int __fastcall S_00523cf0_ProcessObjectReference(
     if (shouldFinalize)
     {
         void* owner = CSF_AT(void*, object, 4);
-        const bool result = ((bool(__fastcall*)(void*, void*, void*))
+        // Original tests only al (test al, al) but returns the whole eax.
+        const int result = ((int(__fastcall*)(void*, void*, void*))
             CSF_AT(void**, owner, 0)[0x7C / 4])(owner, nullptr, object);
-        if (result)
+        if (static_cast<std::uint8_t>(result))
         {
             CSF_AT(std::uint8_t, object, 0) = 0;
             return result;
