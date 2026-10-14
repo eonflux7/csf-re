@@ -27,8 +27,9 @@ def main():
     # Keep optional boundary tracing visible across WSL interop as well as
     # the dry-run switch. No tracing is enabled unless the caller asks for it.
     exports = [os.environ.get("WSLENV", ""), "CSF_DRYRUN/w"]
-    if "CSF_RW_TRACE" in os.environ:
-        exports.append("CSF_RW_TRACE/w")
+    for v in ("CSF_RW_TRACE", "CSF_HANG_SECONDS"):  # HANG: the exe dumps its main thread then (tools/dbg/stdsym.py)
+        if v in os.environ:
+            exports.append(v + "/w")
     env = dict(os.environ, CSF_DRYRUN="0" if a.full else "1",
                WSLENV=":".join(e for e in exports if e))
     t0 = time.time()
@@ -44,7 +45,8 @@ def main():
     if a.full:
         open(os.path.join(a.dir, "winmain.out"), "w").write(out)
         trap = re.search(r"^csf: UNRESOLVED .*$", out, re.M)
-        print(f"full run: exit {code}; {trap.group(0) if trap else 'no trap'}; {a.dir}/winmain.out")
+        hang = "; HANG dump: tools/dbg/stdsym.py" if "csf: HANG" in out else ""
+        print(f"full run: exit {code}; {trap.group(0) if trap else 'no trap'}; {a.dir}/winmain.out{hang}")
         return
     open(os.path.join(a.dir, "dryrun.out"), "w").write(out)
     ran = re.findall(r"^csf: (xc)\[(\d+)\] (0x[0-9A-Fa-f]+)", out, re.M)

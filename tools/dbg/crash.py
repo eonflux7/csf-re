@@ -79,6 +79,21 @@ else:
             break
         print(f"  ASM {a:08X} {ins.instruction}")
         a += ins.instr_size
+    # what each register points at (two levels: the object's first words, then what its first word points at:
+    # a vtable's slots), so objects and vtables can be named offline (tools/dbg/stdsym.py)
+    for n in ("eax", "ebx", "ecx", "edx", "esi", "edi", "ebp"):
+        p = getattr(ctx, n)
+        try:
+            ws = [c.read_dword(p + 4 * i) for i in range(12)] if p > 0x10000 and c.check_valid_read_ptr(p) else None
+        except Exception:
+            ws = None
+        if ws:
+            print(f"  MEM {n} {p:08X}: " + " ".join(f"{w:08X}" for w in ws))
+            try:
+                if ws[0] > 0x10000 and c.check_valid_read_ptr(ws[0]):
+                    print(f"  MEM {n}[0] {ws[0]:08X}: " + " ".join(f"{c.read_dword(ws[0] + 4 * i):08X}" for i in range(8)))
+            except Exception:
+                pass
     esp = ctx.esp
     for i in range(96):
         try:
