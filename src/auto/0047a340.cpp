@@ -45,7 +45,7 @@ static int __fastcall C_008318c8_Initialize(
 
     if (sceneObject)
     {
-        alignas(4) uint8_t options[0xB8] = {};
+        alignas(4) uint8_t options[0xB8];
         InitializeSceneObjectOptions(options, nullptr);
 
         uint32_t flags = CSF_AT(uint32_t, options, 0);

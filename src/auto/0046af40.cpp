@@ -104,10 +104,11 @@ static int __fastcall MissionScript_SerializeMembers(
     if (ready)
     {
         void* serializer = CSF_AT(void*, archive, 0x04);
-        const bool result = ((bool(__fastcall*)(void*, void*, void*))
+        // Original tests only al (test al, al) but returns the whole eax.
+        const int result = ((int(__fastcall*)(void*, void*, void*))
             CSF_AT(void**, serializer, 0)[0x7C / 4])(
                 serializer, nullptr, archive);
-        if (result)
+        if (static_cast<std::uint8_t>(result) != 0)
         {
             CSF_AT(std::uint8_t, archive, 0x00) = 0;
             return result;

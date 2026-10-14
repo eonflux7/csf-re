@@ -78,10 +78,10 @@ static int __fastcall S_0041f0a0_SerializeAttackTaskState(
     if (canFinish)
     {
         void* stream = CSF_AT(void*, archive, 0x04);
-        const bool result =
-            reinterpret_cast<bool(__fastcall*)(void*, void*, S_0041f0a0*)>(
+        const int result =
+            reinterpret_cast<int(__fastcall*)(void*, void*, S_0041f0a0*)>(
                 CSF_AT(void**, stream, 0)[0x7C / 4])(stream, nullptr, archive);
-        if (result)
+        if (static_cast<uint8_t>(result) != 0)
         {
             CSF_AT(uint8_t, archive, 0x00) = 0;
             return result;

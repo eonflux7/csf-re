@@ -27,7 +27,7 @@ static char __fastcall C_00862490_GetDirection(
         std::uint32_t* matrix;
         char destroyMatrix;
         char padding[3];
-    } result{};
+    } result;
 
     auto* matrixReference =
         reinterpret_cast<void* (__fastcall*)(void*, void*, MatrixResult*)>(
