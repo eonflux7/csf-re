@@ -88,14 +88,15 @@ Stage since 2026-10-13: the waves are exhausted at 91.9% of game code. What is l
 user 2026-10-13); the orchestrator writes the
 tasks, reviews reports and patches, decides. Everything is visible on `tools/webmon.py` (user, 2026-10-13).
 
-State on 2026-10-14, afternoon: the standalone exe (`/mnt/e/dev/csf-standalone`, `tools/dryrun.py --full`) runs
-all C++ initialisers, enters WinMain, initialises NetZ and DirectInput, reaches RW EngineInit and stops at the
-first RW plugin attach (0x58D0B0, called from 0x506CF0). Static reach from WinMain (docs/WINMAIN_REACH.txt): trap
-slots rw 58, netz 2, crt 2, game 1, not-a-function 3. Jobs' output enters the tree only after review.
+State on 2026-10-14, evening: the standalone exe (`/mnt/e/dev/csf-standalone`, `tools/dryrun.py --full`) runs
+all C++ initialisers, enters WinMain, initialises NetZ and DirectInput, RW plugins, the camera, particle classes
+and the world, and stops at RenderWare's file-system manager init (0x7C5F60). Game functions missing from the
+standalone: 27 (+5 not in the queue). Static reach from WinMain: docs/WINMAIN_REACH.txt (direct calls) and
+docs/WINMAIN_REACH_VTABLES.txt (`--vtables`, an upper bound). Jobs' output enters the tree only after review.
 
-1. **Run the standalone to its first presented frame**, stop by stop: RW plugin attach and the rest of RW start-up
-   (job rwplugins, sol-hi), the other WinMain traps (job wmrest, sol-med: CRT __wfopen/_wsystem, 2 NetZ, game
-   0x6A2F90, 3 not-a-function targets). Each stop: dryrun --full, `tools/dbg.sh crash 60 <exe> full` on a crash.
+1. **Run the standalone to its first presented frame**, stop by stop: RtFS and DDS (job rwfs), the particle
+   callbacks left (rw8b), the 32 undecided game functions after emudiff can decide them (emufix4). Each stop:
+   dryrun --full, `tools/dbg.sh crash 60 <exe> full` on a crash.
 2. **RenderWare on librw** beyond start-up: docs/RW_PORT.md slices, 188 slots unresolved.
 3. **Installed functions that differ in emudiff**: emufix3 removed most false-alarm causes; what still differs goes
    to grouped sol-med jobs (`work/measure/groupwaves.py`, at most 5-6 sol jobs at once, user 2026-10-14).

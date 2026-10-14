@@ -1679,4 +1679,16 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   wmrest (sol-med) started for the 58 RW and 8 other trap slots WinMain reaches.
 - emufix3's 3 control DIFFs were real: 0x431780, 0x50C1B0, 0x525A50 return a char-returning callee's whole eax in
   the original; ours returned 0 or another value. Fixed; gate ok.
+- Jobs rwplugins (39 RW slots; the geometry/world-sector register functions were swapped: 0x590400 pushes the
+  0x88-byte registry 0x89A858, 0x590BA0 the 0x60-byte 0x89A870) and wmrest (CRT __wfopen/_wsystem, 2 NetZ,
+  0x6A2F90 = zlib's zalloc, cdecl with an ignored opaque: that explains its earlier in-game crash) in. The run then
+  stopped at NetZ 0x68B5F0, reached only through vtables game code installs: `initreach.py --vtables` follows
+  them (an upper bound: 12,704 functions; NetZ trap slots 128). Job netzvt did the 25 reached-vtable NetZ slots.
+- 25 grouped sol-med jobs (work/tasks/gamerest, at most 5 sol jobs at once) on the 98 game functions missing from
+  the standalone: 66 adopted in 45 minutes (gate + emudiff same). The 32 left are mostly emudiff `inconclusive`:
+  the original faults or hits the cap in every profile, unknown cleanup at indirect calls, mocked no-return calls
+  (RaiseException) returning; job emufix4 (sol-hi) works on those causes (work/measure/gamerest_left.txt).
+- Job rw8 (slice 8, particles, partial): the run now creates the camera and its rasters, the particle classes and
+  the world, then stops at 0x7C5F60, RenderWare's file-system manager init (misnamed RwResourcesSetArenaSize).
+  Jobs rwfs (sol-hi: RtFS on host files, DDS) and rw8b (sol-med: three particle callbacks, compressed keyframes).
 
