@@ -6,17 +6,18 @@
 #include "types/auto_classes.h"
 
 CSF_FUNC(int, __cdecl, GetGlobalState_50D190, 0x0050D190, ());
-CSF_FUNC(char, __fastcall, Menus_GetInnerObjectFlag, 0x0050D800, (void* self, void*));
+// Declared int: the original returns this call's whole eax when the flag (al) is clear.
+CSF_FUNC(int, __fastcall, Menus_GetInnerObjectFlag, 0x0050D800, (void* self, void*));
 CSF_FUNC(int, __cdecl, GetGlobalValue_6C5760, 0x006C5760, ());
 CSF_FUNC(int, __stdcall, RwEngine_SetRenderState, 0x006C7B40, (int a1, int a2));
 CSF_FUNC(void, __cdecl, Hud_RenderWidgetAtScaledRect, 0x0042F4F0, (void* widget, const int* rect));
 
 static int __fastcall Hud_RenderDebugOverlay(void* self, void* /*edx*/)
 {
-    const char enabled = Menus_GetInnerObjectFlag(
+    const int enabled = Menus_GetInnerObjectFlag(
         reinterpret_cast<void*>(GetGlobalState_50D190()), nullptr);
-    if (!enabled)
-        return 0;
+    if (!static_cast<char>(enabled))
+        return enabled;
 
     if (CSF_AT(int*, self, 0x154) == nullptr)
         return 0;

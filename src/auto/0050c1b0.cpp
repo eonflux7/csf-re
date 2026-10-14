@@ -20,8 +20,9 @@ CSF_FUNC(void*, __fastcall, AssignStringSubstring, 0x004109E0,
 CSF_FUNC(void*, __cdecl, MenuPage_LookupByName, 0x00541580,
          (void* stringObject, int unusedArg2, int unusedArg3));
 
-// Original 0x6B15D0: char __thiscall (this, a2, a3, a4), ret 12
-CSF_FUNC(char, __fastcall, MenuRuntime_SetPageByIndex, 0x006B15D0,
+// Original 0x6B15D0: char __thiscall (this, a2, a3, a4), ret 12. Declared int: its whole eax is this function's
+// return value on the paths that do not free.
+CSF_FUNC(int, __fastcall, MenuRuntime_SetPageByIndex, 0x006B15D0,
          (void* self, void* edx, int a2, int a3, int a4));
 
 // Original 0x690E60: int __cdecl Mem_FreeDebug(void* Block)
@@ -47,9 +48,8 @@ static void* __fastcall CMenuScreenFader_SwitchScreenByName(CMenuScreenFader* se
     void* lookedUpPage = MenuPage_LookupByName(localString, 2, 0);
     int pageHandle = static_cast<int>(reinterpret_cast<uintptr_t>(lookedUpPage));
 
-    char pageSetByte = MenuRuntime_SetPageByIndex(
-        reinterpret_cast<void*>(static_cast<uintptr_t>(GetGlobalInt())), nullptr, pageHandle, 2, 0);
-    void* result = reinterpret_cast<void*>(static_cast<intptr_t>(pageSetByte));
+    void* result = reinterpret_cast<void*>(static_cast<intptr_t>(MenuRuntime_SetPageByIndex(
+        reinterpret_cast<void*>(static_cast<uintptr_t>(GetGlobalInt())), nullptr, pageHandle, 2, 0)));
 
     uint32_t bufferCapacity = *reinterpret_cast<uint32_t*>(localString + 0x18);
     self->m_state = 3;

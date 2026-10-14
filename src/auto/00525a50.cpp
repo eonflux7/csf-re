@@ -13,7 +13,8 @@
 CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 
 CSF_FUNC(uint32_t, __fastcall, GetSceneMenuContext, 0x0044FC60, (void* self, void* edx));
-CSF_FUNC(char, __stdcall, sub_525370, 0x00525370, (int a1));
+// Declared int: the original returns its whole eax when it decides.
+CSF_FUNC(int, __stdcall, sub_525370, 0x00525370, (int a1));
 CSF_FUNC(int, __fastcall, SceneLoader_GetResourceById, 0x007567C0, (void* self, void* edx, int a2));
 CSF_FUNC(int, __cdecl, GetGlobalValue_8BC1E0, 0x00756A10, ());
 
@@ -31,23 +32,15 @@ static int __fastcall C_00833908_SetSceneResourceIfSceneMatches(C_00833908* self
             int currentResource = static_cast<int>(self->field_002c);
             result = currentResource;
 
-            bool replace = false;
-            if (currentResource == -1)
+            bool replace = currentResource == -1;
+            if (!replace)
             {
-                replace = true;
-            }
-            else
-            {
-                char currentIsPositional = sub_525370(currentResource);
-                if (currentIsPositional)
+                result = sub_525370(currentResource);
+                replace = static_cast<char>(result) != 0;
+                if (!replace)
                 {
-                    replace = true;
-                }
-                else
-                {
-                    char newIsPositional = sub_525370(resourceId);
-                    if (!newIsPositional)
-                        replace = true;
+                    result = sub_525370(resourceId);
+                    replace = static_cast<char>(result) == 0;
                 }
             }
 
