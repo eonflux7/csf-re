@@ -44,7 +44,8 @@ NATIVE = {"_sqrt": "DD442404D9FAC3", "_sin": "DD442404D9FEC3", "_cos": "DD442404
           # the original goes through __CIatan2 & co (CRT, run for real): fpatan / fptan here
           "_atan2": "DD442404DD44240CD9F3C3", "_atan2f": "D9442404D9442408D9F3C3",
           "_atan": "DD442404D9E8D9F3C3", "_atanf": "D9442404D9E8D9F3C3",
-          "_tan": "DD442404D9F2DDD8C3", "_tanf": "D9442404D9F2DDD8C3"}
+          "_tan": "DD442404D9F2DDD8C3", "_tanf": "D9442404D9F2DDD8C3",
+          "_log2": "D9E8DD442404D9F1C3"}  # fld1; fld double argument; fyl2x
 NATIVE_AT = {n: SYS_BASE + 0x100 + 16 * i for i, n in enumerate(NATIVE)}
 FLOATS = [0.0, 1.0, 0.5, 2.0, -1.0, 100.0]
 
@@ -52,7 +53,8 @@ GARBAGE_HI = {(ZONES + 0x0A000100 + k * 0x100000) >> 16 for k in (1, 2, 3, 4)}  
 SAVED_REGS = {ZONES + 0x0A000100 + k * 0x100000 for k in (2, 3, 4)}  # initial ebx, esi, edi
 ECX0 = ZONES + 0x0A000100
 EAX0 = ZONES + 0x0A500100  # a pointer: a few functions take an argument in eax (0x6A0540, zlib's static helpers)
-BYTE_TYPES = ("bool", "char", "uint8_t", "unsigned char", "int8_t", "signed char", "_BOOL1", "BOOL1")
+BYTE_TYPES = ("bool", "char", "uint8_t", "unsigned char", "int8_t", "signed char", "_BOOL1", "BOOL1",
+              "std::uint8_t", "std::int8_t")
 
 _cache = {}
 import threading  # noqa: E402
@@ -146,7 +148,8 @@ def call_pops():
 
 
 
-def infer_stack_pops(ins, direct_pops, entry=None, known=None, groups=None, domains=None, strict=False):
+def infer_stack_pops(ins, direct_pops, entry=None, known=None, groups=None, domains=None, strict=False,
+                     clean_frame=False):
     """Prove call cleanup from the original's CFG, without consulting the candidate.
 
     SP and outstanding pushed arguments are affine expressions in unknown indirect-call pops.
@@ -176,6 +179,16 @@ def infer_stack_pops(ins, direct_pops, entry=None, known=None, groups=None, doma
 
     equalities, nonnegative, pops, variables, seen = [], [], {}, set(), {}
     sites = {}
+    # MSVC reserves small EBP-framed locals with PUSH ECX, not SUB ESP.
+    # Only the contiguous reservation immediately following MOV EBP,ESP
+    # qualifies; later pushes of ECX are outgoing arguments.
+    local_pushes = set()
+    for pc, i in ins.items():
+        if i.mnemonic == 'mov' and i.op_str == 'ebp, esp':
+            p = pc + i.size
+            while p in ins and ins[p].mnemonic == 'push' and ins[p].op_str == 'ecx':
+                local_pushes.add(p)
+                p += ins[p].size
     todo = [(entry if entry is not None else min(ins), ({}, {}, None, {}, frozenset(regs)))]
 
     def equal(a, b):
@@ -238,7 +251,9 @@ def infer_stack_pops(ins, direct_pops, entry=None, known=None, groups=None, doma
         sp, args, saves = sp.copy(), args.copy(), saves.copy()
         if mn == 'push':
             sp = plus(sp, {None: -4})
-            if op in pristine and op in popregs and op not in saves:
+            if pc in local_pushes:
+                pass
+            elif op in pristine and op in popregs and op not in saves:
                 equal(args, {})
                 saves[op] = sp.copy()
             else:
@@ -273,12 +288,18 @@ def infer_stack_pops(ins, direct_pops, entry=None, known=None, groups=None, doma
         elif mn == 'mov' and op == 'esp, ebp':
             if bp is None:
                 return failure
+            if clean_frame:
+                equal(args, {})
             sp, args = bp.copy(), {}
         elif mn == 'leave':
             if bp is None or 'ebp' not in saves:
                 return failure
             equal(bp, saves.pop('ebp'))
+            if clean_frame:
+                equal(args, {})
             sp, args = plus(bp, {None: 4}), {}
+        elif mn == 'lea' and op == 'esp, [esp]':
+            pass  # MSVC alignment NOP, not a dynamic stack adjustment.
         elif mn == 'call':
             n = known.get(pc)
             if n is None and i.operands[0].type == capstone.x86.X86_OP_IMM:
@@ -292,9 +313,13 @@ def infer_stack_pops(ins, direct_pops, entry=None, known=None, groups=None, doma
                 variables.add(key)
                 sp, args = plus(sp, {key: 1}), plus(args, {key: -1})
             nonnegative.append(args)
-        elif mn == 'ret' or (mn == 'jmp' and i.operands[0].type != capstone.x86.X86_OP_IMM):
+        elif mn == 'ret' or (mn == 'jmp' and i.operands[0].type == capstone.x86.X86_OP_IMM
+                            and i.operands[0].imm not in ins) or (mn == 'jmp'
+                            and i.operands[0].type == capstone.x86.X86_OP_MEM and not i.operands[0].mem.index):
             equal(sp, {})
             continue
+        elif mn == 'jmp' and i.operands[0].type != capstone.x86.X86_OP_IMM:
+            return failure  # A switch is not a return: its cases still use this frame.
         elif any(i.reg_name(r) == 'esp' for r in i.regs_access()[1]):
             return failure  # Dynamic/aligned frames and unmodelled stack instructions.
         if mn not in ('push', 'call', 'pop'):
@@ -354,7 +379,7 @@ def binary_call_pop(target):
 
 
 @functools.lru_cache(maxsize=None)
-def stack_call_pops(ea):
+def stack_call_pops(ea, constraints_only=False):
     import capstone
     md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
     md.detail = True
@@ -367,7 +392,23 @@ def stack_call_pops(ea):
              and (n := dispatch_call_pop(v['target'], v.get('receiver'))) is not None}
     groups = {pc: v['group'] for pc, v in evidence.items() if 'group' in v}
     direct = lambda site, target: dispatch_call_pop(target, evidence.get(site, {}).get('receiver'))
+    # A prototype may constrain an ambiguous caller, but must cover the exact
+    # machine dispatch sequence and satisfy the *whole* original stack CFG.
+    typed = typed_indirect_calls(ea)
+    # Same slot does not imply same cleanup when a receiver is used through
+    # different prototypes (e.g. optional argument at 535F60's slot 5C).
+    for pc in list(groups):
+        if pc in typed:
+            groups[pc] = (groups[pc], typed[pc]['pop'])
     initial = infer_stack_pops(ins, direct, ea, known, groups)
+    fixed = dict(known)
+    fixed.update(initial)  # Binary/unique caller facts outrank typed metadata.
+    fixed.update({pc: v['pop'] for pc, v in typed.items() if v['pop'] is not None and pc not in fixed})
+    if typed and infer_stack_pops(ins, direct, ea, fixed, groups, strict=True, clean_frame=True) is not None:
+        known = fixed
+        initial = infer_stack_pops(ins, direct, ea, known, groups)
+    if constraints_only:
+        return initial
     domains, patterns = virtual_pop_domains(evidence)
     for receiver, choices in patterns.items():
         sites = {pc: group for pc, group in groups.items() if group[0] == receiver}
@@ -591,6 +632,123 @@ def returns_al(ea):
     return False
 
 
+@functools.lru_cache(maxsize=None)
+def callsite_abi(ea, site):
+    """Convention evidence for an unresolved indirect call, never the candidate.
+
+    A uniform set of IDA function-pointer declarations/casts supplies a
+    stack-only convention; mixed/untyped functions remain unknown. Callback
+    arguments have a more precise proof: CALL [EBP+offset] names the typed
+    argument directly. Unknown or mixed conventions retain ECX comparison.
+    """
+    import capstone
+    md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+    img, _ = exe_image()
+    ins = [i for lo, hi in own_ranges(ea)[0] for i in md.disasm(img[lo-IMG:hi-IMG], lo)]
+    calls = [i for i in ins if i.mnemonic == 'call' and not i.op_str.startswith('0x')]
+    call = next((i for i in calls if i.address == site), None)
+    if call is None:
+        return None
+    path = os.path.join(ROOT, 'export', 'funcs', f'{ea:08x}.c')
+    if os.path.exists(path):
+        with open(path) as f:
+            text = f.read()
+        casts = re.findall(r'\(__(cdecl|stdcall|thiscall|fastcall)\s*\*', text)
+        if casts and len(set(casts)) == 1 and casts[0] in ('cdecl', 'stdcall'):
+            return False
+    # Function-pointer parameters are not casts in the decompilation.
+    m = re.fullmatch(r'dword ptr \[ebp \+ (0x[0-9a-f]+|\d+)\]', call.op_str)
+    if m:
+        abi = load('abi', lambda: json.load(open(os.path.join(ROOT, 'export', 'abi.json'))))
+        args = [t for t, _, loc in abi.get(f'{ea:08x}', {}).get('args', []) if loc == 'stack']
+        k = (int(m[1], 0) - 8) // 4
+        if 0 <= k < len(args) and re.search(r'\(__(?:cdecl|stdcall)\s*\*\)', args[k]):
+            return False
+    return None
+
+
+@functools.lru_cache(maxsize=None)
+def typed_indirect_calls(ea):
+    """Typed casts paired with the exact original sequence of vtable offsets.
+
+    Refuse partial/mixed syntax and reordered dispatches; this is metadata,
+    not RET evidence. stack_call_pops additionally requires CFG consistency.
+    """
+    import capstone
+    path = os.path.join(ROOT, 'export', 'funcs', f'{ea:08x}.c')
+    if not os.path.exists(path):
+        return {}
+    with open(path) as f:
+        source = f.read()
+    casts = []
+    pattern = r'\(__(cdecl|stdcall|thiscall|fastcall)\s*\*\*\)\(([^()]*)\)\)\('
+    for m in re.finditer(pattern, source):
+        start, end, depth = m.end(), m.end(), 1
+        while end < len(source) and depth:
+            depth += (source[end] == '(') - (source[end] == ')')
+            end += 1
+        expr = source[start:end-1].strip()
+        offset = re.search(r'\+\s*(0x[\da-fA-F]+|\d+)\s*$', expr)
+        slot = int(offset[1], 0) if offset else 0
+        params = split_params(m[2])
+        conv = m[1]
+        stack = params[1:] if conv == 'thiscall' else params[2:] if conv == 'fastcall' else params
+        pop = 0 if conv == 'cdecl' else sum(8 if t.strip() in ('double', '__int64', 'long long') else 4 for t in stack)
+        casts.append(dict(slot=slot, pop=pop, ecx=conv in ('thiscall', 'fastcall'), types=stack))
+    md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+    img, _ = exe_image()
+    calls = [i for lo, hi in own_ranges(ea)[0] for i in md.disasm(img[lo-IMG:hi-IMG], lo)
+             if i.mnemonic == 'call' and not i.op_str.startswith('0x')]
+    if len(casts) != len(calls) or not casts:
+        return {}
+    result = {}
+    for i, v in zip(calls, casts):
+        m = re.fullmatch(r'dword ptr \[e[a-z]{2}(?: \+ (0x[\da-f]+|\d+))?\]', i.op_str)
+        if not m or int(m[1] or '0', 0) != v['slot']:
+            return {}
+        result[i.address] = v
+    return result
+
+
+@functools.lru_cache(maxsize=None)
+def callback_return_type(ea, site):
+    """Return type of a CALL through a typed EBP stack parameter."""
+    from packet import disasm
+    ins = next((i for lo, hi in own_ranges(ea)[0] for i in disasm(lo, hi-lo) if i.address == site), None)
+    m = re.fullmatch(r'dword ptr \[ebp \+ (0x[0-9a-f]+|\d+)\]', ins.op_str) if ins else None
+    if not m:
+        return None
+    abi = load('abi', lambda: json.load(open(os.path.join(ROOT, 'export', 'abi.json'))))
+    args = [t for t, _, loc in abi.get(f'{ea:08x}', {}).get('args', []) if loc == 'stack']
+    k = (int(m[1], 0) - 8) // 4
+    if 0 <= k < len(args):
+        match = re.match(r'(.+?)\s*\(__\w+\s*\*\)', args[k])
+        if match:
+            t = match[1].strip()
+            return 'char' if t in ('unsigned __int8', '__int8') else t
+    return None
+
+
+@functools.lru_cache(maxsize=None)
+def named_vslot_types(ea, site):
+    """An explicit typed vSlotXX cast supplies parameter *widths*, not cleanup."""
+    from packet import disasm
+    ins = next((i for lo, hi in own_ranges(ea)[0] for i in disasm(lo, hi-lo) if i.address == site), None)
+    m = re.fullmatch(r'dword ptr \[e[a-z]{2} \+ (0x[\da-f]+|\d+)\]', ins.op_str) if ins else None
+    path = os.path.join(ROOT, 'export', 'funcs', f'{ea:08x}.c')
+    if not m or not os.path.exists(path):
+        return []
+    with open(path) as f:
+        source = f.read()
+    slot = int(m[1], 0)
+    choices = []
+    for cast in re.finditer(r'\(__(thiscall|stdcall|cdecl|fastcall)\s*\*\)\(([^()]*)\)\)\w+->vSlot([\da-fA-F]+)', source):
+        if int(cast[3], 16) == slot:
+            params = split_params(cast[2])
+            choices.append(params[1:] if cast[1] == 'thiscall' else params[2:] if cast[1] == 'fastcall' else params)
+    return choices[0] if choices and all(p == choices[0] for p in choices) else []
+
+
 def h32(x):
     x = (x ^ (x >> 16)) * 0x7FEB352D & 0xFFFFFFFF
     x = (x ^ (x >> 15)) * 0x846CA68B & 0xFFFFFFFF
@@ -619,6 +777,47 @@ def fill_word(addr, prof):
 
 def fill_page(base, prof):
     return b"".join(struct.pack("<I", fill_word(base + i, prof)) for i in range(0, 0x1000, 4))
+
+
+def mock_outputs(target, index, prof, argv, ecx, result):
+    """Narrow, instruction-audited boundary output contracts.
+
+    These are writes, not comparison exemptions. Each side receives identical
+    event/profile-dependent values at its own output addresses. Initial output
+    contents are irrelevant only for these proven overwrites. No blanket
+    pointer-argument dirtying (many pointers are input-only).
+    """
+    ptr = ZONES + 0x0D000000 + index * 0x10000 + 0x100
+    word = lambda n: struct.pack('<I', n)
+    if target == 0x4DDF80 and result & 0xFF:
+        # Success stores [arg2] and [arg3]: 4DDFD9 / 4DDFF7.
+        return [(argv[k], word((prof + index) % 3)) for k in (2, 3)]
+    if target == 0x4DE230:
+        # Four bounds through the two coordinate-conversion calls at 4DE27F
+        # and 4DE296 after ComputeFloatExtents; model completed output writes.
+        return [(argv[k], word((prof + index + (k > 2)) % 2)) for k in range(1, 5)]
+    if target == 0x6AC000:
+        # Six bounds initialized through the six output pointers before
+        # traversal, 6AC0C3..6AC0E8; never consume prior output values.
+        return [(a, struct.pack('<f', -1.0 if k % 2 == 0 else 1.0)) for k, a in enumerate(argv)]
+    if target in (0x655E40, 0x655F00):
+        # ReadCounterWord/ReadDword pass arg0 and size 2/4 to 6581C0.
+        return [(argv[0], word(1 + (prof + index) % 7)[:2 if target == 0x655E40 else 4])]
+    if target == 0x64A6B0:
+        # String construction delegates to 64A630, which overwrites [arg0]
+        # at 64A677 (and on its null path); arg0 here is ECX.
+        return [(ecx, word(ptr))]
+    if target == 0x6622F0:
+        # Both FindProperty exits write arg0: 662343 and 66235A.
+        return [(argv[0], word(ptr))]
+    if target == 0x7234F0:
+        # Plain copy stores 7234FC..72351D and 723542/723549. The last word
+        # may reuse a call return slot. Do not fill string padding: its
+        # constructor initializes only length/capacity and a terminator.
+        return [(ecx, b''.join(word(ptr + k * 4) for k in range(6))),
+                (ecx + 52, word(ptr + 52) + word(ptr + 56)),
+                (ecx + 44, word(0) + word(7)), (ecx + 28, b'\0\0')]
+    return []
 
 
 # ---------------------------------------------------------------- our object
@@ -742,6 +941,12 @@ class Run:
         if Run.made % 16 == 0:
             gc.collect()
         uc = self.uc = Uc(UC_ARCH_X86, UC_MODE_32)
+        # Unicorn reports CW=0 at reset although its arithmetic initially uses
+        # reset precision. FNSTCW/FLDCW would activate that spurious zero.
+        # Windows CRT startup selects 53-bit precision: __fpmath -> 7B388C
+        # calls __controlfp(_PC_53=0x10000, _MCW_PC=0x30000). Mask exceptions,
+        # round to nearest. An explicit later FLDCW (e.g. 82C404) still runs.
+        uc.reg_write(X.UC_X86_REG_FPCW, 0x027F)
         img, runs = exe_image()
         for a, b in runs:
             uc.mem_map(IMG + a, b - a)
@@ -808,6 +1013,26 @@ class Run:
         uc.hook_add(UC_HOOK_BLOCK, self.on_block)
         uc.hook_add(UC_HOOK_MEM_WRITE, self.on_write)
         uc.hook_add(UC_HOOK_MEM_UNMAPPED, self.on_unmapped)
+        self.eax_width = 32
+        self.indirect_sites = set()
+        self.eax_defs = {}
+        if not obj:
+            import capstone
+            md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+            md.detail = True
+            for lo, hi in own:
+                for ins in md.disasm(bytes(uc.mem_read(lo, hi-lo)), lo):
+                    if ins.mnemonic == 'call':
+                        self.eax_defs[ins.address] = 32  # callee's full mocked result
+                        if ins.operands[0].type != capstone.x86.X86_OP_IMM:
+                            self.indirect_sites.add(ins.address)
+                    elif ins.mnemonic not in ('cmp', 'test', 'push'):
+                        written = {ins.reg_name(r) for r in ins.regs_access()[1]}
+                        for reg, width in (('eax', 32), ('ax', 16), ('al', 8)):
+                            if reg in written:
+                                self.eax_defs[ins.address] = width
+                                break
+        self.eax_def_sites = sorted(self.eax_defs)
 
     def args(self):
         p = proto(self.ea)
@@ -871,17 +1096,34 @@ class Run:
             return True
         if a in crt_events():
             return False
+        return self.in_crt(a)
+
+    def in_crt(self, a):
         import bisect
         i = bisect.bisect_right(self.crt, (a, 0xFFFFFFFF)) - 1
         return i >= 0 and self.crt[i][0] <= a < self.crt[i][1]
 
     def on_block(self, uc, addr, size, _):
         self.blocks += 1
+        # A basic block cannot branch around a definition within it. Record
+        # its last EAX definition without a Python hook on every instruction;
+        # faults/caps mid-block are never compared as completed original runs.
+        if not self.obj and self.eax_def_sites:
+            import bisect
+            k = bisect.bisect_left(self.eax_def_sites, addr + size) - 1
+            if k >= 0 and self.eax_def_sites[k] >= addr:
+                self.eax_width = self.eax_defs[self.eax_def_sites[k]]
         if addr == RET_MAGIC:
             self.status = "ret"
             uc.emu_stop()
-        elif not self.inside(addr) or (addr == self.ea and not self.first and not self.obj):
-            self.pending = addr
+        elif not self.obj and self.in_crt(addr) and addr not in crt_events():
+            ret = struct.unpack('<I', uc.mem_read(uc.reg_read(X.UC_X86_REG_ESP), 4))[0]
+            site = self.ret_site.get(ret)
+            if site in self.indirect_sites and dispatch_evidence(self.ea).get(site, {}).get('target') != addr:
+                self.status = 'synthetic indirect CRT target'
+                uc.emu_stop()
+        elif not self.inside(addr) or (not self.first and addr == (self.obj.entry if self.obj else self.ea)):
+            self.pending = self.ea if self.obj and addr == self.obj.entry else addr
             uc.emu_stop()
         self.first = False
 
@@ -967,6 +1209,20 @@ class Run:
             site = self.ret_site.get(ret)
             fact = self.proven_pops.get(site, {})
             pop = fact.get('pop', call_pops().get(site, p[3] if p else 0)) if ret != RET_MAGIC else (p[3] if p else 0)
+            # Even an indirect call has a resolved numeric target *now*.
+            # Its actual RET outranks both stack solvers and IDA's delta.
+            runtime_pop = dispatch_call_pop(target, dispatch_evidence(self.ea).get(site, {}).get('receiver')) if not imp else None
+            if runtime_pop is not None:
+                pop = runtime_pop
+            elif site and not imp:
+                # An IDA delta or a catalog restricted to unrelated synthetic
+                # vtables cannot decide an unresolved callee's cleanup. Do not
+                # execute a guessed ABI and compare the resulting broken stack.
+                proved = stack_call_pops(self.ea, constraints_only=True).get(site)
+                if proved is None:
+                    self.status = 'unknown call cleanup'
+                    return ret
+                pop = proved
             nargs = len(p[1]) if p else pop // 4
             use_ecx = p[0] if p else not imp
             rt = p[2] if p else "?"
@@ -974,6 +1230,15 @@ class Run:
             if not p and 'pop' in fact and 'nargs' not in fact:
                 nargs = pop // 4
             use_ecx = fact.get("ecx", use_ecx)
+            abi_ecx = callsite_abi(self.ea, site) if site else None
+            if abi_ecx is not None:
+                use_ecx = abi_ecx
+            elif p:
+                use_ecx = p[0] and takes_ecx(target)
+            if not p and site:
+                rt = callback_return_type(self.ea, site) or rt
+            if pop and not p:
+                nargs = pop // 4
             if imp:
                 proven = import_call_pop(ret, imp)
                 if proven is not None:
@@ -1013,6 +1278,17 @@ class Run:
             # typed void, but a constructor-like callee returns `this` and the original may use it (0x751830:
             # `call 0x64A6B0; push eax`); ours passes the object's address itself
             val = uc.reg_read(X.UC_X86_REG_ECX)
+        for address, data in mock_outputs(target, i, self.prof, argv, uc.reg_read(X.UC_X86_REG_ECX), val):
+            for base in range(address & ~0xFFF, (address + len(data) + 0xFFF) & ~0xFFF, 0x1000):
+                try:
+                    uc.mem_read(base, 1)
+                except UcError:
+                    if not self.on_unmapped(uc, 19, base, 1, 0, None):
+                        self.status = 'fault mock output'
+                        return ret
+            uc.mem_write(address, data)
+            if not STACK_LO <= address < STACK_HI:
+                self.written.update(range(address, address + len(data)))
         uc.reg_write(X.UC_X86_REG_EAX, val)
         self.last_mock = (val, rt)
         if rt in ("float", "double", "long double"):
@@ -1174,6 +1450,12 @@ def same_args(eo, em):
         return False
     p = proto(eo[0]) if isinstance(eo[0], int) else None
     types = [t.strip() for t in p[1]] if p else []
+    if not p and len(eo) > 7 and eo[7]:
+        import bisect
+        starts = load('starts', lambda: sorted(functions()))
+        k = bisect.bisect_right(starts, eo[7]) - 1
+        if k >= 0:
+            types = typed_indirect_calls(starts[k]).get(eo[7], {}).get('types', []) or named_vslot_types(starts[k], eo[7])
     literals = literal_pushes(eo[7]) if len(eo) > 7 and eo[7] else frozenset()
     for i, (a, b) in enumerate(zip(eo[5], em[5])):
         if a == b:
@@ -1221,8 +1503,12 @@ def compare(ea, o, m):
         if eo[6] == ECX0 and pr and not pr[0]:
             continue
         if eo[6] != em[6] and takes_ecx(eo[0]):
+            if isinstance(eo[0], int) and eo[0] not in functions() and not proto(eo[0]):
+                return ['?unresolved indirect-call convention (ECX may not be an argument)']
             out.append(f"call {i} to {tn(eo[0])}: ecx {tn(eo[6])} vs {tn(em[6])}")
             return out
+    if m.status == 'cap' and o.blocks > 5000:
+        return ['?ours runs past the cap after a long run of the original']
     if len(o.events) != len(m.events):
         out.append(f"{len(o.events)} calls vs {len(m.events)}")
         return out
@@ -1248,10 +1534,10 @@ def compare(ea, o, m):
     elif rt != "void" and not (o.tail or m.tail) and not eax_meaningless(ea):
         mask = 0xFF if rt in BYTE_TYPES or returns_al(ea) else \
             0xFFFF if rt in ("short", "uint16_t", "int16_t", "unsigned short") else 0xFFFFFFFF
-        # eax still holds what the last callee left, and that callee returns a byte, a float or nothing while this
+        # eax still holds what the last callee left, and that callee returns a float or nothing while this
         # function is typed wider: a leftover, not a return value (0x525A50, 0x6CAF00: Hex-Rays says int)
         lm = o.last_mock
-        left = mask == 0xFFFFFFFF and lm and lm[0] == o.eax and lm[1] in BYTE_TYPES + ("void", "float", "double", "long double")
+        left = mask == 0xFFFFFFFF and lm and lm[0] == o.eax and lm[1] in ("void", "float", "double", "long double")
         # eax is still the old SEH chain head the prologue loaded (`mov eax, fs:[0]`): a void function with a
         # try block on a path that calls nothing (0x40B4C0, an STL fill over an empty range)
         img, _ = exe_image()
@@ -1263,6 +1549,8 @@ def compare(ea, o, m):
             if (o.eax >> 8 * k) & 0xFF == 0xCC:  # 16-bit local loaded as a dword: cccc0101)
                 mask &= ~(0xFF << 8 * k)
         if not left and o.norm(o.eax & mask) != m.norm(m.eax & mask):
+            if mask == 0xFFFFFFFF and getattr(o, 'eax_width', 32) == 8 and (o.eax & 0xFF) == (m.eax & 0xFF):
+                return ['?AL-only return path with an unresolved full-EAX contract']
             out.append(f"returns {o.eax & mask:x} vs {m.eax & mask:x}")
     skip = lambda a: TEB <= a < TEB + 0x1000 or OBJ_BASE <= a < OBJ_BASE + 0x100000 or SYS_BASE <= a < SYS_BASE + 0x1000
     addrs = sorted(a for a in o.written | m.written if not skip(a))

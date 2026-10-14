@@ -318,5 +318,175 @@ class ComparisonRuleTests(unittest.TestCase):
         emudiff.literal_pushes.cache_clear()
 
 
+class FalseAlarmRegressionTests(unittest.TestCase):
+    def test_resolved_indirect_target_ret_overrides_export_and_stack_facts(self):
+        # CALL EAX, not a direct relocation. Deliberately supply stale pop=0.
+        target = emudiff.EXT_BASE + 0x100
+        entry = emudiff.SYS_BASE + 0x600
+        for pop in (4, 8, 12):
+            code = b'\x6a\x07' * (pop // 4) + b'\xb8' + struct.pack('<I', target) + b'\xff\xd0\xc3'
+            site = entry + len(code) - 3
+            run = emudiff.Run(0, 0, [(entry, entry + len(code))])
+            run.uc.mem_write(entry, code)
+            run.ret_site = {site + 2: site}
+            run.proven_pops = {site: dict(pop=0)}
+            with patch.object(emudiff, 'dispatch_call_pop', return_value=pop), \
+                 patch.object(emudiff, 'dispatch_evidence', return_value={}), \
+                 patch.object(emudiff, 'callsite_abi', return_value=False), \
+                 patch.object(emudiff, 'callback_return_type', return_value=None):
+                run.start(entry)
+            self.assertEqual(run.status, 'ret')
+            self.assertEqual(run.esp, emudiff.ESP0 + 4)
+            self.assertEqual(run.events[0][1:4], (pop, pop // 4, False))
+            self.assertEqual(run.events[0][5], (7,) * (pop // 4))
+
+    def test_output_fill_is_mirrored_and_not_a_comparison_exemption(self):
+        original = emudiff.Run(0, 3, [])
+        candidate = emudiff.Run(0, 3, [])
+        addresses = [emudiff.ESP0 - 16, emudiff.ESP0 - 32]
+        events = []
+        for run, address, initial in zip((original, candidate), addresses, (b'\xcc' * 4, b'\0' * 4)):
+            run.uc.mem_write(address, initial)
+            run.uc.mem_write(emudiff.ESP0, struct.pack('<II', emudiff.RET_MAGIC, address))
+            run.uc.reg_write(X.UC_X86_REG_ESP, emudiff.ESP0)
+            run.uc.reg_write(X.UC_X86_REG_ECX, emudiff.ECX0)
+            # Candidate normally replays the original ABI, as it does here.
+            run.script = [(0x655F00, 4, 1, True, 'uint32_t*')]
+            run.mock(0x655F00)
+            self.assertNotEqual(bytes(run.uc.mem_read(address, 4)), initial)
+            events.append(bytes(run.uc.mem_read(address, 4)))
+        self.assertEqual(events[0], events[1])
+        # A stale value from before the out-call is still observable.
+        eo = ('consumer', 4, 1, False, 'int', (struct.unpack('<I', events[0])[0],), None)
+        em = ('consumer', 4, 1, False, 'int', (0,), None)
+        self.assertFalse(emudiff.same_args(eo, em))
+        self.assertEqual(emudiff.mock_outputs(0x655F00 + 1, 0, 0, (), 0, 0), [])
+        # The success-only coordinate writes must not happen on failure.
+        self.assertEqual(emudiff.mock_outputs(0x4DDF80, 0, 0, (0, 0, 1, 2), 0, 0), [])
+
+    def test_unproved_cleanup_is_unknown_not_an_exported_zero(self):
+        run = emudiff.Run(0, 0, [])
+        site = 0x20001000
+        run.ret_site = {site + 2: site}
+        run.proven_pops = {site: dict(pop=0, source='stack')}
+        run.uc.reg_write(X.UC_X86_REG_ESP, emudiff.ESP0)
+        run.uc.mem_write(emudiff.ESP0, struct.pack('<I', site + 2))
+        with patch.object(emudiff, 'dispatch_call_pop', return_value=None), \
+             patch.object(emudiff, 'dispatch_evidence', return_value={}), \
+             patch.object(emudiff, 'stack_call_pops', return_value={}):
+            run.mock(emudiff.EXT_BASE + 0x100)
+        self.assertEqual(run.status, 'unknown call cleanup')
+        self.assertEqual(run.events, [])
+
+    def test_stack_only_conventions_and_unknown_convention_are_distinct(self):
+        for ea, site in ((0x6A18C0, 0x6A18F2), (0x7111F0, 0x7111F6), (0x769010, 0x769021)):
+            self.assertIs(emudiff.callsite_abi(ea, site), False)
+        # A known thiscall still compares ECX, including a wrong-this mutant.
+        original = ComparisonRuleTests().memory_run(0)
+        candidate = ComparisonRuleTests().memory_run(0)
+        original.events = [(0x6E5A80, 4, 1, True, 'int', (1,), 0x20001000)]
+        candidate.events = [(0x6E5A80, 4, 1, True, 'int', (1,), 0x20002000)]
+        with patch.object(emudiff, 'proto', return_value=(True, [], 'void', 0)), \
+             patch.object(emudiff, 'takes_ecx', return_value=True):
+            self.assertIn('ecx', emudiff.compare(0, original, candidate)[0])
+
+    def test_byte_alias_and_instruction_typed_argument_keep_low_bits_exact(self):
+        eo = (0x20001000, 4, 1, False, 'int', (0x2A000100,), None, 0x47FED3)
+        em = (0x20001000, 4, 1, False, 'int', (0,), None, None)
+        # Use the real site from the original, independent of source line numbering.
+        from packet import disasm
+        site = next(i.address for i in disasm(0x47FDF0, int(emudiff.functions()[0x47FDF0]['size']))
+                    if i.mnemonic == 'call' and '0x1ec' in i.op_str)
+        eo = eo[:7] + (site,)
+        self.assertEqual(emudiff.named_vslot_types(0x47FDF0, site), ['bool'])
+        self.assertTrue(emudiff.same_args(eo, em))
+        self.assertFalse(emudiff.same_args(eo, em[:5] + ((1,),) + em[6:]))
+        self.assertIn('std::uint8_t', emudiff.BYTE_TYPES)
+        self.assertEqual(emudiff.callback_return_type(0x769010, 0x769055), 'char')
+        original = ComparisonRuleTests().memory_run(0)
+        candidate = ComparisonRuleTests().memory_run(0)
+        original.eax, candidate.eax = 0x5A5A5A01, 1
+        with patch.object(emudiff, 'proto', return_value=(False, [], 'std::uint8_t', 0)), \
+             patch.object(emudiff, 'eax_meaningless', return_value=False):
+            self.assertEqual(emudiff.compare(0, original, candidate), [])
+            candidate.eax = 0
+            self.assertTrue(emudiff.compare(0, original, candidate))
+        # A byte callee's full EAX can itself be the caller's int return.
+        # Do not skip that comparison just because AL was tested after CALL.
+        original.eax, candidate.eax = 0x5A5A5A00, 0
+        original.last_mock = (original.eax, 'char')
+        with patch.object(emudiff, 'proto', return_value=(False, [], 'int', 0)), \
+             patch.object(emudiff, 'eax_meaningless', return_value=False), \
+             patch.object(emudiff, 'returns_al', return_value=False):
+            self.assertTrue(emudiff.compare(0, original, candidate))
+
+    def test_self_recursion_is_a_boundary_on_both_sides(self):
+        ea = 0x401000
+        original = emudiff.Run(0, 0, [])
+        candidate = emudiff.Run(0, 0, [])
+        for run, obj in ((original, None), (candidate, SimpleNamespace(entry=emudiff.OBJ_BASE))):
+            run.ea, run.obj, run.first = ea, obj, False
+            address = obj.entry if obj else ea
+            run.own = [(address, address + 0x10)]
+            run.on_block(run.uc, address, 1, None)
+            self.assertEqual(run.pending, ea)
+        # Ordinary internal basic blocks must not become extra call events.
+        candidate.pending = None
+        candidate.on_block(candidate.uc, candidate.obj.entry + 4, 1, None)
+        self.assertIsNone(candidate.pending)
+
+    def test_log2_native_shim_and_explicit_x87_startup(self):
+        run = emudiff.Run(0, 0, [])
+        self.assertEqual(run.uc.reg_read(X.UC_X86_REG_FPCW), 0x027F)
+        image, _ = emudiff.exe_image()
+        # Startup helper's PUSH mask / PUSH precision for __controlfp.
+        self.assertEqual(image[0x7B388C-emudiff.IMG:0x7B3896-emudiff.IMG],
+                         bytes.fromhex('6800000300 6800000100'))
+        run.args = lambda: list(struct.unpack('<II', struct.pack('<d', 4.0)))
+        run.start(emudiff.NATIVE_AT['_log2'])
+        self.assertEqual(run.status, 'ret')
+        self.assertEqual(run.events, [])
+        # Unicorn's ST0 accessor exposes only the mantissa. FPn exposes both
+        # mantissa/exponent; TOP selects the physical register containing ST0.
+        top = (run.uc.reg_read(X.UC_X86_REG_FPSW) >> 11) & 7
+        self.assertAlmostEqual(emudiff.st0_float(run.uc.reg_read(X.UC_X86_REG_FP0 + top)), 2.0)
+
+    def test_frame_discard_cannot_validate_a_wrong_hidden_result_prototype(self):
+        self.assertNotIn(0x4F4F0A, emudiff.stack_call_pops(0x4F4EF0, constraints_only=True))
+        self.assertEqual(emudiff.stack_call_pops(0x42F4F0, constraints_only=True)[0x42F5D3], 4)
+        self.assertEqual(emudiff.stack_call_pops(0x535F60, constraints_only=True)[0x535F7F], 8)
+        self.assertEqual(emudiff.stack_call_pops(0x535F60, constraints_only=True)[0x535F86], 4)
+
+    def test_synthetic_crt_dispatch_is_not_a_valid_function_return(self):
+        run = emudiff.Run(0, 0, [])
+        site = 0x20001000
+        run.indirect_sites = {site}
+        run.ret_site = {site + 2: site}
+        run.uc.reg_write(X.UC_X86_REG_ESP, emudiff.ESP0)
+        run.uc.mem_write(emudiff.ESP0, struct.pack('<I', site + 2))
+        target = emudiff.crt_ranges()[1]['__ftol2']
+        with patch.object(emudiff, 'dispatch_evidence', return_value={}):
+            run.on_block(run.uc, target, 1, None)
+        self.assertEqual(run.status, 'synthetic indirect CRT target')
+
+    def test_cap_preceding_a_late_call_is_inconclusive_not_call_count_diff(self):
+        original = ComparisonRuleTests().memory_run(0)
+        candidate = ComparisonRuleTests().memory_run(0)
+        original.blocks = 10000
+        original.events = [('late call', 0, 0, False, 'int', (), None)]
+        candidate.status = 'cap'
+        self.assertTrue(emudiff.compare(0, original, candidate)[0].startswith('?'))
+
+    def test_real_triage_rows_and_adopted_controls(self):
+        # Fresh compilation is essential: installed build objects can be stale.
+        broken = (0x710850, 0x711160, 0x769010)
+        adopted = (0x42DA20, 0x42F4F0, 0x468500, 0x495250, 0x4E9200,
+                   0x6B8E60, 0x744E00, 0x7450D0, 0x745490)
+        for ea in broken + adopted:
+            with self.subTest(ea=f'{ea:08x}'):
+                verdict, detail = emudiff.check(ea, src=str(ROOT / 'src/auto' / f'{ea:08x}.cpp'))
+                self.assertEqual(verdict, 'DIFF' if ea in broken else 'same', detail)
+
+
 if __name__ == "__main__":
     unittest.main()
