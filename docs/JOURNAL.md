@@ -1578,3 +1578,28 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   rwsurvey (docs/RW_PORT.md + first librw slice), rwa (docs/AUDIO_PORT.md + null backend).
 - Game code 97.4%; STL 388 of 418 in; decisions: RWA boundary reimplemented on our own backend, quarantine-rate
   stop rule dropped.
+- **The standalone exe links** (job link2, re-built here): `build/csf_standalone.exe`, 8.66 MB, zero linker errors, with
+  about 3,700 explicit trap slots for what is not provided yet (tools/stubgen.py: game, NetZ, RW, RWA internals,
+  D3DX9, CRT, and 1,713 addresses that are not functions of ours). Nothing has been run: no wine here, and every
+  static initialiser was still a trap when it was built. docs/STANDALONE.md, docs/STANDALONE_LINK2.md,
+  tools/standalone_check.py (image, 36,023 fix-ups, initialiser order: consistent).
+- New game code found by the link job: the CRT's dynamic-initialiser table (`__xc`, 0x898000..0x898450, 196 entries)
+  points into 0x8289F0..0x82C410, which the region map had as NetZ and where IDA had no function for 192 of the
+  entries. That block is the game's dynamic initialisers and atexit destructors: 393 functions, 9.9 KB, now region
+  game (`sync.py --funcs` + db/extra_functions.txt create table-reached functions in the IDB). 204 generated and
+  adopted (tools/initfngen.py); 189 wait on an emulator limit (runs through `_atexit` hit the instruction cap).
+  Game total is 14,885 functions now.
+- Cutover boundaries so far: CRT done; allocator shim; NetZ offline objects (about 200 slots still unresolved, grows
+  as initialisers reference more); RWA all 40 on a null backend (+ DirectSound PCM), Vorbis comes from
+  vorbisfile.dll; RenderWare on librw: 66 of 400 slots in two slices, the survey (docs/RW_PORT*.md) says 17 same,
+  206 differ, 177 missing in librw (particles/PTank, toolkits): the long pole.
+- emudiff sweep over all 14,346 installed functions: 407 differ after the cleanup fix (4 in the diffed tier, about
+  4% of the other two). Kinds: full-register results returned as bool (130), another indirect-call target (80),
+  another this/arguments (85), memory (31), paths. Triage runs in waves of 16 Haiku singles
+  (`qjobs.py --sweep`, work/measure/sweepwaves.py), each fix re-checked here, then the verifier. Wave 1: 16 of 16
+  adopted; wave 2: 13 of 16.
+- emudiff call cleanup (job emufix2): callee `ret N` where the target is determinable, then the caller's stack
+  constraints, then IDA's delta; 632 call sites change (256 indirect), 11 blocked functions unblocked; benchmark
+  unchanged (281/400), controls unchanged.
+- Codex quota is the limiter for sol jobs: four big jobs on one login spend its 5h window in about 25 minutes;
+  job start now spreads over the logins by usage and running jobs (work/measure/stagger.py starts as room appears).

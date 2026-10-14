@@ -88,20 +88,20 @@ Stage since 2026-10-13: the waves are exhausted at 91.9% of game code. What is l
 user 2026-10-13); the orchestrator writes the
 tasks, reviews reports and patches, decides. Everything is visible on `tools/webmon.py` (user, 2026-10-13).
 
-State on the night of 2026-10-13: game code 94.7% (14,153 of 14,492), everything adopted so far installed in a
-passing full smoke. Jobs' output enters the tree only through `tools/adopt.py` (gate + emudiff re-run here).
+State on 2026-10-14, early morning: the standalone exe links (`build/csf_standalone.exe`, with explicit trap slots
+for what is missing); nothing has been run yet. Game code 96% of 14,885 functions (the 393 dynamic initialisers and
+atexit destructors were found and added on 2026-10-14). Jobs' output enters the tree only through `tools/adopt.py`.
 
-1. **Remaining game code**: the last STL instances (job stlrest; 194 of 418 were in before it), about 100 queue
-   items, 9 leftovers blocked by emulator/export assumptions. Tiny functions: done (166, `tools/tinygen.py`).
-2. **Escalation queue** (about 100): small triage jobs (2-3 functions each, literal paths), false-alarm classes fixed
-   in the tool and measured (`tools/emumut.py` for emudiff, `tests/semcheck_regression.py` for the semantic check).
-3. **Cutover**, in parallel: data image (`tools/datagen.py` + `tools/ida/export_dataptrs.py`: done for IDA-known
-   pointers; open: 23 references outside data, vtable slots to library targets), boundaries (`src/boundary/`: CRT
-   done, allocator shim written, NetZ 99 of 321), then a first link attempt, then RenderWare on librw (399) and
-   the RWA boundary on our own backend (40).
-4. **Evidence for the functions that never ran** (6,500 of the done ones): emudiff sweep of the `gate` and
-   `executed` tiers, `review.py sample`.
-5. **Names and types**: `tools/naming.py` (first full run with the captain), then `propagate.sh`.
+1. **Towards an exe that reaches WinMain**: the remaining 189 static initialisers (job initfn2), WinMain (0x509250,
+   adopted), start-up order and the allocator before the first constructor (docs/INIT_FUNCTIONS.md,
+   docs/STANDALONE_LINK2.md), then a first run: needs Windows or wine (not installed: ask the user).
+2. **RenderWare on librw**: slices 3 to 10 of docs/RW_PORT.md (raster/texture/image next), 322 slots unresolved.
+3. **Installed functions that differ in emudiff** (407 after the sweep): Haiku singles in waves, sol-med for the
+   84 over 320 bytes, a sol-med review per batch, then the verifier.
+4. **Escalation queue** (about 80) and the last game code: 30 STL instances, the larger queue functions.
+5. **NetZ** (about 200 unresolved slots), audio backend beyond null/PCM (Vorbis through vorbisfile.dll), D3DX9 and
+   PNG slots (trap stubs today).
+6. **Names and types**: `tools/naming.py`, `propagate.sh`.
 
 Earlier decisions that still hold: no playtest milestone, evidence comes from the verifier's smokes, the in-game
 diff and emudiff (user, 2026-10-11); emudiff is a gate step (2026-10-13).
