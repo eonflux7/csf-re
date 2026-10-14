@@ -1691,4 +1691,16 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Job rw8 (slice 8, particles, partial): the run now creates the camera and its rasters, the particle classes and
   the world, then stops at 0x7C5F60, RenderWare's file-system manager init (misnamed RwResourcesSetArenaSize).
   Jobs rwfs (sol-hi: RtFS on host files, DDS) and rw8b (sol-med: three particle callbacks, compressed keyframes).
+- Job rwfs (40 RtFS slots, DDS): the standalone **presents its first frames** (the loading clock, three Present
+  calls with HRESULT 0, 800x600 full screen). Then crash1: the text layout read an empty symbol atlas. Job crash1
+  traced the atlas to Simbolos.png; read traces (CSF_RW_TRACE: image/texture/PNG reads, RtFS opens, format
+  registrations) showed two causes. (1) datagen translated text: "png\0" at 0x8631BC is 0x676E70, a NetZ function's
+  start, and IDA had made it an offset, so RwImageRegisterImageFormat got garbage. datagen now leaves words that
+  continue a printable string alone (1,363 of them were overwritten, "binkw32.dll", "Italian"...) plus
+  db/datagen_text.yaml for short strings. (2) The game's PNGs carry an iCCP chunk with a truncated zlib stream:
+  libpng goes on, lodepng rejects the file; the PNG boundary drops iCCP before librw decodes.
+- New run tools: CSF_HANG_SECONDS (main-thread dump), crash.py dumps what registers point at, tools/dbg/stdsym.py
+  names addresses from the link map. Run now: menu textures load, a camera update ends, the raster is shown, then
+  the GUI builder dereferences a null data-tree node (0x692BD0 from 0x71EBD0): job crash2. One run hung after
+  RtFSManagerOpen instead (intermittent; the hang dump is ready for it).
 
