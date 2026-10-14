@@ -10,7 +10,7 @@ CSF_FUNC(int*, __cdecl, Container16_InitElementRange_6B5960,
          (int* a1, int a2, int a3, int a4, int a5));
 
 // Grows the storage (reallocating/copying) and inserts copies (__thiscall, ret 12).
-CSF_FUNC(char, __fastcall, Container16_InsertElementCopies_6B5A90,
+CSF_FUNC(std::uint32_t, __fastcall, Container16_InsertElementCopies_6B5A90,
          0x006B5A90,
          (void* self, void* edx, void* a1, unsigned int a3, int a2));
 
@@ -31,12 +31,12 @@ static int* __fastcall Container16_AppendElement(
             static_cast<std::int32_t>(
                 CSF_AT(std::uint32_t, self, 12) - begin) >> 4))
     {
-        const char insertResult = Container16_InsertElementCopies_6B5A90(
+        const std::uint32_t insertResult = Container16_InsertElementCopies_6B5A90(
             self, nullptr,
             reinterpret_cast<void*>(static_cast<std::uintptr_t>(CSF_AT(std::uint32_t, self, 8))),
             1u,
             static_cast<int>(reinterpret_cast<std::uintptr_t>(source)));
-        return reinterpret_cast<int*>(static_cast<std::intptr_t>(insertResult));
+        return reinterpret_cast<int*>(static_cast<std::uintptr_t>(insertResult));
     }
 
     const std::uint32_t insertionAddress = CSF_AT(std::uint32_t, self, 8);

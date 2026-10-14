@@ -27,10 +27,13 @@ static hook::Tail __fastcall GfxSkin_RefreshAttachmentOrForward(void* self, cons
     const uint8_t flag = CSF_AT(uint8_t, sceneObj, 0xF5);
 
     if (flag != 0) {
-        // Original: jmp dword ptr [0x8bb4b4] with the flag byte left in ecx.
+        // Original: `mov cl, byte ptr [eax+0xf5]` only replaces the low byte of ecx, so the
+        // upper 24 bits of the entry ecx reach `jmp dword ptr [0x8bb4b4]` unchanged.
         // The target is the function pointer value stored at 0x8BB4B4.
+        const uint32_t entryEcx = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(self));
+        const uint32_t targetEcx = (entryEcx & 0xFFFFFF00u) | flag;
         void* passthroughTarget = reinterpret_cast<void*>(static_cast<uintptr_t>(g_PassthroughTarget_8BB4B4));
-        return hook::tail_jump(reinterpret_cast<void*>(static_cast<uintptr_t>(flag)),
+        return hook::tail_jump(reinterpret_cast<void*>(static_cast<uintptr_t>(targetEcx)),
                                passthroughTarget);
     }
 

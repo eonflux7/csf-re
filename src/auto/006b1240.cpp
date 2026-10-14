@@ -23,17 +23,26 @@ static float* __fastcall Geometry_ProjectPointOntoSegment(
     directionY = CSF_AT(float, self, 0x10) - CSF_AT(float, self, 0x04);
     directionZ = CSF_AT(float, self, 0x14) - CSF_AT(float, self, 0x08);
 
-    const float length = std::sqrt(
-        directionZ * directionZ +
-        directionY * directionY +
-        directionX * directionX);
+    // The original squares and sums in the x87 register file (80-bit extended); only the
+    // sqrt result is stored as float (fsqrt; fstp dword ptr [ebp-4]). Float squares would
+    // underflow for tiny directions where the extended sum is still non-zero.
+    const long double lengthSquared =
+        static_cast<long double>(directionZ) * directionZ +
+        static_cast<long double>(directionY) * directionY +
+        static_cast<long double>(directionX) * directionX;
+    const float length = static_cast<float>(std::sqrt(lengthSquared));
 
     Vec3_NormalizeHelper(directionBytes, nullptr, length);
 
-    const float projection =
-        directionY * deltaY + directionX * deltaX + directionZ * deltaZ;
+    // Kept extended for the sign test (fcomp on st0 right after fst); the stored float copy is
+    // what the in-segment and past-end branches reload (fld dword ptr [ebp+0Ch]).
+    const long double projectionExtended =
+        static_cast<long double>(directionY) * deltaY +
+        static_cast<long double>(directionX) * deltaX +
+        static_cast<long double>(directionZ) * deltaZ;
+    const float projection = static_cast<float>(projectionExtended);
 
-    if (projection < g_fZero)
+    if (projectionExtended < g_fZero)
     {
         CSF_AT(float, output, 0x00) = CSF_AT(float, self, 0x00);
         CSF_AT(float, output, 0x04) = CSF_AT(float, self, 0x04);
@@ -50,7 +59,9 @@ static float* __fastcall Geometry_ProjectPointOntoSegment(
         directionX *= projection;
         directionY *= projection;
 
-        const float projectedZ = directionZ * projection + CSF_AT(float, self, 0x08);
+        // fld dirZ; fmul proj; fadd [self+8]; fstp: the product is not rounded to float first.
+        const float projectedZ = static_cast<float>(
+            static_cast<long double>(directionZ) * projection + CSF_AT(float, self, 0x08));
         const float projectedY = directionY + CSF_AT(float, self, 0x04);
         const float projectedX = directionX + CSF_AT(float, self, 0x00);
 

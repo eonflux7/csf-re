@@ -24,9 +24,9 @@ static void __fastcall CCamera_RotateAroundPoint(
     CSF_AT(float, translationBytes, 0x4) = -pivot[1];
     CSF_AT(float, translationBytes, 0x8) = -pivot[2];
 
-    reinterpret_cast<void (__fastcall*)(void*, void*, float*, int)>(
+    reinterpret_cast<void (__fastcall*)(void*, void*, float*)>(
         translationVtable[0x20 / 4])(
-            transform, nullptr, reinterpret_cast<float*>(translationBytes), 0);
+            transform, nullptr, reinterpret_cast<float*>(translationBytes));
 
     if (firstAngle != g_fZero)
     {
@@ -57,9 +57,9 @@ static void __fastcall CCamera_RotateAroundPoint(
                 transform, nullptr, secondAngle);
     }
 
-    reinterpret_cast<void (__fastcall*)(void*, void*)>(
+    reinterpret_cast<void (__fastcall*)(void*, void*, float*)>(
         reinterpret_cast<void**>(self->field_0010)[0x20 / 4])(
-            transform, nullptr);
+            transform, nullptr, pivot);
 }
 
 HOOK(0x006D2DB0, CCamera_RotateAroundPoint, "auto");

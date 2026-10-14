@@ -34,7 +34,10 @@ static uint32_t* __cdecl WriteObjectPropsEntryToStream(uint32_t* stream, int unu
     {
         int entrySize = entry[1];
         RwStreamWriteInt32(stream, &entrySize, 4);
-        WriteEntryBodyToStream(stream, entry[0], 0, 0, 0);
+        // The original leaves the stream, the address of entrySize and the size 4
+        // (the RwStreamWriteInt32 argument) in the unused callee slots.
+        WriteEntryBodyToStream(stream, entry[0], reinterpret_cast<int>(stream),
+                               reinterpret_cast<int>(&entrySize), 4);
     }
 
     return stream;

@@ -17,10 +17,15 @@ static int __fastcall S_00526d40_IntersectPlane(
         CSF_AT(float, plane, 0x14)
     };
 
-    if (g_fZero ==
-        normal[1] * CSF_AT(float, self, 0x04) +
-        normal[0] * *reinterpret_cast<const float*>(&self->field_0000) +
-        normal[2] * CSF_AT(float, self, 0x08))
+    // The original keeps every sum, product and quotient here on the x87 stack (extended precision) and rounds
+    // only where it stores a float. Products of tiny components underflow to zero in float but not there, which
+    // changes the sign of a zero result or whether a test is taken, so the arithmetic is done in double and
+    // rounded to float only at the original's stores.
+    const double dot =
+        static_cast<double>(normal[1]) * CSF_AT(float, self, 0x04) +
+        static_cast<double>(normal[0]) * *reinterpret_cast<const float*>(&self->field_0000) +
+        static_cast<double>(normal[2]) * CSF_AT(float, self, 0x08);
+    if (g_fZero == dot)
     {
         return 0;
     }
@@ -39,29 +44,31 @@ static int __fastcall S_00526d40_IntersectPlane(
         const float nz = CSF_AT(float, plane, 0x14);
         CSF_AT(float, plane, 0x20) = nz;
 
-        CSF_AT(float, plane, 0x24) =
-            -(nz * CSF_AT(float, plane, 0x08) +
-              ny * CSF_AT(float, plane, 0x04) +
-              nx * CSF_AT(float, plane, 0x00));
+        CSF_AT(float, plane, 0x24) = static_cast<float>(
+            -(static_cast<double>(nz) * CSF_AT(float, plane, 0x08) +
+              static_cast<double>(ny) * CSF_AT(float, plane, 0x04) +
+              static_cast<double>(nx) * CSF_AT(float, plane, 0x00)));
     }
 
-    const float distance =
-        (-CSF_AT(float, plane, 0x24) -
-         (normal[1] * CSF_AT(float, self, 0x10) +
-          normal[0] * CSF_AT(float, self, 0x0C) +
-          normal[2] * CSF_AT(float, self, 0x14))) /
-        (normal[1] * CSF_AT(float, self, 0x04) +
-         normal[0] * *reinterpret_cast<const float*>(&self->field_0000) +
-         normal[2] * CSF_AT(float, self, 0x08));
+    const double numerator =
+        -static_cast<double>(CSF_AT(float, plane, 0x24)) -
+        (static_cast<double>(normal[1]) * CSF_AT(float, self, 0x10) +
+         static_cast<double>(normal[0]) * CSF_AT(float, self, 0x0C) +
+         static_cast<double>(normal[2]) * CSF_AT(float, self, 0x14));
+    const double denominator =
+        static_cast<double>(normal[1]) * CSF_AT(float, self, 0x04) +
+        static_cast<double>(normal[0]) * *reinterpret_cast<const float*>(&self->field_0000) +
+        static_cast<double>(normal[2]) * CSF_AT(float, self, 0x08);
+    const double distance = numerator / denominator;
 
-    const float offsetX =
-        distance * *reinterpret_cast<const float*>(&self->field_0000);
-    const float offsetY = distance * CSF_AT(float, self, 0x04);
-    const float offsetZ = distance * CSF_AT(float, self, 0x08);
+    // offsetX stays on the stack until the final sum; offsetY and offsetZ are stored as float first.
+    const double offsetX = distance * *reinterpret_cast<const float*>(&self->field_0000);
+    const float offsetY = static_cast<float>(distance * CSF_AT(float, self, 0x04));
+    const float offsetZ = static_cast<float>(distance * CSF_AT(float, self, 0x08));
 
-    const float x = offsetX + CSF_AT(float, self, 0x0C);
-    const float y = offsetY + CSF_AT(float, self, 0x10);
-    const float z = offsetZ + CSF_AT(float, self, 0x14);
+    const float x = static_cast<float>(offsetX + CSF_AT(float, self, 0x0C));
+    const float y = static_cast<float>(static_cast<double>(offsetY) + CSF_AT(float, self, 0x10));
+    const float z = static_cast<float>(static_cast<double>(offsetZ) + CSF_AT(float, self, 0x14));
 
     intersection[0] = x;
     intersection[1] = y;

@@ -11,8 +11,9 @@ CSF_FUNC(int, __cdecl, CopyDwordIntoSlot_6C17E0, 0x006C17E0,
          (int a1, int a2, int a3, int a4, int a5));
 
 // Grows the vector-like container and inserts elements at `position`
-// (0x6C1910, __thiscall, pops 12 stack bytes). Returns a byte.
-CSF_FUNC(char, __fastcall, InsertPointerElements_6C1910, 0x006C1910,
+// (0x6C1910, __thiscall, pops 12 stack bytes). Returns the full eax,
+// which the caller passes through unchanged.
+CSF_FUNC(uint32_t, __fastcall, InsertPointerElements_6C1910, 0x006C1910,
          (void* self, void* edx, uint32_t* Src, unsigned int a3, uint32_t* a4));
 
 // Appends one pointer-sized element to the vector-like container

@@ -6,7 +6,7 @@
 #include "globals.h"
 #include "types/auto_classes.h"
 
-CSF_FUNC(char, __fastcall, TextureDictVector_InsertFilled, 0x006C1910,
+CSF_FUNC(uint32_t, __fastcall, TextureDictVector_InsertFilled, 0x006C1910,
          (void* self, void* edx, uint32_t* Src, unsigned int a3, uint32_t* a4));
 CSF_FUNC(void*, __cdecl, _memcpy, 0x007AEE60,
          (void* destination, const void* source, std::size_t byteCount));

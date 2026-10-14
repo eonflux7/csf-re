@@ -5,8 +5,9 @@
 // Callee at 0x006D4B40 is __cdecl. The original pushes four dwords (a2, ECX, a2, a1),
 // so the callee sees (a1, a2, ECX, a2). The packet's bind line lists two parameters,
 // but the original passes four stack values, so all four are bound here.
-// Returns char (the original uses the al result).
-CSF_FUNC(char, __cdecl, ClumpDict_ProcessPair6D4B40, 0x006D4B40,
+// Returns int: the original returns the whole eax (the loop's last result, or the
+// incoming eax when the range is empty), and the wrapper passes it through unchanged.
+CSF_FUNC(int, __cdecl, ClumpDict_ProcessPair6D4B40, 0x006D4B40,
          (int a1, int a2, int a3, int a4));
 
 // 0x006D4E80: __stdcall, callee-cleaned (ret 8). The incoming ECX is forwarded as the

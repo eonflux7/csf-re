@@ -36,8 +36,12 @@ static uint32_t* __cdecl GfxObjectProps_WriteUserData(
         RwStreamWriteInt32(stream, serialized, 20);
         Mem_Free(serialized);
 
+        // The original pushes five arguments for the three-slot callee; the unused
+        // slots still hold the (freed) serialized buffer, the stream and the buffer again.
         GfxObjectProps_WriteMaterial(
-            stream, CSF_AT(int, properties, 0x04), 0, 0, 0);
+            stream, CSF_AT(int, properties, 0x04),
+            reinterpret_cast<int>(serialized), reinterpret_cast<int>(stream),
+            reinterpret_cast<int>(serialized));
     }
 
     return stream;

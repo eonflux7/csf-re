@@ -16,8 +16,8 @@ CSF_FUNC(bool, __fastcall, sub_6CC8E0, 0x006CC8E0, (void* self, void* edx));
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
 CSF_FUNC(int, __fastcall, ResolveClumpManager, 0x00652020, (int managerId, void* edx));
 CSF_FUNC(int, __fastcall, ResolveEntryLookupValue, 0x00471540, (void* self, void* edx));
-CSF_FUNC(bool, __fastcall, sub_6DB280, 0x006DB280, (void* self, void* edx));
-CSF_FUNC(char, __fastcall, sub_6F61B0, 0x006F61B0, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, sub_6DB280, 0x006DB280, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, sub_6F61B0, 0x006F61B0, (void* self, void* edx));
 
 static int __fastcall GfxScene_SyncWorldClumps(S_006cbc80* self, void* /*edx*/)
 {
