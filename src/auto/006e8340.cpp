@@ -6,9 +6,6 @@
 // Engine instance; its vtable slot 66 (offset 0x108) is the RW allocator.
 CSF_GLOBAL(void*, g_pRwEngineInstance, 0x8B68C0);
 
-// __cdecl allocator slot in the RW engine vtable: (byteCount, zero).
-using RwEngineAllocFn = void* (__cdecl*)(int byteCount, int zero);
-
 // Builds, for every node of an HAnim hierarchy, the index of its parent.
 // Each node carries a 16-byte record whose flags dword (+8) says:
 //   bit 1 (0x2): this node opens a level, so the current parent is pushed;
@@ -16,9 +13,14 @@ using RwEngineAllocFn = void* (__cdecl*)(int byteCount, int zero);
 //   neither:     this node becomes the current parent for the following nodes.
 static int* __cdecl HAnim_BuildParentIndexTable(void* hierarchy) {
     // the engine instance is a struct of function pointers (malloc at +0x108, free at +0x10C), not an object with a vtable
-    RwEngineAllocFn allocate = CSF_AT(RwEngineAllocFn, g_pRwEngineInstance, 0x108);
-    int* outIndices = static_cast<int*>(
-        allocate(4 * CSF_AT(int, hierarchy, 4), 0));
+    // Original: mov ecx, [g_pRwEngineInstance]; push 0; push 4*count; call [ecx+0x108]. The cdecl allocator gets the
+    // engine instance in ecx as well, so the call goes through hook::call_regs (ecx loaded, caller pops the two words).
+    void* engine = g_pRwEngineInstance;
+    const uint32_t allocArgs[2] = {4u * CSF_AT(uint32_t, hierarchy, 4), 0u};
+    hook::Regs regs{};
+    regs.ecx = reinterpret_cast<uint32_t>(engine);
+    int* outIndices = reinterpret_cast<int*>(
+        hook::call_regs(CSF_AT(uintptr_t, engine, 0x108), &regs, allocArgs, 2));
 
     if (CSF_AT(uint32_t, hierarchy, 4) == 0) {
         return outIndices;

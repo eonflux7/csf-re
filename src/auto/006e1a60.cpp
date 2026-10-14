@@ -3,8 +3,8 @@
 #include "hook.h"
 #include "core/memory.h"
 
-// Callee at 0x006E1710 is __cdecl. Bound as given in the packet (two arguments).
-CSF_FUNC(char, __cdecl, sub_6E1710, 0x006E1710, (int a1, int a2));
+// Callee at 0x006E1710 is __cdecl and returns the full eax (its last `result`), so it is bound as int.
+CSF_FUNC(int, __cdecl, sub_6E1710, 0x006E1710, (int a1, int a2));
 
 // 0x006E1A60: __stdcall thunk with ret 8. The original reads the incoming ECX
 // (it pushes ecx as a callee-visible value), so this is written as __fastcall:

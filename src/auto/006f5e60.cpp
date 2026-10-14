@@ -24,7 +24,8 @@ static int __fastcall S_006e48a0_InitializeCamera(
     *reinterpret_cast<uint8_t*>(&self->field_0034) = 0;
 
     self->field_0004 = owner;
-    self->field_0008 = NAN;
+    const uint32_t minusOneBits = 0xffffffffu;
+    std::memcpy(&self->field_0008, &minusOneBits, sizeof(float));
     self->field_003c = 1;
     self->field_0038 = 1128792064;
 

@@ -37,7 +37,8 @@ static char __fastcall Water_InitRenderPipeline(void* self, void* /*edx*/)
             // variadic: (pipeline, firstIndex = NULL, node definition, NULL terminator): four pushes
             uint32_t* locked = RxLockedPipeAddFragment(
                 reinterpret_cast<uint32_t*>(lockResult), nullptr, fileInterface, 0);
-            RxLockedPipeUnlock(locked, 0, 0, 0, 0);
+            // original leaves the AddFragment stack args in place: unlock sees (locked, lockResult, 0, fileInterface, 0)
+            RxLockedPipeUnlock(locked, lockResult, 0, fileInterface, 0);
         }
         else
         {

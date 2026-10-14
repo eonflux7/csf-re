@@ -10,9 +10,12 @@ static int __cdecl HAnimForwardToRwEngineSlot67(int a1)
 {
     void* engine = g_pRwEngineInstance;
     // the engine instance is a struct of function pointers (malloc at +0x108, free at +0x10C), not an object with a vtable
-    using RwFreeFn = void (__cdecl*)(int);
-    auto freeFn = CSF_AT(RwFreeFn, engine, 0x10C);
-    freeFn(a1);
+    // Original: mov ecx, [g_pRwEngineInstance]; push a1; call [ecx+0x10C]; add esp, 4. The cdecl callee gets the
+    // engine instance in ecx as well, so the call goes through hook::call_regs (caller pops the one word).
+    const uint32_t freeArgs[1] = {static_cast<uint32_t>(a1)};
+    hook::Regs regs{};
+    regs.ecx = reinterpret_cast<uint32_t>(engine);
+    hook::call_regs(CSF_AT(uintptr_t, engine, 0x10C), &regs, freeArgs, 1);
     return 1;
 }
 

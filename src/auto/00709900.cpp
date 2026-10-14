@@ -16,8 +16,9 @@ static int __cdecl WaterCopyStateAndSetFrameId(int target, int source)
 {
     CSF_AT(int, target, 0x70) = CSF_AT(int, source, 0xF0);
     ApplyWaterSourceState(target, source);
-    // The original pushes only two arguments here; the third slot is passed as 0.
-    RpHAnimFrameSetID(CSF_AT(int, target, 0x18), 0x10000, 0);
+    // The original pushes only two arguments here: the third stack slot still holds
+    // the target pointer pushed for the call above (cdecl callee, caller never pops it).
+    RpHAnimFrameSetID(CSF_AT(int, target, 0x18), 0x10000, target);
     return target;
 }
 

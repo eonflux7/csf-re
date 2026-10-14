@@ -24,8 +24,13 @@ static int __cdecl GfxHAnim_CopyFirstDwordsToNewArray(int hierarchy)
     // The original cleans the two pushed args itself (add esp, 8).
     int entryCount = CSF_AT(int, reinterpret_cast<void*>(hierarchy), 4);
     // the engine instance is a struct of function pointers (malloc at +0x108, free at +0x10C), not an object with a vtable
-    using RwMallocFn = int (__cdecl*)(int, int);
-    int result = CSF_AT(RwMallocFn, engine, 0x108)(4 * entryCount, 0);
+    // Original: mov ecx, [g_pRwEngineInstance]; push 0; push 4*count; call [ecx+0x108]. The cdecl allocator gets the
+    // engine instance in ecx as well, so the call goes through hook::call_regs (caller pops the two words).
+    const uint32_t allocArgs[2] = {static_cast<uint32_t>(4 * entryCount), 0u};
+    hook::Regs regs{};
+    regs.ecx = reinterpret_cast<uint32_t>(engine);
+    int result = static_cast<int>(
+        hook::call_regs(CSF_AT(uintptr_t, engine, 0x108), &regs, allocArgs, 2));
 
     int* outArray = reinterpret_cast<int*>(result);
     int index = 0;

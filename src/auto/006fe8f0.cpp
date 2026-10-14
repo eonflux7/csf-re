@@ -28,6 +28,9 @@ static unsigned int __fastcall C_00863044_EraseEntryCompacting(C_00863044* self,
             slot[0] = lastEntry[0];
             slot[1] = lastEntry[1];
             slot[2] = lastEntry[2];
+            // The original leaves the slot address in eax (`result = v4 + 12 * result`
+            // in the pseudocode, `lea eax, [ecx + eax*4]` before `ret 4`), so return it.
+            result = static_cast<unsigned int>(reinterpret_cast<uintptr_t>(slot));
         }
         --self->field_002c;
     }

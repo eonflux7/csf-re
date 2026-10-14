@@ -16,8 +16,11 @@ static constexpr int kWaterRasterPluginId = 1036;
 // Offset inside the water object that holds the per-raster plugin displacement.
 static constexpr uint32_t kRasterPluginDisplacementOffset = 0xF4;
 
-// Vtable slot 0x30 / 4 = 12: stdcall (object pointer on the stack, output buffer).
-using RasterPluginQueryFn = int(__stdcall*)(void* obj, void* outBuffer);
+// Vtable slot 0x30 / 4 = 12. The original does `mov ecx, [obj]` (the vtable), `lea edx, [buf]`, `push edx`,
+// `push obj`, `call [ecx+0x30]`: the callee is stdcall (object and buffer on the stack, callee pops 8), and ecx still
+// holds the vtable and edx the buffer at the call. A __fastcall view of the same call puts those two values in
+// ecx/edx and pushes the same two stack arguments, so ecx/edx match the original's registers at the call.
+using RasterPluginQueryFn = int(__fastcall*)(void* vtableInEcx, void* bufferInEdx, void* obj, void* outBuffer);
 static constexpr int kRasterPluginQuerySlot = 0x30 / 4;
 
 static bool __fastcall Water_RasterPluginRequiresFallback(void* self, void* /*edx*/)
@@ -35,8 +38,8 @@ static bool __fastcall Water_RasterPluginRequiresFallback(void* self, void* /*ed
     int queryBuffer[8] = {};
 
     void* pluginObject = reinterpret_cast<void*>(static_cast<uintptr_t>(pluginObjectValue));
-    auto queryFn = reinterpret_cast<RasterPluginQueryFn>(CSF_AT(void**, pluginObject, 0)[kRasterPluginQuerySlot]);
-    int queryResult = queryFn(pluginObject, queryBuffer);
+    void** vtable = CSF_AT(void**, pluginObject, 0);
+    int queryResult = reinterpret_cast<RasterPluginQueryFn>(vtable[kRasterPluginQuerySlot])(vtable, queryBuffer, pluginObject, queryBuffer);
 
     if (queryResult != 0)
         return true;

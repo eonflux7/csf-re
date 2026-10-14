@@ -8,7 +8,7 @@
 #include "legacy/string.h"
 
 // Callee at 0x6FD640: __fastcall-style, self in ecx, edx unused, two stack args (ret 8).
-CSF_FUNC(char, __fastcall, OwnedObject_ProcessArgWithZeroTail, 0x006FD640,
+CSF_FUNC(int, __fastcall, OwnedObject_ProcessArgWithZeroTail, 0x006FD640,
          (void* self, void* edx, int a2, int a3));
 
 // __thiscall method: this->field_0020 is the owned object; forwards a2 with a zero second argument.
