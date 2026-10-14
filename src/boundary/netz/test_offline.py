@@ -95,7 +95,7 @@ def hook(uc, pc, size, data):
             del blocks[a]
     elif name == '_strlen':
         result = len(text(a))
-    elif name == '_memcpy':
+    elif name in ('_memcpy', '_memmove'):
         u.mem_write(a, bytes(u.mem_read(b, c)))
         result = a
     elif name == '_memset':
@@ -469,4 +469,6 @@ import netzstub
 assert {v + '_regs' for v in netzstub.INIT_SUPPORT.values()} <= tested
 exec(compile(pathlib.Path(__file__).with_name('test_initializers.py').read_text(),
              str(pathlib.Path(__file__).with_name('test_initializers.py')), 'exec'))
-print(f'PASS: {checked} emulated calls, all 46 process slots, ESP/nonvolatile registers; no leaked test allocations')
+exec(compile(pathlib.Path(__file__).with_name('test_winmain.py').read_text(),
+             str(pathlib.Path(__file__).with_name('test_winmain.py')), 'exec'))
+print(f'PASS: {checked} emulated calls, all 46 initializer and 17 WinMain slots, ESP/nonvolatile registers; no leaked test allocations')

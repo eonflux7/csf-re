@@ -20,10 +20,21 @@ struct DeviceBackend {
     virtual int createShader(bool pixel, const uint32_t*, void**) = 0;
     virtual int constants(bool pixel, unsigned, const float*, unsigned) = 0;
     virtual int renderState(unsigned, unsigned) = 0;
+    // Startup raster operations have no usable native renderFast equivalent.
+    // Defaults fail: a NULL/recording fixture must explicitly opt in.
+    virtual bool clearRaster(rw::Raster*, uint32_t) { return false; }
+    virtual bool beginRasterDraw(rw::Raster*, rw::Raster*, const rw::Rect&) { return false; }
+    virtual bool endRasterDraw() { return false; }
+    virtual bool presentRaster(rw::Raster*, void*, uint32_t) { return false; }
+    virtual uint32_t textureMemory() { return 0; }
 };
 void bindDeviceBackend(DeviceBackend*); // borrowed; native recording fixture
 bool bindD3D9Device(void*);
 bool deviceReady();
+bool clearRasterContext(uint32_t);
+bool drawRasterContext(Raster*, const rw::Rect&);
+bool showRaster(Raster*, void*, uint32_t);
+uint32_t deviceTextureMemory();
 void invalidateDeviceBoundary(); // reset/rebind clears snapshots and Im3D batch
 void resetImmediateBoundary();
 

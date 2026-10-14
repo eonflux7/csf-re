@@ -44,7 +44,14 @@ def sources():
 
 def compile_one(fl, src, newest_header):
     obj = os.path.join(OBJ, os.path.relpath(src, ROOT).replace("/", "_") + ".obj")
-    if os.path.exists(obj) and os.path.getmtime(obj) >= max(os.path.getmtime(src), newest_header):
+    # Production RW slots and their selected library must agree on the backend.
+    # CMake's separate NULL-platform fixtures do NOT use this private cache.
+    rw_source = os.path.relpath(src, ROOT).startswith('src/boundary/rw/')
+    if rw_source:
+        fl = fl + ['-DRW_D3D9']
+    marker = obj + '.flags.json'
+    same_rw_flags = not rw_source or (os.path.isfile(marker) and json.load(open(marker)) == fl)
+    if same_rw_flags and os.path.exists(obj) and os.path.getmtime(obj) >= max(os.path.getmtime(src), newest_header):
         return src, obj, None
     r = subprocess.run(fl + [f"/Fo{obj}", "-c", "--", src], capture_output=True, text=True,
                        cwd=os.path.join(ROOT, "build"))
@@ -53,6 +60,9 @@ def compile_one(fl, src, newest_header):
             os.remove(obj)
         err = [l for l in (r.stdout + r.stderr).splitlines() if "error" in l]
         return src, None, "\n".join(err[:5])
+    if rw_source:
+        with open(marker, 'w') as stream:
+            json.dump(fl, stream)
     return src, obj, None
 
 

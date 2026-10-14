@@ -32,6 +32,6 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/work/tools/librw/CMakeLists.txt")
 endif()
 # Opt-in cutover boundary. The hook DLL never links librw or boundary slots.
 option(CSF_RW_CPU_SLICE "Build the standalone librw CPU boundary and link probe" OFF)
-if(CSF_RW_CPU_SLICE)
-  add_subdirectory(src/boundary/rw)
+if(CSF_RW_CPU_SLICE OR (WIN32 AND EXISTS "${CMAKE_SOURCE_DIR}/work/tools/librw/CMakeLists.txt"))
+  add_subdirectory(src/boundary/rw EXCLUDE_FROM_ALL)
 endif()

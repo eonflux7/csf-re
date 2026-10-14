@@ -5,6 +5,7 @@
 #include <d3d9.h>
 #include "globals.h"
 #include "boundary/rw/device.h"
+#include "boundary/rw/startup.h"
 int main() {
     if (!rw::Engine::init()) return 1;
     rw::EngineOpenParams params{GetDesktopWindow()};
@@ -19,11 +20,13 @@ int main() {
 #else
 #include "globals.h"
 #include "boundary/rw/device.h"
+#include "boundary/rw/startup.h"
 #include <array>
 #include <cassert>
 #include <cstring>
 #include <cstdio>
 #include <vector>
+#include <unordered_map>
 using namespace csf_rw;
 CSF_FUNC(int,__cdecl,init,0x00627360,(const MemoryFunctions*,char,int));
 CSF_FUNC(int,__cdecl,open,0x00627290,(void*));
@@ -49,6 +52,18 @@ CSF_FUNC(int,__cdecl,state,0x0062D650,(unsigned,unsigned));
 CSF_FUNC(uint32_t,__cdecl,pixel,0x00625870,(const rw::RGBA*,int));
 CSF_FUNC(Raster*,__cdecl,rasterCreate,0x00627770,(int,int,int,int));
 CSF_FUNC(int,__cdecl,rasterDestroy,0x00627570,(Raster*));
+CSF_FUNC(Raster*,__cdecl,push,0x006275B0,(Raster*));
+CSF_FUNC(Raster*,__stdcall,pop,0x00627650,());
+CSF_FUNC(int,__cdecl,clearRaster,0x006274B0,(uint32_t));
+CSF_FUNC(Raster*,__cdecl,fastRaster,0x00627510,(Raster*,int,int));
+CSF_FUNC(Raster*,__cdecl,scaledRaster,0x00627470,(Raster*,const rw::Rect*));
+CSF_FUNC(Raster*,__cdecl,showRasterSlot,0x006276E0,(Raster*,void*,unsigned));
+CSF_FUNC(int,__stdcall,textureMemorySlot,0x00626C90,());
+CSF_FUNC(int,__cdecl,bboxContains,0x0063CA30,(const rw::BBox*,const rw::V3d*));
+CSF_FUNC(csf_rw::VideoMode*,__cdecl,modeInfo,0x00626BE0,(csf_rw::VideoMode*,int));
+CSF_FUNC(int,__cdecl,refresh,0x0062B200,(int));
+CSF_FUNC(unsigned,__cdecl,multiSampling,0x0062B170,(unsigned));
+CSF_FUNC(int,__cdecl,dialogMode,0x0062B2A0,(int));
 CSF_FUNC(Im3DVertex*,__cdecl,transform,0x0063CED0,(Im3DVertex*,unsigned,rw::Matrix*,unsigned));
 CSF_FUNC(int,__stdcall,end,0x0063CFA0,());
 CSF_FUNC(int,__cdecl,renderIndexed,0x0063CFD0,(int,const uint16_t*,int));
@@ -64,7 +79,7 @@ CSF_FUNC(void*,__cdecl,pipeCallback,0x00592690,(void*,PipelineCallback));
 CSF_FUNC(const char**,__stdcall,definition,0x005935D0,());
 
 struct Fake final : DeviceBackend {
-    bool failCaps{},fail{};
+    bool failCaps{},fail{},failEnd{};
     int declarations{},vs{},ps{},ib{},draws{},stateCalls{};
     unsigned lastState{},lastValue{},type{},minimum{},vertices{},first{},primitives{};
     int base{};
@@ -74,6 +89,19 @@ struct Fake final : DeviceBackend {
     unsigned matrixType{},constantStart{},constantCount{};
     bool constantPixel{},shaderPixel{};
     void* lastHandle{};
+    rw::Raster *clearTarget{},*drawSource{},*drawTarget{},*presentTarget{};
+    rw::Rect rectangle{};
+    void* presentWindow{};
+    unsigned presentFlags{},clearPixel{},clears{},rasterDraws{},presents{};
+    bool clearRaster(rw::Raster* r,uint32_t p) override { ++clears;clearTarget=r;clearPixel=p;return !fail; }
+    bool beginRasterDraw(rw::Raster* s,rw::Raster* t,const rw::Rect& rect) override {
+        ++rasterDraws;drawSource=s;drawTarget=t;rectangle=rect;return !fail;
+    }
+    bool endRasterDraw() override { return !fail && !failEnd; }
+    bool presentRaster(rw::Raster* r,void* w,unsigned f) override {
+        ++presents;presentTarget=r;presentWindow=w;presentFlags=f;return !fail && !f;
+    }
+    uint32_t textureMemory() override { return 128u*1024*1024; }
     void* raw() override { return this; }
     bool caps(void* p) override { std::memset(p,0x5a,304); return !failCaps; }
     int declaration(void* p) override { ++declarations;lastHandle=p;return fail ? -1 : 0; }
@@ -112,22 +140,63 @@ static void end3D() { ++ends; }
 struct Native2D { float x,y,z,w;uint32_t color;float u,v; };
 static std::vector<Native2D> captured2D;
 static void indexed2D(rw::PrimitiveType,void* p,int n,void*,int) {
-    captured2D.assign(static_cast<Native2D*>(p),static_cast<Native2D*>(p)+n);++immediateDraws;
+    captured2D.resize(n);std::memcpy(captured2D.data(),p,n*sizeof(Native2D));++immediateDraws;
 }
 static void primitive2D(rw::PrimitiveType,void* p,int n) { indexed2D(rw::PRIMTYPENONE,p,n,nullptr,0); }
-static void nativeSet(int s,void* p) { lastNativeState=s;lastNativeValue=p; }
-static void* nativeGet(int s) { assert(s==lastNativeState);return lastNativeValue; }
+static std::unordered_map<int,void*> recordedStates;
+static void nativeSet(int s,void* p) { lastNativeState=s;lastNativeValue=p;recordedStates[s]=p; }
+static void* nativeGet(int s) { return recordedStates[s]; }
 static int pipelineCalls;
 static void* expectedEntry;
 static void* expectedAtomic;
 static void __cdecl pipelineDraw(void* e,void* a,uint8_t type,uint32_t flags) {
     assert(e==expectedEntry && a==expectedAtomic && type==1 && flags==0x55);++pipelineCalls;
 }
+static rw::DeviceSystem* savedSystem;
+static int initCalls,finalizeCalls;
+static unsigned msaa;
+static bool failInit,failFinalize;
+static int recordSystem(rw::DeviceReq request,void* arg,int n) {
+    switch (request) {
+    case rw::DEVICEINIT: ++initCalls; return failInit ? 0 : savedSystem(request,arg,n);
+    case rw::DEVICEFINALIZE: ++finalizeCalls; return failFinalize ? 0 : savedSystem(request,arg,n);
+    case rw::DEVICEGETNUMVIDEOMODES: return 2;
+    case rw::DEVICEGETCURRENTVIDEOMODE: return 0;
+    case rw::DEVICEGETVIDEOMODEINFO:
+        *static_cast<rw::VideoMode*>(arg)={640,480,32,n ? 1u : 0u}; return 1;
+    case rw::DEVICESETMULTISAMPLINGLEVELS: msaa=n; return 1;
+    default: return savedSystem(request,arg,n);
+    }
+}
+static rw::Raster* recordingRasterCreate(rw::Raster* r) {
+    // A resource recorder, NOT a software GPU. Keep upstream's native header
+    // allocation/plugins and record the exact game resource request.
+    assert(r->type==rw::Raster::CAMERA || r->type==rw::Raster::ZBUFFER || r->type==rw::Raster::CAMERATEXTURE);
+    r->depth=r->type==rw::Raster::ZBUFFER ? 24 : 32;
+    r->format=r->type==rw::Raster::ZBUFFER ? rw::Raster::D24 : rw::Raster::C8888;
+    r->originalWidth=r->width; r->originalHeight=r->height;
+    r->originalPixels=nullptr; r->originalStride=r->stride=0;
+    return r;
+}
 
 int main() {
     assert(!currentDevice() && !caps());
     assert(declaration(nullptr)<0 && !transform(nullptr,0,nullptr,0));
-    assert(init(nullptr,0,0) && open(nullptr) && start());
+    int windowToken;
+    void* window=&windowToken;
+    assert(init(nullptr,0,0) && open(&window));
+    window=nullptr; assert(engineWindow()==&windowToken);
+    savedSystem=rw::engine->device.system; rw::engine->device.system=recordSystem;
+    csf_rw::VideoMode mode{};
+    assert(modeInfo(&mode,0)==&mode && mode.width==640 && mode.flags==0 && mode.refresh==0 && mode.format==0);
+    assert(modeInfo(&mode,1)==&mode && mode.flags==1);
+    mode.width=99; assert(!modeInfo(&mode,-1) && !modeInfo(&mode,2) && mode.width==99);
+    assert(refresh(0)==0 && refresh(60)==0 && multiSampling(4)==1 && msaa==1 && dialogMode(1));
+    failInit=true;assert(!start() && initCalls==1 && finalizeCalls==0 && rw::Engine::state==rw::Engine::Opened);
+    failInit=false;failFinalize=true;
+    assert(!start() && initCalls==2 && finalizeCalls==1 && rw::Engine::state==rw::Engine::Opened);
+    failFinalize=false;assert(start() && initCalls==3 && finalizeCalls==2);
+    rw::engine->device.system=savedSystem;
     Fake fake;
     fake.failCaps=true;bindDeviceBackend(&fake);assert(!deviceReady());
     fake.failCaps=false;bindDeviceBackend(&fake);
@@ -203,6 +272,46 @@ int main() {
     assert(getGameRenderState(1,&value) && value==raster);
     assert(setGameRenderState(1,nullptr) && rasterDestroy(raster));
 
+    // Camera/Z creation rejection on NULL remains deliberate. The recorder
+    // opts into D3D9 driver callbacks to test resource/ABI delegation offline.
+    assert(!rasterCreate(640,480,32,rw::Raster::CAMERA));
+    auto savedCreate=rw::engine->driver[rw::PLATFORM_D3D9]->rasterCreate;
+    rw::engine->driver[rw::PLATFORM_D3D9]->rasterCreate=recordingRasterCreate;
+    int platform=rw::platform;rw::platform=rw::PLATFORM_D3D9;
+    Raster* framebuffer=rasterCreate(640,480,32,rw::Raster::CAMERA);
+    Raster* zbuffer=rasterCreate(640,480,0,rw::Raster::ZBUFFER);
+    Raster* offscreen=rasterCreate(64,64,0,rw::Raster::CAMERATEXTURE);
+    assert(framebuffer && zbuffer && offscreen && framebuffer->width==640 && zbuffer->depth==24);
+    rw::engine->driver[rw::PLATFORM_D3D9]->rasterCreate=savedCreate;
+    rw::platform=platform;
+    Raster* clock=rasterCreate(8,8,0,rw::Raster::NORMAL);assert(clock);
+    assert(textureMemorySlot()==128*1024*1024);
+    assert(!clearRaster(0) && !fastRaster(clock,4,5));
+    for (int i=0;i<3;++i) {
+        assert(push(framebuffer)==framebuffer && clearRaster(0));
+        assert(fastRaster(clock,4,5)==clock && fake.rectangle.w==8);
+        assert(captured2D.size()==4 && captured2D[0].x==3.5f && captured2D[0].y==4.5f &&
+            captured2D[0].w==1 && captured2D[3].u==1 && captured2D[3].v==1 && captured2D[3].x==11.5f);
+        assert(!rw::engine->currentCamera && recordedStates[rw::TEXTURERASTER]==nullptr);
+        assert(fake.drawSource==rasterNative(clock) && fake.drawTarget==rasterNative(framebuffer));
+        assert(!rasterDestroy(framebuffer) && pop()==framebuffer);
+        assert(showRasterSlot(framebuffer,nullptr,0)==framebuffer && fake.presentWindow==&windowToken);
+    }
+    assert(fake.clears==3 && fake.rasterDraws==3 && fake.presents==3);
+    rw::Rect rect{1,2,16,12};assert(push(offscreen)==offscreen && scaledRaster(clock,&rect)==clock && pop()==offscreen);
+    fake.fail=true;assert(!showRasterSlot(framebuffer,nullptr,0));
+    assert(push(framebuffer)==framebuffer && !clearRaster(0) && !fastRaster(clock,0,0) && pop()==framebuffer);
+    fake.fail=false;assert(!showRasterSlot(framebuffer,nullptr,1));
+    fake.failEnd=true;
+    assert(push(framebuffer)==framebuffer && !fastRaster(clock,0,0) && pop()==framebuffer);
+    assert(!rw::engine->currentCamera && recordedStates[rw::TEXTURERASTER]==nullptr);
+    fake.failEnd=false;
+    assert(!showRasterSlot(clock,nullptr,0) && !showRasterSlot(framebuffer,nullptr,2));
+    assert(rasterDestroy(clock) && rasterDestroy(offscreen) && rasterDestroy(zbuffer) && rasterDestroy(framebuffer));
+    rw::BBox box{rw::makeV3d(1,2,3),rw::makeV3d(-1,-2,-3)};
+    rw::V3d inside=box.inf,outside=rw::makeV3d(2,0,0);
+    assert(bboxContains(&box,&inside) && !bboxContains(&box,&outside) && !bboxContains(nullptr,&inside));
+
     assert(pipeMax(4)==4);Pipeline* p=pipeCreate();assert(p && !pipelinesEmpty());
     assert(!pipeUnlock(p) && pipeLock(p)==p);unsigned nodeIndex=99;
     assert(!pipeAdd(p,nullptr,&fake,nullptr));
@@ -219,6 +328,7 @@ int main() {
     rw::engine->device=saved;
     bindDeviceBackend(nullptr);assert(!currentDevice() && !caps() && declaration(nullptr)<0);
     assert(stop() && closeEngine() && term());
+    assert(!engineWindow() && textureMemorySlot()==-1);
     std::puts("rw_device: PASS (recording device only, no GPU)");
 }
 #endif

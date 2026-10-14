@@ -24,7 +24,13 @@ def main():
     if "csf-builds" in a.dir:
         raise SystemExit("refusing to run in the read-only originals")
     shutil.copy2(a.exe, os.path.join(a.dir, "csf_standalone.exe"))
-    env = dict(os.environ, CSF_DRYRUN="0" if a.full else "1", WSLENV="CSF_DRYRUN/w")
+    # Keep optional boundary tracing visible across WSL interop as well as
+    # the dry-run switch. No tracing is enabled unless the caller asks for it.
+    exports = [os.environ.get("WSLENV", ""), "CSF_DRYRUN/w"]
+    if "CSF_RW_TRACE" in os.environ:
+        exports.append("CSF_RW_TRACE/w")
+    env = dict(os.environ, CSF_DRYRUN="0" if a.full else "1",
+               WSLENV=":".join(e for e in exports if e))
     t0 = time.time()
     try:
         p = subprocess.run(["./csf_standalone.exe"], cwd=a.dir, env=env, capture_output=True, text=True,

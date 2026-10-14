@@ -6,16 +6,27 @@
 #else
 #include "hook.h"
 #endif
+#if defined(_WIN32) && defined(RW_D3D9)
+#include <windows.h>
+#include <d3d9.h>
+#endif
 #include "device.h"
+#include "startup.h"
+#if defined(_WIN32) && !defined(RW_D3D9)
+#include <windows.h>
+#include <d3d9.h>
+#endif
+#ifdef RW_D3D9
+#include "../../../work/tools/librw/src/d3d/rwd3dimpl.h"
+// MIT backend helpers update its cache as well as COM, unlike direct setters.
+namespace rw::d3d { void setRenderTarget(int,void*); void setDepthSurface(void*); }
+#endif
 #include <array>
 #include <cstdarg>
 #include <cstring>
 #include <unordered_map>
 #include <unordered_set>
-#ifdef _WIN32
-#include <windows.h>
-#include <d3d9.h>
-#endif
+#include <cmath>
 
 namespace {
 csf_rw::DeviceBackend* backend;
@@ -45,15 +56,65 @@ public:
         return pixel ? device->SetPixelShaderConstantF(start,p,n) : device->SetVertexShaderConstantF(start,p,n);
     }
     int renderState(unsigned s,unsigned v) override { return device->SetRenderState(static_cast<D3DRENDERSTATETYPE>(s),v); }
+    uint32_t textureMemory() override { return device->GetAvailableTextureMem(); }
+#ifdef RW_D3D9
+    bool clearRaster(rw::Raster* target,uint32_t pixel) override {
+        if (FAILED(device->TestCooperativeLevel())) return false;
+        // This ephemeral NATIVE camera is only a Device.clearCamera carrier.
+        // It is never published to the game, nor entered in any owning map.
+        rw::Camera camera{}; camera.frameBuffer=target;
+        rw::RGBA color{static_cast<rw::uint8>(pixel>>16),static_cast<rw::uint8>(pixel>>8),
+                       static_cast<rw::uint8>(pixel),static_cast<rw::uint8>(pixel>>24)};
+        if ((target->format&0xf00)==rw::Raster::C565) {
+            color={static_cast<rw::uint8>(((pixel>>11)&31)*255/31),
+                   static_cast<rw::uint8>(((pixel>>5)&63)*255/63),
+                   static_cast<rw::uint8>((pixel&31)*255/31),255};
+        } else if ((target->format&0xf00)!=rw::Raster::C888 && (target->format&0xf00)!=rw::Raster::C8888) return false;
+        rw::engine->device.clearCamera(&camera,&color,rw::Camera::CLEARIMAGE);
+        return true; // original Clear reports context validity, not HRESULT
+    }
+    bool beginRasterDraw(rw::Raster*,rw::Raster* target,const rw::Rect&) override {
+        if (rw::engine->currentCamera) return false;
+        auto* root=target->parent ? target->parent : target;
+        auto* ext=GETD3DRASTEREXT(root);
+        IDirect3DSurface9* surface=rw::d3d::d3d9Globals.defaultRenderTarget;
+        if (root->type==rw::Raster::CAMERATEXTURE) {
+            if (!ext->texture || FAILED(static_cast<IDirect3DTexture9*>(ext->texture)->GetSurfaceLevel(0,&surface))) return false;
+        }
+        rw::d3d::setRenderTarget(0,surface); rw::d3d::setDepthSurface(nullptr);
+        if (root->type==rw::Raster::CAMERATEXTURE) surface->Release();
+        D3DVIEWPORT9 viewport{static_cast<DWORD>(target->offsetX),static_cast<DWORD>(target->offsetY),
+            static_cast<DWORD>(target->width),static_cast<DWORD>(target->height),0,1};
+        return SUCCEEDED(device->SetViewport(&viewport)) && SUCCEEDED(device->BeginScene());
+    }
+    bool endRasterDraw() override { return SUCCEEDED(device->EndScene()); }
+    bool presentRaster(rw::Raster*,void* window,uint32_t flags) override {
+        // Startup flags=0 uses upstream's initial IMMEDIATE swap policy.
+        // Do not call native show: it hides Present/Reset HRESULTs. Vsync and
+        // device-loss/reset integration remain explicit unsupported policies.
+        if (flags != 0) return false;
+        // D3D9 forbids a destination-window override in exclusive mode. The
+        // copied HWND is already in librw's present.hDeviceWindow; only allow
+        // that destination there, passing NULL to COM as required.
+        HWND destination=static_cast<HWND>(window);
+        if (!rw::d3d::d3d9Globals.present.Windowed) {
+            if (destination && destination!=rw::d3d::d3d9Globals.window) return false;
+            destination=nullptr;
+        }
+        HRESULT result=device->Present(nullptr,nullptr,destination,nullptr);
+        if (csf_rw::startupTracing()) std::fprintf(stderr,"RW startup Present HWND=%p HRESULT=%08lx\n",window,static_cast<unsigned long>(result));
+        return SUCCEEDED(result);
+    }
+#endif
 } d3d9;
 static_assert(sizeof(D3DCAPS9) == 304);
 #endif
 
 // 006dc290 caches the real COM pointer (+5c) for screenshots/gamma/caps.
-void* __stdcall currentDevice() { return backend ? backend->raw() : nullptr; }
+void* __stdcall currentDevice() { csf_rw::startupTrace("0x0062B670","GetCurrentD3DDevice"); return backend ? backend->raw() : nullptr; }
 // 006dc290 mutates caps +ec. Keep a stable writable snapshot, not a temporary
 // or pointer into a native driver whose caps the game would silently corrupt.
-void* __stdcall caps() { return backend ? deviceCaps.data() : nullptr; }
+void* __stdcall caps() { csf_rw::startupTrace("0x0062C110","GetCaps"); return backend ? deviceCaps.data() : nullptr; }
 // 0070a070 passes real shader/declaration COM handles from game-owned water
 // resources. Return HRESULT; all calls must reach the device: raw game COM
 // calls make equality-suppression unsafe. Do not cast an owning RW facade.
@@ -159,6 +220,57 @@ bool bindD3D9Device(void* p) {
 #endif
 }
 bool deviceReady() { return backend!=nullptr; }
+uint32_t deviceTextureMemory() { return backend ? backend->textureMemory() : 0; }
+bool clearRasterContext(uint32_t pixel) {
+    if (!backend || rw::Engine::state!=rw::Engine::Started) return false;
+    auto* target=rw::Raster::getCurrentContext();
+    return target && (target->type==rw::Raster::CAMERA || target->type==rw::Raster::CAMERATEXTURE) && backend->clearRaster(target,pixel);
+}
+bool drawRasterContext(Raster* source,const rw::Rect& rect) {
+    if (!backend || rw::Engine::state!=rw::Engine::Started || rect.w<=0 || rect.h<=0) return false;
+    auto* src=rasterNative(source); auto* target=rw::Raster::getCurrentContext();
+    if (!src || !target || src==target ||
+        (src->flags & rw::Raster::DONTALLOCATE) ||
+        (src->type!=rw::Raster::NORMAL && src->type!=rw::Raster::TEXTURE) ||
+        (target->type!=rw::Raster::CAMERA && target->type!=rw::Raster::CAMERATEXTURE)) return false;
+    // Device seam only binds surfaces/viewport and brackets the scene. The
+    // SAME librw composition runs on production and the recording fixture.
+    if (rw::engine->currentCamera || !backend->beginRasterDraw(src,target,rect)) return false;
+    rw::Camera camera{}; camera.frameBuffer=target;
+    rw::engine->currentCamera=&camera;
+    constexpr int states[]={rw::TEXTURERASTER,rw::ZTESTENABLE,rw::ZWRITEENABLE,
+        rw::VERTEXALPHA,rw::FOGENABLE,rw::CULLMODE,rw::TEXTUREFILTER};
+    void* saved[7]; for (int i=0;i<7;++i) saved[i]=rw::GetRenderStatePtr(states[i]);
+    rw::SetRenderStatePtr(rw::TEXTURERASTER,src);
+    rw::SetRenderState(rw::ZTESTENABLE,0); rw::SetRenderState(rw::ZWRITEENABLE,0);
+    rw::SetRenderState(rw::VERTEXALPHA,0); rw::SetRenderState(rw::FOGENABLE,0);
+    rw::SetRenderState(rw::CULLMODE,rw::CULLNONE);
+    rw::SetRenderState(rw::TEXTUREFILTER,rw::Texture::NEAREST);
+    // This POD is also available to NULL-platform recording fixtures; native
+    // librw only declares d3d::Im2DVertex when RW_D3D9 is selected.
+    struct Vertex { float x,y,z,w; uint32_t color; float u,v; };
+    static_assert(sizeof(Vertex)==28);
+#ifdef RW_D3D9
+    static_assert(sizeof(Vertex)==sizeof(rw::d3d::Im2DVertex));
+    static_assert(offsetof(Vertex,color)==offsetof(rw::d3d::Im2DVertex,color));
+    static_assert(offsetof(Vertex,u)==offsetof(rw::d3d::Im2DVertex,u));
+#endif
+    float x=static_cast<float>(rect.x)-0.5f,y=static_cast<float>(rect.y)-0.5f;
+    float right=x+rect.w,bottom=y+rect.h;
+    Vertex vertices[4]={{x,y,0,1,0xffffffffu,0,0},{x,bottom,0,1,0xffffffffu,0,1},
+        {right,y,0,1,0xffffffffu,1,0},{right,bottom,0,1,0xffffffffu,1,1}};
+    rw::im2d::RenderPrimitive(rw::PRIMTYPETRISTRIP,vertices,4);
+    for (int i=0;i<7;++i) rw::SetRenderStatePtr(states[i],saved[i]);
+    rw::engine->currentCamera=nullptr;
+    return backend->endRasterDraw(); // native draw callback itself is void
+}
+bool showRaster(Raster* raster,void* window,uint32_t flags) {
+    if (!backend || rw::Engine::state!=rw::Engine::Started || (flags&~1u)) return false;
+    auto* n=rasterNative(raster);
+    if (!n || n->type!=rw::Raster::CAMERA) return false;
+    void* destination=window ? window : engineWindow();
+    return backend->presentRaster(n,destination,flags);
+}
 }
 HOOK(0x0062B670,currentDevice,"boundary-rw");
 HOOK(0x0062B720,declaration,"boundary-rw");

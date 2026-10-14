@@ -120,7 +120,11 @@ int main() {
     rw::Engine::memfuncs.rwmalloc = failAlloc;
     assert(regLight(4,43,nullptr,nullptr,nullptr)==-1);
     rw::Engine::memfuncs.rwmalloc = old;
-    assert(!start()); assert(open(nullptr)); assert(!open(nullptr));
+    int windowToken;
+    void* window=&windowToken;
+    assert(!start()); assert(open(&window)); assert(!open(nullptr));
+    window=nullptr; // caller's EngineOpenParams storage can disappear/change
+    assert(csf_rw::engineWindow()==&windowToken);
     assert(facade && facade != rw::engine);
     assert(regFrame(8,43,nullptr,nullptr,nullptr)==-1);
     assert(modes() == rw::Engine::getNumVideoModes());

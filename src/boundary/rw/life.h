@@ -10,6 +10,8 @@ rw::PluginList& plugins(Registry);
 bool constructPlugins(Registry, void*);
 void destructPlugins(Registry, void*);
 bool framesEmpty();
+// A copy, never the caller's short-lived EngineOpenParams pointer.
+void* engineWindow();
 
 struct MemoryFunctions {
     void* (__cdecl *malloc)(uint32_t, uint32_t);

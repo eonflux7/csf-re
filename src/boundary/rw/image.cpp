@@ -7,6 +7,7 @@
 #include "hook.h"
 #endif
 #include "image.h"
+#include "startup.h"
 #include <algorithm>
 #include <cstring>
 #include <string>
@@ -66,6 +67,7 @@ I* adoptImage(rw::Image* n) {
 // Keep the old prefix; librw's inserted bpp stays private. Bound dimensions
 // before upstream's signed stride*height allocation arithmetic.
 I* __cdecl imageCreate(int w, int h, int d) {
+    csf_rw::startupTrace("0x00625060","ImageCreate");
     if (rw::Engine::state != rw::Engine::Started || w <= 0 || h <= 0 ||
         (d!=4 && d!=8 && d!=16 && d!=24 && d!=32) ||
         int64_t(w)*h*(d<8?1:d/8) > INT32_MAX) return nullptr;
@@ -73,6 +75,7 @@ I* __cdecl imageCreate(int w, int h, int d) {
 }
 // 006dba70 writes through pixels immediately; return facade/null, not void.
 I* __cdecl imageAllocate(I* a) {
+    csf_rw::startupTrace("0x006250C0","ImageAllocatePixels");
     auto* n = csf_rw::imageNative(a); if (!n) return nullptr;
     if (n->width<=0 || n->height<=0 || int64_t(n->width)*n->height*n->bpp>INT32_MAX) return nullptr;
     n->allocate(); exportImage(a,n);
@@ -81,6 +84,7 @@ I* __cdecl imageAllocate(I* a) {
 // 006db8b0 destroys captured images; direct borrowed pixel pointers must not
 // acquire ownership merely because librw's setPixels sets the allocation flag.
 int __cdecl imageDestroy(I* a) {
+    csf_rw::startupTrace("0x00625F10","ImageDestroy");
     auto* n=csf_rw::imageNative(a); if (!n) return 0;
     images.erase(a); n->destroy(); freeFacade(a); return 1;
 }
@@ -277,19 +281,23 @@ void exportRaster(R* a,rw::Raster* n) {
 }
 // 00705b40 needs mipmapped textures, 007091d0 zero-sized DONTALLOCATE headers.
 // NULL's own raster operations assert: use librw's OFFLINE D3D9 raster codec
-// on the NULL engine, not a fake rendering device. Camera/Z resources require
-// slice 7 and fail explicitly here. No upstream source or dispatch mutation.
+// on the NULL engine. On D3D9 use its real CAMERA/Z/CAMERATEXTURE callbacks.
 R* __cdecl rasterCreate(int w,int h,int depth,int format) {
+    if (csf_rw::startupTracing()) std::fprintf(stderr,"RW startup 0x00627770 RasterCreate %dx%d depth=%d flags=%x\n",w,h,depth,format);
+    int type = format & 7;
+    bool gpu = type == rw::Raster::CAMERA || type == rw::Raster::ZBUFFER || type == rw::Raster::CAMERATEXTURE;
     if (rw::Engine::state!=rw::Engine::Started || w<0 || h<0 || w>32767 || h>32767 ||
         int64_t(w)*h*8>INT32_MAX || ((format>>8)&15)>10 ||
         ((format&0x6000)==0x6000) ||
-        ((format&7)!=rw::Raster::NORMAL && (format&7)!=rw::Raster::TEXTURE)) return nullptr;
+        (type != rw::Raster::NORMAL && type != rw::Raster::TEXTURE && !gpu) ||
+        (gpu && rw::platform != rw::PLATFORM_D3D9 && !(format & rw::Raster::DONTALLOCATE))) return nullptr;
     R* a=allocate<R>(K::Raster); if (!a) return nullptr;
     auto* n=rw::Raster::create(w,h,depth,format,rw::PLATFORM_D3D9);
     if (!n) { freeFacade(a); return nullptr; }
     a->parent=a; exportRaster(a,n);
     try { rasters.emplace(a,RasterRecord{n}); } catch (...) { n->destroy(); freeFacade(a); return nullptr; }
     if (!csf_rw::constructPlugins(K::Raster,a)) { rasters.erase(a); n->destroy(); freeFacade(a); return nullptr; }
+    if (csf_rw::startupTracing()) std::fprintf(stderr,"RW startup raster=%p native=%p type=%d depth=%d format=%x\n",static_cast<void*>(a),static_cast<void*>(n),n->type,n->depth,n->format);
     return a;
 }
 // 00705a10 locks individual mip levels and reads temporary dimensions/stride.
@@ -325,12 +333,14 @@ int __cdecl rasterLevels(R* a) {
 int __cdecl rasterPlugin(uint32_t id) { return csf_rw::plugins(K::Raster).getPluginOffset(id); }
 // 00529d30/006dbbf0 bracket offscreen drawing with a bounded context stack.
 R* __cdecl rasterPush(R* a) {
+    csf_rw::startupTrace("0x006275B0","PushContext");
     auto* n=csf_rw::rasterNative(a);
     if (!n || contextCount==32 || !rw::Raster::pushContext(n)) return nullptr;
     contexts[contextCount++]=a; return a;
 }
 // 00726a70 pops and expects the popped facade, not native identity.
 R* __stdcall rasterPop() {
+    csf_rw::startupTrace("0x00627650","PopContext");
     auto* a=csf_rw::rasterFacade(rw::Raster::popContext());
     if (a && contextCount) contexts[--contextCount]=nullptr;
     return a;
@@ -353,6 +363,7 @@ I* __cdecl imageRasterFormat(I* a,int type,int* w,int* h,int* d,int* f) {
 }
 // 00705d10 uploads RGBA pixels; 00705a10 temporarily adjusts headers for mips.
 R* __cdecl rasterFromImage(R* a,I* image) {
+    csf_rw::startupTrace("0x00633040","SetFromImage");
     auto* n=csf_rw::rasterNative(a); auto* i=csf_rw::imageNative(image);
     if (!n || !i || !i->pixels || n->parent!=n || (n->flags&rw::Raster::DONTALLOCATE)) return nullptr;
     auto* ret=n->setFromImage(i,rw::PLATFORM_D3D9); exportRaster(a,n); return ret?a:nullptr;

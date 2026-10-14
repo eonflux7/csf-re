@@ -1,5 +1,15 @@
 # Generated offline NetZ boundary — partial, deliberately fail-closed
 
+WinMain cutover update: **17/17 reported NetZ trap slots supplied**, including
+real session sentinels/URL, empty selection ownership and its seven original
+virtual targets. Shared game-manager getters retain pointer identity; the
+constant-true helper is not converted to network failure. See
+[WINMAIN_CUTOVER.md](WINMAIN_CUTOVER.md) for every object, caller failure path
+and computed-call caveat. Current manifest: **194 generated + 5 allocator
+bindings / 371 frozen targets; 172 deferred**. Offline tests also execute 15
+actual game session/selection/cleanup callers, including two construct/destroy
+cycles. No Windows SP startup is claimed. Older totals below are historical.
+
 Initializer cutover update: **46/46 initializer-reached slots supplied**, with
 real owned process state and original vtable identities. See
 [INIT_CUTOVER.md](INIT_CUTOVER.md) for all slots/layouts, offline ownership policy,

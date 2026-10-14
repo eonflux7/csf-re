@@ -1,5 +1,9 @@
 // Standalone ABI boundary over the unmodified MIT librw checkout.
 #ifdef CSF_STANDALONE
+#if defined(_WIN32) && defined(RW_D3D9)
+#include <windows.h>
+#include <d3d9.h>
+#endif
 #include "globals.h"
 #ifdef CSF_RW_NATIVE_TEST
 #define HOOK(addr, fn, module) template <> void* const ::csf::fn_slot<(addr)>::p = (void*)&fn
@@ -9,6 +13,11 @@
 #include "life.h"
 #include "image.h"
 #include "object.h"
+#include "device.h"
+#include "startup.h"
+#ifdef RW_D3D9
+#include "../../../work/tools/librw/src/d3d/rwd3dimpl.h"
+#endif
 #include <cstdlib>
 #include <cstring>
 #include <limits>
@@ -19,6 +28,23 @@ CSF_GLOBAL(void*, gameEngine, 0x008B68C0);
 
 namespace {
 csf_rw::MemoryFunctions gameMemory{};
+void* windowHandle;
+rw::DeviceSystem* startSystem;
+#ifdef RW_D3D9
+rw::DeviceSystem* openSystem;
+int openDeviceSystem(rw::DeviceReq request,void* arg,int n) {
+    return request==rw::DEVICEOPEN ? 1 : openSystem(request,arg,n);
+}
+#endif
+bool finalized;
+int startDeviceSystem(rw::DeviceReq request,void* arg,int n) {
+    // Upstream Engine::start ignores DEVICEINIT/FINALIZE failures. Preflight
+    // INIT once before plugin constructors can touch a failed/null device.
+    if (request==rw::DEVICEINIT) return 1;
+    int result=startSystem(request,arg,n);
+    if (request==rw::DEVICEFINALIZE) finalized=result!=0;
+    return result;
+}
 void* __cdecl defaultMalloc(uint32_t n, uint32_t h) { return rw::defaultMemfuncs.rwmalloc(n,h); }
 void __cdecl defaultFree(void* p) { rw::defaultMemfuncs.rwfree(p); }
 void* __cdecl defaultRealloc(void* p, uint32_t n, uint32_t h) { return rw::defaultMemfuncs.rwrealloc(p,n,h); }
@@ -65,6 +91,7 @@ int __cdecl getState(int state, void* out) {
 // free, realloc, calloc), flags=0, arena bytes. librw's table instead orders
 // malloc/realloc/free and adds must-allocate callbacks; adapt, do not cast.
 int __cdecl engineInit(const csf_rw::MemoryFunctions* m, char flags, int arena) {
+    csf_rw::startupTrace("0x00627360","EngineInit");
     if (rw::Engine::state != rw::Engine::Dead || flags != 0 || arena < 0) return 0;
     if (m) {
         if (!m->malloc || !m->free || !m->realloc || !m->calloc) return 0;
@@ -75,14 +102,35 @@ int __cdecl engineInit(const csf_rw::MemoryFunctions* m, char flags, int arena) 
     gameMemory = {defaultMalloc, defaultFree, defaultRealloc, defaultCalloc};
     return rw::Engine::init();
 }
-// 006dc000 passes a pointer to its window handle. NULL ignores it; a future
-// D3D9 boundary must translate EngineOpenParams rather than reinterpret it.
+// 006dc000 passes address of HWND. Copy it before its stack frame returns.
 int __cdecl engineOpen(void* params) {
+    csf_rw::startupTrace("0x00627290","EngineOpen");
     if (rw::Engine::state != rw::Engine::Initialized) return 0;
-    (void)params;
+    void* window = params ? *static_cast<void**>(params) : nullptr;
+#ifdef RW_D3D9
+    if (!window) return 0;
+    rw::EngineOpenParams nativeParams{static_cast<HWND>(window)};
+    auto* nativeOpen = &nativeParams;
+#else
+    rw::EngineOpenParams* nativeOpen = nullptr;
+#endif
     auto* a = std::calloc(1, registries[0].size);
     if (!a) return 0;
-    if (!rw::Engine::open(nullptr)) { std::free(a); return 0; }
+#ifdef RW_D3D9
+    // Like Start, upstream Open discards the device-system result. Check its
+    // real D3D9 Open first, then suppress only the repeated call in Engine.
+    openSystem=rw::d3d::renderdevice.system;
+    if (!openSystem(rw::DEVICEOPEN,nativeOpen,0)) { std::free(a); return 0; }
+    rw::d3d::renderdevice.system=openDeviceSystem;
+    bool opened=rw::Engine::open(nativeOpen)!=0;
+    rw::d3d::renderdevice.system=openSystem;
+    if (rw::engine) rw::engine->device.system=openSystem;
+    if (!opened) { openSystem(rw::DEVICECLOSE,nullptr,0); std::free(a); return 0; }
+#else
+    if (!rw::Engine::open(nativeOpen)) { std::free(a); return 0; }
+#endif
+    windowHandle = window;
+    if (csf_rw::startupTracing()) std::fprintf(stderr,"RW startup HWND=%p (copied)\n",windowHandle);
     auto* facade = static_cast<EngineFacade*>(a);
     facade->slots[8] = reinterpret_cast<uintptr_t>(&setState);
     facade->slots[9] = reinterpret_cast<uintptr_t>(&getState);
@@ -93,6 +141,9 @@ int __cdecl engineOpen(void* params) {
         facade->slots[69] = reinterpret_cast<uintptr_t>(gameMemory.calloc);
     }
     gameEngine = a;
+#ifdef RW_D3D9
+    csf_rw::installImmediateDispatch(a);
+#endif
     return 1;
 }
 void stopNative() {
@@ -117,20 +168,42 @@ void stopNative() {
 // 006db9a0 checks Start success. Game engine ctor 006baf80 uses the global
 // facade, so publish before invoking callbacks; native callbacks stay native.
 int __stdcall engineStart() {
+    csf_rw::startupTrace("0x00626D60","EngineStart");
     if (rw::Engine::state != rw::Engine::Opened || !gameEngine) return 0;
-    if (!rw::Engine::start()) return 0;
-    if (!csf_rw::imageBoundaryStart()) { stopNative(); return 0; }
+    startSystem=rw::engine->device.system;
+    if (!startSystem(rw::DEVICEINIT,nullptr,0)) {
+        csf_rw::startupTrace("0x00626D60","DEVICEINIT failed (engine remains Opened)");
+        return 0;
+    }
+    finalized=false;
+    rw::engine->device.system=startDeviceSystem;
+    bool started=rw::Engine::start()!=0;
+    rw::engine->device.system=startSystem;
+    if (!started || !finalized) { if (started) stopNative(); return 0; }
+#ifdef RW_D3D9
+    // Start (DEVICEINIT) creates the device; only now may the game borrow it.
+    if (!csf_rw::bindD3D9Device(rw::d3d::d3ddevice)) { stopNative(); return 0; }
+    if (csf_rw::startupTracing()) {
+        const auto& p=rw::d3d::d3d9Globals.present;
+        std::fprintf(stderr,"RW startup D3D9 device=%p (librw-owned) backbuffer=%ux%u format=%u depthFormat=%u windowed=%d msaa=%u\n",
+            static_cast<void*>(rw::d3d::d3ddevice),p.BackBufferWidth,p.BackBufferHeight,
+            static_cast<unsigned>(p.BackBufferFormat),static_cast<unsigned>(p.AutoDepthStencilFormat),
+            p.Windowed,static_cast<unsigned>(p.MultiSampleType));
+    }
+#endif
+    if (!csf_rw::imageBoundaryStart()) { csf_rw::bindDeviceBackend(nullptr); stopNative(); return 0; }
     if (!csf_rw::constructPlugins(csf_rw::Registry::Engine, gameEngine)) {
-        csf_rw::imageBoundaryStop(); stopNative(); return 0;
+        csf_rw::imageBoundaryStop(); csf_rw::bindDeviceBackend(nullptr); stopNative(); return 0;
     }
     return 1;
 }
 // 006db7c0/006dbd50 tear down explicitly, 0050d1a0 calls Term. librw returns void for these three
 // transitions; preserve boolean game results and reject invalid ordering.
 int __stdcall engineStop() {
-    if (rw::Engine::state != rw::Engine::Started || !csf_rw::framesEmpty() || !csf_rw::imagesEmpty() || !csf_rw::objectsEmpty()) return 0;
+    if (rw::Engine::state != rw::Engine::Started || !csf_rw::framesEmpty() || !csf_rw::imagesEmpty() || !csf_rw::objectsEmpty() || !csf_rw::pipelinesEmpty()) return 0;
     csf_rw::destructPlugins(csf_rw::Registry::Engine, gameEngine);
     csf_rw::imageBoundaryStop();
+    csf_rw::bindDeviceBackend(nullptr);
     stopNative(); return 1;
 }
 int __stdcall engineClose();
@@ -178,18 +251,21 @@ int __cdecl enginePlugin(int n, uint32_t id, rw::Constructor c, rw::Destructor d
 }
 // 006dc000 selects subsystem and mode before Start, consuming boolean results.
 int __cdecl subSystem(int n) {
+    csf_rw::startupTrace("0x00626B30","SetSubSystem");
     return rw::Engine::state == rw::Engine::Opened && rw::Engine::setSubSystem(n);
 }
 int __cdecl videoMode(int n) {
+    csf_rw::startupTrace("0x00626C40","SetVideoMode");
     return rw::Engine::state == rw::Engine::Opened && rw::Engine::setVideoMode(n);
 }
-int __stdcall numModes() { return rw::engine ? rw::Engine::getNumVideoModes() : 0; }
+int __stdcall numModes() { csf_rw::startupTrace("0x00626B90","GetNumVideoModes"); return rw::engine ? rw::Engine::getNumVideoModes() : 0; }
 // 006f8360 saves the current mode for restoration. NULL's answer is used, not an
 // invented one-mode graphics device.
 int __stdcall currentMode() { return rw::engine ? rw::Engine::getCurrentVideoMode() : -1; }
 }
 
 namespace csf_rw {
+void* engineWindow() { return windowHandle; }
 rw::PluginList& plugins(Registry k) { return registries[static_cast<unsigned>(k)]; }
 bool constructPlugins(Registry k, void* object) {
     auto& list = plugins(k);
@@ -307,7 +383,7 @@ int __cdecl streamClose(S* s, csf_rw::Memory* out) {
 }
 int __stdcall engineClose() {
     if (rw::Engine::state != rw::Engine::Opened || !streams.empty()) return 0;
-    rw::Engine::close(); std::free(gameEngine); gameEngine = nullptr; return 1;
+    rw::Engine::close(); std::free(gameEngine); gameEngine = nullptr; windowHandle = nullptr; return 1;
 }
 // 006b8510/006b9400 pass BYTE counts of aligned int32 arrays. librw performs
 // endian conversion but returns bytes; preserve original handle/null contract.

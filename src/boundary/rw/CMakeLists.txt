@@ -49,7 +49,7 @@ else()
 endif()
 
 # Slice 7: append-only additions; do not disturb slice 4's source list.
-target_sources(csf_rw_cpu PRIVATE device.cpp im.cpp)
+target_sources(csf_rw_cpu PRIVATE device.cpp im.cpp startup.cpp)
 add_executable(csf_rw_device_link "${CMAKE_SOURCE_DIR}/tests/rw_device.cpp" "${CMAKE_SOURCE_DIR}/tests/rw_globals.cpp")
 target_compile_definitions(csf_rw_device_link PRIVATE CSF_STANDALONE)
 target_include_directories(csf_rw_device_link PRIVATE "${CMAKE_SOURCE_DIR}/src" "${CMAKE_SOURCE_DIR}/hook")
@@ -61,10 +61,8 @@ else()
 endif()
 
 # Compile/link-ready unmodified D3D9 backend, separately from the NULL fixtures.
-# NOT selected for csf_standalone yet: slice-2 Open discards the HWND and slice-3
-# Create rejects camera/Z rasters. Switching its library now would crash Open.
-# The lifecycle integration must select this target instead of librw::librw,
-# pass EngineOpenParams, bind the borrowed device, and install dispatch thunks.
+# Standalone slot objects use RW_D3D9 (tools/linktest.py); NULL fixtures remain
+# independently linked to librw::librw, never to both archives at once.
 if(WIN32)
   get_target_property(_rw7_sources librw SOURCES)
   get_target_property(_rw7_directory librw SOURCE_DIR)
@@ -81,7 +79,7 @@ if(WIN32)
   target_compile_definitions(csf_rw_d3d9_backend PUBLIC RW_D3D9 PRIVATE LODEPNG_NO_COMPILE_CPP NDEBUG)
   target_compile_options(csf_rw_d3d9_backend PRIVATE /EHsc -Wno-c++11-narrowing)
   target_link_libraries(csf_rw_d3d9_backend PUBLIC d3d9 xinput)
-  add_library(csf_rw_d3d9_boundary STATIC EXCLUDE_FROM_ALL cpu.cpp life.cpp image.cpp device.cpp im.cpp toolkit9.cpp)
+  add_library(csf_rw_d3d9_boundary STATIC EXCLUDE_FROM_ALL cpu.cpp life.cpp image.cpp object.cpp device.cpp im.cpp toolkit9.cpp startup.cpp)
   target_compile_definitions(csf_rw_d3d9_boundary PRIVATE CSF_STANDALONE)
   target_include_directories(csf_rw_d3d9_boundary PRIVATE "${CMAKE_SOURCE_DIR}/src" "${CMAKE_SOURCE_DIR}/hook")
   target_compile_options(csf_rw_d3d9_boundary PRIVATE /EHsc -Wno-microsoft-cast)
