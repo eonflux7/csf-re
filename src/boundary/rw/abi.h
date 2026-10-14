@@ -56,3 +56,17 @@ static_assert(sizeof(Frame) == 0xa4);
 static_assert(offsetof(rw::Frame, matrix) == 0x18);
 #endif
 }
+
+// Slice 7 additions: the game writes these value vertices directly (006e3080:
+// stride 0x24, colour +0x18; Im2D dispatch callers: reciprocal Z +0x0c).
+// They are not owning librw objects. Keep them distinct from backend vertices.
+namespace csf_rw {
+struct Im2DVertex { float x, y, z, recipZ; uint32_t color; float u, v; };
+struct Im3DVertex { rw::V3d position, normal; uint32_t color; float u, v; };
+struct VertexStream { void* buffer; uint32_t offset, stride; uint16_t flags; uint8_t managed, dynamicLock; };
+static_assert(sizeof(Im2DVertex) == 0x1c);
+static_assert(sizeof(Im3DVertex) == 0x24 && offsetof(Im3DVertex, color) == 0x18);
+#if UINTPTR_MAX == 0xffffffff
+static_assert(sizeof(VertexStream) == 16 && offsetof(VertexStream, stride) == 8);
+#endif
+}
