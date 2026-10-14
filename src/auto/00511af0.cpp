@@ -30,10 +30,11 @@ static int __fastcall C_008407a8_LoadOptionsMenuLabels(C_008407a8* self, void* /
                   static_cast<int>(reinterpret_cast<uintptr_t>(g_pszMenu_P_SaGame)));
     self->vSlot2C(static_cast<int>(self->field_012c),
                   static_cast<int>(reinterpret_cast<uintptr_t>(g_pszMenu_P_VideoI)));
-    self->vSlot2C(static_cast<int>(self->field_0138),
-                  static_cast<int>(reinterpret_cast<uintptr_t>(g_pszMenu_P_ConIng)));
-
-    return 0;
+    // The original's last call is the slot +0x2C one, and the function returns its eax (no `return 0`).
+    void** vtbl = self->vtbl;
+    return reinterpret_cast<int(__fastcall*)(void*, void*, int, int)>(vtbl[0x2c / 4])(
+        self, nullptr, static_cast<int>(self->field_0138),
+        static_cast<int>(reinterpret_cast<uintptr_t>(g_pszMenu_P_ConIng)));
 }
 
 HOOK(0x00511AF0, C_008407a8_LoadOptionsMenuLabels, "auto");

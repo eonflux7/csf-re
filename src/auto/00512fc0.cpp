@@ -10,7 +10,7 @@ CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 CSF_FUNC(char, __cdecl, GetOptionsByteAt2, 0x006972F0, ());
 CSF_FUNC(char, __cdecl, StoreOptionsByte104, 0x006973C0, (char value));
 CSF_FUNC(char, __cdecl, GetOptionsByte104, 0x006973E0, ());
-CSF_FUNC(char, __cdecl, SceneLoader_SetFileOption, 0x00698600, (char a1));
+CSF_FUNC(void*, __cdecl, SceneLoader_SetFileOption, 0x00698600, (char a1));
 CSF_FUNC(bool, __cdecl, MenuManager_CheckPageAvailability, 0x00698B20, (const char* name, char mode));
 
 using GetCurrentDirectoryWFunction =
@@ -80,7 +80,8 @@ static int __fastcall CSaveGameManager_ValidateSaveName(
 
     g_SetCurrentDirectoryW(previousDirectory);
     StoreOptionsByte104(previousOption104);
-    return SceneLoader_SetFileOption(static_cast<char>(previousFileOption));
+    return reinterpret_cast<std::intptr_t>(
+        SceneLoader_SetFileOption(static_cast<char>(previousFileOption)));
 }
 
 HOOK(0x00512FC0, CSaveGameManager_ValidateSaveName, "auto");

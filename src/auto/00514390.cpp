@@ -69,11 +69,11 @@ static int __fastcall ProfilesSavegames_SerializeRecord(
     if (CSF_AT(std::uint8_t, record, 0) == 0)
     {
         void* stream = CSF_AT(void*, record, 4);
-        const bool result =
-            reinterpret_cast<bool(__fastcall*)(void*, void*, void*)>(
+        const int result =
+            reinterpret_cast<int(__fastcall*)(void*, void*, void*)>(
                 CSF_AT(void**, stream, 0)[0x7C / 4])(
                     stream, nullptr, record);
-        if (result)
+        if (static_cast<std::uint8_t>(result) != 0)
         {
             CSF_AT(std::uint8_t, record, 0) = 0;
             return result;

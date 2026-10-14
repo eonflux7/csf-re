@@ -27,10 +27,10 @@ static C_00830438* GameBddLoader_GetDefaultLoadResult() {
     }
 
     C_00830438* loadResult = reinterpret_cast<C_00830438*>(allocated);
-    C_00830438_Construct(loadResult, nullptr);
+    void* constructed = C_00830438_Construct(loadResult, nullptr);
     loadResult->vtbl = CSF_VTBL(0x840BA8);
     g_Value_8B0574 = reinterpret_cast<uint32_t>(loadResult);
-    return loadResult;
+    return reinterpret_cast<C_00830438*>(constructed);
 }
 
 HOOK(0x518940, GameBddLoader_GetDefaultLoadResult, "auto");

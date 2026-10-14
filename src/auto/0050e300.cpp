@@ -16,8 +16,8 @@ CSF_FUNC(int, __cdecl, GetGlobalValue_75FDF0, 0x0075FDF0, ());
 CSF_GLOBAL(const char*, g_pszMenu_P_Profil, 0x00899AE0);
 CSF_GLOBAL(const char*, g_pszMenu_P_MePrin, 0x00899AE4);
 
-// Slot 0x58 of the panel object: __stdcall taking one string argument.
-using PanelSlot22Fn = int(__stdcall*)(const char* panelName);
+// Slot 0x58 of the panel object: __thiscall (panel object in ecx) taking one string argument.
+using PanelSlot22Fn = int(__thiscall*)(void* panelObj, const char* panelName);
 
 // Shows the initial menu panel: "P_Profil" when the session flag at +0xCC is set,
 // otherwise "P_MePrin". The name is forwarded to the panel manager at field_0014.
@@ -32,7 +32,7 @@ static int __fastcall CMenuManager_ShowInitialPanel(CMenuManager* self, void* /*
 
     void* panelObj = reinterpret_cast<void*>(static_cast<uintptr_t>(self->field_0014));
     PanelSlot22Fn slotFn = reinterpret_cast<PanelSlot22Fn>(CSF_AT(void**, panelObj, 0)[0x58 / 4]);
-    return slotFn(panelName);
+    return slotFn(panelObj, panelName);
 }
 
 HOOK(0x0050E300, CMenuManager_ShowInitialPanel, "auto");

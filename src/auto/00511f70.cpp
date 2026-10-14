@@ -29,7 +29,7 @@ using GetLocalTimeFn = void(__stdcall*)(SaveGamesLocalTimeFields* systemTime);
 // from the current local time and returns the same pointer.
 static int __stdcall SaveGames_FillLocalTimeSnapshot(int a1)
 {
-    SaveGamesLocalTimeFields systemTime{};
+    SaveGamesLocalTimeFields systemTime;
     reinterpret_cast<GetLocalTimeFn>(g_ImportGetLocalTime)(&systemTime);
 
     uint8_t* snapshot = reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(a1));

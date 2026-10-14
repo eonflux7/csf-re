@@ -35,9 +35,11 @@ static char __fastcall C_008407a8_ConnectMenuObjects(
 
     if (self->field_0140)
     {
-        self->vSlot2C(static_cast<int>(self->field_0064),
-                      reinterpret_cast<int>(g_pszMenu_P_SalDem));
-        // The original leaves incidental AL contents from this void call.
+        // The original returns this last call's eax (`return (*(...)+44)(...)`); the char result is its al.
+        // The flag-clear path returns the byte 0 that the original loads into al.
+        void** vtbl = self->vtbl;
+        return static_cast<char>(reinterpret_cast<int(__fastcall*)(void*, void*, int, int)>(vtbl[0x2c / 4])(
+            self, nullptr, static_cast<int>(self->field_0064), reinterpret_cast<int>(g_pszMenu_P_SalDem)));
     }
     return 0;
 }

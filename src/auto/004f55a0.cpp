@@ -28,11 +28,9 @@ static char __fastcall ApplyAnimationEntryToProvider(S_004f5420* self, void* /*e
 
     if (resultIndex != -1)
     {
-        GetValue8B0554();
         uint8_t* animationEntry = reinterpret_cast<uint8_t*>(
             SceneMissionSetup_GetAnimationEntry(CSF_AT(void*, GetValue8B0554(), 0x1FC4), nullptr, resultIndex));
 
-        GetValue8B0554();
         int lookupValue = SceneSubsystem_LookupEntry(CSF_AT(void*, GetValue8B0554(), 0x1FC4), nullptr, resultIndex);
 
         result = sub_4F54A0(self, nullptr,

@@ -80,18 +80,18 @@ static int __fastcall SceneLoader_SerializeSettings(
     }
 
     void* archive = CSF_AT(void*, context, 4);
-    const bool result =
-        reinterpret_cast<bool(__fastcall*)(void*, void*, void*)>(
+    const uint32_t result =
+        reinterpret_cast<uint32_t(__fastcall*)(void*, void*, void*)>(
             CSF_AT(void**, archive, 0)[0x7C / 4])(
                 archive, nullptr, context);
-    if (!result)
+    if (static_cast<uint8_t>(result) == 0)
     {
         CSF_AT(uint8_t, context, 0) = 1;
         return 1;
     }
 
     CSF_AT(uint8_t, context, 0) = 0;
-    return result;
+    return static_cast<int>(result);
 }
 
 HOOK(0x00500990, SceneLoader_SerializeSettings, "auto");

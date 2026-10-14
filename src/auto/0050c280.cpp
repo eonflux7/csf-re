@@ -22,20 +22,22 @@ static int __fastcall CMenuScreenFader_Update(CMenuScreenFader* self, void* /*ed
 {
     // The state is read once and cached, as the original does (eax holds it).
     const uint32_t state = self->m_state;
-    if (state != 0) {
-        switch (state) {
-        case 1:
-            CMenuScreenFader_AdvanceFade(self, nullptr, deltaSeconds);
-            break;
-        case 2:
-            CMenuScreenFader_SwitchScreenByName(self, nullptr, deltaSeconds);
-            break;
-        case 3:
-            CMenuScreenFader_AdvanceFadeTimer(self, nullptr, deltaSeconds);
-            break;
-        default:
-            break;
-        }
+    // Original: `test eax, eax / je 0x50c2f5`: state 0 returns at once, without touching the overlay.
+    if (state == 0) {
+        return 0;
+    }
+    switch (state) {
+    case 1:
+        CMenuScreenFader_AdvanceFade(self, nullptr, deltaSeconds);
+        break;
+    case 2:
+        CMenuScreenFader_SwitchScreenByName(self, nullptr, deltaSeconds);
+        break;
+    case 3:
+        CMenuScreenFader_AdvanceFadeTimer(self, nullptr, deltaSeconds);
+        break;
+    default:
+        break;
     }
 
     // The overlay pointer and progress are re-read after the state step, as in the original.

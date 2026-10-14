@@ -40,7 +40,7 @@ CSF_GLOBAL(uint8_t, g_RegistryRootSelector, 0x0082E65C);
 static char __cdecl AppMain_ConsumeScanFlag()
 {
     alignas(8) uint8_t registryBytes[0x40];
-    alignas(8) uint8_t dataBytes[0x10C] = {};
+    alignas(8) uint8_t dataBytes[0x10C];
     auto* registry = reinterpret_cast<S_0069d0f0*>(registryBytes);
 
     auto* settings = reinterpret_cast<uint8_t*>(GetGlobalValue_75FDF0());

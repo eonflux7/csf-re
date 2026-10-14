@@ -65,10 +65,10 @@ static int __fastcall C_0083f364_Serialize(
     CSF_AT(uint32_t, archive, 0x1C) = savedContext;
     if (proceed) {
         void* backend = CSF_AT(void*, archive, 0x04);
-        const bool result = ((bool(__fastcall*)(void*, void*, bool*))
+        const int result = ((int(__fastcall*)(void*, void*, bool*))
             CSF_AT(void**, backend, 0)[0x7C / 4])(
                 backend, nullptr, archive);
-        if (result) {
+        if (static_cast<uint8_t>(result) != 0) {
             CSF_AT(uint8_t, archive, 0) = 0;
             return result;
         }
