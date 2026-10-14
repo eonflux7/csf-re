@@ -90,6 +90,33 @@ def check_object(obj, required):
     assert counts == collections.Counter({k: 1 for k in required}), 'object definition coverage mismatch'
 
 
+def text_shaped(w):
+    """The 4 bytes of w read as the end or middle of a C string: printable bytes, then NULs only."""
+    b = struct.pack('<I', w)
+    n = b.find(b'\0')
+    body, tail = (b, b'') if n < 0 else (b[:n], b[n:])
+    return len(body) >= 1 and all(32 <= c < 127 for c in body) and not tail.strip(b'\0')
+
+
+def string_words(img, pointers, slots):
+    """Words that are text although they read as code addresses, so they stay raw. "png\0" at 0x8631BC is
+    0x00676E70, a NetZ function's start, and IDA made it an offset; translated, RwImageRegisterImageFormat got
+    garbage for its extension and every PNG read failed (crash1). Two sources: (1) a text-shaped word that continues
+    a printable string begun at least 4 bytes before it (".fli" in "Menus.fli", "Pos" in "...istanciaPos"): a
+    pointer table entry is never preceded by text; (2) db/datagen_text.yaml, short strings of their own checked by
+    hand ("bmp", "png"). A pointer-table entry such as "LfI\0" at 0x82D060 looks the same as "png\0" locally,
+    so (1) does not guess at those. Vtable slots never are text."""
+    listed = {number(r['address']) for r in (yaml.safe_load((ROOT / 'db/datagen_text.yaml').read_text()) or [])}
+    text = set(listed)
+    for a, (t, _) in pointers.items():
+        if a in slots or not img.code(t) or not text_shaped(img.word(a)):
+            continue
+        before = bytes(img.bytes[a - img.start - 4:a - img.start])
+        if len(before) == 4 and all(32 <= c < 127 for c in before):
+            text.add(a)
+    return text
+
+
 def generate(args):
     t0 = time.monotonic()
     # Compiler runs from build/; custom relative output paths must still denote
@@ -219,6 +246,7 @@ def generate(args):
                 candidates[a] = (target, 'aligned-word-known-target' if target in anchors or target in funcs
                                  else 'aligned-word-image-range')
     pointers = {**candidates, **confirmed}
+    textwords = string_words(img, pointers, slots)
 
     virtual_targets = set(slots.values())
 
@@ -246,6 +274,8 @@ def generate(args):
         # as floats denormals: rare in this data. Words into the middle of code stay raw unless --candidate-fixups.
         applied = (a in confirmed or provenance == 'aligned-word-known-target' or args.candidate_fixups
                    or (provenance == 'aligned-word-image-range' and not img.code(target)))
+        if a in textwords:  # text that reads as a code address, IDA's data xrefs included (string_words)
+            applied, provenance = False, provenance + '+text'
         row = dict(source=hex(a), target=hex(target), kind=kind, provenance=provenance,
                    confirmed=a in confirmed, applied=applied, region=reg,
                    implemented=target in impls if img.code(target) else None)

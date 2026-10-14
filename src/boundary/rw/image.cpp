@@ -108,6 +108,7 @@ template<int N> void formatWrite(rw::Image* n, const char* name) {
 // 006e2e60 passes BMP/PNG callback addresses. Callbacks always receive ABI
 // images; adapt the native Image*/void callback types, do not cast them.
 int __cdecl imageRegister(const char* ext, ReadImage read, WriteImage write) {
+    if (csf_rw::startupTracing()) std::fprintf(stderr,"RW startup 0x00625680 ImageRegisterFormat \"%s\" read=%p write=%p\n",ext?ext:"(null)",(void*)read,(void*)write);
     if (!rw::engine || !ext || !*ext || formats.size()>=10) return 0;
     static rw::Image::fileRead readers[]={formatRead<0>,formatRead<1>,formatRead<2>,formatRead<3>,formatRead<4>,formatRead<5>,formatRead<6>,formatRead<7>,formatRead<8>,formatRead<9>};
     static rw::Image::fileWrite writers[]={formatWrite<0>,formatWrite<1>,formatWrite<2>,formatWrite<3>,formatWrite<4>,formatWrite<5>,formatWrite<6>,formatWrite<7>,formatWrite<8>,formatWrite<9>};
@@ -121,7 +122,12 @@ int __cdecl imageRegister(const char* ext, ReadImage read, WriteImage write) {
 bool sameExtension(const char* a, const char* b) { return rw::strncmp_ci(a,b,std::max(std::strlen(a),std::strlen(b))+1)==0; }
 // 00705b40 passes an explicit .bmp extension; native read always APPENDS an
 // extension. Resolve explicit names with librw's filesystem/search-path helper.
+I* imageReadImpl(const char* name);
+void traceRead(const char*,const char*,const char*,const void*);
 I* __cdecl imageRead(const char* name) {
+    I* i=imageReadImpl(name); traceRead("0x006254C0","ImageRead",name,i); return i;
+}
+I* imageReadImpl(const char* name) {
     if (!rw::engine || !name) return nullptr;
     const char* ext=std::strrchr(name,'.');
     if (ext) for (auto& f: formats) if (f.read && sameExtension(ext+1,f.ext.c_str())) {
@@ -142,12 +148,7 @@ I* __cdecl imageWrite(I* a, const char* name) {
 // 006e2e60 registers these four addresses as ABI image callbacks, not codecs
 // taking native headers. Actual parsing/encoding belongs entirely to librw.
 I* __cdecl readBMP(const char* name);
-I* __cdecl readPNG(const char* name) {
-    if (!name || !rw::engine) return nullptr;
-    // getFileContents asserts on an absent file in this checkout.
-    void* f=rw::engine->filefuncs.rwfopen(name,"rb"); if (!f) return nullptr;
-    rw::engine->filefuncs.rwfclose(f); return adoptImage(rw::readPNG(name));
-}
+I* __cdecl readPNG(const char* name);
 // Codecs return void and ignore short writes. Capture their encoded bytes via
 // librw's documented FileFunctions boundary, then check real write AND close.
 // This is a scoped, single-threaded adapter, not an upstream source patch.
@@ -217,6 +218,39 @@ I* __cdecl readBMP(const char* name) {
     rw::engine->filefuncs.rwfread=Capture::read; rw::engine->filefuncs.rwfeof=Capture::eof;
     auto* native=rw::readBMP(name);
     rw::engine->filefuncs=saved; Capture::active=nullptr; return adoptImage(native);
+}
+// The game's PNGs carry an iCCP chunk whose zlib stream is truncated (Menus/Textures/Simbolos.png,
+// Ingame_010.png in GlobalEK.pak); the original's libpng warns and goes on, lodepng rejects the whole file
+// (error 52) and the symbol atlas stayed empty (crash1). The colour profile is never used: serve librw the
+// file without its iCCP chunk, everything else as read.
+I* __cdecl readPNG(const char* name) {
+    if (!name || !rw::engine || Capture::active) return nullptr;
+    // getFileContents asserts on an absent file in this checkout.
+    void* f=rw::engine->filefuncs.rwfopen(name,"rb"); if (!f) { traceRead("0x007C9050","ReadPNG open failed",name,nullptr); return nullptr; }
+    rw::engine->filefuncs.rwfclose(f);
+    uint32_t length=0; auto* bytes=rw::getFileContents(name,&length);
+    if (!bytes) return nullptr;
+    static const unsigned char signature[8]={0x89,'P','N','G','\r','\n',0x1A,'\n'};
+    if (length<8 || std::memcmp(bytes,signature,8)) { freeFacade(bytes); return nullptr; }
+    Capture capture;
+    try {
+        capture.bytes.assign(bytes,bytes+8);
+        for (uint32_t p=8; p+12<=length; ) {
+            uint32_t n=uint32_t(bytes[p])<<24|uint32_t(bytes[p+1])<<16|uint32_t(bytes[p+2])<<8|bytes[p+3];
+            if (n>length-p-12) { capture.bytes.insert(capture.bytes.end(),bytes+p,bytes+length); break; }
+            if (std::memcmp(bytes+p+4,"iCCP",4)) capture.bytes.insert(capture.bytes.end(),bytes+p,bytes+p+12+n);
+            p+=12+n;
+        }
+    } catch (...) { freeFacade(bytes); return nullptr; }
+    freeFacade(bytes);
+    auto saved=rw::engine->filefuncs;
+    Capture::active=&capture;
+    rw::engine->filefuncs.rwfopen=Capture::open; rw::engine->filefuncs.rwfclose=Capture::close;
+    rw::engine->filefuncs.rwfseek=Capture::seek; rw::engine->filefuncs.rwftell=Capture::tell;
+    rw::engine->filefuncs.rwfread=Capture::read; rw::engine->filefuncs.rwfeof=Capture::eof;
+    auto* native=rw::readPNG(name);
+    rw::engine->filefuncs=saved; Capture::active=nullptr;
+    I* i=adoptImage(native); traceRead("0x007C9050","ReadPNG",name,i); return i;
 }
 I* encodeImage(I* a,const char* name,bool png) {
     auto* n=csf_rw::imageNative(a);
@@ -557,7 +591,15 @@ int __cdecl setFind(FindTexture cb) { findCallback=cb; rw::Texture::findCB=nativ
 int __cdecl setRead(ReadTexture cb) { readCallback=cb; rw::Texture::readCB=nativeRead; return 1; }
 // 006c1620 consumes found texture reference; native read adds ref on find and
 // inserts newly read textures into current dictionary. Mirror both outcomes.
+// CSF_RW_TRACE: which asset names the game reads and whether they load (crash1: an atlas left empty).
+void traceRead(const char* slot,const char* op,const char* name,const void* result) {
+    if (csf_rw::startupTracing()) std::fprintf(stderr,"RW startup %s %s \"%s\" -> %p\n",slot,op,name?name:"(null)",result);
+}
+T* textureReadImpl(const char* name,const char* mask);
 T* __cdecl textureRead(const char* name,const char* mask) {
+    T* t=textureReadImpl(name,mask); traceRead("0x006319C0","TextureRead",name,t); return t;
+}
+T* textureReadImpl(const char* name,const char* mask) {
     if (rw::Engine::state!=rw::Engine::Started || !name) return nullptr;
     auto* n=rw::Texture::read(name,mask); if (!n) return nullptr;
     auto* a=adoptTexture(n); if (!a) { n->destroy(); return nullptr; }

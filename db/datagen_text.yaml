@@ -1,0 +1,7 @@
+# Words in the original's data that are text although they read as code addresses, so tools/datagen.py
+# leaves them raw (it translates pointers into code). Only short strings standing on their own go here; text
+# that continues a longer string is found by datagen itself (string_words).
+- address: 0x008631B8
+  text: "bmp"   # 0x00706D62; IDA made it an offset. RwImageRegisterImageFormat's extension (0x6E2E60).
+- address: 0x008631BC
+  text: "png"   # 0x00676E70, a NetZ function's start. Same caller; translated, every PNG read failed (crash1).

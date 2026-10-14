@@ -291,7 +291,11 @@ FS* __cdecl createDisk(int count,const char* device,const char* name) {
     return &f;
 }
 
-void* nativeOpen(const char* path,const char* mode) { return openMode(path,mode); }
+void* nativeOpen(const char* path,const char* mode) {
+    void* f=openMode(path,mode);
+    if(csf_rw::startupTracing()) std::fprintf(stderr,"RW startup RtFS open \"%s\" %s -> %p\n",path?path:"(null)",mode?mode:"",f);
+    return f;
+}
 int nativeClose(void* f) { return closeFile(static_cast<F*>(f)); }
 int nativeSeek(void* f,long off,int whence) { return off<INT32_MIN || off>INT32_MAX?-1:seekFile(static_cast<F*>(f),int32_t(off),whence); }
 long nativeTell(void* p) { auto* f=static_cast<F*>(p); uint64_t pos=(uint64_t(f->position[1])<<32)|f->position[0]; return pos>uint64_t(LONG_MAX)?-1:long(pos); }
