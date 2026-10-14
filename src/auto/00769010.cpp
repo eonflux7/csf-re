@@ -12,7 +12,7 @@
 
 // Comparator supplied by the caller: returns nonzero when the first argument
 // should be ordered after the second (swap wanted).
-using SortComparatorFn = int(__cdecl*)(int, int);
+using SortComparatorFn = uint8_t(__cdecl*)(int, int);
 
 // Sorts three int slots in place using the caller's comparator.
 // Returns the comparator's result from the final check, or, when that check
@@ -20,14 +20,14 @@ using SortComparatorFn = int(__cdecl*)(int, int);
 static int __cdecl SortThreeByComparator(int* firstSlot, int* secondSlot, int* thirdSlot, SortComparatorFn compare)
 {
     // Order first and second.
-    if ((uint8_t)compare(*secondSlot, *firstSlot)) {
+    if (compare(*secondSlot, *firstSlot)) {
         int tmp = *secondSlot;
         *secondSlot = *firstSlot;
         *firstSlot = tmp;
     }
 
     // Order second and third.
-    if ((uint8_t)compare(*thirdSlot, *secondSlot)) {
+    if (compare(*thirdSlot, *secondSlot)) {
         int tmp = *thirdSlot;
         *thirdSlot = *secondSlot;
         *secondSlot = tmp;
