@@ -104,15 +104,24 @@ def string_words(img, pointers, slots):
     garbage for its extension and every PNG read failed (crash1). Two sources: (1) a text-shaped word that continues
     a printable string begun at least 4 bytes before it (".fli" in "Menus.fli", "Pos" in "...istanciaPos"): a
     pointer table entry is never preceded by text; (2) db/datagen_text.yaml, short strings of their own checked by
-    hand ("bmp", "png"). A pointer-table entry such as "LfI\0" at 0x82D060 looks the same as "png\0" locally,
-    so (1) does not guess at those. Vtable slots never are text."""
-    listed = {number(r['address']) for r in (yaml.safe_load((ROOT / 'db/datagen_text.yaml').read_text()) or [])}
+    hand ("bmp", "png": only code points at them); (3) a text-shaped word another data word points at: a string
+    table entry (crash2: the GUI builder's keys ".XY" at 0x864A54 and ".ID" at 0x8305F4, read through 0x8A85EC/
+    0x8A8600, were exported by IDA as 0x59582E/0x44492E; all 34 such words were text: "BOX", ".FX", "SMG", month
+    names). A pointer-table entry such as "LfI\0" at 0x82D060 looks the same as "png\0" locally and nothing points
+    at it, so none of the rules guesses at those. Vtable slots never are text."""
+    listed = {}
+    for r in yaml.safe_load((ROOT / 'db/datagen_text.yaml').read_text()) or []:
+        raw = r['text'].encode('ascii') + b'\0'
+        a = number(r['address'])
+        assert bytes(img.bytes[a - img.start:a - img.start + len(raw)]) == raw, f'datagen_text.yaml: not {raw!r} at {a:#x}'
+        listed[a] = r['text']
     text = set(listed)
+    pointed = {t for t, _ in pointers.values()}
     for a, (t, _) in pointers.items():
         if a in slots or not img.code(t) or not text_shaped(img.word(a)):
             continue
         before = bytes(img.bytes[a - img.start - 4:a - img.start])
-        if len(before) == 4 and all(32 <= c < 127 for c in before):
+        if (len(before) == 4 and all(32 <= c < 127 for c in before)) or a in pointed:
             text.add(a)
     return text
 
