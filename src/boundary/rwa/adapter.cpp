@@ -12,6 +12,7 @@
 #include <cstdarg>
 #include <string>
 #include <cmath>
+#include <cstdio>
 #include "globals.h"
 #include "hook.h"
 #include "backend.h"
@@ -20,6 +21,10 @@
 CSF_FUNC(int, __cdecl, boundary_stream_read, 0x006293E0, (void* stream,void* data,unsigned bytes));
 
 namespace {
+void trace(const char* operation, const void* result, int detail=0) {
+    if(std::getenv("CSF_RW_TRACE"))
+        std::fprintf(stderr,"RWA startup %s -> %p detail=%d thread=%lu\n",operation,result,detail,GetCurrentThreadId());
+}
 using Word = uint32_t;
 static_assert(sizeof(void*)==4, "RWA address ABI requires x86");
 template<class T> T& field(void* p, size_t offset) { return *reinterpret_cast<T*>(static_cast<char*>(p)+offset); }
@@ -117,7 +122,7 @@ static void* __cdecl get_default() { Guard g(mutex); return defaultDictionary; }
 static int __cdecl count(void* p) { Guard g(mutex); auto d=dict(p); return d?int(d->entries.size()):0; }
 static void* __cdecl entry(void* p,int n) { Guard g(mutex); auto d=dict(p); return d && n>=0 && size_t(n)<d->entries.size()?d->entries[n]:nullptr; }
 static void* __cdecl named(void* p,const char* name) { Guard g(mutex); auto d=dict(p); if(d && name) for(auto e:d->entries) { auto s=field<const char*>(e,4); if(s && !_stricmp(s,name)) return e; } return nullptr; }
-static int __cdecl open_engine(int,int) { Guard g(mutex); engineOpen=true; return 1; }
+static int __cdecl open_engine(int,int) { Guard g(mutex); engineOpen=true; trace("0x007DB6F0 open",nullptr,1); return 1; }
 static int __cdecl is_open() { Guard g(mutex); return engineOpen; }
 static int __cdecl close_engine() { Guard g(mutex); objects.clear(); dictionaries.clear(); currentDictionary=defaultDictionary=nullptr; engineOpen=false; masterGain=1; return 0; }
 static int __cdecl update() { Guard g(mutex); for(auto& o:objects) if(o->kind==Object::voice) refresh(o.get()); return 1; }
@@ -144,11 +149,12 @@ static void* __cdecl create_voice(void* parent,char* config,int flags,Factory cb
 static void* __cdecl create_device(void* parent,char* config,int flags,Factory cb,int context) {
     Guard g(mutex); auto p=construct(Object::device,parent,config,flags,cb,context);
     if(p) field<void*>(p,0x7c)=audio::selected_backend().device_handle();
+    trace("0x007EFD80 device",p,flags);
     return p;
 }
 static void* __cdecl create_channel(void* parent,char* config,int flags,Factory cb,int context) { Guard g(mutex); return construct(Object::device,parent,config,flags,cb,context); }
 static void* __cdecl create_parameter(void* parent,char* config,int flags,Factory cb,int context) { Guard g(mutex); return construct(Object::parameter,parent,config,flags,cb,context); }
-static void* __cdecl create_listener(int,int,int) { Guard g(mutex); return make(Object::listener)->abi; }
+static void* __cdecl create_listener(int,int,int) { Guard g(mutex); auto p=make(Object::listener)->abi; trace("0x007DD4C0 listener",p); return p; }
 static int __cdecl release(void* p,void*,int) {
     Guard g(mutex); auto o=find(p); if(!o) return 0;
     if(o->kind==Object::sound) remove_all(p);
@@ -171,7 +177,7 @@ static void* __cdecl attach(void* p,void* sound) {
     if(sound && !field<Word>(p,0x84)) field<float>(p,0x3c)=float(field<Word>(sound,0x2c));
     o->time.offset=0; field<Word>(p,0x48)=0; rebuild(o); return p;
 }
-static int __cdecl prepare(void*,void*,unsigned) { return 1; }
+static int __cdecl prepare(void* device,void*,unsigned count) { trace("0x007DE320 prepare",device,int(count)); return 1; }
 static void* __cdecl detach_device(void* p,void* sound) { Guard g(mutex); if(p) { field<void*>(p,0x84)=sound; field<float>(p,0x38)=field<float>(p,0x3c)=1; } return p; }
 static void* __cdecl register_listener(void* p,void* value) { Guard g(mutex); if(p) field<void*>(p,0x3c)=value; return p; }
 static void* __cdecl device_gain(void* p,float value) {
@@ -185,9 +191,10 @@ static void* __cdecl device_mode(void* p,int value) { Guard g(mutex); if(p) { fi
 static int __cdecl speakers(void*) { return 1; } // RWA stereo code (DS mono maps to 2)
 static void* __cdecl lookup_class(void*,const void*,void** out) { Guard g(mutex); auto p=make(Object::device)->abi; if(out) *out=nullptr; return p; }
 static void* __cdecl defaults(void* p,void* out) {
-    if(!p || !out) return nullptr; std::memset(out,0,40);
+    if(!p || !out) { trace("0x007DC410 defaults-invalid",p); return nullptr; } std::memset(out,0,40);
     field<int>(out,12)=1; field<Word>(out,20)=48000;
     field<uint16_t>(out,24)=16; field<uint16_t>(out,26)=32; field<int>(out,36)=1;
+    trace("0x007DC410 defaults voices",p,field<uint16_t>(out,26));
     return p;
 }
 static void* __cdecl create_sound(void*,void* source,void*,char,void* storage) {

@@ -68,7 +68,8 @@ def load(name, fn):
 
 
 # what the Win32 calls of the CRT's heap pop (the CRT runs for real and has no call sites in export/calls.json)
-IMPORT_POPS = {"HeapAlloc": 12, "HeapFree": 12, "HeapReAlloc": 16, "HeapSize": 12}
+IMPORT_POPS = {"HeapAlloc": 12, "HeapFree": 12, "HeapReAlloc": 16, "HeapSize": 12,
+               "RaiseException": 16, "ExitProcess": 4, "ExitThread": 4, "FatalExit": 4}
 
 
 def imports():
@@ -135,8 +136,27 @@ def crt_events():
     of initialized CRT state. Record the registration itself on either side.
     Key by CRT symbol, not by the initializer being checked.
     """
-    return {ea: (0, 1, False, "int") for name, ea in crt_ranges()[1].items()
-            if name == "_atexit"}
+    conventions = {'_atexit': (0, 1, False, 'int'),
+                   '__CxxThrowException@8': (8, 2, False, 'void'),
+                   '_abort': (0, 0, False, 'void'), '_exit': (0, 1, False, 'void'),
+                   '__exit': (0, 1, False, 'void'), '__Exit': (0, 1, False, 'void')}
+    return {ea: conventions[name] for name, ea in crt_ranges()[1].items() if name in conventions}
+
+
+def no_return(target, argv):
+    """Only documented nonreturning boundaries, not every exception/API call.
+
+    RaiseException with zero flags can be resumed by a handler. The C++ throw
+    helper raises EXCEPTION_NONCONTINUABLE; no normal continuation is possible.
+    """
+    if isinstance(target, int):
+        name = functions().get(target, {}).get('name', '')
+    else:
+        name = target.split('!')[-1]
+    name = re.sub(r'@\d+$', '', name)
+    return name in ('__CxxThrowException', '_abort', '_exit', '__exit', '__Exit',
+                    'ExitProcess', 'ExitThread', 'FatalExit') or (
+                        name == 'RaiseException' and len(argv) > 1 and argv[1] & 1)
 
 
 def api():
@@ -149,7 +169,7 @@ def call_pops():
 
 
 def infer_stack_pops(ins, direct_pops, entry=None, known=None, groups=None, domains=None, strict=False,
-                     clean_frame=False):
+                     clean_frame=False, switches=None):
     """Prove call cleanup from the original's CFG, without consulting the candidate.
 
     SP and outstanding pushed arguments are affine expressions in unknown indirect-call pops.
@@ -159,6 +179,7 @@ def infer_stack_pops(ins, direct_pops, entry=None, known=None, groups=None, doma
     """
     import capstone
     known, groups, domains = known or {}, groups or {}, domains or {}
+    switches = switches or {}
     failure = None if strict else {}
     if not ins:
         return failure
@@ -319,7 +340,8 @@ def infer_stack_pops(ins, direct_pops, entry=None, known=None, groups=None, doma
             equal(sp, {})
             continue
         elif mn == 'jmp' and i.operands[0].type != capstone.x86.X86_OP_IMM:
-            return failure  # A switch is not a return: its cases still use this frame.
+            if pc not in switches or not switches[pc] or any(t not in ins for t in switches[pc]):
+                return failure  # Unresolved switch: do not infer from a partial function.
         elif any(i.reg_name(r) == 'esp' for r in i.regs_access()[1]):
             return failure  # Dynamic/aligned frames and unmodelled stack instructions.
         if mn not in ('push', 'call', 'pop'):
@@ -327,7 +349,10 @@ def infer_stack_pops(ins, direct_pops, entry=None, known=None, groups=None, doma
             pristine -= frozenset(aliases.get(i.reg_name(r), i.reg_name(r)) for r in written)
         state = (sp, args, bp, saves, pristine)
         if mn == 'jmp':
-            todo.append((i.operands[0].imm, state))
+            if pc in switches:
+                todo.extend((target, state) for target in switches[pc])
+            else:
+                todo.append((i.operands[0].imm, state))
         elif mn.startswith('j'):
             todo.extend([(i.operands[0].imm, state), (nextpc, state)])
         else:
@@ -394,19 +419,22 @@ def stack_call_pops(ea, constraints_only=False):
     direct = lambda site, target: dispatch_call_pop(target, evidence.get(site, {}).get('receiver'))
     # A prototype may constrain an ambiguous caller, but must cover the exact
     # machine dispatch sequence and satisfy the *whole* original stack CFG.
-    typed = typed_indirect_calls(ea)
+    typed = dict(typed_indirect_calls(ea))
+    typed.update(global_callback_types(ea))
     # Same slot does not imply same cleanup when a receiver is used through
     # different prototypes (e.g. optional argument at 535F60's slot 5C).
     for pc in list(groups):
         if pc in typed:
             groups[pc] = (groups[pc], typed[pc]['pop'])
-    initial = infer_stack_pops(ins, direct, ea, known, groups)
+    switches = binary_switches(ea)
+    solve = lambda *args, **kw: infer_stack_pops(*args, switches=switches, **kw)
+    initial = solve(ins, direct, ea, known, groups)
     fixed = dict(known)
     fixed.update(initial)  # Binary/unique caller facts outrank typed metadata.
     fixed.update({pc: v['pop'] for pc, v in typed.items() if v['pop'] is not None and pc not in fixed})
-    if typed and infer_stack_pops(ins, direct, ea, fixed, groups, strict=True, clean_frame=True) is not None:
+    if typed and solve(ins, direct, ea, fixed, groups, strict=True, clean_frame=True) is not None:
         known = fixed
-        initial = infer_stack_pops(ins, direct, ea, known, groups)
+        initial = solve(ins, direct, ea, known, groups)
     if constraints_only:
         return initial
     domains, patterns = virtual_pop_domains(evidence)
@@ -418,17 +446,100 @@ def stack_call_pops(ea, constraints_only=False):
         for choice in choices:
             fixed = dict(known)
             fixed.update({pc: choice[group] for pc, group in sites.items()})
-            if infer_stack_pops(ins, direct, ea, fixed, groups, domains, strict=True) is not None:
+            if solve(ins, direct, ea, fixed, groups, domains, strict=True) is not None:
                 possible.append(choice)
         if possible:
             for group in sites.values():
                 domains[group] = {p[group] for p in possible}
-    refined = infer_stack_pops(ins, direct, ea, known, groups, domains)
+    refined = solve(ins, direct, ea, known, groups, domains)
     # The vtable inventory can be incomplete (notably library receivers). It
     # may bound an otherwise ambiguous call, but cannot invalidate or replace
     # a cleanup already proved from the original caller without that inventory.
     refined.update(initial)
     return refined
+
+
+@functools.lru_cache(maxsize=None)
+def original_stack_code(ea):
+    import capstone
+    md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+    md.detail = True
+    img, _ = exe_image()
+    return {i.address: i for lo, hi in own_ranges(ea)[0]
+            for i in md.disasm(img[lo - IMG:hi - IMG], lo)}
+
+
+def register_parent(reg):
+    """A partial GPR write invalidates provenance of the whole pointer."""
+    return {'al': 'eax', 'ah': 'eax', 'ax': 'eax',
+            'bl': 'ebx', 'bh': 'ebx', 'bx': 'ebx',
+            'cl': 'ecx', 'ch': 'ecx', 'cx': 'ecx',
+            'dl': 'edx', 'dh': 'edx', 'dx': 'edx',
+            'si': 'esi', 'di': 'edi', 'bp': 'ebp', 'sp': 'esp'}.get(reg, reg)
+
+
+def profile_stack_consistent(ea, pops):
+    return infer_stack_pops(original_stack_code(ea), lambda pc, t: binary_call_pop(t),
+                            ea, pops, strict=True, switches=binary_switches(ea)) is not None
+
+
+@functools.lru_cache(maxsize=None)
+def binary_switches(ea):
+    """Bounded MSVC switch tables, validated from CMP/JA and image bytes.
+
+    Support direct dword tables and byte-remapped tables. No guessed table
+    length or IDA-only edge: the unsigned bound covers every possible index.
+    Unknown forms still abort stack inference.
+    """
+    import capstone
+    ins = list(original_stack_code(ea).values())
+    heads = {i.address for i in ins}
+    img, _ = exe_image()
+    out, guards = {}, {}
+    for k, i in enumerate(ins):
+        if i.mnemonic != 'jmp' or not i.operands or i.operands[0].type != capstone.x86.X86_OP_MEM:
+            continue
+        mem = i.operands[0].mem
+        if mem.base or not mem.index or mem.scale != 4 or not IMG <= mem.disp < IMG + len(img):
+            continue
+        idx, bound_reg, lookup = i.reg_name(mem.index), i.reg_name(mem.index), None
+        n = k - 1
+        if n >= 0 and ins[n].mnemonic == 'movzx' and ins[n].op_str.split(', ')[0] == idx:
+            op = ins[n].operands[1]
+            if op.type != capstone.x86.X86_OP_MEM or op.size != 1 or op.mem.index or not op.mem.base:
+                continue
+            lookup, bound_reg = op.mem.disp, ins[n].reg_name(op.mem.base)
+            n -= 1
+        if n < 1 or ins[n].mnemonic != 'ja' or ins[n-1].mnemonic != 'cmp':
+            continue
+        chain = ins[n-1:k+1]
+        if any(a.address + a.size != b.address for a, b in zip(chain, chain[1:])):
+            continue
+        cmp = ins[n-1]
+        if cmp.op_str.split(', ')[0] != bound_reg or cmp.operands[1].type != capstone.x86.X86_OP_IMM:
+            continue
+        limit = cmp.operands[1].imm
+        if not 0 <= limit <= 4096 or ins[n].operands[0].imm not in heads:
+            continue
+        indices = range(limit + 1)
+        if lookup is not None:
+            if not IMG <= lookup or lookup + limit + 1 > IMG + len(img):
+                continue
+            indices = set(img[lookup - IMG:lookup - IMG + limit + 1])
+        if mem.disp + 4 * (max(indices) + 1) > IMG + len(img):
+            continue
+        targets = {struct.unpack_from('<I', img, mem.disp - IMG + 4 * j)[0] for j in indices}
+        if targets and targets <= heads:
+            out[i.address] = targets
+            guards[i.address] = cmp.address
+    # Syntactic adjacency is not dominance. A direct edge or another table
+    # case entering after CMP can bypass the bound (or its unsigned JA).
+    incoming = {ea} | {i.operands[0].imm for i in ins
+                      if (i.mnemonic.startswith('j') or i.mnemonic.startswith('loop'))
+                      and i.operands and i.operands[0].type == capstone.x86.X86_OP_IMM}
+    incoming.update(t for targets in out.values() for t in targets)
+    return {pc: targets for pc, targets in out.items()
+            if not any(guards[pc] < t <= pc for t in incoming)}
 
 
 def virtual_pop_domains(evidence):
@@ -649,6 +760,9 @@ def callsite_abi(ea, site):
     call = next((i for i in calls if i.address == site), None)
     if call is None:
         return None
+    callback = global_callback_types(ea).get(site)
+    if callback:
+        return callback['ecx']
     path = os.path.join(ROOT, 'export', 'funcs', f'{ea:08x}.c')
     if os.path.exists(path):
         with open(path) as f:
@@ -665,6 +779,81 @@ def callsite_abi(ea, site):
         if 0 <= k < len(args) and re.search(r'\(__(?:cdecl|stdcall)\s*\*\)', args[k]):
             return False
     return None
+
+
+@functools.lru_cache(maxsize=None)
+def global_callback_types(ea):
+    """Pair named callback-table casts with exact original global loads/slots.
+
+    Mixed virtual and cdecl dispatches cannot use the old whole-function
+    convention heuristic. This proof requires a straight-line reaching MOV
+    from a named global and matching table offset in the typed export.
+    """
+    import yaml
+    path = os.path.join(ROOT, 'export', 'funcs', f'{ea:08x}.c')
+    if not os.path.exists(path):
+        return {}
+    with open(path) as stream:
+        source = stream.read()
+    pattern = r'\(__(cdecl|stdcall)\s*\*\*\)\(([^()]*)\)\)\s*(\w+)\s*\+\s*(\d+)'
+    matches = list(re.finditer(pattern, source))
+    if not matches:
+        return {}
+    def names():
+        with open(os.path.join(ROOT, 'db', 'globals.yaml')) as stream:
+            return {v['name']: v['addr'] for v in yaml.safe_load(stream)}
+    named = load('global_names', names)
+    declarations = {}
+    for match in matches:
+        conv, params, name, slot = match.groups()
+        if name not in named:
+            continue
+        types = split_params(params)
+        width = sum(8 if t in ('double', '__int64') else 4 for t in types)
+        fact = dict(ecx=False, nargs=width // 4, pop=0 if conv == 'cdecl' else width)
+        key = named[name], int(slot) * 4
+        if key in declarations and declarations[key] != fact:
+            declarations[key] = None
+        else:
+            declarations[key] = fact
+    result, registers = {}, {}
+    code = original_stack_code(ea)
+    import capstone
+    switches = binary_switches(ea)
+    if any(i.mnemonic == 'jmp' and i.operands[0].type != capstone.x86.X86_OP_IMM
+           and i.address not in switches for i in code.values()):
+        return {}  # unknown computed edges can bypass the claimed global load
+    leaders = {i.operands[0].imm for i in code.values()
+               if (i.mnemonic.startswith('j') or i.mnemonic.startswith('loop'))
+               and i.operands and i.operands[0].type == capstone.x86.X86_OP_IMM}
+    leaders.update(t for targets in switches.values() for t in targets)
+    previous_end = None
+    for pc, ins in sorted(code.items()):
+        if pc in leaders or previous_end != pc:
+            registers.clear()  # no reaching-load claim across a join/chunk gap
+        previous_end = pc + ins.size
+        if ins.mnemonic == 'call':
+            match = re.fullmatch(r'dword ptr \[(e[a-z]{2})(?: \+ (0x[0-9a-f]+|\d+))?\]', ins.op_str)
+            if match:
+                key = registers.get(match[1]), int(match[2] or '0', 0)
+                if declarations.get(key):
+                    result[pc] = declarations[key]
+            for reg in ('eax', 'ecx', 'edx'):
+                registers.pop(reg, None)
+            continue
+        if ins.mnemonic.startswith(('j', 'loop')) or ins.mnemonic in ('ret', 'leave'):
+            registers.clear()
+            continue
+        parts = ins.op_str.split(', ')
+        value = None
+        if ins.mnemonic == 'mov' and len(parts) == 2:
+            match = re.fullmatch(r'dword ptr \[(0x[0-9a-f]+)\]', parts[1])
+            value = int(match[1], 16) if match else registers.get(parts[1])
+        for reg in ins.regs_access()[1]:
+            registers.pop(register_parent(ins.reg_name(reg)), None)
+        if value is not None:
+            registers[parts[0]] = value
+    return result
 
 
 @functools.lru_cache(maxsize=None)
@@ -727,6 +916,35 @@ def callback_return_type(ea, site):
             t = match[1].strip()
             return 'char' if t in ('unsigned __int8', '__int8') else t
     return None
+
+
+@functools.lru_cache(maxsize=None)
+def indirect_float_returns(ea):
+    """Uniform, explicitly floating-point casts covering every indirect call.
+
+    Require the exact machine slot sequence as well as complete typed-export
+    coverage. This supplies ST0 to a mock, not a rounding exemption. Mixed,
+    missing or differently ordered casts provide no evidence.
+    """
+    path = os.path.join(ROOT, 'export', 'funcs', f'{ea:08x}.c')
+    if not os.path.exists(path):
+        return {}
+    with open(path) as stream:
+        source = stream.read()
+    casts = list(re.finditer(r'\b([\w]+(?:\s+\w+)?)\s+\(__(?:thiscall|cdecl|stdcall|fastcall)\s*\*\*?\)\([^()]*\)\)', source))
+    calls = [i for i in original_stack_code(ea).values() if i.mnemonic == 'call' and not i.op_str.startswith('0x')]
+    if not casts or len(casts) != len(calls) or any(m[1] not in ('float', 'double', 'long double') for m in casts):
+        return {}
+    result = {}
+    for k, (cast, call) in enumerate(zip(casts, calls)):
+        end = casts[k + 1].start() if k + 1 < len(casts) else len(source)
+        expr = source[cast.end():end].split(';', 1)[0]
+        slot = re.search(r'\+\s*(0x[\da-fA-F]+|\d+)\)\)', expr)
+        machine = re.fullmatch(r'dword ptr \[e[a-z]{2} \+ (0x[\da-f]+|\d+)\]', call.op_str)
+        if not slot or not machine or int(slot[1], 0) != int(machine[1], 0):
+            return {}
+        result[call.address] = cast[1]
+    return result
 
 
 @functools.lru_cache(maxsize=None)
@@ -927,9 +1145,10 @@ def hook_name(ea, src=None):
 class Run:
     made = 0
 
-    def __init__(self, ea, prof, own, obj=None, script=None, memory_obj=None):
+    def __init__(self, ea, prof, own, obj=None, script=None, memory_obj=None, graph=None):
         """own: [(start, end)] code that is the function itself. script: the original's events (replayed pops)."""
         self.ea, self.prof, self.own, self.obj, self.script = ea, prof, own, obj, script
+        self.graph = graph
         self.events, self.written, self.status, self.pending = [], set(), None, None
         self.float_written = set()
         self.reserved_done = {}
@@ -990,6 +1209,19 @@ class Run:
         if obj:
             uc.mem_map(EXT_BASE, 0x1000)
         self.mapped = set()
+        if graph:
+            # Seed before either function runs, never change a faulting state
+            # into a successful state mid-execution. Existing image pages get
+            # only the explicit input-field overrides, not zero-filled code.
+            for base in sorted(graph.pages):
+                try:
+                    uc.mem_read(base, 1)
+                except UcError:
+                    uc.mem_map(base, 0x1000)
+                    uc.mem_write(base, graph.page(base))
+                    self.mapped.add(base)
+            for address, value in graph.words.items():
+                uc.mem_write(address, struct.pack('<I', value))
         if not obj:
             # `push ebp; mov ebp, esp; push ecx [; push ecx]` reserves locals: the slot holds ecx until written, and
             # the original may pass it on unwritten (0x516C50 forwards [ebp-4] as a 4th argument). It becomes
@@ -1054,6 +1286,10 @@ class Run:
         uc = self.uc
         esp = ESP0
         vals = self.args()
+        if self.graph:
+            for k, v in self.graph.args.items():
+                if k < len(vals):
+                    vals[k] = v
         uc.mem_write(esp, struct.pack(f"<{1 + len(vals)}I", RET_MAGIC, *vals))
         for r, v in ((X.UC_X86_REG_ESP, esp), (X.UC_X86_REG_EBP, ESP0 + 0x4000), (X.UC_X86_REG_ECX, ZONES + 0x0A000100),
                      (X.UC_X86_REG_EDX, ZONES + 0x0A100100), (X.UC_X86_REG_EAX, EAX0), (X.UC_X86_REG_EBX, ZONES + 0x0A200100),
@@ -1177,7 +1413,10 @@ class Run:
             return False
         self.mapped.add(base)
         uc.mem_map(base, 0x1000)
-        uc.mem_write(base, fill_page(base, self.prof))
+        # Graph heap pages are real zero-initialized backing storage; default
+        # profiles retain their original deterministic mixed fill.
+        uc.mem_write(base, self.graph.page(base) if self.graph and
+                     ZONES <= base < OBJ_BASE else fill_page(base, self.prof))
         return True
 
     def norm(self, v):
@@ -1236,9 +1475,12 @@ class Run:
             elif p:
                 use_ecx = p[0] and takes_ecx(target)
             if not p and site:
-                rt = callback_return_type(self.ea, site) or rt
+                rt = callback_return_type(self.ea, site) or indirect_float_returns(self.ea).get(site, rt)
             if pop and not p:
                 nargs = pop // 4
+            callback = global_callback_types(self.ea).get(site)
+            if callback:
+                nargs, use_ecx = callback['nargs'], callback['ecx']
             if imp:
                 proven = import_call_pop(ret, imp)
                 if proven is not None:
@@ -1259,6 +1501,11 @@ class Run:
         self.events.append((name or target, pop, nargs, use_ecx, rt, tuple(self.norm(a) for a in argv),
                             self.norm(uc.reg_read(X.UC_X86_REG_ECX)) if use_ecx else None,
                             self.ret_site.get(ret) if self.script is None else None))
+        if no_return(name or target, argv):
+            # Preserve the prefix (including argument and memory differences),
+            # but do not fabricate a return register or a normal caller frame.
+            self.status = 'noreturn'
+            return ret
         h = h32(0xE000 + i * 977 + self.prof * 131)
         # pointer results end in a non-zero byte: `test al, al` and `test eax, eax` on an int-typed callee that
         # returns a clean 0 / 1 (0x492BD0) must agree; a callee that sets al only gets garbage above it instead,
@@ -1278,6 +1525,10 @@ class Run:
             # typed void, but a constructor-like callee returns `this` and the original may use it (0x751830:
             # `call 0x64A6B0; push eax`); ours passes the object's address itself
             val = uc.reg_read(X.UC_X86_REG_ECX)
+        if self.graph:
+            original_site = self.ret_site.get(ret) if self.script is None else (
+                self.script[i][7] if i < len(self.script) else None)
+            val = self.graph.results.get(original_site, val)
         for address, data in mock_outputs(target, i, self.prof, argv, uc.reg_read(X.UC_X86_REG_ECX), val):
             for base in range(address & ~0xFFF, (address + len(data) + 0xFFF) & ~0xFFF, 0x1000):
                 try:
@@ -1512,19 +1763,25 @@ def compare(ea, o, m):
     if len(o.events) != len(m.events):
         out.append(f"{len(o.events)} calls vs {len(m.events)}")
         return out
-    if m.status != "ret":
+    if o.status == 'noreturn' or m.status == 'noreturn':
+        if o.status != m.status:
+            return [f"termination {o.status} vs {m.status}"]
+    elif m.status != "ret":
         if m.status == "cap" and o.blocks > 5000:
             # a long loop over filled memory the original just finished under the instruction cap (0x4A35D0: a
             # count from garbage; ours takes a few instructions more per round)
             return ["?ours runs past the cap after a long run of the original"]
         return [f"ours does not return ({m.status})"]
-    if o.esp != m.esp and not (o.tail or m.tail):
+    terminated = o.status == 'noreturn'
+    if not terminated and o.esp != m.esp and not (o.tail or m.tail):
         out.append(f"esp after return {o.esp - ESP0:+d} vs {m.esp - ESP0:+d}")
-    if not m.kept and o.kept:
+    if not terminated and not m.kept and o.kept:
         out.append("ours changes ebx/esi/edi/ebp")
     p = proto(ea)
     rt = p[2] if p else "int"
-    if rt in ("float", "double", "long double"):
+    if terminated:
+        pass  # a nonreturning prefix has no return-value/callee-save contract
+    elif rt in ("float", "double", "long double"):
         fo, fm = st0_float(o.st0), st0_float(m.st0)
         # the emulator loads a denormal float (a small int read as a float) with a wrong exponent: 0x401FA0 got
         # 1.47e19 from (4, 0, 5) read as floats. A result no game value has says nothing either way
@@ -1646,35 +1903,54 @@ def check(ea, obj_path=None, src=None, profiles=PROFILES, verbose=False):
             call_pops().update(vcall_tail_pops(disasm(a, b - a, linear=True)))
     _tls.trace = ""
     done, diffs, why = 0, [], collections.Counter()
-    for prof in range(profiles):
-        o = Run(ea, prof, own, memory_obj=obj)
-        o.ret_site = ret_site
-        o.start(ea)
-        if o.status != "ret":
+    from emuprofiles import build as graph_profile, discover as discover_graph
+    from types import SimpleNamespace
+    implementation = SimpleNamespace(**globals())  # also works with importlib benchmark loading
+    inputs = [(prof, None) for prof in range(profiles)]
+    graph_keys = set()
+    for variant in range(2):
+        graph = graph_profile(implementation, ea, variant)
+        if graph:
+            key = tuple(tuple(sorted(v.items())) for v in
+                        (graph.words, graph.args, graph.results, graph.site_tables))
+            if key not in graph_keys:
+                graph_keys.add(key)
+                inputs.append((2, graph))
+    for number, (prof, graph) in enumerate(inputs):
+        if graph:
+            o = discover_graph(implementation, ea, prof, own, ret_site, obj, graph)
+            if verbose:
+                for proof in graph.evidence:
+                    print(f"  profile {number} pointer: {proof}")
+        else:
+            o = Run(ea, prof, own, memory_obj=obj)
+            o.ret_site = ret_site
+            o.start(ea)
+        if o.status not in ("ret", "noreturn"):
             why[o.status.split(" at ")[0][:40]] += 1
             continue
         # IDA appends shared tail chunks to the original's ranges. A candidate can delegate such a chunk
         # with CSF_FUNC: run the same bytes instead of mocking the chunk as an extra outside call.
-        m = Run(ea, prof, obj.code + shared, obj, o.events).start(obj.entry)
+        m = Run(ea, prof, obj.code + shared, obj, o.events, graph=graph).start(obj.entry)
         d = compare(ea, o, m)
         if d and d[0].startswith("?"):
             why[d[0][1:41]] += 1
             continue
         done += 1
         if verbose:
-            print(f"  profile {prof}: {len(o.events)} calls, {len(o.written)} bytes written: {'; '.join(d) or 'same'}")
+            print(f"  profile {number}: {len(o.events)} calls, {len(o.written)} bytes written: {'; '.join(d) or 'same'}")
         if d:
             if not diffs:  # the two call sequences of the first differing profile (the gate shows them)
                 seq = lambda r: ", ".join((tn(e[0]) if isinstance(e[0], int) and e[0] in functions() else
                                            "indirect" if isinstance(e[0], int) else e[0]) + f"({e[2]} args)"
                                           for e in r.events[:10]) + (" ..." if len(r.events) > 10 else "")
                 _tls.trace = f"original calls: {seq(o) or 'none'}\nyours calls:    {seq(m) or 'none'}"
-            diffs.append(f"profile {prof}: {d[0]}")
+            diffs.append(f"profile {number}: {d[0]}")
     if diffs:
         return "DIFF", f"{len(diffs)}/{done} profiles; {diffs[0]}"
     if not done:
         return "inconclusive", ", ".join(f"{k} x{v}" for k, v in why.most_common())
-    return "same", f"{done}/{profiles} profiles"
+    return "same", f"{done}/{len(inputs)} profiles"
 
 
 def main():

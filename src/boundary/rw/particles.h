@@ -35,7 +35,7 @@ struct ParticleEmitter {
     int32_t numParticles, batchSize;
     ParticleClass* particleClass;
     ParticleBatch *inactiveBatches, *activeBatches;
-    void* reserved;
+    float boundingRadiusSquared; // +24h, accumulated by 57CFE0
 };
 struct EmitterStandard {
     uint32_t seed;
@@ -99,6 +99,7 @@ static_assert(offsetof(ParticlePropTable, sizes)==0x20);
 static_assert(sizeof(ParticleClass)==0x1c && offsetof(ParticleClass, properties)==0x10);
 static_assert(sizeof(ParticleBatch)==0x20 && offsetof(ParticleBatch, dataOffset)==0x14);
 static_assert(sizeof(ParticleEmitter)==0x28 && offsetof(ParticleEmitter, activeBatches)==0x20);
+static_assert(offsetof(ParticleEmitter, boundingRadiusSquared)==0x24);
 static_assert(sizeof(EmitterStandard)==0xac && offsetof(EmitterStandard, texture)==0xa4);
 static_assert(sizeof(EmitterTank)==0x34 && offsetof(EmitterTank, atomic)==0x18);
 static_assert(sizeof(TankFormat)==0x5c && offsetof(TankFormat, flags)==0x58);

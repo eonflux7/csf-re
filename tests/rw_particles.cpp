@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstdio>
 #include <cstring>
+#include <cmath>
 using namespace csf_rw;
 CSF_FUNC(int,__cdecl,init,0x00627360,(const MemoryFunctions*,char,int));
 CSF_FUNC(int,__cdecl,openEngine,0x00627290,(void*));
@@ -38,6 +39,10 @@ CSF_FUNC(ParticleEmitter*,__cdecl,getEmitter,0x0057C290,(Atomic*));
 CSF_FUNC(int,__cdecl,isEmitter,0x0057C220,(Atomic*));
 CSF_FUNC(int,__cdecl,lock,0x005821D0,(Atomic*,TankLock*,uint32_t,uint32_t));
 CSF_FUNC(Atomic*,__cdecl,unlock,0x005823E0,(Atomic*));
+CSF_FUNC(ParticleEmitter*,__cdecl,emitCB,0x0057DBA0,(Atomic*,ParticleEmitter*,void*));
+CSF_FUNC(ParticleEmitter*,__cdecl,sphereCB,0x0057BBD0,(Atomic*,ParticleEmitter*,void*));
+CSF_FUNC(ParticleBatch*,__cdecl,updateCB,0x0057CFE0,(ParticleEmitter*,ParticleBatch*,const float*));
+CSF_FUNC(int,__cdecl,compressFloat,0x0061F5E0,(float));
 CSF_FUNC(Atomic*,__stdcall,createAtomic,0x0058F5C0,());
 CSF_FUNC(int,__cdecl,destroyAtomic,0x0058F060,(Atomic*));
 CSF_FUNC(Frame*,__stdcall,createFrame,0x006235D0,());
@@ -71,11 +76,56 @@ static void checkSchema(ParticleClass* c,const int* ids,const int* sizes,int n) 
     assert(c->objectSize==offset && t->offsets[n]==offset);
     assert(getOffset(t,123456)==-1);
 }
+static void simulation(bool matrixMode) {
+    auto* ec=advEmitter(0x3007f,nullptr);auto* pc=stdParticle(matrixMode ? 255 : 117);assert(ec && pc);
+    uintptr_t callbacks[11]{};callbacks[5]=CSF_ADDR_FN(0x0057ED00);callbacks[6]=CSF_ADDR_FN(0x0057EDA0);
+    assert(setCallbacks(ec,1,callbacks));
+    auto* e=createEmitter(ec,nullptr);assert(e && setParticleClass(e,pc,8));
+    auto* s=static_cast<EmitterStandard*>(particleProperty(e,1));
+    rw::Matrix ltm;ltm.setIdentity();ltm.pos={10,20,30};s->ltm=&ltm;
+    s->currentTime=1;s->nextEmit=0;s->emitCount=3;s->life=2;s->lifeBias=.1f;
+    s->speed=2;s->direction={0,0,1};s->position={1,2,3};
+    float* sphere=static_cast<float*>(particleProperty(e,0x1000008));sphere[0]=2;sphere[1]=1;
+    int radial=1;std::memcpy(sphere+2,&radial,4);
+    auto* tank=static_cast<EmitterTank*>(particleProperty(e,6));
+    rw::V3d positions[8]{};rw::RGBA colors[8]{};rw::V2d sizes[8]{};float rotations[8]{};float uvs[8][4]{};
+    rw::Matrix matrices[8];for(auto& m:matrices) m.setIdentity();
+    unsigned char* input[]={reinterpret_cast<unsigned char*>(positions),reinterpret_cast<unsigned char*>(colors),reinterpret_cast<unsigned char*>(sizes),reinterpret_cast<unsigned char*>(rotations),reinterpret_cast<unsigned char*>(uvs)};
+    unsigned char* output[5];std::memcpy(output,input,sizeof(input));int strides[]={12,4,8,4,16};
+    tank->dataFlags=0xa7;tank->flags=0xa7;tank->platformFlags=0xa7;tank->maxParticles=8;
+    if(matrixMode) {
+        input[0]=output[0]=reinterpret_cast<unsigned char*>(matrices);strides[0]=64;
+        tank->dataFlags=tank->flags=tank->platformFlags=8;
+        auto* axes=static_cast<float*>(particleProperty(e,8));axes[18]=1;axes[23]=1;
+    }
+    tank->input=input;tank->output=output;tank->strides=strides;
+    assert(emitCB(nullptr,e,nullptr)==e);auto* b=e->activeBatches;
+    assert(b && b->numParticles==3 && b->newParticle==0 && e->numParticles==3 && tank->numParticles==3);
+    assert(sphereCB(nullptr,e,nullptr)==e);
+    for(int i=0;i<3;i++) if(!matrixMode) { assert(std::isfinite(positions[i].x));assert(positions[i].x!=11 || positions[i].y!=22); }
+    auto* data=reinterpret_cast<unsigned char*>(b)+b->dataOffset;
+    auto* dead=reinterpret_cast<float*>(data+pc->objectSize);dead[1]=dead[2];
+    // Reset fixture-owned cursors after emission.
+    input[0]=output[0]=matrixMode ? reinterpret_cast<unsigned char*>(matrices) : reinterpret_cast<unsigned char*>(positions);
+    input[1]=output[1]=reinterpret_cast<unsigned char*>(colors);
+    input[2]=output[2]=reinterpret_cast<unsigned char*>(sizes);
+    input[3]=output[3]=reinterpret_cast<unsigned char*>(rotations);
+    input[4]=output[4]=reinterpret_cast<unsigned char*>(uvs);
+    tank->numParticles=0;float dt=.25f;
+    assert(updateCB(e,b,&dt)==b && b->numParticles==2 && tank->numParticles==2);
+    assert(reinterpret_cast<float*>(data)[1]==.25f);
+    auto* base=matrixMode ? reinterpret_cast<unsigned char*>(matrices) : reinterpret_cast<unsigned char*>(positions);
+    assert(output[0]==base+2*strides[0] && input[0]==base+3*strides[0]);
+    assert(compressFloat(0)==0 && compressFloat(-0.0f)==0x8000 && (compressFloat(1)&0xffff)==0x7800);
+    tank->input=nullptr;tank->output=nullptr;tank->strides=nullptr;
+    assert(particleEmitterDestroy(e) && destroyClass(ec) && destroyParticleClass(pc));
+}
 int main() {
     assert(particlesEmpty());
     for(int repeat=0;repeat<2;repeat++) {
         assert(init(nullptr,0,1024)); assert(ptAttach() && prtAttach() && advAttach());
         assert(openEngine(nullptr) && start());
+        simulation(false);simulation(true);
         // These arrays are independently asserted against the original image
         // by tests/rw_particles_original.py, not guessed SDK flag definitions.
         int ids0[]={0,1,2,6,5,4,0x1000007}, sizes0[]={40,172,64,52,32,16,20};
@@ -199,5 +249,5 @@ int main() {
         assert(destroyParticleClass(p0) && destroyParticleClass(p1) && destroyParticleClass(p2) && destroyParticleClass(p3));
         assert(particlesEmpty());assert(stop() && closeEngine() && term());
     }
-    std::puts("PASS particle schemas/ownership/defaults/schedule/batch rings and PTank lock stride/dirty flags");
+    std::puts("PASS particle schemas/ownership/defaults/schedule/batch rings, emission/sphere/update/compression and PTank lock stride/dirty flags");
 }

@@ -41,6 +41,7 @@ class Machine:
             for sec in obj.secs: u.mem_write(sec['base'],bytes(sec['data']))
             u.mem_map(emu.EXT_BASE,0x10000)
             u.mem_map(emu.SYS_BASE,0x1000)
+            for name,at in emu.NATIVE_AT.items(): u.mem_write(at,bytes.fromhex(emu.NATIVE[name]))
             self.word(emu.COOKIE,0xbb40e64e)
             names=linktest.demangle(list(obj.ext))
             for symbol,at in obj.ext.items():
@@ -49,15 +50,25 @@ class Machine:
                 if symbol.startswith('?state@Engine@rw@@'): self.word(at,3)
                 if symbol.startswith('?memfuncs@Engine@rw@@'):
                     self.word(at,ALLOC);self.word(at+8,FREE)
+                # CRT scalar math on the COFF side: actual x87 arithmetic,
+                # matching the image's inlined fsin/fcos for this bounded input.
+                if symbol in ('_sin','_cos','_sqrt'):
+                    opcode={'_sin':b'\xd9\xfe','_cos':b'\xd9\xff','_sqrt':b'\xd9\xfa'}[symbol]
+                    u.mem_write(at,b'\xdd\x44\x24\x04'+opcode+b'\xc3')
         def hook(uc, pc, size, _):
             if pc == END:
                 uc.emu_stop()
             elif obj and pc in obj.ext_names:
                 name=obj.ext_names[pc]
+                if name in ('_sin','_cos','_sqrt'): return
                 sp=uc.reg_read(X.UC_X86_REG_ESP)
                 if name=='_memset':
                     dst,value,n=self.word(sp+4),self.word(sp+8),self.word(sp+12)
                     uc.mem_write(dst,bytes([value&255])*n)
+                    uc.reg_write(X.UC_X86_REG_EAX,dst)
+                elif name in ('_memcpy','_memmove'):
+                    dst,src,n=self.word(sp+4),self.word(sp+8),self.word(sp+12)
+                    uc.mem_write(dst,bytes(uc.mem_read(src,n)))
                     uc.reg_write(X.UC_X86_REG_EAX,dst)
                 elif name.startswith('?plugins@csf_rw@@'):
                     uc.reg_write(X.UC_X86_REG_EAX,ENGINE+0x1000)
@@ -253,3 +264,6 @@ for flag,off,stride in [(1,0x4c,12),(2,0x6c,4),(4,0x64,8),(8,0x54,64),(16,0x5c,1
 assert n.word(T+0x3c)==0x400001ff
 assert n.call(0x5823e0,A)==A and n.word(T+0x40)==0x400001ff and n.word(T+0x3c)==0
 print('PASS: original schemas/cache/defaults and PTank bytes; 25 original/COFF create/schedule/end/begin/batch cases (cdecl/nonvolatiles; explicit allocator/registry/callback doubles)')
+
+# Slice 8b uses the same original-image/COFF machines and ABI assertions.
+exec((ROOT/'tests/rw_particle_simulation_original.inc.py').read_text())

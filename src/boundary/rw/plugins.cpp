@@ -66,6 +66,24 @@ CSF_GLOBAL(int, worldLight, 0x008B1354);
 CSF_GLOBAL(int, clumpCamera, 0x008B13B0);
 CSF_GLOBAL(int, clumpLight, 0x008B13B4);
 namespace {
+// The game's 16-bit compressed format is not IEEE binary16: eleven mantissa
+// bits, a biased four-bit exponent and saturation above magnitude one.
+int __cdecl compressedFloat(float value) {
+    uint32_t bits; std::memcpy(&bits,&value,4);
+    unsigned exponent=(bits>>23)&255;
+    if((bits&0xfff)>=0x800 && exponent>12 &&
+       (exponent<254 || (bits&0x7ff000)!=0x7ff000)) {
+        uint32_t increment=((exponent-12)<<23)|(bits&0x80000000);
+        float delta; std::memcpy(&delta,&increment,4);
+        value+=delta; std::memcpy(&bits,&value,4);
+    }
+    bits&=0xfffff000;
+    if((bits&0x7f800000)>0x3f800000) bits=(bits&0x80000000)|0x7ffff000;
+    if((bits&0x7f800000)<0x38000000) bits&=0x80000000;
+    uint32_t result=(bits>>16)&0x8000;
+    if(bits&0x7fffffff) result|=((bits>>12)&0x7ff)|(uint32_t((int32_t(bits)>>23)-16)<<11);
+    return int(result);
+}
 using K=csf_rw::Registry;
 using Scheme=csf_rw::AnimationScheme;
 std::array<Scheme,16> schemes{};
@@ -302,6 +320,7 @@ HOOK(0x0058C040,userAttach,"boundary-rw");
 HOOK(0x005665A0,anisoAttach,"boundary-rw");
 HOOK(0x005776E0,morphAttach,"boundary-rw");
 HOOK(0x006205C0,compressedRegister,"boundary-rw");
+HOOK(0x0061F5E0,compressedFloat,"boundary-rw");
 HOOK(0x0061ED00,registerScheme,"boundary-rw");
 HOOK(0x0058F270,atomicStream,"boundary-rw");
 HOOK(0x00590430,sectorStream,"boundary-rw");

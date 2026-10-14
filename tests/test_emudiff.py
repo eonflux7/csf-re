@@ -1,5 +1,6 @@
 """Offline emulator regressions. Run: .venv/bin/python tests/test_emudiff.py"""
 import os
+import io
 from pathlib import Path
 import subprocess
 import sys
@@ -242,17 +243,179 @@ class CleanupInferenceTests(unittest.TestCase):
         self.assertEqual(emudiff.import_call_pop(0x7AF69A, 'UNKNOWN.dll!UnknownImport'), 16)
         self.assertEqual(emudiff.import_call_pop(0, 'UNKNOWN.dll!_Other@20'), 20)
 
-    def test_throw_exception_mock_preserves_saved_registers(self):
+    def test_noncontinuable_exception_ends_at_boundary(self):
         ea = 0x7AF666
         own, ret_site = emudiff.own_ranges(ea)
         run = emudiff.Run(ea, 2, own)
         run.ret_site = ret_site
         run.args = lambda: [0, 0]
         run.start(ea)
-        self.assertEqual(run.status, 'ret')
-        self.assertTrue(run.kept)
-        self.assertEqual(run.esp, emudiff.ESP0 + 12)
+        self.assertEqual(run.status, 'noreturn')
+        self.assertEqual(len(run.events), 1)
+        self.assertEqual(run.events[0][0], 'KERNEL32.dll!RaiseException')
         self.assertEqual(run.events[0][1:3], (16, 4))
+        self.assertTrue(emudiff.no_return('KERNEL32.dll!RaiseException', (0, 1, 0, 0)))
+        self.assertFalse(emudiff.no_return('KERNEL32.dll!RaiseException', (0, 0, 0, 0)))
+
+    def test_mixed_named_callback_conventions_are_paired_by_global_and_slot(self):
+        facts = emudiff.global_callback_types(0x738070)
+        self.assertEqual(facts[0x7380A5], dict(ecx=False, nargs=2, pop=0))
+        self.assertNotIn(0x738085, facts)  # actual virtual call, not RW callback
+        self.assertFalse(emudiff.callsite_abi(0x738070, 0x7380A5))
+        self.assertIsNone(emudiff.callsite_abi(0x738070, 0x738085))
+
+    def test_named_callback_load_cannot_cross_join_or_partial_register_write(self):
+        md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+        md.detail = True
+        source = '(*((int (__cdecl **)(int, int))table + 8))(1, 2);'
+        # A branch can bypass the global load, or AL can change the loaded
+        # pointer. Neither supports pairing the call with the named table.
+        for code, expected in (('a100900000 ff5020 c3', True),
+                               ('85d2 7405 a100900000 ff5020 c3', False),
+                               ('ffe2 a100900000 ff5020 c3', False),
+                               ('a100900000 b000 ff5020 c3', False)):
+            with self.subTest(code=code):
+                ins = {i.address: i for i in md.disasm(bytes.fromhex(code), 0x1000)}
+                emudiff.global_callback_types.cache_clear()
+                with patch.object(emudiff, 'original_stack_code', return_value=ins), \
+                        patch.object(emudiff, 'binary_switches', return_value={}), \
+                        patch.object(emudiff.os.path, 'exists', return_value=True), \
+                        patch('builtins.open', return_value=io.StringIO(source)), \
+                        patch.object(emudiff, 'load', return_value={'table': 0x9000}):
+                    self.assertEqual(bool(emudiff.global_callback_types(0x1000)), expected)
+        emudiff.global_callback_types.cache_clear()
+
+    def test_complete_float_dispatch_casts_supply_st0_without_exemptions(self):
+        sites = emudiff.indirect_float_returns(0x7377F0)
+        self.assertEqual(len(sites), 8)
+        self.assertEqual(set(sites.values()), {'double'})
+        self.assertEqual(emudiff.indirect_float_returns(0x738070), {})  # mixed calls
+        own, ret_site = emudiff.own_ranges(0x7377F0)
+        run = emudiff.Run(0x7377F0, 2, own)
+        run.ret_site = ret_site
+        run.start(0x7377F0)
+        self.assertEqual(run.status, 'ret')
+        calls = [event for event in run.events if event[7] in sites]
+        self.assertEqual(len(calls), 8)
+        self.assertTrue(all(event[4] == 'double' for event in calls))
+
+    def test_bounded_switch_cases_preserve_caller_cleanup_proof(self):
+        self.assertEqual(emudiff.binary_switches(0x6E3A70)[0x6E3B17],
+                         {0x6E3B1E, 0x6E3B2D, 0x6E3B3B, 0x6E3B49, 0x6E3B55})
+        pops = emudiff.stack_call_pops(0x6E3A70, constraints_only=True)
+        for site in emudiff.global_callback_types(0x6E3A70):
+            self.assertEqual(pops[site], 0)
+        # An unbounded computed jump or an edge outside the decoded function
+        # must not yield a proof from just the supported prefix.
+        ins, _ = self.infer('55 8bec 6a01 ff5028 ff24c500200000')
+        self.assertEqual(emudiff.infer_stack_pops(ins, lambda pc, t: 0), {})
+        jump = next(pc for pc, i in ins.items() if i.mnemonic == 'jmp')
+        self.assertEqual(emudiff.infer_stack_pops(ins, lambda pc, t: 0,
+                                                switches={jump: {0x9999}}), {})
+
+    def test_switch_bound_must_not_be_bypassed_by_an_incoming_edge(self):
+        md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+        md.detail = True
+        ea = emudiff.IMG + 0x1000
+        for prefix, reenter, expected in (('', False, True),
+                                          ('85d2 7405', False, False),
+                                          ('', True, False)):
+            with self.subTest(prefix=prefix, reenter=reenter):
+                # cmp eax,1; ja default; jmp [eax*4+table]; default: ret
+                raw = bytes.fromhex(prefix + ' 83f801 7707 ff248500204000 c3')
+                ins = {i.address: i for i in md.disasm(raw, ea)}
+                jump = next(pc for pc, i in ins.items() if i.mnemonic == 'jmp')
+                target = jump if reenter else ea + len(raw) - 1
+                img = bytearray(0x3000)
+                struct.pack_into('<II', img, 0x2000, target, target)
+                emudiff.binary_switches.cache_clear()
+                with patch.object(emudiff, 'original_stack_code', return_value=ins), \
+                        patch.object(emudiff, 'exe_image', return_value=(img, [])):
+                    self.assertEqual(bool(emudiff.binary_switches(ea)), expected)
+        emudiff.binary_switches.cache_clear()
+
+    def test_late_register_saves_are_not_virtual_arguments(self):
+        import emuprofiles
+        for ea, site in ((0x7215F0, 0x721624), (0x721900, 0x721934)):
+            graph = emuprofiles.build(emudiff, ea)
+            own, ret_site = emudiff.own_ranges(ea)
+            run = emudiff.Run(ea, 2, own, graph=graph)
+            run.ret_site = ret_site
+            run.start(ea)
+            self.assertEqual(run.status, 'ret')
+            event = next(event for event in run.events if event[7] == site)
+            self.assertEqual(event[1:3], (4, 1))
+            self.assertNotIn(emudiff.ZONES + 0x0A200100, event[5])
+        # PUSH EDI at 6F11A4 is another late save, before a zero-arg getter.
+        graph = emuprofiles.build(emudiff, 0x6F1170)
+        own, ret_site = emudiff.own_ranges(0x6F1170)
+        run = emudiff.Run(0x6F1170, 2, own, graph=graph)
+        run.ret_site = ret_site
+        run.start(0x6F1170)
+        event = next(event for event in run.events if event[7] == 0x6F11A7)
+        self.assertEqual(event[1:3], (0, 0))
+
+    def test_nil_iterator_exception_profile_stops_before_tree_erasure(self):
+        import emuprofiles
+        ea = 0x6B7670
+        graph = emuprofiles.build(emudiff, ea)
+        own, ret_site = emudiff.own_ranges(ea)
+        run = emudiff.Run(ea, 2, own, graph=graph)
+        run.ret_site = ret_site
+        run.start(ea)
+        self.assertEqual(run.status, 'noreturn')
+        self.assertEqual(run.events[-1][0], 0x7AF666)
+        self.assertNotIn(0x690E60, [event[0] for event in run.events])  # no free after throw
+
+
+class GraphProfileTests(unittest.TestCase):
+    def probe(self, hexcode):
+        import emuprofiles
+        pc = emudiff.SYS_BASE + 0x300
+        code = bytes.fromhex(hexcode)
+        md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+        md.detail = True
+        instructions = {i.address: i for i in md.disasm(code, pc)}
+        cls = emudiff.Run
+        def make(*args, **kwargs):
+            run = cls(*args, **kwargs)
+            run.uc.mem_write(pc, code)
+            return run
+        make.made = cls.made
+        graph = emuprofiles.Graph()
+        graph.put(emudiff.ECX0 + 4, 0)
+        with patch.object(emudiff, 'Run', make), \
+                patch.object(emudiff, 'original_stack_code', return_value=instructions):
+            original = emuprofiles.discover(emudiff, pc, 2, [(pc, pc + len(code))], {}, None, graph)
+        return original, graph, make, pc, code
+
+    def test_recursive_fault_fields_are_seeded_then_mirrored(self):
+        # mov eax,[ecx+4]; mov eax,[eax+8]; mov dword [eax],77; ret
+        original, graph, make, pc, code = self.probe('8b4104 8b4008 c7004d000000 c3')
+        self.assertEqual(original.status, 'ret')
+        self.assertEqual(len(graph.evidence), 2)
+        child = graph.words[emudiff.ECX0 + 4]
+        leaf = graph.words[child + 8]
+        candidate = make(pc, 2, [(pc, pc + len(code))], graph=graph).start(pc)
+        self.assertEqual(candidate.status, 'ret')
+        self.assertEqual(original.uc.mem_read(leaf, 4), candidate.uc.mem_read(leaf, 4))
+        with patch.object(emudiff, 'proto', return_value=(False, [], 'void', 0)):
+            self.assertEqual(emudiff.compare(pc, original, candidate), [])
+            candidate.uc.mem_write(leaf, struct.pack('<I', 78))
+            self.assertTrue(emudiff.compare(pc, original, candidate))
+
+    def test_discovery_cannot_repair_a_store_from_the_original(self):
+        # A function-generated null is a failure, not a repairable input.
+        original, graph, _, _, _ = self.probe('c7410400000000 8b4104 8b4008 c3')
+        self.assertTrue(original.status.startswith('fault'))
+        self.assertEqual(graph.evidence, [])
+
+    def test_partial_register_write_invalidates_pointer_load_provenance(self):
+        # mov eax,[ecx+4]; mov al,4; mov eax,[eax+8]; ret
+        # The dereference uses a computed value, not a copied input pointer.
+        original, graph, _, _, _ = self.probe('8b4104 b004 8b4008 c3')
+        self.assertTrue(original.status.startswith('fault'))
+        self.assertEqual(graph.evidence, [])
 
 
 class ComparisonRuleTests(unittest.TestCase):
@@ -278,6 +441,19 @@ class ComparisonRuleTests(unittest.TestCase):
                 self.assertTrue(result)
                 self.assertFalse(result[0].startswith('?'))
             self.assertTrue(emudiff.compare(0, self.memory_run(0xFFFFFFFF), self.memory_run(0x7FC00000)))
+
+    def test_noreturn_compares_prefix_not_return_frame(self):
+        original, candidate = self.memory_run(1), self.memory_run(1)
+        original.status = candidate.status = 'noreturn'
+        candidate.esp += 32
+        candidate.eax = 77
+        candidate.kept = False
+        with patch.object(emudiff, 'proto', return_value=(False, [], 'int', 0)):
+            self.assertEqual(emudiff.compare(0, original, candidate), [])
+            self.assertTrue(emudiff.compare(0, original, self.memory_run(2)))
+            changed = self.memory_run(2)
+            changed.status = 'noreturn'
+            self.assertTrue(emudiff.compare(0, original, changed))
 
     def test_float_store_instruction_classification_and_overwrite(self):
         run = emudiff.Run(0, 0, [])

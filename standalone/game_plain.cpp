@@ -17,6 +17,31 @@ CSF_FUNC(int, __fastcall, GameBddLoader_DispatchMenuRequest, 0x0050F790,
          (void* self, void* edx, int entry, int argument, int request, int configuration));
 CSF_GLOBAL(void*, g_MenuCallbackManager, 0x008B0570);
 
+CSF_FUNC(int, __fastcall, CSoundManager_ReleasePoolsAndReset, 0x005238B0,
+         (void* self, void* edx));
+CSF_FUNC(int, __cdecl, SoundManager_Free, 0x00691110, (void* block));
+
+// Scalar deleting destructor and its two secondary-base adjustors. IDA missed
+// all three entries; 0084106C/00841064 hold the +4/+8-base vtables.
+static void* __fastcall CSoundManager_ScalarDelete(void* self, void*, unsigned flags) {
+    CSoundManager_ReleasePoolsAndReset(self, nullptr);
+    if (flags & 1) SoundManager_Free(self);
+    return self;
+}
+HOOK(0x005240F0, CSoundManager_ScalarDelete, "auto");
+
+static void* const soundManagerDelete = reinterpret_cast<void*>(CSF_ADDR_FN(0x005240F0));
+static __declspec(naked) void CSoundManager_DeleteFromBase4() {
+    __asm sub ecx, 4
+    __asm jmp dword ptr [soundManagerDelete]
+}
+static __declspec(naked) void CSoundManager_DeleteFromBase8() {
+    __asm sub ecx, 8
+    __asm jmp dword ptr [soundManagerDelete]
+}
+HOOK(0x00523920, CSoundManager_DeleteFromBase4, "auto");
+HOOK(0x00523930, CSoundManager_DeleteFromBase8, "auto");
+
 // Independently callable cdecl callback (0050F920..0050F972), missed by IDA.
 // 0050FBD0 registers it through 006973B0, rather than calling it directly.
 static int __cdecl GameBddLoader_LoadCompleteCallback() {

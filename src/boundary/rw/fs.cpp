@@ -40,11 +40,19 @@ std::recursive_mutex managerMutex;
 rw::FileFunctions savedFiles{};
 bool fileFunctionsInstalled;
 void error(int n) { if(errorCallback) errorCallback(n); }
-void* alloc(size_t n) { return rw::Engine::memfuncs.rwmalloc(n, rw::MEMDUR_GLOBAL); }
+void* alloc(size_t n) {
+    void* p=rw::Engine::memfuncs.rwmalloc(n, rw::MEMDUR_GLOBAL);
+    if(!p && csf_rw::startupTracing()) std::fprintf(stderr,"RW startup RtFS allocation bytes=%zu -> null\n",n);
+    return p;
+}
 void release(void* p) { if(p) rw::Engine::memfuncs.rwfree(p); }
 int __stdcall capacity() { if(maxSystems<=0 || numSystems<maxSystems) return 1; error(5); return 0; }
 FS* __cdecl findName(const char* name) {
-    if(name) for(FS* f=head;f;f=f->next) if(!std::strcmp(f->name,name)) return f;
+    if(name) for(FS* f=head;f;f=f->next) if(!std::strcmp(f->name,name)) {
+        if(csf_rw::startupTracing()) std::fprintf(stderr,"RW startup RtFS find name=\"%s\" -> %p\n",name,static_cast<void*>(f));
+        return f;
+    }
+    if(csf_rw::startupTracing()) std::fprintf(stderr,"RW startup RtFS find name=\"%s\" -> null\n",name?name:"(null)");
     error(6); return nullptr;
 }
 int __cdecl nameUsed(const char* name) { if(!findName(name)) return 0; error(7); return 1; }
@@ -74,7 +82,7 @@ FS* __cdecl selectFS(const char* path) {
     if(defaultFS) return defaultFS;
     error(6); return nullptr;
 }
-FS* __cdecl setDefault(FS* fs) { defaultFS=fs; return fs; }
+FS* __cdecl setDefault(FS* fs) { defaultFS=fs; if(csf_rw::startupTracing()) std::fprintf(stderr,"RW startup RtFS default -> %p\n",static_cast<void*>(fs)); return fs; }
 int __cdecl event(FS* f,int which) {
     if(!f) return 0;
     auto fn=which==1?f->registered:which==2?f->unregistered:nullptr;
@@ -82,7 +90,11 @@ int __cdecl event(FS* f,int which) {
 }
 int __cdecl registerFS(FS* f) {
     std::lock_guard<std::recursive_mutex> lock(managerMutex);
-    if(!initialized || !f || !capacity() || findName(f->name)) return 0;
+    if(!initialized || !f || !capacity() || findName(f->name)) {
+        if(csf_rw::startupTracing()) std::fprintf(stderr,"RW startup RtFS register %p -> 0 initialized=%d count=%d max=%d\n",static_cast<void*>(f),initialized,numSystems,maxSystems);
+        return 0;
+    }
+    if(csf_rw::startupTracing()) std::fprintf(stderr,"RW startup RtFS register name=\"%s\" device=\"%s\" -> 1\n",f->name,f->device?f->device:"(null)");
     event(f,1); f->next=head; head=f; ++numSystems; return 1;
 }
 int __cdecl setDevice(FS* f,const char* device) {
@@ -93,15 +105,19 @@ int __cdecl setDevice(FS* f,const char* device) {
     std::strcpy(copy,device); release(f->device); f->device=copy; return 1;
 }
 int __cdecl initFS(FS* f,int n,const char* name,const char* device) {
-    if(!initialized || !f || n<0 || !name || std::strlen(name)>=sizeof(f->name) || !f->getFile) return 0;
-    if(!capacity()) return 2;
-    if(nameUsed(name)) return 6;
+    auto result=[&](int r) {
+        if(csf_rw::startupTracing()) std::fprintf(stderr,"RW startup RtFS init name=\"%s\" device=\"%s\" records=%d -> %d\n",name?name:"(null)",device?device:"(null)",n,r);
+        return r;
+    };
+    if(!initialized || !f || n<0 || !name || std::strlen(name)>=sizeof(f->name) || !f->getFile) return result(0);
+    if(!capacity()) return result(2);
+    if(nameUsed(name)) return result(6);
     std::strcpy(f->name,name); f->count=n; f->async=0;
-    for(int i=0;i<n;++i) { auto* p=f->getFile(f,i); if(!p) return 0; p->status=1; p->async=0; }
+    for(int i=0;i<n;++i) { auto* p=f->getFile(f,i); if(!p) return result(0); p->status=1; p->async=0; }
     f->device=nullptr;
-    int result=setDevice(f,device);
-    if(result==1) { f->registered=nullptr; f->unregistered=nullptr; f->kind=2; }
-    return result;
+    int resultCode=setDevice(f,device);
+    if(resultCode==1) { f->registered=nullptr; f->unregistered=nullptr; f->kind=2; }
+    return result(resultCode);
 }
 F* __cdecl openOn(FS* fs,const char* path,int flags,decltype(F::callback) cb,void* data) {
     if(!fs || !path) { error(4); return nullptr; }
@@ -274,6 +290,7 @@ int __cdecl diskExists(FS* fs,const char* path) {
     std::error_code ec; return std::filesystem::exists(name,ec)?1:0;
 }
 FS* __cdecl createDisk(int count,const char* device,const char* name) {
+    if(csf_rw::startupTracing()) std::fprintf(stderr,"RW startup RtFS disk-create name=\"%s\" device=\"%s\" records=%d\n",name?name:"(null)",device?device:"(null)",count);
     if(!initialized || count<0 || size_t(count)>SIZE_MAX/sizeof(DiskFile) || !name || findName(name)) return nullptr;
     auto* fs=static_cast<DiskFS*>(alloc(sizeof(DiskFS))); if(!fs) return nullptr; std::memset(fs,0,sizeof(*fs));
     fs->files=static_cast<DiskFile*>(alloc(size_t(count)*sizeof(DiskFile)));
@@ -304,7 +321,7 @@ size_t nativeWrite(const void* src,size_t size,size_t n,void* f) { return size>U
 int nativeEOF(void* f) { return eofFile(static_cast<F*>(f)); }
 int __cdecl managerInit(int max) {
     std::lock_guard<std::recursive_mutex> lock(managerMutex);
-    if(initialized) return 0;
+    if(initialized) { csf_rw::startupTrace("0x007C5F60","RtFSManagerOpen -> 0 (already initialized)"); return 0; }
 #ifdef _WIN32
     InitializeCriticalSection(&gameFSLock);
 #endif

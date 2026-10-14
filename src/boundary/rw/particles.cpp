@@ -1,5 +1,5 @@
 // Independent game-facing particle ownership boundary; no SDK and no native
-// particle toolkit in librw. Unimplemented simulation/stream callbacks retain
+// particle toolkit in librw. Unimplemented advanced/stream callbacks retain
 // their address-keyed fatal slots, never success/no-op substitutes.
 #ifdef CSF_STANDALONE
 #include "globals.h"
@@ -167,8 +167,11 @@ ParticleEmitter* __cdecl emitterDestroyCallback(Atomic*,ParticleEmitter*,void*);
 ParticleEmitter* __cdecl emitterEndUpdate(Atomic*,ParticleEmitter*,void*);
 ParticleEmitter* __cdecl emitterBeginUpdate(Atomic*,ParticleEmitter*,const float*);
 ParticleEmitter* __cdecl emitterSchedule(Atomic*,ParticleEmitter*,void*);
+ParticleEmitter* __cdecl standardEmit(Atomic*,ParticleEmitter*,void*);
+ParticleEmitter* __cdecl sphereEmit(Atomic*,ParticleEmitter*,void*);
+ParticleBatch* __cdecl standardParticleUpdate(ParticleEmitter*,ParticleBatch*,const float*);
 std::array<uintptr_t,11> standardEmitterCallbacks() {
-    return {CSF_ADDR_FN(0x0057DBA0),reinterpret_cast<uintptr_t>(emitterBeginUpdate),reinterpret_cast<uintptr_t>(emitterSchedule),reinterpret_cast<uintptr_t>(emitterEndUpdate),0,
+    return {reinterpret_cast<uintptr_t>(standardEmit),reinterpret_cast<uintptr_t>(emitterBeginUpdate),reinterpret_cast<uintptr_t>(emitterSchedule),reinterpret_cast<uintptr_t>(emitterEndUpdate),0,
         reinterpret_cast<uintptr_t>(emitterCreateCallback),reinterpret_cast<uintptr_t>(emitterDestroyCallback),CSF_ADDR_FN(0x0057F0F0),
         CSF_ADDR_FN(0x0057F450),CSF_ADDR_FN(0x0057F7A0),CSF_ADDR_FN(0x0057EDE0)};
 }
@@ -178,7 +181,7 @@ bool defaultCallbacks(ParticleClass* c,bool particle,bool advanced) {
     // concatenation of the source callback sets.
     uintptr_t sets[8][11]{}; int n=1, width=particle ? 7 : 11;
     auto base=standardEmitterCallbacks();
-    if(particle) sets[0][0]=CSF_ADDR_FN(0x0057CFE0);
+    if(particle) sets[0][0]=reinterpret_cast<uintptr_t>(standardParticleUpdate);
     else std::copy(base.begin(),base.end(),sets[0]);
     uint32_t f=c->id;
     if(advanced && !particle) {
@@ -186,7 +189,7 @@ bool defaultCallbacks(ParticleClass* c,bool particle,bool advanced) {
         switch(f&0xff0000) {
         case 0x10000: a[0]=CSF_ADDR_FN(0x0057AE40);a[5]=CSF_ADDR_FN(0x0057B5B0);a[7]=CSF_ADDR_FN(0x0057B3A0);a[8]=CSF_ADDR_FN(0x0057B4A0);a[9]=CSF_ADDR_FN(0x0057B330);a[10]=CSF_ADDR_FN(0x0057B280);++n;break;
         case 0x20000: a[0]=CSF_ADDR_FN(0x0057B640);a[7]=CSF_ADDR_FN(0x0057BAB0);a[8]=CSF_ADDR_FN(0x0057BB40);a[9]=CSF_ADDR_FN(0x0057BA70);a[10]=CSF_ADDR_FN(0x0057BA00);++n;break;
-        case 0x30000: a[0]=CSF_ADDR_FN(0x0057BBD0);a[7]=CSF_ADDR_FN(0x0057BFB0);a[8]=CSF_ADDR_FN(0x0057C020);a[9]=CSF_ADDR_FN(0x0057BF70);a[10]=CSF_ADDR_FN(0x0057BF10);++n;break;
+        case 0x30000: a[0]=reinterpret_cast<uintptr_t>(sphereEmit);a[7]=CSF_ADDR_FN(0x0057BFB0);a[8]=CSF_ADDR_FN(0x0057C020);a[9]=CSF_ADDR_FN(0x0057BF70);a[10]=CSF_ADDR_FN(0x0057BF10);++n;break;
         }
     }
     if(advanced && (f&0x100)) {
@@ -411,6 +414,7 @@ Atomic* __cdecl tankUnlock(Atomic* a) {
     auto* t=getTank(a); if(!t) return nullptr;
     t->dirty|=t->locked; t->locked=0; return a;
 }
+#include "particle_simulation.inc"
 } // namespace
 
 namespace csf_rw {
@@ -500,4 +504,7 @@ HOOK(0x0057C220,atomicIsEmitter,"boundary-rw");
 HOOK(0x0057C290,atomicEmitter,"boundary-rw");
 HOOK(0x005821D0,tankLock,"boundary-rw");
 HOOK(0x005823E0,tankUnlock,"boundary-rw");
+HOOK(0x0057CFE0,standardParticleUpdate,"boundary-rw");
+HOOK(0x0057DBA0,standardEmit,"boundary-rw");
+HOOK(0x0057BBD0,sphereEmit,"boundary-rw");
 #endif
