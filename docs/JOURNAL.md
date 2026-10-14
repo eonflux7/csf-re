@@ -1644,3 +1644,8 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   reported by name; none is). Found with x32dbg: `tools/dbg.sh crash 60 E:\dev\csf-standalone\csf_standalone.exe`
   (crash.py takes an exe, prints the ASLR base: the exe loads at 0x6B0000, not 0x400000; map addresses accordingly).
   A crash used to lose the progress lines (stderr buffered): unbuffered now. WSL interop reports 0xC0000005 as exit 5.
+- Grouped sol-med triage (25 jobs, 86 functions, about 25 min with at most 6 at once): 12 real bugs (9 fixed and
+  adopted), 65 false alarms, 9 not decided. The false alarms are emudiff's: callee cleanup at virtual/indirect calls
+  (the biggest group), mocks that leave output parameters unwritten (0xCC vs 0), ecx compared at cdecl/stdcall/COM
+  calls, byte values compared as full registers, mocked self-recursion on the original's side only, `_log2` missing,
+  Unicorn's initial x87 control word. Per-function verdicts: work/measure/group_verdicts.tsv.
