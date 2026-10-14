@@ -46,13 +46,15 @@ AGENTS = {"sol-med": ("codex", "gpt-6.1-sol", "medium"),     # most jobs (defaul
 DEFAULT = "sol-med"
 CLAUDE_JOBS = 8  # user, 2026-10-13 late: "run more haikus if possible they are cheap" (was 2)
 RETIRED = {"opus-me": ("claude", "claude-opus-5-5", "medium"), "haiku-med": ("claude", "claude-haiku-5-5", "medium"),
-           "haiku-xhi": ("claude", "claude-haiku-5-5", "xhigh"), "mimo-pro": ("codex", "xiaomi/mimo-v2.6-pro:floor", "medium")}
+           "haiku-xhi": ("claude", "claude-haiku-5-5", "xhigh"), "mimo-pro": ("codex", "xiaomi/mimo-v2.6-pro:floor", "medium"),
+           # user, 2026-10-14: tried for grouped jobs, stopped before it finished ("it sucks kinda")
+           "mimo-flash": ("codex", "xiaomi/mimo-v2.6-flash:floor", "medium")}
 # Agents that go through OpenRouter instead of a Codex login: $ per million tokens (input, output), for the
 # job's cost line (https://openrouter.ai/api/v1/models, 2026-10-13). That is the cheapest provider's price: without
 # `:floor` on the model OpenRouter spreads requests over providers up to 6 times dearer (the first eleven jobs cost
 # $1.92 where this estimate said $0.51). The key's real spend is openrouter_budget(); no job starts below OR_MIN.
 OR_MIN = 0.30
-OPENROUTER = {"glm-flash": (0.0261, 0.9)}
+OPENROUTER = {"glm-flash": (0.0261, 0.9), "mimo-flash": (0.14, 0.28)}
 OR_KEY = os.path.expanduser("~/.config/csf-re/openrouter.key")
 OR_HOME = os.path.expanduser("~/.config/csf-re/codex-openrouter")  # CODEX_HOME of these jobs: session files only
 OR_ARGS = ["-c", 'model_provider="openrouter"', "-c", 'model_providers.openrouter.name="OpenRouter"',
