@@ -1,0 +1,58 @@
+from 0x00509250: 1054 functions reached; trap slots {'crt': 2, 'game': 4, 'netz': 17, 'not-a-function': 3, 'rw': 31}
+crt            0x007B02E2 __wfopen                                 via 509250 > 7B02E2
+crt            0x007B00E9 _wsystem                                 via 509250 > 7B00E9
+game           0x005370C0 GameBddLoader_FinalizeLoading            via 509250 > 510BF0 > 5370C0
+game           0x00506CF0 AppMain_PrepareWindowLoader              via 509250 > 50FBD0 > 506F70 > 506CF0
+game           0x00699C80 TextDatabase_InitializeEntryFromPath     via 509250 > 50FBD0 > 506F70 > 69BD90 > 699C80
+game           0x006A2F90 CoreZlibLog_AllocateReusableBlock        via 509250 > 55A970 > 55A910 > 55A800 > 694770 > 698350 > 69E910 > 6A2E30 > 6A2BB0 > 6A3150 > 6A2F90
+netz           0x00652160 LookupObjectById                         via 509250 > 50FBD0 > 652160
+netz           0x00652020 ResolveClumpManager                      via 509250 > 50FBD0 > 506F70 > 652020
+netz           0x006687B0 Sub_6687B0                               via 509250 > 50FBD0 > 73F630 > 73EEA0 > 6687B0
+netz           0x006684F0 NetSession_InitializeContainerStorage    via 509250 > 50FBD0 > 73F630 > 73F080 > 6684F0
+netz           0x00670020 NetSession_InitializeEmbeddedState       via 509250 > 50FBD0 > 73F630 > 73F080 > 670020
+netz           0x007A7B50 GlobalFlag_IsSet                         via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 7A7B50
+netz           0x00671260 NetSession_GetRuntimeState               via 509250 > 50FBD0 > 73F630 > 73EEA0 > 73ECC0 > 671260
+netz           0x00651D00 SpawnPoints_ApplyTempId                  via 509250 > 50FBD0 > 73F630 > 73EEA0 > 73ECC0 > 743A70 > 651D00
+netz           0x00668AC0 NetCallbacks_UnregisterCallback          via 509250 > 50FBD0 > 73F630 > 73EEA0 > 73ECC0 > 743A70 > 668AC0
+netz           0x0064B250 Sub_64B250                               via 509250 > 50FBD0 > 73F630 > 73EEA0 > 73ECC0 > 73DE40 > 64B250
+netz           0x00651C70 SessionScope_Begin                       via 509250 > 50FBD0 > 73F630 > 73EEA0 > 73ECC0 > 73DE40 > 651C70
+netz           0x007A8660 GetNetSingletonInstance                  via 509250 > 50FBD0 > 73F630 > 73EEA0 > 73ECC0 > 743A70 > 7437E0 > 7A8660
+netz           0x00646D30 Game_RaiseStatusNotice                   via 509250 > 50FBD0 > 73F630 > 73EEA0 > 73ECC0 > 743A70 > 743A10 > 646D30
+netz           0x0064AD00 LookupObjectByIndex                      via 509250 > 50FBD0 > 73F630 > 73EEA0 > 73ECC0 > 743A70 > 743A10 > 64AD00
+netz           0x00662BA0 NetSession_ConstructPlayerSelectionItera via 509250 > 50FBD0 > 73F630 > 73EEA0 > 73ECC0 > 73DE40 > 73D710 > 662BA0
+netz           0x0064B9B0 NetSession_InitializeSelectionBase       via 509250 > 50FBD0 > 73F630 > 73EEA0 > 73ECC0 > 73DE40 > 73D710 > 64B9B0
+netz           0x0065E250 NetSession_CreateSelectionHandle         via 509250 > 50FBD0 > 73F630 > 73EEA0 > 73ECC0 > 73DE40 > 73D710 > 65E250
+not-a-function 0x0050F920 <not in db/functions.csv>                via 509250 > 50FBD0 > 50F920
+not-a-function 0x0057ED00 <not in db/functions.csv>                via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0920 > 57ED00
+not-a-function 0x0057F0B0 <not in db/functions.csv>                via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0920 > 57F0B0
+rw             0x00586860 RtRandomSeed                             via 509250 > 50FBD0 > 5113E0 > 510860 > 586860
+rw             0x007C5F60 RwResourcesSetArenaSize                  via 509250 > 50FBD0 > 506F70 > 521CF0 > 70DE80 > 6971B0 > 7C5F60
+rw             0x00626C90 RwEngineGetTextureMemorySize             via 509250 > 50FBD0 > 506F70 > 50B5B0 > 6DC7E0 > 6DC750 > 626C90
+rw             0x0058CCB0 RpWorldCreate                            via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6CB330 > 6BC010 > 58CCB0
+rw             0x0058CC80 RpWorldGetSectorRenderCallBack           via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6CB330 > 6BC010 > 58CC80
+rw             0x0058DF50 RpWorldAddLight                          via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6E3CD0 > 6D2710 > 6D1DB0 > 6D0E70 > 58DF50
+rw             0x0058DFA0 RpWorldRemoveLight                       via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6E3CD0 > 6D2710 > 6D1DB0 > 6D0E70 > 58DFA0
+rw             0x0058DFD0 RpLightGetWorld                          via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6E3CD0 > 6D2710 > 6D1DB0 > 6D0E70 > 58DFD0
+rw             0x0057F970 RpPrtStdPClassStdCreate                  via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0E00 > 57F970
+rw             0x0057FCF0 RpPrtStdPClassSetCallBack                via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0E00 > 57FCF0
+rw             0x005785B0 RpPrtAdvEClassStdCreate                  via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0E00 > 5785B0
+rw             0x0057CFE0 <unnamed>                                via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0E00 > 57CFE0
+rw             0x0057CE10 RpPrtStdEmitterClassSetCallBack          via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0920 > 57CE10
+rw             0x0057FA90 RpPrtStdEClassStdCreate                  via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0920 > 57FA90
+rw             0x0057F050 <unnamed>                                via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0920 > 57F050
+rw             0x0057EF90 <unnamed>                                via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0920 > 57EF90
+rw             0x005784E0 RpPrtAdvEmitterClassCreate               via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0920 > 5784E0
+rw             0x0057DBA0 <unnamed>                                via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0920 > 57DBA0
+rw             0x0057EDA0 <unnamed>                                via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0920 > 57EDA0
+rw             0x005821D0 RpPTankAtomicLock                        via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0E00 > 704D60 > 5821D0
+rw             0x005823E0 RpPTankAtomicUnlock                      via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0E00 > 704D60 > 5823E0
+rw             0x0057C770 RpPrtStdPropTabDestroy                   via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0E00 > 6E05D0 > 57C770
+rw             0x0057CE90 RpPrtStdEmitterClassSetPropTab           via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0E00 > 6E05D0 > 57CE90
+rw             0x0057C9A0 RpPrtStdPropTabCreate                    via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0E00 > 6E05D0 > 57C9A0
+rw             0x0057CED0 RpPrtStdEmitterClassGetPropTab           via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0E00 > 6E05D0 > 57CED0
+rw             0x00580160 RpPrtStdEmitterForAllParticleBatch       via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0920 > 704C30 > 580160
+rw             0x0057BBD0 RpPrtAdvEmtSphereEmitCB                  via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0920 > 7043D0 > 57BBD0
+rw             0x005867D0 RtRandom                                 via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0920 > 7043D0 > 5867D0
+rw             0x0063A4D0 RwD3D9RasterStreamReadDDS                via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6CF710 > 6EEA50 > 707D60 > 6E2ED0 > 705DD0 > 63A4D0
+rw             0x0057C8B0 RpPrtStdPropTabGetPropOffset             via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0920 > 704C30 > 7047C0 > 57C8B0
+rw             0x0063CA30 RwBBoxContainsPoint                      via 509250 > 50FBD0 > 506F70 > 6B1F20 > 6B1B80 > 6DF810 > 6E2760 > 6E26E0 > 6E0920 > 704C30 > 7047C0 > 63CA30

@@ -3,6 +3,7 @@
 
   initreach.py            list, one line per trap slot with its initialiser and call path (docs/INIT_REACH.txt)
   initreach.py --json     counts only (webmon)
+  initreach.py --root 0x509250    the same walk from one function (WinMain) instead of the initialisers
 
 A trap slot is an address build/cutover/stubs.json still fills with a trap. From each xc entry the walk follows the
 callee addresses a source declares (CSF_FUNC, CSF_ADDR_FN). An initialiser hands its destructor to atexit as a
@@ -54,6 +55,24 @@ def reach():
     return found
 
 
+def reach_from(root):
+    """{trap address: dict(path, kind, name)} reachable from one function through direct calls."""
+    stubs = {int(s["address"], 16): s for s in json.load(open(os.path.join(ROOT, "build/cutover/stubs.json")))["slots"]}
+    found, seen, todo = {}, {root}, [(root, (root,))]
+    while todo:
+        ea, path = todo.pop()
+        c, a = refs(ea)
+        for n in (c or set()) | (a or set()):
+            if n in seen:
+                continue
+            seen.add(n)
+            if n in stubs:
+                found[n] = dict(path=path + (n,), kind=stubs[n]["kind"], name=stubs[n].get("name", ""))
+            else:
+                todo.append((n, path + (n,)))
+    return found, len(seen)
+
+
 def summary(found):
     out = {}
     for when in ("startup", "exit"):
@@ -62,6 +81,14 @@ def summary(found):
 
 
 def main():
+    if "--root" in sys.argv:
+        root = int(sys.argv[sys.argv.index("--root") + 1], 16)
+        found, n = reach_from(root)
+        print(f"from 0x{root:08X}: {n} functions reached; trap slots",
+              dict(collections.Counter(f["kind"] for f in found.values())))
+        for t, f in sorted(found.items(), key=lambda x: (x[1]["kind"], len(x[1]["path"]))):
+            print(f"{f['kind']:14} 0x{t:08X} {f['name'][:40]:40} via " + " > ".join("%X" % p for p in f["path"]))
+        return
     found = reach()
     if "--json" in sys.argv:
         print(json.dumps(summary(found)))
