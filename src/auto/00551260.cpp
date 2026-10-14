@@ -24,9 +24,8 @@ static int __stdcall MpSpawn_ResolveHandleAndApplySpawnFlag(int a1)
                 C_00858180* spawn = reinterpret_cast<C_00858180*>(
                     static_cast<uintptr_t>(result - 1712));
                 int globalValue = GetGlobalDword_73C020();
-                char flag = static_cast<char>(
-                    GetSpawnFlagFromGlobal(reinterpret_cast<void*>(static_cast<uintptr_t>(globalValue)), nullptr));
-                return ApplySpawnFlag(spawn, nullptr, static_cast<int>(flag));
+                int flag = GetSpawnFlagFromGlobal(reinterpret_cast<void*>(static_cast<uintptr_t>(globalValue)), nullptr);
+                return ApplySpawnFlag(spawn, nullptr, flag);
             }
         }
     }

@@ -42,7 +42,10 @@ static int __fastcall MenuControls_DispatchTail(int* self, void* /*edx*/)
     if (notifyTarget)
     {
         void** targetVtbl = CSF_AT(void**, notifyTarget, 0);
-        ((void(__stdcall*)(void*))targetVtbl[7])(CSF_AT(void*, self, 0x48));
+        // mov ecx, eax; lea edx,[esi+0x48]; push edx; call [eax+0x1c]: ecx = the notified object, edx and the one
+        // stack argument = the address (one dword, popped by the callee as the original's call site does).
+        void* argAddr = reinterpret_cast<uint8_t*>(self) + 0x48;
+        ((void(__fastcall*)(void*, void*, void*))targetVtbl[7])(reinterpret_cast<void*>(notifyTarget), argAddr, argAddr);
     }
 
     if (!CSF_AT(uint8_t, GetGlobalValue_75FDF0(), 0xCC))

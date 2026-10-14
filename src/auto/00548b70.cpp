@@ -13,9 +13,10 @@ static int __fastcall CMenuSoundOptionsPC_ApplyXfiSetting(CMenuSoundOptionsPC* s
         return static_cast<int>(helper);
 
     void* obj = reinterpret_cast<void*>(helper);
-    int (*fn)(void*, void*, int) =
-        reinterpret_cast<int (*)(void*, void*, int)>(CSF_AT(void**, obj, 0)[0x3C / 4]);
-    return fn(obj, nullptr, static_cast<int>(self->field_0068));
+    // Thiscall: the helper goes in ecx, the option byte is the only stack argument.
+    int (__thiscall*fn)(void*, int) =
+        reinterpret_cast<int (__thiscall*)(void*, int)>(CSF_AT(void**, obj, 0)[0x3C / 4]);
+    return fn(obj, static_cast<int>(self->field_0068));
 }
 
 HOOK(0x00548B70, CMenuSoundOptionsPC_ApplyXfiSetting, "auto");

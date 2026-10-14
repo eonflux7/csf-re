@@ -17,7 +17,7 @@ static int __fastcall MenuMpCharacterSelect_SetStatusLabel(std::uint8_t* self, v
     if (!CSF_AT(uint8_t, self, 0xA))
         text = g_pszMenu_P_LbMePr;
 
-    return ((int(__stdcall*)(const char*))CSF_AT(void**, target, 0)[0x58 / 4])(text);
+    return reinterpret_cast<int(__thiscall*)(void*, const char*)>(CSF_AT(void**, target, 0)[0x58 / 4])(target, text);
 }
 
 HOOK(0x00542750, MenuMpCharacterSelect_SetStatusLabel, "auto");

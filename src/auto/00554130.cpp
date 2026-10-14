@@ -6,7 +6,7 @@
 
 CSF_FUNC(int, __cdecl, GetGlobalDword_73C020, 0x0073C020, ());
 CSF_FUNC(int, __fastcall, ResolveSpawnTeamFlag, 0x0073CD30, (void* self, void* edx));
-CSF_FUNC(char, __fastcall, ApplySpawnPointSelection, 0x007495F0, (void* self, void* edx, int arg0, void* a3, void* a2, int a11));
+CSF_FUNC(int, __fastcall, ApplySpawnPointSelection, 0x007495F0, (void* self, void* edx, int arg0, void* a3, void* a2, int a11));
 CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 
 static uint32_t* __fastcall SpawnPoints_ApplyAndReleaseBlock(void* self, void* /*edx*/, char a2, void* Block, int a4, int a5, int a6, int a7, unsigned int a8)
@@ -19,8 +19,8 @@ static uint32_t* __fastcall SpawnPoints_ApplyAndReleaseBlock(void* self, void* /
         {
             void* spawnObj = reinterpret_cast<uint8_t*>(result) - 0x440;
             int globalTeamValue = GetGlobalDword_73C020();
-            char teamFlag = static_cast<char>(ResolveSpawnTeamFlag(reinterpret_cast<void*>(static_cast<intptr_t>(globalTeamValue)), nullptr));
-            char status = ApplySpawnPointSelection(spawnObj, nullptr, static_cast<int>(teamFlag),
+            int teamFlag = ResolveSpawnTeamFlag(reinterpret_cast<void*>(static_cast<intptr_t>(globalTeamValue)), nullptr);
+            int status = ApplySpawnPointSelection(spawnObj, nullptr, teamFlag,
                                                    reinterpret_cast<void*>(static_cast<uintptr_t>(-1)),
                                                    static_cast<void*>(&a2), 0);
             result = reinterpret_cast<uint32_t*>(static_cast<intptr_t>(status));

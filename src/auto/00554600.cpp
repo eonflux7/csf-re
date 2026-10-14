@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 
 CSF_FUNC(int, __cdecl, GetGlobalDword_73C020, 0x0073C020, ());
-CSF_FUNC(int, __cdecl, sub_73E5A0, 0x0073E5A0, ());
+CSF_FUNC(int, __fastcall, sub_73E5A0, 0x0073E5A0, (int globalValue, void* edx));
 CSF_FUNC(int, __fastcall, sub_553680, 0x00553680, (void* self, void* edx));
 CSF_FUNC(void*, __fastcall, sub_554250, 0x00554250, (void* self, void* edx));
 
@@ -20,9 +20,11 @@ static C_00833908* __fastcall SpawnPoints_ResolveForMode(S_00553680* self, void*
 {
     int spawnMode = 2;
 
-    if (sub_73E5A0() != 0) {
-        GetGlobalDword_73C020();
-        if (sub_73E5A0() == 2)
+    // Original: call 0x73c020, mov ecx,eax, call 0x73e5a0 (the value goes in ecx).
+    int globalValue = GetGlobalDword_73C020();
+    if (sub_73E5A0(globalValue, nullptr) != 0) {
+        globalValue = GetGlobalDword_73C020();
+        if (sub_73E5A0(globalValue, nullptr) == 2)
             spawnMode = 1;
     } else {
         spawnMode = 0;

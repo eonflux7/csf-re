@@ -27,7 +27,6 @@ static int __stdcall CMenuMissionInfo_AllListedEntriesAreFive(CMenuMissionInfo* 
 
     // Global object: count of 196-byte records in its list at +0x34 / +0x38.
     int globalObject = GetGlobal8afc7c();
-    uint32_t eaxValue = static_cast<uint32_t>(globalObject);
     uint8_t* globalBase = reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(globalObject));
     uint32_t globalCount = 0;
     uint32_t globalBegin = CSF_AT(uint32_t, globalBase, 0x34);
@@ -36,6 +35,8 @@ static int __stdcall CMenuMissionInfo_AllListedEntriesAreFive(CMenuMissionInfo* 
         globalCount = static_cast<uint32_t>(byteSpan / 196);
     }
 
+    // eax after the signed division by 196 is the quotient (0 when the begin pointer is null).
+    uint32_t eaxValue = globalCount;
     bool countsMatch = (entryCount == globalCount);
     eaxValue = (eaxValue & 0xFFFFFF00u) | static_cast<uint32_t>(countsMatch);
 
@@ -43,10 +44,11 @@ static int __stdcall CMenuMissionInfo_AllListedEntriesAreFive(CMenuMissionInfo* 
     uint32_t byteOffset = 0;
     if (countsMatch) {
         while (index < entryCount) {
+            // "mov eax, [edi+0x38]" reloads the full register before "sete al".
             uint32_t entriesBase = CSF_AT(uint32_t, self, 0x38);
             uint8_t* entryPtr = reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(entriesBase));
             bool isFive = (CSF_AT(uint32_t, entryPtr, byteOffset + 12) == 5);
-            eaxValue = (eaxValue & 0xFFFFFF00u) | static_cast<uint32_t>(isFive);
+            eaxValue = (entriesBase & 0xFFFFFF00u) | static_cast<uint32_t>(isFive);
             ++index;
             byteOffset += 16;
             if ((eaxValue & 0xFFu) == 0)

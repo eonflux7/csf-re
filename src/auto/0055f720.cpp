@@ -21,10 +21,10 @@ static int __fastcall CMenuMpOnline_ActivateOnlineMenu(void* self, void* /*edx*/
     void** vtbl = CSF_AT(void**, menuObj, 0);
     reinterpret_cast<void(__fastcall*)(void*, void*, void*, int)>(vtbl[24])(menuObj, nullptr, self, 0);
 
-    // Step 2: look up the handle for g_pszMenu_P_Juego (stdcall, vtable slot 23).
+    // Step 2: look up the handle for g_pszMenu_P_Juego (thiscall on the child menu, vtable slot 23).
     menuObj = CSF_AT(void**, self, 0x3C);
     void** vtblForCalls = CSF_AT(void**, menuObj, 0);
-    int stringHandle = reinterpret_cast<int(__stdcall*)(const char*, int)>(vtblForCalls[23])(g_pszMenu_P_Juego, 0);
+    int stringHandle = reinterpret_cast<int(__fastcall*)(void*, void*, const char*, int)>(vtblForCalls[23])(menuObj, nullptr, g_pszMenu_P_Juego, 0);
 
     // Step 3: query the child menu with the handle (thiscall, vtable slot 29).
     menuObj = CSF_AT(void**, self, 0x3C);
