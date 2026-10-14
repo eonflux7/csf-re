@@ -21,8 +21,11 @@
 // NOTE: the original is a __userpurge with an extra register argument (a2)
 // arriving in ebx; the natural C++ mapping keeps it in the second __fastcall
 // register slot (edx) and forwards it unchanged to the 0x104 virtual call.
+// The third parameter is the whole dword at [ebp+8]: the original forwards it
+// to the 0xB8 call as `mov ebx,[ebp+8]; ... push ebx` (all 32 bits), and only
+// tests its low byte (`test bl,bl`) for the mirror logic.
 static void __fastcall CGuiSlider_SetSelected(
-    CGuiSlider* self, void* hitContext, std::uint8_t selected)
+    CGuiSlider* self, void* hitContext, std::uint32_t selectedArg)
 {
     void* part = reinterpret_cast<void*>(self->m_pSelectedPart);
     if (!part)
@@ -34,9 +37,10 @@ static void __fastcall CGuiSlider_SetSelected(
     if (!target)
         target = reinterpret_cast<void*>(self->m_pSelectedPart);
 
-    ((void (__fastcall*)(void*, void*, std::uint8_t))
-        CSF_AT(void**, target, 0)[0xB8 / 4])(target, nullptr, selected);
+    ((void (__fastcall*)(void*, void*, std::uint32_t))
+        CSF_AT(void**, target, 0)[0xB8 / 4])(target, nullptr, selectedArg);
 
+    std::uint8_t selected = static_cast<std::uint8_t>(selectedArg);
     std::uint8_t value = selected;
     if (!self->m_bSelectable && value)
         value = self->m_bSelected;

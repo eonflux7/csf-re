@@ -50,10 +50,15 @@ static bool __fastcall Audio_CreateCaptureBuffer(
     CSF_AT(uint32_t, descriptorBytes, 0x0) = 28;
     CSF_AT(int32_t, descriptorBytes, 0x8) = bufferBytes;
 
-    return reinterpret_cast<int32_t(__stdcall*)(
-        void*, void*, void**, void*)>(
-        CSF_AT(void**, capture, 0x0)[0xC / 4])(
-            capture, descriptorBytes, &CSF_AT(void*, self, 0x8), nullptr) == 0;
+    // Original: mov eax,[edi+4]; mov ecx,[eax]; push 0; push edi+8; push edx; push eax; call [ecx+0xC].
+    // The callee's vtable is loaded into ecx and the object, descriptor, outer slot and 0 are four stack
+    // arguments (stdcall callee pops 0x10); edx still holds the descriptor address.
+    void** captureVtbl = CSF_AT(void**, capture, 0x0);
+
+    return reinterpret_cast<int32_t(__fastcall*)(
+        void*, void*, void*, void*, void**, void*)>(
+        captureVtbl[0xC / 4])(
+            captureVtbl, descriptorBytes, capture, descriptorBytes, &CSF_AT(void*, self, 0x8), nullptr) == 0;
 }
 
 HOOK(0x007116F0, Audio_CreateCaptureBuffer, "auto");

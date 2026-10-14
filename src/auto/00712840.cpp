@@ -19,6 +19,8 @@ CSF_GLOBAL(float, g_UnsignedIntegerBias, 0x0082D744);
 
 static uint32_t* __fastcall C_00863dd0_RefreshEffectGain(C_00863dd0* self, void* /*edx*/) {
     uint8_t* sub = reinterpret_cast<uint8_t*>(self->field_0004);
+    // eax is `this` unless the 0x7E1380 call is made; then the original returns that call's eax.
+    uint32_t* result = reinterpret_cast<uint32_t*>(self);
     uint32_t paramBlockAddr = CSF_AT(uint32_t, sub, 0x50);
     if (paramBlockAddr) {
         uint8_t* paramBlock = reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(paramBlockAddr));
@@ -37,10 +39,10 @@ static uint32_t* __fastcall C_00863dd0_RefreshEffectGain(C_00863dd0* self, void*
         if (CSF_AT(uint32_t, sub, 0x30)) {
             int32_t gainBits = 0;
             std::memcpy(&gainBits, &gain, sizeof(gainBits));
-            sub_7E1380(reinterpret_cast<uint32_t*>(CSF_AT(uint32_t, sub, 0x30)), 4, 1, gainBits);
+            result = sub_7E1380(reinterpret_cast<uint32_t*>(CSF_AT(uint32_t, sub, 0x30)), 4, 1, gainBits);
         }
     }
-    return reinterpret_cast<uint32_t*>(self);
+    return result;
 }
 
 HOOK(0x00712840, C_00863dd0_RefreshEffectGain, "auto");

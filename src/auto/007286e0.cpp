@@ -4,7 +4,7 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-static std::uint8_t __fastcall C_00865870_SynchronizeLinkedObject(
+static std::uint32_t __fastcall C_00865870_SynchronizeLinkedObject(
     C_00865870* self, void* /*edx*/)
 {
     void* source =
@@ -13,12 +13,15 @@ static std::uint8_t __fastcall C_00865870_SynchronizeLinkedObject(
     if (!source)
         return 0;
 
-    const std::uint8_t enabled =
-        ((std::uint8_t (__fastcall*)(void*, void*))
+    // The original tests only al here, but on the early return below it leaves the whole eax as the callee
+    // returned it (`mov al, [esi+48]` then `je`), so the call keeps all 32 bits.
+    const std::uint32_t enabledWord =
+        ((std::uint32_t (__fastcall*)(void*, void*))
             CSF_AT(void**, source, 0)[47])(source, nullptr);
+    const std::uint8_t enabled = static_cast<std::uint8_t>(enabledWord);
 
     if (!enabled && !self->field_0048)
-        return 0;
+        return enabledWord;
 
     void* linkedObject = reinterpret_cast<void*>(self->field_0030);
     if (!linkedObject)
@@ -47,7 +50,7 @@ static std::uint8_t __fastcall C_00865870_SynchronizeLinkedObject(
         reinterpret_cast<void*>(self->field_0030), nullptr, secondValue);
 
     linkedObject = reinterpret_cast<void*>(self->field_0030);
-    return static_cast<std::uint8_t>(
+    return static_cast<std::uint32_t>(
         ((int (__fastcall*)(void*, void*))
             CSF_AT(void**, linkedObject, 0)[2])(linkedObject, nullptr));
 }

@@ -4,7 +4,11 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-static std::uint8_t __fastcall CGuiControl_HandleMouseMovement(
+// The original returns the whole eax on every path: the value of vIsShown
+// (only its low byte is tested), a `mov al, byte ptr [...]` keeps the upper
+// 24 bits of that value, m_inputState is loaded as a dword, and the virtual
+// callees' results are passed through untouched.
+static std::uint32_t __fastcall CGuiControl_HandleMouseMovement(
     CGuiControl* self, void* /*edx*/, void* mouseEvent)
 {
     const std::uint32_t mouseX = CSF_AT(std::uint32_t, mouseEvent, 0x14);
@@ -22,18 +26,26 @@ static std::uint8_t __fastcall CGuiControl_HandleMouseMovement(
     ((void(__fastcall*)(void*, void*, std::uint32_t*, int))
          self->vtbl[0x14c / 4])(self, nullptr, relativePosition, 1);
 
-    const std::uint8_t active =
-        ((std::uint8_t(__fastcall*)(void*, void*))
+    // eax: the full return value of vIsShown.
+    std::uint32_t eax =
+        ((std::uint32_t(__fastcall*)(void*, void*))
              self->vtbl[0x6c / 4])(self, nullptr);
-    if (!active)
-        return active;
-    if (!self->m_bSelectable)
-        return 0;
-    if (!self->m_bMouseEnabled)
-        return 0;
+    if (static_cast<std::uint8_t>(eax) == 0)
+        return eax;
 
-    const std::uint32_t inputState = self->m_inputState;
-    if (inputState & 0x10)
+    // mov al, byte ptr [esi + 0x115]
+    eax = (eax & 0xFFFFFF00u) | self->m_bSelectable;
+    if (static_cast<std::uint8_t>(eax) == 0)
+        return eax;
+
+    // mov al, byte ptr [esi + 0xca]
+    eax = (eax & 0xFFFFFF00u) | self->m_bMouseEnabled;
+    if (static_cast<std::uint8_t>(eax) == 0)
+        return eax;
+
+    // mov eax, dword ptr [esi + 0xe0]
+    eax = self->m_inputState;
+    if ((eax & 0x10) != 0)
     {
         const std::uint32_t targetX = self->field_00cc + mouseX;
         const std::uint32_t targetY = self->field_00d0 + mouseY;
@@ -48,24 +60,24 @@ static std::uint8_t __fastcall CGuiControl_HandleMouseMovement(
         relativePosition[0] = targetX - originX;
         relativePosition[1] = targetY - originY;
 
-        return ((std::uint8_t(__fastcall*)(void*, void*, std::uint32_t*))
+        return ((std::uint32_t(__fastcall*)(void*, void*, std::uint32_t*))
                     vtable[0x98 / 4])(self, nullptr, relativePosition);
     }
 
-    if (!(inputState & 1))
-        return static_cast<std::uint8_t>(inputState);
+    if ((eax & 1) == 0)
+        return eax;
 
-    if (!(inputState & 4))
+    if ((eax & 4) == 0)
     {
-        return ((std::uint8_t(__fastcall*)(void*, void*, int))
+        return ((std::uint32_t(__fastcall*)(void*, void*, int))
                     self->vtbl[0x138 / 4])(self, nullptr, 17);
     }
 
-    if (!self->m_bDraggable)
-        return static_cast<std::uint8_t>(inputState);
+    if (self->m_bDraggable == 0)
+        return eax;
 
     void** vtable = self->vtbl;
-    self->m_inputState = inputState | 0x10;
+    self->m_inputState = eax | 0x10;
     position =
         ((std::uint32_t*(__fastcall*)(void*, void*, void*))
              vtable[0x160 / 4])(self, nullptr, coordinateBuffer);
@@ -76,7 +88,7 @@ static std::uint8_t __fastcall CGuiControl_HandleMouseMovement(
     self->field_00cc = positionX - mouseX;
     self->field_00d0 = positionY - mouseY;
 
-    return ((std::uint8_t(__fastcall*)(void*, void*, int))
+    return ((std::uint32_t(__fastcall*)(void*, void*, int))
                 vtable[0x138 / 4])(self, nullptr, 4);
 }
 

@@ -2,13 +2,22 @@
 #include "globals.h"
 #include "hook.h"
 
-CSF_GLOBAL(void*, g_pDispatchTable, 0x008B68C0);
+CSF_GLOBAL(void*, g_pRwEngineInstance, 0x008B68C0);
 
-static int __stdcall ForwardToCdeclHandler(int a1, int a2, int a3, int a4, int a5)
-{
-    auto pTable = static_cast<uint8_t*>(g_pDispatchTable);
-    auto pFunc = reinterpret_cast<int (__cdecl *)(int, int, int, int, int)>(*reinterpret_cast<void**>(pTable + 0x34));
-    return pFunc(a1, a2, a3, a4, a5);
+// Original 00726770 (stdcall, ret 0x14): eax = a2, ecx = a1, edx = [0x8b68c0]; pushes a5, a4, a3, a2, a1 and calls
+// [edx+0x34] (cdecl: the caller pops, `add esp, 0x14`), then returns the callee's eax with `ret 0x14`.
+// The callee sees ecx = a1 at the call, which a C++ function-pointer call cannot set, so the call goes through
+// hook::call_regs; HOOK_REGS keeps the other registers as they came in and drops the stack words after the call.
+// args[0..4] = a1..a5 (the caller's stack arguments, read only).
+static uint32_t __cdecl ForwardToCdeclHandler(hook::Regs* regs, const uint32_t* args) {
+    void* engine = g_pRwEngineInstance;
+    const uintptr_t handler = CSF_AT(uintptr_t, engine, 0x34);
+
+    regs->eax = args[1];
+    regs->ecx = args[0];
+    regs->edx = reinterpret_cast<uint32_t>(engine);
+    const uint32_t stack[5] = {args[0], args[1], args[2], args[3], args[4]};
+    return hook::call_regs(handler, regs, stack, 5);
 }
 
-HOOK(0x00726770, ForwardToCdeclHandler, "auto");
+HOOK_REGS(0x00726770, ForwardToCdeclHandler, 20, "auto");

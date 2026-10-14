@@ -11,7 +11,11 @@ static int __fastcall C_00863cd4_GetFirstOutputValue(C_00863cd4* self, void* /*e
     int v2 = 0;
 
     void* child = reinterpret_cast<void*>(self->field_0004);
-    reinterpret_cast<void(__stdcall*)(void*, int*, int*)>(CSF_AT(void**, child, 0)[4])(child, &v3, &v2);
+    void** childVtbl = CSF_AT(void**, child, 0);
+    // Original: mov ecx,[child] (ecx = child vtable), lea edx,[v3]; push edx; push child; call [ecx+0x10]
+    // with push &v2 before it. Callee sees vtable in ecx, &v3 in edx, and (child, &v3, &v2) on the stack.
+    using ChildGetTwoOutFn = void(__fastcall*)(void* vtblInEcx, int* v3InEdx, void* childArg, int* v3Arg, int* v2Arg);
+    reinterpret_cast<ChildGetTwoOutFn>(childVtbl[4])(childVtbl, &v3, child, &v3, &v2);
 
     return v3;
 }
