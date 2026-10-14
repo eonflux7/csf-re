@@ -8,7 +8,7 @@ for the hard ones; for small jobs haiku-hi = claude-haiku-5-5@high through `clau
 rewrites; pays per token from the key in ~/.config/csf-re/openrouter.key, never in the repo). The Sol agents and
 glm-flash run through the Codex CLI sandboxed to the job's tree. Nothing runs on the main Claude account.
 
-  deep_worker.py start NAME --task FILE|- [--agent sol-med|sol-hi|haiku-hi|glm-flash] [--timeout 3600] [--fresh]   in the background
+  deep_worker.py start NAME --task FILE|- [--agent sol-med|sol-hi|haiku-hi|glm-flash] [--timeout 3600] [--fresh] [--login codex-2]   in the background
   deep_worker.py run   NAME ...           the same, in the foreground
   deep_worker.py list                     jobs and their state
   deep_worker.py wait NAME... [--adopt]   block until they end (run it in the background); --adopt: adopt.py on each
@@ -174,6 +174,12 @@ def login():
     """The Codex login with the most room in its 5h window, counting the jobs already running on each (four jobs
     started together all took the emptiest login and spent its window in 25 minutes, 2026-10-14)."""
     import grunt
+    pin = os.environ.get("CSF_CODEX_LOGIN")  # --login: this login, whatever the others hold (user, 2026-10-14)
+    if pin:
+        for h in grunt.codex_homes():
+            if os.path.basename(h).lstrip(".") == pin.lstrip("."):
+                return h
+        raise SystemExit(f"deep worker: no Codex login {pin!r}")
     busy = {}
     for j in jobs():
         if j["phase"] == "running" and j.get("home"):
@@ -567,6 +573,7 @@ def main():
         r.add_argument("--fresh", action="store_true", help="throw the job's old tree away first")
         r.add_argument("--force", action="store_true", help="start a Claude job past the limit of concurrent ones")
         r.add_argument("--pool", action="store_true", help="small job: run in a tree of the shared pool (waits for a free one)")
+        r.add_argument("--login", help="Codex login to use (codex, codex-2, codex-3) instead of the emptiest")
         r.set_defaults(fn=fn)
     rv = sub.add_parser("review")
     rv.add_argument("name")
@@ -582,6 +589,8 @@ def main():
     dp.add_argument("name")
     dp.set_defaults(fn=drop)
     a = ap.parse_args()
+    if getattr(a, "login", None):
+        os.environ["CSF_CODEX_LOGIN"] = a.login  # inherited by the background run
     return a.fn(a)
 
 
