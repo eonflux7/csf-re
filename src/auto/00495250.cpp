@@ -14,7 +14,7 @@ static int __fastcall ClearFlag0x20UnlessFsmFieldIs36(void* self, void* /*edx*/)
 {
     void* fsm = CSF_AT(void*, self, 0x40);
     int result = IsFieldAt10Equal36(fsm, nullptr);
-    if (!result)
+    if (static_cast<uint8_t>(result) == 0)
     {
         CSF_AT(uint32_t, self, 0x2E0) &= ~0x20u;
     }
