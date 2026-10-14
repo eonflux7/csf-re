@@ -105,6 +105,21 @@ World* __cdecl removeLight(World* w,Light* l) {
     p->second.native->removeLight(n);remove(l->inWorld);publish(l,lightWorldOffset,0,nullptr);return w;
 }
 World* __cdecl lightWorld(Light* l) { auto* n=lightNative(l);return n?find(n->world):nullptr; }
+// 0058CEF0: the world's clump ring (+0x2C, link at Clump+0x20); next read before the callback, null stops.
+World* __cdecl worldClumps(World* w,Clump* (__cdecl *cb)(Clump*,void*),void* data) {
+    for(Link* l=w->clumps.next;l!=&w->clumps;) {
+        Link* next=l->next;
+        if(!cb(reinterpret_cast<Clump*>(reinterpret_cast<char*>(l)-offsetof(Clump,inWorld)),data)) break;
+        l=next;
+    }
+    return w;
+}
+// 0058CF30: the world's material list (+0x10 array, +0x14 count read once); null stops.
+World* __cdecl worldMaterials(World* w,Material* (__cdecl *cb)(Material*,void*),void* data) {
+    const int count=w->materials.numMaterials;
+    for(int i=0;i<count;++i) if(!cb(w->materials.materials[i],data)) break;
+    return w;
+}
 // 0058CF80: global (directional) lights, then local lights; next is read before the callback (it may remove the
 // current light) and a null return ends both walks. Returns the world.
 World* __cdecl worldLights(World* w,Light* (__cdecl *cb)(Light*,void*),void* data) {
@@ -146,4 +161,6 @@ HOOK(0x0058DF50,addLight,"boundary-rw");
 HOOK(0x0058DFA0,removeLight,"boundary-rw");
 HOOK(0x0058DFD0,lightWorld,"boundary-rw");
 HOOK(0x0058CF80,worldLights,"boundary-rw");
+HOOK(0x0058CEF0,worldClumps,"boundary-rw");
+HOOK(0x0058CF30,worldMaterials,"boundary-rw");
 #endif
