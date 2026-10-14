@@ -4,6 +4,9 @@
   initreach.py            list, one line per trap slot with its initialiser and call path (docs/INIT_REACH.txt)
   initreach.py --json     counts only (webmon)
   initreach.py --root 0x509250    the same walk from one function (WinMain) instead of the initialisers
+  initreach.py --root 0x509250 --vtables    also every slot of a vtable a reached source installs (CSF_VTBL,
+                                            CSF_ADDR_VT): an upper bound for virtual calls (0x68B5F0, a NetZ
+                                            getter, is reached only through vtables 0x83FF18/0x861328/0x861460)
 
 A trap slot is an address build/cutover/stubs.json still fills with a trap. From each xc entry the walk follows the
 callee addresses a source declares (CSF_FUNC, CSF_ADDR_FN). An initialiser hands its destructor to atexit as a
@@ -15,6 +18,16 @@ import collections, json, os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FUNC = re.compile(r"CSF_FUNC\([^;]*?,\s*(0x[0-9A-Fa-f]+)")
 ADDR = re.compile(r"CSF_ADDR_FN\(\s*(0x[0-9A-Fa-f]+)")
+VT = re.compile(r"CSF_(?:VTBL|ADDR_VT)\(\s*(0x[0-9A-Fa-f]+)")
+VTABLES = {}  # vtable start -> slot targets, filled by --vtables
+
+
+def vslots():
+    out = {}
+    for v in json.load(open(os.path.join(ROOT, "db", "vtables.json"))):
+        a = v["addr"] if isinstance(v["addr"], int) else int(v["addr"], 16)
+        out[a] = {t if isinstance(t, int) else int(t, 16) for t in v["slots"]} - {0}
+    return out
 
 
 def refs(ea):
@@ -22,7 +35,10 @@ def refs(ea):
     if not os.path.exists(p):
         return None, None
     s = open(p, errors="replace").read()
-    return {int(a, 16) for a in FUNC.findall(s)} - {ea}, {int(a, 16) for a in ADDR.findall(s)} - {ea}
+    virt = set()
+    for v in VT.findall(s):
+        virt |= VTABLES.get(int(v, 16), set())
+    return {int(a, 16) for a in FUNC.findall(s)} - {ea}, ({int(a, 16) for a in ADDR.findall(s)} | virt) - {ea}
 
 
 def reach():
@@ -81,6 +97,8 @@ def summary(found):
 
 
 def main():
+    if "--vtables" in sys.argv:
+        VTABLES.update(vslots())
     if "--root" in sys.argv:
         root = int(sys.argv[sys.argv.index("--root") + 1], 16)
         found, n = reach_from(root)
