@@ -233,8 +233,20 @@ HOOK_REGS(0x00646FF0, allocator_token, 0, "boundary-netz");
 HOOK_REGS(0x00647200, value_construct, 0, "boundary-netz");
 // sub_647220: audited-offline-support; see audit.json: value_destruct.
 HOOK_REGS(0x00647220, value_destruct, 0, "boundary-netz");
+// MpSpawn_CommitSpawnRecord: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_006472b0() {
+    __asm mov eax, dword ptr [ecx]
+    __asm mov edx, dword ptr [ecx + 4]
+    __asm ret
+}
+HOOK(0x006472B0, offline_006472b0, "boundary-netz");
 // PerfCounters_GetSampleRecord: audited-offline-support; see audit.json: counter_sample.
 HOOK_REGS(0x006474D0, counter_sample, 0, "boundary-netz");
+// sub_647630: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00647630() {
+    __asm ret 0xc
+}
+HOOK(0x00647630, offline_00647630, "boundary-netz");
 // DumpSessionStationRecord: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_006476a0() {
     __asm mov eax, 0
@@ -249,16 +261,40 @@ static __declspec(naked) void offline_00647790() {
 HOOK(0x00647790, offline_00647790, "boundary-netz");
 // sub_647840: audited-offline-support; see audit.json: context_dword_647840.
 HOOK_REGS(0x00647840, context_dword_647840, 0, "boundary-netz");
+// sub_648560: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00648560() {
+    __asm xor eax, eax
+    __asm ret 4
+}
+HOOK(0x00648560, offline_00648560, "boundary-netz");
+// sub_648680: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00648680() {
+    __asm xor eax, eax
+    __asm ret 8
+}
+HOOK(0x00648680, offline_00648680, "boundary-netz");
 // NetSession_GetPrimaryEndpoint: audited-offline-support; see audit.json: primary_endpoint.
 HOOK_REGS(0x006486C0, primary_endpoint, 0, "boundary-netz");
 // NetSession_GetSecondaryEndpoint: audited-offline-support; see audit.json: secondary_endpoint.
 HOOK_REGS(0x006486D0, secondary_endpoint, 0, "boundary-netz");
+// sub_648750: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00648750() {
+    __asm mov byte ptr [ecx + 4], 1
+    __asm ret
+}
+HOOK(0x00648750, offline_00648750, "boundary-netz");
 // NetSession_ConfigureEndpoint: audited-offline-rejection; caller tests byte result or ignores endpoint setter result; see audit.json.
 static __declspec(naked) void offline_00648770() {
     __asm mov eax, 0
     __asm ret 4
 }
 HOOK(0x00648770, offline_00648770, "boundary-netz");
+// sub_648F10: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00648f10() {
+    __asm mov al, 1
+    __asm ret 8
+}
+HOOK(0x00648F10, offline_00648f10, "boundary-netz");
 // sub_648FA0: audited-offline-support; see audit.json: critical_construct.
 HOOK_REGS(0x00648FA0, critical_construct, 0, "boundary-netz");
 // sub_648FB0: audited-offline-support; see audit.json: critical_destruct.
@@ -289,9 +325,8 @@ static __declspec(naked) void offline_0064af40() {
     __asm ret 0
 }
 HOOK(0x0064AF40, offline_0064af40, "boundary-netz");
-// FinalizeSpawnUpdate: offline-noop; no callbacks, transport side effects, or state mutation.
+// FinalizeSpawnUpdate: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
 static __declspec(naked) void offline_0064af90() {
-    __asm mov eax, 0
     __asm ret 8
 }
 HOOK(0x0064AF90, offline_0064af90, "boundary-netz");
@@ -423,12 +458,24 @@ static __declspec(naked) void offline_00655ce0() {
     __asm ret 8
 }
 HOOK(0x00655CE0, offline_00655ce0, "boundary-netz");
+// GfxTransform_GetOtherPosition: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00655ff0() {
+    __asm lea eax, [ecx + 0x28]
+    __asm ret
+}
+HOOK(0x00655FF0, offline_00655ff0, "boundary-netz");
 // NetChatDdl_WriteTextField: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_00656280() {
     __asm mov eax, 0
     __asm ret 8
 }
 HOOK(0x00656280, offline_00656280, "boundary-netz");
+// sub_656A30: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00656a30() {
+    __asm mov eax, 3
+    __asm ret
+}
+HOOK(0x00656A30, offline_00656a30, "boundary-netz");
 // NetGathering_CreateTemporaryListHead: audited-offline-support; see audit.json: list_head.
 HOOK_REGS(0x00656DE0, list_head, 0, "boundary-netz");
 // NetGatheringDdl_InitializeScratchObject: audited-offline-support; see audit.json: offline_result.
@@ -439,6 +486,12 @@ static __declspec(naked) void offline_006575d0() {
     __asm ret 4
 }
 HOOK(0x006575D0, offline_006575d0, "boundary-netz");
+// sub_657760: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00657760() {
+    __asm lea eax, [ecx + 0x10]
+    __asm ret
+}
+HOOK(0x00657760, offline_00657760, "boundary-netz");
 // sub_657810: audited-offline-support; see audit.json: context_word_657810.
 HOOK_REGS(0x00657810, context_word_657810, 0, "boundary-netz");
 // NetSession_SetEndpointValue: audited-offline-rejection; caller tests byte result or ignores endpoint setter result; see audit.json.
@@ -497,6 +550,12 @@ static __declspec(naked) void offline_0065e750() {
     __asm ret 8
 }
 HOOK(0x0065E750, offline_0065e750, "boundary-netz");
+// sub_65EFE0: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_0065efe0() {
+    __asm mov al, 1
+    __asm ret 0xc
+}
+HOOK(0x0065EFE0, offline_0065efe0, "boundary-netz");
 // NetSession_ConstructPlayerSelectionIterator: audited-offline-support; see audit.json: selection_sentinel.
 HOOK_REGS(0x00662BA0, selection_sentinel, 4, "boundary-netz");
 // None: audited-offline-support; see audit.json: selection_delete.
@@ -509,6 +568,12 @@ HOOK_REGS(0x00662C30, selection_reject_id, 4, "boundary-netz");
 HOOK_REGS(0x00662C60, selection_first, 4, "boundary-netz");
 // sub_662D10: audited-offline-support; see audit.json: selection_last.
 HOOK_REGS(0x00662D10, selection_last, 4, "boundary-netz");
+// sub_668230: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00668230() {
+    __asm mov eax, dword ptr [ecx]
+    __asm jmp dword ptr [eax + 8]
+}
+HOOK(0x00668230, offline_00668230, "boundary-netz");
 // GetReferencedObject: audited-offline-support; see audit.json: referenced_object_get.
 HOOK_REGS(0x006683F0, referenced_object_get, 0, "boundary-netz");
 // sub_668450: audited-offline-support; see audit.json: list_factory_668450.
@@ -617,6 +682,33 @@ static __declspec(naked) void offline_00676700() {
     __asm ret 8
 }
 HOOK(0x00676700, offline_00676700, "boundary-netz");
+// sub_676ED0: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00676ed0() {
+    __asm mov al, byte ptr [ecx + 0x18]
+    __asm ret
+}
+HOOK(0x00676ED0, offline_00676ed0, "boundary-netz");
+// sub_676F50: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00676f50() {
+    __asm mov eax, dword ptr [ecx + 0xb8]
+    __asm ret
+}
+HOOK(0x00676F50, offline_00676f50, "boundary-netz");
+// sub_677BC0: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00677bc0() {
+    __asm lea eax, [ecx + 0x2c]
+    __asm ret
+}
+HOOK(0x00677BC0, offline_00677bc0, "boundary-netz");
+// sub_677DA0: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00677da0() {
+    __asm mov edx, dword ptr [ecx + 0x20]
+    __asm xor eax, eax
+    __asm test edx, edx
+    __asm sete al
+    __asm ret
+}
+HOOK(0x00677DA0, offline_00677da0, "boundary-netz");
 // sub_67AC40: audited-offline-support; see audit.json: context_dword_67ac40.
 HOOK_REGS(0x0067AC40, context_dword_67ac40, 0, "boundary-netz");
 // sub_67CFE0: audited-offline-support; see audit.json: random_construct.
@@ -651,6 +743,12 @@ static __declspec(naked) void offline_0067fb60() {
     __asm ret 0
 }
 HOOK(0x0067FB60, offline_0067fb60, "boundary-netz");
+// sub_67FBB0: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_0067fbb0() {
+    __asm mov eax, 0xb
+    __asm ret
+}
+HOOK(0x0067FBB0, offline_0067fbb0, "boundary-netz");
 // NetSession_ReadPropertyString: offline-noop; no callbacks, transport side effects, or state mutation.
 static __declspec(naked) void offline_00680360() {
     __asm mov eax, 0
@@ -663,10 +761,46 @@ static __declspec(naked) void offline_00680ca0() {
     __asm ret 0
 }
 HOOK(0x00680CA0, offline_00680ca0, "boundary-netz");
+// WeaponFirearms_CheckState: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00681d60() {
+    __asm mov al, byte ptr [ecx + 0x14]
+    __asm ret
+}
+HOOK(0x00681D60, offline_00681d60, "boundary-netz");
+// GetPageCountForContexts: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00681f30() {
+    __asm mov eax, dword ptr [ecx + 0x28]
+    __asm ret
+}
+HOOK(0x00681F30, offline_00681f30, "boundary-netz");
+// GetCurrentItemCount: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00681f40() {
+    __asm mov eax, dword ptr [ecx + 0x1c]
+    __asm ret
+}
+HOOK(0x00681F40, offline_00681f40, "boundary-netz");
+// GetSkinTargetObject: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00681fb0() {
+    __asm mov eax, dword ptr [ecx + 0x30]
+    __asm ret
+}
+HOOK(0x00681FB0, offline_00681fb0, "boundary-netz");
+// ResolveSkinObjectFromArg: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_00681fc0() {
+    __asm mov eax, dword ptr [ecx + 0x34]
+    __asm ret
+}
+HOOK(0x00681FC0, offline_00681fc0, "boundary-netz");
 // GetCachedObjectProvider: audited-offline-support; see audit.json: provider_get.
 HOOK_REGS(0x00686C10, provider_get, 0, "boundary-netz");
 // sub_6882D0: audited-offline-support; see audit.json: list_factory_6882d0.
 HOOK_REGS(0x006882D0, list_factory_6882d0, 0, "boundary-netz");
+// sub_68B5F0: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_0068b5f0() {
+    __asm lea eax, [ecx + 4]
+    __asm ret
+}
+HOOK(0x0068B5F0, offline_0068b5f0, "boundary-netz");
 // NetSpawnMessages_FormatFloatValue: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_0068e670() {
     __asm mov eax, 0
@@ -679,6 +813,12 @@ static __declspec(naked) void offline_0068ec40() {
     __asm ret 8
 }
 HOOK(0x0068EC40, offline_0068ec40, "boundary-netz");
+// GfxSkin_ShouldSkipProviderAttachment: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_0068eca0() {
+    __asm mov al, byte ptr [ecx + 0x10]
+    __asm ret
+}
+HOOK(0x0068ECA0, offline_0068eca0, "boundary-netz");
 // sub_68ECE0: audited-offline-support; see audit.json: timeout_construct.
 HOOK_REGS(0x0068ECE0, timeout_construct, 0, "boundary-netz");
 // sub_68F540: audited-offline-support; see audit.json: interpolation_construct.
@@ -931,6 +1071,12 @@ static __declspec(naked) void offline_007a79f0() {
 HOOK(0x007A79F0, offline_007a79f0, "boundary-netz");
 // GlobalFlag_IsSet: audited-offline-support; see audit.json: constant_enabled.
 HOOK_REGS(0x007A7B50, constant_enabled, 0, "boundary-netz");
+// sub_7A7B60: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_007a7b60() {
+    __asm mov al, 1
+    __asm ret 4
+}
+HOOK(0x007A7B60, offline_007a7b60, "boundary-netz");
 // NetCallbacks_ProcessReferencedObject: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_007a7fb0() {
     __asm mov eax, 0
@@ -939,6 +1085,12 @@ static __declspec(naked) void offline_007a7fb0() {
 HOOK(0x007A7FB0, offline_007a7fb0, "boundary-netz");
 // GetNetSingletonInstance: audited-offline-support; see audit.json: singleton_lookup.
 HOOK_REGS(0x007A8660, singleton_lookup, 0, "boundary-netz");
+// Sub_7A8ED0: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
+static __declspec(naked) void offline_007a8ed0() {
+    __asm xor al, al
+    __asm ret
+}
+HOOK(0x007A8ED0, offline_007a8ed0, "boundary-netz");
 // Net_TestRegisteredCallbackSlot: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_007a9700() {
     __asm mov eax, 0

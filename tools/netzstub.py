@@ -18,6 +18,7 @@ import packet
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "src/boundary/netz"
+VT_CONTRACTS = json.loads((OUT / 'vtable_contracts.json').read_text())
 ALLOC = {0x647070, 0x6470E0, 0x647140, 0x647160, 0x6471C0}
 STRINGS = {0x64A690, 0x64A6B0, 0x64A6F0, 0x64A710}
 CTOR = 0x798DF0
@@ -135,6 +136,8 @@ def virtuals():
 
 def family(a, contract, abi):
     name, ret = contract.get("name", ""), contract.get("ret", "")
+    if f'0x{a:08X}' in VT_CONTRACTS:
+        return 'audited-local-virtual', None, 'exact local boundary contract; see vtable_contracts.json'
     if a in SUPPORT_NAMES:
         return 'audited-offline-support', None, 'see audit.json: ' + SUPPORT_NAMES[a]
     if a in AUDITED_FAILURES:
@@ -401,7 +404,14 @@ def generate(targets):
         entry = {"address": f"0x{a:08X}", "contract": c, "export_abi": {k: abi.get(k) for k in ("cc", "ret", "args", "stk")},
                  "family": fam, "reason": why, "callers": callers[a], "emitted": False}
         entry['audit'] = audit.get(f'0x{a:08X}')
-        if a in SUPPORT_NAMES or a in AUDITED_FAILURES:
+        local = VT_CONTRACTS.get(f'0x{a:08X}')
+        if local:
+            packet.disasm(a, 1)
+            expected_bytes = bytes.fromhex(local['bytes'])
+            if packet._img[a - 0x400000:a - 0x400000 + len(expected_bytes)] != expected_bytes:
+                raise ValueError(f'local virtual binary evidence changed: {a:08X}')
+            entry['virtual_contract'] = {k: v for k, v in local.items() if k != 'vtables'}
+        if a in SUPPORT_NAMES or a in AUDITED_FAILURES or local:
             if not entry['audit']:
                 raise ValueError(f'missing reviewed ownership/caller evidence for {a:08X}')
         # Triage is explicitly NOT a proof of MP-only reachability. It distinguishes
@@ -430,10 +440,16 @@ def generate(targets):
             entry['binary_cleanup_error'] = str(e)
         if fam not in ("allocator", "deferred"):
             try:
-                pop = cleanup(a)
+                if local and local.get('tail_dispatch'):
+                    # No ret is inserted: the genuine game virtual owns cleanup.
+                    if cleanup(int(local['audited_tail_target'], 16)) != local['ret_bytes']:
+                        raise ValueError('tail target cleanup changed')
+                    pop = local['ret_bytes']
+                else:
+                    pop = cleanup(a)
                 expected = api.stack_bytes(c.get("conv", "__cdecl"), c.get("params", ""))
                 expected = 0 if c.get("conv") == "__cdecl" else expected
-                if pop != expected and a not in INIT_SUPPORT and a not in WINMAIN_SUPPORT:
+                if pop != expected and a not in INIT_SUPPORT and a not in WINMAIN_SUPPORT and not local:
                     raise ValueError(f"contract pops {expected}, binary pops {pop}")
                 entry["ret_bytes"] = pop
                 if pop != expected:
@@ -441,7 +457,12 @@ def generate(targets):
                         'policy': 'audited process lifetime boundary uses binary cleanup'}
                 entry["emitted"] = True
                 lines.append(f"// {c.get('name')}: {fam}; {why}.")
-                if a in support:
+                if local:
+                    name = f'offline_{a:08x}'
+                    lines += [f'static __declspec(naked) void {name}() {{']
+                    lines += ['    __asm ' + ins.strip() for ins in local['instructions']]
+                    lines += ['}', f'HOOK(0x{a:08X}, {name}, "boundary-netz");']
+                elif a in support:
                     lines.append(f'HOOK_REGS(0x{a:08X}, {support[a]}, {pop}, "boundary-netz");')
                 else:
                     name = f"offline_{a:08x}"
@@ -504,7 +525,8 @@ def main():
             if e["emitted"]:
                 a = int(e["address"], 16)
                 name = support[a] + "_regs" if a in support else f"offline_{a:08x}"
-                checks.append((name, e["ret_bytes"]))
+                if not e.get('virtual_contract', {}).get('tail_dispatch'):
+                    checks.append((name, e["ret_bytes"]))
         checks += [(name, n) for name, n in zip(["gathering_delete", "gathering_factory", "gathering_class_name"], [4, 0, 4])]
         checks += [(f"offline_virtual_{i}", v["ret_bytes"]) for i, v in enumerate(json.loads(manifest)["virtuals"]) if i >= 3]
         checks += [('request_delete' if i == 0 else f'request_virtual_{i}', v['ret_bytes'])
@@ -530,6 +552,18 @@ def main():
             ins = instructions.get(name, [])
             if a in support:
                 valid = ins[:9] == regs_entry and len(ins) >= 10 and ins[9].startswith('retl')
+            elif e.get('virtual_contract'):
+                import emudiff
+                obj = emudiff.Obj(str(args.object), name)
+                code = bytes.fromhex(e['virtual_contract']['bytes'])
+                section = next(s for s in obj.secs if s['base'] <= obj.entry < s['base'] + len(s['data']))
+                offset = obj.entry - section['base']
+                from capstone import Cs, CS_ARCH_X86, CS_MODE_32
+                decoder = Cs(CS_ARCH_X86, CS_MODE_32)
+                actual = bytes(section['data'][offset:offset + len(code)])
+                # xor r,r has two equivalent encodings (MSVC vs clang).
+                decoded = lambda b: [(i.mnemonic, i.op_str) for i in decoder.disasm(b, 0)]
+                valid = decoded(actual) == decoded(code)
             else:
                 # Result-only naked entries must not acquire a compiler prologue,
                 # read untrusted parameters, or alter non-result registers.

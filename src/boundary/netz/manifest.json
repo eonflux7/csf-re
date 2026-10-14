@@ -4732,8 +4732,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "integer may encode pointer, ID, or status; failure not audited",
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
       "callers": [
         {
           "file": "src/auto/005516e0.cpp",
@@ -4875,6 +4875,28 @@
           ]
         },
         {
+          "file": "src/auto/007485c0.cpp",
+          "name": "MpSpawn_CommitSpawnRecord",
+          "ret": "int64_t",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx",
+          "caller_functions": [
+            "S_00747f20_ComputeStateMode1"
+          ],
+          "uses": []
+        },
+        {
+          "file": "src/auto/00748670.cpp",
+          "name": "MpSpawn_CommitSpawnRecord",
+          "ret": "int64_t",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx",
+          "caller_functions": [
+            "S_00747f20_GetRelativeSpawnSlotState"
+          ],
+          "uses": []
+        },
+        {
           "file": "src/auto/00748700.cpp",
           "name": "MpSpawn_CommitSpawnRecord",
           "ret": "int64_t",
@@ -4939,12 +4961,36 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov eax, dword ptr [ecx]",
+          "mov edx, dword ptr [ecx + 4]",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov eax, dword ptr [ecx]",
+          "mov edx, dword ptr [ecx + 4]",
+          "ret "
+        ],
+        "bytes": "8b018b5104c3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
       "triage_group": "shared-game-caller-needs-boundary-audit",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 0
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x006472C0",
@@ -5127,6 +5173,69 @@
       "result_dereference_review": true,
       "binary_ret_bytes": 0,
       "ret_bytes": 0
+    },
+    {
+      "address": "0x00647630",
+      "contract": {
+        "name": "sub_647630",
+        "name_src": "addr",
+        "votes": {},
+        "ret": "void",
+        "conv": "__stdcall",
+        "params": "int a1, int a2, int a3",
+        "sig_src": "abi"
+      },
+      "export_abi": {
+        "cc": "stdcall",
+        "ret": "void",
+        "args": [
+          [
+            "int",
+            "a1",
+            "stack"
+          ],
+          [
+            "int",
+            "a2",
+            "stack"
+          ],
+          [
+            "int",
+            "a3",
+            "stack"
+          ]
+        ],
+        "stk": 12
+      },
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
+      "callers": [],
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "ret 0xc"
+        ],
+        "ret_bytes": 12,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "ret 0xc"
+        ],
+        "bytes": "c20c00",
+        "ret_bytes": 12,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
+      "triage_group": "network-operation-or-result",
+      "mp_only_proven": false,
+      "result_dereference_review": false,
+      "binary_ret_bytes": 12,
+      "ret_bytes": 12
     },
     {
       "address": "0x006476A0",
@@ -5704,6 +5813,38 @@
           ]
         },
         {
+          "file": "src/auto/007485c0.cpp",
+          "name": "MpSpawn_FetchSpawnRecord",
+          "ret": "uint32_t*",
+          "conv": "__cdecl",
+          "params": "uint32_t* a1",
+          "caller_functions": [
+            "S_00747f20_ComputeStateMode1"
+          ],
+          "uses": [
+            {
+              "line": 14,
+              "text": "uint32_t* spawnRecord = MpSpawn_FetchSpawnRecord("
+            }
+          ]
+        },
+        {
+          "file": "src/auto/00748670.cpp",
+          "name": "MpSpawn_FetchSpawnRecord",
+          "ret": "uint32_t*",
+          "conv": "__cdecl",
+          "params": "uint32_t* a1",
+          "caller_functions": [
+            "S_00747f20_GetRelativeSpawnSlotState"
+          ],
+          "uses": [
+            {
+              "line": 15,
+              "text": "MpSpawn_FetchSpawnRecord(reinterpret_cast<uint32_t*>(spawnRecordBytes));"
+            }
+          ]
+        },
+        {
           "file": "src/auto/00748700.cpp",
           "name": "MpSpawn_FetchSpawnRecord",
           "ret": "uint32_t*",
@@ -5774,6 +5915,121 @@
       "mp_only_proven": false,
       "result_dereference_review": true,
       "binary_ret_bytes": 0
+    },
+    {
+      "address": "0x00648560",
+      "contract": {
+        "name": "sub_648560",
+        "name_src": "addr",
+        "votes": {},
+        "ret": "int",
+        "conv": "__stdcall",
+        "params": "int a1",
+        "sig_src": "abi"
+      },
+      "export_abi": {
+        "cc": "stdcall",
+        "ret": "int",
+        "args": [
+          [
+            "int",
+            "a1",
+            "stack"
+          ]
+        ],
+        "stk": 4
+      },
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
+      "callers": [],
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "xor eax, eax",
+          "ret 4"
+        ],
+        "ret_bytes": 4,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "xor eax, eax",
+          "ret 4"
+        ],
+        "bytes": "33c0c20400",
+        "ret_bytes": 4,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
+      "triage_group": "network-operation-or-result",
+      "mp_only_proven": false,
+      "result_dereference_review": false,
+      "binary_ret_bytes": 4,
+      "ret_bytes": 4
+    },
+    {
+      "address": "0x00648680",
+      "contract": {
+        "name": "sub_648680",
+        "name_src": "addr",
+        "votes": {},
+        "ret": "int",
+        "conv": "__stdcall",
+        "params": "int a1, int a2",
+        "sig_src": "abi"
+      },
+      "export_abi": {
+        "cc": "stdcall",
+        "ret": "int",
+        "args": [
+          [
+            "int",
+            "a1",
+            "stack"
+          ],
+          [
+            "int",
+            "a2",
+            "stack"
+          ]
+        ],
+        "stk": 8
+      },
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
+      "callers": [],
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "xor eax, eax",
+          "ret 8"
+        ],
+        "ret_bytes": 8,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "xor eax, eax",
+          "ret 8"
+        ],
+        "bytes": "33c0c20800",
+        "ret_bytes": 8,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
+      "triage_group": "network-operation-or-result",
+      "mp_only_proven": false,
+      "result_dereference_review": false,
+      "binary_ret_bytes": 8,
+      "ret_bytes": 8
     },
     {
       "address": "0x006486C0",
@@ -6040,6 +6296,61 @@
       "mp_only_proven": false,
       "result_dereference_review": true,
       "binary_ret_bytes": 0
+    },
+    {
+      "address": "0x00648750",
+      "contract": {
+        "name": "sub_648750",
+        "name_src": "addr",
+        "votes": {},
+        "ret": "void",
+        "conv": "__fastcall",
+        "params": "void* self, void* edx",
+        "sig_src": "abi"
+      },
+      "export_abi": {
+        "cc": "thiscall",
+        "ret": "void",
+        "args": [
+          [
+            "CInputBase *",
+            "this",
+            "ecx"
+          ]
+        ],
+        "stk": 0
+      },
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
+      "callers": [],
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov byte ptr [ecx + 4], 1",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov byte ptr [ecx + 4], 1",
+          "ret "
+        ],
+        "bytes": "c6410401c3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
+      "triage_group": "network-operation-or-result",
+      "mp_only_proven": false,
+      "result_dereference_review": false,
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x00648770",
@@ -6664,6 +6975,66 @@
       "mp_only_proven": false,
       "result_dereference_review": false,
       "binary_ret_bytes": 0
+    },
+    {
+      "address": "0x00648F10",
+      "contract": {
+        "name": "sub_648F10",
+        "name_src": "addr",
+        "votes": {},
+        "ret": "char",
+        "conv": "__stdcall",
+        "params": "int a1, int a2",
+        "sig_src": "abi"
+      },
+      "export_abi": {
+        "cc": "stdcall",
+        "ret": "char",
+        "args": [
+          [
+            "int",
+            "a1",
+            "stack"
+          ],
+          [
+            "int",
+            "a2",
+            "stack"
+          ]
+        ],
+        "stk": 8
+      },
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
+      "callers": [],
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov al, 1",
+          "ret 8"
+        ],
+        "ret_bytes": 8,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov al, 1",
+          "ret 8"
+        ],
+        "bytes": "b001c20800",
+        "ret_bytes": 8,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
+      "triage_group": "network-operation-or-result",
+      "mp_only_proven": false,
+      "result_dereference_review": false,
+      "binary_ret_bytes": 8,
+      "ret_bytes": 8
     },
     {
       "address": "0x00648FA0",
@@ -8423,6 +8794,34 @@
             {
               "line": 29,
               "text": "InitializeTemporaryString(tempStringBytes, nullptr, CSF_ADDR_DATA(0x8679EC));"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/00747ae0.cpp",
+          "name": "InitializeTemporaryString",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, std::int32_t source",
+          "caller_functions": [
+            "NetProyectil_Construct"
+          ],
+          "uses": [
+            {
+              "line": 19,
+              "text": "InitializeTemporaryString("
+            },
+            {
+              "line": 25,
+              "text": "InitializeTemporaryString("
+            },
+            {
+              "line": 31,
+              "text": "InitializeTemporaryString("
+            },
+            {
+              "line": 37,
+              "text": "InitializeTemporaryString("
             }
           ]
         },
@@ -12312,6 +12711,42 @@
           ]
         },
         {
+          "file": "src/auto/0074bd70.cpp",
+          "name": "LookupObjectByIndex",
+          "ret": "int",
+          "conv": "__cdecl",
+          "params": "int index",
+          "caller_functions": [
+            "NetGhostDdl_ProcessFieldHelper"
+          ],
+          "uses": [
+            {
+              "line": 17,
+              "text": "auto* object = reinterpret_cast<char*>(LookupObjectByIndex(CSF_AT(uint32_t, self, 0x2C) >> 22));"
+            },
+            {
+              "line": 26,
+              "text": "object = reinterpret_cast<char*>(LookupObjectByIndex(CSF_AT(uint32_t, self, 0x2C) >> 22));"
+            },
+            {
+              "line": 34,
+              "text": "object = reinterpret_cast<char*>(LookupObjectByIndex(CSF_AT(uint32_t, self, 0x2C) >> 22));"
+            },
+            {
+              "line": 42,
+              "text": "object = reinterpret_cast<char*>(LookupObjectByIndex(CSF_AT(uint32_t, self, 0x2C) >> 22));"
+            },
+            {
+              "line": 50,
+              "text": "object = reinterpret_cast<char*>(LookupObjectByIndex(CSF_AT(uint32_t, self, 0x2C) >> 22));"
+            },
+            {
+              "line": 58,
+              "text": "object = reinterpret_cast<char*>(LookupObjectByIndex(CSF_AT(uint32_t, self, 0x2C) >> 22));"
+            }
+          ]
+        },
+        {
           "file": "src/auto/0074bee0.cpp",
           "name": "LookupObjectByIndex",
           "ret": "int",
@@ -12548,6 +12983,46 @@
             {
               "line": 29,
               "text": "LookupObjectByIndex(static_cast<int>(objectIndex))));"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/00750350.cpp",
+          "name": "LookupObjectByIndex",
+          "ret": "int",
+          "conv": "__cdecl",
+          "params": "int index",
+          "caller_functions": [
+            "NetPostmanDdl_HandleMessage"
+          ],
+          "uses": [
+            {
+              "line": 17,
+              "text": "auto* object = reinterpret_cast<char*>(LookupObjectByIndex(CSF_AT(uint32_t, self, 0x2C) >> 22));"
+            },
+            {
+              "line": 26,
+              "text": "object = reinterpret_cast<char*>(LookupObjectByIndex(CSF_AT(uint32_t, self, 0x2C) >> 22));"
+            },
+            {
+              "line": 34,
+              "text": "object = reinterpret_cast<char*>(LookupObjectByIndex(CSF_AT(uint32_t, self, 0x2C) >> 22));"
+            },
+            {
+              "line": 42,
+              "text": "object = reinterpret_cast<char*>(LookupObjectByIndex(CSF_AT(uint32_t, self, 0x2C) >> 22));"
+            },
+            {
+              "line": 50,
+              "text": "object = reinterpret_cast<char*>(LookupObjectByIndex(CSF_AT(uint32_t, self, 0x2C) >> 22));"
+            },
+            {
+              "line": 58,
+              "text": "object = reinterpret_cast<char*>(LookupObjectByIndex(CSF_AT(uint32_t, self, 0x2C) >> 22));"
+            },
+            {
+              "line": 66,
+              "text": "object = reinterpret_cast<char*>(LookupObjectByIndex(CSF_AT(uint32_t, self, 0x2C) >> 22));"
             }
           ]
         },
@@ -13481,8 +13956,8 @@
         ],
         "stk": 8
       },
-      "family": "offline-noop",
-      "reason": "no callbacks, transport side effects, or state mutation",
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
       "callers": [
         {
           "file": "src/auto/0049e3c0.cpp",
@@ -13513,6 +13988,22 @@
             {
               "line": 38,
               "text": "sub_64AF90((int)a2, a3);"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/0074bd70.cpp",
+          "name": "FinalizeSpawnUpdate",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, void* context, int update",
+          "caller_functions": [
+            "NetGhostDdl_ProcessFieldHelper"
+          ],
+          "uses": [
+            {
+              "line": 64,
+              "text": "FinalizeSpawnUpdate(self, nullptr, savedContext, savedUpdate);"
             }
           ]
         },
@@ -13563,10 +14054,45 @@
               "text": "FinalizeSpawnUpdate(static_cast<int>(reinterpret_cast<uintptr_t>(a2)), a3);"
             }
           ]
+        },
+        {
+          "file": "src/auto/00750350.cpp",
+          "name": "FinalizeSpawnUpdate",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, void* context, int update",
+          "caller_functions": [
+            "NetPostmanDdl_HandleMessage"
+          ],
+          "uses": [
+            {
+              "line": 72,
+              "text": "FinalizeSpawnUpdate(self, nullptr, savedContext, savedUpdate);"
+            }
+          ]
         }
       ],
       "emitted": true,
-      "audit": null,
+      "audit": {
+        "instructions": [
+          "ret 8"
+        ],
+        "ret_bytes": 8,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "ret 8"
+        ],
+        "bytes": "c20800",
+        "ret_bytes": 8,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
       "triage_group": "shared-game-caller-needs-boundary-audit",
       "mp_only_proven": false,
       "result_dereference_review": false,
@@ -22878,6 +23404,22 @@
           ]
         },
         {
+          "file": "src/auto/006ed9a0.cpp",
+          "name": "SceneLoader_GetSceneController",
+          "ret": "int",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx",
+          "caller_functions": [
+            "GfxCollision_CollectSphereTriangleIntersection"
+          ],
+          "uses": [
+            {
+              "line": 145,
+              "text": "SceneLoader_GetSceneController(reinterpret_cast<void*>(global), nullptr);"
+            }
+          ]
+        },
+        {
           "file": "src/auto/006edf60.cpp",
           "name": "SceneLoader_GetSceneController",
           "ret": "int",
@@ -23326,6 +23868,30 @@
           ]
         },
         {
+          "file": "src/auto/00541f60.cpp",
+          "name": "ResolveClumpManager",
+          "ret": "int",
+          "conv": "__fastcall",
+          "params": "int managerId, void* edx",
+          "caller_functions": [
+            "CGuiCharacterPreview_Render"
+          ],
+          "uses": [
+            {
+              "line": 36,
+              "text": "ResolveClumpManager(GetGlobalInt(), nullptr));"
+            },
+            {
+              "line": 52,
+              "text": "ResolveClumpManager(GetGlobalInt(), nullptr));"
+            },
+            {
+              "line": 86,
+              "text": "ResolveClumpManager(GetGlobalInt(), nullptr));"
+            }
+          ]
+        },
+        {
           "file": "src/auto/00542070.cpp",
           "name": "ResolveClumpManager",
           "ret": "void*",
@@ -23658,6 +24224,22 @@
             {
               "line": 67,
               "text": "ResolveClumpManager(GetGlobalInt(), nullptr));"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/006e4680.cpp",
+          "name": "ResolveClumpManager",
+          "ret": "int",
+          "conv": "__fastcall",
+          "params": "int managerId, void* edx",
+          "caller_functions": [
+            "GfxObjectInstances_ApplyAtomicScale"
+          ],
+          "uses": [
+            {
+              "line": 61,
+              "text": "int manager = ResolveClumpManager(GetGlobalInt(), nullptr);"
             }
           ]
         },
@@ -24075,6 +24657,26 @@
             },
             {
               "line": 146,
+              "text": "screen = LookupObjectById("
+            }
+          ]
+        },
+        {
+          "file": "src/auto/004f4500.cpp",
+          "name": "LookupObjectById",
+          "ret": "void*",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx",
+          "caller_functions": [
+            "HudStringShow_UpdateDisplay"
+          ],
+          "uses": [
+            {
+              "line": 82,
+              "text": "void* screen = LookupObjectById("
+            },
+            {
+              "line": 88,
               "text": "screen = LookupObjectById("
             }
           ]
@@ -30264,8 +30866,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "pointer result may be dereferenced; no universal fake object",
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
       "callers": [
         {
           "file": "src/auto/0048e860.cpp",
@@ -30376,12 +30978,34 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "lea eax, [ecx + 0x28]",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "lea eax, [ecx + 0x28]",
+          "ret "
+        ],
+        "bytes": "8d4128c3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
       "triage_group": "shared-game-caller-needs-boundary-audit",
       "mp_only_proven": false,
       "result_dereference_review": true,
-      "binary_ret_bytes": 0
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x00656260",
@@ -32692,6 +33316,55 @@
       "binary_ret_bytes": 8
     },
     {
+      "address": "0x00656A30",
+      "contract": {
+        "name": "sub_656A30",
+        "name_src": "addr",
+        "votes": {},
+        "ret": "int",
+        "conv": "__cdecl",
+        "params": "",
+        "sig_src": "abi"
+      },
+      "export_abi": {
+        "cc": "stdcall",
+        "ret": "int",
+        "args": [],
+        "stk": 0
+      },
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
+      "callers": [],
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov eax, 3",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov eax, 3",
+          "ret "
+        ],
+        "bytes": "b803000000c3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
+      "triage_group": "network-operation-or-result",
+      "mp_only_proven": false,
+      "result_dereference_review": false,
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
+    },
+    {
       "address": "0x00656DE0",
       "contract": {
         "name": "NetGathering_CreateTemporaryListHead",
@@ -32975,6 +33648,61 @@
       "result_dereference_review": false,
       "binary_ret_bytes": 4,
       "ret_bytes": 4
+    },
+    {
+      "address": "0x00657760",
+      "contract": {
+        "name": "sub_657760",
+        "name_src": "addr",
+        "votes": {},
+        "ret": "char*",
+        "conv": "__fastcall",
+        "params": "void* self, void* edx",
+        "sig_src": "abi"
+      },
+      "export_abi": {
+        "cc": "thiscall",
+        "ret": "char *",
+        "args": [
+          [
+            "CLightObject *",
+            "this",
+            "ecx"
+          ]
+        ],
+        "stk": 0
+      },
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
+      "callers": [],
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "lea eax, [ecx + 0x10]",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "lea eax, [ecx + 0x10]",
+          "ret "
+        ],
+        "bytes": "8d4110c3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
+      "triage_group": "network-result",
+      "mp_only_proven": false,
+      "result_dereference_review": true,
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x00657810",
@@ -35533,6 +36261,22 @@
           ]
         },
         {
+          "file": "src/auto/00747ae0.cpp",
+          "name": "RootDO_Construct",
+          "ret": "void*",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, int a2",
+          "caller_functions": [
+            "NetProyectil_Construct"
+          ],
+          "uses": [
+            {
+              "line": 13,
+              "text": "RootDO_Construct(self, nullptr, a2);"
+            }
+          ]
+        },
+        {
           "file": "src/auto/0074b850.cpp",
           "name": "RootDO_Construct",
           "ret": "void*",
@@ -35766,6 +36510,71 @@
       "mp_only_proven": false,
       "result_dereference_review": false,
       "binary_ret_bytes": 12
+    },
+    {
+      "address": "0x0065EFE0",
+      "contract": {
+        "name": "sub_65EFE0",
+        "name_src": "addr",
+        "votes": {},
+        "ret": "char",
+        "conv": "__stdcall",
+        "params": "int a1, int a2, int a3",
+        "sig_src": "abi"
+      },
+      "export_abi": {
+        "cc": "stdcall",
+        "ret": "char",
+        "args": [
+          [
+            "int",
+            "a1",
+            "stack"
+          ],
+          [
+            "int",
+            "a2",
+            "stack"
+          ],
+          [
+            "int",
+            "a3",
+            "stack"
+          ]
+        ],
+        "stk": 12
+      },
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
+      "callers": [],
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov al, 1",
+          "ret 0xc"
+        ],
+        "ret_bytes": 12,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov al, 1",
+          "ret 0xc"
+        ],
+        "bytes": "b001c20c00",
+        "ret_bytes": 12,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
+      "triage_group": "network-operation-or-result",
+      "mp_only_proven": false,
+      "result_dereference_review": false,
+      "binary_ret_bytes": 12,
+      "ret_bytes": 12
     },
     {
       "address": "0x00660630",
@@ -36182,6 +36991,42 @@
           ]
         },
         {
+          "file": "src/auto/0074bd70.cpp",
+          "name": "NetCogibleDdl_FindProperty",
+          "ret": "void**",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, void** output, uint8_t* key",
+          "caller_functions": [
+            "NetGhostDdl_ProcessFieldHelper"
+          ],
+          "uses": [
+            {
+              "line": 18,
+              "text": "NetCogibleDdl_FindProperty(object + 0xC, nullptr, &firstProperty, firstKey);"
+            },
+            {
+              "line": 27,
+              "text": "NetCogibleDdl_FindProperty(object + 0xC, nullptr, reinterpret_cast<void**>(&update),"
+            },
+            {
+              "line": 35,
+              "text": "NetCogibleDdl_FindProperty(object + 0xC, nullptr, reinterpret_cast<void**>(&update),"
+            },
+            {
+              "line": 43,
+              "text": "NetCogibleDdl_FindProperty(object + 0xC, nullptr, reinterpret_cast<void**>(&update),"
+            },
+            {
+              "line": 51,
+              "text": "NetCogibleDdl_FindProperty(object + 0xC, nullptr, reinterpret_cast<void**>(&update),"
+            },
+            {
+              "line": 59,
+              "text": "NetCogibleDdl_FindProperty(object + 0xC, nullptr, reinterpret_cast<void**>(&update),"
+            }
+          ]
+        },
+        {
           "file": "src/auto/0074bee0.cpp",
           "name": "NetCogibleDdl_FindProperty",
           "ret": "void**",
@@ -36498,6 +37343,46 @@
             {
               "line": 42,
               "text": "NetCogibleDdl_FindProperty("
+            }
+          ]
+        },
+        {
+          "file": "src/auto/00750350.cpp",
+          "name": "NetCogibleDdl_FindProperty",
+          "ret": "void**",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, void** output, uint8_t* key",
+          "caller_functions": [
+            "NetPostmanDdl_HandleMessage"
+          ],
+          "uses": [
+            {
+              "line": 18,
+              "text": "NetCogibleDdl_FindProperty(object + 0xC, nullptr, &firstProperty, firstKey);"
+            },
+            {
+              "line": 27,
+              "text": "NetCogibleDdl_FindProperty(object + 0xC, nullptr, reinterpret_cast<void**>(&update),"
+            },
+            {
+              "line": 35,
+              "text": "NetCogibleDdl_FindProperty(object + 0xC, nullptr, reinterpret_cast<void**>(&update),"
+            },
+            {
+              "line": 43,
+              "text": "NetCogibleDdl_FindProperty(object + 0xC, nullptr, reinterpret_cast<void**>(&update),"
+            },
+            {
+              "line": 51,
+              "text": "NetCogibleDdl_FindProperty(object + 0xC, nullptr, reinterpret_cast<void**>(&update),"
+            },
+            {
+              "line": 59,
+              "text": "NetCogibleDdl_FindProperty(object + 0xC, nullptr, reinterpret_cast<void**>(&update),"
+            },
+            {
+              "line": 67,
+              "text": "NetCogibleDdl_FindProperty(object + 0xC, nullptr, reinterpret_cast<void**>(&update),"
             }
           ]
         },
@@ -37427,6 +38312,65 @@
       "binary_ret_bytes": 0
     },
     {
+      "address": "0x00668230",
+      "contract": {
+        "name": "sub_668230",
+        "name_src": "addr",
+        "votes": {},
+        "ret": "int",
+        "conv": "__fastcall",
+        "params": "void* self, void* edx",
+        "sig_src": "abi"
+      },
+      "export_abi": {
+        "cc": "thiscall",
+        "ret": "int",
+        "args": [
+          [
+            "C_00867358 *",
+            "this",
+            "ecx"
+          ]
+        ],
+        "stk": 0
+      },
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
+      "callers": [],
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov eax, dword ptr [ecx]",
+          "jmp dword ptr [eax + 8]"
+        ],
+        "ret_bytes": 0,
+        "tail_dispatch": true,
+        "audited_tail_target": "0x00738870",
+        "convention": "thiscall tail dispatch; target owns cleanup",
+        "behaviour": "forward unchanged ECX and stack through genuine game vtable slot 2, not a transport failure or dummy rendering return",
+        "ownership": "none",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov eax, dword ptr [ecx]",
+          "jmp dword ptr [eax + 8]"
+        ],
+        "bytes": "8b01ff6008",
+        "ret_bytes": 0,
+        "tail_dispatch": true,
+        "audited_tail_target": "0x00738870",
+        "convention": "thiscall tail dispatch; target owns cleanup",
+        "behaviour": "forward unchanged ECX and stack through genuine game vtable slot 2, not a transport failure or dummy rendering return",
+        "ownership": "none"
+      },
+      "triage_group": "network-operation-or-result",
+      "mp_only_proven": false,
+      "result_dereference_review": false,
+      "binary_cleanup_error": "indirect tail: cleanup unknown",
+      "ret_bytes": 0
+    },
+    {
       "address": "0x00668250",
       "contract": {
         "name": "sub_668250",
@@ -37812,6 +38756,26 @@
             {
               "line": 19,
               "text": "void* referencedObject = GetReferencedObject(cachedObjectProvider, nullptr);"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/004958c0.cpp",
+          "name": "GetReferencedObject",
+          "ret": "void*",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx",
+          "caller_functions": [
+            "CharacterModel_UpdateSpecialCharacter"
+          ],
+          "uses": [
+            {
+              "line": 43,
+              "text": "void* referencedObject = GetReferencedObject(provider, nullptr);"
+            },
+            {
+              "line": 67,
+              "text": "referencedObject = GetReferencedObject(provider, nullptr);"
             }
           ]
         },
@@ -42301,6 +43265,34 @@
           ]
         },
         {
+          "file": "src/auto/00747ae0.cpp",
+          "name": "ResolveStringId",
+          "ret": "std::uint16_t",
+          "conv": "__cdecl",
+          "params": "std::uint32_t tempString",
+          "caller_functions": [
+            "NetProyectil_Construct"
+          ],
+          "uses": [
+            {
+              "line": 23,
+              "text": "self->field_0020 = ResolveStringId(CSF_AT(std::uint32_t, tempStringBytes, 0));"
+            },
+            {
+              "line": 29,
+              "text": "self->field_0022 = ResolveStringId(CSF_AT(std::uint32_t, tempStringBytes, 0));"
+            },
+            {
+              "line": 35,
+              "text": "self->field_0024 = ResolveStringId(CSF_AT(std::uint32_t, tempStringBytes, 0));"
+            },
+            {
+              "line": 41,
+              "text": "self->field_0026 = ResolveStringId(CSF_AT(std::uint32_t, tempStringBytes, 0));"
+            }
+          ]
+        },
+        {
           "file": "src/auto/0074b850.cpp",
           "name": "ResolveStringId",
           "ret": "std::uint16_t",
@@ -43463,6 +44455,42 @@
           ]
         },
         {
+          "file": "src/auto/0074bd70.cpp",
+          "name": "NetPlayerDdl_ApplyProperty",
+          "ret": "int",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, int object, int field, int id, int update, void* context",
+          "caller_functions": [
+            "NetGhostDdl_ProcessFieldHelper"
+          ],
+          "uses": [
+            {
+              "line": 21,
+              "text": "NetPlayerDdl_ApplyProperty(CSF_AT(void*, firstProperty, 0x10), nullptr,"
+            },
+            {
+              "line": 29,
+              "text": "NetPlayerDdl_ApplyProperty(CSF_AT(void*, update, 0x10), nullptr,"
+            },
+            {
+              "line": 37,
+              "text": "NetPlayerDdl_ApplyProperty(CSF_AT(void*, update, 0x10), nullptr,"
+            },
+            {
+              "line": 45,
+              "text": "NetPlayerDdl_ApplyProperty(CSF_AT(void*, update, 0x10), nullptr,"
+            },
+            {
+              "line": 53,
+              "text": "NetPlayerDdl_ApplyProperty(CSF_AT(void*, update, 0x10), nullptr,"
+            },
+            {
+              "line": 61,
+              "text": "const int result = NetPlayerDdl_ApplyProperty(CSF_AT(void*, update, 0x10), nullptr,"
+            }
+          ]
+        },
+        {
           "file": "src/auto/0074da00.cpp",
           "name": "NetPlayerDdl_ApplyProperty",
           "ret": "char",
@@ -43519,6 +44547,46 @@
             {
               "line": 35,
               "text": "NetPlayerDdl_ApplyProperty("
+            }
+          ]
+        },
+        {
+          "file": "src/auto/00750350.cpp",
+          "name": "NetPlayerDdl_ApplyProperty",
+          "ret": "int",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, int object, int field, int id, int update, void* context",
+          "caller_functions": [
+            "NetPostmanDdl_HandleMessage"
+          ],
+          "uses": [
+            {
+              "line": 21,
+              "text": "NetPlayerDdl_ApplyProperty(CSF_AT(void*, firstProperty, 0x10), nullptr,"
+            },
+            {
+              "line": 29,
+              "text": "NetPlayerDdl_ApplyProperty(CSF_AT(void*, update, 0x10), nullptr,"
+            },
+            {
+              "line": 37,
+              "text": "NetPlayerDdl_ApplyProperty(CSF_AT(void*, update, 0x10), nullptr,"
+            },
+            {
+              "line": 45,
+              "text": "NetPlayerDdl_ApplyProperty(CSF_AT(void*, update, 0x10), nullptr,"
+            },
+            {
+              "line": 53,
+              "text": "NetPlayerDdl_ApplyProperty(CSF_AT(void*, update, 0x10), nullptr,"
+            },
+            {
+              "line": 61,
+              "text": "NetPlayerDdl_ApplyProperty(CSF_AT(void*, update, 0x10), nullptr,"
+            },
+            {
+              "line": 69,
+              "text": "const int result = NetPlayerDdl_ApplyProperty(CSF_AT(void*, update, 0x10), nullptr,"
             }
           ]
         }
@@ -45285,6 +46353,232 @@
       "ret_bytes": 8
     },
     {
+      "address": "0x00676ED0",
+      "contract": {
+        "name": "sub_676ED0",
+        "name_src": "addr",
+        "votes": {},
+        "ret": "char",
+        "conv": "__fastcall",
+        "params": "void* self, void* edx",
+        "sig_src": "abi"
+      },
+      "export_abi": {
+        "cc": "thiscall",
+        "ret": "char",
+        "args": [
+          [
+            "C_0086754c *",
+            "this",
+            "ecx"
+          ]
+        ],
+        "stk": 0
+      },
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
+      "callers": [],
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov al, byte ptr [ecx + 0x18]",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov al, byte ptr [ecx + 0x18]",
+          "ret "
+        ],
+        "bytes": "8a4118c3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
+      "triage_group": "network-operation-or-result",
+      "mp_only_proven": false,
+      "result_dereference_review": false,
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
+    },
+    {
+      "address": "0x00676F50",
+      "contract": {
+        "name": "sub_676F50",
+        "name_src": "addr",
+        "votes": {},
+        "ret": "int",
+        "conv": "__fastcall",
+        "params": "void* self, void* edx",
+        "sig_src": "abi"
+      },
+      "export_abi": {
+        "cc": "thiscall",
+        "ret": "int",
+        "args": [
+          [
+            "C_008670f0 *",
+            "this",
+            "ecx"
+          ]
+        ],
+        "stk": 0
+      },
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
+      "callers": [],
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov eax, dword ptr [ecx + 0xb8]",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov eax, dword ptr [ecx + 0xb8]",
+          "ret "
+        ],
+        "bytes": "8b81b8000000c3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
+      "triage_group": "network-operation-or-result",
+      "mp_only_proven": false,
+      "result_dereference_review": false,
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
+    },
+    {
+      "address": "0x00677BC0",
+      "contract": {
+        "name": "sub_677BC0",
+        "name_src": "addr",
+        "votes": {},
+        "ret": "char*",
+        "conv": "__fastcall",
+        "params": "void* self, void* edx",
+        "sig_src": "abi"
+      },
+      "export_abi": {
+        "cc": "thiscall",
+        "ret": "char *",
+        "args": [
+          [
+            "C_00867260 *",
+            "this",
+            "ecx"
+          ]
+        ],
+        "stk": 0
+      },
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
+      "callers": [],
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "lea eax, [ecx + 0x2c]",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "lea eax, [ecx + 0x2c]",
+          "ret "
+        ],
+        "bytes": "8d412cc3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
+      "triage_group": "network-result",
+      "mp_only_proven": false,
+      "result_dereference_review": true,
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
+    },
+    {
+      "address": "0x00677DA0",
+      "contract": {
+        "name": "sub_677DA0",
+        "name_src": "addr",
+        "votes": {},
+        "ret": "int",
+        "conv": "__fastcall",
+        "params": "void* self, void* edx",
+        "sig_src": "abi"
+      },
+      "export_abi": {
+        "cc": "thiscall",
+        "ret": "BOOL",
+        "args": [
+          [
+            "C_0082fcd8 *",
+            "this",
+            "ecx"
+          ]
+        ],
+        "stk": 0
+      },
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
+      "callers": [],
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov edx, dword ptr [ecx + 0x20]",
+          "xor eax, eax",
+          "test edx, edx",
+          "sete al",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov edx, dword ptr [ecx + 0x20]",
+          "xor eax, eax",
+          "test edx, edx",
+          "sete al",
+          "ret "
+        ],
+        "bytes": "8b512033c085d20f94c0c3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
+      "triage_group": "network-operation-or-result",
+      "mp_only_proven": false,
+      "result_dereference_review": false,
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
+    },
+    {
       "address": "0x0067AA80",
       "contract": {
         "name": "NetChatDDL_RegisterAppName",
@@ -46440,6 +47734,55 @@
       "ret_bytes": 0
     },
     {
+      "address": "0x0067FBB0",
+      "contract": {
+        "name": "sub_67FBB0",
+        "name_src": "addr",
+        "votes": {},
+        "ret": "int",
+        "conv": "__cdecl",
+        "params": "",
+        "sig_src": "abi"
+      },
+      "export_abi": {
+        "cc": "stdcall",
+        "ret": "int",
+        "args": [],
+        "stk": 0
+      },
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
+      "callers": [],
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov eax, 0xb",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov eax, 0xb",
+          "ret "
+        ],
+        "bytes": "b80b000000c3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
+      "triage_group": "network-operation-or-result",
+      "mp_only_proven": false,
+      "result_dereference_review": false,
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
+    },
+    {
       "address": "0x0067FC00",
       "contract": {
         "name": "NetSession_GetStationObject",
@@ -46851,8 +48194,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
       "callers": [
         {
           "file": "src/auto/00478a20.cpp",
@@ -46871,12 +48214,34 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov al, byte ptr [ecx + 0x14]",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov al, byte ptr [ecx + 0x14]",
+          "ret "
+        ],
+        "bytes": "8a4114c3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
       "triage_group": "shared-game-caller-needs-boundary-audit",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 0
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x00681F30",
@@ -46903,8 +48268,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
       "callers": [
         {
           "file": "src/auto/0053d5d0.cpp",
@@ -46947,12 +48312,34 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov eax, dword ptr [ecx + 0x28]",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov eax, dword ptr [ecx + 0x28]",
+          "ret "
+        ],
+        "bytes": "8b4128c3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
       "triage_group": "shared-game-caller-needs-boundary-audit",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 0
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x00681F40",
@@ -46980,8 +48367,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
       "callers": [
         {
           "file": "src/auto/00422e40.cpp",
@@ -47828,12 +49215,34 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov eax, dword ptr [ecx + 0x1c]",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov eax, dword ptr [ecx + 0x1c]",
+          "ret "
+        ],
+        "bytes": "8b411cc3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
       "triage_group": "shared-game-caller-needs-boundary-audit",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 0
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x00681FB0",
@@ -47861,8 +49270,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
       "callers": [
         {
           "file": "src/auto/006c58a0.cpp",
@@ -47897,12 +49306,34 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov eax, dword ptr [ecx + 0x30]",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov eax, dword ptr [ecx + 0x30]",
+          "ret "
+        ],
+        "bytes": "8b4130c3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
       "triage_group": "shared-game-caller-needs-boundary-audit",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 0
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x00681FC0",
@@ -47929,8 +49360,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
       "callers": [
         {
           "file": "src/auto/00442a80.cpp",
@@ -48017,12 +49448,34 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov eax, dword ptr [ecx + 0x34]",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov eax, dword ptr [ecx + 0x34]",
+          "ret "
+        ],
+        "bytes": "8b4134c3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
       "triage_group": "shared-game-caller-needs-boundary-audit",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 0
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x00686C10",
@@ -49143,6 +50596,26 @@
             {
               "line": 18,
               "text": "void* cachedObjectProvider = GetCachedObjectProvider(reinterpret_cast<void*>(firstElement), nullptr);"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/004958c0.cpp",
+          "name": "GetCachedObjectProvider",
+          "ret": "void*",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx",
+          "caller_functions": [
+            "CharacterModel_UpdateSpecialCharacter"
+          ],
+          "uses": [
+            {
+              "line": 41,
+              "text": "void* provider = GetCachedObjectProvider("
+            },
+            {
+              "line": 65,
+              "text": "provider = GetCachedObjectProvider("
             }
           ]
         },
@@ -52179,6 +53652,26 @@
           ]
         },
         {
+          "file": "src/auto/006e4680.cpp",
+          "name": "GetCachedObjectProvider",
+          "ret": "void*",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx",
+          "caller_functions": [
+            "GfxObjectInstances_ApplyAtomicScale"
+          ],
+          "uses": [
+            {
+              "line": 29,
+              "text": "if (!GetCachedObjectProvider(object, nullptr))"
+            },
+            {
+              "line": 130,
+              "text": "void* clump = GetCachedObjectProvider(object, nullptr);"
+            }
+          ]
+        },
+        {
           "file": "src/auto/006e4b10.cpp",
           "name": "GetCachedObjectProvider",
           "ret": "void*",
@@ -52923,6 +54416,61 @@
       "mp_only_proven": false,
       "result_dereference_review": true,
       "binary_ret_bytes": 8
+    },
+    {
+      "address": "0x0068B5F0",
+      "contract": {
+        "name": "sub_68B5F0",
+        "name_src": "addr",
+        "votes": {},
+        "ret": "char*",
+        "conv": "__fastcall",
+        "params": "void* self, void* edx",
+        "sig_src": "abi"
+      },
+      "export_abi": {
+        "cc": "thiscall",
+        "ret": "char *",
+        "args": [
+          [
+            "CRenderEngine *",
+            "this",
+            "ecx"
+          ]
+        ],
+        "stk": 0
+      },
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
+      "callers": [],
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "lea eax, [ecx + 4]",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "lea eax, [ecx + 4]",
+          "ret "
+        ],
+        "bytes": "8d4104c3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
+      "triage_group": "network-result",
+      "mp_only_proven": false,
+      "result_dereference_review": true,
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x0068E2B0",
@@ -54054,8 +55602,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
       "callers": [
         {
           "file": "src/auto/006c8420.cpp",
@@ -54090,12 +55638,34 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov al, byte ptr [ecx + 0x10]",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov al, byte ptr [ecx + 0x10]",
+          "ret "
+        ],
+        "bytes": "8a4110c3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
       "triage_group": "shared-game-caller-needs-boundary-audit",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 0
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x0068ECE0",
@@ -60585,8 +62155,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
       "callers": [
         {
           "file": "src/auto/00705fc0.cpp",
@@ -60605,12 +62175,34 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "mov al, 1",
+          "ret 4"
+        ],
+        "ret_bytes": 4,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "mov al, 1",
+          "ret 4"
+        ],
+        "bytes": "b001c20400",
+        "ret_bytes": 4,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
       "triage_group": "shared-game-caller-needs-boundary-audit",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 4
+      "binary_ret_bytes": 4,
+      "ret_bytes": 4
     },
     {
       "address": "0x007A7FB0",
@@ -60790,8 +62382,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "audited-local-virtual",
+      "reason": "exact local boundary contract; see vtable_contracts.json",
       "callers": [
         {
           "file": "src/auto/00528df0.cpp",
@@ -61134,12 +62726,34 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "instructions": [
+          "xor al, al",
+          "ret "
+        ],
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release",
+        "table_evidence": "vtable_contracts.json and VTABLE_CUTOVER.json"
+      },
+      "virtual_contract": {
+        "instructions": [
+          "xor al, al",
+          "ret "
+        ],
+        "bytes": "32c0c3",
+        "ret_bytes": 0,
+        "convention": "thiscall (ECX self; original ret N)",
+        "behaviour": "exact local accessor/constant/no-op; no transport, callbacks or fabricated connection",
+        "ownership": "borrowed member address/value; no allocation or retain/release"
+      },
       "triage_group": "shared-game-caller-needs-boundary-audit",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 0
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x007A9700",
@@ -62461,6 +64075,66 @@
             {
               "line": 32,
               "text": "sub_81BB40(static_cast<int>(self->field_0004));"
+            }
+          ]
+        }
+      ],
+      "emitted": false,
+      "audit": null,
+      "triage_group": "shared-game-caller-needs-boundary-audit",
+      "mp_only_proven": false,
+      "result_dereference_review": false,
+      "binary_ret_bytes": 0
+    },
+    {
+      "address": "0x0081BC10",
+      "contract": {
+        "name": "sub_81BC10",
+        "name_src": "addr",
+        "votes": {},
+        "ret": "int",
+        "conv": "__cdecl",
+        "params": "int a1, int a2, int a3",
+        "sig_src": "abi"
+      },
+      "export_abi": {
+        "cc": "cdecl",
+        "ret": "int",
+        "args": [
+          [
+            "int",
+            "a1",
+            "stack"
+          ],
+          [
+            "int",
+            "a2",
+            "stack"
+          ],
+          [
+            "int",
+            "a3",
+            "stack"
+          ]
+        ],
+        "stk": 12
+      },
+      "family": "deferred",
+      "reason": "unnamed or potentially shared/non-network helper",
+      "callers": [
+        {
+          "file": "src/auto/0070a6a0.cpp",
+          "name": "sub_81BC10",
+          "ret": "int",
+          "conv": "__cdecl",
+          "params": "int a1, int a2, int a3",
+          "caller_functions": [
+            "C_00863588_UpdateTransform"
+          ],
+          "uses": [
+            {
+              "line": 34,
+              "text": "sub_81BC10(static_cast<int>(self->field_0004), ownerForCall, 0);"
             }
           ]
         }

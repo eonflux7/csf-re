@@ -94,7 +94,7 @@ assert not blocks
 # Actual compiled game wrappers. All unexercised dependencies trap rather than
 # being mocked as success; the offline branch must genuinely avoid them.
 game_roots = (0x73f080, 0x73c380, 0x697130, 0x697070, 0x4f21d0, 0x4856e0, 0x74a910, 0x73eea0,
-              0x73ecc0, 0x74a770, 0x73d710, 0x73de40, 0x743a10, 0x743a70, 0x7437e0)
+              0x73ecc0, 0x74a770, 0x73d710, 0x73de40, 0x743a10, 0x743a70, 0x7437e0, 0x738870)
 emitted = [e for e in json.loads(manifest.read_text())['targets'] if e['emitted']]
 entries = {}
 for e in emitted:

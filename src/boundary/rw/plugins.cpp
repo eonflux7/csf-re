@@ -7,6 +7,7 @@
 #include "hook.h"
 #endif
 #include "plugins.h"
+#include "particles.h"
 #include "startup.h"
 #include <cstring>
 #include <array>
@@ -161,11 +162,14 @@ int __stdcall collisionAttach() {
 }
 int __stdcall ptAttach() {
     csf_rw::startupTrace("0x005816E0","RpPTankPluginAttach (storage only)");
-    return attachable(K::Engine,303) && put(ptEngine,K::Engine,4,303) && put(ptAtomic,K::Atomic,4,303);
+    return attachable(K::Engine,303) && put(ptEngine,K::Engine,4,303) && put(ptAtomic,K::Atomic,sizeof(void*),303);
 }
 int __stdcall prtAttach() {
-    csf_rw::startupTrace("0x0057C4A0","RpPrtStdPluginAttach (storage only)");
-    if(!attachable(K::Engine,304) || !put(prtEngine,K::Engine,0,304) || !put(prtAtomic,K::Atomic,4,304)) return 0;
+    csf_rw::startupTrace("0x0057C4A0","RpPrtStdPluginAttach (emitter ownership)");
+    if(!attachable(K::Engine,304) || !put(prtEngine,K::Engine,0,304)) return 0;
+    prtAtomic=csf_rw::registerABIPlugin(K::Atomic,sizeof(void*),304,csf_rw::particleAtomicCtor,
+        csf_rw::particleAtomicDtor,csf_rw::particleAtomicCopy);
+    if(prtAtomic<0) return 0;
     prtStream=prtAtomic; return 1;
 }
 int __stdcall advAttach() {

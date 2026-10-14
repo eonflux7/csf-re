@@ -471,4 +471,6 @@ exec(compile(pathlib.Path(__file__).with_name('test_initializers.py').read_text(
              str(pathlib.Path(__file__).with_name('test_initializers.py')), 'exec'))
 exec(compile(pathlib.Path(__file__).with_name('test_winmain.py').read_text(),
              str(pathlib.Path(__file__).with_name('test_winmain.py')), 'exec'))
+exec(compile(pathlib.Path(__file__).with_name('test_vtables.py').read_text(),
+             str(pathlib.Path(__file__).with_name('test_vtables.py')), 'exec'))
 print(f'PASS: {checked} emulated calls, all 46 initializer and 17 WinMain slots, ESP/nonvolatile registers; no leaked test allocations')

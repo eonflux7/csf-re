@@ -466,6 +466,15 @@ Frame* cloneTree(Frame* source,std::unordered_map<Frame*,Frame*>& map) {
 // dereferences a null root: compose its object clone primitives, reject null root.
 Clump* __cdecl clumpClone(Clump* c) {
     auto* n=clumpNative(c); if(!n || n->world || !c->object.parent) return nullptr;
+    // librw PluginList::copy ignores the callback's return. A populated
+    // particle/PTank extension cannot be shallow-copied, or silently dropped
+    // by a failing copy callback; reject before allocating the clone.
+    for(auto* a:snapshot<Atomic>(c->atomics,offsetof(Atomic,inClump))) {
+        for(uint32_t id : {303u,304u}) {
+            int off=plugins(K::Atomic).getPluginOffset(id);
+            if(off>=0 && *reinterpret_cast<void**>(reinterpret_cast<char*>(a)+off)) return nullptr;
+        }
+    }
     std::unordered_map<Geometry*,int> copies;
     for(auto* a:snapshot<Atomic>(c->atomics,offsetof(Atomic,inClump))) if(a->geometry) ++copies[a->geometry];
     for(auto& p:copies) if(!geometryNative(p.first) || p.first->refCount>SHRT_MAX-p.second) return nullptr;

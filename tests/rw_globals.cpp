@@ -118,3 +118,50 @@ template <> void* const csf::fn_slot<0x00620070>::p = reinterpret_cast<void*>(&u
 template <> void* const csf::fn_slot<0x0061FF00>::p = reinterpret_cast<void*>(&unavailableAnimationCallback);
 template <> void* const csf::fn_slot<0x0061FFB0>::p = reinterpret_cast<void*>(&unavailableAnimationCallback);
 template <> void* const csf::fn_slot<0x00620060>::p = reinterpret_cast<void*>(&unavailableAnimationCallback);
+
+// Particle defaults store these identities, but simulation/advanced stream
+// callbacks are deliberately still fatal in production and in these fixtures.
+#include <cstdlib>
+namespace { void unavailableParticleCallback() { std::abort(); } }
+template <> void* const csf::fn_slot<0x00578670>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x00578760>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x00578BA0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x00578C10>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x00578C60>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x00578CE0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x00578D40>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x00578DE0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x00579000>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057A090>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057A1B0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057A230>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057A380>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057A450>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057A600>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057A9A0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057ACD0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057AD40>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057AD80>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057ADE0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057AE40>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057B280>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057B330>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057B3A0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057B4A0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057B5B0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057B640>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057BA00>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057BA70>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057BAB0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057BB40>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057BBD0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057BF10>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057BF70>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057BFB0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057C020>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057CFE0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057DBA0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057EDE0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057F0F0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057F450>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+template <> void* const csf::fn_slot<0x0057F7A0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);

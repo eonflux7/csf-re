@@ -1,5 +1,11 @@
 # WinMain-reached offline NetZ boundary
 
+Follow-on virtual-slot cutover: see [VTABLE_CUTOVER.md](VTABLE_CUTOVER.md).
+All 23 actual virtual trap targets in the 128-address upper bound are supplied;
+103 downstream direct dependencies remain. Direct-demand NetZ unresolved in
+the follow-on worker tree: 163 -> 153 (this tree also includes two intervening
+WinMain boundary additions). Historical results below are unchanged.
+
 The 17 slots in the primary tree's `docs/WINMAIN_REACH.txt` are supplied by
 address, with binary CFG cleanup and compiled HOOK_REGS entry checks. This
 worker tree lacked that report and the tool's `--root` extension; the primary

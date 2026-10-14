@@ -1,5 +1,13 @@
 # Generated offline NetZ boundary — partial, deliberately fail-closed
 
+Vtable cutover: **23/23 actual virtual trap targets** in the supplied 128-address
+WinMain upper bound supplied; two additional direct local accessors supplied,
+103 downstream direct dependencies deferred. Exact local returns are not
+network failures. See [VTABLE_CUTOVER.md](VTABLE_CUTOVER.md) and its per-table
+JSON inventory. No Windows startup is claimed.
+Current frozen manifest: **221 generated + 5 allocator bindings / 387 targets;
+161 deferred**. Direct-demand NetZ unresolved: **163 -> 153** in this tree.
+
 WinMain cutover update: **17/17 reported NetZ trap slots supplied**, including
 real session sentinels/URL, empty selection ownership and its seven original
 virtual targets. Shared game-manager getters retain pointer identity; the

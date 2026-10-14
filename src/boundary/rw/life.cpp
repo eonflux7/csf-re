@@ -16,6 +16,7 @@
 #include "device.h"
 #include "startup.h"
 #include "plugins.h"
+#include "particles.h"
 #include "world.h"
 #ifdef RW_D3D9
 #include "../../../work/tools/librw/src/d3d/rwd3dimpl.h"
@@ -203,7 +204,7 @@ int __stdcall engineStart() {
 // 006db7c0/006dbd50 tear down explicitly, 0050d1a0 calls Term. librw returns void for these three
 // transitions; preserve boolean game results and reject invalid ordering.
 int __stdcall engineStop() {
-    if (rw::Engine::state != rw::Engine::Started || !csf_rw::framesEmpty() || !csf_rw::imagesEmpty() || !csf_rw::objectsEmpty() || !csf_rw::pipelinesEmpty() || !csf_rw::worldsEmpty()) return 0;
+    if (rw::Engine::state != rw::Engine::Started || !csf_rw::framesEmpty() || !csf_rw::imagesEmpty() || !csf_rw::objectsEmpty() || !csf_rw::pipelinesEmpty() || !csf_rw::worldsEmpty() || !csf_rw::particlesEmpty()) return 0;
     csf_rw::destructPlugins(csf_rw::Registry::Engine, gameEngine);
     csf_rw::imageBoundaryStop();
     csf_rw::bindDeviceBackend(nullptr);
@@ -212,7 +213,7 @@ int __stdcall engineStop() {
 int __stdcall engineClose();
 int __stdcall engineTerm() {
     if (rw::Engine::state != rw::Engine::Initialized) return 0;
-    rw::Engine::term(); csf_rw::pluginBoundaryTerm(); gameMemory = {}; return 1;
+    rw::Engine::term(); csf_rw::pluginBoundaryTerm(); csf_rw::particleBoundaryTerm(); gameMemory = {}; return 1;
 }
 void* descriptor;
 decltype(rw::Engine::memfuncs.rwmalloc) savedAllocator;
