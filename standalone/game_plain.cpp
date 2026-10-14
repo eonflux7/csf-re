@@ -4,6 +4,7 @@
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include <cstring>
+#include <initializer_list>
 #include "globals.h"
 #include "hook.h"
 
@@ -126,3 +127,89 @@ HOOK(0x4FB8F0, DevCommandLine_Set, "auto");
 HOOK(0x508F50, Window_FitClientArea, "auto");
 HOOK(0x5364D0, GameScreen_HasBriefing, "auto");
 HOOK(0x7DB650, Import_DirectInput8Create, "boundary-import");
+
+// Destructor of the class with vtables 0x830578/+4 0x830528/+0x10 0x830520 (Settings -> Game), missed by IDA;
+// called from 0x5371EB. Frees the +0xE4 block, then unwinds to the 0x83042C base.
+static void __fastcall C_00830578_Destroy(void* self, void*) {
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x00830578);
+    CSF_AT(uint32_t, self, 0x04) = CSF_ADDR_VT(0x00830528);
+    CSF_AT(uint32_t, self, 0x10) = CSF_ADDR_VT(0x00830520);
+    if (void* block = CSF_AT(void*, self, 0xE4)) {
+        SoundManager_Free(block);
+        CSF_AT(void*, self, 0xE4) = nullptr;
+    }
+    CSF_AT(uint32_t, self, 0x04) = CSF_ADDR_DATA(0x00830488);
+    CSF_AT(uint32_t, self, 0x04) = CSF_ADDR_VT(0x00830438);
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x0083042C);
+}
+HOOK(0x0042B320, C_00830578_Destroy, "auto");
+
+// Code IDA left outside any function: reached only through vtable slots / adjustor thunks (no function at all),
+// or kept as another function's chunk while our sources call it as a function (tools/gen_adjustors.py covers the
+// thunks themselves). Without the original bytes these slots trapped in the standalone.
+CSF_FUNC(void, __fastcall, C_008311c4_Destroy, 0x0044CC90, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, Destroy_454F10, 0x00454F10, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, Destroy_457090, 0x00457090, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, Destroy_46B340, 0x0046B340, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, Destroy_520BD0, 0x00520BD0, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, Scene_ResetTrackedObjects, 0x0044D3F0, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, C_00860a30_InitBase, 0x006CA660, (void* self, void* edx));
+CSF_FUNC(void, __fastcall, S00402350_InitTransform, 0x00402350, (void* self, void* edx));
+
+// Scalar deleting destructors: destroy, then free when flags & 1.
+#define CSF_SCALAR_DELETE(addr, name, destroy)                     \
+    static void* __fastcall name(void* self, void*, unsigned flags) { \
+        destroy(self, nullptr);                                     \
+        if (flags & 1) SoundManager_Free(self);                     \
+        return self;                                                \
+    }                                                               \
+    HOOK(addr, name, "auto");
+CSF_SCALAR_DELETE(0x0044CD80, C_008311c4_ScalarDelete, C_008311c4_Destroy)
+CSF_SCALAR_DELETE(0x00455D80, CScene_ScalarDelete, Destroy_454F10)
+CSF_SCALAR_DELETE(0x00457120, C_008312e0_ScalarDelete, Destroy_457090)
+CSF_SCALAR_DELETE(0x0046BC10, CMissionScript_ScalarDelete, Destroy_46B340)
+CSF_SCALAR_DELETE(0x00520DF0, C_00840fdc_ScalarDelete, Destroy_520BD0)
+
+// Scalar deleting destructor of the class with vtables 0x8311E8/+4 0x8311CC.
+static void* __fastcall C_008311e8_ScalarDelete(void* self, void*, unsigned flags) {
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x008311E8);
+    CSF_AT(uint32_t, self, 0x04) = CSF_ADDR_VT(0x008311CC);
+    Scene_ResetTrackedObjects(self, nullptr);
+    if (void* block = CSF_AT(void*, self, 0x08)) {
+        SoundManager_Free(block);
+        CSF_AT(void*, self, 0x08) = nullptr;
+    }
+    CSF_AT(uint32_t, self, 0x04) = CSF_ADDR_VT(0x0082D410);
+    if (flags & 1) SoundManager_Free(self);
+    return self;
+}
+HOOK(0x0044D550, C_008311e8_ScalarDelete, "auto");
+
+// Chunk of 0x742C80: slot 2 of the object in ECX with argument 0.
+static int __fastcall CallSlot2WithZero(void* self, void*) {
+    return reinterpret_cast<int(__fastcall*)(void*, void*, int)>(CSF_AT(void**, self, 0)[2])(self, nullptr, 0);
+}
+HOOK(0x00661DC0, CallSlot2WithZero, "auto");
+
+// Chunks of 0x6C9BE0: two constructors on the 0x6CA660 base.
+static void* __fastcall C_00861508_Construct(void* self, void*) {
+    C_00860a30_InitBase(self, nullptr);
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x00861508);
+    CSF_AT(uint32_t, self, 0x04) = CSF_ADDR_VT(0x00861500);
+    CSF_AT(uint32_t, self, 0x08) = CSF_ADDR_VT(0x008614E4);
+    S00402350_InitTransform(static_cast<uint8_t*>(self) + 0x20, nullptr);
+    for (int o : {0x5C, 0x60, 0x64, 0x68, 0x6C, 0x70, 0x74, 0x78, 0x7C, 0x88, 0x8C, 0x90, 0x94})
+        CSF_AT(uint32_t, self, o) = 0;
+    return self;
+}
+HOOK(0x006DCA90, C_00861508_Construct, "auto");
+static void* __fastcall C_00862390_Construct(void* self, void*) {
+    C_00860a30_InitBase(self, nullptr);
+    for (int o : {0x20, 0x24, 0x28, 0x2C, 0x34, 0x38, 0x30})
+        CSF_AT(uint32_t, self, o) = 0;
+    CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x00862390);
+    CSF_AT(uint32_t, self, 0x04) = CSF_ADDR_VT(0x00862384);
+    CSF_AT(uint32_t, self, 0x08) = CSF_ADDR_VT(0x00862368);
+    return self;
+}
+HOOK(0x006F0CB0, C_00862390_Construct, "auto");
