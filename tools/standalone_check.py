@@ -205,12 +205,18 @@ def audit(cutover, exe):
     assert [(r['table'], r['index'], number(r['source']), number(r['target']))
             for r in initializers['entries']] == nonzero
     init_source = (cutover / 'initializers.cpp').read_text().split('int csf::run_original_initializers() {', 1)[1]
-    assert [int(a, 16) for a in re.findall(r'init_([0-9A-F]+)\(\)', init_source)] == [r[3] for r in nonzero]
-    init_traps = [hex(r[3]) for r in nonzero if r[3] in stub]
-    assert all(r[3] in real | stub for r in nonzero)
+    # the original CRT's own start-up entries are listed in order but not called (tools/initgen.py)
+    crt_own = {number(r['target']) for r in initializers['entries'] if r['region'] == 'crt'}
+    assert [int(a, 16) for a in re.findall(r'init_([0-9A-F]+)\(\)', init_source)] == \
+        [r[3] for r in nonzero if r[3] not in crt_own]
+    assert [int(a, 16) for a in re.findall(r'// \w+\[\d+\] 0x([0-9A-F]+): original CRT', init_source)] == \
+        [r[3] for r in nonzero if r[3] in crt_own]
+    called = [r for r in nonzero if r[3] not in crt_own]
+    init_traps = [hex(r[3]) for r in called if r[3] in stub]
+    assert all(r[3] in real | stub for r in called)
     assert all(r['covered'] == (number(r['target']) in real) for r in initializers['entries'])
-    assert initializers['covered'] == len(nonzero) - len(init_traps)
-    assert initializers['missing'] == len(init_traps)
+    assert initializers['covered'] == len(called) - len(init_traps) + sum(r[3] in real for r in nonzero if r[3] in crt_own)
+    assert initializers['missing'] == len(init_traps) + sum(r[3] not in real for r in nonzero if r[3] in crt_own)
 
     vt_rows = json.loads((data / 'datagen-vtables.json').read_text())
     slots = {number(v['address']) + 4 * i: number(t)
