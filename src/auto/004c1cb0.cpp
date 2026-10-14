@@ -78,10 +78,10 @@ static int __fastcall AiStateFactory_ProcessArchiveFields(
     if (processField)
     {
         void* archive = CSF_AT(void*, context, 0x04);
-        const uint8_t result = ((uint8_t(__fastcall*)(void*, void*, void*))
+        const int result = ((int(__fastcall*)(void*, void*, void*))
             CSF_AT(void**, archive, 0x00)[0x7C / 4])(
                 archive, nullptr, context);
-        if (result != 0)
+        if (static_cast<uint8_t>(result) != 0)
         {
             CSF_AT(uint8_t, context, 0x00) = 0;
             return result;

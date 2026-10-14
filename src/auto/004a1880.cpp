@@ -77,11 +77,11 @@ static int __fastcall C_00834400_ProcessFields(
     if (continueProcessing)
     {
         void* visitor = CSF_AT(void*, context, 0x04);
-        const bool completed =
-            ((bool(__fastcall*)(void*, void*, int))
+        const int completed =
+            ((int(__fastcall*)(void*, void*, int))
                 CSF_AT(void**, visitor, 0)[0x7C / 4])(
                     visitor, nullptr, contextAddress);
-        if (completed)
+        if (static_cast<uint8_t>(completed) != 0)
         {
             CSF_AT(uint8_t, context, 0x00) = 0;
             return completed;

@@ -46,11 +46,12 @@ static int __fastcall C_00831278_SerializeIconRecords(
     if (CSF_AT(uint8_t, archive, 0x00) == 0)
     {
         void* serializer = CSF_AT(void*, archive, 0x04);
-        const bool result =
-            reinterpret_cast<bool (__fastcall*)(void*, void*, int)>(
+        // Original keeps the callee's full eax (test al,al only sets flags, then ret 4).
+        const int result =
+            reinterpret_cast<int (__fastcall*)(void*, void*, int)>(
                 CSF_AT(void**, serializer, 0)[0x7C / 4])(
                     serializer, nullptr, archiveAddress);
-        if (result)
+        if (static_cast<uint8_t>(result) != 0)
         {
             CSF_AT(uint8_t, archive, 0x00) = 0;
             return result;

@@ -73,9 +73,8 @@ static char __fastcall CPlayerCharacter_GetViewPositionAndDirection(CPlayerChara
     outPosition[1] = position[1];
     outPosition[2] = position[2];
 
+    // Not zeroed: the original stores nothing to its ebp-8 buffer before the call (0x4964f1-0x4964f7) and reads it back after.
     S_MatrixRef matrixRef;
-    matrixRef.matrix = nullptr;
-    matrixRef.owned = 0;
 
     S_MatrixRef* result =
         ((S_MatrixRef*(__fastcall*)(void*, void*, S_MatrixRef*))CSF_AT(void**, viewObject, 0)[0x8C / 4])(

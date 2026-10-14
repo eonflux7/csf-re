@@ -5,7 +5,7 @@
 #include "types/auto_classes.h"
 
 // Callees of the original (bound by address).
-CSF_FUNC(bool, __fastcall, sub_4A8DE0, 0x004A8DE0, (void* self, void* edx));
+CSF_FUNC(int, __fastcall, sub_4A8DE0, 0x004A8DE0, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, sub_4A9140, 0x004A9140, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, sub_4A9340, 0x004A9340, (void* self, void* edx));
 CSF_FUNC(int, __fastcall, ResetState, 0x004D16F0, (void* self, void*));

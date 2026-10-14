@@ -63,11 +63,12 @@ static int __fastcall S_004c2380_ProcessAttackFallbacks(
     if (!blocked)
     {
         void* handler = CSF_AT(void*, record, 0x04);
-        const bool result =
-            reinterpret_cast<bool(__fastcall*)(void*, void*, int)>(
+        // Original: call [edx+7Ch]; test al, al; je ...; ... ret 4 with the full eax.
+        const int result =
+            reinterpret_cast<int(__fastcall*)(void*, void*, int)>(
                 CSF_AT(void**, handler, 0)[0x7C / 4])(
                     handler, nullptr, recordAddress);
-        if (result)
+        if (static_cast<uint8_t>(result) != 0)
         {
             CSF_AT(uint8_t, record, 0) = 0;
             return result;

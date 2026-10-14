@@ -36,15 +36,18 @@ static int __fastcall C_008344f0_ResetFieldsAndNotify(C_008344f0* self, void* /*
     if (child == 0)
         return 0;
 
-    // hit = child->vSlot68(); if (hit != 0) child->vSlot1C(0, 0)
+    // hit = child->vSlot68(); if (hit != 0) hit->vSlot1C(0, 0)
+    // The original reloads the vtable from eax (= hit) before the vSlot1C call,
+    // and returns the callee's full eax (no truncation to char).
     void* childObj = reinterpret_cast<void*>(static_cast<uintptr_t>(child));
     void** childVtbl = CSF_AT(void**, childObj, 0);
     int hit = ((int(__fastcall*)(void*, void*))childVtbl[0x68 / 4])(childObj, nullptr);
     if (hit == 0)
         return hit;
 
-    return static_cast<int>(
-        ((char(__fastcall*)(void*, void*, int, int))childVtbl[0x1C / 4])(childObj, nullptr, 0, 0));
+    void* hitObj = reinterpret_cast<void*>(static_cast<uintptr_t>(hit));
+    void** hitVtbl = CSF_AT(void**, hitObj, 0);
+    return ((int(__fastcall*)(void*, void*, int, int))hitVtbl[0x1C / 4])(hitObj, nullptr, 0, 0);
 }
 
 HOOK(0x4A2C00, C_008344f0_ResetFieldsAndNotify, "auto");

@@ -23,7 +23,6 @@ CSF_GLOBAL(float, g_ProgressScale, 0x0082E03C);
 // Returns the bit pattern of the interpolated float.
 static int __fastcall S_0041e5f0_AppendInterpolatedValues(S_0041e5f0* self, void* /*edx*/, float a2, float a3)
 {
-    GetGlobalState_50D190();
     int stepIndex = GetStateValue(reinterpret_cast<void*>(GetGlobalState_50D190()), nullptr, 100) + 1;
     float stepFloat = static_cast<float>(stepIndex);
     if (stepIndex < 0)

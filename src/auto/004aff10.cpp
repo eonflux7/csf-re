@@ -25,10 +25,8 @@ static int __stdcall Estatico_UpdateGuardTask(C_0085e7b8* a1)
         linkedBase = reinterpret_cast<uint8_t*>(linkedObjectValue) - 4;
     UnnamedApply_4DC180(a1, nullptr, reinterpret_cast<int>(linkedBase) + 1476);
 
-    // Second lookup: result discarded by the original, but the call is kept.
-    GetLinkedObjectValue_4DB5C0(a1, nullptr);
-
-    // Third lookup: base used as the `this` for the final dispatcher call.
+    // Second lookup: base minus 4 (or 0 if unlinked), kept as the task base;
+    // it is the `this` base (+1476) for the final dispatcher call.
     int linkedObjectValueForTask = GetLinkedObjectValue_4DB5C0(a1, nullptr);
     uint8_t* taskBase = nullptr;
     if (linkedObjectValueForTask)

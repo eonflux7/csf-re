@@ -59,18 +59,18 @@ static int __fastcall S_0041f0a0_SerializeAutonomousState(
     }
 
     void* serializer = CSF_AT(void*, state, 0x04);
-    const bool result =
-        reinterpret_cast<bool(__fastcall*)(void*, void*, S_0041f0a0*)>(
+    const int result =
+        reinterpret_cast<int(__fastcall*)(void*, void*, S_0041f0a0*)>(
             CSF_AT(void**, serializer, 0)[0x7C / 4])(
                 serializer, nullptr, state);
-    if (!result)
+    if (static_cast<uint8_t>(result) == 0)
     {
         CSF_AT(uint8_t, state, 0x00) = 1;
         return 1;
     }
 
     CSF_AT(uint8_t, state, 0x00) = 0;
-    return static_cast<int>(result);
+    return result;
 }
 
 HOOK(0x004CF620, S_0041f0a0_SerializeAutonomousState, "auto");

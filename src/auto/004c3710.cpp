@@ -82,10 +82,10 @@ static int __fastcall S_00523cf0_ProcessCoverAttackTasks(
     if (pending)
     {
         void* owner = CSF_AT(void*, task, 4);
-        const bool result =
-            reinterpret_cast<bool(__fastcall*)(void*, void*, void*)>(
+        const int result =
+            reinterpret_cast<int(__fastcall*)(void*, void*, void*)>(
                 CSF_AT(void**, owner, 0)[0x7C / 4])(owner, nullptr, task);
-        if (result)
+        if (static_cast<std::uint8_t>(result) != 0)
         {
             CSF_AT(std::uint8_t, task, 0) = 0;
             return result;
