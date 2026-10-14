@@ -1656,3 +1656,8 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   1,042 functions, trap slots rw 31, netz 17, game 12 (10 of them queue items), crt 2, not-a-function 3. The 12 game
   ones go to three grouped sol-med jobs (work/tasks/wm). Job emufix3 (sol-hi) fixes emudiff's false-alarm causes
   against the 65 documented cases (docs/EMUDIFF_FALSE_ALARMS.tsv).
+- Run into WinMain, stop by stop: 0x694380 and 0x697070 (quarantined / emudiff artefact, both in), 0x4FB8F0
+  (+0x508F50, 0x5364D0: only the hook-only devcmd.cpp implemented them; plain versions in standalone/game_plain.cpp,
+  job plain3), then two crashes on raw original data pointers in a language table at 0x8A66C8 (names, and 2-letter
+  codes IDA never made strings). datagen applied confirmed pointers only; it now also applies aligned words equal to
+  a known item's start and words into the data sections (in-code words stay raw). Next stop: NetZ 0x6684F0.

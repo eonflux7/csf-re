@@ -3,7 +3,8 @@
 
 Output lives in build/datagen (generated inputs, never hand-maintained src/). See
 docs/DATAGEN.md for layout, the stripped-relocation limitation and startup contract.
-Default: confirmed fixups only; --candidate-fixups additionally relocates heuristic
+Default: confirmed fixups, words equal to a known item's start, and words into the data sections;
+--candidate-fixups additionally relocates heuristic
 aligned image-address words. Neither mode claims a complete relocation inventory
 when the PE is stripped and the export has no data-to-data xrefs.
 """
@@ -238,7 +239,13 @@ def generate(args):
         kind = classify(target)
         reg = region(target) if img.code(target) else None
         is_lib = reg not in (None, 'game', 'unknown')
-        applied = a in confirmed or args.candidate_fixups
+        # An aligned word equal to the start of a known string, function or data item is a pointer in practice
+        # (0x8A66C8: a language table whose name pointers IDA has as plain dwords; left raw, the first read of one
+        # crashed the standalone run). So is a word inside the original's data sections: the same table's 2-letter
+        # language codes ("CH", "EK") are strings IDA never made. As integers such words would be 8.5-9.2 million,
+        # as floats denormals: rare in this data. Words into the middle of code stay raw unless --candidate-fixups.
+        applied = (a in confirmed or provenance == 'aligned-word-known-target' or args.candidate_fixups
+                   or (provenance == 'aligned-word-image-range' and not img.code(target)))
         row = dict(source=hex(a), target=hex(target), kind=kind, provenance=provenance,
                    confirmed=a in confirmed, applied=applied, region=reg,
                    implemented=target in impls if img.code(target) else None)

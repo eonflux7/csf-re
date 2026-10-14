@@ -1,7 +1,7 @@
 """Run the play copy under x32dbg (x64dbg-automate) and report the first crash. Windows-side script.
 
 Run via tools/dbg.sh crash [seconds] [exe]: exe defaults to the play copy's CommXPC.exe; the standalone exe is
-`tools/dbg.sh crash 60 E:\\dev\\csf-standalone\\csf_standalone.exe` (CSF_DRYRUN=1 is set for it). Writes a report to stdout:
+`tools/dbg.sh crash 60 E:\\dev\\csf-standalone\\csf_standalone.exe` (CSF_DRYRUN=1 is set for it; add `full` to run on into WinMain). Writes a report to stdout:
   faulting eip + module, registers, disassembly around eip, stack words with module/symbol hints.
 Symbolization of game addresses and of our dinput8.dll happens WSL-side (tools/dbg.sh pipes through
 tools/dbg/symbolize.py).
@@ -16,7 +16,8 @@ secs = int(sys.argv[1]) if len(sys.argv) > 1 else 90
 import os
 DIR = os.path.dirname(GAME)
 if GAME.lower().endswith("csf_standalone.exe"):
-    os.environ["CSF_DRYRUN"] = "1"  # inherited by x32dbg and the debuggee
+    # inherited by x32dbg and the debuggee; a third argument `full` runs on into WinMain
+    os.environ["CSF_DRYRUN"] = "0" if len(sys.argv) > 3 and sys.argv[3] == "full" else "1"
 
 # No default stops (system/entry/TLS breakpoints): read from the ini at debugger startup, so patch it before launch.
 INI = X64DBG[:-4] + ".ini"
