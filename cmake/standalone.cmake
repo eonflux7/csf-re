@@ -23,6 +23,7 @@ endif()
 add_custom_command(OUTPUT "${CSF_CUTOVER}/base.json"
   COMMAND "${CSF_PYTHON}" "${CMAKE_SOURCE_DIR}/tools/linktest.py" -j 8 --out "${CSF_CUTOVER}/base.json"
   DEPENDS ${CSF_STANDALONE_SRC} ${CSF_STANDALONE_HEADERS}
+          "${CMAKE_SOURCE_DIR}/standalone/game_plain.cpp"
           "${CMAKE_SOURCE_DIR}/tools/linktest.py" "${CMAKE_SOURCE_DIR}/db/functions.csv"
           "${CMAKE_SOURCE_DIR}/build/compile_commands.json"
   BYPRODUCTS ${CSF_SLOT_OBJECTS}
@@ -49,7 +50,7 @@ add_custom_command(OUTPUT "${CSF_DATA}" "${CSF_INITS}"
   WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
   COMMENT "Generate validated data and original CRT initializer order (reject invalid bindings)")
 add_library(csf_standalone_startup OBJECT EXCLUDE_FROM_ALL
-            standalone/main.cpp "${CSF_DATA}" "${CSF_INITS}")
+            standalone/main.cpp standalone/game_plain.cpp "${CSF_DATA}" "${CSF_INITS}")
 add_dependencies(csf_standalone_startup csf_standalone_inventory)
 target_compile_definitions(csf_standalone_startup PRIVATE CSF_STANDALONE)
 target_include_directories(csf_standalone_startup PRIVATE src hook standalone)

@@ -36,6 +36,9 @@ def sources():
     out = []
     for d, _, fs in os.walk(os.path.join(ROOT, "src")):
         out += [os.path.join(d, f) for f in fs if f.endswith(".cpp")]
+    # Game slots supplied only by the exe still belong in the pre-data inventory:
+    # datagen needs their IAT/global bindings before startup objects are linked.
+    out.append(os.path.join(ROOT, "standalone", "game_plain.cpp"))
     return sorted(out)
 
 
