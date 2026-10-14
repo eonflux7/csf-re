@@ -335,7 +335,14 @@ R* __cdecl rasterCreate(int w,int h,int depth,int format) {
     return a;
 }
 // 00705a10 locks individual mip levels and reads temporary dimensions/stride.
+unsigned char* rasterLockNative(R* a,int level,int mode);
 unsigned char* __cdecl rasterLock(R* a,int level,int mode) {
+    unsigned char* p=rasterLockNative(a,level,mode);
+    if (csf_rw::startupTracing()) std::fprintf(stderr,"RW startup 0x00627810 RasterLock %p level=%d mode=%d -> %p\n",
+                                               static_cast<void*>(a),level,mode,static_cast<void*>(p));
+    return p;
+}
+unsigned char* rasterLockNative(R* a,int level,int mode) {
     auto it=rasters.find(a); if (it==rasters.end() || it->second.level>=0 || !mode || !(mode&3) || (mode&~15)) return nullptr;
     auto* n=it->second.native;
     if (n->parent!=n || (n->flags&rw::Raster::DONTALLOCATE) || level<0 || level>=n->getNumLevels()) return nullptr;

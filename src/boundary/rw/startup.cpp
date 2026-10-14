@@ -101,6 +101,7 @@ csf_rw::Raster* __cdecl rasterFast(csf_rw::Raster* src,int x,int y) {
     return csf_rw::drawRasterContext(src,rect) ? src : nullptr;
 }
 csf_rw::Raster* __cdecl rasterScaled(csf_rw::Raster* src,const rw::Rect* rect) {
+    csf_rw::startupTrace("0x00627470","RasterRenderScaled");
     return rect && csf_rw::drawRasterContext(src,*rect) ? src : nullptr;
 }
 // First frame supplies window=0, flags=0; use the HWND copied at EngineOpen.

@@ -88,11 +88,11 @@ Stage since 2026-10-13: the waves are exhausted at 91.9% of game code. What is l
 user 2026-10-13); the orchestrator writes the
 tasks, reviews reports and patches, decides. Everything is visible on `tools/webmon.py` (user, 2026-10-13).
 
-State on 2026-10-14, evening: the standalone exe (`/mnt/e/dev/csf-standalone`, `tools/dryrun.py --full`) runs
-all C++ initialisers, enters WinMain, initialises NetZ and DirectInput, RW plugins, the camera, particle classes
-and the world, and stops at RenderWare's file-system manager init (0x7C5F60). Game functions missing from the
-standalone: 27 (+5 not in the queue). Static reach from WinMain: docs/WINMAIN_REACH.txt (direct calls) and
-docs/WINMAIN_REACH_VTABLES.txt (`--vtables`, an upper bound). Jobs' output enters the tree only after review.
+State on 2026-10-14, night: the standalone exe (`/mnt/e/dev/csf-standalone`, `tools/dryrun.py --full`) runs its
+main loop: the four logo Bink movies and the full intro cinematic play on screen (screenshots taken), no trap or crash
+in 160 s. Next: a playtest (does a key/click skip the intro and reach the main menu? SendKeys Escape did not), then
+the menu itself. Game functions missing from the standalone: 25. Static reach from WinMain: docs/WINMAIN_REACH.txt
+(direct calls) and docs/WINMAIN_REACH_VTABLES.txt (`--vtables`, an upper bound). Jobs' output enters the tree only after review.
 
 1. **Run the standalone to its first presented frame**, stop by stop: RtFS and DDS (job rwfs), the particle
    callbacks left (rw8b), the 32 undecided game functions after emudiff can decide them (emufix4). Each stop:

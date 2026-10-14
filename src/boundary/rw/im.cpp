@@ -6,6 +6,7 @@
 #include "hook.h"
 #endif
 #include "device.h"
+#include "startup.h"
 #include <cmath>
 #include <vector>
 
@@ -51,13 +52,15 @@ bool convert(const csf_rw::Im2DVertex* p,int n,std::vector<DeviceIm2DVertex>& ou
 // entries, not original-address slots in the allocated slice inventory.
 int __cdecl im2DPrimitive(int t,const csf_rw::Im2DVertex* p,int n) {
     std::vector<DeviceIm2DVertex> native;
-    if (!ready() || !primitive(t,n>0 ? n : 0) || !convert(p,n,native)) return 0;
+    ++csf_rw::im2DFrameCalls[0];
+    if (!ready() || !primitive(t,n>0 ? n : 0) || !convert(p,n,native)) return ++csf_rw::im2DFrameCalls[1], 0;
     rw::im2d::RenderPrimitive(static_cast<rw::PrimitiveType>(t),native.data(),n); return 1;
 }
 int __cdecl im2DIndexed(int t,const csf_rw::Im2DVertex* p,int n,const uint16_t* idx,int count) {
     std::vector<DeviceIm2DVertex> native;
+    ++csf_rw::im2DFrameCalls[0];
     if (!ready() || n<=0 || !primitive(t,count>0 ? count : 0) ||
-        !indicesValid(idx,count,n) || !convert(p,n,native)) return 0;
+        !indicesValid(idx,count,n) || !convert(p,n,native)) return ++csf_rw::im2DFrameCalls[1], 0;
     rw::im2d::RenderIndexedPrimitive(static_cast<rw::PrimitiveType>(t),native.data(),n,const_cast<uint16_t*>(idx),count); return 1;
 }
 int __cdecl im2DLine(const csf_rw::Im2DVertex* p,int n,int a,int b) {

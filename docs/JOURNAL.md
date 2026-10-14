@@ -1704,3 +1704,18 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   the GUI builder dereferences a null data-tree node (0x692BD0 from 0x71EBD0): job crash2. One run hung after
   RtFSManagerOpen instead (intermittent; the hang dump is ready for it).
 
+
+## 2026-10-14 (night): the standalone plays the intro
+- Jobs applied: rw8b (particle simulation), audio1 (0x69CE50 dialog wstring; 0x523920/0x523930 adjustors, 0x5240F0
+  dtor), emufix4 (emudiff profiles), crash3 (0x544780 passed two saved registers to the arg-less getter 0x68B5F0:
+  ESP off by 8, freed memory read).
+- Two traps written by hand, both undefined behaviour in the original: 0x5348B0 builds a one-byte delimiter " "
+  with no terminator (strlen runs into the saved EBP; ours uses length 1); 0x51AB40 passes a fill record whose first
+  byte is uninitialised stack (ours 0). Emudiff can only show these as DIFF/inconclusive.
+- After those the run no longer stops: Eidos/Pyro/RW/Nvidia Bink logos (800x600 rasters) and the intro cinematic
+  (720x576) decode through RwRasterLock/BinkCopyToBuffer and draw with RwRasterRenderScaled; screenshots via
+  PowerShell CopyFromScreen show the frames. Trace now logs RasterLock, RasterRenderScaled and Im2D counts per Present.
+- SendKeys {ESC} did not skip the intro (input path or wrong key: needs a playtest).
+- Re-running adopt.py on the grouped jobs changed nothing: their 32 leftovers were never in the patches.
+- Pitfall: background `while pgrep -f check_wm.sh` waiters match each other's command lines and never proceed
+  (cost ~3 h). Chain steps in one command instead.

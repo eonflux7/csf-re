@@ -113,7 +113,9 @@ public:
             destination=nullptr;
         }
         HRESULT result=device->Present(nullptr,nullptr,destination,nullptr);
-        if (csf_rw::startupTracing()) std::fprintf(stderr,"RW startup Present HWND=%p HRESULT=%08lx\n",window,static_cast<unsigned long>(result));
+        if (csf_rw::startupTracing()) std::fprintf(stderr,"RW startup Present HWND=%p HRESULT=%08lx im2d=%d failed=%d\n",window,
+                                                   static_cast<unsigned long>(result),csf_rw::im2DFrameCalls[0],csf_rw::im2DFrameCalls[1]);
+        csf_rw::im2DFrameCalls[0]=csf_rw::im2DFrameCalls[1]=0;
         return SUCCEEDED(result);
     }
 #endif
