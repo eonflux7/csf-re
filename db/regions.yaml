@@ -3,8 +3,8 @@
 # kind: game = reimplement; lib = never reverse, only name its boundary API (functions called from game code).
 # Ranges are [start, end). Later entries override earlier ones. confidence: low|med|high.
 
-- {start: 0x401000, end: 0x566000, kind: game, lib: null,  confidence: high, note: "main game code"}
-- {start: 0x566000, end: 0x5a1d50, kind: lib,  lib: rw,    confidence: high, note: "RenderWare core/world"}
+- {start: 0x401000, end: 0x566070, kind: game, lib: null,  confidence: high, note: "main game code"}
+- {start: 0x566070, end: 0x5a1d50, kind: lib,  lib: rw,    confidence: high, note: "RenderWare core/world (0x566010/0x566040 are CMenuMpSessionsPC methods)"}
 - {start: 0x5a1d50, end: 0x61e0c0, kind: lib,  lib: d3dx9, confidence: high, note: "D3DX9 static (shader compiler 5.04.00.3900); unaligned functions"}
 - {start: 0x61e0c0, end: 0x6465b0, kind: lib,  lib: rw,    confidence: high, note: "RW D3D9 driver"}
 - {start: 0x6465b0, end: 0x690b10, kind: lib,  lib: netz,  confidence: med,  note: "Quazal NetZ core"}
