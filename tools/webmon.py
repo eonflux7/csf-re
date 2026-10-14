@@ -167,6 +167,30 @@ def linktest():
                         f"{len(d.get('vtables') or [])} vtables to generate")
 
 
+def standalone():
+    """The cutover at a glance: link test (functions still unresolved per region), the last dry run of the
+    standalone exe (tools/dryrun.py), trap slots the initialisers still reach (tools/initreach.py, static)."""
+    out = {}
+    lt = os.path.join(ROOT, "work", "linktest.json")
+    d = read_json("work", "linktest.json")
+    if d:
+        u = d.get("unresolved_functions") or {}
+        out["link"] = dict(at=os.path.getmtime(lt), compiled=d.get("compiled"), files=d.get("files"),
+                           unresolved=sorted(((k, len(v)) for k, v in u.items()), key=lambda x: -x[1]),
+                           globals=len(d.get("globals") or []), vtables=len(d.get("vtables") or []))
+    dr = read_json("work", "dryrun.json")
+    if dr:
+        exe = os.path.join(ROOT, "build", "csf_standalone.exe")
+        dr["exe_newer"] = os.path.exists(exe) and os.path.getmtime(exe) > dr.get("exe_mtime", 0) + 1
+        out["dryrun"] = dr
+    try:
+        import initreach
+        out["reach"] = initreach.summary(initreach.reach())
+    except (OSError, ValueError, KeyError) as e:
+        out["reach"] = {"error": str(e)[:120]}
+    return out
+
+
 def background():
     out = []
     for label, f in (("verifier", "verifier_state.json"), ("lanes / waves", "grunt_state.json")):
@@ -230,6 +254,7 @@ def collect():
         evidence=slow("evidence", 90, evidence), quota=slow("quota", 60, quota), plan=slow("plan", 30, plan),
         jobs=sorted(jobs, key=lambda j: (j["phase"] != "running", bool(j.get("review")), -j["started"])),
         queue=queue, background=background(), linktest=slow("linktest", 60, linktest),
+        standalone=slow("standalone", 30, standalone),
         commits=[dict(zip(("hash", "when", "subject"), c.split("\t", 2))) for c in commits])
 
 
@@ -396,15 +421,26 @@ function meter(u,W){if(!u)return '<span class="dim">–</span>';const days=W>864
   return `<div class="qh"><b style="color:${c}">${u.used}%</b><span class="dim small" title="${at?'resets '+at:''}">${r}</span></div>
    <div class="meter" title="${u.used}% used${gone==null?'':', '+Math.round(gone*100)+'% of the window gone'}"><i style="width:${Math.min(100,u.used)}%;background:${c}"></i>${gone==null?'':`<u style="left:${gone*100}%"></u>`}</div>${out}`;}
 function render(s){last=s;const p=s.progress,ev=s.evidence||{},pl=s.plan||{},bg=s.background||{};let h='';
-  // progress
-  h+=`<section class="c4"><h2>Game code written</h2><div class="big">${p.pct}%</div><div class="bar"><i style="width:${p.pct}%"></i></div>
-   <div class="dim small">${p.done.toLocaleString()} of ${p.total.toLocaleString()} functions, ${p.done_kb} of ${p.total_kb} KB</div>
-   <table style="margin-top:8px"><thead><tr><th>Left</th><th class="n">fns</th><th class="n">KB</th></tr></thead>${p.left.map(l=>`<tr><td>${E(l.label)}</td><td class="n">${l.n}</td><td class="n">${l.kb}</td></tr>`).join('')}</table></section>`;
+  // game code and cutover
+  const sa=s.standalone||{},lk=sa.link,dr=sa.dryrun,rc=sa.reach||{},ago=t=>hm(Date.now()/1000-t,1)+' ago';
+  const cnt=o=>Object.values(o||{}).reduce((a,b)=>a+b,0),det=o=>Object.entries(o||{}).map(([k,v])=>`${E(k)} ${v}`).join(', ');
+  h+=`<section class="c4"><h2>Game code and standalone exe</h2>
+   <div class="qh"><b>${p.pct}%</b><span class="dim small">of game code written: ${p.done.toLocaleString()} of ${p.total.toLocaleString()} functions, ${p.done_kb} of ${p.total_kb} KB</span></div>
+   <div class="bar"><i style="width:${p.pct}%"></i></div>
+   <div class="dim small" style="margin-top:4px">left: ${p.left.filter(l=>l.n).map(l=>`<span title="${E(l.label)}">${l.n} ${E(l.kind)} (${l.kb} KB)</span>`).join(' · ')||'nothing'}</div>
+   <h2 style="margin-top:12px">Dry run (CSF_DRYRUN=1, up to WinMain)</h2>${dr?`
+   <div class="qh"><b style="color:${dr.finished?'var(--ok)':'var(--warn)'}">${dr.ran} / ${dr.total}</b><span class="dim small">C++ initialisers run · ${ago(dr.at)}</span></div>
+   <div class="bar"><i style="width:${Math.round(100*dr.ran/Math.max(dr.total,1))}%;background:${dr.finished?'var(--ok)':'var(--warn)'}"></i></div>
+   <div class="small" style="margin-top:4px">${dr.finished?'<span class="done">reached WinMain</span>':dr.trap?`stopped at <span class="mono">${E(dr.trap.address)}</span> <span class="dim">${E(dr.trap.name)}</span> <span class="chip">${E(dr.trap.region)}</span>`:`exit ${E(String(dr.exit))}`}${dr.last?` <span class="dim">after ${E(dr.last.table)}[${dr.last.index}] ${E(dr.last.target)}</span>`:''}</div>
+   ${dr.exe_newer?'<div class="warn small">exe rebuilt since: run tools/dryrun.py again</div>':''}`:'<span class="dim">never run: tools/dryrun.py</span>'}
+   ${rc.error?`<div class="failed small">${E(rc.error)}</div>`:rc.startup?`<div class="small" style="margin-top:4px" title="static, direct calls only: an upper bound (paths not taken count), pointer calls unseen">trap slots the initialisers can reach: <b>${cnt(rc.startup)}</b> at start-up <span class="dim">(${det(rc.startup)})</span>, ${cnt(rc.exit)} at exit only</div>`:''}
+   <h2 style="margin-top:12px">Link test: functions still unresolved</h2>${lk?`<table>${lk.unresolved.map(([r,n])=>`<tr><td>${E(r)}</td><td class="n">${n}</td></tr>`).join('')}</table>
+   <div class="dim small" style="margin-top:4px">${lk.compiled}/${lk.files} files compile · ${lk.globals.toLocaleString()} globals, ${lk.vtables.toLocaleString()} vtables to generate · ${ago(lk.at)}</div>`:'<span class="dim">no link test yet: tools/linktest.py</span>'}</section>`;
   // evidence
   const tl={diffed:'compared with the original in game',executed:'ran in game without crashing',gate:'static checks only, never ran',stale:'changed since its evidence',mismatched:'differs from the original'};
   h+=`<section class="c4"><h2>Evidence behind the done functions</h2>${ev.error?`<div class="failed">${E(ev.error)}</div>`:ev.tiers?`<table>${ev.tiers.map(t=>`<tr><td>${tl[t.tier]}</td><td class="n">${t.n.toLocaleString()}</td><td class="n dim">${t.kb} KB</td></tr>`).join('')}
    <tr><td>pending first in-game install</td><td class="n">${ev.pending}</td><td class="n dim">${ev.pending_kb} KB</td></tr></table>`:'<span class="dim">collecting…</span>'}
-   ${s.linktest&&s.linktest.summary?`<div class="dim small" style="margin-top:8px">${E(s.linktest.summary)}</div>`:''}</section>`;
+</section>`;
   // quota
   h+=`<section class="c4"><h2>Quota</h2><table class="qt"><thead><tr><th>Login</th><th>5 h window</th><th>Weekly window</th></tr></thead>${(s.quota||[]).map(q=>`<tr><td title="${E(q.kind)}">${E(q.login)}${q.age>180?`<div class="warn small" title="the usage endpoint is rate-limited; this is its last good answer">${hm(q.age)} old</div>`:''}</td>${q.error?`<td colspan=2 class="failed small">${E(q.error)}</td>`:q.money?`<td colspan=2>${money(q.money)}</td>`:`<td>${meter(q['5h'],18000)}</td><td>${meter(q['7d'],604800)}</td>`}</tr>`).join('')}</table>
    <div class="dim small" style="margin-top:6px">bar: quota used · tick: time gone in the window · hover for the reset time</div>
