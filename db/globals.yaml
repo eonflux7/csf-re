@@ -543,6 +543,7 @@
 - {addr: 0x0085F6A0, name: g_LengthCodes, type: CodeLookup, uses: 1, src: auto}
 - {addr: 0x0085F7A0, name: g_LengthBases, type: LengthValues, uses: 1, src: auto}
 - {addr: 0x0085F818, name: g_DistanceBases, type: DistanceValues, uses: 1, src: auto}
+- {addr: 0x0085F900, name: g_InflateCodeLengthOrder, type: CodeLengthOrder, uses: 1, src: auto}
 - {addr: 0x0086005C, name: g_VectorLengthEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x00860070, name: g_BoxIntersectionEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x0086008C, name: g_RadiansToDegreesFactor, type: const float, uses: 1, src: auto}
@@ -1182,7 +1183,7 @@
 - {addr: 0x008A6C14, name: g_DeflateBufferError, type: const char*, uses: 1, src: auto}
 - {addr: 0x008A6C20, name: g_LogStateWordA, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008A6C24, name: g_LogStateWordB, type: uint32_t, uses: 1, src: auto}
-- {addr: 0x008A7D28, name: g_InflateBitMasks, type: InflateMasks, uses: 2, src: auto, alt: [g_InflateMasks]}
+- {addr: 0x008A7D28, name: g_InflateMasks, type: InflateMasks, uses: 3, src: auto, alt: [g_InflateBitMasks]}
 - {addr: 0x008A7D6C, name: g_AxisX, type: float, uses: 0, src: captain, conf: 0.85}
 - {addr: 0x008A7D70, name: g_AxisX_Y, type: float, uses: 0, src: captain, conf: 0.85}
 - {addr: 0x008A7D74, name: g_AxisX_Z, type: float, uses: 0, src: captain, conf: 0.85}
