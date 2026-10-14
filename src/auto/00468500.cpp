@@ -12,7 +12,7 @@ static char __cdecl MissionScript_ProcessValue(S_00691860* context, bool* state)
 {
     int resolvedValue = 0;
 
-    if (state[20])
+    if (CSF_AT(uint8_t, state, 0x14))
     {
         void* owner = CSF_AT(void*, context, 0);
         if (owner)
@@ -35,19 +35,19 @@ static char __cdecl MissionScript_ProcessValue(S_00691860* context, bool* state)
             reinterpret_cast<uint16_t*>(context));
     }
 
-    int descriptor[4] = {};
+    int descriptor[4];
     bool failed = false;
-    if (!*state)
+    if (!CSF_AT(uint8_t, state, 0))
     {
         void* provider = CSF_AT(void*, state, 0x04);
         failed =
-            !(reinterpret_cast<bool(__fastcall*)(void*, void*, int*, bool*)>(
+            !(reinterpret_cast<unsigned char(__fastcall*)(void*, void*, int*, bool*)>(
                 CSF_AT(void**, provider, 0)[0x88 / 4]))(
                     provider, nullptr, descriptor, state);
     }
     *state = failed;
 
-    if (!CSF_AT(uint8_t, descriptor, 0x01) && state[21])
+    if (!CSF_AT(uint8_t, descriptor, 0x01) && CSF_AT(uint8_t, state, 0x15))
     {
         void* owner = CSF_AT(void*, context, 0);
         void* resolver = static_cast<uint8_t*>(owner) + 0x0C;
