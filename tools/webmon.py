@@ -5,7 +5,9 @@
   .venv/bin/python tools/webmon.py [--port 8777]        then http://127.0.0.1:8777
 
 Shows: what is left of the game code (by kind), the evidence behind the done functions, agent jobs (state, agent,
-login, age, patch size, the orchestrator's verdict; task / report / patch one click away), the escalation queue
+login, age, patch size, the orchestrator's verdict, a running job's last step; tabs running / to review / reviewed,
+a text and an agent filter kept in the URL hash; a viewer with task / report / patch / history, j k to step through
+the jobs, buttons that copy the review command), the escalation queue
 by failure class with the job that holds each item, quota of every login, background processes (verifier, waves),
 open backlog and decisions, recent commits.
 
@@ -213,7 +215,10 @@ def collect():
         j["age_min"] = round(((j.get("finished") or time.time()) - j["started"]) / 60)
         j["tokens"] = slow("tok" + j["name"], 20 if j["phase"] == "running" else 600, lambda j=j: deep_worker.tokens(j))
         j["shells"] = len(deep_worker.shells(j))
-        j.pop("usage", None)
+        if j["phase"] == "running":  # the row shows what a running job is doing without opening it
+            j["last"] = slow("last" + j["name"], 8, lambda j=j: [dict(kind=k, text=t) for k, t in deep_worker.history(j["name"], 1)])
+        for k in ("usage", "home", "head", "pid"):
+            j.pop(k, None)
     commits = subprocess.run(["git", "-C", ROOT, "log", "-14", "--format=%h\t%ar\t%s"], capture_output=True,
                              text=True).stdout.splitlines()
     return dict(
@@ -276,10 +281,27 @@ tr.job{cursor:pointer}tr.job:hover td{background:var(--chip)}tr.jd td{background
 .meter>u{position:absolute;top:-3px;bottom:-3px;width:2px;margin-left:-1px;background:var(--ink);opacity:.6;border-radius:1px}
 .qh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;white-space:nowrap}.qh b{font-size:15px;font-weight:650;font-variant-numeric:tabular-nums}
 .qh span{font-variant-numeric:tabular-nums}table.qt td{padding-right:14px;width:38%}table.qt td:first-child{width:24%}table.qt td:last-child{padding-right:0}.warn{color:var(--warn)}
+.contents{display:contents}
+.jh{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}.jh h2{margin:0}
+.tabs{display:inline-flex;gap:4px;flex-wrap:wrap}.tabs button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:1px 10px;font:inherit;font-size:12.5px;cursor:pointer}
+.tabs button:hover{border-color:var(--acc)}.tabs button.on{background:var(--acc);border-color:var(--acc);color:var(--card)}.tabs button b{font-weight:600;font-variant-numeric:tabular-nums;margin-left:5px;opacity:.85}
+.jh input,.jh select{font:inherit;font-size:13px;padding:3px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}.jh input{flex:1;min-width:200px;max-width:380px}
+#jsum{margin-left:auto}
+.task{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:560px}
+.last{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:560px;margin-top:2px}
+.ea{display:inline-block;font:11.5px ui-monospace,Menlo,Consolas,monospace;padding:0 5px;border-radius:4px;background:var(--chip);margin:2px 3px 0 0}
+button.off{color:var(--dim);opacity:.5}
+#jmore{text-align:center;padding-top:8px}#jmore:empty{display:none}
+dialog header{display:flex;gap:12px;align-items:center;flex-wrap:wrap}dialog header .grow{flex:1}
+pre .add{color:var(--ok)}pre .del{color:var(--bad)}pre .hunk{color:var(--acc)}pre .fh{font-weight:650}
 </style></head><body>
 <header><h1>CSF-RE</h1><span class="dim">agent jobs, queue and what is left of the game code</span><span id="stamp"></span></header>
-<main id="m"><section class="c12">loading…</section></main>
-<dialog id="dlg"><header><b id="dt"></b> <span class="dim small" id="ds"></span><button class="link" style="float:right" onclick="dlg.close()">close</button></header><pre id="dp"></pre></dialog>
+<main id="m"><div id="top" class="contents"><section class="c12">loading…</section></div>
+<section class="c12" id="jobs"><div class="jh"><h2>Agent jobs</h2><span id="jtabs" class="tabs"></span>
+ <input id="jq" type="search" placeholder="filter by name, task, address, note, verdict…  ( / )" autocomplete="off"><select id="ja"><option value="">all agents</option></select><span id="jsum" class="dim small"></span></div>
+ <div class="wrap"><table id="jt"></table></div><div id="jmore"></div></section>
+<div id="bot" class="contents"></div></main>
+<dialog id="dlg"><header><b id="dt"></b><span id="dtabs" class="tabs"></span><span class="dim small grow" id="ds"></span><span id="dact" class="small"></span><button class="link" onclick="dlg.close()">close</button></header><pre id="dp"></pre></dialog>
 <script>
 const E=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const open_=new Set(),openJobs=new Set(),jd={};let last=null;
@@ -294,8 +316,71 @@ function jobDetail(n){const d=jd[n];if(!d)return '<span class="dim">loading…</
    ${!t.input&&d.phase=='running'?'<div class="dim small">no running count for this job (started before the session log was kept); the total shows when it ends</div>':''}</div>
    <div><h2>Last steps</h2>${(d.history||[]).length?d.history.slice().reverse().map(x=>`<div class="hist"><span class="chip">${x.kind}</span> <span class="${x.kind=='say'?'':'mono small'}">${E(x.text)}</span></div>`).join(''):'<span class="dim small">nothing recorded yet</span>'}</div></div>`;}
 async function loadJobs(){for(const n of openJobs){try{const r=await fetch('/api/job/'+n);jd[n]=await r.json();const el=document.getElementById('jd-'+n);if(el)el.innerHTML=jobDetail(n);}catch(e){}}}
-async function show(title,url){dt.textContent=title;ds.textContent=url;dp.textContent='loading…';dlg.showModal();
+// The viewer: a queue item (show) or a job with tabs task / report / patch / history (viewJob);
+// in a job: left/right switch tabs, j/k step through the jobs the table lists, the verdict buttons copy the review command.
+let vj=null;const VT=[['task','Task'],['report','Report'],['patch','Patch'],['activity','History']];
+async function show(title,url){vj=null;dtabs.innerHTML=dact.innerHTML='';dt.textContent=title;ds.textContent=url;dp.textContent='loading…';if(!dlg.open)dlg.showModal();
   const r=await fetch(url);dp.textContent=r.ok?await r.text():'not there (yet)';}
+const diffHtml=t=>t.split('\n').map(l=>{const c=/^(\+\+\+|---|diff |index )/.test(l)?'fh':l[0]=='+'?'add':l[0]=='-'?'del':l.startsWith('@@')?'hunk':'';return c?`<span class="${c}">${E(l)}</span>`:E(l);}).join('\n');
+async function viewJob(n,w){const j=((last||{}).jobs||[]).find(x=>x.name==n)||{name:n};vj={n,w};
+  dt.textContent=n;ds.textContent=`${j.agent||''} · ${stateLabel(j)}${j.review?' · '+j.review:''}  —  ← → tabs · j k jobs · esc`;
+  dtabs.innerHTML=VT.map(([k,l])=>`<button data-w="${k}" class="${k==w?'on':''}">${l}${k=='patch'&&j.patch_lines?`<b>${j.patch_lines}</b>`:''}</button>`).join('');
+  dact.innerHTML='copy review: '+['applied','partial','rejected'].map(v=>`<button class="link ${v}" data-r="${v}">${v}</button>`).join(' · ');
+  if(!dlg.open)dlg.showModal();dlg.scrollTop=0;dp.textContent='loading…';
+  const r=await fetch(`/job/${n}/${w}`),t=r.ok?await r.text():'not there (yet)';if(!vj||vj.n!=n||vj.w!=w)return;
+  if(w=='patch'&&r.ok)dp.innerHTML=diffHtml(t);else dp.textContent=t;}
+async function copy(s,el){try{await navigator.clipboard.writeText(s);}catch(e){const t=document.createElement('textarea');t.value=s;document.body.append(t);t.select();document.execCommand('copy');t.remove();}
+  const o=el.textContent;el.textContent='copied';setTimeout(()=>el.textContent=o,1200);}
+dtabs.onclick=e=>{const b=e.target.closest('[data-w]');if(b&&vj)viewJob(vj.n,b.dataset.w);};
+dact.onclick=e=>{const b=e.target.closest('[data-r]');if(b&&vj)copy(`.venv/bin/python tools/deep_worker.py review ${vj.n} ${b.dataset.r} --note ""`,b);};
+dlg.addEventListener('keydown',e=>{if(!vj||e.ctrlKey||e.metaKey||e.altKey)return;const i=VT.findIndex(t=>t[0]==vj.w);
+  if(e.key=='ArrowRight'||e.key=='ArrowLeft'){e.preventDefault();viewJob(vj.n,VT[(i+(e.key=='ArrowRight'?1:VT.length-1))%VT.length][0]);}
+  else if(e.key=='j'||e.key=='k'){const p=vis.indexOf(vj.n),q=p<0?0:p+(e.key=='j'?1:-1);if(q>=0&&q<vis.length)viewJob(vis[q],vj.w);}});
+// Agent jobs: a tab per bucket (running / waiting for review / reviewed), a text filter and an agent filter, kept in the
+// URL hash with the open rows; the table lists 40 rows at a time.
+const JT=[['active','Active'],['running','Running'],['review','To review'],['reviewed','Reviewed'],['all','All']],JE={active:'nothing running or waiting for review',running:'nothing running',review:'nothing waiting for review',reviewed:'nothing reviewed yet',all:'no jobs yet'};
+const jf={tab:'active',q:'',agent:'',limit:40};let vis=[],jtHtml='',agKey='';
+const bucket=j=>j.phase=='running'?'running':j.review?'reviewed':'review',BO={running:0,review:1,reviewed:2};
+const inTab=(j,t)=>t=='all'||t==bucket(j)||(t=='active'&&bucket(j)!='reviewed');
+const when=j=>j.review?(j.reviewed||j.finished||j.started):(j.finished||j.started);
+function jmatch(j){if(jf.agent&&(j.agent||'sol-hi')!=jf.agent)return false;const q=jf.q.trim().toLowerCase();if(!q)return true;
+  const s=[j.name,j.task,j.note,j.agent,j.login,j.review,stateLabel(j),(j.eas||[]).join(' ')].join(' ').toLowerCase();return q.split(/\s+/).every(w=>s.includes(w));}
+const waiting=j=>j.phase=='running'&&/^\(waiting/.test(j.task||'');
+const stateLabel=j=>waiting(j)?'waiting for a tree':j.phase=='done'&&!j.review?'done, to review':j.phase=='dead'?'dead (process gone)':j.phase||'';
+const ago=t=>hm(Date.now()/1000-t,1)+' ago';
+function jobRow(j){const eas=j.eas||[],t=j.tokens||{},L=(j.last||[])[0],lk=(w,l,ok)=>`<button class="link${ok?'':' off'}" data-v="${w}">${l}</button>`;
+  return `<tr class="job" data-job="${E(j.name)}"><td class="mono" style="white-space:nowrap"><span class="dim">${openJobs.has(j.name)?'▾':'▸'}</span> ${E(j.name)}</td><td>${E(j.agent||'sol-hi')}<div class="dim small">${E(j.login||'')}</div></td>
+    <td class="${waiting(j)?'dim':j.phase}">${stateLabel(j)}${j.shells?` <span class="chip">${j.shells} shell${j.shells>1?'s':''}</span>`:''}${j.runs>1?` <span class="dim small">run ${j.runs}</span>`:''}${j.error?`<div class="small dim" title="${E(j.error)}">${E(j.error.slice(0,90))}</div>`:''}</td>
+    <td class="n">${hm(j.age_min*60,1)}${j.finished?`<div class="dim small" title="ended ${new Date(j.finished*1000).toLocaleString()}">ended ${ago(j.finished)}</div>`:''}</td>
+    <td class="n">${tok(t)}${t.cost_usd?`<div class="dim small">$${t.cost_usd.toFixed(2)}</div>`:''}</td><td class="n">${j.patch_lines??'–'}</td>
+    <td class="${j.review||''}" ${j.reviewed?`title="reviewed ${new Date(j.reviewed*1000).toLocaleString()}"`:''}>${j.review||'–'}${j.note?`<div class="small dim">${E(j.note)}</div>`:''}</td>
+    <td><div class="task" title="${E(j.task)}">${E(j.task)}</div>${eas.length?`<div>${eas.slice(0,4).map(e=>`<span class="ea">${e}</span>`).join('')}${eas.length>4?`<span class="dim small">+${eas.length-4} more</span>`:''}</div>`:''}
+     ${L?`<div class="last mono small running" title="${E(L.text)}">${L.kind} · ${E(L.text)}</div>`:''}</td>
+    <td style="white-space:nowrap">${lk('task','task',1)} · ${lk('report','report',j.has_report)} · ${lk('patch','patch',j.patch_lines)} · ${lk('activity','history',1)}</td></tr>
+    ${openJobs.has(j.name)?`<tr class="jd"><td colspan=9 id="jd-${E(j.name)}">${jobDetail(j.name)}</td></tr>`:''}`;}
+function renderJobs(){if(!last)return;const J=(last.jobs||[]).slice().sort((a,b)=>BO[bucket(a)]-BO[bucket(b)]||when(b)-when(a));
+  const M=J.filter(jmatch),F=M.filter(j=>inTab(j,jf.tab));vis=F.map(j=>j.name);
+  jtabs.innerHTML=JT.map(([t,l])=>`<button data-t="${t}" class="${t==jf.tab?'on':''}">${l}<b>${M.filter(j=>inTab(j,t)).length}</b></button>`).join('');
+  const ag=[...new Set(J.map(j=>j.agent||'sol-hi'))].sort();if(ag.join()!=agKey){agKey=ag.join();ja.innerHTML='<option value="">all agents</option>'+ag.map(a=>`<option>${E(a)}</option>`).join('');ja.value=jf.agent;}
+  const ti=F.reduce((a,j)=>a+((j.tokens||{}).input||0),0),to=F.reduce((a,j)=>a+((j.tokens||{}).output||0),0),c=F.reduce((a,j)=>a+((j.tokens||{}).cost_usd||0),0);
+  jsum.textContent=`${F.length} job${F.length==1?'':'s'} · tokens ${k(ti)} in / ${k(to)} out${c?` · $${c.toFixed(2)}`:''}`;
+  const h=`<thead><tr><th>Job</th><th>Agent</th><th>State</th><th class="n">Time</th><th class="n">Tokens in / out</th><th class="n">Patch</th><th>Verdict</th><th>Task</th><th></th></tr></thead>
+   ${F.slice(0,jf.limit).map(jobRow).join('')||`<tr><td colspan=9 class="dim">${jf.q||jf.agent?'no job matches the filter':JE[jf.tab]}</td></tr>`}`;
+  if(h!=jtHtml){jt.innerHTML=jtHtml=h;}
+  const more=F.length-jf.limit;jmore.innerHTML=more>0?`<button class="link" data-m="40">show ${Math.min(40,more)} more</button> <span class="dim small">· ${more} not shown ·</span> <button class="link" data-m="all">show all</button>`:'';}
+function saveHash(){const p=new URLSearchParams();if(jf.tab!='active')p.set('tab',jf.tab);if(jf.q)p.set('q',jf.q);if(jf.agent)p.set('agent',jf.agent);if(openJobs.size)p.set('job',[...openJobs].join(','));
+  const q=p.toString().replace(/%2C/g,',');history.replaceState(null,'',q?'#'+q:location.pathname);}
+function loadHash(){const p=new URLSearchParams(location.hash.slice(1));jf.tab=JE[p.get('tab')]?p.get('tab'):'active';jf.q=p.get('q')||'';jf.agent=p.get('agent')||'';
+  (p.get('job')||'').split(',').filter(Boolean).forEach(n=>openJobs.add(n));jq.value=jf.q;}
+const refilter=()=>{jf.limit=40;saveHash();renderJobs();};
+jtabs.onclick=e=>{const b=e.target.closest('[data-t]');if(b){jf.tab=b.dataset.t;refilter();}};
+jq.oninput=()=>{jf.q=jq.value;refilter();};ja.onchange=()=>{jf.agent=ja.value;refilter();};
+jq.onkeydown=e=>{if(e.key=='Escape'&&jq.value){jq.value='';jq.oninput();}};
+jmore.onclick=e=>{const b=e.target.closest('[data-m]');if(b){jf.limit=b.dataset.m=='all'?1e9:jf.limit+40;renderJobs();}};
+jt.onclick=e=>{const r=e.target.closest('tr.job');if(!r)return;const n=r.dataset.job,v=e.target.closest('[data-v]');
+  if(v){if(!v.classList.contains('off'))viewJob(n,v.dataset.v);return;}
+  if(e.target.closest('td:last-child'))return;openJobs.has(n)?openJobs.delete(n):openJobs.add(n);saveHash();renderJobs();loadJobs();};
+document.addEventListener('keydown',e=>{if(e.key=='/'&&!dlg.open&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();jq.focus();}});
 // A prepaid key: $ spent of its limit
 function money(m){const p=m.limit?Math.min(100,Math.round(100*m.spent/m.limit)):0,c=p>=90?'var(--bad)':p>=70?'var(--warn)':'var(--ok)';
   return `<div class="qh"><b style="color:${c}">$${m.spent.toFixed(2)}</b><span class="dim small">${m.limit?'of $'+m.limit+' spent':'spent, no limit'}${m.expires?' · key expires '+new Date(m.expires).toLocaleDateString():''}</span></div>
@@ -325,20 +410,7 @@ function render(s){last=s;const p=s.progress,ev=s.evidence||{},pl=s.plan||{},bg=
    <div class="dim small" style="margin-top:6px">bar: quota used · tick: time gone in the window · hover for the reset time</div>
    <h2 style="margin-top:14px">Background</h2>${(bg.states||[]).map(b=>`<div><span class="${b.running?'running':'dim'}">●</span> ${E(b.what)}: ${E(b.phase)||'–'} <span class="dim small">${b.running?'':'(not running, '+hm(b.age_min*60,1)+' ago)'}</span></div>`).join('')}
    ${(bg.procs||[]).map(x=>`<div class="mono dim small">${E(x)}</div>`).join('')}</section>`;
-  // jobs
-  const J=s.jobs||[];const run=J.filter(j=>j.phase=='running').length,wait=J.filter(j=>j.phase!='running'&&!j.review).length;
-  h+=`<section class="c12"><h2>Agent jobs <span class="chip">${run} running</span> <span class="chip">${wait} waiting for review</span> <span class="chip">${J.length-run-wait} reviewed</span></h2><div class="wrap"><table>
-   <thead><tr><th>Job</th><th>Agent</th><th>State</th><th class="n">Time</th><th class="n">Tokens in / out</th><th class="n">Patch</th><th>Verdict</th><th>Task</th><th></th></tr></thead>
-   ${J.map(j=>`<tr class="job" data-job="${E(j.name)}"><td class="mono"><span class="dim">${openJobs.has(j.name)?'▾':'▸'}</span> ${E(j.name)}</td><td>${E(j.agent||'sol-hi')}<div class="dim small">${E(j.login||'')}</div></td>
-    <td class="${j.phase}">${j.phase=='done'&&!j.review?'done, to review':j.phase}${j.shells?` <span class="chip">${j.shells} shell${j.shells>1?'s':''}</span>`:''}${j.runs>1?` <span class="dim small">run ${j.runs}</span>`:''}${j.error?`<div class="small dim">${E(j.error.slice(0,90))}</div>`:''}</td>
-    <td class="n">${hm(j.age_min*60,1)}</td><td class="n">${tok(j.tokens)}</td><td class="n">${j.patch_lines??'–'}</td>
-    <td class="${j.review||''}">${j.review||'–'}${j.note?`<div class="small dim">${E(j.note)}</div>`:''}</td>
-    <td>${E(j.task)}${(j.eas||[]).length?` <span class="dim small">(${j.eas.length} addresses)</span>`:''}</td>
-    <td style="white-space:nowrap" onclick="event.stopPropagation()"><button class="link" onclick="show('${E(j.name)}: task','/job/${E(j.name)}/task')">task</button> ·
-     <button class="link" onclick="show('${E(j.name)}: report','/job/${E(j.name)}/report')">report</button> ·
-     <button class="link" onclick="show('${E(j.name)}: patch','/job/${E(j.name)}/patch')">patch</button> ·
-     <button class="link" onclick="show('${E(j.name)}: activity','/job/${E(j.name)}/activity')">full history</button></td></tr>
-    ${openJobs.has(j.name)?`<tr class="jd"><td colspan=9 id="jd-${E(j.name)}">${jobDetail(j.name)}</td></tr>`:''}`).join('')||'<tr><td colspan=9 class="dim">no jobs yet</td></tr>'}</table></div></section>`;
+  top.innerHTML=h;h='';
   // queue
   const Q=s.queue||[],by={};Q.forEach(q=>(by[q.cls]=by[q.cls]||[]).push(q));const held=Q.filter(q=>q.job).length;
   h+=`<section class="c7"><h2>Escalation queue <span class="chip">${Q.length} items</span> <span class="chip">${held} held by a job</span></h2>
@@ -348,13 +420,12 @@ function render(s){last=s;const p=s.progress,ev=s.evidence||{},pl=s.plan||{},bg=
   h+=`<section class="c5"><h2>Waiting on the user</h2>${(pl.decisions||[]).length?`<ul>${pl.decisions.map(d=>`<li>${E(d.replace(/^- /,''))}</li>`).join('')}</ul>`:'<span class="dim">nothing</span>'}
    <h2 style="margin-top:14px">Open backlog</h2>${(pl.areas||[]).map(a=>`<details data-k="pl${E(a.area)}" ${open_.has('pl'+a.area)?'open':''}><summary><b>${a.open.length}</b><span class="grow">${E(a.area)}</span><span class="dim small">${a.done} done</span></summary><ul class="small">${a.open.map(o=>`<li>${E(o)}</li>`).join('')}</ul></details>`).join('')}
    <h2 style="margin-top:14px">Recent commits</h2><table>${(s.commits||[]).map(c=>`<tr><td class="mono dim small">${c.hash}</td><td class="small">${E(c.subject)}</td><td class="dim small" style="white-space:nowrap">${E(c.when)}</td></tr>`).join('')}</table></section>`;
-  m.innerHTML=h;
-  m.querySelectorAll('tr.job').forEach(r=>r.addEventListener('click',()=>{const n=r.dataset.job;openJobs.has(n)?openJobs.delete(n):openJobs.add(n);render(last);loadJobs();}));
+  bot.innerHTML=h;renderJobs();
   m.querySelectorAll('details').forEach(d=>d.addEventListener('toggle',()=>d.open?open_.add(d.dataset.k):open_.delete(d.dataset.k)));
   stamp.textContent=(s.error?'collector error: '+s.error+' · ':'')+'state from '+new Date(s.at*1000).toLocaleTimeString();}
-async function tick(){try{const r=await fetch('/api/state');const s=await r.json();if(s.progress&&!dlg.open){render(s);loadJobs();}else if(!s.progress)stamp.textContent='collecting…';}
+async function tick(){try{const r=await fetch('/api/state');const s=await r.json();if(s.progress){render(s);loadJobs();}else if(!s.progress)stamp.textContent='collecting…';}
   catch(e){stamp.textContent='monitor not reachable';}}
-(location.hash.match(/job=([\w.,-]+)/)||['',''])[1].split(',').filter(Boolean).forEach(n=>openJobs.add(n));
+loadHash();
 tick();setInterval(tick,4000);
 </script></body></html>"""
 
