@@ -10,7 +10,7 @@ static int __stdcall ReleaseBlockAtOffset0C(int a1)
     int result = CSF_AT(int, obj, 0x0C);
     if (result)
     {
-        Mem_Free(reinterpret_cast<void*>(static_cast<uintptr_t>(CSF_AT(int, obj, 0x0C))));
+        result = Mem_Free(reinterpret_cast<void*>(static_cast<uintptr_t>(CSF_AT(int, obj, 0x0C))));
         CSF_AT(int, obj, 0x0C) = 0;
     }
     return result;

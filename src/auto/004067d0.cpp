@@ -76,11 +76,12 @@ static int __fastcall S_00405e60_ProcessFields(
     if (CSF_AT(uint8_t, context, 0) == 0)
     {
         void* processor = CSF_AT(void*, context, 0x4);
-        const bool result =
-            reinterpret_cast<bool (__fastcall*)(void*, void*, int)>(
+        const int result =
+            reinterpret_cast<int (__fastcall*)(void*, void*, int)>(
                 CSF_AT(void**, processor, 0)[0x7C / 4])(
                     processor, nullptr, contextAddress);
-        if (result)
+        // Original: test al, al / je -> the whole eax is returned on this path.
+        if (static_cast<uint8_t>(result) != 0)
         {
             CSF_AT(uint8_t, context, 0) = 0;
             return result;

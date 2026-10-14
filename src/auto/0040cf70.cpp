@@ -97,11 +97,11 @@ static int __fastcall C_0082db60_Serialize(
     if (ready)
     {
         void* archive = CSF_AT(void*, context, 0x04);
-        const bool result =
-            reinterpret_cast<bool(__fastcall*)(void*, void*, int)>(
+        const int result =
+            reinterpret_cast<int(__fastcall*)(void*, void*, int)>(
                 CSF_AT(void**, archive, 0)[0x7C / 4])(
                     archive, nullptr, contextAddress);
-        if (result)
+        if (static_cast<uint8_t>(result) != 0)
         {
             CSF_AT(uint8_t, context, 0x00) = 0;
             return result;

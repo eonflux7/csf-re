@@ -7,7 +7,7 @@ CSF_FUNC(int, __fastcall, GfxMatrix_RotateZAxisRadians, 0x006ADBE0, (int* self, 
 
 CSF_GLOBAL(float, g_RadToDegFactor, 0x0082D7C4);
 
-using VirtualRotateNotifyFn = int(__fastcall*)(void* self, void* edx, int* rotatedVec, float degrees, void* object);
+using VirtualRotateNotifyFn = int(__fastcall*)(void* self, void* edx, int* rotatedVec, float degrees);
 
 static int __fastcall RotateTransformEntryZ(uint32_t* self, void* /*edx*/, int entryIndex, float angleRadians)
 {
@@ -31,7 +31,7 @@ static int __fastcall RotateTransformEntryZ(uint32_t* self, void* /*edx*/, int e
     if (object != nullptr) {
         float degrees = angleRadians * g_RadToDegFactor;
         VirtualRotateNotifyFn notify = reinterpret_cast<VirtualRotateNotifyFn>(CSF_AT(void**, object, 0)[72 / 4]);
-        return notify(object, nullptr, rotated, degrees, object);
+        return notify(object, nullptr, rotated, degrees);
     }
     return result;
 }

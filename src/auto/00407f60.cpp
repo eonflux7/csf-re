@@ -21,9 +21,11 @@ static int __fastcall RotateSubEntryAroundAxisX(uint8_t* self, void* /*edx*/, in
     if (entryObject != 0)
     {
         float angleDegrees = a3 * g_DegreesPerRadian;
-        // Vtable slot 0x48 / 4 = 18; __stdcall with (&g_AxisX, degrees), object pointer is not passed.
-        return ((int(__stdcall*)(float*, float))CSF_AT(void**, reinterpret_cast<void*>(entryObject), 0)[18])(
-            &g_AxisX, angleDegrees);
+        // Vtable slot 0x48 / 4 = 18. The original loads the object into ecx (push ecx; fstp [esp]
+        // overwrites that pushed slot with the degrees), then pushes &g_AxisX and calls [eax+0x48]:
+        // ecx = object, stack = (&g_AxisX, degrees), callee pops 8.
+        return ((int(__fastcall*)(void*, void*, float*, float))CSF_AT(void**, reinterpret_cast<void*>(entryObject), 0)[18])(
+            reinterpret_cast<void*>(entryObject), nullptr, &g_AxisX, angleDegrees);
     }
     return result;
 }

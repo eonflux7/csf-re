@@ -74,13 +74,15 @@ static int __fastcall S_00691860_Serialize(
     if (canContinue)
     {
         void* serializer = CSF_AT(void*, context, 4);
-        const bool result = ((bool(__fastcall*)(void*, void*, uint8_t*))
+        // Original: call [edx+7Ch]; test al, al; je ...; ... ret 4 with eax
+        // unchanged, so the callee's full eax is the return value.
+        const uint32_t result = ((uint32_t(__fastcall*)(void*, void*, uint8_t*))
             CSF_AT(void**, serializer, 0)[0x7C / 4])(
                 serializer, nullptr, context);
-        if (result)
+        if (static_cast<uint8_t>(result) != 0)
         {
             CSF_AT(uint8_t, context, 0) = 0;
-            return result;
+            return static_cast<int>(result);
         }
     }
 

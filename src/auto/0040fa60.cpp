@@ -59,8 +59,8 @@ static int __fastcall Vehicle_SerializeBaseState(C_0082de40* self, void* /*edx*/
     if (CSF_AT(uint8_t, ar, 0) == 0) {
         stream = CSF_AT(void*, ar, 4);
         streamVtbl = CSF_AT(void**, stream, 0);
-        char r = ((char(__fastcall*)(void*, void*, int))streamVtbl[0x7C / 4])(stream, nullptr, a2);
-        if (r != 0) {
+        int r = ((int(__fastcall*)(void*, void*, int))streamVtbl[0x7C / 4])(stream, nullptr, a2);
+        if (static_cast<uint8_t>(r) != 0) {
             CSF_AT(uint8_t, ar, 0) = 0;
             return r;
         }

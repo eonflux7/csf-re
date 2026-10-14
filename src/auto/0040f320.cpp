@@ -15,7 +15,7 @@ CSF_FUNC(int, __cdecl, RwMatrixDestroy, 0x00624D10,
 static char __fastcall C_0082ddf8_UpdateWorldRay(
     C_0082ddf8* self, void* /*edx*/)
 {
-    alignas(8) std::uint8_t matrixResult[0x8] = {};
+    alignas(8) std::uint8_t matrixResult[0x8];
     void* source = reinterpret_cast<void*>(self->field_001c);
     reinterpret_cast<void(__fastcall*)(void*, void*, void*, int)>(
         CSF_AT(void**, source, 0)[0x2C / 4])(

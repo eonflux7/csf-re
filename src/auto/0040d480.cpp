@@ -42,7 +42,7 @@ static char __fastcall C_0082dc88_RecordScaledPosition(
 
     void* dispatched = C_0082dd78_DispatchReturnedObject(self, nullptr);
 
-    alignas(8) std::uint8_t matrixResultBytes[0xC]{};
+    alignas(8) std::uint8_t matrixResultBytes[0xC];
     void* matrixResult =
         reinterpret_cast<void* (__fastcall*)(void*, void*, void*)>(
             CSF_AT(void**, transform, 0)[0x8C / 4])(

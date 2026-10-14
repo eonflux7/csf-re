@@ -82,10 +82,10 @@ static int __fastcall Archive_SerializeComposite(void* self, void* /*edx*/, int 
     if (!failed)
     {
         void* serializer = CSF_AT(void*, archive, 4);
-        const bool result = ((bool(__fastcall*)(void*, void*, int))
+        const int result = ((int(__fastcall*)(void*, void*, int))
             CSF_AT(void**, serializer, 0)[0x7C / 4])(
                 serializer, nullptr, a2);
-        if (result)
+        if (static_cast<std::uint8_t>(result) != 0)
         {
             CSF_AT(std::uint8_t, archive, 0) = 0;
             return result;

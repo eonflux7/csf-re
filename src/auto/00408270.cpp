@@ -40,10 +40,11 @@ static int __fastcall RotateEntryZAndNotifyStdcall(uint8_t* self, void* /*edx*/,
     }
 
     float degrees = angleRadians * g_RadToDegFactor;
-    // Slot 18 is a __stdcall method taking (matrix, degrees); the original pushes
-    // the float degrees value into the slot that held the object pointer.
-    return reinterpret_cast<int(__stdcall*)(int*, float)>(
-        CSF_AT(void**, notifyTarget, 0)[0x48 / 4])(matrix, degrees);
+    // Slot 18 (0x48). The original loads the object into ecx (push ecx; fstp [esp] overwrites
+    // that pushed slot with the degrees), then pushes the matrix address and calls [eax+0x48]:
+    // ecx = object, stack = (matrix, degrees), callee pops 8.
+    return reinterpret_cast<int(__fastcall*)(void*, void*, int*, float)>(
+        CSF_AT(void**, notifyTarget, 0)[0x48 / 4])(notifyTarget, nullptr, matrix, degrees);
 }
 
 HOOK(0x00408270, RotateEntryZAndNotifyStdcall, "auto");

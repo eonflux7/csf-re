@@ -18,15 +18,18 @@ static void __fastcall C_0082dfd0_ReduceVectorMagnitude(
         CSF_AT(float, self, 0x94) != g_ZeroVectorY ||
         CSF_AT(float, self, 0x98) != g_ZeroVectorZ)
     {
-        const float magnitude = std::sqrt(
-            self->field_0090 * self->field_0090 +
-            CSF_AT(float, self, 0x94) * CSF_AT(float, self, 0x94) +
-            CSF_AT(float, self, 0x98) * CSF_AT(float, self, 0x98));
+        // The original keeps the sum, the difference and the quotient on the x87 stack (no float store between
+        // them): only the magnitude (fstp dword [ebp-4]) and the stored components are rounded to float.
+        const double sumOfSquares =
+            static_cast<double>(self->field_0090) * self->field_0090 +
+            static_cast<double>(CSF_AT(float, self, 0x94)) * CSF_AT(float, self, 0x94) +
+            static_cast<double>(CSF_AT(float, self, 0x98)) * CSF_AT(float, self, 0x98);
+        const float magnitude = static_cast<float>(std::sqrt(sumOfSquares));
 
         void* settings = reinterpret_cast<void*>(GetGlobalValue_8BC1E0());
-        const float remaining = magnitude - CSF_AT(float, settings, 0x934);
+        const double remaining = static_cast<double>(magnitude) - CSF_AT(float, settings, 0x934);
 
-        if (!(remaining > g_fZero))
+        if (!(remaining > static_cast<double>(g_fZero)))
         {
             self->field_0090 = g_ZeroVectorX;
             CSF_AT(float, self, 0x94) = g_ZeroVectorY;
@@ -37,7 +40,7 @@ static void __fastcall C_0082dfd0_ReduceVectorMagnitude(
         }
         else
         {
-            const float scale = remaining / magnitude;
+            const double scale = remaining / magnitude;
             self->field_0090 = scale * self->field_0090;
             CSF_AT(float, self, 0x94) = scale * CSF_AT(float, self, 0x94);
             CSF_AT(float, self, 0x98) = scale * CSF_AT(float, self, 0x98);
