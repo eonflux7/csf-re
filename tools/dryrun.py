@@ -65,7 +65,8 @@ def main():
     exports = [os.environ.get("WSLENV", ""), "CSF_DRYRUN/w"]
     if a.full:  # message boxes print and answer OK (standalone/main.cpp); CSF_NO_DIALOGS=0 keeps them
         os.environ.setdefault("CSF_NO_DIALOGS", "1")
-    for v in ("CSF_RW_TRACE", "CSF_HANG_SECONDS", "CSF_NO_DIALOGS", "CSF_INPUT"):  # HANG: the exe dumps its main thread then (tools/dbg/stdsym.py)
+        os.environ.setdefault("CSF_EXCEPTION_TRACE", "1")  # first faults print where they were (tools/dbg/stdsym.py)
+    for v in ("CSF_RW_TRACE", "CSF_HANG_SECONDS", "CSF_NO_DIALOGS", "CSF_INPUT", "CSF_EXIT_TRACE", "CSF_EXCEPTION_TRACE"):  # HANG: the exe dumps its main thread then (tools/dbg/stdsym.py)
         if v in os.environ:
             exports.append(v + "/w")
     env = dict(os.environ, CSF_DRYRUN="0" if a.full else "1",
@@ -91,6 +92,9 @@ def main():
         open(os.path.join(a.dir, "winmain.out"), "w").write(out)
         trap = re.search(r"^csf: UNRESOLVED .*$", out, re.M)
         hang = "; HANG dump: tools/dbg/stdsym.py" if "csf: HANG" in out else ""
+        exc = re.search(r"^csf: EXCEPTION .*$", out, re.M)
+        if exc:
+            hang += f"; {exc.group(0)} (tools/dbg/stdsym.py)"
         print(f"full run: exit {code}; {trap.group(0) if trap else 'no trap'}; {a.dir}/winmain.out{hang}")
         return
     open(os.path.join(a.dir, "dryrun.out"), "w").write(out)

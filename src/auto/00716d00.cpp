@@ -78,16 +78,17 @@ static int __fastcall CGuiListBoxBase_SelectNextItem(
                 if (slider)
                 {
                     void** sliderVtable = CSF_AT(void**, slider, 0);
+                    // Slot 0x270 takes no argument (0x72FF80): the 0 pushed for it is slot 0x26C's second one.
                     const int sliderPosition =
-                        reinterpret_cast<int (__fastcall*)(void*, void*, int)>(
-                            sliderVtable[0x270 / 4])(slider, nullptr, 0);
+                        reinterpret_cast<int (__fastcall*)(void*, void*)>(
+                            sliderVtable[0x270 / 4])(slider, nullptr);
 
                     slider = reinterpret_cast<void*>(self->m_pSlider);
-                    reinterpret_cast<void (__fastcall*)(void*, void*, int)>(
+                    reinterpret_cast<void (__fastcall*)(void*, void*, int, int)>(
                         sliderVtable[0x26C / 4])(
                             slider, nullptr,
                             static_cast<int32_t>(
-                                static_cast<uint32_t>(sliderPosition) + 1u));
+                                static_cast<uint32_t>(sliderPosition) + 1u), 0);
                 }
                 ++self->field_0168;
             }

@@ -17,8 +17,10 @@ static int __fastcall CMenuGameOptionsPC_RefreshMouseSlider(
         return 0;
 
     using GetScalar = double (__fastcall*)(void*, void*);
-    using GetCount = int (__fastcall*)(void*, void*, int);
-    using SetPosition = void (__fastcall*)(void*, void*, int);
+    // Slot 0x264 takes no argument: the original's `push 0` before it stays on the stack and is slot 0x26C's second
+    // argument (0x544187..0x5441AC).
+    using GetCount = int (__fastcall*)(void*, void*);
+    using SetPosition = void (__fastcall*)(void*, void*, int, int);
     using GetSelection = int (__fastcall*)(void*, void*);
     using ApplySelection = int (__fastcall*)(void*, void*, int);
 
@@ -42,12 +44,12 @@ static int __fastcall CMenuGameOptionsPC_RefreshMouseSlider(
     void* slider = reinterpret_cast<void*>(self->field_0058);
     void** sliderVtable = CSF_AT(void**, slider, 0);
     int count = reinterpret_cast<GetCount>(
-        CSF_AT(void**, slider, 0)[0x264 / 4])(slider, nullptr, 0);
+        CSF_AT(void**, slider, 0)[0x264 / 4])(slider, nullptr);
 
-    int position = static_cast<int>(
-        static_cast<std::int64_t>((count - 1) * (value / step)));
+    int position = static_cast<int>(static_cast<std::int64_t>(
+        static_cast<double>(count - 1) * (static_cast<double>(value) / static_cast<double>(step))));
     reinterpret_cast<SetPosition>(sliderVtable[0x26C / 4])(
-        slider, nullptr, position);
+        slider, nullptr, position, 0);
 
     slider = reinterpret_cast<void*>(self->field_0058);
     int selection = reinterpret_cast<GetSelection>(
