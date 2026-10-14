@@ -1,6 +1,8 @@
 #include <cstdint>
 #include <cstddef>
 #include <cstring>
+#include <cstdio>
+#include <cstdlib>
 #include "globals.h"
 #include "hook.h"
 #include "core/memory.h"
@@ -37,6 +39,9 @@ static int __fastcall C_00864508_RequestMenuByName(
 
     if (index == definitionCount)
         return 0;
+    // Diagnostics (tools/dryrun.py --input): CSF_PAGE_TRACE=1 prints each page requested by name.
+    if (std::getenv("CSF_PAGE_TRACE"))
+        std::fprintf(stderr, "csf: page %s\n", name);
 
     const std::uint32_t definitionOffset = index << 6;
     const std::uint32_t menuHandle = CSF_AT(

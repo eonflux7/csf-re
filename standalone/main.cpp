@@ -63,6 +63,38 @@ static void exit_dump() {
     }
 }
 
+// CSF_EXIT_TRACE=1 also catches an exit that bypasses the CRT (ExitProcess, TerminateProcess, a destructor running
+// after ours): ntdll!NtTerminateProcess is patched to print the exit status and the stack once, then carry on.
+static unsigned char g_ntTerminateBytes[5];
+static unsigned char* g_ntTerminate;
+static LONG __stdcall terminate_trace(HANDLE process, LONG status) {
+    static LONG once;
+    if ((process == nullptr || process == GetCurrentProcess()) && !InterlockedExchange(&once, 1)) {
+        std::fprintf(stderr, "csf: TERMINATE status=%ld (0x%lX)\n", status, static_cast<unsigned long>(status));
+        exit_dump();
+    }
+    DWORD old;
+    VirtualProtect(g_ntTerminate, 5, PAGE_EXECUTE_READWRITE, &old);
+    std::memcpy(g_ntTerminate, g_ntTerminateBytes, 5);
+    VirtualProtect(g_ntTerminate, 5, old, &old);
+    FlushInstructionCache(GetCurrentProcess(), g_ntTerminate, 5);
+    return reinterpret_cast<LONG(__stdcall*)(HANDLE, LONG)>(g_ntTerminate)(process, status);
+}
+
+static void install_terminate_trace() {
+    g_ntTerminate = reinterpret_cast<unsigned char*>(GetProcAddress(GetModuleHandleA("ntdll.dll"), "NtTerminateProcess"));
+    if (!g_ntTerminate)
+        return;
+    std::memcpy(g_ntTerminateBytes, g_ntTerminate, 5);
+    DWORD old;
+    VirtualProtect(g_ntTerminate, 5, PAGE_EXECUTE_READWRITE, &old);
+    g_ntTerminate[0] = 0xE9;
+    const auto rel = reinterpret_cast<intptr_t>(&terminate_trace) - reinterpret_cast<intptr_t>(g_ntTerminate + 5);
+    std::memcpy(g_ntTerminate + 1, &rel, 4);
+    VirtualProtect(g_ntTerminate, 5, old, &old);
+    FlushInstructionCache(GetCurrentProcess(), g_ntTerminate, 5);
+}
+
 // CSF_EXCEPTION_TRACE=1: the first 3 hardware exceptions (access violation, illegal instruction, stack overflow, divide
 // by zero, fast fail) print where they happened before any handler runs (the game's own __except around its main loop
 // swallows them and quits): code, address, registers and the stack words that point into this exe (stdsym.py).
@@ -139,9 +171,16 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command, int sh
     if (GetEnvironmentVariableA("CSF_EXCEPTION_TRACE", exceptionTrace, sizeof exceptionTrace) && exceptionTrace[0] != '0')
         AddVectoredExceptionHandler(1, exception_dump);
     char exitTrace[8]{};
-    if (GetEnvironmentVariableA("CSF_EXIT_TRACE", exitTrace, sizeof exitTrace) && exitTrace[0] != '0')
+    if (GetEnvironmentVariableA("CSF_EXIT_TRACE", exitTrace, sizeof exitTrace) && exitTrace[0] != '0') {
         std::atexit(exit_dump);
+        install_terminate_trace();
+    }
     const int code = Game_WinMain(instance, previous, command, show);
     std::fprintf(stderr, "csf: WinMain returned %d\n", code);
-    return code;
+    // The game has shut its memory system down by now, and the boundary's static containers (rw frame maps, stream
+    // callbacks, ...) hold nodes from it: the CRT's static destructors would free or walk released memory (heap
+    // corruption 0xC0000374, then access violations, after Exit -> Ok). The game's own shutdown ran inside WinMain;
+    // end the process here with its code instead of returning into the CRT's exit.
+    std::fflush(nullptr);
+    ExitProcess(static_cast<UINT>(code));
 }
