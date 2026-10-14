@@ -12,8 +12,10 @@ static int __fastcall CMenuSaveGame_ReleaseSubObject(CMenuSaveGame* self, void* 
     void** sub = reinterpret_cast<void**>(static_cast<uintptr_t>(self->field_0044));
     if ( sub )
     {
-        // vtable slot 0, __thiscall with one stack argument (popped by the callee)
-        result = reinterpret_cast<int(__fastcall*)(void*, void*, int)>(sub[0])(sub, nullptr, 1);
+        // the object's first dword is its vtable; slot 0 of that vtable is the target (mov eax, [ecx]; call [eax]).
+        // __thiscall with one stack argument (popped by the callee)
+        void** vtable = reinterpret_cast<void**>(sub[0]);
+        result = reinterpret_cast<int(__fastcall*)(void*, void*, int)>(vtable[0])(sub, nullptr, 1);
         self->field_0044 = 0;
     }
     return result;

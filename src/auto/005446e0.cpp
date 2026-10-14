@@ -25,9 +25,9 @@ static unsigned int __fastcall CMenuProfilesPC_DispatchStateEvent(void* self, vo
     case 2u:
         return CMenuProfiles_HandleStateTwo(self, nullptr);
     case 4u:
-        return static_cast<unsigned int>(CMenuSaveGame_ShutdownAndReturnResult(self, nullptr));
-    case 5u:
         return static_cast<unsigned int>(CMenuSaveGame_ResetSelection(self, nullptr));
+    case 5u:
+        return static_cast<unsigned int>(CMenuSaveGame_ShutdownAndReturnResult(self, nullptr));
     default:
         return state;
     }

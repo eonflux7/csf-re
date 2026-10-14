@@ -4,9 +4,9 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-CSF_GLOBAL(volatile float, g_UnsignedIntegerBias, 0x0082D744);
-CSF_GLOBAL(volatile uint32_t, g_ScreenWidth, 0x00899B9C);
-CSF_GLOBAL(volatile uint32_t, g_ScreenHeight, 0x00899BA0);
+CSF_GLOBAL(float, g_UnsignedIntegerBias, 0x0082D744);
+CSF_GLOBAL(uint32_t, g_ScreenWidth, 0x00899B9C);
+CSF_GLOBAL(uint32_t, g_ScreenHeight, 0x00899BA0);
 
 CSF_FUNC(int, __cdecl, GetGlobalInt, 0x006B1380, ());
 CSF_FUNC(void*, __fastcall, LookupObjectById, 0x00652160,
@@ -23,12 +23,19 @@ static double MenuSaveGame_ConvertUnsignedAnchor(uint32_t value)
     return converted;
 }
 
-static int __fastcall CMenuSaveGame_ResolvePanelAndApplyScale(
-    CMenuSaveGame* self, void* /*edx*/, void* screen, void* registryHolder)
+// The original pushes ebx and esi at entry and passes them, as they were at entry, to the first owner's virtual call
+// (`(v11, a3, a2)`: a3 = esi, a2 = ebx). That callee pops them (the original's ret 8 path leaves nothing else on the
+// stack), so the entry values come in through HOOK_REGS and go out as the two stack arguments of that call.
+// args[0] = screen, args[1] = registryHolder (the caller's stack arguments, read only).
+static uint32_t __cdecl CMenuSaveGame_ResolvePanelAndApplyScale(hook::Regs* regs, const uint32_t* args)
 {
+    CMenuSaveGame* self = reinterpret_cast<CMenuSaveGame*>(static_cast<uintptr_t>(regs->ecx));
+    void* screen = reinterpret_cast<void*>(static_cast<uintptr_t>(args[0]));
+    void* registryHolder = reinterpret_cast<void*>(static_cast<uintptr_t>(args[1]));
+
     const uint32_t cachedPanel = self->field_0044;
     if (cachedPanel != 0)
-        return static_cast<int>(cachedPanel);
+        return cachedPanel;
 
     void* rootObject =
         ((void* (__fastcall*)(void*, void*))CSF_AT(void**, screen, 0)[21])(
@@ -49,13 +56,13 @@ static int __fastcall CMenuSaveGame_ResolvePanelAndApplyScale(
         static_cast<uint32_t>(reinterpret_cast<uintptr_t>(panel));
     self->field_0044 = panelValue;
     if (panelValue == 0)
-        return static_cast<int>(panelValue);
+        return panelValue;
 
     const int firstObjectId = GetGlobalInt();
     void* firstOwner = LookupObjectById(firstObjectId, nullptr);
     void* firstAnchor =
-        ((void* (__fastcall*)(void*, void*))CSF_AT(void**, firstOwner, 0)[6])(
-            firstOwner, nullptr);
+        ((void* (__fastcall*)(void*, void*, uint32_t, uint32_t))CSF_AT(void**, firstOwner, 0)[6])(
+            firstOwner, nullptr, regs->esi, regs->ebx);
     const uint32_t anchorX = CSF_AT(uint32_t, firstAnchor, 0);
 
     const int secondObjectId = GetGlobalInt();
@@ -91,8 +98,9 @@ static int __fastcall CMenuSaveGame_ResolvePanelAndApplyScale(
         convertedWidth += static_cast<double>(g_UnsignedIntegerBias);
     const float ratioX = static_cast<float>(convertedX / convertedWidth);
 
-    return ((int (__fastcall*)(void*, void*, float, float))panelVtable[84])(
-        currentPanel, nullptr, ratioX, ratioY);
+    return static_cast<uint32_t>(
+        ((int (__fastcall*)(void*, void*, float, float))panelVtable[84])(
+            currentPanel, nullptr, ratioX, ratioY));
 }
 
-HOOK(0x00544780, CMenuSaveGame_ResolvePanelAndApplyScale, "auto");
+HOOK_REGS(0x00544780, CMenuSaveGame_ResolvePanelAndApplyScale, 8, "auto");
