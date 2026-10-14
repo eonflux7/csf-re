@@ -119,7 +119,9 @@ int main() {
         rw::BBox box{rw::makeV3d(100,100,100),rw::makeV3d(-100,-100,-100)};
         auto* w=worldCreate(&box);assert(w && w->object.type==7 && w->root->type==-1);
         assert(w->root->bounds.sup.x==100 && worldRender(w)(w->root)==w->root);
-        w->root->numVertices=1;assert(!worldRender(w)(w->root));w->root->numVertices=0;
+    // Original default sector callback tests triangles, not vertex count.
+    w->root->numVertices=1;assert(worldRender(w)(w->root)==w->root);w->root->numVertices=0;
+    w->root->numTriangles=1;assert(!worldRender(w)(w->root));w->root->numTriangles=0;
         assert(setSectorCallback(w,nullptr)==w);
         assert(word(w->root,plugins(Registry::Sector).getPluginOffset(298))==0xffffffff);
         assert(word(w->root,plugins(Registry::Sector).getPluginOffset(298)+20)==3);

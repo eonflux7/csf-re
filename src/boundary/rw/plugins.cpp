@@ -238,10 +238,10 @@ int __stdcall patchAttach() {
 int __stdcall userAttach() {
     csf_rw::startupTrace("0x0058C040","RpUserDataPluginAttach");
     if(!attachable(K::Engine,287) || !engine(0,287) ||
-       !put(userGeometry,K::Geometry,8,287) || !put(userSector,K::Sector,8,287) ||
-       !put(userFrame,K::Frame,8,287) || !put(userCamera,K::Camera,8,287) ||
-       !put(userLight,K::Light,8,287) || !put(userMaterial,K::Material,8,287) ||
-       !put(userTexture,K::Texture,8,287)) return 0;
+       !put(userGeometry,K::Geometry,sizeof(rw::UserDataExtension),287) || !put(userSector,K::Sector,sizeof(rw::UserDataExtension),287) ||
+       !put(userFrame,K::Frame,sizeof(rw::UserDataExtension),287) || !put(userCamera,K::Camera,sizeof(rw::UserDataExtension),287) ||
+       !put(userLight,K::Light,sizeof(rw::UserDataExtension),287) || !put(userMaterial,K::Material,sizeof(rw::UserDataExtension),287) ||
+       !put(userTexture,K::Texture,sizeof(rw::UserDataExtension),287)) return 0;
     userGeometryStream=userGeometry; userSectorStream=userSector; userFrameStream=userFrame;
     userCameraStream=userCamera;userLightStream=userLight;userMaterialStream=userMaterial;userTextureStream=userTexture;
     rw::registerUserDataPlugin(); return 1;

@@ -5,7 +5,6 @@
 #include <dinput.h>
 #include <cstring>
 #include <cstdio>
-#include <vector>
 #include <initializer_list>
 #include "globals.h"
 #include "hook.h"
@@ -112,10 +111,20 @@ static BOOL __fastcall GameScreen_HasBriefing(uint8_t* self, void*) {
 // (X,Y). Each injected step prints "csf: input ...".
 namespace {
 struct ScriptStep { DWORD at; int kind; int a, b; };  // kind: 0 key, 1 goto, 2 click, 3 rclick, 4 wheel
-std::vector<ScriptStep> g_script;
-size_t g_scriptNext;
+// Fixed storage: no dynamic initialisers or atexit destructors in this file (tests/audio1_offline.py and
+// tests/wmrest_offline.py run its initialisers in Unicorn).
+struct EventQueue {
+    DIDEVICEOBJECTDATA items[256];
+    size_t head, tail;
+    bool empty() const { return head == tail; }
+    const DIDEVICEOBJECTDATA& front() const { return items[head % 256]; }
+    void pop() { ++head; }
+    void push(const DIDEVICEOBJECTDATA& e) { if (tail - head < 256) items[tail++ % 256] = e; }
+};
+ScriptStep g_script[128];
+size_t g_scriptCount, g_scriptNext;
 DWORD g_scriptStart;
-std::vector<DIDEVICEOBJECTDATA> g_pendingKeys, g_pendingMouse;
+EventQueue g_pendingKeys, g_pendingMouse;
 using GetDeviceDataFn = HRESULT (STDMETHODCALLTYPE*)(void*, DWORD, DIDEVICEOBJECTDATA*, DWORD*, DWORD);
 using CreateDeviceFn = HRESULT (STDMETHODCALLTYPE*)(void*, REFGUID, void**, void*);
 CreateDeviceFn g_createDevice;
@@ -128,15 +137,15 @@ void ScriptedInput_Load() {
         if (sscanf(step, "%lf:%15[a-z]:%d,%d", &t, kind, &a, &b) < 2) continue;
         const int k = !strcmp(kind, "key") ? 0 : !strcmp(kind, "goto") ? 1 : !strcmp(kind, "click") ? 2
                     : !strcmp(kind, "rclick") ? 3 : !strcmp(kind, "wheel") ? 4 : -1;
-        if (k >= 0) g_script.push_back({static_cast<DWORD>(t * 1000), k, a, b});
+        if (k >= 0 && g_scriptCount < 128) g_script[g_scriptCount++] = {static_cast<DWORD>(t * 1000), k, a, b};
     }
 }
-void Push(std::vector<DIDEVICEOBJECTDATA>& q, DWORD offset, DWORD data) {
-    DIDEVICEOBJECTDATA e{}; e.dwOfs = offset; e.dwData = data; e.dwTimeStamp = GetTickCount(); q.push_back(e);
+void Push(EventQueue& q, DWORD offset, DWORD data) {
+    DIDEVICEOBJECTDATA e{}; e.dwOfs = offset; e.dwData = data; e.dwTimeStamp = GetTickCount(); q.push(e);
 }
 void ScriptedInput_Advance() {
     const DWORD now = GetTickCount() - g_scriptStart;
-    while (g_scriptNext < g_script.size() && g_script[g_scriptNext].at <= now) {
+    while (g_scriptNext < g_scriptCount && g_script[g_scriptNext].at <= now) {
         const ScriptStep& s = g_script[g_scriptNext++];
         std::fprintf(stderr, "csf: input t=%.1f kind=%d %d,%d\n", now / 1000.0, s.kind, s.a, s.b);
         switch (s.kind) {
@@ -150,7 +159,7 @@ void ScriptedInput_Advance() {
     }
 }
 // Appends pending events (down and up of one press go out in separate polls, so the game sees a press).
-HRESULT Inject(GetDeviceDataFn real, std::vector<DIDEVICEOBJECTDATA>& q, void* self, DWORD size, DIDEVICEOBJECTDATA* data,
+HRESULT Inject(GetDeviceDataFn real, EventQueue& q, void* self, DWORD size, DIDEVICEOBJECTDATA* data,
                DWORD* count, DWORD flags) {
     const DWORD capacity = count ? *count : 0;
     HRESULT result = real(self, size, data, count, flags);
@@ -164,7 +173,7 @@ HRESULT Inject(GetDeviceDataFn real, std::vector<DIDEVICEOBJECTDATA>& q, void* s
         const bool button = e.dwOfs >= DIMOFS_BUTTON0 && e.dwOfs <= DIMOFS_BUTTON7;
         if ((button || &q == &g_pendingKeys) && !e.dwData && sawButtonDown) break;  // release in the next poll
         if (e.dwData == 0x80) sawButtonDown = true;
-        data[(*count)++] = e; q.erase(q.begin()); ++added;
+        data[(*count)++] = e; q.pop(); ++added;
     }
     return result;
 }
@@ -200,7 +209,7 @@ HRESULT STDMETHODCALLTYPE CreateDevice(void* self, REFGUID guid, void** device, 
 }  // namespace
 static void ScriptedInput_WrapInterface(void* directInput) {
     ScriptedInput_Load();
-    if (!g_script.empty() && !g_createDevice)
+    if (g_scriptCount && !g_createDevice)
         PatchSlot(directInput, 3, reinterpret_cast<void*>(&CreateDevice), reinterpret_cast<void**>(&g_createDevice));
 }
 

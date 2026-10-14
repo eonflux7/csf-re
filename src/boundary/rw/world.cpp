@@ -15,29 +15,31 @@ CSF_GLOBAL(int, cameraWorldOffset, 0x008B1348);
 CSF_GLOBAL(int, lightWorldOffset, 0x008B1354);
 CSF_GLOBAL(int, atomicWorldOffset, 0x008B134C);
 CSF_GLOBAL(int, clumpWorldOffsetB, 0x008B1350);
-CSF_GLOBAL(int, clumpWorldOffset, 0x008B13B4);
+CSF_GLOBAL(int, lightClumpOffsetW, 0x008B13B4);
 namespace {
 using namespace csf_rw;
 struct Record { rw::World* native; };
 std::unordered_map<World*,Record> worlds;
 void ring(Link& l) { l.next=l.prev=&l; }
 void remove(Link& l) { l.prev->next=l.next;l.next->prev=l.prev;ring(l); }
-void append(Link& head,Link& l) { l.next=&head;l.prev=head.prev;head.prev->next=&l;head.prev=&l; }
+void prepend(Link& head,Link& l) { l.prev=&head;l.next=head.next;head.next->prev=&l;head.next=&l; }
+void reorderLight(rw::World* w,rw::Light* l) {
+    // librw appends world lights; the original prepends. Enumeration order can
+    // decide which local/directional lights fit a backend's finite light set.
+    l->inWorld.remove();
+    (l->getType()<rw::Light::POINT?w->globalLights:w->localLights).add(&l->inWorld);
+}
 World* find(rw::World* n) {
     for(auto& p:worlds) if(p.second.native==n) return p.first;
     return nullptr;
 }
 void publish(void* object,int offset,int delta,World* w) {
-#if UINTPTR_MAX == 0xffffffff
     if(offset>=0) std::memcpy(static_cast<char*>(object)+offset+delta,&w,sizeof(w));
-#else
-    (void)object;(void)offset;(void)delta;(void)w;
-#endif
 }
 Sector* __cdecl emptyRender(Sector* s) {
     // Rendering an actually empty leaf requires no draw. No claim of rendering
     // a loaded BSP: reject nonempty leaves rather than swallowing their draws.
-    return s && s->type==-1 && !s->numTriangles && !s->numVertices ? s : nullptr;
+    return s && s->type==-1 && !s->numTriangles ? s : nullptr;
 }
 World* __cdecl createWorld(const rw::BBox* box) {
     startupTrace("0x0058CCB0","RpWorldCreate (empty leaf)");
@@ -97,8 +99,8 @@ World* __cdecl addLight(World* w,Light* l) {
     startupTrace("0x0058DF50","RpWorldAddLight");
     auto p=worlds.find(w);auto* n=lightNative(l);
     if(p==worlds.end() || !n || n->world) return nullptr;
-    p->second.native->addLight(n);
-    append(l->object.object.subType>=128?w->localLights:w->globalLights,l->inWorld);
+    p->second.native->addLight(n);reorderLight(p->second.native,n);
+    prepend(l->object.object.subType>=128?w->localLights:w->globalLights,l->inWorld);
     publish(l,lightWorldOffset,0,w);return w;
 }
 World* __cdecl removeLight(World* w,Light* l) {
@@ -108,11 +110,95 @@ World* __cdecl removeLight(World* w,Light* l) {
     p->second.native->removeLight(n);remove(l->inWorld);publish(l,lightWorldOffset,0,nullptr);return w;
 }
 World* __cdecl lightWorld(Light* l) { auto* n=lightNative(l);return n?find(n->world):nullptr; }
-// 0058F0E0 RpClumpGetWorld, 0058DE40 RpAtomicGetWorld, 0058DF40 (006FDFE0's clump lookup): the word at the
-// world plugin's offset (registered globals), as the original reads it.
-World* __cdecl clumpGetWorld(void* c) { return *reinterpret_cast<World**>(static_cast<char*>(c)+clumpWorldOffset); }
-World* __cdecl atomicGetWorld(void* a) { return *reinterpret_cast<World**>(static_cast<char*>(a)+atomicWorldOffset); }
-World* __cdecl clumpGetWorldB(void* c) { return *reinterpret_cast<World**>(static_cast<char*>(c)+clumpWorldOffsetB); }
+// World getters below read the word at the registered world-plugin offset.
+// 58F0E0 reads the LIGHT clump plugin (8B13B4), not the world plugin.
+// Its database name RpClumpGetWorld is misleading; callers pass lights.
+Clump* __cdecl clumpGetWorld(Light* l) {
+    Clump* c;std::memcpy(&c,reinterpret_cast<char*>(l)+lightClumpOffsetW,sizeof(c));return c;
+}
+World* __cdecl atomicGetWorld(Atomic* a) {
+    World* w;std::memcpy(&w,reinterpret_cast<char*>(a)+atomicWorldOffset,sizeof(w));return w;
+}
+World* __cdecl clumpGetWorldB(Clump* c) {
+    World* w;std::memcpy(&w,reinterpret_cast<char*>(c)+clumpWorldOffsetB,sizeof(w));return w;
+}
+World* __cdecl removeAtomic(World* w,Atomic* a) {
+    auto p=worlds.find(w);auto* n=atomicNative(a);
+    if(p==worlds.end() || !n || n->world!=p->second.native) return nullptr;
+    p->second.native->removeAtomic(n);
+    publish(a,atomicWorldOffset,0,nullptr); return w;
+}
+// Original 58E280 inserts at the head; publish only after preflighting every
+// member so librw's assertion-only membership API cannot partially add a clump.
+World* __cdecl addClump(World* w,Clump* c) {
+    auto p=worlds.find(w);auto* n=clumpNative(c);
+    if(p==worlds.end() || !n || n->world) return nullptr;
+    for(Link* l=c->atomics.next;l!=&c->atomics;l=l->next) {
+        auto* a=reinterpret_cast<Atomic*>(reinterpret_cast<char*>(l)-offsetof(Atomic,inClump));
+        auto* b=atomicNative(a); if(!b || b->clump!=n || b->world) return nullptr;
+    }
+    FORLIST(l,n->lights) {
+        auto* b=rw::Light::fromClump(l);auto* a=lightFacade(b);
+        if(!a || !lightNative(a) || b->world) return nullptr;
+    }
+    FORLIST(l,n->cameras) {
+        auto* b=rw::Camera::fromClump(l);auto* a=cameraFacade(b);
+        if(!a || !cameraNative(a) || b->world) return nullptr;
+    }
+    p->second.native->addClump(n);
+    prepend(w->clumps,c->inWorld);++w->numClumps;
+    publish(c,clumpWorldOffsetB,0,w);
+    for(Link* l=c->atomics.next;l!=&c->atomics;l=l->next) {
+        auto* a=reinterpret_cast<Atomic*>(reinterpret_cast<char*>(l)-offsetof(Atomic,inClump));
+        publish(a,atomicWorldOffset,0,w);
+    }
+    FORLIST(l,n->lights) {
+        auto* a=lightFacade(rw::Light::fromClump(l));
+        reorderLight(p->second.native,rw::Light::fromClump(l));
+        prepend(a->object.object.subType>=128?w->localLights:w->globalLights,a->inWorld);
+        publish(a,lightWorldOffset,0,w);
+    }
+    FORLIST(l,n->cameras) publish(cameraFacade(rw::Camera::fromClump(l)),cameraWorldOffset,12,w);
+    frameExport();objectExport();return w;
+}
+World* __cdecl removeClump(World* w,Clump* c) {
+    auto p=worlds.find(w);auto* n=clumpNative(c);
+    if(p==worlds.end() || !n || n->world!=p->second.native) return nullptr;
+    // An atomic may already have been independently removed from the world.
+    // librw removeClump asserts for that case; compose its removal primitives
+    // rather than reattaching detached objects just to satisfy the assertion.
+    for(Link* l=c->atomics.next;l!=&c->atomics;l=l->next) {
+        auto* a=reinterpret_cast<Atomic*>(reinterpret_cast<char*>(l)-offsetof(Atomic,inClump));
+        auto* b=atomicNative(a);if(b && b->world==p->second.native) removeAtomic(w,a);
+    }
+    FORLIST(l,n->lights) {
+        auto* a=lightFacade(rw::Light::fromClump(l));
+        if(a && lightNative(a)->world==p->second.native) removeLight(w,a);
+    }
+    FORLIST(l,n->cameras) {
+        auto* a=cameraFacade(rw::Camera::fromClump(l));
+        if(a && cameraNative(a)->world==p->second.native) removeCamera(w,a);
+    }
+    if(w->currentClump==&c->inWorld) w->currentClump=c->inWorld.next;
+    remove(c->inWorld);--w->numClumps;
+    n->inWorld.remove();n->world=nullptr;
+    publish(c,clumpWorldOffsetB,0,nullptr);return w;
+}
+using SectorCB=Sector* (__cdecl *)(Sector*,void*);
+// There is no BSP in librw. The tracked boundary currently owns one empty leaf;
+// do not guess plane-sector pointer fields or traverse unowned game pointers.
+World* __cdecl worldSectors(World* w,SectorCB cb,void* data) {
+    if(!worlds.count(w) || !cb || !w->root || w->root->type>=0) return nullptr;
+    cb(w->root,data);return w;
+}
+World* __cdecl sectorWorld(Sector* s) {
+    for(auto& p:worlds) if(p.first->root==s) return p.first;
+    return nullptr;
+}
+World* __cdecl setSectorRender(World* w,SectorRender cb) {
+    if(!worlds.count(w)) return nullptr;
+    w->sectorRender=cb?cb:emptyRender;return w;
+}
 // 0058CEF0: the world's clump ring (+0x2C, link at Clump+0x20); next read before the callback, null stops.
 World* __cdecl worldClumps(World* w,Clump* (__cdecl *cb)(Clump*,void*),void* data) {
     for(Link* l=w->clumps.next;l!=&w->clumps;) {
@@ -174,4 +260,10 @@ HOOK(0x0058CF30,worldMaterials,"boundary-rw");
 HOOK(0x0058F0E0,clumpGetWorld,"boundary-rw");
 HOOK(0x0058DE40,atomicGetWorld,"boundary-rw");
 HOOK(0x0058DF40,clumpGetWorldB,"boundary-rw");
+HOOK(0x0058E280,addClump,"boundary-rw");
+HOOK(0x0058E310,removeClump,"boundary-rw");
+HOOK(0x0058DE00,removeAtomic,"boundary-rw");
+HOOK(0x0058CFF0,worldSectors,"boundary-rw");
+HOOK(0x0058D1A0,sectorWorld,"boundary-rw");
+HOOK(0x0058CC60,setSectorRender,"boundary-rw");
 #endif

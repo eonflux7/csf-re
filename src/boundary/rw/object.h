@@ -15,6 +15,9 @@ rw::Material* materialNative(Material*);
 rw::Light* lightNative(Light*);
 rw::Camera* cameraNative(Camera*);
 rw::Clump* clumpNative(Clump*);
+Light* lightFacade(rw::Light*);
+Camera* cameraFacade(rw::Camera*);
+Clump* lightClump(Light*);
 // Construction helpers for slice 6's stream boundary and NULL fixtures. These
 // are not additional original-address slots. Inputs are owned by the caller.
 Material* materialCreate();

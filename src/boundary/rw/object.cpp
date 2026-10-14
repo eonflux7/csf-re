@@ -15,6 +15,7 @@
 #include <cmath>
 #include <limits>
 #include <climits>
+#include <algorithm>
 
 using namespace csf_rw;
 CSF_FUNC(ObjectWithFrame*, __cdecl, attachFrame, 0x0063CE30, (ObjectWithFrame*, Frame*));
@@ -23,6 +24,7 @@ CSF_FUNC(Frame*, __cdecl, addChild, 0x00623B90, (Frame*, Frame*));
 CSF_FUNC(int, __cdecl, destroyFrame, 0x00623B10, (Frame*));
 CSF_FUNC(rw::Matrix*, __cdecl, getLTM, 0x00623720, (Frame*));
 CSF_FUNC(int, __stdcall, syncFrames, 0x006327D0, ());
+CSF_GLOBAL(int, lightClumpOffset, 0x008B13B4);
 
 namespace {
 using K=Registry;
@@ -42,6 +44,10 @@ template<class A> A* allocate(K k) {
     if(p) std::memset(p,0,plugins(k).size); return p;
 }
 void freeFacade(void* p) { rw::Engine::memfuncs.rwfree(p); }
+void publishLightClump(Light* l,Clump* c) {
+    if(plugins(K::Light).getPluginOffset(16)>=0)
+        std::memcpy(reinterpret_cast<char*>(l)+lightClumpOffset,&c,sizeof(c));
+}
 template<class A,class N> N* lookup(const std::unordered_map<A*,N*>& map,A* a) {
     auto it=map.find(a); return it==map.end()?nullptr:it->second;
 }
@@ -198,6 +204,19 @@ Atomic* __cdecl resyncSphere(Atomic* a) {
     n->object.object.privateFlags|=rw::Atomic::WORLDBOUNDDIRTY;
     a->interpolator.flags&=~2u; exportAtomic(a,n); return a;
 }
+rw::Sphere* __cdecl worldSphere(Atomic* a) {
+    if(!atomicNative(a) || !a->object.object.parent) return nullptr;
+    if((a->interpolator.flags&2) && !resyncSphere(a)) return nullptr;
+    // Sync the facade hierarchy first. librw's sphere routine transforms the
+    // centre but deliberately omits radius scaling; adapt that difference.
+    auto* m=getLTM(static_cast<Frame*>(a->object.object.parent));
+    auto* n=atomicNative(a);if(!m || !n) return nullptr;
+    n->getWorldBoundingSphere();
+    float scale=(m->flags&3)==3 ? 1.0f : std::sqrt(std::max({rw::dot(m->right,m->right),
+        rw::dot(m->up,m->up),rw::dot(m->at,m->at)}));
+    n->worldBoundingSphere.radius=n->boundingSphere.radius*scale;
+    exportAtomic(a,n);return &a->worldBoundingSphere;
+}
 // ClumpRender callers use null as failure and install facade callbacks. librw's
 // void render cannot propagate their failures; keep rendering remaining members.
 Clump* __cdecl clumpRender(Clump* c) {
@@ -241,7 +260,7 @@ Clump* __cdecl clumpLights(Clump* c,LightCB cb,void* data) {
 Clump* __cdecl clumpRemoveLight(Clump* c,Light* a) {
     auto* n=clumpNative(c); auto* b=lightNative(a);
     if(!n || !b || b->clump!=n) return nullptr;
-    n->removeLight(b); return c;
+    n->removeLight(b);publishLightClump(a,nullptr); return c;
 }
 // Both count callers expect integers, not object handles. GetNumLights has ONE
 // argument (export ABI records a spurious second; original body/RET confirms).
@@ -460,12 +479,24 @@ Frame* cloneTree(Frame* source,std::unordered_map<Frame*,Frame*>& map) {
     }
     return f;
 }
+bool canCloneFrameData(Frame* f) {
+    if(plugins(K::Frame).getPluginOffset(rw::ID_USERDATA)>=0) {
+        auto* n=frameNative(f);if(!n || rw::UserDataExtension::get(n)->numArrays) return false;
+    }
+    for(auto* child=f->child;child;child=child->next) if(!canCloneFrameData(child)) return false;
+    return true;
+}
 // Clump clone callers expect a distinct hierarchy, shared retained geometries,
 // copied plugin tails and facade callbacks. Both original and native clone only
 // atomics, NOT lights/cameras. Native clone loses interpolated local spheres and
 // dereferences a null root: compose its object clone primitives, reject null root.
 Clump* __cdecl clumpClone(Clump* c) {
     auto* n=clumpNative(c); if(!n || n->world || !c->object.parent) return nullptr;
+    // UserData facade tails borrow native payloads. Generic byte copying would
+    // alias them; upstream's UserData copy callback itself writes to the source
+    // array. Until a deep-copy adapter exists, reject instead of corrupting or
+    // publishing a clone whose payload dangles when the source is destroyed.
+    if(!canCloneFrameData(static_cast<Frame*>(c->object.parent))) return nullptr;
     // librw PluginList::copy ignores the callback's return. A populated
     // particle/PTank extension cannot be shallow-copied, or silently dropped
     // by a failing copy callback; reject before allocating the clone.
@@ -504,6 +535,12 @@ Clump* __cdecl clumpClone(Clump* c) {
 }
 
 namespace csf_rw {
+Light* lightFacade(rw::Light* n) { for(auto& p:lights) if(p.second==n) return p.first; return nullptr; }
+Camera* cameraFacade(rw::Camera* n) { for(auto& p:cameras) if(p.second==n) return p.first; return nullptr; }
+Clump* lightClump(Light* a) {
+    auto* n=lightNative(a); if(n) for(auto& p:clumps) if(p.second==n->clump) return p.first;
+    return nullptr;
+}
 bool objectsEmpty() { return materials.empty() && geometries.empty() && atomics.empty() && lights.empty() && cameras.empty() && clumps.empty(); }
 bool worldHasCamera(rw::World* w) { for(auto& p:cameras) if(p.second->world==w) return true; return false; }
 rw::Material* materialNative(Material* a) {
@@ -656,13 +693,14 @@ bool clumpAddAtomic(Clump* c,Atomic* a) {
 }
 bool clumpAddLight(Clump* c,Light* a) {
     auto* n=clumpNative(c); auto* b=lightNative(a); if(!n || !b || b->clump) return false;
-    n->addLight(b); return true;
+    n->addLight(b);publishLightClump(a,c); return true;
 }
 void clumpSetFrame(Clump* c,Frame* f) { if(lookup(clumps,c) && (!f || frameNative(f))) { c->object.parent=f; clumpNative(c); } }
 }
 
 // Caller 006e5530 (_rpAtomicResyncInterpolatedSphere): see facade/return/ownership contract above; packet in work/rw4-check/006e5530.packet.
 HOOK(0x0058EB40,resyncSphere,"boundary-rw");
+HOOK(0x0058EC60,worldSphere,"boundary-rw");
 // Caller 00704000 (RpClumpRender): see facade/return/ownership contract above; packet in work/rw4-check/00704000.packet.
 HOOK(0x0058EEB0,clumpRender,"boundary-rw");
 // Caller 006f71a0 (RpClumpForAllAtomics): see facade/return/ownership contract above; packet in work/rw4-check/006f71a0.packet.

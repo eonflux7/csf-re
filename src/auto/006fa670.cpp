@@ -17,8 +17,8 @@ CSF_GLOBAL(float, g_FilmDriftScale, 0x00862BE8);
 CSF_GLOBAL(float, g_FilmRestartDelay, 0x00862BF0);
 CSF_GLOBAL(float, g_FilmPatchAlphaBase, 0x00862BF4);
 CSF_GLOBAL(float, g_FilmPatchSizeBase, 0x00862BFC);
-CSF_GLOBAL(float, g_FilmSpeckSizeBase, 0x00862C00);
-CSF_GLOBAL(float, g_FilmSpeckAlphaBase, 0x00862C14);
+CSF_GLOBAL(float, g_FilmSpeckSizeBase, 0x00862C14);   // 0.005 (0x6FA953, 0x6FAA50)
+CSF_GLOBAL(float, g_FilmSpeckAlphaBase, 0x00862C00);  // 0.2 (0x6FAA8A)
 CSF_GLOBAL(float, g_FilmScratchAlphaBase, 0x00862C1C);
 CSF_GLOBAL(float, g_FilmSpeckAlphaScale, 0x00862C34);
 CSF_GLOBAL(float, g_FilmSpeckSizeScale, 0x00862C38);

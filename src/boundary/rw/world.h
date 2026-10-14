@@ -20,8 +20,8 @@ struct World {
     int renderOrder;
     MaterialList materials;
     Sector* root;
-    int numClumps;
-    uint32_t clumpFrame; // original Create clears +0x24, currentClump is +0x28
+    uint32_t clumpFrame;
+    int numClumps; // original Add/RemoveClump updates +0x24
     Link *currentClump;
     Link clumps, localLights, globalLights;
     rw::V3d origin;
@@ -35,6 +35,7 @@ bool worldDestroy(World*); // restricted to tracked, detached empty worlds
 #if UINTPTR_MAX == 0xffffffff
 static_assert(sizeof(World)==116 && offsetof(World,root)==0x1c);
 static_assert(offsetof(World,sectorRender)==0x68 && offsetof(World,render)==0x6c);
+static_assert(offsetof(World,numClumps)==0x24 && offsetof(World,clumps)==0x2c);
 static_assert(sizeof(Sector)==136 && offsetof(Sector,bounds)==0x48);
 static_assert(offsetof(Sector,numVertices)==0x82);
 #endif
