@@ -42,9 +42,29 @@ static DWORD WINAPI hang_dump(void* seconds) {
     return 0;
 }
 
+// CSF_NO_DIALOGS: the game's message boxes (MessageBoxW/A through the original's IAT slots 0x82D290/0x82D2C4)
+// print their text and answer OK. A full-screen run otherwise blocks on an invisible modal box (sound init's error
+// dialog from 0x69CE50 looked like a hang).
+static int WINAPI no_dialog_a(HWND, LPCSTR text, LPCSTR caption, UINT type);
+static int WINAPI no_dialog_w(HWND window, LPCWSTR text, LPCWSTR caption, UINT type) {
+    char t[2048]{}, c[256]{};  // UTF-8: %ls stops at the first character outside the C locale (Spanish text)
+    if (text) WideCharToMultiByte(CP_UTF8, 0, text, -1, t, sizeof t - 1, nullptr, nullptr);
+    if (caption) WideCharToMultiByte(CP_UTF8, 0, caption, -1, c, sizeof c - 1, nullptr, nullptr);
+    return no_dialog_a(window, t, c, type);
+}
+static int WINAPI no_dialog_a(HWND, LPCSTR text, LPCSTR caption, UINT type) {
+    std::fprintf(stderr, "csf: MessageBox [%s] %s (type %X): answered OK\n", caption ? caption : "", text ? text : "", type);
+    return IDOK;
+}
+
 int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command, int show) {
     std::setvbuf(stderr, nullptr, _IONBF, 0);  // progress lines must survive a crash
     csf::initialize_data();
+    char quiet[8]{};
+    if (GetEnvironmentVariableA("CSF_NO_DIALOGS", quiet, sizeof quiet) && quiet[0] != '0') {
+        *reinterpret_cast<void**>(CSF_ADDR_DATA(0x0082D290)) = reinterpret_cast<void*>(&no_dialog_w);
+        *reinterpret_cast<void**>(CSF_ADDR_DATA(0x0082D2C4)) = reinterpret_cast<void*>(&no_dialog_a);
+    }
     const int result = csf::run_original_initializers();
     if (result) {
         std::fprintf(stderr, "csf: C initializer failed: %d\n", result);

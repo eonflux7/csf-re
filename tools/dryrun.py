@@ -27,7 +27,9 @@ def main():
     # Keep optional boundary tracing visible across WSL interop as well as
     # the dry-run switch. No tracing is enabled unless the caller asks for it.
     exports = [os.environ.get("WSLENV", ""), "CSF_DRYRUN/w"]
-    for v in ("CSF_RW_TRACE", "CSF_HANG_SECONDS"):  # HANG: the exe dumps its main thread then (tools/dbg/stdsym.py)
+    if a.full:  # message boxes print and answer OK (standalone/main.cpp); CSF_NO_DIALOGS=0 keeps them
+        os.environ.setdefault("CSF_NO_DIALOGS", "1")
+    for v in ("CSF_RW_TRACE", "CSF_HANG_SECONDS", "CSF_NO_DIALOGS"):  # HANG: the exe dumps its main thread then (tools/dbg/stdsym.py)
         if v in os.environ:
             exports.append(v + "/w")
     env = dict(os.environ, CSF_DRYRUN="0" if a.full else "1",
