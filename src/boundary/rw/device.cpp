@@ -99,11 +99,19 @@ public:
         return SUCCEEDED(device->SetViewport(&viewport)) && SUCCEEDED(device->BeginScene());
     }
     bool endRasterDraw() override { return SUCCEEDED(device->EndScene()); }
-    bool presentRaster(rw::Raster*,void* window,uint32_t flags) override {
-        // Startup flags=0 uses upstream's initial IMMEDIATE swap policy.
-        // Do not call native show: it hides Present/Reset HRESULTs. Vsync and
-        // device-loss/reset integration remain explicit unsupported policies.
+    bool presentRaster(rw::Raster* raster,void* window,uint32_t flags) override {
+        // Present is called directly so its HRESULT stays visible. Two things go through librw's native show, which
+        // releases/restores librw's video memory around Device::Reset (the boundary creates no D3D resources):
+        // - full screen presents with vsync: upstream starts IMMEDIATE, which ran the menu at ~2000 fps (tearing,
+        //   the "shimmering" menu); the first frame switches the interval with one native FLIPWAITVSYNCH show.
+        // - a lost device (alt-tab out of full screen) is reported as shown while lost and reset once
+        //   TestCooperativeLevel says DEVICENOTRESET; before, Present failed forever and the game froze.
         if (flags != 0) return false;
+        if (!rw::d3d::d3d9Globals.present.Windowed &&
+            rw::d3d::d3d9Globals.present.PresentationInterval != D3DPRESENT_INTERVAL_ONE) {
+            rw::engine->device.showRaster(raster,rw::Raster::FLIPWAITVSYNCH);
+            return true;
+        }
         // D3D9 forbids a destination-window override in exclusive mode. The
         // copied HWND is already in librw's present.hDeviceWindow; only allow
         // that destination there, passing NULL to COM as required.
@@ -116,6 +124,13 @@ public:
         if (csf_rw::startupTracing()) std::fprintf(stderr,"RW startup Present HWND=%p HRESULT=%08lx im2d=%d failed=%d\n",window,
                                                    static_cast<unsigned long>(result),csf_rw::im2DFrameCalls[0],csf_rw::im2DFrameCalls[1]);
         csf_rw::im2DFrameCalls[0]=csf_rw::im2DFrameCalls[1]=0;
+        if (result == D3DERR_DEVICELOST) {
+            if (device->TestCooperativeLevel() == D3DERR_DEVICENOTRESET) {
+                csf_rw::startupTrace("0x006276E0","device lost: reset");
+                rw::engine->device.showRaster(raster,rw::Raster::FLIPWAITVSYNCH);
+            }
+            return true;
+        }
         return SUCCEEDED(result);
     }
 #endif
