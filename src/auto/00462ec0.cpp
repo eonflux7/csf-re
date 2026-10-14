@@ -23,7 +23,7 @@ static int __fastcall ApplyCachedEntryValueToTargetFloat(void* self, void* edx, 
     uint32_t entryValue = p2[1];
 
     uint32_t* v4 = reinterpret_cast<uint32_t*>(GetCachedEntryObject(v3, nullptr));
-    ProcessEntryValue(self, nullptr, v4, static_cast<int>(entryValue), 0, 0);
+    ProcessEntryValue(self, nullptr, v4, static_cast<int>(entryValue), 1, 0);
 
     // Signed load of the object's +8 dword, with the bias added when negative (unsigned view).
     int32_t raw = static_cast<int32_t>(v4[2]);

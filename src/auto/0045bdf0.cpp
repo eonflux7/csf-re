@@ -36,11 +36,10 @@ static int __fastcall SyncCoordsFromLookup(void* self, void* /*edx*/, int a2, in
         void* info = reinterpret_cast<TablePtrSlotFn>(CSF_AT(void**, table, 0)[2])(table, nullptr, result);
         int stateValue = CSF_AT(int, info, 180);
 
-        uint8_t* manager = reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(GetValue8B0554()));
-        (void)manager;
+        // 0045be34: call 0x4e8c50 once; 0045be39: mov ecx, eax; 0045be3b: call 0x4e9540
+        void* manager = reinterpret_cast<void*>(static_cast<uintptr_t>(GetValue8B0554()));
         uint8_t* entry = static_cast<uint8_t*>(
-            LookupStateEntry(GetValue8B0554() ? reinterpret_cast<void*>(static_cast<uintptr_t>(GetValue8B0554())) : nullptr,
-                             nullptr, stateValue, key, 0, 0));
+            LookupStateEntry(manager, nullptr, stateValue, key, 0, 0));
 
         // Destination record: a2 -> +4 -> +4 holds the output words
         uint8_t* argBase = reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(a2));

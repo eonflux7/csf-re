@@ -6,7 +6,7 @@
 CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 
 CSF_FUNC(int, __fastcall, CHandleTable_Resolve, 0x0044FC30, (void* self, void* edx, int handle));
-CSF_FUNC(int16_t, __fastcall, InvokeControlAction, 0x004921D0, (void* self, void* edx, int a2));
+CSF_FUNC(int, __fastcall, InvokeControlAction, 0x004921D0, (void* self, void* edx, int a2));
 
 static int __stdcall ResolveFlaggedControlAction(int action, int handle)
 {

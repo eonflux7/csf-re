@@ -3,11 +3,14 @@
 #include "hook.h"
 #include "core/memory.h"
 
-CSF_FUNC(void, __cdecl, Hud_RenderWidgetAtScaledRect, 0x0042F4F0, (void* widget, const int* rect));
+// 0x42F4F0 is void, but its last call is the SetSize vtable call and only pops follow it, so eax at its return is
+// that call's result; the original passes that whole eax back from this function, so it is bound as returning uint32_t.
+CSF_FUNC(uint32_t, __cdecl, Hud_RenderWidgetAtScaledRect, 0x0042F4F0, (void* widget, const int* rect));
 
 // Updates the owner child at +0x30, then the slot child at +0xD0 when an active slot exists
-// (slots at +0x6C, stride 0x20, 4 entries), then draws the widget at +0x44.
-static char __fastcall Hud_RenderSubtitlePanel(uint8_t* self, void* /*edx*/)
+// (slots at +0x6C, stride 0x20, 4 entries), then draws the widget at +0x44. Returns the whole eax the original
+// leaves: the widget call's result when the widget is drawn, else the last value computed above.
+static uint32_t __fastcall Hud_RenderSubtitlePanel(uint8_t* self, void* /*edx*/)
 {
     uint32_t lastResult = 0;
 
@@ -50,10 +53,10 @@ static char __fastcall Hud_RenderSubtitlePanel(uint8_t* self, void* /*edx*/)
     void* widget = CSF_AT(void*, self, 0x44);
     if (widget != nullptr)
     {
-        Hud_RenderWidgetAtScaledRect(widget, nullptr);
+        lastResult = Hud_RenderWidgetAtScaledRect(widget, nullptr);
     }
 
-    return (char)lastResult;
+    return lastResult;
 }
 
 HOOK(0x439CF0, Hud_RenderSubtitlePanel, "auto");

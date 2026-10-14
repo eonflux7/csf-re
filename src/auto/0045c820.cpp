@@ -27,7 +27,6 @@ static int32_t* __stdcall ResetVectorAndLoadSlotPosition(void* a1, void* /*a2*/,
     // Key comes from the object referenced by a3: [[a3] + 4] + 4.
     void* keyOwner = CSF_AT(void*, CSF_AT(void*, a3, 0), 4);
 
-    GetValue8B0554();
     void* context = reinterpret_cast<void*>(static_cast<intptr_t>(GetValue8B0554()));
     int32_t key = CSF_AT(int32_t, keyOwner, 4);
     void* lookupSelf = CSF_AT(void*, context, 0x1F90);

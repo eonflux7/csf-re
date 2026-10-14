@@ -52,11 +52,11 @@ static int __fastcall S_00523cf0_ProcessSecondSubobject(
     if (shouldFinish)
     {
         void* interfaceObject = reinterpret_cast<void*>(string->field_0004);
-        const bool result =
-            ((bool(__fastcall*)(void*, void*, S_00691860*))
+        const int result =
+            ((int(__fastcall*)(void*, void*, S_00691860*))
                 CSF_AT(void**, interfaceObject, 0)[0x7C / 4])(
                     interfaceObject, nullptr, string);
-        if (result)
+        if (static_cast<uint8_t>(result) != 0)
         {
             CSF_AT(uint8_t, string, 0x00) = 0;
             return result;

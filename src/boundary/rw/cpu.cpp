@@ -9,6 +9,7 @@
 #include "hook.h"
 #endif
 #include "abi.h"
+#include "life.h"
 #include <cstdlib>
 #include <unordered_map>
 #include <vector>
@@ -20,16 +21,17 @@ using csf_rw::Frame;
 using M = rw::Matrix;
 using V = rw::V3d;
 using Op = rw::CombineOp;
+static_assert(sizeof(rw::Quat) == 16 && offsetof(rw::Quat, w) == 12);
+#if UINTPTR_MAX == 0xffffffff
+static_assert(offsetof(csf_rw::ObjectWithFrame, inFrame) == 8);
+static_assert(offsetof(csf_rw::ObjectWithFrame, sync) == 16);
+#endif
 using FrameCB = Frame* (__cdecl *)(Frame*, void*);
 using ObjectCB = void* (__cdecl *)(void*, void*);
 
-// NULL backend has no device. Lifecycle slots in the next slice must replace this
-// bootstrap with the game's explicit Init/Open/Close/Term sequence.
+// Only explicit lifecycle may start a device, including the NULL device.
 bool cpuEngine() {
-    if (rw::Engine::state == rw::Engine::Started) return true;
-    if (rw::Engine::state == rw::Engine::Dead && !rw::Engine::init()) return false;
-    if (rw::Engine::state == rw::Engine::Initialized && !rw::Engine::open(nullptr)) return false;
-    return rw::Engine::start() != 0;
+    return rw::Engine::state == rw::Engine::Started;
 }
 void allocator() {
     if (rw::Engine::state == rw::Engine::Dead)
@@ -65,7 +67,7 @@ void importFrames() {
 }
 static Frame* __stdcall frameCreate() {
     if (!cpuEngine()) return nullptr;
-    auto* a = static_cast<Frame*>(std::calloc(1, sizeof(Frame)));
+    auto* a = static_cast<Frame*>(std::calloc(1, csf_rw::plugins(csf_rw::Registry::Frame).size));
     if (!a) return nullptr;
     rw::Frame* b = rw::Frame::create();
     if (!b) { std::free(a); return nullptr; }
@@ -77,6 +79,9 @@ static Frame* __stdcall frameCreate() {
     a->objects.next = a->objects.prev = &a->objects;
     a->dirty.next = a->dirty.prev = &a->dirty;
     exportFrames();
+    if (!csf_rw::constructPlugins(csf_rw::Registry::Frame, a)) {
+        frames().erase(a); facades().erase(b); b->destroy(); std::free(a); return nullptr;
+    }
     return a;
 }
 static Frame* __cdecl frameUpdate(Frame* f) {
@@ -128,6 +133,7 @@ static Frame* __cdecl frameIdentity(Frame* f) {
     importFrames(); native(f)->matrix.setIdentity(); native(f)->updateObjects(); exportFrames(); return f;
 }
 static int __cdecl frameDestroy(Frame* f) {
+    csf_rw::destructPlugins(csf_rw::Registry::Frame, f);
     // Attached game objects use the facade list. Detach without destroying them.
     while (f->objects.next != &f->objects) {
         auto* l = f->objects.next;
@@ -229,7 +235,40 @@ static M* __cdecl matrixRotateCS(M* m, const V* axis, float t, float s, Op op) {
 }
 // librw allocates directly, so there are no spare freelist blocks to purge.
 static int __stdcall purge() { return 0; }
+// 006d3250 attaches an object's frame; 006d2bf0/006da9a0 detach before
+// destruction. The game ObjectWithFrame list MUST contain facade Frame pointers.
+// Native owning-object slices must additionally attach their private sidecar;
+// no native owning-object slots exist yet in these CPU/lifecycle slices.
+static csf_rw::ObjectWithFrame* __cdecl objectSetFrame(csf_rw::ObjectWithFrame* o, Frame* f) {
+    if (!o || (f && frames().find(f) == frames().end())) return nullptr;
+    if (o->object.parent) {
+        auto* l = &o->inFrame;
+        l->prev->next = l->next; l->next->prev = l->prev;
+    }
+    o->object.parent = f;
+    o->inFrame.next = o->inFrame.prev = nullptr;
+    if (f) {
+        auto* l = &o->inFrame;
+        l->next = f->objects.next; l->prev = &f->objects;
+        l->next->prev = l; f->objects.next = l;
+        frameUpdate(f);
+    }
+    return o;
 }
+// 006e81a0/007077e0 supply RW-layout matrices and expect the output quaternion
+// handle. This value type has no owning/plugin prefix to mirror.
+static rw::Quat* __cdecl quatFromMatrix(rw::Quat* q, const M* m) {
+    if (!q || !m) return nullptr;
+    M copy = *m; *q = copy.getRotation(); return q;
+}
+// 006e8b20/006e9080 supply angles in degrees. Unlike Matrix::rotate, librw's
+// Quat::rotate expects radians, so convert here, not by patching upstream.
+static rw::Quat* __cdecl quatRotate(rw::Quat* q, const V* axis, float degrees, Op op) {
+    if (!q || !axis || rw::dot(*axis, *axis) == 0.0f) return nullptr;
+    return q->rotate(axis, degrees * (3.14159265358979323846f / 180.0f), op);
+}
+}
+namespace csf_rw { bool framesEmpty() { return frames().empty(); } }
 
 HOOK(0x00622EE0, sqrtRW, "boundary-rw");
 HOOK(0x00622F40, invSqrtRW, "boundary-rw");
@@ -267,4 +306,7 @@ HOOK(0x00624D10, matrixDestroy, "boundary-rw");
 HOOK(0x00624D40, matrixCreate, "boundary-rw");
 HOOK(0x006265F0, purge, "boundary-rw");
 HOOK(0x006327D0, frameSync, "boundary-rw");
+HOOK(0x0063CE30, objectSetFrame, "boundary-rw");
+HOOK(0x007D9D40, quatFromMatrix, "boundary-rw");
+HOOK(0x007D9E30, quatRotate, "boundary-rw");
 #endif

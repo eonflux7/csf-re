@@ -25,6 +25,17 @@ static inline float Minimap_SquareRoot(float value)
 #endif
 }
 
+static inline double Minimap_SquareRootD(double value)
+{
+#if defined(__has_builtin) && __has_builtin(__builtin_elementwise_sqrt)
+    return __builtin_elementwise_sqrt(value);
+#else
+    typedef double Vec2d __attribute__((__vector_size__(16)));
+    Vec2d packed = { value, 0.0 };
+    return __builtin_ia32_sqrtsd(packed)[0];
+#endif
+}
+
 // Computes the 2D (x,z) direction from `from` to `to`, normalized and scaled to
 // half the object's extent (field_002c - field_0024). When `absolute` is false the
 // length is additionally proportional to distance / refLength.
@@ -46,7 +57,10 @@ static float* __fastcall Minimap_ComputeScaledDirection(C_00830e5c* self, void* 
         scale = distance * ((float)extent * g_HalfDurationScale) / refLength;
     }
 
-    if (g_fZero != Minimap_SquareRoot(vec[1] * vec[1] + vec[0] * vec[0])) {
+    // The original keeps the squares and their sum on the x87 stack (extended precision) up to
+    // fsqrt/fucompp; in float, the squares of denormal differences underflow to 0 and the test flips.
+    double lenSq = (double)vec[1] * (double)vec[1] + (double)vec[0] * (double)vec[0];
+    if ((double)g_fZero != Minimap_SquareRootD(lenSq)) {
         NormalizeVector2(vec, nullptr);
         vec[0] = vec[0] * scale;
         vec[1] = vec[1] * scale;

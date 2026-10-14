@@ -33,13 +33,12 @@ static int __stdcall SceneHandle_ResolveAndDispatch(int a1, int a2, uint32_t* a3
                                       static_cast<int>(reinterpret_cast<uintptr_t>(handleSlot)));
         if (result)
         {
-            // value = *(*(*(a3[1] + 4) + 4) + 4), reloaded after the Resolve call
+            // value = *(*(a3[1] + 4) + 4), reloaded after the Resolve call
+            // (0045e797: ecx=[edi+4]; 0045e79a: edx=[ecx+4]; 0045e79d: eax=[edx+4])
             uint8_t* ctxObj = reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(a3[1]));
             uint8_t* innerObj = reinterpret_cast<uint8_t*>(
                 static_cast<uintptr_t>(CSF_AT(uint32_t, ctxObj, 4)));
-            uint8_t* leafObj = reinterpret_cast<uint8_t*>(
-                static_cast<uintptr_t>(CSF_AT(uint32_t, innerObj, 4)));
-            int payload = static_cast<int>(CSF_AT(uint32_t, leafObj, 4));
+            int payload = static_cast<int>(CSF_AT(uint32_t, innerObj, 4));
 
             // ecx = g_pCurrentScene at the call site; stack: slot pointer, then payload.
             return sub_452C70(g_pCurrentScene, nullptr,

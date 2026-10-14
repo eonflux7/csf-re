@@ -19,8 +19,9 @@ static int __stdcall DispatchToDefaultDestination(int a1, int a2, int a3)
     int globalValue = GetGlobalValue_8B0568();
     void* globalObject = reinterpret_cast<void*>(static_cast<uintptr_t>(globalValue));
 
-    DefaultDestination_Get(globalObject, nullptr);
-    return sub_44BB40(globalObject, nullptr, flagIsZero);
+    // The original passes the result of DefaultDestination_Get (eax) as `this` to sub_44BB40 (mov ecx, eax).
+    void* destination = DefaultDestination_Get(globalObject, nullptr);
+    return sub_44BB40(destination, nullptr, flagIsZero);
 }
 
 HOOK(0x0045B440, DispatchToDefaultDestination, "auto");

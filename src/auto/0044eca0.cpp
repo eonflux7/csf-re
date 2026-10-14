@@ -55,10 +55,10 @@ static int __fastcall Serialization_ProcessRecord(
     if (active)
     {
         void* object = CSF_AT(void*, record, 0x04);
-        const bool result = ((bool(__fastcall*)(void*, void*, bool*))
+        const int result = ((int(__fastcall*)(void*, void*, bool*))
             CSF_AT(void**, object, 0)[0x7C / 4])(
                 object, nullptr, record);
-        if (result)
+        if (static_cast<uint8_t>(result))
         {
             CSF_AT(uint8_t, record, 0x00) = 0;
             return result;

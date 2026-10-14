@@ -17,7 +17,7 @@ static int __fastcall CopyRangeRecordIntoObject(void* self, void* /*edx*/, int /
     if (key >= 0)
     {
         CSF_AT(uint32_t, self, 0x60) = *reinterpret_cast<uint32_t*>(node + 8);
-        result = *reinterpret_cast<int32_t*>(node + 8);
+        result = *reinterpret_cast<int32_t*>(node + 12);
         CSF_AT(int32_t, self, 0x64) = result;
         CSF_AT(int32_t, self, 0x18) = 5;
         CSF_AT(uint8_t, self, 0x82) = 0;

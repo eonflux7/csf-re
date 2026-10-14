@@ -1,11 +1,18 @@
 #include "globals.h"
 #include "boundary/rw/abi.h"
+#include "boundary/rw/life.h"
 #include <cassert>
 #include <cmath>
 #include <cstdio>
 using M = rw::Matrix;
 using V = rw::V3d;
 using F = csf_rw::Frame;
+CSF_FUNC(int, __cdecl, engineInit, 0x00627360, (const csf_rw::MemoryFunctions*, char, int));
+CSF_FUNC(int, __cdecl, engineOpen, 0x00627290, (void*));
+CSF_FUNC(int, __stdcall, engineStart, 0x00626D60, ());
+CSF_FUNC(int, __stdcall, engineStop, 0x00626CE0, ());
+CSF_FUNC(int, __stdcall, engineClose, 0x00626E30, ());
+CSF_FUNC(int, __stdcall, engineTerm, 0x00626EC0, ());
 CSF_FUNC(M*, __stdcall, createM, 0x00624D40, ());
 CSF_FUNC(int, __cdecl, destroyM, 0x00624D10, (M*));
 CSF_FUNC(M*, __cdecl, translateM, 0x00624B30, (M*, const V*, rw::CombineOp));
@@ -60,6 +67,9 @@ static void attachObject(csf_rw::ObjectWithFrame& o, F* f) {
 }
 static void* __cdecl failAlloc(size_t, rw::uint32) { return nullptr; }
 int main() {
+    assert(engineInit(nullptr,0,0));
+    assert(engineOpen(nullptr));
+    assert(engineStart());
     // Every slot in the slice is a real link reference, not just an object compile.
     const uintptr_t slots[] = {
         CSF_ADDR_FN(0x00622EE0), CSF_ADDR_FN(0x00622F40), CSF_ADDR_FN(0x00622FA0),
@@ -146,5 +156,6 @@ int main() {
     updateF(r); syncF();
     assert(syncOrderCount == 3 && syncOrder[0] == r && syncOrder[1] == left && syncOrder[2] == right);
     destroyF(left); destroyF(right); destroyF(r);
+    assert(engineStop()); assert(engineClose()); assert(engineTerm());
     std::puts("rw CPU: 36 slots linked; vector/matrix/frame tests passed");
 }

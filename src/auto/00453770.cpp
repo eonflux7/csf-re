@@ -76,11 +76,13 @@ static int __fastcall SerializeFourMembers(void* self, void* /*edx*/, void* cont
     if (!finished)
     {
         void* serializer = CSF_AT(void*, context, 0x04);
-        const unsigned char result =
-            reinterpret_cast<unsigned char (__fastcall*)(void*, void*, void*)>(
+        // Original 0045383a..00453847: test al,al selects the path, but the
+        // success path returns the full eax of the callee (ret 4), not a bool.
+        const std::uint32_t result =
+            reinterpret_cast<std::uint32_t (__fastcall*)(void*, void*, void*)>(
                 CSF_AT(void**, serializer, 0)[0x7C / 4])(
                     serializer, nullptr, context);
-        if (result != 0)
+        if (static_cast<std::uint8_t>(result) != 0)
         {
             CSF_AT(std::uint8_t, context, 0x00) = 0;
             return result;
