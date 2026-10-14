@@ -97,15 +97,15 @@
 - {addr: 0x0082D3B4, name: g_BinkSetMemory, type: BinkSetMemoryFn, uses: 1, src: auto}
 - {addr: 0x0082D3B8, name: g_BinkSetSoundSystem, type: BinkSetSoundSystemFn, uses: 1, src: auto}
 - {addr: 0x0082D3BC, name: g_BinkOpenDirectSound, type: void*, uses: 1, src: auto}
-- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 158, src: auto}
+- {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 160, src: auto}
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 3, src: auto}
 - {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 5, src: auto}
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 5, src: auto}
-- {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 43, src: auto, alt: [g_flt_82D4C4]}
+- {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 44, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4C8, name: g_CollisionMinimumTriangleArea, type: float, uses: 1, src: auto}
 - {addr: 0x0082D4CC, name: g_fZero, type: float, uses: 4, src: opus}
 - {addr: 0x0082D4D0, name: g_CollisionHeightTolerance, type: float, uses: 1, src: auto}
-- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 203, src: auto}
+- {addr: 0x0082D4D4, name: g_TransitionOne, type: float, uses: 204, src: auto}
 - {addr: 0x0082D4EC, name: g_ValueScale, type: float, uses: 15, src: auto}
 - {addr: 0x0082D4F0, name: g_SceneLoadMillisecondsToSeconds, type: float, uses: 18, src: auto, alt: [g_MinimumHeadTimeStep]}
 - {addr: 0x0082D54C, name: g_SecondaryYRotationScale, type: const float, uses: 1, src: auto}
@@ -131,8 +131,10 @@
 - {addr: 0x0082D820, name: g_BoundsInterpolationFraction, type: float, uses: 1, src: auto}
 - {addr: 0x0082D824, name: g_BoundsPointHeightOffset, type: float, uses: 1, src: auto}
 - {addr: 0x0082DAF0, name: g_ScoreboardRefreshInterval, type: float, uses: 8, src: auto}
-- {addr: 0x0082DBCC, name: g_VehicleAimLowerLimit, type: float, uses: 2, src: auto}
-- {addr: 0x0082DBD0, name: g_VehicleYawUpperLimit, type: float, uses: 2, src: auto}
+- {addr: 0x0082DBC4, name: g_VehiclePitchLowerLimit, type: float, uses: 1, src: auto}
+- {addr: 0x0082DBC8, name: g_VehiclePitchUpperLimit, type: float, uses: 1, src: auto}
+- {addr: 0x0082DBCC, name: g_VehicleAimLowerLimit, type: float, uses: 3, src: auto}
+- {addr: 0x0082DBD0, name: g_VehicleYawUpperLimit, type: float, uses: 3, src: auto}
 - {addr: 0x0082DC60, name: g_DegreesToRadians, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC64, name: g_AngleEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x0082DC68, name: g_MaximumHeadTimeStep, type: float, uses: 6, src: auto}
@@ -273,7 +275,8 @@
 - {addr: 0x00830D20, name: g_fEpsilon, type: float, uses: 1, src: auto}
 - {addr: 0x00830DC0, name: g_fMinStepPos, type: float, uses: 1, src: auto}
 - {addr: 0x00830DC4, name: g_fMinStepNeg, type: float, uses: 1, src: auto}
-- {addr: 0x00830E2C, name: g_RadarAngleLoopLimit, type: float, uses: 2, src: auto, alt: [g_RadarTwoPiMinusEpsilon]}
+- {addr: 0x00830E28, name: g_RadarTwoPi, type: float, uses: 1, src: auto}
+- {addr: 0x00830E2C, name: g_RadarAngleLoopLimit, type: float, uses: 3, src: auto, alt: [g_RadarTwoPiMinusEpsilon]}
 - {addr: 0x00830E44, name: g_RadarTwoPi, type: float, uses: 1, src: auto}
 - {addr: 0x00830E48, name: g_AudioAttenuationDistance, type: float, uses: 2, src: auto, alt: [g_MinimapZoomNormal]}
 - {addr: 0x00830E4C, name: g_MinimapZoomWide, type: float, uses: 2, src: auto}
@@ -971,10 +974,10 @@
 - {addr: 0x00899690, name: g_pszKey_MINIMAPA_RADAR, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x00899694, name: g_pszKey_MINIMAPA_RTS, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x00899698, name: g_pszKey_NUM_VERTEX, type: const char*, uses: 0, src: captain, conf: 1.0}
-- {addr: 0x0089969C, name: g_pszKey_ColorComponent0, type: char*, uses: 1, src: auto}
-- {addr: 0x008996A0, name: g_pszKey_ColorComponent1, type: char*, uses: 1, src: auto}
-- {addr: 0x008996A4, name: g_pszKey_ColorComponent2, type: char*, uses: 1, src: auto}
-- {addr: 0x008996A8, name: g_pszKey_ColorComponent3, type: char*, uses: 1, src: auto}
+- {addr: 0x0089969C, name: g_pszKey_ColorComponent0, type: char*, uses: 2, src: auto}
+- {addr: 0x008996A0, name: g_pszKey_ColorComponent1, type: char*, uses: 2, src: auto}
+- {addr: 0x008996A4, name: g_pszKey_ColorComponent2, type: char*, uses: 2, src: auto}
+- {addr: 0x008996A8, name: g_pszKey_ColorComponent3, type: char*, uses: 2, src: auto}
 - {addr: 0x008996AC, name: g_pszKey_SOLID, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008996B0, name: g_pszKey_TEX_W, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008996B4, name: g_pszKey_TEX_H, type: const char*, uses: 0, src: captain, conf: 1.0}
