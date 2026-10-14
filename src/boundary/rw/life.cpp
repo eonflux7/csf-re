@@ -269,9 +269,12 @@ int __cdecl videoMode(int n) {
     return rw::Engine::state == rw::Engine::Opened && rw::Engine::setVideoMode(n);
 }
 int __stdcall numModes() { csf_rw::startupTrace("0x00626B90","GetNumVideoModes"); return rw::engine ? rw::Engine::getNumVideoModes() : 0; }
-// 006f8360 saves the current mode for restoration. NULL's answer is used, not an
-// invented one-mode graphics device.
-int __stdcall currentMode() { return rw::engine ? rw::Engine::getCurrentVideoMode() : -1; }
+// 00626AB0/00626AC0 are a plain get/set pair over one RW global (0x8B68C4, 0 at start; the binary has no other
+// reference to it), not the current video mode as rwname guessed: 006F8360 saves it, sets 0 and restores it; skin
+// entries of type 4 (006C7B20) set it; 22 game call sites read it as a flag (e.g. 0056FAD5: flag ? 5 : 4).
+static int engineFlag8B68C4 = 0;
+int __cdecl getEngineFlag() { return engineFlag8B68C4; }
+void __cdecl setEngineFlag(int value) { engineFlag8B68C4 = value; }
 }
 
 namespace csf_rw {
@@ -453,7 +456,8 @@ HOOK(0x00591590, materialPlugin, "boundary-rw");
 HOOK(0x0059CEC0, lightPlugin, "boundary-rw");
 HOOK(0x00623950, framePlugin, "boundary-rw");
 HOOK(0x00626AE0, enginePlugin, "boundary-rw");
-HOOK(0x00626AB0, currentMode, "boundary-rw");
+HOOK(0x00626AB0, getEngineFlag, "boundary-rw");
+HOOK(0x00626AC0, setEngineFlag, "boundary-rw");
 HOOK(0x00626B30, subSystem, "boundary-rw");
 HOOK(0x00626B90, numModes, "boundary-rw");
 HOOK(0x00626C40, videoMode, "boundary-rw");

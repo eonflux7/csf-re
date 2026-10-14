@@ -21,7 +21,8 @@ CSF_FUNC(int, __stdcall, start, 0x00626D60, ());
 CSF_FUNC(int, __stdcall, stop, 0x00626CE0, ());
 CSF_FUNC(int, __stdcall, close, 0x00626E30, ());
 CSF_FUNC(int, __stdcall, term, 0x00626EC0, ());
-CSF_FUNC(int, __stdcall, current, 0x00626AB0, ());
+CSF_FUNC(int, __cdecl, engineFlag, 0x00626AB0, ());
+CSF_FUNC(void, __cdecl, setEngineFlag, 0x00626AC0, (int));
 CSF_FUNC(int, __stdcall, modes, 0x00626B90, ());
 CSF_FUNC(int, __cdecl, subsystem, 0x00626B30, (int));
 CSF_FUNC(int, __cdecl, mode, 0x00626C40, (int));
@@ -131,7 +132,7 @@ int main() {
     assert(facade && facade != rw::engine);
     assert(regFrame(8,43,nullptr,nullptr,nullptr)==-1);
     assert(modes() == rw::Engine::getNumVideoModes());
-    assert(current() == rw::Engine::getCurrentVideoMode());
+    assert(engineFlag() == 0); setEngineFlag(1); assert(engineFlag() == 1); setEngineFlag(0);  // plain global 0x8B68C4
     assert(subsystem(0) == rw::Engine::setSubSystem(0));
     assert(mode(0) == rw::Engine::setVideoMode(0));
     assert(!term()); assert(start()); assert(engineCtors == 1); assert(!start());
