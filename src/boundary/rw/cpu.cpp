@@ -10,6 +10,7 @@
 #endif
 #include "abi.h"
 #include "life.h"
+#include "object.h"
 #include <cstdlib>
 #include <unordered_map>
 #include <vector>
@@ -141,6 +142,8 @@ static int __cdecl frameDestroy(Frame* f) {
             reinterpret_cast<char*>(l) - offsetof(csf_rw::ObjectWithFrame, inFrame));
         l->prev->next = l->next; l->next->prev = l->prev;
         obj->object.parent = nullptr;
+        obj->inFrame.next = obj->inFrame.prev = nullptr;
+        csf_rw::objectFrameChanged(obj);
     }
     // librw destroy clears children's parent pointers but doesn't repair their
     // root pointers. Detach through the hierarchy API before freeing the root.
@@ -155,7 +158,7 @@ void collectSyncFrames(rw::Frame* f, std::vector<Frame*>& order) {
 }
 static int __stdcall frameSync() {
     if (!cpuEngine()) return 0;
-    importFrames();
+    importFrames(); csf_rw::objectImport();
     std::vector<Frame*> dirty;
     // Preserve librw's dirty-root list and child preorder, not hash-map order:
     // callbacks may observe objects previously synchronized in this pass.
@@ -164,7 +167,9 @@ static int __stdcall frameSync() {
         collectSyncFrames(root, dirty);
     }
     rw::Frame::syncDirty(); exportFrames();
-    // No native ObjectWithFrame sidecars yet. Sync callbacks see facade pointers.
+    csf_rw::objectExport();
+    // Native sidecars synchronized above. Game sync callbacks still receive
+    // facade pointers and may schedule a later dirty-frame pass themselves.
     for (Frame* f : dirty) {
         if (!frames().contains(f)) continue;
         frameObjects(f, [](void* p, void*) -> void* {
@@ -241,7 +246,7 @@ static int __stdcall purge() { return 0; }
 // no native owning-object slots exist yet in these CPU/lifecycle slices.
 static csf_rw::ObjectWithFrame* __cdecl objectSetFrame(csf_rw::ObjectWithFrame* o, Frame* f) {
     if (!o || (f && frames().find(f) == frames().end())) return nullptr;
-    if (o->object.parent) {
+    if (o->inFrame.next && o->inFrame.prev) {
         auto* l = &o->inFrame;
         l->prev->next = l->next; l->next->prev = l->prev;
     }
@@ -253,6 +258,7 @@ static csf_rw::ObjectWithFrame* __cdecl objectSetFrame(csf_rw::ObjectWithFrame* 
         l->next->prev = l; f->objects.next = l;
         frameUpdate(f);
     }
+    csf_rw::objectFrameChanged(o);
     return o;
 }
 // 006e81a0/007077e0 supply RW-layout matrices and expect the output quaternion
@@ -268,7 +274,11 @@ static rw::Quat* __cdecl quatRotate(rw::Quat* q, const V* axis, float degrees, O
     return q->rotate(axis, degrees * (3.14159265358979323846f / 180.0f), op);
 }
 }
-namespace csf_rw { bool framesEmpty() { return frames().empty(); } }
+namespace csf_rw {
+bool framesEmpty() { return frames().empty(); }
+rw::Frame* frameNative(Frame* f) { importFrames(); auto it=frames().find(f); return it==frames().end()?nullptr:it->second; }
+void frameExport() { exportFrames(); }
+}
 
 HOOK(0x00622EE0, sqrtRW, "boundary-rw");
 HOOK(0x00622F40, invSqrtRW, "boundary-rw");

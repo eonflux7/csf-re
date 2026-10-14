@@ -120,6 +120,7 @@ static uint32_t __cdecl gathering_name(hook::Regs* r, const uint32_t* a) {
 }
 } // namespace
 
+#include "init_support.h"
 static void gathering_init(void*);
 static void* __fastcall gathering_delete(void* self, void*, unsigned flags) {
     string_destroy(static_cast<unsigned char*>(self) + 0x28);
@@ -219,8 +220,18 @@ static __declspec(naked) void offline_00646de0() {
     __asm ret 0
 }
 HOOK(0x00646DE0, offline_00646de0, "boundary-netz");
+// sub_646E10: audited-offline-support; see audit.json: thread_map_construct.
+HOOK_REGS(0x00646E10, thread_map_construct, 4, "boundary-netz");
+// sub_646EF0: audited-offline-support; see audit.json: thread_map_destruct.
+HOOK_REGS(0x00646EF0, thread_map_destruct, 0, "boundary-netz");
 // NetSession_GetNodeAllocator: audited-offline-support; see audit.json: allocator_token.
 HOOK_REGS(0x00646FF0, allocator_token, 0, "boundary-netz");
+// sub_647200: audited-offline-support; see audit.json: value_construct.
+HOOK_REGS(0x00647200, value_construct, 0, "boundary-netz");
+// sub_647220: audited-offline-support; see audit.json: value_destruct.
+HOOK_REGS(0x00647220, value_destruct, 0, "boundary-netz");
+// PerfCounters_GetSampleRecord: audited-offline-support; see audit.json: counter_sample.
+HOOK_REGS(0x006474D0, counter_sample, 0, "boundary-netz");
 // DumpSessionStationRecord: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_006476a0() {
     __asm mov eax, 0
@@ -233,6 +244,8 @@ static __declspec(naked) void offline_00647790() {
     __asm ret 0
 }
 HOOK(0x00647790, offline_00647790, "boundary-netz");
+// sub_647840: audited-offline-support; see audit.json: context_dword_647840.
+HOOK_REGS(0x00647840, context_dword_647840, 0, "boundary-netz");
 // NetSession_GetPrimaryEndpoint: audited-offline-support; see audit.json: primary_endpoint.
 HOOK_REGS(0x006486C0, primary_endpoint, 0, "boundary-netz");
 // NetSession_GetSecondaryEndpoint: audited-offline-support; see audit.json: secondary_endpoint.
@@ -243,6 +256,18 @@ static __declspec(naked) void offline_00648770() {
     __asm ret 4
 }
 HOOK(0x00648770, offline_00648770, "boundary-netz");
+// sub_648FA0: audited-offline-support; see audit.json: critical_construct.
+HOOK_REGS(0x00648FA0, critical_construct, 0, "boundary-netz");
+// sub_648FB0: audited-offline-support; see audit.json: critical_destruct.
+HOOK_REGS(0x00648FB0, critical_destruct, 0, "boundary-netz");
+// sub_649AC0: audited-offline-support; see audit.json: thread_value_construct.
+HOOK_REGS(0x00649AC0, thread_value_construct, 4, "boundary-netz");
+// sub_649BA0: audited-offline-support; see audit.json: thread_value_destruct.
+HOOK_REGS(0x00649BA0, thread_value_destruct, 0, "boundary-netz");
+// sub_64A290: audited-offline-support; see audit.json: stopwatch_destruct.
+HOOK_REGS(0x0064A290, stopwatch_destruct, 0, "boundary-netz");
+// sub_64A310: audited-offline-support; see audit.json: stopwatch_construct.
+HOOK_REGS(0x0064A310, stopwatch_construct, 8, "boundary-netz");
 // ResetBaseState: owned-string; length-prefixed string on the game heap.
 HOOK_REGS(0x0064A690, string_default, 0, "boundary-netz");
 // InitializeTemporaryString: owned-string; length-prefixed string on the game heap.
@@ -343,16 +368,34 @@ static __declspec(naked) void offline_00651b40() {
     __asm ret 0
 }
 HOOK(0x00651B40, offline_00651b40, "boundary-netz");
+// sub_651D70: audited-offline-support; see audit.json: registry_base_construct.
+HOOK_REGS(0x00651D70, registry_base_construct, 0, "boundary-netz");
+// sub_651D80: audited-offline-support; see audit.json: registry_base_destruct.
+HOOK_REGS(0x00651D80, registry_base_destruct, 0, "boundary-netz");
 // NetSession_SetSettingsPair: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_00651fc0() {
     __asm mov eax, 0
     __asm ret 8
 }
 HOOK(0x00651FC0, offline_00651fc0, "boundary-netz");
+// sub_6523A0: audited-offline-support; see audit.json: context_dword_6523a0.
+HOOK_REGS(0x006523A0, context_dword_6523a0, 0, "boundary-netz");
 // CreateListNodeFromEntry: audited-offline-support; see audit.json: list_node.
 HOOK_REGS(0x006524B0, list_node, 12, "boundary-netz");
+// sub_652680: audited-offline-support; see audit.json: context_pair_construct.
+HOOK_REGS(0x00652680, context_pair_construct, 4, "boundary-netz");
 // NetGatheringDdl_PrepareRequestData: audited-offline-support; see audit.json: list_clear_strings.
 HOOK_REGS(0x00652810, list_clear_strings, 0, "boundary-netz");
+// sub_653730: audited-offline-support; see audit.json: registry_construct.
+HOOK_REGS(0x00653730, registry_construct, 0, "boundary-netz");
+// sub_653740: audited-offline-support; see audit.json: registry_destruct.
+HOOK_REGS(0x00653740, registry_destruct, 0, "boundary-netz");
+// sub_653750: audited-offline-support; see audit.json: registry_append.
+HOOK_REGS(0x00653750, registry_append, 4, "boundary-netz");
+// sub_6537B0: audited-offline-support; see audit.json: registry_unlink.
+HOOK_REGS(0x006537B0, registry_unlink, 4, "boundary-netz");
+// sub_653840: audited-offline-support; see audit.json: settings_destruct.
+HOOK_REGS(0x00653840, settings_destruct, 0, "boundary-netz");
 // sub_653E90: audited-offline-support; see audit.json: plain_list_head.
 HOOK_REGS(0x00653E90, plain_list_head, 0, "boundary-netz");
 // NetChat_CopyTextBytes: offline-false; not connected / request rejected / predicate false.
@@ -377,12 +420,18 @@ static __declspec(naked) void offline_006575d0() {
     __asm ret 4
 }
 HOOK(0x006575D0, offline_006575d0, "boundary-netz");
+// sub_657810: audited-offline-support; see audit.json: context_word_657810.
+HOOK_REGS(0x00657810, context_word_657810, 0, "boundary-netz");
 // NetSession_SetEndpointValue: audited-offline-rejection; caller tests byte result or ignores endpoint setter result; see audit.json.
 static __declspec(naked) void offline_00658240() {
     __asm mov eax, 0
     __asm ret 4
 }
 HOOK(0x00658240, offline_00658240, "boundary-netz");
+// sub_658610: audited-offline-support; see audit.json: context_value_destruct.
+HOOK_REGS(0x00658610, context_value_destruct, 0, "boundary-netz");
+// sub_6587B0: audited-offline-support; see audit.json: context_value_construct.
+HOOK_REGS(0x006587B0, context_value_construct, 4, "boundary-netz");
 // SessionFlagBuffer_SetMode: offline-noop; no callbacks, transport side effects, or state mutation.
 static __declspec(naked) void offline_0065e130() {
     __asm mov eax, 0
@@ -431,6 +480,8 @@ static __declspec(naked) void offline_0065e750() {
     __asm ret 8
 }
 HOOK(0x0065E750, offline_0065e750, "boundary-netz");
+// sub_668450: audited-offline-support; see audit.json: list_factory_668450.
+HOOK_REGS(0x00668450, list_factory_668450, 0, "boundary-netz");
 // IsSessionAddressReady: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_00668a50() {
     __asm mov eax, 0
@@ -449,6 +500,8 @@ static __declspec(naked) void offline_00669280() {
     __asm ret 0
 }
 HOOK(0x00669280, offline_00669280, "boundary-netz");
+// sub_6694A0: audited-offline-support; see audit.json: context_list_destruct.
+HOOK_REGS(0x006694A0, context_list_destruct, 0, "boundary-netz");
 // NetSession_RequestConnection: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_00669760() {
     __asm mov eax, 0
@@ -461,8 +514,14 @@ static __declspec(naked) void offline_00669ac0() {
     __asm ret 0
 }
 HOOK(0x00669AC0, offline_00669ac0, "boundary-netz");
+// sub_669FE0: audited-offline-support; see audit.json: context_list_construct.
+HOOK_REGS(0x00669FE0, context_list_construct, 4, "boundary-netz");
 // ConstructResource: audited-offline-support; see audit.json: request_construct.
 HOOK_REGS(0x0066A440, request_construct, 0, "boundary-netz");
+// sub_66B390: audited-offline-support; see audit.json: tree_factory_66b390.
+HOOK_REGS(0x0066B390, tree_factory_66b390, 0, "boundary-netz");
+// sub_66BBE0: audited-offline-support; see audit.json: tree_range_66bbe0.
+HOOK_REGS(0x0066BBE0, tree_range_66bbe0, 12, "boundary-netz");
 // NetSpawnMessages_FormatInitialPoint: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_0066bf70() {
     __asm mov eax, 0
@@ -487,6 +546,8 @@ static __declspec(naked) void offline_0066cf50() {
     __asm ret 20
 }
 HOOK(0x0066CF50, offline_0066cf50, "boundary-netz");
+// sub_66D400: audited-offline-support; see audit.json: list_factory_66d400.
+HOOK_REGS(0x0066D400, list_factory_66d400, 0, "boundary-netz");
 // NetSessionSlot_SetName: audited-offline-support; see audit.json: session_string_construct.
 HOOK_REGS(0x0066F130, session_string_construct, 4, "boundary-netz");
 // NetSessionSlot_Reset: audited-offline-support; see audit.json: session_string_destruct.
@@ -501,18 +562,34 @@ static __declspec(naked) void offline_0066f1a0() {
 HOOK(0x0066F1A0, offline_0066f1a0, "boundary-netz");
 // NetGathering_CopyUrlString: audited-offline-support; see audit.json: empty_string_output.
 HOOK_REGS(0x0066FBB0, empty_string_output, 4, "boundary-netz");
+// sub_672620: audited-offline-support; see audit.json: settings_construct.
+HOOK_REGS(0x00672620, settings_construct, 0, "boundary-netz");
+// sub_6727A0: audited-offline-support; see audit.json: factory_destruct.
+HOOK_REGS(0x006727A0, factory_destruct, 0, "boundary-netz");
+// sub_672960: audited-offline-support; see audit.json: factory_construct.
+HOOK_REGS(0x00672960, factory_construct, 0, "boundary-netz");
 // NetPrudpSendModeCommand: audited-offline-rejection; caller tests byte result or ignores endpoint setter result; see audit.json.
 static __declspec(naked) void offline_00676700() {
     __asm mov eax, 0
     __asm ret 8
 }
 HOOK(0x00676700, offline_00676700, "boundary-netz");
+// sub_67AC40: audited-offline-support; see audit.json: context_dword_67ac40.
+HOOK_REGS(0x0067AC40, context_dword_67ac40, 0, "boundary-netz");
+// sub_67CFE0: audited-offline-support; see audit.json: random_construct.
+HOOK_REGS(0x0067CFE0, random_construct, 0, "boundary-netz");
+// sub_67D010: audited-offline-support; see audit.json: root_construct.
+HOOK_REGS(0x0067D010, root_construct, 4, "boundary-netz");
+// RootDO_BaseCleanup: audited-offline-support; see audit.json: root_destruct.
+HOOK_REGS(0x0067D030, root_destruct, 0, "boundary-netz");
 // NetPostman_Reset: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_0067d040() {
     __asm mov eax, 0
     __asm ret 0
 }
 HOOK(0x0067D040, offline_0067d040, "boundary-netz");
+// sub_67D100: audited-offline-support; see audit.json: reference_construct.
+HOOK_REGS(0x0067D100, reference_construct, 0, "boundary-netz");
 // NetPlayer_DispatchInheritedEvent: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_0067f520() {
     __asm mov eax, 0
@@ -543,6 +620,10 @@ static __declspec(naked) void offline_00680ca0() {
     __asm ret 0
 }
 HOOK(0x00680CA0, offline_00680ca0, "boundary-netz");
+// GetCachedObjectProvider: audited-offline-support; see audit.json: provider_get.
+HOOK_REGS(0x00686C10, provider_get, 0, "boundary-netz");
+// sub_6882D0: audited-offline-support; see audit.json: list_factory_6882d0.
+HOOK_REGS(0x006882D0, list_factory_6882d0, 0, "boundary-netz");
 // NetSpawnMessages_FormatFloatValue: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_0068e670() {
     __asm mov eax, 0
@@ -555,6 +636,10 @@ static __declspec(naked) void offline_0068ec40() {
     __asm ret 8
 }
 HOOK(0x0068EC40, offline_0068ec40, "boundary-netz");
+// sub_68ECE0: audited-offline-support; see audit.json: timeout_construct.
+HOOK_REGS(0x0068ECE0, timeout_construct, 0, "boundary-netz");
+// sub_68F540: audited-offline-support; see audit.json: interpolation_construct.
+HOOK_REGS(0x0068F540, interpolation_construct, 0, "boundary-netz");
 // NetSession_SetEndpointAttribute: audited-offline-rejection; caller tests byte result or ignores endpoint setter result; see audit.json.
 static __declspec(naked) void offline_0068f740() {
     __asm mov eax, 0
@@ -585,6 +670,8 @@ static __declspec(naked) void offline_00791790() {
     __asm ret 4
 }
 HOOK(0x00791790, offline_00791790, "boundary-netz");
+// sub_796490: audited-offline-support; see audit.json: list_factory_796490.
+HOOK_REGS(0x00796490, list_factory_796490, 0, "boundary-netz");
 // C_0085ff6c_ConstructGatheringBase: audited-constructor; 0x30-byte offline base, eight ABI-specific virtuals.
 HOOK_REGS(0x00798DF0, gathering_construct, 0, "boundary-netz");
 // sub_798E40: audited-offline-support; see audit.json: gathering_destruct.
@@ -653,6 +740,8 @@ static __declspec(naked) void offline_00799c20() {
     __asm ret 4
 }
 HOOK(0x00799C20, offline_00799c20, "boundary-netz");
+// sub_79C090: audited-offline-support; see audit.json: list_factory_79c090.
+HOOK_REGS(0x0079C090, list_factory_79c090, 0, "boundary-netz");
 // NetGatheringDdl_StartGatheringRequest: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_0079e420() {
     __asm mov eax, 0
@@ -833,6 +922,10 @@ static __declspec(naked) void offline_007a9c60() {
     __asm ret 0
 }
 HOOK(0x007A9C60, offline_007a9c60, "boundary-netz");
+// sub_7AA3C0: audited-offline-support; see audit.json: tree_factory_7aa3c0.
+HOOK_REGS(0x007AA3C0, tree_factory_7aa3c0, 0, "boundary-netz");
+// sub_7AA730: audited-offline-support; see audit.json: tree_range_7aa730.
+HOOK_REGS(0x007AA730, tree_range_7aa730, 12, "boundary-netz");
 // NetCallbacks_SetServiceListState: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_007aa910() {
     __asm mov eax, 0

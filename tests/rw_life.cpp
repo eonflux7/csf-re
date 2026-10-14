@@ -109,10 +109,12 @@ int main() {
     assert(!init(nullptr, 1, 0)); assert(init(nullptr, 0, 1024)); assert(!init(nullptr,0,0));
     engineOffset = regEngine(4, 42, engineCtor, engineDtor); assert(engineOffset >= 300);
     frameOffset = regFrame(8, 42, frameCtor, frameDtor, nullptr); assert(frameOffset == sizeof(F));
-    assert(regAtomic(4,42,nullptr,nullptr,nullptr)==116);
-    assert(regGeometry(4,42,nullptr,nullptr,nullptr)==136);
-    assert(regMaterial(4,42,nullptr,nullptr,nullptr)==28);
-    assert(regLight(4,42,nullptr,nullptr,nullptr)==64);
+    // Native fixtures widen pointers; the actual x86 prefixes remain asserted
+    // as 116/136/28/64 in abi.h. Tail storage must not overlap a widened header.
+    assert(regAtomic(4,42,nullptr,nullptr,nullptr)==sizeof(csf_rw::Atomic));
+    assert(regGeometry(4,42,nullptr,nullptr,nullptr)==sizeof(csf_rw::Geometry));
+    assert(regMaterial(4,42,nullptr,nullptr,nullptr)==sizeof(csf_rw::Material));
+    assert(regLight(4,42,nullptr,nullptr,nullptr)==sizeof(csf_rw::Light));
     assert(regFrame(8,42,nullptr,nullptr,nullptr)==-1);
     auto old = rw::Engine::memfuncs.rwmalloc;
     rw::Engine::memfuncs.rwmalloc = failAlloc;
@@ -164,7 +166,7 @@ int main() {
     assert(streamClose(s,nullptr)); assert(close()); assert(!facade); assert(term());
     assert(engineDtors==1); assert(std::remove(path)==0);
     // Reinitialization resets ABI registries and native plugin descriptors.
-    assert(init(nullptr,0,0)); assert(regMaterial(4,77,nullptr,nullptr,nullptr)==28);
+    assert(init(nullptr,0,0)); assert(regMaterial(4,77,nullptr,nullptr,nullptr)==sizeof(csf_rw::Material));
     assert(open(nullptr)); assert(start()); assert(stop()); assert(close()); assert(term());
     csf_rw::MemoryFunctions custom{customMalloc,customFree,customRealloc,customCalloc};
     assert(init(&custom,0,0)); assert(open(nullptr)); assert(start());

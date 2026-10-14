@@ -8,6 +8,7 @@
 #endif
 #include "life.h"
 #include "image.h"
+#include "object.h"
 #include <cstdlib>
 #include <cstring>
 #include <limits>
@@ -40,9 +41,9 @@ static_assert(sizeof(void*) != 4 || sizeof(csf_rw::Memory) == 8);
 static_assert(sizeof(void*) != 4 || sizeof(csf_rw::MemoryFunctions) == 16);
 rw::PluginList registries[] = {
     rw::PluginList(sizeof(EngineFacade)), rw::PluginList(sizeof(csf_rw::Frame)),
-    rw::PluginList(116), rw::PluginList(136), rw::PluginList(28), rw::PluginList(64),
+    rw::PluginList(sizeof(csf_rw::Atomic)), rw::PluginList(sizeof(csf_rw::Geometry)), rw::PluginList(sizeof(csf_rw::Material)), rw::PluginList(sizeof(csf_rw::Light)),
     rw::PluginList(sizeof(csf_rw::Raster)), rw::PluginList(sizeof(csf_rw::Texture)),
-    rw::PluginList(sizeof(csf_rw::TexDictionary))
+    rw::PluginList(sizeof(csf_rw::TexDictionary)), rw::PluginList(sizeof(csf_rw::Clump)), rw::PluginList(sizeof(csf_rw::Camera))
 };
 int __cdecl setState(int state, void* value) {
     if (!rw::engine) return 0;
@@ -127,7 +128,7 @@ int __stdcall engineStart() {
 // 006db7c0/006dbd50 tear down explicitly, 0050d1a0 calls Term. librw returns void for these three
 // transitions; preserve boolean game results and reject invalid ordering.
 int __stdcall engineStop() {
-    if (rw::Engine::state != rw::Engine::Started || !csf_rw::framesEmpty() || !csf_rw::imagesEmpty()) return 0;
+    if (rw::Engine::state != rw::Engine::Started || !csf_rw::framesEmpty() || !csf_rw::imagesEmpty() || !csf_rw::objectsEmpty()) return 0;
     csf_rw::destructPlugins(csf_rw::Registry::Engine, gameEngine);
     csf_rw::imageBoundaryStop();
     stopNative(); return 1;

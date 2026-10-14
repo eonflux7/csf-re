@@ -579,6 +579,16 @@ rw::Texture* textureNative(Texture* a) {
     n->filterAddressing=a->filterAddressing; n->refCount=a->refCount; return n;
 }
 Texture* textureFacade(rw::Texture* n) { for (auto& p:textures) if (p.second==n) return p.first; return nullptr; }
+void textureExport(Texture* a) { auto it=textures.find(a); if (it!=textures.end()) exportTexture(a,it->second); }
+int textureRelease(Texture* a) { return textureDestroy(a); }
+bool textureCanRelease(Texture* a,int references) {
+    auto* n=textureNative(a); if(!n || a->refCount<=0) return false;
+    if(n->refCount>references || !a->raster) return true;
+    auto it=rasters.find(a->raster); if(it==rasters.end() || it->second.level>=0) return false;
+    for(auto& r:rasters) if(r.first!=a->raster && r.first->parent==a->raster) return false;
+    for(unsigned i=0;i<contextCount;++i) if(contexts[i]==a->raster) return false;
+    return true;
+}
 bool imagesEmpty() {
     return !contextCount && images.empty() && rasters.empty() && textures.empty() &&
         (dictionaries.empty() || (dictionaries.size()==1 && dictionaries.count(initialDictionary)));

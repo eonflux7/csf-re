@@ -1,5 +1,9 @@
 # Second NetZ boundary audit — partial completion
 
+Follow-up: [INIT_CUTOVER.md](INIT_CUTOVER.md) records the separate **46/46
+initializer-slot** cutover. The below is the historical second audit; its totals
+are not current. NetZ's overall online cutover remains deliberately incomplete.
+
 Finding: 29 further demanded slots can be covered without invented universal
 objects. 193 remain unresolved. This is **not** completion of the requested NetZ
 cutover or evidence that single player starts. In particular the target set

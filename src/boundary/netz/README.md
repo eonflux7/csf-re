@@ -1,5 +1,15 @@
 # Generated offline NetZ boundary — partial, deliberately fail-closed
 
+Initializer cutover update: **46/46 initializer-reached slots supplied**, with
+real owned process state and original vtable identities. See
+[INIT_CUTOVER.md](INIT_CUTOVER.md) for all slots/layouts, offline ownership policy,
+the 51 -> 5 static reachability result, and indirect-call limitations. The
+boundary now has **169 generated + 5 allocator bindings / 364 frozen targets;
+190 deliberately deferred**. `test_offline.py` requires `tools/linktest.py`'s
+initializer objects and executes 54 actual initializer wrappers and their 54
+registered destructors, as well as each individual new boundary wrapper.
+The figures below describe the earlier partial audit, not current totals.
+
 Regenerate with `.venv/bin/python tools/netzstub.py`; test reproducibility with
 `--check`. Initial target capture uses `--report work/linktest.json` **before**
 installing these slots. `targets.json` freezes that baseline so regeneration

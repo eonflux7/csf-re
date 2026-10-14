@@ -5,7 +5,7 @@
 namespace csf_rw {
 // These callbacks use the same C signatures as librw, but the registry belongs
 // to ABI objects, NEVER to native owning objects. Later slices must use it.
-enum class Registry { Engine, Frame, Atomic, Geometry, Material, Light, Raster, Texture, Dictionary };
+enum class Registry { Engine, Frame, Atomic, Geometry, Material, Light, Raster, Texture, Dictionary, Clump, Camera };
 rw::PluginList& plugins(Registry);
 bool constructPlugins(Registry, void*);
 void destructPlugins(Registry, void*);

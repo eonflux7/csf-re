@@ -7,6 +7,10 @@ rw::Raster* rasterNative(Raster*);
 Raster* rasterFacade(rw::Raster*);
 rw::Texture* textureNative(Texture*);
 Texture* textureFacade(rw::Texture*);
+// Export AFTER native ownership changes, before the next inward conversion.
+void textureExport(Texture*);
+int textureRelease(Texture*);
+bool textureCanRelease(Texture*, int references=1);
 bool imagesEmpty();
 bool imageBoundaryStart();
 void imageBoundaryStop();
