@@ -39,6 +39,7 @@ def sources():
     # Game slots supplied only by the exe still belong in the pre-data inventory:
     # datagen needs their IAT/global bindings before startup objects are linked.
     out.append(os.path.join(ROOT, "standalone", "game_plain.cpp"))
+    out.append(os.path.join(ROOT, "standalone", "adjustors.cpp"))  # tools/gen_adjustors.py
     return sorted(out)
 
 
