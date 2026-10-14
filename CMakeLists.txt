@@ -25,7 +25,11 @@ target_compile_options(csf_hook PRIVATE /W3 /EHsc /Zc:threadSafeInit- -Wno-micro
 target_link_libraries(csf_hook PRIVATE minhook kernel32 user32 ole32)
 target_link_options(csf_hook PRIVATE /MAP:${CMAKE_BINARY_DIR}/dinput8.map)
 
-include(cmake/standalone.cmake)
+# The cutover target needs the librw checkout (work/tools/librw). Trees without it (the verifier's) build the
+# hooked DLL only.
+if(EXISTS "${CMAKE_SOURCE_DIR}/work/tools/librw/CMakeLists.txt")
+  include(cmake/standalone.cmake)
+endif()
 # Opt-in cutover boundary. The hook DLL never links librw or boundary slots.
 option(CSF_RW_CPU_SLICE "Build the standalone librw CPU boundary and link probe" OFF)
 if(CSF_RW_CPU_SLICE)

@@ -37,10 +37,9 @@ static int __fastcall CCharActionFsm_ResetAndDisableObjectUpdates(CCharActionFsm
 
     int globalValue = GetGlobalValue_4FBDE0();
     int firstElement = GetFirstElement(reinterpret_cast<void*>(static_cast<uintptr_t>(globalValue)), nullptr);
-    GetCachedObjectProvider(reinterpret_cast<void*>(static_cast<uintptr_t>(firstElement)), nullptr);
+    void* provider = GetCachedObjectProvider(reinterpret_cast<void*>(static_cast<uintptr_t>(firstElement)), nullptr);
 
-    return ObjectProvider_SetUpdateMode(
-        reinterpret_cast<void*>(static_cast<uintptr_t>(firstElement)), nullptr, 0);
+    return ObjectProvider_SetUpdateMode(provider, nullptr, 0);
 }
 
 HOOK(0x00484CF0, CCharActionFsm_ResetAndDisableObjectUpdates, "auto");
