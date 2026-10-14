@@ -20,7 +20,9 @@ static int __stdcall ZlibLog_CopyPathBackslashed(char* destination, const char* 
     strcpy(pathBuffer, source);
     sub_694BF0(reinterpret_cast<uint8_t*>(pathBuffer), 47, 92);
     strcpy(destination, pathBuffer);
-    return 0;
+    // The original's last eax is the copy loop's pointer: one past the terminator of pathBuffer.
+    char* loopEnd = pathBuffer + strlen(pathBuffer) + 1;
+    return static_cast<int>(reinterpret_cast<uintptr_t>(loopEnd));
 }
 
 HOOK(0x006A2B60, ZlibLog_CopyPathBackslashed, "auto");

@@ -27,7 +27,9 @@ static int __cdecl ZlibLog_CopyPathBackslashes(char* dst, const char* src, int /
     while ((*d++ = *s++) != 0) {
     }
 
-    return 0;
+    // The original never writes eax after its copy loop, so the returned
+    // value is the register left by that loop: one past local's terminator.
+    return static_cast<int>(reinterpret_cast<uintptr_t>(s));
 }
 
 HOOK(0x006A02C0, ZlibLog_CopyPathBackslashes, "auto");

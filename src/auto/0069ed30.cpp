@@ -5,8 +5,10 @@
 // 0x0069EB70: __cdecl. The original pushes four dwords (a1, a2, ECX, a2), so
 // the callee sees four stack arguments and the caller cleans 0x10 bytes.
 // The packet's two-argument bind line does not match the pushes, so this
-// follows the pushes. The callee returns a char (al).
-CSF_FUNC(char, __cdecl, RtFSManager_ForwardArgsToEB70, 0x0069EB70,
+// follows the pushes. The callee leaves its result in the full eax (the loop's
+// last i[1] or the MemDebug free result), and the wrapper returns that eax
+// unchanged, so the callee is bound as int, not char.
+CSF_FUNC(int, __cdecl, RtFSManager_ForwardArgsToEB70, 0x0069EB70,
          (int a1, int a2, int a3, int a4));
 
 // 0x0069ED30: __stdcall, two stack arguments, callee-cleaned (ret 8).

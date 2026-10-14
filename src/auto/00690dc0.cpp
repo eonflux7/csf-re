@@ -11,7 +11,7 @@ CSF_FUNC(int, __fastcall, C_0085eb30_ReleaseMutexIfSet, 0x0069E3D0, (C_0085eb30*
 
 CSF_GLOBAL(const char*, g_MemDebugFile, 0x008BAD78);
 CSF_GLOBAL(int, g_MemDebugLine, 0x008BAD7C);
-CSF_GLOBAL(bool, g_bMemDebugTrackingEnabled, 0x008BAD88);
+CSF_GLOBAL(uint8_t, g_bMemDebugTrackingEnabled, 0x008BAD88);
 CSF_GLOBAL(int, g_MemDebugTotalAllocatedBytes, 0x008BAD8C);
 CSF_GLOBAL(uint8_t, g_MemDebugAllocationStatus, 0x008BAD90);
 CSF_GLOBAL(uint8_t, g_unk_8BAD98, 0x008BAD98);
@@ -24,7 +24,7 @@ static void* __cdecl CoreMemDebug_Allocate(
     if (C_0085eb30_WaitForEventHandle(
             reinterpret_cast<C_0085eb30*>(&g_MemDebugMutex), nullptr, 0))
     {
-        if (g_bMemDebugTrackingEnabled)
+        if (g_bMemDebugTrackingEnabled != 0)
             g_MemDebugTotalAllocatedBytes += size;
 
         if (file)

@@ -23,7 +23,7 @@ static float* __fastcall GfxMatrix_GetBoundingSphere(
     CSF_AT(std::uint32_t, output, 0x00) = CSF_AT(std::uint32_t, self, 0x00);
     CSF_AT(std::uint32_t, output, 0x04) = CSF_AT(std::uint32_t, self, 0x04);
     CSF_AT(std::uint32_t, output, 0x08) = CSF_AT(std::uint32_t, self, 0x08);
-    CSF_AT(float, output, 0x0C) = std::sqrt(z * z + y * y + x * x);
+    CSF_AT(float, output, 0x0C) = static_cast<float>(std::sqrt((double)z * z + (double)y * y + (double)x * x));
     return output;
 }
 

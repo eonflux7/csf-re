@@ -2,12 +2,15 @@
 
 // Copies the file-name part of a path (text after the last '/' or '\\') into a2.
 // If no separator exists, the whole path is copied when it fits.
-// Returns the length of the input path. The copy is skipped when the destination
+// Returns the length of the input path, except when the whole-path copy runs (no separator, fits in a3):
+// then the original returns its source pointer after the copy loop, one past the terminator (a1 + length + 1),
+// because the copy loop keeps its pointer in eax. The copy is skipped when the destination
 // buffer (capacity a3) is too small. The original inlines strlen and strcpy, so no calls are made here.
 static unsigned int __cdecl SceneLoader_CopyMapFilename(const char* a1, char* a2, unsigned int a3)
 {
     // strlen(a1), inlined
     unsigned int pathLength = 0;
+    unsigned int result = 0;  // value returned: pathLength, or the copy's end pointer (see above)
     while (a1[pathLength] != '\0')
     {
         ++pathLength;
@@ -33,6 +36,7 @@ static unsigned int __cdecl SceneLoader_CopyMapFilename(const char* a1, char* a2
         }
     }
 
+    result = pathLength;
     if (separatorFound)
     {
         // Copy the name after the separator if it fits in the buffer.
@@ -65,10 +69,12 @@ static unsigned int __cdecl SceneLoader_CopyMapFilename(const char* a1, char* a2
                 ++dst;
                 ++src;
             } while (ch != '\0');
+            // Original: 00694949 mov eax, edi ... 00694958 jne -> eax ends one past the NUL.
+            result = reinterpret_cast<unsigned int>(src);
         }
     }
 
-    return pathLength;
+    return result;
 }
 
 HOOK(0x006948E0, SceneLoader_CopyMapFilename, "auto");

@@ -15,7 +15,7 @@ static int __fastcall C_0085ee28_ReadCompressedBlock(
         CSF_AT(void**, stream, 0)[0x14 / 4])(
         stream, nullptr, 0, self->field_0014);
 
-    int compressedSize = 0;
+    int compressedSize;
     ((void(__fastcall*)(void*, void*, void*, int))
         CSF_AT(void**, stream, 0)[0x8 / 4])(
         stream, nullptr, &compressedSize, 4);
