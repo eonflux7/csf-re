@@ -81,5 +81,7 @@ add_dependencies(csf_standalone csf_standalone_inventory)
 target_compile_definitions(csf_standalone PRIVATE CSF_STANDALONE)
 target_include_directories(csf_standalone PRIVATE src hook standalone)
 target_compile_options(csf_standalone PRIVATE /W3 /EHsc /Zc:threadSafeInit-)
-target_link_libraries(csf_standalone PRIVATE librw::librw kernel32 user32 ole32)
+# The SDK's dinput8.lib by path (its c_dfDIKeyboard/c_dfDIMouse; their GUIDs are in dxguid): plain `dinput8` finds the hook DLL's import library
+# build/dinput8.lib first.
+target_link_libraries(csf_standalone PRIVATE csf_rw_d3d9_backend kernel32 user32 ole32 ${XWIN}/sdk/lib/um/x86/dinput8.lib dxguid)
 target_link_options(csf_standalone PRIVATE "/MAP:${CSF_CUTOVER}/csf_standalone.map" /ERRORLIMIT:0)
