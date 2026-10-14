@@ -1627,3 +1627,11 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Started rw7 (D3D9 device, sol-hi) and rw9 (toolkits, first half) next to rw4: the slices' dependencies are softer
   than the plan's table; they code against the RW 3.x offsets for slice 4 objects and append to the shared files.
 - webmon: the top panels never rendered: `top` in a browser is window.top, not the #top element.
+- Afternoon: RenderWare slices 4, 7, 9 and the NetZ initialiser slots (job netzinit) in: link test rw 280 -> 198,
+  netz 229 -> 183. Dry run (tools/dryrun.py on Windows) 14 -> 32 of 196 C++ initialisers; it now stops at 0x69DFA0,
+  a game function quarantined for breaking the installed baseline (job q69dfa0). Traps the initialisers can reach
+  (tools/initreach.py, static upper bound): game 1, rw 2 (world-dependent, slice 6).
+- The Haiku sweep is exhausted. Re-running emudiff on its 278 leftovers: 192 now pass (the differences were the
+  tool's, fixed since by emufix2 and the atexit event), 86 remain. Those go to sol-med in 25 grouped jobs (one per
+  module, lone functions packed by address, one pattern job for the return-value cases; work/measure/groupwaves.py,
+  at most 6 sol jobs at once, user). MiMo 2.6 Flash tried for grouped jobs and dropped (user).
