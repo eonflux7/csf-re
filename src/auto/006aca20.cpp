@@ -7,8 +7,9 @@
 CSF_FUNC(bool, __fastcall, GfxMatrix_ProcessValueAndPointer, 0x006AC7B0,
          (void* self, void* edx, int a2, float* a3));
 
-// The original's struct vtable, referenced at the call site (0x6ACA2B).
-static const void* const s_MatrixHelperVtable = CSF_VTBL(0x006AC7B0);
+// The packet's call-site annotation refers to the function, not a struct vtable.
+// Code-address annotation: function value, not a vtable.
+static const void* const s_MatrixHelperVtable = reinterpret_cast<void**>(CSF_ADDR_FN(0x006AC7B0));
 
 // Forwards the value argument together with a pointer to the parameter slot
 // holding that same value. ecx = this is passed through unchanged.

@@ -2,6 +2,7 @@
 # Reuse linktest's private compile cache, NEVER csf_hook objects. This also keeps
 # flags identical to the audited linktest.flags() MSVC x86 configuration.
 find_program(CSF_PYTHON NAMES python PATHS "${CMAKE_SOURCE_DIR}/.venv/bin" NO_DEFAULT_PATH REQUIRED)
+include("${CMAKE_SOURCE_DIR}/cmake/librw.cmake")
 set(CSF_CUTOVER "${CMAKE_BINARY_DIR}/cutover")
 file(MAKE_DIRECTORY "${CSF_CUTOVER}")
 file(GLOB_RECURSE CSF_STANDALONE_SRC CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.cpp")
@@ -34,7 +35,7 @@ set(CSF_INITS "${CSF_CUTOVER}/initializers.cpp")
 add_custom_command(OUTPUT "${CSF_DATA}" "${CSF_INITS}"
   COMMAND "${CSF_PYTHON}" "${CMAKE_SOURCE_DIR}/tools/datagen.py"
           --linktest "${CSF_CUTOVER}/base.json" --output "${CSF_CUTOVER}/data"
-          --report "${CSF_CUTOVER}/data/datagen.json" --allow-rejected
+          --report "${CSF_CUTOVER}/data/datagen.json"
   COMMAND "${CSF_PYTHON}" "${CMAKE_SOURCE_DIR}/tools/initgen.py"
           --linktest "${CSF_CUTOVER}/base.json" --output "${CSF_CUTOVER}"
   DEPENDS "${CSF_CUTOVER}/base.json" "${CMAKE_SOURCE_DIR}/tools/datagen.py"
@@ -46,7 +47,7 @@ add_custom_command(OUTPUT "${CSF_DATA}" "${CSF_INITS}"
              "${CSF_CUTOVER}/initializers.tsv" "${CSF_CUTOVER}/startup-disassembly.txt"
              "${CSF_CUTOVER}/data/datagen.json" "${CSF_CUTOVER}/data/datagen-rejected.json"
   WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-  COMMENT "Generate data and original CRT initializer order (rejected data remains undefined)")
+  COMMENT "Generate validated data and original CRT initializer order (reject invalid bindings)")
 add_library(csf_standalone_startup OBJECT EXCLUDE_FROM_ALL
             standalone/main.cpp "${CSF_DATA}" "${CSF_INITS}")
 add_dependencies(csf_standalone_startup csf_standalone_inventory)
@@ -79,5 +80,5 @@ add_dependencies(csf_standalone csf_standalone_inventory)
 target_compile_definitions(csf_standalone PRIVATE CSF_STANDALONE)
 target_include_directories(csf_standalone PRIVATE src hook standalone)
 target_compile_options(csf_standalone PRIVATE /W3 /EHsc /Zc:threadSafeInit-)
-target_link_libraries(csf_standalone PRIVATE kernel32 user32 ole32)
+target_link_libraries(csf_standalone PRIVATE librw::librw kernel32 user32 ole32)
 target_link_options(csf_standalone PRIVATE "/MAP:${CSF_CUTOVER}/csf_standalone.map" /ERRORLIMIT:0)

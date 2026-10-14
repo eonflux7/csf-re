@@ -46,7 +46,8 @@ static int __stdcall Scene_ResolveHandleOrFallback(int a1, int a2, uint32_t* a3)
             }
             else
             {
-                [[maybe_unused]] auto sceneFallbackVtbl = CSF_VTBL(0x004686A0);
+                // Code-address annotation: function value, not a vtable.
+                [[maybe_unused]] auto sceneFallbackVtbl = reinterpret_cast<void**>(CSF_ADDR_FN(0x004686A0));
                 uint32_t midAgain = CSF_AT(uint32_t, reinterpret_cast<void*>(a3[1]), 4);
                 uint32_t deepArgAgain = CSF_AT(uint32_t, reinterpret_cast<void*>(midAgain), 4);
                 void* sceneTableAgain = CSF_AT(void*, g_pCurrentScene, 0xBC);

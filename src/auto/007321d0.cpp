@@ -20,7 +20,8 @@ CSF_FUNC(int*, __fastcall, InitSubObjectFromSource, 0x00732230, (void* self, voi
 static int* __fastcall C_0086709c_CreateCopy(C_0086709c* self, void* /*edx*/)
 {
     // Vtable of S_0047ea40, referenced by the original's call to AssignPointerStorage.
-    [[maybe_unused]] void* assignStorageVtbl = CSF_VTBL(0x0047EA40);
+    // Code-address annotation: function value, not a vtable.
+    [[maybe_unused]] void* assignStorageVtbl = reinterpret_cast<void**>(CSF_ADDR_FN(0x0047EA40));
 
     uint8_t* created = nullptr;
     int rawAllocated = CoreMemory_AllocUntagged(44);

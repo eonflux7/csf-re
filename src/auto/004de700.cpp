@@ -9,11 +9,12 @@
 // Callee at 0x004DE550, __thiscall with no stack args (ret 0): ecx = this.
 CSF_FUNC(void, __fastcall, S_004de550_ReleaseOwnedResource, 0x004DE550, (void* self, void* edx));
 
-// The packet lists S_004de550's vtable as referenced at the call site (0x4DE70C).
+// The packet mislabeled this function address as a vtable at the call site.
 // The original stores no vtable pointer in this function, so this is a read-only
 // address expression with no memory write.
 static inline void* S_004de550_ReferencedVtable() {
-    return CSF_VTBL(0x004DE550);
+    // Code-address annotation: function value, not a vtable.
+    return reinterpret_cast<void**>(CSF_ADDR_FN(0x004DE550));
 }
 
 // Resets the S_004de550 slot: releases the owned resource if the active flag is set,

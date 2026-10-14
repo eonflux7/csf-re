@@ -18,7 +18,6 @@ static char __fastcall GameConfig_LoadVersionedSettings(C_00869cd0* self, void* 
     // Stack-resident settings file object (0x3C bytes), same as the original's [ebp-0x3C].
     alignas(4) std::uint8_t settingsFile[0x3C];
 
-    CSF_AT(void*, settingsFile, 0) = CSF_VTBL(0x00692B10);
     MenuExtras_InitializeFile(settingsFile, nullptr);
 
     const char* path = reinterpret_cast<const char*>(static_cast<std::uintptr_t>(pathArg));

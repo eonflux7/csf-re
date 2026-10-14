@@ -47,7 +47,8 @@ static char __stdcall ApplySceneMenuModeFromRequest(int /*a1*/, int /*a2*/, uint
         if (sceneMenuContext != nullptr)
         {
             const int globalValue457A80 = GetGlobalValue_457A80();
-            [[maybe_unused]] const auto resetObjectVtbl = CSF_VTBL(0x00457AF0);
+            // Code-address annotation: function value, not a vtable.
+            [[maybe_unused]] const auto resetObjectVtbl = reinterpret_cast<void**>(CSF_ADDR_FN(0x00457AF0));
             ResetGlobalValueObject(reinterpret_cast<void*>(globalValue457A80), nullptr);
 
             RefreshMenuContext(sceneMenuContext, nullptr);

@@ -11,7 +11,8 @@ CSF_FUNC(int, __fastcall, Dispatch_NoLinkedTarget, 0x004DBCB0, (void* self, void
 CSF_GLOBAL(float, g_fZero, 0x0082D4CC);
 CSF_GLOBAL(void*, g_pCurrentScene, 0x008AFC90);
 
-static const auto g_TargetHandleVtable = CSF_VTBL(0x0048C9F0);
+// Code-address annotation: function value, not a vtable.
+static const auto g_TargetHandleVtable = reinterpret_cast<void**>(CSF_ADDR_FN(0x0048C9F0));
 
 static void* AiCombat_GetLinkedOwner(void* context)
 {

@@ -95,7 +95,8 @@ static void NetGatheringDdl_HandlePhaseFive(S_006a7520* self)
 static void __fastcall NetGatheringDdl_DispatchByPhase(
     S_006a7520* self, void* /*edx*/, int a2)
 {
-    [[maybe_unused]] static void* const referencedVtable = CSF_VTBL(0x006A7520);
+    // Code-address annotation: function value, not a vtable.
+    [[maybe_unused]] static void* const referencedVtable = reinterpret_cast<void**>(CSF_ADDR_FN(0x006A7520));
 
     if (self->field_0008 != 3 || self->field_000c != 5)
         return;

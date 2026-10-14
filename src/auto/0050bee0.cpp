@@ -17,7 +17,6 @@ static char __fastcall C_0083fdf4_LoadOptionsFile(C_0083fdf4* self, void* /*edx*
 {
     // Stack object used by the MenuExtras file API; occupies ebp-0x40 up to the local at ebp-0x4.
     alignas(8) uint8_t fileBytes[0x3C];
-    CSF_AT(void*, fileBytes, 0) = (void*)CSF_VTBL(0x00692B10);
     MenuExtras_InitializeFile(fileBytes, nullptr);
 
     char result = 0;

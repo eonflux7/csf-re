@@ -19,7 +19,16 @@ static char SwitchExitValue(uint32_t command)
 {
     if (command > 0x26)
         return static_cast<char>(command);
-    return static_cast<char>(reinterpret_cast<const uint8_t*>(CSF_ADDR_DATA(0x004D62B4))[command]);
+    // Binary switch-index bytes: cases 0, 11, 14, 38 map to 0..3;
+    // every other in-range command maps to the shared default index 4.
+    // This is dispatch logic, not a global in the standalone data image.
+    switch (command) {
+    case 0: return 0;
+    case 0xB: return 1;
+    case 0xE: return 2;
+    case 0x26: return 3;
+    default: return 4;
+    }
 }
 
 static char __fastcall C_0083c280_HandleCommand(

@@ -18,7 +18,8 @@ CSF_FUNC(uint32_t*, __fastcall, InsertElement72_77D4B0, 0x0077D4B0,
 static uint32_t* __fastcall GameDataDefs_AppendElement72(
     S_0077d4b0* self, void* /*edx*/, int element)
 {
-    [[maybe_unused]] auto* const vtableRef = CSF_VTBL(0x0077D4B0);
+    // Code-address annotation: function value, not a vtable.
+    [[maybe_unused]] auto* const vtableRef = reinterpret_cast<void**>(CSF_ADDR_FN(0x0077D4B0));
 
     const uint32_t begin = self->field_0004;
     uint32_t size = 0;

@@ -13,7 +13,8 @@ static uint32_t* __fastcall S_004f1210_AppendRecord(
 {
     // The original has a call-site reference to S_004f1210's vtable address.
     // No store uses it, so this only keeps the reference present.
-    [[maybe_unused]] const auto classVtable = CSF_VTBL(0x004F1210);
+    // Code-address annotation: function value, not a vtable.
+    [[maybe_unused]] const auto classVtable = reinterpret_cast<void**>(CSF_ADDR_FN(0x004F1210));
 
     if (self->field_0008 >= self->field_0004)
     {

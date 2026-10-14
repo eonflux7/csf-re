@@ -7,9 +7,6 @@
 CSF_FUNC(int, __cdecl, MenuMessageBox_ResolveEntryByKey, 0x00692440,
          (int textId, int variant));
 
-using ModeDispatchTable = volatile std::uint32_t[6];
-CSF_GLOBAL(ModeDispatchTable, g_MenuMpSessions_ModeDispatch, 0x00560BB8);
-
 static void MenuMpSessions_SetControlFlag(void* control, std::uint32_t flag)
 {
     ((void(__fastcall*)(void*, void*, std::uint32_t))
@@ -63,8 +60,7 @@ static void __fastcall CMenuMpSessions_RefreshOptionControls(
         std::uint32_t mode = self->field_0018;
         if (mode <= 5)
         {
-            // Preserve the original dispatch-table memory reference.
-            (void)g_MenuMpSessions_ModeDispatch[mode];
+            // The original text-embedded jump table is represented by this switch.
             switch (mode)
             {
             case 0:

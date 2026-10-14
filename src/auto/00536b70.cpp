@@ -11,8 +11,9 @@ CSF_FUNC(int, __fastcall, sub_536940, 0x00536940, (void* self, void* edx, float 
 
 static int __fastcall MenuControls_ApplyGlobalFloatToScene(S_00536940* self, void* /*edx*/)
 {
-    // Referenced by the original's call site (vtable of S_00536940).
-    [[maybe_unused]] const void* const sceneVtable = CSF_VTBL(0x00536940);
+    // Referenced by the original's call site (the function S_00536940).
+    // Code-address annotation: function value, not a vtable.
+    [[maybe_unused]] const void* const sceneVtable = reinterpret_cast<void**>(CSF_ADDR_FN(0x00536940));
 
     int globalValueBlock = GetGlobalValue_8BC1E0();
     float speedValue = CSF_AT(float, reinterpret_cast<void*>(static_cast<uintptr_t>(globalValueBlock)), 0x2264);

@@ -22,8 +22,7 @@ static char __fastcall C_00840af8_TryLoadSaveFile(void* self, void* /*edx*/, int
     if (!CSF_AT(uint8_t, GetGlobalValue_75FDF0(), 0xCC))
         return 0;
 
-    // Records the file object's vtable slot (same value the initializer installs).
-    CSF_AT(void*, fileBytes, 0) = CSF_VTBL(0x00692B10);
+    // Initialize the file buffer by calling the constructor, not storing its address.
     MenuExtras_InitializeFile(fileBytes, nullptr);
 
     char savedOptionsByte = GetOptionsByte1();

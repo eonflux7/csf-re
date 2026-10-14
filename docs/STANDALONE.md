@@ -16,6 +16,26 @@ configured: that is the existing linktest flags/cache contract.
 The private cache is invalidated when flags change and tracks all src/hook
 headers, not just a fixed short header list.
 
+**Second-step update (2026-10-14): the exe now links.** See
+[STANDALONE_LINK2.md](STANDALONE_LINK2.md) for the measured result, binding audit,
+trap counts and the three pre-existing gate failures retained to preserve the
+requested emudiff baselines. The historical first-attempt measurements below
+are not the current linker state. Standalone now links the unmodified librw NULL
+checkout, and datagen runs strictly (without `--allow-rejected`). The default
+hook target neither builds nor links librw.
+
+Linux-side checks, **after** building the executable and with the build idle:
+
+```
+.venv/bin/python tests/test_standalone_check.py
+.venv/bin/python tools/standalone_check.py --require-ready --out build/cutover/dryrun.json
+```
+
+The tests pass for consistent generated inputs; `--require-ready` currently
+returns **2**, reporting 201 initializer traps and unresolved analysis paths.
+This is a host-side input/COFF audit, not execution of `CSF_DRYRUN=1` or proof
+that the executable can reach WinMain. It rejects stale object inventories.
+
 ## Generated inputs and explicit gaps
 
 `build/cutover/` contains:

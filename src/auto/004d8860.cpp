@@ -40,7 +40,8 @@ static int __fastcall AiAutonomous_BeginAttackTask(void* self, void* /*edx*/)
     handleBlock[0] = static_cast<int>(reinterpret_cast<uintptr_t>(CSF_VTBL(0x0082D448)));
 
     // Reference to the target task's vtable (S_0048c9f0), used as the object of CopyTargetHandle
-    [[maybe_unused]] auto* targetHandleVtbl = CSF_VTBL(0x0048C9F0);
+    // Code-address annotation: function value, not a vtable.
+    [[maybe_unused]] auto* targetHandleVtbl = reinterpret_cast<void**>(CSF_ADDR_FN(0x0048C9F0));
 
     void* target = CSF_AT(void*, CSF_AT(void*, CSF_AT(void*, self, 0x08), 0x14), 0x204);
     return AiAttackTasks_CopyTargetHandle(target, nullptr,

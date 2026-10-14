@@ -14,7 +14,8 @@ CSF_FUNC(void**, __fastcall, LogWindow_Construct, 0x006A30A0, (void* self, void*
 
 static void** __cdecl GetSharedLogWindow()
 {
-    [[maybe_unused]] const void* const logWindowVtbl = CSF_VTBL(0x006A30A0);
+    // Code-address annotation: function value, not a vtable.
+    [[maybe_unused]] const void* const logWindowVtbl = reinterpret_cast<void**>(CSF_ADDR_FN(0x006A30A0));
 
     void** result = reinterpret_cast<void**>(g_SharedLogWindowInstance);
     if (result == nullptr)

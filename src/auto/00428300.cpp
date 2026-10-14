@@ -13,7 +13,8 @@ CSF_FUNC(void, __fastcall, sub_4280A0, 0x004280A0, (void* self, void* edx, float
 static int __fastcall HudObjectives_UpdateAuxiliaryWidget(S_004276c0* self, void* /*edx*/, float a2)
 {
     // Vtable reference bound by address (base-class store equivalent in the original's chain).
-    const void* vtblRef = CSF_VTBL(0x004276C0);
+    // Code-address annotation: function value, not a vtable.
+    const void* vtblRef = reinterpret_cast<void**>(CSF_ADDR_FN(0x004276C0));
     (void)vtblRef;
 
     if (self->field_0008 && self->field_0009)

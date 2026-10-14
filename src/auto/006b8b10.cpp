@@ -10,7 +10,8 @@ CSF_FUNC(uint32_t*, __fastcall, InitS00402350Object, 0x00402350, (void* self, vo
 static void* __fastcall FxParticleManager_GetAttachmentTransform(void* self, void* /*edx*/, void* a2)
 {
     // The S_00402350 vtable is referenced by the original's construction path.
-    const void* s00402350Vtable = CSF_VTBL(0x00402350);
+    // Code-address annotation: function value, not a vtable.
+    const void* s00402350Vtable = reinterpret_cast<void**>(CSF_ADDR_FN(0x00402350));
     (void)s00402350Vtable;
 
     // Stack object for S_00402350: room 0x3C bytes up to the frame end.

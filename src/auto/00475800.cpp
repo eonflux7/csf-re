@@ -26,7 +26,8 @@ static unsigned int __fastcall S_0044d360_RegisterSceneObjects(S_0044d360* self,
     // Not found: append (original LABEL_5)
     if (self->field_0030 >= CSF_AT(uint32_t, self, 0x2c)) {
         int growAmount = CSF_AT(int, self, 0x34);
-        [[maybe_unused]] void* growArrayVtable = CSF_VTBL(0x0041E5F0);
+        // Code-address annotation: function value, not a vtable.
+        [[maybe_unused]] void* growArrayVtable = reinterpret_cast<void**>(CSF_ADDR_FN(0x0041E5F0));
         S_0041e5f0_GrowArrayCapacity(reinterpret_cast<S_0041e5f0*>(&self->field_0028), nullptr, growAmount);
     }
 

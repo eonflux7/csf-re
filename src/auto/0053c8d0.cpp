@@ -4,15 +4,9 @@
 #include "core/memory.h"
 #include "types/auto_classes.h"
 
-using AcousticDispatchTable = std::uint32_t[4];
-CSF_GLOBAL(AcousticDispatchTable, g_AcousticSelectionDispatch, 0x0053C9A0);
-
 static int __fastcall CMenuSoundOptions_InitializeAcousticRadioGroup(
     CMenuSoundOptions* self, void* /*edx*/, int /*unused*/)
 {
-    // The original uses this table to dispatch the four selection cases.
-    (void)&g_AcousticSelectionDispatch;
-
     if (!self->field_002c)
         return 0;
 

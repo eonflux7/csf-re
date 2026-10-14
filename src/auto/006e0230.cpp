@@ -53,7 +53,8 @@ static int __fastcall C_00861988_CreateAndRegisterParticle(C_00861988* self, voi
 
     // Append at the end, growing the array first if it is full.
     if (self->field_001c >= self->field_0018) {
-        [[maybe_unused]] auto growArrayVtbl = CSF_VTBL(0x0041E5F0);
+        // Code-address annotation: function value, not a vtable.
+        [[maybe_unused]] auto growArrayVtbl = reinterpret_cast<void**>(CSF_ADDR_FN(0x0041E5F0));
         S_0041e5f0_GrowArrayCapacity(
             reinterpret_cast<S_0041e5f0*>(&self->field_0014),
             nullptr,

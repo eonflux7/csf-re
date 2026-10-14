@@ -14,7 +14,8 @@ CSF_FUNC(bool, __fastcall, sub_4DCDC0, 0x004DCDC0, (void* self, void* edx, uint3
 
 static int __fastcall StaticGuard_CanEngageTarget(S_004aa310* self, void* /*edx*/, S_004abb90* a2)
 {
-    [[maybe_unused]] static const auto kStaticGuardVtbl = CSF_VTBL(0x004AA310);
+    // Code-address annotation: function value, not a vtable.
+    [[maybe_unused]] static const auto kStaticGuardVtbl = reinterpret_cast<void**>(CSF_ADDR_FN(0x004AA310));
 
     // Table pointer taken from the global block returned by GetValue8B0554().
     S_004dc8f0* table = CSF_AT(S_004dc8f0*, reinterpret_cast<uint8_t*>(GetValue8B0554()), 8152);

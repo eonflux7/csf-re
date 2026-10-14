@@ -24,7 +24,6 @@ static char __fastcall S_00782f90_LoadVersionedFile(S_00782f90* self, void* /*ed
     alignas(8) uint8_t fileBytes[0x3C];
     S_00692b10& file = *reinterpret_cast<S_00692b10*>(fileBytes);
 
-    *reinterpret_cast<void**>(fileBytes) = CSF_VTBL(0x00692B10);
     S_00692b10_InitializeFile(&file, nullptr);
 
     if (S_00693740_LoadFile(reinterpret_cast<S_00693740*>(&file), nullptr, a2))

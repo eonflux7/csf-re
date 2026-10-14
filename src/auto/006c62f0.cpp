@@ -9,7 +9,8 @@ CSF_FUNC(void*, __fastcall, S_0041e5f0_GrowArrayCapacity, 0x0041E5F0, (S_0041e5f
 // Appends `value` to the dynamic dword array at +0xE0 when bit 0x02 of the byte at +0x08 is set.
 // Returns true when the value was appended, false when the flag is clear.
 static bool __fastcall SkinAppendEntryIfEnabled(void* self, void* /*edx*/, int value) {
-    [[maybe_unused]] const void* const growArrayVtbl = CSF_VTBL(0x0041E5F0);
+    // Code-address annotation: function value, not a vtable.
+    [[maybe_unused]] const void* const growArrayVtbl = reinterpret_cast<void**>(CSF_ADDR_FN(0x0041E5F0));
 
     if ((CSF_AT(uint8_t, self, 0x08) & 0x02) == 0) {
         return false;

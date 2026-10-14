@@ -12,9 +12,6 @@
 CSF_FUNC(void, __stdcall, PrepareStaticAiState, 0x004DC3C0, (void* a1));
 CSF_FUNC(int, __fastcall, GetLinkedObjectValue_4DB5C0, 0x004DB5C0, (void* self, void*));
 
-// Global at the absolute address 0x718 (the original reads it as [0 + 0x718]).
-CSF_GLOBAL(void*, g_MacroOrderFallbackObj, 0x718);
-
 typedef char(__fastcall* ObjectCharSlot40Fn)(void* self, void* edx);
 
 static char __fastcall TFncMacroOrden_ConsumePendingDispatch(TFncMacroOrden* self, void* /*edx*/, int a2) {
@@ -31,7 +28,9 @@ static char __fastcall TFncMacroOrden_ConsumePendingDispatch(TFncMacroOrden* sel
             ObjectCharSlot40Fn fn = reinterpret_cast<ObjectCharSlot40Fn>(CSF_AT(void**, innerObj, 0)[40]);
             return fn(innerObj, nullptr);
         } else {
-            void* fallbackObj = g_MacroOrderFallbackObj;
+            // EAX is zero on this original path: a null-object field access,
+            // not an image global. Preserve the fault, do not fabricate storage.
+            void* fallbackObj = CSF_AT(void*, reinterpret_cast<void*>(linked), 0x718);
             ObjectCharSlot40Fn fn = reinterpret_cast<ObjectCharSlot40Fn>(CSF_AT(void**, fallbackObj, 0)[40]);
             return fn(fallbackObj, nullptr);
         }

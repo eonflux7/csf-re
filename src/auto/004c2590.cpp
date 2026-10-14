@@ -12,7 +12,8 @@ CSF_FUNC(int, __fastcall, CoverAttack_ProcessRecord, 0x004C2380, (void* self, vo
 // then reports whether the record is done (1) or still pending (0).
 static int __fastcall CoverAttackState_SerializeRecord(S_004c2380* self, void* /*edx*/, int a2)
 {
-    [[maybe_unused]] const void* coverAttackVtbl = CSF_VTBL(0x004C2380);
+    // Code-address annotation: function value, not a vtable.
+    [[maybe_unused]] const void* coverAttackVtbl = reinterpret_cast<void**>(CSF_ADDR_FN(0x004C2380));
 
     void* record = reinterpret_cast<void*>(a2);
 

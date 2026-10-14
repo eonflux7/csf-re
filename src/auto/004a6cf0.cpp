@@ -8,7 +8,8 @@
 CSF_FUNC(int, __fastcall, sub_771B80, 0x00771B80, (void* self, void* edx, int a2));
 
 static int __fastcall GetMappedValueForKey(void* self, void* /*edx*/, S_00771b80* key) {
-    [[maybe_unused]] auto* keyVtbl = CSF_VTBL(0x00771B80);
+    // Code-address annotation: function value, not a vtable.
+    [[maybe_unused]] auto* keyVtbl = reinterpret_cast<void**>(CSF_ADDR_FN(0x00771B80));
 
     // Owner -> table owner at +0x08 -> table holder at +0x2C
     uint32_t ownerRaw = CSF_AT(uint32_t, self, 0x08);

@@ -26,7 +26,8 @@ static int __fastcall S_00743570_ReadEventAndForward(S_00743570* self, void* /*e
     int ninthValue;
 
     // Reference to the S_00743570 vtable address, kept so the binding is present (no behavior).
-    [[maybe_unused]] const void* vtableRef = CSF_VTBL(0x00743570);
+    // Code-address annotation: function value, not a vtable.
+    [[maybe_unused]] const void* vtableRef = reinterpret_cast<void**>(CSF_ADDR_FN(0x00743570));
 
     NetCogibleDdl_ReadIntoSlot(reader, nullptr, reinterpret_cast<int>(&a2));
     NetCogibleDdl_ReadIntoSlot(reader, nullptr, reinterpret_cast<int>(&a3));

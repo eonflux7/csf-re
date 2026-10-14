@@ -10,7 +10,8 @@ CSF_FUNC(void*, __fastcall, S_0041e5f0_GrowArrayCapacity, 0x0041E5F0, (S_0041e5f
 CSF_FUNC(const void*, __fastcall, Vec_GrowTwelveByteRecordArray, 0x004DE9B0, (void* self, void*, int extraRecords));
 
 static uint8_t __fastcall ClumpLoader_RefreshSceneCapacityIfEnabled(void* self, void* /*edx*/) {
-    [[maybe_unused]] const void* arrayVtbl = CSF_VTBL(0x0041E5F0);
+    // Code-address annotation: function value, not a vtable.
+    [[maybe_unused]] const void* arrayVtbl = reinterpret_cast<void**>(CSF_ADDR_FN(0x0041E5F0));
 
     uint32_t eaxValue = CSF_AT(uint8_t, self, 0x20);
     if (CSF_AT(uint8_t, self, 0x20) != 0) {

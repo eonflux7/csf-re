@@ -1,21 +1,5 @@
 # Use the checked-out MIT project, not copied sources or RenderWare SDK headers.
-set(CSF_LIBRW_SOURCE "${CMAKE_SOURCE_DIR}/work/tools/librw" CACHE PATH "librw checkout")
-set(LIBRW_PLATFORM NULL CACHE STRING "CPU slice uses the no-device backend" FORCE)
-set(LIBRW_TOOLS OFF CACHE BOOL "" FORCE)
-set(LIBRW_INSTALL OFF CACHE BOOL "" FORCE)
-add_subdirectory("${CSF_LIBRW_SOURCE}" "${CMAKE_BINARY_DIR}/librw")
-# Upstream's Xbox serialization tables use unsigned {-1}; clang-cl rejects those
-# as C++11 narrowing even though this backend is not active. No source patch.
-target_compile_options(librw PRIVATE -Wno-c++11-narrowing)
-# librw's upstream Clang branch adds Unix libm even for clang-cl on Windows.
-if(WIN32 AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  get_target_property(_rwlibs librw LINK_LIBRARIES)
-  list(REMOVE_ITEM _rwlibs m)
-  set_property(TARGET librw PROPERTY LINK_LIBRARIES "${_rwlibs}")
-  get_target_property(_rwinterface librw INTERFACE_LINK_LIBRARIES)
-  list(REMOVE_ITEM _rwinterface "$<LINK_ONLY:m>")
-  set_property(TARGET librw PROPERTY INTERFACE_LINK_LIBRARIES "${_rwinterface}")
-endif()
+include("${CMAKE_SOURCE_DIR}/cmake/librw.cmake")
 add_library(csf_rw_cpu STATIC cpu.cpp)
 target_compile_definitions(csf_rw_cpu PRIVATE CSF_STANDALONE)
 target_include_directories(csf_rw_cpu PRIVATE "${CMAKE_SOURCE_DIR}/src" "${CMAKE_SOURCE_DIR}/hook")
