@@ -1,5 +1,6 @@
 #include <cstdint>
 #include "hook.h"
+#include "globals.h"
 
 // Returns the address of the global data block at 0x008AFDA0.
 // Original: mov eax, 0x8AFDA0 ; ret
