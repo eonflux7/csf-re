@@ -9,6 +9,7 @@
 CSF_FUNC(int, __stdcall, Game_WinMain, 0x00509250, (HINSTANCE, HINSTANCE, LPSTR, int));
 
 int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command, int show) {
+    std::setvbuf(stderr, nullptr, _IONBF, 0);  // progress lines must survive a crash
     csf::initialize_data();
     const int result = csf::run_original_initializers();
     if (result) {

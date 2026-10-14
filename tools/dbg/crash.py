@@ -1,6 +1,7 @@
 """Run the play copy under x32dbg (x64dbg-automate) and report the first crash. Windows-side script.
 
-Run via tools/dbg.sh crash [seconds]. Writes a report to stdout:
+Run via tools/dbg.sh crash [seconds] [exe]: exe defaults to the play copy's CommXPC.exe; the standalone exe is
+`tools/dbg.sh crash 60 E:\\dev\\csf-standalone\\csf_standalone.exe` (CSF_DRYRUN=1 is set for it). Writes a report to stdout:
   faulting eip + module, registers, disassembly around eip, stack words with module/symbol hints.
 Symbolization of game addresses and of our dinput8.dll happens WSL-side (tools/dbg.sh pipes through
 tools/dbg/symbolize.py).
@@ -10,8 +11,12 @@ from x64dbg_automate import X64DbgClient
 from x64dbg_automate.events import EventType
 
 X64DBG = r"E:\dev\tools\x64dbg\release\x32\x32dbg.exe"
-GAME = r"E:\dev\csf-play\CommXPC.exe"
+GAME = sys.argv[2] if len(sys.argv) > 2 else r"E:\dev\csf-play\CommXPC.exe"
 secs = int(sys.argv[1]) if len(sys.argv) > 1 else 90
+import os
+DIR = os.path.dirname(GAME)
+if GAME.lower().endswith("csf_standalone.exe"):
+    os.environ["CSF_DRYRUN"] = "1"  # inherited by x32dbg and the debuggee
 
 # No default stops (system/entry/TLS breakpoints): read from the ini at debugger startup, so patch it before launch.
 INI = X64DBG[:-4] + ".ini"
@@ -25,7 +30,7 @@ except OSError:
     pass
 
 c = X64DbgClient(x64dbg_path=X64DBG)
-c.start_session(GAME, current_dir=r"E:\dev\csf-play")
+c.start_session(GAME, current_dir=DIR)
 c.wait_until_debugging(30)
 FATAL = (0xC0000005, 0xC000001D, 0xC00000FD, 0xC0000094, 0xC0000096, 0xC0000409)  # 409: fast-fail (stack cookie)
 c.clear_debug_events()
@@ -57,6 +62,11 @@ else:
     except OSError:
         pass
     print(f"DLLBASE {base:08X}")
+    try:  # the main module's real (ASLR) base, for the standalone exe's link map
+        mb, ok = c.eval_sync("mod.main()")
+        print(f"MAINBASE {mb:08X}" if ok else "MAINBASE ?")
+    except Exception as e:
+        print(f"MAINBASE ? {e}")
     print(f"CRASH code={crashed.ExceptionCode:08X} eip={eip:08X} fault_addr="
           f"{(crashed.ExceptionInformation[1] if crashed.NumberParameters > 1 else 0):08X}")
     for n in ("eax", "ebx", "ecx", "edx", "esi", "edi", "ebp", "esp"):

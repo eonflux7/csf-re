@@ -1635,3 +1635,12 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   tool's, fixed since by emufix2 and the atexit event), 86 remain. Those go to sol-med in 25 grouped jobs (one per
   module, lone functions packed by address, one pattern job for the return-value cases; work/measure/groupwaves.py,
   at most 6 sol jobs at once, user). MiMo 2.6 Flash tried for grouped jobs and dropped (user).
+- **The standalone dry run completes** (exit 0, "dry run completed; WinMain not called"): all 195 game initialisers
+  run; xc[1] is the CRT's __security_init_cookie, which the host CRT does. Two fixes on the way:
+  0x69DFA0 back in the tree (job q69dfa0 found no defect in the quarantined file; the in-game baseline break is
+  for the verifier to show again), then a crash at 0x0049652E: game code calls Windows through the original's IAT
+  slots (101 files, 98 imports, e.g. 0x69E3E0 CreateMutexA through 0x82D19C), and the copied data held the file's
+  name offsets there. datagen now binds all 243 IAT slots at start-up (LoadLibrary/GetProcAddress; a missing one is
+  reported by name; none is). Found with x32dbg: `tools/dbg.sh crash 60 E:\dev\csf-standalone\csf_standalone.exe`
+  (crash.py takes an exe, prints the ASLR base: the exe loads at 0x6B0000, not 0x400000; map addresses accordingly).
+  A crash used to lose the progress lines (stderr buffered): unbuffered now. WSL interop reports 0xC0000005 as exit 5.
