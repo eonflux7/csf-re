@@ -23,16 +23,12 @@ static double MenuSaveGame_ConvertUnsignedAnchor(uint32_t value)
     return converted;
 }
 
-// The original pushes ebx and esi at entry and passes them, as they were at entry, to the first owner's virtual call
-// (`(v11, a3, a2)`: a3 = esi, a2 = ebx). That callee pops them (the original's ret 8 path leaves nothing else on the
-// stack), so the entry values come in through HOOK_REGS and go out as the two stack arguments of that call.
-// args[0] = screen, args[1] = registryHolder (the caller's stack arguments, read only).
-static uint32_t __cdecl CMenuSaveGame_ResolvePanelAndApplyScale(hook::Regs* regs, const uint32_t* args)
+// The original's push ebx / push esi save registers (restored at 0054484D),
+// not arguments to the owner's slot 6. That getter is 0068B5F0 on the render
+// engine: lea eax,[ecx+4]; ret. Giving it stack arguments misbalances ESP.
+static uint32_t __fastcall CMenuSaveGame_ResolvePanelAndApplyScale(
+    CMenuSaveGame* self, void* /*edx*/, void* screen, void* registryHolder)
 {
-    CMenuSaveGame* self = reinterpret_cast<CMenuSaveGame*>(static_cast<uintptr_t>(regs->ecx));
-    void* screen = reinterpret_cast<void*>(static_cast<uintptr_t>(args[0]));
-    void* registryHolder = reinterpret_cast<void*>(static_cast<uintptr_t>(args[1]));
-
     const uint32_t cachedPanel = self->field_0044;
     if (cachedPanel != 0)
         return cachedPanel;
@@ -61,8 +57,8 @@ static uint32_t __cdecl CMenuSaveGame_ResolvePanelAndApplyScale(hook::Regs* regs
     const int firstObjectId = GetGlobalInt();
     void* firstOwner = LookupObjectById(firstObjectId, nullptr);
     void* firstAnchor =
-        ((void* (__fastcall*)(void*, void*, uint32_t, uint32_t))CSF_AT(void**, firstOwner, 0)[6])(
-            firstOwner, nullptr, regs->esi, regs->ebx);
+        ((void* (__fastcall*)(void*, void*))CSF_AT(void**, firstOwner, 0)[6])(
+            firstOwner, nullptr);
     const uint32_t anchorX = CSF_AT(uint32_t, firstAnchor, 0);
 
     const int secondObjectId = GetGlobalInt();
@@ -103,4 +99,4 @@ static uint32_t __cdecl CMenuSaveGame_ResolvePanelAndApplyScale(hook::Regs* regs
             currentPanel, nullptr, ratioX, ratioY));
 }
 
-HOOK_REGS(0x00544780, CMenuSaveGame_ResolvePanelAndApplyScale, 8, "auto");
+HOOK(0x00544780, CMenuSaveGame_ResolvePanelAndApplyScale, "auto");
