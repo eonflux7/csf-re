@@ -18,6 +18,7 @@
 #include "plugins.h"
 #include "particles.h"
 #include "world.h"
+#include "fs.h"
 #ifdef RW_D3D9
 #include "../../../work/tools/librw/src/d3d/rwd3dimpl.h"
 #endif
@@ -310,10 +311,8 @@ S* __cdecl streamOpen(int type, int access, void* data) {
     auto* s = new(std::nothrow) S{type, access, nullptr, false};
     if (!s) return nullptr;
     if (type == 2) {
-        auto* f = new(std::nothrow) rw::StreamFile;
-        if (!f || !data || !f->open(static_cast<char*>(data), access == 1 ? "rb" : access == 2 ? "wb" : "ab")) {
-            delete f; delete s; return nullptr;
-        }
+        auto* f = csf_rw::openFileStream(static_cast<char*>(data), access == 1 ? "rb" : access == 2 ? "wb" : "ab");
+        if (!f) { delete s; return nullptr; }
         s->sidecar = f;
     } else {
         if (!data) { delete s; return nullptr; }

@@ -1,6 +1,24 @@
 // Link probes do not include generated standalone image data. Give this one
 // global a test-owned cell; production uses the generated shared-image slot.
 #include "globals.h"
+#include "boundary/rw/fs.h"
+#ifdef _WIN32
+#include <windows.h>
+namespace { CRITICAL_SECTION fsCriticalSection; }
+template <> unsigned char* const csf::gv<0x008BEB40>::d = reinterpret_cast<unsigned char*>(&fsCriticalSection);
+#endif
+namespace {
+csf_rw::FileSystem *fsDefault, *fsHead;
+int fsMax, fsCount, fsInitialized, fsError;
+void (__cdecl *fsErrorCB)(int);
+}
+template <> unsigned char* const csf::gv<0x008BC7C4>::d = reinterpret_cast<unsigned char*>(&fsDefault);
+template <> unsigned char* const csf::gv<0x008BC7C8>::d = reinterpret_cast<unsigned char*>(&fsHead);
+template <> unsigned char* const csf::gv<0x008BC7CC>::d = reinterpret_cast<unsigned char*>(&fsMax);
+template <> unsigned char* const csf::gv<0x008BC7D0>::d = reinterpret_cast<unsigned char*>(&fsCount);
+template <> unsigned char* const csf::gv<0x008BC7D4>::d = reinterpret_cast<unsigned char*>(&fsInitialized);
+template <> unsigned char* const csf::gv<0x008BC7D8>::d = reinterpret_cast<unsigned char*>(&fsError);
+template <> unsigned char* const csf::gv<0x008BC7DC>::d = reinterpret_cast<unsigned char*>(&fsErrorCB);
 namespace { void* engineCell; }
 template <> unsigned char* const csf::gv<0x008B68C0>::d = reinterpret_cast<unsigned char*>(&engineCell);
 namespace { int pluginCell_008BE558; }

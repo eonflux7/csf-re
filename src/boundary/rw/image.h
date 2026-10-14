@@ -5,6 +5,7 @@ namespace csf_rw {
 rw::Image* imageNative(Image*);
 rw::Raster* rasterNative(Raster*);
 Raster* rasterFacade(rw::Raster*);
+void rasterExport(Raster*);
 rw::Texture* textureNative(Texture*);
 Texture* textureFacade(rw::Texture*);
 // Export AFTER native ownership changes, before the next inward conversion.

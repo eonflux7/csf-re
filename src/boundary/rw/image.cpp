@@ -584,6 +584,7 @@ rw::Image* imageNative(Image* a) {
 }
 rw::Raster* rasterNative(Raster* a) { auto it=rasters.find(a); return it==rasters.end()?nullptr:it->second.native; }
 Raster* rasterFacade(rw::Raster* n) { for (auto& p:rasters) if (p.second.native==n) return p.first; return nullptr; }
+void rasterExport(Raster* a) { auto* n=rasterNative(a); if(n) exportRaster(a,n); }
 rw::Texture* textureNative(Texture* a) {
     auto it=textures.find(a); if (it==textures.end()) return nullptr;
     auto* n=it->second;
