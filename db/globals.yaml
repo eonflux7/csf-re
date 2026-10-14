@@ -1175,9 +1175,10 @@
 - {addr: 0x008A6BA0, name: g_psz_vfs_8A6BA0, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A6BA4, name: g_psz_win, type: const char*, uses: 0, src: captain, conf: 1.0}
 - {addr: 0x008A6BA8, name: g_psz_1_1_4, type: const char*, uses: 0, src: captain, conf: 1.0}
-- {addr: 0x008A6BAC, name: g_LogEntryTable, type: uint8_t, uses: 3, src: auto, alt: [g_RecordArray, g_TrackedBlockTable]}
-- {addr: 0x008A6BB0, name: g_LogEntryAux, type: uint32_t, uses: 2, src: auto, alt: [g_RecordCount]}
-- {addr: 0x008A6BB4, name: g_LogEntryCount, type: uint32_t, uses: 2, src: auto, alt: [g_TrackedBlockCount]}
+- {addr: 0x008A6BAC, name: g_TrackedBlockTable, type: uint8_t*, uses: 4, src: auto, alt: [g_LogEntryTable, g_RecordArray]}
+- {addr: 0x008A6BB0, name: g_LogEntryAux, type: uint32_t, uses: 3, src: auto, alt: [g_RecordCount, g_TrackedBlockCapacity]}
+- {addr: 0x008A6BB4, name: g_TrackedBlockCount, type: uint32_t, uses: 3, src: auto, alt: [g_LogEntryCount]}
+- {addr: 0x008A6BB8, name: g_TrackedBlockGrowth, type: int, uses: 1, src: auto}
 - {addr: 0x008A6C08, name: g_DeflateStreamError, type: const char*, uses: 1, src: auto}
 - {addr: 0x008A6C10, name: g_ZlibMemoryError, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008A6C14, name: g_DeflateBufferError, type: const char*, uses: 1, src: auto}
@@ -2060,8 +2061,46 @@
 - {addr: 0x008B0901, name: g_AccountMenuStateFlag, type: 'std::uint8_t', uses: 3, src: auto}
 - {addr: 0x008B0902, name: g_bMenuFlag_8B0902, type: 'std::uint8_t', uses: 2, src: auto}
 - {addr: 0x008B0903, name: byte_8B0903, type: uint8_t, uses: 3, src: auto, alt: [g_MpSessionsTransitionBlocked, g_SessionThreadStarting]}
+- {addr: 0x008B0904, name: adcGeometry, type: int, uses: 1, src: auto}
+- {addr: 0x008B0908, name: adcSector, type: int, uses: 1, src: auto}
+- {addr: 0x008B0918, name: anisoOffset, type: int, uses: 1, src: auto}
+- {addr: 0x008B091C, name: anisoStream, type: int, uses: 1, src: auto}
+- {addr: 0x008B0924, name: collEngine, type: int, uses: 1, src: auto}
+- {addr: 0x008B0928, name: collAtomic, type: int, uses: 1, src: auto}
 - {addr: 0x008B0930, name: g_CollisionPluginOffset, type: uint32_t, uses: 1, src: auto}
+- {addr: 0x008B0984, name: matfxMaterial, type: int, uses: 1, src: auto}
+- {addr: 0x008B0994, name: matfxAtomic, type: int, uses: 1, src: auto}
+- {addr: 0x008B0998, name: matfxSector, type: int, uses: 1, src: auto}
+- {addr: 0x008B09DC, name: mipOffset, type: int, uses: 1, src: auto}
+- {addr: 0x008B09E0, name: mipStream, type: int, uses: 1, src: auto}
+- {addr: 0x008B09E4, name: morphAtomic, type: int, uses: 1, src: auto}
+- {addr: 0x008B09E8, name: morphGeometry, type: int, uses: 1, src: auto}
 - {addr: 0x008B09EC, name: g_PTankPluginOffset, type: 'std::int32_t', uses: 0, src: captain, conf: 0.7}
+- {addr: 0x008B09F0, name: ptEngine, type: int, uses: 1, src: auto}
+- {addr: 0x008B0A14, name: randomOffset, type: int, uses: 1, src: auto}
+- {addr: 0x008B1240, name: skinEngine, type: int, uses: 1, src: auto}
+- {addr: 0x008B1244, name: skinAtomic, type: int, uses: 1, src: auto}
+- {addr: 0x008B1248, name: skinGeometry, type: int, uses: 1, src: auto}
+- {addr: 0x008B1294, name: userGeometry, type: int, uses: 1, src: auto}
+- {addr: 0x008B1298, name: userGeometryStream, type: int, uses: 1, src: auto}
+- {addr: 0x008B129C, name: userSector, type: int, uses: 1, src: auto}
+- {addr: 0x008B12A0, name: userSectorStream, type: int, uses: 1, src: auto}
+- {addr: 0x008B12A4, name: userFrame, type: int, uses: 1, src: auto}
+- {addr: 0x008B12A8, name: userFrameStream, type: int, uses: 1, src: auto}
+- {addr: 0x008B12AC, name: userCamera, type: int, uses: 1, src: auto}
+- {addr: 0x008B12B0, name: userCameraStream, type: int, uses: 1, src: auto}
+- {addr: 0x008B12B4, name: userLight, type: int, uses: 1, src: auto}
+- {addr: 0x008B12B8, name: userLightStream, type: int, uses: 1, src: auto}
+- {addr: 0x008B12BC, name: userMaterial, type: int, uses: 1, src: auto}
+- {addr: 0x008B12C0, name: userMaterialStream, type: int, uses: 1, src: auto}
+- {addr: 0x008B12C4, name: userTexture, type: int, uses: 1, src: auto}
+- {addr: 0x008B12C8, name: userTextureStream, type: int, uses: 1, src: auto}
+- {addr: 0x008B1348, name: cameraWorldOffset, type: int, uses: 2, src: auto, alt: [worldCamera]}
+- {addr: 0x008B134C, name: worldAtomic, type: int, uses: 1, src: auto}
+- {addr: 0x008B1350, name: worldClump, type: int, uses: 1, src: auto}
+- {addr: 0x008B1354, name: lightWorldOffset, type: int, uses: 2, src: auto, alt: [worldLight]}
+- {addr: 0x008B13B0, name: clumpCamera, type: int, uses: 1, src: auto}
+- {addr: 0x008B13B4, name: clumpLight, type: int, uses: 1, src: auto}
 - {addr: 0x008B68C0, name: g_pRwEngineInstance, type: void*, uses: 2, src: captain, conf: 0.9, alt: [g_008B68C0, g_pDispatchTable]}
 - {addr: 0x008B99B0, name: g_AccountService, type: void*, uses: 2, src: auto, alt: [g_NetSessionOwner]}
 - {addr: 0x008B99B4, name: g_TransportFlag, type: uint8_t, uses: 1, src: auto}
@@ -2324,6 +2363,19 @@
 - {addr: 0x008BC7D4, name: dword_8BC7D4, type: int, uses: 1, src: auto}
 - {addr: 0x008BC98C, name: defaultDictionary, type: void*, uses: 1, src: auto}
 - {addr: 0x008BC990, name: currentDictionary, type: void*, uses: 1, src: auto}
+- {addr: 0x008BE558, name: hanimOffset, type: int, uses: 1, src: auto}
+- {addr: 0x008BE560, name: ltEngine, type: int, uses: 1, src: auto}
+- {addr: 0x008BE564, name: ltAtomic, type: int, uses: 1, src: auto}
+- {addr: 0x008BE568, name: ltGeometry, type: int, uses: 1, src: auto}
+- {addr: 0x008BE56C, name: ltSector, type: int, uses: 1, src: auto}
+- {addr: 0x008BE570, name: ltWorld, type: int, uses: 1, src: auto}
+- {addr: 0x008BE574, name: ltMaterial, type: int, uses: 1, src: auto}
+- {addr: 0x008BE5E0, name: advEngine, type: int, uses: 1, src: auto}
+- {addr: 0x008BE6A0, name: prtEngine, type: int, uses: 1, src: auto}
+- {addr: 0x008BE6A4, name: prtAtomic, type: int, uses: 1, src: auto}
+- {addr: 0x008BE6A8, name: prtStream, type: int, uses: 1, src: auto}
+- {addr: 0x008BE7A4, name: patchWorld, type: int, uses: 1, src: auto}
+- {addr: 0x008BE7A8, name: patchSector, type: int, uses: 1, src: auto}
 - {addr: 0x008BF5E0, name: bankAlignment, type: Word, uses: 1, src: auto}
 - {addr: 0x008C1000, name: controlWord, type: uint32_t, uses: 1, src: auto}
 - {addr: 0x008C1004, name: previousControlWord, type: uint32_t, uses: 1, src: auto}
