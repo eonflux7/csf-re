@@ -99,7 +99,7 @@
 - {addr: 0x0082D3BC, name: g_BinkOpenDirectSound, type: void*, uses: 1, src: auto}
 - {addr: 0x0082D444, name: g_HalfDurationScale, type: float, uses: 160, src: auto}
 - {addr: 0x0082D4B8, name: g_NegativeHalfScale, type: float, uses: 3, src: auto}
-- {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 5, src: auto}
+- {addr: 0x0082D4BC, name: g_CharacterHeightScale, type: float, uses: 6, src: auto}
 - {addr: 0x0082D4C0, name: g_CoverAttackFarDistanceSquared, type: float, uses: 5, src: auto}
 - {addr: 0x0082D4C4, name: g_MissingMetricValue, type: float, uses: 44, src: auto, alt: [g_flt_82D4C4]}
 - {addr: 0x0082D4C8, name: g_CollisionMinimumTriangleArea, type: float, uses: 1, src: auto}
@@ -1168,6 +1168,10 @@
 - {addr: 0x0089A5F4, name: g_MpAccountMode, type: int, uses: 2, src: auto}
 - {addr: 0x0089A5F8, name: dword_89A5F8, type: uint32_t, uses: 2, src: auto, alt: [g_pendingSessionMode]}
 - {addr: 0x0089A5FC, name: g_MenuMpOnlineAccountEditContext, type: uint32_t*, uses: 2, src: auto}
+- {addr: 0x008A65E4, name: g_NextNetDdlClassId, type: 'std::uint32_t', uses: 1, src: auto}
+- {addr: 0x008A65F8, name: g_NetDdlOptionF8, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x008A65F9, name: g_NetDdlOptionF9, type: 'std::uint8_t', uses: 1, src: auto}
+- {addr: 0x008A65FA, name: g_NetDdlOptionFA, type: 'std::uint8_t', uses: 1, src: auto}
 - {addr: 0x008A669C, name: g_NextUniqueId, type: 'std::int32_t', uses: 2, src: captain, conf: 0.75, alt: [g_FallbackContext]}
 - {addr: 0x008A66B0, name: g_DefaultRecordValue, type: uint32_t, uses: 2, src: auto}
 - {addr: 0x008A66B4, name: g_ParserAllocationBlocks, type: void**, uses: 2, src: auto}
@@ -2319,7 +2323,7 @@
 - {addr: 0x008BBF7C, name: g_TransitionVertex2V, type: float, uses: 1, src: auto}
 - {addr: 0x008BBF84, name: g_SecondU, type: float, uses: 1, src: auto}
 - {addr: 0x008BBF88, name: g_SecondV, type: float, uses: 1, src: auto}
-- {addr: 0x008BBF8C, name: g_Block8BBF8C, type: void*, uses: 3, src: auto, alt: [g_QuadVertexBuffer]}
+- {addr: 0x008BBF8C, name: g_Block8BBF8C, type: void*, uses: 4, src: auto, alt: [g_QuadVertexBuffer]}
 - {addr: 0x008BBF90, name: g_Block8BBF90, type: void*, uses: 3, src: auto, alt: [g_QuadIndexBuffer]}
 - {addr: 0x008BBF98, name: g_AccountConnectionFlag, type: uint8_t, uses: 8, src: auto, alt: [g_ConnectionRequestFlag, g_NetSessionConnectionFlag, g_NetSessionFlag, g_OnlineMenuActive, g_SessionWaitFailedFlag, g_StationDumpPendingFlag]}
 - {addr: 0x008BC098, name: g_Session, type: uint32_t, uses: 4, src: auto, alt: [g_dword_8BC098]}
@@ -2356,7 +2360,7 @@
 - {addr: 0x008BC180, name: g_DdlObjectClassId, type: uint32_t, uses: 6, src: auto}
 - {addr: 0x008BC184, name: g_RequiredObjectClassId, type: uint32_t, uses: 6, src: auto}
 - {addr: 0x008BC188, name: dword_8BC188, type: int, uses: 7, src: auto, alt: [g_NetTempIdValue, g_NetTemporaryId, g_SessionEntryId, g_SpawnPointTempId, g_SpawnTempId, g_TemporarySpawnId]}
-- {addr: 0x008BC1CC, name: g_DdlObjectClassId, type: uint32_t, uses: 6, src: auto, alt: [g_DdlObjectSupportClassId]}
+- {addr: 0x008BC1CC, name: g_DdlObjectClassId, type: uint32_t, uses: 7, src: auto, alt: [g_DdlObjectSupportClassId]}
 - {addr: 0x008BC1D0, name: g_DistanceReferenceX, type: float, uses: 2, src: auto, alt: [g_SelectionOriginX]}
 - {addr: 0x008BC1D4, name: g_DistanceReferenceY, type: float, uses: 2, src: auto, alt: [g_SelectionOriginY]}
 - {addr: 0x008BC1D8, name: g_DistanceReferenceZ, type: float, uses: 2, src: auto, alt: [g_SelectionOriginZ]}
@@ -2365,7 +2369,7 @@
 - {addr: 0x008BC1E4, name: g_Value_8BC1E4, type: int, uses: 3, src: auto}
 - {addr: 0x008BC1E8, name: g_Value_8BC1E8, type: 'std::uint32_t', uses: 4, src: auto}
 - {addr: 0x008BC1EC, name: g_Value8BC1EC, type: int, uses: 3, src: auto}
-- {addr: 0x008BC27C, name: g_RegisteredNetClassId, type: uint32_t, uses: 2, src: auto, alt: [g_SpawnObjectType]}
+- {addr: 0x008BC27C, name: g_RegisteredNetClassId, type: uint32_t, uses: 3, src: auto, alt: [g_SpawnObjectType]}
 - {addr: 0x008BC7C8, name: dword_8BC7C8, type: void*, uses: 2, src: auto, alt: [head]}
 - {addr: 0x008BC7CC, name: capacity, type: int, uses: 1, src: auto}
 - {addr: 0x008BC7D0, name: dword_8BC7D0, type: int, uses: 2, src: auto, alt: [registeredCount]}
