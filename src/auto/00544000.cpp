@@ -13,7 +13,7 @@ static int __fastcall CMenuGameOptionsPC_Destroy(CMenuGameOptionsPC* self, void*
     // Install primary vtable pointer (offset 0, not a declared field).
     CSF_AT(uint32_t, self, 0x0) = CSF_ADDR_VT(0x008439B8);
     // Install secondary/base vtable pointer kept in CMenuScreen::field_0004.
-    self->field_0004 = 0x00843968u;
+    self->field_0004 = CSF_ADDR_VT(0x00843968);
     // Tail-call the base destructor, forwarding ecx/edx unchanged.
     return CMenuGameOptions_Destruct_53B5A0(self, edx);
 }

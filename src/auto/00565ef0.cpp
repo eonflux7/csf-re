@@ -12,7 +12,7 @@
 
 // Vtable addresses written into the object header (primary, secondary and intermediate bases).
 static const uint32_t kVtblCMenuMpGameMode = CSF_ADDR_VT(0x00845CA8);   // primary vtable
-static constexpr uint32_t kVtblSecondary845C58 = 0x00845C58u;   // secondary base vtable
+static const uint32_t kVtblSecondary845C58 = CSF_ADDR_VT(0x00845C58);   // secondary base vtable
 static const uint32_t kVtblIntermediate830488 = CSF_ADDR_DATA(0x00830488);
 static const uint32_t kVtblIntermediate830438 = CSF_ADDR_VT(0x00830438);
 static const uint32_t kVtblFinal83042C = CSF_ADDR_VT(0x0083042C);

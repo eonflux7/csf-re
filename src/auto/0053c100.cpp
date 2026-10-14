@@ -23,7 +23,7 @@ static void* __fastcall CMenuProfiles_Construct(void* self, void* /*edx*/, int m
     C_00830438_Construct(embeddedSubobject, nullptr);
 
     CSF_AT(uint32_t, self, 0) = CSF_ADDR_VT(0x00842908);
-    CSF_AT(uint32_t, embeddedSubobject, 0) = 0x008428B8;
+    CSF_AT(uint32_t, embeddedSubobject, 0) = CSF_ADDR_VT(0x008428B8);
     CSF_AT(uint32_t, self, 0x3C) = static_cast<uint32_t>(menuHandle);
     CSF_AT(uint32_t, self, 0x24) = 0;
     CSF_AT(uint8_t, self, 0x40) = 0;

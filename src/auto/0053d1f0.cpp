@@ -18,7 +18,7 @@ static CMenuSoundOptionsInGame* __fastcall CMenuSoundOptionsInGame_Construct(
 {
   CMenuSoundOptions_Construct(self, nullptr, a2);
   CSF_AT(void*, self, 0) = reinterpret_cast<void*>(CSF_ADDR_VT(0x00842BC8));
-  self->field_0004 = 0x00842B78;
+  self->field_0004 = CSF_ADDR_VT(0x00842B78);
   return self;
 }
 

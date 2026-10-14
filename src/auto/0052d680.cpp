@@ -27,7 +27,7 @@ static CMenuProgressBar* __fastcall CMenuProgressBar_Construct(CMenuProgressBar*
     self->field_0024 = static_cast<uint32_t>(progressOwner);
 
     // Sub-object vtable at +4.
-    CSF_AT(uint32_t, self, 0x0004) = 0x00841548;
+    CSF_AT(uint32_t, self, 0x0004) = CSF_ADDR_VT(0x00841548);
 
     // Clear +0x20 and +0x1C.
     self->field_0020 = 0;

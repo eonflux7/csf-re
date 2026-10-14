@@ -18,7 +18,7 @@ static CMenuVideoOptionsInGame* __fastcall CMenuVideoOptionsInGame_Construct(
 {
   CMenuVideoOptions_Construct(self, nullptr, a2);
   CSF_AT(void*, self, 0) = reinterpret_cast<void*>(CSF_ADDR_VT(0x008440A0));
-  self->field_0004 = 0x00844050;
+  self->field_0004 = CSF_ADDR_VT(0x00844050);
   return self;
 }
 

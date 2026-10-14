@@ -18,7 +18,7 @@ static CMenuMpSessionsPC* __fastcall CMenuMpSessionsPC_Construct(
 {
   CMenuMpSessions_Construct(self, nullptr, a2);
   CSF_AT(void*, self, 0) = reinterpret_cast<void*>(CSF_ADDR_VT(0x00845D48));
-  self->field_0004 = 0x00845CF8;
+  self->field_0004 = CSF_ADDR_VT(0x00845CF8);
   return self;
 }
 

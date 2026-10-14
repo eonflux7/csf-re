@@ -18,7 +18,7 @@ static CMenuOptionsPC* __fastcall CMenuOptionsPC_Construct(
 {
   CMenuOptions_Construct(self, nullptr, a2);
   CSF_AT(void*, self, 0) = reinterpret_cast<void*>(CSF_ADDR_VT(0x00842858));
-  self->field_0004 = 0x00842808;
+  self->field_0004 = CSF_ADDR_VT(0x00842808);
   return self;
 }
 

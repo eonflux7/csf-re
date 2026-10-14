@@ -12,7 +12,7 @@
 
 // Vtable addresses written into the object header (primary and intermediate bases).
 static const uint32_t kVtblCMenuMpPause = CSF_ADDR_VT(0x00841D70);      // CMenuMpPause primary vtable
-static constexpr uint32_t kVtblIntermediate841D20 = 0x00841D20u; // base-class vtable (second header slot)
+static const uint32_t kVtblIntermediate841D20 = CSF_ADDR_VT(0x00841D20); // base-class vtable (second header slot)
 static const uint32_t kVtblIntermediate830488 = CSF_ADDR_DATA(0x00830488);
 static const uint32_t kVtblIntermediate830438 = CSF_ADDR_VT(0x00830438);
 static const uint32_t kVtblFinal83042C = CSF_ADDR_VT(0x0083042C);

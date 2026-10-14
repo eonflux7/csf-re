@@ -23,7 +23,7 @@ CSF_FUNC(void, __fastcall, CMenuSoundOptions_Destruct_53CCE0, 0x53CCE0,
 static void* __fastcall CMenuSoundOptionsInGame_Destroy(CMenuSoundOptionsInGame* self, void* /*edx*/, char a2)
 {
     CSF_AT(uint32_t, self, 0x0000) = CSF_ADDR_VT(0x00842BC8);
-    self->field_0004 = 0x00842B78u;
+    self->field_0004 = CSF_ADDR_VT(0x00842B78);
 
     CMenuSoundOptions_Destruct_53CCE0(self, nullptr);
 

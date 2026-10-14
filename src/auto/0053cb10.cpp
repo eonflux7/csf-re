@@ -4,10 +4,6 @@
 #include "types/auto_classes.h"
 #include "globals.h"
 
-// Original switch-dispatch table; control flow is expressed directly below.
-static const std::uint32_t* const kAcousticSelectionDispatch =
-    reinterpret_cast<const std::uint32_t*>(0x0053CB68);
-
 static int __fastcall CMenuSoundOptions_ApplyAcousticSelection(
     CMenuSoundOptions* self, void* /*edx*/)
 {

@@ -21,7 +21,7 @@ static CMenuAccountEdit* __fastcall CMenuAccountEdit_DestroyAndMaybeFree(CMenuAc
 {
     // Install CMenuAccountEdit primary vtable and secondary vtable.
     CSF_AT(uint32_t, self, 0) = CSF_ADDR_VT(0x845438);
-    self->field_0004 = 0x8453E8;
+    self->field_0004 = CSF_ADDR_VT(0x008453E8);
 
     // Release the child object at +0x284 through its slot-0 (deleting) destructor, then clear it.
     void** child = reinterpret_cast<void**>(self->field_0284);

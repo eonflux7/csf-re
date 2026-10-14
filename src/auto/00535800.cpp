@@ -12,7 +12,7 @@
 
 // Vtable addresses written into the object header during teardown.
 static const uint32_t kVtblCMenuIntroVideo = CSF_ADDR_VT(0x00841EE0);   // CMenuIntroVideo primary vtable
-static constexpr uint32_t kVtblSecondary841E90 = 0x00841E90u;   // secondary base vtable
+static const uint32_t kVtblSecondary841E90 = CSF_ADDR_VT(0x00841E90);   // secondary base vtable
 static const uint32_t kVtblIntermediate830488 = CSF_ADDR_DATA(0x00830488);
 static const uint32_t kVtblIntermediate830438 = CSF_ADDR_VT(0x00830438);
 static const uint32_t kVtblFinal83042C = CSF_ADDR_VT(0x0083042C);

@@ -10,7 +10,7 @@ CSF_GLOBAL(PreviewAnimationEntries, g_PreviewAnimations, 0x00843288);
 CSF_GLOBAL(float, g_PreviewRadiansToDegrees, 0x008432A8);
 
 static void* const g_PreviewReferenceData =
-    reinterpret_cast<void*>(0x0089A3F8);
+    reinterpret_cast<void*>(CSF_ADDR_DATA(0x0089A3F8));
 
 static int __fastcall MpCharacterSelect_SetPreviewCharacter(
     void* self, void* /*edx*/, void* previewCharacter)

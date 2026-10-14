@@ -8,7 +8,7 @@
 
 // Vtable pointer values stored into the object (the original writes these immediates).
 static const uint32_t kCMenuScreenVtable = CSF_ADDR_VT(0x0083042C);     // CMenuScreen base vtable
-static constexpr uint32_t kEmbeddedMenuPartVtable = 0x00842438; // vtable of the member at +0x04
+static const uint32_t kEmbeddedMenuPartVtable = CSF_ADDR_VT(0x00842438); // vtable of the member at +0x04
 static const uint32_t kCMenuPauseVtable = CSF_ADDR_VT(0x00842488);       // CMenuPause vtable
 
 // Initializer of the embedded member object at CMenuPause+0x04 (__thiscall, no stack args).

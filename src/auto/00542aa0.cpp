@@ -19,7 +19,7 @@ static CMenuControlsInGame* __fastcall CMenuControlsInGame_Construct(
 {
   CMenuControls_Construct(self, nullptr, a2);
   CSF_AT(void*, self, 0) = reinterpret_cast<void*>(CSF_ADDR_VT(0x00843550));
-  self->field_0004 = 0x00843500;
+  self->field_0004 = CSF_ADDR_VT(0x00843500);
   return self;
 }
 

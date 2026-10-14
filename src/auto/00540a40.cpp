@@ -26,7 +26,7 @@ static CMenuMpScoreBar* __fastcall CMenuMpScoreBar_Construct(CMenuMpScoreBar* se
     self->field_0034 = static_cast<uint32_t>(ownerValue);
 
     // Sub-object vtable at +0x04.
-    self->field_0004 = 0x008430A8;
+    self->field_0004 = CSF_ADDR_VT(0x008430A8);
 
     // Zero-initialise members (same order as original).
     self->field_0030 = 0;

@@ -74,6 +74,30 @@ def code_spans(src):
 LIT = re.compile(r"\b0[xX]([0-9A-Fa-f]{6,8})[uU]?[lL]?\b")
 
 
+_image = None
+DATA_START = 0x82D000  # first address of the data image (.rdata onward)
+
+
+def binary_kind(v):
+    """'VT' | 'DATA' for an address in the data image that no db list names, read from the exe: a word that points
+    into .text starts a vtable (secondary vtables such as 0x841E90 are in no list), anything else is data."""
+    global _image
+    if not DATA_START <= v < IMAGE[1]:
+        return None
+    if _image is None:
+        try:
+            import pefile
+            pe = pefile.PE(os.path.join(ROOT, "work", "pc", "CommXPC.exe"), fast_load=True)
+            _image = pe.get_memory_mapped_image()
+        except (OSError, ImportError):
+            _image = b""
+    if not _image:
+        return None
+    o = v - 0x400000
+    w = int.from_bytes(_image[o:o + 4], "little")
+    return "VT" if IMAGE[0] <= w < DATA_START else "DATA"
+
+
 def raw_hits(src, wanted=None):
     """[(start, end, value, kind)] of raw address literals in plain code (wanted: restrict to these values)."""
     k = kinds()
@@ -83,8 +107,9 @@ def raw_hits(src, wanted=None):
             if m.end() > b:
                 continue
             v = int(m.group(1), 16)
-            if IMAGE[0] <= v < IMAGE[1] and v in k and (wanted is None or v in wanted):
-                out.append((m.start(), m.end(), v, k[v]))
+            kind = k.get(v) or binary_kind(v) if IMAGE[0] <= v < IMAGE[1] else None
+            if kind and (wanted is None or v in wanted):
+                out.append((m.start(), m.end(), v, kind))
     return out
 
 

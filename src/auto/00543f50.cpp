@@ -19,7 +19,7 @@ static CMenuGameOptionsInGamePC* __fastcall CMenuGameOptionsInGamePC_Construct(
 {
   CMenuGameOptionsPC_Construct(self, nullptr, a2);
   CSF_AT(void*, self, 0) = reinterpret_cast<void*>(CSF_ADDR_VT(0x008438F0));
-  self->field_0004 = 0x008438A0;
+  self->field_0004 = CSF_ADDR_VT(0x008438A0);
   return self;
 }
 

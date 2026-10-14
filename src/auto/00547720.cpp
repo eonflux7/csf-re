@@ -13,7 +13,7 @@ CSF_FUNC(int, __cdecl, Mem_FreeDebug, 0x00690E60, (void* block));
 static void** const g_MenuExtrasVtable =
     CSF_VTBL(0x00843CB8);
 static void** const g_MenuExtrasSecondaryVtable =
-    reinterpret_cast<void**>(0x00843C68);
+    reinterpret_cast<void**>(CSF_ADDR_VT(0x00843C68));
 static void** const g_MenuScreenIntermediateSecondaryVtable =
     reinterpret_cast<void**>(CSF_ADDR_DATA(0x00830488));
 static void** const g_MenuScreenSecondaryVtable =

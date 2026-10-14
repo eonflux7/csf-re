@@ -25,7 +25,7 @@ static CMenuMain* __fastcall CMenuMain_Construct(CMenuMain* self, void* /*edx*/,
     self->field_002c = static_cast<uint32_t>(menuOwner);
 
     // Sub-object vtable slot at +0x004.
-    CSF_AT(uint32_t, self, 0x004) = 0x00842500;
+    CSF_AT(uint32_t, self, 0x004) = CSF_ADDR_VT(0x00842500);
 
     self->field_0018 = 0;
     self->field_0010 = 0;

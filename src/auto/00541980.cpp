@@ -29,7 +29,7 @@ static CMenuMpStats* __fastcall CMenuMpStats_Construct(CMenuMpStats* self, void*
     self->field_0088 = static_cast<uint32_t>(ownerArg);
 
     // mov dword ptr [edi], 0x8431e0   (edi = this+4)
-    *reinterpret_cast<uint32_t*>(reinterpret_cast<uint8_t*>(self) + 4) = 0x008431E0u;
+    *reinterpret_cast<uint32_t*>(reinterpret_cast<uint8_t*>(self) + 4) = CSF_ADDR_VT(0x008431E0);
 
     // Zero the stats fields.
     self->field_0084 = 0;

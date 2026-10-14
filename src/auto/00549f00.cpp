@@ -13,7 +13,7 @@ static void** const g_MenuScreenVtable =
 static void** const g_MenuVideoOptionsVtable =
     CSF_VTBL(0x00844148);
 static void** const g_MenuVideoOptionsSecondaryVtable =
-    reinterpret_cast<void**>(0x008440F8);
+    reinterpret_cast<void**>(CSF_ADDR_VT(0x008440F8));
 
 static CMenuVideoOptions* __fastcall CMenuVideoOptions_Construct(
     CMenuVideoOptions* self, void* /*edx*/, int argument)

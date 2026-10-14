@@ -17,7 +17,7 @@ CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
 static C_00843720* __fastcall C_00843720_DestructWithOptionalFree(C_00843720* self, void* /*edx*/, char freeFlag)
 {
     CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x00843720);
-    CSF_AT(uint32_t, self, 0x04) = 0x008436D0u;
+    CSF_AT(uint32_t, self, 0x04) = CSF_ADDR_VT(0x008436D0);
     CSF_AT(uint32_t, self, 0x10) = CSF_ADDR_VT(0x008436CC);
 
     C_00843720_ReleaseSubobjects(self, nullptr);

@@ -14,7 +14,7 @@
 // Vtable of the CMenuScreen base sub-object at +0x00 (written first, overwritten at the end).
 static const uint32_t kCMenuScreenBaseVtable = CSF_ADDR_VT(0x0083042C);
 // Vtable of the embedded sub-object at +0x04 (the one passed to the init call).
-static constexpr uint32_t kEmbeddedSubobjectVtable = 0x00841D20;
+static const uint32_t kEmbeddedSubobjectVtable = CSF_ADDR_VT(0x00841D20);
 // Final vtable of CMenuMpPause.
 static const uint32_t kCMenuMpPauseVtable = CSF_ADDR_VT(0x00841D70);
 

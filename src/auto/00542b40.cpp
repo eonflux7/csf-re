@@ -24,7 +24,7 @@ static CMenuControlsInGame* __fastcall CMenuControlsInGame_Destroy(
     CMenuControlsInGame* self, void* /*edx*/, char a2)
 {
     CSF_AT(uint32_t, self, 0x0000) = CSF_ADDR_VT(0x00843550);
-    self->field_0004 = 0x00843500u;
+    self->field_0004 = CSF_ADDR_VT(0x00843500);
 
     CMenuControls_Destruct_542E60(self, nullptr);
 

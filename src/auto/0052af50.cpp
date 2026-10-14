@@ -21,8 +21,8 @@ CSF_FUNC(void, __cdecl, Mem_Free, 0x691110, (void* block));
 static int __fastcall CMenuMessageBox_DestructBody(CMenuMessageBox* self, void* /*edx*/)
 {
     CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x00841370);
-    self->field_0004 = 0x00841320u;
-    CSF_AT(uint32_t, self, 0x10) = 0x00841318u;
+    self->field_0004 = CSF_ADDR_VT(0x00841320);
+    CSF_AT(uint32_t, self, 0x10) = CSF_ADDR_VT(0x00841318);
 
     CMenuMessageBox_DestroyOwnedObject(self, nullptr);
 

@@ -22,7 +22,7 @@ static void* __fastcall CMenuGameOptionsPC_Construct(void* self, void* /*edx*/, 
     CMenuGameOptions_Construct(self, nullptr, a2);
 
     CSF_AT(uint32_t, self, 0x000) = CSF_ADDR_VT(0x008439B8);
-    CSF_AT(uint32_t, self, 0x004) = 0x00843968;
+    CSF_AT(uint32_t, self, 0x004) = CSF_ADDR_VT(0x00843968);
     CSF_AT(uint32_t, self, 0x058) = 0;
     CSF_AT(uint32_t, self, 0x05C) = 0x3EB33333;
     CSF_AT(uint8_t, self, 0x060) = 1;

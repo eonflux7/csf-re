@@ -19,7 +19,7 @@ static CMenuSoundOptions* __fastcall CMenuSoundOptions_Construct(
         nullptr);
 
     CSF_AT(void**, self, 0) = CSF_VTBL(0x00842AD0);
-    self->field_0004 = 0x00842A80;
+    self->field_0004 = CSF_ADDR_VT(0x00842A80);
 
     self->field_0030 = 1.0f;
     self->field_0034 = 1.0f;

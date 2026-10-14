@@ -12,7 +12,7 @@
 
 // Vtable addresses written into the object header during teardown.
 static const uint32_t kVtblCMenuMpOnline = CSF_ADDR_VT(0x00845740);   // primary vtable of CMenuMpOnline
-static constexpr uint32_t kVtblCMenuScreenChain = 0x008456F0u; // CMenuScreen-side intermediate vtable
+static const uint32_t kVtblCMenuScreenChain = CSF_ADDR_VT(0x008456F0); // CMenuScreen-side intermediate vtable
 static const uint32_t kVtblIntermediate830488 = CSF_ADDR_DATA(0x00830488);
 static const uint32_t kVtblIntermediate830438 = CSF_ADDR_VT(0x00830438);
 static const uint32_t kVtblFinal83042C = CSF_ADDR_VT(0x0083042C);

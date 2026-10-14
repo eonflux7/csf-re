@@ -12,7 +12,7 @@
 CSF_FUNC(void*, __fastcall, CMenuSoundOptions_Construct, 0x0053CFC0, (void* self, void* edx, int a2));
 
 static const uint32_t kVtblCMenuSoundOptionsPC = CSF_ADDR_VT(0x00843DB8);
-static constexpr uint32_t kVtblSecondaryBase = 0x00843D68;
+static const uint32_t kVtblSecondaryBase = CSF_ADDR_VT(0x00843D68);
 
 static CMenuSoundOptionsPC* __fastcall CMenuSoundOptionsPC_Construct(CMenuSoundOptionsPC* self, void* /*edx*/, int a2)
 {

@@ -11,7 +11,7 @@ CSF_FUNC(int, __cdecl, GetGlobalValue_8B056C, 0x00506BD0, ());
 static void** const g_MenuScreenVtable =
     CSF_VTBL(0x0083042C);
 static void** const g_MenuControlsEmbeddedVtable =
-    reinterpret_cast<void**>(0x008435A8);
+    reinterpret_cast<void**>(CSF_ADDR_VT(0x008435A8));
 static void** const g_MenuControlsVtable =
     CSF_VTBL(0x008435F8);
 

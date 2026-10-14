@@ -18,8 +18,8 @@ static int __fastcall CMenuLoading_ReleaseMembersAndResetVtable(CMenuLoading* se
 
     // Install the CMenuLoading vtable and the embedded/base vtables (same order as original).
     CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x00842150);
-    CSF_AT(uint32_t, self, 0x04) = 0x00842100u;
-    CSF_AT(uint32_t, self, 0x10) = 0x008420F8u;
+    CSF_AT(uint32_t, self, 0x04) = CSF_ADDR_VT(0x00842100);
+    CSF_AT(uint32_t, self, 0x10) = CSF_ADDR_VT(0x008420F8);
 
     // Release the object at +0x2C (virtual slot 0, flag 1).
     if (ownedAt2C != nullptr) {

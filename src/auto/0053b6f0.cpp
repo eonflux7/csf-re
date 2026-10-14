@@ -13,7 +13,7 @@
 // Vtable addresses stored into the object by the constructor.
 static const uintptr_t kCMenuScreenBaseVtableAddr = CSF_ADDR_VT(0x0083042C);
 static const uintptr_t kCMenuGameOptionsVtableAddr = CSF_ADDR_VT(0x00842788);
-static constexpr uintptr_t kEmbeddedSubobjectVtableAddr = 0x00842738;
+static const uintptr_t kEmbeddedSubobjectVtableAddr = CSF_ADDR_VT(0x00842738);
 
 CSF_FUNC(void*, __cdecl, GetGlobalValue_8B056C, 0x00506BD0, ());
 CSF_FUNC(void*, __fastcall, C_00830438_Construct, 0x00712CC0, (void* self, void* edx));

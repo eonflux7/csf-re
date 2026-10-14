@@ -25,7 +25,7 @@ static CMenuDemoExit* __fastcall CMenuDemoExit_Construct(CMenuDemoExit* self, vo
     self->field_0018 = static_cast<uint32_t>(parentOwner);
 
     // Sub-object vtable at +0x004.
-    self->field_0004 = 0x008429B8;
+    self->field_0004 = CSF_ADDR_VT(0x008429B8);
 
     self->m_pGui = 0;
     self->m_pPendingMenu = 0;

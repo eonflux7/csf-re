@@ -23,7 +23,7 @@ CSF_FUNC(void, __fastcall, CMenuMissionInfo_Destruct, 0x53EC00,
 static void* __fastcall CMenuExtras_Destroy(C_00843ed0* self, void* /*edx*/, char a2)
 {
     CSF_AT(uint32_t, self, 0x0000) = CSF_ADDR_VT(0x00843ED0);
-    self->field_0004 = 0x00843E80u;
+    self->field_0004 = CSF_ADDR_VT(0x00843E80);
 
     CMenuMissionInfo_Destruct(self, nullptr);
 

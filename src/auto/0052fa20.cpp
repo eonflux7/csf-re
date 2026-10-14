@@ -22,7 +22,7 @@ static CMenuCredits* __fastcall CMenuCredits_DestroyAndMaybeFree(CMenuCredits* s
 {
     // Install CMenuCredits primary vtable and secondary vtable.
     CSF_AT(uint32_t, self, 0) = CSF_ADDR_VT(0x8418B8);
-    self->field_0004 = 0x841868;
+    self->field_0004 = CSF_ADDR_VT(0x00841868);
 
     // Release the child object at +0x18 through its slot-0 (deleting) destructor, then clear it.
     void** child = reinterpret_cast<void**>(self->field_0018);

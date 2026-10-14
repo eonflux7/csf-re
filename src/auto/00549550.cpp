@@ -23,7 +23,7 @@ CSF_FUNC(void, __fastcall, CMenuVideoOptions_Destruct_549CA0, 0x549CA0,
 static void* __fastcall CMenuVideoOptionsInGame_Destroy(CMenuVideoOptionsInGame* self, void* /*edx*/, char a2)
 {
     CSF_AT(uint32_t, self, 0x0000) = CSF_ADDR_VT(0x008440A0);
-    self->field_0004 = 0x00844050u;
+    self->field_0004 = CSF_ADDR_VT(0x00844050);
 
     CMenuVideoOptions_Destruct_549CA0(self, nullptr);
 

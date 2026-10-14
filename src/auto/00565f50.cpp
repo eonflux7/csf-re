@@ -32,7 +32,7 @@ static CMenuMpGameMode* __fastcall CMenuMpGameMode_Construct(CMenuMpGameMode* se
 
     // Final CMenuMpGameMode vtable and embedded sub-object vtable.
     CSF_AT(uint32_t, self, 0x0) = CSF_ADDR_VT(0x00845CA8);
-    CSF_AT(uint32_t, self, 0x4) = 0x00845C58;
+    CSF_AT(uint32_t, self, 0x4) = CSF_ADDR_VT(0x00845C58);
 
     CSF_AT(uint32_t, self, 0x20) = 0;
     CSF_AT(uint32_t, self, 0x24) = 0;

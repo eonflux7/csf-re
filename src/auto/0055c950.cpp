@@ -9,7 +9,7 @@
 
 // Vtable addresses written by the constructor, stored as the exact immediates the original uses.
 static const uint32_t kVtblCMenuScreenBase = CSF_ADDR_VT(0x0083042C);
-static constexpr uint32_t kVtblCMenuScreenSecondary = 0x008453E8;
+static const uint32_t kVtblCMenuScreenSecondary = CSF_ADDR_VT(0x008453E8);
 static const uint32_t kVtblCMenuAccountEdit = CSF_ADDR_VT(0x00845438);
 
 // Callees (all __thiscall, plain ret).

@@ -18,7 +18,7 @@ static CMenuLoadGameMainMenu* __fastcall CMenuLoadGameMainMenu_Construct(
 {
   CMenuLoadGame_Construct(self, nullptr, a2);
   CSF_AT(void*, self, 0) = reinterpret_cast<void*>(CSF_ADDR_VT(0x008423D8));
-  self->field_0004 = 0x00842388;
+  self->field_0004 = CSF_ADDR_VT(0x00842388);
   return self;
 }
 

@@ -5,7 +5,7 @@
 
 // Vtable/data addresses referenced by the original constructor.
 static const uint32_t kVtblCMenuCreditsPartial = CSF_ADDR_VT(0x0083042C); // intermediate vtable, overwritten below
-static constexpr uint32_t kVtblCMenuCreditsSubBase = 0x00841868; // vtable stored at this+4
+static const uint32_t kVtblCMenuCreditsSubBase = CSF_ADDR_VT(0x00841868); // vtable stored at this+4
 static const uint32_t kVtblCMenuCredits = CSF_ADDR_VT(0x008418B8);        // final vtable stored at this+0
 
 // __thiscall callees, bound by address (arg count: this only).

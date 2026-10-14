@@ -23,7 +23,7 @@ CSF_FUNC(void, __fastcall, CMenuGameOptionsPC_Destroy_544000, 0x544000,
 static void* __fastcall CMenuGameOptionsInGamePC_Destroy(CMenuGameOptionsInGamePC* self, void* /*edx*/, char a2)
 {
     CSF_AT(uint32_t, self, 0x0000) = CSF_ADDR_VT(0x008438F0);
-    self->field_0004 = 0x008438A0u;
+    self->field_0004 = CSF_ADDR_VT(0x008438A0);
 
     CMenuGameOptionsPC_Destroy_544000(self, nullptr);
 

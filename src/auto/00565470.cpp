@@ -17,7 +17,7 @@ static CMenuAccounts* __fastcall CMenuAccounts_Construct(
         reinterpret_cast<uint8_t*>(self) + 4, nullptr);
 
     CSF_AT(uint32_t, self, 0x00) = CSF_ADDR_VT(0x00845AF8);
-    self->field_0004 = 0x00845AA8;
+    self->field_0004 = CSF_ADDR_VT(0x00845AA8);
     self->field_003c = 0;
     self->field_0018 = 0;
     self->field_001c = 0;

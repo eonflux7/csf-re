@@ -23,7 +23,7 @@ CSF_FUNC(unsigned int, __fastcall, CMenuLoadGame_DestroyBody, 0x539B20,
 static CMenuLoadGameMainMenu* __fastcall CMenuLoadGameMainMenu_Destroy(CMenuLoadGameMainMenu* self, void* /*edx*/, char a2)
 {
     CSF_AT(uint32_t, self, 0x0000) = CSF_ADDR_VT(0x008423D8);
-    self->field_0004 = 0x00842388u;
+    self->field_0004 = CSF_ADDR_VT(0x00842388);
 
     CMenuLoadGame_DestroyBody(self, nullptr);
 

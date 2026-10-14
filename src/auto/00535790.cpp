@@ -9,7 +9,7 @@
 // Vtable addresses stored as immediate values, matching the original's
 // `mov dword ptr [reg], imm32` stores.
 static const uint32_t kCMenuScreenPrimaryVtable = CSF_ADDR_VT(0x0083042C);   // off_83042C
-static constexpr uint32_t kCMenuScreenSubobjectVtable = 0x00841E90u; // off_841E90
+static const uint32_t kCMenuScreenSubobjectVtable = CSF_ADDR_VT(0x00841E90); // off_841E90
 static const uint32_t kCMenuIntroVideoVtable = CSF_ADDR_VT(0x00841EE0);      // off_841EE0
 
 // Callees, bound by address.

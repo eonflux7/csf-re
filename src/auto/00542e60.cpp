@@ -19,7 +19,7 @@ static void __fastcall CMenuControls_Destruct(CMenuControls* self, void* /*edx*/
     void* child = reinterpret_cast<void*>(self->field_0014);
 
     CSF_AT(uint32_t, self, 0) = CSF_ADDR_VT(0x008435F8);   // CMenuControls vtable
-    self->field_0004 = 0x008435A8;            // CMenuScreen intermediate vtable
+    self->field_0004 = CSF_ADDR_VT(0x008435A8);            // CMenuScreen intermediate vtable
 
     if (child) {
         void** childVtbl = CSF_AT(void**, child, 0);

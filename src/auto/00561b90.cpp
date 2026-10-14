@@ -9,7 +9,7 @@ static void** const g_MenuScreenVtable =
 static void** const g_MpSessionsVtable =
     CSF_VTBL(0x00845990);
 static void** const g_MpSessionsSecondaryVtable =
-    reinterpret_cast<void**>(0x00845940);
+    reinterpret_cast<void**>(CSF_ADDR_VT(0x00845940));
 
 CSF_FUNC(std::uint32_t*, __fastcall, C_00830438_Construct,
          0x00712CC0, (std::uint32_t* self, void* edx));
