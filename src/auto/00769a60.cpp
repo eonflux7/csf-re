@@ -11,7 +11,7 @@ CSF_FUNC(int, __cdecl, Mem_Free, 0x00691110, (void* block));
 
 // Frees every heap-allocated entry of a pointer vector stored at +4 (begin), +8 (end), +0xC (capacity),
 // then frees the vector buffer itself and resets the three pointers.
-static int InputBindings_ClearBindingList(void* self, void* /*edx*/)
+static int __fastcall InputBindings_ClearBindingList(void* self, void* /*edx*/)
 {
     uint32_t count;
     if (CSF_AT(uint32_t, self, 4) != 0)

@@ -10,7 +10,7 @@
 #include "types/auto_classes.h"
 #include "legacy/string.h"
 
-CSF_FUNC(void, __fastcall, sub_747CE0, 0x00747CE0, (void* self, void* edx, void* a2));
+CSF_FUNC(int, __fastcall, sub_747CE0, 0x00747CE0, (void* self, void* edx, void* a2));
 
 // Forwards the second stack argument (a2) to the handler at 0x747CE0, using the
 // first stack argument (a1) as `this`. The original loads ecx from [ebp+8] and
@@ -18,8 +18,8 @@ CSF_FUNC(void, __fastcall, sub_747CE0, 0x00747CE0, (void* self, void* edx, void*
 // `ret 8`.
 static int __stdcall NetProyectilDdl_ForwardToHandlerWithSecondArg(std::uint32_t* a1, C_008622e8* a2)
 {
-    sub_747CE0(a1, nullptr, a2);
-    return 0;
+    // The original returns the callee's eax unchanged (no `xor eax, eax`).
+    return sub_747CE0(a1, nullptr, a2);
 }
 
 HOOK(0x747E70, NetProyectilDdl_ForwardToHandlerWithSecondArg, "auto");
