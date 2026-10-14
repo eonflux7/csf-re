@@ -514,6 +514,10 @@ D* __cdecl dictionaryAdd(D* d,T* t) {
     if (it==dictionaries.end() || !n) return nullptr;
     dictionaryRemove(t); it->second->add(n); t->dict=d; append(d->textures,t->inDict); return d;
 }
+// 00726b00 stores the dictionary's stream size after each texture it adds (its +30: memory accounting).
+uint32_t __cdecl dictionaryStreamSize(D* d) {
+    auto it=dictionaries.find(d); return it==dictionaries.end()?0:it->second->streamGetSize();
+}
 // 00726b00 finds names case-insensitively; find itself does NOT add a reference.
 T* __cdecl dictionaryFind(D* d,const char* name) {
     auto it=dictionaries.find(d); if (it==dictionaries.end() || !name) return nullptr;
@@ -708,6 +712,7 @@ HOOK(0x00631780,textureCreate,"boundary-rw");
 HOOK(0x006317E0,textureDestroy,"boundary-rw");
 HOOK(0x00631800,textureName,"boundary-rw");
 HOOK(0x006318E0,dictionaryAdd,"boundary-rw");
+HOOK(0x006307D0,dictionaryStreamSize,"boundary-rw");
 HOOK(0x00631920,dictionaryRemove,"boundary-rw");
 HOOK(0x00631950,dictionaryFind,"boundary-rw");
 HOOK(0x00631990,dictionaryCurrent,"boundary-rw");
