@@ -63,11 +63,11 @@ static int __fastcall AiAutonomous_SerializeByteAndPair(
     if (canContinue)
     {
         void* serializer = CSF_AT(void*, context, 4);
-        const bool result =
-            ((bool(__fastcall*)(void*, void*, void*))
+        const int result =
+            ((int(__fastcall*)(void*, void*, void*))
                 CSF_AT(void**, serializer, 0)[0x7C / 4])(
                     serializer, nullptr, context);
-        if (result)
+        if ((result & 0xFF) != 0)
         {
             CSF_AT(std::uint8_t, context, 0) = 0;
             return result;

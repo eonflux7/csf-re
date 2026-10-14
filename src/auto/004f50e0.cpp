@@ -12,7 +12,7 @@ static int __fastcall CharacterModel_ForwardToChildSlot19(void* self, void* /*ed
 {
     void** child = CSF_AT(void**, self, 0x04);
     void* childVtbl = CSF_AT(void*, child, 0);
-    return ((int(__fastcall*)(void*, void*, int, int))CSF_AT(void**, childVtbl, 0)[0x4C / 4])(
+    return ((int(__fastcall*)(void*, void*, int, int))CSF_AT(void*, childVtbl, 0x4C))(
         child, nullptr, a2, 0);
 }
 

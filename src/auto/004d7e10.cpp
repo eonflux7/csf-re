@@ -24,8 +24,9 @@ static int __fastcall Autonomo_BeginActionWithFlag(void* self, void* /*edx*/, in
     void** vtbl = CSF_AT(void**, sub, 0);
     CSF_AT(int, sub, 0x1c) = (a4 != 0);
 
-    // vtable slot 0xAC / 4, __stdcall with (a2, a3); result is returned
-    return reinterpret_cast<int(__stdcall*)(int, int)>(vtbl[0xAC / 4])(a2, a3);
+    // vtable slot 0xAC / 4 on sub: the original leaves sub in ecx (mov ecx, [eax+0x30]; mov eax, [ecx]) and pushes
+    // only a2, a3, so it is a __thiscall with this = sub that pops its own 8 bytes; result is returned
+    return reinterpret_cast<int(__thiscall*)(void*, int, int)>(vtbl[0xAC / 4])(sub, a2, a3);
 }
 
 HOOK(0x004D7E10, Autonomo_BeginActionWithFlag, "auto");

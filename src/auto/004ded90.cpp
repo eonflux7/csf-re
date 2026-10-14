@@ -28,12 +28,12 @@ static char __fastcall ApplySceneResourceName(S_004de880* self, void* /*edx*/, i
     void* sceneFile = OpenSceneFile(reinterpret_cast<const char*>(a2), CSF_STR(0x0083E130, "r"), 0);
     if (sceneFile)
     {
-        // Virtual read at vtable slot 2: read a 4-byte header word into headerWord.
-        int headerWord;
+        // Virtual read at vtable slot 2: the 4-byte header word is read into the parameter slot a2 itself
+        // (the original's [ebp+8]) and tested from there; if the read leaves it alone, a2 is still tested.
         ((void(__fastcall*)(void*, void*, int*, int))CSF_AT(void**, sceneFile, 0)[2])(
-            sceneFile, nullptr, &headerWord, 4);
+            sceneFile, nullptr, &a2, 4);
 
-        if (!headerWord)
+        if (!a2)
             self->field_0005 = SceneResource_ParseHeader(self, nullptr, reinterpret_cast<uint32_t*>(sceneFile));
 
         if (self->field_0005)

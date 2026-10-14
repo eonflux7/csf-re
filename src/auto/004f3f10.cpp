@@ -87,11 +87,11 @@ static int __fastcall C_0083f0ec_Serialize(
     }
 
     void* serializer = CSF_AT(void*, archive, 0x04);
-    const bool result =
-        reinterpret_cast<bool(__fastcall*)(void*, void*, int)>(
+    const int result =
+        reinterpret_cast<int(__fastcall*)(void*, void*, int)>(
             CSF_AT(void**, serializer, 0)[0x7C / 4])(
                 serializer, nullptr, archiveArg);
-    if (!result)
+    if (static_cast<uint8_t>(result) == 0)
     {
         CSF_AT(uint8_t, archive, 0x00) = 1;
         return 1;

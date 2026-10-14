@@ -11,8 +11,8 @@ CSF_FUNC(void, __stdcall, C_0085ec18_NullSub, 0x004B2A20, (int));
 static void __fastcall C_0083e5e8_ApplyScaledProgress(C_0083e5e8* self, void* /*edx*/, int* a2)
 {
     int linkedMax = self->vGetLinkedValueDC();
-    float scaledStep = (float)*a2 * g_ProgressScale;
-    float increment = (float)linkedMax * scaledStep;
+    double scaledStep = (double)*a2 * (double)g_ProgressScale;
+    double increment = (double)linkedMax * scaledStep;
     self->field_0008 += (uint32_t)(int64_t)increment;
 
     if ((int)self->field_0008 > (int)self->vGetLinkedValueDC())

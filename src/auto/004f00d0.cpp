@@ -68,13 +68,13 @@ static int __fastcall TextDatabase_ProcessTextRequest(
     if (continueProcessing)
     {
         void* provider = CSF_AT(void*, request, 0x4);
-        bool result = ((bool(__fastcall*)(void*, void*, char*))
-                       CSF_AT(void**, provider, 0)[0x7C / 4])(
-                           provider, nullptr, request);
-        if (result)
+        uint32_t result = ((uint32_t(__fastcall*)(void*, void*, char*))
+                           CSF_AT(void**, provider, 0)[0x7C / 4])(
+                               provider, nullptr, request);
+        if (static_cast<uint8_t>(result) != 0)
         {
             CSF_AT(uint8_t, request, 0) = 0;
-            return result;
+            return static_cast<int>(result);
         }
     }
 

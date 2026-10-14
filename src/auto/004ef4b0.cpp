@@ -8,12 +8,6 @@
 // Base-class constructor chain step (bound by address, __fastcall/__thiscall, ret 0).
 CSF_FUNC(uint32_t*, __fastcall, AreaMeshBase_Init, 0x007711C0, (void* self, void* edx));
 
-// Legacy hook reads code bytes here (known emudiff DIFF). Keep hook behaviour
-// unchanged in this mechanical cutover; the binary actually stores an immediate.
-#ifndef CSF_STANDALONE
-CSF_GLOBAL(uint32_t, g_DefaultAreaMeshParam, 0x00800000);
-#endif
-
 static uint32_t* __fastcall GameAreaMesh_Construct(C_0083eee4* self, void* /*edx*/)
 {
     AreaMeshBase_Init(self, nullptr);
@@ -31,11 +25,8 @@ static uint32_t* __fastcall GameAreaMesh_Construct(C_0083eee4* self, void* /*edx
     self->field_0024 = 0;
     self->field_0028 = 10;
     self->field_002c = 0;
-#ifdef CSF_STANDALONE
+    // 004ef4ef: mov dword ptr [esi + 0x30], 0x800000 (immediate, not a load from 0x800000)
     self->field_0030 = 1u << 23;
-#else
-    self->field_0030 = g_DefaultAreaMeshParam;
-#endif
 
     return reinterpret_cast<uint32_t*>(self);
 }

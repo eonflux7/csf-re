@@ -25,7 +25,7 @@ static int __fastcall MpSpawnPoints_GetProviderPosition(C_0085ec18* self, void* 
     void* sourceObject = reinterpret_cast<GetSourceObjectFn>(CSF_AT(void**, providerObject, 0)[0x10 / 4])(providerObject, nullptr);
 
     // Stack buffer the callee fills: [0..3] matrix handle, [4] ownership flag.
-    alignas(8) std::uint8_t outBuffer[8] = {};
+    alignas(8) std::uint8_t outBuffer[8];
     std::uint32_t& matrixHandle = *reinterpret_cast<std::uint32_t*>(outBuffer);
 
     GetPositionMatrixFn getPositionMatrix =

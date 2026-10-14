@@ -22,13 +22,15 @@ static int __fastcall C_0083e5e8_ComputeScaledLinkedValueAtLeastTwo(C_0083e5e8* 
 
     // Read the field as a signed int; if negative, treat it as unsigned
     // by adding 2^32 (g_UnsignedIntegerBias).
+    // The original keeps fild / fmul / fadd / fmulp on the x87 stack, never
+    // rounded to float: the operands and the product stay in double here.
     int rawValue = CSF_AT(int, globalValueBase, 0x1828);
-    float unsignedValue = static_cast<float>(rawValue);
+    double unsignedValue = static_cast<double>(rawValue);
     if (rawValue < 0) {
-        unsignedValue += g_UnsignedIntegerBias;
+        unsignedValue += static_cast<double>(g_UnsignedIntegerBias);
     }
 
-    float product = static_cast<float>(linkedValue) * g_ProgressScale * unsignedValue;
+    double product = static_cast<double>(linkedValue) * static_cast<double>(g_ProgressScale) * unsignedValue;
 
     // Truncate toward zero to a 64-bit integer; the result is used as its low 32 bits.
     int32_t scaled = static_cast<int32_t>(static_cast<int64_t>(product));
