@@ -4,14 +4,45 @@
   dryrun.py [--dir /mnt/e/dev/csf-standalone] [--exe build/csf_standalone.exe] [--timeout 60]
   dryrun.py --full [--timeout 60]   no CSF_DRYRUN: on into the game's WinMain (opens a window); killed at the
                                     timeout; output DIR/winmain.out, nothing recorded in work/dryrun.json
+  dryrun.py --full --input SCRIPT --shots 20,25 [--tag menu]
+      SCRIPT: scripted DirectInput events (CSF_INPUT, standalone/game_plain.cpp), "T:key:DIK;T:goto:X,Y;T:click"
+      (T seconds; DIK 1 = Escape, 0x1C = Enter); --shots: screenshots at those seconds (from the start of the run)
+      to DIR/shots/TAG-T.png (tools/dbg/shot.ps1, the primary screen). Named scripts: --input intro-skip, see SCRIPTS.
 
 Copies the exe into the standalone copy (made with `playcopy.py DIR --original`), runs it with CSF_DRYRUN=1
 (data initialisation and the CRT initialiser tables, then exit before WinMain), and writes work/dryrun.json:
 initialisers run of the table, the last one, the trap it stopped at (if any), exit code. Output: DIR/dryrun.out.
 """
-import argparse, json, os, re, shutil, subprocess, time
+import argparse, json, os, re, shutil, subprocess, threading, time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Named input scripts (800x600 menu coordinates). The intro movies skip on a key; the first ~8 s are start-up.
+SKIP = "8:key:1;10:key:1;12:key:1;14:key:1;16:key:1"  # one Escape per movie: 4 logos + the intro; menu at ~20 s
+SCRIPTS = {
+    "intro-skip": SKIP,
+    "campaign": SKIP + ";20:goto:400,253;21:click",
+    "settings": SKIP + ";20:goto:400,344;21:click",
+    "credits": SKIP + ";20:goto:400,388;21:click",
+    "exit": SKIP + ";20:goto:400,433;21:click",
+    "settings-controls": SKIP + ";20:goto:400,344;21:click;24:goto:400,203;25:click",
+    "settings-video": SKIP + ";20:goto:400,344;21:click;24:goto:400,253;25:click",
+    "settings-sound": SKIP + ";20:goto:400,344;21:click;24:goto:400,302;25:click",
+    "settings-game": SKIP + ";20:goto:400,344;21:click;24:goto:400,352;25:click",
+    "settings-back": SKIP + ";20:goto:400,344;21:click;24:goto:400,517;25:click",
+}
+
+
+def shots(dirpath, tag, times, t0):
+    """Screenshots of the primary screen at the given seconds after t0 (PowerShell CopyFromScreen)."""
+    os.makedirs(os.path.join(dirpath, "shots"), exist_ok=True)
+    script = subprocess.run(["wslpath", "-w", os.path.join(ROOT, "tools", "dbg", "shot.ps1")],
+                            capture_output=True, text=True).stdout.strip()
+    for t in times:
+        time.sleep(max(0, t0 + t - time.time()))
+        out = subprocess.run(["wslpath", "-w", os.path.join(dirpath, "shots", f"{tag}-{t:g}.png")],
+                             capture_output=True, text=True).stdout.strip()
+        subprocess.run(["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script, out],
+                       capture_output=True)
 
 
 def main():
@@ -20,7 +51,12 @@ def main():
     ap.add_argument("--exe", default=os.path.join(ROOT, "build", "csf_standalone.exe"))
     ap.add_argument("--timeout", type=int, default=60)
     ap.add_argument("--full", action="store_true")
+    ap.add_argument("--input", help="scripted input (CSF_INPUT) or a name from SCRIPTS")
+    ap.add_argument("--shots", help="comma-separated seconds for screenshots")
+    ap.add_argument("--tag", default="shot")
     a = ap.parse_args()
+    if a.input:
+        os.environ["CSF_INPUT"] = SCRIPTS.get(a.input, a.input)
     if "csf-builds" in a.dir:
         raise SystemExit("refusing to run in the read-only originals")
     shutil.copy2(a.exe, os.path.join(a.dir, "csf_standalone.exe"))
@@ -29,12 +65,17 @@ def main():
     exports = [os.environ.get("WSLENV", ""), "CSF_DRYRUN/w"]
     if a.full:  # message boxes print and answer OK (standalone/main.cpp); CSF_NO_DIALOGS=0 keeps them
         os.environ.setdefault("CSF_NO_DIALOGS", "1")
-    for v in ("CSF_RW_TRACE", "CSF_HANG_SECONDS", "CSF_NO_DIALOGS"):  # HANG: the exe dumps its main thread then (tools/dbg/stdsym.py)
+    for v in ("CSF_RW_TRACE", "CSF_HANG_SECONDS", "CSF_NO_DIALOGS", "CSF_INPUT"):  # HANG: the exe dumps its main thread then (tools/dbg/stdsym.py)
         if v in os.environ:
             exports.append(v + "/w")
     env = dict(os.environ, CSF_DRYRUN="0" if a.full else "1",
                WSLENV=":".join(e for e in exports if e))
     t0 = time.time()
+    shooter = None
+    if a.shots:
+        shooter = threading.Thread(target=shots, args=(a.dir, a.tag, [float(x) for x in a.shots.split(",")], t0),
+                                   daemon=True)
+        shooter.start()
     try:
         p = subprocess.run(["./csf_standalone.exe"], cwd=a.dir, env=env, capture_output=True, text=True,
                            errors="replace", timeout=a.timeout)
@@ -42,6 +83,8 @@ def main():
     except subprocess.TimeoutExpired as e:
         out, code = ((e.stdout or b"") + (e.stderr or b"")).decode(errors="replace"), "timeout"
         subprocess.run(["taskkill.exe", "/IM", "csf_standalone.exe", "/F"], capture_output=True)
+    if shooter:
+        shooter.join(timeout=1)
     if isinstance(code, int) and code in (5, 0xC0000005 - (1 << 32)):
         code = "0xC0000005 (access violation; WSL shows 5)"
     if a.full:

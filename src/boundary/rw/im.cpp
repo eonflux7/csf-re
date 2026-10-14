@@ -50,15 +50,24 @@ bool convert(const csf_rw::Im2DVertex* p,int n,std::vector<DeviceIm2DVertex>& ou
 // Engine +30/+34 callers (00726770, 00738870) pass RW primitive numbers,
 // original 28-byte vertices and 16-bit indices. These are cdecl dispatch
 // entries, not original-address slots in the allocated slice inventory.
+// CSF_RW_TRACE: the first 300 Im2D draws with their first vertex and the blend state they draw under.
+void traceIm2D(const char* kind,int t,const csf_rw::Im2DVertex* p,int n) {
+    static int traced=0;
+    if (!csf_rw::startupTracing() || traced>=300 || !p || n<=0) return;
+    ++traced;
+    std::fprintf(stderr,"RW startup Im2D %s prim=%d n=%d v0=(%.1f,%.1f) color=%08x uv=(%.3f,%.3f) raster=%p src=%d dst=%d valpha=%d\n",
+        kind,t,n,p[0].x,p[0].y,static_cast<unsigned>(p[0].color),p[0].u,p[0].v,rw::GetRenderStatePtr(rw::TEXTURERASTER),
+        rw::GetRenderState(rw::SRCBLEND),rw::GetRenderState(rw::DESTBLEND),rw::GetRenderState(rw::VERTEXALPHA));
+}
 int __cdecl im2DPrimitive(int t,const csf_rw::Im2DVertex* p,int n) {
     std::vector<DeviceIm2DVertex> native;
-    ++csf_rw::im2DFrameCalls[0];
+    ++csf_rw::im2DFrameCalls[0]; traceIm2D("prim",t,p,n);
     if (!ready() || !primitive(t,n>0 ? n : 0) || !convert(p,n,native)) return ++csf_rw::im2DFrameCalls[1], 0;
     rw::im2d::RenderPrimitive(static_cast<rw::PrimitiveType>(t),native.data(),n); return 1;
 }
 int __cdecl im2DIndexed(int t,const csf_rw::Im2DVertex* p,int n,const uint16_t* idx,int count) {
     std::vector<DeviceIm2DVertex> native;
-    ++csf_rw::im2DFrameCalls[0];
+    ++csf_rw::im2DFrameCalls[0]; traceIm2D("indexed",t,p,n);
     if (!ready() || n<=0 || !primitive(t,count>0 ? count : 0) ||
         !indicesValid(idx,count,n) || !convert(p,n,native)) return ++csf_rw::im2DFrameCalls[1], 0;
     rw::im2d::RenderIndexedPrimitive(static_cast<rw::PrimitiveType>(t),native.data(),n,const_cast<uint16_t*>(idx),count); return 1;

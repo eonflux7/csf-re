@@ -4,6 +4,8 @@
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include <cstring>
+#include <cstdio>
+#include <vector>
 #include <initializer_list>
 #include "globals.h"
 #include "hook.h"
@@ -103,6 +105,105 @@ static BOOL __fastcall GameScreen_HasBriefing(uint8_t* self, void*) {
            !CSF_AT(uint8_t, Render_GetSystem(), 4);
 }
 
+// Scripted input for unattended runs (tools/dryrun.py --input): CSF_INPUT="T:key:DIK;T:goto:X,Y;T:click;T:rclick;T:wheel:N"
+// with T in seconds since the first DirectInput device was created. Windows' synthetic input does not reach the game's
+// exclusive DirectInput devices, so events are appended to what GetDeviceData returns (both devices are buffered,
+// 0x713400). The cursor moves by relative deltas: goto parks it at (0,0) with a large negative move, then moves to
+// (X,Y). Each injected step prints "csf: input ...".
+namespace {
+struct ScriptStep { DWORD at; int kind; int a, b; };  // kind: 0 key, 1 goto, 2 click, 3 rclick, 4 wheel
+std::vector<ScriptStep> g_script;
+size_t g_scriptNext;
+DWORD g_scriptStart;
+std::vector<DIDEVICEOBJECTDATA> g_pendingKeys, g_pendingMouse;
+using GetDeviceDataFn = HRESULT (STDMETHODCALLTYPE*)(void*, DWORD, DIDEVICEOBJECTDATA*, DWORD*, DWORD);
+using CreateDeviceFn = HRESULT (STDMETHODCALLTYPE*)(void*, REFGUID, void**, void*);
+CreateDeviceFn g_createDevice;
+
+void ScriptedInput_Load() {
+    char text[4096];
+    if (!GetEnvironmentVariableA("CSF_INPUT", text, sizeof text)) return;
+    for (char* step = strtok(text, ";"); step; step = strtok(nullptr, ";")) {
+        double t = 0; char kind[16] = {}; int a = 0, b = 0;
+        if (sscanf(step, "%lf:%15[a-z]:%d,%d", &t, kind, &a, &b) < 2) continue;
+        const int k = !strcmp(kind, "key") ? 0 : !strcmp(kind, "goto") ? 1 : !strcmp(kind, "click") ? 2
+                    : !strcmp(kind, "rclick") ? 3 : !strcmp(kind, "wheel") ? 4 : -1;
+        if (k >= 0) g_script.push_back({static_cast<DWORD>(t * 1000), k, a, b});
+    }
+}
+void Push(std::vector<DIDEVICEOBJECTDATA>& q, DWORD offset, DWORD data) {
+    DIDEVICEOBJECTDATA e{}; e.dwOfs = offset; e.dwData = data; e.dwTimeStamp = GetTickCount(); q.push_back(e);
+}
+void ScriptedInput_Advance() {
+    const DWORD now = GetTickCount() - g_scriptStart;
+    while (g_scriptNext < g_script.size() && g_script[g_scriptNext].at <= now) {
+        const ScriptStep& s = g_script[g_scriptNext++];
+        std::fprintf(stderr, "csf: input t=%.1f kind=%d %d,%d\n", now / 1000.0, s.kind, s.a, s.b);
+        switch (s.kind) {
+        case 0: Push(g_pendingKeys, s.a, 0x80); Push(g_pendingKeys, s.a, 0); break;
+        case 1: Push(g_pendingMouse, DIMOFS_X, static_cast<DWORD>(-20000)); Push(g_pendingMouse, DIMOFS_Y, static_cast<DWORD>(-20000));
+                Push(g_pendingMouse, DIMOFS_X, static_cast<DWORD>(s.a)); Push(g_pendingMouse, DIMOFS_Y, static_cast<DWORD>(s.b)); break;
+        case 2: Push(g_pendingMouse, DIMOFS_BUTTON0, 0x80); Push(g_pendingMouse, DIMOFS_BUTTON0, 0); break;
+        case 3: Push(g_pendingMouse, DIMOFS_BUTTON1, 0x80); Push(g_pendingMouse, DIMOFS_BUTTON1, 0); break;
+        case 4: Push(g_pendingMouse, DIMOFS_Z, static_cast<DWORD>(s.a)); break;
+        }
+    }
+}
+// Appends pending events (down and up of one press go out in separate polls, so the game sees a press).
+HRESULT Inject(GetDeviceDataFn real, std::vector<DIDEVICEOBJECTDATA>& q, void* self, DWORD size, DIDEVICEOBJECTDATA* data,
+               DWORD* count, DWORD flags) {
+    const DWORD capacity = count ? *count : 0;
+    HRESULT result = real(self, size, data, count, flags);
+    ScriptedInput_Advance();
+    if (q.empty() || !data || !count || size != sizeof(DIDEVICEOBJECTDATA) || (flags & DIGDD_PEEK)) return result;
+    if (FAILED(result)) { *count = 0; result = DI_OK; }
+    DWORD added = 0;
+    bool sawButtonDown = false;
+    while (!q.empty() && *count < capacity) {
+        const DIDEVICEOBJECTDATA& e = q.front();
+        const bool button = e.dwOfs >= DIMOFS_BUTTON0 && e.dwOfs <= DIMOFS_BUTTON7;
+        if ((button || &q == &g_pendingKeys) && !e.dwData && sawButtonDown) break;  // release in the next poll
+        if (e.dwData == 0x80) sawButtonDown = true;
+        data[(*count)++] = e; q.erase(q.begin()); ++added;
+    }
+    return result;
+}
+void* g_keyboard;
+void* g_mouse;
+GetDeviceDataFn g_getDeviceData;
+HRESULT STDMETHODCALLTYPE DeviceData(void* self, DWORD size, DIDEVICEOBJECTDATA* data, DWORD* count, DWORD flags) {
+    if (self == g_keyboard) return Inject(g_getDeviceData, g_pendingKeys, self, size, data, count, flags);
+    if (self == g_mouse) return Inject(g_getDeviceData, g_pendingMouse, self, size, data, count, flags);
+    return g_getDeviceData(self, size, data, count, flags);
+}
+// dinput8 tells its A and W interfaces apart by the object's vtable pointer, so the shared vtable's slot is replaced
+// in place (VirtualProtect), not the object's vtable pointer.
+void PatchSlot(void* object, int slot, void* fn, void** original) {
+    void** table = *static_cast<void***>(object);
+    if (table[slot] == fn) return;
+    DWORD old;
+    if (!VirtualProtect(&table[slot], sizeof(void*), PAGE_READWRITE, &old)) return;
+    *original = table[slot];
+    table[slot] = fn;
+    VirtualProtect(&table[slot], sizeof(void*), old, &old);
+}
+HRESULT STDMETHODCALLTYPE CreateDevice(void* self, REFGUID guid, void** device, void* outer) {
+    const HRESULT result = g_createDevice(self, guid, device, outer);
+    if (SUCCEEDED(result) && device && *device) {
+        if (!g_scriptStart) g_scriptStart = GetTickCount();
+        if (guid == GUID_SysKeyboard) g_keyboard = *device;
+        if (guid == GUID_SysMouse) g_mouse = *device;
+        if (!g_getDeviceData) PatchSlot(*device, 10, reinterpret_cast<void*>(&DeviceData), reinterpret_cast<void**>(&g_getDeviceData));
+    }
+    return result;
+}
+}  // namespace
+static void ScriptedInput_WrapInterface(void* directInput) {
+    ScriptedInput_Load();
+    if (!g_script.empty() && !g_createDevice)
+        PatchSlot(directInput, 3, reinterpret_cast<void*>(&CreateDevice), reinterpret_cast<void**>(&g_createDevice));
+}
+
 // 0x7DB650 is the exe's jump through the DINPUT8 import; the standalone loads System32's dinput8.dll itself.
 // The exe's c_dfDIKeyboard (0x883BD4) and c_dfDIMouse (0x8839CC) come from the static dinput8.lib and point at object
 // arrays it placed in .text (0x7DA650, 0x7DA5E0), which the standalone does not have: the SDK's dinput8.lib copies
@@ -120,7 +221,10 @@ static HRESULT WINAPI Import_DirectInput8Create(HINSTANCE inst, DWORD ver, const
         if (HMODULE m = LoadLibraryA(path))
             real = reinterpret_cast<Create>(GetProcAddress(m, "DirectInput8Create"));
     }
-    return real ? real(inst, ver, riid, out, outer) : E_FAIL;
+    if (!real) return E_FAIL;
+    const HRESULT result = real(inst, ver, riid, out, outer);
+    if (SUCCEEDED(result) && out && *out) ScriptedInput_WrapInterface(*out);
+    return result;
 }
 
 HOOK(0x4FB8F0, DevCommandLine_Set, "auto");
