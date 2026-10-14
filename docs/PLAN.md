@@ -95,7 +95,8 @@ atexit destructors were found and added on 2026-10-14). Jobs' output enters the 
 1. **Towards an exe that reaches WinMain**: the remaining 189 static initialisers (job initfn2), WinMain (0x509250,
    adopted), start-up order and the allocator before the first constructor (docs/INIT_FUNCTIONS.md,
    docs/STANDALONE_LINK2.md), then a first run: needs Windows or wine (not installed: ask the user).
-2. **RenderWare on librw**: slices 3 to 10 of docs/RW_PORT.md (raster/texture/image next), 322 slots unresolved.
+2. **RenderWare on librw**: slices 4 to 10 of docs/RW_PORT.md (slice 3 in: 42 of 50; slice 4, objects/camera/
+   lights/material, is job rw4), 280 slots unresolved.
 3. **Installed functions that differ in emudiff** (407 after the sweep): Haiku singles in waves, sol-med for the
    84 over 320 bytes, a sol-med review per batch, then the verifier.
 4. **Escalation queue** (about 80) and the last game code: 30 STL instances, the larger queue functions.

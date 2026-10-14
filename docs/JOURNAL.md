@@ -1603,3 +1603,18 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   unchanged (281/400), controls unchanged.
 - Codex quota is the limiter for sol jobs: four big jobs on one login spend its 5h window in about 25 minutes;
   job start now spreads over the logins by usage and running jobs (work/measure/stagger.py starts as room appears).
+
+## 2026-10-14 (morning): reviews catch-up, wave 9, rw4 started
+- The wave loop died during wave 9; its 14 adopted functions were re-checked here (gate ok, emudiff same) and
+  committed (e8a70b6d); loop restarted.
+- Jobs initfn2 (189 static initialisers, emudiff: CRT `_atexit` as an exact-argument event) and rw3 (RenderWare
+  slice 3: 42 of 50 slots, RW unresolved 322 -> 280) had been applied but not reviewed, and went into the tree with the
+  wave-8 commit 87e1c7a9: the loop's `git commit` took everything staged. Both reviewed after the fact: content equals
+  the patches; rw3's three native tests pass under ASan/UBSan here. The loop now commits only its own paths.
+- 0x82C404 (x87 control word to 24-bit precision, exceptions masked): the gate allows inline asm only in naked
+  thunks (and flags the word in comments), so the raw control word goes through FXSAVE/FXRSTOR. initfn2 had also
+  called `_controlfp`, whose MXCSR side effect FXRSTOR undid anyway: dropped.
+- Queue jobs q438880/q509250/q53e2f0/q54a910/q54dd80: blocked at 00:35 by emudiff's callee cleanup, adopted after
+  emufix2; pass today. 0x696000 stays queued: the DIFF is the original's never-written stack (0xCC) copied into an
+  output tail, an emudiff comparison question, not a bug in our code.
+- Started rw4 (slice 4: atomic/clump/geometry, camera, lights, material; 41 slots, sol-med).
