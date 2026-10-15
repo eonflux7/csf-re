@@ -1799,3 +1799,9 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   guard), but the map's object templates are in the world when they are cloned per placement. Guard removed (the
   clone is composed from atomic clones; world membership plays no part); reject reasons now go to CSF_RW_TRACE.
   0x6BD690 has a CSF_RW_TRACE `csf: CLONE` line. Next stop: 0x5A1B17 D3DXCompileShader (shaders compiled at load).
+- FR01 past the clone: D3DX boundary (src/boundary/d3dx/shader.cpp: D3DXCompileShader/AssembleShader forward to
+  d3dx9_43.dll at runtime; the game wants only the compiled buffer). RW plugin 0x50F (a 4-byte ID on geometries
+  and world sectors, offsets in 0x8B1404/0x8B1408, registered by the original's RpWorldPluginAttach via 0x59C240)
+  registered in worldAttach with its four accessors. Next: RpWorldStreamRead rejects FR01's world (Maps/FR01/FR01.rws
+  in Ransom.pak, now extracted to /mnt/e/dev/csf-paks/Ransom): a chunk payload ends early even with complete reads
+  (world_stream.inc readFully), so the scene finaliser gets a null world. Job rwworld3.

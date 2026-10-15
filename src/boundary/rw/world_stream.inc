@@ -224,6 +224,17 @@ void buildSectorMeshes(Record& rec) {
         }
     }
 }
+// Custom streams (the game's pak file system behind RwStreamOpen) may return less than asked for one large read;
+// the world's sector tree is one chunk of several MB. Read until complete or the stream gives nothing more.
+uint32_t readFully(rw::Stream* source,void* out,uint32_t n) {
+    uint32_t done=0;
+    while(done<n) {
+        uint32_t got=source->read8(static_cast<uint8_t*>(out)+done,n-done);
+        if(!got) break;
+        done+=got;
+    }
+    return done;
+}
 World* __cdecl readWorld(Stream* stream) {
     startupTrace("0x0059FEA0","RpWorldStreamRead (CPU BSP)");
     auto* source=streamNative(stream);
@@ -237,10 +248,10 @@ World* __cdecl readWorld(Stream* stream) {
         for(;;) {
             checkWorld(!source->eof());
             if(auto* memory=dynamic_cast<rw::StreamMemory*>(source)) checkWorld(memory->position<memory->length);
-            uint32_t h[3];checkWorld(source->read8(h,12)==12);
+            uint32_t h[3];checkWorld(readFully(source,h,12)==12);
             checkWorld(h[1]<=256u*1024*1024 && bytes.size()+12+h[1]<=512u*1024*1024);
             size_t at=bytes.size();bytes.resize(at+12+h[1]);std::memcpy(bytes.data()+at,h,12);
-            checkWorld(!h[1] || source->read8(bytes.data()+at+12,h[1])==h[1]);
+            checkWorld(!h[1] || readFully(source,bytes.data()+at+12,h[1])==h[1]);
             if(h[0]==rw::ID_EXTENSION) break;
         }
         scope.context.base=bytes.data();

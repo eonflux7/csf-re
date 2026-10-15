@@ -61,6 +61,11 @@ CSF_GLOBAL(int, anisoStream, 0x008B091C);
 CSF_GLOBAL(int, morphAtomic, 0x008B09E4);
 CSF_GLOBAL(int, morphGeometry, 0x008B09E8);
 CSF_GLOBAL(int, worldCamera, 0x008B1348);
+// Plugin 0x50F (registered by the original from RpWorldPluginAttach via 0x59C240 > 0x593CB0): a 4-byte ID on
+// geometries (offset in 0x8B1404) and world sectors (0x8B1408), zeroed on construction and copied on clone; the
+// game sets/reads it through 0x593D30/0x593D50 (geometry) and 0x593D60/0x593D80 (sector), e.g. 0x709900.
+CSF_GLOBAL(int, idGeometry, 0x008B1404);
+CSF_GLOBAL(int, idSector, 0x008B1408);
 CSF_GLOBAL(int, worldAtomic, 0x008B134C);
 CSF_GLOBAL(int, worldClump, 0x008B1350);
 CSF_GLOBAL(int, worldLight, 0x008B1354);
@@ -133,6 +138,8 @@ int __stdcall worldAttach() {
     }
     if(reserve(K::Atomic,0,31)<0 || reserve(K::World,0,31)<0 ||
        reserve(K::Geometry,0,31)<0 || reserve(K::Material,0,31)<0) return 0;
+    // 0x50F's engine part only counts open/close (0x593C90/0x593CA0 on 0x8B1400, read nowhere): size 0.
+    if(!engine(0,0x50F) || !put(idGeometry,K::Geometry,4,0x50F) || !put(idSector,K::Sector,4,0x50F)) return 0;
     rw::registerMeshPlugin(); rw::registerNativeDataPlugin();
     rw::registerAtomicRightsPlugin(); rw::registerMaterialRightsPlugin();
     return csf_rw::attachStreamImageLifetime();
@@ -332,6 +339,16 @@ bool readPluginPayload(Registry k,uint32_t id,Stream* s,int length,void* object)
 }
 }
 HOOK(0x0058D0B0,worldAttach,"boundary-rw");
+namespace {
+void __cdecl geometrySetID(void* geometry,int id) { *reinterpret_cast<int*>(static_cast<char*>(geometry)+idGeometry)=id; }
+int __cdecl geometryGetID(void* geometry) { return *reinterpret_cast<int*>(static_cast<char*>(geometry)+idGeometry); }
+void __cdecl sectorSetID(void* sector,int id) { *reinterpret_cast<int*>(static_cast<char*>(sector)+idSector)=id; }
+int __cdecl sectorGetID(void* sector) { return *reinterpret_cast<int*>(static_cast<char*>(sector)+idSector); }
+}
+HOOK(0x00593D30,geometrySetID,"boundary-rw");
+HOOK(0x00593D50,geometryGetID,"boundary-rw");
+HOOK(0x00593D60,sectorSetID,"boundary-rw");
+HOOK(0x00593D80,sectorGetID,"boundary-rw");
 HOOK(0x0061ECD0,animInit,"boundary-rw");
 HOOK(0x0056DAE0,hanimAttach,"boundary-rw");
 HOOK(0x00587450,skinAttach,"boundary-rw");
