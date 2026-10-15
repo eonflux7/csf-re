@@ -29,4 +29,12 @@ Clump* clumpCreate();
 bool clumpAddAtomic(Clump*, Atomic*);
 bool clumpAddLight(Clump*, Light*);
 void clumpSetFrame(Clump*, Frame*);
+// Streaming transaction seam: create/export aliases without taking another
+// native reference. Forget runs ABI dtors/removes maps, but never destroys n.
+void* streamObjectCreate(Registry, void* n);
+void* streamObjectExport(Registry, void* n);
+void* streamObjectForget(Registry, void* n);
+Frame* frameFacade(rw::Frame*);
+Frame* streamFrameCreate(rw::Frame*);
+Frame* streamFrameForget(rw::Frame*);
 }

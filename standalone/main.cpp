@@ -7,6 +7,8 @@
 #include "globals.h"
 #include "runtime.h"
 
+namespace csf { extern unsigned g_heapCheck; }  // src/boundary/crt/crt.cpp: CSF_HEAP_CHECK
+
 // db/functions.csv: _WinMain@16; parked in queue/00509250.md.
 CSF_FUNC(int, __stdcall, Game_WinMain, 0x00509250, (HINSTANCE, HINSTANCE, LPSTR, int));
 
@@ -102,7 +104,7 @@ static LONG CALLBACK exception_dump(EXCEPTION_POINTERS* info) {
     static LONG count;
     const DWORD code = info->ExceptionRecord->ExceptionCode;
     if (code != EXCEPTION_ACCESS_VIOLATION && code != EXCEPTION_ILLEGAL_INSTRUCTION && code != EXCEPTION_STACK_OVERFLOW &&
-        code != EXCEPTION_INT_DIVIDE_BY_ZERO && code != 0xC0000409)
+        code != EXCEPTION_INT_DIVIDE_BY_ZERO && code != 0xC0000409 && code != 0xE0000CF5)  // CF5: CSF_HEAP_CHECK
         return EXCEPTION_CONTINUE_SEARCH;
     if (InterlockedIncrement(&count) > 3) return EXCEPTION_CONTINUE_SEARCH;
     const CONTEXT& c = *info->ContextRecord;
@@ -170,6 +172,11 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command, int sh
     char exceptionTrace[8]{};
     if (GetEnvironmentVariableA("CSF_EXCEPTION_TRACE", exceptionTrace, sizeof exceptionTrace) && exceptionTrace[0] != '0')
         AddVectoredExceptionHandler(1, exception_dump);
+    char heapCheck[16]{};
+    if (GetEnvironmentVariableA("CSF_HEAP_CHECK", heapCheck, sizeof heapCheck)) {
+        csf::g_heapCheck = static_cast<unsigned>(std::atoi(heapCheck) > 0 ? std::atoi(heapCheck) : 1);
+        std::fprintf(stderr, "csf: heap check every %u calls\n", csf::g_heapCheck);
+    }
     char exitTrace[8]{};
     if (GetEnvironmentVariableA("CSF_EXIT_TRACE", exitTrace, sizeof exitTrace) && exitTrace[0] != '0') {
         std::atexit(exit_dump);

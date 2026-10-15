@@ -123,9 +123,9 @@ int __stdcall worldAttach() {
     if(!attachable(K::Engine,1281)) return 0;
     for(auto p: {std::pair<int,uint32_t>{4,1281},{48,1282},{4,1283},{8,1284},{4,1285},{0,1290},{12,1287},{0,1291},{12,1289}})
         if(!engine(p.first,p.second)) return 0;
-    if(!put(worldCamera,K::Camera,28,1289) || !put(worldAtomic,K::Atomic,8,1289) ||
+    if(!put(worldCamera,K::Camera,sizeof(void*)==8?32:28,1289) || !put(worldAtomic,K::Atomic,8,1289) ||
        !put(worldClump,K::Clump,8,1289) || !put(worldLight,K::Light,8,1289) ||
-       !put(clumpCamera,K::Camera,12,16) || !put(clumpLight,K::Light,12,16)) return 0;
+       !put(clumpCamera,K::Camera,3*sizeof(void*),16) || !put(clumpLight,K::Light,3*sizeof(void*),16)) return 0;
     // Zero-size registrations still have IDs/offsets and stream contracts.
     for(uint32_t id:{1294u,1296u}) {
         if(reserve(K::Sector,0,id)<0 || reserve(K::Geometry,0,id)<0) return 0;
@@ -134,7 +134,7 @@ int __stdcall worldAttach() {
        reserve(K::Geometry,0,31)<0 || reserve(K::Material,0,31)<0) return 0;
     rw::registerMeshPlugin(); rw::registerNativeDataPlugin();
     rw::registerAtomicRightsPlugin(); rw::registerMaterialRightsPlugin();
-    return 1;
+    return csf_rw::attachStreamImageLifetime();
 }
 int __stdcall animInit() {
     csf_rw::startupTrace("0x0061ECD0","RtAnimInitialize");
@@ -301,6 +301,39 @@ const AnimationScheme* animationScheme(uint32_t id) {
     return nullptr;
 }
 void pluginBoundaryTerm() { schemeCount=0; streamCallbacks.clear(); randomState={}; }
+std::vector<uint32_t> pluginStreamIDs(Registry k,bool readsOnly) {
+    std::vector<uint32_t> ids;
+    for(auto& p:streamCallbacks) if(unsigned(p.first>>32)==unsigned(k) && (!readsOnly || p.second.read))
+        ids.push_back(uint32_t(p.first));
+    return ids;
+}
+int registerABIPluginStream(Registry k,uint32_t id,uintptr_t r,uintptr_t w,uintptr_t s) {
+    return streamRegistration(k,id,r,w,s);
+}
+int pluginPayloadSize(Registry k,uint32_t id,void* object) {
+    auto it=streamCallbacks.find((uint64_t(unsigned(k))<<32)|id);
+    if(it==streamCallbacks.end() || !it->second.size) return -1;
+    FORLIST(l,plugins(k).plugins) {
+        auto* p=LLLinkGetData(l,rw::Plugin,inParentList);
+        if(p->id==id) {
+            using Size=int (__cdecl *)(void*,int,int);
+            return reinterpret_cast<Size>(it->second.size)(object,p->offset,p->size);
+        }
+    }
+    return -1;
+}
+bool readPluginPayload(Registry k,uint32_t id,Stream* s,int length,void* object) {
+    auto it=streamCallbacks.find((uint64_t(unsigned(k))<<32)|id);
+    if(it==streamCallbacks.end() || !it->second.read) return false;
+    FORLIST(l,plugins(k).plugins) {
+        auto* p=LLLinkGetData(l,rw::Plugin,inParentList);
+        if(p->id==id) {
+            using Read=Stream* (__cdecl *)(Stream*,int,void*,int,int);
+            return reinterpret_cast<Read>(it->second.read)(s,length,object,p->offset,p->size)!=nullptr;
+        }
+    }
+    return false;
+}
 }
 HOOK(0x0058D0B0,worldAttach,"boundary-rw");
 HOOK(0x0061ECD0,animInit,"boundary-rw");

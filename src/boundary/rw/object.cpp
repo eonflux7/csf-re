@@ -108,6 +108,17 @@ void exportGeometry(Geometry* a,GeoState& s) {
         auto& m=s.morphs[i]; auto& b=n->morphTargets[i];
         m={a,b.boundingSphere,b.vertices,b.normals};
     }
+    if(auto* h=n->meshHeader) {
+        s.meshes.resize(sizeof(MeshHeader)+sizeof(Mesh)*h->numMeshes);
+        a->mesh=reinterpret_cast<MeshHeader*>(s.meshes.data());
+        *a->mesh={h->flags,h->numMeshes,h->serialNum,h->totalIndices,0};
+        auto* mesh=reinterpret_cast<Mesh*>(a->mesh+1);
+        for(unsigned i=0;i<h->numMeshes;++i) {
+            auto& b=h->getMeshes()[i]; Material* material=nullptr;
+            for(auto& p:materials) if(p.second==b.material) { material=p.first; break; }
+            mesh[i]={b.indices,b.numIndices,material};
+        }
+    } else { s.meshes.clear(); a->mesh=nullptr; }
 }
 void exportLight(Light* a,rw::Light* n) {
     a->radius=n->radius; a->color=n->color; a->minusCosAngle=n->minusCosAngle;
@@ -134,6 +145,7 @@ void nativeRender(rw::Atomic* n) {
     for(auto& p:atomics) if(p.second==n) { p.first->renderCB(p.first); return; }
 }
 Atomic* adoptAtomic(rw::Atomic* n) {
+    for(auto& p:atomics) if(p.second==n) return p.first;
     auto* a=allocate<Atomic>(K::Atomic); if(!a) return nullptr;
     a->object.object={rw::Atomic::ID,0,n->object.object.flags,n->object.object.privateFlags,nullptr};
     a->object.sync=syncFacade; ring(a->inClump); ring(a->worldSectors);
@@ -348,6 +360,7 @@ int __cdecl lightDestroy(Light* a) {
 Light* __cdecl lightCreate(unsigned char type) {
     auto* a=allocate<Light>(K::Light); if(!a) return nullptr;
     auto* n=rw::Light::create(type); if(!n) { freeFacade(a); return nullptr; }
+    for(auto& p:lights) if(p.second==n) { freeFacade(a); return p.first; }
     n->minusCosAngle=0;
     a->object.object={rw::Light::ID,type,n->object.object.flags,n->object.object.privateFlags,nullptr};
     a->object.sync=syncFacade; ring(a->worldSectors); ring(a->inWorld); exportLight(a,n);
@@ -431,6 +444,9 @@ Camera* __stdcall cameraCreate() {
     startupTrace("0x006290B0","CameraCreate");
     auto* a=allocate<Camera>(K::Camera); if(!a) return nullptr;
     auto* n=rw::Camera::create(); if(!n) { freeFacade(a); return nullptr; }
+    for(auto& p:cameras) if(p.second==n) {
+        n->setNearPlane(n->nearPlane);exportCamera(p.first,n);freeFacade(a);return p.first;
+    }
     a->object.object={rw::Camera::ID,0,0,0,nullptr}; a->object.sync=syncFacade;
     a->beginUpdate=defaultBegin; a->endUpdate=defaultEnd;
     n->setNearPlane(n->nearPlane); exportCamera(a,n); a->viewMatrix.setIdentity();
@@ -641,6 +657,7 @@ void objectImport() {
 Material* materialCreate() {
     auto* a=allocate<Material>(K::Material); if(!a) return nullptr;
     auto* n=rw::Material::create(); if(!n) { freeFacade(a); return nullptr; }
+    for(auto& p:materials) if(p.second==n) { freeFacade(a); return p.first; }
     exportMaterial(a,n);
     if(!insert(materials,a,n)) { n->destroy(); freeFacade(a); return nullptr; }
     if(!constructPlugins(K::Material,a)) { materials.erase(a); n->destroy(); freeFacade(a); return nullptr; } return a;
@@ -662,6 +679,7 @@ Geometry* geometryCreate(int verts,int tris,unsigned flags) {
     if(verts<0 || tris<0 || verts>65535 || tris>1000000 || ((flags>>16)&255)>8) return nullptr;
     auto* a=allocate<Geometry>(K::Geometry); if(!a) return nullptr;
     auto* n=rw::Geometry::create(verts,tris,flags); if(!n) { freeFacade(a); return nullptr; }
+    for(auto& p:geometries) if(p.second.n==n) { freeFacade(a); return p.first; }
     try { GeoState s{}; s.n=n; s.morphs.resize(n->numMorphTargets); geometries.emplace(a,std::move(s)); }
     catch(...) { n->destroy(); freeFacade(a); return nullptr; }
     exportGeometry(a,geometries.at(a));
@@ -683,6 +701,7 @@ bool geometryAddMorphTargets(Geometry* g,int count) {
 Clump* clumpCreate() {
     auto* a=allocate<Clump>(K::Clump); if(!a) return nullptr;
     auto* n=rw::Clump::create(); if(!n) { freeFacade(a); return nullptr; }
+    for(auto& p:clumps) if(p.second==n) { freeFacade(a); return p.first; }
     a->object.type=rw::Clump::ID; ring(a->atomics); ring(a->lights); ring(a->cameras); ring(a->inWorld);
     if(!insert(clumps,a,n)) { n->destroy(); freeFacade(a); return nullptr; }
     if(!constructPlugins(K::Clump,a)) { clumps.erase(a); n->destroy(); freeFacade(a); return nullptr; } return a;
@@ -696,6 +715,151 @@ bool clumpAddLight(Clump* c,Light* a) {
     n->addLight(b);publishLightClump(a,c); return true;
 }
 void clumpSetFrame(Clump* c,Frame* f) { if(lookup(clumps,c) && (!f || frameNative(f))) { c->object.parent=f; clumpNative(c); } }
+
+// These operations deliberately do not call the inward conversions: while a
+// native reader is filling its object, stale facade fields are not authoritative.
+template<class A,class N> A* reverse(const std::unordered_map<A*,N*>& map,N* n) {
+    for(auto& p:map) if(p.second==n) return p.first;
+    return nullptr;
+}
+void streamFrameLink(ObjectWithFrame* a,rw::Frame* f) {
+    auto* parent=frameFacade(f);
+    if(a->object.parent==parent) return;
+    if(a->inFrame.next && a->inFrame.prev) unlink(a->inFrame);
+    a->object.parent=parent;
+    a->inFrame.next=a->inFrame.prev=nullptr;
+    if(parent) append(parent->objects,a->inFrame);
+}
+void* streamObjectExport(Registry k,void* object) {
+    if(k==K::Frame) { frameExport(); return frameFacade(static_cast<rw::Frame*>(object)); }
+    if(k==K::Texture) {
+        auto* n=static_cast<rw::Texture*>(object); auto* a=textureFacade(n);
+        if(a) streamImageExport(); return a;
+    }
+    if(k==K::Material) {
+        auto* n=static_cast<rw::Material*>(object); auto* a=reverse(materials,n);
+        if(a) exportMaterial(a,n); return a;
+    }
+    if(k==K::Geometry) {
+        auto* n=static_cast<rw::Geometry*>(object);
+        for(auto& p:geometries) if(p.second.n==n) {
+            auto& s=p.second; s.materials.clear();
+            for(int i=0;i<n->matList.numMaterials;++i) {
+                auto* a=reverse(materials,n->matList.materials[i]); if(!a) return nullptr;
+                exportMaterial(a,n->matList.materials[i]); s.materials.push_back(a);
+            }
+            s.morphs.resize(n->numMorphTargets); exportGeometry(p.first,s); return p.first;
+        }
+    }
+    if(k==K::Atomic) {
+        auto* n=static_cast<rw::Atomic*>(object); auto* a=reverse(atomics,n); if(!a) return nullptr;
+        a->object.object.flags=n->object.object.flags;
+        a->geometry=static_cast<Geometry*>(n->geometry?streamObjectExport(K::Geometry,n->geometry):nullptr);
+        streamFrameLink(&a->object,n->getFrame()); exportAtomic(a,n);
+        a->clump=reverse(clumps,n->clump); return a;
+    }
+    if(k==K::Light) {
+        auto* n=static_cast<rw::Light*>(object); auto* a=reverse(lights,n); if(!a) return nullptr;
+        a->object.object.flags=n->object.object.flags;
+        streamFrameLink(&a->object,n->getFrame()); exportLight(a,n);
+        publishLightClump(a,reverse(clumps,n->clump)); return a;
+    }
+    if(k==K::Camera) {
+        auto* n=static_cast<rw::Camera*>(object); auto* a=reverse(cameras,n); if(!a) return nullptr;
+        streamFrameLink(&a->object,n->getFrame()); exportCamera(a,n); return a;
+    }
+    if(k==K::Clump) {
+        auto* n=static_cast<rw::Clump*>(object); auto* a=reverse(clumps,n); if(!a) return nullptr;
+        a->object.parent=frameFacade(n->getFrame()); ring(a->atomics);
+        // Original AddAtomic inserts at the head, unlike librw's append.
+        FORLIST(l,n->atomics) {
+            auto* b=static_cast<Atomic*>(streamObjectExport(K::Atomic,rw::Atomic::fromClump(l)));
+            if(!b) return nullptr;
+            b->inClump.prev=&a->atomics; b->inClump.next=a->atomics.next;
+            a->atomics.next->prev=&b->inClump; a->atomics.next=&b->inClump;
+        }
+        ring(a->lights); ring(a->cameras);
+        auto member=[&](K k,void* b,Link& root) {
+            if(!b) return;
+            int off=plugins(k).getPluginOffset(16); if(off<0) return;
+            std::memcpy(static_cast<char*>(b)+off,&a,sizeof(a));
+            auto* link=reinterpret_cast<Link*>(static_cast<char*>(b)+off+sizeof(void*));
+            link->prev=&root; link->next=root.next;
+            root.next->prev=link; root.next=link;
+        };
+        FORLIST(l,n->lights) member(K::Light,streamObjectExport(K::Light,rw::Light::fromClump(l)),a->lights);
+        FORLIST(l,n->cameras) member(K::Camera,streamObjectExport(K::Camera,rw::Camera::fromClump(l)),a->cameras);
+        return a;
+    }
+    return nullptr;
+}
+void* streamObjectCreate(Registry k,void* object) {
+    if(k==K::Frame) return streamFrameCreate(static_cast<rw::Frame*>(object));
+    if(k==K::Texture) return streamTextureCreate(static_cast<rw::Texture*>(object));
+    void* result=nullptr;
+    if(k==K::Atomic) return adoptAtomic(static_cast<rw::Atomic*>(object));
+    if(k==K::Material) {
+        auto* a=allocate<Material>(k); if(!a) return nullptr;
+        if(!insert(materials,a,static_cast<rw::Material*>(object))) { freeFacade(a); return nullptr; }
+        result=a;
+    } else if(k==K::Geometry) {
+        auto* a=allocate<Geometry>(k); if(!a) return nullptr;
+        try { GeoState s{}; s.n=static_cast<rw::Geometry*>(object); geometries.emplace(a,std::move(s)); }
+        catch(...) { freeFacade(a); throw; } result=a;
+    } else if(k==K::Clump) {
+        auto* a=allocate<Clump>(k); if(!a) return nullptr;
+        a->object.type=rw::Clump::ID; ring(a->atomics); ring(a->lights); ring(a->cameras); ring(a->inWorld);
+        if(!insert(clumps,a,static_cast<rw::Clump*>(object))) { freeFacade(a); return nullptr; } result=a;
+    } else if(k==K::Light) {
+        auto* a=allocate<Light>(k); if(!a) return nullptr; auto* n=static_cast<rw::Light*>(object);
+        a->object.object={rw::Light::ID,n->object.object.subType,n->object.object.flags,0,nullptr};
+        a->object.sync=syncFacade; ring(a->worldSectors); ring(a->inWorld);
+        if(!insert(lights,a,n)) { freeFacade(a); return nullptr; } result=a;
+    } else if(k==K::Camera) {
+        auto* a=allocate<Camera>(k); if(!a) return nullptr;
+        a->object.object={rw::Camera::ID,0,0,0,nullptr}; a->object.sync=syncFacade;
+        a->beginUpdate=defaultBegin; a->endUpdate=defaultEnd; a->viewMatrix.setIdentity();
+        if(!insert(cameras,a,static_cast<rw::Camera*>(object))) { freeFacade(a); return nullptr; } result=a;
+    }
+    if(!result) return nullptr;
+    auto discard=[&]() {
+        if(k==K::Material) materials.erase(static_cast<Material*>(result));
+        if(k==K::Geometry) geometries.erase(static_cast<Geometry*>(result));
+        if(k==K::Clump) clumps.erase(static_cast<Clump*>(result));
+        if(k==K::Light) lights.erase(static_cast<Light*>(result));
+        if(k==K::Camera) cameras.erase(static_cast<Camera*>(result));
+        freeFacade(result);
+    };
+    // No ABI constructor has run yet if POD/vector publication throws.
+    try { streamObjectExport(k,object); } catch(...) { discard(); throw; }
+    if(!constructPlugins(k,result)) { discard(); return nullptr; }
+    return result;
+}
+void* streamObjectForget(Registry k,void* object) {
+    if(k==K::Frame) return streamFrameForget(static_cast<rw::Frame*>(object));
+    if(k==K::Texture || k==K::Raster) return streamImageForget(k,object);
+    void* result=nullptr;
+    if(k==K::Geometry) {
+        for(auto& p:geometries) if(p.second.n==object) { result=p.first; break; }
+    } else if(k==K::Material) result=reverse(materials,static_cast<rw::Material*>(object));
+    else if(k==K::Atomic) result=reverse(atomics,static_cast<rw::Atomic*>(object));
+    else if(k==K::Light) result=reverse(lights,static_cast<rw::Light*>(object));
+    else if(k==K::Camera) result=reverse(cameras,static_cast<rw::Camera*>(object));
+    else if(k==K::Clump) result=reverse(clumps,static_cast<rw::Clump*>(object));
+    if(!result) return nullptr;
+    destructPlugins(k,result);
+    if(k==K::Atomic || k==K::Light || k==K::Camera) {
+        auto* a=static_cast<ObjectWithFrame*>(result);
+        if(a->inFrame.next && a->inFrame.prev) unlink(a->inFrame);
+    }
+    if(k==K::Geometry) geometries.erase(static_cast<Geometry*>(result));
+    else if(k==K::Material) materials.erase(static_cast<Material*>(result));
+    else if(k==K::Atomic) atomics.erase(static_cast<Atomic*>(result));
+    else if(k==K::Light) lights.erase(static_cast<Light*>(result));
+    else if(k==K::Camera) cameras.erase(static_cast<Camera*>(result));
+    else if(k==K::Clump) clumps.erase(static_cast<Clump*>(result));
+    return result;
+}
 }
 
 // Caller 006e5530 (_rpAtomicResyncInterpolatedSphere): see facade/return/ownership contract above; packet in work/rw4-check/006e5530.packet.

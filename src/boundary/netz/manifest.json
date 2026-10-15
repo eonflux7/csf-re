@@ -678,6 +678,46 @@
           ]
         },
         {
+          "file": "src/auto/0073f3b0.cpp",
+          "name": "Notice",
+          "ret": "void",
+          "conv": "__cdecl",
+          "params": "int a, int b, int status, int d",
+          "caller_functions": [
+            "Collect_0073f3b0"
+          ],
+          "uses": [
+            {
+              "line": 32,
+              "text": "if (!object) Notice(0, 0, static_cast<int>(0xA0030004u), 0);"
+            },
+            {
+              "line": 36,
+              "text": "Notice(0, 0, static_cast<int>(0xE003000Cu), 0);"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/0073f4f0.cpp",
+          "name": "Notice",
+          "ret": "void",
+          "conv": "__cdecl",
+          "params": "int a, int b, int status, int d",
+          "caller_functions": [
+            "Collect_0073f4f0"
+          ],
+          "uses": [
+            {
+              "line": 32,
+              "text": "if (!object) Notice(0, 0, static_cast<int>(0xA0030004u), 0);"
+            },
+            {
+              "line": 36,
+              "text": "Notice(0, 0, static_cast<int>(0xE003000Cu), 0);"
+            }
+          ]
+        },
+        {
           "file": "src/auto/00743a10.cpp",
           "name": "Game_RaiseStatusNotice",
           "ret": "void",
@@ -12383,6 +12423,38 @@
           ]
         },
         {
+          "file": "src/auto/0073f3b0.cpp",
+          "name": "ResolveClass",
+          "ret": "void*",
+          "conv": "__cdecl",
+          "params": "uint32_t type",
+          "caller_functions": [
+            "Collect_0073f3b0"
+          ],
+          "uses": [
+            {
+              "line": 34,
+              "text": "void* type = ResolveClass(CSF_AT(uint32_t, object, 0x2C) >> 22);"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/0073f4f0.cpp",
+          "name": "ResolveClass",
+          "ret": "void*",
+          "conv": "__cdecl",
+          "params": "uint32_t type",
+          "caller_functions": [
+            "Collect_0073f4f0"
+          ],
+          "uses": [
+            {
+              "line": 34,
+              "text": "void* type = ResolveClass(CSF_AT(uint32_t, object, 0x2C) >> 22);"
+            }
+          ]
+        },
+        {
           "file": "src/auto/00742f10.cpp",
           "name": "LookupObjectByIndex",
           "ret": "int",
@@ -13151,7 +13223,7 @@
       },
       "triage_group": "network-operation-or-result",
       "mp_only_proven": false,
-      "result_dereference_review": false,
+      "result_dereference_review": true,
       "binary_ret_bytes": 0,
       "ret_bytes": 0
     },
@@ -15786,6 +15858,38 @@
           ]
         },
         {
+          "file": "src/auto/0073f3b0.cpp",
+          "name": "Reset",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx",
+          "caller_functions": [
+            "Collect_0073f3b0"
+          ],
+          "uses": [
+            {
+              "line": 24,
+              "text": "Reset(selection, nullptr);"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/0073f4f0.cpp",
+          "name": "Reset",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx",
+          "caller_functions": [
+            "Collect_0073f4f0"
+          ],
+          "uses": [
+            {
+              "line": 24,
+              "text": "Reset(selection, nullptr);"
+            }
+          ]
+        },
+        {
           "file": "src/auto/0074acb0.cpp",
           "name": "NetSession_ResetSelection",
           "ret": "void",
@@ -16160,6 +16264,46 @@
             {
               "line": 75,
               "text": "NetSession_AdvanceIterator(iterator, nullptr, 0);"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/0073f3b0.cpp",
+          "name": "Select",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, int mode",
+          "caller_functions": [
+            "Collect_0073f3b0"
+          ],
+          "uses": [
+            {
+              "line": 25,
+              "text": "Select(selection, nullptr, 1);"
+            },
+            {
+              "line": 45,
+              "text": "Select(selection, nullptr, 0);"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/0073f4f0.cpp",
+          "name": "Select",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, int mode",
+          "caller_functions": [
+            "Collect_0073f4f0"
+          ],
+          "uses": [
+            {
+              "line": 25,
+              "text": "Select(selection, nullptr, 1);"
+            },
+            {
+              "line": 45,
+              "text": "Select(selection, nullptr, 0);"
             }
           ]
         },
@@ -19487,6 +19631,38 @@
           ]
         },
         {
+          "file": "src/auto/0073f3b0.cpp",
+          "name": "Construct",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, uint32_t value",
+          "caller_functions": [
+            "Collect_0073f3b0"
+          ],
+          "uses": [
+            {
+              "line": 28,
+              "text": "Construct(temporary, nullptr, selection[1]);"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/0073f4f0.cpp",
+          "name": "Construct",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, uint32_t value",
+          "caller_functions": [
+            "Collect_0073f4f0"
+          ],
+          "uses": [
+            {
+              "line": 28,
+              "text": "Construct(temporary, nullptr, selection[1]);"
+            }
+          ]
+        },
+        {
           "file": "src/auto/0074acb0.cpp",
           "name": "NetSession_InitializeObjectReference",
           "ret": "int",
@@ -19868,6 +20044,54 @@
             {
               "line": 77,
               "text": "sub_651B40(temporaryBytes, nullptr);"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/0073f3b0.cpp",
+          "name": "Destroy",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx",
+          "caller_functions": [
+            "Collect_0073f3b0"
+          ],
+          "uses": [
+            {
+              "line": 30,
+              "text": "Destroy(temporary, nullptr);"
+            },
+            {
+              "line": 46,
+              "text": "Destroy(handle, nullptr);"
+            },
+            {
+              "line": 51,
+              "text": "Destroy(selection + 1, nullptr);"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/0073f4f0.cpp",
+          "name": "Destroy",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx",
+          "caller_functions": [
+            "Collect_0073f4f0"
+          ],
+          "uses": [
+            {
+              "line": 30,
+              "text": "Destroy(temporary, nullptr);"
+            },
+            {
+              "line": 46,
+              "text": "Destroy(handle, nullptr);"
+            },
+            {
+              "line": 51,
+              "text": "Destroy(selection + 1, nullptr);"
             }
           ]
         },
@@ -20523,6 +20747,46 @@
           ]
         },
         {
+          "file": "src/auto/0073f3b0.cpp",
+          "name": "Assign",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, void* value",
+          "caller_functions": [
+            "Collect_0073f3b0"
+          ],
+          "uses": [
+            {
+              "line": 26,
+              "text": "} else Assign(selection + 1, nullptr, &empty);"
+            },
+            {
+              "line": 50,
+              "text": "Assign(selection + 1, nullptr, &empty);"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/0073f4f0.cpp",
+          "name": "Assign",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, void* value",
+          "caller_functions": [
+            "Collect_0073f4f0"
+          ],
+          "uses": [
+            {
+              "line": 26,
+              "text": "} else Assign(selection + 1, nullptr, &empty);"
+            },
+            {
+              "line": 50,
+              "text": "Assign(selection + 1, nullptr, &empty);"
+            }
+          ]
+        },
+        {
           "file": "src/auto/0074acb0.cpp",
           "name": "SessionScope_Begin",
           "ret": "int",
@@ -20949,6 +21213,38 @@
             {
               "line": 62,
               "text": "NetSession_CopyObjectReference("
+            }
+          ]
+        },
+        {
+          "file": "src/auto/0073f3b0.cpp",
+          "name": "Copy",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, void* source",
+          "caller_functions": [
+            "Collect_0073f3b0"
+          ],
+          "uses": [
+            {
+              "line": 29,
+              "text": "Copy(handle, nullptr, temporary);"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/0073f4f0.cpp",
+          "name": "Copy",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, void* source",
+          "caller_functions": [
+            "Collect_0073f4f0"
+          ],
+          "uses": [
+            {
+              "line": 29,
+              "text": "Copy(handle, nullptr, temporary);"
             }
           ]
         },
@@ -34470,6 +34766,38 @@
           ]
         },
         {
+          "file": "src/auto/0073f3b0.cpp",
+          "name": "Attach",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, uint32_t iterator",
+          "caller_functions": [
+            "Collect_0073f3b0"
+          ],
+          "uses": [
+            {
+              "line": 48,
+              "text": "Attach(selection, nullptr, 0);"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/0073f4f0.cpp",
+          "name": "Attach",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx, uint32_t iterator",
+          "caller_functions": [
+            "Collect_0073f4f0"
+          ],
+          "uses": [
+            {
+              "line": 48,
+              "text": "Attach(selection, nullptr, 0);"
+            }
+          ]
+        },
+        {
           "file": "src/auto/0074acb0.cpp",
           "name": "SessionFlagBuffer_SetMode",
           "ret": "void",
@@ -38287,6 +38615,22 @@
       "family": "deferred",
       "reason": "pointer result may be dereferenced; no universal fake object",
       "callers": [
+        {
+          "file": "src/auto/006b7670.cpp",
+          "name": "Advance",
+          "ret": "void",
+          "conv": "__fastcall",
+          "params": "Node** self, void* edx",
+          "caller_functions": [
+            "EraseNodeFromRange"
+          ],
+          "uses": [
+            {
+              "line": 15,
+              "text": "static __forceinline void advance(Node** p) { Advance(p, nullptr); }"
+            }
+          ]
+        },
         {
           "file": "src/auto/006b7d20.cpp",
           "name": "GfxWorld_IncrementTreeIterator",
@@ -53596,6 +53940,26 @@
             {
               "line": 305,
               "text": "GetCachedObjectProvider(accessor, nullptr));"
+            }
+          ]
+        },
+        {
+          "file": "src/auto/006e3a70.cpp",
+          "name": "GetCachedObjectProvider",
+          "ret": "void*",
+          "conv": "__fastcall",
+          "params": "void* self, void* edx",
+          "caller_functions": [
+            "S_006e3740_DrawColoredProvider"
+          ],
+          "uses": [
+            {
+              "line": 19,
+              "text": "void* provider = GetCachedObjectProvider(object, nullptr);"
+            },
+            {
+              "line": 28,
+              "text": "void* orientationProvider = GetCachedObjectProvider("
             }
           ]
         },

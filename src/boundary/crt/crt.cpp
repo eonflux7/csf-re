@@ -17,6 +17,27 @@
 #include <stdexcept>
 #include <new>
 
+// CSF_HEAP_CHECK=N (standalone/main.cpp sets g_heapCheck): every Nth malloc/free/realloc/calloc of the game validates
+// the process heap first, and every free/realloc validates its block; the first failure raises 0xE0000CF5, which
+// CSF_EXCEPTION_TRACE prints with the stack (a corrupt heap was intact at the previous check: the writer ran between).
+extern "C" __declspec(dllimport) int __stdcall HeapValidate(void*, unsigned long, const void*);
+extern "C" __declspec(dllimport) void __stdcall RaiseException(unsigned long, unsigned long, unsigned long, const unsigned long*);
+namespace csf { unsigned g_heapCheck; }
+static unsigned g_heapCalls;
+static void heap_check(const char* op, const void* p, size_t n) {
+    if (!csf::g_heapCheck)
+        return;
+    if (p && !HeapValidate(reinterpret_cast<void*>(_get_heap_handle()), 0, p)) {  // every call: a block the heap never handed out (or freed)
+        std::fprintf(stderr, "csf: HEAP %s(%p) of a block the heap does not own, call %u\n", op, p, g_heapCalls);
+    } else {
+        if (++g_heapCalls % csf::g_heapCheck || HeapValidate(reinterpret_cast<void*>(_get_heap_handle()), 0, nullptr))
+            return;
+        std::fprintf(stderr, "csf: HEAP corrupt before %s(%p, %u), call %u\n", op, p, static_cast<unsigned>(n), g_heapCalls);
+    }
+    csf::g_heapCheck = 0;
+    RaiseException(0xE0000CF5u, 0, 0, nullptr);
+}
+
 // Use concrete wrappers (rather than addresses of overloaded C++ header functions).
 #define FORWARD(R, N, P, E) \
     static R __cdecl boundary_##N P { return E; }
@@ -64,7 +85,7 @@ FORWARD(int, vsnprintf, (char* p, size_t n, const char* f, va_list a), _vsnprint
 HOOK(0x007B0BEB, boundary_vsnprintf, "boundary-crt");
 FORWARD(int, stricmp, (const char* p, const char* q), _stricmp(p,q));
 HOOK(0x007B0C41, boundary_stricmp, "boundary-crt");
-FORWARD(void, free, (void* p), std::free(p));
+FORWARD(void, free, (void* p), (heap_check("free", p, 0), std::free(p)));
 HOOK(0x007B17CC, boundary_free, "boundary-crt");
 FORWARD(int, tolower, (int c), std::tolower(c));
 HOOK(0x007B1905, boundary_tolower, "boundary-crt");
@@ -80,11 +101,11 @@ FORWARD(char*, strchr, (char* p, int c), std::strchr(p,c));
 HOOK(0x007B1B60, boundary_strchr, "boundary-crt");
 FORWARD(double, ceil, (double x), std::ceil(x));
 HOOK(0x007B1C40, boundary_ceil, "boundary-crt");
-FORWARD(void*, malloc, (size_t n), std::malloc(n));
+FORWARD(void*, malloc, (size_t n), (heap_check("malloc", nullptr, n), std::malloc(n)));
 HOOK(0x007B1EC2, boundary_malloc, "boundary-crt");
-FORWARD(void*, realloc, (void* p, size_t n), std::realloc(p,n));
+FORWARD(void*, realloc, (void* p, size_t n), (heap_check("realloc", p, n), std::realloc(p,n)));
 HOOK(0x007B1ED4, boundary_realloc, "boundary-crt");
-FORWARD(void*, calloc, (size_t n, size_t s), std::calloc(n,s));
+FORWARD(void*, calloc, (size_t n, size_t s), (heap_check("calloc", nullptr, n * s), std::calloc(n,s)));
 HOOK(0x007B2081, boundary_calloc, "boundary-crt");
 FORWARD(char*, strstr, (char* p, const char* q), std::strstr(p,q));
 HOOK(0x007B2350, boundary_strstr, "boundary-crt");

@@ -1747,3 +1747,14 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Harness: `dryrun.py --walk` (all named scripts: ok/FAIL, pages seen via CSF_PAGE_TRACE from 0x71C2A0
   RequestMenuByName, walk.json, 640-px jpg thumbnails). Menu pages: P_Intro, P_MePrin, P_Profil, P_Credits, P_MsgBox.
 - 0x729710 ApplyEdgeTextureTransform written by hand (Exit dialog's border strips): horizontal when |dy| <= 1e-6.
+- Job gamelast (sol-med, applied): all 24 game slots the standalone lacked (+2 dependencies); game unresolved 0.
+  0x6B2E20's gate DIFF is the emulator's synthetic vtable (checked by hand against the disassembly: ret counts, the
+  early push for 0x6ADB40, matrix ownership flags). Name entry, Campaign page and the Game options page (P_MOG) now run.
+- Job rwclump (sol-hi, applied): RpClumpStreamRead/GetSize on librw with facade adoption, game plugin stream
+  callbacks and rollback (docs/RW_CLUMP_REPORT.md); Write still traps (callers 0x6BDDC0, 0x708980).
+- Harness: text fields read WM_CHAR (0x508D40 -> CInputDirectInput 0x713880 buffer +0xC50); a script `char:C` step
+  posts it. Without the DirectInput key event of the same press each character appeared three times (the buffer is
+  cleared on key events), so scripts send both. CSF_HEAP_CHECK=N validates the UCRT heap in the CRT boundary's
+  malloc/free. tools/check_all.sh: the whole pre-commit check (RW ASan tests ... dry run, offline tests, --walk).
+- Open: confirming a new profile ends with 0xC0000374 in free (0x5172C0 AddNamedEntry -> 0x5166E0 -> MemDebug free);
+  heap and block validate right before - double free or foreign pointer suspected. Job crash4.

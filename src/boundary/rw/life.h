@@ -27,6 +27,9 @@ struct Memory { uint8_t* start; uint32_t length; };
 struct Stream;
 rw::Stream* streamNative(Stream*);
 bool streamPrepareWrite(Stream*, uint32_t);
+// Registered, non-owning stream view used only for the duration of a callback.
+Stream* streamBorrow(rw::Stream*);
+void streamUnborrow(Stream*);
 struct ChunkHeader { uint32_t type, length, version, build, isComplex; };
 static_assert(sizeof(ChunkHeader) == 20);
 }

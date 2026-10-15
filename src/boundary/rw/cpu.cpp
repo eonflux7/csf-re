@@ -70,8 +70,12 @@ static Frame* __stdcall frameCreate() {
     if (!cpuEngine()) return nullptr;
     auto* a = static_cast<Frame*>(std::calloc(1, csf_rw::plugins(csf_rw::Registry::Frame).size));
     if (!a) return nullptr;
-    rw::Frame* b = rw::Frame::create();
+    rw::Frame* b;
+    try { b=rw::Frame::create(); } catch(...) { std::free(a); throw; }
     if (!b) { std::free(a); return nullptr; }
+    // A stream callback may call the ordinary factory while native lifecycle
+    // observers are installed. Reuse its already-constructed ABI identity.
+    if(auto* existing=facade(b)) { std::free(a); return existing; }
     try { frames().emplace(a, b); facades().emplace(b, a); }
     catch (...) { frames().erase(a); b->destroy(); std::free(a); return nullptr; }
     a->object.type = b->object.type;
@@ -149,7 +153,7 @@ static int __cdecl frameDestroy(Frame* f) {
     // root pointers. Detach through the hierarchy API before freeing the root.
     rw::Frame* b = native(f);
     while (b->child) b->child->removeChild();
-    b->destroy(); frames().erase(f); facades().erase(b); std::free(f); exportFrames(); return 1;
+    frames().erase(f); facades().erase(b); b->destroy(); std::free(f); exportFrames(); return 1;
 }
 void collectSyncFrames(rw::Frame* f, std::vector<Frame*>& order) {
     order.push_back(facade(f));
@@ -275,6 +279,27 @@ static rw::Quat* __cdecl quatRotate(rw::Quat* q, const V* axis, float degrees, O
 }
 }
 namespace csf_rw {
+Frame* frameFacade(rw::Frame* n) { return facade(n); }
+Frame* streamFrameCreate(rw::Frame* n) {
+    if(auto* a=facade(n)) return a;
+    auto* a=static_cast<Frame*>(std::calloc(1,plugins(Registry::Frame).size));
+    if(!a) return nullptr;
+    try { frames().emplace(a,n); facades().emplace(n,a); }
+    catch(...) { frames().erase(a); facades().erase(n); std::free(a); throw; }
+    a->object.type=n->object.type; a->object.flags=n->object.flags;
+    a->objects.next=a->objects.prev=&a->objects;
+    a->dirty.next=a->dirty.prev=&a->dirty;
+    exportFrames();
+    if(!constructPlugins(Registry::Frame,a)) {
+        frames().erase(a); facades().erase(n); std::free(a); return nullptr;
+    }
+    return a;
+}
+Frame* streamFrameForget(rw::Frame* n) {
+    auto* a=facade(n); if(!a) return nullptr;
+    destructPlugins(Registry::Frame,a);
+    frames().erase(a); facades().erase(n); return a;
+}
 bool framesEmpty() { return frames().empty(); }
 rw::Frame* frameNative(Frame* f) { importFrames(); auto it=frames().find(f); return it==frames().end()?nullptr:it->second; }
 void frameExport() { exportFrames(); }

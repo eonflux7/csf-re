@@ -19,4 +19,8 @@ void imageBoundaryStop();
 // later integration; ordinary texture streaming stores references, not pixels.
 bool textureStreamWrite(Texture*, Stream*);
 Texture* textureStreamRead(Stream*);
+Texture* streamTextureCreate(rw::Texture*);
+void* streamImageForget(Registry, void*);
+void streamImageExport();
+bool attachStreamImageLifetime(); // zero-storage native destructor observers
 }

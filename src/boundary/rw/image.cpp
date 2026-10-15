@@ -362,7 +362,8 @@ int __cdecl rasterDestroy(R* a) {
     for (auto& t:textures) if (t.first->raster==a) return 0;
     for (auto& r:rasters) if (r.first!=a && r.first->parent==a) return 0;
     for (unsigned i=0;i<contextCount;++i) if (contexts[i]==a) return 0;
-    csf_rw::destructPlugins(K::Raster,a); it->second.native->destroy(); rasters.erase(it); freeFacade(a); return 1;
+    auto* n=it->second.native;
+    csf_rw::destructPlugins(K::Raster,a); rasters.erase(it); n->destroy(); freeFacade(a); return 1;
 }
 // 006a0000's width thunk relies on +0c, not native Raster's width offset.
 int __cdecl rasterWidth(R* a) { return a ? a->width:0; }
@@ -582,15 +583,19 @@ rw::Texture* nativeFind(const char* name) {
 rw::Texture* nativeRead(const char* name,const char* mask) {
     if (readCallback) return csf_rw::textureNative(readCallback(name,mask));
     auto* i=rw::Image::readMasked(name,mask); if (!i) return nullptr;
-    I* a=adoptImage(i); if (!a) return nullptr;
+    I* a;
+    try { a=adoptImage(i); } catch(...) { i->destroy(); throw; }
+    if (!a) return nullptr; // adoptImage itself destroys i on a returned failure
     int w,h,depth,format; T* t=nullptr;
-    if (imageRasterFormat(a,rw::Raster::TEXTURE,&w,&h,&depth,&format)) {
-        auto* r=rasterCreate(w,h,depth,format);
-        if (r) {
-            if (rasterFromImage(r,a)) t=textureCreate(r);
-            if (!t) rasterDestroy(r);
+    try {
+        if (imageRasterFormat(a,rw::Raster::TEXTURE,&w,&h,&depth,&format)) {
+            auto* r=rasterCreate(w,h,depth,format);
+            if (r) {
+                if (rasterFromImage(r,a)) t=textureCreate(r);
+                if (!t) rasterDestroy(r);
+            }
         }
-    }
+    } catch(...) { imageDestroy(a); throw; }
     imageDestroy(a);
     if (t) { textureName(t,name); if (mask) std::strncpy(t->mask,mask,31); }
     return csf_rw::textureNative(t);
@@ -688,6 +693,74 @@ bool textureStreamWrite(Texture* a,Stream* s) {
 Texture* textureStreamRead(Stream* s) {
     auto* stream=streamNative(s); if (!stream) return nullptr;
     auto* n=rw::Texture::streamRead(stream); return n?adoptTexture(n):nullptr;
+}
+Texture* streamTextureCreate(rw::Texture* n) { return adoptTexture(n); }
+void streamImageExport() {
+    for(auto& p:textures) {
+        exportTexture(p.first,p.second);
+        D* d=nullptr;
+        for(auto& item:dictionaries) if(item.second==p.second->dict) { d=item.first; break; }
+        if(p.first->dict!=d) {
+            if(p.first->dict) unlink(p.first->inDict);
+            p.first->dict=d; if(d) append(d->textures,p.first->inDict);
+        }
+    }
+}
+std::vector<Image*> streamImageCheckpoint() {
+    std::vector<Image*> result;for(auto& p:images) result.push_back(p.first);return result;
+}
+void streamImageRollback(const std::vector<Image*>& before) {
+    for(auto it=images.begin();it!=images.end();) {
+        auto* a=it->first;++it;
+        if(std::find(before.begin(),before.end(),a)==before.end()) imageDestroy(a);
+    }
+}
+void* streamImageForget(Registry k,void* n) {
+    if(k==K::Texture) {
+        auto* a=textureFacade(static_cast<rw::Texture*>(n)); if(!a) return nullptr;
+        // Native destruction is already in progress: never import a stale
+        // facade refcount or remove the native ring behind Texture::destroy.
+        if(a->dict) { unlink(a->inDict); a->dict=nullptr; }
+        destructPlugins(k,a); textures.erase(a); return a;
+    }
+    if(k==K::Raster) {
+        auto* a=rasterFacade(static_cast<rw::Raster*>(n)); if(!a) return nullptr;
+        destructPlugins(k,a); rasters.erase(a); return a;
+    }
+    return nullptr;
+}
+namespace {
+void* nativeTextureGone(void* n,int,int) {
+    if(auto* a=streamImageForget(K::Texture,n)) freeFacade(a); return n;
+}
+void* nativeRasterGone(void* n,int,int) {
+    if(auto* a=streamImageForget(K::Raster,n)) freeFacade(a); return n;
+}
+void* lifetimeDescriptor;
+decltype(rw::Engine::memfuncs.rwmalloc) lifetimeMalloc;
+void* descriptorMalloc(size_t n,rw::uint32 h) {
+    if(lifetimeDescriptor && n==sizeof(rw::Plugin)) {
+        auto* p=lifetimeDescriptor;lifetimeDescriptor=nullptr;return p;
+    }
+    return lifetimeMalloc(n,h);
+}
+}
+bool attachStreamImageLifetime() {
+    // Native MatFX and similar plugins can own secondary textures/rasters.
+    // Their destruction bypasses materialDestroy's primary-texture release;
+    // these permanent, zero-byte observers prevent dangling facade identities.
+    auto& mem=rw::Engine::memfuncs;
+    void* t=mem.rwmalloc(sizeof(rw::Plugin),rw::MEMDUR_GLOBAL);
+    void* r=mem.rwmalloc(sizeof(rw::Plugin),rw::MEMDUR_GLOBAL);
+    if(!t || !r) { mem.rwfree(t);mem.rwfree(r);return false; }
+    lifetimeMalloc=mem.rwmalloc;mem.rwmalloc=descriptorMalloc;
+    lifetimeDescriptor=t;rw::Texture::registerPlugin(0,0x43534654,nullptr,nativeTextureGone,nullptr);
+    lifetimeDescriptor=r;rw::Raster::registerPlugin(0,0x43534652,nullptr,nativeRasterGone,nullptr);
+    mem.rwmalloc=lifetimeMalloc;
+    auto* tp=static_cast<rw::Plugin*>(t);auto* rp=static_cast<rw::Plugin*>(r);
+    tp->inParentList.remove();rw::Texture::s_plglist.plugins.add(&tp->inParentList);
+    rp->inParentList.remove();rw::Raster::s_plglist.plugins.add(&rp->inParentList);
+    return true;
 }
 }
 HOOK(0x00566520,maxAnisotropy,"boundary-rw");

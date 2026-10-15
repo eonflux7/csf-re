@@ -5,8 +5,8 @@
   dryrun.py --full [--timeout 60]   no CSF_DRYRUN: on into the game's WinMain (opens a window); killed at the
                                     timeout; output DIR/winmain.out, nothing recorded in work/dryrun.json
   dryrun.py --full --input SCRIPT --shots 20,25 [--tag menu]
-      SCRIPT: scripted DirectInput events (CSF_INPUT, standalone/game_plain.cpp), "T:key:DIK;T:goto:X,Y;T:click"
-      (T seconds; DIK 1 = Escape, 0x1C = Enter); --shots: screenshots at those seconds (from the start of the run)
+      SCRIPT: scripted DirectInput events (CSF_INPUT, standalone/game_plain.cpp), "T:key:DIK;T:goto:X,Y;T:click;T:char:C"
+      (T seconds; DIK 1 = Escape, 28 = Enter; char: WM_CHAR code for text fields); --shots: screenshots at those seconds (from the start of the run)
       to DIR/shots/TAG-T.png (tools/dbg/shot.ps1, the primary screen) plus a 640-wide TAG-T.jpg to look at.
       Named scripts: --input intro-skip, see SCRIPTS. With --input, CSF_PAGE_TRACE prints "csf: page NAME" for every
       menu page requested (0x71C2A0), and the summary line ends with the pages seen.
@@ -39,19 +39,22 @@ SCRIPTS = {
     # Campaign profiles page: list entries from (494,218), 22 px apart; Select (200,222), New (200,267), Back (400,517)
     "campaign-select": SKIP + ";20:goto:400,253;21:click;24:goto:494,218;25:click;27:goto:200,222;28:click",
     "campaign-new": SKIP + ";20:goto:400,253;21:click;24:goto:200,267;25:click",
-    # name entry: T E S T (DIK 20 18 31 20), Backspace (14), T, Enter (28)
+    # name entry: a real key press is a DirectInput key event plus WM_CHAR; "TEST", Backspace (DIK 14), "T" (shot 34)
     "campaign-new-type": SKIP + ";20:goto:400,253;21:click;24:goto:200,267;25:click"
-                         ";27:key:20;27.5:key:18;28:key:31;28.5:key:20;29:key:14;29.5:key:20;30:key:28",
+                         ";27:char:84;27:key:20;27.5:char:69;27.5:key:18;28:char:83;28:key:31;28.5:char:84;28.5:key:20"
+                         ";29:key:14;29.5:char:84;29.5:key:20",
+    "campaign-new-ok": SKIP + ";20:goto:400,253;21:click;24:goto:200,267;25:click"
+                       ";27:char:66;27:key:48;27.5:char:79;27.5:key:24;28:char:84;28:key:20;30:goto:588,517;31:click",
 }
 # --walk: screenshot time and the page the script should end on (None: not checked; "exit": the process ends with
 # WinMain's return code - a different one means the CRT's exit failed; rerun with CSF_EXIT_TRACE=1 to see why).
 WALK = {
     "campaign": (32, "Menus/P_Profil.fbs"), "credits": (32, "Menus/P_Credits.fbs"),
     "settings-controls": (32, "Menus/P_Contro.fbs"), "settings-video": (32, "Menus/P_Video.fbs"),
-    "settings-sound": (42, "Menus/P_Sound.fbs"), "settings-game": (32, "Menus/P_Option.fbs"),  # Game: not by name
+    "settings-sound": (42, "Menus/P_Sound.fbs"), "settings-game": (32, "Menus/P_MOG.fbs"),
     "settings-back": (32, "Menus/P_MePrin.fbs"), "exit": (32, "Menus/P_MsgBox.fbs"), "exit-ok": (None, "exit"),
     "campaign-select": (38, "Menus/P_Campan.fbs"), "campaign-new": (32, "Menus/P_Edit.fbs"),
-    "campaign-new-type": (34, None),
+    "campaign-new-type": (34, "Menus/P_Edit.fbs"), "campaign-new-ok": (36, None),
 }
 
 
@@ -107,7 +110,9 @@ def walk(names, timeout):
         ret = re.search(r"^csf: WinMain returned (-?\d+)", out, re.M)
         if want == "exit" and not (ret and code == ret.group(1)):  # the CRT's exit must keep WinMain's code
             code += f" (WinMain {ret.group(1) if ret else 'did not return'})"
-        ok = not exc and not trap and (want != "exit" or (ret and code == ret.group(1))) and (want in (None, "exit") or
+        ended = want != "exit" and code != "timeout"  # the run should still be going at the timeout
+        ok = not exc and not trap and not ended and (want != "exit" or (ret and code == ret.group(1))) and (
+            want in (None, "exit") or
                                                                            (pages and pages[-1] == want))
         bad += not ok
         r = dict(name=name, ok=ok, exit=code, pages=pages, trap=trap.group(0) if trap else None,
@@ -148,7 +153,7 @@ def main():
     if a.full:  # message boxes print and answer OK (standalone/main.cpp); CSF_NO_DIALOGS=0 keeps them
         os.environ.setdefault("CSF_NO_DIALOGS", "1")
         os.environ.setdefault("CSF_EXCEPTION_TRACE", "1")  # first faults print where they were (tools/dbg/stdsym.py)
-    for v in ("CSF_RW_TRACE", "CSF_HANG_SECONDS", "CSF_NO_DIALOGS", "CSF_INPUT", "CSF_EXIT_TRACE", "CSF_EXCEPTION_TRACE", "CSF_PAGE_TRACE"):  # HANG: the exe dumps its main thread then (tools/dbg/stdsym.py)
+    for v in ("CSF_RW_TRACE", "CSF_HANG_SECONDS", "CSF_NO_DIALOGS", "CSF_INPUT", "CSF_EXIT_TRACE", "CSF_EXCEPTION_TRACE", "CSF_PAGE_TRACE", "CSF_HEAP_CHECK"):  # HANG: the exe dumps its main thread then (tools/dbg/stdsym.py)
         if v in os.environ:
             exports.append(v + "/w")
     env = dict(os.environ, CSF_DRYRUN="0" if a.full else "1",

@@ -287,7 +287,10 @@ bool constructPlugins(Registry k, void* object) {
     auto& list = plugins(k);
     for (rw::LLLink* link = list.plugins.link.next; link != &list.plugins.link; link = link->next) {
         auto* p = reinterpret_cast<rw::Plugin*>(reinterpret_cast<char*>(link) - offsetof(rw::Plugin, inParentList));
-        if (!p->constructor(object, p->offset, p->size)) {
+        bool complete=false;
+        try { complete=p->constructor(object,p->offset,p->size)!=nullptr; }
+        catch(...) { /* A failed constructor owns no completed ABI extension. */ }
+        if (!complete) {
             // Roll back completed constructors, excluding the failing one.
             for (rw::LLLink* prev = link->prev; prev != &list.plugins.link; prev = prev->prev) {
                 auto* q = reinterpret_cast<rw::Plugin*>(reinterpret_cast<char*>(prev) - offsetof(rw::Plugin, inParentList));
@@ -447,6 +450,12 @@ namespace csf_rw {
 bool streamPrepareWrite(Stream* s, uint32_t n) {
     return valid(s) && s->access != 1 && reserve(s,n);
 }
+Stream* streamBorrow(rw::Stream* n) {
+    auto* s=new Stream{0,1,n,false};
+    try { streams.insert(s); } catch(...) { delete s; throw; }
+    return s;
+}
+void streamUnborrow(Stream* s) { streams.erase(s); delete s; }
 }
 
 HOOK(0x0058F210, atomicPlugin, "boundary-rw");

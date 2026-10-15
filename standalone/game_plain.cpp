@@ -104,13 +104,14 @@ static BOOL __fastcall GameScreen_HasBriefing(uint8_t* self, void*) {
            !CSF_AT(uint8_t, Render_GetSystem(), 4);
 }
 
-// Scripted input for unattended runs (tools/dryrun.py --input): CSF_INPUT="T:key:DIK;T:goto:X,Y;T:click;T:rclick;T:wheel:N"
+// Scripted input for unattended runs (tools/dryrun.py --input): CSF_INPUT="T:key:DIK;T:goto:X,Y;T:click;T:rclick;T:wheel:N;T:char:C"
 // with T in seconds since the first DirectInput device was created. Windows' synthetic input does not reach the game's
 // exclusive DirectInput devices, so events are appended to what GetDeviceData returns (both devices are buffered,
 // 0x713400). The cursor moves by relative deltas: goto parks it at (0,0) with a large negative move, then moves to
-// (X,Y). Each injected step prints "csf: input ...".
+// (X,Y). Text fields read WM_CHAR (0x508D40), not DirectInput: char posts WM_CHAR C (a code, 8 = backspace) to the
+// active window of the polling (game) thread. Each injected step prints "csf: input ...".
 namespace {
-struct ScriptStep { DWORD at; int kind; int a, b; };  // kind: 0 key, 1 goto, 2 click, 3 rclick, 4 wheel
+struct ScriptStep { DWORD at; int kind; int a, b; };  // kind: 0 key, 1 goto, 2 click, 3 rclick, 4 wheel, 5 char
 // Fixed storage: no dynamic initialisers or atexit destructors in this file (tests/audio1_offline.py and
 // tests/wmrest_offline.py run its initialisers in Unicorn).
 struct EventQueue {
@@ -136,7 +137,7 @@ void ScriptedInput_Load() {
         double t = 0; char kind[16] = {}; int a = 0, b = 0;
         if (sscanf(step, "%lf:%15[a-z]:%d,%d", &t, kind, &a, &b) < 2) continue;
         const int k = !strcmp(kind, "key") ? 0 : !strcmp(kind, "goto") ? 1 : !strcmp(kind, "click") ? 2
-                    : !strcmp(kind, "rclick") ? 3 : !strcmp(kind, "wheel") ? 4 : -1;
+                    : !strcmp(kind, "rclick") ? 3 : !strcmp(kind, "wheel") ? 4 : !strcmp(kind, "char") ? 5 : -1;
         if (k >= 0 && g_scriptCount < 128) g_script[g_scriptCount++] = {static_cast<DWORD>(t * 1000), k, a, b};
     }
 }
@@ -155,6 +156,7 @@ void ScriptedInput_Advance() {
         case 2: Push(g_pendingMouse, DIMOFS_BUTTON0, 0x80); Push(g_pendingMouse, DIMOFS_BUTTON0, 0); break;
         case 3: Push(g_pendingMouse, DIMOFS_BUTTON1, 0x80); Push(g_pendingMouse, DIMOFS_BUTTON1, 0); break;
         case 4: Push(g_pendingMouse, DIMOFS_Z, static_cast<DWORD>(s.a)); break;
+        case 5: PostMessageA(GetActiveWindow(), WM_CHAR, static_cast<WPARAM>(s.a), 1); break;
         }
     }
 }

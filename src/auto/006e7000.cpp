@@ -1,0 +1,65 @@
+#include <cstddef>
+#include <cstdint>
+#include <cstring>
+
+#include "globals.h"
+#include "hook.h"
+
+CSF_FUNC(int, __cdecl, CoreMemory_AllocUntagged, 0x006910F0, (std::size_t size));
+CSF_FUNC(int, __cdecl, CoreMemory_Free, 0x00691110, (void* block));
+
+static const void* __fastcall Owner_GrowTwentyByteRecordArray(
+    void* self, void* /*edx*/, int extraRecords)
+{
+    const std::uint32_t recordCount =
+        CSF_AT(std::uint32_t, self, 0x04) +
+        static_cast<std::uint32_t>(extraRecords);
+
+    void* newRecords = reinterpret_cast<void*>(
+        static_cast<std::uintptr_t>(
+            static_cast<std::uint32_t>(
+                CoreMemory_AllocUntagged(static_cast<std::size_t>(recordCount) * 20u))));
+
+    if (newRecords != nullptr)
+    {
+        if (static_cast<std::int32_t>(recordCount - 1u) >= 0)
+        {
+            auto* record = static_cast<std::uint32_t*>(newRecords);
+            std::uint32_t remaining = recordCount;
+            do
+            {
+                // Leave the first two dwords untouched.
+                record[2] = 0;
+                record[3] = 0;
+                record[4] = 0;
+                record += 5;
+            }
+            while (--remaining != 0);
+        }
+    }
+
+    const std::uint32_t usedCount = CSF_AT(std::uint32_t, self, 0x08);
+    if (usedCount != 0)
+    {
+        const void* oldSource = CSF_AT(const void*, self, 0x00);
+        std::memcpy(newRecords, oldSource, static_cast<std::size_t>(usedCount) * 20u);
+    }
+
+    void* oldRecords = CSF_AT(void*, self, 0x00);
+    const void* result = oldRecords;
+
+    CSF_AT(std::uint32_t, self, 0x04) +=
+        static_cast<std::uint32_t>(extraRecords);
+
+    if (oldRecords != nullptr)
+    {
+        result = reinterpret_cast<const void*>(
+            static_cast<std::intptr_t>(CoreMemory_Free(oldRecords)));
+        CSF_AT(void*, self, 0x00) = nullptr;
+    }
+
+    CSF_AT(void*, self, 0x00) = newRecords;
+    return result;
+}
+
+HOOK(0x006E7000, Owner_GrowTwentyByteRecordArray, "auto");
