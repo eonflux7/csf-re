@@ -5705,8 +5705,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "pointer result may be dereferenced; no universal fake object",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_spawn_record",
       "callers": [
         {
           "file": "src/auto/005516e0.cpp",
@@ -5949,12 +5949,42 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_spawn_record",
+        "ownership": "See mission_support.h: empty references; owned opaque replication sinks consumed on commit; owned key string destroyed by value. Non-offline references fail closed.",
+        "evidence": [
+          "Binary instructions below; game callers and limitations: docs/NETZ_LOAD_REPORT.md"
+        ],
+        "binary_evidence": [
+          "006483d0 call 0x4b2a30",
+          "006483d5 test eax, eax",
+          "006483d7 jne 0x6483e0",
+          "006483d9 mov eax, 0x8b99c4",
+          "006483de jmp 0x6483e9",
+          "006483e0 mov ecx, dword ptr [0x8b99c0]",
+          "006483e6 lea eax, [ecx + eax*4]",
+          "006483e9 mov ecx, dword ptr [eax]",
+          "006483eb test ecx, ecx",
+          "006483ed jne 0x6483f9",
+          "006483ef mov eax, dword ptr [esp + 4]",
+          "006483f3 mov dword ptr [eax], ecx",
+          "006483f5 mov dword ptr [eax + 4], ecx",
+          "006483f8 ret ",
+          "006483f9 push esi",
+          "006483fa mov esi, dword ptr [esp + 8]",
+          "006483fe push esi",
+          "006483ff call 0x647c40",
+          "00648404 mov eax, esi",
+          "00648406 pop esi",
+          "00648407 ret "
+        ]
+      },
       "triage_group": "shared-game-caller-needs-boundary-audit",
       "mp_only_proven": false,
       "result_dereference_review": true,
-      "binary_ret_bytes": 0
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x00648560",
@@ -13257,8 +13287,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "pointer result may be dereferenced; no universal fake object",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_discard_entry",
       "callers": [
         {
           "file": "src/auto/00742100.cpp",
@@ -13921,12 +13951,29 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_discard_entry",
+        "ownership": "See mission_support.h: empty references; owned opaque replication sinks consumed on commit; owned key string destroyed by value. Non-offline references fail closed.",
+        "evidence": [
+          "Binary instructions below; game callers and limitations: docs/NETZ_LOAD_REPORT.md"
+        ],
+        "binary_evidence": [
+          "0064ad60 mov eax, dword ptr [esp + 4]",
+          "0064ad64 push eax",
+          "0064ad65 add ecx, 0x2c",
+          "0064ad68 push ecx",
+          "0064ad69 call 0x65c4f0",
+          "0064ad6e mov ecx, eax",
+          "0064ad70 call 0x65bfc0",
+          "0064ad75 ret 4"
+        ]
+      },
       "triage_group": "network-result",
       "mp_only_proven": false,
       "result_dereference_review": true,
-      "binary_ret_bytes": 4
+      "binary_ret_bytes": 4,
+      "ret_bytes": 4
     },
     {
       "address": "0x0064AF40",
@@ -14196,8 +14243,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "ABI audit: indirect tail: cleanup unknown",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_station_name",
       "callers": [
         {
           "file": "src/auto/0073e0a0.cpp",
@@ -14232,12 +14279,20 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_station_name",
+        "ownership": "Borrowed static empty C string for diagnostics, never a fake class registry object.",
+        "evidence": [
+          "Original extracts class ID from object+2c, calls 64ad00 and tail dispatches virtual+40.",
+          "73e0a0 uses result as %s; 74a9c0 ignores it. Neither caller supplies stack arguments; explicit offline ret0 avoids guessing indirect-tail cleanup."
+        ]
+      },
       "triage_group": "network-result",
       "mp_only_proven": false,
       "result_dereference_review": true,
-      "binary_cleanup_error": "indirect tail: cleanup unknown"
+      "binary_cleanup_error": "indirect tail: cleanup unknown",
+      "ret_bytes": 0
     },
     {
       "address": "0x0064B250",
@@ -15522,8 +15577,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "pointer result may be dereferenced; no universal fake object",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_reference_get",
       "callers": [
         {
           "file": "src/auto/0074a9c0.cpp",
@@ -15558,12 +15613,20 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_reference_get",
+        "ownership": "Returns null for empty offline reference, aborts for a nonempty unsupported online object.",
+        "evidence": [
+          "Original calls 64b310; returns zero when invalid, otherwise reference[0]; ret0.",
+          "74a9c0 dereferences result: it must not be entered for an empty reference. 73e420's empty offline cursor skips its loop and that call entirely."
+        ]
+      },
       "triage_group": "network-result",
       "mp_only_proven": false,
       "result_dereference_review": true,
-      "binary_ret_bytes": 0
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x0064B880",
@@ -17033,8 +17096,8 @@
         ],
         "stk": 8
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_discard_commit",
       "callers": [
         {
           "file": "src/auto/00742100.cpp",
@@ -17701,12 +17764,160 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_discard_commit",
+        "ownership": "See mission_support.h: empty references; owned opaque replication sinks consumed on commit; owned key string destroyed by value. Non-offline references fail closed.",
+        "evidence": [
+          "Binary instructions below; game callers and limitations: docs/NETZ_LOAD_REPORT.md"
+        ],
+        "binary_evidence": [
+          "0064ceb0 sub esp, 0x10",
+          "0064ceb3 push ebx",
+          "0064ceb4 push esi",
+          "0064ceb5 push edi",
+          "0064ceb6 mov esi, ecx",
+          "0064ceb8 call 0x4b2a30",
+          "0064cebd push eax",
+          "0064cebe push 4",
+          "0064cec0 mov ecx, 0x8b9a90",
+          "0064cec5 call 0x647aa0",
+          "0064ceca test eax, eax",
+          "0064cecc je 0x64ced5",
+          "0064cece mov eax, dword ptr [eax + 0xc]",
+          "0064ced1 test eax, eax",
+          "0064ced3 jne 0x64ced9",
+          "0064ced5 xor eax, eax",
+          "0064ced7 jmp 0x64cedc",
+          "0064ced9 mov eax, dword ptr [eax + 8]",
+          "0064cedc lea ebx, [eax + 0x24]",
+          "0064cedf mov al, byte ptr [0x8b99e8]",
+          "0064cee4 test al, al",
+          "0064cee6 jne 0x64ceef",
+          "0064cee8 mov ecx, ebx",
+          "0064ceea call 0x648fc0",
+          "0064ceef mov al, byte ptr [esp + 0x20]",
+          "0064cef3 test al, al",
+          "0064cef5 je 0x64cf55",
+          "0064cef7 mov ecx, esi",
+          "0064cef9 call 0x64b5c0",
+          "0064cefe test al, al",
+          "0064cf00 je 0x64cf26",
+          "0064cf02 mov esi, dword ptr [esp + 0x24]",
+          "0064cf06 test esi, esi",
+          "0064cf08 je 0x64cf1a",
+          "0064cf0a mov ecx, esi",
+          "0064cf0c call 0x655990",
+          "0064cf11 push esi",
+          "0064cf12 call 0x6471c0",
+          "0064cf17 add esp, 4",
+          "0064cf1a push 0",
+          "0064cf1c push 0xe0030000",
+          "0064cf21 jmp 0x64cfa9",
+          "0064cf26 mov edi, dword ptr [esp + 0x24]",
+          "0064cf2a push 1",
+          "0064cf2c push edi",
+          "0064cf2d lea eax, [esi + 0x18]",
+          "0064cf30 push eax",
+          "0064cf31 mov ecx, esi",
+          "0064cf33 call 0x64c4e0",
+          "0064cf38 test edi, edi",
+          "0064cf3a je 0x64d01f",
+          "0064cf40 mov ecx, edi",
+          "0064cf42 call 0x655990",
+          "0064cf47 push edi",
+          "0064cf48 call 0x6471c0",
+          "0064cf4d add esp, 4",
+          "0064cf50 jmp 0x64d01f",
+          "0064cf55 mov eax, dword ptr [esi + 0xc]",
+          "0064cf58 test eax, eax",
+          "0064cf5a je 0x64cfd0",
+          "0064cf5c lea ecx, [esp + 0x20]",
+          "0064cf60 push ecx",
+          "0064cf61 call 0x652290",
+          "0064cf66 mov ecx, dword ptr [eax]",
+          "0064cf68 add esp, 4",
+          "0064cf6b test ecx, ecx",
+          "0064cf6d je 0x64cf8a",
+          "0064cf6f mov edi, dword ptr [esi + 0xc]",
+          "0064cf72 lea edx, [esp + 0xc]",
+          "0064cf76 push edx",
+          "0064cf77 call 0x652290",
+          "0064cf7c mov edx, dword ptr [eax]",
+          "0064cf7e add esp, 4",
+          "0064cf81 cmp edi, edx",
+          "0064cf83 sete al",
+          "0064cf86 test al, al",
+          "0064cf88 je 0x64cfd0",
+          "0064cf8a mov esi, dword ptr [esp + 0x24]",
+          "0064cf8e test esi, esi",
+          "0064cf90 je 0x64cfa2",
+          "0064cf92 mov ecx, esi",
+          "0064cf94 call 0x655990",
+          "0064cf99 push esi",
+          "0064cf9a call 0x6471c0",
+          "0064cf9f add esp, 4",
+          "0064cfa2 push 0",
+          "0064cfa4 push 0xe0030001",
+          "0064cfa9 push 0",
+          "0064cfab push 0",
+          "0064cfad call 0x646d30",
+          "0064cfb2 mov al, byte ptr [0x8b99e8]",
+          "0064cfb7 add esp, 0x10",
+          "0064cfba test al, al",
+          "0064cfbc jne 0x64cfc5",
+          "0064cfbe mov ecx, ebx",
+          "0064cfc0 call 0x648fd0",
+          "0064cfc5 xor al, al",
+          "0064cfc7 pop edi",
+          "0064cfc8 pop esi",
+          "0064cfc9 pop ebx",
+          "0064cfca add esp, 0x10",
+          "0064cfcd ret 8",
+          "0064cfd0 mov esi, dword ptr [esi + 0xc]",
+          "0064cfd3 push ecx",
+          "0064cfd4 mov eax, esp",
+          "0064cfd6 lea ecx, [esp + 0x14]",
+          "0064cfda mov dword ptr [eax], esi",
+          "0064cfdc call 0x651d00",
+          "0064cfe1 lea ecx, [esp + 0x10]",
+          "0064cfe5 call 0x647790",
+          "0064cfea mov edi, dword ptr [esp + 0x10]",
+          "0064cfee mov esi, dword ptr [esp + 0x24]",
+          "0064cff2 neg al",
+          "0064cff4 push 1",
+          "0064cff6 push esi",
+          "0064cff7 sbb eax, eax",
+          "0064cff9 and eax, edi",
+          "0064cffb mov ecx, eax",
+          "0064cffd call 0x652ed0",
+          "0064d002 test esi, esi",
+          "0064d004 je 0x64d016",
+          "0064d006 mov ecx, esi",
+          "0064d008 call 0x655990",
+          "0064d00d push esi",
+          "0064d00e call 0x6471c0",
+          "0064d013 add esp, 4",
+          "0064d016 lea ecx, [esp + 0x10]",
+          "0064d01a call 0x651b40",
+          "0064d01f mov al, byte ptr [0x8b99e8]",
+          "0064d024 test al, al",
+          "0064d026 jne 0x64d02f",
+          "0064d028 mov ecx, ebx",
+          "0064d02a call 0x648fd0",
+          "0064d02f pop edi",
+          "0064d030 pop esi",
+          "0064d031 mov al, 1",
+          "0064d033 pop ebx",
+          "0064d034 add esp, 0x10",
+          "0064d037 ret 8"
+        ]
+      },
       "triage_group": "network-operation-or-result",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 8
+      "binary_ret_bytes": 8,
+      "ret_bytes": 8
     },
     {
       "address": "0x0064D1A0",
@@ -19515,8 +19726,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "constructor/layout/embedded ownership needs audit",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_reference_construct",
       "callers": [
         {
           "file": "src/auto/0073dce0.cpp",
@@ -19703,12 +19914,49 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_reference_construct",
+        "ownership": "See mission_support.h: empty references; owned opaque replication sinks consumed on commit; owned key string destroyed by value. Non-offline references fail closed.",
+        "evidence": [
+          "Binary instructions below; game callers and limitations: docs/NETZ_LOAD_REPORT.md"
+        ],
+        "binary_evidence": [
+          "00651a60 push esi",
+          "00651a61 mov esi, ecx",
+          "00651a63 mov dword ptr [esi + 4], 0",
+          "00651a6a push edi",
+          "00651a6b mov edi, dword ptr [esp + 0xc]",
+          "00651a6f test edi, edi",
+          "00651a71 mov byte ptr [esi + 8], 1",
+          "00651a75 mov dword ptr [esi + 4], 0",
+          "00651a7c mov dword ptr [esi], 0",
+          "00651a82 je 0x651aae",
+          "00651a84 mov eax, dword ptr [edi + 0x2c]",
+          "00651a87 test eax, 0x3fffff",
+          "00651a8c jne 0x651aa3",
+          "00651a8e push 0",
+          "00651a90 push 0xe000000e",
+          "00651a95 push 0",
+          "00651a97 push 0",
+          "00651a99 call 0x646d30",
+          "00651a9e add esp, 0x10",
+          "00651aa1 xor eax, eax",
+          "00651aa3 push edi",
+          "00651aa4 mov ecx, esi",
+          "00651aa6 mov dword ptr [esi + 4], eax",
+          "00651aa9 call 0x6519e0",
+          "00651aae pop edi",
+          "00651aaf mov eax, esi",
+          "00651ab1 pop esi",
+          "00651ab2 ret 4"
+        ]
+      },
       "triage_group": "network-layout-and-ownership",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 4
+      "binary_ret_bytes": 4,
+      "ret_bytes": 4
     },
     {
       "address": "0x00651B40",
@@ -21097,8 +21345,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "integer may encode pointer, ID, or status; failure not audited",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_reference_copy",
       "callers": [
         {
           "file": "src/auto/0073dce0.cpp",
@@ -21333,12 +21581,44 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_reference_copy",
+        "ownership": "See mission_support.h: empty references; owned opaque replication sinks consumed on commit; owned key string destroyed by value. Non-offline references fail closed.",
+        "evidence": [
+          "Binary instructions below; game callers and limitations: docs/NETZ_LOAD_REPORT.md"
+        ],
+        "binary_evidence": [
+          "00651d30 mov eax, dword ptr [esp + 4]",
+          "00651d34 push esi",
+          "00651d35 mov esi, ecx",
+          "00651d37 xor ecx, ecx",
+          "00651d39 mov dword ptr [esi + 4], ecx",
+          "00651d3c mov byte ptr [esi + 8], 1",
+          "00651d40 mov dword ptr [esi + 4], ecx",
+          "00651d43 mov dword ptr [esi], ecx",
+          "00651d45 mov edx, dword ptr [eax + 4]",
+          "00651d48 mov dword ptr [esi + 4], edx",
+          "00651d4b mov eax, dword ptr [eax]",
+          "00651d4d cmp eax, ecx",
+          "00651d4f mov ecx, esi",
+          "00651d51 je 0x651d5f",
+          "00651d53 push eax",
+          "00651d54 call 0x6519e0",
+          "00651d59 mov eax, esi",
+          "00651d5b pop esi",
+          "00651d5c ret 4",
+          "00651d5f call 0x651bd0",
+          "00651d64 mov eax, esi",
+          "00651d66 pop esi",
+          "00651d67 ret 4"
+        ]
+      },
       "triage_group": "network-operation-or-result",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 4
+      "binary_ret_bytes": 4,
+      "ret_bytes": 4
     },
     {
       "address": "0x00651D70",
@@ -24718,8 +24998,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "integer may encode pointer, ID, or status; failure not audited",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_entry_id",
       "callers": [
         {
           "file": "src/auto/0073d0f0.cpp",
@@ -24738,12 +25018,33 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_entry_id",
+        "ownership": "See mission_support.h: empty references; owned opaque replication sinks consumed on commit; owned key string destroyed by value. Non-offline references fail closed.",
+        "evidence": [
+          "Binary instructions below; game callers and limitations: docs/NETZ_LOAD_REPORT.md"
+        ],
+        "binary_evidence": [
+          "00652070 mov eax, dword ptr [ecx + 0x2c]",
+          "00652073 test eax, 0x3fffff",
+          "00652078 jne 0x65208f",
+          "0065207a push 0",
+          "0065207c push 0xe000000e",
+          "00652081 push 0",
+          "00652083 push 0",
+          "00652085 call 0x646d30",
+          "0065208a add esp, 0x10",
+          "0065208d xor eax, eax",
+          "0065208f and eax, 0x3fffff",
+          "00652094 ret "
+        ]
+      },
       "triage_group": "network-operation-or-result",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 0
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x00652160",
@@ -27122,8 +27423,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "pointer result may be dereferenced; no universal fake object",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_owner_slot",
       "callers": [
         {
           "file": "src/auto/0073cd90.cpp",
@@ -27190,12 +27491,35 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_owner_slot",
+        "ownership": "See mission_support.h: empty references; owned opaque replication sinks consumed on commit; owned key string destroyed by value. Non-offline references fail closed.",
+        "evidence": [
+          "Binary instructions below; game callers and limitations: docs/NETZ_LOAD_REPORT.md"
+        ],
+        "binary_evidence": [
+          "00652290 call 0x4b2a30",
+          "00652295 test eax, eax",
+          "00652297 jne 0x6522a7",
+          "00652299 mov eax, 0x8b9a5c",
+          "0065229e mov edx, dword ptr [eax]",
+          "006522a0 mov eax, dword ptr [esp + 4]",
+          "006522a4 mov dword ptr [eax], edx",
+          "006522a6 ret ",
+          "006522a7 mov ecx, dword ptr [0x8b9a58]",
+          "006522ad mov edx, dword ptr [ecx + eax*4]",
+          "006522b0 lea eax, [ecx + eax*4]",
+          "006522b3 mov eax, dword ptr [esp + 4]",
+          "006522b7 mov dword ptr [eax], edx",
+          "006522b9 ret "
+        ]
+      },
       "triage_group": "network-result",
       "mp_only_proven": false,
       "result_dereference_review": true,
-      "binary_ret_bytes": 0
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x006523A0",
@@ -31475,8 +31799,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "pointer result may be dereferenced; no universal fake object",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_discard_flag",
       "callers": [
         {
           "file": "src/auto/006ab250.cpp",
@@ -31643,12 +31967,34 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_discard_flag",
+        "ownership": "See mission_support.h: empty references; owned opaque replication sinks consumed on commit; owned key string destroyed by value. Non-offline references fail closed.",
+        "evidence": [
+          "Binary instructions below; game callers and limitations: docs/NETZ_LOAD_REPORT.md"
+        ],
+        "binary_evidence": [
+          "00656380 mov al, byte ptr [esp + 4]",
+          "00656384 push esi",
+          "00656385 push 1",
+          "00656387 mov esi, ecx",
+          "00656389 push 1",
+          "0065638b lea ecx, [esp + 0x10]",
+          "0065638f push ecx",
+          "00656390 mov ecx, esi",
+          "00656392 mov byte ptr [esp + 0x14], al",
+          "00656396 call 0x656090",
+          "0065639b mov eax, esi",
+          "0065639d pop esi",
+          "0065639e ret 4"
+        ]
+      },
       "triage_group": "network-result",
       "mp_only_proven": false,
       "result_dereference_review": true,
-      "binary_ret_bytes": 4
+      "binary_ret_bytes": 4,
+      "ret_bytes": 4
     },
     {
       "address": "0x006563B0",
@@ -31680,8 +32026,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "pointer result may be dereferenced; no universal fake object",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_discard_byte",
       "callers": [
         {
           "file": "src/auto/006ab250.cpp",
@@ -32024,12 +32370,31 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_discard_byte",
+        "ownership": "See mission_support.h: empty references; owned opaque replication sinks consumed on commit; owned key string destroyed by value. Non-offline references fail closed.",
+        "evidence": [
+          "Binary instructions below; game callers and limitations: docs/NETZ_LOAD_REPORT.md"
+        ],
+        "binary_evidence": [
+          "006563b0 push esi",
+          "006563b1 push 1",
+          "006563b3 push 1",
+          "006563b5 lea eax, [esp + 0x10]",
+          "006563b9 push eax",
+          "006563ba mov esi, ecx",
+          "006563bc call 0x656090",
+          "006563c1 mov eax, esi",
+          "006563c3 pop esi",
+          "006563c4 ret 4"
+        ]
+      },
       "triage_group": "network-result",
       "mp_only_proven": false,
       "result_dereference_review": true,
-      "binary_ret_bytes": 4
+      "binary_ret_bytes": 4,
+      "ret_bytes": 4
     },
     {
       "address": "0x006563D0",
@@ -32061,8 +32426,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "pointer result may be dereferenced; no universal fake object",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_discard_word",
       "callers": [
         {
           "file": "src/auto/00742720.cpp",
@@ -32315,12 +32680,31 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_discard_word",
+        "ownership": "See mission_support.h: empty references; owned opaque replication sinks consumed on commit; owned key string destroyed by value. Non-offline references fail closed.",
+        "evidence": [
+          "Binary instructions below; game callers and limitations: docs/NETZ_LOAD_REPORT.md"
+        ],
+        "binary_evidence": [
+          "006563d0 push esi",
+          "006563d1 push 2",
+          "006563d3 push 1",
+          "006563d5 lea eax, [esp + 0x10]",
+          "006563d9 push eax",
+          "006563da mov esi, ecx",
+          "006563dc call 0x656090",
+          "006563e1 mov eax, esi",
+          "006563e3 pop esi",
+          "006563e4 ret 4"
+        ]
+      },
       "triage_group": "network-result",
       "mp_only_proven": false,
       "result_dereference_review": true,
-      "binary_ret_bytes": 4
+      "binary_ret_bytes": 4,
+      "ret_bytes": 4
     },
     {
       "address": "0x006563F0",
@@ -32352,8 +32736,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_discard_dword",
       "callers": [
         {
           "file": "src/auto/006ab250.cpp",
@@ -33482,12 +33866,77 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_discard_dword",
+        "ownership": "See mission_support.h: empty references; owned opaque replication sinks consumed on commit; owned key string destroyed by value. Non-offline references fail closed.",
+        "evidence": [
+          "Binary instructions below; game callers and limitations: docs/NETZ_LOAD_REPORT.md"
+        ],
+        "binary_evidence": [
+          "006563f0 push ecx",
+          "006563f1 mov al, byte ptr [0x8b99d0]",
+          "006563f6 test al, al",
+          "006563f8 push esi",
+          "006563f9 mov esi, ecx",
+          "006563fb je 0x65641a",
+          "006563fd lea eax, [esp + 4]",
+          "00656401 push eax",
+          "00656402 lea ecx, [esp + 0x10]",
+          "00656406 push ecx",
+          "00656407 call 0x65dfd0",
+          "0065640c add esp, 8",
+          "0065640f push -1",
+          "00656411 push 4",
+          "00656413 lea edx, [esp + 0xc]",
+          "00656417 push edx",
+          "00656418 jmp 0x656423",
+          "0065641a push -1",
+          "0065641c push 4",
+          "0065641e lea eax, [esp + 0x14]",
+          "00656422 push eax",
+          "00656423 mov ecx, dword ptr [esi]",
+          "00656425 call 0x658450",
+          "0065642a mov al, byte ptr [esi + 0x14]",
+          "0065642d test al, al",
+          "0065642f jne 0x656479",
+          "00656431 mov al, byte ptr [0x8b99d0]",
+          "00656436 test al, al",
+          "00656438 mov ecx, dword ptr [esi]",
+          "0065643a je 0x656464",
+          "0065643c call 0x686c10",
+          "00656441 mov ecx, dword ptr [esi]",
+          "00656443 sub eax, 4",
+          "00656446 mov dword ptr [esp + 4], eax",
+          "0065644a call 0x471540",
+          "0065644f push eax",
+          "00656450 lea ecx, [esp + 8]",
+          "00656454 push ecx",
+          "00656455 call 0x65dfd0",
+          "0065645a add esp, 8",
+          "0065645d mov eax, esi",
+          "0065645f pop esi",
+          "00656460 pop ecx",
+          "00656461 ret 4",
+          "00656464 push edi",
+          "00656465 call 0x471540",
+          "0065646a mov ecx, dword ptr [esi]",
+          "0065646c mov edi, eax",
+          "0065646e call 0x686c10",
+          "00656473 sub eax, 4",
+          "00656476 mov dword ptr [edi], eax",
+          "00656478 pop edi",
+          "00656479 mov eax, esi",
+          "0065647b pop esi",
+          "0065647c pop ecx",
+          "0065647d ret 4"
+        ]
+      },
       "triage_group": "network-operation-or-result",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 4
+      "binary_ret_bytes": 4,
+      "ret_bytes": 4
     },
     {
       "address": "0x00656480",
@@ -33524,8 +33973,8 @@
         ],
         "stk": 8
       },
-      "family": "deferred",
-      "reason": "pointer result may be dereferenced; no universal fake object",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_discard_pair",
       "callers": [
         {
           "file": "src/auto/00742430.cpp",
@@ -33604,12 +34053,30 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_discard_pair",
+        "ownership": "See mission_support.h: empty references; owned opaque replication sinks consumed on commit; owned key string destroyed by value. Non-offline references fail closed.",
+        "evidence": [
+          "Binary instructions below; game callers and limitations: docs/NETZ_LOAD_REPORT.md"
+        ],
+        "binary_evidence": [
+          "00656480 push esi",
+          "00656481 push 1",
+          "00656483 lea eax, [esp + 0xc]",
+          "00656487 push eax",
+          "00656488 mov esi, ecx",
+          "0065648a call 0x6562c0",
+          "0065648f mov eax, esi",
+          "00656491 pop esi",
+          "00656492 ret 8"
+        ]
+      },
       "triage_group": "network-result",
       "mp_only_proven": false,
       "result_dereference_review": true,
-      "binary_ret_bytes": 8
+      "binary_ret_bytes": 8,
+      "ret_bytes": 8
     },
     {
       "address": "0x00656A30",
@@ -36931,8 +37398,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "shared-game-helper",
+      "reason": "implemented exactly in src/auto/00660630.cpp; see docs/NETZ_LOAD_REPORT.md",
       "callers": [
         {
           "file": "src/auto/0069ab30.cpp",
@@ -38612,8 +39079,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "pointer result may be dereferenced; no universal fake object",
+      "family": "shared-game-helper",
+      "reason": "implemented exactly in src/auto/00665e40.cpp; see docs/NETZ_LOAD_REPORT.md",
       "callers": [
         {
           "file": "src/auto/006b7670.cpp",
@@ -42649,8 +43116,8 @@
         ],
         "stk": 12
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_discard_key",
       "callers": [
         {
           "file": "src/auto/00742100.cpp",
@@ -43309,12 +43776,69 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_discard_key",
+        "ownership": "See mission_support.h: empty references; owned opaque replication sinks consumed on commit; owned key string destroyed by value. Non-offline references fail closed.",
+        "evidence": [
+          "Binary instructions below; game callers and limitations: docs/NETZ_LOAD_REPORT.md"
+        ],
+        "binary_evidence": [
+          "0066b590 sub esp, 8",
+          "0066b593 lea eax, [esp + 0xc]",
+          "0066b597 push eax",
+          "0066b598 mov ecx, 0x8baa74",
+          "0066b59d call 0x67fce0",
+          "0066b5a2 cmp eax, dword ptr [0x8baa78]",
+          "0066b5a8 mov dword ptr [esp], eax",
+          "0066b5ab je 0x66b5c3",
+          "0066b5ad add eax, 0xc",
+          "0066b5b0 push eax",
+          "0066b5b1 lea ecx, [esp + 0x10]",
+          "0066b5b5 call 0x64a790",
+          "0066b5ba test al, al",
+          "0066b5bc jne 0x66b5c3",
+          "0066b5be lea eax, [esp]",
+          "0066b5c1 jmp 0x66b5d1",
+          "0066b5c3 mov ecx, dword ptr [0x8baa78]",
+          "0066b5c9 mov dword ptr [esp + 4], ecx",
+          "0066b5cd lea eax, [esp + 4]",
+          "0066b5d1 mov eax, dword ptr [eax]",
+          "0066b5d3 cmp eax, dword ptr [0x8baa78]",
+          "0066b5d9 push esi",
+          "0066b5da jne 0x66b613",
+          "0066b5dc mov edx, dword ptr [esp + 0x10]",
+          "0066b5e0 push edx",
+          "0066b5e1 push 0x85b14c",
+          "0066b5e6 push 4",
+          "0066b5e8 call 0x653bd0",
+          "0066b5ed push 0",
+          "0066b5ef push 0xa0030003",
+          "0066b5f4 push 0",
+          "0066b5f6 push 0",
+          "0066b5f8 call 0x646d30",
+          "0066b5fd add esp, 0x1c",
+          "0066b600 lea ecx, [esp + 0x10]",
+          "0066b604 xor esi, esi",
+          "0066b606 call 0x64a6f0",
+          "0066b60b mov ax, si",
+          "0066b60e pop esi",
+          "0066b60f add esp, 8",
+          "0066b612 ret ",
+          "0066b613 mov si, word ptr [eax + 0x10]",
+          "0066b617 lea ecx, [esp + 0x10]",
+          "0066b61b call 0x64a6f0",
+          "0066b620 mov ax, si",
+          "0066b623 pop esi",
+          "0066b624 add esp, 8",
+          "0066b627 ret "
+        ]
+      },
       "triage_group": "network-operation-or-result",
       "mp_only_proven": false,
       "result_dereference_review": true,
-      "binary_ret_bytes": 0
+      "binary_ret_bytes": 0,
+      "ret_bytes": 0
     },
     {
       "address": "0x0066BBE0",
@@ -46509,8 +47033,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "shared-game-helper",
+      "reason": "implemented exactly in src/auto/00672ac0.cpp; see docs/NETZ_LOAD_REPORT.md",
       "callers": [
         {
           "file": "src/auto/00464510.cpp",
@@ -54861,8 +55385,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "constructor/layout/embedded ownership needs audit",
+      "family": "shared-game-helper",
+      "reason": "implemented exactly in src/auto/0068e2b0.cpp; see docs/NETZ_LOAD_REPORT.md",
       "callers": [
         {
           "file": "src/auto/004ff020.cpp",
@@ -54950,9 +55474,25 @@
         ],
         "stk": 12
       },
-      "family": "deferred",
-      "reason": "pointer result may be dereferenced; no universal fake object",
+      "family": "shared-game-helper",
+      "reason": "implemented exactly in src/auto/0068e2c0.cpp; see docs/NETZ_LOAD_REPORT.md",
       "callers": [
+        {
+          "file": "src/auto/0068e430.cpp",
+          "name": "Construct",
+          "ret": "uint32_t*",
+          "conv": "__fastcall",
+          "params": "uint32_t* self, void* edx, uint32_t x, uint32_t y, uint32_t z",
+          "caller_functions": [
+            "SharedHelper"
+          ],
+          "uses": [
+            {
+              "line": 6,
+              "text": "Construct(result, nullptr, self[0], self[1], self[2]); return result;"
+            }
+          ]
+        },
         {
           "file": "src/auto/007409d0.cpp",
           "name": "sub_68E2C0",
@@ -54984,11 +55524,27 @@
               "text": "sub_68E2C0(vecB, nullptr, a2, a3, a4);"
             }
           ]
+        },
+        {
+          "file": "src/auto/007a2a20.cpp",
+          "name": "Construct",
+          "ret": "uint32_t*",
+          "conv": "__fastcall",
+          "params": "uint32_t* self, void* edx, uint32_t x, uint32_t y, uint32_t z",
+          "caller_functions": [
+            "SharedHelper"
+          ],
+          "uses": [
+            {
+              "line": 6,
+              "text": "Construct(result, nullptr, self[1], self[0], self[2]); return result;"
+            }
+          ]
         }
       ],
       "emitted": false,
       "audit": null,
-      "triage_group": "network-result",
+      "triage_group": "shared-game-caller-needs-boundary-audit",
       "mp_only_proven": false,
       "result_dereference_review": true,
       "binary_ret_bytes": 12
@@ -55023,8 +55579,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "pointer result may be dereferenced; no universal fake object",
+      "family": "shared-game-helper",
+      "reason": "implemented exactly in src/auto/0068e2e0.cpp; see docs/NETZ_LOAD_REPORT.md",
       "callers": [
         {
           "file": "src/auto/004d1ae0.cpp",
@@ -55219,8 +55775,8 @@
         ],
         "stk": 0
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "shared-game-helper",
+      "reason": "implemented exactly in src/auto/0068e300.cpp; see docs/NETZ_LOAD_REPORT.md",
       "callers": [
         {
           "file": "src/auto/0044f3e0.cpp",
@@ -55369,8 +55925,8 @@
         ],
         "stk": 8
       },
-      "family": "deferred",
-      "reason": "pointer result may be dereferenced; no universal fake object",
+      "family": "shared-game-helper",
+      "reason": "implemented exactly in src/auto/0068e320.cpp; see docs/NETZ_LOAD_REPORT.md",
       "callers": [
         {
           "file": "src/auto/00741460.cpp",
@@ -55424,8 +55980,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "shared-game-helper",
+      "reason": "implemented exactly in src/auto/0068e360.cpp; see docs/NETZ_LOAD_REPORT.md",
       "callers": [
         {
           "file": "src/auto/00741460.cpp",
@@ -55542,8 +56098,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "pointer result may be dereferenced; no universal fake object",
+      "family": "shared-game-helper",
+      "reason": "implemented exactly in src/auto/0068e430.cpp; see docs/NETZ_LOAD_REPORT.md",
       "callers": [
         {
           "file": "src/auto/004d1ae0.cpp",
@@ -55629,8 +56185,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "shared-game-helper",
+      "reason": "implemented exactly in src/auto/0068e450.cpp; see docs/NETZ_LOAD_REPORT.md",
       "callers": [
         {
           "file": "src/auto/00741460.cpp",
@@ -60481,8 +61037,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "pointer result may be dereferenced; no universal fake object",
+      "family": "shared-game-helper",
+      "reason": "implemented exactly in src/auto/007a2a20.cpp; see docs/NETZ_LOAD_REPORT.md",
       "callers": [
         {
           "file": "src/auto/00740aa0.cpp",
@@ -60568,8 +61124,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "shared-game-helper",
+      "reason": "implemented exactly in src/auto/007a2a40.cpp; see docs/NETZ_LOAD_REPORT.md",
       "callers": [
         {
           "file": "src/auto/007409d0.cpp",
@@ -60589,7 +61145,58 @@
         }
       ],
       "emitted": false,
-      "audit": null,
+      "audit": {
+        "behaviour": "shared Euler nearest-angle helper implemented in src/auto/007a2a40.cpp, not stubbed",
+        "ownership": "Three floats supplied by game caller 7409d0; no NetZ ownership or state.",
+        "evidence": [
+          "Binary instructions below; game callers and limitations: docs/NETZ_LOAD_REPORT.md"
+        ],
+        "binary_evidence": [
+          "007a2a40 push esi",
+          "007a2a41 push edi",
+          "007a2a42 mov edi, dword ptr [esp + 0xc]",
+          "007a2a46 fld dword ptr [edi]",
+          "007a2a48 mov esi, ecx",
+          "007a2a4a mov eax, dword ptr [esi + 4]",
+          "007a2a4d mov dword ptr [esp + 0xc], eax",
+          "007a2a51 fsub dword ptr [esp + 0xc]",
+          "007a2a55 push 0x40490fdb",
+          "007a2a5a push 0xc0490fdb",
+          "007a2a5f push ecx",
+          "007a2a60 fstp dword ptr [esp]",
+          "007a2a63 call 0x7a2990",
+          "007a2a68 mov ecx, dword ptr [esi]",
+          "007a2a6a fadd dword ptr [esp + 0x18]",
+          "007a2a6e add esp, 0xc",
+          "007a2a71 mov dword ptr [esp + 0xc], ecx",
+          "007a2a75 fstp dword ptr [esi + 4]",
+          "007a2a78 push 0x40490fdb",
+          "007a2a7d fld dword ptr [edi + 4]",
+          "007a2a80 push 0xc0490fdb",
+          "007a2a85 fsub dword ptr [esp + 0x14]",
+          "007a2a89 push ecx",
+          "007a2a8a fstp dword ptr [esp]",
+          "007a2a8d call 0x7a2990",
+          "007a2a92 mov edx, dword ptr [esi + 8]",
+          "007a2a95 fadd dword ptr [esp + 0x18]",
+          "007a2a99 add esp, 0xc",
+          "007a2a9c mov dword ptr [esp + 0xc], edx",
+          "007a2aa0 fstp dword ptr [esi]",
+          "007a2aa2 push 0x40490fdb",
+          "007a2aa7 fld dword ptr [edi + 8]",
+          "007a2aaa push 0xc0490fdb",
+          "007a2aaf fsub dword ptr [esp + 0x14]",
+          "007a2ab3 push ecx",
+          "007a2ab4 fstp dword ptr [esp]",
+          "007a2ab7 call 0x7a2990",
+          "007a2abc fadd dword ptr [esp + 0x18]",
+          "007a2ac0 add esp, 0xc",
+          "007a2ac3 pop edi",
+          "007a2ac4 fstp dword ptr [esi + 8]",
+          "007a2ac7 pop esi",
+          "007a2ac8 ret 4"
+        ]
+      },
       "triage_group": "network-operation-or-result",
       "mp_only_proven": false,
       "result_dereference_review": false,
@@ -60618,8 +61225,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "shared-game-helper",
+      "reason": "implemented exactly in src/auto/007a2ad0.cpp; see docs/NETZ_LOAD_REPORT.md",
       "callers": [
         {
           "file": "src/auto/007409d0.cpp",
@@ -60678,8 +61285,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "shared-game-helper",
+      "reason": "implemented exactly in src/auto/007a2ae0.cpp; see docs/NETZ_LOAD_REPORT.md",
       "callers": [
         {
           "file": "src/auto/00740aa0.cpp",
@@ -60765,8 +61372,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_reject_position_state",
       "callers": [
         {
           "file": "src/auto/00740a60.cpp",
@@ -60805,12 +61412,36 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_reject_position_state",
+        "ownership": "See mission_support.h: empty references; owned opaque replication sinks consumed on commit; owned key string destroyed by value. Non-offline references fail closed.",
+        "evidence": [
+          "Binary instructions below; game callers and limitations: docs/NETZ_LOAD_REPORT.md"
+        ],
+        "binary_evidence": [
+          "007a2d60 push esi",
+          "007a2d61 mov esi, ecx",
+          "007a2d63 call 0x64b5c0",
+          "007a2d68 test al, al",
+          "007a2d6a je 0x7a2d72",
+          "007a2d6c xor al, al",
+          "007a2d6e pop esi",
+          "007a2d6f ret 4",
+          "007a2d72 mov eax, dword ptr [esp + 8]",
+          "007a2d76 push eax",
+          "007a2d77 lea ecx, [esi + 0x3e0]",
+          "007a2d7d call 0x690c40",
+          "007a2d82 mov al, 1",
+          "007a2d84 pop esi",
+          "007a2d85 ret 4"
+        ]
+      },
       "triage_group": "network-operation-or-result",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 4
+      "binary_ret_bytes": 4,
+      "ret_bytes": 4
     },
     {
       "address": "0x007A2D90",
@@ -60840,8 +61471,8 @@
         ],
         "stk": 4
       },
-      "family": "deferred",
-      "reason": "unnamed or potentially shared/non-network helper",
+      "family": "audited-offline-support",
+      "reason": "see audit.json: mission_reject_rotation_state",
       "callers": [
         {
           "file": "src/auto/007409d0.cpp",
@@ -60860,12 +61491,36 @@
           ]
         }
       ],
-      "emitted": false,
-      "audit": null,
+      "emitted": true,
+      "audit": {
+        "behaviour": "mission_reject_rotation_state",
+        "ownership": "See mission_support.h: empty references; owned opaque replication sinks consumed on commit; owned key string destroyed by value. Non-offline references fail closed.",
+        "evidence": [
+          "Binary instructions below; game callers and limitations: docs/NETZ_LOAD_REPORT.md"
+        ],
+        "binary_evidence": [
+          "007a2d90 push esi",
+          "007a2d91 mov esi, ecx",
+          "007a2d93 call 0x64b5c0",
+          "007a2d98 test al, al",
+          "007a2d9a je 0x7a2da2",
+          "007a2d9c xor al, al",
+          "007a2d9e pop esi",
+          "007a2d9f ret 4",
+          "007a2da2 mov eax, dword ptr [esp + 8]",
+          "007a2da6 push eax",
+          "007a2da7 lea ecx, [esi + 0x160]",
+          "007a2dad call 0x690c40",
+          "007a2db2 mov al, 1",
+          "007a2db4 pop esi",
+          "007a2db5 ret 4"
+        ]
+      },
       "triage_group": "network-operation-or-result",
       "mp_only_proven": false,
       "result_dereference_review": false,
-      "binary_ret_bytes": 4
+      "binary_ret_bytes": 4,
+      "ret_bytes": 4
     },
     {
       "address": "0x007A2DC0",

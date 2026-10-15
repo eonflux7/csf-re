@@ -1779,3 +1779,9 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Same class swept: dataptrs words of 2-3 printable chars + NUL, referenced from code as an address, pointing
   mid-function: 35, 27 of them translated (game: "BDD", "FLY", "CID", "SET", "ESP", "Hit", "_LM", ...; D3DX
   keywords). All 27 now in db/datagen_text.yaml. Next stop on FR01: RtAnimAnimationRead 0x61F3C0 [rw].
+- Job netzload (applied): of the 32 NetZ-region traps on the mission-load path, 15 are generic helpers the linker
+  shared with game code (tree iterators, vector copies, a scene lookup, Euler-angle arithmetic at 0x7A2A40 that the
+  old stub treated as a no-op) - now exact replicas, csv rows region=game/module=stl; 17 are real NetZ calls with
+  offline stubs (docs/NETZ_LOAD_REPORT.md). NetZ unresolved 154 -> 122. Walk 13/14 (mission stops at RtAnim).
+- Codex quota: all three logins hit their 5h limit tonight; quota-stopped jobs resume on another login from their
+  tree (deep_worker start NAME again).

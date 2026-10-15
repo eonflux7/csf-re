@@ -122,6 +122,7 @@ static uint32_t __cdecl gathering_name(hook::Regs* r, const uint32_t* a) {
 
 #include "init_support.h"
 #include "winmain_support.h"
+#include "mission_support.h"
 static void gathering_init(void*);
 static void* __fastcall gathering_delete(void* self, void*, unsigned flags) {
     string_destroy(static_cast<unsigned char*>(self) + 0x28);
@@ -261,6 +262,8 @@ static __declspec(naked) void offline_00647790() {
 HOOK(0x00647790, offline_00647790, "boundary-netz");
 // sub_647840: audited-offline-support; see audit.json: context_dword_647840.
 HOOK_REGS(0x00647840, context_dword_647840, 0, "boundary-netz");
+// MpSpawn_FetchSpawnRecord: audited-offline-support; see audit.json: mission_spawn_record.
+HOOK_REGS(0x006483D0, mission_spawn_record, 0, "boundary-netz");
 // sub_648560: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
 static __declspec(naked) void offline_00648560() {
     __asm xor eax, eax
@@ -319,6 +322,8 @@ HOOK_REGS(0x0064A710, string_assign, 4, "boundary-netz");
 HOOK_REGS(0x0064A8F0, empty_format_output, 0, "boundary-netz");
 // LookupObjectByIndex: audited-offline-support; see audit.json: class_index_lookup.
 HOOK_REGS(0x0064AD00, class_index_lookup, 0, "boundary-netz");
+// FindOrCreateConfigEntry: audited-offline-support; see audit.json: mission_discard_entry.
+HOOK_REGS(0x0064AD60, mission_discard_entry, 4, "boundary-netz");
 // NetSession_TestSelectedObjectState: offline-zero; zero count / false predicate.
 static __declspec(naked) void offline_0064af40() {
     __asm mov eax, 0
@@ -330,6 +335,8 @@ static __declspec(naked) void offline_0064af90() {
     __asm ret 8
 }
 HOOK(0x0064AF90, offline_0064af90, "boundary-netz");
+// NetSession_GetStationName: audited-offline-support; see audit.json: mission_station_name.
+HOOK_REGS(0x0064B110, mission_station_name, 0, "boundary-netz");
 // Sub_64B250: audited-offline-support; see audit.json: selected_object_test.
 HOOK_REGS(0x0064B250, selected_object_test, 0, "boundary-netz");
 // NetDdlObjectManager_IsReferenceValid: offline-false; not connected / request rejected / predicate false.
@@ -344,6 +351,8 @@ static __declspec(naked) void offline_0064b5c0() {
     __asm ret 0
 }
 HOOK(0x0064B5C0, offline_0064b5c0, "boundary-netz");
+// NetDdlObjectManager_GetReferencedObject: audited-offline-support; see audit.json: mission_reference_get.
+HOOK_REGS(0x0064B620, mission_reference_get, 0, "boundary-netz");
 // NetSession_ResetSelection: offline-noop; no callbacks, transport side effects, or state mutation.
 static __declspec(naked) void offline_0064b880() {
     __asm mov eax, 0
@@ -370,6 +379,8 @@ static __declspec(naked) void offline_0064ca10() {
     __asm ret 0
 }
 HOOK(0x0064CA10, offline_0064ca10, "boundary-netz");
+// AddConfigEntry: audited-offline-support; see audit.json: mission_discard_commit.
+HOOK_REGS(0x0064CEB0, mission_discard_commit, 8, "boundary-netz");
 // NetSession_ProcessSelectedObject: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_0064d1a0() {
     __asm mov eax, 0
@@ -410,12 +421,16 @@ HOOK(0x006510B0, offline_006510b0, "boundary-netz");
 HOOK_REGS(0x00651160, list_count, 4, "boundary-netz");
 // NetSession_ConstructConnection: audited-offline-support; see audit.json: connection_construct.
 HOOK_REGS(0x00651770, connection_construct, 0, "boundary-netz");
+// NetSession_InitializeObjectReference: audited-offline-support; see audit.json: mission_reference_construct.
+HOOK_REGS(0x00651A60, mission_reference_construct, 4, "boundary-netz");
 // SpawnPoints_ReleaseEntry: audited-offline-support; see audit.json: selection_link_release.
 HOOK_REGS(0x00651B40, selection_link_release, 0, "boundary-netz");
 // SessionScope_Begin: audited-offline-support; see audit.json: selection_link_reset.
 HOOK_REGS(0x00651C70, selection_link_reset, 4, "boundary-netz");
 // SpawnPoints_ApplyTempId: audited-offline-support; see audit.json: selection_link_id.
 HOOK_REGS(0x00651D00, selection_link_id, 4, "boundary-netz");
+// NetSession_CopyObjectReference: audited-offline-support; see audit.json: mission_reference_copy.
+HOOK_REGS(0x00651D30, mission_reference_copy, 4, "boundary-netz");
 // sub_651D70: audited-offline-support; see audit.json: registry_base_construct.
 HOOK_REGS(0x00651D70, registry_base_construct, 0, "boundary-netz");
 // sub_651D80: audited-offline-support; see audit.json: registry_base_destruct.
@@ -430,8 +445,12 @@ HOOK(0x00651FC0, offline_00651fc0, "boundary-netz");
 HOOK_REGS(0x00652010, scene_controller_get, 0, "boundary-netz");
 // ResolveClumpManager: audited-offline-support; see audit.json: clump_manager_get.
 HOOK_REGS(0x00652020, clump_manager_get, 0, "boundary-netz");
+// SpawnPoints_ResolveEntryId: audited-offline-support; see audit.json: mission_entry_id.
+HOOK_REGS(0x00652070, mission_entry_id, 0, "boundary-netz");
 // LookupObjectById: audited-offline-support; see audit.json: object_manager_get.
 HOOK_REGS(0x00652160, object_manager_get, 0, "boundary-netz");
+// MpRecords_ResolveOwnerSlot: audited-offline-support; see audit.json: mission_owner_slot.
+HOOK_REGS(0x00652290, mission_owner_slot, 0, "boundary-netz");
 // sub_6523A0: audited-offline-support; see audit.json: context_dword_6523a0.
 HOOK_REGS(0x006523A0, context_dword_6523a0, 0, "boundary-netz");
 // CreateListNodeFromEntry: audited-offline-support; see audit.json: list_node.
@@ -470,6 +489,16 @@ static __declspec(naked) void offline_00656280() {
     __asm ret 8
 }
 HOOK(0x00656280, offline_00656280, "boundary-netz");
+// WriteConfigFlag: audited-offline-support; see audit.json: mission_discard_flag.
+HOOK_REGS(0x00656380, mission_discard_flag, 4, "boundary-netz");
+// GameConfig_WriteByteField: audited-offline-support; see audit.json: mission_discard_byte.
+HOOK_REGS(0x006563B0, mission_discard_byte, 4, "boundary-netz");
+// GameConfig_WriteWordField: audited-offline-support; see audit.json: mission_discard_word.
+HOOK_REGS(0x006563D0, mission_discard_word, 4, "boundary-netz");
+// GameConfig_WriteDwordField: audited-offline-support; see audit.json: mission_discard_dword.
+HOOK_REGS(0x006563F0, mission_discard_dword, 4, "boundary-netz");
+// WriteConfigPair: audited-offline-support; see audit.json: mission_discard_pair.
+HOOK_REGS(0x00656480, mission_discard_pair, 8, "boundary-netz");
 // sub_656A30: audited-local-virtual; exact local boundary contract; see vtable_contracts.json.
 static __declspec(naked) void offline_00656a30() {
     __asm mov eax, 3
@@ -624,6 +653,8 @@ HOOK_REGS(0x00669FE0, context_list_construct, 4, "boundary-netz");
 HOOK_REGS(0x0066A440, request_construct, 0, "boundary-netz");
 // sub_66B390: audited-offline-support; see audit.json: tree_factory_66b390.
 HOOK_REGS(0x0066B390, tree_factory_66b390, 0, "boundary-netz");
+// HashTemporaryString: audited-offline-support; see audit.json: mission_discard_key.
+HOOK_REGS(0x0066B590, mission_discard_key, 0, "boundary-netz");
 // sub_66BBE0: audited-offline-support; see audit.json: tree_range_66bbe0.
 HOOK_REGS(0x0066BBE0, tree_range_66bbe0, 12, "boundary-netz");
 // NetSpawnMessages_FormatInitialPoint: offline-false; not connected / request rejected / predicate false.
@@ -997,6 +1028,10 @@ static __declspec(naked) void offline_007a2970() {
     __asm ret 0
 }
 HOOK(0x007A2970, offline_007a2970, "boundary-netz");
+// sub_7A2D60: audited-offline-support; see audit.json: mission_reject_position_state.
+HOOK_REGS(0x007A2D60, mission_reject_position_state, 4, "boundary-netz");
+// sub_7A2D90: audited-offline-support; see audit.json: mission_reject_rotation_state.
+HOOK_REGS(0x007A2D90, mission_reject_rotation_state, 4, "boundary-netz");
 // NetPlayerDdl_ForwardMatchTest: offline-false; not connected / request rejected / predicate false.
 static __declspec(naked) void offline_007a3070() {
     __asm mov eax, 0
