@@ -1771,3 +1771,11 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Harness side effect caught: profiles live in the user's Documents/CSF Data, shared with the original game - a test
   run added profile "BOT" (removed again through the game's Delete; copy with BOT in work/csfdata-backup). Every
   dryrun --full run now backs that folder up and restores it (CSF_KEEP_SAVES=1 to keep a run's).
+- Job mission1 (sol-med, applied; resumed on another Codex login after a quota stop): the FR01 script parser fault
+  was datagen: the catalog's type names "VAR"/"ANM"/"FBS" are 3-letter strings IDA exported as pointers into code,
+  datagen translated them, lookups fell to NO_FUNCTION with a null payload. Also 0x537490 + 0x536F20 (P_Juego slots
+  outside IDA's functions); `csf: SCRIPT` diagnostics (standalone only). Static list of the mission-load path's
+  traps: docs/MISSION1_REPORT.md (47 RW, 32 NetZ, 1 CRT).
+- Same class swept: dataptrs words of 2-3 printable chars + NUL, referenced from code as an address, pointing
+  mid-function: 35, 27 of them translated (game: "BDD", "FLY", "CID", "SET", "ESP", "Hit", "_LM", ...; D3DX
+  keywords). All 27 now in db/datagen_text.yaml. Next stop on FR01: RtAnimAnimationRead 0x61F3C0 [rw].

@@ -3,6 +3,9 @@
 #include "globals.h"
 #include "hook.h"
 #include "types/auto_classes.h"
+#ifdef CSF_STANDALONE
+void csf_script_loaded(const char*, unsigned, void*);
+#endif
 
 CSF_FUNC(void*, __fastcall, GrowButtonArray, 0x0041E5F0, (void* self, void* edx, int growth));
 CSF_FUNC(int, __fastcall, DestroyScriptParser, 0x0046ACF0, (void* self, void* edx));
@@ -44,6 +47,10 @@ static char __fastcall S_0046b530_LoadGameSceneScript(
     }
 
     auto* root = CSF_AT(std::uint8_t*, file, 0);
+#ifdef CSF_STANDALONE
+    csf_script_loaded(reinterpret_cast<const char*>(path),
+                      CSF_AT(uint32_t, file, 8), root);
+#endif
     auto* resources = FindProperty(
         root, nullptr, const_cast<char*>(CSF_STR(0x00831580, ".RECURSOS")));
     if (resources)

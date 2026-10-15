@@ -1,5 +1,9 @@
 #include <cstdint>
 #include <cstring>
+#ifdef CSF_STANDALONE
+void csf_script_invalid_leaf(const char*, unsigned, unsigned, void*, int,
+                             void*, unsigned, void*, const uint32_t*);
+#endif
 #include "globals.h"
 #include "hook.h"
 #include "core/memory.h"
@@ -76,6 +80,22 @@ static int __fastcall S_0046c260_ParseExpression(
 
         S_0046c260_ParseExpression(
             self, nullptr, childNode, childExpression);
+
+#ifdef CSF_STANDALONE
+        // Do not paper over an invalid leaf: the resolver requires a typed
+        // payload. Preserve its behavior, but retain the parent/child context
+        // before the game's SEH discards the parser stack.
+        void* child = reinterpret_cast<void*>(childExpression);
+        if (CSF_AT(uint16_t, child, 2) == 0xFFFF) {
+            void* value = CSF_AT(void*, child, 4);
+            if (value && CSF_AT(int, value, 8) == -1 && !CSF_AT(void*, value, 4)) {
+                csf_script_invalid_leaf(
+                    attributeText, childIndex, childCount, childNode,
+                    MissionScript_GetNodeType(childNode, nullptr), child,
+                    unsigned(CSF_AT(uint16_t, child, 0)), value, definition);
+            }
+        }
+#endif
 
         result = MissionScript_FinalizeExpressionChild(
             reinterpret_cast<void*>(self->field_0044),

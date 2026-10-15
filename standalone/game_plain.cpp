@@ -413,3 +413,150 @@ static void* __fastcall EnterLevel(uint8_t* self, void*, int page, int argument)
 }
 }  // namespace enter_level
 HOOK(0x00537280, enter_level::EnterLevel, "auto");
+
+// IDA orphan code. 537490 is the secondary interface's leave slot (this is
+// four bytes past the page); its tail jump opens the page following the game.
+namespace leave_level {
+using enter_level::Slot;
+using enter_level::Getter;
+CSF_FUNC(void, __fastcall, ResetApp, 0x0050D230, (void*, void*));
+CSF_FUNC(void, __cdecl, UnregisterSound, 0x004754D0, (void*));
+CSF_FUNC(void*, __cdecl, GetSceneState, 0x004FBDE0, ());
+CSF_FUNC(void, __fastcall, PrepareSceneState, 0x004FC440, (void*, void*));
+CSF_FUNC(void, __fastcall, ResetScene, 0x00503790, (void*, void*));
+CSF_FUNC(void, __fastcall, ClearControls, 0x00536370, (void*, void*));
+CSF_FUNC(void, __cdecl, ExitCharacterSelect, 0x00542720, ());
+CSF_FUNC(void, __fastcall, ResetPortraits, 0x00457000, (void*, void*));
+CSF_FUNC(void, __fastcall, ReleaseRegistration, 0x0044C510, (void*, void*));
+CSF_FUNC(void*, __fastcall, GetSceneController, 0x00652010, (void*, void*));
+CSF_FUNC(void, __fastcall, SelectScenario, 0x00501990, (void*, void*, char*, char));
+CSF_FUNC(void*, __cdecl, GetTextDatabase, 0x0069B700, ());
+CSF_FUNC(void, __fastcall, SetTextPath, 0x0069BD90, (void*, void*, unsigned, const char*));
+CSF_FUNC(void*, __cdecl, GetConfig, 0x00756A10, ());
+CSF_FUNC(int, __fastcall, IsReady, 0x0050C880, (void*, void*));
+CSF_FUNC(void, __fastcall, InitPageArgs, 0x0050C860, (void*, void*));
+CSF_FUNC(void, __fastcall, SetIntroData, 0x006F2850, (void*, void*, void*));
+CSF_FUNC(void, __fastcall, SetCharacterStatus, 0x00542750, (void*, void*, void*));
+// Resolve these at use, not through new CRT binding initializers.
+static void* LoadingPage() { return CSF_AT(void*, CSF_ADDR_DATA(0x00899B14), 0); }
+static void* ReadyPage() { return CSF_AT(void*, CSF_ADDR_DATA(0x00899AE8), 0); }
+static void* IntroPage() { return CSF_AT(void*, CSF_ADDR_DATA(0x00899B2C), 0); }
+static void* ReturnPage() { return CSF_AT(void*, CSF_ADDR_DATA(0x00899AD0), 0); }
+static void* SpecialPage() { return CSF_AT(void*, CSF_ADDR_DATA(0x00899B0C), 0); }
+static void* ConfirmPage() { return CSF_AT(void*, CSF_ADDR_DATA(0x00899B98), 0); }
+static void* DefaultPage() { return CSF_AT(void*, CSF_ADDR_DATA(0x00899AD8), 0); }
+
+static void* Find(void* menu, void* name) {
+    return Slot<void*(__fastcall*)(void*, void*, void*)>(menu, 0x5C)(menu, nullptr, name);
+}
+static void Show(void* menu, void* name) {
+    Slot<void(__fastcall*)(void*, void*, void*)>(menu, 0x58)(menu, nullptr, name);
+}
+static void __fastcall OpenNextPage(uint8_t* self, void*) {
+    void* menu = CSF_AT(void*, self, 0x18);
+    void* page = Find(menu, LoadingPage());
+    if (Slot<uint8_t(__fastcall*)(void*, void*, void*, int)>(menu, 0x74)(menu, nullptr, page, 0))
+        Slot<void(__fastcall*)(void*, void*, void*, int)>(menu, 0x60)(menu, nullptr, page, 0);
+    if (CSF_AT(uint8_t, App_Get(), 0xD0)) {
+        if (void* select = CSF_AT(void*, self, 0x14C))
+            SetCharacterStatus(select, nullptr, CSF_AT(void*, self, 0x18));
+        return;
+    }
+    if (CSF_AT(int, enter_level::GetGlobal_8B0568(), 0x5C) == 1 ||
+        CSF_AT(uint8_t, enter_level::GetGlobal_8B0568(), 0xB4)) return;
+    if (CSF_AT(uint8_t, GetConfig(), 0xA6C)) {
+        Show(CSF_AT(void*, self, 0x18), ReadyPage());
+        return;
+    }
+    if (void* ready = CSF_AT(void*, App_Get(), 0x6C); ready && IsReady(ready, nullptr)) {
+        void* args = self + 0x100;
+        InitPageArgs(args, nullptr);
+        uint8_t* config = static_cast<uint8_t*>(GetConfig());
+        void* text = CSF_AT(uint32_t, config, 0x21D0) < 16
+            ? config + 0x21BC : CSF_AT(void*, config, 0x21BC);
+        CSF_AT(void*, args, 0) = text;
+        CSF_AT(int, self, 0x104) = 1;
+        CSF_AT(uint8_t, self, 0x112) = 1;
+        // args is pushed before Find, but Find ret 4 consumes only the name.
+        SetIntroData(Find(CSF_AT(void*, self, 0x18), IntroPage()), nullptr, args);
+        Show(CSF_AT(void*, self, 0x18), IntroPage());
+    } else if (CSF_AT(uint8_t, self, 0x187)) {
+        Show(CSF_AT(void*, self, 0x18), ReturnPage());
+        CSF_AT(uint8_t, self, 0x187) = 0;
+    } else if (CSF_AT(uint8_t, self, 0x142)) {
+        Show(CSF_AT(void*, self, 0x18), SpecialPage());
+    } else if (CSF_AT(uint8_t, self, 0x271)) {
+        CSF_AT(uint8_t, self, 0x270) = 1;
+        CSF_AT(void*, Find(CSF_AT(void*, self, 0x18), ConfirmPage()), 0x20) = self + 0x270;
+        Show(CSF_AT(void*, self, 0x18), ConfirmPage());
+    } else {
+        Show(CSF_AT(void*, self, 0x18), DefaultPage());
+    }
+}
+
+static void __fastcall LeaveLevel(uint8_t* self, void*) {
+    CSF_AT(uint8_t, self, 0x17C) = 1;
+    void* app = App_Get();
+    Slot<void(__fastcall*)(void*, void*, int)>(app, 0x5C)(app, nullptr, 1);
+    ResetApp(App_Get(), nullptr);
+    enter_level::ResetThirdManager(enter_level::GetGlobal_521BB0(), nullptr);
+    UnregisterSound(enter_level::GetGlobal_521BB0());
+    void* loader = enter_level::GetGlobal_8B0568();
+    if (CSF_AT(uint8_t, loader, 0xB5)) {
+        loader = enter_level::GetGlobal_8B0568();
+        Slot<void(__fastcall*)(void*, void*)>(loader, 0x2C)(loader, nullptr);
+    }
+    PrepareSceneState(GetSceneState(), nullptr);
+    ResetScene(enter_level::GetGlobal_8B0568(), nullptr);
+    reinterpret_cast<Getter>(CSF_ADDR_FN(0x004506B0))();
+    reinterpret_cast<Getter>(CSF_ADDR_FN(0x00519400))();
+    uint8_t* page = self - 4;
+    ClearControls(page, nullptr);
+    Slot<void(__fastcall*)(void*, void*)>(page, 0x78)(page, nullptr);
+    // 542720 is cdecl/ret, despite the unused ECX load from self+148.
+    ExitCharacterSelect();
+    const uintptr_t releases[] = {CSF_ADDR_FN(0x00525140), CSF_ADDR_FN(0x004F4930),
+        CSF_ADDR_FN(0x0044B8A0), CSF_ADDR_FN(0x004FBDF0), CSF_ADDR_FN(0x00436070),
+        CSF_ADDR_FN(0x00442790), CSF_ADDR_FN(0x0051F750), CSF_ADDR_FN(0x004010A0),
+        CSF_ADDR_FN(0x005189E0), CSF_ADDR_FN(0x00519200), CSF_ADDR_FN(0x00519280),
+        CSF_ADDR_FN(0x004E8C60), CSF_ADDR_FN(0x00506AC0), CSF_ADDR_FN(0x00457A90),
+        CSF_ADDR_FN(0x006C8C10)};
+    for (uintptr_t fn : releases) reinterpret_cast<Getter>(fn)();
+    ResetPortraits(enter_level::Scheduler_BoundContexts(enter_level::GetGlobal_8B0568(), nullptr), nullptr);
+    ReleaseRegistration(enter_level::DefaultDestination(enter_level::GetGlobal_8B0568(), nullptr), nullptr);
+    reinterpret_cast<Getter>(CSF_ADDR_FN(0x004755F0))();
+    void* controller = GetSceneController(Render_GetSystem(), nullptr);
+    Slot<void(__fastcall*)(void*, void*)>(controller, 0x28)(controller, nullptr);
+    char* scenario = CSF_AT(uint32_t, self, 0x174) < 16
+        ? reinterpret_cast<char*>(self + 0x160) : CSF_AT(char*, self, 0x160);
+    SelectScenario(enter_level::GetGlobal_8B0568(), nullptr, scenario, 1);
+    // Both words survive the argumentless database getter (SetTextPath ret 8).
+    SetTextPath(GetTextDatabase(), nullptr, 4, CSF_STR(0x0082E65C, ""));
+    if (CSF_AT(uint8_t, App_Get(), 0xD0))
+        CSF_AT(uint8_t, enter_level::GetGlobal_75FDF0(), 0xCC) = CSF_AT(uint8_t, self, 0x270);
+    OpenNextPage(page, nullptr);
+}
+} // namespace leave_level
+HOOK(0x00536F20, leave_level::OpenNextPage, "auto");
+HOOK(0x00537490, leave_level::LeaveLevel, "auto");
+
+// Standalone-only pre-SEH diagnostics; these do not substitute a value or
+// suppress the original parser exception. No static state/initialization.
+void csf_script_loaded(const char* path, unsigned size, void* root) {
+    std::fprintf(stderr, "csf: SCRIPT loaded path=%s size=%u root=%p\n", path, size, root);
+    std::fflush(stderr);
+}
+void csf_script_payload_failed(void* value, int type) {
+    std::fprintf(stderr, "csf: SCRIPT payload allocation failed value=%p type=%d\n", value, type);
+    std::fflush(stderr);
+}
+void csf_script_invalid_leaf(const char* parent, unsigned index, unsigned count,
+                             void* node, int nodeType, void* entry, unsigned opcode,
+                             void* value, const uint32_t* definition) {
+    std::fprintf(stderr,
+        "csf: SCRIPT invalid leaf parent=%s child=%u/%u node=%p nodeType=%d "
+        "entry=%p opcode=%u value=%p payload=null def=(%u,%u,%u)\n",
+        parent, index, count, node, nodeType, entry, opcode, value,
+        definition[0], definition[1], definition[2]);
+    std::fflush(stderr);
+}

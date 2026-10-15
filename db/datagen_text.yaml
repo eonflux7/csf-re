@@ -5,3 +5,61 @@
   text: "bmp"   # 0x00706D62; IDA made it an offset. RwImageRegisterImageFormat's extension (0x6E2E60).
 - address: 0x008631BC
   text: "png"   # 0x00676E70, a NetZ function's start. Same caller; translated, every PNG read failed (crash1).
+# 2026-10-15 (mission1): short strings referenced directly from code ("push offset") whose words IDA exported as
+# pointers into the middle of functions; translated, the mission script catalog's "VAR"/"ANM"/"FBS" type names
+# became code addresses and the parser faulted on FR01. Found by: dataptrs entry, 2-3 printable chars + NUL,
+# code dref to the word itself, target neither a function start nor 16-aligned (35 hits; 27 were translated).
+- address: 0x0083F2EC
+  text: "FLY"   # 0x00594C46
+- address: 0x008405BC
+  text: "BDD"   # 0x00444442
+- address: 0x00843F80
+  text: "16x"   # 0x00783631
+- address: 0x00849924
+  text: "Arg"   # 0x00677241
+- address: 0x0084BC40
+  text: "FOG"   # 0x00474F46
+- address: 0x0084BD38
+  text: "fog"   # 0x00676F66
+- address: 0x0084BDE4
+  text: "sat"   # 0x00746173
+- address: 0x0084D3C4
+  text: "%s_"   # 0x005F7325
+- address: 0x008517CC
+  text: "int"   # 0x00746E69
+- address: 0x00851D9C
+  text: "asm"   # 0x006D7361
+- address: 0x00851DFC
+  text: "try"   # 0x00797274
+- address: 0x00851ED4
+  text: "out"   # 0x0074756F
+- address: 0x00851ED8
+  text: "new"   # 0x0077656E
+- address: 0x00851F1C
+  text: "for"   # 0x00726F66
+- address: 0x00852198
+  text: "Ids"   # 0x00736449
+- address: 0x0085B4D0
+  text: "CID"   # 0x00444943
+- address: 0x0085E6B4
+  text: "XXX"   # 0x00585858
+- address: 0x00861A40
+  text: "_LM"   # 0x004D4C5F
+- address: 0x008679EC
+  text: "Hit"   # 0x00746948
+- address: 0x0087097C
+  text: "SET"   # 0x00544553
+- address: 0x00870EA0
+  text: "Add"   # 0x00646441
+- address: 0x008716A0
+  text: "FBS"   # 0x00534246
+- address: 0x0087185C
+  text: "ANM"   # 0x004D4E41
+- address: 0x008718C4
+  text: "VAR"   # 0x00524156
+- address: 0x00874144
+  text: "CID"   # 0x00444943
+- address: 0x0087B720
+  text: "ESP"   # 0x00505345
+- address: 0x0087B728
+  text: "ESP"   # 0x00505345

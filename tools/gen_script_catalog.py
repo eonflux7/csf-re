@@ -13,6 +13,7 @@ import json, os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import api  # noqa: E402
+import packet  # noqa: E402
 from packet import DB, disasm, ret_bytes  # noqa: E402
 
 EA = 0x76A540
@@ -69,6 +70,10 @@ def main():
                 types = [re.sub(r"\s*\w*$", "", p) if re.search(r"[\s*&]\w+$", p) else p for p in stack]
                 callee[t] = dict(name=a["name"], conv=a["conv"], types=types, decl=api.decl_line(t),
                                  n=len(stack), pops=(ret_bytes(t, db.F[t]["size"]) or [0])[0])
+                if t == 0x769FC0:
+                    # Its current source uses a local Vector alias, unavailable
+                    # in this TU. Keep the same pointer ABI without that alias.
+                    callee[t].update(name='sub_769FC0', decl='CSF_FUNC(unsigned int, __fastcall, sub_769FC0, 0x00769FC0, (void* self, void* edx, unsigned int a2));')
 
     reg = {r: None for r in REG32}  # None = unknown, int = constant, ('frame', off), 'this', ('esp', depth)
     reg["ecx"] = "this"
@@ -149,6 +154,15 @@ def main():
             if len(stack) < c["n"]:
                 raise SystemExit(f"{at}: call {c['name']} with {len(stack)} on the stack")
             args = [stack.pop() for _ in range(c["n"])]
+            # Registration argument 4 is a command name, even when IDA treated
+            # its three letters as an offset (VAR\0 == 0x00524156, ANM\0 ==
+            # 0x004D4E41). Emit CSF_STR, not a relocated data-image address:
+            # datagen cannot distinguish these isolated words from pointers.
+            if t not in (0x769FC0, SORT):
+                name_addr = args[3]
+                raw = packet._img[name_addr - 0x400000:].split(b'\0', 1)[0]
+                assert raw and all(32 <= b < 127 for b in raw), (at, name_addr)
+                strings[name_addr] = raw.decode('ascii')
             if any(isinstance(a, tuple) and a[0] == "slot" for a in args):
                 raise SystemExit(f"{at}: unfilled stack slot in {args}")
             if c["conv"] == "__fastcall" and reg["ecx"] != "this":
