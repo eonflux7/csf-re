@@ -15,6 +15,9 @@
       work/measure/walk.json (exit, trap, first exception, pages, expected page reached); outputs kept as
       work/measure/walk-NAME.out. Exit status 1 when a script faulted, trapped or missed its page.
 
+--full runs back up Documents/CSF Data (profiles, saves; shared with the original game) to work/csfdata-run and put
+it back afterwards; CSF_KEEP_SAVES=1 keeps what the run wrote.
+
 Copies the exe into the standalone copy (made with `playcopy.py DIR --original`), runs it with CSF_DRYRUN=1
 (data initialisation and the CRT initialiser tables, then exit before WinMain), and writes work/dryrun.json:
 initialisers run of the table, the last one, the trap it stopped at (if any), exit code. Output: DIR/dryrun.out.
@@ -41,6 +44,9 @@ SCRIPTS = {
     # Campaign page: Play Mission (230,177), Load Game (230,217), Extras (230,257)
     "mission": SKIP + ";20:goto:400,253;21:click;24:goto:494,218;25:click;27:goto:200,222;28:click"
                ";31:goto:230,177;32:click;35:goto:400,320;36:click",  # difficulty: Easy (240,320) Normal Hard (560,320)
+    # deletes the third profile (the one campaign-new-ok adds) after its confirmation fades in
+    "campaign-delete-3": SKIP + ";20:goto:400,253;21:click;24:goto:494,262;25:click;27:goto:200,312;28:click"
+                         ";36:goto:296,320;37:click",
     "campaign-new": SKIP + ";20:goto:400,253;21:click;24:goto:200,267;25:click",
     # name entry: a real key press is a DirectInput key event plus WM_CHAR; "TEST", Backspace (DIK 14), "T" (shot 34)
     "campaign-new-type": SKIP + ";20:goto:400,253;21:click;24:goto:200,267;25:click"
@@ -80,6 +86,14 @@ def shots(dirpath, tag, times, t0):
             im.convert("RGB").save(png[:-4] + ".jpg", quality=85)
         except Exception:
             pass
+
+
+def saves_dir():
+    """The game's profiles and saves (Documents/CSF Data), shared with the original game the user plays."""
+    home = subprocess.run(["cmd.exe", "/c", "echo %USERPROFILE%"], capture_output=True, text=True,
+                          cwd="/mnt/c").stdout.strip()
+    path = subprocess.run(["wslpath", "-u", home], capture_output=True, text=True).stdout.strip() if home else ""
+    return os.path.join(path, "Documents", "CSF Data") if path else None
 
 
 def copy_exe(src, dst):
@@ -161,6 +175,12 @@ def main():
             exports.append(v + "/w")
     env = dict(os.environ, CSF_DRYRUN="0" if a.full else "1",
                WSLENV=":".join(e for e in exports if e))
+    # Scripted runs create and delete profiles: keep the user's saves as they were (CSF_KEEP_SAVES=1 keeps the run's).
+    saves = saves_dir() if a.full else None
+    backup = os.path.join(ROOT, "work", "csfdata-run")
+    if saves and os.path.isdir(saves):
+        shutil.rmtree(backup, ignore_errors=True)
+        shutil.copytree(saves, backup)
     t0 = time.time()
     shooter = None
     if a.shots:
@@ -176,6 +196,10 @@ def main():
         subprocess.run(["taskkill.exe", "/IM", "csf_standalone.exe", "/F"], capture_output=True)
     if shooter:
         shooter.join(timeout=1)
+    if saves and os.path.isdir(backup) and os.environ.get("CSF_KEEP_SAVES") != "1":
+        time.sleep(1)  # the killed process may still hold a file for a moment
+        shutil.rmtree(saves, ignore_errors=True)
+        shutil.copytree(backup, saves)
     if isinstance(code, int) and code in (5, 0xC0000005 - (1 << 32)):
         code = "0xC0000005 (access violation; WSL shows 5)"
     if a.full:

@@ -1764,3 +1764,10 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   images (Loadings/PT_*.png) are RGB: RenderWare's PNG reader returns 32-bit, librw 24, and 0x705D10 takes 8/32
   only -> readPNG converts 24 to 32. Next stops: a fault in the mission script parser (0x46F210 under 0x46BC40
   LoadGameSceneScript) and 0x537490 (another P_Juego slot outside IDA's functions). Job mission1.
+- Job crash4 (applied): 0x5172C0 AddNamedEntry built its 80-byte record as two separate stack buffers; the reset
+  (0x5166E0) read the record's +0x38 buffer pointer from outside it and freed stack garbage (0xC0000374). One
+  contiguous record now (tests/profile_new_record.py forces the new-name path emudiff's profiles never reached).
+  New profile -> Ok works.
+- Harness side effect caught: profiles live in the user's Documents/CSF Data, shared with the original game - a test
+  run added profile "BOT" (removed again through the game's Delete; copy with BOT in work/csfdata-backup). Every
+  dryrun --full run now backs that folder up and restores it (CSF_KEEP_SAVES=1 to keep a run's).

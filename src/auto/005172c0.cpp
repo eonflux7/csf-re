@@ -22,8 +22,11 @@ static char __fastcall C_00840af8_AddNamedEntry(
     void* provider = CSF_AT(
         void*, reinterpret_cast<void*>(GetGlobalValue_8B056C()), 0x4);
 
-    alignas(8) std::uint8_t entryBytes[0x1C]{};
-    alignas(8) std::uint8_t detailsBytes[0x38]{};
+    // One 80-byte save record, not two independent stack objects. The original
+    // passes its start to ResetSaveData/AppendEntry and start+0x1C to the
+    // provider. ResetSaveData accesses the vector at +0x38 and flags at +0x4C.
+    alignas(8) std::uint8_t entryBytes[0x50]{};
+    auto* detailsBytes = entryBytes + 0x1C;
 
     CSF_AT(std::uint32_t, entryBytes, 0x18) = 7;
     CSF_AT(int, entryBytes, 0x14) = 0;
