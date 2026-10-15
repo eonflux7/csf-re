@@ -187,10 +187,12 @@ def login():
     best = None
     for h in grunt.codex_homes():
         try:
-            used = grunt.codex_usage(h)["5h"][0]
+            usage = grunt.codex_usage(h)
+            used = usage["5h"][0]
+            weekly = usage.get("7d", [0])[0]
         except Exception:
-            used = 50
-        if used >= 99:
+            used, weekly = 50, 0
+        if used >= 99 or weekly >= 99:  # a spent 7-day window stops a job as fast as a spent 5h one (2026-10-15)
             continue
         score = used + 20 * busy.get(h, 0)  # a running job is worth about a fifth of a window
         if best is None or score < best[0]:
