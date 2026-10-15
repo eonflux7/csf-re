@@ -1,4 +1,6 @@
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 #include "globals.h"
 #include "hook.h"
 #include "core/memory.h"
@@ -34,8 +36,33 @@ static int __fastcall C_008605d8_BuildClumpFromRecord(
     if (!sourceClump)
         return sourceClump;
 
+#ifdef CSF_STANDALONE
+    // Diagnostics (CSF_RW_TRACE): the game atomic plugin words (+0, +4 = property record) of the source clump's
+    // atomics, before the clone; the clone's follow below.
+    static int traced;
+    const bool trace = std::getenv("CSF_RW_TRACE") && traced < 4;
+    if (trace) {
+        ++traced;
+        SceneLoader_CollectSectorObjects(sourceClump, reinterpret_cast<int>(&g_SectorObjects));
+        const uint32_t off = *reinterpret_cast<uint32_t*>(CSF_ADDR_DATA(0x008BB478));
+        for (std::uint32_t i = 0; i < g_SectorObjectCount && i < 4; ++i)
+            std::fprintf(stderr, "csf: CLONE source record=%d atomic=%08X plugin+%X: %08X %08X\n", CSF_AT(int, record, 0),
+                         g_SectorObjects[i], off, CSF_AT(uint32_t, reinterpret_cast<void*>(g_SectorObjects[i] + off), 0),
+                         CSF_AT(uint32_t, reinterpret_cast<void*>(g_SectorObjects[i] + off), 4));
+    }
+#endif
     const int clump = RpClumpClone(sourceClump);
     SceneLoader_CollectSectorObjects(clump, reinterpret_cast<int>(&g_SectorObjects));
+#ifdef CSF_STANDALONE
+    if (trace) {
+        const uint32_t off = *reinterpret_cast<uint32_t*>(CSF_ADDR_DATA(0x008BB478));
+        std::fprintf(stderr, "csf: CLONE source=%08X clone=%08X atomics=%u\n", sourceClump, clump, g_SectorObjectCount);
+        for (std::uint32_t i = 0; i < g_SectorObjectCount && i < 4; ++i)
+            std::fprintf(stderr, "csf: CLONE copy atomic=%08X plugin+%X: %08X %08X\n", g_SectorObjects[i], off,
+                         CSF_AT(uint32_t, reinterpret_cast<void*>(g_SectorObjects[i] + off), 0),
+                         CSF_AT(uint32_t, reinterpret_cast<void*>(g_SectorObjects[i] + off), 4));
+    }
+#endif
 
     for (std::uint32_t index = 0; index < g_SectorObjectCount; ++index)
     {

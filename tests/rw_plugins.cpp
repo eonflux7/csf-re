@@ -1,5 +1,6 @@
 #include "globals.h"
 #include "boundary/rw/plugins.h"
+#include "boundary/rw/animation.h"
 #include "boundary/rw/world.h"
 #include <cassert>
 #include <cstdio>
@@ -83,7 +84,7 @@ int main() {
         assert(frameStream(-256,11,12,13)==plugins(Registry::Frame).getPluginOffset(-256));
         assert(lightStream(-256,11,12,13)==plugins(Registry::Light).getPluginOffset(-256));
         assert(atomicStream(999,0,0,0)==-1);
-        assert(compressedRegister() && animationScheme(2)->keyframeSize==24);
+        assert(compressedRegister() && animationScheme(2)->keyframeSize==sizeof(CompressedKey));
         assert(!compressedRegister());
         AnimationScheme game{273,36,16,1,2,3,4,5,6,7,8,0};
         assert(schemeRegister(&game) && !schemeRegister(&game));

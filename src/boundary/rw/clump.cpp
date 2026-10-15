@@ -8,6 +8,7 @@
 #endif
 #include "object.h"
 #include "plugins.h"
+#include "animation.h"
 #include "startup.h"
 #include <algorithm>
 #include <cstdio>
@@ -50,7 +51,11 @@ struct Input final:rw::Stream {
         require(p>=0 && p<=length); position=uint32_t(p);
     }
     rw::uint32 tell() override { return position; }
-    bool eof() override { return position==length; }
+    // Match stdio EOF: a successful exact-length read has not failed. librw
+    // checks eof() AFTER reading a chunk header, so position==length rejects
+    // a valid trailing empty extension (and enters its unsafe failgeo path).
+    // All overreads throw above; successful root consumption is checked below.
+    bool eof() override { return false; }
 };
 uint32_t word(const uint8_t* p) { uint32_t n; std::memcpy(&n,p,4); return n; }
 struct Chunk { uint32_t id,version; const uint8_t* p; uint32_t size; };
@@ -385,6 +390,7 @@ uint32_t __cdecl clumpSize(Clump* a) {
 }
 void publish(K k,void* n) {
     void* a=streamObjectExport(k,n); require(a || k==K::Raster);
+    if(a) animationPublish(k,a,n);
     int off=plugins(k).getPluginOffset(rw::ID_USERDATA);
     int nativeOffset=-1;
     FORLIST(l,active->adapter(k).saved) {
@@ -485,7 +491,7 @@ Clump* __cdecl readClump(Stream* s) {
         Transaction transaction;
         Input input(bytes.data(),uint32_t(bytes.size()));
         try {
-            auto* n=rw::Clump::streamRead(&input); require(n && input.eof());
+            auto* n=rw::Clump::streamRead(&input); require(n && input.position==input.length);
             n->getFrame()->setHierarchyRoot(n->getFrame()); frameExport();
             // Refresh counts after the native geometry-list references are dropped.
             for(auto& p:transaction.live) if(p.second!=K::Raster) publish(p.second,p.first);

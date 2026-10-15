@@ -16,6 +16,7 @@
 #include "device.h"
 #include "startup.h"
 #include "plugins.h"
+#include "animation.h"
 #include "particles.h"
 #include "world.h"
 #include "fs.h"
@@ -301,7 +302,10 @@ bool constructPlugins(Registry k, void* object) {
     }
     return true;
 }
-void destructPlugins(Registry k, void* object) { plugins(k).destruct(object); }
+void destructPlugins(Registry k, void* object) {
+    plugins(k).destruct(object);
+    animationForget(k,object);
+}
 struct Stream { int type, access; rw::Stream* sidecar; bool ownsMemory; };
 rw::Stream* streamNative(Stream* s) { return s ? s->sidecar : nullptr; }
 }

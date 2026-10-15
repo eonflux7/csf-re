@@ -7,6 +7,7 @@
 #include "hook.h"
 #endif
 #include "plugins.h"
+#include "animation.h"
 #include "particles.h"
 #include "startup.h"
 #include <cstring>
@@ -143,13 +144,18 @@ int __stdcall animInit() {
 }
 int __stdcall hanimAttach() {
     csf_rw::startupTrace("0x0056DAE0","RpHAnimPluginAttach");
-    if(!attachable(K::Engine,286) || !engine(0,286) || !put(hanimOffset,K::Frame,8,286,hanimCtor)) return 0;
+    if(!attachable(K::Engine,286) || !engine(0,286) || !put(hanimOffset,K::Frame,sizeof(csf_rw::HAnimExtension),286,hanimCtor)) return 0;
+    // Builtin copy must duplicate hierarchy ownership, not byte-copy its pointer.
+    FORLIST(l,csf_rw::plugins(K::Frame).plugins) {
+        auto* p=LLLinkGetData(l,rw::Plugin,inParentList);
+        if(p->id==286) p->copy=csf_rw::animationCopyFrame;
+    }
     rw::registerHAnimPlugin(); return 1;
 }
 int __stdcall skinAttach() {
     csf_rw::startupTrace("0x00587450","RpSkinPluginAttach");
     if(!attachable(K::Engine,278) || !put(skinEngine,K::Engine,0,278) ||
-       !put(skinAtomic,K::Atomic,4,278) || !put(skinGeometry,K::Geometry,4,278)) return 0;
+       !put(skinAtomic,K::Atomic,sizeof(void*),278) || !put(skinGeometry,K::Geometry,sizeof(void*),278)) return 0;
     rw::registerSkinPlugin(); return 1;
 }
 int __stdcall matfxAttach() {
@@ -258,23 +264,13 @@ int __stdcall morphAttach() {
 int __cdecl registerScheme(const Scheme* p) {
     csf_rw::startupTrace("0x0061ED00","RtAnimRegisterInterpolationScheme");
     if(rw::Engine::state!=rw::Engine::Initialized || !p || schemeCount==schemes.size() ||
-       !p->interpolatedSize || !p->keyframeSize || csf_rw::animationScheme(p->id)) return 0;
+       !p->interpolatedSize || !p->keyframeSize) return 0;
+    for(unsigned i=0;i<schemeCount;i++) if(schemes[i].id==p->id) return 0;
     schemes[schemeCount++]=*p; return 1;
 }
 int __stdcall compressedRegister() {
-    csf_rw::startupTrace("0x006205C0","RtCompressedKeyFrameRegister (descriptor only)");
-    // Original 12-word ABI; these callbacks are address-resolved game/library
-    // identities. They are not invoked or cast to native librw stream callbacks.
-    Scheme s{2,36,24,
-        reinterpret_cast<uintptr_t>(CSF_ADDR_FN(0x0056DB70)),
-        reinterpret_cast<uintptr_t>(CSF_ADDR_FN(0x0056E0A0)),
-        reinterpret_cast<uintptr_t>(CSF_ADDR_FN(0x0061F6D0)),
-        reinterpret_cast<uintptr_t>(CSF_ADDR_FN(0x0056E700)),
-        reinterpret_cast<uintptr_t>(CSF_ADDR_FN(0x00620070)),
-        reinterpret_cast<uintptr_t>(CSF_ADDR_FN(0x0061FF00)),
-        reinterpret_cast<uintptr_t>(CSF_ADDR_FN(0x0061FFB0)),
-        reinterpret_cast<uintptr_t>(CSF_ADDR_FN(0x00620060)),24};
-    return registerScheme(&s);
+    csf_rw::startupTrace("0x006205C0","RtCompressedKeyFrameRegister");
+    return registerScheme(csf_rw::builtinAnimationScheme(2));
 }
 // Retain game stream callback identities separately from librw's native stream
 // callbacks. No stream decoder/adoption is installed by registration alone.
@@ -298,7 +294,7 @@ STREAM_FN(frameStream,Frame,"0x006329D0")
 namespace csf_rw {
 const AnimationScheme* animationScheme(uint32_t id) {
     for(unsigned i=0;i<schemeCount;i++) if(schemes[i].id==id) return &schemes[i];
-    return nullptr;
+    return id==1?builtinAnimationScheme(id):nullptr;
 }
 void pluginBoundaryTerm() { schemeCount=0; streamCallbacks.clear(); randomState={}; }
 std::vector<uint32_t> pluginStreamIDs(Registry k,bool readsOnly) {

@@ -1792,3 +1792,10 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   docs/RW_WORLD2_REPORT.md. The mission's .bsp is not in GlobalEK: it comes from the map's own pak.
 - Quota: .codex and codex-2 are at 100% of their 7-day window (reset in ~5 days); codex-3 had ~10% left (rwanim).
   deep_worker's login() checks only the 5h window: pin CSF_CODEX_LOGIN until the weeklies reset.
+- Job rwanim (sol-hi, applied after two quota resumes; CMake conflict with rwworld2 merged by hand): RtAnim
+  interpolators/animations, HAnim hierarchies, skin and MatFX on librw with original-layout facades, 26/27 slots
+  (RtSkinSplitAtomicSplit still traps); all 560 Parachut.pak animations read and sampled. RW unresolved -> 104.
+- FR01 then faulted in 0x6BD690 on a null clump: our RpClumpClone refused clumps that are in a world (slice-4
+  guard), but the map's object templates are in the world when they are cloned per placement. Guard removed (the
+  clone is composed from atomic clones; world membership plays no part); reject reasons now go to CSF_RW_TRACE.
+  0x6BD690 has a CSF_RW_TRACE `csf: CLONE` line. Next stop: 0x5A1B17 D3DXCompileShader (shaders compiled at load).

@@ -126,17 +126,6 @@ template <> unsigned char* const csf::gv<0x008B13B0>::d = reinterpret_cast<unsig
 namespace { int pluginCell_008B13B4; }
 template <> unsigned char* const csf::gv<0x008B13B4>::d = reinterpret_cast<unsigned char*>(&pluginCell_008B13B4);
 
-// Compressed registration stores these identities; no fixture invokes them.
-namespace { void unavailableAnimationCallback() {} }
-template <> void* const csf::fn_slot<0x0056DB70>::p = reinterpret_cast<void*>(&unavailableAnimationCallback);
-template <> void* const csf::fn_slot<0x0056E0A0>::p = reinterpret_cast<void*>(&unavailableAnimationCallback);
-template <> void* const csf::fn_slot<0x0061F6D0>::p = reinterpret_cast<void*>(&unavailableAnimationCallback);
-template <> void* const csf::fn_slot<0x0056E700>::p = reinterpret_cast<void*>(&unavailableAnimationCallback);
-template <> void* const csf::fn_slot<0x00620070>::p = reinterpret_cast<void*>(&unavailableAnimationCallback);
-template <> void* const csf::fn_slot<0x0061FF00>::p = reinterpret_cast<void*>(&unavailableAnimationCallback);
-template <> void* const csf::fn_slot<0x0061FFB0>::p = reinterpret_cast<void*>(&unavailableAnimationCallback);
-template <> void* const csf::fn_slot<0x00620060>::p = reinterpret_cast<void*>(&unavailableAnimationCallback);
-
 // Particle defaults store these identities, but simulation/advanced stream
 // callbacks are deliberately still fatal in production and in these fixtures.
 #include <cstdlib>

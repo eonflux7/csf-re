@@ -7,6 +7,7 @@
 #include "hook.h"
 #endif
 #include "object.h"
+#include "animation.h"
 #include "device.h"
 #include "startup.h"
 #include <unordered_map>
@@ -508,24 +509,28 @@ bool canCloneFrameData(Frame* f) {
 // atomics, NOT lights/cameras. Native clone loses interpolated local spheres and
 // dereferences a null root: compose its object clone primitives, reject null root.
 Clump* __cdecl clumpClone(Clump* c) {
-    auto* n=clumpNative(c); if(!n || n->world || !c->object.parent) return nullptr;
+    auto* n=clumpNative(c);
+    if(!n) { startupTrace("0x0058FC60","ClumpClone rejected: no native"); return nullptr; }
+    // A clump already in a world clones like any other (the clone is not added to it): the map's object
+    // templates are in the world when 0x6BD690 clones them for each placement (mission FR01).
+    if(!c->object.parent) { startupTrace("0x0058FC60","ClumpClone rejected: no frame"); return nullptr; }
     // UserData facade tails borrow native payloads. Generic byte copying would
     // alias them; upstream's UserData copy callback itself writes to the source
     // array. Until a deep-copy adapter exists, reject instead of corrupting or
     // publishing a clone whose payload dangles when the source is destroyed.
-    if(!canCloneFrameData(static_cast<Frame*>(c->object.parent))) return nullptr;
+    if(!canCloneFrameData(static_cast<Frame*>(c->object.parent))) { startupTrace("0x0058FC60","ClumpClone rejected: frame user data"); return nullptr; }
     // librw PluginList::copy ignores the callback's return. A populated
     // particle/PTank extension cannot be shallow-copied, or silently dropped
     // by a failing copy callback; reject before allocating the clone.
     for(auto* a:snapshot<Atomic>(c->atomics,offsetof(Atomic,inClump))) {
         for(uint32_t id : {303u,304u}) {
             int off=plugins(K::Atomic).getPluginOffset(id);
-            if(off>=0 && *reinterpret_cast<void**>(reinterpret_cast<char*>(a)+off)) return nullptr;
+            if(off>=0 && *reinterpret_cast<void**>(reinterpret_cast<char*>(a)+off)) { startupTrace("0x0058FC60","ClumpClone rejected: particle extension"); return nullptr; }
         }
     }
     std::unordered_map<Geometry*,int> copies;
     for(auto* a:snapshot<Atomic>(c->atomics,offsetof(Atomic,inClump))) if(a->geometry) ++copies[a->geometry];
-    for(auto& p:copies) if(!geometryNative(p.first) || p.first->refCount>SHRT_MAX-p.second) return nullptr;
+    for(auto& p:copies) if(!geometryNative(p.first) || p.first->refCount>SHRT_MAX-p.second) { startupTrace("0x0058FC60","ClumpClone rejected: geometry without native"); return nullptr; }
     auto* out=clumpCreate(); if(!out) return nullptr;
     std::unordered_map<Frame*,Frame*> frames;
     if(c->object.parent) {
@@ -545,6 +550,24 @@ Clump* __cdecl clumpClone(Clump* c) {
         auto it=frames.find(static_cast<Frame*>(a->object.object.parent));
         if(it==frames.end()) { clumpDestroy(out); return nullptr; }
         atomicFrame(copy,it->second);
+        // A native skin copy retains the source hierarchy. For a hierarchy
+        // owned by this cloned frame tree, translate it to the independent
+        // HAnim copy; otherwise destroying the source leaves a dangling skin.
+        int skinOff=plugins(K::Atomic).getPluginOffset(278);
+        int hanimOff=plugins(K::Frame).getPluginOffset(286);
+        if(skinOff>=0 && hanimOff>=0) {
+            Hierarchy* source=nullptr;
+            std::memcpy(&source,reinterpret_cast<char*>(a)+skinOff,sizeof(source));
+            if(source) {
+                auto parent=frames.find(source->parentFrame);
+                if(parent!=frames.end()) {
+                    HAnimExtension ext{};
+                    std::memcpy(&ext,reinterpret_cast<char*>(parent->second)+hanimOff,sizeof(ext));
+                    rw::Skin::setHierarchy(b,hierarchyNative(ext.hierarchy));
+                    std::memcpy(reinterpret_cast<char*>(copy)+skinOff,&ext.hierarchy,sizeof(ext.hierarchy));
+                }
+            }
+        }
     }
     out->callback=c->callback;
     plugins(K::Clump).copy(out,c); return out;
