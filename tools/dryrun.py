@@ -38,6 +38,9 @@ SCRIPTS = {
     "exit-ok": SKIP + ";20:goto:400,433;21:click;24:goto:296,320;25:click",  # Exit -> Ok: the process ends
     # Campaign profiles page: list entries from (494,218), 22 px apart; Select (200,222), New (200,267), Back (400,517)
     "campaign-select": SKIP + ";20:goto:400,253;21:click;24:goto:494,218;25:click;27:goto:200,222;28:click",
+    # Campaign page: Play Mission (230,177), Load Game (230,217), Extras (230,257)
+    "mission": SKIP + ";20:goto:400,253;21:click;24:goto:494,218;25:click;27:goto:200,222;28:click"
+               ";31:goto:230,177;32:click;35:goto:400,320;36:click",  # difficulty: Easy (240,320) Normal Hard (560,320)
     "campaign-new": SKIP + ";20:goto:400,253;21:click;24:goto:200,267;25:click",
     # name entry: a real key press is a DirectInput key event plus WM_CHAR; "TEST", Backspace (DIK 14), "T" (shot 34)
     "campaign-new-type": SKIP + ";20:goto:400,253;21:click;24:goto:200,267;25:click"
@@ -54,7 +57,7 @@ WALK = {
     "settings-sound": (42, "Menus/P_Sound.fbs"), "settings-game": (32, "Menus/P_MOG.fbs"),
     "settings-back": (32, "Menus/P_MePrin.fbs"), "exit": (32, "Menus/P_MsgBox.fbs"), "exit-ok": (None, "exit"),
     "campaign-select": (38, "Menus/P_Campan.fbs"), "campaign-new": (32, "Menus/P_Edit.fbs"),
-    "campaign-new-type": (34, "Menus/P_Edit.fbs"), "campaign-new-ok": (36, None),
+    "campaign-new-type": (34, "Menus/P_Edit.fbs"), "mission": (90, None), "campaign-new-ok": (36, None),
 }
 
 

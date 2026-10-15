@@ -328,3 +328,88 @@ static void* __fastcall C_00862390_Construct(void* self, void*) {
     return self;
 }
 HOOK(0x006F0CB0, C_00862390_Construct, "auto");
+
+// 0x537280: a slot of vtables 0x842040/0x843728 (the in-game menu page, P_Juego) that IDA left outside any function;
+// the mission starts through it. It resets the game-side singletons, loads the interface scene, sizes the HUD text to
+// the screen and opens the first page. Two calls take a word the original pushed before an argumentless getter:
+// 0x4F4A40 (ret 8) the two floats pushed before 0x4F4920, 0x519640 (ret 4) the state's +0x10 pushed before 0x519420.
+namespace enter_level {
+using Getter = void* (__cdecl*)();
+CSF_FUNC(void*, __fastcall, InitializeCheatScreen, 0x0042B380, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, ForwardOffset, 0x00536440, (void* self, void* edx));
+CSF_FUNC(void*, __cdecl, GetGlobal_521BB0, 0x00521BB0, ());
+CSF_FUNC(int, __fastcall, ResetThirdManager, 0x00523640, (void* self, void* edx));
+CSF_FUNC(uint32_t, __cdecl, MpSpawnPoints_RegisterObject, 0x00475850, (void* object));
+CSF_FUNC(void*, __cdecl, GetGlobal_8B0568, 0x004FDBB0, ());
+CSF_FUNC(void*, __fastcall, Scheduler_BoundContexts, 0x004FE490, (void* self, void* edx));
+CSF_FUNC(char, __fastcall, SceneLoader_NotifySceneChange, 0x004570F0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, DefaultDestination, 0x004FE4A0, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, EnsureSpawnPointRegistered, 0x0044BB10, (void* self, void* edx));
+CSF_FUNC(void*, __fastcall, LoadInterfazScene, 0x00535E00, (void* self, void* edx));
+CSF_FUNC(void*, __cdecl, GetGlobal8B0558, 0x004F4920, ());
+CSF_FUNC(void, __fastcall, HudStringShow_SetSize, 0x004F4A40, (void* self, void* edx, float width, float height));
+CSF_FUNC(void, __fastcall, RefreshCameraPreview, 0x00542510, (void* self, void* edx, int a, int b));
+CSF_FUNC(void*, __fastcall, InitializeDialogPanels, 0x00536270, (void* self, void* edx));
+CSF_FUNC(void*, __cdecl, GetSingleton_519550, 0x00519550, ());
+CSF_FUNC(void*, __cdecl, GetGlobal_519420, 0x00519420, ());
+CSF_FUNC(void, __fastcall, InitializeSearchDialog, 0x00519640, (void* self, void* edx, void* input));
+CSF_FUNC(void*, __fastcall, ResolveOpeningVideo, 0x00536E20, (void* self, void* edx));
+CSF_FUNC(void*, __cdecl, GetValue_8B0574, 0x00518980, ());
+CSF_FUNC(uint8_t*, __cdecl, GetGlobal_75FDF0, 0x0075FDF0, ());
+CSF_GLOBAL(uint32_t, g_screenWidth, 0x00899B9C);
+CSF_GLOBAL(uint32_t, g_screenHeight, 0x00899BA0);
+
+template <typename Fn> Fn Slot(void* obj, int offset) { return reinterpret_cast<Fn>(CSF_AT(void**, obj, 0)[offset / 4]); }
+
+static void* __fastcall EnterLevel(uint8_t* self, void*, int page, int argument) {
+    void* app = App_Get();
+    Slot<void(__fastcall*)(void*, void*)>(app, 0x1C)(app, nullptr);
+    InitializeCheatScreen(self, nullptr);
+    Slot<void(__fastcall*)(void*, void*)>(self, 0x88)(self, nullptr);
+    void* scene = CSF_AT(void*, self, 0x13C);
+    Slot<void(__fastcall*)(void*, void*)>(scene, 0x16C)(scene, nullptr);
+    CSF_AT(int, self, 0x18) = page;
+    ForwardOffset(self, nullptr);
+    CSF_AT(uint8_t, self, 0x150) = 0;
+    ResetThirdManager(GetGlobal_521BB0(), nullptr);
+    MpSpawnPoints_RegisterObject(GetGlobal_521BB0());
+    // Singletons created (or reset) in this order; their results are not used.
+    const uintptr_t getters[] = {CSF_ADDR_FN(0x006C8BC0), CSF_ADDR_FN(0x00457FD0), CSF_ADDR_FN(0x004565D0),
+        CSF_ADDR_FN(0x004EA0D0), CSF_ADDR_FN(0x005193B0), CSF_ADDR_FN(0x00519220), CSF_ADDR_FN(0x005189B0),
+        CSF_ADDR_FN(0x00401520), CSF_ADDR_FN(0x0044BAC0), CSF_ADDR_FN(0x00436030), CSF_ADDR_FN(0x004FD6E0),
+        CSF_ADDR_FN(0x004F4D20), CSF_ADDR_FN(0x005258B0), CSF_ADDR_FN(0x004429D0), CSF_ADDR_FN(0x0051FFE0)};
+    for (uintptr_t getter : getters)
+        reinterpret_cast<Getter>(getter)();
+    SceneLoader_NotifySceneChange(Scheduler_BoundContexts(GetGlobal_8B0568(), nullptr), nullptr);
+    EnsureSpawnPointRegistered(DefaultDestination(GetGlobal_8B0568(), nullptr), nullptr);
+    LoadInterfazScene(self, nullptr);
+
+    void* device = Render_GetDevice(Render_GetSystem(), nullptr);
+    const uint32_t width = CSF_AT(uint32_t, Slot<void*(__fastcall*)(void*, void*)>(device, 0x18)(device, nullptr), 0);
+    device = Render_GetDevice(Render_GetSystem(), nullptr);
+    const uint32_t height = CSF_AT(uint32_t, Slot<void*(__fastcall*)(void*, void*)>(device, 0x18)(device, nullptr), 4);
+    const float heightRatio = static_cast<float>(static_cast<long double>(height) / g_screenHeight);
+    const float widthRatio = static_cast<float>(static_cast<long double>(width) / g_screenWidth);
+    HudStringShow_SetSize(GetGlobal8B0558(), nullptr, widthRatio, heightRatio);
+
+    RefreshCameraPreview(CSF_AT(void*, self, 0x14C), nullptr, page, argument);
+    Slot<void(__fastcall*)(void*, void*)>(self, 0x74)(self, nullptr);
+    InitializeDialogPanels(self, nullptr);
+    GetSingleton_519550();
+    void* input = CSF_AT(void*, App_Get(), 0x10);
+    InitializeSearchDialog(GetGlobal_519420(), nullptr, input);
+    ResolveOpeningVideo(self, nullptr);
+    GetValue_8B0574();
+    void* handler = CSF_AT(void*, App_Get(), 0x10);
+    Slot<void(__fastcall*)(void*, void*)>(handler, 0x08)(handler, nullptr);
+    if (void* panel = CSF_AT(void*, self, 0x138))
+        Slot<void(__fastcall*)(void*, void*, int)>(panel, 0xA8)(panel, nullptr, 1);
+    CSF_AT(uint8_t, self, 0x180) = 0;
+    if (CSF_AT(uint8_t, App_Get(), 0xD0)) {
+        CSF_AT(uint8_t, self, 0x274) = CSF_AT(uint8_t, GetGlobal_75FDF0(), 0xCC);
+        CSF_AT(uint8_t, GetGlobal_75FDF0(), 0xCC) = 0;
+    }
+    return CSF_AT(void*, self, 0x13C);
+}
+}  // namespace enter_level
+HOOK(0x00537280, enter_level::EnterLevel, "auto");

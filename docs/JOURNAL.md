@@ -1758,3 +1758,9 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   malloc/free. tools/check_all.sh: the whole pre-commit check (RW ASan tests ... dry run, offline tests, --walk).
 - Open: confirming a new profile ends with 0xC0000374 in free (0x5172C0 AddNamedEntry -> 0x5166E0 -> MemDebug free);
   heap and block validate right before - double free or foreign pointer suspected. Job crash4.
+- Mission start (script `mission`: profile -> Select -> Play Mission -> Normal): 0x537280 (P_Juego page slot, vtables
+  0x842040/0x843728, outside IDA's functions) written in standalone/game_plain.cpp - two more stray pushes (0x4F4A40
+  ret 8 takes the floats pushed before 0x4F4920; 0x519640 ret 4 the word pushed before 0x519420). Loading screen
+  images (Loadings/PT_*.png) are RGB: RenderWare's PNG reader returns 32-bit, librw 24, and 0x705D10 takes 8/32
+  only -> readPNG converts 24 to 32. Next stops: a fault in the mission script parser (0x46F210 under 0x46BC40
+  LoadGameSceneScript) and 0x537490 (another P_Juego slot outside IDA's functions). Job mission1.

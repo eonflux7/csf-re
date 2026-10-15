@@ -250,6 +250,9 @@ I* __cdecl readPNG(const char* name) {
     rw::engine->filefuncs.rwfread=Capture::read; rw::engine->filefuncs.rwfeof=Capture::eof;
     auto* native=rw::readPNG(name);
     rw::engine->filefuncs=saved; Capture::active=nullptr;
+    // RenderWare images are 4, 8 or 32 bits deep: its PNG reader returns RGB files as 32-bit, librw keeps 24, and the
+    // game's raster loader 0x705D10 takes only 8 or 32 (the mission loading screens, Loadings/PT_*.png, are RGB).
+    if (native && native->depth==24) native->convertTo32();
     I* i=adoptImage(native); traceRead("0x007C9050","ReadPNG",name,i); return i;
 }
 I* encodeImage(I* a,const char* name,bool png) {
