@@ -88,11 +88,12 @@ Stage since 2026-10-13: the waves are exhausted at 91.9% of game code. What is l
 user 2026-10-13); the orchestrator writes the
 tasks, reviews reports and patches, decides. Everything is visible on `tools/webmon.py` (user, 2026-10-13).
 
-State on 2026-10-15: the standalone exe runs the menus: intro skip, main menu, Settings and all its pages, Credits,
-Campaign profiles, Exit -> Ok (clean exit, code 1). Tested unattended: `tools/dryrun.py --walk` runs every named
-menu script (scripted DirectInput, page trace, screenshots; work/measure/walk.json). Next on the player's path:
-profile creation (text editing) and loading a mission (RW clump streaming, 0x58FFC0). Game functions missing from
-the standalone: 23 (job gamelast); RW 158 (job rwclump: clump streaming). Jobs' output enters the tree only after review.
+State on 2026-10-15 (morning): the standalone exe runs every menu, creates and deletes profiles, and starts the
+first mission (FR01): loading screen, mission scripts parsed; it stops at RW animation/world streaming. Tested
+unattended: `tools/dryrun.py --walk` (14 named scripts; all pass but `mission`); `tools/check_all.sh` before each
+commit. Game functions missing from the standalone: 0. Jobs: rwanim (RtAnim/HAnim/skin/MatFX), rwworld2 (BSP world
+streaming, frames, collision), netzload (NetZ-region helpers the game shares). Jobs' output enters the tree only
+after review.
 
 1. **Play the standalone further, unattended**: extend dryrun SCRIPTS along the player's path (profile select/new,
    mission select, mission load) and run `dryrun.py --walk` after every applied job; each FAIL line is the next fix
