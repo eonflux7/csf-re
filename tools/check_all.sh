@@ -29,6 +29,8 @@ cmake --build build --target csf_hook -j 8 > work/hook_build.log 2>&1; echo "hoo
 if [ "$OFFLINE" = 0 ]; then .venv/bin/python tools/dryrun.py; else echo "dryrun skipped (--offline)"; fi
 .venv/bin/python tests/wmrest_offline.py 2>&1 | tail -1
 .venv/bin/python tests/rw_particles_original.py 2>&1 | tail -1
+.venv/bin/python tests/rw_team_original.py 2>&1 | tail -1
 .venv/bin/python tests/audio1_offline.py 2>&1 | tail -1
 .venv/bin/python tests/test_datagen_text.py 2>&1 | tail -1
+.venv/bin/python tests/rw_scene_finaliser_original.py 2>&1 | tail -1
 [ "$WALK" = 0 ] || .venv/bin/python tools/dryrun.py --walk 2>&1 | tail -20

@@ -14,6 +14,7 @@
 #include <array>
 #include <unordered_map>
 #include <cstdio>
+#include <algorithm>
 CSF_GLOBAL(int, hanimOffset, 0x008BE558);
 CSF_GLOBAL(int, skinEngine, 0x008B1240);
 CSF_GLOBAL(int, skinAtomic, 0x008B1244);
@@ -192,8 +193,11 @@ int __stdcall collisionAttach() {
     return attachable(K::Engine,285) && put(collEngine,K::Engine,4,285) && put(collAtomic,K::Atomic,4,285);
 }
 int __stdcall ptAttach() {
-    csf_rw::startupTrace("0x005816E0","RpPTankPluginAttach (storage only)");
-    return attachable(K::Engine,303) && put(ptEngine,K::Engine,4,303) && put(ptAtomic,K::Atomic,sizeof(void*),303);
+    csf_rw::startupTrace("0x005816E0","RpPTankPluginAttach (CPU clusters)");
+    if(!attachable(K::Engine,303) || !put(ptEngine,K::Engine,4,303)) return 0;
+    ptAtomic=csf_rw::registerABIPlugin(K::Atomic,sizeof(void*),303,csf_rw::particleAtomicCtor,
+        csf_rw::particleTankDtor,csf_rw::particleAtomicCopy);
+    return ptAtomic>=0;
 }
 int __stdcall prtAttach() {
     csf_rw::startupTrace("0x0057C4A0","RpPrtStdPluginAttach (emitter ownership)");
@@ -246,7 +250,7 @@ int __stdcall randomAttach() {
 }
 int __stdcall patchAttach() {
     csf_rw::startupTrace("0x005865E0","RpPatchPluginAttach (storage only)");
-    return attachable(K::World,298) && put(patchWorld,K::World,44,298) && put(patchSector,K::Sector,104,298,patchSectorCtor);
+    return attachable(K::World,298) && put(patchWorld,K::World,40+sizeof(void*),298) && put(patchSector,K::Sector,104,298,patchSectorCtor);
 }
 int __stdcall userAttach() {
     csf_rw::startupTrace("0x0058C040","RpUserDataPluginAttach");
@@ -266,7 +270,7 @@ int __stdcall anisoAttach() {
 }
 int __stdcall morphAttach() {
     csf_rw::startupTrace("0x005776E0","RpMorphPluginAttach (storage only)");
-    return attachable(K::Engine,261) && engine(0,261) && put(morphAtomic,K::Atomic,12,261) && put(morphGeometry,K::Geometry,12,261);
+    return attachable(K::Engine,261) && engine(0,261) && put(morphAtomic,K::Atomic,3*sizeof(void*),261) && put(morphGeometry,K::Geometry,3*sizeof(void*),261);
 }
 int __cdecl registerScheme(const Scheme* p) {
     csf_rw::startupTrace("0x0061ED00","RtAnimRegisterInterpolationScheme");
@@ -337,12 +341,34 @@ bool readPluginPayload(Registry k,uint32_t id,Stream* s,int length,void* object)
     }
     return false;
 }
+bool writePluginPayload(Registry k,uint32_t id,Stream* s,int length,void* object) {
+    auto it=streamCallbacks.find((uint64_t(unsigned(k))<<32)|id);
+    if(it==streamCallbacks.end() || !it->second.write) return false;
+    FORLIST(l,plugins(k).plugins) {
+        auto* p=LLLinkGetData(l,rw::Plugin,inParentList);
+        if(p->id==id) {
+            using Write=Stream* (__cdecl *)(Stream*,int,void*,int,int);
+            return reinterpret_cast<Write>(it->second.write)(s,length,object,p->offset,p->size)!=nullptr;
+        }
+    }
+    return false;
 }
+}
+namespace {
+void* __cdecl readRegistry(void* registry,csf_rw::Stream* stream,void* object) {
+    K kind;
+    if(registry==reinterpret_cast<void*>(CSF_ADDR_DATA(0x008A6410))) kind=K::Texture;
+    else if(registry==reinterpret_cast<void*>(CSF_ADDR_DATA(0x008A6428))) kind=K::Dictionary;
+    else return nullptr; // only live direct callers use these two registries
+    return csf_rw::readImageRegistry(kind,stream,object)?registry:nullptr;
+}
+}
+HOOK(0x0063CB30,readRegistry,"boundary-rw");
 HOOK(0x0058D0B0,worldAttach,"boundary-rw");
 namespace {
-void __cdecl geometrySetID(void* geometry,int id) { *reinterpret_cast<int*>(static_cast<char*>(geometry)+idGeometry)=id; }
+int __cdecl geometrySetID(void* geometry,int id) { *reinterpret_cast<int*>(static_cast<char*>(geometry)+idGeometry)=id;return id; }
 int __cdecl geometryGetID(void* geometry) { return *reinterpret_cast<int*>(static_cast<char*>(geometry)+idGeometry); }
-void __cdecl sectorSetID(void* sector,int id) { *reinterpret_cast<int*>(static_cast<char*>(sector)+idSector)=id; }
+int __cdecl sectorSetID(void* sector,int id) { *reinterpret_cast<int*>(static_cast<char*>(sector)+idSector)=id;return id; }
 int __cdecl sectorGetID(void* sector) { return *reinterpret_cast<int*>(static_cast<char*>(sector)+idSector); }
 }
 HOOK(0x00593D30,geometrySetID,"boundary-rw");

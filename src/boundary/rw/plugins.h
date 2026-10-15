@@ -15,6 +15,7 @@ const AnimationScheme* animationScheme(uint32_t);
 void pluginBoundaryTerm();
 std::vector<uint32_t> pluginStreamIDs(Registry, bool readsOnly=true);
 bool readPluginPayload(Registry, uint32_t, Stream*, int length, void* facade);
+bool writePluginPayload(Registry, uint32_t, Stream*, int length, void* facade);
 int registerABIPluginStream(Registry, uint32_t, uintptr_t read, uintptr_t write=0, uintptr_t size=0);
 int pluginPayloadSize(Registry, uint32_t, void* facade); // -1: no game size callback
 }

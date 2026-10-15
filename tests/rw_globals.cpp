@@ -2,6 +2,20 @@
 // global a test-owned cell; production uses the generated shared-image slot.
 #include "globals.h"
 #include "boundary/rw/fs.h"
+namespace {
+unsigned char textureRegistryToken, dictionaryRegistryToken;
+int miscPVSIndexCell;
+int miscGeometryIDOffsetCell, miscSectorIDOffsetCell;
+rw::V3d miscPVSPositionCell;
+void* miscPVSSectorCell;
+}
+template <> unsigned char* const csf::gv<0x008A6410>::d = &textureRegistryToken;
+template <> unsigned char* const csf::gv<0x008A6428>::d = &dictionaryRegistryToken;
+template <> unsigned char* const csf::gv<0x008BE7C0>::d = reinterpret_cast<unsigned char*>(&miscPVSIndexCell);
+template <> unsigned char* const csf::gv<0x008BE7C4>::d = reinterpret_cast<unsigned char*>(&miscPVSPositionCell);
+template <> unsigned char* const csf::gv<0x008BE7D0>::d = reinterpret_cast<unsigned char*>(&miscPVSSectorCell);
+template <> unsigned char* const csf::gv<0x008B1404>::d = reinterpret_cast<unsigned char*>(&miscGeometryIDOffsetCell);
+template <> unsigned char* const csf::gv<0x008B1408>::d = reinterpret_cast<unsigned char*>(&miscSectorIDOffsetCell);
 #ifdef _WIN32
 #include <windows.h>
 namespace { CRITICAL_SECTION fsCriticalSection; }
@@ -114,6 +128,9 @@ template <> unsigned char* const csf::gv<0x008B09E4>::d = reinterpret_cast<unsig
 namespace { int pluginCell_008B09E8; }
 template <> unsigned char* const csf::gv<0x008B09E8>::d = reinterpret_cast<unsigned char*>(&pluginCell_008B09E8);
 namespace { int pluginCell_008B1348; }
+namespace { int pluginCell_008B1404, pluginCell_008B1408; }
+template <> unsigned char* const csf::gv<0x008B1404>::d = reinterpret_cast<unsigned char*>(&pluginCell_008B1404);
+template <> unsigned char* const csf::gv<0x008B1408>::d = reinterpret_cast<unsigned char*>(&pluginCell_008B1408);
 template <> unsigned char* const csf::gv<0x008B1348>::d = reinterpret_cast<unsigned char*>(&pluginCell_008B1348);
 namespace { int pluginCell_008B134C; }
 template <> unsigned char* const csf::gv<0x008B134C>::d = reinterpret_cast<unsigned char*>(&pluginCell_008B134C);
@@ -126,8 +143,8 @@ template <> unsigned char* const csf::gv<0x008B13B0>::d = reinterpret_cast<unsig
 namespace { int pluginCell_008B13B4; }
 template <> unsigned char* const csf::gv<0x008B13B4>::d = reinterpret_cast<unsigned char*>(&pluginCell_008B13B4);
 
-// Particle defaults store these identities, but simulation/advanced stream
-// callbacks are deliberately still fatal in production and in these fixtures.
+// Visibility's unrelated proxy remains fatal; particle callbacks now link to
+// their real boundary implementations rather than fixture placeholders.
 #include <cstdlib>
 namespace { int staticFramePluginCell; }
 template <> unsigned char* const csf::gv<0x008A6450>::d = reinterpret_cast<unsigned char*>(&staticFramePluginCell);
@@ -143,44 +160,15 @@ template <> unsigned char* const csf::gv<0x008BE7A0>::d = reinterpret_cast<unsig
 template <> unsigned char* const csf::gv<0x008BE588>::d = reinterpret_cast<unsigned char*>(&ltMapStyleCell);
 template <> unsigned char* const csf::gv<0x008BE5B0>::d = reinterpret_cast<unsigned char*>(&ltMapRasterCell);
 template <> unsigned char* const csf::gv<0x008851D8>::d = reinterpret_cast<unsigned char*>(&visibilityDescriptorCell);
+namespace { csf_rw::ToolkitDescriptor defaultPhysicsShapeCell{}; int physicsErrorCell; }
+template <> unsigned char* const csf::gv<0x00885020>::d = reinterpret_cast<unsigned char*>(&defaultPhysicsShapeCell);
+template <> unsigned char* const csf::gv<0x008BE0D4>::d = reinterpret_cast<unsigned char*>(&physicsErrorCell);
+namespace { int idGeometryCell, idSectorCell; }
+template <> unsigned char* const csf::gv<0x008B1404>::d = reinterpret_cast<unsigned char*>(&idGeometryCell);
+template <> unsigned char* const csf::gv<0x008B1408>::d = reinterpret_cast<unsigned char*>(&idSectorCell);
 template <> void* const csf::fn_slot<0x007FF600>::p = reinterpret_cast<void*>(&unavailableVisibilityCallback);
-namespace { void unavailableParticleCallback() { std::abort(); } }
-template <> void* const csf::fn_slot<0x00578670>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x00578760>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x00578BA0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x00578C10>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x00578C60>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x00578CE0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x00578D40>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x00578DE0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x00579000>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057A090>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057A1B0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057A230>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057A380>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057A450>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057A600>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057A9A0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057ACD0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057AD40>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057AD80>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057ADE0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057AE40>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057B280>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057B330>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057B3A0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057B4A0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057B5B0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057B640>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057BA00>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057BA70>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057BAB0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057BB40>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057BF10>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057BF70>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057BFB0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057C020>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057EDE0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057F0F0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057F450>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
-template <> void* const csf::fn_slot<0x0057F7A0>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
+namespace { int particleStreamVersion=3; }
+template <> unsigned char* const csf::gv<0x008BE6AC>::d = reinterpret_cast<unsigned char*>(&particleStreamVersion);
+namespace { int idGeometry=-1,idSector=-1; }
+template <> unsigned char* const csf::gv<0x008B1404>::d = reinterpret_cast<unsigned char*>(&idGeometry);
+template <> unsigned char* const csf::gv<0x008B1408>::d = reinterpret_cast<unsigned char*>(&idSector);

@@ -20,6 +20,10 @@ void imageBoundaryStop();
 bool textureStreamWrite(Texture*, Stream*);
 Texture* textureStreamRead(Stream*);
 Texture* streamTextureCreate(rw::Texture*);
+rw::TexDictionary* dictionaryNative(TexDictionary*);
+TexDictionary* dictionaryFacade(rw::TexDictionary*);
+int __cdecl readNativeTextureABI(Stream*, Texture**, int);
+bool readImageRegistry(Registry, Stream*, void*);
 void* streamImageForget(Registry, void*);
 void streamImageExport();
 bool attachStreamImageLifetime(); // zero-storage native destructor observers

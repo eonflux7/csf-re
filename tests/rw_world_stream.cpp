@@ -66,7 +66,7 @@ CSF_FUNC(Camera*,__stdcall,newCamera,0x006290B0,());
 CSF_FUNC(int,__cdecl,deleteCamera,0x00629070,(Camera*));
 CSF_FUNC(Camera*,__cdecl,cameraSectors,0x0058DEF0,(Camera*,SC,void*));
 static constexpr uint32_t id=0xffffff00;
-static int wc,sc,mc,wd,sd,md,failCtor=-1,failRead=-1;
+static int wc,sc,mc,wd,sd,md,failCtor=-1,failRead=-1,shortPropertyReads;
 static std::vector<int> order;
 static void* ctor(void* p,int off,int size) {
     if(failCtor==0) return nullptr;if(failCtor>0) --failCtor;
@@ -90,6 +90,14 @@ static void* worldDtor(void* p,int,int) {
 static void* sectorDtor(void* p,int,int) { assert(sectorWorld(static_cast<Sector*>(p)));++sd;return p; }
 static void* materialDtor(void* p,int,int) { ++md;return p; }
 static Stream* gameRead(Stream* s,int length,void* p,int off,int size) {
+    if(length>=12) {
+        auto* sector=static_cast<Sector*>(p);uint32_t words[2];
+        assert(size==4 && read(s,words,8)==8 && words[0]==1 && words[1]==1);
+        assert(length==12+sector->numTriangles);
+        std::vector<uint8_t> payload(sector->numTriangles);
+        assert(read(s,payload.data(),uint32_t(payload.size()))==payload.size() && payload[0]==0x5a);
+        ++shortPropertyReads;return s;
+    }
     assert(length==4 && size==4);int value;assert(read(s,&value,4)==4);
     if(value==9) {
         auto* w=static_cast<World*>(p);assert(w->root);
@@ -294,6 +302,22 @@ int main() {
         }
     }
     rw::version=0x36003;
+    {
+        // 6B8D20 advertises four bytes that 6B8510 never writes, including
+        // when the per-triangle byte array is present (FR01's are absent).
+        auto shortProperty=fixture(true);
+        auto word=[&](size_t at) { uint32_t n;std::memcpy(&n,shortProperty.data()+at,4);return n; };
+        auto add=[&](size_t at,uint32_t n) { n+=word(at);std::memcpy(shortProperty.data()+at,&n,4); };
+        size_t leafAt=0;while(word(leafAt)!=9) leafAt+=12+word(leafAt+4);
+        size_t ext=leafAt+24+word(leafAt+16),plugin=ext+12;
+        assert(word(ext)==3 && word(plugin)==id && word(plugin+4)==4);
+        Bytes payload;put(payload,uint32_t(1));put(payload,uint32_t(1));put(payload,uint8_t(0x5a));
+        shortProperty.erase(shortProperty.begin()+plugin+12,shortProperty.begin()+plugin+16);
+        shortProperty.insert(shortProperty.begin()+plugin+12,payload.begin(),payload.end());
+        add(plugin+4,9);add(ext+4,9);add(leafAt+4,9);
+        auto* loaded=load(shortProperty);assert(loaded && shortPropertyReads==1);
+        assert(deleteWorld(loaded) && allocated.empty() && worldsEmpty() && objectsEmpty());
+    }
     {
         // If the explicit UV count is absent, TEXTURED2 wins over TEXTURED,
         // including when an exporter sets both low-byte flags.

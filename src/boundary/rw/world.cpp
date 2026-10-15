@@ -256,6 +256,7 @@ using SectorCB=Sector* (__cdecl *)(Sector*,void*);
 // The BSP belongs to the boundary; this librw checkout has no owning BSP type.
 World* __cdecl worldSectors(World* w,SectorCB cb,void* data) {
     if(!worlds.count(w) || !cb || !w->root) return nullptr;
+    startupTrace("0x0058CFF0","RpWorldForAllWorldSectors");
     // Push right, visit left first; callbacks returning null stop the walk.
     std::vector<Sector*> stack{w->root};
     while(!stack.empty()) {
@@ -279,6 +280,8 @@ World* __cdecl setSectorRender(World* w,SectorRender cb) {
 }
 // 0058CEF0: the world's clump ring (+0x2C, link at Clump+0x20); next read before the callback, null stops.
 World* __cdecl worldClumps(World* w,Clump* (__cdecl *cb)(Clump*,void*),void* data) {
+    if(!worlds.count(w) || !cb) return nullptr;
+    if(startupTracing()) std::fprintf(stderr,"RW WorldForAllClumps clumps=%d\n",w->numClumps);
     for(Link* l=w->clumps.next;l!=&w->clumps;) {
         Link* next=l->next;
         if(!cb(reinterpret_cast<Clump*>(reinterpret_cast<char*>(l)-offsetof(Clump,inWorld)),data)) break;
@@ -288,7 +291,9 @@ World* __cdecl worldClumps(World* w,Clump* (__cdecl *cb)(Clump*,void*),void* dat
 }
 // 0058CF30: the world's material list (+0x10 array, +0x14 count read once); null stops.
 World* __cdecl worldMaterials(World* w,Material* (__cdecl *cb)(Material*,void*),void* data) {
+    if(!worlds.count(w) || !cb) return nullptr;
     const int count=w->materials.numMaterials;
+    if(startupTracing()) std::fprintf(stderr,"RW WorldForAllMaterials materials=%d\n",count);
     for(int i=0;i<count;++i) if(!cb(w->materials.materials[i],data)) break;
     return w;
 }

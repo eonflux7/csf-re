@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <cstddef>
+#include <cstring>
 #include "globals.h"
 #include "hook.h"
 #include "core/memory.h"
@@ -28,20 +29,23 @@ static int __cdecl SceneLoader_ClumpFlagCallback(uint32_t* clump, int flagPtr)
 
 static int __stdcall SceneLoader_ApplyFlagToWorldMaterialsAndClumps(int worldHandle, char flagValue)
 {
-    char flag[4];
+    // The original's [ebp-0xC], [ebp-8], [ebp-4] are one callback
+    // descriptor. 4FEE70/4FEF20 read its +4/+8 filter settings; separate
+    // unused locals let the optimizer discard them and exposed stack garbage.
+    alignas(4) char flag[12];
     flag[0] = flagValue;
 
     // First lookup: global id -> object, then virtual slot 6 (+0x18) -> read +0x20
     void* firstObject = LookupObjectById(reinterpret_cast<void*>(GetGlobalInt()), nullptr);
     void* firstResult = reinterpret_cast<void* (__fastcall*)(void*, void*)>(CSF_AT(void**, firstObject, 0)[6])(firstObject, nullptr);
     int firstValue = CSF_AT(int, firstResult, 0x20);
-    (void)firstValue;
+    std::memcpy(flag + 4, &firstValue, 4);
 
     // Second lookup: global id -> object, then virtual slot 6 (+0x18) -> read +0x1C
     void* secondObject = LookupObjectById(reinterpret_cast<void*>(GetGlobalInt()), nullptr);
     void* secondResult = reinterpret_cast<void* (__fastcall*)(void*, void*)>(CSF_AT(void**, secondObject, 0)[6])(secondObject, nullptr);
     int secondValue = CSF_AT(int, secondResult, 0x1C);
-    (void)secondValue;
+    std::memcpy(flag + 8, &secondValue, 4);
 
     RpWorldForAllMaterials(
         worldHandle,

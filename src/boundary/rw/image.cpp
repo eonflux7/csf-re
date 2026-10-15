@@ -452,6 +452,21 @@ I* __cdecl imageFromRaster(I* a,R* raster) {
     src->destroy(); exportImage(a,dst); return a;
 }
 void exportTexture(T* a,rw::Texture* n) {
+    if(n->raster) {
+        auto* r=csf_rw::rasterFacade(n->raster);
+        if(!r) {
+            // Native TXD decoders assign the raster AFTER Texture::create's
+            // plugin constructors have run. Adopt only the completed raster.
+            r=allocate<R>(K::Raster); if(!r) throw std::bad_alloc();
+            try { rasters.emplace(r,RasterRecord{n->raster}); }
+            catch(...) { freeFacade(r); throw; }
+            r->parent=r;exportRaster(r,n->raster);
+            if(!csf_rw::constructPlugins(K::Raster,r)) {
+                rasters.erase(r);freeFacade(r);throw std::bad_alloc();
+            }
+        }
+        a->raster=r;
+    } else a->raster=nullptr;
     std::memcpy(a->name,n->name,32); std::memcpy(a->mask,n->mask,32);
     a->filterAddressing=n->filterAddressing; a->refCount=n->refCount;
     int off=csf_rw::plugins(K::Texture).getPluginOffset(295);
@@ -698,6 +713,12 @@ Texture* textureStreamRead(Stream* s) {
     auto* n=rw::Texture::streamRead(stream); return n?adoptTexture(n):nullptr;
 }
 Texture* streamTextureCreate(rw::Texture* n) { return adoptTexture(n); }
+rw::TexDictionary* dictionaryNative(TexDictionary* a) {
+    auto it=dictionaries.find(a); if(it==dictionaries.end()) return nullptr;
+    for(auto& t:textures) if(t.first->dict==a) textureNative(t.first);
+    return it->second;
+}
+TexDictionary* dictionaryFacade(rw::TexDictionary* n) { return adoptDictionary(n); }
 void streamImageExport() {
     for(auto& p:textures) {
         exportTexture(p.first,p.second);
@@ -719,6 +740,11 @@ void streamImageRollback(const std::vector<Image*>& before) {
     }
 }
 void* streamImageForget(Registry k,void* n) {
+    if(k==K::Dictionary) {
+        D* a=nullptr; for(auto& p:dictionaries) if(p.second==n) { a=p.first; break; }
+        if(!a) return nullptr;
+        destructPlugins(k,a); unlink(a->inGlobalList); dictionaries.erase(a); return a;
+    }
     if(k==K::Texture) {
         auto* a=textureFacade(static_cast<rw::Texture*>(n)); if(!a) return nullptr;
         // Native destruction is already in progress: never import a stale

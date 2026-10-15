@@ -65,6 +65,8 @@ struct EmitterTank {
 struct TankLock { void* data; int32_t stride; };
 struct TankFormat {
     int32_t numClusters;
+    // Historical field names: texCoords is actually the four-color cluster
+    // (bit 64); colors is the two-UV cluster (bit 128). Keep their ABI order.
     TankLock position, matrix, normal, size, color, texCoords, rotation, colors, texCoords4;
     uint32_t reserved;
     int32_t clusterCount, stride;
@@ -83,6 +85,10 @@ struct Tank {
     TankFormat format;
     uint32_t tail[37];
 };
+// CPU quad assembly seam; positions are in PTank coordinates. No driver calls.
+bool particleTankQuads(Atomic*, const rw::Matrix& camera, int first, int count,
+                       std::vector<Im3DVertex>&);
+void* particleTankDtor(void*, int, int);
 using EmitterCallback = ParticleEmitter* (__cdecl *)(Atomic*, ParticleEmitter*, void*);
 using BatchCallback = ParticleBatch* (__cdecl *)(ParticleEmitter*, ParticleBatch*, void*);
 void* particleProperty(ParticleEmitter*, int32_t id);

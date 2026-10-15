@@ -267,3 +267,4 @@ print('PASS: original schemas/cache/defaults and PTank bytes; 25 original/COFF c
 
 # Slice 8b uses the same original-image/COFF machines and ABI assertions.
 exec((ROOT/'tests/rw_particle_simulation_original.inc.py').read_text())
+exec((ROOT/'tests/rw_particle_advanced_original.inc.py').read_text())

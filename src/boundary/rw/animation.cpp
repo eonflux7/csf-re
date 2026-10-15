@@ -503,6 +503,21 @@ int __cdecl skinSplit(Skin* a) { return a && a->remapIndices!=nullptr; }
 // MatFX owning storage stays native; public APIs translate frame identities.
 int __cdecl atomicEffects(Atomic* a) { auto* n=atomicNative(a); return n?rw::MatFX::getEffects(n):0; }
 int __cdecl materialEffects(Material* a) { auto* n=materialNative(a); return n?rw::MatFX::getEffects(n):0; }
+Atomic* __cdecl enableEffects(Atomic* a) {
+    auto* n=atomicNative(a); if(!n || plugins(K::Atomic).getPluginOffset(288)<0) return nullptr;
+    if(!rw::MatFX::getEffects(n)) rw::MatFX::enableEffects(n);
+    tail(K::Atomic,288,a,1); return a;
+}
+Material* __cdecl setEffects(Material* a,unsigned effects) {
+    auto* n=materialNative(a); if(!n || effects>6 || plugins(K::Material).getPluginOffset(288)<0) return nullptr;
+    // Upstream setEffects dereferences an unchecked allocation. Preallocate
+    // through the engine allocator so the ABI can report failure normally.
+    if(!rw::MatFX::get(n)) {
+        auto* fx=static_cast<rw::MatFX*>(alloc(sizeof(rw::MatFX))); if(!fx) return nullptr;
+        *PLUGINOFFSET(rw::MatFX*,n,rw::matFXGlobals.materialOffset)=fx;
+    }
+    rw::MatFX::setEffects(n,effects); return a;
+}
 Material* __cdecl envFrame(Material* a,Frame* f) {
     auto* n=materialNative(a); auto* b=frameNative(f); if(!n || (f && !b)) return nullptr;
     auto* fx=rw::MatFX::get(n); if(!fx || fx->getEffectIndex(2)<0) return nullptr;
@@ -591,6 +606,8 @@ HOOK(0x0056DB50,attachHierarchy,"boundary-rw");
 HOOK(0x00587020,setSkinHierarchy,"boundary-rw");
 HOOK(0x00587040,getSkinHierarchy,"boundary-rw");
 HOOK(0x00587050,geometrySkin,"boundary-rw");
+HOOK(0x00571270,enableEffects,"boundary-rw");
+HOOK(0x00571A80,setEffects,"boundary-rw");
 HOOK(0x005870E0,skinSplit,"boundary-rw");
 HOOK(0x005870F0,skinType,"boundary-rw");
 HOOK(0x005712A0,atomicEffects,"boundary-rw");

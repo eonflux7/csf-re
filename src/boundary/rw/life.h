@@ -29,6 +29,7 @@ rw::Stream* streamNative(Stream*);
 bool streamPrepareWrite(Stream*, uint32_t);
 // Registered, non-owning stream view used only for the duration of a callback.
 Stream* streamBorrow(rw::Stream*);
+Stream* streamBorrow(rw::Stream*, bool writable);
 void streamUnborrow(Stream*);
 struct ChunkHeader { uint32_t type, length, version, build, isComplex; };
 static_assert(sizeof(ChunkHeader) == 20);

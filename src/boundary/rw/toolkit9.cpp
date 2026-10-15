@@ -177,6 +177,7 @@ static int __cdecl destroyHandle(H* h) {
     release(h->nodes); release(h);
     return 1;
 }
+#include "toolkit_physics.inc"
 HOOK(0x007E4970,noOperation,"boundary-rw");
 HOOK(0x007F7900,destroyObject,"boundary-rw");
 HOOK(0x007F7BF0,dispatchOutput,"boundary-rw");

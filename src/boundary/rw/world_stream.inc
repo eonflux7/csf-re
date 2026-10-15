@@ -4,6 +4,8 @@
 struct WorldReadFailure {};
 struct WorldReadContext {
     const uint8_t* base=nullptr;int failedPosition=-1;
+    std::unordered_map<size_t,uint32_t> declaredPluginSizes;
+    unsigned shortProperties=0;
 };
 WorldReadContext* worldReadContext=nullptr;
 struct WorldReadScope {
@@ -71,12 +73,17 @@ struct WorldInput final:rw::Stream {
     bool eof() override { return pos==size; }
     uint32_t word() { uint32_t n;read8(&n,4);return n; }
 };
-struct WorldChunk { uint32_t id,version; const uint8_t* bytes; uint32_t size; };
+struct WorldChunk { uint32_t id,version; const uint8_t* bytes; uint32_t size,declaredSize; };
 WorldChunk worldChunk(WorldInput& in) {
     uint32_t id=in.word(),size=in.word(),stamp=in.word();
     uint32_t version=stamp&0xffff0000?(((stamp>>14)&0x3ff00)+0x30000)|((stamp>>16)&0x3f):stamp<<8;
     checkWorld(size<=in.size-in.pos);
-    WorldChunk c{id,version,in.bytes+in.pos,size};in.pos+=size;return c;
+    WorldChunk c{id,version,in.bytes+in.pos,size,size};
+    if(worldReadContext && worldReadContext->base) {
+        auto p=worldReadContext->declaredPluginSizes.find(size_t(c.bytes-worldReadContext->base));
+        if(p!=worldReadContext->declaredPluginSizes.end()) c.declaredSize=p->second;
+    }
+    in.pos+=size;return c;
 }
 WorldChunk worldExpect(WorldInput& in,uint32_t id) {
     auto c=worldChunk(in);checkWorld(c.id==id && c.version>=0x35000 && c.version<=0x37002);return c;
@@ -114,7 +121,7 @@ void worldExtension(const WorldChunk& c,Registry k,void* facade) {
         WorldInput payload(p.bytes,p.size);
         auto* stream=streamBorrow(&payload);checkWorld(stream!=nullptr);
         try {
-            checkWorld(readPluginPayload(k,p.id,stream,int(p.size),facade) && payload.eof());
+            checkWorld(readPluginPayload(k,p.id,stream,int(p.declaredSize),facade) && payload.eof());
         } catch(...) {
             if(worldReadContext) worldReadContext->failedPosition=int(p.bytes-worldReadContext->base)+int(payload.pos);
             streamUnborrow(stream);throw;
@@ -229,31 +236,81 @@ void buildSectorMeshes(Record& rec) {
 uint32_t readFully(rw::Stream* source,void* out,uint32_t n) {
     uint32_t done=0;
     while(done<n) {
+        if(auto* memory=dynamic_cast<rw::StreamMemory*>(source))
+            if(memory->position>=memory->length) break;
         uint32_t got=source->read8(static_cast<uint8_t*>(out)+done,n-done);
         if(!got) break;
+        checkWorld(got<=n-done);
         done+=got;
     }
     return done;
+}
+// CSF's sector property writer 6B8510 writes version/presence (8 bytes),
+// then optionally numTriangles bytes. Its size callback 6B8D20 reports 12
+// plus that array instead. Every enclosing EXTENSION/SECTOR/PLANE/WORLD
+// inherits the extra four bytes. 59F990 walks two children, and 63CB30
+// accounts DECLARED plugin lengths while callbacks advance the real cursor.
+// Stage by that grammar, not by enclosing byte lengths. Normalize envelopes
+// for the bounded decoder, retaining the original callback length separately.
+enum class WorldStage { Payload, Tree, Extension };
+uint32_t stageWorldChunk(rw::Stream* source,std::vector<uint8_t>& bytes,
+                         WorldStage kind,int sectorTriangles=-1,unsigned depth=0) {
+    checkWorld(depth<64);
+    uint32_t h[3];checkWorld(readFully(source,h,12)==12);
+    checkWorld(h[1]<=256u*1024*1024 && bytes.size()+12ull+h[1]<=512u*1024*1024);
+    size_t at=bytes.size();bytes.resize(at+12);std::memcpy(bytes.data()+at,h,12);
+    auto payload=[&](uint32_t n) {
+        size_t p=bytes.size();bytes.resize(p+n);
+        checkWorld(!n || readFully(source,bytes.data()+p,n)==n);
+    };
+    if(kind==WorldStage::Tree) {
+        checkWorld(h[0]==9 || h[0]==10);
+        size_t structure=bytes.size();
+        uint64_t declared=12ull+stageWorldChunk(source,bytes,WorldStage::Payload,-1,depth+1);
+        uint32_t id,size;std::memcpy(&id,bytes.data()+structure,4);std::memcpy(&size,bytes.data()+structure+4,4);
+        checkWorld(id==rw::ID_STRUCT && size>=(h[0]==9?44u:16u));
+        if(h[0]==9) {
+            uint32_t nt;std::memcpy(&nt,bytes.data()+structure+16,4);checkWorld(nt<=65535);
+            declared+=12ull+stageWorldChunk(source,bytes,WorldStage::Extension,int(nt),depth+1);
+        } else {
+            for(int i=0;i<2;++i) declared+=12ull+stageWorldChunk(source,bytes,WorldStage::Tree,-1,depth+1);
+        }
+        checkWorld(declared==h[1]);
+    } else if(kind==WorldStage::Extension) {
+        checkWorld(h[0]==rw::ID_EXTENSION);
+        uint64_t declared=0;
+        while(declared<h[1]) {
+            declared+=12ull+stageWorldChunk(source,bytes,WorldStage::Payload,sectorTriangles,depth+1);
+            checkWorld(declared<=h[1]);
+        }
+    } else if(sectorTriangles>=0 && h[0]==0xffffff00 && h[1]>=12) {
+        payload(8);
+        uint32_t version,present;std::memcpy(&version,bytes.data()+at+12,4);std::memcpy(&present,bytes.data()+at+16,4);
+        if(version==1 && present<=1 && h[1]==12u+(present?unsigned(sectorTriangles):0u)) {
+            payload(present?unsigned(sectorTriangles):0u);
+            worldReadContext->declaredPluginSizes.emplace(at+12,h[1]);
+            ++worldReadContext->shortProperties;
+        } else payload(h[1]-8);
+    } else payload(h[1]);
+    uint32_t physical=uint32_t(bytes.size()-at-12);
+    std::memcpy(bytes.data()+at+4,&physical,4);
+    return h[1];
 }
 World* __cdecl readWorld(Stream* stream) {
     startupTrace("0x0059FEA0","RpWorldStreamRead (CPU BSP)");
     auto* source=streamNative(stream);
     if(!source || worldReadContext || rw::Engine::state!=rw::Engine::Started) return nullptr;
+    if(startupTracing()) std::fprintf(stderr,"RW WorldStreamRead input-position=0x%x (WORLD header consumed)\n",source->tell());
     WorldReadScope scope;
     std::vector<uint8_t> bytes;
     World* w=nullptr;
     try {
-        // The outer WORLD header has already been consumed. Bound all plugin
-        // views and leave the next chunk in the parent stream untouched.
-        for(;;) {
-            checkWorld(!source->eof());
-            if(auto* memory=dynamic_cast<rw::StreamMemory*>(source)) checkWorld(memory->position<memory->length);
-            uint32_t h[3];checkWorld(readFully(source,h,12)==12);
-            checkWorld(h[1]<=256u*1024*1024 && bytes.size()+12+h[1]<=512u*1024*1024);
-            size_t at=bytes.size();bytes.resize(at+12+h[1]);std::memcpy(bytes.data()+at,h,12);
-            checkWorld(!h[1] || readFully(source,bytes.data()+at+12,h[1])==h[1]);
-            if(h[0]==rw::ID_EXTENSION) break;
-        }
+        // 6BEC60 opened a filename stream (type 2/access 1) and consumed
+        // WORLD's header. Do not read to EOF: other game chunks can follow.
+        stageWorldChunk(source,bytes,WorldStage::Payload); // STRUCT
+        stageWorldChunk(source,bytes,WorldStage::Payload); // MATLIST
+        stageWorldChunk(source,bytes,WorldStage::Tree);
+        stageWorldChunk(source,bytes,WorldStage::Extension);
         scope.context.base=bytes.data();
         WorldInput in(bytes.data(),uint32_t(bytes.size()));auto head=worldExpect(in,rw::ID_STRUCT);
         checkWorld(head.size==64);WorldInput header(head.bytes,head.size);
@@ -284,6 +341,10 @@ World* __cdecl readWorld(Stream* stream) {
         checkWorld(constructPlugins(Registry::World,w));rec.constructed=true;
         worldExtension(worldExpect(in,rw::ID_EXTENSION),Registry::World,w);checkWorld(in.eof());
         buildSectorMeshes(rec);
+        if(startupTracing()) std::fprintf(stderr,
+            "RW WorldStreamRead loaded materials=%zu planes=%u sectors=%zu vertices=%llu triangles=%llu short-properties=%u\n",
+            rec.materials.size(),gotPlanes,rec.leaves.size(),static_cast<unsigned long long>(gotVertices),
+            static_cast<unsigned long long>(gotTriangles),scope.context.shortProperties);
         return w;
     } catch(...) {
         if(w) {

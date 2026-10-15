@@ -140,6 +140,7 @@ int __cdecl engineOpen(void* params) {
     auto* facade = static_cast<EngineFacade*>(a);
     facade->slots[8] = reinterpret_cast<uintptr_t>(&setState);
     facade->slots[9] = reinterpret_cast<uintptr_t>(&getState);
+    facade->slots[44] = reinterpret_cast<uintptr_t>(&csf_rw::readNativeTextureABI);
     if (gameMemory.malloc) {
         facade->slots[66] = reinterpret_cast<uintptr_t>(gameMemory.malloc);
         facade->slots[67] = reinterpret_cast<uintptr_t>(gameMemory.free);
@@ -454,11 +455,12 @@ namespace csf_rw {
 bool streamPrepareWrite(Stream* s, uint32_t n) {
     return valid(s) && s->access != 1 && reserve(s,n);
 }
-Stream* streamBorrow(rw::Stream* n) {
-    auto* s=new Stream{0,1,n,false};
+Stream* streamBorrow(rw::Stream* n,bool writable) {
+    auto* s=new Stream{0,writable?2:1,n,false};
     try { streams.insert(s); } catch(...) { delete s; throw; }
     return s;
 }
+Stream* streamBorrow(rw::Stream* n) { return streamBorrow(n,false); }
 void streamUnborrow(Stream* s) { streams.erase(s); delete s; }
 }
 

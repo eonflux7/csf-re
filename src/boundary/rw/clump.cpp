@@ -166,6 +166,7 @@ rw::PluginList& nativePlugins(K k) {
     case K::Camera:return rw::Camera::s_plglist;
     case K::Clump:return rw::Clump::s_plglist;
     case K::Texture:return rw::Texture::s_plglist;
+    case K::Dictionary:return rw::TexDictionary::s_plglist;
     default:return rw::Raster::s_plglist;
     }
 }
@@ -177,6 +178,7 @@ void* observerCreate(void*,int,int);
 void* observerDestroy(void*,int,int);
 rw::Stream* payload(rw::Stream*,int,void*,int,int);
 int sizePayload(void*,int,int);
+rw::Stream* writePayload(rw::Stream*,int,void*,int,int);
 void rights(void*,int,int,uint32_t);
 void completed(void*,int,int);
 void* noop(void* p,int,int) { return p; }
@@ -187,7 +189,7 @@ struct Adapter {
     rw::LinkList saved;
     std::vector<std::unique_ptr<rw::Plugin>> nodes;
     struct Reader { uint32_t id; rw::StreamRead native; int offset,size; bool game;
-        rw::StreamGetSize getSize; rw::RightsCallback rights; };
+        rw::StreamGetSize getSize; rw::RightsCallback rights; rw::StreamWrite write; };
     std::vector<Reader> readers;
     bool installed=false;
     explicit Adapter(K k):kind(k),list(nativePlugins(k)) { saved.init(); }
@@ -201,23 +203,23 @@ struct Adapter {
             auto* original=LLLinkGetData(l,rw::Plugin,inParentList);
             bool isGame=std::find(game.begin(),game.end(),original->id)!=game.end();
             if(original->read || (sizing && original->getSize) || isGame) {
-                readers.push_back({original->id,original->read,original->offset,original->size,isGame,original->getSize,original->rightsCallback});
+                readers.push_back({original->id,original->read,original->offset,original->size,isGame,original->getSize,original->rightsCallback,original->write});
                 auto bridge=p; bridge.offset=int(readers.size()-1); bridge.size=int(kind);
                 bridge.id=original->id; bridge.destructor=noop; bridge.read=payload;
                 if(original->rightsCallback) bridge.rightsCallback=rights;
-                if(sizing) bridge.getSize=sizePayload; add(bridge);
+                if(sizing) { bridge.getSize=sizePayload; bridge.write=writePayload; } add(bridge);
                 game.erase(std::remove(game.begin(),game.end(),original->id),game.end());
             }
         }
         for(auto id:game) {
-            readers.push_back({id,nullptr,0,0,true,nullptr,nullptr}); auto bridge=p;
+            readers.push_back({id,nullptr,0,0,true,nullptr,nullptr,nullptr}); auto bridge=p;
             bridge.offset=int(readers.size()-1); bridge.size=int(kind); bridge.id=id;
             bridge.destructor=noop; bridge.read=payload;
-            if(sizing) bridge.getSize=sizePayload; add(bridge);
+            if(sizing) { bridge.getSize=sizePayload; bridge.write=writePayload; } add(bridge);
         }
         FORLIST(l,list.plugins) {
             auto copy=*LLLinkGetData(l,rw::Plugin,inParentList); copy.read=nullptr;
-            if(sizing) copy.getSize=nullptr; add(copy);
+            if(sizing) { copy.getSize=nullptr; copy.write=nullptr; } add(copy);
         }
         p.destructor=noop; p.constructor=sizing?noop:observerCreate;
         p.alwaysCallback=sizing?nullptr:completed; add(p);
@@ -263,7 +265,7 @@ struct Transaction {
         active->allocations.erase(p); if(q) active->allocations.insert(q); return q;
     }
     Transaction() {
-        for(K k:{K::Frame,K::Atomic,K::Geometry,K::Material,K::Light,K::Camera,K::Clump,K::Texture,K::Raster}) {
+        for(K k:{K::Frame,K::Atomic,K::Geometry,K::Material,K::Light,K::Camera,K::Clump,K::Texture,K::Raster,K::Dictionary}) {
             adapters.emplace_back(new Adapter(k)); adapters.back()->prepare();
         }
         // No fallible operations after installing the temporary dispatch lists.
@@ -285,6 +287,7 @@ struct Transaction {
         case K::Camera:static_cast<rw::Camera*>(p)->destroy();break;
         case K::Frame:static_cast<rw::Frame*>(p)->destroyHierarchy();break;
         case K::Texture:static_cast<rw::Texture*>(p)->destroy();break;
+        case K::Dictionary:static_cast<rw::TexDictionary*>(p)->destroy();break;
         default:static_cast<rw::Raster*>(p)->destroy();break;
         }
     }
@@ -307,7 +310,7 @@ struct Transaction {
             }
             // Release roots first, then any objects the failed reader had not
             // linked yet. Refcounted leftovers can include geometry-list holds.
-            for(K k:{K::Clump,K::Atomic,K::Light,K::Camera,K::Geometry,K::Material,K::Frame,K::Texture,K::Raster}) {
+            for(K k:{K::Clump,K::Atomic,K::Light,K::Camera,K::Geometry,K::Material,K::Frame,K::Dictionary,K::Texture,K::Raster}) {
                 for(;;) {
                     void* p=nullptr;
                     for(auto& entry:live) if(entry.second==k) {
@@ -351,14 +354,16 @@ struct Transaction {
 struct Sizes {
     std::vector<std::unique_ptr<Adapter>> adapters;
     uint32_t savedVersion=rw::version;
+    uint32_t savedBuild=rw::build;
     Sizes() {
-        for(K k:{K::Frame,K::Atomic,K::Geometry,K::Material,K::Light,K::Camera,K::Clump,K::Texture}) {
+        for(K k:{K::Frame,K::Atomic,K::Geometry,K::Material,K::Light,K::Camera,K::Clump,K::Texture,K::Dictionary}) {
             adapters.emplace_back(new Adapter(k)); adapters.back()->prepare(true);
         }
         for(auto& a:adapters) a->install();
         rw::version=0x37002; // original writer's version, not an original address
+        rw::build=55;
     }
-    ~Sizes() { rw::version=savedVersion; }
+    ~Sizes() { rw::version=savedVersion; rw::build=savedBuild; }
 };
 Sizes* sizes=nullptr;
 int sizePayload(void* n,int index,int kind) {
@@ -368,6 +373,78 @@ int sizePayload(void* n,int index,int kind) {
     int game=r.game?pluginPayloadSize(K(kind),r.id,streamObjectExport(K(kind),n)):-1;
     if(game>=0) return game;
     return r.getSize?r.getSize(n,r.offset,r.size):0;
+}
+rw::Stream* writePayload(rw::Stream* s,int length,void* n,int index,int kind) {
+    Adapter* adapter=nullptr;
+    for(auto& a:sizes->adapters) if(a->kind==K(kind)) { adapter=a.get(); break; }
+    require(adapter); auto& r=adapter->readers.at(index);
+    uint32_t start=s->tell();
+    if(r.game && pluginPayloadSize(K(kind),r.id,streamObjectExport(K(kind),n))>=0) {
+        auto* borrowed=streamBorrow(s,true); require(borrowed);
+        bool ok=false;
+        try { ok=writePluginPayload(K(kind),r.id,borrowed,length,streamObjectExport(K(kind),n)); }
+        catch(...) { streamUnborrow(borrowed); throw; }
+        streamUnborrow(borrowed); require(ok);
+    } else require(r.write && r.write(s,length,n,r.offset,r.size));
+    require(s->tell()-start==uint32_t(length)); return s;
+}
+struct Output final:rw::Stream {
+    std::vector<uint8_t> bytes;
+    rw::uint32 write8(const void* p,rw::uint32 n) override {
+        if(!n) return 0;
+        require(n<=512u*1024*1024-bytes.size());
+        auto* b=static_cast<const uint8_t*>(p); bytes.insert(bytes.end(),b,b+n); return n;
+    }
+    rw::uint32 read8(void*,rw::uint32) override { throw ReadFailure{}; }
+    void seek(rw::int32,rw::int32=1) override { throw ReadFailure{}; }
+    rw::uint32 tell() override { return uint32_t(bytes.size()); }
+    bool eof() override { return false; }
+};
+Clump* __cdecl writeClump(Clump* a,Stream* s) {
+    if(active || sizes || !a || !streamNative(s)) return nullptr;
+    try {
+        objectImport(); auto* n=clumpNative(a); require(n && n->getFrame());
+        Sizes context; sizes=&context;
+        Output body;
+        try {
+            // Compose native codecs around a boundary-owned unique geometry
+            // table. Calling native Clump::streamWrite would write a shared
+            // geometry (and invoke its game callbacks) once per atomic.
+            std::vector<rw::Frame*> frames(n->getFrame()->count());
+            rw::makeFrameList(n->getFrame(),frames.data());
+            rw::FrameList_ fl{int(frames.size()),frames.data()};
+            auto frameIndex=[&](rw::Frame* f) {
+                auto it=std::find(frames.begin(),frames.end(),f);require(it!=frames.end());return int(it-frames.begin());
+            };
+            rw::writeChunkHeader(&body,rw::ID_STRUCT,12);
+            body.writeI32(n->countAtomics());body.writeI32(n->countLights());body.writeI32(n->countCameras());
+            fl.streamWrite(&body);
+            std::vector<rw::Geometry*> geometries;
+            FORLIST(l,n->atomics) {
+                auto* g=rw::Atomic::fromClump(l)->geometry;require(g);
+                if(std::find(geometries.begin(),geometries.end(),g)==geometries.end()) geometries.push_back(g);
+            }
+            Output geos;rw::writeChunkHeader(&geos,rw::ID_STRUCT,4);geos.writeI32(geometries.size());
+            for(auto* g:geometries) require(g->streamWrite(&geos));
+            rw::writeChunkHeader(&body,rw::ID_GEOMETRYLIST,geos.bytes.size());body.write8(geos.bytes.data(),geos.bytes.size());
+            FORLIST(l,n->atomics) {
+                auto* at=rw::Atomic::fromClump(l);
+                int32_t data[]={frameIndex(at->getFrame()),int32_t(std::find(geometries.begin(),geometries.end(),at->geometry)-geometries.begin()),at->object.object.flags,0};
+                rw::writeChunkHeader(&body,rw::ID_ATOMIC,40+rw::Atomic::s_plglist.streamGetSize(at));
+                rw::writeChunkHeader(&body,rw::ID_STRUCT,16);body.write8(data,16);rw::Atomic::s_plglist.streamWrite(&body,at);
+            }
+            FORLIST(l,n->lights) {
+                auto* light=rw::Light::fromClump(l);rw::writeChunkHeader(&body,rw::ID_STRUCT,4);body.writeI32(frameIndex(light->getFrame()));require(light->streamWrite(&body));
+            }
+            FORLIST(l,n->cameras) {
+                auto* camera=rw::Camera::fromClump(l);rw::writeChunkHeader(&body,rw::ID_STRUCT,4);body.writeI32(frameIndex(camera->getFrame()));require(camera->streamWrite(&body));
+            }
+            rw::Clump::s_plglist.streamWrite(&body,n);
+        } catch(...) { sizes=nullptr;throw; }
+        uint32_t h[]={rw::ID_CLUMP,uint32_t(body.bytes.size()),0x1c020037};
+        require(streamPrepareWrite(s,12+body.bytes.size())); auto* target=streamNative(s);
+        require(target->write8(h,12)==12 && target->write8(body.bytes.data(),body.bytes.size())==body.bytes.size());sizes=nullptr;return a;
+    } catch(...) { sizes=nullptr;return nullptr; }
 }
 uint32_t __cdecl clumpSize(Clump* a) {
     if(active || sizes || !a || rw::Engine::state!=rw::Engine::Started) return 0;
@@ -505,8 +582,126 @@ Clump* __cdecl readClump(Stream* s) {
         return nullptr;
     } catch(...) { return nullptr; }
 }
+void checkNativeTexture(const Chunk& c) {
+    require(version(c.version)>=0x35000 && version(c.version)<=0x37002);
+    auto list=chunks(c.p,c.size);
+    require(list.size()==2 && list[0].id==rw::ID_STRUCT && list[1].id==rw::ID_EXTENSION);
+    auto& st=list[0]; require(st.size>=88 && word(st.p)==rw::PLATFORM_D3D9);
+    require(version(st.version)>=0x35000 && version(st.version)<=0x37002);
+    auto* p=st.p;
+    unsigned width=p[80]|unsigned(p[81])<<8,height=p[82]|unsigned(p[83])<<8;
+    unsigned depth=p[84],levels=p[85],type=p[86],flags=p[87];
+    uint32_t format=word(p+72),d3d=word(p+76);
+    require(width && height && width<=16384 && height<=16384 && type==rw::Raster::TEXTURE && !(flags&2));
+    require(levels>0 && levels<=unsigned(rw::Raster::calculateNumLevels(width,height)));
+    require(levels==1 || (format&rw::Raster::MIPMAP));
+    unsigned block=0;
+    if(flags&8) {
+        require(d3d>=0x31545844 && d3d<=0x35545844 && (d3d&0xffffff)==0x545844);
+        block=d3d==0x31545844?8:16;
+    } else {
+        unsigned f=format&0xf00;
+        bool palette=(format&(rw::Raster::PAL4|rw::Raster::PAL8))!=0;
+        require(palette?depth==8:
+            ((f==0x100 || f==0x200 || f==0x300 || f==0xa00)?depth==16:
+             f==0x500?depth==32:f==0x600?depth==24:f==0x400 && depth==8));
+    }
+    uint64_t at=88;
+    if(format&rw::Raster::PAL4) at+=128;
+    else if(format&rw::Raster::PAL8) at+=1024;
+    for(unsigned i=0;i<levels;++i) {
+        require(at+4<=st.size); unsigned length=word(p+at); at+=4;
+        unsigned w=std::max(1u,width>>i),h=std::max(1u,height>>i);
+        uint64_t expected=block?uint64_t((w+3)/4)*((h+3)/4)*block:uint64_t(w)*h*(depth/8);
+        require(length==expected && at+length<=st.size); at+=length;
+    }
+    require(at==st.size); chunks(list[1].p,list[1].size);
+}
+bool readAll(rw::Stream* s,void* out,uint32_t length) {
+    uint32_t done=0;
+    while(done<length) {
+        uint32_t n=s->read8(static_cast<uint8_t*>(out)+done,length-done);
+        if(!n || n>length-done) return false;
+        done+=n;
+    }
+    return true;
+}
+TexDictionary* __cdecl readDictionary(Stream* s) {
+    if(active || sizes || rw::Engine::state!=rw::Engine::Started) return nullptr;
+    auto* source=streamNative(s); if(!source) return nullptr;
+    try {
+        std::vector<uint8_t> bytes;
+        for(;;) {
+            uint32_t h[3]; require(readAll(source,h,12));
+            require(h[1]<=256u*1024*1024 && bytes.size()+12+h[1]<=512u*1024*1024);
+            size_t at=bytes.size(); bytes.resize(at+12+h[1]); std::memcpy(bytes.data()+at,h,12);
+            if(h[1]) require(readAll(source,bytes.data()+at+12,h[1]));
+            if(h[0]==rw::ID_EXTENSION) break;
+        }
+        auto list=chunks(bytes.data(),bytes.size());
+        require(list.size()>=2 && list[0].id==rw::ID_STRUCT && list[0].size==4);
+        require(version(list[0].version)>=0x35000 && version(list[0].version)<=0x37002);
+        uint32_t header=word(list[0].p),count=header&65535;
+        require((header>>16)==0 || (header>>16)==2);
+        require(list.size()==size_t(count)+2 && list.back().id==rw::ID_EXTENSION);
+        chunks(list.back().p,list.back().size);
+        for(unsigned i=0;i<count;++i) { require(list[i+1].id==rw::ID_TEXTURENATIVE); checkNativeTexture(list[i+1]); }
+        Transaction transaction; Input input(bytes.data(),bytes.size());
+        // Native TexDictionary::streamRead treats the 16-bit count as signed;
+        // the executable's count is unsigned. Compose the native texture and
+        // plugin codecs so valid dictionaries above 32767 are not truncated.
+        input.seek(16,0);auto* n=rw::TexDictionary::create();require(n);
+        for(uint32_t i=0;i<count;++i) {
+            require(rw::findChunk(&input,rw::ID_TEXTURENATIVE,nullptr,nullptr));
+            auto* t=rw::Texture::streamReadNative(&input);require(t);
+            require(rw::Texture::s_plglist.streamRead(&input,t));n->add(t);
+        }
+        require(rw::TexDictionary::s_plglist.streamRead(&input,n) && input.tell()==bytes.size());
+        streamImageExport(); auto* a=dictionaryFacade(n); require(a);
+        transaction.committed=true; return a;
+    } catch(...) { return nullptr; }
+}
+TexDictionary* __cdecl writeDictionary(TexDictionary* a,Stream* s) {
+    if(active || sizes || !a || !streamNative(s)) return nullptr;
+    try {
+        auto* n=dictionaryNative(a); require(n && n->count()<65536);
+        Sizes context; sizes=&context; Output out;
+        try { n->streamWrite(&out); } catch(...) { sizes=nullptr; throw; }
+        require(streamPrepareWrite(s,out.bytes.size()));
+        require(streamNative(s)->write8(out.bytes.data(),out.bytes.size())==out.bytes.size());sizes=nullptr;return a;
+    } catch(...) { sizes=nullptr;return nullptr; }
+}
 }
 namespace csf_rw {
+int __cdecl readNativeTextureABI(Stream* s,Texture** out,int length) {
+    if(out) *out=nullptr;
+    if(!out || active || sizes || length<12 || !streamNative(s)) return 0;
+    try {
+        auto* source=streamNative(s);uint32_t h[3];require(readAll(source,h,12) && h[0]==rw::ID_STRUCT);
+        require(h[1]<=uint32_t(length-12) && h[1]<=256u*1024*1024);
+        std::vector<uint8_t> bytes(24+h[1]);std::memcpy(bytes.data(),h,12);
+        require(readAll(source,bytes.data()+12,h[1]));
+        uint32_t ext[]={rw::ID_EXTENSION,0,h[2]};std::memcpy(bytes.data()+12+h[1],ext,12);
+        checkNativeTexture({rw::ID_TEXTURENATIVE,h[2],bytes.data(),uint32_t(bytes.size())});
+        Transaction transaction;Input input(bytes.data(),bytes.size());
+        auto* n=rw::Texture::streamReadNative(&input);require(n);
+        streamImageExport(); // adopt completed rasters while rollback can run
+        *out=textureFacade(n);require(*out);transaction.committed=true;return 1;
+    } catch(...) { return 0; }
+}
+bool readImageRegistry(Registry k,Stream* s,void* object) {
+    if(active || sizes || !object || !streamNative(s)) return false;
+    try {
+        auto* source=streamNative(s);uint32_t length=0,v=0;
+        require(rw::findChunk(source,rw::ID_EXTENSION,&length,&v) && v>=0x35000 && v<=0x37002 && length<=256u*1024*1024);
+        std::vector<uint8_t> bytes(12+length);uint32_t h[]={rw::ID_EXTENSION,length,0x1c020037};std::memcpy(bytes.data(),h,12);
+        require(readAll(source,bytes.data()+12,length));chunks(bytes.data()+12,length);
+        void* n=k==K::Dictionary?static_cast<void*>(dictionaryNative(static_cast<TexDictionary*>(object))):static_cast<void*>(textureNative(static_cast<Texture*>(object)));
+        require(n);Transaction transaction;Input input(bytes.data(),bytes.size());
+        require(nativePlugins(k).streamRead(&input,n) && input.tell()==bytes.size());
+        transaction.committed=true;return true;
+    } catch(...) { return false; }
+}
 bool streamWorldMaterials(const uint8_t* bytes,uint32_t length,std::vector<Material*>& out,uint32_t* cursor) {
     if(active || sizes || !out.empty()) return false;
     try {
@@ -536,4 +731,7 @@ bool streamWorldMaterials(const uint8_t* bytes,uint32_t length,std::vector<Mater
 }
 HOOK(0x0058FFC0,readClump,"boundary-rw");
 HOOK(0x0058FD10,clumpSize,"boundary-rw");
+HOOK(0x0058FDF0,writeClump,"boundary-rw");
+HOOK(0x00630A20,readDictionary,"boundary-rw");
+HOOK(0x006308E0,writeDictionary,"boundary-rw");
 #endif

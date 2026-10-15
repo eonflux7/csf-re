@@ -1,6 +1,6 @@
 // Independent game-facing particle ownership boundary; no SDK and no native
-// particle toolkit in librw. Unimplemented advanced/stream callbacks retain
-// their address-keyed fatal slots, never success/no-op substitutes.
+// particle toolkit in librw. Property/stream callbacks, simulation dispatch and
+// CPU PTank quads bridge the game-facing ABI; see docs/RW_PRT_REPORT.md.
 #ifdef CSF_STANDALONE
 #include "globals.h"
 #ifdef CSF_RW_NATIVE_TEST
@@ -9,6 +9,7 @@
 #include "hook.h"
 #endif
 #include "particles.h"
+#include "world.h"
 #include "startup.h"
 #include <algorithm>
 #include <array>
@@ -22,6 +23,7 @@ using namespace csf_rw;
 std::vector<ParticlePropTable*> tables;
 std::vector<ParticleClass*> emitterClasses, particleClasses;
 std::vector<ParticleEmitter*> emitters;
+std::vector<Tank*> ownedTanks;
 void* allocate(size_t n) {
     if (n>UINT32_MAX || rw::Engine::state!=rw::Engine::Started) return nullptr;
     return rw::Engine::memfuncs.rwmalloc(n,0x30130);
@@ -170,50 +172,7 @@ ParticleEmitter* __cdecl emitterSchedule(Atomic*,ParticleEmitter*,void*);
 ParticleEmitter* __cdecl standardEmit(Atomic*,ParticleEmitter*,void*);
 ParticleEmitter* __cdecl sphereEmit(Atomic*,ParticleEmitter*,void*);
 ParticleBatch* __cdecl standardParticleUpdate(ParticleEmitter*,ParticleBatch*,const float*);
-std::array<uintptr_t,11> standardEmitterCallbacks() {
-    return {reinterpret_cast<uintptr_t>(standardEmit),reinterpret_cast<uintptr_t>(emitterBeginUpdate),reinterpret_cast<uintptr_t>(emitterSchedule),reinterpret_cast<uintptr_t>(emitterEndUpdate),0,
-        reinterpret_cast<uintptr_t>(emitterCreateCallback),reinterpret_cast<uintptr_t>(emitterDestroyCallback),CSF_ADDR_FN(0x0057F0F0),
-        CSF_ADDR_FN(0x0057F450),CSF_ADDR_FN(0x0057F7A0),CSF_ADDR_FN(0x0057EDE0)};
-}
-bool defaultCallbacks(ParticleClass* c,bool particle,bool advanced) {
-    // PrtAdv compacts each event column separately: standard callback first,
-    // then shape, then optional interpolator callbacks. It is not row-major
-    // concatenation of the source callback sets.
-    uintptr_t sets[8][11]{}; int n=1, width=particle ? 7 : 11;
-    auto base=standardEmitterCallbacks();
-    if(particle) sets[0][0]=reinterpret_cast<uintptr_t>(standardParticleUpdate);
-    else std::copy(base.begin(),base.end(),sets[0]);
-    uint32_t f=c->id;
-    if(advanced && !particle) {
-        auto& a=sets[n];
-        switch(f&0xff0000) {
-        case 0x10000: a[0]=CSF_ADDR_FN(0x0057AE40);a[5]=CSF_ADDR_FN(0x0057B5B0);a[7]=CSF_ADDR_FN(0x0057B3A0);a[8]=CSF_ADDR_FN(0x0057B4A0);a[9]=CSF_ADDR_FN(0x0057B330);a[10]=CSF_ADDR_FN(0x0057B280);++n;break;
-        case 0x20000: a[0]=CSF_ADDR_FN(0x0057B640);a[7]=CSF_ADDR_FN(0x0057BAB0);a[8]=CSF_ADDR_FN(0x0057BB40);a[9]=CSF_ADDR_FN(0x0057BA70);a[10]=CSF_ADDR_FN(0x0057BA00);++n;break;
-        case 0x30000: a[0]=reinterpret_cast<uintptr_t>(sphereEmit);a[7]=CSF_ADDR_FN(0x0057BFB0);a[8]=CSF_ADDR_FN(0x0057C020);a[9]=CSF_ADDR_FN(0x0057BF70);a[10]=CSF_ADDR_FN(0x0057BF10);++n;break;
-        }
-    }
-    if(advanced && (f&0x100)) {
-        auto& a=sets[n++];
-        if(particle) a[0]=CSF_ADDR_FN(0x0057A600);
-        else { a[0]=CSF_ADDR_FN(0x0057A9A0);a[7]=CSF_ADDR_FN(0x0057AD80);a[8]=CSF_ADDR_FN(0x0057ADE0);a[9]=CSF_ADDR_FN(0x0057AD40);a[10]=CSF_ADDR_FN(0x0057ACD0); }
-    }
-    if(advanced && (f&0x1600)) {
-        auto& a=sets[n++];
-        if(particle) a[0]=CSF_ADDR_FN(0x00578DE0);
-        else { a[0]=CSF_ADDR_FN(0x00579000);a[5]=CSF_ADDR_FN(0x0057A450);a[7]=CSF_ADDR_FN(0x0057A230);a[8]=CSF_ADDR_FN(0x0057A380);a[9]=CSF_ADDR_FN(0x0057A1B0);a[10]=CSF_ADDR_FN(0x0057A090); }
-    }
-    if(advanced && (f&0x800)) {
-        auto& a=sets[n++];
-        if(particle) a[0]=CSF_ADDR_FN(0x00578670);
-        else { a[0]=CSF_ADDR_FN(0x00578760);a[5]=CSF_ADDR_FN(0x00578D40);a[7]=CSF_ADDR_FN(0x00578C60);a[8]=CSF_ADDR_FN(0x00578CE0);a[9]=CSF_ADDR_FN(0x00578C10);a[10]=CSF_ADDR_FN(0x00578BA0); }
-    }
-    uintptr_t result[8*11]{};
-    for(int col=0;col<width;col++) {
-        int row=0;
-        for(int i=0;i<n;i++) if(sets[i][col]) result[row++*width+col]=sets[i][col];
-    }
-    return setCallbacks(c,n,result,width)!=nullptr;
-}
+bool defaultCallbacks(ParticleClass*,bool,bool);
 ParticleClass* classCreate(uint32_t flags,const int32_t* adv,bool particle,bool advanced) {
     Schema s; if(!schema(s,flags,adv,particle,advanced)) return nullptr;
     auto& v=particle ? particleClasses : emitterClasses;
@@ -247,6 +206,9 @@ size_t propertySize(int id,int original) {
     if(id==0 && original==40) return sizeof(ParticleEmitter);
     if(id==1 && original==172) return sizeof(EmitterStandard);
     if(id==6 && original==52) return sizeof(EmitterTank);
+    if(id==0x1000001) return size_t(original)+sizeof(void*)-4;
+    if(id>=0x1000002 && id<=0x1000005) return size_t(original)+sizeof(void*)-4;
+    if(id==0x1000006) return size_t(original)+2*(sizeof(void*)-4);
     return size_t(original);
 }
 size_t emitterSize(ParticleClass* c) {
@@ -315,6 +277,11 @@ ParticleEmitter* __cdecl emitterSchedule(Atomic*,ParticleEmitter* e,void*) {
     return e;
 }
 
+// RW callback columns have ABI-compatible opaque payloads (dt, streams, clones)
+// but different C++ pointer types. Sanitize the callback bodies, not this cast.
+#if defined(__clang__)
+__attribute__((no_sanitize("function")))
+#endif
 bool invokeEmitter(ParticleEmitter* e,int slot,Atomic* a,void* data) {
     auto* c=e->emitterClass;
     for(int i=0;i<c->numCallbackSets;i++) {
@@ -415,6 +382,30 @@ Atomic* __cdecl tankUnlock(Atomic* a) {
     t->dirty|=t->locked; t->locked=0; return a;
 }
 #include "particle_simulation.inc"
+#include "particle_properties.inc"
+#include "particle_stream.inc"
+#include "particle_advanced.inc"
+#include "particle_tank.inc"
+#include "particle_dispatch.inc"
+
+// 5865A0 is PVS sector callback registration, despite the particle-facing
+// database name. CPU worlds currently do not implement the PVS filter. Keep
+// the saved callback and registration guard without replacing world traversal.
+CSF_GLOBAL(int,particlePvsOffset,0x008BE7A4);
+CSF_GLOBAL(World*,particlePvsWorld,0x008BE7A0);
+Sector* __cdecl particlePvsSector(Sector* s) {
+    if(!particlePvsWorld || particlePvsOffset<0) return nullptr;
+    auto cb=payloadGet<SectorRender>(reinterpret_cast<char*>(particlePvsWorld)+particlePvsOffset,40);
+    return cb ? cb(s) : nullptr;
+}
+World* __cdecl particleWorldRenderCallback(World* w) {
+    if(!w || particlePvsOffset<0) return w;
+    auto* p=reinterpret_cast<char*>(w)+particlePvsOffset;
+    if(payloadGet<int>(p) && !payloadGet<int>(p,20)) {
+        payloadSet<int>(p,20,1);payloadSet<SectorRender>(p,40,w->sectorRender);w->sectorRender=particlePvsSector;
+    }
+    return w;
+}
 } // namespace
 
 namespace csf_rw {
@@ -456,7 +447,7 @@ int particleEmitterDestroy(ParticleEmitter* e) {
     emitterClassDestroy(e->emitterClass); particleClassDestroy(e->particleClass);
     forget(emitters,e); release(e); return 1;
 }
-bool particlesEmpty() { return emitters.empty() && emitterClasses.empty() && particleClasses.empty() && tables.empty(); }
+bool particlesEmpty() { return ownedTanks.empty() && emitters.empty() && emitterClasses.empty() && particleClasses.empty() && tables.empty(); }
 void particleBoundaryTerm() { tableTail=nullptr;emitterTail=nullptr;particleTail=nullptr; }
 // Until emitter clone/stream formats are established, populated plugin copy
 // fails rather than sharing an owned emitter between two atomics.
@@ -507,4 +498,97 @@ HOOK(0x005823E0,tankUnlock,"boundary-rw");
 HOOK(0x0057CFE0,standardParticleUpdate,"boundary-rw");
 HOOK(0x0057DBA0,standardEmit,"boundary-rw");
 HOOK(0x0057BBD0,sphereEmit,"boundary-rw");
+HOOK(0x00578BA0,multiClone<0x1000004>,"boundary-rw");
+HOOK(0x00578C10,multiSize<0x1000004>,"boundary-rw");
+HOOK(0x00578C60,(multiStream<0x1000004,true>),"boundary-rw");
+HOOK(0x00578CE0,(multiStream<0x1000004,false>),"boundary-rw");
+HOOK(0x00578D40,multiCreate<0x1000004>,"boundary-rw");
+HOOK(0x0057A090,multiPropsClone,"boundary-rw");
+HOOK(0x0057A1B0,multiPropsSize,"boundary-rw");
+HOOK(0x0057A230,multiPropsStream<true>,"boundary-rw");
+HOOK(0x0057A380,multiPropsStream<false>,"boundary-rw");
+HOOK(0x0057A450,multiPropsCreate,"boundary-rw");
+HOOK(0x0057ACD0,(fixedClone<0x1000001,20,-1,true>),"boundary-rw");
+HOOK(0x0057AD40,(fixedSize<0x1000001,20,-1,true>),"boundary-rw");
+HOOK(0x0057AD80,(fixedStream<0x1000001,20,-1,true,true>),"boundary-rw");
+HOOK(0x0057ADE0,(fixedStream<0x1000001,20,-1,true,false>),"boundary-rw");
+HOOK(0x0057B280,pointClone,"boundary-rw");
+HOOK(0x0057B330,pointSize,"boundary-rw");
+HOOK(0x0057B3A0,pointStream<true>,"boundary-rw");
+HOOK(0x0057B4A0,pointStream<false>,"boundary-rw");
+HOOK(0x0057B5B0,pointCreate,"boundary-rw");
+HOOK(0x0057BA00,(fixedClone<0x1000007,20>),"boundary-rw");
+HOOK(0x0057BA70,(fixedSize<0x1000007,20>),"boundary-rw");
+HOOK(0x0057BAB0,(fixedStream<0x1000007,20,3,false,true>),"boundary-rw");
+HOOK(0x0057BB40,(fixedStream<0x1000007,20,3,false,false>),"boundary-rw");
+HOOK(0x0057BF10,(fixedClone<0x1000008,12>),"boundary-rw");
+HOOK(0x0057BF70,(fixedSize<0x1000008,12>),"boundary-rw");
+HOOK(0x0057BFB0,(fixedStream<0x1000008,12,2,false,true>),"boundary-rw");
+HOOK(0x0057C020,(fixedStream<0x1000008,12,2,false,false>),"boundary-rw");
+HOOK(0x00582400,tankCreate,"boundary-rw");
+HOOK(0x005821A0,tankDestroy,"boundary-rw");
+HOOK(0x005821B0,tankDataFormat,"boundary-rw");
+HOOK(0x00581250,emitterSetTank,"boundary-rw");
+HOOK(0x00578670,multiParticleUpdate<true>,"boundary-rw");
+HOOK(0x00578DE0,multiParticleUpdate<false>,"boundary-rw");
+HOOK(0x0057EDE0,standardClone,"boundary-rw");
+HOOK(0x0057F0F0,standardStream<true>,"boundary-rw");
+HOOK(0x0057F450,standardStream<false>,"boundary-rw");
+HOOK(0x0057F7A0,standardStreamSize,"boundary-rw");
+HOOK(0x00578760,multiEmit<true>,"boundary-rw");
+HOOK(0x00579000,multiEmit<false>,"boundary-rw");
+HOOK(0x0057A9A0,subEmitterEmit,"boundary-rw");
+HOOK(0x0057AE40,shapedEmit<false>,"boundary-rw");
+HOOK(0x0057B640,shapedEmit<true>,"boundary-rw");
+HOOK(0x0057C2D0,particleAtomicUpdate,"boundary-rw");
+HOOK(0x0057C5D0,particleAtomicCreate,"boundary-rw");
+HOOK(0x0057A600,subEmitterUpdate,"boundary-rw");
+HOOK(0x005865A0,particleWorldRenderCallback,"boundary-rw");
+
+namespace {
+std::array<uintptr_t,11> standardEmitterCallbacks() {
+    return {reinterpret_cast<uintptr_t>(standardEmit),reinterpret_cast<uintptr_t>(emitterBeginUpdate),reinterpret_cast<uintptr_t>(emitterSchedule),reinterpret_cast<uintptr_t>(emitterEndUpdate),0,
+        reinterpret_cast<uintptr_t>(emitterCreateCallback),reinterpret_cast<uintptr_t>(emitterDestroyCallback),CSF_ADDR_FN(0x0057F0F0),
+        CSF_ADDR_FN(0x0057F450),CSF_ADDR_FN(0x0057F7A0),CSF_ADDR_FN(0x0057EDE0)};
+}
+bool defaultCallbacks(ParticleClass* c,bool particle,bool advanced) {
+    // PrtAdv compacts each event column separately: standard callback first,
+    // then shape, then optional interpolator callbacks. It is not row-major
+    // concatenation of the source callback sets.
+    uintptr_t sets[8][11]{}; int n=1, width=particle ? 7 : 11;
+    auto base=standardEmitterCallbacks();
+    if(particle) sets[0][0]=reinterpret_cast<uintptr_t>(standardParticleUpdate);
+    else std::copy(base.begin(),base.end(),sets[0]);
+    uint32_t f=c->id;
+    if(advanced && !particle) {
+        auto& a=sets[n];
+        switch(f&0xff0000) {
+        case 0x10000: a[0]=CSF_ADDR_FN(0x0057AE40);a[5]=CSF_ADDR_FN(0x0057B5B0);a[7]=CSF_ADDR_FN(0x0057B3A0);a[8]=CSF_ADDR_FN(0x0057B4A0);a[9]=CSF_ADDR_FN(0x0057B330);a[10]=CSF_ADDR_FN(0x0057B280);++n;break;
+        case 0x20000: a[0]=CSF_ADDR_FN(0x0057B640);a[7]=CSF_ADDR_FN(0x0057BAB0);a[8]=CSF_ADDR_FN(0x0057BB40);a[9]=CSF_ADDR_FN(0x0057BA70);a[10]=CSF_ADDR_FN(0x0057BA00);++n;break;
+        case 0x30000: a[0]=reinterpret_cast<uintptr_t>(sphereEmit);a[7]=CSF_ADDR_FN(0x0057BFB0);a[8]=CSF_ADDR_FN(0x0057C020);a[9]=CSF_ADDR_FN(0x0057BF70);a[10]=CSF_ADDR_FN(0x0057BF10);++n;break;
+        }
+    }
+    if(advanced && (f&0x100)) {
+        auto& a=sets[n++];
+        if(particle) a[0]=CSF_ADDR_FN(0x0057A600);
+        else { a[0]=CSF_ADDR_FN(0x0057A9A0);a[7]=CSF_ADDR_FN(0x0057AD80);a[8]=CSF_ADDR_FN(0x0057ADE0);a[9]=CSF_ADDR_FN(0x0057AD40);a[10]=CSF_ADDR_FN(0x0057ACD0); }
+    }
+    if(advanced && (f&0x1600)) {
+        auto& a=sets[n++];
+        if(particle) a[0]=CSF_ADDR_FN(0x00578DE0);
+        else { a[0]=CSF_ADDR_FN(0x00579000);a[5]=CSF_ADDR_FN(0x0057A450);a[7]=CSF_ADDR_FN(0x0057A230);a[8]=CSF_ADDR_FN(0x0057A380);a[9]=CSF_ADDR_FN(0x0057A1B0);a[10]=CSF_ADDR_FN(0x0057A090); }
+    }
+    if(advanced && (f&0x800)) {
+        auto& a=sets[n++];
+        if(particle) a[0]=CSF_ADDR_FN(0x00578670);
+        else { a[0]=CSF_ADDR_FN(0x00578760);a[5]=CSF_ADDR_FN(0x00578D40);a[7]=CSF_ADDR_FN(0x00578C60);a[8]=CSF_ADDR_FN(0x00578CE0);a[9]=CSF_ADDR_FN(0x00578C10);a[10]=CSF_ADDR_FN(0x00578BA0); }
+    }
+    uintptr_t result[8*11]{};
+    for(int col=0;col<width;col++) {
+        int row=0;
+        for(int i=0;i<n;i++) if(sets[i][col]) result[row++*width+col]=sets[i][col];
+    }
+    return setCallbacks(c,n,result,width)!=nullptr;
+}
+} // namespace
 #endif

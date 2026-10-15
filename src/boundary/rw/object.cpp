@@ -755,6 +755,7 @@ void streamFrameLink(ObjectWithFrame* a,rw::Frame* f) {
     if(parent) append(parent->objects,a->inFrame);
 }
 void* streamObjectExport(Registry k,void* object) {
+    if(k==K::Dictionary) return dictionaryFacade(static_cast<rw::TexDictionary*>(object));
     if(k==K::Frame) { frameExport(); return frameFacade(static_cast<rw::Frame*>(object)); }
     if(k==K::Texture) {
         auto* n=static_cast<rw::Texture*>(object); auto* a=textureFacade(n);
@@ -818,6 +819,7 @@ void* streamObjectExport(Registry k,void* object) {
     return nullptr;
 }
 void* streamObjectCreate(Registry k,void* object) {
+    if(k==K::Dictionary) return dictionaryFacade(static_cast<rw::TexDictionary*>(object));
     if(k==K::Frame) return streamFrameCreate(static_cast<rw::Frame*>(object));
     if(k==K::Texture) return streamTextureCreate(static_cast<rw::Texture*>(object));
     void* result=nullptr;
@@ -861,7 +863,7 @@ void* streamObjectCreate(Registry k,void* object) {
 }
 void* streamObjectForget(Registry k,void* object) {
     if(k==K::Frame) return streamFrameForget(static_cast<rw::Frame*>(object));
-    if(k==K::Texture || k==K::Raster) return streamImageForget(k,object);
+    if(k==K::Texture || k==K::Raster || k==K::Dictionary) return streamImageForget(k,object);
     void* result=nullptr;
     if(k==K::Geometry) {
         for(auto& p:geometries) if(p.second.n==object) { result=p.first; break; }
