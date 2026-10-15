@@ -500,6 +500,34 @@ Clump* __cdecl readClump(Stream* s) {
     } catch(...) { return nullptr; }
 }
 }
+namespace csf_rw {
+bool streamWorldMaterials(const uint8_t* bytes,uint32_t length,std::vector<Material*>& out,uint32_t* cursor) {
+    if(active || sizes || !out.empty()) return false;
+    try {
+        Shape shape;
+        shape.check({rw::ID_MATLIST,0,bytes,length});
+        Transaction transaction;
+        // librw checks eof() AFTER a chunk header. A final zero-length material
+        // extension is valid; supply a private sentinel, never parent bytes.
+        std::vector<uint8_t> bounded(bytes,bytes+length);bounded.resize(size_t(length)+12);
+        Input input(bounded.data(),uint32_t(bounded.size()));
+        try {
+        rw::MaterialList list{};
+        require(rw::MaterialList::streamRead(&input,&list) && input.tell()==length);
+        std::vector<Material*> result;
+        result.reserve(list.numMaterials);
+        for(int i=0;i<list.numMaterials;++i) {
+            publish(K::Material,list.materials[i]);
+            auto* a=static_cast<Material*>(streamObjectExport(K::Material,list.materials[i]));
+            require(a); result.push_back(a);
+        }
+        // Transfer references, not the native pointer array, to the world.
+        rw::Engine::memfuncs.rwfree(list.materials);
+        out.swap(result); transaction.committed=true; return true;
+        } catch(...) { if(cursor) *cursor=input.tell();throw; }
+    } catch(...) { return false; }
+}
+}
 HOOK(0x0058FFC0,readClump,"boundary-rw");
 HOOK(0x0058FD10,clumpSize,"boundary-rw");
 #endif

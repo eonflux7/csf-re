@@ -140,6 +140,21 @@ template <> void* const csf::fn_slot<0x00620060>::p = reinterpret_cast<void*>(&u
 // Particle defaults store these identities, but simulation/advanced stream
 // callbacks are deliberately still fatal in production and in these fixtures.
 #include <cstdlib>
+namespace { int staticFramePluginCell; }
+template <> unsigned char* const csf::gv<0x008A6450>::d = reinterpret_cast<unsigned char*>(&staticFramePluginCell);
+#include "boundary/rw/toolkit9.h"
+#include "boundary/rw/world.h"
+namespace {
+csf_rw::World* pvsCurrentCell;
+uint32_t ltMapStyleCell=2,ltMapRasterCell=38404;
+csf_rw::ToolkitDescriptor visibilityDescriptorCell{};
+void unavailableVisibilityCallback() { std::abort(); }
+}
+template <> unsigned char* const csf::gv<0x008BE7A0>::d = reinterpret_cast<unsigned char*>(&pvsCurrentCell);
+template <> unsigned char* const csf::gv<0x008BE588>::d = reinterpret_cast<unsigned char*>(&ltMapStyleCell);
+template <> unsigned char* const csf::gv<0x008BE5B0>::d = reinterpret_cast<unsigned char*>(&ltMapRasterCell);
+template <> unsigned char* const csf::gv<0x008851D8>::d = reinterpret_cast<unsigned char*>(&visibilityDescriptorCell);
+template <> void* const csf::fn_slot<0x007FF600>::p = reinterpret_cast<void*>(&unavailableVisibilityCallback);
 namespace { void unavailableParticleCallback() { std::abort(); } }
 template <> void* const csf::fn_slot<0x00578670>::p = reinterpret_cast<void*>(&unavailableParticleCallback);
 template <> void* const csf::fn_slot<0x00578760>::p = reinterpret_cast<void*>(&unavailableParticleCallback);

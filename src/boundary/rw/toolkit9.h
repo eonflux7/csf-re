@@ -14,7 +14,7 @@ struct ToolkitChildren { ToolkitObject* objects; uint32_t count; };
 struct ToolkitObject {
     rw::Matrix matrix;
     // Type-dependent +40..+4f payload: vector, children pointer, render callback.
-    unsigned char payload[16];
+    unsigned char payload[3*sizeof(void*)+4];
     uint32_t multiplier, offset;
     uint16_t control0, control1;
     ToolkitDescriptor* descriptor;

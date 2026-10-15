@@ -23,6 +23,7 @@ CSF_FUNC(int,__cdecl,countM,0x0058BDE0,(Material*));
 CSF_FUNC(A*,__cdecl,getM,0x0058BE10,(Material*,int));
 CSF_FUNC(double,__cdecl,realValue,0x0058BE40,(A*,int));
 CSF_FUNC(int,__cdecl,intValue,0x0058BE50,(A*,int));
+CSF_FUNC(const char*,__cdecl,arrayName,0x005870B0,(A*));
 CSF_FUNC(Frame*,__stdcall,newFrame,0x006235D0,());
 CSF_FUNC(int,__cdecl,deleteFrame,0x00623B10,(Frame*));
 CSF_FUNC(Texture*,__cdecl,newTexture,0x00631780,(Raster*));
@@ -53,6 +54,7 @@ int main() {
     A::geometryGet(n,0)->setInt(0,17);A::geometryGet(n,0)->setInt(1,-29);
     A::geometryGet(n,1)->setFloat(0,1.25f);A::geometryGet(n,2)->setInt(0,99);
     assert(countG(g)==3 && intValue(getG(g,0),1)==-29 && realValue(getG(g,1),0)==1.25);
+    assert(arrayName(getG(g,0))==getG(g,0)->name);
     checkMirror(g,Registry::Geometry,rw::UserDataExtension::get(n));
     assert(removeG(g,0)==g && countG(g)==2);
     assert(!std::strcmp(getG(g,0)->name,"second") && intValue(getG(g,1),0)==99);

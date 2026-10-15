@@ -13,6 +13,7 @@ using O = csf_rw::ToolkitObject;
 using D = csf_rw::ToolkitDescriptor;
 using H = csf_rw::ToolkitHandle;
 CSF_GLOBAL(void*, engine, 0x008B68C0);
+CSF_GLOBAL(D, visibilityDescriptor, 0x008851D8);
 CSF_FUNC(rw::Matrix*, __cdecl, multiply, 0x00624630,
          (rw::Matrix*, const rw::Matrix*, const rw::Matrix*));
 
@@ -31,6 +32,7 @@ static void alignedRelease(void* p) {
     auto bytes = static_cast<unsigned char*>(p);
     release(bytes - bytes[-1]); // original alignment allocation header, not _aligned_free
 }
+static int __cdecl releaseVisibilityProxy(O* o) { store(o->payload,0,static_cast<void*>(nullptr));return 1; }
 
 // 006d6760 supplies a count. Exact RET-only slot: formal identity stays unknown.
 static void __cdecl noOperation(uint32_t) {}
@@ -38,7 +40,9 @@ static void __cdecl noOperation(uint32_t) {}
 // 006d6a40/006d6760: owned 96-byte toolkit object, descriptor destructor then
 // alignment-header release. Descriptor callbacks always receive the ABI object.
 static int __cdecl destroyObject(O* o) {
-    reinterpret_cast<void (__cdecl *)(O*)>(o->descriptor->methods[0])(o);
+    if(o->descriptor->methods[0]==reinterpret_cast<void*>(&releaseVisibilityProxy))
+        reinterpret_cast<int (__cdecl *)(O*)>(o->descriptor->methods[0])(o);
+    else reinterpret_cast<void (__cdecl *)(O*)>(o->descriptor->methods[0])(o);
     alignedRelease(o);
     return 1;
 }
@@ -61,8 +65,36 @@ static D* __cdecl setTransform(O* o, const rw::Matrix* m) {
     return d; // original returns descriptor, NOT object
 }
 // 006d6ee0 saves/replaces the visibility proxy's callback at +48.
-static uintptr_t __cdecl setCallback(O* o, uintptr_t cb) { store(o->payload,8,cb); return cb; }
-static uintptr_t __cdecl getCallback(O* o) { return load<uintptr_t>(o->payload,8); }
+static uintptr_t __cdecl setCallback(O* o, uintptr_t cb) { store(o->payload,2*sizeof(void*),cb); return cb; }
+static uintptr_t __cdecl getCallback(O* o) { return load<uintptr_t>(o->payload,2*sizeof(void*)); }
+
+static O* __cdecl createVisibilityProxy(void* object,uint32_t kind) {
+    // Compatible with alignedRelease (one-byte distance to engine allocation).
+    auto alloc=load<void* (__cdecl *)(uint32_t,uint32_t)>(engine,66*sizeof(void*));
+    auto* base=static_cast<unsigned char*>(alloc(sizeof(O)+16,198912));
+    if(!base) return nullptr;
+    auto at=(reinterpret_cast<uintptr_t>(base)+16)&~uintptr_t(15);
+    auto* o=reinterpret_cast<O*>(at); reinterpret_cast<unsigned char*>(o)[-1]=uint8_t(at-reinterpret_cast<uintptr_t>(base));
+    std::memset(o,0,sizeof(*o));o->matrix.setIdentity();o->descriptor=&visibilityDescriptor;
+    store(o->payload,0,object);store(o->payload,sizeof(void*),kind);
+    store(o->payload,2*sizeof(void*),reinterpret_cast<uintptr_t>(CSF_ADDR_FN(0x007FF600)));
+    float value=.2f;std::memcpy(&o->multiplier,&value,4);std::memcpy(&o->offset,&value,4);
+    return o;
+}
+static H* __cdecl dictAdd(H* h,void* entry,uintptr_t value) {
+    auto** entries=static_cast<void**>(h->entries);
+    uint32_t i=0;while(i<h->cursor && entries[i]) ++i;
+    if(i==h->count) return nullptr;
+    if(i==h->cursor) ++h->cursor;
+    entries[i]=entry;static_cast<uintptr_t*>(h->scratch)[i]=value;return h;
+}
+static int __cdecl dictRemove(H* h,void* entry) {
+    auto** entries=static_cast<void**>(h->entries);
+    for(uint32_t i=0;i<h->cursor;++i) if(entries[i]==entry) {
+        entries[i]=nullptr;if(i+1==h->cursor) --h->cursor;return 1;
+    }
+    return 0;
+}
 
 // 006e3d70/006e41d0/006e3f60/006d6ee0 pass scalar bit patterns, not RGBA.
 // Type 8 is an inline array of 96-byte children, not an Rt2d scene hierarchy.
@@ -166,4 +198,8 @@ HOOK(0x007FB030,setConfig20,"boundary-rw");
 HOOK(0x007FB040,setConfig16,"boundary-rw");
 HOOK(0x007FB050,setConfig24,"boundary-rw");
 HOOK(0x007FD9C0,destroyHandle,"boundary-rw");
+HOOK(0x007FF0E0,createVisibilityProxy,"boundary-rw");
+HOOK(0x007FF120,releaseVisibilityProxy,"boundary-rw");
+HOOK(0x007FDA30,dictAdd,"boundary-rw");
+HOOK(0x007FDA80,dictRemove,"boundary-rw");
 #endif

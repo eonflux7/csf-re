@@ -1785,3 +1785,10 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   offline stubs (docs/NETZ_LOAD_REPORT.md). NetZ unresolved 154 -> 122. Walk 13/14 (mission stops at RtAnim).
 - Codex quota: all three logins hit their 5h limit tonight; quota-stopped jobs resume on another login from their
   tree (deep_worker start NAME again).
+- Job rwworld2 (sol-hi, applied after a quota resume): CPU BSP world streaming owned by the boundary (librw has no
+  BSP reader; its materials/geometry are reused), 23/25 world slots (frames' static plugins, matrix/bbox streams,
+  collision and intersection walkers, lightmap/PVS queries); a teardown use-after-free found by ASan fixed. RW
+  unresolved 162 -> 140. Still traps: 0x58CBB0 RpWorldRender, 0x5903F0 RpWorldSectorRender, proxy 0x7FF600.
+  docs/RW_WORLD2_REPORT.md. The mission's .bsp is not in GlobalEK: it comes from the map's own pak.
+- Quota: .codex and codex-2 are at 100% of their 7-day window (reset in ~5 days); codex-3 had ~10% left (rwanim).
+  deep_worker's login() checks only the 5h window: pin CSF_CODEX_LOGIN until the weeklies reset.

@@ -28,6 +28,12 @@ CSF_FUNC(void*,__cdecl,config20,0x007FB030,(void*,float));
 CSF_FUNC(void*,__cdecl,config16,0x007FB040,(void*,float));
 CSF_FUNC(void*,__cdecl,config24,0x007FB050,(void*,float));
 CSF_FUNC(int,__cdecl,destroyH,0x007FD9C0,(H*));
+CSF_FUNC(H*,__cdecl,dictAdd,0x007FDA30,(H*,void*,uintptr_t));
+CSF_FUNC(int,__cdecl,dictRemove,0x007FDA80,(H*,void*));
+CSF_FUNC(O*,__cdecl,newProxy,0x007FF0E0,(void*,uint32_t));
+CSF_FUNC(int,__cdecl,clearProxy,0x007FF120,(O*));
+static void* proxyMalloc(uint32_t n,uint32_t) { return std::malloc(n); }
+static void proxyDtor(O*) {}
 namespace {
 D boxD{}, sphereD{}, capsuleD{};
 std::vector<void*> freed;
@@ -110,8 +116,22 @@ int main() {
     assert(read<float>(config,20)==200 && read<float>(config,24)==5000);
     assert(!std::memcmp(config+76,v,12) && read<uint32_t>(config,28)==0xa5a5a5a5);
     // Use the exact game engine allocator dispatch, recording release order.
-    uintptr_t engineSlots[75]{};engineSlots[67]=reinterpret_cast<uintptr_t>(&freeRecord);
+    uintptr_t engineSlots[75]{};engineSlots[66]=reinterpret_cast<uintptr_t>(&proxyMalloc);engineSlots[67]=reinterpret_cast<uintptr_t>(&freeRecord);
     *reinterpret_cast<void**>(csf::gv<0x008B68C0>::d)=engineSlots;
+    auto& proxyDescriptor=*reinterpret_cast<D*>(csf::gv<0x008851D8>::d);
+    proxyDescriptor.type=9;proxyDescriptor.methods[0]=reinterpret_cast<void*>(&proxyDtor);
+    auto* proxy=newProxy(&o,0);assert(proxy && !(reinterpret_cast<uintptr_t>(proxy)&15));
+    assert(proxy->descriptor==&proxyDescriptor && read<void*>(proxy->payload,0)==&o);
+    assert(getCB(proxy)==reinterpret_cast<uintptr_t>(CSF_ADDR_FN(0x007FF600)));
+    assert(proxy->multiplier==bits(.2f) && proxy->offset==bits(.2f) && proxy->matrix.flags==0x20003);
+    void* entries[2]{};uintptr_t values[2]{};H dict{};dict.entries=entries;dict.scratch=values;dict.count=2;
+    assert(dictAdd(&dict,proxy,123)==&dict && dict.cursor==1 && values[0]==123);
+    assert(dictAdd(&dict,&o,456)==&dict && dict.cursor==2);
+    assert(!dictAdd(&dict,&dict,789));assert(dictRemove(&dict,proxy) && dict.cursor==2);
+    assert(dictAdd(&dict,proxy,42)==&dict && values[0]==42 && dict.cursor==2);
+    assert(dictRemove(&dict,&o) && dict.cursor==1 && !dictRemove(&dict,&o));
+    assert(dictRemove(&dict,proxy) && dict.cursor==0);assert(clearProxy(proxy)==1 && !read<void*>(proxy->payload,0));
+    proxyDescriptor.methods[0]=reinterpret_cast<void*>(CSF_ADDR_FN(0x007FF120));assert(destroy(proxy)==1);
     void* base;auto owned=static_cast<O*>(alignedBlock(sizeof(O),&base));
     *owned=O{};owned->descriptor=&boxD;boxD.methods[0]=reinterpret_cast<void*>(&objectDtor);
     assert(destroy(owned)==1 && destructed==1 && freed.back()==base);

@@ -16,6 +16,8 @@
 #include <vector>
 #include <new>
 #include <cmath>
+#include <cstring>
+CSF_GLOBAL(int, staticFramePlugins, 0x008A6450);
 
 namespace {
 using csf_rw::Frame;
@@ -218,6 +220,31 @@ static M* __cdecl matrixRotate(M* m, const V* v, float a, Op op) { return m->rot
 static M* __cdecl matrixScale(M* m, const V* v, Op op) { return m->scale(v, op); }
 static M* __cdecl matrixTranslate(M* m, const V* v, Op op) { return m->translate(v, op); }
 static M* __cdecl matrixTransform(M* m, const M* other, Op op) { return m->transform(other, op); }
+static M* __cdecl matrixOrthoNormalize(M*,const M*);
+// Original flag controls the streamed hierarchy's static attachment/update
+// policy, not registry registration or allocation sizes.
+static int __cdecl frameSetStaticPlugins(int flag) { staticFramePlugins=flag; return flag; }
+static M* __cdecl matrixStreamRead(csf_rw::Stream* stream,M* out) {
+    auto* in=csf_rw::streamNative(stream); if(!in) return nullptr;
+    try {
+        rw::uint32 length,version;
+        if(!rw::findChunk(in,rw::ID_STRUCT,&length,&version) || length>52 ||
+           version<0x35000 || version>0x37002) return nullptr;
+        float values[13]{};
+        if(in->read8(values,length)!=length) return nullptr;
+        if(!out) out=matrixCreate(); if(!out) return nullptr;
+        std::memcpy(&out->right,values,12); std::memcpy(&out->up,values+3,12);
+        std::memcpy(&out->at,values+6,12); std::memcpy(&out->pos,values+9,12);
+        uint32_t flags; std::memcpy(&flags,values+12,4); out->flags=flags&3;
+        if(out->flags==3) matrixOrthoNormalize(out,out);
+        return out;
+    } catch(...) { return nullptr; }
+}
+static rw::BBox* __cdecl bboxAddPoint(rw::BBox* box,V* point) { box->addPoint(point);return box; }
+static rw::BBox* __cdecl bboxCalculate(rw::BBox* box,V* points,int count) {
+    if(!box || !points || count<=0) return nullptr;
+    box->calculate(points,count);return box;
+}
 // Two CPU APIs absent from librw's public Matrix interface. Adapt with librw
 // vector primitives / the Rodrigues representation used by Matrix::makeRotation.
 // These are boundary operations, not translations of original library code.
@@ -328,6 +355,10 @@ HOOK(0x00623910, frameObjects, "boundary-rw");
 HOOK(0x00623B10, frameDestroy, "boundary-rw");
 HOOK(0x00623B90, frameAdd, "boundary-rw");
 HOOK(0x00624560, matrixOptimize, "boundary-rw");
+HOOK(0x006329C0, frameSetStaticPlugins, "boundary-rw");
+HOOK(0x0063BF20, matrixStreamRead, "boundary-rw");
+HOOK(0x0063C9B0, bboxAddPoint, "boundary-rw");
+HOOK(0x0063C8B0, bboxCalculate, "boundary-rw");
 HOOK(0x00624620, matrixUpdate, "boundary-rw");
 HOOK(0x00624630, matrixMultiply, "boundary-rw");
 HOOK(0x006246A0, matrixOrthoNormalize, "boundary-rw");

@@ -53,6 +53,7 @@ Array* __cdecl materialGet(Material* m,int i) { return arrayAt(materialData(m),i
 // double. Not an integer register return and not a float-pointer getter.
 double __cdecl getReal(Array* a,int i) { return a->getFloat(i); }
 int __cdecl getInt(Array* a,int i) { return a->getInt(i); }
+const char* __cdecl getName(Array* a) { return a->name; }
 }
 HOOK(0x0058BCC0,geometryRemove,"boundary-rw");
 HOOK(0x0058BCE0,geometryCount,"boundary-rw");
@@ -67,4 +68,5 @@ HOOK(0x0058BDE0,materialCount,"boundary-rw");
 HOOK(0x0058BE10,materialGet,"boundary-rw");
 HOOK(0x0058BE40,getReal,"boundary-rw");
 HOOK(0x0058BE50,getInt,"boundary-rw");
+HOOK(0x005870B0,getName,"boundary-rw");
 #endif

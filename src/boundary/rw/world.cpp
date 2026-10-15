@@ -1,4 +1,6 @@
-// Empty-world startup and membership bridge over native librw World.
+// BSP/empty-world facade, membership and CPU queries over native librw objects.
+// Sector geometry is native-owned, but librw's World has no BSP or sector
+// renderer. World/camera visibility-cache production and Rx remain separate.
 #ifdef CSF_STANDALONE
 #include "globals.h"
 #ifdef CSF_RW_NATIVE_TEST
@@ -8,21 +10,82 @@
 #endif
 #include "world.h"
 #include "startup.h"
+#include "plugins.h"
 #include <unordered_map>
 #include <cstring>
 #include <algorithm>
+#include <memory>
+#include <stdexcept>
+#include <cmath>
+#include <unordered_set>
+#include <cstdio>
 CSF_GLOBAL(int, cameraWorldOffset, 0x008B1348);
 CSF_GLOBAL(int, lightWorldOffset, 0x008B1354);
 CSF_GLOBAL(int, atomicWorldOffset, 0x008B134C);
 CSF_GLOBAL(int, clumpWorldOffsetB, 0x008B1350);
 CSF_GLOBAL(int, lightClumpOffsetW, 0x008B13B4);
+CSF_GLOBAL(int, pvsWorldOffset, 0x008BE7A4);
+CSF_GLOBAL(csf_rw::World*, pvsCurrentWorld, 0x008BE7A0);
+CSF_GLOBAL(int, ltMapSectorOffset, 0x008BE56C);
+CSF_GLOBAL(int, ltMapAtomicOffset, 0x008BE564);
+CSF_GLOBAL(uint32_t, ltMapStyle, 0x008BE588);
+CSF_GLOBAL(uint32_t, ltMapRasterFormat, 0x008BE5B0);
 namespace {
 using namespace csf_rw;
-struct Record { rw::World* native; };
+struct Leaf {
+    Sector* facade=nullptr;
+    rw::Geometry* geometry=nullptr;
+    std::vector<int8_t> normals;
+    std::vector<uint8_t> meshes;
+    std::vector<rw::Triangle> triangles;
+    std::vector<rw::Material*> materials;
+    bool constructed=false;
+    ~Leaf() {
+        if(constructed) destructPlugins(Registry::Sector,facade);
+        if(geometry) geometry->destroy();
+        // World material-list references still hold these objects alive.
+        for(auto* m:materials) streamObjectExport(Registry::Material,m);
+        if(facade) rw::Engine::memfuncs.rwfree(facade);
+    }
+};
+struct Record {
+    rw::World* native;
+    std::vector<std::unique_ptr<Leaf>> leaves;
+    std::vector<std::unique_ptr<Plane>> planes;
+    std::vector<Material*> materials;
+    bool streamed=false,constructed=true;
+    Sector* destroyingSector=nullptr;
+};
+void releaseLeaves(Record& record) {
+    // Streamed sectors are part of the original world's allocation. Their
+    // headers/CPU arrays outlive sector plugin destruction and remain readable
+    // by the world destructor; reclaim native/facade storage only afterwards.
+    for(auto it=record.leaves.rbegin();it!=record.leaves.rend();++it) {
+        auto& leaf=**it;
+        if(leaf.constructed) {
+            destructPlugins(Registry::Sector,leaf.facade);leaf.constructed=false;
+        }
+    }
+}
+void disposeLeaves(Record& record) {
+    while(!record.leaves.empty()) {
+        auto leaf=std::move(record.leaves.back());record.leaves.pop_back();
+        record.destroyingSector=leaf->facade;leaf.reset();record.destroyingSector=nullptr;
+    }
+}
 std::unordered_map<World*,Record> worlds;
+struct WorldTie { Link sectorLink;Atomic* atomic;Link atomicLink;Sector* sector; };
+std::unordered_map<Atomic*,std::vector<std::unique_ptr<WorldTie>>> atomicTies;
+bool tieAtomic(World*,Atomic*);
+World* __cdecl removeClump(World*,Clump*);
 void ring(Link& l) { l.next=l.prev=&l; }
 void remove(Link& l) { l.prev->next=l.next;l.next->prev=l.prev;ring(l); }
 void prepend(Link& head,Link& l) { l.prev=&head;l.next=head.next;head.next->prev=&l;head.next=&l; }
+void untieAtomic(Atomic* a) {
+    auto p=atomicTies.find(a);if(p==atomicTies.end()) return;
+    for(auto& t:p->second) { remove(t->sectorLink);remove(t->atomicLink); }
+    atomicTies.erase(p);
+}
 void reorderLight(rw::World* w,rw::Light* l) {
     // librw appends world lights; the original prepends. Enumeration order can
     // decide which local/directional lights fit a backend's finite light set.
@@ -52,10 +115,7 @@ World* __cdecl createWorld(const rw::BBox* box) {
     auto* s=static_cast<Sector*>(rw::Engine::memfuncs.rwmalloc(rootSize,0));
     if(!s) { rw::Engine::memfuncs.rwfree(w); return nullptr; }
     std::memset(s,0,rootSize); s->type=-1;s->bounds=s->collisionBounds=*box;
-#if UINTPTR_MAX == 0xffffffff
-    s->atomics.next=s->atomics.prev=reinterpret_cast<uintptr_t>(&s->atomics);
-    s->lights.next=s->lights.prev=reinterpret_cast<uintptr_t>(&s->lights);
-#endif
+    ring(s->atomics);ring(s->lights);
     w->object={7,0,0,0,nullptr};w->renderOrder=2;w->root=s;w->bounds=*box;
     ring(w->clumps);ring(w->localLights);ring(w->globalLights);w->currentClump=&w->clumps;
     w->sectorRender=emptyRender;
@@ -126,6 +186,7 @@ World* __cdecl removeAtomic(World* w,Atomic* a) {
     auto p=worlds.find(w);auto* n=atomicNative(a);
     if(p==worlds.end() || !n || n->world!=p->second.native) return nullptr;
     p->second.native->removeAtomic(n);
+    untieAtomic(a);
     publish(a,atomicWorldOffset,0,nullptr); return w;
 }
 // Original 58E280 inserts at the head; publish only after preflighting every
@@ -159,7 +220,14 @@ World* __cdecl addClump(World* w,Clump* c) {
         publish(a,lightWorldOffset,0,w);
     }
     FORLIST(l,n->cameras) publish(cameraFacade(rw::Camera::fromClump(l)),cameraWorldOffset,12,w);
-    frameExport();objectExport();return w;
+    frameExport();objectExport();
+    try {
+        for(Link* l=c->atomics.next;l!=&c->atomics;l=l->next) {
+            auto* a=reinterpret_cast<Atomic*>(reinterpret_cast<char*>(l)-offsetof(Atomic,inClump));
+            if(!tieAtomic(w,a)) { removeClump(w,c);return nullptr; }
+        }
+    } catch(...) { removeClump(w,c);return nullptr; }
+    return w;
 }
 World* __cdecl removeClump(World* w,Clump* c) {
     auto p=worlds.find(w);auto* n=clumpNative(c);
@@ -185,14 +253,24 @@ World* __cdecl removeClump(World* w,Clump* c) {
     publish(c,clumpWorldOffsetB,0,nullptr);return w;
 }
 using SectorCB=Sector* (__cdecl *)(Sector*,void*);
-// There is no BSP in librw. The tracked boundary currently owns one empty leaf;
-// do not guess plane-sector pointer fields or traverse unowned game pointers.
+// The BSP belongs to the boundary; this librw checkout has no owning BSP type.
 World* __cdecl worldSectors(World* w,SectorCB cb,void* data) {
-    if(!worlds.count(w) || !cb || !w->root || w->root->type>=0) return nullptr;
-    cb(w->root,data);return w;
+    if(!worlds.count(w) || !cb || !w->root) return nullptr;
+    // Push right, visit left first; callbacks returning null stop the walk.
+    std::vector<Sector*> stack{w->root};
+    while(!stack.empty()) {
+        auto* s=stack.back();stack.pop_back();
+        if(s->type<0) { if(!cb(s,data)) break; }
+        else { auto* p=reinterpret_cast<Plane*>(s);stack.push_back(p->right);stack.push_back(p->left); }
+    }
+    return w;
 }
 World* __cdecl sectorWorld(Sector* s) {
-    for(auto& p:worlds) if(p.first->root==s) return p.first;
+    for(auto& p:worlds) {
+        if(p.second.destroyingSector==s) return p.first;
+        if(p.first->root==s) return p.first;
+        for(auto& leaf:p.second.leaves) if(leaf->facade==s) return p.first;
+    }
     return nullptr;
 }
 World* __cdecl setSectorRender(World* w,SectorRender cb) {
@@ -229,19 +307,47 @@ int __cdecl destroyWorld(World* w) {
     startupTrace("0x0058CBD0","RpWorldDestroy (empty world)");
     return worldDestroy(w);
 }
+#include "world_stream.inc"
+#include "world_queries.inc"
+World* __cdecl readWorldFacade(Stream* stream) {
+    auto* w=readWorld(stream);if(!w) return nullptr;
+    // librw builds one mesh per material-list slot, including unused slots.
+    // World sectors expose only actual groups; don't publish empty meshes for
+    // every other sector's materials. The borrowed native indices stay valid.
+    for(auto& leaf:worlds.at(w).leaves) if(auto* header=leaf->facade->mesh) {
+        auto* meshes=reinterpret_cast<Mesh*>(header+1);unsigned used=0;
+        for(unsigned i=0;i<header->numMeshes;++i) if(meshes[i].numIndices) meshes[used++]=meshes[i];
+        header->numMeshes=uint16_t(used);
+    }
+    return w;
+}
 }
 namespace csf_rw {
-bool worldsEmpty() { return worlds.empty(); }
+bool worldsEmpty() { return worlds.empty() && atomicTies.empty(); }
+bool worldRefreshAtomic(Atomic* a) {
+    auto* n=atomicNative(a);auto* w=n?find(n->world):nullptr;
+    if(!w) { untieAtomic(a);return true; }
+    try { return tieAtomic(w,a); } catch(...) { return false; }
+}
 bool worldDestroy(World* w) {
-    auto p=worlds.find(w);if(p==worlds.end() || !w->root || w->root->type!=-1 ||
-        w->root->numTriangles || w->root->numVertices || w->numClumps ||
+    auto p=worlds.find(w);if(p==worlds.end() || !w->root ||
+        (!p->second.streamed && (w->root->type!=-1 || w->root->numTriangles || w->root->numVertices)) || w->numClumps ||
         w->localLights.next!=&w->localLights || w->globalLights.next!=&w->globalLights) return false;
     // Native World has no camera ring: don't leave borrowed camera world links.
     // The object slice supplies this predicate for its owning camera map.
     if(worldHasCamera(p->second.native)) return false;
-    destructPlugins(Registry::Sector,w->root);destructPlugins(Registry::World,w);
+    if(p->second.streamed) {
+        // Sector callbacks run with the world/materials still discoverable.
+        releaseLeaves(p->second);
+        if(p->second.constructed) destructPlugins(Registry::World,w);
+        disposeLeaves(p->second);
+        for(auto* m:p->second.materials) materialDestroy(m);
+    } else {
+        destructPlugins(Registry::Sector,w->root);destructPlugins(Registry::World,w);
+        rw::Engine::memfuncs.rwfree(w->root);
+    }
     p->second.native->destroy();worlds.erase(p);
-    rw::Engine::memfuncs.rwfree(w->root);rw::Engine::memfuncs.rwfree(w);return true;
+    rw::Engine::memfuncs.rwfree(w);return true;
 }
 }
 HOOK(0x0058CCB0,createWorld,"boundary-rw");
@@ -266,4 +372,18 @@ HOOK(0x0058DE00,removeAtomic,"boundary-rw");
 HOOK(0x0058CFF0,worldSectors,"boundary-rw");
 HOOK(0x0058D1A0,sectorWorld,"boundary-rw");
 HOOK(0x0058CC60,setSectorRender,"boundary-rw");
+HOOK(0x0059FEA0,readWorldFacade,"boundary-rw");
+HOOK(0x005863D0,pvsProgress,"boundary-rw");
+HOOK(0x0056EFF0,getLtStyle,"boundary-rw");
+HOOK(0x0056F2B0,setLtStyle,"boundary-rw");
+HOOK(0x0056F380,queryLightMaps,"boundary-rw");
+HOOK(0x0058DE50,sectorAtomics,"boundary-rw");
+HOOK(0x0056B9B0,sectorIntersections,"boundary-rw");
+HOOK(0x007DA4E0,lineSphere,"boundary-rw");
+HOOK(0x00620640,lineTriangle,"boundary-rw");
+HOOK(0x00620840,sphereTriangle,"boundary-rw");
+HOOK(0x0056BAF0,worldCollision,"boundary-rw");
+HOOK(0x0056BDF0,atomicCollision,"boundary-rw");
+HOOK(0x0058DEF0,cameraSectors,"boundary-rw");
+HOOK(0x0056BBD0,worldAtomicIntersections,"boundary-rw");
 #endif

@@ -88,6 +88,7 @@ void __cdecl syncFacade(ObjectWithFrame* o) {
     if(o->object.type==rw::Atomic::ID) {
         auto* a=reinterpret_cast<Atomic*>(o);
         if(a->interpolator.flags&2) resyncSphere(a);
+        worldRefreshAtomic(a);
     }
     objectExport();
 }
@@ -865,6 +866,7 @@ void* streamObjectForget(Registry k,void* object) {
 // Caller 006e5530 (_rpAtomicResyncInterpolatedSphere): see facade/return/ownership contract above; packet in work/rw4-check/006e5530.packet.
 HOOK(0x0058EB40,resyncSphere,"boundary-rw");
 HOOK(0x0058EC60,worldSphere,"boundary-rw");
+HOOK(0x0058E680,defaultRender,"boundary-rw");
 // Caller 00704000 (RpClumpRender): see facade/return/ownership contract above; packet in work/rw4-check/00704000.packet.
 HOOK(0x0058EEB0,clumpRender,"boundary-rw");
 // Caller 006f71a0 (RpClumpForAllAtomics): see facade/return/ownership contract above; packet in work/rw4-check/006f71a0.packet.

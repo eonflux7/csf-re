@@ -1,5 +1,6 @@
 #pragma once
 #include "image.h"
+#include <vector>
 namespace csf_rw {
 // Private conversions: never publish native owning objects to game callbacks.
 rw::Frame* frameNative(Frame*);
@@ -9,6 +10,7 @@ void objectExport();
 void objectImport();
 bool objectsEmpty();
 bool worldHasCamera(rw::World*);
+bool worldRefreshAtomic(Atomic*);
 rw::Atomic* atomicNative(Atomic*);
 rw::Geometry* geometryNative(Geometry*);
 rw::Material* materialNative(Material*);
@@ -37,4 +39,7 @@ void* streamObjectForget(Registry, void* n);
 Frame* frameFacade(rw::Frame*);
 Frame* streamFrameCreate(rw::Frame*);
 Frame* streamFrameForget(rw::Frame*);
+// Reads a MATLIST payload using the clump transaction's material/texture
+// adapters. On success each entry owns one native reference (duplicates too).
+bool streamWorldMaterials(const uint8_t*, uint32_t, std::vector<Material*>&, uint32_t* cursor=nullptr);
 }
