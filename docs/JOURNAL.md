@@ -1805,3 +1805,22 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   registered in worldAttach with its four accessors. Next: RpWorldStreamRead rejects FR01's world (Maps/FR01/FR01.rws
   in Ransom.pak, now extracted to /mnt/e/dev/csf-paks/Ransom): a chunk payload ends early even with complete reads
   (world_stream.inc readFully), so the scene finaliser gets a null world. Job rwworld3.
+
+
+## 2026-10-17: reconcile status and focus on a playable mission
+- Reconciled the plan with committed work through d15068f9: rwworld3 fixed FR01's structurally inconsistent
+  BSP envelopes; rwteam added 23/33 physics slots, rwprt 46/46 requested particle/PTank slots, and rwmisc
+  17/18 miscellaneous slots. Detailed scope and test limits are in the corresponding reports.
+- Latest recorded Windows mission stop is a sector collision query after the world loads. Collision attach
+  currently provides engine/atomic storage only; sector collision support is missing. World/sector rendering
+  and visibility remain unfinished. The previous journal's world-read rejection is superseded; no new
+  Windows run was performed for this status reconciliation.
+- Status review: 2,199 functions have matching in-game differential evidence, 5,476 executed without that
+  evidence, 7,147 never executed in a recorded smoke, 66 stale and 9 mismatched; 448 pending installation
+  verification. These are snapshots, not a claim that implemented code is verified or gameplay is close.
+- Testing review found check_all.sh can mask failed checks (printed exit codes and pipelines without
+  failure propagation). Emulator matching can have only one usable profile; the mutation audit documents
+  input/observation gaps. Prioritize trustworthy checks and targeted regressions for actual mission bugs.
+- User: update these documents and commit first, then work directly, without deep-workers. Current target:
+  FR01 loads, renders, permits movement/collision and weapon use, then exits; audit same-cause defects and
+  preserve already working menu/profile behavior. Existing unrelated standalone/harness edits are retained.

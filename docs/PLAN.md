@@ -83,34 +83,43 @@ The orchestrator (Opus, interactive) works `queue/` and the backlog below.
 
 ## Current focus (priority order)
 
-Stage since 2026-10-13: the waves are exhausted at 91.9% of game code. What is left is done by **agent jobs**
-(`tools/deep_worker.py`: sol-med for most jobs, sol-hi for hard ones, haiku-hi (or glm-flash for mechanical rewrites) for small ones;
-user 2026-10-13); the orchestrator writes the
-tasks, reviews reports and patches, decides. Everything is visible on `tools/webmon.py` (user, 2026-10-13).
+Stage as of 2026-10-17: first playable standalone mission. Work directly in the checkout;
+**do not start deep-workers or agent jobs** (user, 2026-10-17). The module-wave loop above is historical
+production tooling, not the current work queue. Implementation counts measure code produced, not gameplay
+correctness; report live execution and differential evidence separately.
 
-State on 2026-10-15 (morning): the standalone exe runs every menu, creates and deletes profiles, and starts the
-first mission (FR01): loading screen, mission scripts parsed; it stops at RW animation/world streaming. Tested
-unattended: `tools/dryrun.py --walk` (14 named scripts; all pass but `mission`); `tools/check_all.sh` before each
-commit. Game functions missing from the standalone: 0. Jobs: rwanim (RtAnim/HAnim/skin/MatFX), rwworld2 (BSP world
-streaming, frames, collision), netzload (NetZ-region helpers the game shares). Jobs' output enters the tree only
-after review.
+Latest recorded state (`d15068f9`, 2026-10-15): menus and profile creation work; FR01 scripts, animations,
+clumps and BSP world load. Mission loading then faults in a sector collision query: RpCollision attach
+currently reserves engine/atomic storage but omits sector collision support. World/sector rendering and
+visibility are also unfinished. This is not yet a playable mission. Reports: RW_WORLD3_REPORT.md,
+RW_TEAM_REPORT.md, RW_PRT_REPORT.md and RW_MISC_REPORT.md. PLAN/JOURNAL's older animation/world-read
+blockers have been superseded. No new Windows run was performed during the 2026-10-17 status review.
 
-1. **Play the standalone further, unattended**: extend dryrun SCRIPTS along the player's path (profile select/new,
-   mission select, mission load) and run `dryrun.py --walk` after every applied job; each FAIL line is the next fix
-   (`tools/dbg/stdsym.py work/measure/walk-NAME.out`; odd exit codes: CSF_EXIT_TRACE=1).
-2. **RenderWare on librw** beyond start-up: docs/RW_PORT.md slices, 158 slots unresolved (world rendering: docs/RW_WORLD_REPORT.md).
-3. **Installed functions that differ in emudiff**: emufix3 removed most false-alarm causes; what still differs goes
-   to grouped sol-med jobs (`work/measure/groupwaves.py`, at most 5-6 sol jobs at once, user 2026-10-14).
-4. **Escalation queue** and the last game code: 30 STL instances, the larger queue functions.
-5. **NetZ** (165 unresolved), audio backend beyond null/PCM, D3DX9 and PNG slots (trap stubs today).
-6. **Names and types**: `tools/naming.py`, `propagate.sh`.
+1. **Complete one gameplay path**: FR01 load -> visible world -> player movement/collision -> weapon use ->
+   clean exit. Inventory missing dependencies on that path before implementing them. Start with the sector
+   collision query in the latest mission trace; confirm the ABI, plugin storage and stream contracts, then
+   add a regression that reproduces the failure before fixing it. Next: sector rendering and visibility.
+2. **Make checks dependable**: make `tools/check_all.sh` propagate every failed check and include targeted
+   mission regressions. Its current printed exit codes/pipelines can hide failures. Keep menu/profile checks
+   passing while extending mission checks to assert outcomes, not just process survival.
+3. **Turn each defect into evidence**: use original-binary comparisons, real-asset fixtures and sanitizer
+   checks as appropriate; audit related code for the same root cause (argument cleanup, contiguous records,
+   discarded fields, data relocation). `same 1/8` means one usable emulator input, not complete verification.
+   Record precisely what ran and what remains untested. Do not weaken traps or add success no-ops to advance.
+4. **Then remaining integration**: RenderWare physics/animation/particles consumers, NetZ offline boundaries,
+   audio beyond null/PCM, and remaining library slots needed by this mission. Refresh `tools/status.py` and
+   the link test for current counts; older numbers in reports are snapshots.
+5. **Verification backlog**: unresolved emudiff differences, pending hooks and the escalation queue. Naming
+   and type cleanup follow demonstrated mission needs rather than delaying the playable path.
 
-Earlier decisions that still hold: no playtest milestone, evidence comes from the verifier's smokes, the in-game
-diff and emudiff (user, 2026-10-11); emudiff is a gate step (2026-10-13).
+Continue unattended testing with `tools/dryrun.py --walk` and targeted mission runs when the Windows
+runtime is available. No human playtest is required to continue (earlier user decision); the milestone is
+repeatable automated gameplay evidence. Preserve unrelated working-tree changes when committing.
 
 ## Backlog
 
 ### Loop & tooling
+- [ ] Make check_all.sh fail on any failed build/test (including piped checks); include mission regressions.
 - [ ] IDB: apply the corrected prototypes (db/regargs.json spurious regs dropped) in a sync.py stage + propagate
 - [ ] Float returns Hex-Rays got wrong (`tools/fpret.py`: 0x40FC50 typed `long double`, returns nothing): push
   `void` for the functions in db/fpret.json that differ, in the same sync.py stage, so packets stop showing it.
@@ -193,6 +202,7 @@ diff and emudiff (user, 2026-10-11); emudiff is a gate step (2026-10-13).
       replay_table.inc in CMakeLists.txt
 
 ### Cutover
+- [ ] FR01 playable path: sector collision plugin/query, sector rendering/visibility, movement, weapon use, exit.
 - [ ] Allocator shim: written (`src/boundary/alloc/`, 2026-10-13), not run; open: heap initialisation and alignment, malformed callers (`src/boundary/REPORT.md`); rw.h shim
 - [ ] (generator in place 2026-10-13: `tools/datagen.py`, `docs/DATAGEN.md`; open: see current focus) Generated data for the standalone build: csf::gv<A> (globals: initial bytes from the exe) and csf::vt<A>
       (vtables: tables of csf::fn_slot pointers), from `linktest.py` (`work/linktest.json`; counts in `status.py`)
@@ -212,6 +222,9 @@ negative controls (`controls.py`), verification ledger, waivers; the grunt drive
 guards. One-shot scripts of that phase: `tools/setup/`. History: JOURNAL.
 
 ## Decisions made
+
+- 2026-10-17 (user): update the plan/journal, commit, then proceed directly; **no deep-workers**. Focus on
+  the first playable mission with targeted regressions and explicit evidence instead of bulk production.
 
 - 2026-10-07: **Single-player first; multiplayer stubbed.** NetZ boundary is not reimplemented; game net code
   (net DDL classes etc.) gets stubbed at cutover. Revisit LAN after SP cutover.
