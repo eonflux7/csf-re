@@ -128,9 +128,6 @@ template <> unsigned char* const csf::gv<0x008B09E4>::d = reinterpret_cast<unsig
 namespace { int pluginCell_008B09E8; }
 template <> unsigned char* const csf::gv<0x008B09E8>::d = reinterpret_cast<unsigned char*>(&pluginCell_008B09E8);
 namespace { int pluginCell_008B1348; }
-namespace { int pluginCell_008B1404, pluginCell_008B1408; }
-template <> unsigned char* const csf::gv<0x008B1404>::d = reinterpret_cast<unsigned char*>(&pluginCell_008B1404);
-template <> unsigned char* const csf::gv<0x008B1408>::d = reinterpret_cast<unsigned char*>(&pluginCell_008B1408);
 template <> unsigned char* const csf::gv<0x008B1348>::d = reinterpret_cast<unsigned char*>(&pluginCell_008B1348);
 namespace { int pluginCell_008B134C; }
 template <> unsigned char* const csf::gv<0x008B134C>::d = reinterpret_cast<unsigned char*>(&pluginCell_008B134C);
@@ -163,12 +160,10 @@ template <> unsigned char* const csf::gv<0x008851D8>::d = reinterpret_cast<unsig
 namespace { csf_rw::ToolkitDescriptor defaultPhysicsShapeCell{}; int physicsErrorCell; }
 template <> unsigned char* const csf::gv<0x00885020>::d = reinterpret_cast<unsigned char*>(&defaultPhysicsShapeCell);
 template <> unsigned char* const csf::gv<0x008BE0D4>::d = reinterpret_cast<unsigned char*>(&physicsErrorCell);
-namespace { int idGeometryCell, idSectorCell; }
-template <> unsigned char* const csf::gv<0x008B1404>::d = reinterpret_cast<unsigned char*>(&idGeometryCell);
-template <> unsigned char* const csf::gv<0x008B1408>::d = reinterpret_cast<unsigned char*>(&idSectorCell);
 template <> void* const csf::fn_slot<0x007FF600>::p = reinterpret_cast<void*>(&unavailableVisibilityCallback);
 namespace { int particleStreamVersion=3; }
 template <> unsigned char* const csf::gv<0x008BE6AC>::d = reinterpret_cast<unsigned char*>(&particleStreamVersion);
-namespace { int idGeometry=-1,idSector=-1; }
-template <> unsigned char* const csf::gv<0x008B1404>::d = reinterpret_cast<unsigned char*>(&idGeometry);
-template <> unsigned char* const csf::gv<0x008B1408>::d = reinterpret_cast<unsigned char*>(&idSector);
+
+namespace { int collisionGeometryOffset, collisionSectorOffset; }
+template <> unsigned char* const csf::gv<0x008B092C>::d = reinterpret_cast<unsigned char*>(&collisionGeometryOffset);
+template <> unsigned char* const csf::gv<0x008B0930>::d = reinterpret_cast<unsigned char*>(&collisionSectorOffset);

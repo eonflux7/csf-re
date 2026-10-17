@@ -178,7 +178,12 @@ def audit(cutover, exe):
     code_fixups = 0
     for r in applied:
         a, target = number(r['source']), number(r['target'])
-        assert r['confirmed'] and image.data(a) and image.data(a + 3)
+        assert image.data(a) and image.data(a + 3)
+        assert '+text' not in r['provenance'], 'text word relocated as a pointer'
+        assert (r['confirmed'] or report['candidate_fixups'] or
+                r['provenance'] == 'aligned-word-known-target' or
+                (r['provenance'] == 'aligned-word-image-range' and not image.code(target))), \
+            'unapproved pointer provenance'
         assert image.word(a) == target
         if image.code(target):
             assert target in real | stub, f'undefined fix-up target {target:#x}'

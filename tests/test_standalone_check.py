@@ -90,7 +90,7 @@ class GeneratedInputs(unittest.TestCase):
         source = (ROOT / 'standalone/main.cpp').read_text()
         positions = [source.index(s) for s in ('csf::initialize_data();',
             'csf::run_original_initializers();', 'GetEnvironmentVariableA("CSF_DRYRUN"',
-            'return Game_WinMain(')]
+            'Game_WinMain(')]
         self.assertEqual(positions, sorted(positions))
         dry = source[positions[2]:positions[3]]
         self.assertIn('!std::strcmp(dry, "1")', dry)
@@ -120,6 +120,14 @@ class GeneratedInputs(unittest.TestCase):
 
     def test_changed_initial_bytes_hash_rejected(self):
         self.mutate('data/manifest.json', lambda r: r.update(image_sha256='wrong'))
+
+    def test_text_pointer_or_unknown_provenance_rejected(self):
+        def change(rows, provenance):
+            row = next(r for r in rows if r['applied'])
+            row.update(confirmed=False, provenance=provenance)
+        for provenance in ('data-xref+text', 'unknown'):
+            with self.subTest(provenance=provenance):
+                self.mutate('data/datagen-pointers.json', lambda rows: change(rows, provenance))
 
     def test_duplicate_applied_pointer_rejected(self):
         def duplicate(rows):

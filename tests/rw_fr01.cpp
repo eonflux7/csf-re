@@ -2,6 +2,7 @@
 #include "globals.h"
 #include "boundary/rw/world.h"
 #include "boundary/rw/plugins.h"
+#include "boundary/rw/collision.h"
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
@@ -10,6 +11,7 @@
 using namespace csf_rw;
 CSF_FUNC(int,__cdecl,init,0x00627360,(const MemoryFunctions*,char,int));
 CSF_FUNC(int,__stdcall,attachWorld,0x0058D0B0,());
+CSF_FUNC(int,__stdcall,attachCollision,0x0056C1B0,());
 CSF_FUNC(int,__stdcall,attachUser,0x0058C040,());
 CSF_FUNC(int,__cdecl,openEngine,0x00627290,(void*));
 CSF_FUNC(int,__stdcall,start,0x00626D60,());
@@ -46,11 +48,18 @@ static Stream* propertyRead(Stream* stream,int length,void* p,int off,int n) {
     if(words[1]) assert(skip(stream,s->numTriangles));
     ++propertyReads;return stream;
 }
-struct Counts { unsigned leaves=0;uint64_t vertices=0,triangles=0,indices=0; };
+struct Counts { unsigned leaves=0;uint64_t vertices=0,triangles=0,indices=0,collisionTriangles=0;unsigned collisionTrees=0; };
 static Sector* inspectSector(Sector* s,void* data) {
     auto& c=*static_cast<Counts*>(data);++c.leaves;
     c.vertices+=s->numVertices;c.triangles+=s->numTriangles;
     assert(s->type==-1 && sectorWorld(s) && s->mesh);
+    int off=plugins(Registry::Sector).getPluginOffset(285);assert(off>=int(sizeof(Sector)));
+    CollisionTree* tree;std::memcpy(&tree,reinterpret_cast<char*>(s)+off,sizeof(tree));
+    if(tree) {
+        ++c.collisionTrees;c.collisionTriangles+=tree->numEntries;
+        assert(tree->numEntries==s->numTriangles && tree->nodes && tree->remap);
+        for(unsigned i=0;i<tree->numEntries;++i) assert(tree->remap[i]<s->numTriangles);
+    }
     assert(getID(s)==0);setID(s,int(c.leaves));assert(getID(s)==int(c.leaves));
     for(unsigned i=0;i<s->numTriangles;++i) for(unsigned j=0;j<3;++j) assert(s->triangles[i].v[j]<s->numVertices);
     auto* meshes=reinterpret_cast<Mesh*>(s->mesh+1);
@@ -80,6 +89,8 @@ static bool load(const std::string& path,unsigned expectedLeaves,unsigned expect
     assert(propertyReads-before==expectedLeaves);
     Counts c;assert(sectors(w,inspectSector,&c)==w);
     assert(c.leaves==expectedLeaves && c.vertices==expectedVertices && c.triangles==expectedTriangles);
+    if(expectedLeaves==326) assert(c.collisionTrees==144 && c.collisionTriangles==99653);
+    else assert(!c.collisionTrees);
     assert(w->materials.numMaterials==int(expectedMaterials));
     unsigned mc=0;assert(materials(w,[](Material* m,void* p)->Material* { assert(m);++*static_cast<unsigned*>(p);return m; },&mc)==w);
     assert(mc==expectedMaterials);
@@ -98,7 +109,7 @@ static bool load(const std::string& path,unsigned expectedLeaves,unsigned expect
 }
 int main() {
     const char* base=std::getenv("CSF_FR01_DIR");if(!base) base="/mnt/e/dev/csf-paks/Ransom/Maps/FR01";
-    assert(init(nullptr,0,0) && attachWorld() && attachUser());
+    assert(init(nullptr,0,0) && attachWorld() && attachUser() && attachCollision());
     assert(registerABIPlugin(Registry::Sector,8,0xffffff00,propertyCtor,propertyDtor)>=0);
     assert(registerABIPluginStream(Registry::Sector,0xffffff00,reinterpret_cast<uintptr_t>(propertyRead))>=0);
     assert(openEngine(nullptr) && start());

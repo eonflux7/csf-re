@@ -66,7 +66,8 @@ class DataGeneration(unittest.TestCase):
             self.assertEqual(int(addr, 16) - self.image.start, int(offset))
         # The rule is independent of inferred object size and applies equally
         # to overlapping globals and vtable aliases.
-        self.assertNotIn('reinterpret_cast', self.src)
+        aliases = [line for line in self.src.splitlines() if line.startswith('template <>')]
+        self.assertTrue(all(re.search(r'= image \+ \d+;', line) for line in aliases))
 
     def test_fixups_use_own_storage_or_fn_slots(self):
         applied = [r for r in self.pointers if r['applied']]
@@ -75,7 +76,9 @@ class DataGeneration(unittest.TestCase):
         for r in applied:
             a, t = number(r['source']), number(r['target'])
             self.assertEqual(self.image.word(a), t)
-            self.assertTrue(r['confirmed'])
+            self.assertTrue(r['confirmed'] or r['provenance'] == 'aligned-word-known-target' or
+                            (r['provenance'] == 'aligned-word-image-range' and not self.image.code(t)))
+            self.assertNotIn('+text', r['provenance'])
             expr = f'fn_slot<0x{t:08X}>::p' if self.image.code(t) else f'image + {t - self.image.start}'
             self.assertEqual(fixes[a - self.image.start], expr)
 

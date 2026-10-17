@@ -9,6 +9,9 @@
 #include "plugins.h"
 #include "animation.h"
 #include "particles.h"
+#include "collision.h"
+#include "world.h"
+#include <cmath>
 #include "startup.h"
 #include <cstring>
 #include <array>
@@ -34,6 +37,8 @@ CSF_GLOBAL(int, adcGeometry, 0x008B0904);
 CSF_GLOBAL(int, adcSector, 0x008B0908);
 CSF_GLOBAL(int, collEngine, 0x008B0924);
 CSF_GLOBAL(int, collAtomic, 0x008B0928);
+CSF_GLOBAL(int, collGeometry, 0x008B092C);
+CSF_GLOBAL(int, collSector, 0x008B0930);
 CSF_GLOBAL(int, ptEngine, 0x008B09F0);
 CSF_GLOBAL(int, ptAtomic, 0x008B09EC);
 CSF_GLOBAL(int, prtEngine, 0x008BE6A0);
@@ -188,9 +193,16 @@ int __stdcall adcAttach() {
     if(!attachable(K::Engine,308) || !engine(0,308) || !put(adcGeometry,K::Geometry,12,308) || !put(adcSector,K::Sector,12,308)) return 0;
     rw::ps2::registerADCPlugin(); return 1;
 }
+#include "collision.inc"
 int __stdcall collisionAttach() {
-    csf_rw::startupTrace("0x0056C1B0","RpCollisionPluginAttach (storage only)");
-    return attachable(K::Engine,285) && put(collEngine,K::Engine,4,285) && put(collAtomic,K::Atomic,4,285);
+    csf_rw::startupTrace("0x0056C1B0","RpCollisionPluginAttach (owned collision trees)");
+    if(!attachable(K::Engine,285) || !put(collEngine,K::Engine,4,285) ||
+       !put(collAtomic,K::Atomic,4,285)) return 0;
+    collSector=csf_rw::registerABIPlugin(K::Sector,sizeof(void*),285,collisionCtor,collisionDtor,nullptr);
+    collGeometry=csf_rw::registerABIPlugin(K::Geometry,sizeof(void*),285,collisionCtor,collisionDtor,nullptr);
+    return collSector>=0 && collGeometry>=0 &&
+        csf_rw::registerABIPluginStream(K::Sector,285,reinterpret_cast<uintptr_t>(collisionRead))>=0 &&
+        csf_rw::registerABIPluginStream(K::Geometry,285,reinterpret_cast<uintptr_t>(collisionRead))>=0;
 }
 int __stdcall ptAttach() {
     csf_rw::startupTrace("0x005816E0","RpPTankPluginAttach (CPU clusters)");

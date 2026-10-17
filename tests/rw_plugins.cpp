@@ -91,8 +91,8 @@ int main() {
         assert(animationScheme(273)->apply==1 && animationScheme(273)->customSize==0);
 #if UINTPTR_MAX == 0xffffffff
         assert(plugins(Registry::Atomic).getPluginOffset(-256)==184);
-        assert(plugins(Registry::Sector).getPluginOffset(-256)==292);
-        assert(plugins(Registry::Geometry).size==140);
+        assert(plugins(Registry::Sector).getPluginOffset(-256)==296);
+        assert(plugins(Registry::Geometry).size==144);
         assert(plugins(Registry::Material).getPluginOffset(-256)==60);
         assert(plugins(Registry::Frame).getPluginOffset(-256)==180);
         assert(plugins(Registry::Light).getPluginOffset(-256)==92);

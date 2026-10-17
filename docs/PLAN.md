@@ -95,6 +95,14 @@ visibility are also unfinished. This is not yet a playable mission. Reports: RW_
 RW_TEAM_REPORT.md, RW_PRT_REPORT.md and RW_MISC_REPORT.md. PLAN/JOURNAL's older animation/world-read
 blockers have been superseded. No new Windows run was performed during the 2026-10-17 status review.
 
+Collision update (2026-10-17, native evidence only): sector/geometry collision registration and owned
+modern collision-tree streaming are implemented; the real FR01 collision world loads 144 trees / 99,653
+triangles under ASan/UBSan. The new regression fails with the previous attach implementation and passes
+with the fix. **The Windows mission has not been rerun**, so the recorded collision crash remains the
+last live-game result. Full builds/checks were interrupted at the user's wrap-up request; rerun them
+before deployment. Native build directory for this relocated checkout: `work/rwcheck-20261017` (set
+`CSF_CHECK_RW_BUILD` when running check_all.sh). Legacy collision streams and collision writes are unsupported.
+
 1. **Complete one gameplay path**: FR01 load -> visible world -> player movement/collision -> weapon use ->
    clean exit. Inventory missing dependencies on that path before implementing them. Start with the sector
    collision query in the latest mission trace; confirm the ABI, plugin storage and stream contracts, then
@@ -119,7 +127,7 @@ repeatable automated gameplay evidence. Preserve unrelated working-tree changes 
 ## Backlog
 
 ### Loop & tooling
-- [ ] Make check_all.sh fail on any failed build/test (including piped checks); include mission regressions.
+- [x] (2026-10-17) Make check_all.sh fail on any failed build/test (including piped checks); include mission regressions. Failure-injection tests pass; full real validation still needs completing.
 - [ ] IDB: apply the corrected prototypes (db/regargs.json spurious regs dropped) in a sync.py stage + propagate
 - [ ] Float returns Hex-Rays got wrong (`tools/fpret.py`: 0x40FC50 typed `long double`, returns nothing): push
   `void` for the functions in db/fpret.json that differ, in the same sync.py stage, so packets stop showing it.

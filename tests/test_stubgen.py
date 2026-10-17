@@ -105,7 +105,9 @@ class Generators(unittest.TestCase):
         self.assertEqual(len((self.path / 'initializers.tsv').read_text().splitlines()), 202)
         self.assertIn('__cinit', (self.path / 'startup-disassembly.txt').read_text())
         source = (self.path / 'initializers.cpp').read_text()
-        self.assertLess(source.index('init_007AEDE3()'), source.index('init_007B90C8()'))
+        self.assertLess(source.index('0x007AEDE3: original CRT start-up, not called'),
+                        source.index('0x007B90C8: original CRT start-up, not called'))
+        self.assertNotIn('    init_007B90C8();', source)
         self.compile('init', source)
 
     def test_error_kinds(self):

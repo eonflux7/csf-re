@@ -1824,3 +1824,34 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - User: update these documents and commit first, then work directly, without deep-workers. Current target:
   FR01 loads, renders, permits movement/collision and weapon use, then exits; audit same-cause defects and
   preserve already working menu/profile behavior. Existing unrelated standalone/harness edits are retained.
+
+
+## 2026-10-17: collision boundary and dependable check failures
+- Worked directly, no workers. RpCollision attach omitted the sector/geometry plugin registrations and
+  8B0930/8B092C offsets consumed by the game. Added owned collision-tree storage and a bounded modern
+  0x11D stream decoder (retail 3.6.0.1–3.7.0.2 shape), node/range/remap validation and teardown. Stream
+  inf/sup bounds become runtime sup/inf; no invented collision success or empty-tree fallback. Legacy
+  streams and writing remain unsupported. New globals use CSF_GLOBAL, original x86 layout is asserted.
+- tests/rw_collision.cpp fails at the missing sector registration against a freshly compiled pre-fix
+  plugins.cpp, then passes with the fix under ASan/UBSan. Covers both registries, malformed/cyclic trees,
+  remaps, allocation failure, duplicate reads, tracked allocation reclamation and two engine lifecycles.
+- tests/rw_fr01.cpp now attaches collision and checks the real asset: FR01_col.rws loads 144 trees with
+  all 99,653 triangles; FR01.rws has no collision extensions. Both worlds load and tear down under
+  ASan/UBSan. Existing plugin/world tests pass; x86 MSVC compilation of plugins.cpp and the collision/
+  plugin tests passed before the final graph-height validation refinement. Logs: work/collision-*.log.
+- Fresh native builds exposed six duplicate 8B1404/8B1408 definitions in tests/rw_globals.cpp from earlier
+  integration; consolidated them. Updated x86 plugin-offset expectations for the added pointer storage.
+- check_all.sh now stops on failed commands, keeps full logs, checks the current built NetZ object,
+  includes mission/profile regressions and the Python suite, and checks dryrun's recorded finished flag.
+  Three runner tests inject failures across configure/native/link/build/NetZ/mission/unit/walk stages and
+  pass. CSF_CHECK_RW_BUILD allows a fresh native directory when the checkout path changes.
+- Added Python-suite execution exposed stale tests/audit assumptions (IAT casts, explicitly heuristic
+  data fixups, skipped original CRT initialization, WinMain exit wrapper). Updated checks to the current
+  contracts; added rejection tests for text/unknown pointer provenance. The original run had 2 failures
+  and 2 errors; the rerun was interrupted before completion, so these changes are not claimed fully verified.
+- Configured fresh native and cross CMake caches for /home/eon/projects/csf-re (old caches referred to
+  /home/eon/dev/csf-re). The broad native phase passed before the final graph-height refinement; targeted
+  collision/real-asset tests passed again after it. Full link/build/unit validation was stopped at the
+  user's wrap-up request; no Windows mission was launched. Resume with check_all.sh and then the mission
+  run, followed by inspection using its matching fresh link map. Existing standalone/harness edits remain
+  outside this change. Windows interop requires execution outside the sandbox (vsock restriction).
