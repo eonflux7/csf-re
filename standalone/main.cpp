@@ -10,6 +10,7 @@
 namespace csf { extern unsigned g_heapCheck; }  // src/boundary/crt/crt.cpp: CSF_HEAP_CHECK
 
 // db/functions.csv: _WinMain@16; parked in queue/00509250.md.
+void csf_harness_install();
 CSF_FUNC(int, __stdcall, Game_WinMain, 0x00509250, (HINSTANCE, HINSTANCE, LPSTR, int));
 
 // CSF_HANG_SECONDS=N: after N seconds, suspend the main thread, print its registers and every stack word that
@@ -182,6 +183,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command, int sh
         std::atexit(exit_dump);
         install_terminate_trace();
     }
+    csf_harness_install();  // standalone/harness.cpp: CSF_DISPLAY, CSF_SKIP_INTRO, CSF_GOTO, CSF_MISSION, CSF_SHOTS
     const int code = Game_WinMain(instance, previous, command, show);
     std::fprintf(stderr, "csf: WinMain returned %d\n", code);
     // The game has shut its memory system down by now, and the boundary's static containers (rw frame maps, stream

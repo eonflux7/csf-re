@@ -110,6 +110,8 @@ static BOOL __fastcall GameScreen_HasBriefing(uint8_t* self, void*) {
 // 0x713400). The cursor moves by relative deltas: goto parks it at (0,0) with a large negative move, then moves to
 // (X,Y). Text fields read WM_CHAR (0x508D40), not DirectInput: char posts WM_CHAR C (a code, 8 = backspace) to the
 // active window of the polling (game) thread. Each injected step prints "csf: input ...".
+extern bool csf_harness_offscreen, csf_harness_menu_clock;  // standalone/harness.cpp
+extern DWORD csf_harness_menu_tick;
 namespace {
 struct ScriptStep { DWORD at; int kind; int a, b; };  // kind: 0 key, 1 goto, 2 click, 3 rclick, 4 wheel, 5 char
 // Fixed storage: no dynamic initialisers or atexit destructors in this file (tests/audio1_offline.py and
@@ -129,6 +131,10 @@ EventQueue g_pendingKeys, g_pendingMouse;
 using GetDeviceDataFn = HRESULT (STDMETHODCALLTYPE*)(void*, DWORD, DIDEVICEOBJECTDATA*, DWORD*, DWORD);
 using CreateDeviceFn = HRESULT (STDMETHODCALLTYPE*)(void*, REFGUID, void**, void*);
 CreateDeviceFn g_createDevice;
+using SetCooperativeLevelFn = HRESULT (STDMETHODCALLTYPE*)(void*, HWND, DWORD);
+using GetDeviceStateFn = HRESULT (STDMETHODCALLTYPE*)(void*, DWORD, void*);
+SetCooperativeLevelFn g_setCooperativeLevel;
+GetDeviceStateFn g_getDeviceState;
 
 void ScriptedInput_Load() {
     char text[4096];
@@ -145,7 +151,8 @@ void Push(EventQueue& q, DWORD offset, DWORD data) {
     DIDEVICEOBJECTDATA e{}; e.dwOfs = offset; e.dwData = data; e.dwTimeStamp = GetTickCount(); q.push(e);
 }
 void ScriptedInput_Advance() {
-    const DWORD now = GetTickCount() - g_scriptStart;
+    if (csf_harness_menu_clock && !csf_harness_menu_tick) return;  // harness runs: times count from the main menu
+    const DWORD now = GetTickCount() - (csf_harness_menu_clock ? csf_harness_menu_tick : g_scriptStart);
     while (g_scriptNext < g_scriptCount && g_script[g_scriptNext].at <= now) {
         const ScriptStep& s = g_script[g_scriptNext++];
         std::fprintf(stderr, "csf: input t=%.1f kind=%d %d,%d\n", now / 1000.0, s.kind, s.a, s.b);
@@ -165,6 +172,7 @@ HRESULT Inject(GetDeviceDataFn real, EventQueue& q, void* self, DWORD size, DIDE
                DWORD* count, DWORD flags) {
     const DWORD capacity = count ? *count : 0;
     HRESULT result = real(self, size, data, count, flags);
+    if (csf_harness_offscreen && count) { *count = 0; result = DI_OK; }  // the user's own input never reaches the game
     ScriptedInput_Advance();
     if (q.empty() || !data || !count || size != sizeof(DIDEVICEOBJECTDATA) || (flags & DIGDD_PEEK)) return result;
     if (FAILED(result)) { *count = 0; result = DI_OK; }
@@ -198,6 +206,16 @@ void PatchSlot(void* object, int slot, void* fn, void** original) {
     table[slot] = fn;
     VirtualProtect(&table[slot], sizeof(void*), old, &old);
 }
+// CSF_DISPLAY=offscreen (standalone/harness.cpp): shared, background devices, so the game never takes the user's
+// keyboard or mouse; their state reads as idle and buffered reads carry only scripted events.
+HRESULT STDMETHODCALLTYPE CooperativeLevel(void* self, HWND window, DWORD) {
+    return g_setCooperativeLevel(self, window, DISCL_NONEXCLUSIVE | DISCL_BACKGROUND);
+}
+HRESULT STDMETHODCALLTYPE DeviceState(void* self, DWORD size, void* data) {
+    const HRESULT result = g_getDeviceState(self, size, data);
+    if (data) std::memset(data, 0, size);
+    return SUCCEEDED(result) ? result : DI_OK;
+}
 HRESULT STDMETHODCALLTYPE CreateDevice(void* self, REFGUID guid, void** device, void* outer) {
     const HRESULT result = g_createDevice(self, guid, device, outer);
     if (SUCCEEDED(result) && device && *device) {
@@ -205,13 +223,17 @@ HRESULT STDMETHODCALLTYPE CreateDevice(void* self, REFGUID guid, void** device, 
         if (guid == GUID_SysKeyboard) g_keyboard = *device;
         if (guid == GUID_SysMouse) g_mouse = *device;
         if (!g_getDeviceData) PatchSlot(*device, 10, reinterpret_cast<void*>(&DeviceData), reinterpret_cast<void**>(&g_getDeviceData));
+        if (csf_harness_offscreen && !g_setCooperativeLevel) {
+            PatchSlot(*device, 13, reinterpret_cast<void*>(&CooperativeLevel), reinterpret_cast<void**>(&g_setCooperativeLevel));
+            PatchSlot(*device, 9, reinterpret_cast<void*>(&DeviceState), reinterpret_cast<void**>(&g_getDeviceState));
+        }
     }
     return result;
 }
 }  // namespace
 static void ScriptedInput_WrapInterface(void* directInput) {
     ScriptedInput_Load();
-    if (g_scriptCount && !g_createDevice)
+    if ((g_scriptCount || csf_harness_offscreen) && !g_createDevice)
         PatchSlot(directInput, 3, reinterpret_cast<void*>(&CreateDevice), reinterpret_cast<void**>(&g_createDevice));
 }
 

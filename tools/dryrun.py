@@ -2,18 +2,24 @@
 """Run the standalone exe's dry run on Windows (WSL interop) and record how far it got.
 
   dryrun.py [--dir /mnt/e/dev/csf-standalone] [--exe build/csf_standalone.exe] [--timeout 60]
-  dryrun.py --full [--timeout 60]   no CSF_DRYRUN: on into the game's WinMain (opens a window); killed at the
-                                    timeout; output DIR/winmain.out, nothing recorded in work/dryrun.json
-  dryrun.py --full --input SCRIPT --shots 20,25 [--tag menu]
-      SCRIPT: scripted DirectInput events (CSF_INPUT, standalone/game_plain.cpp), "T:key:DIK;T:goto:X,Y;T:click;T:char:C"
-      (T seconds; DIK 1 = Escape, 28 = Enter; char: WM_CHAR code for text fields); --shots: screenshots at those seconds (from the start of the run)
-      to DIR/shots/TAG-T.png (tools/dbg/shot.ps1, the primary screen) plus a 640-wide TAG-T.jpg to look at.
-      Named scripts: --input intro-skip, see SCRIPTS. With --input, CSF_PAGE_TRACE prints "csf: page NAME" for every
-      menu page requested (0x71C2A0), and the summary line ends with the pages seen.
-  dryrun.py --walk [NAME,NAME..] [--timeout 40]
-      every named script (default: all but intro-skip) in turn, a screenshot at its WALK time; one line each and
+  dryrun.py --full [--timeout 60]   no CSF_DRYRUN: on into the game's WinMain; killed at the timeout; output
+                                    DIR/winmain.out, nothing recorded in work/dryrun.json
+      Every --full run is OFFSCREEN and silent (standalone/harness.cpp, CSF_DISPLAY=offscreen): a 1280x960 window
+      outside the desktop that never takes focus, the keyboard or the mouse, movies without sound, the intro skipped.
+      --show: a visible 1280x960 window instead (for a person to watch); --intro: play the intro movies.
+  dryrun.py --full --goto P_Option        open a menu page directly once the main menu is up
+  dryrun.py --full --mission Maps/FR01/Ransom.scn --timeout 200 --shots 30,m60
+                                          start a scenario directly (as the scenario select page does)
+      --shots: back-buffer PNGs DIR/shots/TAG-T.png (+ 640-wide .jpg to look at) at T seconds after the first frame,
+      or mT seconds after the main menu. --quit-after T closes the window T s after the first frame.
+  dryrun.py --full --input SCRIPT         scripted DirectInput clicks/keys (CSF_INPUT "T:key:DIK;T:goto:X,Y;T:click;
+      T:char:C", T seconds after the main menu, 800x600 menu coordinates) for flows that need a page's own state;
+      named scripts in SCRIPTS. CSF_PAGE_TRACE prints "csf: page NAME" for every page requested (0x71C2A0).
+  dryrun.py --walk [NAME,NAME..] [--timeout 30]
+      every WALK entry (default: all but mission) in turn, offscreen, one after another: one line each and
       work/measure/walk.json (exit, trap, first exception, pages, expected page reached); outputs kept as
-      work/measure/walk-NAME.out. Exit status 1 when a script faulted, trapped or missed its page.
+      work/measure/walk-NAME.out, shots DIR/shots/NAME-mT.jpg. Exit status 1 when one faulted, trapped or missed
+      its page.
 
 --full runs back up Documents/CSF Data (profiles, saves; shared with the original game) to work/csfdata-run and put
 it back afterwards; CSF_KEEP_SAVES=1 keeps what the run wrote.
@@ -25,67 +31,64 @@ initialisers run of the table, the last one, the trap it stopped at (if any), ex
 import argparse, json, os, re, shutil, subprocess, sys, threading, time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# Named input scripts (800x600 menu coordinates). The intro movies skip on a key; the first ~8 s are start-up.
-SKIP = "8:key:1;10:key:1;12:key:1;14:key:1;16:key:1"  # one Escape per movie: 4 logos + the intro; menu at ~20 s
+# Walk entries. Pages that open on their own are opened directly (--goto: the menu manager's open-page call, as the
+# page's button would); flows that need the page's own state (profile selection, typing a name, the Exit
+# confirmation) use scripted DirectInput clicks (CSF_INPUT, 800x600 menu coordinates), timed from the main menu.
 SCRIPTS = {
-    "intro-skip": SKIP,
-    "campaign": SKIP + ";20:goto:400,253;21:click",
-    "settings": SKIP + ";20:goto:400,344;21:click",
-    "credits": SKIP + ";20:goto:400,388;21:click",
-    "exit": SKIP + ";20:goto:400,433;21:click",
-    "settings-controls": SKIP + ";20:goto:400,344;21:click;24:goto:400,203;25:click",
-    "settings-video": SKIP + ";20:goto:400,344;21:click;24:goto:400,253;25:click",
-    "settings-sound": SKIP + ";20:goto:400,344;21:click;24:goto:400,302;25:click",
-    "settings-game": SKIP + ";20:goto:400,344;21:click;24:goto:400,352;25:click",
-    "settings-back": SKIP + ";20:goto:400,344;21:click;24:goto:400,517;25:click",
-    "exit-ok": SKIP + ";20:goto:400,433;21:click;24:goto:296,320;25:click",  # Exit -> Ok: the process ends
+    "exit": "0:goto:400,433;1:click",
+    "exit-ok": "0:goto:400,433;1:click;4:goto:296,320;5:click",  # Exit -> Ok: the process ends
     # Campaign profiles page: list entries from (494,218), 22 px apart; Select (200,222), New (200,267), Back (400,517)
-    "campaign-select": SKIP + ";20:goto:400,253;21:click;24:goto:494,218;25:click;27:goto:200,222;28:click",
-    # Campaign page: Play Mission (230,177), Load Game (230,217), Extras (230,257)
-    "mission": SKIP + ";20:goto:400,253;21:click;24:goto:494,218;25:click;27:goto:200,222;28:click"
-               ";31:goto:230,177;32:click;35:goto:400,320;36:click",  # difficulty: Easy (240,320) Normal Hard (560,320)
+    "campaign-select": "0:goto:400,253;1:click;4:goto:494,218;5:click;7:goto:200,222;8:click",
+    # Campaign page: Play Mission (230,177); difficulty: Easy (240,320) Normal (400,320) Hard (560,320)
+    "mission-menus": "0:goto:400,253;1:click;4:goto:494,218;5:click;7:goto:200,222;8:click"
+                     ";11:goto:230,177;12:click;15:goto:400,320;16:click",
     # deletes the third profile (the one campaign-new-ok adds) after its confirmation fades in
-    "campaign-delete-3": SKIP + ";20:goto:400,253;21:click;24:goto:494,262;25:click;27:goto:200,312;28:click"
-                         ";36:goto:296,320;37:click",
-    "campaign-new": SKIP + ";20:goto:400,253;21:click;24:goto:200,267;25:click",
-    # name entry: a real key press is a DirectInput key event plus WM_CHAR; "TEST", Backspace (DIK 14), "T" (shot 34)
-    "campaign-new-type": SKIP + ";20:goto:400,253;21:click;24:goto:200,267;25:click"
-                         ";27:char:84;27:key:20;27.5:char:69;27.5:key:18;28:char:83;28:key:31;28.5:char:84;28.5:key:20"
-                         ";29:key:14;29.5:char:84;29.5:key:20",
-    "campaign-new-ok": SKIP + ";20:goto:400,253;21:click;24:goto:200,267;25:click"
-                       ";27:char:66;27:key:48;27.5:char:79;27.5:key:24;28:char:84;28:key:20;30:goto:588,517;31:click",
+    "campaign-delete-3": "0:goto:400,253;1:click;4:goto:494,262;5:click;7:goto:200,312;8:click;16:goto:296,320;17:click",
+    "campaign-new": "0:goto:400,253;1:click;4:goto:200,267;5:click",
+    # name entry: a key press is a DirectInput key event plus WM_CHAR; "TEST", Backspace (DIK 14), "T"
+    "campaign-new-type": "0:goto:400,253;1:click;4:goto:200,267;5:click"
+                         ";7:char:84;7:key:20;7.5:char:69;7.5:key:18;8:char:83;8:key:31;8.5:char:84;8.5:key:20"
+                         ";9:key:14;9.5:char:84;9.5:key:20",
+    "campaign-new-ok": "0:goto:400,253;1:click;4:goto:200,267;5:click"
+                       ";7:char:66;7:key:48;7.5:char:79;7.5:key:24;8:char:84;8:key:20;10:goto:588,517;11:click",
 }
-# --walk: screenshot time and the page the script should end on (None: not checked; "exit": the process ends with
-# WinMain's return code - a different one means the CRT's exit failed; rerun with CSF_EXIT_TRACE=1 to see why).
+# --walk: name -> dict(goto=PAGE | input=SCRIPT | mission=SCN, after=seconds after the main menu for the screenshot
+# (None: no shot), want=the last page requested ("exit": the process must end with WinMain's return code; None: not
+# checked)).
 WALK = {
-    "campaign": (32, "Menus/P_Profil.fbs"), "credits": (32, "Menus/P_Credits.fbs"),
-    "settings-controls": (32, "Menus/P_Contro.fbs"), "settings-video": (32, "Menus/P_Video.fbs"),
-    "settings-sound": (42, "Menus/P_Sound.fbs"), "settings-game": (32, "Menus/P_MOG.fbs"),
-    "settings-back": (32, "Menus/P_MePrin.fbs"), "exit": (32, "Menus/P_MsgBox.fbs"), "exit-ok": (None, "exit"),
-    "campaign-select": (38, "Menus/P_Campan.fbs"), "campaign-new": (32, "Menus/P_Edit.fbs"),
-    "campaign-new-type": (34, "Menus/P_Edit.fbs"), "mission": (90, None), "campaign-new-ok": (36, None),
+    "menu": dict(after=3, want="Menus/P_MePrin.fbs"),
+    "campaign": dict(goto="P_Profil", after=3, want="Menus/P_Profil.fbs"),
+    "credits": dict(goto="P_Credits", after=3, want="Menus/P_Credits.fbs"),
+    "settings": dict(goto="P_Option", after=3, want="Menus/P_Option.fbs"),
+    "settings-controls": dict(goto="P_Contro", after=3, want="Menus/P_Contro.fbs"),
+    "settings-video": dict(goto="P_Video", after=3, want="Menus/P_Video.fbs"),
+    "settings-sound": dict(goto="P_Sound", after=3, want="Menus/P_Sound.fbs"),
+    "settings-game": dict(goto="P_MOG", after=3, want="Menus/P_MOG.fbs"),
+    "exit": dict(input="exit", after=3, want="Menus/P_MsgBox.fbs"),
+    "exit-ok": dict(input="exit-ok", after=None, want="exit"),
+    "campaign-select": dict(input="campaign-select", after=10, want="Menus/P_Campan.fbs"),
+    "campaign-new": dict(input="campaign-new", after=7, want="Menus/P_Edit.fbs"),
+    "campaign-new-type": dict(input="campaign-new-type", after=11, want="Menus/P_Edit.fbs"),
+    "campaign-new-ok": dict(input="campaign-new-ok", after=14, want=None),
+    "mission": dict(mission="Maps/FR01/Ransom.scn", after=60, want=None),
 }
 
 
-def shots(dirpath, tag, times, t0):
-    """Screenshots of the primary screen at the given seconds after t0 (PowerShell CopyFromScreen)."""
-    os.makedirs(os.path.join(dirpath, "shots"), exist_ok=True)
-    script = subprocess.run(["wslpath", "-w", os.path.join(ROOT, "tools", "dbg", "shot.ps1")],
-                            capture_output=True, text=True).stdout.strip()
-    for t in times:
-        time.sleep(max(0, t0 + t - time.time()))
-        out = subprocess.run(["wslpath", "-w", os.path.join(dirpath, "shots", f"{tag}-{t:g}.png")],
-                             capture_output=True, text=True).stdout.strip()
-        subprocess.run(["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script, out],
-                       capture_output=True)
+def thumbnails(dirpath, tag):
+    """640-wide JPEGs of the run's back-buffer PNGs (standalone/harness.cpp writes DIR/shots/TAG-T.png)."""
+    import glob
+    for png in glob.glob(os.path.join(dirpath, "shots", f"{tag}-*.png")):
         try:
             from PIL import Image
-            png = os.path.join(dirpath, "shots", f"{tag}-{t:g}.png")
             im = Image.open(png)
             im.thumbnail((640, 480))
             im.convert("RGB").save(png[:-4] + ".jpg", quality=85)
         except Exception:
             pass
+
+
+def winpath(path):
+    return subprocess.run(["wslpath", "-w", path], capture_output=True, text=True).stdout.strip()
 
 
 def saves_dir():
@@ -112,9 +115,15 @@ def walk(names, timeout):
     results, bad = [], 0
     os.makedirs(os.path.join(ROOT, "work", "measure"), exist_ok=True)
     for name in names:
-        shot, want = WALK.get(name, (32, None))
-        cmd = [sys.executable, os.path.abspath(__file__), "--full", "--timeout", str(timeout), "--input", name,
-               "--tag", name] + (["--shots", f"{shot:g}"] if shot else [])
+        w = WALK[name]
+        want, after = w.get("want"), w.get("after")
+        shot = f"m{after:g}" if after is not None else None
+        cmd = [sys.executable, os.path.abspath(__file__), "--full", "--timeout", str(timeout), "--tag", name]
+        for key in ("goto", "input", "mission"):
+            if w.get(key):
+                cmd += [f"--{key}", w[key]]
+        if shot:
+            cmd += ["--shots", shot]
         line = subprocess.run(cmd, capture_output=True, text=True).stdout.strip().splitlines()
         line = line[-1] if line else "(no output)"
         out = open("/mnt/e/dev/csf-standalone/winmain.out", errors="replace").read()
@@ -134,7 +143,7 @@ def walk(names, timeout):
         bad += not ok
         r = dict(name=name, ok=ok, exit=code, pages=pages, trap=trap.group(0) if trap else None,
                  exception=exc.group(0) if exc else None,
-                 shot=f"/mnt/e/dev/csf-standalone/shots/{name}-{shot:g}.jpg" if shot else None)
+                 shot=f"/mnt/e/dev/csf-standalone/shots/{name}-{shot}.jpg" if shot else None)
         results.append(r)
         print(f"{'ok  ' if ok else 'FAIL'} {name:18} exit {code:8} pages {' > '.join(pages) or '-'}"
               f"{'; ' + r['trap'] if trap else ''}{'; ' + r['exception'] if exc else ''}", flush=True)
@@ -155,11 +164,32 @@ def main():
     ap.add_argument("--shots", help="comma-separated seconds for screenshots")
     ap.add_argument("--tag", default="shot")
     ap.add_argument("--walk", nargs="?", const="", help="comma-separated script names (default: all of WALK)")
+    ap.add_argument("--show", action="store_true", help="a visible 1280x960 window (default: offscreen and silent)")
+    ap.add_argument("--goto", help="open this menu page directly once the main menu is up (e.g. P_Option)")
+    ap.add_argument("--mission", help="start this scenario directly once the main menu is up (e.g. Maps/FR01/Ransom.scn)")
+    ap.add_argument("--intro", action="store_true", help="play the intro movies (default: skipped)")
+    ap.add_argument("--quit-after", type=float, help="close the game window this many seconds after the first frame")
     a = ap.parse_args()
     if a.walk is not None:
-        sys.exit(walk([n for n in a.walk.split(",") if n] or list(WALK), a.timeout if a.timeout != 60 else 40))
+        sys.exit(walk([n for n in a.walk.split(",") if n] or [n for n in WALK if n != "mission"],
+                        a.timeout if a.timeout != 60 else 30))
     if a.input:
         os.environ["CSF_INPUT"] = SCRIPTS.get(a.input, a.input)
+    if a.full:
+        # standalone/harness.cpp. Never a full-screen window on the user's desktop: offscreen (no focus, no input
+        # taken, no sound) unless --show asks for a visible 1280x960 window.
+        os.environ["CSF_DISPLAY"] = "window" if a.show else "offscreen"
+        if not a.intro:
+            os.environ.setdefault("CSF_SKIP_INTRO", "1")
+        if a.goto:
+            os.environ["CSF_GOTO"] = a.goto
+        if a.mission:
+            os.environ["CSF_MISSION"] = a.mission
+        if a.quit_after:
+            os.environ["CSF_QUIT_AFTER"] = f"{a.quit_after:g}"
+        if a.shots:
+            os.makedirs(os.path.join(a.dir, "shots"), exist_ok=True)
+            os.environ.update(CSF_SHOTS=a.shots, CSF_SHOT_DIR=winpath(os.path.join(a.dir, "shots")), CSF_SHOT_TAG=a.tag)
         os.environ.setdefault("CSF_PAGE_TRACE", "1")  # "csf: page NAME" from 0x71C2A0 RequestMenuByName
     if "csf-builds" in a.dir:
         raise SystemExit("refusing to run in the read-only originals")
@@ -170,7 +200,9 @@ def main():
     if a.full:  # message boxes print and answer OK (standalone/main.cpp); CSF_NO_DIALOGS=0 keeps them
         os.environ.setdefault("CSF_NO_DIALOGS", "1")
         os.environ.setdefault("CSF_EXCEPTION_TRACE", "1")  # first faults print where they were (tools/dbg/stdsym.py)
-    for v in ("CSF_RW_TRACE", "CSF_HANG_SECONDS", "CSF_NO_DIALOGS", "CSF_INPUT", "CSF_EXIT_TRACE", "CSF_EXCEPTION_TRACE", "CSF_PAGE_TRACE", "CSF_HEAP_CHECK"):  # HANG: the exe dumps its main thread then (tools/dbg/stdsym.py)
+    for v in ("CSF_RW_TRACE", "CSF_HANG_SECONDS", "CSF_NO_DIALOGS", "CSF_INPUT", "CSF_EXIT_TRACE", "CSF_EXCEPTION_TRACE", "CSF_PAGE_TRACE", "CSF_HEAP_CHECK",
+              "CSF_DISPLAY", "CSF_SKIP_INTRO", "CSF_GOTO", "CSF_MISSION", "CSF_QUIT_AFTER", "CSF_SHOTS", "CSF_SHOT_DIR",
+              "CSF_SHOT_TAG", "CSF_AUDIO_BACKEND"):  # HANG: the exe dumps its main thread then (tools/dbg/stdsym.py)
         if v in os.environ:
             exports.append(v + "/w")
     env = dict(os.environ, CSF_DRYRUN="0" if a.full else "1",
@@ -182,11 +214,6 @@ def main():
         shutil.rmtree(backup, ignore_errors=True)
         shutil.copytree(saves, backup)
     t0 = time.time()
-    shooter = None
-    if a.shots:
-        shooter = threading.Thread(target=shots, args=(a.dir, a.tag, [float(x) for x in a.shots.split(",")], t0),
-                                   daemon=True)
-        shooter.start()
     try:
         p = subprocess.run(["./csf_standalone.exe"], cwd=a.dir, env=env, capture_output=True, text=True,
                            errors="replace", timeout=a.timeout)
@@ -194,8 +221,8 @@ def main():
     except subprocess.TimeoutExpired as e:
         out, code = ((e.stdout or b"") + (e.stderr or b"")).decode(errors="replace"), "timeout"
         subprocess.run(["taskkill.exe", "/IM", "csf_standalone.exe", "/F"], capture_output=True)
-    if shooter:
-        shooter.join(timeout=1)
+    if a.full and a.shots:
+        thumbnails(a.dir, a.tag)
     if saves and os.path.isdir(backup) and os.environ.get("CSF_KEEP_SAVES") != "1":
         time.sleep(1)  # the killed process may still hold a file for a moment
         shutil.rmtree(saves, ignore_errors=True)

@@ -51,7 +51,7 @@ add_custom_command(OUTPUT "${CSF_DATA}" "${CSF_INITS}"
   WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
   COMMENT "Generate validated data and original CRT initializer order (reject invalid bindings)")
 add_library(csf_standalone_startup OBJECT EXCLUDE_FROM_ALL
-            standalone/main.cpp standalone/game_plain.cpp standalone/adjustors.cpp "${CSF_DATA}" "${CSF_INITS}")
+            standalone/main.cpp standalone/game_plain.cpp standalone/adjustors.cpp standalone/harness.cpp "${CSF_DATA}" "${CSF_INITS}")
 add_dependencies(csf_standalone_startup csf_standalone_inventory)
 target_compile_definitions(csf_standalone_startup PRIVATE CSF_STANDALONE)
 target_include_directories(csf_standalone_startup PRIVATE src hook standalone)

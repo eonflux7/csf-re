@@ -20,6 +20,7 @@
 #include "../../../work/tools/librw/src/d3d/rwd3dimpl.h"
 // MIT backend helpers update its cache as well as COM, unlike direct setters.
 namespace rw::d3d { void setRenderTarget(int,void*); void setDepthSurface(void*); }
+extern "C" { void (*csf_present_hook)(void* device) = nullptr; }
 #endif
 #include <array>
 #include <cstdarg>
@@ -107,6 +108,7 @@ public:
         // - a lost device (alt-tab out of full screen) is reported as shown while lost and reset once
         //   TestCooperativeLevel says DEVICENOTRESET; before, Present failed forever and the game froze.
         if (flags != 0) return false;
+        if (csf_present_hook) csf_present_hook(device);  // standalone/harness.cpp: screenshots, timed actions
         if (!rw::d3d::d3d9Globals.present.Windowed &&
             rw::d3d::d3d9Globals.present.PresentationInterval != D3DPRESENT_INTERVAL_ONE) {
             rw::engine->device.showRaster(raster,rw::Raster::FLIPWAITVSYNCH);
