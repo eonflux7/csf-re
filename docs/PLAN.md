@@ -23,15 +23,15 @@ module, evidence, link test), `tools/grunt.py wave --next` (what to wave next), 
 
 - Everything runs in WSL. IDA 9.3 Linux at `~/ida-pro-9.3`, driven headless via idalib from `.venv`.
 - IDB: `ida/CommXPC.exe.i64` (gitignored, derived). Exe copy: `work/pc/CommXPC.exe`.
-- Game builds (read-only originals): `/mnt/e/dev/csf-builds/`; never deploy into them. Play copy for hook testing:
-  `/mnt/e/dev/csf-play`; smoke pool copies `csf-play-p1..p7` (verifier/bisect only); `csf-play-user` is the unhooked
-  original for the user's own play and savegames.
+- Game builds (read-only originals) live outside the repo; never deploy into them. Play copy for hook testing:
+  `$CSF_PLAY`; smoke pool copies `csf-play-p1..p7` next to it (verifier/bisect only); keep a separate unhooked
+  original for your own play and savegames.
 - Python deps in `.venv` beyond idalib: pefile, capstone, pyyaml, unicorn (tools/emudiff.py).
 - Toolchain: clang-cl 21 + lld-link, `i686-pc-windows-msvc`, MSVC SDK via `xwin` (`~/.xwin`, license accepted by
   the user). x64dbg + x64dbg-automate under `E:\dev\tools` for crash triage and targeted runtime RE.
 - Third-party sources/tools go in `work/tools/` (gitignored). Never leaked RenderWare SDK source; librw (MIT) only.
-- Models: grunts on their own Claude account (`~/.config/csf-re/claude-grunts`, Haiku only, via `claude -p`) and
-  Codex; the captain (naming) on the main account. Quota guards and ladders: `db/lanes.yaml`.
+- Models: grunts are Claude Haiku (via `claude -p`, separate config dir under `$CSF_CONFIG_DIR`) and Codex; the
+  captain (naming) is Claude. Quota guards and ladders: `db/lanes.yaml`.
 
 ## The loop (per module)
 
@@ -236,7 +236,7 @@ guards. One-shot scripts of that phase: `tools/setup/`. History: JOURNAL.
 
 - 2026-10-07: **Single-player first; multiplayer stubbed.** NetZ boundary is not reimplemented; game net code
   (net DDL classes etc.) gets stubbed at cutover. Revisit LAN after SP cutover.
-- 2026-10-08: Grunts: Haiku 5.5 / Opus 5.5 on the grunts' own Claude account (never the main account) + Codex
+- 2026-10-08: Grunts: Haiku 5.5 / Opus 5.5 + Codex
   (Sonnet as the Codex stand-in); OpenCode Go and DeepSeek dropped (allowance / quality). Ladders chosen from the
   run logs (`grunt.py cost`), kept in `db/lanes.yaml`.
 - 2026-10-08 (user): **progress is bytes per module**, waves per module.
@@ -249,7 +249,7 @@ guards. One-shot scripts of that phase: `tools/setup/`. History: JOURNAL.
   callers' cleanup, an entry-block register read); our knowledge goes back into the IDB and Hex-Rays re-derives.
 - 2026-10-08: **fidelity is behavioral**: natural expressions, no emulation of x87 rounding or register/stack
   artifacts; the in-game diff tolerates last-bit float differences where the original stores floats.
-- 2026-10-12 (user): **the grunts' Claude account is for Haiku rungs only.** No Opus rung, no Sonnet stand-in;
+- 2026-10-12 (user): **Claude is used for Haiku rungs only.** No Opus rung, no Sonnet stand-in;
   M/L/X are Codex `gpt-6.1-sol@high` and end in `queue/`; Haiku out of quota -> `gpt-6.1-sol@low`.
 - 2026-10-10 (user): **simpler loop**: names never change inside a wave (tools/naming.py at milestones, code-hash
   invariant); types come first as structure from the binary (propagate.sh), not as names. Review is one rolling

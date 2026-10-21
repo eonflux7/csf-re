@@ -118,9 +118,10 @@ JSON metadata: {"name": "<function name used>", "confidence": 0.0-1.0,
 
 
 CLAUDE_CWD = os.path.expanduser("~/.cache/csf-re-claude")  # outside the repo: no CLAUDE.md / memory pulled in
-# The grunts' own Claude account (a second subscription, logged in once with
-# `CLAUDE_CONFIG_DIR=~/.config/csf-re/claude-grunts claude` -> /login); the captain keeps the main account.
-CLAUDE_GRUNTS = os.path.expanduser("~/.config/csf-re/claude-grunts")
+# Separate Claude Code config dir for batch agent runs (log in once with
+# `CLAUDE_CONFIG_DIR=$CSF_CONFIG_DIR/claude-grunts claude` -> /login); interactive work uses the default config.
+CSF_CONFIG_DIR = os.path.expanduser(os.environ.get("CSF_CONFIG_DIR", "~/.config/csf-re"))
+CLAUDE_GRUNTS = os.path.join(CSF_CONFIG_DIR, "claude-grunts")
 
 
 USAGE_CACHE = {"main": os.path.join(ROOT, "work", "claude_usage.json"),
@@ -128,7 +129,7 @@ USAGE_CACHE = {"main": os.path.join(ROOT, "work", "claude_usage.json"),
 
 
 def claude_usage(which="main"):
-    """5h / 7d windows of a Claude plan (main = the captain's account, grunts = CLAUDE_GRUNTS), from the endpoint
+    """5h / 7d windows of a Claude plan (main = the default config, grunts = CLAUDE_GRUNTS), from the endpoint
     Claude Code's /usage reads (the account's own OAuth token). Rate-limited (429) when polled often: asked at most
     once a minute (shared by monitor and lanes through work/claude_*usage.json), after an error again after its
     Retry-After or 5 min; meanwhile the last good answer is returned with its age (`_age`)."""
@@ -176,7 +177,7 @@ CLAUDE_BRIEF = ("\n\nThinking: keep it short. Work from the packet directly; rea
 def chat_claude(model, messages, effort=None):
     """Claude via the Claude Code CLI in headless mode, on the grunts' own account (never the captain's). No tools."""
     if not claude_grunts_ready():
-        raise RuntimeError(f"grunts' Claude account not logged in: CLAUDE_CONFIG_DIR={CLAUDE_GRUNTS} claude, /login")
+        raise RuntimeError(f"agent config not logged in: CLAUDE_CONFIG_DIR={CLAUDE_GRUNTS} claude, /login")
     os.makedirs(CLAUDE_CWD, exist_ok=True)
     env = dict(os.environ, CLAUDE_CONFIG_DIR=CLAUDE_GRUNTS)
     eff = ["--effort", effort] if effort in ("low", "medium", "high", "xhigh", "max") else []
@@ -402,9 +403,9 @@ def live(**kw):
 
 CODEX_RESERVED = threading.Event()  # Codex 5h window past --codex-reserve: S/M Codex rungs go to CODEX_SUB
 CODEX_SUB = None  # (backend, model) standing in for Codex in S/M while reserved or paused, e.g. claude:...@medium
-CLAUDE_SUB = {}  # Claude rung model -> Codex model standing in while the grunts' Claude account is paused (--claude-sub)
+CLAUDE_SUB = {}  # Claude rung model -> Codex model standing in while Claude rungs are paused (--claude-sub)
 CLAUDE_SUB_LOGIN = None  # the Codex login those stand-ins run on (--claude-sub-login, e.g. codex-2)
-CLAUDE_PAUSED = threading.Event()  # set by the lanes quota guard: the grunts' Claude account is near its limit
+CLAUDE_PAUSED = threading.Event()  # set by the lanes quota guard: Claude rungs are near their usage limit
 CODEX_PAUSED = threading.Event()  # set by the lanes quota guard: no new Codex calls (writes, fallbacks, reviews)
 
 
@@ -612,7 +613,7 @@ def example_section(db, ex):
 
 
 def claude_grunts_ready():
-    """The grunts' Claude account is logged in (never fall back onto the main account the captain uses)."""
+    """The agent config (CLAUDE_GRUNTS) is logged in (never fall back onto the interactive config)."""
     return os.path.exists(os.path.join(CLAUDE_GRUNTS, ".credentials.json"))
 
 
@@ -1151,7 +1152,7 @@ def lanes(args):
     done example up to --m-max; M = up to --m-max; L = up to --l-max; X = the rest (Opus: the captain's model writes
     the big ones). Each tier has its own in-flight cap, so slow L/X calls
     never hold up the S stream. Quota: Codex pauses at --codex-cap of its 5h window (L gets no new work, S/M lose their
-    Codex rung); the grunts' Claude account pauses at --claude-cap of its 5h or weekly window. A function whose only
+    Codex rung); Claude rungs pause at --claude-cap of its 5h or weekly window. A function whose only
     remaining rungs were out of quota is deferred, not escalated. Every --batch gate passes: build + smoke + commit.
 
     Rolling waves (args.roll, from `wave --waves N`): modules are taken in rank order and up to --overlap are open at
@@ -1205,7 +1206,7 @@ def lanes(args):
         return all(b == "codex" for b, _, _ in ladders[t])
 
     def quota():
-        """Pause/resume Codex on its 5h window and the grunts' Claude account on its 5h/7d windows (every 2 min)."""
+        """Pause/resume Codex on its 5h window and Claude rungs on their 5h/7d windows (every 2 min)."""
         nonlocal quota_t
         if time.time() - quota_t < 120:
             return
@@ -1216,10 +1217,10 @@ def lanes(args):
                 pct = max(v[0] for k, v in u.items() if k != "_age")
                 if pct >= args.claude_cap and not CLAUDE_PAUSED.is_set():
                     CLAUDE_PAUSED.set()
-                    print(f"grunts' Claude account at {pct:.0f}% (cap {args.claude_cap}): Claude paused", flush=True)
+                    print(f"Claude grunts at {pct:.0f}% (cap {args.claude_cap}): Claude paused", flush=True)
                 elif pct < args.claude_cap and CLAUDE_PAUSED.is_set():
                     CLAUDE_PAUSED.clear()
-                    print(f"grunts' Claude account at {pct:.0f}%: Claude resumed", flush=True)
+                    print(f"Claude grunts at {pct:.0f}%: Claude resumed", flush=True)
                 live(claude_paused=CLAUDE_PAUSED.is_set(), claude_pct=pct)
             except Exception:
                 pass  # endpoint down: keep the current state

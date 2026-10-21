@@ -490,8 +490,8 @@ state, so a missing `mute` (or `mute 0`) explicitly unmutes. Tested on a hardlin
   wave's placeholder functions. Held classes are not re-asked on later runs (`family --retry-held` does).
 
 ## 2026-10-08 — Model A/B over OpenCode Go; grunt lanes become one tiered lane
-- OpenCode Go ($10/mo, per-model monthly $ allowances; 5h window = 20 %, week = 50 %) via a service-account key
-  (~/.config/csf-re/opencode_go.key). grunt backend `go`: OpenAI chat/completions or Anthropic /messages (Claude
+- OpenCode Go ($10/mo, per-model monthly $ allowances; 5h window = 20 %, week = 50 %) via an API key
+  (kept outside the repo). grunt backend `go`: OpenAI chat/completions or Anthropic /messages (Claude
   models: adaptive thinking + output_config.effort), `model@effort` pins effort, `x-opencode-session` header
   required, DeepSeek needs the workspace's Privacy = Global. Streamed with a 240 s idle timeout: non-streamed, a long
   MiMo think and a hung request looked the same for 20 min.
@@ -519,15 +519,15 @@ state, so a missing `mute` (or `mute 0`) explicitly unmutes. Tested on a hardlin
 - MiMo 2.6 Pro: 3 rescues in 140, 6-12+ min per call. Ladders now S: Haiku low x2 -> Haiku medium -> Codex high;
   M: Haiku high x2 -> Codex high x2; L: Codex high x2; review at medium. No xhigh (not worth its quota).
 
-## 2026-10-08 — OpenCode Go dropped; grunts get their own Claude account
+## 2026-10-08 — OpenCode Go dropped; grunts move to Claude Code
 - Go's Haiku allowance ran out after ~280 functions (5h window; $10/mo plan, per-model allowances): the last batch
   ended 121 ok / 2 escalated / 18 deferred, and before the stop Codex had quietly absorbed the S/M work.
-- Grunts now call Haiku 5.5 (and Opus 5.5) through `claude -p` on a second subscription (CLAUDE_CONFIG_DIR =
-  ~/.config/csf-re/claude-grunts); the captain stays on the main account, and the grunt backend refuses to run if
-  the grunts' login is missing (never falls back onto the main account). CLI overhead per call ~560 tokens
+- Grunts now call Haiku 5.5 (and Opus 5.5) through `claude -p` with a separate CLAUDE_CONFIG_DIR
+  ($CSF_CONFIG_DIR/claude-grunts); the grunt backend refuses to run if that login is missing (never falls back
+  onto the interactive config). CLI overhead per call ~560 tokens
   (cached) with --strict-mcp-config --setting-sources "" --disable-slash-commands, like the captain; without
-  them ~4k (the account's claude.ai connectors alone ~3.4k). --bare would be leaner but takes API keys only.
-- Quota: lanes polls the grunts' account usage (same oauth/usage endpoint as the monitor, shared cache file) and
+  them ~4k (the config's connectors alone ~3.4k). --bare would be leaner but takes API keys only.
+- Quota: lanes polls the grunt config's usage (same oauth/usage endpoint as the monitor, shared cache file) and
   pauses it at 95 % of 5h/7d. Once Codex's 5h window passes 50 %, S/M Codex rungs run on Opus 5.5 medium, so
   Codex high stays for L. The Go backend, spend ledger and the A/B tooling are removed (results stay in work/ab/).
 
@@ -1009,7 +1009,7 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - First rolling run (10-11, 47 min until stopped by hand): 910 functions through the gate (19-27 a minute, against
   5-10 before), 5 escalated, 9 modules admitted; modules closed out of order and verified in the background
   without touching production. First module: 561 s from admission to report. The loop is no longer the limit:
-  the run took Codex from 9% to ~70% and the grunts' Claude account from 4% to 95% of their 5h windows.
+  the run took Codex from 9% to ~70% and the Claude grunts from 4% to 95% of their 5h windows.
 - Found in that run, fixed for the next start:
   - Codex past its reserve sent S/M rungs to the Claude stand-in also while that account was paused: every M
     function came back deferred with Codex at 70%. The stand-in is used only while Claude has room.
@@ -1257,7 +1257,7 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 ## 2026-10-12 evening — a run on one Codex login: 484 functions, both quota windows spent, 38 false escalations
 
 - 16:39-17:50 on codex-2 alone: 484 functions (game code 52.1% -> 55.9% with the earlier 100), then codex-2 at
-  its limit and the grunts' Claude account at 100% (session limit, resets 21:30): with one Codex login the S/M
+  its limit and the Claude grunts at 100% (session limit, resets 21:30): with one Codex login the S/M
   work moved to Sonnet and Opus and spent the Claude window the ladders are meant to protect.
 - 39 of the run's 39 escalations had lost a rung to a backend error that the lanes did not read as quota
   ("You've hit your session limit", "usage_limit"): they were escalated, not deferred. The pattern now covers
@@ -1270,7 +1270,7 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 
 ## 2026-10-12 night — ladders without Opus/Sonnet, two Codex logins, a production-only run
 
-- User: the grunts' Claude account is for Haiku rungs only (db/lanes.yaml: no Opus rung in M/X, no Sonnet
+- User: Claude is for Haiku rungs only (db/lanes.yaml: no Opus rung in M/X, no Sonnet
   stand-in, Haiku out of quota -> gpt-6.1-sol@low). `~/.codex` works again after one CLI token refresh (the
   lanes now do that refresh once before taking a login out).
 - 18:15-18:57 (full waves, both logins; killed on request): 396 functions. 18:58-19:03 (`--no-verify
@@ -1462,10 +1462,10 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   the candidate is same 2/8. 0x69AE30 back to the lanes. The worker also edited PLAN/JOURNAL in its tree: not
   taken (the brief now says so).
 - New way of working (user, 2026-10-13): the orchestrator spawns agents and oversees them instead of doing the
-  jobs. `deep_worker.py` got `--agent sol-hi|opus-me` (Opus through `claude -p` on the main account, dontAsk with
+  jobs. `deep_worker.py` got `--agent sol-hi|opus-me` (Opus through `claude -p`, dontAsk with
   a fixed command list), `start` (detached), `review NAME verdict --note`, quota stops named as such, the Codex
-  login with the most room. Third Codex login `codex-3` added by the user (the two others hit 100% of their 5h
-  window at once: three jobs died after 3 min, one after 18; restarted in their trees).
+  login with the most room. Third Codex login added (the two others hit their 5h
+  limit at once: three jobs died after 3 min, one after 18; restarted in their trees).
 - `tools/webmon.py`: local web monitor for this stage (http://127.0.0.1:8777), replaces `tools/monitor.py`.
   What is left by kind, evidence tiers, jobs (task / report / patch / activity), queue by failure class with the
   job holding each item, quota per login, background processes, open decisions and backlog, commits. One collector
@@ -1507,19 +1507,19 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   (tools/stackabi.py). Measured: db/api.json identical with and without the tool changes; proven set unchanged;
   3 more queued candidates DIFF -> same. 12 of its 13 functions and those 3 are pending (0x6D6800 stays queued:
   emudiff inconclusive).
-- opus-lo (claude-opus-5-5@low on the grunts' Claude account, user 2026-10-13) for easy and small-to-medium jobs.
+- opus-lo (claude-opus-5-5@low, user 2026-10-13) for easy and small-to-medium jobs.
   First two: d728160 ($0.35) found a real bug in a function of the diffed tier (3 arguments where the original
   pushes 5; dead in the callee, so the in-game diff could not see it: emudiff could); lt6910f0 ($0.57) fixed the
   one file failing the standalone compile (it included the header declaring its own address). Eight triage
   batches started on it (in-game mismatches, smoke failures, small emudiff rejections): candidates only, no
   changes under tools/ or hook/.
-- Eight opus-lo jobs at once spent the grunts' 5h window in 4 minutes (about 1.1M input tokens, $1.1-1.4 each);
+- Eight opus-lo jobs at once hit the 5h usage limit in 4 minutes (about 1.1M input tokens, $1.1-1.4 each);
   two finished (emu2, mis2), six stopped with their trees kept. deep_worker now: `sonnet-lo` agent (to try first,
   user), at most two Claude jobs at a time, Claude briefs skip PLAN/JOURNAL.
 
 ## 2026-10-13 (night): agents, tiny functions, decisions
 - Agent policy (user): sol-med for most jobs, sol-hi for hard ones, GLM-5.3-flash over OpenRouter (`glm-flash`) on
-  trial for small ones; no agent job on a Claude account. Codex requests slimmed after capturing one with a local
+  trial for small ones; no agent job on Claude. Codex requests slimmed after capturing one with a local
   fake provider: the brief is the system prompt (`model_instructions_file`), unused tools off (53 KB -> 25 KB per
   request for Sol, 41 KB -> 7.5 KB for GLM). Sol's sub-agent and ask-the-user tools have no switch in codex 0.160.
 - First glm-flash job (2 emudiff rejections, 5 min, $0.02): one false alarm explained (0x6FE8C0: a mocked return
@@ -1855,3 +1855,15 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   user's wrap-up request; no Windows mission was launched. Resume with check_all.sh and then the mission
   run, followed by inspection using its matching fresh link map. Existing standalone/harness edits remain
   outside this change. Windows interop requires execution outside the sandbox (vsock restriction).
+
+
+## 2026-10-22: public release cleanup
+- Added README.md (project state, evidence ledger in detail, build, layout, legal), LICENSE (MIT, user's
+  choice), docs/README.md (index of reports). Full history kept: checked every commit for secrets, keys and game
+  binaries/assets; none found. The standalone run-harness WIP was committed as found (c8bdc9da).
+- Account details scrubbed (user): agent logins and keys now live under `$CSF_CONFIG_DIR` (default unchanged,
+  `~/.config/csf-re`); comments, PLAN, JOURNAL and CLAUDE.md no longer describe private accounts or key paths.
+  CLAUDE.md's agent section updated to the 2026-10-17 decision (work directly, no agent jobs).
+- Ledger read straight from db/verify.json (status.py hashes built hook objects; this relocated checkout has none,
+  so it shows every function pending): diffed 2,205, executed 5,536, never ran 7,150, mismatched 9, installed
+  14,605. Same picture as the 2026-10-17 review.

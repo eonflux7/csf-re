@@ -17,7 +17,7 @@ should learn.
 Usage:
   review.py sample [--n 20] [--module M,..] [--model claude-opus-5-5] [--effort high] [--dry]
   review.py report [--module M]
-Runs on the grunts' Claude account (grunt.ask backend claude; never the main account).
+Runs through grunt.ask backend claude (the agent config, CLAUDE_GRUNTS).
 """
 import argparse, collections, csv, datetime, json, os, random, re, sys
 

@@ -27,12 +27,12 @@ review_effort: medium
 
 # quota guards (% of the 5h window; 0: off) and stand-ins
 codex_cap: 90          # pause Codex
-claude_cap: 95         # pause the grunts' Claude account (5h or 7d window)
-# 2026-10-12 (user): the grunts' Claude account is for the Haiku rungs only. No Opus rung (M and X end on Codex,
+claude_cap: 95         # pause Claude rungs (5h or 7d window)
+# 2026-10-12 (user): Claude is used for the Haiku rungs only. No Opus rung (M and X end on Codex,
 # then queue/), no Sonnet stand-in for Codex; Haiku out of quota -> gpt-6.1-sol@low.
 codex_reserve: 50      # from here S/M Codex rungs run on codex_sub, if one is set (Codex kept for L)
 codex_sub:
-# while the grunts' Claude account is paused: Claude rung model=Codex model standing in (unlisted rungs are skipped)
+# while Claude rungs are paused: Claude rung model=Codex model standing in (unlisted rungs are skipped)
 claude_sub: claude-haiku-5-5@low=gpt-6.1-sol@low
 claude_sub_login: codex-2
 

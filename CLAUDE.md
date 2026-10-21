@@ -19,16 +19,15 @@ backlog), pending/verified counts and the link-test line, and any open decisions
    commit (`git add -A && git commit`). Commit messages end with the Co-Authored-By trailer.
 5. Stop and ask when: sudo is needed, an open decision blocks progress, or a playtest is needed.
 
-## How work is done now (2026-10-13)
-Game code is nearly all written; what is left (queue, STL replicas, verification, cutover) is done by agent jobs.
-The orchestrator writes the task, starts jobs (`tools/deep_worker.py start NAME --task FILE --agent A`: sol-med = gpt-6.1-sol@medium for most jobs (default),
-sol-hi = gpt-6.1-sol@high for the hard ones; small jobs: haiku-hi = Haiku high on the grunts' Claude account, four
-at a time, or glm-flash = GLM-5.3-flash over OpenRouter for mechanical rewrites (key in
-~/.config/csf-re/openrouter.key, paid per token); never the main Claude account),
+## How work is done now (2026-10-17)
+Stage: first playable standalone mission (FR01). Work directly in the checkout; **do not start deep-workers or
+agent jobs** (user, 2026-10-17). The module-wave loop and `tools/deep_worker.py` are historical production
+tooling, kept for the record. If agent jobs are resumed: the orchestrator writes the task, starts jobs
+(`tools/deep_worker.py start NAME --task FILE --agent A`; agents and their backends are listed in the script),
 reviews each report and patch (check the claims with the tools before applying), records the verdict
-(`deep_worker.py review NAME applied|partial|rejected --note ...`), then commits. It does a job itself only when
-that is quicker than writing the task. Jobs, queue and quota are on the web monitor: `tools/webmon.py`
-(http://127.0.0.1:8777).
+(`deep_worker.py review NAME applied|partial|rejected --note ...`), then commits. Agent logins and keys live
+under `$CSF_CONFIG_DIR` (default `~/.config/csf-re`), never in the repo. Jobs, queue and quota are on the web
+monitor: `tools/webmon.py` (http://127.0.0.1:8777).
 
 ## Layout
 - `tools/ida/` idalib scripts (`common.py` opens the IDB). Run with `.venv/bin/python`. IDB: `ida/CommXPC.exe.i64`.
@@ -50,7 +49,7 @@ that is quicker than writing the task. Jobs, queue and quota are on the web moni
 - `queue/` escalations for the orchestrator (one file per function: gate, smoke or review failure).
 - `export/` derived from IDB (gitignored); regenerate with `tools/ida/export_meta.py`.
 - `work/` gitignored scratch: exe copy, extracted discs, third-party tools (`work/tools/`).
-- Original game builds (read-only): `/mnt/e/dev/csf-builds/`.
+- Original game builds (read-only) live outside the repo; the play copy is `$CSF_PLAY`. Game files are never committed.
 
 ## Rules
 - Repo is source of truth; IDB is derived. Never hand-edit `export/`.

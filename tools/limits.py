@@ -9,10 +9,10 @@ CODEX_HOME_MAIN = os.path.expanduser("~/.codex")
 
 
 def codex_homes():
-    """Codex logins the grunts rotate over: the CLI's own ~/.codex, then every ~/.config/csf-re/codex-*/ holding an
-    auth.json (log one in with `CODEX_HOME=~/.config/csf-re/codex-2 codex login`)."""
+    """Codex logins the grunts rotate over: the CLI's own ~/.codex, then every $CSF_CONFIG_DIR/codex-*/ holding an
+    auth.json (log one in with `CODEX_HOME=$CSF_CONFIG_DIR/codex-2 codex login`)."""
     import glob
-    extra = sorted(os.path.dirname(p) for p in glob.glob(os.path.expanduser("~/.config/csf-re/codex-*/auth.json")))
+    extra = sorted(os.path.dirname(p) for p in glob.glob(os.path.join(os.path.expanduser(os.environ.get("CSF_CONFIG_DIR", "~/.config/csf-re")), "codex-*", "auth.json")))
     return [h for h in [CODEX_HOME_MAIN] + extra if os.path.exists(os.path.join(h, "auth.json"))]
 
 

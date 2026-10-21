@@ -3,10 +3,10 @@
 orchestrator no longer does the jobs itself; it spawns agents, reviews what they return, decides).
 
 Agents (--agent; user, 2026-10-13): sol-med = gpt-6.1-sol@medium for most jobs (default), sol-hi = gpt-6.1-sol@high
-for the hard ones; for small jobs haiku-hi = claude-haiku-5-5@high through `claude -p` on the grunts' Claude account
+for the hard ones; for small jobs haiku-hi = claude-haiku-5-5@high through `claude -p` with the agent config
 (a fixed list of commands allowed, four at a time) or glm-flash = z-ai/glm-5.3-flash over OpenRouter (mechanical
-rewrites; pays per token from the key in ~/.config/csf-re/openrouter.key, never in the repo). The Sol agents and
-glm-flash run through the Codex CLI sandboxed to the job's tree. Nothing runs on the main Claude account.
+rewrites; API key read from $CSF_CONFIG_DIR/openrouter.key, never in the repo). The Sol agents and
+glm-flash run through the Codex CLI sandboxed to the job's tree.
 
   deep_worker.py start NAME --task FILE|- [--agent sol-med|sol-hi|haiku-hi|glm-flash] [--timeout 3600] [--fresh] [--login codex-2]   in the background
   deep_worker.py run   NAME ...           the same, in the foreground
@@ -27,11 +27,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 DEEP = os.path.join(ROOT, "work", "deep")
 # 2026-10-13 (user): deep workers run on sol-hi only; Claude usage stays with the orchestrator. opus-me
-# (claude-opus-5-5@medium via `claude -p`, main account) ran three jobs that day (about 37% -> 71% of the 5h window
-# together with the session); its code path stays for old jobs' logs and is not offered.
-# opus-lo (user, same day): claude-opus-5-5@low on the grunts' Claude account, for easy jobs only.
-# 2026-10-13 evening: eight opus-lo jobs at once (5-7 queue items each, about 1.1M input tokens and $1.2 per job
-# in 4 minutes) spent the grunts' 5h window; six stopped unfinished. Since then: sonnet-lo is the Claude agent to
+# (claude-opus-5-5@medium via `claude -p`) ran three jobs that day; its code path stays for old jobs' logs and is
+# not offered.
+# opus-lo (user, same day): claude-opus-5-5@low with the agent config, for easy jobs only.
+# 2026-10-13 evening: eight opus-lo jobs at once (5-7 queue items each) hit the usage limit; six stopped unfinished. Since then: sonnet-lo is the Claude agent to
 # try first (user), at most CLAUDE_JOBS Claude jobs at a time, and their brief skips PLAN/JOURNAL.
 # Later that evening (user): three agents by difficulty. Sonnet and Opus are out.
 # Night (user): "sol medium is the best and not too far from sol high": sol-med for most jobs; GLM-5.3-flash over
@@ -42,7 +41,7 @@ AGENTS = {"sol-med": ("codex", "gpt-6.1-sol", "medium"),     # most jobs (defaul
           # user, 2026-10-13 late: Haiku high is back for small jobs after a comparison on one task (two installed
           # functions with an emudiff DIFF): haiku xhigh solved both in 4 min, mimo-v2.6-pro both in 10 min,
           # glm-flash neither in 25 min
-          "haiku-hi": ("claude", "claude-haiku-5-5", "high")}            # small jobs; grunts' Claude account, CLAUDE_JOBS at a time
+          "haiku-hi": ("claude", "claude-haiku-5-5", "high")}            # small jobs; agent config, CLAUDE_JOBS at a time
 DEFAULT = "sol-med"
 CLAUDE_JOBS = 8  # user, 2026-10-13 late: "run more haikus if possible they are cheap" (was 2)
 RETIRED = {"opus-me": ("claude", "claude-opus-5-5", "medium"), "haiku-med": ("claude", "claude-haiku-5-5", "medium"),
@@ -55,8 +54,9 @@ RETIRED = {"opus-me": ("claude", "claude-opus-5-5", "medium"), "haiku-med": ("cl
 # $1.92 where this estimate said $0.51). The key's real spend is openrouter_budget(); no job starts below OR_MIN.
 OR_MIN = 0.30
 OPENROUTER = {"glm-flash": (0.0261, 0.9), "mimo-flash": (0.14, 0.28)}
-OR_KEY = os.path.expanduser("~/.config/csf-re/openrouter.key")
-OR_HOME = os.path.expanduser("~/.config/csf-re/codex-openrouter")  # CODEX_HOME of these jobs: session files only
+CSF_CONFIG_DIR = os.path.expanduser(os.environ.get("CSF_CONFIG_DIR", "~/.config/csf-re"))  # as tools/grunt.py
+OR_KEY = os.path.join(CSF_CONFIG_DIR, "openrouter.key")
+OR_HOME = os.path.join(CSF_CONFIG_DIR, "codex-openrouter")  # CODEX_HOME of these jobs: session files only
 OR_ARGS = ["-c", 'model_provider="openrouter"', "-c", 'model_providers.openrouter.name="OpenRouter"',
            "-c", 'model_providers.openrouter.base_url="https://openrouter.ai/api/v1"',
            "-c", 'model_providers.openrouter.env_key="OPENROUTER_API_KEY"',
@@ -306,7 +306,7 @@ def run(a):
                    "--disable-slash-commands", "--output-format", "stream-json", "--verbose"]
             import grunt
             if not grunt.claude_grunts_ready():
-                raise SystemExit(f"grunts' Claude account not logged in: CLAUDE_CONFIG_DIR={grunt.CLAUDE_GRUNTS}")
+                raise SystemExit(f"agent config not logged in: CLAUDE_CONFIG_DIR={grunt.CLAUDE_GRUNTS}")
             state(d, login="claude grunts")
             with open(events, "w") as ev:  # one JSON event per line as it happens: history and tokens while it runs
                 r = subprocess.run(cmd, input=prompt, stdout=ev, stderr=subprocess.PIPE, text=True, cwd=tree,
