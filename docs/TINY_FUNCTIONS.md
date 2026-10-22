@@ -2,7 +2,7 @@
 
 All 166 tiny todo game functions (736 bytes) are mechanically implementable and have room for the existing five-byte entry hook. They are excluded by `select(min_size=6)`, not by insufficient patch space. This tree contains 166 generated candidates; all 166 passed the gate and returned `same` under its emulator check. No hook header change is needed for this set.
 
-The current snapshot is HEAD `b908139c`. Its other todo game functions outside STL and queue number **29**, not the brief's 27. There are 195 leftovers in these two groups. The journal's “192 = 166 + 27” was itself arithmetically inconsistent. This report uses the actual CSV, exports and queue directory, unchanged.
+The current snapshot is HEAD `7da395ac`. Its other todo game functions outside STL and queue number **29**, not the brief's 27. There are 195 leftovers in these two groups. The journal's “192 = 166 + 27” was itself arithmetically inconsistent. This report uses the actual CSV, exports and queue directory, unchanged.
 
 ## Classification and references
 
@@ -60,14 +60,14 @@ There is no immediate hybrid-runtime requirement to replace any of the originals
 
 Source checks identify six hard exclusions: two hand-owned hooks, one missing pseudocode export, three without a module. Twenty more entries are selectable in a module-specific lane but their modules currently rank below 60. Rolling `admit()` calls `rank_modules(db, 60)` **before** filtering `seen`; its top 60 includes queued and tiny todo entries that selection will reject. Once those top modules have been visited, it can report ranking exhausted while lower-ranked selectable modules remain. Recompute across all modules or filter for selectable work before truncation; do not infer completion from that message.
 
-Three entries within the window were previously produced, then returned to todo; “no lane took it” is false for them. `git show 4651dcec -- db/functions.csv` shows the resets of `004958c0` and `004d31e0`, while `7a256dbf` documents `0069ae30` returning from queue. The worktree contains no historical grunt/wave logs, so snapshot ranking explains a present exclusion, not the exact historical order of every leftover. Clone grouping is not a permanent exclusion: completed siblings provide examples, and all-todo clusters offer one member at a time.
+Three entries within the window were previously produced, then returned to todo; “no lane took it” is false for them. `git show bf02c547 -- db/functions.csv` shows the resets of `004958c0` and `004d31e0`, while `a63bd84f` documents `0069ae30` returning from queue. The worktree contains no historical grunt/wave logs, so snapshot ranking explains a present exclusion, not the exact historical order of every leftover. Clone grouping is not a permanent exclusion: completed siblings provide examples, and all-todo clusters offer one member at a time.
 
 * `0045aa70` (114 B): module rank 83, outside rolling admit()'s top-60 window
-* `004958c0` (220 B): Selectable now; previously done, reset to todo by emulator sweep commit `4651dcec` (current module rank 55).
+* `004958c0` (220 B): Selectable now; previously done, reset to todo by emulator sweep commit `bf02c547` (current module rank 55).
 * `004b2990` (111 B): module rank 72, outside rolling admit()'s top-60 window
 * `004b2a40` (74 B): module rank 72, outside rolling admit()'s top-60 window; clone cluster of 2 ({'todo': 1, 'done': 1})
 * `004b9660` (78 B): module rank 88, outside rolling admit()'s top-60 window
-* `004d31e0` (384 B): Selectable now; previously done, reset to todo by emulator sweep commit `4651dcec` (current module rank 54).
+* `004d31e0` (384 B): Selectable now; previously done, reset to todo by emulator sweep commit `bf02c547` (current module rank 54).
 * `004db5f0` (43 B): module rank 69, outside rolling admit()'s top-60 window
 * `004db620` (41 B): module rank 69, outside rolling admit()'s top-60 window
 * `004fb8f0` (47 B): Hand-owned hook in `src/core/devcmd.cpp`; select skips it; CSV still todo (also rank 101).
@@ -77,7 +77,7 @@ Three entries within the window were previously produced, then returned to todo;
 * `00692390` (16 B): module rank 79, outside rolling admit()'s top-60 window; clone cluster of 10 ({'done': 6, 'lib': 3, 'todo': 1})
 * `006923c0` (18 B): module rank 79, outside rolling admit()'s top-60 window
 * `006923e0` (34 B): module rank 79, outside rolling admit()'s top-60 window; clone cluster of 59 ({'done': 58, 'todo': 1})
-* `0069ae30` (62 B): Selectable now (rank 53); returned from queue by `7a256dbf` after the stack-probe emulator fix.
+* `0069ae30` (62 B): Selectable now (rank 53); returned from queue by `a63bd84f` after the stack-probe emulator fix.
 * `006b6fe0` (62 B): module rank 96, outside rolling admit()'s top-60 window; clone cluster of 7 ({'done': 5, 'queue': 1, 'todo': 1})
 * `006d0dd0` (24 B): module rank 66, outside rolling admit()'s top-60 window
 * `006f5510` (34 B): module rank 76, outside rolling admit()'s top-60 window; clone cluster of 3 ({'todo': 3})

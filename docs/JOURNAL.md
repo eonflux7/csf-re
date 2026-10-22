@@ -1606,10 +1606,10 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 
 ## 2026-10-14 (morning): reviews catch-up, wave 9, rw4 started
 - The wave loop died during wave 9; its 14 adopted functions were re-checked here (gate ok, emudiff same) and
-  committed (e8a70b6d); loop restarted.
+  committed (c9b017a0); loop restarted.
 - Jobs initfn2 (189 static initialisers, emudiff: CRT `_atexit` as an exact-argument event) and rw3 (RenderWare
   slice 3: 42 of 50 slots, RW unresolved 322 -> 280) had been applied but not reviewed, and went into the tree with the
-  wave-8 commit 87e1c7a9: the loop's `git commit` took everything staged. Both reviewed after the fact: content equals
+  wave-8 commit 62c1a8fb: the loop's `git commit` took everything staged. Both reviewed after the fact: content equals
   the patches; rw3's three native tests pass under ASan/UBSan here. The loop now commits only its own paths.
 - 0x82C404 (x87 control word to 24-bit precision, exceptions masked): the gate allows inline asm only in naked
   thunks (and flags the word in comments), so the raw control word goes through FXSAVE/FXRSTOR. initfn2 had also
@@ -1808,7 +1808,7 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 
 
 ## 2026-10-17: reconcile status and focus on a playable mission
-- Reconciled the plan with committed work through d15068f9: rwworld3 fixed FR01's structurally inconsistent
+- Reconciled the plan with committed work through ef2e1de6: rwworld3 fixed FR01's structurally inconsistent
   BSP envelopes; rwteam added 23/33 physics slots, rwprt 46/46 requested particle/PTank slots, and rwmisc
   17/18 miscellaneous slots. Detailed scope and test limits are in the corresponding reports.
 - Latest recorded Windows mission stop is a sector collision query after the world loads. Collision attach
@@ -1860,7 +1860,7 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 ## 2026-10-22: public release cleanup
 - Added README.md (project state, evidence ledger in detail, build, layout, legal), LICENSE (MIT, user's
   choice), docs/README.md (index of reports). Full history kept: checked every commit for secrets, keys and game
-  binaries/assets; none found. The standalone run-harness WIP was committed as found (c8bdc9da).
+  binaries/assets; none found. The standalone run-harness WIP was committed as found (a5012897).
 - Account details scrubbed (user): agent logins and keys now live under `$CSF_CONFIG_DIR` (default unchanged,
   `~/.config/csf-re`); comments, PLAN, JOURNAL and CLAUDE.md no longer describe private accounts or key paths.
   CLAUDE.md's agent section updated to the 2026-10-17 decision (work directly, no agent jobs).
@@ -1874,3 +1874,11 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   longer under `/mnt/e/dev/csf-paks` on this machine; resolution via both variables checked with a dummy
   fixture). Also checked: no byte dumps of the original in db/tests/docs, all relative README/docs links
   resolve, packed history 48 MB (single author identity).
+- History rewritten for publication (user): all 1,443 commits authored and committed as
+  `eonflux7 <122987246+eonflux7@users.noreply.github.com>` (repo-local git config set to match); final tree
+  identical. Branch renamed master → main; merged branch worktree-webmon-usage and stale worktrees removed.
+  Pre-rewrite backup: `../csf-re-pre-rewrite.bundle` (outside the repo). The 9 commit hashes cited in the docs
+  were remapped to the rewritten commits.
+- README reworked for first-time readers: plain-language intro and "at a glance", How it works and a glossary
+  before the ledger, Getting started (requirements.txt, venv, exe, librw, data directories, the shared
+  `Documents\CSF Data` caveat, build/run commands), Contributing.

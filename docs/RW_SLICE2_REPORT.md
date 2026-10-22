@@ -149,7 +149,7 @@ from the reduced unresolved set.
   Baseline methodology: the first full `linktest.py -j 8` started before editing,
   but reached cpu.cpp after its three new helper definitions were added. For the
   corrected baseline, I separately compiled cpu.cpp from task-start HEAD
-  ac5ad1c270e5091d54a937c332379f209d879ce7, using linktest.flags(), and inventoried
+  caf5a9cf05d4ae448f1a2544c8b507ee2076fd06, using linktest.flags(), and inventoried
   the full compiled COFF set with that original CPU object substituted and life
   excluded: `linktest.py -j 8 --objects work/rw2-check/before-objects.txt --out
   work/rw2-check/before.json`. All other sources are unchanged by this task.

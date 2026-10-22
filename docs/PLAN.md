@@ -88,7 +88,7 @@ Stage as of 2026-10-17: first playable standalone mission. Work directly in the 
 production tooling, not the current work queue. Implementation counts measure code produced, not gameplay
 correctness; report live execution and differential evidence separately.
 
-Latest recorded state (`d15068f9`, 2026-10-15): menus and profile creation work; FR01 scripts, animations,
+Latest recorded state (`ef2e1de6`, 2026-10-15): menus and profile creation work; FR01 scripts, animations,
 clumps and BSP world load. Mission loading then faults in a sector collision query: RpCollision attach
 currently reserves engine/atomic storage but omits sector collision support. World/sector rendering and
 visibility are also unfinished. This is not yet a playable mission. Reports: RW_WORLD3_REPORT.md,

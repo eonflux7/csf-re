@@ -1,30 +1,143 @@
 # CSF-RE: Commandos: Strike Force (PC) reimplementation
 
 A functional C++ reimplementation of **Commandos: Strike Force** for Windows (`CommXPC.exe`, Pyro Studios /
-Eidos, 2006), built **hook-first**. Reimplemented functions are swapped into the running original game one at a
-time and checked against it. When nothing of the original's own code is left, the same sources link into a
-standalone executable (the **cutover**). Library code the game linked statically (RenderWare, Quazal NetZ, D3DX,
-the MSVC CRT) is never reimplemented. The game's calls into it are routed to open replacements, mainly
+Eidos, 2006). Every function of the game's own code has been rewritten in C++. The rewrites are tested by
+swapping them into the running original game, and the same sources also link into a standalone executable that
+no longer needs the original program's code. Libraries the game linked in (RenderWare, Quazal NetZ, D3DX, the
+MSVC runtime) are not rewritten. Their calls go to open replacements instead, mainly
 [librw](https://github.com/aap/librw) for RenderWare Graphics.
 
 > **Status: work in progress, not playable.** The standalone exe runs the intro and the menus and creates
-> profiles. The first mission loads its world and then stops. Read the state and the evidence ledger below
-> before relying on any part of it.
+> profiles. The first mission loads its world and then stops. Most of the rewritten code has not yet been
+> checked against the original (see [the evidence ledger](#the-evidence-ledger)).
 
-The goal is behavioural fidelity, not a byte-matching decompilation. Code uses natural C++ expressions and does
-not emulate x87 rounding or register and stack artifacts.
+**No game files are included.** You need your own copy of the PC game. See [Legal](#legal).
 
-**No game files are included.** You need your own legally obtained copy of the PC game. See [Legal](#legal).
+### At a glance
+
+- **Can I play it?** Not yet. You can watch the standalone exe reach the menus. The first mission does not run.
+- **What is it for?** Preservation and study: a readable, buildable version of the game that can later be fixed,
+  ported and modded. The goal is matching behaviour, not a byte-identical decompilation. The code uses ordinary
+  C++ and does not emulate x87 rounding or register and stack quirks.
+- **Who can build it?** Developers on Linux/WSL2 with a clang-cl cross toolchain and a copy of the game. Native
+  Windows builds are not set up. See [Getting started](#getting-started).
+- **How was it made?** Mostly by AI agents under human direction, with automated checks and an evidence ledger,
+  because code produced this way must not be trusted on sight. See [How this was made](#how-this-was-made).
 
 ---
 
-## Project state (2026-10-22, commit after `43233e7f`)
+## How it works
 
-### The short version
+1. **Analysis.** IDA 9.3 (headless, idalib) provides what can be computed from the binary: prototypes,
+   call-site arguments, stack deltas, cross-references. The binary has no symbols and no RTTI, so names come from
+   strings, asserts and structure. Identifiers in the original are Spanish. Knowledge lives in `db/` and is
+   pushed back into the IDA database so Hex-Rays can derive more types from it (`tools/ida/propagate.sh`).
+2. **Production.** Each function gets a packet: typed pseudocode, disassembly, class fields, typed virtual calls
+   and the binding of every callee. A model writes the C++, and a **gate** checks it before it is accepted: it
+   compiles; it uses the same globals, constants and vtable slots as the original; the calling convention and
+   `ret N` match; there are no raw addresses; and an emulated run of the original bytes against our object code
+   agrees (`tools/emudiff.py`, Unicorn).
+3. **In-game verification.** `hook/` builds a `dinput8.dll` proxy that installs rewritten functions into the
+   original game (via MinHook) and compares their results with the original's on the same inputs.
+   `tools/verifier.py` runs the game in background copies, bisects crashes and moves the culprits to `queue/`.
+4. **Cutover.** Every reference to the original goes through an address-keyed macro (`CSF_FUNC`, `CSF_GLOBAL`,
+   `CSF_VTBL`, … in `src/globals.h`). The standalone build resolves those to our definitions, to data generated
+   from your copy of the exe (`tools/datagen.py`) or to library boundaries. Anything unresolved becomes an
+   explicit trap.
+
+### Terms used in this repo
+
+| Term | Meaning |
+|---|---|
+| **hook** / hook build | `dinput8.dll` loaded by the original game; replaces original functions with ours at run time |
+| **standalone** | `csf_standalone.exe`: our code plus generated data and library boundaries, no original code executed |
+| **cutover** | The switch from the hook build to the standalone build |
+| **boundary** | The interface where game code calls a library (RenderWare, NetZ, CRT…), mapped onto a replacement |
+| **trap** | A library function with no replacement yet: prints its original address and aborts. Never a fake success |
+| **smoke** | A short automated run of the hooked game (start-up, menus, a savegame load) |
+| **diffed** | A function whose in-game results matched the original's (see the ledger) |
+| **gate** | The static checks a rewritten function must pass before it is committed |
+| **packet** | Everything a model gets for one function: pseudocode, disassembly, types, callee bindings |
+
+---
+
+## Getting started
+
+Developed on Linux (WSL2), cross-compiling to 32-bit Windows. The game itself runs on the Windows side through
+WSL interop, so the game directories must be on a Windows drive (e.g. under `/mnt/c/...`).
+
+### Requirements
+
+- clang-cl / lld-link 21 (plus `llvm-lib-21`, `llvm-rc-21`, `llvm-mt-21`) and the MSVC CRT/SDK from
+  [xwin](https://github.com/Jake-Shadle/xwin) in `~/.xwin` (you must accept its license).
+- CMake ≥ 3.20, Ninja, Python 3.
+- Your copy of the PC game. The tools were developed against the retail executable with SHA-256
+  `b225664e06d83303e2707bf182606c40aaacf5d38a5eb0a134c31f8f5b8e3d97` (MSVC 7.1 build of 2006-02-23). Other
+  releases (patched or digital) are untested and very likely differ.
+- For the standalone target: a librw checkout at `work/tools/librw`, developed against
+  `aap/librw@18532c2e13efbc1aa43f0b00b4459831f9414de0`, unmodified.
+- Only for the analysis tools (`tools/ida/`): IDA Pro 9.3 with idalib. Not needed to build.
+
+### Setup
+
+```sh
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+mkdir -p work/pc && cp /path/to/game/CommXPC.exe work/pc/          # your exe; data is generated from it
+git clone https://github.com/aap/librw work/tools/librw && git -C work/tools/librw checkout 18532c2e
+```
+
+The tools work on copies of the game install, never on the install itself. Set `CSF_DATA_ROOT` to a directory on
+a Windows drive and put a full copy of the installed game at `$CSF_DATA_ROOT/csf-play` (the hook copy). Each
+directory can also be set on its own:
+
+| Variable | Default | Contents |
+|---|---|---|
+| `CSF_DATA_ROOT` | `/mnt/e/dev` (the original developer's layout) | Parent of the four below |
+| `CSF_PLAY` | `$CSF_DATA_ROOT/csf-play` | Copy of the game the hook DLL is deployed into |
+| `CSF_STANDALONE` | `$CSF_DATA_ROOT/csf-standalone` | Run directory of the standalone exe (`tools/playcopy.py $CSF_STANDALONE --original`) |
+| `CSF_PAKS` | `$CSF_DATA_ROOT/csf-paks` | Extracted `.pak` contents for the optional real-asset tests |
+| `CSF_BUILDS` | `$CSF_DATA_ROOT/csf-builds` | Original game builds, read-only |
+
+Defaults are in [tools/paths.py](tools/paths.py) (mirrored by `tests/paths.h` and the shell scripts). Other
+variables: `CSF_POOL` (parallel smoke copies), `CSF_FR01_DIR` (overrides `$CSF_PAKS/Ransom/Maps/FR01`),
+`CSF_CHECK_RW_BUILD` (native RW test build dir), `CSF_CONFIG_DIR` (agent logins/keys).
+
+> Runs of the game, hooked or standalone, use the same `Documents\CSF Data` folder as your installed game
+> (profiles and savegames). `tools/dryrun.py --full` backs it up and restores it; other tools do not.
+
+### Build and run
+
+**Hook DLL** (into the copy at `$CSF_PLAY`):
+
+```sh
+cmake -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=cmake/clang-cl-x86.cmake
+ninja -C build                      # -> build/dinput8.dll
+tools/deploy.sh                     # rebuilds and copies the DLL into $CSF_PLAY; pending hooks stay off
+tools/smoke.sh                      # one smoke run; result line + hook log
+```
+
+**Standalone executable** (needs librw; `build/` must be configured as above first):
+
+```sh
+cmake --build build --target csf_standalone -j 8                  # -> build/csf_standalone.exe
+.venv/bin/python tools/dryrun.py --full --show --timeout 120       # watch it reach the menus
+.venv/bin/python tools/dryrun.py --walk                            # scripted, unattended menu walks
+```
+
+See [docs/STANDALONE.md](docs/STANDALONE.md) for the generated inputs and the trap policy, and
+`standalone/harness.cpp` for the run-time switches (`CSF_DISPLAY`, `CSF_SKIP_INTRO`, `CSF_MISSION`, `CSF_SHOTS`,
+…).
+
+**Checks:** `tools/check_all.sh` runs every stage (`--offline` skips the Windows game). Tests that need
+extracted game data print `SKIP` when it is absent. `tools/status.py --modules` prints the live numbers.
+
+---
+
+## Project state (2026-10-22)
 
 | Area | State |
 |---|---|
-| Game code (the game's own functions) | **14,900 of 14,903 written** (100% of bytes; 3 todo). Volume of written code, **not** correctness |
+| Game code (the game's own functions) | **14,900 of 14,903 written** (100% of bytes; 3 todo). This counts code written, **not** code proven correct |
 | Verified against the original | **2,205 functions (14.8%) compared in game with matching results**; 5,536 more only executed; 7,150 never ran |
 | Standalone link | Links. 14,927/14,927 sources compile standalone; 138 library slots still trap (NetZ 122, RW 15, PNG 1) |
 | Standalone runtime (Windows, last run 2026-10-15) | Logos and intro movies, main menu, Settings pages, new profile, Campaign page, mission start |
@@ -33,7 +146,7 @@ not emulate x87 rounding or register and stack artifacts.
 | Still missing for a playable mission | World/sector rendering and visibility, player movement and collision, weapon use, clean exit from a mission |
 | Multiplayer | Out of scope for now. The NetZ layer is stubbed offline (decision 2026-10-07) |
 
-### What the game has been seen to do (standalone exe, Windows)
+### What the standalone exe has been seen to do (Windows)
 
 Recorded in [docs/JOURNAL.md](docs/JOURNAL.md), runs of 2026-10-14 and 2026-10-15:
 
@@ -61,6 +174,18 @@ that stops.
 4. Then the remaining integration (RW physics/animation/particle consumers, NetZ offline boundaries, audio beyond
    null/PCM), then the verification backlog (below).
 
+### Functions by region
+
+| Region | Functions | Size | Treatment |
+|---|---:|---:|---|
+| game | 14,903 | 2,309 KB | Reimplemented in `src/auto/` (14,900 done) |
+| RenderWare Graphics | 2,159 | 543 KB | Boundary onto librw (`src/boundary/rw/`) |
+| D3DX9 | 1,247 | 470 KB | Forwarded to `d3dx9_43.dll` where needed |
+| Quazal NetZ | 3,601 | 443 KB | Offline stubs (`src/boundary/netz/`); multiplayer out of scope |
+| RenderWare Audio | 581 | 92 KB | Its 40-slot boundary reimplemented on our own backend. Partial: silent timeline and optional DirectSound PCM; compressed banks are not decoded yet ([docs/AUDIO_PORT.md](docs/AUDIO_PORT.md)) |
+| MSVC CRT | 486 | 84 KB | Boundary onto the host UCRT (`src/boundary/crt/`) |
+| libpng | 156 | 54 KB | Images read through librw's PNG decoder |
+
 ---
 
 ## The evidence ledger
@@ -80,7 +205,7 @@ Levels, weakest to strongest:
 | **mismatched** | A recorded in-game comparison differed from the original |
 | **installed** | Orthogonal flag: the hook was on in at least one passing smoke |
 
-### Ledger totals (game region, recorded as of the last smoke runs, 2026-10-14)
+### Ledger totals (game region, as of the last smoke runs, 2026-10-14)
 
 | Level | Functions | Share | Code size |
 |---|---:|---:|---:|
@@ -150,106 +275,20 @@ The functions the automated pipeline could not settle, one file each with the fa
 - Data generated from the original image at build time: 2,895 globals, 1,154 vtables. 0 raw original addresses
   in code, 0 asm thunks embedding original addresses, 50 other undefined symbols.
 
-### Functions by region
-
-| Region | Functions | Size | Treatment |
-|---|---:|---:|---|
-| game | 14,903 | 2,309 KB | Reimplemented in `src/auto/` (14,900 done) |
-| RenderWare Graphics | 2,159 | 543 KB | Boundary onto librw (`src/boundary/rw/`) |
-| D3DX9 | 1,247 | 470 KB | Forwarded to `d3dx9_43.dll` where needed |
-| Quazal NetZ | 3,601 | 443 KB | Offline stubs (`src/boundary/netz/`); multiplayer out of scope |
-| RenderWare Audio | 581 | 92 KB | Its 40-slot boundary reimplemented on our own backend. Partial: silent timeline and optional DirectSound PCM; compressed banks are not decoded yet ([docs/AUDIO_PORT.md](docs/AUDIO_PORT.md)) |
-| MSVC CRT | 486 | 84 KB | Boundary onto the host UCRT (`src/boundary/crt/`) |
-| libpng | 156 | 54 KB | Images read through librw's PNG decoder |
-
 ---
 
-## How it works
-
-1. **Analysis.** IDA 9.3 (headless, idalib) is the source of truth for what it computes from the binary:
-   prototypes, call-site arguments, stack deltas, xrefs. The binary has no symbols and no RTTI, so names come from
-   strings, asserts and structure (identifiers are Spanish). Knowledge lives in `db/` and is pushed back into the
-   IDB, and Hex-Rays re-derives types from it (`tools/ida/propagate.sh`).
-2. **Production.** Each function gets a packet: typed pseudocode, disassembly, class fields, typed virtual calls
-   and the canonical binding of every callee. A model writes the C++ and a **gate** checks it: compile; the
-   references match the original's (globals, constants, vtable slots); ABI and `ret N`; no raw addresses; and,
-   since 2026-10-13, an emulated differential run of the original bytes against our object (`tools/emudiff.py`,
-   Unicorn). Gated functions are committed as *pending*.
-3. **In-game verification.** `hook/` builds a `dinput8.dll` proxy that installs the reimplemented functions into
-   the original game (JMP, vtable and trampoline hooks via MinHook) and records hits and in-game diffs.
-   `tools/verifier.py` smokes pending functions in background copies of the game, bisects crashes and quarantines
-   culprits to `queue/`.
-4. **Cutover.** Every reference to the original goes through an address-keyed macro (`CSF_FUNC`, `CSF_GLOBAL`,
-   `CSF_VTBL`, … in `src/globals.h`). The standalone build resolves them to our definitions, generated data
-   (`tools/datagen.py`) or library boundaries. Anything unresolved becomes an explicit trap.
-
-### How this was made
+## How this was made
 
 This project was built largely by **AI agents under human direction**. Claude (Opus) worked as the orchestrator
 and architect. Smaller models (Claude Haiku, OpenAI Codex/GPT and others; the policy is in `db/lanes.yaml`) wrote
-most of `src/auto/` through the gated pipeline above. The tooling for that, including `tools/grunt.py`,
-`tools/deep_worker.py`, `tools/naming.py`, `tools/review.py` and `CLAUDE.md`, is kept in the repo as a record of
-the method. The pipeline is no longer the current way of working: since 2026-10-17, work is done directly and
-targeted at the playable mission. Agent logins and API keys are read from `$CSF_CONFIG_DIR` (default
-`~/.config/csf-re`) and never stored in the repo.
+most of `src/auto/` through the gated pipeline described in [How it works](#how-it-works). The tooling for that,
+including `tools/grunt.py`, `tools/deep_worker.py`, `tools/naming.py`, `tools/review.py` and `CLAUDE.md`, is kept
+in the repo as a record of the method. The pipeline is no longer the current way of working: since 2026-10-17,
+work is done directly and aimed at the playable mission. Agent logins and API keys are read from
+`$CSF_CONFIG_DIR` (default `~/.config/csf-re`) and never stored in the repo.
 
-The evidence ledger exists because code written this way must not be trusted on sight.
-
----
-
-## Building
-
-Developed on Linux (WSL2), cross-compiling to 32-bit Windows. The game runs on the Windows side.
-
-**Requirements**
-
-- clang-cl / lld-link 21 (plus `llvm-lib-21`, `llvm-rc-21`, `llvm-mt-21`) and the MSVC CRT/SDK from
-  [xwin](https://github.com/Jake-Shadle/xwin) in `~/.xwin` (accept its license).
-- CMake ≥ 3.20, Ninja.
-- Python 3 venv in `.venv` with `pefile`, `capstone`, `pyyaml`, `unicorn`. IDA Pro 9.3 with idalib is needed only
-  for the analysis tools (`tools/ida/`), not for building.
-- Your copy of the PC game. Put the executable at `work/pc/CommXPC.exe`. The tools were developed against
-  SHA-256 `b225664e06d83303e2707bf182606c40aaacf5d38a5eb0a134c31f8f5b8e3d97` (MSVC 7.1 build of 2006-02-23).
-- For the standalone target: a librw checkout at `work/tools/librw` (developed against
-  `aap/librw@18532c2e13efbc1aa43f0b00b4459831f9414de0`, unmodified).
-
-**Hook DLL** (installs into a copy of the game, never into your original install):
-
-```sh
-cmake -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=cmake/clang-cl-x86.cmake
-ninja -C build                      # -> build/dinput8.dll
-CSF_PLAY=/path/to/game-copy tools/deploy.sh   # rebuilds, copies the DLL in; pending hooks stay off
-```
-
-**Standalone executable** (needs librw; data is generated from your `CommXPC.exe` at build time):
-
-```sh
-cmake --build build --target csf_standalone -j 8   # -> build/csf_standalone.exe
-.venv/bin/python tools/dryrun.py --walk --dir /path/to/run-dir   # scripted, unattended runs (Windows via WSL interop)
-```
-
-See [docs/STANDALONE.md](docs/STANDALONE.md) for the generated inputs and the trap policy, and
-`standalone/harness.cpp` for the run-time switches (`CSF_DISPLAY`, `CSF_SKIP_INTRO`, `CSF_MISSION`, `CSF_SHOTS`,
-…).
-
-**Checks:** `tools/check_all.sh` (all stages; `--offline` skips the Windows game). It needs the game data for the
-real-asset tests (`CSF_FR01_DIR` = an extracted `Maps/FR01` from `Ransom.pak`). `tools/status.py --modules` prints
-the live numbers.
-
-**Machine-local directories** (all outside the repo; [tools/paths.py](tools/paths.py), mirrored by
-`tests/paths.h` and the shell scripts). Set `CSF_DATA_ROOT` once, or each directory on its own:
-
-| Variable | Default | Contents |
-|---|---|---|
-| `CSF_DATA_ROOT` | `/mnt/e/dev` (the original developer's WSL layout) | Parent of the four below |
-| `CSF_PLAY` | `$CSF_DATA_ROOT/csf-play` | Copy of the game the hook DLL is deployed into |
-| `CSF_STANDALONE` | `$CSF_DATA_ROOT/csf-standalone` | Run directory of the standalone exe (`tools/dryrun.py`) |
-| `CSF_PAKS` | `$CSF_DATA_ROOT/csf-paks` | Extracted `.pak` contents for the optional real-asset tests |
-| `CSF_BUILDS` | `$CSF_DATA_ROOT/csf-builds` | Original game builds, read-only |
-
-Other variables: `CSF_POOL` (parallel smoke copies), `CSF_FR01_DIR` (overrides `$CSF_PAKS/Ransom/Maps/FR01`),
-`CSF_CHECK_RW_BUILD` (native RW test build dir), `CSF_CONFIG_DIR` (agent logins/keys). Real-asset tests print
-`SKIP` when their data is absent.
+[docs/JOURNAL.md](docs/JOURNAL.md) is the dated log of findings and decisions; [docs/PLAN.md](docs/PLAN.md) is the
+working plan; [docs/README.md](docs/README.md) indexes the per-item reports.
 
 ---
 
@@ -272,6 +311,15 @@ Other variables: `CSF_POOL` (parallel smoke copies), `CSF_FR01_DIR` (overrides `
 
 Not in the repo (gitignored): `work/` (exe copy, extracted data, third-party checkouts), `ida/` (the IDB),
 `export/` (derived from the IDB), `build/`.
+
+---
+
+## Contributing
+
+Issues are welcome, especially reproducible differences from the original game's behaviour (address, inputs,
+expected vs actual). Pull requests should keep to the project's rules: no game files or original code bytes, no
+leaked SDK material, original addresses only through the `src/globals.h` macros, and evidence for behavioural
+claims (a test, an emulated diff or an in-game diff).
 
 ---
 
