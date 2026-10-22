@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run the standalone exe's dry run on Windows (WSL interop) and record how far it got.
 
-  dryrun.py [--dir /mnt/e/dev/csf-standalone] [--exe build/csf_standalone.exe] [--timeout 60]
+  dryrun.py [--dir $CSF_STANDALONE] [--exe build/csf_standalone.exe] [--timeout 60]
   dryrun.py --full [--timeout 60]   no CSF_DRYRUN: on into the game's WinMain; killed at the timeout; output
                                     DIR/winmain.out, nothing recorded in work/dryrun.json
       Every --full run is OFFSCREEN and silent (standalone/harness.cpp, CSF_DISPLAY=offscreen): a 1280x960 window
@@ -31,6 +31,8 @@ initialisers run of the table, the last one, the trap it stopped at (if any), ex
 import argparse, json, os, re, shutil, subprocess, sys, threading, time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, "tools"))
+from paths import STANDALONE
 # Walk entries. Pages that open on their own are opened directly (--goto: the menu manager's open-page call, as the
 # page's button would); flows that need the page's own state (profile selection, typing a name, the Exit
 # confirmation) use scripted DirectInput clicks (CSF_INPUT, 800x600 menu coordinates), timed from the main menu.
@@ -126,8 +128,8 @@ def walk(names, timeout):
             cmd += ["--shots", shot]
         line = subprocess.run(cmd, capture_output=True, text=True).stdout.strip().splitlines()
         line = line[-1] if line else "(no output)"
-        out = open("/mnt/e/dev/csf-standalone/winmain.out", errors="replace").read()
-        shutil.copy("/mnt/e/dev/csf-standalone/winmain.out", os.path.join(ROOT, "work", "measure", f"walk-{name}.out"))
+        out = open(os.path.join(STANDALONE, "winmain.out"), errors="replace").read()
+        shutil.copy(os.path.join(STANDALONE, "winmain.out"), os.path.join(ROOT, "work", "measure", f"walk-{name}.out"))
         pages = re.findall(r"^csf: page (\S+)", out, re.M)
         exc = re.search(r"^csf: EXCEPTION .*$", out, re.M)
         trap = re.search(r"^csf: UNRESOLVED .*$", out, re.M)
@@ -143,7 +145,7 @@ def walk(names, timeout):
         bad += not ok
         r = dict(name=name, ok=ok, exit=code, pages=pages, trap=trap.group(0) if trap else None,
                  exception=exc.group(0) if exc else None,
-                 shot=f"/mnt/e/dev/csf-standalone/shots/{name}-{shot}.jpg" if shot else None)
+                 shot=os.path.join(STANDALONE, "shots", f"{name}-{shot}.jpg") if shot else None)
         results.append(r)
         print(f"{'ok  ' if ok else 'FAIL'} {name:18} exit {code:8} pages {' > '.join(pages) or '-'}"
               f"{'; ' + r['trap'] if trap else ''}{'; ' + r['exception'] if exc else ''}", flush=True)
@@ -156,7 +158,7 @@ def walk(names, timeout):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--dir", default="/mnt/e/dev/csf-standalone")
+    ap.add_argument("--dir", default=STANDALONE)
     ap.add_argument("--exe", default=os.path.join(ROOT, "build", "csf_standalone.exe"))
     ap.add_argument("--timeout", type=int, default=60)
     ap.add_argument("--full", action="store_true")

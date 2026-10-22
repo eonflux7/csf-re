@@ -2,7 +2,7 @@
 # Build the hook DLL and copy it into the play copy of the game (never the original build).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-PLAY=${CSF_PLAY:-/mnt/e/dev/csf-play}
+PLAY=${CSF_PLAY:-${CSF_DATA_ROOT:-/mnt/e/dev}/csf-play}
 "$ROOT/.venv/bin/python" "$ROOT/tools/difftable.py" >/dev/null
 ninja -C "$ROOT/build"
 # the play exe imports our DLL as CSFHOOK.dll (tools/playexe.py: Windows resolves DINPUT8.dll to System32 first)

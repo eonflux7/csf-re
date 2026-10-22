@@ -51,7 +51,7 @@ this was the only malformed expression in the Windows run.
 
 `4FE010` replaces the scene filename extension with `.gsc`, calls `46BC40`,
 then uses `.csc` for `444890`. The assets are not expected as loose GSCs in
-GlobalEK: `/mnt/e/dev/csf-builds/csf-pc-retail/Maps/Parachut.pak` contains
+GlobalEK: `$CSF_BUILDS/csf-pc-retail/Maps/Parachut.pak` contains
 `Maps/FR01/Parachut.scn` (387143 bytes), `.gsc` (953175), `.csc` (14929), and
 `Maps/FR01/FR01.rws` (11029370).
 

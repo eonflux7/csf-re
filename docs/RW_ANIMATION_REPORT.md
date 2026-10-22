@@ -139,7 +139,7 @@ The optional asset test is reproducible without Windows:
 ```sh
 ASAN_OPTIONS=detect_leaks=0 UBSAN_OPTIONS=halt_on_error=1 \
   .venv/bin/python tests/rw_animation_assets.py \
-  --pak /mnt/e/dev/csf-builds/csf-pc-retail/Maps/Parachut.pak
+  --pak $CSF_BUILDS/csf-pc-retail/Maps/Parachut.pak
 ```
 
 It validates PAK/zlib framing, extracts only animations into ignored

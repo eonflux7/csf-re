@@ -24,7 +24,7 @@ Full dumps (not checked-in asset data): `work/rwworld3/chunks.txt` and
 
 ```sh
 .venv/bin/python tests/rw_chunk_tree.py \
-  /mnt/e/dev/csf-paks/Ransom/Maps/FR01/{FR01.rws,FR01_col.rws,Ransom.wad} \
+  $CSF_PAKS/Ransom/Maps/FR01/{FR01.rws,FR01_col.rws,Ransom.wad} \
   > work/rwworld3/chunks.txt
 .venv/bin/python tests/rw_world_chunks.py --tree > work/rwworld3/chunk-tree.txt
 ```

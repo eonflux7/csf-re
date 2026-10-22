@@ -876,7 +876,7 @@ def diff_rejects(good, smoke_out):
     return [r for r in good if r["ea"] not in bad], rej
 
 
-PLAY = os.environ.get("CSF_PLAY", "/mnt/e/dev/csf-play")
+from paths import PLAY
 BISECT_TAG = "# grunt-bisect"
 
 

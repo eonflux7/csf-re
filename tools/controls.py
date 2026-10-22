@@ -22,6 +22,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from packet import DB
 from gate import gate
 from gen_classes_h import load_names
+from paths import PLAY
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FIX_DIR = os.path.join(ROOT, "tests", "controls")
@@ -219,7 +220,7 @@ LIVE = [  # (ea, kind, how to build the mutant from the current file)
 
 def live_candidates(db):
     """Add a const mutant for a few leaf functions the last smoke actually diffed (they're reached in-mission)."""
-    summ = os.path.join(os.environ.get("CSF_PLAY", "/mnt/e/dev/csf-play"), "csf_diff_summary.txt")
+    summ = os.path.join(PLAY, "csf_diff_summary.txt")
     out = list(LIVE)
     if not os.path.exists(summ):
         return out

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Smoke pool: several play copies, so independent smokes run side by side (bisect parts, the verifier's starts).
 
-The first copy is the play copy (CSF_PLAY, /mnt/e/dev/csf-play): deploys and ini edits go there as before. The
+The first copy is the play copy (CSF_PLAY, tools/paths.py): deploys and ini edits go there as before. The
 others mirror it (`sync`: hook DLL + ini without bisect lines) and only ever run smokes. Each copy keeps its own
 csf_hook.log / hits / diff files; savegames are shared (Documents\\CSF Data\\Games). Several instances can run at
 once because the hook DLL renames the game's single-instance mutex (src/core/devcmd.cpp, MultiInstance).
 
-  CSF_POOL="dir dir ..."   the copies (default: the play copy + /mnt/e/dev/csf-play-p1..p3 that exist);
+  CSF_POOL="dir dir ..."   the copies (default: the play copy + its siblings csf-play-p1..p3 that exist);
                            CSF_POOL_SIZE=N uses only the first N (1 = no parallel smokes)
   pool.py make N           create copies p1..pN-1 next to the play copy (tools/playcopy.py: data hard-linked)
   pool.py list             the copies in use
@@ -15,7 +15,7 @@ import concurrent.futures as cf, os, re, shutil, signal, subprocess, sys, thread
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(__file__))
-PLAY = os.environ.get("CSF_PLAY", "/mnt/e/dev/csf-play")
+from paths import PLAY
 BISECT_TAG = "# grunt-bisect"
 
 

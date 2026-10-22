@@ -15,7 +15,7 @@
 # Starts straight into a mission (src/core/devcmd.cpp), windowed 1280x960, muted unless CSF_MUTE=0, off-screen unless CSF_BG=0:
 #   CSF_START="scene Maps/FR01/Parachut.scn" (default) | "loadsave 1.sav" | "menu" (normal intro + menus)
 set -uo pipefail
-PLAY=${CSF_PLAY:-/mnt/e/dev/csf-play}
+PLAY=${CSF_PLAY:-${CSF_DATA_ROOT:-/mnt/e/dev}/csf-play}
 SECS=${1:-15}
 START=${CSF_START:-scene Maps/FR01/Parachut.scn}
 INI="$PLAY/csf_hook.ini"

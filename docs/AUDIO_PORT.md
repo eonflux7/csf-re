@@ -188,7 +188,7 @@ The backend/device singleton is deliberately process-lifetime (avoids static
 teardown ordering with ABI sidecars); voice buffers are released on destruction
 or engine close. DLL/backend unloading before process exit is not implemented.
 
-The configured clang-cl sysroot is `/home/eon/.xwin`. SDK headers **dsound.h,
+The configured clang-cl sysroot is `~/.xwin`. SDK headers **dsound.h,
 xaudio2.h, audioclient.h** and `sdk/lib/um/x86/dsound.lib` are present. DirectSound
 was chosen because it provides PCM secondary buffers with this existing toolchain;
 WASAPI/XAudio2 would need more device/COM/event plumbing. `mmsystem.h` must precede

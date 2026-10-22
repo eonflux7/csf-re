@@ -38,7 +38,8 @@ LEDGER = os.path.join(ROOT, "db", "verify.json")
 CACHE = os.path.join(ROOT, "work", "codehash_cache.json")
 TREE = os.environ.get("CSF_TREE", ROOT)  # the checkout whose build was deployed (verifier: its own detached tree)
 OBJ_DIR = os.path.join(TREE, "build", "CMakeFiles", "csf_hook.dir", "src", "auto")
-PLAY = os.environ.get("CSF_PLAY", "/mnt/e/dev/csf-play")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from paths import PLAY
 TIERS = ["diffed", "executed", "gate", "stale", "mismatched"]
 
 

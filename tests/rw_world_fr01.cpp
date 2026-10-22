@@ -1,5 +1,6 @@
 // Optional extracted-asset regression. Does not require a GPU or game process.
 #include "globals.h"
+#include "paths.h"
 #include "boundary/rw/world.h"
 #include "boundary/rw/plugins.h"
 #include <algorithm>
@@ -110,7 +111,7 @@ int main() {
     assert(registerABIPlugin(Registry::Sector,8,0xffffff00)>=0);
     assert(registerABIPluginStream(Registry::Sector,0xffffff00,reinterpret_cast<uintptr_t>(&propertyRead))>=0);
     assert(openEngine(nullptr) && start());auto saved=rw::Texture::readCB;rw::Texture::readCB=texture;
-    const char* dir=std::getenv("CSF_FR01_DIR");if(!dir) dir="/mnt/e/dev/csf-paks/Ransom/Maps/FR01";
+    const char* fr01=std::getenv("CSF_FR01_DIR");std::string dir=fr01?fr01:paksPath("Ransom/Maps/FR01");
     bool a=asset(std::string(dir)+"/FR01.rws"),b=asset(std::string(dir)+"/FR01_col.rws");
     rw::Texture::readCB=saved;assert(stop() && closeEngine() && term());
     std::puts(a && b?"rw real FR01 worlds passed":"rw real FR01 worlds: absent assets skipped");

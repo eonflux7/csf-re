@@ -12,6 +12,8 @@ CommXPC.exe.orig.
 Usage: playexe.py [PLAY_DIR]      prints the DLL file name to deploy to
 """
 import os, shutil, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from paths import PLAY
 
 DLL = "CSFHOOK.dll"
 OLD, NEW = b"DINPUT8.dll\0", DLL.encode() + b"\0"
@@ -34,4 +36,4 @@ def ensure(play):
 
 
 if __name__ == "__main__":
-    print(ensure(sys.argv[1] if len(sys.argv) > 1 else os.environ.get("CSF_PLAY", "/mnt/e/dev/csf-play")))
+    print(ensure(sys.argv[1] if len(sys.argv) > 1 else PLAY))

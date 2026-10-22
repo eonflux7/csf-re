@@ -1,5 +1,6 @@
 // Real extracted assets are optional. No game, SDK, Windows or GPU required.
 #include "globals.h"
+#include "paths.h"
 #include "boundary/rw/world.h"
 #include "boundary/rw/plugins.h"
 #include "boundary/rw/collision.h"
@@ -108,7 +109,7 @@ static bool load(const std::string& path,unsigned expectedLeaves,unsigned expect
     return true;
 }
 int main() {
-    const char* base=std::getenv("CSF_FR01_DIR");if(!base) base="/mnt/e/dev/csf-paks/Ransom/Maps/FR01";
+    const char* fr01=std::getenv("CSF_FR01_DIR");std::string base=fr01?fr01:paksPath("Ransom/Maps/FR01");
     assert(init(nullptr,0,0) && attachWorld() && attachUser() && attachCollision());
     assert(registerABIPlugin(Registry::Sector,8,0xffffff00,propertyCtor,propertyDtor)>=0);
     assert(registerABIPluginStream(Registry::Sector,0xffffff00,reinterpret_cast<uintptr_t>(propertyRead))>=0);

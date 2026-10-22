@@ -3,12 +3,14 @@
 from the link map: each hex word in [MAINBASE, MAINBASE+image) becomes map symbol + offset, with the original
 address when the symbol is a HOOK'd function (its source file is src_auto_<ea>.cpp) or a fn_slot trap.
 
-  stdsym.py [dump-file]     (default /mnt/e/dev/csf-standalone/winmain.out; stdin with -)
+  stdsym.py [dump-file]     (default $CSF_STANDALONE/winmain.out; stdin with -)
 """
 import bisect, re, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "tools"))
+from paths import STANDALONE
 MAP = ROOT / "build/cutover/csf_standalone.map"
 PREF = 0x400000
 
@@ -24,7 +26,7 @@ def load():
 
 
 def main():
-    src = sys.argv[1] if len(sys.argv) > 1 else "/mnt/e/dev/csf-standalone/winmain.out"
+    src = sys.argv[1] if len(sys.argv) > 1 else str(Path(STANDALONE) / "winmain.out")
     text = sys.stdin.read() if src == "-" else open(src, errors="replace").read()
     m = re.search(r"MAINBASE ([0-9A-Fa-f]{8})", text)
     if not m:

@@ -1,4 +1,5 @@
 #include "globals.h"
+#include "paths.h"
 #include "boundary/rw/particles.h"
 #include "boundary/rw/world.h"
 #include <cassert>
@@ -217,7 +218,7 @@ static void realSmokeTexture() {
     // Extracted retail data is optional on other machines; no fixture copies
     // or SDK material are checked in. This exercises a real smoke texture's
     // raster/material lifetime through the production PTank owner.
-    const char* path="/mnt/e/dev/csf-paks/GlobalEK/Gfx/Textures/humo02.png";
+    const std::string png=paksPath("GlobalEK/Gfx/Textures/humo02.png");const char* path=png.c_str();
     auto* file=std::fopen(path,"rb");if(!file) { std::puts("SKIP extracted smoke PNG unavailable");return; }std::fclose(file);
     auto* image=pngRead(path);assert(image && image->pixels);
     int w,h,d,f;assert(findFormat(image,4,&w,&h,&d,&f));auto* raster=rasterCreate(w,h,d,f);

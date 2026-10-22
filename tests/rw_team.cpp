@@ -1,5 +1,6 @@
 // Historical name of the job. Binary contracts here are physics, not RpTeam.
 #include "globals.h"
+#include "paths.h"
 #include "boundary/rw/toolkit9.h"
 #include <cassert>
 #include <cstdlib>
@@ -122,8 +123,8 @@ int main() {
     assert(std::fabs(rotations[1].w-1)<1e-6);
     // Real mission data: feed the first clump's serialized frame matrices
     // through the physics-part adapter. This is not a world/clump reader test.
-    const char* fixture=std::getenv("CSF_RW_TEAM_FRAMES");
-    if(!fixture) fixture="/mnt/e/dev/csf-paks/Ransom/Maps/FR01/FR01.rws";
+    const char* frames=std::getenv("CSF_RW_TEAM_FRAMES");
+    const std::string fixture=frames?frames:paksPath("Ransom/Maps/FR01/FR01.rws");
     std::ifstream asset(fixture,std::ios::binary);
     if(asset) {
         uint32_t header[16]{};asset.read(reinterpret_cast<char*>(header),sizeof header);

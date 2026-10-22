@@ -3,7 +3,7 @@
 # to 960 wide), then kill it.
 # Usage: shots.sh 10 20 30      (uses the deployed dinput8.dll and csf_hook.ini, incl. autopilot steps)
 set -uo pipefail
-PLAY=${CSF_PLAY:-/mnt/e/dev/csf-play}
+PLAY=${CSF_PLAY:-${CSF_DATA_ROOT:-/mnt/e/dev}/csf-play}
 WINPLAY=$(wslpath -w "$PLAY")
 mkdir -p "$PLAY/shots"; rm -f "$PLAY/shots"/*.png
 TIMES=$(IFS=,; echo "$*")

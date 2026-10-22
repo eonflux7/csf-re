@@ -8,6 +8,10 @@ import argparse
 import collections
 from pathlib import Path
 import struct
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
+from paths import PAKS  # noqa: E402
 
 NAMES = {1: 'STRUCT', 2: 'STRING', 3: 'EXTENSION', 6: 'TEXTURE',
          7: 'MATERIAL', 8: 'MATLIST', 9: 'SECTOR', 10: 'PLANE', 11: 'WORLD'}
@@ -98,7 +102,7 @@ if __name__ == '__main__':
     parser.add_argument('files', nargs='*', type=Path)
     parser.add_argument('--tree', action='store_true')
     args = parser.parse_args()
-    files = args.files or list(Path('/mnt/e/dev/csf-paks/Ransom/Maps/FR01').glob('*.rws'))
+    files = args.files or list(Path(PAKS, 'Ransom/Maps/FR01').glob('*.rws'))
     if not files:
         print('SKIP: extracted FR01 RWS files absent')
     for path in files:

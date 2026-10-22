@@ -473,7 +473,7 @@ csf_hook.ini `mute 1` (written by tools/smoke.sh unless CSF_MUTE=0) mutes the ga
 default output device (src/core/devcmd.cpp, from CDevCommandLine::Set, on a separate MTA thread). That catches
 whatever API the game plays through and leaves the saved sound options alone. Windows remembers per-app session
 state, so a missing `mute` (or `mute 0`) explicitly unmutes. Tested on a hardlinked private play copy
-(CSF_PLAY=/mnt/e/dev/csf-play-mute) because a grunt lane was using the shared one: SMOKE OK, SetMute hr=0.
+(CSF_PLAY=$CSF_DATA_ROOT/csf-play-mute) because a grunt lane was using the shared one: SMOKE OK, SetMute hr=0.
 
 ## 2026-10-08 — menu wave 1: link failure, crash, background smokes no longer take focus
 - Lanes stopped on a *link* error (gate compiles each file alone): 0x564B80's naked asm called a `__fastcall`
@@ -684,7 +684,7 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   names) quarantined 7 (0078ce30 00544920 004350c0 0042df60 0042db20 0078ce20 00544980), then "full batch passed
   on re-run: flaky". With a flaky crash, blind-bisect culprits may be false: re-check them before trusting.
   The loop stopped as designed (`waves: regression check failed`).
-- **Diff tier 3 v1** on branch `diff-tier3` (worktree work/t3, play copy /mnt/e/dev/csf-play-dev, not merged):
+- **Diff tier 3 v1** on branch `diff-tier3` (worktree work/t3, play copy $CSF_DATA_ROOT/csf-play-dev, not merged):
   difftable.py picks 420 functions whose own writes stay in this/globals/stack but which make direct calls; 497
   callees intercepted (251 over existing hooks, 246 MinHook). hook/replay.cpp records the original's calls (callee,
   ecx/edx, args, return incl. st0, bytes changed in the snapshot regions and in stack buffers passed by pointer)
@@ -1618,7 +1618,7 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   emufix2; pass today. 0x696000 stays queued: the DIFF is the original's never-written stack (0xCC) copied into an
   output tail, an emudiff comparison question, not a bug in our code.
 - Started rw4 (slice 4: atomic/clump/geometry, camera, lights, material; 41 slots, sol-med).
-- **First run of the standalone exe** (Windows through WSL interop, no wine needed; copy `/mnt/e/dev/csf-standalone`
+- **First run of the standalone exe** (Windows through WSL interop, no wine needed; copy `$CSF_STANDALONE`
   made with `playcopy.py --original`, the exe beside the original): `CSF_DRYRUN=1` ran the C initialisers and 14 of
   196 C++ ones, then trapped cleanly at `UNRESOLVED 0x00646E10 [netz]` (constructor of the NetZ global at 0x8B9980,
   from initialiser 0x828BA0). standalone_check.py's "initializer traps 0" counts only table entries; the static
@@ -1803,7 +1803,7 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   d3dx9_43.dll at runtime; the game wants only the compiled buffer). RW plugin 0x50F (a 4-byte ID on geometries
   and world sectors, offsets in 0x8B1404/0x8B1408, registered by the original's RpWorldPluginAttach via 0x59C240)
   registered in worldAttach with its four accessors. Next: RpWorldStreamRead rejects FR01's world (Maps/FR01/FR01.rws
-  in Ransom.pak, now extracted to /mnt/e/dev/csf-paks/Ransom): a chunk payload ends early even with complete reads
+  in Ransom.pak, now extracted to $CSF_PAKS/Ransom): a chunk payload ends early even with complete reads
   (world_stream.inc readFully), so the scene finaliser gets a null world. Job rwworld3.
 
 
@@ -1849,8 +1849,8 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
   data fixups, skipped original CRT initialization, WinMain exit wrapper). Updated checks to the current
   contracts; added rejection tests for text/unknown pointer provenance. The original run had 2 failures
   and 2 errors; the rerun was interrupted before completion, so these changes are not claimed fully verified.
-- Configured fresh native and cross CMake caches for /home/eon/projects/csf-re (old caches referred to
-  /home/eon/dev/csf-re). The broad native phase passed before the final graph-height refinement; targeted
+- Configured fresh native and cross CMake caches for the checkout (old caches referred to
+  its previous path). The broad native phase passed before the final graph-height refinement; targeted
   collision/real-asset tests passed again after it. Full link/build/unit validation was stopped at the
   user's wrap-up request; no Windows mission was launched. Resume with check_all.sh and then the mission
   run, followed by inspection using its matching fresh link map. Existing standalone/harness edits remain
@@ -1867,3 +1867,10 @@ Fresh-eyes review of the RE flow (user request), then implemented end to end. Fi
 - Ledger read straight from db/verify.json (status.py hashes built hook objects; this relocated checkout has none,
   so it shows every function pending): diffed 2,205, executed 5,536, never ran 7,150, mismatched 9, installed
   14,605. Same picture as the 2026-10-17 review.
+- Second pass: machine paths. Tools and tests no longer hard-code `/mnt/e/dev/...`; `tools/paths.py` (Python),
+  `tests/paths.h` (C++) and the shell scripts derive `CSF_PLAY`/`CSF_STANDALONE`/`CSF_PAKS`/`CSF_BUILDS` from
+  one `CSF_DATA_ROOT` (default unchanged, so this machine needs no setup). Docs use the variables; `/home/...`
+  paths removed. The touched RW tests build and pass natively (real assets skipped: the extracted paks are no
+  longer under `/mnt/e/dev/csf-paks` on this machine; resolution via both variables checked with a dummy
+  fixture). Also checked: no byte dumps of the original in db/tests/docs, all relative README/docs links
+  resolve, packed history 48 MB (single author identity).

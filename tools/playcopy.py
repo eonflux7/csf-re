@@ -5,13 +5,15 @@ Hard-linked: files of at least 1 MB that the game only reads (.pak maps, .bik vi
 executables and DLLs (deploy.sh / playexe.py rewrite them per copy), Config/ (the game writes Juego.cfg etc.), and
 everything small. Our run files (csf_hook.log, hits, diff logs, shots/) are not carried over.
 
-  playcopy.py DST [--src /mnt/e/dev/csf-play]             a hook copy (smoke pool instance; deploy.sh fills it)
+  playcopy.py DST [--src $CSF_PLAY]             a hook copy (smoke pool instance; deploy.sh fills it)
   playcopy.py DST --original                              the unhooked original game (CommXPC.exe.orig, no hook
                                                           DLL): for playing / making savegames by hand
 Savegames live in Documents\\CSF Data\\Games, shared by every copy. Idempotent: existing files are replaced.
-Never point DST at /mnt/e/dev/csf-builds (read-only originals).
+Never point DST at $CSF_BUILDS (read-only originals).
 """
 import argparse, os, shutil, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from paths import PLAY
 
 LINK_MIN = 1 << 20
 NEVER_LINK = {".exe", ".dll", ".cfg", ".ini", ".txt", ".log", ".orig", ".dat"}
@@ -21,7 +23,7 @@ SKIP = {"csf_hook.log", "csf_hook_hits.txt", "csf_diff.log", "csf_diff_summary.t
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("dst")
-    ap.add_argument("--src", default="/mnt/e/dev/csf-play")
+    ap.add_argument("--src", default=PLAY)
     ap.add_argument("--original", action="store_true", help="unhooked original exe, no hook DLL / ini")
     a = ap.parse_args()
     src, dst = os.path.abspath(a.src), os.path.abspath(a.dst)

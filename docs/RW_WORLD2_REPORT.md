@@ -165,7 +165,7 @@ This count is not interchangeable with the 140 source-call unresolved slots.
 
 * No game, smoke, Windows executable or GPU was run. The complete
   `check_all.sh --no-walk` is not claimed: it invokes Windows even with that flag.
-* `find /mnt/e/dev/csf-paks/GlobalEK -iname '*.bsp'` found **no files**. FR01's BSP
+* `find $CSF_PAKS/GlobalEK -iname '*.bsp'` found **no files**. FR01's BSP
   and accompanying textures/clumps need extraction from mission-specific paks
   before an asset test is possible. The new fixture is synthetic, not FR01.
 * Native/platform-sector streaming, lightmap/PVS/MatFX owning stream extensions,

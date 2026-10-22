@@ -236,10 +236,20 @@ See [docs/STANDALONE.md](docs/STANDALONE.md) for the generated inputs and the tr
 real-asset tests (`CSF_FR01_DIR` = an extracted `Maps/FR01` from `Ransom.pak`). `tools/status.py --modules` prints
 the live numbers.
 
-**Environment variables used by the tools:** `CSF_PLAY` (hooked game copy), `CSF_POOL` (parallel smoke copies),
-`CSF_FR01_DIR` (extracted mission assets), `CSF_CHECK_RW_BUILD` (native RW test build dir), `CSF_CONFIG_DIR`
-(agent logins/keys). Several tools still default to the original developer's paths under `/mnt/e/dev/`. Set
-the variables.
+**Machine-local directories** (all outside the repo; [tools/paths.py](tools/paths.py), mirrored by
+`tests/paths.h` and the shell scripts). Set `CSF_DATA_ROOT` once, or each directory on its own:
+
+| Variable | Default | Contents |
+|---|---|---|
+| `CSF_DATA_ROOT` | `/mnt/e/dev` (the original developer's WSL layout) | Parent of the four below |
+| `CSF_PLAY` | `$CSF_DATA_ROOT/csf-play` | Copy of the game the hook DLL is deployed into |
+| `CSF_STANDALONE` | `$CSF_DATA_ROOT/csf-standalone` | Run directory of the standalone exe (`tools/dryrun.py`) |
+| `CSF_PAKS` | `$CSF_DATA_ROOT/csf-paks` | Extracted `.pak` contents for the optional real-asset tests |
+| `CSF_BUILDS` | `$CSF_DATA_ROOT/csf-builds` | Original game builds, read-only |
+
+Other variables: `CSF_POOL` (parallel smoke copies), `CSF_FR01_DIR` (overrides `$CSF_PAKS/Ransom/Maps/FR01`),
+`CSF_CHECK_RW_BUILD` (native RW test build dir), `CSF_CONFIG_DIR` (agent logins/keys). Real-asset tests print
+`SKIP` when their data is absent.
 
 ---
 
